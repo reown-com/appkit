@@ -34,7 +34,7 @@ test.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-test('should connect to all chains', async () => {
+test('should connect to all namespaces', async () => {
   await modalValidator.expectAccountButtonReady('eip155')
   await modalValidator.expectAccountButtonReady('solana')
   await modalValidator.expectAccountButtonReady('bip122')
@@ -114,8 +114,22 @@ test('should switch network when clicking custom buttons per namespace', async (
   await modalValidator.expectBalanceFetched('BTC')
 })
 
-test('should disconnect from all chains', async () => {
+test('should disconnect from all namespaces', async () => {
   await modalPage.disconnect()
+  await modalValidator.expectDisconnected('eip155')
+  await modalValidator.expectDisconnected('solana')
+  await modalValidator.expectDisconnected('bip122')
+})
+
+test('should disconnect from all namespaces when try to disconnect only one when connected with wc', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+
+  await modalValidator.expectAccountButtonReady('eip155')
+  await modalValidator.expectAccountButtonReady('solana')
+  await modalValidator.expectAccountButtonReady('bip122')
+
+  await modalPage.disconnectWithHook('eip155')
+
   await modalValidator.expectDisconnected('eip155')
   await modalValidator.expectDisconnected('solana')
   await modalValidator.expectDisconnected('bip122')

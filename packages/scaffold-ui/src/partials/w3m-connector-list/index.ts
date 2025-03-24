@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
+import { ApiController, ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
@@ -30,10 +30,16 @@ export class W3mConnectorList extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private recommended = ApiController.state.recommended
+
+  @state() private featured = ApiController.state.featured
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ApiController.subscribeKey('recommended', val => (this.recommended = val)),
+      ApiController.subscribeKey('featured', val => (this.featured = val))
     )
   }
 
@@ -44,7 +50,7 @@ export class W3mConnectorList extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
-      ConnectorUtil.getConnectorsByType(this.connectors)
+      ConnectorUtil.getConnectorsByType(this.connectors, this.recommended, this.featured)
     const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
     const isWCEnabled = OptionsController.state.enableWalletConnect
 
@@ -72,11 +78,13 @@ export class W3mConnectorList extends LitElement {
           : null}
         ${injected.length
           ? html`<w3m-connect-injected-widget
+              .connectors=${injected}
               tabIdx=${ifDefined(this.tabIdx)}
             ></w3m-connect-injected-widget>`
           : null}
         ${featured.length
           ? html`<w3m-connect-featured-widget
+              .wallets=${featured}
               tabIdx=${ifDefined(this.tabIdx)}
             ></w3m-connect-featured-widget>`
           : null}
@@ -92,6 +100,7 @@ export class W3mConnectorList extends LitElement {
           : null}
         ${recommended.length
           ? html`<w3m-connect-recommended-widget
+              .wallets=${recommended}
               tabIdx=${ifDefined(this.tabIdx)}
             ></w3m-connect-recommended-widget>`
           : null}

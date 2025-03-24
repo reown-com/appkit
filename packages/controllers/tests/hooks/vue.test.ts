@@ -2,8 +2,16 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import type { App } from 'vue'
 import { createApp, nextTick } from 'vue'
 
-import { AccountController, ChainController, ConnectorController } from '../../exports/index.js'
-import { useAppKitAccount } from '../../exports/vue.js'
+import { ConstantsUtil } from '@reown/appkit-common'
+
+import {
+  AccountController,
+  type AuthConnector,
+  ChainController,
+  ConnectionController,
+  ConnectorController
+} from '../../exports/index.js'
+import { useAppKitAccount, useDisconnect } from '../../exports/vue.js'
 import {
   mockChainControllerState,
   mockResetChainControllerState
@@ -74,10 +82,53 @@ describe('useAppKitAccount', () => {
     AccountController.setUser({ username: 'test', email: 'testuser@example.com' }, 'eip155')
     AccountController.setSmartAccountDeployed(true, 'eip155')
     AccountController.setPreferredAccountType('smartAccount', 'eip155')
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({} as any)
+    ConnectorController.state.connectors = [
+      {
+        id: ConstantsUtil.CONNECTOR_ID.AUTH,
+        type: 'AUTH'
+      } as AuthConnector
+    ]
 
     await nextTick()
 
     expect(state.value).toEqual(connectedWithEmbeddedWalletState)
+  })
+
+  it('should return account state with namespace parameter', async () => {
+    ConnectorController.state.connectors = []
+    const [state] = withSetup(() => useAppKitAccount({ namespace: 'solana' }))
+
+    await nextTick()
+
+    expect(state.value).toEqual({
+      allAccounts: [],
+      address: undefined,
+      caipAddress: undefined,
+      isConnected: false,
+      status: undefined,
+      embeddedWalletInfo: undefined
+    })
+  })
+})
+
+describe('useDisconnect', () => {
+  it('should disconnect as expected', async () => {
+    const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
+
+    const { disconnect } = useDisconnect()
+
+    await disconnect()
+
+    expect(disconnectSpy).toHaveBeenCalled()
+  })
+
+  it('should disconnect for specific namespace as expected', async () => {
+    const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
+
+    const { disconnect } = useDisconnect()
+
+    await disconnect({ namespace: 'solana' })
+
+    expect(disconnectSpy).toHaveBeenCalledWith('solana')
   })
 })

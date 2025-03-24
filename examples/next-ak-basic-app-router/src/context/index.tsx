@@ -17,8 +17,8 @@ if (!projectId) {
 
 // Set up metadata
 export const appKitMetadata = {
-  name: 'AppKit Next.js AppKit Basic',
-  description: 'AppKit Next.js AppKit Basic Example',
+  name: 'AppKit Next.js AppKit Core',
+  description: 'AppKit Next.js AppKit Core Example',
   url: 'https://appkit-lab.reown.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }

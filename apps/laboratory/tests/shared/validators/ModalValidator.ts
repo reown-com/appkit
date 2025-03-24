@@ -10,7 +10,10 @@ import { getMaximumWaitConnections } from '../utils/timeouts'
 const MAX_WAIT = getMaximumWaitConnections()
 
 export class ModalValidator {
-  constructor(public readonly page: Page) {}
+  public readonly page: Page
+  constructor(page: Page) {
+    this.page = page
+  }
 
   async expectConnected() {
     const accountButton = this.page.locator('appkit-account-button').first()
