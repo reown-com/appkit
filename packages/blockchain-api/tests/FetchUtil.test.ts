@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { FetchUtil } from '../../src/utils/FetchUtil'
+import { FetchUtil } from '../src/utils/FetchUtil.js'
 
 describe('FetchUtil', () => {
   const mockBaseUrl = 'https://api.example.com'

@@ -61,7 +61,7 @@ export const SmartSessionsController = {
         return []
       }
 
-      const sessions = (await BlockchainApiController.getSmartSessions(caipAddress)) as {
+      const sessions = (await BlockchainApiController.getSmartSessions(caipAddress)) as unknown as {
         pcis: SmartSession[]
       }
 
