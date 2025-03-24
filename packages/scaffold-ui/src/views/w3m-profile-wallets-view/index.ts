@@ -9,7 +9,7 @@ import {
   ConnectionController,
   ConnectorController,
   ModalController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-certified-switch'
 import '@reown/appkit-ui/wui-flex'
@@ -66,7 +66,7 @@ export class W3mProfileWalletsView extends LitElement {
             const connectorImageUrl = connector?.imageUrl || connector?.info?.icon
             const namespaceConnector = this.activeConnectorId[connection.chain]
             const connected =
-              ChainController.getAccountDataByChainNamespace(connection.chain)?.address &&
+              ChainController.getAccountData(connection.chain)?.address &&
               namespaceConnector === connection.connectorId
 
             const isActive =
