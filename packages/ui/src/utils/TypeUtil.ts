@@ -151,6 +151,7 @@ export type IconType =
   | 'plus'
   | 'qrCode'
   | 'recycleHorizontal'
+  | 'reown'
   | 'refresh'
   | 'search'
   | 'send'
@@ -200,6 +201,7 @@ export type VisualType =
   | 'paypal'
   | 'pencil'
   | 'solana'
+  | 'bitcoin'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 

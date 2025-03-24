@@ -5,8 +5,8 @@ import {
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
-import type { WcWallet } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { WcWallet } from '@reown/appkit-controllers'
 
 import { WalletUtil } from '../src/utils/WalletUtil'
 

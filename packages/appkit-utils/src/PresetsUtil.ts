@@ -1,5 +1,5 @@
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { ConnectorType } from '@reown/appkit-core'
+import type { ConnectorType } from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -97,14 +97,16 @@ export const PresetsUtil = {
     2020: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
     // Saigon Testnet (a.k.a. Ronin)
     2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
+    // Berachain Mainnet
+    80094: 'e329c2c9-59b0-4a02-83e4-212ff3779900',
     // Solana networks
     '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     // Bitcoin
-    '000000000019d6689c085ae165831e93': '21c895fa-e105-4829-9434-378bb54fa600',
+    '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
     // Bitcoin Testnet
-    '000000000933ea01ad0ee984209779ba': '220bcb01-ba47-41d3-fe5b-e29bbc4a4b00'
+    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
   } as Record<string, string>,
 
   ConnectorImageIds: {

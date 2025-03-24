@@ -1,27 +1,45 @@
 import { vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
-import {
-  AccountController,
-  BlockchainApiController,
-  ChainController,
-  type ChainControllerState,
-  StorageUtil
-} from '@reown/appkit-core'
+import { AccountController, BlockchainApiController, StorageUtil } from '@reown/appkit-controllers'
 
-import { mainnet, unsupportedNetwork } from './mocks/Networks.js'
+import { mockLocalStorage } from './mocks/LocalStorage.js'
+import { mainnet } from './mocks/Networks.js'
 
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
-  vi.mocked(global).window = { location: { origin: '' } } as unknown as Window & typeof globalThis
-  vi.mocked(global).document = {
+  vi.stubGlobal('window', {
+    location: { origin: '' },
+    matchMedia: vi.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    }))
+  } as unknown as Window & typeof globalThis)
+
+  vi.stubGlobal('document', {
     body: {
       insertAdjacentElement: vi.fn()
     } as unknown as HTMLElement,
     createElement: vi.fn().mockReturnValue({ appendChild: vi.fn() }),
     getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
     querySelector: vi.fn()
-  } as unknown as Document
+  } as unknown as Document)
+
+  vi.stubGlobal('localStorage', mockLocalStorage() as unknown as Storage)
+
+  vi.stubGlobal('navigator', {
+    userAgent: '',
+    platform: '',
+    language: '',
+    languages: [],
+    onLine: true
+  } as unknown as Navigator)
 }
 
 export function mockBlockchainApiController() {
@@ -41,12 +59,4 @@ export function mockStorageUtil() {
 
 export function mockFetchTokenBalanceOnce(response: Balance[]) {
   vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValueOnce(response)
-}
-
-export function mockChainControllerStateWithUnsupportedChain() {
-  vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-    ...ChainController.state,
-    activeChain: mainnet.chainNamespace,
-    activeCaipNetwork: unsupportedNetwork
-  } as unknown as ChainControllerState)
 }

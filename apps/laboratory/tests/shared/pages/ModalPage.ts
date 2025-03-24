@@ -33,6 +33,9 @@ export type ModalFlavor =
   | 'wallet-button'
   | 'siwe'
   | 'siwx'
+  | 'core-sign-client'
+  | 'core-universal-provider'
+  | 'core'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
@@ -45,7 +48,8 @@ function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
     'wagmi-verify-evil': maliciousUrl,
     'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
     'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
-    'ethers-verify-evil': maliciousUrl
+    'ethers-verify-evil': maliciousUrl,
+    'core-sign-client': `${baseUrl}core/sign-client/`
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
@@ -57,13 +61,14 @@ export class ModalPage {
   private readonly connectButton: Locator
   private readonly url: string
   private emailAddress = ''
-
-  constructor(
-    public readonly page: Page,
-    public readonly library: string,
-    public readonly flavor: ModalFlavor
-  ) {
-    this.connectButton = this.page.getByTestId('connect-button')
+  public readonly page: Page
+  public readonly library: string
+  public readonly flavor: ModalFlavor
+  constructor(page: Page, library: string, flavor: ModalFlavor) {
+    this.page = page
+    this.library = library
+    this.flavor = flavor
+    this.connectButton = this.page.getByTestId('connect-button').first()
     if (library === 'multichain-ethers-solana') {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
     } else {
@@ -315,6 +320,15 @@ export class ModalPage {
     await disconnectBtn.click()
   }
 
+  async disconnectWithHook(namespace?: string) {
+    const disconnectBtn = this.page.getByTestId(
+      namespace ? `${namespace}-disconnect-button` : 'disconnect-hook-button'
+    )
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
+    await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
+    await disconnectBtn.click()
+  }
+
   async sign(_namespace?: string) {
     const namespace = _namespace || getNamespaceByLibrary(this.library)
     const signButton = this.page
@@ -439,11 +453,11 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
-  async openAccount() {
+  async openAccount(namespace?: string) {
     expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
     this.page.waitForTimeout(300)
-    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
   async openConnectModal() {

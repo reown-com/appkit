@@ -10,7 +10,7 @@ import {
 } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-core'
+import { StorageUtil } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
@@ -535,7 +535,11 @@ describe('BitcoinAdapter', () => {
         ([name]) => name === 'networkChange'
       )![1]
 
-      callback({ type: 'networkChange' })
+      callback({
+        type: 'networkChange',
+        stacks: { name: 'mock_network' },
+        bitcoin: { name: 'Mainnet' }
+      })
 
       expect(listeners.switchNetwork).toHaveBeenCalled()
     })

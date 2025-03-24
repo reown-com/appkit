@@ -133,7 +133,7 @@ type BalanceQuantity = {
 
 export type SIWEStatus = 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
 
-export type SdkFramework = 'html' | 'react' | 'vue'
+export type SdkFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 
 export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}`
 

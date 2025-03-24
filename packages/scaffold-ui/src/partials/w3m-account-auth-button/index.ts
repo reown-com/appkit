@@ -8,7 +8,7 @@ import {
   RouterController,
   type SocialProvider,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-text'
@@ -49,6 +49,12 @@ export class W3mAccountAuthButton extends LitElement {
       return null
     }
     const email = authConnector.provider.getEmail() ?? ''
+
+    if (!email && !this.socialUsername) {
+      this.style.cssText = `display: none`
+
+      return null
+    }
 
     return html`
       <wui-list-item

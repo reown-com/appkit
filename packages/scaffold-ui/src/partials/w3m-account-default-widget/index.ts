@@ -16,7 +16,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
 import '@reown/appkit-ui/wui-button'
@@ -449,7 +449,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     try {
       this.disconnecting = true
       await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })

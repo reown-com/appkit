@@ -9,7 +9,7 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type { IconType } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -66,6 +66,8 @@ export class W3mConnectingWidget extends LitElement {
   @state() protected secondaryLabel = 'Accept connection request in the wallet'
 
   @state() public buffering = false
+
+  @state() protected isLoading = false
 
   @property({ type: Boolean }) public isMobile = false
 
@@ -162,7 +164,7 @@ export class W3mConnectingWidget extends LitElement {
               <wui-button
                 variant="accent"
                 size="md"
-                ?disabled=${this.isRetrying || (!this.error && this.buffering)}
+                ?disabled=${this.isRetrying || (!this.error && this.buffering) || this.isLoading}
                 @click=${this.onTryAgain.bind(this)}
                 data-testid="w3m-connecting-widget-secondary-button"
               >

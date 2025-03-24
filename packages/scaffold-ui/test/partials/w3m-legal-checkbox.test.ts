@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { OptionsController } from '@reown/appkit-core'
+import { OptionsController } from '@reown/appkit-controllers'
 
 import { W3mLegalCheckbox } from '../../src/partials/w3m-legal-checkbox/index'
 import { HelpersUtil } from '../utils/HelpersUtil'
