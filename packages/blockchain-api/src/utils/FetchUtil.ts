@@ -116,12 +116,12 @@ export class FetchUtil {
     })
 
     // Add client ID if available
-    if (this.clientId) {
+    if (this.clientId && !url.searchParams.has('clientId')) {
       url.searchParams.append('clientId', this.clientId)
     }
 
     // Add project ID if available and not already in params
-    if (this.projectId) {
+    if (this.projectId && !url.searchParams.has('projectId')) {
       url.searchParams.append('projectId', this.projectId)
     }
 
