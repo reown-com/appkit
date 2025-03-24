@@ -28,6 +28,8 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -77,7 +79,7 @@ const state = proxy<ChainControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ChainController = {
+const controller = {
   state,
 
   subscribe(callback: (value: ChainControllerState) => void) {
@@ -781,3 +783,6 @@ export const ChainController = {
       .map(caipNetwork => caipNetwork.caipNetworkId)
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ChainController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)

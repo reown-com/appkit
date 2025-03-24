@@ -39,8 +39,6 @@ import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary'
-import { TelemetryErrorCategory } from './TelemetryController'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -134,7 +132,7 @@ const state = proxy<BlockchainApiControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-const controller = {
+export const BlockchainApiController = {
   state,
 
   async get<T>(request: RequestArguments): Promise<T> {
@@ -650,6 +648,3 @@ const controller = {
     state.api = new FetchUtil({ baseUrl, clientId })
   }
 }
-
-// Export the controller wrapped with our error boundary
-export const BlockchainApiController = withErrorBoundary(controller, TelemetryErrorCategory.API_ERROR)
