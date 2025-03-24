@@ -17,14 +17,7 @@ const nextConfig = {
     config.externals.push('pino-pretty', 'lokijs', 'encoding')
 
     return config
-  },
-  redirects: async () => [
-    {
-      source: '/see',
-      destination: '/api/sse',
-      permanent: true
-    }
-  ]
+  }
 }
 
 export default nextConfig
