@@ -154,6 +154,11 @@ export interface OptionsControllerStatePublic {
    * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
    */
   manualWCControl?: boolean
+  /**
+   * Enable or disable the network switcher in the modal.
+   * @default true
+   */
+  showNetworkSwitcher?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -173,7 +178,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
+  showNetworkSwitcher: true
 })
 
 // -- Controller ---------------------------------------- //
@@ -331,6 +337,10 @@ export const OptionsController = {
 
   setManualWCControl(manualWCControl: OptionsControllerState['manualWCControl']) {
     state.manualWCControl = manualWCControl
+  },
+
+  setEnableNetworkSwitcher(showNetworkSwitcher: OptionsControllerState['showNetworkSwitcher']) {
+    state.showNetworkSwitcher = showNetworkSwitcher
   },
 
   setDefaultAccountTypes(
