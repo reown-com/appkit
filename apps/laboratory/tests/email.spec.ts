@@ -125,7 +125,7 @@ emailTest('it should show loading on page refresh', async () => {
   await validator.expectAccountButtonReady()
 })
 
-emailTest.only('it should show snackbar error if failed to fetch token balance', async () => {
+emailTest('it should show snackbar error if failed to fetch token balance', async () => {
   // Clear cache and set offline to simulate token balance fetch failure
   await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
   await context.setOffline(true)
