@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
@@ -10,9 +11,10 @@ import {
   CoreHelperUtil,
   ModalController,
   OptionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import type { WuiAccountButton } from '@reown/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
+import '@reown/appkit-ui/wui-account-button'
 
 class W3mAccountButtonBase extends LitElement {
   // -- Members ------------------------------------------- //
@@ -27,17 +29,19 @@ class W3mAccountButtonBase extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @property() public namespace?: ChainNamespace = undefined
 
-  @state() private balanceVal = AccountController.state.balance
+  @state() private caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceVal = ChainController.getAccountData(this.namespace)?.balance
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private balanceSymbol = ChainController.getAccountData(this.namespace)?.balanceSymbol
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileName = ChainController.getAccountData(this.namespace)?.profileName
 
-  @state() private network = ChainController.state.activeCaipNetwork
+  @state() private profileImage = ChainController.getAccountData(this.namespace)?.profileImage
+
+  @state() private network = ChainController.getNetworkData(this.namespace)?.caipNetwork
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
@@ -49,10 +53,34 @@ class W3mAccountButtonBase extends LitElement {
       : true
 
   // -- Lifecycle ----------------------------------------- //
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ...[
+  public override firstUpdated() {
+    const namespace = this.namespace
+
+    if (namespace) {
+      this.unsubscribe.push(
+        ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            this.caipAddress = val?.caipAddress
+            this.balanceVal = val?.balance
+            this.balanceSymbol = val?.balanceSymbol
+            this.profileName = val?.profileName
+            this.profileImage = val?.profileImage
+          },
+          namespace
+        ),
+        ChainController.subscribeChainProp(
+          'networkState',
+          val => {
+            this.network = val?.caipNetwork
+            this.isSupported = ChainController.checkIfSupportedNetwork(namespace, val?.caipNetwork)
+            this.networkImage = AssetUtil.getNetworkImage(val?.caipNetwork)
+          },
+          namespace
+        )
+      )
+    } else {
+      this.unsubscribe.push(
         AssetController.subscribeNetworkImages(() => {
           this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
@@ -69,9 +97,14 @@ class W3mAccountButtonBase extends LitElement {
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
             : true
+          this.fetchNetworkImage(val)
         })
-      ]
-    )
+      )
+    }
+  }
+
+  public override updated() {
+    this.fetchNetworkImage(this.network)
   }
 
   public override disconnectedCallback() {
@@ -101,7 +134,7 @@ class W3mAccountButtonBase extends LitElement {
           ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)
           : ''}
         @click=${this.onClick.bind(this)}
-        data-testid="account-button"
+        data-testid=${`account-button${this.namespace ? `-${this.namespace}` : ''}`}
         .charsStart=${this.charsStart}
         .charsEnd=${this.charsEnd}
         ?loading=${shouldShowLoading}
@@ -111,11 +144,19 @@ class W3mAccountButtonBase extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onClick() {
+  private async onClick() {
+    await ChainController.switchActiveNamespace(this.namespace)
+
     if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
       ModalController.open()
     } else {
       ModalController.open({ view: 'UnsupportedChain' })
+    }
+  }
+
+  private async fetchNetworkImage(network?: CaipNetwork) {
+    if (network?.assets?.imageId) {
+      this.networkImage = await AssetUtil.fetchNetworkImage(network?.assets?.imageId)
     }
   }
 }

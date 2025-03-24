@@ -1,6 +1,9 @@
 export const ConstantsUtil = {
   SECURE_SITE_ORIGIN:
-    process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org',
+    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+    (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+      : undefined) || 'https://secure.walletconnect.org',
 
   Socials: ['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'] as const,
   Email: 'email' as const,

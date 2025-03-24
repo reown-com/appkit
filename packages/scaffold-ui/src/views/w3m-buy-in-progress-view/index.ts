@@ -11,8 +11,16 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-visual'
 
 import styles from './styles.js'
 

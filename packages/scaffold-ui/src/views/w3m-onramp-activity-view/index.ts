@@ -9,9 +9,13 @@ import {
   OnRampController,
   OptionsController,
   TransactionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-transaction-list-item-loader'
 
+import '../../partials/w3m-onramp-activity-item/index.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //

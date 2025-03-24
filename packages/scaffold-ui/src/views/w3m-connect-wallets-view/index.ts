@@ -2,9 +2,13 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { OptionsController } from '@reown/appkit-core'
+import { OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
+import '../../partials/w3m-wallet-login-list/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connect-wallets-view')

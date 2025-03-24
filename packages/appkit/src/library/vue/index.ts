@@ -1,7 +1,7 @@
 import { onUnmounted, reactive, ref } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type Event } from '@reown/appkit-core'
+import { type Event } from '@reown/appkit-controllers'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -12,9 +12,9 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
+import { ProviderUtil } from '@reown/appkit-utils'
 
-import type { AppKit } from '../../../src/client.js'
-import { ProviderUtil } from '../../store/ProviderUtil.js'
+import type { AppKitBaseClient as AppKit } from '../../client/appkit-base-client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 export interface AppKitEvent {
@@ -23,7 +23,7 @@ export interface AppKitEvent {
 }
 
 type OpenOptions = {
-  view:
+  view?:
     | 'Account'
     | 'Connect'
     | 'Networks'
@@ -44,7 +44,10 @@ type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
 declare module 'vue' {
   export interface ComponentCustomProperties {
-    AppKitButton: Pick<AppKitButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+    AppKitButton: Pick<
+      AppKitButton,
+      'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
+    >
     AppKitConnectButton: Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
     AppKitAccountButton: Pick<AppKitAccountButton, 'disabled' | 'balance'>
     AppKitNetworkButton: Pick<AppKitNetworkButton, 'disabled'>
@@ -64,7 +67,7 @@ export function getAppKit(appKit: AppKit) {
 }
 
 // -- Core Hooks ---------------------------------------------------------------
-export * from '@reown/appkit-core/vue'
+export * from '@reown/appkit-controllers/vue'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const state = ref(ProviderUtil.state)

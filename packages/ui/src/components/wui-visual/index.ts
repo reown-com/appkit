@@ -2,6 +2,7 @@ import type { TemplateResult } from 'lit'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import { bitcoinSvg } from '../../assets/visual/bitcoin.js'
 import { browserSvg } from '../../assets/visual/browser.js'
 import { coinbaseSvg } from '../../assets/visual/coinbase.js'
 import { daoSvg } from '../../assets/visual/dao.js'
@@ -54,7 +55,8 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   google: googleSvg,
   pencil: pencilSvg,
   lightbulb: lightbulbSvg,
-  solana: solanaSvg
+  solana: solanaSvg,
+  bitcoin: bitcoinSvg
 }
 
 @customElement('wui-visual')

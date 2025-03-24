@@ -179,4 +179,12 @@ describe('LeatherConnector', () => {
 
     requestSpy.mockRestore()
   })
+
+  it('should replace image/svg with image/svg+xml', () => {
+    const connector = new LeatherConnector({
+      connector: satsConnectConnector
+    })
+
+    expect(connector.imageUrl).toBe('data:image/svg+xml;')
+  })
 })

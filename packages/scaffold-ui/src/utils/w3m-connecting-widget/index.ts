@@ -9,9 +9,18 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type { IconType } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
 
+import '../../partials/w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 export class W3mConnectingWidget extends LitElement {
@@ -57,6 +66,8 @@ export class W3mConnectingWidget extends LitElement {
   @state() protected secondaryLabel = 'Accept connection request in the wallet'
 
   @state() public buffering = false
+
+  @state() protected isLoading = false
 
   @property({ type: Boolean }) public isMobile = false
 
@@ -153,7 +164,7 @@ export class W3mConnectingWidget extends LitElement {
               <wui-button
                 variant="accent"
                 size="md"
-                ?disabled=${this.isRetrying || (!this.error && this.buffering)}
+                ?disabled=${this.isRetrying || (!this.error && this.buffering) || this.isLoading}
                 @click=${this.onTryAgain.bind(this)}
                 data-testid="w3m-connecting-widget-secondary-button"
               >

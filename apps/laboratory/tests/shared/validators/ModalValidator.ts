@@ -10,10 +10,13 @@ import { getMaximumWaitConnections } from '../utils/timeouts'
 const MAX_WAIT = getMaximumWaitConnections()
 
 export class ModalValidator {
-  constructor(public readonly page: Page) {}
+  public readonly page: Page
+  constructor(page: Page) {
+    this.page = page
+  }
 
   async expectConnected() {
-    const accountButton = this.page.locator('appkit-account-button')
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -39,8 +42,8 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
-    const accountButton = this.page.locator('appkit-account-button')
+  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL') {
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -75,8 +78,8 @@ export class ModalValidator {
     ).toBeVisible()
   }
 
-  async expectDisconnected() {
-    const connectButton = this.page.getByTestId('connect-button')
+  async expectDisconnected(namespace?: string) {
+    const connectButton = this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`)
     await expect(connectButton, 'Connect button should be present').toBeVisible({
       timeout: MAX_WAIT
     })
@@ -312,9 +315,13 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton() {
+  async expectOnrampButton(visible: boolean) {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    await expect(onrampButton).toBeVisible()
+    if (visible) {
+      await expect(onrampButton).toBeVisible()
+    } else {
+      await expect(onrampButton).not.toBeVisible()
+    }
   }
 
   async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {
@@ -394,8 +401,8 @@ export class ModalValidator {
     await expect(connectButton).toContainText('Connecting...')
   }
 
-  async expectAccountButtonReady() {
-    const accountButton = this.page.getByTestId('account-button')
+  async expectAccountButtonReady(namespace?: string) {
+    const accountButton = this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`)
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 

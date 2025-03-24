@@ -1,4 +1,4 @@
-import { type Connector, ConnectorController } from '@reown/appkit-core'
+import { type Connector, ConnectorController } from '@reown/appkit-controllers'
 
 import { ApiController } from './controllers/ApiController.js'
 import { WalletButtonController } from './controllers/WalletButtonController.js'

@@ -15,7 +15,7 @@ export function mockSatsConnectProvider(replaces: Partial<SatsConnectProvider> =
 
   const provider: SatsConnectProvider = {
     id,
-    icon: 'mock_icon',
+    icon: 'data:image/svg;',
     name: 'mock_provider_name',
     chromeWebStoreUrl: '',
     googlePlayStoreUrl: '',
