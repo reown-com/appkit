@@ -265,7 +265,7 @@ export const AccountController = {
       state.lastRetry = Date.now()
 
       onError?.(error)
-      SnackController.showError('Token Balance Unavailable')
+      SnackController.showError('Token balance unavailable')
     } finally {
       state.balanceLoading = false
     }
