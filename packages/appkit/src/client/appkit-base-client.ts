@@ -127,9 +127,11 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
-    await this.syncExistingConnection()
-
-    PublicStateController.set({ initialized: true })
+    // Skip if on server as it requires storage access
+    if (CoreHelperUtil.isClient()) {
+      await this.syncExistingConnection()
+      PublicStateController.set({ initialized: true })
+    }
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
