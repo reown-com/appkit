@@ -86,7 +86,7 @@ describe('W3mAccountAuthButton', () => {
 
     expect(RouterController.push).toHaveBeenCalledWith('UpdateEmailWallet', {
       email: MOCK_EMAIL,
-      isUpdatingEmailWithWalletButton: false
+      redirectView: 'Account'
     })
   })
 

@@ -95,7 +95,7 @@ export interface RouterControllerState {
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
-    isUpdatingEmailWithWalletButton?: boolean
+    redirectView?: RouterControllerState['view']
     newEmail?: string
     target?: SwapInputTarget
     swapUnsupportedChain?: boolean

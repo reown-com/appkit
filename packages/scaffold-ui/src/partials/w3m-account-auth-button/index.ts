@@ -76,7 +76,7 @@ export class W3mAccountAuthButton extends LitElement {
   // -- Private ------------------------------------------- //
   private onGoToUpdateEmail(email: string, socialProvider: SocialProvider | null) {
     if (!socialProvider) {
-      RouterController.push('UpdateEmailWallet', { email, isUpdatingEmailWithWalletButton: false })
+      RouterController.push('UpdateEmailWallet', { email, redirectView: 'Account' })
     }
   }
 

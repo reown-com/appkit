@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { type Connector, ConnectorController, OptionsController } from '@reown/appkit-core'
+import { type Connector, ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 

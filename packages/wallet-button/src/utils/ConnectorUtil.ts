@@ -276,7 +276,7 @@ export const ConnectorUtil = {
 
     RouterController.push('UpdateEmailWallet', {
       email: initialEmail,
-      isUpdatingEmailWithWalletButton: true
+      redirectView: undefined
     })
 
     return new Promise((resolve, reject) => {

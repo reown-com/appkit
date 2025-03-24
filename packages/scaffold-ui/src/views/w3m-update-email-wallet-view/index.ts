@@ -21,8 +21,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
   private initialEmail = RouterController.state.data?.email ?? ''
 
-  private isUpdatingEmailWithWalletButton =
-    RouterController.state.data?.isUpdatingEmailWithWalletButton ?? false
+  private redirectView = RouterController.state.data?.redirectView
 
   // -- State & Properties -------------------------------- //
   @state() private email = ''
@@ -81,13 +80,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
         RouterController.push('UpdateEmailSecondaryOtp', {
           email: this.initialEmail,
           newEmail: this.email,
-          isUpdatingEmailWithWalletButton: this.isUpdatingEmailWithWalletButton
+          redirectView: this.redirectView
         })
       } else {
         RouterController.push('UpdateEmailPrimaryOtp', {
           email: this.initialEmail,
           newEmail: this.email,
-          isUpdatingEmailWithWalletButton: this.isUpdatingEmailWithWalletButton
+          redirectView: this.redirectView
         })
       }
     } catch (error) {
@@ -99,7 +98,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
   private buttonsTemplate() {
     const showSubmit = !this.loading && this.email.length > 3 && this.email !== this.initialEmail
 
-    if (this.isUpdatingEmailWithWalletButton) {
+    if (!this.redirectView) {
       return html`
         <wui-button
           size="md"
