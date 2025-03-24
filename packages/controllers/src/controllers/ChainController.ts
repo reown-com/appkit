@@ -486,7 +486,6 @@ const controller = {
 
   getRequestedCaipNetworks(chainToFilter: ChainNamespace) {
     const adapter = state.chains.get(chainToFilter)
-
     const { approvedCaipNetworkIds = [], requestedCaipNetworks = [] } = adapter?.networkState || {}
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
