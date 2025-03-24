@@ -656,9 +656,12 @@ export const ChainController = {
       const disconnectResults = await Promise.allSettled(
         chainsToDisconnect.map(async ([ns, adapter]) => {
           try {
-            if (adapter.connectionControllerClient?.disconnect) {
+            const { caipAddress } = this.getAccountData(ns) || {}
+
+            if (caipAddress && adapter.connectionControllerClient?.disconnect) {
               await adapter.connectionControllerClient.disconnect(ns)
             }
+
             this.resetAccount(ns)
             this.resetNetwork(ns)
           } catch (error) {
