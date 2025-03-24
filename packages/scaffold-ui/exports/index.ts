@@ -33,7 +33,6 @@ export * from '../src/views/w3m-get-wallet-view/index.js'
 export * from '../src/views/w3m-what-is-a-wallet-view/index.js'
 export * from '../src/views/w3m-connect-wallets-view/index.js'
 
-
 // Network
 export * from '../src/views/w3m-network-switch-view/index.js'
 export * from '../src/views/w3m-networks-view/index.js'
