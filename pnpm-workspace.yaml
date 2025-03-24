@@ -1,24 +1,46 @@
 packages:
-  - 'packages/adapters/*'
-  - 'packages/appkit'
-  - 'packages/common'
-  - 'packages/ui'
-  - 'packages/controllers'
-  - 'packages/core-legacy'
-  - 'packages/appkit-utils'
-  - 'packages/scaffold-ui'
-  - 'packages/polyfills'
-  - 'packages/wallet'
-  - 'packages/siwe'
-  - 'packages/siwx'
-  - 'packages/wallet-button'
-  - 'packages/cdn'
-  - 'packages/experimental'
-  - 'packages/cli'
-  - 'apps/*'
-  - 'examples/*'
-  - 'services/*'
-  - 'packages/ui-new'
+  - packages/adapters/*
+  - packages/appkit
+  - packages/common
+  - packages/ui
+  - packages/controllers
+  - packages/core-legacy
+  - packages/appkit-utils
+  - packages/scaffold-ui
+  - packages/polyfills
+  - packages/wallet
+  - packages/siwe
+  - packages/siwx
+  - packages/wallet-button
+  - packages/cdn
+  - packages/experimental
+  - packages/cli
+  - apps/*
+  - examples/*
+  - services/*
+  - packages/ui-new
   - '!packages/appkit-new'
   - '!apps/gallery-new'
   - '!apps/laboratory-new'
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@sentry/cli'
+  - '@sveltejs/kit'
+  - '@swc/core'
+  - bigint-buffer
+  - blake-hash
+  - bufferutil
+  - core-js
+  - esbuild
+  - keccak
+  - lmdb
+  - msgpackr-extract
+  - protobufjs
+  - secp256k1
+  - sharp
+  - svelte-preprocess
+  - tiny-secp256k1
+  - usb
+  - utf-8-validate
+  - vue-demi
+  - workerd

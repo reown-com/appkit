@@ -1,5 +1,0 @@
----
-
----
-
-Circleci project setup

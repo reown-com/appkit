@@ -51,12 +51,12 @@
   "devDependencies": {
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.28.1",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.1",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
     "@vitest/coverage-v8": "2.1.9",
     "@vitest/ui": "2.1.8",
-    "buffer": "5.5.0||6.0.0",
+    "buffer": "^6.0.0",
     "danger": "11.3.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
@@ -67,13 +67,13 @@
     "pino": "7.11.0",
     "prettier": "3.5.3",
     "process": "0.11.10",
-    "turbo": "2.0.6-canary.0",
+    "turbo": "2.4.4",
     "typescript": "5.7.3",
     "vite": "5.4.12",
     "vite-plugin-node-polyfills": "0.23.0",
     "vitest": "2.1.9"
   },
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@10.6.5+sha512.cdf928fca20832cd59ec53826492b7dc25dc524d4370b6b4adbf65803d32efaa6c1c88147c0ae4e8d579a6c9eec715757b50d4fa35eea179d868eada4ed043af",
   "pnpm": {
     "overrides": {
       "@solana/web3.js": "1.95.8"
@@ -87,5 +87,33 @@
   },
   "@parcel/resolver-default": {
     "packageExports": true
-  }
+  },
+  "description": "> [!NOTE] > Looking for Web3modal v[1-5]? [switch the branch](https://github.com/WalletConnect/web3modal/tree/V5).",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "eslint-compat-utils": "^0.5.1",
+    "eslint-config-next": "^14.2.25",
+    "eslint-import-resolver-node": "^0.3.9",
+    "eslint-import-resolver-typescript": "^3.9.1",
+    "eslint-module-utils": "^2.12.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-lit": "^1.15.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-svelte": "^2.46.1",
+    "eslint-plugin-wc": "^2.2.1",
+    "eslint-scope": "^7.2.2",
+    "eslint-visitor-keys": "^3.4.3",
+    "find-up": "^7.0.0",
+    "flag": "^5.0.1",
+    "prettier-linter-helpers": "^1.0.0",
+    "svelte-eslint-parser": "^0.43.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
