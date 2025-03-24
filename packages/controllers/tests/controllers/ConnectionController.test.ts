@@ -247,6 +247,11 @@ describe('ConnectionController', () => {
       polkadot: 'polkadot-connector',
       bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     }
+    ChainController.state.chains.set('eip155', {
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
@@ -278,6 +283,17 @@ describe('ConnectionController', () => {
       polkadot: 'polkadot-connector',
       bip122: 'bip122-connector'
     }
+    ChainController.state.chains.set('eip155', {
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
+    ChainController.state.chains.set('solana', {
+      accountState: {
+        caipAddress: 'solana:1'
+      }
+    } as unknown as ChainAdapter)
+
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
