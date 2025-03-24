@@ -9,11 +9,7 @@ import {
 } from '@reown/appkit-common'
 import { SafeLocalStorage } from '@reown/appkit-common'
 
-import type {
-  ChainAdapter,
-  ChainControllerState,
-  NetworkControllerClient
-} from '../../exports/index.js'
+import type { ChainAdapter, NetworkControllerClient } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
