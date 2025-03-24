@@ -27,9 +27,9 @@ export function withErrorBoundary<T extends Record<string, any>>(
     const original = controller[key]
 
     if (typeof original === 'function') {
-      newController[key] = async (...args: any[]) => {
+      const wrapped = (...args: Parameters<typeof original>) => {
         try {
-          const result = await original.apply(controller, args)
+          const result = original.apply(controller, args)
           return result
         } catch (err) {
           const error = err instanceof AppKitError
@@ -44,6 +44,8 @@ export function withErrorBoundary<T extends Record<string, any>>(
           throw error
         }
       }
+
+      newController[key] = wrapped
     } else {
       newController[key] = original
     }
