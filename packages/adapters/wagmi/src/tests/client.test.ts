@@ -155,6 +155,7 @@ describe('WagmiAdapter', () => {
         `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
       )
     })
+
     it('should return custom RPC if transports is provided', () => {
       const adapterWithCustomRpc = new WagmiAdapter({
         networks: mockNetworks,

@@ -337,6 +337,7 @@ export abstract class AppKitBaseClient {
     const extendedNetwork = defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
           customNetworkImageUrls: options.chainImages,
+          customRpcUrls: options.customRpcUrls,
           projectId: options.projectId
         })
       : undefined

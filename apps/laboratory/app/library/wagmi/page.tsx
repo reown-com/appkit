@@ -14,22 +14,16 @@ import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
-const transports = {
-  [mainnet.id]: ['https://eth.merkle.io']
-}
-
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks: ConstantsUtil.EvmNetworks,
-  projectId: ConstantsUtil.ProjectId,
-  transports
+  projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
-  projectId: ConstantsUtil.ProjectId,
-  transports
+  projectId: ConstantsUtil.ProjectId
 })
 
 const config = wagmiAdapter.wagmiConfig
