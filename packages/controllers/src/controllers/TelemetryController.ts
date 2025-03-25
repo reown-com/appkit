@@ -40,6 +40,10 @@ const DEFAULT_STATE = Object.freeze<TelemetryControllerState>({
 
 const api = new FetchUtil({ baseUrl: CoreHelperUtil.getAnalyticsUrl(), clientId: null })
 
+// Rate limiting constants
+const MAX_ERRORS_PER_MINUTE = 5
+const ONE_MINUTE_MS = 60 * 1000
+
 // -- State --------------------------------------------- //
 const state = proxy<TelemetryControllerState>({
   ...DEFAULT_STATE
@@ -58,6 +62,19 @@ export const TelemetryController = {
 
   async sendError(error: Error, category: TelemetryErrorCategory) {
     if (!state.enabled) return
+
+    // Check rate limiting using events array
+    const now = Date.now()
+    const recentErrors = state.events.filter(event => {
+      const eventTime = new Date(event.properties.timestamp || '').getTime()
+      return now - eventTime < ONE_MINUTE_MS
+    })
+    
+    if (recentErrors.length >= MAX_ERRORS_PER_MINUTE) {
+      // eslint-disable-next-line no-console
+      console.warn('Rate limit exceeded for telemetry error reporting')
+      return
+    }
 
     const errorEvent: TelemetryEvent = {
       type: TelemetryEventType.ERROR,
@@ -97,7 +114,6 @@ export const TelemetryController = {
       // eslint-disable-next-line no-console
       console.error('Error sending telemetry event:', err)
     }
-
   },
 
   enable() {

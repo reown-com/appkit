@@ -73,7 +73,7 @@ export type { EnsControllerState } from '../src/controllers/EnsController.js'
 export { AlertController } from '../src/controllers/AlertController.js'
 export type { AlertControllerState } from '../src/controllers/AlertController.js'
 
-export { TelemetryController } from '../src/controllers/TelemetryController.js'
+export { TelemetryController, TelemetryErrorCategory } from '../src/controllers/TelemetryController.js'
 export type { TelemetryControllerState } from '../src/controllers/TelemetryController.js'
 
 // -- Utils -------------------------------------------------------------------
@@ -84,6 +84,7 @@ export { StorageUtil } from '../src/utils/StorageUtil.js'
 export { RouterUtil } from '../src/utils/RouterUtil.js'
 export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
+export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
 
 export { FetchUtil } from '../src/utils/FetchUtil.js'
 
