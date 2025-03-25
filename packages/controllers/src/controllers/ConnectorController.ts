@@ -11,6 +11,8 @@ import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
 import { ThemeController } from './ThemeController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorWithProviders extends Connector {
@@ -43,7 +45,7 @@ const state = proxy<ConnectorControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ConnectorController = {
+const controller = {
   state,
 
   subscribe(callback: (value: ConnectorControllerState) => void) {
@@ -341,3 +343,6 @@ export const ConnectorController = {
     state.activeConnectorIds = { ...defaultActiveConnectors }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ConnectorController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)

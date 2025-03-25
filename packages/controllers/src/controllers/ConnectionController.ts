@@ -22,7 +22,7 @@ import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
-import { AppKitError } from '../utils/withErrorBoundary.js'
+import { withErrorBoundary, AppKitError } from '../utils/withErrorBoundary.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
@@ -89,7 +89,7 @@ const state = proxy<ConnectionControllerState>({
 // eslint-disable-next-line init-declarations
 let wcConnectionPromise: Promise<void> | undefined
 // -- Controller ---------------------------------------- //
-export const ConnectionController = {
+const controller = {
   state,
   subscribeKey<K extends StateKey>(
     key: K,
@@ -295,3 +295,6 @@ export const ConnectionController = {
     }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ConnectionController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
