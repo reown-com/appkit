@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
@@ -102,9 +102,14 @@ const zerionConnector = {
 
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
   })
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should have valid default state', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })
@@ -122,6 +127,38 @@ describe('ConnectorController', () => {
         connectors: [walletConnectConnector, walletConnectSolanaConnector]
       }
     ])
+  })
+
+  it('should find connector by active namespace only', () => {
+    const EVM_EXPLORER_ID = 'evm-explorer-id'
+    const SOLANA_EXPLORER_ID = 'solana-explorer-id'
+
+    const evmConnector = {
+      id: 'evm-connector',
+      explorerId: EVM_EXPLORER_ID,
+      type: 'INJECTED',
+      chain: ConstantsUtil.CHAIN.EVM,
+      name: 'EVM Connector'
+    } as const
+
+    const solanaConnector = {
+      id: 'solana-connector',
+      explorerId: SOLANA_EXPLORER_ID,
+      type: 'INJECTED',
+      chain: ConstantsUtil.CHAIN.SOLANA,
+      name: 'Solana Connector'
+    } as const
+
+    ConnectorController.setConnectors([evmConnector, solanaConnector])
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+
+    expect(ConnectorController.getConnector(EVM_EXPLORER_ID, '')).toEqual(evmConnector)
+    expect(ConnectorController.getConnector(SOLANA_EXPLORER_ID, '')).toBeUndefined()
+
+    ChainController.setActiveNamespace(ConstantsUtil.CHAIN.SOLANA)
+
+    expect(ConnectorController.getConnector(SOLANA_EXPLORER_ID, '')).toEqual(solanaConnector)
+    expect(ConnectorController.getConnector(EVM_EXPLORER_ID, '')).toBeUndefined()
   })
 
   it('should update state correctly on setConnectors()', () => {
