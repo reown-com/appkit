@@ -5,6 +5,8 @@ import type { W3mThemeVariables } from '@reown/appkit-common'
 
 import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil.js'
 import { ConnectorController } from './ConnectorController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
@@ -21,7 +23,7 @@ const state = proxy<ThemeControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ThemeController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: ThemeControllerState) => void) {
@@ -35,7 +37,7 @@ export const ThemeController = {
       const authConnector = ConnectorController.getAuthConnector()
 
       if (authConnector) {
-        const themeVariables = ThemeController.getSnapshot().themeVariables
+        const themeVariables = controller.getSnapshot().themeVariables
 
         authConnector.provider.syncTheme({
           themeMode,
@@ -56,7 +58,7 @@ export const ThemeController = {
       const authConnector = ConnectorController.getAuthConnector()
 
       if (authConnector) {
-        const themeVariablesSnapshot = ThemeController.getSnapshot().themeVariables
+        const themeVariablesSnapshot = controller.getSnapshot().themeVariables
 
         authConnector.provider.syncTheme({
           themeVariables: themeVariablesSnapshot,
@@ -73,3 +75,6 @@ export const ThemeController = {
     return snapshot(state)
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ThemeController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
