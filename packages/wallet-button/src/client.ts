@@ -10,7 +10,11 @@ import { WalletUtil } from './utils/WalletUtil.js'
 export class AppKitWalletButton {
   constructor() {
     if (!this.isReady()) {
-      ApiController.fetchWalletButtons()
+      ApiController.fetchWalletButtons().then(() => {
+        if (ApiController.state.walletButtons.length) {
+          WalletButtonController.setReady(true)
+        }
+      })
     }
   }
 
@@ -21,6 +25,7 @@ export class AppKitWalletButton {
   public subscribeIsReady(callback: ({ isReady }: { isReady: boolean }) => void) {
     ApiController.subscribeKey('walletButtons', val => {
       if (val.length) {
+        WalletButtonController.setReady(true)
         callback({ isReady: true })
       } else {
         callback({ isReady: false })
@@ -30,6 +35,10 @@ export class AppKitWalletButton {
 
   async connect(wallet: Wallet) {
     const connectors = ConnectorController.state.connectors
+
+    if (wallet === ConstantsUtil.Email) {
+      return ConnectorUtil.connectEmail()
+    }
 
     if (ConstantsUtil.Socials.some(social => social === wallet)) {
       return ConnectorUtil.connectSocial(wallet as SocialProvider)
@@ -50,5 +59,9 @@ export class AppKitWalletButton {
       connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
       wallet: walletButton
     })
+  }
+
+  async updateEmail() {
+    return ConnectorUtil.updateEmail()
   }
 }
