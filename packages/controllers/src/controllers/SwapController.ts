@@ -615,6 +615,7 @@ export const SwapController = {
         userAddress: fromCaipAddress
       })
       const gasLimit = await ConnectionController.estimateGas({
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
         address: fromAddress as `0x${string}`,
         to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
         data: response.tx.data
