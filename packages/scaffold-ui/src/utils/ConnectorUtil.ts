@@ -27,11 +27,6 @@ interface GetConnectorPositionParameters {
   overriddenConnectors?: ConnectorPosition[]
 }
 
-interface ConnectorPositionOption {
-  type: ConnectorPosition
-  isEnabled: boolean | undefined
-}
-
 export const ConnectorUtil = {
   getConnectorsByType(
     connectors: ConnectorWithProviders[],
@@ -124,12 +119,10 @@ export const ConnectorUtil = {
     const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
     const isWCEnabled = OptionsController.state.enableWalletConnect
 
-    const allConnectors: ConnectorPositionOption[] = [
+    const allConnectors = [
       { type: 'walletConnect', isEnabled: isWCEnabled && !isConnectedWithWC },
       { type: 'recent', isEnabled: recent.length > 0 },
-      { type: 'multiChain', isEnabled: multiChain.length > 0 },
-      { type: 'announced', isEnabled: announced.length > 0 },
-      { type: 'injected', isEnabled: injected.length > 0 },
+      { type: 'injected', isEnabled: [...injected, ...announced, ...multiChain].length > 0 },
       { type: 'featured', isEnabled: featured.length > 0 },
       { type: 'custom', isEnabled: custom && custom.length > 0 },
       { type: 'external', isEnabled: external.length > 0 },

@@ -240,8 +240,6 @@ export const ConstantsUtil = {
     connectorPosition: [
       'walletConnect',
       'recent',
-      'multiChain',
-      'announced',
       'injected',
       'featured',
       'custom',

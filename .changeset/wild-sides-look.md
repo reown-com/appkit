@@ -23,7 +23,7 @@
 
 Added support for customizing connector positions in connect modal. 
 
-The array order determines the exact display order, in the example below the injected wallets will appear first, followed by WalletConnect and then multi-chain wallets.
+The array order determines the exact display order, in the example below the injected wallets will appear first, followed by WalletConnect and then recent wallets.
 
 **Example usage**
 
@@ -35,7 +35,7 @@ const modal = createAppKit({
   networks: [], // Add your networks here
   projectId: 'YOUR_PROJECT_ID',
   features: {
-    connectorPosition: ['injected', 'walletConnect', 'multiChain']
+    connectorPosition: ['injected', 'walletConnect', 'recent']
   }
 })
 ```

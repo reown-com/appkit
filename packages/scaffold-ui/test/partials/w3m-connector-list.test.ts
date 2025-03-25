@@ -56,8 +56,6 @@ describe('W3mConnectorList', () => {
     vi.spyOn(ConnectorUtil, 'getConnectorPosition').mockReturnValue([
       'walletConnect',
       'recent',
-      'multiChain',
-      'announced',
       'injected',
       'featured',
       'custom',
@@ -80,6 +78,12 @@ describe('W3mConnectorList', () => {
   })
 
   it('should render only specified connector types in correct order', async () => {
+    vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
+      ...MOCK_CONNECTORS,
+      multiChain: [],
+      announced: [],
+      injected: MOCK_CONNECTORS.injected
+    })
     vi.spyOn(ConnectorUtil, 'getConnectorPosition').mockReturnValue([
       'injected',
       'walletConnect',

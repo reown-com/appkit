@@ -1055,8 +1055,6 @@ export type ConnectMethod = 'email' | 'social' | 'wallet'
 export type ConnectorPosition =
   | 'walletConnect'
   | 'recent'
-  | 'multiChain'
-  | 'announced'
   | 'injected'
   | 'featured'
   | 'custom'
@@ -1128,8 +1126,8 @@ export type Features = {
   legalCheckbox?: boolean
   /**
    * @description The order of the connectors
-   * @default ['walletConnect', 'recent', 'multiChain', 'announced', 'injected', 'featured', 'custom', 'external', 'recommended']
-   * @type {('walletConnect' | 'recent' | 'multiChain' | 'announced' | 'injected' | 'featured' | 'custom' | 'external' | 'recommended')[]}
+   * @default ['walletConnect', 'recent', 'injected', 'featured', 'custom', 'external', 'recommended']
+   * @type {('walletConnect' | 'recent' | 'injected' | 'featured' | 'custom' | 'external' | 'recommended')[]}
    */
   connectorPosition?: ConnectorPosition[]
   /**

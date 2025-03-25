@@ -72,6 +72,30 @@ export class W3mConnectorList extends LitElement {
 
     return connectorPosition.map(position => {
       switch (position) {
+        /*
+         * We merged injected, announced, and multi-chain connectors
+         * into a single connector type (injected) to reduce confusion
+         */
+        case 'injected':
+          return html`
+            ${multiChain.length
+              ? html`<w3m-connect-multi-chain-widget
+                  tabIdx=${ifDefined(this.tabIdx)}
+                ></w3m-connect-multi-chain-widget>`
+              : null}
+            ${announced.length
+              ? html`<w3m-connect-announced-widget
+                  tabIdx=${ifDefined(this.tabIdx)}
+                ></w3m-connect-announced-widget>`
+              : null}
+            ${injected.length
+              ? html`<w3m-connect-injected-widget
+                  .connectors=${injected}
+                  tabIdx=${ifDefined(this.tabIdx)}
+                ></w3m-connect-injected-widget>`
+              : null}
+          `
+
         case 'walletConnect':
           return html`<w3m-connect-walletconnect-widget
             tabIdx=${ifDefined(this.tabIdx)}
@@ -81,22 +105,6 @@ export class W3mConnectorList extends LitElement {
           return html`<w3m-connect-recent-widget
             tabIdx=${ifDefined(this.tabIdx)}
           ></w3m-connect-recent-widget>`
-
-        case 'multiChain':
-          return html`<w3m-connect-multi-chain-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-multi-chain-widget>`
-
-        case 'announced':
-          return html`<w3m-connect-announced-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-announced-widget>`
-
-        case 'injected':
-          return html`<w3m-connect-injected-widget
-            .connectors=${injected}
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-injected-widget>`
 
         case 'featured':
           return html`<w3m-connect-featured-widget
@@ -122,7 +130,7 @@ export class W3mConnectorList extends LitElement {
 
         default:
           // eslint-disable-next-line no-console
-          console.error(`Unknown connector position: ${connectorPosition}`)
+          console.warn(`Unknown connector position: ${position}`)
 
           return null
       }

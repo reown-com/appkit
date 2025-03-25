@@ -9,6 +9,7 @@ const RECENT = { id: 'recent' } as WcWallet
 const FEATURED = { id: 'featured' } as WcWallet
 const CUSTOM = { id: 'custom' } as WcWallet
 const EXTERNAL = { id: 'external' } as WcWallet
+const MULTI_CHAIN = { id: 'multiChain' } as WcWallet
 
 describe('ConnectorUtil', () => {
   beforeEach(() => {
@@ -31,9 +32,9 @@ describe('ConnectorUtil', () => {
         featured: [FEATURED],
         custom: [CUSTOM],
         recent: [RECENT],
-        announced: [],
+        announced: [INJECTED],
         injected: [INJECTED],
-        multiChain: [],
+        multiChain: [MULTI_CHAIN],
         external: [EXTERNAL],
         overriddenConnectors: ['featured', 'walletConnect', 'injected']
       })
@@ -63,9 +64,9 @@ describe('ConnectorUtil', () => {
         featured: [FEATURED],
         custom: [CUSTOM],
         recent: [RECENT],
-        announced: [],
+        announced: [INJECTED],
         injected: [INJECTED],
-        multiChain: [],
+        multiChain: [MULTI_CHAIN],
         external: [EXTERNAL]
       })
 
@@ -85,7 +86,7 @@ describe('ConnectorUtil', () => {
         ...OptionsController.state,
         enableWalletConnect: true,
         features: {
-          connectorPosition: ['injected', 'recommended', 'announced', 'multiChain']
+          connectorPosition: ['injected', 'recommended']
         }
       })
 
@@ -95,23 +96,14 @@ describe('ConnectorUtil', () => {
         custom: [CUSTOM],
         recent: [RECENT],
         announced: [],
-        injected: [INJECTED],
+        injected: [],
         multiChain: [],
         external: [EXTERNAL]
       })
 
-      expect(result).toEqual([
-        'injected',
-        'walletConnect',
-        'recent',
-        'featured',
-        'custom',
-        'external'
-      ])
+      expect(result).toEqual(['walletConnect', 'recent', 'featured', 'custom', 'external'])
 
-      expect(result).not.toContain('recommended')
-      expect(result).not.toContain('announced')
-      expect(result).not.toContain('multiChain')
+      expect(result).not.toContain('injected')
     })
 
     it('should handle disabled walletConnect connector properly', () => {
@@ -156,7 +148,7 @@ describe('ConnectorUtil', () => {
         recent: [],
         announced: [],
         injected: [INJECTED],
-        multiChain: [],
+        multiChain: [INJECTED],
         external: []
       })
 
