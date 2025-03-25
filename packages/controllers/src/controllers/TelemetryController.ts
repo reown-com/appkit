@@ -1,5 +1,8 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+import { EventsController } from './EventsController'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil'
+import { FetchUtil } from '../utils/FetchUtil'
 
 // -- Types --------------------------------------------- //
 export enum TelemetryEventType {
@@ -20,7 +23,6 @@ export interface TelemetryEvent {
     errorType?: string
     errorMessage?: string
     stackTrace?: string
-    uncaught?: boolean
     timestamp?: string
   }
 }
@@ -35,6 +37,8 @@ const DEFAULT_STATE = Object.freeze<TelemetryControllerState>({
   enabled: true,
   events: []
 })
+
+const api = new FetchUtil({ baseUrl: CoreHelperUtil.getAnalyticsUrl(), clientId: null })
 
 // -- State --------------------------------------------- //
 const state = proxy<TelemetryControllerState>({
@@ -52,7 +56,7 @@ export const TelemetryController = {
     return subKey(state, key, callback)
   },
 
-  sendError(error: Error, category: TelemetryErrorCategory, uncaught = false) {
+  async sendError(error: Error, category: TelemetryErrorCategory) {
     if (!state.enabled) return
 
     const errorEvent: TelemetryEvent = {
@@ -62,15 +66,38 @@ export const TelemetryController = {
         errorType: error.name,
         errorMessage: error.message,
         stackTrace: error.stack,
-        uncaught,
         timestamp: new Date().toISOString()
       }
     }
 
     state.events.push(errorEvent)
-    // TODO: Replace with actual Pulse API integration
-    // PulseAPI.sendEvent(errorEvent)
-    console.error('Telemetry error event:', errorEvent)
+    try {
+      if (typeof window === 'undefined') {
+        return
+      }
+
+      await api.post({
+        path: '/e',
+        params: EventsController.getSdkProperties(),
+        body: {
+          eventId: CoreHelperUtil.getUUID(),
+          url: window.location.href,
+          domain: window.location.hostname,
+          timestamp: new Date().toISOString(),
+          props: {
+            type: TelemetryEventType.ERROR,
+            event: category,
+            errorType: error.name,
+            errorMessage: error.message,
+            stackTrace: error.stack
+          }
+        }
+      })
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Error sending telemetry event:', err)
+    }
+
   },
 
   enable() {

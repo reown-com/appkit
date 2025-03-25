@@ -8,8 +8,6 @@ import type { Event } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { OptionsController } from './OptionsController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getAnalyticsUrl()
@@ -34,7 +32,7 @@ const state = proxy<EventsControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-const controller = {
+export const EventsController = {
   state,
 
   subscribe(callback: (newState: EventsControllerState) => void) {
@@ -102,6 +100,3 @@ const controller = {
     }
   }
 }
-
-// Export the controller wrapped with our error boundary
-export const EventsController = withErrorBoundary(controller, TelemetryErrorCategory.API_ERROR)
