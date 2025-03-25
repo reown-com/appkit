@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval';
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src * 'self' data: blob: https://walletconnect.org https://walletconnect.com https://secure.walletconnect.com https://secure.walletconnect.org https://tokens-data.1inch.io https://tokens.1inch.io https://ipfs.io https://cdn.zerion.io https://appkit-lab.reown.org;
     font-src 'self' https://fonts.gstatic.com;
@@ -23,6 +23,7 @@ export function middleware(request: NextRequest) {
     frame-ancestors ${verifyApiNestedIframesTestOuterDomain};
     report-uri https://o1095249.ingest.sentry.io/api/4505685639364608/security/?sentry_key=36ff1e79c60877fce6c0273e94a8ed69;
     report-to csp-endpoint
+    upgrade-insecure-requests
 `
   const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/gu, ' ').trim()
 
@@ -36,4 +37,23 @@ export function middleware(request: NextRequest) {
   response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
 
   return response
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    {
+      source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+      missing: [
+        { type: 'header', key: 'next-router-prefetch' },
+        { type: 'header', key: 'purpose', value: 'prefetch' },
+      ],
+    },
+  ],
 }
