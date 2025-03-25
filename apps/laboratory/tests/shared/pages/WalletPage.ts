@@ -11,14 +11,18 @@ export class WalletPage {
   private vercelPreview: Locator
 
   public connectToSingleAccount = false
+  public page: Page
+  public isPageLoaded = false
 
-  constructor(public page: Page) {
+  constructor(page: Page) {
+    this.page = page
     this.gotoHome = this.page.getByTestId('wc-connect')
     this.vercelPreview = this.page.locator('css=vercel-live-feedback')
   }
 
   async load() {
     await this.page.goto(this.baseURL)
+    this.isPageLoaded = true
   }
 
   loadNewPage(page: Page) {
@@ -32,6 +36,7 @@ export class WalletPage {
    */
 
   async connectWithUri(uri: string) {
+    await this.page.waitForLoadState()
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
       await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
@@ -65,12 +70,14 @@ export class WalletPage {
    * @param accept - accept or reject the session
    */
   async handleSessionProposal(opts: SessionParams) {
+    await this.page.waitForLoadState()
     const variant = opts.accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     await this.performRequestAction(variant)
   }
 
   async handleRequest({ accept }: { accept: boolean }) {
+    await this.page.waitForLoadState()
     const variant = accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     await this.performRequestAction(variant)

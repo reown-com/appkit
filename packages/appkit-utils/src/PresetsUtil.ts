@@ -104,9 +104,9 @@ export const PresetsUtil = {
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     // Bitcoin
-    '000000000019d6689c085ae165831e93': '21c895fa-e105-4829-9434-378bb54fa600',
+    '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
     // Bitcoin Testnet
-    '000000000933ea01ad0ee984209779ba': '220bcb01-ba47-41d3-fe5b-e29bbc4a4b00'
+    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
   } as Record<string, string>,
 
   ConnectorImageIds: {

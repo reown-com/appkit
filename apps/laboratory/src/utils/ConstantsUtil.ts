@@ -164,6 +164,7 @@ export const ConstantsUtil = {
     'phantom'
   ] as Wallet[],
   SolanaWalletButtons: [
+    'walletConnect',
     'metamask',
     'trust',
     'coinbase',
@@ -184,5 +185,6 @@ export const ConstantsUtil = {
     'x',
     'discord',
     'farcaster'
-  ] as SocialProvider[]
+  ] as SocialProvider[],
+  Email: 'email' as const
 }

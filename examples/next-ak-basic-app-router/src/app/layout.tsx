@@ -5,8 +5,8 @@ import ContextProvider from '@/context'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'AppKit Next.js AppKit Basic',
-  description: 'AppKit Next.js AppKit Basic Example',
+  title: 'AppKit Next.js AppKit Core',
+  description: 'AppKit Next.js AppKit Core Example',
   creator: 'reown, inc.',
   keywords: [
     'appkit',

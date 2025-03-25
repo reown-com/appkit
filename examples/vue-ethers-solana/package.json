@@ -11,7 +11,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
-    "ethers": "5.7.2",
+    "ethers": "5.8.0",
     "vue": "3.4.3"
   },
   "devDependencies": {
