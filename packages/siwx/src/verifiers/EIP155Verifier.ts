@@ -23,7 +23,7 @@ export class EIP155Verifier extends SIWXVerifier {
     try {
       const client = createPublicClient({
         chain: caipNetwork as BaseNetwork,
-        transport: http(caipNetwork?.rpcUrls.default.http[0])
+        transport: http(caipNetwork?.['rpcUrls'].default.http[0])
       })
 
       return await client.verifyMessage({

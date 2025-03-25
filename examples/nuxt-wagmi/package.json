@@ -14,11 +14,11 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/vue-query": "5.59.16",
     "@vue/devtools-api": "7.6.8",
-    "@wagmi/core": "2.16.5",
-    "@wagmi/vue": "0.0.56",
+    "@wagmi/core": "2.16.7",
+    "@wagmi/vue": "0.1.14",
     "@walletconnect/logger": "2.1.2",
-    "nuxt": "3.14.1592",
-    "viem": "2.23.11",
+    "nuxt": "3.16.0",
+    "viem": "2.23.13",
     "vue": "3.5.13",
     "vue-router": "latest"
   }

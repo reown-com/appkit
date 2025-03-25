@@ -322,7 +322,6 @@ export const ChainController = {
 
     if (state.activeChain !== caipNetwork.chainNamespace) {
       this.setIsSwitchingNamespace(true)
-      ConnectorController.setFilterByNamespace(caipNetwork.chainNamespace)
     }
 
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
@@ -657,9 +656,12 @@ export const ChainController = {
       const disconnectResults = await Promise.allSettled(
         chainsToDisconnect.map(async ([ns, adapter]) => {
           try {
-            if (adapter.connectionControllerClient?.disconnect) {
+            const { caipAddress } = this.getAccountData(ns) || {}
+
+            if (caipAddress && adapter.connectionControllerClient?.disconnect) {
               await adapter.connectionControllerClient.disconnect(ns)
             }
+
             this.resetAccount(ns)
             this.resetNetwork(ns)
           } catch (error) {

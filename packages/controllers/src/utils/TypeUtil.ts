@@ -89,7 +89,6 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
-
 export type Connector = {
   id: string
   type: ConnectorType
@@ -141,6 +140,7 @@ export interface WcWallet {
   id: string
   name: string
   badge_type?: BadgeType
+  chains?: CaipNetworkId[]
   homepage?: string
   image_id?: string
   image_url?: string

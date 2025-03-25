@@ -23,6 +23,11 @@
       "import": "./dist/esm/exports/index.js",
       "default": "./dist/esm/exports/index.js"
     },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
+    },
     "./react": {
       "types": "./dist/types/exports/react.d.ts",
       "import": "./dist/esm/exports/react.js",

@@ -1,6 +1,8 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
@@ -30,7 +32,9 @@ export interface ApiControllerState {
   page: number
   count: number
   featured: WcWallet[]
+  allFeatured: WcWallet[]
   recommended: WcWallet[]
+  allRecommended: WcWallet[]
   wallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
@@ -53,7 +57,9 @@ const state = proxy<ApiControllerState>({
   page: 1,
   count: 0,
   featured: [],
+  allFeatured: [],
   recommended: [],
+  allRecommended: [],
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
@@ -164,6 +170,7 @@ export const ApiController = {
       const images = data.map(d => d.image_id).filter(Boolean)
       await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
       state.featured = data
+      state.allFeatured = data
     }
   },
 
@@ -194,6 +201,7 @@ export const ApiController = {
         )
       )
       state.recommended = data
+      state.allRecommended = data
       state.count = count ?? 0
     } catch {
       // Catch silently
@@ -336,5 +344,24 @@ export const ApiController = {
     } catch (error) {
       OptionsController.setFeatures({ analytics: false })
     }
+  },
+
+  setFilterByNamespace(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      state.featured = state.allFeatured
+      state.recommended = state.allRecommended
+
+      return
+    }
+
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
+    state.featured = state.allFeatured.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.recommended = state.allRecommended.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
   }
 }

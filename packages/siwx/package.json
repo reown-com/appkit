@@ -24,7 +24,7 @@
     "bip322-js": "2.0.0",
     "bs58": "6.0.0",
     "tweetnacl": "1.0.3",
-    "viem": "2.23.11"
+    "viem": "2.23.13"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

@@ -191,6 +191,7 @@ describe('ConnectionController', () => {
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
+    const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
 
     await ConnectionController.disconnect()
 
@@ -200,6 +201,7 @@ describe('ConnectionController', () => {
     expect(setLoadingSpy).toHaveBeenCalledWith(false, undefined)
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+    expect(setFilterByNamespaceSpy).toHaveBeenCalledWith(undefined)
   })
 
   it('should disconnect only for specific namespace', async () => {
@@ -245,6 +247,11 @@ describe('ConnectionController', () => {
       polkadot: 'polkadot-connector',
       bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     }
+    ChainController.state.chains.set('eip155', {
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
@@ -276,6 +283,17 @@ describe('ConnectionController', () => {
       polkadot: 'polkadot-connector',
       bip122: 'bip122-connector'
     }
+    ChainController.state.chains.set('eip155', {
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
+    ChainController.state.chains.set('solana', {
+      accountState: {
+        caipAddress: 'solana:1'
+      }
+    } as unknown as ChainAdapter)
+
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')

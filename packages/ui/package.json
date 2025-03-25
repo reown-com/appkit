@@ -430,12 +430,12 @@
   },
   "dependencies": {
     "lit": "3.1.0",
-    "qrcode": "1.5.3"
+    "qrcode": "1.5.3",
+    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-common": "workspace:*"
   },
   "devDependencies": {
-    "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-wallet": "workspace:*",
     "@types/qrcode": "1.5.5",
     "@vitest/coverage-v8": "2.1.9",
     "eslint-plugin-lit": "1.11.0",
