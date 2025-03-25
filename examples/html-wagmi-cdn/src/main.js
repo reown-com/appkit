@@ -2,7 +2,7 @@ import {
   WagmiAdapter,
   createAppKit,
   networks
-} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.6.9/dist/appkit.js'
+} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.7.0/dist/appkit.js'
 import { reconnect } from 'https://esm.sh/@wagmi/core@2.x'
 
 // Get projectId

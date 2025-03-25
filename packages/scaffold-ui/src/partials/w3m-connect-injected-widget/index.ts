@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { Connector } from '@reown/appkit-controllers'
+import type { Connector, ConnectorWithProviders } from '@reown/appkit-controllers'
 import {
   ApiController,
   AssetUtil,
@@ -17,28 +17,14 @@ import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-injected-widget')
 export class W3mConnectInjectedWidget extends LitElement {
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //  // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
 
-  @state() private connectors = ConnectorController.state.connectors
-
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
-    )
-  }
-
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
+  @property() public connectors: ConnectorWithProviders[] = []
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const injectedConnectors = this.connectors.filter(connector => connector.type === 'INJECTED')
+    const injectedConnectors = this.connectors
 
     if (
       !injectedConnectors?.length ||

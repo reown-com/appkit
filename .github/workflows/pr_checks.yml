@@ -30,7 +30,7 @@ jobs:
       - name: setup-node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: 'pnpm'
 
       - name: install
@@ -89,7 +89,7 @@ jobs:
       - name: setup-node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: 'pnpm'
 
       - name: Download build artifacts
@@ -132,7 +132,7 @@ jobs:
       - name: setup-node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: 'pnpm'
 
       - name: Download build artifacts
@@ -174,7 +174,7 @@ jobs:
       - name: setup-node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: 'pnpm'
 
       - name: Download build artifacts
