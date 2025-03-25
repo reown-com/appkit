@@ -9,7 +9,7 @@ import {
 } from '@reown/appkit-common'
 import { SafeLocalStorage } from '@reown/appkit-common'
 
-import type { NetworkControllerClient } from '../../exports/index.js'
+import type { ChainAdapter, NetworkControllerClient } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
@@ -405,6 +405,18 @@ describe('ChainController', () => {
         networkControllerClient
       }
     )
+    ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, {
+      ...evmAdapterCustom,
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
+    ChainController.state.chains.set(ConstantsUtil.CHAIN.SOLANA, {
+      ...solanaAdapterCustom,
+      accountState: {
+        caipAddress: 'solana:1'
+      }
+    } as unknown as ChainAdapter)
 
     await ChainController.disconnect()
 
@@ -449,6 +461,13 @@ describe('ChainController', () => {
       connectionControllerClient: evmConnectionController,
       networkControllerClient
     })
+
+    ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, {
+      ...customEvmAdapter,
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
 
     await ChainController.disconnect()
 
