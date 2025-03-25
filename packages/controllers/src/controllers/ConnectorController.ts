@@ -224,9 +224,12 @@ export const ConnectorController = {
   getConnectorById(id: string) {
     return state.allConnectors.find(c => c.id === id)
   },
-
   getConnector(id: string, rdns?: string | null) {
-    return state.allConnectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
+    const connectorsByNamespace = state.allConnectors.filter(
+      c => c.chain === ChainController.state.activeChain
+    )
+
+    return connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {
