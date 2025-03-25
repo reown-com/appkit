@@ -237,6 +237,17 @@ export const ConstantsUtil = {
       'apple',
       'facebook'
     ] as SocialProvider[],
+    connectorPosition: [
+      'walletConnect',
+      'recent',
+      'multiChain',
+      'announced',
+      'injected',
+      'featured',
+      'custom',
+      'external',
+      'recommended'
+    ],
     history: true,
     analytics: true,
     allWallets: true,

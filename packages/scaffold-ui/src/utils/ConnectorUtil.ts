@@ -4,14 +4,33 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
+  type ConnectorPosition,
   type ConnectorWithProviders,
   CoreHelperUtil,
+  type CustomWallet,
   OptionsController,
   StorageUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
 
 import { WalletUtil } from './WalletUtil.js'
+
+interface GetConnectorPositionParameters {
+  recommended: WcWallet[]
+  featured: WcWallet[]
+  custom: CustomWallet[] | undefined
+  recent: WcWallet[]
+  announced: WcWallet[]
+  injected: WcWallet[]
+  multiChain: WcWallet[]
+  external: WcWallet[]
+  overriddenConnectors?: ConnectorPosition[]
+}
+
+interface ConnectorPositionOption {
+  type: ConnectorPosition
+  isEnabled: boolean | undefined
+}
 
 export const ConnectorUtil = {
   getConnectorsByType(
@@ -85,5 +104,56 @@ export const ConnectorUtil = {
     })
 
     return isConnectedWithWC
+  },
+
+  /**
+   * Returns the connector positions in the order of the user's preference.
+   * @returns ConnectorPosition[]
+   */
+  getConnectorPosition({
+    recommended,
+    featured,
+    custom,
+    recent,
+    announced,
+    injected,
+    multiChain,
+    external,
+    overriddenConnectors = OptionsController.state.features?.connectorPosition ?? []
+  }: GetConnectorPositionParameters) {
+    const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
+    const isWCEnabled = OptionsController.state.enableWalletConnect
+
+    const allConnectors: ConnectorPositionOption[] = [
+      { type: 'walletConnect', isEnabled: isWCEnabled && !isConnectedWithWC },
+      { type: 'recent', isEnabled: recent.length > 0 },
+      { type: 'multiChain', isEnabled: multiChain.length > 0 },
+      { type: 'announced', isEnabled: announced.length > 0 },
+      { type: 'injected', isEnabled: injected.length > 0 },
+      { type: 'featured', isEnabled: featured.length > 0 },
+      { type: 'custom', isEnabled: custom && custom.length > 0 },
+      { type: 'external', isEnabled: external.length > 0 },
+      { type: 'recommended', isEnabled: recommended.length > 0 }
+    ]
+
+    const enabledConnectors = allConnectors.filter(option => option.isEnabled)
+
+    const enabledConnectorTypes = new Set(enabledConnectors.map(option => option.type))
+
+    const prioritizedConnectors = overriddenConnectors
+      .filter(type => enabledConnectorTypes.has(type))
+      .map(type => ({ type, isEnabled: true }))
+
+    const remainingConnectors = enabledConnectors.filter(({ type: enabledConnectorType }) => {
+      const hasPrioritizedConnector = prioritizedConnectors.some(
+        ({ type: prioritizedConnectorType }) => prioritizedConnectorType === enabledConnectorType
+      )
+
+      return !hasPrioritizedConnector
+    })
+
+    return Array.from(
+      new Set([...prioritizedConnectors, ...remainingConnectors].map(({ type }) => type))
+    )
   }
 }
