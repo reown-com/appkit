@@ -2,7 +2,7 @@ import { MessageSigningProtocols } from 'sats-connect'
 import { type Mock, type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
@@ -326,7 +326,11 @@ describe('SatsConnectConnector', () => {
       const emitSpy = vi.spyOn(connector, 'emit')
       const callback = addListenerSpy.mock.calls.find(([event]) => event === 'networkChange')?.[1]
 
-      await callback?.({ type: 'networkChange' })
+      await callback?.({
+        type: 'networkChange',
+        stacks: { name: 'mock_network' },
+        bitcoin: { name: 'Mainnet' }
+      })
 
       expect(emitSpy).toHaveBeenCalledWith('chainChanged', [bitcoin, bitcoinTestnet])
     })

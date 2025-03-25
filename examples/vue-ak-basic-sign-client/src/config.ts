@@ -1,6 +1,6 @@
 import SignClient from '@walletconnect/sign-client'
 
-import { createAppKit } from '@reown/appkit/basic'
+import { createAppKit } from '@reown/appkit/core'
 import { solana } from '@reown/appkit/networks'
 import { mainnet } from '@reown/appkit/networks'
 
