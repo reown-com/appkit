@@ -6,24 +6,24 @@ import { type Address, toHex } from 'viem'
 import {
   type SmartSessionGrantPermissionsRequest,
   createSubscription,
-  grantPermissions,
-  isSmartSessionSupported
+  grantPermissions
 } from '@reown/appkit-experimental/smart-session'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useLocalEcdsaKey } from '@/src/context/LocalEcdsaKeyContext'
 import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 import { bigIntReplacer } from '@/src/utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '@/src/utils/ERC7715Utils'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { address, isConnected, embeddedWalletInfo } = useAppKitAccount({ namespace: 'eip155' })
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
-  const { accountType, user } = embeddedWalletInfo ?? {}
-  const isSmartAccount = accountType === 'smartAccount'
-  const isEmailAllowed = Boolean(user?.email?.includes('+smart-sessions@'))
-  const isSupported = isSmartSessionSupported() && isSmartAccount && isEmailAllowed
+  const { supported: isCapabiltySupported } = useWagmiAvailableCapabilities({
+    capability: 'permissions',
+    method: 'wallet_grantPermissions'
+  })
 
   if (!isConnected || !address || !chainId) {
     return (
@@ -33,12 +33,10 @@ export function WagmiRequestPermissionsAsyncTest() {
     )
   }
 
-  if (!isSupported) {
+  if (!isCapabiltySupported) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support wallet_grantPermissions rpc method.
-        <br />
-        Please use smart account with email youremail+smart-sessions@domain.com
       </Text>
     )
   }
