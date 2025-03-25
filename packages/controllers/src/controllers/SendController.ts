@@ -14,6 +14,8 @@ import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 
@@ -53,7 +55,7 @@ const state = proxy<SendControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const SendController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: SendControllerState) => void) {
@@ -404,3 +406,6 @@ export const SendController = {
     state.tokenBalances = []
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const SendController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
