@@ -202,6 +202,7 @@ export const CaipNetworksUtil = {
       customRpcUrls?: Record<CaipNetworkId, string[]>
     }
   ) {
+    console.trace('>>> extendCaipNetworks', caipNetworks)
     return caipNetworks.map(caipNetwork =>
       CaipNetworksUtil.extendCaipNetwork(caipNetwork, {
         customNetworkImageUrls,
