@@ -54,6 +54,7 @@ export interface RouterControllerState {
     | 'ConnectSocials'
     | 'ConnectWallets'
     | 'Downloads'
+    | 'EmailLogin'
     | 'EmailVerifyOtp'
     | 'EmailVerifyDevice'
     | 'GetWallet'
@@ -94,6 +95,7 @@ export interface RouterControllerState {
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
+    redirectView?: RouterControllerState['view']
     newEmail?: string
     target?: SwapInputTarget
     swapUnsupportedChain?: boolean
