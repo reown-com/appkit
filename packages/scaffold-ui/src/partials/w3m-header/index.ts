@@ -95,7 +95,8 @@ function headings() {
     SwitchActiveChain: 'Switch chain',
     SmartSessionCreated: undefined,
     SmartSessionList: 'Smart Sessions',
-    SIWXSignMessage: 'Sign In'
+    SIWXSignMessage: 'Sign In',
+    ProfileWallets: 'Wallets'
   }
 }
 

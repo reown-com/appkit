@@ -73,6 +73,11 @@
       "types": "./dist/types/exports/email.d.ts",
       "import": "./dist/esm/exports/email.js",
       "default": "./dist/esm/exports/email.js"
+    },
+    "./profile": {
+      "types": "./dist/types/exports/profile.d.ts",
+      "import": "./dist/esm/exports/profile.js",
+      "default": "./dist/esm/exports/profile.js"
     }
   },
   "scripts": {

@@ -7,6 +7,7 @@ import {
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
 
+import type { Connection } from '../controllers/ConnectionController.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,
@@ -561,4 +562,29 @@ export const StorageUtil = {
       console.info('Unable to clear address cache')
     }
   }
+}
+
+function connectionToStorage(connections: Connection[]): Connection[] {
+  return connections.map(connection => ({
+    accounts: connection.accounts,
+    chain: connection.chain,
+    connectorId: connection.connectorId
+  }))
+}
+
+export function syncConnectionsToStorage(connections: Connection[]) {
+  try {
+    SafeLocalStorage.setItem(
+      SafeLocalStorageKeys.CONNECTIONS,
+      JSON.stringify(connectionToStorage(connections))
+    )
+  } catch {
+    console.info('Unable to sync connections')
+  }
+}
+
+export function getConnectionsFromStorage(): Connection[] {
+  const connections = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
+
+  return connections ? JSON.parse(connections) : []
 }

@@ -155,7 +155,7 @@ export abstract class AppKitBaseClient {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
-    this.initializeConnectorController()
+    this.initializeConnectorController(options)
   }
 
   protected initializeThemeController(options: AppKitOptions) {
@@ -182,11 +182,14 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize()
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
-  protected initializeConnectorController() {
-    ConnectorController.initialize(this.chainNamespaces)
+  protected initializeConnectorController(options: AppKitOptions) {
+    const namespaces = options.adapters?.map(adapter => adapter.namespace) || []
+    // @ts-expect-error - will update adapter types
+    ConnectorController.initialize(namespaces)
   }
 
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
@@ -198,7 +201,6 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
-
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
@@ -372,6 +374,11 @@ export abstract class AppKitBaseClient {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
+        const connector = ConnectorController.getConnectors(chainToUse).find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('connectExternal: Connector not found')
+        }
 
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
@@ -386,6 +393,7 @@ export abstract class AppKitBaseClient {
           throw new Error('Adapter not found')
         }
 
+        const chainId = caipNetwork?.id || this.getCaipNetwork(chainToUse)?.id
         const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
 
         const res = await adapter.connect({
@@ -393,7 +401,7 @@ export abstract class AppKitBaseClient {
           info,
           type,
           provider,
-          chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
+          chainId,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
             fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
@@ -404,10 +412,8 @@ export abstract class AppKitBaseClient {
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
-        this.syncProvider({ ...res, chainNamespace: chainToUse })
         await this.syncAccount({ ...res, chainNamespace: chainToUse })
-        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
-        this.setAllAccounts(accounts, chainToUse)
+        await this.syncConnection({ ...res, chainNamespace: chainToUse })
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -822,23 +828,9 @@ export abstract class AppKitBaseClient {
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
 
-      if (connection) {
-        const accounts = await adapter?.getAccounts({
-          namespace,
-          id: connector.id
-        })
-
-        if (accounts && accounts.accounts.length > 0) {
-          this.setAllAccounts(accounts.accounts, namespace)
-        } else {
-          this.setAllAccounts(
-            [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')],
-            namespace
-          )
-        }
-
-        this.syncProvider({ ...connection, chainNamespace: namespace })
+      if (connection.address) {
         await this.syncAccount({ ...connection, chainNamespace: namespace })
+        this.syncConnection({ ...connection, chainNamespace: namespace })
         this.setStatus('connected', namespace)
       } else {
         this.setStatus('disconnected', namespace)
@@ -892,15 +884,8 @@ export abstract class AppKitBaseClient {
           chainNamespace
         )
         StorageUtil.addConnectedNamespace(chainNamespace)
-
         this.syncWalletConnectAccounts(chainNamespace)
-        await this.syncAccount({
-          address,
-          chainId,
-          chainNamespace
-        })
-      } else {
-        this.setStatus('disconnected', chainNamespace)
+        await this.syncAccount({ address, chainId, chainNamespace })
       }
 
       await ChainController.setApprovedCaipNetworksData(chainNamespace)
@@ -930,19 +915,6 @@ export abstract class AppKitBaseClient {
         chainNamespace
       )
     }
-  }
-
-  protected syncProvider({
-    type,
-    provider,
-    id,
-    chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
-    chainNamespace: ChainNamespace
-  }) {
-    ProviderUtil.setProviderId(chainNamespace, type)
-    ProviderUtil.setProvider(chainNamespace, provider)
-    ConnectorController.setConnectorId(id, chainNamespace)
   }
 
   protected async syncAccount(
@@ -1026,6 +998,27 @@ export abstract class AppKitBaseClient {
         await this.syncBalance({ address, chainId: networkOfChain?.id, chainNamespace })
       }
     }
+  }
+
+  private async syncConnection(
+    params: Pick<AdapterBlueprint.ConnectResult, 'id' | 'type' | 'provider'> & {
+      chainNamespace: ChainNamespace
+    }
+  ) {
+    const { id, type, provider, chainNamespace } = params
+    const adapter = this.getAdapter(chainNamespace)
+
+    if (!adapter) {
+      return
+    }
+
+    const { accounts } = await adapter.getAccounts({ namespace: chainNamespace, id })
+    this.setAllAccounts(accounts, chainNamespace)
+    ConnectionController.addConnection({ accounts, chain: chainNamespace, connectorId: id })
+    ConnectorController.setConnectorId(id, chainNamespace)
+    ConnectorController.setConnectorId(id, chainNamespace)
+    ProviderUtil.setProviderId(chainNamespace, type)
+    ProviderUtil.setProvider(chainNamespace, provider)
   }
 
   private async syncAccountInfo(

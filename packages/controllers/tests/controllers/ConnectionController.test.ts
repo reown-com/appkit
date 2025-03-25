@@ -115,6 +115,7 @@ describe('ConnectionController', () => {
     )
 
     expect(ConnectionController.state).toEqual({
+      connections: [],
       wcError: false,
       buffering: false,
       status: 'disconnected',
