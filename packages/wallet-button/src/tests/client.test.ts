@@ -1,7 +1,12 @@
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
 import type { ParsedCaipAddress } from '@reown/appkit-common'
-import { type Connector, ConnectorController, type WcWallet } from '@reown/appkit-controllers'
+import {
+  type Connector,
+  ConnectorController,
+  FetchUtil,
+  type WcWallet
+} from '@reown/appkit-controllers'
 
 import { AppKitWalletButton } from '../client'
 import { ApiController } from '../controllers/ApiController'
@@ -33,6 +38,9 @@ describe('AppKitWalletButton', () => {
     vi.spyOn(ConnectorUtil, 'connectWalletConnect').mockImplementation(
       async () => PARSED_CAIP_ADDRESS
     )
+    vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({
+      data: []
+    })
   })
 
   afterEach(() => {
