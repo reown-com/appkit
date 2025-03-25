@@ -1,5 +1,6 @@
 /* eslint-disable max-depth */
 import { ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -17,6 +18,9 @@ import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
+
+// -- Constants ------------------------------------------ //
+const UPDATE_EMAIL_INTERVAL = 1_000
 
 interface ConnectWalletConnect {
   walletConnect: boolean
@@ -228,6 +232,75 @@ export const ConnectorUtil = {
       }
 
       connectSocial()
+    })
+  },
+  connectEmail(): Promise<ParsedCaipAddress> {
+    return new Promise(async (resolve, reject) => {
+      await ModalController.open()
+      RouterController.push('EmailLogin')
+
+      const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+        if (!val) {
+          if (RouterController.state.view !== 'Connect') {
+            RouterController.push('Connect')
+          }
+          unsubscribeModalController()
+          reject(new Error('Modal closed'))
+        }
+      })
+
+      const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
+        if (val) {
+          ModalController.close()
+          unsubscribeChainController()
+          resolve(ParseUtil.parseCaipAddress(val))
+        }
+      })
+    })
+  },
+  async updateEmail(): Promise<{ email: string }> {
+    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
+    const authConnector = ConnectorController.getAuthConnector()
+
+    if (!authConnector) {
+      throw new Error('No auth connector found')
+    }
+
+    if (connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+      throw new Error('Not connected to email or social')
+    }
+
+    const initialEmail = authConnector.provider.getEmail() ?? ''
+
+    await ModalController.open()
+
+    RouterController.push('UpdateEmailWallet', {
+      email: initialEmail,
+      redirectView: undefined
+    })
+
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        const newEmail = authConnector.provider.getEmail() ?? ''
+
+        if (newEmail !== initialEmail) {
+          ModalController.close()
+          clearInterval(interval)
+          unsubscribeModalController()
+          resolve({ email: newEmail })
+        }
+      }, UPDATE_EMAIL_INTERVAL)
+
+      const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+        if (!val) {
+          if (RouterController.state.view !== 'Connect') {
+            RouterController.push('Connect')
+          }
+          clearInterval(interval)
+          unsubscribeModalController()
+          reject(new Error('Modal closed'))
+        }
+      })
     })
   }
 }

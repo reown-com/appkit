@@ -7,7 +7,7 @@ import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../composites/wui-icon-box/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType } from '../../utils/TypeUtil.js'
+import type { IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -22,7 +22,9 @@ export class WuiWalletButton extends LitElement {
 
   @property({ type: Boolean }) public walletConnect = false
 
-  @property({ type: Boolean }) public icon?: IconType
+  @property() public icon?: IconType
+
+  @property() public iconSize?: SizeType
 
   @property({ type: Boolean }) public loading = false
 
@@ -60,7 +62,11 @@ export class WuiWalletButton extends LitElement {
     }
 
     if (this.icon) {
-      return html`<wui-icon size="xl" color="inherit" name=${this.icon}></wui-icon>`
+      return html`<wui-icon
+        size=${this.iconSize ?? 'xl'}
+        color="inherit"
+        name=${this.icon}
+      ></wui-icon>`
     }
 
     if (this.imageSrc) {
