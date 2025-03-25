@@ -6,10 +6,11 @@ import { getTransport } from '@/server/transportStore'
 export const dynamic = 'force-dynamic'
 
 // Handle OPTIONS requests for CORS preflight
-export async function OPTIONS() {
-  return new Response(null, {
-    status: 200,
+export async function OPTIONS(message: string, status = 200) {
+  return new Response(message, {
+    status,
     headers: {
+      'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
@@ -32,32 +33,13 @@ export async function POST(request: Request) {
     }
 
     if (!sessionId) {
-      return new Response(JSON.stringify({ error: 'sessionId is required' }), {
-        status: 400,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-        }
-      })
+      return OPTIONS('sessionId is required', 400)
     }
 
     const transport = getTransport(sessionId)
 
     if (!transport) {
-      return new Response(
-        JSON.stringify({ error: 'Session not found. Please establish an SSE connection first.' }),
-        {
-          status: 404,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-          }
-        }
-      )
+      return OPTIONS('Session not found. Please establish an SSE connection first.', 404)
     }
 
     const messageData = await request.json()
@@ -135,32 +117,12 @@ export async function POST(request: Request) {
         }
 
         const completeResponse = () => {
-          resolve(
-            new Response(JSON.stringify(responseBody), {
-              status: responseStatus,
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-              }
-            })
-          )
+          resolve(new Response(JSON.stringify(responseBody), { status: responseStatus }))
         }
 
         // Set a timeout to ensure we don't hang forever
         const timeoutId = setTimeout(() => {
-          resolve(
-            new Response(JSON.stringify({ received: true, timeout: true }), {
-              status: 200,
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-              }
-            })
-          )
+          resolve(new Response(JSON.stringify({ received: true, timeout: true }), { status: 200 }))
         }, 5000)
 
         try {
@@ -169,54 +131,14 @@ export async function POST(request: Request) {
           console.error('[Messages] Error calling handlePostMessage:', err)
           clearTimeout(timeoutId)
 
-          resolve(
-            new Response(
-              JSON.stringify({
-                error: 'Error processing message',
-                message: err instanceof Error ? err.message : 'Unknown error'
-              }),
-              {
-                status: 500,
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Access-Control-Allow-Origin': '*',
-                  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-                }
-              }
-            )
-          )
+          resolve(OPTIONS('Error processing message', 500))
         }
       } catch (err) {
-        resolve(
-          new Response(
-            JSON.stringify({
-              error: 'Error setting up request handler',
-              message: err instanceof Error ? err.message : 'Unknown error'
-            }),
-            {
-              status: 500,
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-              }
-            }
-          )
-        )
+        resolve(OPTIONS('Error setting up request handler', 500))
       }
     })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-      }
-    })
+    return OPTIONS(errorMessage, 500)
   }
 }

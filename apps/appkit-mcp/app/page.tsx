@@ -10,7 +10,6 @@ import ChatHeader from '@/components/chat-header'
 import ChatInput from '@/components/chat-input'
 import ChatMessages from '@/components/chat-messages'
 import DisconnectedSection from '@/components/disconnected-section'
-import { cn } from '@/lib/utils'
 
 export default function Page() {
   const { address } = useAppKitAccount()
