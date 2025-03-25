@@ -207,7 +207,7 @@ export class AppKit extends AppKitCore {
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
-
+    console.log('isConnected', isConnected)
     const theme = ThemeController.getSnapshot()
     const options = OptionsController.getSnapshot()
 
@@ -225,6 +225,7 @@ export class AppKit extends AppKitCore {
 
     if (chainNamespace && isAuthSupported) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
+        console.log('connectExternal')
         await this.connectionControllerClient?.connectExternal({
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
           info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
@@ -233,7 +234,9 @@ export class AppKit extends AppKitCore {
           chainId: ChainController.state.activeCaipNetwork?.id,
           chain: chainNamespace
         })
+        console.log('connectExternal done')
         this.setStatus('connected', chainNamespace)
+        console.log('setStatus connected')
       } else if (
         ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
       ) {

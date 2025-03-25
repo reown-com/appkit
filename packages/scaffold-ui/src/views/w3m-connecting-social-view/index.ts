@@ -123,54 +123,40 @@ export class W3mConnectingSocialView extends LitElement {
 
   private handleSocialConnection = async (event: MessageEvent) => {
     if (event.data?.resultUri) {
-      if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
-        window.removeEventListener('message', this.handleSocialConnection, false)
-        try {
-          if (this.authConnector && !this.connecting) {
-            if (this.socialWindow) {
-              this.socialWindow.close()
-              AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
-            }
-            this.connecting = true
-            this.updateMessage()
-            const uri = event.data.resultUri as string
-
-            if (this.socialProvider) {
-              EventsController.sendEvent({
-                type: 'track',
-                event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
-                properties: { provider: this.socialProvider }
-              })
-            }
-            await this.authConnector.provider.connectSocial(uri)
-
-            if (this.socialProvider) {
-              StorageUtil.setConnectedSocialProvider(this.socialProvider)
-              await ConnectionController.connectExternal(
-                this.authConnector,
-                this.authConnector.chain
-              )
-              EventsController.sendEvent({
-                type: 'track',
-                event: 'SOCIAL_LOGIN_SUCCESS',
-                properties: { provider: this.socialProvider }
-              })
-            }
+      // If (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
+      window.removeEventListener('message', this.handleSocialConnection, false)
+      try {
+        if (this.authConnector && !this.connecting) {
+          if (this.socialWindow) {
+            this.socialWindow.close()
+            AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
           }
-        } catch (error) {
-          this.error = true
+          this.connecting = true
           this.updateMessage()
+          const uri = event.data.resultUri as string
+
           if (this.socialProvider) {
             EventsController.sendEvent({
               type: 'track',
-              event: 'SOCIAL_LOGIN_ERROR',
+              event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
+              properties: { provider: this.socialProvider }
+            })
+          }
+          await this.authConnector.provider.connectSocial(uri)
+
+          if (this.socialProvider) {
+            StorageUtil.setConnectedSocialProvider(this.socialProvider)
+            await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
+            EventsController.sendEvent({
+              type: 'track',
+              event: 'SOCIAL_LOGIN_SUCCESS',
               properties: { provider: this.socialProvider }
             })
           }
         }
-      } else {
-        RouterController.goBack()
-        SnackController.showError('Untrusted Origin')
+      } catch (error) {
+        this.error = true
+        this.updateMessage()
         if (this.socialProvider) {
           EventsController.sendEvent({
             type: 'track',
@@ -179,6 +165,19 @@ export class W3mConnectingSocialView extends LitElement {
           })
         }
       }
+      /*
+       * } else {
+       *   RouterController.goBack()
+       *   SnackController.showError('Untrusted Origin')
+       *   if (this.socialProvider) {
+       *     EventsController.sendEvent({
+       *       type: 'track',
+       *       event: 'SOCIAL_LOGIN_ERROR',
+       *       properties: { provider: this.socialProvider }
+       *     })
+       *   }
+       * }
+       */
     }
   }
 
