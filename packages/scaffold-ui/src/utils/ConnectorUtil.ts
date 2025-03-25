@@ -4,7 +4,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  type ConnectorPosition,
+  type ConnectorTypeOrder,
   type ConnectorWithProviders,
   CoreHelperUtil,
   type CustomWallet,
@@ -15,7 +15,7 @@ import {
 
 import { WalletUtil } from './WalletUtil.js'
 
-interface GetConnectorPositionParameters {
+interface GetConnectorTypeOrderParameters {
   recommended: WcWallet[]
   featured: WcWallet[]
   custom: CustomWallet[] | undefined
@@ -24,7 +24,7 @@ interface GetConnectorPositionParameters {
   injected: WcWallet[]
   multiChain: WcWallet[]
   external: WcWallet[]
-  overriddenConnectors?: ConnectorPosition[]
+  overriddenConnectors?: ConnectorTypeOrder[]
 }
 
 export const ConnectorUtil = {
@@ -103,9 +103,9 @@ export const ConnectorUtil = {
 
   /**
    * Returns the connector positions in the order of the user's preference.
-   * @returns ConnectorPosition[]
+   * @returns ConnectorTypeOrder[]
    */
-  getConnectorPosition({
+  getConnectorTypeOrder({
     recommended,
     featured,
     custom,
@@ -114,8 +114,8 @@ export const ConnectorUtil = {
     injected,
     multiChain,
     external,
-    overriddenConnectors = OptionsController.state.features?.connectorPosition ?? []
-  }: GetConnectorPositionParameters) {
+    overriddenConnectors = OptionsController.state.features?.connectorTypeOrder ?? []
+  }: GetConnectorTypeOrderParameters) {
     const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
     const isWCEnabled = OptionsController.state.enableWalletConnect
 

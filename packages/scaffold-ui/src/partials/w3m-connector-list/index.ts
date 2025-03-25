@@ -59,7 +59,7 @@ export class W3mConnectorList extends LitElement {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       ConnectorUtil.getConnectorsByType(this.connectors, this.recommended, this.featured)
 
-    const connectorPosition = ConnectorUtil.getConnectorPosition({
+    const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
       custom,
       recent,
       announced,
@@ -70,8 +70,8 @@ export class W3mConnectorList extends LitElement {
       external
     })
 
-    return connectorPosition.map(position => {
-      switch (position) {
+    return connectorTypeOrder.map(type => {
+      switch (type) {
         /*
          * We merged injected, announced, and multi-chain connectors
          * into a single connector type (injected) to reduce confusion
@@ -130,7 +130,7 @@ export class W3mConnectorList extends LitElement {
 
         default:
           // eslint-disable-next-line no-console
-          console.warn(`Unknown connector position: ${position}`)
+          console.warn(`Unknown connector type: ${type}`)
 
           return null
       }

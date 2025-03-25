@@ -237,7 +237,7 @@ export const ConstantsUtil = {
       'apple',
       'facebook'
     ] as SocialProvider[],
-    connectorPosition: [
+    connectorTypeOrder: [
       'walletConnect',
       'recent',
       'injected',

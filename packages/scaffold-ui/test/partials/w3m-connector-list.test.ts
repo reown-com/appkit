@@ -6,7 +6,7 @@ import { html } from 'lit'
 import {
   ApiController,
   ConnectorController,
-  type ConnectorPosition,
+  type ConnectorTypeOrder,
   CoreHelperUtil
 } from '@reown/appkit-controllers'
 
@@ -53,7 +53,7 @@ describe('W3mConnectorList', () => {
 
   it('should render all connector types in correct order', async () => {
     vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue(MOCK_CONNECTORS)
-    vi.spyOn(ConnectorUtil, 'getConnectorPosition').mockReturnValue([
+    vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue([
       'walletConnect',
       'recent',
       'injected',
@@ -84,7 +84,7 @@ describe('W3mConnectorList', () => {
       announced: [],
       injected: MOCK_CONNECTORS.injected
     })
-    vi.spyOn(ConnectorUtil, 'getConnectorPosition').mockReturnValue([
+    vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue([
       'injected',
       'walletConnect',
       'external',
@@ -113,7 +113,7 @@ describe('W3mConnectorList', () => {
       featured: [],
       external: []
     })
-    vi.spyOn(ConnectorUtil, 'getConnectorPosition').mockReturnValue([])
+    vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue([])
 
     const element: W3mConnectorList = await fixture(html`<w3m-connector-list></w3m-connector-list>`)
 
@@ -121,9 +121,9 @@ describe('W3mConnectorList', () => {
   })
 
   it('should handle non valid connector positions', async () => {
-    vi.spyOn(ConnectorUtil, 'getConnectorPosition').mockReturnValue([
+    vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue([
       'unknown'
-    ] as unknown as ConnectorPosition[])
+    ] as unknown as ConnectorTypeOrder[])
 
     const element: W3mConnectorList = await fixture(html`<w3m-connector-list></w3m-connector-list>`)
 

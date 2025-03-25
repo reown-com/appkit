@@ -16,18 +16,18 @@ describe('ConnectorUtil', () => {
     vi.clearAllMocks()
   })
 
-  describe('getConnectorPosition', () => {
+  describe('getConnectorTypeOrder', () => {
     it('should return connector positions in order of overriddenConnectors first then enabled connectors', () => {
       vi.spyOn(ConnectorUtil, 'getIsConnectedWithWC').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         enableWalletConnect: true,
         features: {
-          connectorPosition: ['injected', 'walletConnect']
+          connectorTypeOrder: ['injected', 'walletConnect']
         }
       })
 
-      const result = ConnectorUtil.getConnectorPosition({
+      const result = ConnectorUtil.getConnectorTypeOrder({
         recommended: [],
         featured: [FEATURED],
         custom: [CUSTOM],
@@ -55,11 +55,11 @@ describe('ConnectorUtil', () => {
         ...OptionsController.state,
         enableWalletConnect: true,
         features: {
-          connectorPosition: ['injected', 'walletConnect']
+          connectorTypeOrder: ['injected', 'walletConnect']
         }
       })
 
-      const result = ConnectorUtil.getConnectorPosition({
+      const result = ConnectorUtil.getConnectorTypeOrder({
         recommended: [],
         featured: [FEATURED],
         custom: [CUSTOM],
@@ -86,11 +86,11 @@ describe('ConnectorUtil', () => {
         ...OptionsController.state,
         enableWalletConnect: true,
         features: {
-          connectorPosition: ['injected', 'recommended']
+          connectorTypeOrder: ['injected', 'recommended']
         }
       })
 
-      const result = ConnectorUtil.getConnectorPosition({
+      const result = ConnectorUtil.getConnectorTypeOrder({
         recommended: [],
         featured: [FEATURED],
         custom: [CUSTOM],
@@ -112,11 +112,11 @@ describe('ConnectorUtil', () => {
         ...OptionsController.state,
         enableWalletConnect: false,
         features: {
-          connectorPosition: ['walletConnect', 'injected']
+          connectorTypeOrder: ['walletConnect', 'injected']
         }
       })
 
-      const result = ConnectorUtil.getConnectorPosition({
+      const result = ConnectorUtil.getConnectorTypeOrder({
         recommended: [],
         featured: [],
         custom: [],
@@ -137,11 +137,11 @@ describe('ConnectorUtil', () => {
         ...OptionsController.state,
         enableWalletConnect: true,
         features: {
-          connectorPosition: ['walletConnect', 'injected']
+          connectorTypeOrder: ['walletConnect', 'injected']
         }
       })
 
-      const result = ConnectorUtil.getConnectorPosition({
+      const result = ConnectorUtil.getConnectorTypeOrder({
         recommended: [],
         featured: [],
         custom: [],

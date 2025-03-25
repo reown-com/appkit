@@ -35,7 +35,7 @@ const modal = createAppKit({
   networks: [], // Add your networks here
   projectId: 'YOUR_PROJECT_ID',
   features: {
-    connectorPosition: ['injected', 'walletConnect', 'recent']
+    connectorTypeOrder: ['injected', 'walletConnect', 'recent']
   }
 })
 ```

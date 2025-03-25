@@ -1052,7 +1052,7 @@ export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
 
 export type ConnectMethod = 'email' | 'social' | 'wallet'
 
-export type ConnectorPosition =
+export type ConnectorTypeOrder =
   | 'walletConnect'
   | 'recent'
   | 'injected'
@@ -1129,7 +1129,7 @@ export type Features = {
    * @default ['walletConnect', 'recent', 'injected', 'featured', 'custom', 'external', 'recommended']
    * @type {('walletConnect' | 'recent' | 'injected' | 'featured' | 'custom' | 'external' | 'recommended')[]}
    */
-  connectorPosition?: ConnectorPosition[]
+  connectorTypeOrder?: ConnectorTypeOrder[]
   /**
    * @description The order of the connect methods. This is experimental and subject to change.
    * @default ['email', 'social', 'wallet']
