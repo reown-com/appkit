@@ -27,6 +27,7 @@ export function useAppKitActions() {
       case 'send':
         open({
           view: 'WalletSend',
+          // @ts-ignore
           data: {
             sendParams: {
               sourceToken: (args as SendParams).sourceToken,
@@ -40,6 +41,7 @@ export function useAppKitActions() {
       case 'swap':
         open({
           view: 'Swap',
+          // @ts-ignore
           data: {
             swapParams: {
               sourceToken: (args as SwapParams).sourceToken,

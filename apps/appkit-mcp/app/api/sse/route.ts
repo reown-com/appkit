@@ -9,18 +9,6 @@ import { removeTransport, storeTransport } from '@/server/transportStore'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300 // 5 minutes maximum duration
 
-// Handle OPTIONS requests for CORS preflight
-export async function OPTIONS() {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-    }
-  })
-}
-
 export async function GET(request: Request) {
   const encoder = new TextEncoder()
   const sessionId = crypto.randomUUID()

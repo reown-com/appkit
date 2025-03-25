@@ -6,7 +6,7 @@ import { getTransport } from '@/server/transportStore'
 export const dynamic = 'force-dynamic'
 
 // Handle OPTIONS requests for CORS preflight
-export async function OPTIONS(message: string, status = 200) {
+function returnResponse(message: string, status = 200) {
   return new Response(message, {
     status,
     headers: {
@@ -33,13 +33,13 @@ export async function POST(request: Request) {
     }
 
     if (!sessionId) {
-      return OPTIONS('sessionId is required', 400)
+      return returnResponse('sessionId is required', 400)
     }
 
     const transport = getTransport(sessionId)
 
     if (!transport) {
-      return OPTIONS('Session not found. Please establish an SSE connection first.', 404)
+      return returnResponse('Session not found. Please establish an SSE connection first.', 404)
     }
 
     const messageData = await request.json()
@@ -131,14 +131,14 @@ export async function POST(request: Request) {
           console.error('[Messages] Error calling handlePostMessage:', err)
           clearTimeout(timeoutId)
 
-          resolve(OPTIONS('Error processing message', 500))
+          resolve(returnResponse('Error processing message', 500))
         }
       } catch (err) {
-        resolve(OPTIONS('Error setting up request handler', 500))
+        resolve(returnResponse('Error setting up request handler', 500))
       }
     })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    return OPTIONS(errorMessage, 500)
+    return returnResponse(errorMessage, 500)
   }
 }
