@@ -126,7 +126,7 @@ emailTestAfterFarcaster(
     await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
     await page.page.context().setOffline(true)
     await page.openAccount()
-    await validator.expectSnackbar('Token Balance Unavailable')
+    await validator.expectSnackbar('Token balance unavailable')
     await page.closeModal()
   }
 )

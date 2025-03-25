@@ -135,6 +135,6 @@ export type SIWEStatus = 'uninitialized' | 'ready' | 'loading' | 'success' | 're
 
 export type SdkFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 
-export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}`
+export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion
 
 export type AppKitSdkVersion = `${SdkFramework}-${string}-${string}`

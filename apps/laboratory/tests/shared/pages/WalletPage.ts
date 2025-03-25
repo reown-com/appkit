@@ -12,6 +12,7 @@ export class WalletPage {
 
   public connectToSingleAccount = false
   public page: Page
+  public isPageLoaded = false
 
   constructor(page: Page) {
     this.page = page
@@ -21,6 +22,7 @@ export class WalletPage {
 
   async load() {
     await this.page.goto(this.baseURL)
+    this.isPageLoaded = true
   }
 
   loadNewPage(page: Page) {

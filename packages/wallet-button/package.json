@@ -38,6 +38,7 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-blockchain-api": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.2.1",

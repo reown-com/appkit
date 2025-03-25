@@ -222,6 +222,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setDisableAppend(options.disableAppend)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setSIWX(options.siwx)
+    BlockchainApiController.initializeClient()
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
@@ -358,7 +359,7 @@ export abstract class AppKitBaseClient {
         const result = await adapter.connectWalletConnect(chainId)
 
         this.close()
-        this.setClientId(result?.clientId || null)
+        this.setClientId(result?.clientId)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         this.chainNamespaces.forEach(namespace => {
           ConnectorController.setConnectorId(

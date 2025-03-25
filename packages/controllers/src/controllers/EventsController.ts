@@ -1,9 +1,9 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 
+import { FetchUtil } from '@reown/appkit-blockchain-api'
 import { ConstantsUtil, isSafe } from '@reown/appkit-common'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
@@ -11,7 +11,7 @@ import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getAnalyticsUrl()
-const api = new FetchUtil({ baseUrl, clientId: null })
+const api = new FetchUtil({ baseUrl })
 const excluded = ['MODAL_CREATED']
 
 // -- Types --------------------------------------------- //
