@@ -1,7 +1,6 @@
 packages:
   - 'packages/adapters/*'
   - 'packages/appkit'
-  - 'packages/blockchain-api'
   - 'packages/common'
   - 'packages/ui'
   - 'packages/controllers'
