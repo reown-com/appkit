@@ -25,15 +25,19 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
-import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
+import {
+  ErrorUtil,
+  HelpersUtil,
+  ProviderUtil,
+  ConstantsUtil as UtilConstantsUtil
+} from '@reown/appkit-utils'
 import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
-import { ProviderUtil } from '../store/ProviderUtil.js'
-import { AppKitCore, type AppKitOptionsWithSdk } from './core.js'
+import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
 
 declare global {
   interface Window {
@@ -48,7 +52,7 @@ export { AccountController }
 let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
-export class AppKit extends AppKitCore {
+export class AppKit extends AppKitBaseClient {
   static override instance?: AppKit
 
   private authProvider?: W3mFrameProvider
@@ -501,6 +505,7 @@ export class AppKit extends AppKitCore {
       // Selectively import views based on feature flags
       const featureImportPromises = []
       if (features) {
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
         if (usingEmbeddedWallet) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))

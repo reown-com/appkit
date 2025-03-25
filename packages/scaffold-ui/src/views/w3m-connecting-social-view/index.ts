@@ -12,7 +12,6 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  SnackController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
@@ -23,7 +22,6 @@ import '@reown/appkit-ui/wui-loading-thumbnail'
 import '@reown/appkit-ui/wui-logo'
 import '@reown/appkit-ui/wui-text'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-social-view')

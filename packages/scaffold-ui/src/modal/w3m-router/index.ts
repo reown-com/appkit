@@ -97,6 +97,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connecting-social-view></w3m-connecting-social-view>`
       case 'Downloads':
         return html`<w3m-downloads-view></w3m-downloads-view>`
+      case 'EmailLogin':
+        return html`<w3m-email-login-view></w3m-email-login-view>`
       case 'EmailVerifyOtp':
         return html`<w3m-email-verify-otp-view></w3m-email-verify-otp-view>`
       case 'EmailVerifyDevice':

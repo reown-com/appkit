@@ -201,6 +201,7 @@ export type VisualType =
   | 'paypal'
   | 'pencil'
   | 'solana'
+  | 'bitcoin'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 

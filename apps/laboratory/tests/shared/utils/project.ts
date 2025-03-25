@@ -82,7 +82,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
-  'wallet.spec.ts'
+  'wallet.spec.ts',
+  'wallet-button.spec'
 ]
 
 function createRegex(tests: string[], isDesktop = true) {
