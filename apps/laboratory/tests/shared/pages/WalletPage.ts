@@ -36,6 +36,7 @@ export class WalletPage {
    */
 
   async connectWithUri(uri: string) {
+    await this.page.waitForLoadState()
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
       await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
@@ -69,12 +70,14 @@ export class WalletPage {
    * @param accept - accept or reject the session
    */
   async handleSessionProposal(opts: SessionParams) {
+    await this.page.waitForLoadState()
     const variant = opts.accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     await this.performRequestAction(variant)
   }
 
   async handleRequest({ accept }: { accept: boolean }) {
+    await this.page.waitForLoadState()
     const variant = accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     await this.performRequestAction(variant)
