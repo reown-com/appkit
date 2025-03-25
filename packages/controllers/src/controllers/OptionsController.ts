@@ -1,7 +1,7 @@
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { OptionsUtil } from '../utils/OptionsUtil.js'
@@ -37,7 +37,7 @@ export interface OptionsControllerStatePublic {
    * @default {}
    * @see https://docs.reown.com/appkit/react/core/options#customrpcurls
    */
-  customRpcUrls?: Record<CaipNetworkId, string[]>
+  customRpcUrls?: Record<CaipNetworkId, CustomRpcUrl[]>
   /**
    * Array of wallet ids to be shown in the modal's connection view with priority. These wallets will also show up first in `All Wallets` view
    * @default []
