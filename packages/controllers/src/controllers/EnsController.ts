@@ -10,6 +10,8 @@ import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -33,7 +35,7 @@ const state = proxy<EnsControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const EnsController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: EnsControllerState) => void) {
@@ -174,3 +176,6 @@ export const EnsController = {
     return ensError?.reasons?.[0]?.description || defaultError
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const EnsController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)

@@ -9,6 +9,8 @@ import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
@@ -87,7 +89,7 @@ const defaultState = {
 const state = proxy<OnRampControllerState>(defaultState)
 
 // -- Controller ---------------------------------------- //
-export const OnRampController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: OnRampControllerState) => void) {
@@ -176,3 +178,6 @@ export const OnRampController = {
     state.quotesLoading = false
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const OnRampController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
