@@ -164,7 +164,9 @@ export class ModalPage {
   async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
-    await walletPage.load()
+    if (!walletPage.isPageLoaded) {
+      await walletPage.load()
+    }
     if (immediate) {
       uri = await page.getImmidiateConnectUri()
     } else {
