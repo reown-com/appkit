@@ -177,17 +177,23 @@ export class ModalPage {
     await walletValidator.expectConnected()
   }
 
-  async emailFlow(
-    emailAddress: string,
-    context: BrowserContext,
+  async emailFlow({
+    emailAddress,
+    context,
+    mailsacApiKey,
+    clickConnectButton = true
+  }: {
+    emailAddress: string
+    context: BrowserContext
     mailsacApiKey: string
-  ): Promise<void> {
+    clickConnectButton?: boolean
+  }): Promise<void> {
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
 
     await email.deleteAllMessages(emailAddress)
-    await this.loginWithEmail(emailAddress)
+    await this.loginWithEmail(emailAddress, undefined, clickConnectButton)
 
     const firstMessageId = await email.getLatestMessageId(emailAddress)
     if (!firstMessageId) {
@@ -223,12 +229,14 @@ export class ModalPage {
     await this.enterOTP(otp)
   }
 
-  async loginWithEmail(email: string, validate = true) {
-    // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
-    await this.page
-      .getByTestId('connect-button')
-      .getByRole('button', { name: 'Connect Wallet' })
-      .click()
+  async loginWithEmail(email: string, validate = true, clickConnectButton = true) {
+    if (clickConnectButton) {
+      // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
+      await this.page
+        .getByTestId('connect-button')
+        .getByRole('button', { name: 'Connect Wallet' })
+        .click()
+    }
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')

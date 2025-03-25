@@ -71,6 +71,10 @@ export class AppKitWalletButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.wallet === 'email') {
+      return this.emailTemplate()
+    }
+
     if (ConstantsUtil.Socials.some(social => social === this.wallet)) {
       return this.socialTemplate()
     }
@@ -163,6 +167,25 @@ export class AppKitWalletButton extends LitElement {
           .finally(() => (this.loading = false))
       }}
       .icon=${this.wallet}
+      ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
+      ?loading=${this.loading || this.modalLoading}
+      ?error=${this.error}
+    ></wui-wallet-button>`
+  }
+
+  private emailTemplate() {
+    return html`<wui-wallet-button
+      data-testid="apkt-wallet-button-email"
+      name=${this.modalLoading ? 'Loading...' : 'Email'}
+      @click=${async () => {
+        this.loading = true
+        this.error = false
+        await ConnectorUtil.connectEmail()
+          .catch(() => (this.error = true))
+          .finally(() => (this.loading = false))
+      }}
+      .icon=${'mail'}
+      .iconSize=${'lg'}
       ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
       ?loading=${this.loading || this.modalLoading}
       ?error=${this.error}
