@@ -33,6 +33,9 @@ describe('AppKit Gas Estimation', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    // Mock ChainController.initialize before creating TestAppKit
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => {})
+
     appKit = new TestAppKit(mockOptions)
   })
 
