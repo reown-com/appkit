@@ -27,17 +27,17 @@ import {
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import {
-  type GetEnsAddressReturnType,
-  type Hex,
-  type HttpTransport,
-  formatUnits,
-  parseUnits
-} from 'viem'
+import { type GetEnsAddressReturnType, type Hex, formatUnits, parseUnits } from 'viem'
 import { normalize } from 'viem/ens'
 
 import { AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
-import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type {
+  AppKitNetwork,
+  BaseNetwork,
+  CaipNetwork,
+  ChainNamespace,
+  CustomRpcUrl
+} from '@reown/appkit-common'
 import {
   ConstantsUtil as CommonConstantsUtil,
   NetworkUtil,
@@ -84,38 +84,27 @@ export class WagmiAdapter extends AdapterBlueprint {
       networks: AppKitNetwork[]
       pendingTransactionsFilter?: PendingTransactionsFilter
       projectId: string
+      customRpcUrls?: Record<string | number, CustomRpcUrl[]>
     }
   ) {
+    const networks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
+      projectId: configParams.projectId,
+      customNetworkImageUrls: {},
+      customRpcUrls: configParams.customRpcUrls
+    }) as [CaipNetwork, ...CaipNetwork[]]
+
     super({
       projectId: configParams.projectId,
-      networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
-        projectId: configParams.projectId,
-        customNetworkImageUrls: {},
-        customRpcChainIds: configParams.transports
-          ? Object.keys(configParams.transports).map(Number)
-          : []
-      }) as [CaipNetwork, ...CaipNetwork[]]
+      networks
     })
 
     this.pendingTransactionsFilter = {
       ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
       ...(configParams.pendingTransactionsFilter ?? {})
     }
-
     this.namespace = CommonConstantsUtil.CHAIN.EVM
 
-    this.createConfig({
-      ...configParams,
-      networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
-        projectId: configParams.projectId,
-        customNetworkImageUrls: {},
-        customRpcChainIds: configParams.transports
-          ? Object.keys(configParams.transports).map(Number)
-          : []
-      }) as [CaipNetwork, ...CaipNetwork[]],
-      projectId: configParams.projectId
-    })
-
+    this.createConfig({ ...configParams, networks })
     this.setupWatchers()
   }
 
@@ -156,6 +145,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     configParams: Partial<CreateConfigParameters> & {
       networks: CaipNetwork[]
       projectId: string
+      customRpcUrls?: Record<string | number, CustomRpcUrl[]>
     }
   ) {
     this.caipNetworks = configParams.networks
@@ -163,29 +153,33 @@ export class WagmiAdapter extends AdapterBlueprint {
       caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
     ) as unknown as [BaseNetwork, ...BaseNetwork[]]
 
-    const transportsArr = this.wagmiChains.map(chain => [
-      chain.id,
-      CaipNetworksUtil.getViemTransport(chain as CaipNetwork)
-    ])
+    const transports: CreateConfigParameters['transports'] = {}
+    const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
-    Object.entries(configParams.transports ?? {}).forEach(([chainId, transport]) => {
-      const index = transportsArr.findIndex(([id]) => id === Number(chainId))
-      if (index === -1) {
-        transportsArr.push([Number(chainId), transport as HttpTransport])
+    this.wagmiChains.forEach(element => {
+      const fromTransportProp = configParams.transports?.[element.id]
+
+      if (fromTransportProp) {
+        transports[element.id] = CaipNetworksUtil.extendWagmiTransports(
+          element as CaipNetwork,
+          configParams.projectId,
+          fromTransportProp
+        )
       } else {
-        transportsArr[index] = [Number(chainId), transport as HttpTransport]
+        transports[element.id] = CaipNetworksUtil.getViemTransport(
+          element as CaipNetwork,
+          configParams.projectId,
+          configParams.customRpcUrls?.[element.id]
+        )
       }
     })
-
-    const transports = Object.fromEntries(transportsArr)
-    const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
     this.wagmiConfig = createConfig({
       ...configParams,
       chains: this.wagmiChains,
-      transports,
-      connectors
-    })
+      connectors,
+      transports
+    } as CreateConfigParameters)
   }
 
   private setupWatchPendingTransactions() {

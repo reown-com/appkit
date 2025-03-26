@@ -1,4 +1,4 @@
-import type { ChainFormatters } from 'viem'
+import type { ChainFormatters, HttpTransportConfig } from 'viem'
 import type { Chain as BaseChain } from 'viem/chains'
 
 export type { BaseChain }
@@ -19,6 +19,13 @@ export type CaipNetwork<
     imageId: string | undefined
     imageUrl: string | undefined
   }
+}
+
+export type CustomRpcUrlMap = Record<string | number, CustomRpcUrl[]>
+
+export type CustomRpcUrl = {
+  url: string
+  config?: HttpTransportConfig
 }
 
 export type AppKitNetwork = BaseNetwork | CaipNetwork

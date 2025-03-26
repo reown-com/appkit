@@ -198,7 +198,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
-
+    OptionsController.setCustomRpcUrls(options.customRpcUrls)
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
@@ -325,6 +325,7 @@ export abstract class AppKitBaseClient {
   protected extendCaipNetworks(options: AppKitOptions) {
     const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
+      customRpcUrls: options.customRpcUrls,
       projectId: options.projectId
     })
 
@@ -336,6 +337,7 @@ export abstract class AppKitBaseClient {
     const extendedNetwork = defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
           customNetworkImageUrls: options.chainImages,
+          customRpcUrls: options.customRpcUrls,
           projectId: options.projectId
         })
       : undefined
