@@ -81,6 +81,9 @@
       "elliptic": ">=6.6.1",
       "axios": ">=1.8.2",
       "ws": ">=7.5.10"
+    },
+    "patchedDependencies": {
+      "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
     }
   },
   "overrides": {
