@@ -130,7 +130,7 @@ export class CloudAuthSIWX implements SIWXConfig {
     return this.request('me?includeAppKitAccount=true', undefined)
   }
 
-  async setSessionAccountMetadata(metadata: object) {
+  async setSessionAccountMetadata(metadata: object | null = null) {
     if (!this.getStorageToken(this.localAuthStorageKey)) {
       throw new Error('Not authenticated')
     }
@@ -323,7 +323,7 @@ export namespace CloudAuthSIWX {
         token: string
       }
     >
-    'account-metadata': Request<'PUT', { metadata: object }, unknown>
+    'account-metadata': Request<'PUT', { metadata: object | null }, unknown>
     'sign-out': Request<'POST', undefined, never>
   }
 
