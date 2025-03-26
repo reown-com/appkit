@@ -36,7 +36,7 @@ import type {
   BaseNetwork,
   CaipNetwork,
   ChainNamespace,
-  CustomRpcUrl
+  CustomRpcUrlMap
 } from '@reown/appkit-common'
 import {
   ConstantsUtil as CommonConstantsUtil,
@@ -84,7 +84,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       networks: AppKitNetwork[]
       pendingTransactionsFilter?: PendingTransactionsFilter
       projectId: string
-      customRpcUrls?: Record<string | number, CustomRpcUrl[]>
+      customRpcUrls?: CustomRpcUrlMap
     }
   ) {
     const networks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
@@ -145,7 +145,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     configParams: Partial<CreateConfigParameters> & {
       networks: CaipNetwork[]
       projectId: string
-      customRpcUrls?: Record<string | number, CustomRpcUrl[]>
+      customRpcUrls?: CustomRpcUrlMap
     }
   ) {
     this.caipNetworks = configParams.networks
@@ -158,6 +158,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     this.wagmiChains.forEach(element => {
       const fromTransportProp = configParams.transports?.[element.id]
+      const caipNetworkId = CaipNetworksUtil.getCaipNetworkId(element)
 
       if (fromTransportProp) {
         transports[element.id] = CaipNetworksUtil.extendWagmiTransports(
@@ -169,7 +170,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         transports[element.id] = CaipNetworksUtil.getViemTransport(
           element as CaipNetwork,
           configParams.projectId,
-          configParams.customRpcUrls?.[element.id]
+          configParams.customRpcUrls?.[caipNetworkId]
         )
       }
     })
