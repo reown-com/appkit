@@ -105,9 +105,15 @@ export function useWagmiAvailableCapabilities({
   }, [connector, address, chain, isConnected])
 
   useEffect(() => {
-    if (chain && availableCapabilities && capability) {
-      const capabilitiesOnConnectedChain = availableCapabilities[toHex(chain.id)]
-      setSupported(Boolean(capabilitiesOnConnectedChain?.[capability] && isMethodSupported()))
+    if (!capability) {
+      setSupported(isMethodSupported())
+
+      return
+    }
+
+    if (chain && availableCapabilities) {
+      const capabilityOnConnectChain = availableCapabilities[toHex(chain.id)]
+      setSupported(Boolean(capabilityOnConnectChain?.[capability] && isMethodSupported()))
     }
   }, [chain, availableCapabilities, capability, provider])
 
