@@ -9,6 +9,18 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build",
@@ -26,6 +38,9 @@
     "tweetnacl": "1.0.3",
     "viem": "2.23.13"
   },
+  "peerDependencies": {
+    "react": "19.0.0"
+  },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
@@ -37,8 +52,10 @@
     "url": "https://github.com/reown-com/appkit/issues"
   },
   "devDependencies": {
+    "@types/react": "19.0.0",
     "@vitest/coverage-v8": "2.1.9",
     "happy-dom": "15.11.7",
+    "react": "19.0.0",
     "vitest": "2.1.9"
   },
   "keywords": [

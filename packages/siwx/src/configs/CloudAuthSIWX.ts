@@ -32,6 +32,10 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   private required: boolean
 
+  private listeners: CloudAuthSIWX.EventListeners = {
+    'session-changed': []
+  }
+
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
     this.localAuthStorageKey =
       (params.localAuthStorageKey as keyof SafeLocalStorageItems) ||
@@ -65,6 +69,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       'nonceJwt'
     )
     this.setStorageToken(response.token, this.localAuthStorageKey)
+    this.emit('session-changed', session)
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
@@ -88,6 +93,8 @@ export class CloudAuthSIWX implements SIWXConfig {
         message: '',
         signature: ''
       }
+
+      this.emit('session-changed', session)
 
       return [session]
     } catch {
@@ -113,6 +120,26 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   getRequired() {
     return this.required
+  }
+
+  on<Event extends keyof CloudAuthSIWX.Events>(
+    event: Event,
+    callback: CloudAuthSIWX.Listener<Event>
+  ) {
+    this.listeners[event].push(callback)
+
+    return () => {
+      this.listeners[event] = this.listeners[event].filter(
+        cb => cb !== callback
+      ) as CloudAuthSIWX.EventListeners[Event]
+    }
+  }
+
+  removeAllListeners() {
+    const keys = Object.keys(this.listeners) as (keyof CloudAuthSIWX.Events)[]
+    keys.forEach(key => {
+      this.listeners[key] = []
+    })
   }
 
   private async request<Key extends CloudAuthSIWX.RequestKey>(
@@ -163,6 +190,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   private clearStorageTokens(): void {
     SafeLocalStorage.removeItem(this.localAuthStorageKey)
     SafeLocalStorage.removeItem(this.localNonceStorageKey)
+    this.emit('session-changed', undefined)
   }
 
   private async getNonce(): Promise<string> {
@@ -217,6 +245,13 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   private getSDKProperties(): { projectId: string; st: string; sv: string } {
     return ApiController._getSdkProperties()
+  }
+
+  private emit<Event extends keyof CloudAuthSIWX.Events>(
+    event: Event,
+    data: CloudAuthSIWX.Events[Event]
+  ) {
+    this.listeners[event].forEach(listener => listener(data))
   }
 }
 
@@ -281,4 +316,14 @@ export namespace CloudAuthSIWX {
         icon: string | undefined
       }
     | { type: 'social'; social: string; identifier: string }
+
+  export type Events = {
+    'session-changed': SIWXSession | undefined
+  }
+
+  export type Listener<Event extends keyof Events> = (event: Events[Event]) => void
+
+  export type EventListeners = {
+    [Key in keyof Events]: Listener<Key>[]
+  }
 }
