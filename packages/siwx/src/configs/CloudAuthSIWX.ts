@@ -130,6 +130,14 @@ export class CloudAuthSIWX implements SIWXConfig {
     return this.request('me?includeAppKitAccount=true', undefined)
   }
 
+  async setSessionAccountMetadata(metadata: object) {
+    if (!this.getStorageToken(this.localAuthStorageKey)) {
+      throw new Error('Not authenticated')
+    }
+
+    return this.request('account-metadata', { metadata })
+  }
+
   on<Event extends keyof CloudAuthSIWX.Events>(
     event: Event,
     callback: CloudAuthSIWX.Listener<Event>
@@ -269,7 +277,7 @@ const RequestMethod = {
   nonce: 'GET',
   me: 'GET',
   authenticate: 'POST',
-  'update-user-metadata': 'PATCH',
+  'account-metadata': 'PUT',
   'sign-out': 'POST',
   'me?includeAppKitAccount=true': 'GET'
 } satisfies { [key in CloudAuthSIWX.RequestKey]: CloudAuthSIWX.Requests[key]['method'] }
@@ -293,7 +301,7 @@ export namespace CloudAuthSIWX {
     required?: boolean
   }
 
-  export type Request<Method extends 'GET' | 'POST' | 'PATCH', Params, Response> = {
+  export type Request<Method extends 'GET' | 'POST' | 'PATCH' | 'PUT', Params, Response> = {
     method: Method
     body: Params
     response: Response
@@ -315,7 +323,7 @@ export namespace CloudAuthSIWX {
         token: string
       }
     >
-    'update-user-metadata': Request<'PATCH', Record<string, unknown>, unknown>
+    'account-metadata': Request<'PUT', { metadata: object }, unknown>
     'sign-out': Request<'POST', undefined, never>
   }
 
