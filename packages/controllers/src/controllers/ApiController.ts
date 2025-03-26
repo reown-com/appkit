@@ -363,5 +363,9 @@ export const ApiController = {
     state.recommended = state.allRecommended.filter(wallet =>
       wallet.chains?.some(chain => caipNetworkIds.includes(chain))
     )
+
+    state.wallets = state.wallets.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
   }
 }
