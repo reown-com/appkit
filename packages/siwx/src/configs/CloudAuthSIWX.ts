@@ -122,6 +122,14 @@ export class CloudAuthSIWX implements SIWXConfig {
     return this.required
   }
 
+  async getSessionAccount() {
+    if (!this.getStorageToken(this.localAuthStorageKey)) {
+      throw new Error('Not authenticated')
+    }
+
+    return this.request('me?includeAppKitAccount=true', undefined)
+  }
+
   on<Event extends keyof CloudAuthSIWX.Events>(
     event: Event,
     callback: CloudAuthSIWX.Listener<Event>
@@ -164,7 +172,9 @@ export class CloudAuthSIWX implements SIWXConfig {
           }
 
     const response = await fetch(
-      `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`,
+      new URL(
+        `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`
+      ),
       {
         method: RequestMethod[key],
         body: params ? JSON.stringify(params) : undefined,
@@ -260,7 +270,8 @@ const RequestMethod = {
   me: 'GET',
   authenticate: 'POST',
   'update-user-metadata': 'PATCH',
-  'sign-out': 'POST'
+  'sign-out': 'POST',
+  'me?includeAppKitAccount=true': 'GET'
 } satisfies { [key in CloudAuthSIWX.RequestKey]: CloudAuthSIWX.Requests[key]['method'] }
 
 export namespace CloudAuthSIWX {
@@ -291,6 +302,7 @@ export namespace CloudAuthSIWX {
   export type Requests = {
     nonce: Request<'GET', undefined, { nonce: string; token: string }>
     me: Request<'GET', undefined, { address: string; chainId: number }>
+    'me?includeAppKitAccount=true': Request<'GET', undefined, SessionAccount>
     authenticate: Request<
       'POST',
       {
@@ -325,5 +337,34 @@ export namespace CloudAuthSIWX {
 
   export type EventListeners = {
     [Key in keyof Events]: Listener<Key>[]
+  }
+
+  export type SessionAccount = {
+    aud: string
+    iss: string
+    exp: number
+    projectIdKey: string
+    sub: string
+    address: string
+    chainId: number
+    uri: string
+    domain: string
+    projectUuid: string
+    profileUuid: string
+    nonce: string
+    appKitAccount?: {
+      uuid: string
+      caip2_chain: string
+      address: string
+      profile_uuid: string
+      created_at: string
+      is_main_account: boolean
+      verification_status: null
+      connection_method: object | null
+      metadata: object
+      last_signed_in_at: string
+      signed_up_at: string
+      updated_at: string
+    }
   }
 }
