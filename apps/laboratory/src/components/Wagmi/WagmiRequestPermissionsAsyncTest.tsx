@@ -36,7 +36,8 @@ export function WagmiRequestPermissionsAsyncTest() {
   if (!isCapabiltySupported) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_grantPermissions rpc method.
+        Wallet does not support wallet_grantPermissions rpc method. Ensure connecting smart account
+        with email youremail+smart-sessions@domain.com
       </Text>
     )
   }

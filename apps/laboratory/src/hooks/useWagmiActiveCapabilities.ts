@@ -54,32 +54,35 @@ export function useWagmiAvailableCapabilities({
     [supportedChains, chain]
   )
 
-  useEffect(() => {
-    if (isConnected && connector && address && chain) {
-      fetchProviderAndAccountCapabilities(address as Address, connector, chain)
-    }
-  }, [connector, address, chain, isConnected])
-
   async function fetchProviderAndAccountCapabilities(
-    connectedAccount: `0x${string}`,
+    connectedAccount: Address,
     connectedConnector: Connector,
     connectedChain: Chain
   ) {
     const connectedProvider = (await connectedConnector.getProvider?.({
       chainId: connectedChain.id
     })) as Provider
+
+    if (!connectedProvider) {
+      return
+    }
+
+    setProvider(connectedProvider)
+
     if (connectedProvider instanceof W3mFrameProvider) {
       const walletCapabilities = await connectedProvider.getCapabilities()
-      setProvider(connectedProvider)
       setAvailableCapabilities(walletCapabilities)
-    } else if (connectedProvider) {
-      setProvider(connectedProvider)
+    } else {
       const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
       setAvailableCapabilities(walletCapabilities)
     }
   }
 
   function isMethodSupported(): boolean {
+    if (!provider) {
+      return false
+    }
+
     if (provider instanceof W3mFrameProvider) {
       const supportedMethods = Object.values(EIP_5792_RPC_METHODS).concat(
         Object.values(EIP_7715_RPC_METHODS)
@@ -92,13 +95,21 @@ export function useWagmiAvailableCapabilities({
   }
 
   useEffect(() => {
-    if (chain && availableCapabilities) {
-      const capabilityOnConnectChain = availableCapabilities[toHex(chain.id)]
-      if (capability && capabilityOnConnectChain?.[capability] && isMethodSupported()) {
-        setSupported(true)
+    async function checkConnectionAndFetch() {
+      if (isConnected && connector && address && chain) {
+        await fetchProviderAndAccountCapabilities(address as Address, connector, chain)
       }
     }
-  }, [provider, chain, availableCapabilities, capability])
+
+    checkConnectionAndFetch()
+  }, [connector, address, chain, isConnected])
+
+  useEffect(() => {
+    if (chain && availableCapabilities && capability) {
+      const capabilitiesOnConnectedChain = availableCapabilities[toHex(chain.id)]
+      setSupported(Boolean(capabilitiesOnConnectedChain?.[capability] && isMethodSupported()))
+    }
+  }, [chain, availableCapabilities, capability, provider])
 
   return {
     provider,
