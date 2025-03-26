@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 
@@ -16,7 +17,9 @@ export default function ChatHeader() {
       )}
     >
       <div>
-        <Image src={'/reown-logo.png'} alt="Reown logo" width={150} height={40} />
+        <Link href="https://reown.com" target="_blank" rel="noopener noreferrer">
+          <Image src={'/reown-logo.png'} alt="Reown logo" width={150} height={40} />
+        </Link>
       </div>
       {address ? (
         <div>

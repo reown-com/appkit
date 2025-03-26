@@ -1,4 +1,5 @@
 import Lottie from 'lottie-react'
+import Link from 'next/link'
 
 import { useAppKitAccount } from '@reown/appkit-controllers/react'
 import { useAppKit } from '@reown/appkit/react'
@@ -21,8 +22,17 @@ export default function DisconnectedSection() {
           Chat Onchain with AppKit
         </h4>
         <p className="text-xl lg:text-3xl max-w-2xl text-text-secondary text-center mb-8">
-          Get your transaction history, see balances, swap or send tokens - all onchain, powered by
-          AppKit.
+          Chat with your wallets, ask your balances, send tokens, swap between them, and more - all
+          onchain, powered by{' '}
+          <Link
+            href="https://reown.com/appkit"
+            className="text-blue-500"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            AppKit
+          </Link>
+          .
         </p>
         <p className="text-xl lg:text-2xl text-text-secondary text-center mb-2">
           Connect your wallet to get started.
