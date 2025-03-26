@@ -5,7 +5,8 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   ConstantsUtil,
-  type CustomRpcUrl
+  type CustomRpcUrl,
+  type CustomRpcUrlMap
 } from '@reown/appkit-common'
 
 import { PresetsUtil } from './PresetsUtil.js'
@@ -65,7 +66,7 @@ type ExtendCaipNetworkParams = {
   customNetworkImageUrls: Record<number | string, string> | undefined
   projectId: string
   customRpc?: boolean
-  customRpcUrls?: Record<string | number, CustomRpcUrl[]>
+  customRpcUrls?: CustomRpcUrlMap
 }
 
 export const CaipNetworksUtil = {
@@ -150,7 +151,7 @@ export const CaipNetworksUtil = {
 
     const chainDefaultRpcUrl =
       caipNetwork?.rpcUrls?.['chainDefault']?.http?.[0] || networkDefaultRpcUrl
-    const customRpcUrlsOfNetwork = customRpcUrls?.[caipNetwork.id]?.map(i => i.url) || []
+    const customRpcUrlsOfNetwork = customRpcUrls?.[caipNetworkId]?.map(i => i.url) || []
 
     const rpcUrls = [...customRpcUrlsOfNetwork, reownRpcUrl]
     const rpcUrlsWithoutReown = [...customRpcUrlsOfNetwork]
