@@ -303,7 +303,6 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
     slippage: string
     permit?: string
   }
-  disableEstimate?: boolean
 }
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
