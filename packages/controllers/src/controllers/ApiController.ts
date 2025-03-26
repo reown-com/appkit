@@ -236,10 +236,12 @@ export const ApiController = {
       .filter(Boolean)
     await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
 
+
     state.wallets = CoreHelperUtil.uniqueBy(
       [...state.wallets, ...ApiController._filterOutExtensions(data)],
       'id'
-    )
+    ).filter(w => w.chains?.some(chain => caipNetworkIds.includes(chain)))
+
     state.count = count > state.count ? count : state.count
     state.page = page
   },
