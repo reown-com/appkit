@@ -77,7 +77,8 @@ testMWagmiVerifyValid(
   }
 )
 
-testMWagmiVerifyDomainMismatch(
+// Skipping this test because domain will always show as verified in the react-wallet
+testMWagmiVerifyDomainMismatch.skip(
   'wagmi: connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
   async ({ modalPage, context }) => {
     test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
