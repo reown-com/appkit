@@ -21,7 +21,7 @@ export type CaipNetwork<
   }
 }
 
-export type CustomRpcUrlMap = Record<string | number, CustomRpcUrl[]>
+export type CustomRpcUrlMap = Record<CaipNetworkId, CustomRpcUrl[]>
 
 export type CustomRpcUrl = {
   url: string

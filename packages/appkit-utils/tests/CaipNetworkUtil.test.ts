@@ -1,7 +1,7 @@
 import { http } from 'viem'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitNetwork } from '@reown/appkit-common'
+import { type AppKitNetwork, type CustomRpcUrlMap } from '@reown/appkit-common'
 
 import { CaipNetworksUtil } from '../src/CaipNetworkUtil'
 
@@ -171,8 +171,8 @@ describe('CaipNetworksUtil', () => {
     const customNetworkImageUrls = {
       1: 'https://example.com/eth.png'
     }
-    const customRpcUrls = {
-      1: [{ url: 'https://custom.eth.example.com' }]
+    const customRpcUrls: CustomRpcUrlMap = {
+      'eip155:1': [{ url: 'https://custom.eth.example.com' }]
     }
 
     it('should extend network with all required properties', () => {
