@@ -29,8 +29,8 @@ Define your map of chain ID / URL objects:
 
 ```jsx
 const customRpcUrls = {
-  1: [{ url: 'https://your-custom-mainnet-url.com' }],
-  137: [{ url: 'https://your-custom-polygon-url.com' }]
+  "eip155:1": [{ url: 'https://your-custom-mainnet-url.com' }],
+  "eip155:137": [{ url: 'https://your-custom-polygon-url.com' }]
 }
 ```
 
@@ -59,7 +59,7 @@ If you need to pass fetch configs for your transport, you can use `config` prope
 
 ```jsx
 const customRpcUrls = {
-  1: [
+  "eip155:1": [
     {
       url: "https://your-custom-mainnet-url.com",
       config: {
