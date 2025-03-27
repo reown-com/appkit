@@ -533,7 +533,7 @@ export namespace AdapterBlueprint {
     to: string
     data: string
     value: bigint | number
-    gasPrice: bigint | number
+    gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
     provider?: AppKitConnector['provider']
