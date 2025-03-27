@@ -6,53 +6,55 @@ import { EnsController } from '@reown/appkit-controllers'
 
 import { solana, solanaDevnet } from '../networks/index.js'
 
+export const DEFAULT_METHODS = {
+  solana: [
+    'solana_signMessage',
+    'solana_signTransaction',
+    'solana_requestAccounts',
+    'solana_getAccounts',
+    'solana_signAllTransactions',
+    'solana_signAndSendTransaction'
+  ],
+  eip155: [
+    'eth_accounts',
+    'eth_requestAccounts',
+    'eth_sendRawTransaction',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+    'eth_sendTransaction',
+    'personal_sign',
+    'wallet_switchEthereumChain',
+    'wallet_addEthereumChain',
+    'wallet_getPermissions',
+    'wallet_requestPermissions',
+    'wallet_registerOnboarding',
+    'wallet_watchAsset',
+    'wallet_scanQRCode',
+    // EIP-5792
+    'wallet_getCallsStatus',
+    'wallet_showCallsStatus',
+    'wallet_sendCalls',
+    'wallet_getCapabilities',
+    // EIP-7715
+    'wallet_grantPermissions',
+    'wallet_revokePermissions',
+    //EIP-7811
+    'wallet_getAssets'
+  ],
+  bip122: [
+    'sendTransfer',
+    'signMessage',
+    'signPsbt',
+    'getAccountAddresses'
+  ]
+}
+
 export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
-    switch (chainNamespace) {
-      case 'solana':
-        return [
-          'solana_signMessage',
-          'solana_signTransaction',
-          'solana_requestAccounts',
-          'solana_getAccounts',
-          'solana_signAllTransactions',
-          'solana_signAndSendTransaction'
-        ]
-      case 'eip155':
-        return [
-          'eth_accounts',
-          'eth_requestAccounts',
-          'eth_sendRawTransaction',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-          'eth_sendTransaction',
-          'personal_sign',
-          'wallet_switchEthereumChain',
-          'wallet_addEthereumChain',
-          'wallet_getPermissions',
-          'wallet_requestPermissions',
-          'wallet_registerOnboarding',
-          'wallet_watchAsset',
-          'wallet_scanQRCode',
-          // EIP-5792
-          'wallet_getCallsStatus',
-          'wallet_showCallsStatus',
-          'wallet_sendCalls',
-          'wallet_getCapabilities',
-          // EIP-7715
-          'wallet_grantPermissions',
-          'wallet_revokePermissions',
-          //EIP-7811
-          'wallet_getAssets'
-        ]
-      case 'bip122':
-        return ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
-      default:
-        return []
-    }
+    return DEFAULT_METHODS[chainNamespace as keyof typeof DEFAULT_METHODS] || []
   },
 
   createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
