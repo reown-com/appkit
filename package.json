@@ -1,8 +1,14 @@
 {
-  "name": "shadow-test-apkt",
-  "version": "0.0.4",
+  "name": "@reown/appkit-monorepo",
+  "version": "1.7.1",
   "private": true,
   "type": "module",
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/reown-com/appkit",
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  },
   "scripts": {
     "prebuild": "node scripts/inject-version.js",
     "build:clean": "turbo run build:clean --filter={./packages/*}",
