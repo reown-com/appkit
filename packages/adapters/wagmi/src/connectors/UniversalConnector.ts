@@ -110,7 +110,10 @@ export function walletConnect(
         }
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
-          const namespaces = WcHelpersUtil.createNamespaces(caipNetworks)
+          // SOMETHING LIKE THIS
+          const defaultNamespaces = WcHelpersUtil.createNamespaces(caipNetworks)
+          const optionsNamespaces = OptionsController.state.universalProviderConfigOverride?.namespaces
+          const namespaces = optionsNamespaces ? { ...defaultNamespaces, ...optionsNamespaces } : defaultNamespaces
           await provider.connect({
             optionalNamespaces: namespaces,
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
