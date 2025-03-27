@@ -155,6 +155,7 @@ describe('WagmiAdapter', () => {
         `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
       )
     })
+
     it('should return custom RPC if transports is provided', () => {
       const adapterWithCustomRpc = new WagmiAdapter({
         networks: mockNetworks,
@@ -165,7 +166,7 @@ describe('WagmiAdapter', () => {
       })
 
       expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
-        `https://eth.merkle.io`
+        'https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=test-project-id'
       )
     })
 

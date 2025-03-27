@@ -1052,6 +1052,15 @@ export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
 
 export type ConnectMethod = 'email' | 'social' | 'wallet'
 
+export type ConnectorTypeOrder =
+  | 'walletConnect'
+  | 'recent'
+  | 'injected'
+  | 'featured'
+  | 'custom'
+  | 'external'
+  | 'recommended'
+
 export type Features = {
   /**
    * @description Enable or disable the swaps feature. Enabled by default.
@@ -1115,6 +1124,12 @@ export type Features = {
    * @default false
    */
   legalCheckbox?: boolean
+  /**
+   * @description The order of the connectors
+   * @default ['walletConnect', 'recent', 'injected', 'featured', 'custom', 'external', 'recommended']
+   * @type {('walletConnect' | 'recent' | 'injected' | 'featured' | 'custom' | 'external' | 'recommended')[]}
+   */
+  connectorTypeOrder?: ConnectorTypeOrder[]
   /**
    * @description The order of the connect methods. This is experimental and subject to change.
    * @default ['email', 'social', 'wallet']
