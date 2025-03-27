@@ -90,6 +90,7 @@ const mockSwapState: SwapControllerState = {
   swapTransaction: {
     data: '0x123',
     to: '0x456',
+    gas: BigInt(21000),
     gasPrice: BigInt(1000000000),
     value: BigInt(0),
     toAmount: '10'
