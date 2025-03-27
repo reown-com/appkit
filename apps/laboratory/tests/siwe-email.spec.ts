@@ -50,7 +50,7 @@ emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
   timingRecords.push({
     item: 'beforeAll',
     timeMs: new Date().getTime() - start.getTime()
-  });
+  })
 })
 
 emailSiweTest.afterAll(async () => {
