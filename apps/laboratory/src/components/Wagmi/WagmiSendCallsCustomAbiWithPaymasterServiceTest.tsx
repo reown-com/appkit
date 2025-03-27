@@ -200,7 +200,15 @@ function AvailableTestContent() {
         }
       }
     })
-  }, [sendCalls, paymasterServiceUrl, contractAbi, contractAddress, methodArgs, method, valueToSend])
+  }, [
+    sendCalls,
+    paymasterServiceUrl,
+    contractAbi,
+    contractAddress,
+    methodArgs,
+    method,
+    valueToSend
+  ])
 
   return (
     <Stack direction={['column', 'column', 'column']}>
