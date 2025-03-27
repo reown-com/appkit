@@ -126,7 +126,7 @@ describe('AppKitWalletButton', () => {
         ModalController.state.open = true
       })
 
-    const RouterControllerPushSpy = vi.spyOn(RouterController, 'push')
+    const RouterControllerReplaceSpy = vi.spyOn(RouterController, 'replace')
 
     const walletButtonClick = vi.fn()
 
@@ -142,7 +142,7 @@ describe('AppKitWalletButton', () => {
 
     expect(walletButtonClick).toHaveBeenCalledOnce()
     expect(ModalControllerOpenSpy).toHaveBeenCalled()
-    expect(RouterControllerPushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
+    expect(RouterControllerReplaceSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
       wallet: MetaMask
     })
 
@@ -162,23 +162,34 @@ describe('AppKitWalletButton', () => {
 
     expect(parseCaipAddressSpy).toHaveBeenCalledWith(caipAddress)
     expect(ModalControllerCloseSpy).toHaveBeenCalled()
-    expect(RouterControllerPushSpy).toHaveBeenCalledWith('Connect')
+    expect(RouterControllerReplaceSpy).toHaveBeenCalledWith('Connect')
 
     element.requestUpdate()
     await elementUpdated(element)
 
     expect(walletButton.getAttribute('disabled')).not.toBeNull()
     expect(walletButton.getAttribute('loading')).toBeNull()
+  })
 
+  test('should redirect to all wallets on mobile if walletConnect is selected', async () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(ModalController, 'open').mockResolvedValue()
+    const RouterControllerReplaceSpy = vi.spyOn(RouterController, 'replace')
 
-    element.requestUpdate()
-    await elementUpdated(element)
+    const element: AppKitWalletButton = await fixture(
+      html`<appkit-wallet-button wallet="walletConnect"></appkit-wallet-button>`
+    )
+
+    const walletButton = HelpersUtil.getByTestId(element, WALLET_BUTTON)
+
+    const walletButtonClick = vi.fn()
+
+    walletButton.addEventListener('click', walletButtonClick)
 
     await walletButton.click()
 
-    expect(ModalControllerOpenSpy).toHaveBeenCalled()
-    expect(RouterControllerPushSpy).toHaveBeenCalledWith('AllWallets')
+    expect(walletButtonClick).toHaveBeenCalled()
+    expect(RouterControllerReplaceSpy).toHaveBeenCalledWith('AllWallets')
   })
 
   test('should connect with external connector', async () => {
