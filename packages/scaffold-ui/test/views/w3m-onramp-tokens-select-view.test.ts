@@ -111,7 +111,7 @@ describe('W3mOnrampTokensView', () => {
     expect(listItems?.length).toBe(1)
   })
 
-  it.only('should handle legal checkbox interaction', async () => {
+  it('should handle legal checkbox interaction', async () => {
     vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
       ...OptionsStateController.state,
       isLegalCheckboxChecked: false
