@@ -8,13 +8,13 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SendApiUtil } from '../utils/SendApiUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
@@ -408,4 +408,7 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const SendController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
+export const SendController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

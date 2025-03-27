@@ -1,4 +1,7 @@
-import { TelemetryController, TelemetryErrorCategory } from '../controllers/TelemetryController'
+import { TelemetryController, TelemetryErrorCategory } from '../controllers/TelemetryController.js'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Controller = Record<string, any>
 
 export class AppKitError extends Error {
   public category: TelemetryErrorCategory
@@ -17,28 +20,31 @@ export class AppKitError extends Error {
   }
 }
 
-export function withErrorBoundary<T extends Record<string, any>>(
+export function withErrorBoundary<T extends Controller>(
   controller: T,
   defaultCategory: TelemetryErrorCategory = TelemetryErrorCategory.INTERNAL_SDK_ERROR
 ): T {
-  const newController: Record<string, any> = {}
+  const newController: Controller = {}
 
-  Object.keys(controller).forEach((key) => {
+  Object.keys(controller).forEach(key => {
     const original = controller[key]
 
     if (typeof original === 'function') {
+      // eslint-disable-next-line func-style
       const wrapped = (...args: Parameters<typeof original>) => {
         try {
           const result = original.apply(controller, args)
+
           return result
         } catch (err) {
-          const error = err instanceof AppKitError
-            ? err
-            : new AppKitError(
-                err instanceof Error ? err.message : String(err),
-                defaultCategory,
-                err
-              )
+          const error =
+            err instanceof AppKitError
+              ? err
+              : new AppKitError(
+                  err instanceof Error ? err.message : String(err),
+                  defaultCategory,
+                  err
+                )
 
           TelemetryController.sendError(error, error.category)
           throw error
@@ -52,4 +58,4 @@ export function withErrorBoundary<T extends Record<string, any>>(
   })
 
   return newController as T
-} 
+}

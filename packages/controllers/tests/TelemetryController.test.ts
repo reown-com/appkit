@@ -1,6 +1,10 @@
 /// <reference types="vitest" />
-import { TelemetryController, TelemetryErrorCategory } from '../src/controllers/TelemetryController'
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  TelemetryController,
+  TelemetryErrorCategory
+} from '../src/controllers/TelemetryController.js'
 
 // Mock dependencies
 vi.mock('../src/utils/CoreHelperUtil', () => ({
@@ -36,7 +40,7 @@ describe('TelemetryController', () => {
   describe('rate limiting', () => {
     it('should allow up to 5 errors per minute', async () => {
       const error = new Error('Test error')
-      
+
       // Send 5 errors
       for (let i = 0; i < 5; i++) {
         await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
@@ -47,14 +51,14 @@ describe('TelemetryController', () => {
 
       // Try to send a 6th error
       await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
-      
+
       // Verify no additional error was sent
       expect(TelemetryController.state.events.length).toBe(5)
     })
 
     it('should allow new errors after a minute has passed', async () => {
       const error = new Error('Test error')
-      
+
       // Send 5 errors
       for (let i = 0; i < 5; i++) {
         await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
@@ -68,17 +72,17 @@ describe('TelemetryController', () => {
 
       // Try to send a new error
       await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
-      
+
       // Verify the new error was sent
       expect(TelemetryController.state.events.length).toBe(6)
     })
 
     it('should not apply rate limiting when disabled', async () => {
       const error = new Error('Test error')
-      
+
       // Disable telemetry
       TelemetryController.disable()
-      
+
       // Try to send errors
       for (let i = 0; i < 10; i++) {
         await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
@@ -90,7 +94,7 @@ describe('TelemetryController', () => {
 
     it('should clear rate limiting state when events are cleared', async () => {
       const error = new Error('Test error')
-      
+
       // Send 5 errors
       for (let i = 0; i < 5; i++) {
         await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
@@ -98,7 +102,7 @@ describe('TelemetryController', () => {
 
       // Clear events
       TelemetryController.clearEvents()
-      
+
       // Try to send new errors
       for (let i = 0; i < 5; i++) {
         await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
@@ -108,4 +112,4 @@ describe('TelemetryController', () => {
       expect(TelemetryController.state.events.length).toBe(5)
     })
   })
-}) 
+})

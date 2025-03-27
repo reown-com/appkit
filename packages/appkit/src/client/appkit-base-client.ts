@@ -1311,6 +1311,7 @@ export abstract class AppKitBaseClient {
       }
 
       const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
       return requestedCaipNetworks.filter(c => c.chainNamespace === chainNamespace)?.[0]
     }
 

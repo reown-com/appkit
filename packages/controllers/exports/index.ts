@@ -73,7 +73,10 @@ export type { EnsControllerState } from '../src/controllers/EnsController.js'
 export { AlertController } from '../src/controllers/AlertController.js'
 export type { AlertControllerState } from '../src/controllers/AlertController.js'
 
-export { TelemetryController, TelemetryErrorCategory } from '../src/controllers/TelemetryController.js'
+export {
+  TelemetryController,
+  TelemetryErrorCategory
+} from '../src/controllers/TelemetryController.js'
 export type { TelemetryControllerState } from '../src/controllers/TelemetryController.js'
 
 // -- Utils -------------------------------------------------------------------

@@ -10,6 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -19,7 +20,6 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Constants ---------------------------------------- //
@@ -908,4 +908,7 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const SwapController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
+export const SwapController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

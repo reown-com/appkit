@@ -19,6 +19,7 @@ import type {
   ChainAdapter,
   NetworkControllerClient
 } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -28,7 +29,6 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Constants ----------------------------------------- //
@@ -787,4 +787,7 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const ChainController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
+export const ChainController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

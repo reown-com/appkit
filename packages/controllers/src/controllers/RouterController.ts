@@ -4,13 +4,13 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import type { SwapInputTarget } from './SwapController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
@@ -243,4 +243,7 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const RouterController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
+export const RouterController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

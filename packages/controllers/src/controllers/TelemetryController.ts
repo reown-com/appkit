@@ -1,8 +1,9 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { EventsController } from './EventsController'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil'
-import { FetchUtil } from '../utils/FetchUtil'
+
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { FetchUtil } from '../utils/FetchUtil.js'
+import { EventsController } from './EventsController.js'
 
 // -- Types --------------------------------------------- //
 export enum TelemetryEventType {
@@ -61,18 +62,21 @@ export const TelemetryController = {
   },
 
   async sendError(error: Error, category: TelemetryErrorCategory) {
-    if (!state.enabled) return
+    if (!state.enabled) {
+      return
+    }
 
     // Check rate limiting using events array
     const now = Date.now()
     const recentErrors = state.events.filter(event => {
       const eventTime = new Date(event.properties.timestamp || '').getTime()
+
       return now - eventTime < ONE_MINUTE_MS
     })
-    
+
     if (recentErrors.length >= MAX_ERRORS_PER_MINUTE) {
-      // eslint-disable-next-line no-console
-      console.warn('Rate limit exceeded for telemetry error reporting')
+      // Exit silently
+
       return
     }
 
@@ -127,4 +131,4 @@ export const TelemetryController = {
   clearEvents() {
     state.events = []
   }
-} 
+}

@@ -1,7 +1,8 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_STATE = Object.freeze<SnackControllerState>({

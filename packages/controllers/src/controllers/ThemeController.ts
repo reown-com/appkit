@@ -4,8 +4,8 @@ import { getW3mThemeVariables } from '@reown/appkit-common'
 import type { W3mThemeVariables } from '@reown/appkit-common'
 
 import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil.js'
-import { ConnectorController } from './ConnectorController.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { ConnectorController } from './ConnectorController.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
@@ -77,4 +77,7 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const ThemeController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
+export const ThemeController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
@@ -14,7 +15,6 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {

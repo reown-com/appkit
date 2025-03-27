@@ -74,4 +74,7 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const TooltipController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
+export const TooltipController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

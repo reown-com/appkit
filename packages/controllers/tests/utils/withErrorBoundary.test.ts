@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { TelemetryController } from '../../src/controllers/TelemetryController'
-import { withErrorBoundary, AppKitError } from '../../src/utils/withErrorBoundary'
-import { TelemetryErrorCategory } from '../../src/controllers/TelemetryController'
+
+import { TelemetryController } from '../../src/controllers/TelemetryController.js'
+import { TelemetryErrorCategory } from '../../src/controllers/TelemetryController.js'
+import { AppKitError, withErrorBoundary } from '../../src/utils/withErrorBoundary.js'
 
 // -- Setup --------------------------------------------------------------------
 const sendErrorSpy = vi.spyOn(TelemetryController, 'sendError')
@@ -97,7 +98,10 @@ describe('withErrorBoundary', () => {
       }
     }
 
-    const wrappedController = withErrorBoundary(mockController, TelemetryErrorCategory.SECURE_SITE_ERROR)
+    const wrappedController = withErrorBoundary(
+      mockController,
+      TelemetryErrorCategory.SECURE_SITE_ERROR
+    )
 
     await expect(wrappedController.errorMethod()).rejects.toThrow(AppKitError)
     expect(sendErrorSpy).toHaveBeenCalledWith(
@@ -132,7 +136,10 @@ describe('withErrorBoundary', () => {
       }
     }
 
-    const wrappedController = withErrorBoundary(mockController, TelemetryErrorCategory.SECURE_SITE_ERROR)
+    const wrappedController = withErrorBoundary(
+      mockController,
+      TelemetryErrorCategory.SECURE_SITE_ERROR
+    )
 
     await expect(wrappedController.apiErrorMethod()).rejects.toThrow(AppKitError)
     expect(sendErrorSpy).toHaveBeenCalledWith(
@@ -152,4 +159,4 @@ describe('withErrorBoundary', () => {
       TelemetryErrorCategory.SECURE_SITE_ERROR
     )
   })
-}) 
+})

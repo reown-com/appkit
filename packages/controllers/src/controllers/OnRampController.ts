@@ -5,11 +5,11 @@ import { ConstantsUtil } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
@@ -180,4 +180,7 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const OnRampController = withErrorBoundary(controller, TelemetryErrorCategory.INTERNAL_SDK_ERROR)
+export const OnRampController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)
