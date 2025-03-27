@@ -31,7 +31,7 @@ type TransactionParams = {
   data: string
   to: string
   gas?: bigint
-  gasPrice: bigint
+  gasPrice?: bigint
   value: bigint
   toAmount: string
 }
@@ -732,7 +732,6 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        gasPrice: BigInt(data.gasPrice),
         value: data.value,
         chainNamespace: 'eip155'
       })
@@ -799,7 +798,6 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        gasPrice: BigInt(data.gasPrice),
         value: data.value,
         chainNamespace: 'eip155'
       })
