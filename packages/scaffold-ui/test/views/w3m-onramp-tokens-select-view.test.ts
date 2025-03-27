@@ -118,8 +118,8 @@ describe('W3mOnrampTokensView', () => {
     })
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
-      termsConditionsUrl: 'https://terms.com',
-      privacyPolicyUrl: 'https://privacy.com',
+      termsConditionsUrl: '...',
+      privacyPolicyUrl: '...',
       features: {
         legalCheckbox: true
       }
