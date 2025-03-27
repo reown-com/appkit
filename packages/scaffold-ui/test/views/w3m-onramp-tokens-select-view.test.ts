@@ -8,6 +8,7 @@ import {
   ModalController,
   OnRampController,
   OptionsController,
+  OptionsStateController,
   type PurchaseCurrency
 } from '@reown/appkit-controllers'
 
@@ -26,6 +27,8 @@ const mockTokenImages = {
 
 describe('W3mOnrampTokensView', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
+
     vi.spyOn(OnRampController, 'state', 'get').mockReturnValue({
       ...OnRampController.state,
       purchaseCurrencies: mockTokens
@@ -108,7 +111,20 @@ describe('W3mOnrampTokensView', () => {
     expect(listItems?.length).toBe(1)
   })
 
-  it('should handle legal checkbox interaction', async () => {
+  it.only('should handle legal checkbox interaction', async () => {
+    vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
+      ...OptionsStateController.state,
+      isLegalCheckboxChecked: false
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      termsConditionsUrl: 'https://terms.com',
+      privacyPolicyUrl: 'https://privacy.com',
+      features: {
+        legalCheckbox: true
+      }
+    })
+
     const element: W3mOnrampTokensView = await fixture(
       html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
     )
@@ -119,8 +135,15 @@ describe('W3mOnrampTokensView', () => {
     expect(listContainer?.classList.contains('disabled')).toBe(true)
 
     const checkbox = element.shadowRoot?.querySelector('w3m-legal-checkbox')
-    checkbox?.dispatchEvent(new CustomEvent('checkboxChange', { detail: true }))
-    await element.updateComplete
+    const wuiCheckbox = checkbox?.shadowRoot?.querySelector('wui-checkbox')
+    const input = wuiCheckbox?.shadowRoot?.querySelector('input')
+
+    expect(input).not.toBeNull()
+
+    input?.click()
+
+    element.requestUpdate()
+    await elementUpdated(element)
 
     expect(listContainer?.classList.contains('disabled')).toBe(false)
   })
