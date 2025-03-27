@@ -149,6 +149,16 @@ describe('W3mOnrampTokensView', () => {
   })
 
   it('should handle token image updates', async () => {
+    vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
+      ...OptionsStateController.state,
+      isLegalCheckboxChecked: false
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        legalCheckbox: false
+      }
+    })
     const element: W3mOnrampTokensView = await fixture(
       html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
     )
@@ -171,6 +181,16 @@ describe('W3mOnrampTokensView', () => {
   })
 
   it('should cleanup subscriptions on disconnect', async () => {
+    vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
+      ...OptionsStateController.state,
+      isLegalCheckboxChecked: false
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        legalCheckbox: false
+      }
+    })
     const element: W3mOnrampTokensView = await fixture(
       html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
     )
