@@ -67,6 +67,16 @@ describe('SolanaAdapter', () => {
     })
   })
 
+  describe('constructor', () => {
+    it('should set adapterType', () => {
+      expect(adapter.adapterType).toEqual(ConstantsUtil.ADAPTER_TYPES.SOLANA)
+    })
+
+    it('should set namespace', () => {
+      expect(adapter.namespace).toEqual(ConstantsUtil.CHAIN.SOLANA)
+    })
+  })
+
   describe('SolanaAdapter - syncConnectors', () => {
     it('should not add coinbase connector if window.coinbaseSolana does not exist', async () => {
       const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)

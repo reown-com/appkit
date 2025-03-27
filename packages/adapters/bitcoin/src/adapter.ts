@@ -17,13 +17,13 @@ import { UnitsUtil } from './utils/UnitsUtil.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
-  public adapterType = 'bitcoin'
   private api: BitcoinApi.Interface
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
-      namespace: 'bip122',
+      namespace: ConstantsUtil.CHAIN.BITCOIN,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.BITCOIN,
       ...params
     })
 

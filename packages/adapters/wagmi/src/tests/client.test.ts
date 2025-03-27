@@ -100,8 +100,8 @@ describe('WagmiAdapter', () => {
   describe('WagmiAdapter - constructor and initialization', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.projectId).toBe(mockProjectId)
-      expect(adapter.adapterType).toBe('wagmi')
-      expect(adapter.namespace).toBe('eip155')
+      expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.WAGMI)
+      expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.EVM)
     })
 
     it('should set wagmi connectors', async () => {
