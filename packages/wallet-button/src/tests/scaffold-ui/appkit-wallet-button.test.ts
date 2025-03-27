@@ -7,6 +7,7 @@ import { ParseUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectorController,
+  CoreHelperUtil,
   ModalController,
   RouterController,
   type WcWallet
@@ -41,6 +42,7 @@ describe('AppKitWalletButton', () => {
   })
 
   beforeEach(() => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     ChainController.state.activeCaipAddress = undefined
   })
 
@@ -100,6 +102,12 @@ describe('AppKitWalletButton', () => {
   })
 
   test('should connect with walletConnect', async () => {
+    vi.spyOn(ParseUtil, 'parseCaipAddress').mockReturnValue({
+      chainNamespace: 'eip155',
+      chainId: 1,
+      address: '0x123'
+    })
+
     const element: AppKitWalletButton = await fixture(
       html`<appkit-wallet-button wallet="metamask"></appkit-wallet-button>`
     )
@@ -124,7 +132,7 @@ describe('AppKitWalletButton', () => {
 
     walletButton.addEventListener('click', walletButtonClick)
 
-    walletButton.click()
+    await walletButton.click()
 
     element.requestUpdate()
     await elementUpdated(element)
@@ -161,6 +169,16 @@ describe('AppKitWalletButton', () => {
 
     expect(walletButton.getAttribute('disabled')).not.toBeNull()
     expect(walletButton.getAttribute('loading')).toBeNull()
+
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+
+    element.requestUpdate()
+    await elementUpdated(element)
+
+    await walletButton.click()
+
+    expect(ModalControllerOpenSpy).toHaveBeenCalled()
+    expect(RouterControllerPushSpy).toHaveBeenCalledWith('AllWallets')
   })
 
   test('should connect with external connector', async () => {

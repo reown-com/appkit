@@ -41,9 +41,13 @@ export const ConnectorUtil = {
 
       await ModalController.open()
 
-      RouterController.push(CoreHelperUtil.isMobile() ? 'AllWallets' : 'ConnectingWalletConnect', {
-        wallet
-      })
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.push('AllWallets')
+      } else {
+        RouterController.push('ConnectingWalletConnect', {
+          wallet
+        })
+      }
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
