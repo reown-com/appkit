@@ -115,7 +115,7 @@ describe('W3mOnrampFiatSelectView', () => {
     })
     vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
       ...OptionsStateController.state,
-      isLegalCheckboxChecked: true
+      isLegalCheckboxChecked: false
     })
     const element: W3mOnrampFiatSelectView = await fixture(
       html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
@@ -124,10 +124,14 @@ describe('W3mOnrampFiatSelectView', () => {
     await elementUpdated(element)
 
     const checkbox = element.shadowRoot?.querySelector('w3m-legal-checkbox')
-    if (checkbox) {
-      checkbox.dispatchEvent(new CustomEvent('checkboxChange', { detail: true }))
-    }
+    const wuiCheckbox = checkbox?.shadowRoot?.querySelector('wui-checkbox')
+    const input = wuiCheckbox?.shadowRoot?.querySelector('input')
 
+    expect(input).not.toBeNull()
+
+    input?.click()
+
+    element.requestUpdate()
     await elementUpdated(element)
 
     const container = element.shadowRoot?.querySelector('wui-flex')
