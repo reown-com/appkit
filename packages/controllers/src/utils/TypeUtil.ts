@@ -471,7 +471,6 @@ export type Event =
     }
   | {
       type: 'track'
-      address?: string
       event: 'UNIVERSAL_PROVIDER_INIT_ERROR'
       properties?: {
         message: string
