@@ -13,6 +13,7 @@ import {
   CoreHelperUtil,
   type Features,
   OptionsController,
+  OptionsStateController,
   RouterController,
   type WalletGuideType
 } from '@reown/appkit-controllers'
@@ -54,7 +55,7 @@ export class W3mConnectView extends LitElement {
 
   @property() private walletGuide: WalletGuideType = 'get-started'
 
-  @state() private checked = false
+  @state() private checked = OptionsStateController.state.isLegalCheckboxChecked
 
   @state() private isEmailEnabled = this.features?.email && !ChainController.state.noAdapters
 
@@ -79,7 +80,8 @@ export class W3mConnectView extends LitElement {
       OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val)),
       ChainController.subscribeKey('noAdapters', val =>
         this.setEmailAndSocialEnableCheck(this.features, val)
-      )
+      ),
+      OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => (this.checked = val))
     )
   }
 
@@ -350,10 +352,7 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    return html`<w3m-legal-checkbox
-      @checkboxChange=${this.onCheckboxChange.bind(this)}
-      data-testid="w3m-legal-checkbox"
-    ></w3m-legal-checkbox>`
+    return html`<w3m-legal-checkbox data-testid="w3m-legal-checkbox"></w3m-legal-checkbox>`
   }
 
   private handleConnectListScroll() {
@@ -401,10 +400,6 @@ export class W3mConnectView extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onContinueWalletClick() {
     RouterController.push('ConnectWallets')
-  }
-
-  private onCheckboxChange(event: CustomEvent<string>) {
-    this.checked = Boolean(event.detail)
   }
 }
 
