@@ -9,7 +9,7 @@
       <img src="/appkit-logo.png" alt="Reown" width="150" />
     </div>
 
-    <h1 class="page-title">Vue AppKit Core Example</h1>
+    <h1 class="page-title">Vue AppKit Cloud Auth Example</h1>
 
     <div class="appkit-buttons-container">
       <appkit-button />
