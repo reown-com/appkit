@@ -62,76 +62,86 @@ export const WcHelpersUtil = {
 
   applyNamespaceOverrides(
     baseNamespaces: NamespaceConfig,
-    overrides: OptionsControllerState['universalProviderConfigOverride']
+    overrides?: OptionsControllerState['universalProviderConfigOverride']
   ): NamespaceConfig {
-    const result = { ...baseNamespaces }
     if (!overrides) {
-      return baseNamespaces
+      return { ...baseNamespaces }
     }
 
-    // Apply complete namespace overrides
-    if (overrides.namespaces) {
-      Object.entries(overrides.namespaces).forEach(([key, namespace]) => {
-        result[key] = namespace
-      })
-    }
+    const result = { ...baseNamespaces }
 
-    // Apply method overrides
+    const namespacesToOverride = new Set<string>()
+
     if (overrides.methods) {
-      Object.entries(overrides.methods).forEach(([namespace, methods]) => {
-        if (!result[namespace]) {
-          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
-        }
-        result[namespace].methods = methods
-      })
+      Object.keys(overrides.methods).forEach(ns => namespacesToOverride.add(ns))
     }
 
-    // Apply chain overrides
     if (overrides.chains) {
-      Object.entries(overrides.chains).forEach(([namespace, chains]) => {
-        if (!result[namespace]) {
-          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
-        }
-        result[namespace].chains = chains
-      })
+      Object.keys(overrides.chains).forEach(ns => namespacesToOverride.add(ns))
     }
 
-    // Apply event overrides
     if (overrides.events) {
-      Object.entries(overrides.events).forEach(([namespace, events]) => {
-        if (!result[namespace]) {
-          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
+      Object.keys(overrides.events).forEach(ns => namespacesToOverride.add(ns))
+    }
+
+    if (overrides.rpcMap) {
+      Object.keys(overrides.rpcMap).forEach(chainId => {
+        const [ns] = chainId.split(':')
+        if (ns) {
+          namespacesToOverride.add(ns)
         }
-        result[namespace].events = events
       })
     }
 
-    // Apply RPC map overrides
+    namespacesToOverride.forEach(ns => {
+      if (!result[ns]) {
+        result[ns] = this.createDefaultNamespace(ns as ChainNamespace)
+      }
+    })
+
+    if (overrides.methods) {
+      Object.entries(overrides.methods).forEach(([ns, methods]) => {
+        if (result[ns]) {
+          result[ns].methods = methods
+        }
+      })
+    }
+
+    if (overrides.chains) {
+      Object.entries(overrides.chains).forEach(([ns, chains]) => {
+        if (result[ns]) {
+          result[ns].chains = chains
+        }
+      })
+    }
+
+    if (overrides.events) {
+      Object.entries(overrides.events).forEach(([ns, events]) => {
+        if (result[ns]) {
+          result[ns].events = events
+        }
+      })
+    }
+
     if (overrides.rpcMap) {
-      // First, group RPC map overrides by namespace
-      const rpcMapByNamespace: Record<string, Record<string, string>> = {}
+      const processedNamespaces = new Set<string>()
 
       Object.entries(overrides.rpcMap).forEach(([chainId, rpcUrl]) => {
-        const [namespace, id] = chainId.split(':')
-        if (!namespace || !id) {
+        const [ns, id] = chainId.split(':')
+        if (!ns || !id || !result[ns]) {
           return
         }
 
-        if (!rpcMapByNamespace[namespace]) {
-          rpcMapByNamespace[namespace] = {}
+        if (!result[ns].rpcMap) {
+          result[ns].rpcMap = {}
         }
 
-        rpcMapByNamespace[namespace][id] = rpcUrl
-      })
-
-      // Then apply the grouped overrides, replacing the entire rpcMap for each namespace
-      Object.entries(rpcMapByNamespace).forEach(([namespace, rpcMap]) => {
-        if (!result[namespace]) {
-          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
+        if (!processedNamespaces.has(ns)) {
+          result[ns].rpcMap = {}
+          processedNamespaces.add(ns)
         }
 
-        // Replace the entire rpcMap instead of merging
-        result[namespace].rpcMap = rpcMap
+        result[ns].rpcMap[id] = rpcUrl
       })
     }
 

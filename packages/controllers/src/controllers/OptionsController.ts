@@ -1,4 +1,3 @@
-import type { Namespace } from '@walletconnect/universal-provider'
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -165,7 +164,6 @@ export interface OptionsControllerStatePublic {
   manualWCControl?: boolean
   /**
    * Custom Universal Provider configuration to override the default one.
-   * If `namespaces` is provided, it will override the default namespaces.
    * If `methods` is provided, it will override the default methods.
    * If `chains` is provided, it will override the default chains.
    * If `events` is provided, it will override the default events.
@@ -174,7 +172,6 @@ export interface OptionsControllerStatePublic {
    * @default undefined
    */
   universalProviderConfigOverride?: {
-    namespaces?: Record<string, Namespace>
     methods?: Record<string, string[]>
     chains?: Record<string, string[]>
     events?: Record<string, string[]>
