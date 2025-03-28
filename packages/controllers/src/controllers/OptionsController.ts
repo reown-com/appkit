@@ -1,3 +1,4 @@
+import type { Namespace } from '@walletconnect/universal-provider'
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -18,7 +19,6 @@ import type {
   Tokens,
   WalletFeature
 } from '../utils/TypeUtil.js'
-import type { EthereumRpcMap, Namespace } from '@walletconnect/universal-provider'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -162,11 +162,11 @@ export interface OptionsControllerStatePublic {
    * @default false
    * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
    */
-  manualWCControl?: boolean,
+  manualWCControl?: boolean
   /**
    * Custom Universal Provider configuration to override the default one.
    * If `namespaces` is provided, it will override the default namespaces.
-   * If `methods` is provided, it will override the default methods. 
+   * If `methods` is provided, it will override the default methods.
    * If `chains` is provided, it will override the default chains.
    * If `events` is provided, it will override the default events.
    * If `rpcMap` is provided, it will override the default rpcMap.
@@ -174,11 +174,11 @@ export interface OptionsControllerStatePublic {
    * @default undefined
    */
   universalProviderConfigOverride?: {
-    namespaces?: Record<string, Namespace>,
-    methods?: Record<string, string[]>,
-    chains?: Record<string, string[]>,
-    events?: Record<string, string[]>,
-    rpcMap?: Record<string, string>,
+    namespaces?: Record<string, Namespace>
+    methods?: Record<string, string[]>
+    chains?: Record<string, string[]>
+    events?: Record<string, string[]>
+    rpcMap?: Record<string, string>
     defaultChain?: string
   }
 }
@@ -373,6 +373,16 @@ export const OptionsController = {
         state.defaultAccountTypes[namespace] = accountType
       }
     })
+  },
+
+  setUniversalProviderConfigOverride(
+    universalProviderConfigOverride: OptionsControllerState['universalProviderConfigOverride']
+  ) {
+    state.universalProviderConfigOverride = universalProviderConfigOverride
+  },
+
+  getUniversalProviderConfigOverride() {
+    return state.universalProviderConfigOverride
   },
 
   getSnapshot() {

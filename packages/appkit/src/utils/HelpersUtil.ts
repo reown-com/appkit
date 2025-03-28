@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider'
 
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { EnsController } from '@reown/appkit-controllers'
+import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
 
 import { solana, solanaDevnet } from '../networks/index.js'
 
@@ -44,33 +44,110 @@ export const DEFAULT_METHODS = {
     //EIP-7811
     'wallet_getAssets'
   ],
-  bip122: [
-    'sendTransfer',
-    'signMessage',
-    'signPsbt',
-    'getAccountAddresses'
-  ]
+  bip122: ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
 }
 
 export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     return DEFAULT_METHODS[chainNamespace as keyof typeof DEFAULT_METHODS] || []
   },
+  createDefaultNamespace(chainNamespace: ChainNamespace): Namespace {
+    return {
+      methods: this.getMethodsByChainNamespace(chainNamespace),
+      events: ['accountsChanged', 'chainChanged'],
+      chains: [],
+      rpcMap: {}
+    }
+  },
 
-  createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
-    return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
+  applyNamespaceOverrides(
+    baseNamespaces: NamespaceConfig,
+    overrides: OptionsControllerState['universalProviderConfigOverride']
+  ): NamespaceConfig {
+    const result = { ...baseNamespaces }
+    if (!overrides) {
+      return baseNamespaces
+    }
+
+    // Apply complete namespace overrides
+    if (overrides.namespaces) {
+      Object.entries(overrides.namespaces).forEach(([key, namespace]) => {
+        result[key] = namespace
+      })
+    }
+
+    // Apply method overrides
+    if (overrides.methods) {
+      Object.entries(overrides.methods).forEach(([namespace, methods]) => {
+        if (!result[namespace]) {
+          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
+        }
+        result[namespace].methods = methods
+      })
+    }
+
+    // Apply chain overrides
+    if (overrides.chains) {
+      Object.entries(overrides.chains).forEach(([namespace, chains]) => {
+        if (!result[namespace]) {
+          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
+        }
+        result[namespace].chains = chains
+      })
+    }
+
+    // Apply event overrides
+    if (overrides.events) {
+      Object.entries(overrides.events).forEach(([namespace, events]) => {
+        if (!result[namespace]) {
+          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
+        }
+        result[namespace].events = events
+      })
+    }
+
+    // Apply RPC map overrides
+    if (overrides.rpcMap) {
+      // First, group RPC map overrides by namespace
+      const rpcMapByNamespace: Record<string, Record<string, string>> = {}
+
+      Object.entries(overrides.rpcMap).forEach(([chainId, rpcUrl]) => {
+        const [namespace, id] = chainId.split(':')
+        if (!namespace || !id) {
+          return
+        }
+
+        if (!rpcMapByNamespace[namespace]) {
+          rpcMapByNamespace[namespace] = {}
+        }
+
+        rpcMapByNamespace[namespace][id] = rpcUrl
+      })
+
+      // Then apply the grouped overrides, replacing the entire rpcMap for each namespace
+      Object.entries(rpcMapByNamespace).forEach(([namespace, rpcMap]) => {
+        if (!result[namespace]) {
+          result[namespace] = this.createDefaultNamespace(namespace as ChainNamespace)
+        }
+
+        // Replace the entire rpcMap instead of merging
+        result[namespace].rpcMap = rpcMap
+      })
+    }
+
+    return result
+  },
+
+  createNamespaces(
+    caipNetworks: CaipNetwork[],
+    configOverride?: OptionsControllerState['universalProviderConfigOverride']
+  ): NamespaceConfig {
+    const defaultNamespaces = caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
       const { id, chainNamespace, rpcUrls } = chain
       const rpcUrl = rpcUrls.default.http[0]
 
-      const methods = this.getMethodsByChainNamespace(chainNamespace)
-
       if (!acc[chainNamespace]) {
-        acc[chainNamespace] = {
-          methods,
-          events: ['accountsChanged', 'chainChanged'],
-          chains: [],
-          rpcMap: {}
-        } satisfies Namespace
+        acc[chainNamespace] = this.createDefaultNamespace(chainNamespace)
       }
 
       const caipNetworkId = `${chainNamespace}:${id}`
@@ -97,6 +174,8 @@ export const WcHelpersUtil = {
 
       return acc
     }, {})
+
+    return this.applyNamespaceOverrides(defaultNamespaces, configOverride)
   },
 
   resolveReownName: async (name: string) => {

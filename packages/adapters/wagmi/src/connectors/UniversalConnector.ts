@@ -24,7 +24,7 @@ import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-controllers'
+import { OptionsController, StorageUtil } from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -110,10 +110,12 @@ export function walletConnect(
         }
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
-          // SOMETHING LIKE THIS
-          const defaultNamespaces = WcHelpersUtil.createNamespaces(caipNetworks)
-          const optionsNamespaces = OptionsController.state.universalProviderConfigOverride?.namespaces
-          const namespaces = optionsNamespaces ? { ...defaultNamespaces, ...optionsNamespaces } : defaultNamespaces
+          const universalProviderConfigOverride =
+            OptionsController.state.universalProviderConfigOverride
+          const namespaces = WcHelpersUtil.createNamespaces(
+            caipNetworks,
+            universalProviderConfigOverride
+          )
           await provider.connect({
             optionalNamespaces: namespaces,
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
