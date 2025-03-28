@@ -8,6 +8,7 @@ import {
   SwapController,
   type SwapTokenWithBalance
 } from '@reown/appkit-controllers'
+import { EventsController } from '@reown/appkit-controllers'
 
 import { W3mSwapView } from '../../src/views/w3m-swap-view'
 
@@ -221,5 +222,51 @@ describe('W3mSwapView', () => {
     element.disconnectedCallback()
 
     expect(clearIntervalSpy.mock.calls.length).to.equal(1)
+  })
+
+  it('should retry swap when fetchError is true', async () => {
+    vi.spyOn(SwapController, 'state', 'get').mockReturnValue({
+      ...SwapController.state,
+      fetchError: true,
+      sourceToken: { ...mockToken, symbol: 'ETH' },
+      toToken: { ...mockToken, symbol: 'USDT' },
+      sourceTokenAmount: '1.5',
+      toTokenAmount: '2000'
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: mockChainState.activeCaipNetwork
+    })
+
+    const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens')
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+    const routerPushSpy = vi.spyOn(RouterController, 'push')
+
+    const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
+    await element.updateComplete
+
+    const actionButton = element.shadowRoot?.querySelector(
+      '[data-testid="swap-action-button"]'
+    ) as HTMLElement
+
+    await actionButton?.click()
+
+    expect(swapTokensSpy.mock.calls.length).to.equal(1)
+
+    expect(sendEventSpy.mock.calls.length).to.equal(1)
+    expect(sendEventSpy.mock.calls[0]?.[0]).to.deep.equal({
+      type: 'track',
+      event: 'INITIATE_SWAP',
+      properties: {
+        network: 'eip155:1',
+        swapFromToken: 'ETH',
+        swapToToken: 'USDT',
+        swapFromAmount: '1.5',
+        swapToAmount: '2000',
+        isSmartAccount: false
+      }
+    })
+    expect(routerPushSpy.mock.calls.length).to.equal(1)
+    expect(routerPushSpy.mock.calls[0]?.[0]).to.equal('SwapPreview')
   })
 })
