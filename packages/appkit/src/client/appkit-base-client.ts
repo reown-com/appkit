@@ -1201,7 +1201,7 @@ export abstract class AppKitBaseClient {
           type: 'error',
           event: 'INTERNAL_SDK_ERROR',
           properties: {
-            errorType: 'UNIVERSAL_PROVIDER_INIT_ERROR',
+            errorType: err instanceof Error ? err.constructor.name : 'Unknown',
             errorMessage: err instanceof Error ? err.message : 'Unknown',
             uncaught: false
           }
