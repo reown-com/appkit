@@ -6,10 +6,12 @@ import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 import { ThemeController } from './ThemeController.js'
 
 // -- Types --------------------------------------------- //
@@ -43,7 +45,7 @@ const state = proxy<ConnectorControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ConnectorController = {
+const controller = {
   state,
 
   subscribe(callback: (value: ConnectorControllerState) => void) {
@@ -344,3 +346,9 @@ export const ConnectorController = {
     state.activeConnectorIds = { ...defaultActiveConnectors }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ConnectorController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

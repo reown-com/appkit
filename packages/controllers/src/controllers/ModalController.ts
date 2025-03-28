@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
@@ -43,7 +44,7 @@ const state = proxy<ModalControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ModalController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: ModalControllerState) => void) {
@@ -154,3 +155,6 @@ export const ModalController = {
     }, 500)
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ModalController = withErrorBoundary(controller)
