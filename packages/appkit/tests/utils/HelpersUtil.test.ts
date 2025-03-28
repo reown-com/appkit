@@ -242,4 +242,159 @@ describe('WcHelpersUtil', () => {
       expect(WcHelpersUtil.isSessionEventData(data)).toBe(expected)
     })
   })
+
+  describe('createDefaultNamespace', () => {
+    test('creates correct namespace structure for solana', () => {
+      const namespace = WcHelpersUtil.createDefaultNamespace('solana')
+      expect(namespace).toEqual({
+        methods: [
+          'solana_signMessage',
+          'solana_signTransaction',
+          'solana_requestAccounts',
+          'solana_getAccounts',
+          'solana_signAllTransactions',
+          'solana_signAndSendTransaction'
+        ],
+        events: ['accountsChanged', 'chainChanged'],
+        chains: [],
+        rpcMap: {}
+      })
+    })
+
+    test('creates correct namespace structure for eip155', () => {
+      const namespace = WcHelpersUtil.createDefaultNamespace('eip155')
+      expect(namespace).toEqual({
+        methods: expect.arrayContaining([
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData',
+          'eth_sendTransaction',
+          'wallet_switchEthereumChain'
+        ]),
+        events: ['accountsChanged', 'chainChanged'],
+        chains: [],
+        rpcMap: {}
+      })
+    })
+
+    test('creates namespace with empty methods for unknown chain namespace', () => {
+      const namespace = WcHelpersUtil.createDefaultNamespace('unknown' as any)
+      expect(namespace).toEqual({
+        methods: [],
+        events: ['accountsChanged', 'chainChanged'],
+        chains: [],
+        rpcMap: {}
+      })
+    })
+  })
+
+  describe('applyNamespaceOverrides', () => {
+    const baseNamespaces = {
+      eip155: {
+        methods: ['eth_sign', 'personal_sign'],
+        events: ['accountsChanged', 'chainChanged'],
+        chains: ['eip155:1'],
+        rpcMap: { '1': 'https://ethereum.rpc.com' }
+      }
+    }
+
+    test('applies complete namespace overrides', () => {
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        namespaces: {
+          eip155: {
+            methods: ['custom_method'],
+            events: ['customEvent'],
+            chains: ['eip155:137'],
+            rpcMap: { '137': 'https://custom.rpc.com' }
+          }
+        }
+      })
+
+      expect(result).toEqual({
+        eip155: {
+          methods: ['custom_method'],
+          events: ['customEvent'],
+          chains: ['eip155:137'],
+          rpcMap: { '137': 'https://custom.rpc.com' }
+        }
+      })
+    })
+
+    test('applies method overrides', () => {
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        methods: {
+          eip155: ['new_method1', 'new_method2'],
+          solana: ['solana_method1', 'solana_method2']
+        }
+      })
+
+      expect(result['eip155']?.methods).toEqual(['new_method1', 'new_method2'])
+      expect(result['solana']?.methods).toEqual(['solana_method1', 'solana_method2'])
+      expect(result['eip155']?.chains).toEqual(['eip155:1'])
+    })
+
+    test('applies chain overrides', () => {
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        chains: {
+          eip155: ['eip155:42', 'eip155:56'],
+          bip122: ['bip122:000000000019d6689c085ae165831e93']
+        }
+      })
+
+      expect(result['eip155']?.chains).toEqual(['eip155:42', 'eip155:56'])
+      expect(result['bip122']?.chains).toEqual(['bip122:000000000019d6689c085ae165831e93'])
+      expect(result['bip122']?.methods).toEqual(
+        expect.arrayContaining(['sendTransfer', 'signMessage'])
+      )
+    })
+
+    test('applies event overrides', () => {
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        events: {
+          eip155: ['newEvent1', 'newEvent2'],
+          solana: ['solanaEvent']
+        }
+      })
+
+      expect(result['eip155']?.events).toEqual(['newEvent1', 'newEvent2'])
+      expect(result['solana']?.events).toEqual(['solanaEvent'])
+    })
+
+    test('applies rpcMap overrides', () => {
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        rpcMap: {
+          'eip155:1': 'https://new-ethereum.rpc.com',
+          'solana:mainnet': 'https://solana-mainnet.rpc.com'
+        }
+      })
+
+      expect(result['eip155']?.rpcMap).toEqual({
+        '1': 'https://new-ethereum.rpc.com'
+      })
+      expect(result['solana']?.rpcMap).toEqual({
+        mainnet: 'https://solana-mainnet.rpc.com'
+      })
+    })
+
+    test('handles multiple types of overrides simultaneously', () => {
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        methods: { eip155: ['method1', 'method2'] },
+        chains: { eip155: ['eip155:42'] },
+        events: { eip155: ['event1'] },
+        rpcMap: { 'eip155:42': 'https://kovan.rpc.com' }
+      })
+
+      expect(result).toEqual({
+        eip155: {
+          methods: ['method1', 'method2'],
+          events: ['event1'],
+          chains: ['eip155:42'],
+          rpcMap: {
+            '42': 'https://kovan.rpc.com'
+          }
+        }
+      })
+    })
+  })
 })
