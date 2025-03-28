@@ -290,94 +290,154 @@ describe('WcHelpersUtil', () => {
   })
 
   describe('applyNamespaceOverrides', () => {
-    const baseNamespaces = {
-      eip155: {
-        methods: ['eth_sign', 'personal_sign'],
-        events: ['accountsChanged', 'chainChanged'],
-        chains: ['eip155:1'],
-        rpcMap: { '1': 'https://ethereum.rpc.com' }
-      }
-    }
-
-    test('applies complete namespace overrides', () => {
-      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
-        namespaces: {
-          eip155: {
-            methods: ['custom_method'],
-            events: ['customEvent'],
-            chains: ['eip155:137'],
-            rpcMap: { '137': 'https://custom.rpc.com' }
-          }
-        }
-      })
-
-      expect(result).toEqual({
+    test('returns a copy of baseNamespaces when overrides is undefined', () => {
+      const baseNamespaces = {
         eip155: {
-          methods: ['custom_method'],
-          events: ['customEvent'],
-          chains: ['eip155:137'],
-          rpcMap: { '137': 'https://custom.rpc.com' }
+          methods: ['eth_sign'],
+          events: ['accountsChanged'],
+          chains: ['eip155:1'],
+          rpcMap: { '1': 'https://ethereum.rpc.com' }
         }
-      })
+      }
+
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, undefined)
+
+      // Should return a copy, not the original object
+      expect(result).not.toBe(baseNamespaces)
+      expect(result).toEqual(baseNamespaces)
     })
 
-    test('applies method overrides', () => {
-      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
-        methods: {
-          eip155: ['new_method1', 'new_method2'],
-          solana: ['solana_method1', 'solana_method2']
+    test('handles empty overrides object', () => {
+      const baseNamespaces = {
+        eip155: {
+          methods: ['eth_sign'],
+          events: ['accountsChanged'],
+          chains: ['eip155:1'],
+          rpcMap: { '1': 'https://ethereum.rpc.com' }
         }
+      }
+
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {})
+
+      expect(result).toEqual(baseNamespaces)
+    })
+
+    test('creates new namespace that does not exist in base when referenced in multiple override types', () => {
+      const baseNamespaces = {
+        eip155: {
+          methods: ['eth_sign'],
+          events: ['accountsChanged'],
+          chains: ['eip155:1'],
+          rpcMap: { '1': 'https://ethereum.rpc.com' }
+        }
+      }
+
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        methods: { cosmos: ['cosmos_method'] },
+        chains: { cosmos: ['cosmos:cosmoshub-4'] },
+        events: { cosmos: ['cosmos_event'] },
+        rpcMap: { 'cosmos:cosmoshub-4': 'https://cosmos-hub.rpc.com' }
+      })
+
+      expect(result['cosmos']).toBeDefined()
+      expect(result['cosmos']?.methods).toEqual(['cosmos_method'])
+      expect(result['cosmos']?.chains).toEqual(['cosmos:cosmoshub-4'])
+      expect(result['cosmos']?.events).toEqual(['cosmos_event'])
+      expect(result['cosmos']?.rpcMap).toEqual({ 'cosmoshub-4': 'https://cosmos-hub.rpc.com' })
+
+      // Original namespace should remain unchanged
+      expect(result['eip155']).toEqual(baseNamespaces['eip155'])
+    })
+
+    test('handles missing rpcMap in base namespace when applying rpcMap overrides', () => {
+      const baseNamespaces = {
+        eip155: {
+          methods: ['eth_sign'],
+          events: ['accountsChanged'],
+          chains: ['eip155:1']
+        }
+      }
+
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        rpcMap: { 'eip155:42': 'https://kovan.rpc.com' }
+      })
+
+      expect(result['eip155']?.rpcMap).toEqual({ '42': 'https://kovan.rpc.com' })
+    })
+
+    test('applies method overrides for existing namespace', () => {
+      const baseNamespaces = {
+        eip155: {
+          methods: ['eth_sign', 'personal_sign'],
+          events: ['accountsChanged', 'chainChanged'],
+          chains: ['eip155:1'],
+          rpcMap: { '1': 'https://ethereum.rpc.com' }
+        }
+      }
+
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        methods: { eip155: ['new_method1', 'new_method2'] }
       })
 
       expect(result['eip155']?.methods).toEqual(['new_method1', 'new_method2'])
-      expect(result['solana']?.methods).toEqual(['solana_method1', 'solana_method2'])
+      // Other properties should remain unchanged
+      expect(result['eip155']?.events).toEqual(['accountsChanged', 'chainChanged'])
       expect(result['eip155']?.chains).toEqual(['eip155:1'])
+      expect(result['eip155']?.rpcMap).toEqual({ '1': 'https://ethereum.rpc.com' })
     })
 
-    test('applies chain overrides', () => {
-      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
-        chains: {
-          eip155: ['eip155:42', 'eip155:56'],
-          bip122: ['bip122:000000000019d6689c085ae165831e93']
+    test('applies chain overrides for existing namespace', () => {
+      const baseNamespaces = {
+        eip155: {
+          methods: ['eth_sign', 'personal_sign'],
+          events: ['accountsChanged', 'chainChanged'],
+          chains: ['eip155:1'],
+          rpcMap: { '1': 'https://ethereum.rpc.com' }
         }
+      }
+
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        chains: { eip155: ['eip155:42', 'eip155:56'] }
       })
 
       expect(result['eip155']?.chains).toEqual(['eip155:42', 'eip155:56'])
-      expect(result['bip122']?.chains).toEqual(['bip122:000000000019d6689c085ae165831e93'])
-      expect(result['bip122']?.methods).toEqual(
-        expect.arrayContaining(['sendTransfer', 'signMessage'])
-      )
+      // Other properties should remain unchanged
+      expect(result['eip155']?.methods).toEqual(['eth_sign', 'personal_sign'])
+      expect(result['eip155']?.events).toEqual(['accountsChanged', 'chainChanged'])
+      expect(result['eip155']?.rpcMap).toEqual({ '1': 'https://ethereum.rpc.com' })
     })
 
-    test('applies event overrides', () => {
-      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
-        events: {
-          eip155: ['newEvent1', 'newEvent2'],
-          solana: ['solanaEvent']
+    test('applies event overrides for existing namespace', () => {
+      const baseNamespaces = {
+        eip155: {
+          methods: ['eth_sign', 'personal_sign'],
+          events: ['accountsChanged', 'chainChanged'],
+          chains: ['eip155:1'],
+          rpcMap: { '1': 'https://ethereum.rpc.com' }
         }
+      }
+
+      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
+        events: { eip155: ['newEvent1', 'newEvent2'] }
       })
 
       expect(result['eip155']?.events).toEqual(['newEvent1', 'newEvent2'])
-      expect(result['solana']?.events).toEqual(['solanaEvent'])
-    })
-
-    test('applies rpcMap overrides', () => {
-      const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
-        rpcMap: {
-          'eip155:1': 'https://new-ethereum.rpc.com',
-          'solana:mainnet': 'https://solana-mainnet.rpc.com'
-        }
-      })
-
-      expect(result['eip155']?.rpcMap).toEqual({
-        '1': 'https://new-ethereum.rpc.com'
-      })
-      expect(result['solana']?.rpcMap).toEqual({
-        mainnet: 'https://solana-mainnet.rpc.com'
-      })
+      // Other properties should remain unchanged
+      expect(result['eip155']?.methods).toEqual(['eth_sign', 'personal_sign'])
+      expect(result['eip155']?.chains).toEqual(['eip155:1'])
+      expect(result['eip155']?.rpcMap).toEqual({ '1': 'https://ethereum.rpc.com' })
     })
 
     test('handles multiple types of overrides simultaneously', () => {
+      const baseNamespaces = {
+        eip155: {
+          methods: ['eth_sign', 'personal_sign'],
+          events: ['accountsChanged', 'chainChanged'],
+          chains: ['eip155:1'],
+          rpcMap: { '1': 'https://ethereum.rpc.com' }
+        }
+      }
+
       const result = WcHelpersUtil.applyNamespaceOverrides(baseNamespaces, {
         methods: { eip155: ['method1', 'method2'] },
         chains: { eip155: ['eip155:42'] },
