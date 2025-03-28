@@ -2643,6 +2643,9 @@ importers:
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.3)(terser@5.39.0)
+      vue:
+        specifier: 3.5.13
+        version: 3.5.13(typescript@5.8.2)
 
   packages/ui:
     dependencies:
