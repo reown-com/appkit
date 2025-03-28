@@ -1,0 +1,55 @@
+{
+  "name": "@reown/appkit-solana-wallet-adapter",
+  "version": "1.7.1",
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/adapter.js",
+  "types": "./dist/types/adapter.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/adapter.d.ts",
+      "import": "./dist/adapter.js",
+      "default": "./dist/adapter.js"
+    },
+    "./core": {
+      "types": "./dist/types/core.d.ts",
+      "import": "./dist/core.js",
+      "default": "./dist/core.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "watch": "tsc --watch",
+    "build": "pnpm run clean && tsc"
+  },
+  "devDependencies": {
+    "@solana/wallet-adapter-base": "0.9.23",
+    "@solana/web3.js": "1.98.0",
+    "@types/node": "22.13.14",
+    "typescript": "5.7.3"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@walletconnect/universal-provider": "2.19.1",
+    "@walletconnect/utils": "2.19.1",
+    "@walletconnect/types": "2.19.1",
+    "bs58": "6.0.0"
+  },
+  "peerDependencies": {
+    "@solana/wallet-adapter-base": "0.x",
+    "@solana/web3.js": "1.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WalletConnect/walletconnect-solana-adapter"
+  }
+}
