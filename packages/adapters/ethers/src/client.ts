@@ -28,12 +28,13 @@ export interface EIP6963ProviderDetail {
 
 export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
-  public adapterType = 'ethers'
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor() {
-    super({})
-    this.namespace = CommonConstantsUtil.CHAIN.EVM
+    super({
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS,
+      namespace: CommonConstantsUtil.CHAIN.EVM
+    })
   }
 
   private async createEthersConfig(options: AppKitOptions) {

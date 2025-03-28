@@ -79,6 +79,9 @@ export {
 } from '../src/controllers/TelemetryController.js'
 export type { TelemetryControllerState } from '../src/controllers/TelemetryController.js'
 
+export { OptionsStateController } from '../src/controllers/OptionsStateController.js'
+export type { OptionsStateControllerState } from '../src/controllers/OptionsStateController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'

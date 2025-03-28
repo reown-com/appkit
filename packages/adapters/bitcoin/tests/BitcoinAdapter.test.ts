@@ -39,6 +39,16 @@ describe('BitcoinAdapter', () => {
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
   })
 
+  describe('constructor', () => {
+    it('should set adapterType', () => {
+      expect(adapter.adapterType).toEqual(ConstantsUtil.ADAPTER_TYPES.BITCOIN)
+    })
+
+    it('should set namespace', () => {
+      expect(adapter.namespace).toEqual(ConstantsUtil.CHAIN.BITCOIN)
+    })
+  })
+
   describe('connectWalletConnect', () => {
     let mockWalletConnect: MockedObject<BitcoinWalletConnectConnector>
 

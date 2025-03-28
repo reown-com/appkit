@@ -964,7 +964,7 @@ export type SendTransactionArgs =
       data: `0x${string}`
       value: bigint
       gas?: bigint
-      gasPrice: bigint
+      gasPrice?: bigint
       address: `0x${string}`
     }
   | { chainNamespace: 'solana'; to: string; value: number }
