@@ -40,6 +40,10 @@ function SessionStatus() {
   const [session, setSession] = useState<SIWXSession | undefined>(undefined)
 
   useEffect(() => {
+    if (!siwx) {
+      return undefined
+    }
+
     siwx.on('session-changed', newSession => {
       setSession(newSession)
     })
@@ -47,7 +51,7 @@ function SessionStatus() {
     return () => {
       siwx.removeAllListeners()
     }
-  }, [])
+  }, [siwx])
 
   return (
     <>
@@ -55,7 +59,13 @@ function SessionStatus() {
 
       <Text>Bellow will be displayed the current SIWX session object when it is validated.</Text>
 
-      <Code maxH="64" whiteSpace="pre" overflow="auto" variant="outline">
+      <Code
+        maxH="64"
+        whiteSpace="pre"
+        overflow="auto"
+        variant="outline"
+        data-testid="cloud-auth-session-status"
+      >
         {session ? JSON.stringify(session, null, 2) : 'No session detected yet'}
       </Code>
     </>
@@ -73,6 +83,10 @@ function SessionAccount() {
 
   const handleGetSessionAccount = useCallback(async () => {
     try {
+      if (!siwx) {
+        throw new Error('SIWX is not initialized')
+      }
+
       setIsLoading(true)
       setSessionAccount(undefined)
       setError(undefined)
@@ -105,14 +119,25 @@ function SessionAccount() {
         &nbsp;<Code>getSessionAccount</Code>&nbsp;method from&nbsp;<Code>CloudAuthSIWX</Code>.
       </Text>
 
-      <Button onClick={handleGetSessionAccount} isLoading={isLoading} isDisabled={isLoading}>
+      <Button
+        onClick={handleGetSessionAccount}
+        isLoading={isLoading}
+        isDisabled={isLoading}
+        data-testid="cloud-auth-get-session-account-button"
+      >
         Get Session Account
       </Button>
 
       {(sessionAccount || error) && (
         <Flex flexDir="column" gap={2}>
           <Heading size="xs">Result</Heading>
-          <Code maxH="64" whiteSpace="pre" overflow="auto" variant="outline">
+          <Code
+            maxH="64"
+            whiteSpace="pre"
+            overflow="auto"
+            variant="outline"
+            data-testid="cloud-auth-session-account"
+          >
             {sessionAccount
               ? JSON.stringify(sessionAccount, null, 2)
               : error?.message || 'unknown error'}
@@ -132,6 +157,10 @@ function UpdateSessionAccountMetadata() {
 
   const handleUpdateSessionAccountMetadata = useCallback(async () => {
     try {
+      if (!siwx) {
+        throw new Error('SIWX is not initialized')
+      }
+
       setIsLoading(true)
       setError(undefined)
 
@@ -174,6 +203,7 @@ function UpdateSessionAccountMetadata() {
         placeholder='{ "username": "satoshi" }'
         value={metadata}
         onChange={e => setMetadata(e.target.value)}
+        data-testid="cloud-auth-update-session-account-metadata"
       />
 
       <Button
