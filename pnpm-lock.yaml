@@ -1346,6 +1346,37 @@ importers:
         specifier: 5.4.12
         version: 5.4.12(@types/node@22.13.9)(lightningcss@1.29.3)(terser@5.39.0)
 
+  examples/react-cloud-auth:
+    dependencies:
+      '@esbuild-plugins/node-globals-polyfill':
+        specifier: ^0.2.3
+        version: 0.2.3(esbuild@0.25.1)
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-siwx':
+        specifier: workspace:*
+        version: link:../../packages/siwx
+      react:
+        specifier: 19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: 19.0.0
+        version: 19.0.0(react@19.0.0)
+    devDependencies:
+      '@types/react':
+        specifier: 19.0.0
+        version: 19.0.0
+      '@types/react-dom':
+        specifier: 19.0.0
+        version: 19.0.0
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@5.4.12(@types/node@22.13.9)(lightningcss@1.29.3)(terser@5.39.0))
+      vite:
+        specifier: 5.4.12
+        version: 5.4.12(@types/node@22.13.9)(lightningcss@1.29.3)(terser@5.39.0)
+
   examples/react-ep:
     dependencies:
       '@reown/appkit':
