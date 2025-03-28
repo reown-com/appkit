@@ -277,9 +277,7 @@ export const CaipNetworksUtil = {
     const availableNamespaces = Array.from(ChainController.state.chains?.keys() || [])
     const namespace = caipNetworkIdFromStorage?.split(':')[0] as ChainNamespace | undefined
     const isNamespaceAvailable = namespace ? availableNamespaces.includes(namespace) : false
-    const caipNetwork = caipNetworks?.find(
-      caipNetwork => caipNetwork.caipNetworkId === caipNetworkIdFromStorage
-    )
+    const caipNetwork = caipNetworks?.find(cn => cn.caipNetworkId === caipNetworkIdFromStorage)
     const isUnsupportedNetwork = isNamespaceAvailable && !caipNetwork && caipNetworkIdFromStorage
 
     if (isUnsupportedNetwork) {
