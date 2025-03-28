@@ -1732,6 +1732,34 @@ importers:
         specifier: 2.1.8
         version: 2.1.8(typescript@5.7.3)
 
+  examples/vue-cloud-auth:
+    dependencies:
+      '@esbuild-plugins/node-globals-polyfill':
+        specifier: ^0.2.3
+        version: 0.2.3(esbuild@0.25.1)
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-siwx':
+        specifier: workspace:*
+        version: link:../../packages/siwx
+      vue:
+        specifier: 3.4.3
+        version: 3.4.3(typescript@5.7.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: 5.0.2
+        version: 5.0.2(vite@5.4.12(@types/node@22.13.9)(lightningcss@1.29.3)(terser@5.39.0))(vue@3.4.3(typescript@5.7.3))
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
+      vite:
+        specifier: 5.4.12
+        version: 5.4.12(@types/node@22.13.9)(lightningcss@1.29.3)(terser@5.39.0)
+      vue-tsc:
+        specifier: 2.1.8
+        version: 2.1.8(typescript@5.7.3)
+
   examples/vue-ep:
     dependencies:
       '@walletconnect/ethereum-provider':
@@ -20508,6 +20536,10 @@ snapshots:
     dependencies:
       esbuild: 0.17.19
 
+  '@esbuild-plugins/node-globals-polyfill@0.2.3(esbuild@0.25.1)':
+    dependencies:
+      esbuild: 0.25.1
+
   '@esbuild-plugins/node-modules-polyfill@0.2.2(esbuild@0.17.19)':
     dependencies:
       esbuild: 0.17.19
@@ -34523,7 +34555,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 3.6.2
+      readable-stream: 4.7.0
       webextension-polyfill: 0.10.0
 
   external-editor@3.1.0:
