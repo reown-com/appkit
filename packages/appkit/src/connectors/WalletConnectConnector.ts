@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { SIWXUtil } from '@reown/appkit-controllers'
+import { OptionsController, SIWXUtil } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
 import type { ChainAdapterConnector } from '../adapters/ChainAdapterConnector.js'
@@ -37,8 +37,14 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
     const isAuthenticated = await this.authenticate()
 
     if (!isAuthenticated) {
+      const universalProviderConfigOverride =
+        OptionsController.state.universalProviderConfigOverride
+      const namespaces = WcHelpersUtil.createNamespaces(
+        this.caipNetworks,
+        universalProviderConfigOverride
+      )
       await this.provider.connect({
-        optionalNamespaces: WcHelpersUtil.createNamespaces(this.caipNetworks)
+        optionalNamespaces: namespaces
       })
     }
 
