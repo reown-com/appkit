@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the swap screen would freeze when swap allowance failed
+Fixed an issue where the swap screen froze if allowance approval failed
