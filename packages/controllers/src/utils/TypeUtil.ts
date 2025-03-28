@@ -470,10 +470,13 @@ export type Event =
       }
     }
   | {
-      type: 'track'
-      event: 'UNIVERSAL_PROVIDER_INIT_ERROR'
-      properties?: {
-        message: string
+      type: 'error'
+      event: 'INITIALIZE'
+      properties: {
+        errorType?: string
+        errorMessage?: string
+        stackTrace?: string
+        uncaught?: boolean
       }
     }
   | {
