@@ -291,12 +291,12 @@ function AvailableTestContent() {
             // Switch to Base network
             switchChain({ chainId: 8453 })
           }
-          setContractAddress('0x833589fcd6edb6e08f4c7c32d4f71b54bda02913')
+          setContractAddress('0x833589fcd6edb6e08f4c7c32d4f71b54bda02913') // USDC on Base https://basescan.org/token/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913#writeProxyContract
           setContractAbi(
             '[{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]'
           )
           setMethod('transfer')
-          setMethodArgs(`["${address}", 10000]`)
+          setMethodArgs(`["${address}", ${0.1 * Math.pow(10, 6)}]`)
         }}
         isDisabled={isLoading}
       >
