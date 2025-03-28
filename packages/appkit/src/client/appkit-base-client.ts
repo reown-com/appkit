@@ -261,57 +261,17 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Network Initialization ---------------------------------------------------
-  protected getUnsupportedNetwork(caipNetworkId: CaipNetworkId) {
-    return {
-      id: caipNetworkId.split(':')[1],
-      caipNetworkId,
-      name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
-      chainNamespace: caipNetworkId.split(':')[0],
-      nativeCurrency: {
-        name: '',
-        decimals: 0,
-        symbol: ''
-      },
-      rpcUrls: {
-        default: {
-          http: []
-        }
-      }
-    } as CaipNetwork
-  }
-
   protected setUnsupportedNetwork(chainId: string | number) {
     const namespace = this.getActiveChainNamespace()
 
     if (namespace) {
-      const unsupportedNetwork = this.getUnsupportedNetwork(`${namespace}:${chainId}`)
+      const unsupportedNetwork = CaipNetworksUtil.getUnsupportedNetwork(`${namespace}:${chainId}`)
       ChainController.setActiveCaipNetwork(unsupportedNetwork)
     }
   }
 
   protected getDefaultNetwork() {
-    const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
-
-    if (caipNetworkIdFromStorage) {
-      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkIdFromStorage)
-
-      if (caipNetwork) {
-        return caipNetwork
-      }
-
-      if (this.defaultCaipNetwork) {
-        // It's still a case that the network in storage might not be found in the networks array
-        return this.defaultCaipNetwork
-      }
-
-      return this.getUnsupportedNetwork(caipNetworkIdFromStorage)
-    }
-
-    if (this.defaultCaipNetwork) {
-      return this.defaultCaipNetwork
-    }
-
-    return this.caipNetworks?.[0]
+    return CaipNetworksUtil.getCaipNetworkFromStorage(this.defaultCaipNetwork)
   }
 
   protected extendCaipNetwork(network: AppKitNetwork, options: AppKitOptions) {
