@@ -73,6 +73,9 @@ export type { EnsControllerState } from '../src/controllers/EnsController.js'
 export { AlertController } from '../src/controllers/AlertController.js'
 export type { AlertControllerState } from '../src/controllers/AlertController.js'
 
+export { OptionsStateController } from '../src/controllers/OptionsStateController.js'
+export type { OptionsStateControllerState } from '../src/controllers/OptionsStateController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'

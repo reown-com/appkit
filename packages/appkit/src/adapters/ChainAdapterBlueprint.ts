@@ -48,6 +48,7 @@ export abstract class AdapterBlueprint<
   public namespace: ChainNamespace | undefined
   public caipNetworks?: CaipNetwork[]
   public projectId?: string
+  public adapterType: string | undefined
 
   protected availableConnectors: Connector[] = []
   protected connector?: Connector
@@ -73,6 +74,7 @@ export abstract class AdapterBlueprint<
     this.caipNetworks = params.networks
     this.projectId = params.projectId
     this.namespace = params.namespace
+    this.adapterType = params.adapterType
   }
 
   /**
@@ -401,6 +403,7 @@ export namespace AdapterBlueprint {
     namespace?: ChainNamespace
     networks?: CaipNetwork[]
     projectId?: string
+    adapterType?: string
   }
 
   export type SwitchNetworkParams = {
@@ -533,7 +536,7 @@ export namespace AdapterBlueprint {
     to: string
     data: string
     value: bigint | number
-    gasPrice: bigint | number
+    gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
     provider?: AppKitConnector['provider']
