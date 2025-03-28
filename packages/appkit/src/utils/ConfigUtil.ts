@@ -7,7 +7,8 @@ interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion
 }
 
-const PLAN_API_URL = 'http://localhost:8000/api/pricing'
+const PLAN_API_URL =
+  'https://api-web3modal-auth-staging.walletconnect-v1-bridge.workers.dev/plans/v1/appkit/config?projectId=017a80231854c3b1c56df7bb46bba859&st=w3m&sv=react-ethers-5.1.3'
 export const ConfigUtil = {
   async checkConfig(options: AppKitOptionsWithSdk) {
     const config: {
@@ -15,29 +16,22 @@ export const ConfigUtil = {
       socials: SocialProvider[] | false | undefined
       networks: ('eip155' | 'solana' | 'bitcoin')[]
     } = await fetch(PLAN_API_URL, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      method: 'GET'
     }).then(res => res.json())
 
-    const errors: string[] = []
+    console.log(config)
 
-    const socials = this.checkSocials(config.socials, options?.features?.socials, errors)
-    const networks = this.checkNetworks(config.networks, options?.adapters, errors)
+    // const errors: string[] = []
 
-    if (errors.length > 0) {
-      console.error(errors)
-    }
+    // const socials = this.checkSocials(config.socials, options?.features?.socials, errors)
+    // const networks = this.checkNetworks(config.networks, options?.adapters, errors)
+
+    // if (errors.length > 0) {
+    //   console.error(errors)
+    // }
 
     return {
-      ...options,
-      adapters: networks,
-      features: {
-        ...options?.features,
-        socials
-      }
+      ...options
     }
   },
 
