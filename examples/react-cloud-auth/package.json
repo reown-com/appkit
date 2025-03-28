@@ -7,7 +7,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-globals-polyfill": "0.2.3",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-siwx": "workspace:*",
     "react": "19.0.0",
