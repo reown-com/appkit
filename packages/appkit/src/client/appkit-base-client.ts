@@ -1196,8 +1196,9 @@ export abstract class AppKitBaseClient {
     if (!this.universalProvider) {
       try {
         await this.createUniversalProvider()
-      } catch (error) {
-        throw new Error('AppKit:getUniversalProvider - Cannot create provider')
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('AppKit:getUniversalProvider - Cannot create provider', err)
       }
     }
 
