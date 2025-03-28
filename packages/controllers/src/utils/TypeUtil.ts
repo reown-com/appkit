@@ -471,7 +471,7 @@ export type Event =
     }
   | {
       type: 'error'
-      event: 'INITIALIZE'
+      event: 'INTERNAL_SDK_ERROR'
       properties: {
         errorType?: string
         errorMessage?: string

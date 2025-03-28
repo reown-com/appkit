@@ -1199,7 +1199,7 @@ export abstract class AppKitBaseClient {
       } catch (err) {
         EventsController.sendEvent({
           type: 'error',
-          event: 'INITIALIZE',
+          event: 'INTERNAL_SDK_ERROR',
           properties: {
             errorType: 'UNIVERSAL_PROVIDER_INIT_ERROR',
             errorMessage: err instanceof Error ? err.message : 'Unknown',
