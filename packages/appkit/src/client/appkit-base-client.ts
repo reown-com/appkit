@@ -213,6 +213,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
+    OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
