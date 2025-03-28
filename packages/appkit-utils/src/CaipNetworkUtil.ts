@@ -271,7 +271,7 @@ export const CaipNetworksUtil = {
    * Gets the CaipNetwork object from the storage if `@appkit/active_caip_network_id` is being set
    * @returns CaipNetwork or undefined
    */
-  getCaipNetworkFromStorage(defaultCaipNetwork: CaipNetwork | undefined) {
+  getCaipNetworkFromStorage(defaultCaipNetwork?: CaipNetwork) {
     const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
     const caipNetworks = ChainController.getAllRequestedCaipNetworks()
     const availableNamespaces = Array.from(ChainController.state.chains?.keys() || [])
