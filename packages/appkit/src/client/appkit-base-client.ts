@@ -1197,6 +1197,11 @@ export abstract class AppKitBaseClient {
       try {
         await this.createUniversalProvider()
       } catch (err) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'UNIVERSAL_PROVIDER_INIT_ERROR',
+          properties: { message: err instanceof Error ? err.message : 'Unknown' }
+        })
         // eslint-disable-next-line no-console
         console.error('AppKit:getUniversalProvider - Cannot create provider', err)
       }
