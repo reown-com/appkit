@@ -1,5 +1,30 @@
 # @reown/appkit-experimental
 
+## 1.7.2
+
+### Patch Changes
+
+- [#4100](https://github.com/reown-com/appkit/pull/4100) [`848ad47`](https://github.com/reown-com/appkit/commit/848ad47d64ddbea4cbe4768f7374f63f2fcdf8a5) Thanks [@KannuSingh](https://github.com/KannuSingh)! - adds support for customizing universal provider configuration via a new universalProviderConfigOverride option
+
+- [#4104](https://github.com/reown-com/appkit/pull/4104) [`b18d2a9`](https://github.com/reown-com/appkit/commit/b18d2a958d5f9d60e6e88f35e6f2c99d8f9291d6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `createAppKit` would throw an error if the universal provider failed to initialize
+
+- [#4091](https://github.com/reown-com/appkit/pull/4091) [`1fc664d`](https://github.com/reown-com/appkit/commit/1fc664db6b109ac2ce9c66aec31a3ae2d6419589) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the WalletConnect wallet button wasn't opening the "All Wallets" modal view on mobile devices
+
+- [#4102](https://github.com/reown-com/appkit/pull/4102) [`ae79b16`](https://github.com/reown-com/appkit/commit/ae79b164833193c363abfc42d9dd9ce0864d81ca) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the swap screen froze if allowance approval failed
+
+- [#4094](https://github.com/reown-com/appkit/pull/4094) [`af1e79a`](https://github.com/reown-com/appkit/commit/af1e79a76d32def90c9605dc8e53a2ade002033c) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where users were required to re-check the legal checkbox after navigating away and returning to the connect view
+
+- [#4103](https://github.com/reown-com/appkit/pull/4103) [`afc0739`](https://github.com/reown-com/appkit/commit/afc073935348bc90414fda0c26134938383d9fcc) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue where switchin between appkit instances result network to be not detected as expected.
+
+  When AppKit initialized, if local storage active CAIP network value is something AppKit doesn't support, AppKit will redirect to first available network.
+
+- Updated dependencies [[`848ad47`](https://github.com/reown-com/appkit/commit/848ad47d64ddbea4cbe4768f7374f63f2fcdf8a5), [`b18d2a9`](https://github.com/reown-com/appkit/commit/b18d2a958d5f9d60e6e88f35e6f2c99d8f9291d6), [`1fc664d`](https://github.com/reown-com/appkit/commit/1fc664db6b109ac2ce9c66aec31a3ae2d6419589), [`ae79b16`](https://github.com/reown-com/appkit/commit/ae79b164833193c363abfc42d9dd9ce0864d81ca), [`af1e79a`](https://github.com/reown-com/appkit/commit/af1e79a76d32def90c9605dc8e53a2ade002033c), [`afc0739`](https://github.com/reown-com/appkit/commit/afc073935348bc90414fda0c26134938383d9fcc)]:
+  - @reown/appkit-controllers@1.7.2
+  - @reown/appkit@1.7.2
+  - @reown/appkit-utils@1.7.2
+  - @reown/appkit-common@1.7.2
+  - @reown/appkit-ui@1.7.2
+
 ## 1.7.1
 
 ### Patch Changes
