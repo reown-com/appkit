@@ -130,7 +130,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/types": "2.19.1",
-    "@walletconnect/universal-provider": "2.19.1",
+    "@walletconnect/universal-provider": "2.19.2",
     "bs58": "6.0.0",
     "valtio": "1.13.2",
     "viem": ">=2.23.5"
@@ -142,7 +142,7 @@
     "@vitest/coverage-v8": "2.1.9",
     "@vue/runtime-core": "3.4.3",
     "@walletconnect/types": "2.19.1",
-    "@walletconnect/universal-provider": "2.19.1",
+    "@walletconnect/universal-provider": "2.19.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "vitest": "2.1.9",
