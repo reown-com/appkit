@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/sign-client": "2.19.1",
+    "@walletconnect/sign-client": "2.19.2",
     "@walletconnect/types": "2.19.1",
     "ethers": "6.13.2",
     "react": "19.0.0",
