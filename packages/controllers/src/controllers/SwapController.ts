@@ -10,6 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -19,6 +20,7 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -162,7 +164,7 @@ const initialState: SwapControllerState = {
 const state = proxy<SwapControllerState>(initialState)
 
 // -- Controller ---------------------------------------- //
-export const SwapController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: SwapControllerState) => void) {
@@ -785,7 +787,7 @@ export const SwapController = {
         goBack: false,
         onSuccess() {
           SnackController.showLoading(snackbarPendingMessage)
-          SwapController.resetState()
+          controller.resetState()
         }
       })
     } else {
@@ -818,11 +820,11 @@ export const SwapController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
-      SwapController.resetState()
+      controller.resetState()
       if (!isAuthConnector) {
         RouterController.replace('Account')
       }
-      SwapController.getMyTokensWithBalance(forceUpdateAddresses)
+      controller.getMyTokensWithBalance(forceUpdateAddresses)
 
       return transactionHash
     } catch (err) {
@@ -898,3 +900,9 @@ export const SwapController = {
     state.providerFee = SwapCalculationUtil.getProviderFee(state.sourceTokenAmount)
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const SwapController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

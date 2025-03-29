@@ -2,6 +2,7 @@ import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_STATE = Object.freeze<SnackControllerState>({
@@ -35,7 +36,7 @@ const state = proxy<SnackControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const SnackController = {
+const controller = {
   state,
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: SnackControllerState[K]) => void) {
@@ -91,3 +92,6 @@ export const SnackController = {
     }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const SnackController = withErrorBoundary(controller)

@@ -4,12 +4,14 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -33,7 +35,7 @@ const state = proxy<EnsControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const EnsController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: EnsControllerState) => void) {
@@ -174,3 +176,9 @@ export const EnsController = {
     return ensError?.reasons?.[0]?.description || defaultError
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const EnsController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

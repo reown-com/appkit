@@ -16,11 +16,13 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
+import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { RouterController } from './RouterController.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -87,7 +89,7 @@ const state = proxy<ConnectionControllerState>({
 // eslint-disable-next-line init-declarations
 let wcConnectionPromise: Promise<void> | undefined
 // -- Controller ---------------------------------------- //
-export const ConnectionController = {
+const controller = {
   state,
   subscribeKey<K extends StateKey>(
     key: K,
@@ -289,7 +291,17 @@ export const ConnectionController = {
       ModalController.setLoading(false, namespace)
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {
-      throw new Error('Failed to disconnect')
+      throw new AppKitError(
+        'Failed to disconnect',
+        TelemetryErrorCategory.INTERNAL_SDK_ERROR,
+        error
+      )
     }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ConnectionController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)
