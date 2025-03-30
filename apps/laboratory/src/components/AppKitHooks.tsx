@@ -41,12 +41,6 @@ export function AppKitHooks() {
   const isMultichainPage = pathname?.includes('multichain-no-adapters')
 
   function handleSwitchNetwork() {
-    if (isMultichainPage) {
-      switchNetwork(getNetworkToSwitch(caipNetwork))
-
-      return
-    }
-
     const networkToSwitch = getNetworkToSwitch(caipNetwork)
 
     if (!networkToSwitch) {
