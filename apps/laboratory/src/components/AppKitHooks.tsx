@@ -43,6 +43,7 @@ export function AppKitHooks() {
   function handleSwitchNetwork() {
     if (isMultichainPage) {
       switchNetwork(getNetworkToSwitch(caipNetwork))
+      
       return
     }
 
