@@ -1,7 +1,7 @@
 'use client'
 
-import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
+import { type AppKitNetwork, bitcoin, mainnet, solana } from '@reown/appkit/networks'
+import { createAppKit, useAppKitNetwork } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
@@ -22,8 +22,14 @@ const modal = createAppKit({
 ThemeStore.setModal(modal)
 
 export default function MultiChainWagmiAdapterOnly() {
+  const { switchNetwork } = useAppKitNetwork()
+
   return (
     <>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+        <button onClick={() => switchNetwork(solana)}>Switch to Solana</button>
+        <button onClick={() => switchNetwork(bitcoin)}>Switch to Bitcoin</button>
+      </div>
       <AppKitButtons />
       <AppKitInfo />
       <MultiChainInfo />
