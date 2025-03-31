@@ -75,10 +75,6 @@ export function getAppKit(appKit: AppKit) {
 export * from '@reown/appkit-controllers/vue'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace): UseAppKitReturnType<T> {
-  if (!modal) {
-    throw new Error('Please call "createAppKit" before using "useAppKitProvider" hook')
-  }
-
   const walletProvider = ref(ProviderUtil.state.providers[chainNamespace] as T | undefined)
   const walletProviderType = ref(ProviderUtil.state.providerIds[chainNamespace])
 
