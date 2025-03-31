@@ -69,7 +69,7 @@ export function getAppKit(appKit: AppKit) {
 // -- Core Hooks ---------------------------------------------------------------
 export * from '@reown/appkit-controllers/vue'
 
-export function useAppKitProvider<T extends object>(chainNamespace: ChainNamespace) {
+export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKitProvider" hook')
   }
