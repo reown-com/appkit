@@ -1,6 +1,5 @@
 ---
 '@reown/appkit-controllers': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -14,6 +13,7 @@
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes recommended wallets listing when opening modal with namespace filter
+Fixed an issue where `createAppKit` would throw an error if the universal provider failed to initialize

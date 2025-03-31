@@ -22,7 +22,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
-      namespace: 'bip122',
+      namespace: ConstantsUtil.CHAIN.BITCOIN,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.BITCOIN,
       ...params
     })
 

@@ -1,11 +1,11 @@
 ---
-'@reown/appkit-adapter-solana': patch
 '@reown/appkit-utils': patch
+'@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
+'@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
@@ -21,4 +21,6 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Patches changesets action to allow for automatic canaries and GH Changelogs
+Fixes issue where switchin between appkit instances result network to be not detected as expected.
+
+When AppKit initialized, if local storage active CAIP network value is something AppKit doesn't support, AppKit will redirect to first available network.

@@ -470,6 +470,16 @@ export type Event =
       }
     }
   | {
+      type: 'error'
+      event: 'INTERNAL_SDK_ERROR'
+      properties: {
+        errorType?: string
+        errorMessage?: string
+        stackTrace?: string
+        uncaught?: boolean
+      }
+    }
+  | {
       type: 'track'
       address?: string
       event: 'CLICK_WALLET_HELP'
@@ -964,7 +974,7 @@ export type SendTransactionArgs =
       data: `0x${string}`
       value: bigint
       gas?: bigint
-      gasPrice: bigint
+      gasPrice?: bigint
       address: `0x${string}`
     }
   | { chainNamespace: 'solana'; to: string; value: number }
