@@ -1,3 +1,5 @@
+import { state } from 'lit/decorators.js'
+
 import {
   ConnectionController,
   ConstantsUtil,
@@ -10,14 +12,28 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
+  // -- State & Properties -------------------------------- //
+  @state() protected override isLoading = true
+
+  // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
   private labelTimeout?: ReturnType<typeof setTimeout> = undefined
 
+  // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-mobile: No wallet provided')
     }
+
+    // Initialize loading state and subscribe to URI changes
+    this.updateLoadingState()
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('wcUri', () => {
+        this.updateLoadingState()
+      })
+    )
+
     this.secondaryBtnLabel = undefined
     this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
@@ -43,6 +59,12 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   // -- Private ------------------------------------------- //
+
+  // Update the isLoading state based on required conditions
+  private updateLoadingState() {
+    this.isLoading = !this.uri
+  }
+
   protected override onRender = () => {
     if (!this.ready && this.uri) {
       this.ready = true

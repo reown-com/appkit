@@ -1,5 +1,5 @@
 import { fixture, html } from '@open-wc/testing'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConnectionController, CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
 
@@ -9,6 +9,12 @@ const WC_URI = 'uri'
 
 describe('W3mConnectingWcMobile', () => {
   beforeAll(() => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'openHref')
+    vi.spyOn(CoreHelperUtil, 'isIframe').mockReturnValue(false)
+  })
+
+  beforeEach(() => {
     vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
       ...RouterController.state,
       data: {
@@ -23,7 +29,31 @@ describe('W3mConnectingWcMobile', () => {
       ...ConnectionController.state,
       wcUri: WC_URI
     })
-    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+  })
+
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
+  it('should set isLoading to false when URI is available', async () => {
+    const el: W3mConnectingWcMobile = await fixture(
+      html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
+    )
+
+    expect(el['isLoading']).toBe(false)
+  })
+
+  it('should set isLoading to true when URI is not available', async () => {
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      wcUri: undefined
+    })
+
+    const el: W3mConnectingWcMobile = await fixture(
+      html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
+    )
+
+    expect(el['isLoading']).toBe(true)
   })
 
   it('should call openHref with _self if not in an iframe', async () => {
@@ -41,6 +71,8 @@ describe('W3mConnectingWcMobile', () => {
     try {
       ;(global.window as any).top = { name: 'top' }
       ;(global.window as any).self = { name: 'self' }
+
+      vi.spyOn(CoreHelperUtil, 'isIframe').mockReturnValue(true)
 
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
       const el: W3mConnectingWcMobile = await fixture(

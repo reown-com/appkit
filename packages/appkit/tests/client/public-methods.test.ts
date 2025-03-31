@@ -48,6 +48,26 @@ describe('Base Public methods', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    // Add default state mocks for potentially accessed controllers
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      promises: {},
+      page: 1,
+      count: 0,
+      featured: [],
+      allFeatured: [],
+      recommended: [],
+      allRecommended: [],
+      wallets: [],
+      search: [],
+      isAnalyticsEnabled: false,
+      excludedRDNS: [],
+      isFetchingRecommendedWallets: false
+    })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      connectors: []
+    })
   })
 
   it('should open modal', async () => {
