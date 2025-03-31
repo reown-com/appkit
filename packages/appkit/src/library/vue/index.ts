@@ -69,17 +69,27 @@ export function getAppKit(appKit: AppKit) {
 // -- Core Hooks ---------------------------------------------------------------
 export * from '@reown/appkit-controllers/vue'
 
-export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
-  const state = ref(ProviderUtil.state)
-  const { providers, providerIds } = state.value
+export function useAppKitProvider<T extends object>(chainNamespace: ChainNamespace) {
+  if (!modal) {
+    throw new Error('Please call "createAppKit" before using "useAppKitProvider" hook')
+  }
 
-  const walletProvider = providers[chainNamespace] as T | undefined
-  const walletProviderType = providerIds[chainNamespace]
+  const walletProvider = ref(ProviderUtil.state.providers[chainNamespace] as T | undefined)
+  const walletProviderType = ref(ProviderUtil.state.providerIds[chainNamespace])
 
-  return {
+  const unsubscribe = ProviderUtil.subscribe(newState => {
+    walletProvider.value = newState.providers[chainNamespace]
+    walletProviderType.value = newState.providerIds[chainNamespace]
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return reactive({
     walletProvider,
     walletProviderType
-  }
+  })
 }
 
 export function useAppKitTheme() {
