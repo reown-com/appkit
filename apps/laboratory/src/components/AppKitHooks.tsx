@@ -66,12 +66,16 @@ export function AppKitHooks() {
           </Button>
         )}
 
-        <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
-          {isMultichainPage ? 'Switch to EVM' : 'Switch Network'}
-        </Button>
+        {!isMultichainPage && (
+          <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+            Switch Network
+          </Button>
+        )}
 
         {isMultichainPage && (
           <>
+            <Button onClick={() => switchNetwork(mainnet)}>Switch to Ethereum</Button>
+            <Button onClick={() => switchNetwork(polygon)}>Switch to Polygon</Button>
             <Button onClick={() => switchNetwork(solana)}>Switch to Solana</Button>
             <Button onClick={() => switchNetwork(bitcoin)}>Switch to Bitcoin</Button>
           </>
