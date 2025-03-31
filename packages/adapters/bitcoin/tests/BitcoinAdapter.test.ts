@@ -15,6 +15,7 @@ import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
 import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectProvider'
+import { BitgetConnector } from '../src/connectors/BitgetConnector'
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
 import { OKXConnector } from '../src/connectors/OKXConnector'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
@@ -221,12 +222,14 @@ describe('BitcoinAdapter', () => {
       const walletStandardConnectorSpy = vi.spyOn(WalletStandardConnector, 'watchWallets')
       const satsConnectConnectorSpy = vi.spyOn(SatsConnectConnector, 'getWallets')
       const okxConnectorSpy = vi.spyOn(OKXConnector, 'getWallet')
+      const bitgetConnectorSpy = vi.spyOn(BitgetConnector, 'getWallet')
 
       adapter.syncConnectors(undefined, undefined)
 
       expect(walletStandardConnectorSpy).toHaveBeenCalled()
       expect(satsConnectConnectorSpy).toHaveBeenCalled()
       expect(okxConnectorSpy).toHaveBeenCalled()
+      expect(bitgetConnectorSpy).toHaveBeenCalled()
     })
 
     it('should add connectors from SatsConnectConnector', () => {
@@ -250,6 +253,15 @@ describe('BitcoinAdapter', () => {
       adapter.syncConnectors(undefined, undefined)
 
       expect(adapter.connectors[0]).toBeInstanceOf(OKXConnector)
+    })
+
+    it('should add BitgetConnector', () => {
+      ;(window as any).bitkeep = {}
+      ;(window as any).bitkeep.unisat = { connect: vi.fn() }
+
+      adapter.syncConnectors(undefined, undefined)
+
+      expect(adapter.connectors[0]).toBeInstanceOf(BitgetConnector)
     })
 
     it('should pass correct getActiveNetwork to SatsConnectConnector', () => {

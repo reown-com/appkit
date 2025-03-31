@@ -7,6 +7,7 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectProvider.js'
+import { BitgetConnector } from './connectors/BitgetConnector.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
@@ -117,6 +118,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
     if (okxConnector) {
       this.addConnector(okxConnector)
+    }
+
+    const bitgetConnector = BitgetConnector.getWallet({
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (bitgetConnector) {
+      this.addConnector(bitgetConnector)
     }
   }
 

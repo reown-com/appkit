@@ -15,6 +15,8 @@ export const PresetsUtil = {
       '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
     [CommonConstantsUtil.CONNECTOR_ID.OKX]:
       '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
+    [CommonConstantsUtil.CONNECTOR_ID.BITGET]:
+      '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662',
 
     /* Connector names */
     [ConstantsUtil.METMASK_CONNECTOR_NAME]:
