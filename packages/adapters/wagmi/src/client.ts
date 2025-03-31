@@ -73,7 +73,6 @@ const DEFAULT_PENDING_TRANSACTIONS_FILTER = {
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
   public wagmiConfig!: Config
-  public adapterType = 'wagmi'
 
   private pendingTransactionsFilter: PendingTransactionsFilter
   private unwatchPendingTransactions: (() => void) | undefined
@@ -95,14 +94,15 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     super({
       projectId: configParams.projectId,
-      networks
+      networks,
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.WAGMI,
+      namespace: CommonConstantsUtil.CHAIN.EVM
     })
 
     this.pendingTransactionsFilter = {
       ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
       ...(configParams.pendingTransactionsFilter ?? {})
     }
-    this.namespace = CommonConstantsUtil.CHAIN.EVM
 
     this.createConfig({ ...configParams, networks })
     this.setupWatchers()
