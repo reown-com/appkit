@@ -95,7 +95,7 @@
   },
   "dependencies": {
     "eslint-compat-utils": "^0.5.1",
-    "eslint-config-next": "^14.2.25",
+    "eslint-config-next": "^15.2.1",
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^3.9.1",
     "eslint-module-utils": "^2.12.0",
