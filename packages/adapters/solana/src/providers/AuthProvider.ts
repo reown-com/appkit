@@ -48,10 +48,11 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
     )
   }
 
-  public async connect(params: { chainId?: string } = {}) {
+  public async connect(params: { chainId?: string; socialUri?: string } = {}) {
     const chainId = params.chainId || this.getActiveChain()?.id
     await this.provider.connect({
-      chainId: withSolanaNamespace(chainId)
+      chainId: withSolanaNamespace(chainId),
+      socialUri: params.socialUri
     })
 
     if (!this.publicKey) {

@@ -32,6 +32,7 @@ export interface ConnectExternalOptions {
   chain?: ChainNamespace
   chainId?: number | string
   caipNetwork?: CaipNetwork
+  socialUri?: string
 }
 
 export interface ConnectionControllerClient {

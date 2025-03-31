@@ -370,7 +370,7 @@ export abstract class AppKitBaseClient {
         })
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
+      connectExternal: async ({ id, info, type, provider, chain, caipNetwork, socialUri }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
@@ -398,7 +398,8 @@ export abstract class AppKitBaseClient {
           chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
+            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0],
+          socialUri
         })
 
         if (!res) {

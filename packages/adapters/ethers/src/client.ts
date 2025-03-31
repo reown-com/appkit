@@ -334,7 +334,8 @@ export class EthersAdapter extends AdapterBlueprint {
   public async connect({
     id,
     type,
-    chainId
+    chainId,
+    socialUri
   }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === id)
     const selectedProvider = connector?.provider as Provider
@@ -350,7 +351,8 @@ export class EthersAdapter extends AdapterBlueprint {
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155,
+        socialUri
       })
 
       accounts = [address]
