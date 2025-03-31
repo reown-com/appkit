@@ -11,7 +11,7 @@ import { mainnet } from '../mocks/Networks.js'
 const TestComponent = defineComponent({
   setup() {
     const state = useAppKitProvider('eip155')
-    
+
     return { state }
   },
   render() {
