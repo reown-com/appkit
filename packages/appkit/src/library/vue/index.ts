@@ -1,7 +1,7 @@
 import { onUnmounted, reactive, ref } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type Event } from '@reown/appkit-controllers'
+import { type ConnectorType, type Event } from '@reown/appkit-controllers'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -42,6 +42,11 @@ type ThemeModeOptions = AppKitOptions['themeMode']
 
 type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
+type UseAppKitReturnType<T> = {
+  walletProvider: T | undefined
+  walletProviderType: ConnectorType | undefined
+}
+
 declare module 'vue' {
   export interface ComponentCustomProperties {
     AppKitButton: Pick<
@@ -69,7 +74,7 @@ export function getAppKit(appKit: AppKit) {
 // -- Core Hooks ---------------------------------------------------------------
 export * from '@reown/appkit-controllers/vue'
 
-export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
+export function useAppKitProvider<T>(chainNamespace: ChainNamespace): UseAppKitReturnType<T> {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKitProvider" hook')
   }
@@ -89,7 +94,7 @@ export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   return reactive({
     walletProvider,
     walletProviderType
-  })
+  }) as UseAppKitReturnType<T>
 }
 
 export function useAppKitTheme() {
