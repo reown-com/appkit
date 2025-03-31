@@ -73,6 +73,8 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   protected override onConnect = () => {
+    this.updateLoadingState()
+
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
