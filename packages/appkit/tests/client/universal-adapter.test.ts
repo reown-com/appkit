@@ -7,15 +7,10 @@ import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockUniversalProvider } from '../mocks/Providers.js'
-import {
-  mockBlockchainApiController,
-  mockStorageUtil,
-  mockWindowAndDocument
-} from '../test-utils.js'
+import { mockBlockchainApiController, mockStorageUtil } from '../test-utils.js'
 
 describe('Universal Adapter', () => {
   beforeEach(() => {
-    mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
   })
