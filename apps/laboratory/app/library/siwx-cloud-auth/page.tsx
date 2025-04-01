@@ -12,6 +12,8 @@ import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
+import { CloudAuthTests } from './_components/CloudAuthTests'
+
 const networks = ConstantsUtil.EvmNetworks
 
 const etherAdapter = new EthersAdapter()
@@ -36,6 +38,7 @@ export default function SIWXCloudAuth() {
     <>
       <AppKitButtons />
       <AppKitInfo />
+      <CloudAuthTests />
       <EthersTests />
       <SolanaTests />
     </>
