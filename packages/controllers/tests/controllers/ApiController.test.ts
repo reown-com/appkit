@@ -536,7 +536,10 @@ describe('ApiController', () => {
       { name: 'Phantom', rdns: 'app.phantom' }
     ])
     const result = EIP6963Wallets.filter(
-      wallet => !ApiController.state.excludedWallets.includes(wallet)
+      wallet =>
+        !ApiController.state.excludedWallets.some(
+          excludedWallet => excludedWallet.rdns === wallet.rdns
+        )
     )
     expect(result).toEqual(filteredWallet)
   })
