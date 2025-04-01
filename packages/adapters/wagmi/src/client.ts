@@ -329,7 +329,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       gasPrice: params.gasPrice as bigint,
       data: params.data as Hex,
       chainId,
-      type: 'legacy' as const
+      type: 'legacy' as const,
+      parameters: ['nonce'] as const
     }
 
     await prepareTransactionRequest(this.wagmiConfig, txParams)
