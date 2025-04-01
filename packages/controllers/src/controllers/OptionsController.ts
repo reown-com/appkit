@@ -1,6 +1,8 @@
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
+
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { OptionsUtil } from '../utils/OptionsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
@@ -30,6 +32,12 @@ export interface OptionsControllerStatePublic {
    * @see https://cloud.walletconnect.com/
    */
   projectId: ProjectId
+  /**
+   * A map of CAIP network ID and custom RPC URLs to be used by the AppKit.
+   * @default {}
+   * @see https://docs.reown.com/appkit/react/core/options#customrpcurls
+   */
+  customRpcUrls?: Record<CaipNetworkId, CustomRpcUrl[]>
   /**
    * Array of wallet ids to be shown in the modal's connection view with priority. These wallets will also show up first in `All Wallets` view
    * @default []
@@ -154,6 +162,22 @@ export interface OptionsControllerStatePublic {
    * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
    */
   manualWCControl?: boolean
+  /**
+   * Custom Universal Provider configuration to override the default one.
+   * If `methods` is provided, it will override the default methods.
+   * If `chains` is provided, it will override the default chains.
+   * If `events` is provided, it will override the default events.
+   * If `rpcMap` is provided, it will override the default rpcMap.
+   * If `defaultChain` is provided, it will override the default defaultChain.
+   * @default undefined
+   */
+  universalProviderConfigOverride?: {
+    methods?: Record<string, string[]>
+    chains?: Record<string, string[]>
+    events?: Record<string, string[]>
+    rpcMap?: Record<string, string>
+    defaultChain?: string
+  }
 }
 
 export interface OptionsControllerStateInternal {
@@ -207,6 +231,10 @@ export const OptionsController = {
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
     state.projectId = projectId
+  },
+
+  setCustomRpcUrls(customRpcUrls: OptionsControllerState['customRpcUrls']) {
+    state.customRpcUrls = customRpcUrls
   },
 
   setAllWallets(allWallets: OptionsControllerState['allWallets']) {
@@ -342,6 +370,16 @@ export const OptionsController = {
         state.defaultAccountTypes[namespace] = accountType
       }
     })
+  },
+
+  setUniversalProviderConfigOverride(
+    universalProviderConfigOverride: OptionsControllerState['universalProviderConfigOverride']
+  ) {
+    state.universalProviderConfigOverride = universalProviderConfigOverride
+  },
+
+  getUniversalProviderConfigOverride() {
+    return state.universalProviderConfigOverride
   },
 
   getSnapshot() {

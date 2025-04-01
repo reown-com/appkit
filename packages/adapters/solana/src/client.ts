@@ -36,13 +36,14 @@ export interface AdapterOptions {
 
 export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
-  public adapterType = 'solana'
   public wallets?: BaseWalletAdapter[]
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(options: AdapterOptions = {}) {
-    super({})
-    this.namespace = CommonConstantsUtil.CHAIN.SOLANA
+    super({
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.SOLANA,
+      namespace: CommonConstantsUtil.CHAIN.SOLANA
+    })
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
   }

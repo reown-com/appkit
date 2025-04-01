@@ -1,6 +1,5 @@
 ---
-'@reown/appkit-controllers': patch
-'@reown/appkit-scaffold-ui': patch
+'@reown/appkit-wallet-button': patch
 '@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -11,14 +10,15 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
-'@reown/appkit-wallet-button': patch
 ---
 
-Fixes recommended wallets listing when opening modal with namespace filter
+Fixed an issue where the WalletConnect wallet button wasn't opening the "All Wallets" modal view on mobile devices
