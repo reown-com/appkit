@@ -287,11 +287,9 @@ export class W3mSwapView extends LitElement {
     SwapController.switchTokens()
   }
 
-  private onSwapPreview() {
+  private async onSwapPreview() {
     if (this.fetchError) {
-      SwapController.swapTokens()
-
-      return
+      await SwapController.swapTokens()
     }
     EventsController.sendEvent({
       type: 'track',

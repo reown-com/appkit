@@ -162,6 +162,22 @@ export interface OptionsControllerStatePublic {
    * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
    */
   manualWCControl?: boolean
+  /**
+   * Custom Universal Provider configuration to override the default one.
+   * If `methods` is provided, it will override the default methods.
+   * If `chains` is provided, it will override the default chains.
+   * If `events` is provided, it will override the default events.
+   * If `rpcMap` is provided, it will override the default rpcMap.
+   * If `defaultChain` is provided, it will override the default defaultChain.
+   * @default undefined
+   */
+  universalProviderConfigOverride?: {
+    methods?: Record<string, string[]>
+    chains?: Record<string, string[]>
+    events?: Record<string, string[]>
+    rpcMap?: Record<string, string>
+    defaultChain?: string
+  }
 }
 
 export interface OptionsControllerStateInternal {
@@ -354,6 +370,16 @@ export const OptionsController = {
         state.defaultAccountTypes[namespace] = accountType
       }
     })
+  },
+
+  setUniversalProviderConfigOverride(
+    universalProviderConfigOverride: OptionsControllerState['universalProviderConfigOverride']
+  ) {
+    state.universalProviderConfigOverride = universalProviderConfigOverride
+  },
+
+  getUniversalProviderConfigOverride() {
+    return state.universalProviderConfigOverride
   },
 
   getSnapshot() {
