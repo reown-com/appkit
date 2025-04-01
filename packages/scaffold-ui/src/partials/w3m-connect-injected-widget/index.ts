@@ -43,6 +43,10 @@ export class W3mConnectInjectedWidget extends LitElement {
         ${injectedConnectors.map(connector => {
           const walletRDNS = connector.info?.rdns
 
+          if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
+            return null
+          }
+
           if (!walletRDNS && !ConnectionController.checkInstalled()) {
             this.style.cssText = `display: none`
 
