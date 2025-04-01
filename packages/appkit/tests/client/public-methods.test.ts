@@ -615,16 +615,21 @@ describe('Base Public methods', () => {
 
     await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider, mainnet.chainNamespace)
 
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
-    expect(setAllAccounts).toHaveBeenCalledWith(
-      [
-        { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
-        { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
-      ],
-      mainnet.chainNamespace
+    await vi.waitFor(
+      () => {
+        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
+        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
+        expect(setAllAccounts).toHaveBeenCalledWith(
+          [
+            { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
+            { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
+          ],
+          mainnet.chainNamespace
+        )
+        expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
+      },
+      { interval: 100, timeout: 2000 }
     )
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
   })
 
   it('should get Reown name', async () => {

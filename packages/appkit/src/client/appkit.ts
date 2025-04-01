@@ -124,6 +124,36 @@ export class AppKit extends AppKitBaseClient {
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
+
+      const preferredAccountType = OptionsController.state.defaultAccountTypes[
+        namespace
+      ] as W3mFrameTypes.AccountType
+
+      const isPreferredAccountTypeSame =
+        Boolean(user.preferredAccountType) &&
+        HelpersUtil.isLowerCaseMatch(user.preferredAccountType, preferredAccountType)
+
+      if (!isPreferredAccountTypeSame && !this.hasSwitchedToPreferredAccountTypeOnConnect) {
+        // Prevent duplicate attempts during async operation
+        this.hasSwitchedToPreferredAccountTypeOnConnect = true
+
+        const { success } = await ConnectionController.setPreferredAccountType(preferredAccountType)
+          .then(() => ({ success: false }))
+          .catch(error => {
+            // eslint-disable-next-line no-console
+            console.error('setPreferredAccountType error:', error)
+
+            return { success: false }
+          })
+
+        // If successful it should reconnect and call provider.onConnect again
+        if (success) {
+          return
+        }
+      } else {
+        this.hasSwitchedToPreferredAccountTypeOnConnect = true
+      }
+
       /*
        * This covers the case where user switches back from a smart account supported
        *  network to a non-smart account supported network resulting in a different address
@@ -140,9 +170,10 @@ export class AppKit extends AppKitBaseClient {
 
       this.setUser({ ...(AccountController.state.user || {}), email: user.email }, namespace)
 
-      const preferredAccountType = (user.preferredAccountType ||
-        OptionsController.state.defaultAccountTypes[namespace]) as W3mFrameTypes.AccountType
-      this.setPreferredAccountType(preferredAccountType, namespace)
+      this.setPreferredAccountType(
+        (user.preferredAccountType as W3mFrameTypes.AccountType) || preferredAccountType,
+        namespace
+      )
 
       const userAccounts = user.accounts?.map(account =>
         CoreHelperUtil.createAccount(
@@ -154,7 +185,11 @@ export class AppKit extends AppKitBaseClient {
 
       this.setAllAccounts(
         userAccounts || [
-          CoreHelperUtil.createAccount(namespace, user.address, preferredAccountType)
+          CoreHelperUtil.createAccount(
+            namespace,
+            user.address,
+            (user.preferredAccountType as W3mFrameTypes.AccountType) || preferredAccountType
+          )
         ],
         namespace
       )
@@ -178,6 +213,7 @@ export class AppKit extends AppKitBaseClient {
       if (!address) {
         return
       }
+
       this.setPreferredAccountType(
         type as W3mFrameTypes.AccountType,
         ChainController.state.activeChain as ChainNamespace
