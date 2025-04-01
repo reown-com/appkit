@@ -92,24 +92,11 @@ export class BitgetConnector extends ProviderEventEmitter implements BitcoinConn
   }
 
   public async signPSBT(
-    params: BitcoinConnector.SignPSBTParams
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _params: BitcoinConnector.SignPSBTParams
   ): Promise<BitcoinConnector.SignPSBTResponse> {
-    const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
-
-    const signedPsbtHex = await this.wallet.signPsbt(psbtHex, {
-      toSignInputs: params.signInputs
-    })
-
-    let txid: string | undefined = undefined
-
-    if (params.broadcast) {
-      txid = await this.wallet.pushPsbt(signedPsbtHex)
-    }
-
-    return {
-      psbt: Buffer.from(signedPsbtHex, 'hex').toString('base64'),
-      txid
-    }
+    // There is an issue with signing psbt with bitget wallet
+    return Promise.reject(new MethodNotSupportedError(this.id, 'signPSBT'))
   }
 
   public request<T>(_args: RequestArguments): Promise<T> {

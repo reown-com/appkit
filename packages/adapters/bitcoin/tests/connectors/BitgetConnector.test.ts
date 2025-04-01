@@ -128,31 +128,8 @@ describe('BitgetConnector', () => {
   })
 
   describe('signPSBT', () => {
-    it('should sign a PSBT without broadcast', async () => {
-      const pushPsbtSpy = vi.spyOn(wallet, 'pushPsbt')
-
-      const result = await connector.signPSBT({
-        psbt: Buffer.from('mock_psbt').toString('base64'),
-        signInputs: [],
-        broadcast: false
-      })
-
-      expect(pushPsbtSpy).not.toHaveBeenCalled()
-      expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: undefined })
-    })
-
-    it('should sign a PSBT with broadcast', async () => {
-      getActiveNetwork.mockReturnValueOnce(bitcoinTestnet)
-      const pushPsbtSpy = vi.spyOn(wallet, 'pushPsbt')
-
-      const result = await connector.signPSBT({
-        psbt: Buffer.from('mock_psbt').toString('base64'),
-        signInputs: [],
-        broadcast: true
-      })
-
-      expect(pushPsbtSpy).toHaveBeenCalledWith('6d6f636b5f70736274')
-      expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: 'mock_txhash' })
+    it('should throw an error because signPSBT is not supported', async () => {
+      await expect(connector.signPSBT({} as any)).rejects.toThrow(MethodNotSupportedError)
     })
   })
 
