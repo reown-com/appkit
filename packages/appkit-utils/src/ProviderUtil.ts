@@ -40,6 +40,12 @@ export const ProviderUtil = {
     return subKey(state, key, callback)
   },
 
+  subscribe(callback: (value: ProviderStoreUtilState) => void) {
+    return subscribe(state, () => {
+      callback(state)
+    })
+  },
+
   subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {
     return subscribe(state.providers, () => callback(state.providers))
   },
