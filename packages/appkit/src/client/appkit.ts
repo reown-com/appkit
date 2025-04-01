@@ -352,7 +352,7 @@ export class AppKit extends AppKitBaseClient {
     super.initControllers(options)
 
     if (this.options.excludeWalletIds) {
-      ApiController.initializeExcludedWalletRdns({ ids: this.options.excludeWalletIds })
+      ApiController.initializeExcludedWallets({ ids: this.options.excludeWalletIds })
     }
   }
 
