@@ -470,6 +470,16 @@ export type Event =
       }
     }
   | {
+      type: 'error'
+      event: 'INTERNAL_SDK_ERROR'
+      properties: {
+        errorType?: string
+        errorMessage?: string
+        stackTrace?: string
+        uncaught?: boolean
+      }
+    }
+  | {
       type: 'track'
       address?: string
       event: 'CLICK_WALLET_HELP'

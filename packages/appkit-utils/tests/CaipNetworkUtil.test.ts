@@ -1,9 +1,67 @@
 import { http } from 'viem'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitNetwork, type CustomRpcUrlMap } from '@reown/appkit-common'
+import { type AppKitNetwork, ConstantsUtil, type CustomRpcUrlMap } from '@reown/appkit-common'
+import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 
 import { CaipNetworksUtil } from '../src/CaipNetworkUtil'
+
+const mainnet: AppKitNetwork = {
+  id: 1,
+  name: 'Ethereum',
+  nativeCurrency: {
+    name: 'Ether',
+    symbol: 'ETH',
+    decimals: 18
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://ethereum.example.com']
+    }
+  }
+}
+const polygon: AppKitNetwork = {
+  id: 137,
+  name: 'Polygon',
+  nativeCurrency: {
+    name: 'Polygon',
+    symbol: 'MATIC',
+    decimals: 18
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://polygon.example.com']
+    }
+  }
+}
+const solana: AppKitNetwork = {
+  id: 'solana',
+  name: 'Solana',
+  chainNamespace: 'solana',
+  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  nativeCurrency: {
+    name: 'Solana',
+    symbol: 'SOL',
+    decimals: 9
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://solana.example.com']
+    }
+  }
+}
+
+const mainnetCaipNetwork: AppKitNetwork = {
+  ...mainnet,
+  chainNamespace: 'eip155',
+  caipNetworkId: 'eip155:1'
+}
+
+const polygonCaipNetwork: AppKitNetwork = {
+  ...polygon,
+  chainNamespace: 'eip155',
+  caipNetworkId: 'eip155:137'
+}
 
 vi.mock('viem', () => ({
   http: vi.fn(),
@@ -13,50 +71,6 @@ vi.mock('viem', () => ({
 describe('CaipNetworksUtil', () => {
   // Test data
   const mockProjectId = 'test-project-id'
-  const mainnet: AppKitNetwork = {
-    id: 1,
-    name: 'Ethereum',
-    nativeCurrency: {
-      name: 'Ether',
-      symbol: 'ETH',
-      decimals: 18
-    },
-    rpcUrls: {
-      default: {
-        http: ['https://ethereum.example.com']
-      }
-    }
-  }
-  const polygon: AppKitNetwork = {
-    id: 137,
-    name: 'Polygon',
-    nativeCurrency: {
-      name: 'Polygon',
-      symbol: 'MATIC',
-      decimals: 18
-    },
-    rpcUrls: {
-      default: {
-        http: ['https://polygon.example.com']
-      }
-    }
-  }
-  const solana: AppKitNetwork = {
-    id: 'solana',
-    name: 'Solana',
-    chainNamespace: 'solana',
-    caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    nativeCurrency: {
-      name: 'Solana',
-      symbol: 'SOL',
-      decimals: 9
-    },
-    rpcUrls: {
-      default: {
-        http: ['https://solana.example.com']
-      }
-    }
-  }
 
   beforeEach(() => {
     vi.resetModules()
@@ -254,6 +268,105 @@ describe('CaipNetworksUtil', () => {
           }
         }
       )
+    })
+  })
+
+  describe('getUnsupportedNetwork', () => {
+    it('should create unsupported network object with correct format', () => {
+      const caipNetworkId = 'eip155:1234'
+      const result = CaipNetworksUtil.getUnsupportedNetwork(caipNetworkId)
+
+      expect(result).toEqual({
+        id: '1234',
+        caipNetworkId: 'eip155:1234',
+        name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
+        chainNamespace: 'eip155',
+        nativeCurrency: {
+          name: '',
+          decimals: 0,
+          symbol: ''
+        },
+        rpcUrls: {
+          default: {
+            http: []
+          }
+        }
+      })
+    })
+  })
+
+  describe('getCaipNetworkFromStorage', () => {
+    beforeEach(() => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId')
+      vi.spyOn(ChainController, 'getAllRequestedCaipNetworks')
+      vi.spyOn(ChainController.state, 'chains', 'get')
+    })
+
+    afterEach(() => {
+      vi.resetAllMocks()
+    })
+
+    it('should return unsupported network when network ID exists but not supported', () => {
+      const unsupportedNetworkId = 'eip155:999'
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValue(unsupportedNetworkId)
+      vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue([mainnetCaipNetwork])
+      vi.spyOn(ChainController.state, 'chains', 'get').mockReturnValue(new Map([['eip155', {}]]))
+
+      const result = CaipNetworksUtil.getCaipNetworkFromStorage(mainnetCaipNetwork)
+
+      expect(result).toEqual({
+        id: '999',
+        caipNetworkId: unsupportedNetworkId,
+        name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
+        chainNamespace: 'eip155',
+        nativeCurrency: {
+          name: '',
+          decimals: 0,
+          symbol: ''
+        },
+        rpcUrls: {
+          default: {
+            http: []
+          }
+        }
+      })
+    })
+
+    it('should return matching network when found in available networks', () => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValue('eip155:137')
+      vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue([
+        mainnetCaipNetwork,
+        polygonCaipNetwork
+      ])
+      vi.spyOn(ChainController.state, 'chains', 'get').mockReturnValue(new Map([['eip155', {}]]))
+
+      const result = CaipNetworksUtil.getCaipNetworkFromStorage()
+
+      expect(result).toEqual(polygonCaipNetwork)
+    })
+
+    it('should return default network when no stored network found', () => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue([
+        mainnetCaipNetwork,
+        polygonCaipNetwork
+      ])
+
+      const result = CaipNetworksUtil.getCaipNetworkFromStorage(polygonCaipNetwork)
+
+      expect(result).toEqual(polygonCaipNetwork)
+    })
+
+    it('should return first available network when no stored or default network', () => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue([
+        mainnetCaipNetwork,
+        polygonCaipNetwork
+      ])
+
+      const result = CaipNetworksUtil.getCaipNetworkFromStorage(undefined)
+
+      expect(result).toEqual(mainnetCaipNetwork)
     })
   })
 })

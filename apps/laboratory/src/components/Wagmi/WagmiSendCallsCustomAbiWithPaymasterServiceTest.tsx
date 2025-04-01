@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button, Input, Select, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { type Abi, encodeFunctionData, parseEther } from 'viem'
-import { useAccount } from 'wagmi'
+import { useAccount, useSwitchChain } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 
 import { useAppKitAccount } from '@reown/appkit/react'
@@ -78,6 +78,8 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
 }
 
 function AvailableTestContent() {
+  const { switchChain } = useSwitchChain()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const [paymasterProvider, setPaymasterProvider] = useState<string>()
   const [reownPolicyId, setReownPolicyId] = useState<string>('')
   const [contractAbi, setContractAbi] = useState<string>('')
@@ -281,6 +283,26 @@ function AvailableTestContent() {
         whiteSpace="nowrap"
         textOverflow="ellipsis"
       />
+
+      <Button
+        width={'fit-content'}
+        onClick={() => {
+          if (switchChain) {
+            // Switch to Base network
+            switchChain({ chainId: 8453 })
+          }
+          // USDC on Base https://basescan.org/token/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913#writeProxyContract
+          setContractAddress('0x833589fcd6edb6e08f4c7c32d4f71b54bda02913')
+          setContractAbi(
+            '[{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]'
+          )
+          setMethod('transfer')
+          setMethodArgs(`["${address}", ${0.1 * 10 ** 6}]`)
+        }}
+        isDisabled={isLoading}
+      >
+        Try with USDC on Base
+      </Button>
 
       <Button
         width={'fit-content'}
