@@ -27,6 +27,7 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
     "lit": "3.2.1",
     "valtio": "1.13.2"
   },
