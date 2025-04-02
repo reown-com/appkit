@@ -198,6 +198,8 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
+    OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
+
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
     OptionsController.setSdkVersion(options.sdkVersion)
@@ -966,6 +968,7 @@ export abstract class AppKitBaseClient {
       if (network?.chainNamespace === ChainController.state.activeChain) {
         // If the network is unsupported and the user doesn't allow unsupported chains, we show the unsupported chain UI
         if (
+          OptionsController.state.enableNetworkSwitch &&
           !OptionsController.state.allowUnsupportedChain &&
           ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
         ) {
