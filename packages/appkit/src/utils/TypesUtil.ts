@@ -95,10 +95,4 @@ export type AppKitOptions = {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
-
-  /**
-   * Enable or disable network switching in the modal.
-   * @default true
-   */
-  enableNetworkSwitch?: boolean
 } & Omit<OptionsControllerState, 'defaultAccountTypes'>
