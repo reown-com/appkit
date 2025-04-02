@@ -7,7 +7,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import type { GetCapabilitiesResult } from '../types/EIP5792'
-import type { Asset, WalletGetAssetsRPCRequest, WalletGetAssetsRPCResponse } from '../types/ERC7811'
+import type { Asset, WalletGetAssetsParams, WalletGetAssetsResponse } from '../types/ERC7811'
 import { fetchFallbackBalances } from '../utils/BalanceFetcherUtil'
 import { convertChainIdToHex, formatBalance } from '../utils/FormatterUtil'
 
@@ -95,9 +95,9 @@ function processAssetsToBalances(chainAssets: Asset[], chainIdNum: number): Toke
 }
 
 async function getAssetsViaWalletService(
-  request: WalletGetAssetsRPCRequest,
+  request: WalletGetAssetsParams,
   walletServiceUrl: string
-): Promise<Record<Hex, Asset[]>> {
+): Promise<WalletGetAssetsResponse> {
   const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
@@ -119,16 +119,14 @@ async function getAssetsViaWalletService(
     headers: { 'Content-Type': 'application/json' }
   })
 
-  const { result } = (await response.json()) as WalletGetAssetsRPCResponse
-
-  return result
+  return (await response.json()) as WalletGetAssetsResponse
 }
 
 async function getAssetsViaProvider(
   provider: UniversalProvider,
-  request: WalletGetAssetsRPCRequest
-): Promise<Record<Hex, Asset[]>> {
-  const response: Record<Hex, Asset[]> = await provider.request({
+  request: WalletGetAssetsParams
+): Promise<WalletGetAssetsResponse> {
+  const response: WalletGetAssetsResponse = await provider.request({
     method: 'wallet_getAssets',
     params: [request]
   })
@@ -148,8 +146,8 @@ export function useWalletGetAssets() {
       return []
     }
     const chainIdAsHex = convertChainIdToHex(parseInt(chainId.toString(), 10))
-    const request: WalletGetAssetsRPCRequest = {
-      account: address,
+    const request: WalletGetAssetsParams = {
+      account: address as `0x${string}`,
       chainFilter: [chainIdAsHex]
     }
 
