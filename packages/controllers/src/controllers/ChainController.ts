@@ -341,7 +341,7 @@ export const ChainController = {
     if (newAdapter) {
       AccountController.replaceState(newAdapter.accountState)
     }
-    // Reset send and swap-change state when switching networks
+    // Reset send state when switching networks
     SendController.resetSend()
 
     PublicStateController.set({
