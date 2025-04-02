@@ -36,6 +36,8 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
+  @state() private address = AccountController.state.address
+
   @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
 
   @state() private initialized = SwapController.state.initialized
@@ -70,6 +72,13 @@ export class W3mSwapView extends LitElement {
     ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
         this.caipNetworkId = newCaipNetwork?.caipNetworkId
+        SwapController.resetState()
+        SwapController.initializeState()
+      }
+    })
+    AccountController.subscribeKey('address', newAddress => {
+      if (this.address !== newAddress) {
+        this.address = newAddress
         SwapController.resetState()
         SwapController.initializeState()
       }
