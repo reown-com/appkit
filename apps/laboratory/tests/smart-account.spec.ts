@@ -92,7 +92,9 @@ smartAccountTest(
     await page.closeModal()
 
     //Requesting a sign immediately after login or after switch network causes a 'user rejected' error from embedded wallet so a small delay is needed
-    await new Promise<void>(resolve => setTimeout(resolve, 1000))
+    await new Promise<void>(resolve => {
+      setTimeout(resolve, 1000)
+    })
 
     await page.sign(namespace)
     await page.approveSign()
@@ -115,7 +117,9 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await validator.expectAccountButtonReady()
 
   // Requesting a sign immediately after login or after switch network causes a 'user rejected' error from embedded wallet so a small delay is needed
-  await new Promise<void>(resolve => setTimeout(resolve, 1000))
+  await new Promise<void>(resolve => {
+    setTimeout(resolve, 1000)
+  })
   await page.sign(namespace)
   await page.approveSign()
   await validator.expectAcceptedSign()
