@@ -28,7 +28,6 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
-import { SwapController } from './SwapController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -344,7 +343,6 @@ export const ChainController = {
     }
     // Reset send and swap-change state when switching networks
     SendController.resetSend()
-    SwapController.resetState()
 
     PublicStateController.set({
       activeChain: state.activeChain,
