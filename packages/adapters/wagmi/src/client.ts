@@ -43,7 +43,7 @@ import {
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import { CoreHelperUtil, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
@@ -119,7 +119,9 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
-      const { address, accounts } = await provider.connect()
+      const { address, accounts } = await provider.connect({
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+      })
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
@@ -329,7 +331,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       gasPrice: params.gasPrice as bigint,
       data: params.data as Hex,
       chainId,
-      type: 'legacy' as const
+      type: 'legacy' as const,
+      parameters: ['nonce'] as const
     }
 
     await prepareTransactionRequest(this.wagmiConfig, txParams)
