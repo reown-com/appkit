@@ -7,9 +7,15 @@ export default css`
     width: calc(100% + var(--wui-spacing-s) * 2);
   }
 
-  .token-info {
-    background-color: var(--wui-color-bg-125);
+  .token-display {
+    padding: var(--wui-spacing-s) var(--wui-spacing-m);
     border-radius: var(--wui-border-radius-s);
-    padding: var(--wui-spacing-xs) var(--wui-spacing-s);
+    background-color: var(--wui-color-bg-125);
+    margin-top: var(--wui-spacing-s);
+    margin-bottom: var(--wui-spacing-s);
+  }
+
+  .token-display wui-text {
+    text-transform: none;
   }
 `

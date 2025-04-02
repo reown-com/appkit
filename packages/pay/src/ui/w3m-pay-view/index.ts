@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ModalController,
   RouterController,
@@ -73,45 +74,11 @@ export class W3mPayView extends LitElement {
     return html`
       <wui-flex flexDirection="column">
         <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="s">
-          <wui-flex flexDirection="column" alignItems="center">
-            <wui-flex flexDirection="column" alignItems="center">
-              <wui-flex alignItems="center" gap="xs">
-                <wui-text variant="large-700" color="fg-100">${this.amount || '0.0000'}</wui-text>
-                <wui-flex alignItems="center" gap="xxs" class="token-info">
-                  <wui-text variant="paragraph-600" color="fg-100"
-                    >${this.tokenSymbol || 'ETH'}</wui-text
-                  >
-                  ${this.networkName
-                    ? html`
-                        <wui-text variant="small-500" color="fg-200"
-                          >on ${this.networkName}</wui-text
-                        >
-                      `
-                    : ''}
-                </wui-flex>
-              </wui-flex>
-            </wui-flex>
-          </wui-flex>
+          ${this.renderPaymentHeader()}
 
           <wui-flex flexDirection="column" gap="s">
             <wui-flex flexDirection="column" gap="s">
-              ${this.isWalletConnected
-                ? this.renderConnectedWalletOption()
-                : this.renderDisconnectedWalletOption()}
-              ${this.isWalletConnected
-                ? html`
-                    <wui-list-item
-                      variant="icon"
-                      iconVariant="overlay"
-                      icon="disconnect"
-                      @click=${this.onDisconnect}
-                      data-testid="disconnect-button"
-                      ?chevron=${false}
-                    >
-                      <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
-                    </wui-list-item>
-                  `
-                : html``}
+              ${this.isWalletConnected ? this.renderConnectedView() : this.renderDisconnectedView()}
             </wui-flex>
 
             <wui-separator text="or"></wui-separator>
@@ -139,26 +106,68 @@ export class W3mPayView extends LitElement {
     }
   }
 
-  private renderConnectedWalletOption() {
-    const walletName = this.connectedWalletInfo?.name || 'connected wallet'
+  private renderPaymentHeader() {
+    let displayNetworkName = this.networkName
+    if (this.networkName) {
+      const allNetworks = ChainController.getAllRequestedCaipNetworks()
+      const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.networkName)
+      if (targetNetwork) {
+        displayNetworkName = targetNetwork.name
+      }
+    }
 
-    return html`<wui-list-item
-      @click=${this.onWalletPayment}
-      ?chevron=${true}
-      data-testid="wallet-payment-option"
-    >
-      <wui-flex alignItems="center" gap="s">
-        <wui-wallet-image
-          size="sm"
-          imageSrc=${ifDefined(this.connectedWalletInfo?.icon)}
-          name=${ifDefined(this.connectedWalletInfo?.name)}
-        ></wui-wallet-image>
-        <wui-text variant="paragraph-500" color="inherit">Pay with ${walletName}</wui-text>
+    return html`
+      <wui-flex flexDirection="column" alignItems="center">
+        <wui-flex alignItems="center" gap="xs">
+          <wui-text variant="large-700" color="fg-100">${this.amount || '0.0000'}</wui-text>
+          <wui-flex class="token-display" alignItems="center" gap="xxs">
+            <wui-text variant="paragraph-600" color="fg-100">
+              ${this.tokenSymbol || 'ETH'}
+            </wui-text>
+            ${displayNetworkName
+              ? html`
+                  <wui-text variant="small-500" color="fg-200"> on ${displayNetworkName} </wui-text>
+                `
+              : ''}
+          </wui-flex>
+        </wui-flex>
       </wui-flex>
-    </wui-list-item>`
+    `
   }
 
-  private renderDisconnectedWalletOption() {
+  private renderConnectedView() {
+    const walletName = this.connectedWalletInfo?.name || 'connected wallet'
+
+    return html`
+      <wui-list-item
+        @click=${this.onWalletPayment}
+        ?chevron=${true}
+        data-testid="wallet-payment-option"
+      >
+        <wui-flex alignItems="center" gap="s">
+          <wui-wallet-image
+            size="sm"
+            imageSrc=${ifDefined(this.connectedWalletInfo?.icon)}
+            name=${ifDefined(this.connectedWalletInfo?.name)}
+          ></wui-wallet-image>
+          <wui-text variant="paragraph-500" color="inherit">Pay with ${walletName}</wui-text>
+        </wui-flex>
+      </wui-list-item>
+
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="disconnect"
+        @click=${this.onDisconnect}
+        data-testid="disconnect-button"
+        ?chevron=${false}
+      >
+        <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private renderDisconnectedView() {
     return html`<wui-list-item
       variant="icon"
       iconVariant="overlay"
