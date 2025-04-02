@@ -11,7 +11,8 @@ import {
   type ConnectionControllerClient,
   CoreHelperUtil,
   type NetworkControllerClient,
-  SnackController
+  SnackController,
+  SwapController
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -214,7 +215,7 @@ describe('AccountController', () => {
       })
 
       const setTokenBalanceSpy = vi.spyOn(AccountController, 'setTokenBalance')
-
+      const setBalancesSpy = vi.spyOn(SwapController, 'setBalances')
       const result = await AccountController.fetchTokenBalance()
 
       expect(result).toEqual([
@@ -228,6 +229,7 @@ describe('AccountController', () => {
         ]),
         'eip155'
       )
+      expect(setBalancesSpy).not.toHaveBeenCalled()
       expect(AccountController.state.lastRetry).toBeUndefined()
       expect(AccountController.state.balanceLoading).toBe(false)
     })
