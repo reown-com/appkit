@@ -39,7 +39,7 @@ export const REPO_URL = 'https://github.com/reown-com/appkit'
 export function getPublicUrl() {
   const isProduction = process.env['NODE_ENV'] === 'production'
   if (isProduction) {
-    return 'https://appkit-lab.reown.org'
+    return 'https://appkit-lab.reown.com'
   }
 
   const publicUrl = process.env['NEXT_PUBLIC_PUBLIC_URL']
