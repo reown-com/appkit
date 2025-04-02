@@ -30,8 +30,8 @@ export type SwapInputTarget = 'sourceToken' | 'toToken'
 type TransactionParams = {
   data: string
   to: string
-  gas: bigint
-  gasPrice: bigint
+  gas?: bigint
+  gasPrice?: bigint
   value: bigint
   toAmount: string
 }
@@ -597,7 +597,7 @@ export const SwapController = {
   },
 
   async createAllowanceTransaction() {
-    const { fromCaipAddress, fromAddress, sourceTokenAddress, toTokenAddress } = this.getParams()
+    const { fromCaipAddress, sourceTokenAddress, fromAddress, toTokenAddress } = this.getParams()
 
     if (!fromCaipAddress || !toTokenAddress) {
       return undefined
@@ -614,11 +614,11 @@ export const SwapController = {
         userAddress: fromCaipAddress
       })
       const gasLimit = await ConnectionController.estimateGas({
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
         address: fromAddress as `0x${string}`,
         to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
         data: response.tx.data
       })
-
       const transaction = {
         data: response.tx.data,
         to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
@@ -693,7 +693,6 @@ export const SwapController = {
       }
 
       state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gas, gasPrice)
-
       state.approvalTransaction = undefined
       state.swapTransaction = transaction
 
@@ -733,8 +732,6 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        gas: data.gas,
-        gasPrice: BigInt(data.gasPrice),
         value: data.value,
         chainNamespace: 'eip155'
       })
@@ -801,8 +798,6 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        gas: data.gas,
-        gasPrice: BigInt(data.gasPrice),
         value: data.value,
         chainNamespace: 'eip155'
       })

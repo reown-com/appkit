@@ -29,12 +29,13 @@ export interface EIP6963ProviderDetail {
 
 export class Ethers5Adapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
-  public adapterType = 'ethers'
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor() {
-    super({})
-    this.namespace = CommonConstantsUtil.CHAIN.EVM
+    super({
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS5,
+      namespace: CommonConstantsUtil.CHAIN.EVM
+    })
   }
 
   private async createEthersConfig(options: AppKitOptions) {
@@ -403,7 +404,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
-      const { address, accounts } = await provider.connect()
+      const { address, accounts } = await provider.connect({
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+      })
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>

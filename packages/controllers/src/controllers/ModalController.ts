@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -54,20 +55,26 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
+    const isConnected = AccountController.state.status === 'connected'
+
     if (ConnectionController.state.wcBasic) {
       // No need to add an await here if we are use basic
       ApiController.prefetch({ fetchNetworkImages: false, fetchConnectorImages: false })
     } else {
-      await ApiController.prefetch()
+      await ApiController.prefetch({
+        fetchConnectorImages: !isConnected,
+        fetchFeaturedWallets: !isConnected,
+        fetchRecommendedWallets: !isConnected
+      })
     }
 
     if (options?.namespace) {
-      ConnectorController.setFilterByNamespace(options.namespace)
       await ChainController.switchActiveNamespace(options.namespace)
       ModalController.setLoading(true, options.namespace)
     } else {
       ModalController.setLoading(true)
     }
+    ConnectorController.setFilterByNamespace(options?.namespace)
 
     const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
     const hasNoAdapters = ChainController.state.noAdapters
@@ -121,7 +128,6 @@ export const ModalController = {
       PublicStateController.set({ open: false })
     }
 
-    ConnectorController.clearNamespaceFilter()
     ConnectionController.resetUri()
   },
 

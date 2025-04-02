@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-controllers",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -22,6 +22,11 @@
       "types": "./dist/types/exports/index.d.ts",
       "import": "./dist/esm/exports/index.js",
       "default": "./dist/esm/exports/index.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
     },
     "./react": {
       "types": "./dist/types/exports/react.d.ts",

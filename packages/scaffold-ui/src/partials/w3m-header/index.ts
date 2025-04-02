@@ -54,6 +54,7 @@ function headings() {
     ConvertSelectToken: 'Select token',
     ConvertPreview: 'Preview convert',
     Downloads: name ? `Get ${name}` : 'Downloads',
+    EmailLogin: 'Email Login',
     EmailVerifyOtp: 'Confirm Email',
     EmailVerifyDevice: 'Register Device',
     GetWallet: 'Get a wallet',

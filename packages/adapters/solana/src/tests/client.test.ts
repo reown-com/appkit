@@ -63,7 +63,8 @@ describe('SolanaAdapter', () => {
     adapter.construct({
       networks: mockNetworks,
       projectId: 'test-project-id',
-      namespace: 'solana'
+      namespace: ConstantsUtil.CHAIN.SOLANA,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.SOLANA
     })
   })
 
@@ -99,8 +100,8 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - constructor', () => {
     it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('solana')
-      expect(adapter.namespace).toBe('solana')
+      expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.SOLANA)
+      expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.SOLANA)
       expect(adapter.networks).toEqual(mockNetworks)
       expect(adapter.projectId).toBe('test-project-id')
       expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(

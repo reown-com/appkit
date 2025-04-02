@@ -14,6 +14,7 @@ import {
 } from '@reown/appkit-controllers'
 
 import { W3mConnectRecommendedWidget } from '../../src/partials/w3m-connect-recommended-widget'
+import { WalletUtil } from '../../src/utils/WalletUtil.js'
 
 // --- Constants ---------------------------------------------------- //
 const MOCK_WALLET_CONNECT_CONNECTOR: ConnectorWithProviders = {
@@ -67,8 +68,12 @@ describe('W3mConnectRecommendedWidget', () => {
       connectors: []
     })
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     expect(element.render()).toBeNull()
@@ -80,8 +85,12 @@ describe('W3mConnectRecommendedWidget', () => {
       customWallets: [MOCK_RECOMMENDED_WALLET]
     })
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     expect(element.style.display).toBe('none')
@@ -93,8 +102,12 @@ describe('W3mConnectRecommendedWidget', () => {
       featuredWalletIds: ['mock-id']
     })
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     expect(element.style.display).toBe('none')
@@ -106,16 +119,24 @@ describe('W3mConnectRecommendedWidget', () => {
       recommended: []
     })
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     expect(element.style.display).toBe('none')
   })
 
   it('should render recommended wallets', async () => {
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     element.requestUpdate()
@@ -140,8 +161,12 @@ describe('W3mConnectRecommendedWidget', () => {
       recommended: [unknownWallet]
     })
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     element.requestUpdate()
@@ -155,8 +180,12 @@ describe('W3mConnectRecommendedWidget', () => {
     const pushSpy = vi.spyOn(RouterController, 'push')
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(MOCK_WALLET_CONNECT_CONNECTOR)
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     const walletItem = element.shadowRoot?.querySelector('wui-list-wallet')
@@ -171,8 +200,12 @@ describe('W3mConnectRecommendedWidget', () => {
     const pushSpy = vi.spyOn(RouterController, 'push')
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     const walletItem = element.shadowRoot?.querySelector('wui-list-wallet')
@@ -201,8 +234,12 @@ describe('W3mConnectRecommendedWidget', () => {
       recommended: [MOCK_RECOMMENDED_WALLET, { ...MOCK_RECOMMENDED_WALLET, id: 'mock2' }]
     })
 
+    const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
+
     const element: W3mConnectRecommendedWidget = await fixture(
-      html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+      html`<w3m-connect-recommended-widget
+        .wallets=${recommended}
+      ></w3m-connect-recommended-widget>`
     )
 
     element.requestUpdate()
