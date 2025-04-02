@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { ERC7811Utils, type WalletGetAssetsResponse } from '../../src/utils/ERC7811Util'
+import { ERC7811Utils } from '../../src/utils/ERC7811Util'
+import type { WalletGetAssetsResponse } from '../../src/utils/TypeUtil'
 
 describe('ERC7811Util', () => {
   afterEach(() => {
@@ -16,7 +17,7 @@ describe('ERC7811Util', () => {
       const asset = {
         address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
         balance: '0x1000' as `0x${string}`,
-        type: 'ERC20' as 'ERC20' | 'NATIVE',
+        type: 'erc20' as 'erc20' | 'native',
         metadata: {
           name: 'Test Token',
           symbol: 'TST',
@@ -49,7 +50,7 @@ describe('ERC7811Util', () => {
       const asset = {
         address: 'native' as 'native',
         balance: '0xDE0B6B3A7640000' as `0x${string}`,
-        type: 'NATIVE' as 'ERC20' | 'NATIVE',
+        type: 'native' as 'erc20' | 'native',
         metadata: {
           name: 'Ethereum',
           symbol: 'ETH',
@@ -82,7 +83,7 @@ describe('ERC7811Util', () => {
       const asset = {
         address: 'native' as 'native',
         balance: '0xDE0B6B3A7640000' as `0x${string}`,
-        type: 'NATIVE' as 'ERC20' | 'NATIVE',
+        type: 'native' as 'erc20' | 'native',
         metadata: {
           name: 'Ethereum',
           symbol: 'ETH',
@@ -115,7 +116,7 @@ describe('ERC7811Util', () => {
       const asset = {
         address: 'native' as 'native',
         balance: '0xDE0B6B3A7640000' as `0x${string}`,
-        type: 'NATIVE' as 'ERC20' | 'NATIVE',
+        type: 'native' as 'erc20' | 'native',
         metadata: {
           // Missing fields
           // name, symbol, decimals, value, price, and iconUrl are missing
@@ -226,7 +227,7 @@ describe('ERC7811Util', () => {
           {
             address: '0x123' as `0x${string}`,
             balance: '0x1000' as `0x${string}`,
-            type: 'ERC20' as 'ERC20' | 'NATIVE',
+            type: 'erc20' as 'erc20' | 'native',
             metadata: {
               name: 'Test Token',
               symbol: 'TST',
@@ -288,7 +289,7 @@ describe('ERC7811Util', () => {
       const validAsset = {
         address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
         balance: '0x1000' as `0x${string}`,
-        type: 'NATIVE' as 'ERC20' | 'NATIVE',
+        type: 'native' as 'erc20' | 'native',
         metadata: {
           name: 'Ethereum',
           symbol: 'ETH',
@@ -305,7 +306,7 @@ describe('ERC7811Util', () => {
       const invalidAsset = {
         address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
         balance: '0x1000' as `0x${string}`,
-        type: 'NATIVE' as 'ERC20' | 'NATIVE',
+        type: 'native' as 'erc20' | 'native',
         metadata: {
           name: 'Ethereum',
           symbol: 'ETH',

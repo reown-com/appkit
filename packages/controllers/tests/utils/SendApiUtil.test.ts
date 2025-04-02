@@ -6,8 +6,9 @@ import { AccountController } from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
-import { ERC7811Utils, type WalletGetAssetsResponse } from '../../src/utils/ERC7811Util'
+import { ERC7811Utils } from '../../src/utils/ERC7811Util'
 import { SendApiUtil } from '../../src/utils/SendApiUtil'
+import type { WalletGetAssetsResponse } from '../../src/utils/TypeUtil'
 
 vi.mock('../../src/controllers/AccountController')
 vi.mock('../../src/controllers/BlockchainApiController')
@@ -89,7 +90,7 @@ describe('SendApiUtil', () => {
           {
             address: mockEthereumAddress as `0x${string}`,
             balance: '0xDE0B6B3A7640000',
-            type: 'NATIVE',
+            type: 'native',
             metadata: {
               name: 'Ethereum',
               symbol: 'ETH',
@@ -334,7 +335,7 @@ describe('SendApiUtil', () => {
           {
             address: mockEthereumAddress as `0x${string}`,
             balance: '0xDE0B6B3A7640000' as `0x${string}`,
-            type: 'NATIVE' as const,
+            type: 'native' as const,
             metadata: {
               name: 'Ethereum',
               symbol: 'ETH',

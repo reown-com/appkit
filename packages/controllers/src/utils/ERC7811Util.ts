@@ -2,7 +2,8 @@ import { formatUnits } from 'viem'
 
 import type { Balance, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
-type Hex = `0x${string}`
+import type { Asset, WalletGetAssetsResponse } from './TypeUtil.ts'
+
 interface TokenMetadata {
   name: string
   symbol: string
@@ -11,22 +12,6 @@ interface TokenMetadata {
   price: number
   iconUrl: string
 }
-
-interface Asset {
-  address: `0x${string}` | 'native'
-  balance: `0x${string}`
-  type: 'NATIVE' | 'ERC20'
-  metadata: Record<string, unknown>
-}
-
-export interface WalletGetAssetsRequest {
-  account: Hex
-  assetFilter?: Record<Hex, (Hex | 'native')[]>
-  assetTypeFilter?: ('NATIVE' | 'ERC20')[]
-  chainFilter?: Hex[]
-}
-
-export type WalletGetAssetsResponse = Record<Hex, Asset[]>
 
 export const ERC7811Utils = {
   /**
@@ -142,7 +127,7 @@ export const ERC7811Utils = {
       asset !== null &&
       typeof asset.address === 'string' &&
       typeof asset.balance === 'string' &&
-      (asset.type === 'ERC20' || asset.type === 'NATIVE') &&
+      (asset.type === 'erc20' || asset.type === 'native') &&
       typeof asset.metadata === 'object' &&
       asset.metadata !== null &&
       typeof asset.metadata['name'] === 'string' &&

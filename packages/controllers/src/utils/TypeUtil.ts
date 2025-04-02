@@ -950,22 +950,24 @@ export type AccountTypeMap = {
     path?: K extends 'bip122' ? string : never
   }
 }
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export type AssetType = 'native' | 'erc20' | 'erc721' | string
+export type AddressOrNative = `0x${string}` | 'native'
+export type Asset = {
+  address: AddressOrNative
+  balance: `0x${string}`
+  type: AssetType
+  metadata: Record<string, unknown>
+}
 export type WalletGetAssetsParams = {
   account: `0x${string}`
-  assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
-  assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+  assetFilter?: Record<`0x${string}`, AddressOrNative[]>
+  assetTypeFilter?: AssetType[]
   chainFilter?: `0x${string}`[]
 }
 
-export type WalletGetAssetsResponse = Record<
-  `0x${string}`,
-  {
-    address: `0x${string}` | 'native'
-    balance: `0x${string}`
-    type: 'NATIVE' | 'ERC20'
-    metadata: Record<string, unknown>
-  }[]
->
+export type WalletGetAssetsResponse = Record<`0x${string}`, Asset[]>
+
 export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
