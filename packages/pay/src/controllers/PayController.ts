@@ -13,7 +13,11 @@ import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKitPayErrorCodes } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
+import type { Exchange } from '../types/exchange.js'
 import type { PaymentOptions } from '../types/options.js'
+import { getExchanges } from '../utils/ApiUtil.js'
+
+const DEFAULT_PAGE = 0
 
 // -- Types --------------------------------------------- //
 
@@ -24,6 +28,8 @@ export interface PayControllerState extends Pick<PaymentOptions, 'paymentAsset'>
   isConfigured: boolean
   error: string | null
   isPaymentInProgress: boolean
+  isLoading: boolean
+  exchanges: Exchange[]
 }
 
 type StateKey = keyof PayControllerState
@@ -46,7 +52,9 @@ const state = proxy<PayControllerState>({
   },
   isConfigured: false,
   error: null,
-  isPaymentInProgress: false
+  isPaymentInProgress: false,
+  exchanges: [],
+  isLoading: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -109,16 +117,20 @@ export const PayController = {
   },
 
   getExchanges() {
-    return [
-      {
-        id: 'coinbase',
-        name: 'Coinbase'
-      },
-      {
-        id: 'binance',
-        name: 'Binance'
-      }
-    ]
+    return state.exchanges
+  },
+
+  async fetchExchanges() {
+    try {
+      state.isLoading = true
+      const response = await getExchanges({
+        page: DEFAULT_PAGE
+      })
+      // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
+      state.exchanges = response.exchanges.slice(0, 2)
+    } finally {
+      state.isLoading = false
+    }
   },
 
   subscribeEvents() {
