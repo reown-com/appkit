@@ -235,7 +235,7 @@ describe('W3mHeader', () => {
   })
 
   describe('Network Selector Visibility', () => {
-    it('should show network selector in Account view when showNetworkSwitcher is true', async () => {
+    it('should show network selector in Account view when enableNetworkSwitch is true', async () => {
       vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
         ...RouterController.state,
         view: 'Account'
@@ -246,7 +246,7 @@ describe('W3mHeader', () => {
       })
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        showNetworkSwitcher: true
+        enableNetworkSwitch: true
       })
 
       element.requestUpdate()
@@ -256,7 +256,7 @@ describe('W3mHeader', () => {
       expect(networkSelect).not.toBeNull()
     })
 
-    it('should hide network selector in Account view when showNetworkSwitcher is false', async () => {
+    it('should hide network selector in Account view when enableNetworkSwitch is false', async () => {
       vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
         ...RouterController.state,
         view: 'Account'
@@ -267,7 +267,7 @@ describe('W3mHeader', () => {
       })
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        showNetworkSwitcher: false
+        enableNetworkSwitch: false
       })
 
       element.requestUpdate()

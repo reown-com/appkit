@@ -61,12 +61,13 @@ export class ModalPage {
   private readonly connectButton: Locator
   private readonly url: string
   private emailAddress = ''
-
-  constructor(
-    public readonly page: Page,
-    public readonly library: string,
-    public readonly flavor: ModalFlavor
-  ) {
+  public readonly page: Page
+  public readonly library: string
+  public readonly flavor: ModalFlavor
+  constructor(page: Page, library: string, flavor: ModalFlavor) {
+    this.page = page
+    this.library = library
+    this.flavor = flavor
     this.connectButton = this.page.getByTestId('connect-button').first()
     if (library === 'multichain-ethers-solana') {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
@@ -163,7 +164,9 @@ export class ModalPage {
   async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
-    await walletPage.load()
+    if (!walletPage.isPageLoaded) {
+      await walletPage.load()
+    }
     if (immediate) {
       uri = await page.getImmidiateConnectUri()
     } else {
@@ -176,17 +179,23 @@ export class ModalPage {
     await walletValidator.expectConnected()
   }
 
-  async emailFlow(
-    emailAddress: string,
-    context: BrowserContext,
+  async emailFlow({
+    emailAddress,
+    context,
+    mailsacApiKey,
+    clickConnectButton = true
+  }: {
+    emailAddress: string
+    context: BrowserContext
     mailsacApiKey: string
-  ): Promise<void> {
+    clickConnectButton?: boolean
+  }): Promise<void> {
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
 
     await email.deleteAllMessages(emailAddress)
-    await this.loginWithEmail(emailAddress)
+    await this.loginWithEmail(emailAddress, undefined, clickConnectButton)
 
     const firstMessageId = await email.getLatestMessageId(emailAddress)
     if (!firstMessageId) {
@@ -222,12 +231,14 @@ export class ModalPage {
     await this.enterOTP(otp)
   }
 
-  async loginWithEmail(email: string, validate = true) {
-    // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
-    await this.page
-      .getByTestId('connect-button')
-      .getByRole('button', { name: 'Connect Wallet' })
-      .click()
+  async loginWithEmail(email: string, validate = true, clickConnectButton = true) {
+    if (clickConnectButton) {
+      // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
+      await this.page
+        .getByTestId('connect-button')
+        .getByRole('button', { name: 'Connect Wallet' })
+        .click()
+    }
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
@@ -314,6 +325,15 @@ export class ModalPage {
     await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
     await accountBtn.click()
     const disconnectBtn = this.page.getByTestId('disconnect-button')
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
+    await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
+    await disconnectBtn.click()
+  }
+
+  async disconnectWithHook(namespace?: string) {
+    const disconnectBtn = this.page.getByTestId(
+      namespace ? `${namespace}-disconnect-button` : 'disconnect-hook-button'
+    )
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()

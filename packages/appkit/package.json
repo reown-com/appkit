@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -133,7 +133,7 @@
     "@walletconnect/universal-provider": "2.19.1",
     "bs58": "6.0.0",
     "valtio": "1.13.2",
-    "viem": ">=2.23.5"
+    "viem": ">=2.23.11"
   },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",
@@ -143,6 +143,7 @@
     "@vue/runtime-core": "3.4.3",
     "@walletconnect/types": "2.19.1",
     "@walletconnect/universal-provider": "2.19.1",
+    "@vue/test-utils": "2.4.6",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "vitest": "2.1.9",

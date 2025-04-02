@@ -100,5 +100,5 @@ export type AppKitOptions = {
    * Enable or disable network switching in the modal.
    * @default true
    */
-  showNetworkSwitcher?: boolean
+  enableNetworkSwitch?: boolean
 } & Omit<OptionsControllerState, 'defaultAccountTypes'>

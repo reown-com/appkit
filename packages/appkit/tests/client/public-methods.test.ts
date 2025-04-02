@@ -30,9 +30,9 @@ import {
   ThemeController
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
-import { ProviderUtil } from '../../src/store'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
@@ -51,7 +51,7 @@ describe('Base Public methods', () => {
   })
 
   it('should open modal', async () => {
-    const prefetch = vi.spyOn(ApiController, 'prefetch').mockResolvedValueOnce(undefined)
+    const prefetch = vi.spyOn(ApiController, 'prefetch').mockResolvedValueOnce([])
     const open = vi.spyOn(ModalController, 'open')
 
     const appKit = new AppKit(mockOptions)
@@ -616,16 +616,21 @@ describe('Base Public methods', () => {
 
     await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider, mainnet.chainNamespace)
 
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
-    expect(setAllAccounts).toHaveBeenCalledWith(
-      [
-        { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
-        { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
-      ],
-      mainnet.chainNamespace
+    await vi.waitFor(
+      () => {
+        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
+        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
+        expect(setAllAccounts).toHaveBeenCalledWith(
+          [
+            { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
+            { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
+          ],
+          mainnet.chainNamespace
+        )
+        expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
+      },
+      { interval: 100, timeout: 2000 }
     )
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
   })
 
   it('should get Reown name', async () => {
@@ -1045,7 +1050,7 @@ describe('Base Public methods', () => {
     })
   })
 
-  it('should handle network switcher UI when showNetworkSwitcher is true', async () => {
+  it('should handle network switcher UI when enableNetworkSwitch is true', async () => {
     vi.spyOn(ChainController, 'getNetworkData').mockReturnValue(
       mainnet as unknown as AdapterNetworkState
     )
@@ -1062,7 +1067,7 @@ describe('Base Public methods', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       allowUnsupportedChain: false,
-      showNetworkSwitcher: true
+      enableNetworkSwitch: true
     })
 
     const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
@@ -1079,7 +1084,7 @@ describe('Base Public methods', () => {
     expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
 
-  it('should handle network switcher UI when showNetworkSwitcher is false', async () => {
+  it('should handle network switcher UI when enableNetworkSwitch is false', async () => {
     vi.spyOn(ChainController, 'getNetworkData').mockReturnValue(
       mainnet as unknown as AdapterNetworkState
     )
@@ -1093,7 +1098,7 @@ describe('Base Public methods', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       allowUnsupportedChain: false,
-      showNetworkSwitcher: false
+      enableNetworkSwitch: false
     })
 
     const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')

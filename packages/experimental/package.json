@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-experimental",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -49,9 +49,10 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
     "lit": "3.1.0",
     "valtio": "1.13.2",
-    "viem": "2.23.5",
+    "viem": "2.23.13",
     "zod": "3.22.4"
   },
   "devDependencies": {

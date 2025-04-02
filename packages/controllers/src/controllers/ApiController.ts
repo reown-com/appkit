@@ -1,6 +1,8 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
@@ -11,7 +13,6 @@ import type {
   ApiGetWalletsResponse,
   WcWallet
 } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
 import { AssetController } from './AssetController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -27,15 +28,17 @@ const imageCountToFetch = 20
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
-  prefetchPromise?: Promise<unknown>
+  promises: Record<string, Promise<unknown>>
   page: number
   count: number
   featured: WcWallet[]
+  allFeatured: WcWallet[]
   recommended: WcWallet[]
+  allRecommended: WcWallet[]
   wallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
-  excludedRDNS: string[]
+  excludedWallets: { rdns: string; name: string }[]
   isFetchingRecommendedWallets: boolean
 }
 
@@ -50,14 +53,17 @@ type StateKey = keyof ApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ApiControllerState>({
+  promises: {},
   page: 1,
   count: 0,
   featured: [],
+  allFeatured: [],
   recommended: [],
+  allRecommended: [],
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
-  excludedRDNS: [],
+  excludedWallets: [],
   isFetchingRecommendedWallets: false
 })
 
@@ -164,6 +170,7 @@ export const ApiController = {
       const images = data.map(d => d.image_id).filter(Boolean)
       await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
       state.featured = data
+      state.allFeatured = data
     }
   },
 
@@ -194,6 +201,7 @@ export const ApiController = {
         )
       )
       state.recommended = data
+      state.allRecommended = data
       state.count = count ?? 0
     } catch {
       // Catch silently
@@ -236,7 +244,7 @@ export const ApiController = {
     state.page = page
   },
 
-  async initializeExcludedWalletRdns({ ids }: { ids: string[] }) {
+  async initializeExcludedWallets({ ids }: { ids: string[] }) {
     const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
 
     const { data } = await api.get<ApiGetWalletsResponse>({
@@ -253,7 +261,7 @@ export const ApiController = {
     if (data) {
       data.forEach(wallet => {
         if (wallet?.rdns) {
-          state.excludedRDNS.push(wallet.rdns)
+          state.excludedWallets.push({ rdns: wallet.rdns, name: wallet.name })
         }
       })
     }
@@ -290,31 +298,34 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
+  initPromise(key: string, fetchFn: () => Promise<void>) {
+    const existingPromise = state.promises[key]
+
+    if (existingPromise) {
+      return existingPromise
+    }
+
+    return (state.promises[key] = fetchFn())
+  },
+
   prefetch({
     fetchConnectorImages = true,
     fetchFeaturedWallets = true,
     fetchRecommendedWallets = true,
     fetchNetworkImages = true
   }: PrefetchParameters = {}) {
-    // Avoid pre-fetch if user is already connected as there is no need to fetch wallets in that case
-    if (AccountController.state.status === 'connected') {
-      return Promise.resolve()
-    }
-
-    if (state.prefetchPromise) {
-      return state.prefetchPromise
-    }
-
     const promises = [
-      fetchConnectorImages && ApiController.fetchConnectorImages(),
-      fetchFeaturedWallets && ApiController.fetchFeaturedWallets(),
-      fetchRecommendedWallets && ApiController.fetchRecommendedWallets(),
-      fetchNetworkImages && ApiController.fetchNetworkImages()
+      fetchConnectorImages &&
+        ApiController.initPromise('connectorImages', ApiController.fetchConnectorImages),
+      fetchFeaturedWallets &&
+        ApiController.initPromise('featuredWallets', ApiController.fetchFeaturedWallets),
+      fetchRecommendedWallets &&
+        ApiController.initPromise('recommendedWallets', ApiController.fetchRecommendedWallets),
+      fetchNetworkImages &&
+        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages)
     ].filter(Boolean)
 
-    state.prefetchPromise = Promise.allSettled(promises)
-
-    return state.prefetchPromise
+    return Promise.allSettled(promises)
   },
 
   prefetchAnalyticsConfig() {
@@ -333,5 +344,24 @@ export const ApiController = {
     } catch (error) {
       OptionsController.setFeatures({ analytics: false })
     }
+  },
+
+  setFilterByNamespace(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      state.featured = state.allFeatured
+      state.recommended = state.allRecommended
+
+      return
+    }
+
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
+    state.featured = state.allFeatured.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.recommended = state.allRecommended.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
   }
 }

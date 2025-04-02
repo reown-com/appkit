@@ -17,7 +17,7 @@ describe('OptionsController', () => {
         polkadot: 'eoa',
         solana: 'eoa'
       },
-      showNetworkSwitcher: true
+      enableNetworkSwitch: true
     })
   })
 

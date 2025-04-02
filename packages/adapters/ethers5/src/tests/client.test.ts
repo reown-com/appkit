@@ -2,12 +2,12 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { providers } from 'ethers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Emitter } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import type { Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { ProviderUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
-import { ProviderUtil } from '@reown/appkit/store'
 
 import { Ethers5Adapter } from '../client'
 import { Ethers5Methods } from '../utils/Ethers5Methods'
@@ -88,9 +88,12 @@ describe('Ethers5Adapter', () => {
   })
 
   describe('Ethers5Adapter -constructor', () => {
-    it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('ethers')
-      expect(adapter.namespace).toBe('eip155')
+    it('should set adapterType', () => {
+      expect(adapter.adapterType).toEqual(CommonConstantsUtil.ADAPTER_TYPES.ETHERS5)
+    })
+
+    it('should set namespace', () => {
+      expect(adapter.namespace).toEqual(CommonConstantsUtil.CHAIN.EVM)
     })
 
     it('should not set info property for injected connector', () => {

@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds showNetworkSwitcher prop to allow disabling of network switching in the modal
+Adds `enableNetworkSwitcher` prop to allow disabling of network switching in the modal

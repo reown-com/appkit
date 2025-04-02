@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 
-import { ChainController, ConnectorController } from '../../exports'
-import { useAppKitAccount, useAppKitNetworkCore } from '../../exports/react'
+import { ChainController, ConnectionController, ConnectorController } from '../../exports/index.js'
+import { useAppKitAccount, useAppKitNetworkCore, useDisconnect } from '../../exports/react.js'
 
 vi.mock('valtio', () => ({
   useSnapshot: vi.fn()
@@ -166,5 +166,58 @@ describe('useAppKitAccount', () => {
         isSmartAccountDeployed: false
       }
     })
+  })
+
+  it('should return account state with namespace parameter', async () => {
+    const mockCaipAddress = 'eip155:1:0x123...'
+    const mockPlainAddress = '0x123...'
+
+    useSnapshot.mockReturnValueOnce({
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              address: mockPlainAddress,
+              caipAddress: mockCaipAddress,
+              allAccounts: [],
+              status: 'connected'
+            }
+          }
+        ]
+      ])
+    })
+
+    const result = useAppKitAccount({ namespace: 'solana' })
+
+    expect(result).toEqual({
+      allAccounts: [],
+      address: undefined,
+      caipAddress: undefined,
+      isConnected: false,
+      status: undefined,
+      embeddedWalletInfo: undefined
+    })
+  })
+})
+
+describe('useDisconnect', () => {
+  it('should disconnect as expected', async () => {
+    const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
+    const { disconnect } = useDisconnect()
+
+    await disconnect()
+
+    expect(disconnectSpy).toHaveBeenCalled()
+  })
+
+  it('should disconnect for specific namespace as expected', async () => {
+    const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
+    const { disconnect } = useDisconnect()
+
+    await disconnect({ namespace: 'solana' })
+
+    expect(disconnectSpy).toHaveBeenCalledWith('solana')
   })
 })
