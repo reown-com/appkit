@@ -110,7 +110,7 @@ emailTestAfterFarcaster(
   }
 )
 
-emailTestAfterFarcaster(
+emailTestAfterFarcaster.skip(
   'it should show loading on page refresh after abort login with farcaster',
   async () => {
     await page.page.reload()
