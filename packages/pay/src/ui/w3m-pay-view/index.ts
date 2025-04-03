@@ -80,9 +80,7 @@ export class W3mPayView extends LitElement {
             <wui-flex flexDirection="column" gap="s">
               ${this.isWalletConnected ? this.renderConnectedView() : this.renderDisconnectedView()}
             </wui-flex>
-
             <wui-separator text="or"></wui-separator>
-
             ${this.renderExchangeOptions()}
           </wui-flex>
         </wui-flex>
@@ -96,7 +94,7 @@ export class W3mPayView extends LitElement {
     this.networkName = paymentAsset.network
     this.tokenSymbol = paymentAsset.metadata.symbol
 
-    if (paymentAsset.amount && paymentAsset.amount !== BigInt(0)) {
+    if (paymentAsset.amount && paymentAsset.amount > 0) {
       try {
         const divisor = 10 ** paymentAsset.metadata.decimals
         this.amount = (Number(paymentAsset.amount) / divisor).toFixed(4)
@@ -173,7 +171,7 @@ export class W3mPayView extends LitElement {
       iconVariant="overlay"
       icon="walletPlaceholder"
       @click=${this.onWalletPayment}
-      ?chevron=${!this.isWalletConnected}
+      ?chevron=${true}
       data-testid="wallet-payment-option"
     >
       <wui-text variant="paragraph-500" color="inherit">Pay from wallet</wui-text>
@@ -218,8 +216,10 @@ export class W3mPayView extends LitElement {
     PayController.handlePayWithWallet()
   }
 
-  private onExchangePayment(_exchangeId: string) {
-    RouterController.push('OnRampProviders')
+  private async onExchangePayment(exchangeId: string) {
+    const payUrl = await PayController.getPayUrl(exchangeId)
+    RouterController.push('PayLoading')
+    window.open(payUrl, '_blank')
   }
 
   private async onDisconnect(e: Event) {

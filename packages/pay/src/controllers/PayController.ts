@@ -1,13 +1,20 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainId, type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import {
+  type ChainId,
+  type ChainNamespace,
+  ConstantsUtil,
+  ContractUtil,
+  ParseUtil
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   ConnectionController,
   ModalController,
-  RouterController
+  RouterController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
 
@@ -15,7 +22,8 @@ import { AppKitPayErrorCodes } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
 import type { PaymentOptions } from '../types/options.js'
-import { getExchanges } from '../utils/ApiUtil.js'
+import { getExchanges, getPayUrl } from '../utils/ApiUtil.js'
+import { formatCaip19Asset } from '../utils/AssetUtil.js'
 
 const DEFAULT_PAGE = 0
 
@@ -43,7 +51,7 @@ const state = proxy<PayControllerState>({
     network: 'eip155:1',
     recipient: '0x0',
     asset: '0x0',
-    amount: 0n,
+    amount: 0,
     metadata: {
       name: '0x0',
       symbol: '0x0',
@@ -133,6 +141,23 @@ export const PayController = {
     }
   },
 
+  async getPayUrl(exchangeId: string) {
+    try {
+      const amount = Number(state.paymentAsset.amount)
+      const response = await getPayUrl({
+        exchangeId,
+        asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
+        amount: amount.toString(16),
+        recipient: `${state.paymentAsset.network}:${state.paymentAsset.recipient}`
+      })
+
+      return response.url
+    } catch (error) {
+      SnackController.showError((error as Error).message)
+      throw new Error((error as Error).message)
+    }
+  },
+
   subscribeEvents() {
     if (state.isConfigured) {
       return
@@ -173,32 +198,40 @@ export const PayController = {
     }
 
     try {
+      state.isPaymentInProgress = true
+      await ModalController.open({
+        view: 'PayLoading'
+      })
       if (state.activeNetwork === ConstantsUtil.CHAIN.EVM) {
         if (state.paymentAsset.asset === 'native') {
-          state.isPaymentInProgress = true
-          await ModalController.open({
-            view: 'PayLoading'
-          })
-          const gasPrice = await provider.request({
-            method: 'eth_gasPrice',
-            params: []
-          })
+          const amount = state.paymentAsset.amount / Number(10 ** 18)
           const res = await ConnectionController.sendTransaction({
             chainNamespace: state.activeNetwork,
             to: state.paymentAsset.recipient as `0x${string}`,
             address: state.activeAddress as `0x${string}`,
-            value: state.paymentAsset.amount,
-            data: '0x',
-            gasPrice: BigInt(gasPrice as string)
+            value: BigInt(amount),
+            data: '0x'
           })
-
           // eslint-disable-next-line no-console
           console.log('res', { res })
         }
+        if (state.paymentAsset.asset.startsWith('0x')) {
+          const tokenAddress = state.paymentAsset.asset as `0x${string}`
+          const amount = ConnectionController.parseUnits(
+            state.paymentAsset.amount.toString(),
+            Number(state.paymentAsset.metadata.decimals)
+          )
+          await ConnectionController.writeContract({
+            fromAddress: AccountController.state.address as `0x${string}`,
+            tokenAddress,
+            args: [state.paymentAsset.recipient as `0x${string}`, amount ?? BigInt(0)],
+            method: 'transfer',
+            abi: ContractUtil.getERC20Abi(tokenAddress),
+            chainNamespace: 'eip155'
+          })
+        }
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('error', { error })
       state.error = (error as Error).message
     } finally {
       state.isPaymentInProgress = false

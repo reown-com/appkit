@@ -2,7 +2,6 @@
 
 import { Button, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
 import { Card } from '@chakra-ui/react'
-import { parseEther } from 'viem'
 
 import { openPay } from '@reown/appkit-pay'
 
@@ -19,10 +18,10 @@ export function AppKitPay() {
             onClick={async () => {
               await openPay({
                 paymentAsset: {
-                  network: 'eip155:84532',
+                  network: 'eip155:8453',
                   recipient: '0x81D8C68Be5EcDC5f927eF020Da834AA57cc3Bd24',
-                  asset: 'native',
-                  amount: parseEther('0.00001'),
+                  asset: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+                  amount: 20,
                   metadata: {
                     name: 'Ethereum',
                     symbol: 'ETH',
