@@ -121,24 +121,21 @@ emailTest('it should show names feature only for EVM networks', async ({ library
 
 emailTest('it should show loading on page refresh', async () => {
   await page.page.reload()
-  // Await validator.expectConnectButtonLoading()
+  await validator.expectConnectButtonLoading()
   await validator.expectAccountButtonReady()
 })
 
 emailTest('it should show snackbar error if failed to fetch token balance', async () => {
   // Clear cache and set offline to simulate token balance fetch failure
   await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
-  await context.route('**/*', route => {
-    route.abort()
-  })
+  await context.setOffline(true)
   await page.openAccount()
   await validator.expectSnackbar('Token Balance Unavailable')
-  await context.unroute('**/*')
   await page.closeModal()
 })
 
 emailTest('it should disconnect correctly', async ({ library }) => {
-  await page.page.reload()
+  await context.setOffline(false)
   if (library === 'solana') {
     await page.openAccount()
     await page.openProfileView()
@@ -150,11 +147,8 @@ emailTest('it should disconnect correctly', async ({ library }) => {
 })
 
 emailTest('it should abort request if it takes more than 30 seconds', async () => {
-  await context.route('**/*', route => {
-    route.abort()
-  })
+  await context.setOffline(true)
   await page.loginWithEmail(tempEmail, false)
   await page.page.waitForTimeout(30_000)
   await validator.expectSnackbar('Something went wrong')
-  await context.unroute('**/*')
 })
