@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-chore: swap state (myTokensWithBalance) reset on network and account change
+Fixes swap balance recent on network and account change

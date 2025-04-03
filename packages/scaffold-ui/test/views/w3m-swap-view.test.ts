@@ -125,16 +125,9 @@ describe('W3mSwapView', () => {
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      currentTab: 0,
+      ...AccountController.state,
       caipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
-      address: '0x123456789abcdef123456789abcdef123456789a',
-      profileName: undefined,
-      profileImage: undefined,
-      balance: undefined,
-      balanceSymbol: undefined,
-      addressLabels: new Map(),
-      allAccounts: [],
-      preferredAccountType: undefined
+      address: '0x123456789abcdef123456789abcdef123456789a'
     })
   })
 
