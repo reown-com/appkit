@@ -34,8 +34,8 @@ const modal = createAppKit({
 })
 
 watchConnectors(wagmiAdapter.wagmiConfig, {
-  onChange(data) {
-    if (data.length > 4) {
+  onChange(connectors) {
+    if (connectors.length > 4) {
       reconnect(wagmiAdapter.wagmiConfig)
     }
   }
