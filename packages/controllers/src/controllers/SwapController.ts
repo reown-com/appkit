@@ -302,6 +302,7 @@ export const SwapController = {
     state.networkTokenSymbol = initialState.networkTokenSymbol
     state.networkBalanceInUSD = initialState.networkBalanceInUSD
     state.inputError = initialState.inputError
+    state.myTokensWithBalance = initialState.myTokensWithBalance
   },
 
   resetValues() {
