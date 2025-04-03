@@ -421,7 +421,11 @@ export abstract class AppKitBaseClient {
           const provider = ProviderUtil.getProvider(
             ChainController.state.activeChain as ChainNamespace
           )
-          const result = await adapter?.sendTransaction({ ...args, provider })
+          const result = await adapter?.sendTransaction({
+            ...args,
+            caipNetwork: this.getCaipNetwork(),
+            provider
+          })
 
           return result?.hash || ''
         }
