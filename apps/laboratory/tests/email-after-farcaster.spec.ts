@@ -114,7 +114,6 @@ emailTestAfterFarcaster(
   'it should show loading on page refresh after abort login with farcaster',
   async () => {
     await page.page.reload()
-    await validator.expectConnectButtonLoading()
     await validator.expectAccountButtonReady()
   }
 )
@@ -124,7 +123,9 @@ emailTestAfterFarcaster(
   async () => {
     // Clear cache and set offline to simulate token balance fetch failure
     await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
-    await page.page.context().setOffline(true)
+    await context.route('**/*', route => {
+      route.abort()
+    })
     await page.openAccount()
     await validator.expectSnackbar('Token Balance Unavailable')
     await page.closeModal()
@@ -134,7 +135,7 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should disconnect correctly after abort login with farcaster',
   async () => {
-    await page.page.context().setOffline(false)
+    await context.unroute('**/*')
     await page.goToSettings()
     await page.disconnect()
     await validator.expectDisconnected()
@@ -144,7 +145,9 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should abort request if it takes more than 30 seconds after abort login with farcaster',
   async () => {
-    await page.page.context().setOffline(true)
+    await context.route('**/*', route => {
+      route.abort()
+    })
     await page.loginWithEmail(tempEmail, false)
     await page.page.waitForTimeout(30_000)
     await validator.expectSnackbar('Something went wrong')

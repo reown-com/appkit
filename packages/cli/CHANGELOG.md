@@ -1,5 +1,15 @@
 # @reown/appkit-cli
 
+## 1.7.2-7f005fd744d7d75ca9c0ce920705ec7f95908dbe.0
+
+### Patch Changes
+
+- [#4091](https://github.com/reown-com/appkit/pull/4091) [`1fc664d`](https://github.com/reown-com/appkit/commit/1fc664db6b109ac2ce9c66aec31a3ae2d6419589) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the WalletConnect wallet button wasn't opening the "All Wallets" modal view on mobile devices
+
+- Test version for social login improvements
+
+- [#4094](https://github.com/reown-com/appkit/pull/4094) [`af1e79a`](https://github.com/reown-com/appkit/commit/af1e79a76d32def90c9605dc8e53a2ade002033c) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where users were required to re-check the legal checkbox after navigating away and returning to the connect view
+
 ## 1.7.1
 
 ### Patch Changes

@@ -38,7 +38,9 @@ export function authConnector(parameters: AuthParameters) {
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
 
-    async connect(options = {}) {
+    async connect(
+      options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
+    ) {
       const provider = await this.getProvider()
       let chainId = options.chainId
 
@@ -58,7 +60,8 @@ export function authConnector(parameters: AuthParameters) {
         accounts
       } = await provider.connect({
         chainId,
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155,
+        socialUri: options.socialUri
       })
 
       currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
