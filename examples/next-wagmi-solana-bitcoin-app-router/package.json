@@ -13,7 +13,7 @@
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
-    "@tanstack/react-query": "5.67.1",
+    "@tanstack/react-query": "5.67.2",
     "@wagmi/core": "2.16.5",
     "next": "14.2.25",
     "next-themes": "0.4.5",
