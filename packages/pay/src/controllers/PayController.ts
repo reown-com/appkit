@@ -1,17 +1,12 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import {
-  type ChainId,
-  type ChainNamespace,
-  ConstantsUtil,
-  ContractUtil,
-  ParseUtil
-} from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil, ContractUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   ConnectionController,
+  CoreHelperUtil,
   ModalController,
   RouterController,
   SnackController
@@ -30,9 +25,6 @@ const DEFAULT_PAGE = 0
 // -- Types --------------------------------------------- //
 
 export interface PayControllerState extends Pick<PaymentOptions, 'paymentAsset'> {
-  activeAddress: string
-  activeNetwork: string
-  activeChainId: ChainId
   isConfigured: boolean
   error: string | null
   isPaymentInProgress: boolean
@@ -44,9 +36,6 @@ type StateKey = keyof PayControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<PayControllerState>({
-  activeAddress: '',
-  activeNetwork: '',
-  activeChainId: 0,
   paymentAsset: {
     network: 'eip155:1',
     recipient: '0x0',
@@ -79,29 +68,12 @@ export const PayController = {
   },
 
   async handleOpenPay(options: PaymentOptions) {
-    this.populateState()
     this.setPaymentConfig(options)
     this.subscribeEvents()
     state.isConfigured = true
     await ModalController.open({
       view: 'Pay'
     })
-  },
-
-  populateState() {
-    const activeChain = ChainController.state.activeChain as ChainNamespace
-    if (!activeChain) {
-      return
-    }
-    state.activeNetwork = activeChain
-    const activeAddress = AccountController.state.caipAddress
-    if (!activeAddress) {
-      return
-    }
-    const { chainId, address } = ParseUtil.parseCaipAddress(activeAddress)
-
-    state.activeAddress = address
-    state.activeChainId = chainId
   },
 
   // -- Setters ----------------------------------------- //
@@ -113,10 +85,6 @@ export const PayController = {
     } catch (error) {
       state.error = (error as Error).message
     }
-  },
-
-  setActiveAddress(activeAddress: string) {
-    state.activeAddress = activeAddress
   },
 
   // -- Getters ----------------------------------------- //
@@ -169,8 +137,6 @@ export const PayController = {
       if (!provider) {
         return
       }
-      state.activeNetwork = chainNamespace
-
       await this.handlePayment()
     })
 
@@ -178,23 +144,62 @@ export const PayController = {
       if (!caipAddress) {
         return
       }
-
-      const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-
-      state.activeAddress = address
-      state.activeChainId = chainId
-
       await this.handlePayment()
     })
   },
   async handlePayment() {
-    if (!state.activeAddress || !state.activeChainId || !state.activeNetwork) {
+    const caipAddress = AccountController.state.caipAddress
+    if (!caipAddress) {
+      return
+    }
+    const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
+    const chainNamespace = ChainController.state.activeChain as ChainNamespace
+    if (!address || !chainId || !chainNamespace) {
       return
     }
 
-    const provider = ProviderUtil.getProvider(state.activeNetwork as ChainNamespace)
+    const provider = ProviderUtil.getProvider(chainNamespace)
     if (!provider) {
       return
+    }
+
+    const caipNetwork = ChainController.state.activeCaipNetwork
+    if (!caipNetwork) {
+      return
+    }
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+
+    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+      approvedCaipNetworkIds,
+      requestedCaipNetworks
+    )
+
+    const assetCaipNetwork = sortedNetworks.find(
+      network => network.caipNetworkId === state.paymentAsset.network
+    )
+
+    if (!assetCaipNetwork) {
+      return
+    }
+
+    if (assetCaipNetwork.caipNetworkId !== caipNetwork.caipNetworkId) {
+      try {
+        const isSupportingAllNetworks = ChainController.getNetworkProp(
+          'supportsAllNetworks',
+          assetCaipNetwork.chainNamespace
+        )
+        if (
+          approvedCaipNetworkIds?.includes(assetCaipNetwork.caipNetworkId) ||
+          isSupportingAllNetworks
+        ) {
+          await ChainController.switchActiveNetwork(assetCaipNetwork)
+        }
+      } catch (error) {
+        SnackController.showError('Unable to switch network to the configured asset network')
+
+        return
+      }
     }
 
     try {
@@ -202,13 +207,13 @@ export const PayController = {
       await ModalController.open({
         view: 'PayLoading'
       })
-      if (state.activeNetwork === ConstantsUtil.CHAIN.EVM) {
+      if (chainNamespace === ConstantsUtil.CHAIN.EVM) {
         if (state.paymentAsset.asset === 'native') {
           const amount = state.paymentAsset.amount / Number(10 ** 18)
           const res = await ConnectionController.sendTransaction({
-            chainNamespace: state.activeNetwork,
+            chainNamespace,
             to: state.paymentAsset.recipient as `0x${string}`,
-            address: state.activeAddress as `0x${string}`,
+            address: address as `0x${string}`,
             value: BigInt(amount),
             data: '0x'
           })
@@ -256,8 +261,15 @@ export const PayController = {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_AMOUNT)
     }
   },
+
   handlePayWithWallet() {
-    if (!state.activeAddress || !state.activeChainId || !state.activeNetwork) {
+    const caipAddress = AccountController.state.caipAddress
+    if (!caipAddress) {
+      return
+    }
+    const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
+    const chainNamespace = ChainController.state.activeChain as ChainNamespace
+    if (!address || !chainId || !chainNamespace) {
       RouterController.push('Connect')
     }
     this.handlePayment()
