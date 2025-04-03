@@ -682,7 +682,7 @@ export abstract class AppKitBaseClient {
         const account = isSameNamespace && address ? address : accountAddress
 
         if (account) {
-          this.syncAccount({ address: account, chainId, chainNamespace })
+          this.syncAccount({ address: account, chainId: caipNetwork.id, chainNamespace })
         }
       } else {
         this.setUnsupportedNetwork(chainId)
@@ -1099,12 +1099,15 @@ export abstract class AppKitBaseClient {
     namespace: ChainNamespace
   ) {
     const adapter = this.getAdapter(namespace)
+    const caipNetwork =
+      this.caipNetworks?.find(n => n.id.toString() === chainId.toString()) ||
+      this.getCaipNetwork(namespace)
 
     if (adapter) {
       const balance = await adapter.getBalance({
         address,
         chainId,
-        caipNetwork: this.getCaipNetwork(namespace),
+        caipNetwork,
         tokens: this.options.tokens
       })
       this.setBalance(balance.balance, balance.symbol, namespace)

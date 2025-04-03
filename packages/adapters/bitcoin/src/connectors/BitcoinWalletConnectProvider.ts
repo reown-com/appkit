@@ -102,6 +102,11 @@ export class BitcoinWalletConnectConnector
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async switchNetwork(caipNetworkId: string): Promise<void> {
+    this.provider.setDefaultChain(caipNetworkId)
+  }
+
   public request<T>(args: RequestArguments) {
     // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
     return this.internalRequest(args) as T

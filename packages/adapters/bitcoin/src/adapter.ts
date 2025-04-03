@@ -229,6 +229,16 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
   }
 
+  override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+    const connector = params.provider as BitcoinConnector
+
+    if (!connector) {
+      throw new Error('BitcoinAdapter:switchNetwork - connector is undefined')
+    }
+
+    await connector.switchNetwork(params.caipNetwork.caipNetworkId)
+  }
+
   // -- Unused => Refactor ------------------------------------------- //
 
   override getProfile(
@@ -313,8 +323,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     connector.on('accountsChanged', accountsChanged)
     this.eventsToUnbind.push(() => connector.removeListener('accountsChanged', accountsChanged))
 
-    const chainChanged = (data: string) => {
-      this.emit('switchNetwork', { chainId: data })
+    const chainChanged = async (data: string) => {
+      const address = await this.connect({
+        id: connector.id,
+        chainId: data,
+        type: ''
+      })
+      this.emit('switchNetwork', { chainId: data, address: address.address })
     }
     connector.on('chainChanged', chainChanged)
     this.eventsToUnbind.push(() => connector.removeListener('chainChanged', chainChanged))

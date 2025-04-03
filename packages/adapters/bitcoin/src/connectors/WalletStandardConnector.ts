@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
@@ -237,6 +238,11 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     callback(...wrapWallets(get()))
 
     return on('register', (...wallets) => callback(...wrapWallets(wallets)))
+  }
+
+  // @ts-expect-error the original method requires a parameter
+  public async switchNetwork(caipNetworkId: string): Promise<void> {
+    throw new Error(`${this.name} wallet does not support network switching`)
   }
 }
 
