@@ -235,6 +235,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
 
     const connector = params.provider as BitcoinConnector
+
     if (!connector) {
       throw new Error('BitcoinAdapter:switchNetwork - provider is undefined')
     }
