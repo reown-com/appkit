@@ -151,7 +151,6 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   public async switchNetwork(caipNetworkId: string): Promise<void> {
     const networkName = this.mapCaipNetworkToXverse(caipNetworkId)
     await this.internalRequest('wallet_changeNetwork', { name: networkName })
-    this.emit('chainChanged', caipNetworkId)
   }
 
   private mapCaipNetworkToXverse(caipNetworkId: string): BitcoinNetworkType {
