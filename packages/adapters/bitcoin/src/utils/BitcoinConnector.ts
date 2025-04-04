@@ -10,6 +10,7 @@ export interface BitcoinConnector extends ChainAdapterConnector, Provider {
   signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
   sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string>
   signPSBT(params: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse>
+  switchNetwork(caipNetworkId: string): Promise<void>
 }
 
 export namespace BitcoinConnector {
