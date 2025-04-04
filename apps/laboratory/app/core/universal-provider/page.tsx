@@ -212,7 +212,7 @@ export default function UniversalProviderPage() {
         return
       }
 
-      const signature: string = await provider.request(payload, network)
+      const { signature } = await provider.request<{ signature: string }>(payload, network)
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
