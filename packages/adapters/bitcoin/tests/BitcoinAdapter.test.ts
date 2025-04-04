@@ -483,12 +483,13 @@ describe.skip('BitcoinAdapter', () => {
     })
   })
 
-  describe.only('connector events', () => {
+  describe('connector events', () => {
     let mocks: ReturnType<typeof mockSatsConnectProvider>
     const listeners = {
       accountChanged: vi.fn(),
       disconnect: vi.fn(),
-      switchNetwork: vi.fn()
+      switchNetwork: vi.fn(),
+      chainChanged: vi.fn()
     }
 
     beforeEach(async () => {
@@ -548,6 +549,14 @@ describe.skip('BitcoinAdapter', () => {
     })
 
     it('should emit switchNetwork on networkChange', () => {
+      vi.spyOn(adapter, 'connect').mockResolvedValueOnce({
+        id: 'mock_id',
+        type: 'ANNOUNCED',
+        address: 'mock_address',
+        chainId: 'mock_chain_id',
+        provider: undefined
+      })
+
       const callback = mocks.wallet.addListener.mock.calls.find(
         ([name]) => name === 'networkChange'
       )![1]

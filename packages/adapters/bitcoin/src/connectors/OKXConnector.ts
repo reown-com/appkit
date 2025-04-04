@@ -111,8 +111,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     }
   }
 
-  // @ts-expect-error the original method requires a parameter
-  public async switchNetwork(caipNetworkId: string): Promise<void> {
+  public async switchNetwork(_caipNetworkId: string): Promise<void> {
     throw new Error(`${this.name} wallet does not support network switching`)
   }
 

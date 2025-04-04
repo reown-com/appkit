@@ -19,6 +19,7 @@ import type { RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { mapCaipNetworkToXverseName, mapXverseNameToCaipNetwork } from '../utils/HelperUtil.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
 export class SatsConnectConnector extends ProviderEventEmitter implements BitcoinConnector {
@@ -149,19 +150,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   public async switchNetwork(caipNetworkId: string): Promise<void> {
-    const networkName = this.mapCaipNetworkToXverse(caipNetworkId)
+    const networkName = mapCaipNetworkToXverseName(caipNetworkId)
     await this.internalRequest('wallet_changeNetwork', { name: networkName })
-  }
-
-  private mapCaipNetworkToXverse(caipNetworkId: string): BitcoinNetworkType {
-    switch (caipNetworkId) {
-      case 'bip122:000000000019d6689c085ae165831e93':
-        return BitcoinNetworkType.Mainnet
-      case 'bip122:000000000933ea01ad0ee984209779ba':
-        return BitcoinNetworkType.Signet
-      default:
-        throw new Error(`Network ${caipNetworkId} not supported by Xverse wallet`)
-    }
   }
 
   public async sendTransfer({
@@ -230,21 +220,10 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       }),
 
       provider.addListener('networkChange', _data => {
-        const chainId = this.mapXverseToCaipNetwork(_data.stacks.name as BitcoinNetworkType)
+        const chainId = mapXverseNameToCaipNetwork(_data.stacks.name as BitcoinNetworkType)
         this.emit('chainChanged', chainId)
       })
     )
-  }
-
-  private mapXverseToCaipNetwork(network: BitcoinNetworkType): string {
-    switch (network) {
-      case BitcoinNetworkType.Mainnet:
-        return 'bip122:000000000019d6689c085ae165831e93'
-      case BitcoinNetworkType.Signet:
-        return 'bip122:000000000933ea01ad0ee984209779ba'
-      default:
-        throw new Error(`Network ${network} not supported by sats-connect connector`)
-    }
   }
 
   private unbindEvents() {
