@@ -102,7 +102,8 @@ export class BitcoinWalletConnectConnector
     }
   }
 
-  public async switchNetwork(caipNetworkId: string): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async switchNetwork(caipNetworkId: string) {
     this.provider.setDefaultChain(caipNetworkId)
   }
 

@@ -230,13 +230,16 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    const connector = params.provider as BitcoinConnector
-
-    if (!connector) {
-      throw new Error('BitcoinAdapter:switchNetwork - connector is undefined')
+    if (params.providerType === 'WALLET_CONNECT' || params.providerType === 'AUTH') {
+      return await super.switchNetwork(params)
     }
 
-    await connector.switchNetwork(params.caipNetwork.caipNetworkId)
+    const connector = params.provider as BitcoinConnector
+    if (!connector) {
+      throw new Error('BitcoinAdapter:switchNetwork - provider is undefined')
+    }
+
+    return await connector.switchNetwork(params.caipNetwork.caipNetworkId)
   }
 
   // -- Unused => Refactor ------------------------------------------- //

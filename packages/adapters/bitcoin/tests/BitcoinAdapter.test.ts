@@ -31,7 +31,7 @@ function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.
   }
 }
 
-describe.skip('BitcoinAdapter', () => {
+describe('BitcoinAdapter', () => {
   let adapter: BitcoinAdapter
   let api: ReturnType<typeof mockBitcoinApi>
 
@@ -508,7 +508,7 @@ describe.skip('BitcoinAdapter', () => {
         })
       )
 
-      listeners.accountChanged = vi.fn(() => {})
+      listeners.accountChanged = vi.fn()
       adapter.on('accountChanged', listeners.accountChanged)
       listeners.disconnect = vi.fn()
       adapter.on('disconnect', listeners.disconnect)
@@ -548,7 +548,7 @@ describe.skip('BitcoinAdapter', () => {
       expect(listeners.disconnect).toHaveBeenCalled()
     })
 
-    it('should emit switchNetwork on networkChange', () => {
+    it('should emit switchNetwork on networkChange', async () => {
       vi.spyOn(adapter, 'connect').mockResolvedValueOnce({
         id: 'mock_id',
         type: 'ANNOUNCED',
@@ -561,7 +561,7 @@ describe.skip('BitcoinAdapter', () => {
         ([name]) => name === 'networkChange'
       )![1]
 
-      callback({
+      await callback({
         type: 'networkChange',
         stacks: { name: BitcoinNetworkType.Signet },
         bitcoin: { name: BitcoinNetworkType.Signet }
