@@ -61,7 +61,6 @@ describe('Base Public methods', () => {
       wallets: [],
       search: [],
       isAnalyticsEnabled: false,
-      excludedRDNS: [],
       isFetchingRecommendedWallets: false
     })
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
