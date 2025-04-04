@@ -1,5 +1,18 @@
 # @reown/appkit-scaffold-ui
 
+## 1.7.3
+
+### Patch Changes
+
+- [#4126](https://github.com/reown-com/appkit/pull/4126) [`116b854`](https://github.com/reown-com/appkit/commit/116b854b9d94192fad1d6a6f1b9b7e511ff118fe) Thanks [@KannuSingh](https://github.com/KannuSingh)! - Fixes swap balance recent on network and account change
+
+- Updated dependencies [[`116b854`](https://github.com/reown-com/appkit/commit/116b854b9d94192fad1d6a6f1b9b7e511ff118fe)]:
+  - @reown/appkit-controllers@1.7.3
+  - @reown/appkit-utils@1.7.3
+  - @reown/appkit-common@1.7.3
+  - @reown/appkit-ui@1.7.3
+  - @reown/appkit-wallet@1.7.3
+
 ## 1.7.2
 
 ### Patch Changes
