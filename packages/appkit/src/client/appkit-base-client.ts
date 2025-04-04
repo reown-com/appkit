@@ -686,7 +686,7 @@ export abstract class AppKitBaseClient {
         const account = isSameNamespace && address ? address : accountAddress
 
         if (account) {
-          this.syncAccount({ address: account, chainId, chainNamespace })
+          this.syncAccount({ address: account, chainId: caipNetwork.id, chainNamespace })
         }
       } else {
         this.setUnsupportedNetwork(chainId)
@@ -1103,12 +1103,13 @@ export abstract class AppKitBaseClient {
     namespace: ChainNamespace
   ) {
     const adapter = this.getAdapter(namespace)
+    const caipNetwork = ChainController.getCaipNetworkByNamespace(namespace, chainId)
 
     if (adapter) {
       const balance = await adapter.getBalance({
         address,
         chainId,
-        caipNetwork: this.getCaipNetwork(namespace),
+        caipNetwork,
         tokens: this.options.tokens
       })
       this.setBalance(balance.balance, balance.symbol, namespace)
@@ -1282,8 +1283,16 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Public Internal ---------------------------------------------------
-  public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
+  public getCaipNetwork = (chainNamespace?: ChainNamespace, id?: string | number) => {
     if (chainNamespace) {
+      const caipNetworkWithId = ChainController.getNetworkData(
+        chainNamespace
+      )?.requestedCaipNetworks?.find(c => c.id === id)
+
+      if (caipNetworkWithId) {
+        return caipNetworkWithId
+      }
+
       const namespaceCaipNetwork = ChainController.getNetworkData(chainNamespace)?.caipNetwork
 
       if (namespaceCaipNetwork) {
