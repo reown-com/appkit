@@ -66,7 +66,13 @@ describe('Base Public methods', () => {
     })
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
-      connectors: []
+      connectors: [
+        {
+          id: 'test-connector',
+          type: 'WALLET_CONNECT',
+          name: 'Test Connector'
+        } as Connector
+      ]
     })
   })
 

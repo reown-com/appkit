@@ -1,5 +1,3 @@
-import { state } from 'lit/decorators.js'
-
 import {
   ConnectionController,
   ConstantsUtil,
@@ -13,7 +11,6 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
   // -- State & Properties -------------------------------- //
-  @state() protected override isLoading = true
 
   // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
@@ -27,12 +24,7 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     }
 
     // Initialize loading state and subscribe to URI changes
-    this.updateLoadingState()
-    this.unsubscribe.push(
-      ConnectionController.subscribeKey('wcUri', () => {
-        this.updateLoadingState()
-      })
-    )
+    this.unsubscribe.push()
 
     this.secondaryBtnLabel = undefined
     this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
@@ -61,9 +53,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   // -- Private ------------------------------------------- //
 
   // Update the isLoading state based on required conditions
-  private updateLoadingState() {
-    this.isLoading = !this.uri
-  }
 
   protected override onRender = () => {
     if (!this.ready && this.uri) {
@@ -73,8 +62,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   protected override onConnect = () => {
-    this.updateLoadingState()
-
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
@@ -114,6 +101,24 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
 
   protected override onTryAgain() {
     if (!this.buffering) {
+      // Clear existing timeouts
+      clearTimeout(this.btnLabelTimeout)
+      clearTimeout(this.labelTimeout)
+
+      // Reset labels to initial state
+      this.secondaryBtnLabel = undefined
+      this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+
+      // Restart timeouts
+      this.btnLabelTimeout = setTimeout(() => {
+        this.secondaryBtnLabel = 'Try again'
+        this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+      }, ConstantsUtil.FIVE_SEC_MS)
+      this.labelTimeout = setTimeout(() => {
+        this.secondaryLabel = `Hold tight... it's taking longer than expected`
+      }, ConstantsUtil.THREE_SEC_MS)
+
+      // Reset error state and attempt connection again
       ConnectionController.setWcError(false)
       this.onConnect()
     }
