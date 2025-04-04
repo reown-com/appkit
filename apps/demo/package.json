@@ -1,5 +1,5 @@
 {
-  "name": "@apps/builder",
+  "name": "@apps/demo",
   "version": "1.1.7",
   "private": true,
   "scripts": {
@@ -52,7 +52,8 @@
     "tailwind-merge": "2.2.1",
     "tailwindcss-animate": "1.0.7",
     "viem": "2.23.13",
-    "wagmi": "2.14.15"
+    "wagmi": "2.14.15",
+    "valtio": "1.13.2"
   },
   "devDependencies": {
     "@types/node": "22.13.4",
