@@ -23,7 +23,6 @@ import { mapCaipNetworkToXverseName, mapXverseNameToCaipNetwork } from '../utils
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
 export class SatsConnectConnector extends ProviderEventEmitter implements BitcoinConnector {
-  static readonly PROVIDER_ID = 'XverseProviders.BitcoinProvider'
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 

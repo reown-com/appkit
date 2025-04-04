@@ -1103,9 +1103,7 @@ export abstract class AppKitBaseClient {
     namespace: ChainNamespace
   ) {
     const adapter = this.getAdapter(namespace)
-    const caipNetwork =
-      this.caipNetworks?.find(n => n.id.toString() === chainId.toString()) ||
-      this.getCaipNetwork(namespace)
+    const caipNetwork = ChainController.getCaipNetworkByNamespace(namespace, chainId)
 
     if (adapter) {
       const balance = await adapter.getBalance({
@@ -1285,8 +1283,16 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Public Internal ---------------------------------------------------
-  public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
+  public getCaipNetwork = (chainNamespace?: ChainNamespace, id?: string | number) => {
     if (chainNamespace) {
+      const caipNetworkWithId = ChainController.getNetworkData(
+        chainNamespace
+      )?.requestedCaipNetworks?.find(c => c.id === id)
+
+      if (caipNetworkWithId) {
+        return caipNetworkWithId
+      }
+
       const namespaceCaipNetwork = ChainController.getNetworkData(chainNamespace)?.caipNetwork
 
       if (namespaceCaipNetwork) {
