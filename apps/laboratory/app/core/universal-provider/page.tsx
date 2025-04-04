@@ -29,6 +29,10 @@ import { OPTIONAL_NAMESPACES, PROJECT_ID, networks } from '../constants'
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 
+type SignMessageResponse = {
+  signature: string
+}
+
 export default function UniversalProviderPage() {
   const toast = useChakraToast()
   const [provider, setProvider] = useState<UniversalProvider | null>(null)
@@ -212,7 +216,7 @@ export default function UniversalProviderPage() {
         return
       }
 
-      const signature: string = await provider.request(payload, network)
+      const { signature } = await provider.request<SignMessageResponse>(payload, network)
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
