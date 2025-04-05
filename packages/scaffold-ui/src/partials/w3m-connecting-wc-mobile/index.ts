@@ -10,14 +10,17 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
+  // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
   private labelTimeout?: ReturnType<typeof setTimeout> = undefined
 
+  // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-mobile: No wallet provided')
     }
+
     this.secondaryBtnLabel = undefined
     this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
@@ -43,6 +46,7 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   // -- Private ------------------------------------------- //
+
   protected override onRender = () => {
     if (!this.ready && this.uri) {
       this.ready = true
@@ -90,6 +94,24 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
 
   protected override onTryAgain() {
     if (!this.buffering) {
+      // Clear existing timeouts
+      clearTimeout(this.btnLabelTimeout)
+      clearTimeout(this.labelTimeout)
+
+      // Reset labels to initial state
+      this.secondaryBtnLabel = undefined
+      this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+
+      // Restart timeouts
+      this.btnLabelTimeout = setTimeout(() => {
+        this.secondaryBtnLabel = 'Try again'
+        this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+      }, ConstantsUtil.FIVE_SEC_MS)
+      this.labelTimeout = setTimeout(() => {
+        this.secondaryLabel = `Hold tight... it's taking longer than expected`
+      }, ConstantsUtil.THREE_SEC_MS)
+
+      // Reset error state and attempt connection again
       ConnectionController.setWcError(false)
       this.onConnect()
     }
