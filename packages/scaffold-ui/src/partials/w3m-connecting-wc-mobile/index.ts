@@ -21,8 +21,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       throw new Error('w3m-connecting-wc-mobile: No wallet provided')
     }
 
-    // Initialize loading state and subscribe to URI changes
-
     this.secondaryBtnLabel = undefined
     this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
