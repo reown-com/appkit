@@ -11,7 +11,7 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@walletconnect/ethereum-provider": "2.18.0-canary-ak-8",
-    "next": "14.2.25",
+    "next": "14.2.26",
     "next-themes": "0.4.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
