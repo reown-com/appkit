@@ -10,8 +10,6 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
-  // -- State & Properties -------------------------------- //
-
   // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
   private labelTimeout?: ReturnType<typeof setTimeout> = undefined
@@ -24,7 +22,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     }
 
     // Initialize loading state and subscribe to URI changes
-    this.unsubscribe.push()
 
     this.secondaryBtnLabel = undefined
     this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
@@ -51,8 +48,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   // -- Private ------------------------------------------- //
-
-  // Update the isLoading state based on required conditions
 
   protected override onRender = () => {
     if (!this.ready && this.uri) {
