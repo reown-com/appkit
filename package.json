@@ -1,8 +1,14 @@
 {
-  "name": "shadow-test-apkt",
-  "version": "0.0.4",
+  "name": "@reown/appkit-monorepo",
+  "version": "1.7.1",
   "private": true,
   "type": "module",
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/reown-com/appkit",
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  },
   "scripts": {
     "prebuild": "node scripts/inject-version.js",
     "build:clean": "turbo run build:clean --filter={./packages/*}",
@@ -16,8 +22,10 @@
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "gallery-new": "turbo run dev --filter={./apps/gallery-new}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
-    "builder:dev": "pnpm --filter @apps/builder dev",
-    "builder:build": "pnpm build; pnpm --filter @apps/builder build",
+    "builder:dev": "pnpm --filter @apps/demo dev",
+    "demo:dev": "pnpm --filter @apps/demo dev",
+    "builder:build": "pnpm build; pnpm --filter @apps/demo build",
+    "demo:build": "pnpm build; pnpm --filter @apps/demo build",
     "laboratory-new": "pnpm --filter @apps/laboratory-new dev",
     "browser-extension": "pnpm --filter @apps/browser-extension dev",
     "examples": "turbo run dev --filter={./examples/*}",
@@ -83,6 +91,9 @@
       "elliptic": ">=6.6.1",
       "axios": ">=1.8.2",
       "ws": ">=7.5.10"
+    },
+    "patchedDependencies": {
+      "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
     }
   },
   "overrides": {

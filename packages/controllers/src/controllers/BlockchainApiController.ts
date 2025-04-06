@@ -183,7 +183,8 @@ export const BlockchainApiController = {
     amount,
     from,
     to,
-    userAddress
+    userAddress,
+    disableEstimate
   }: BlockchainApiGenerateSwapCalldataRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
@@ -192,7 +193,7 @@ export const BlockchainApiController = {
       throw new Error('Network not supported for Swaps')
     }
 
-    return state.client.generateSwapCalldata({ amount, from, to, userAddress })
+    return state.client.generateSwapCalldata({ amount, from, to, userAddress, disableEstimate })
   },
 
   async generateApproveCalldata({

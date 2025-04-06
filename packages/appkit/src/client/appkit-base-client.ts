@@ -104,6 +104,7 @@ export abstract class AppKitBaseClient {
   protected universalProviderInitPromise?: Promise<void>
   protected caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
   protected defaultCaipNetwork?: CaipNetwork
+  protected hasSwitchedToPreferredAccountTypeOnConnect = false
 
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
@@ -198,8 +199,10 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
-    OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
+    OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
 
+    OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
+    OptionsController.setCustomRpcUrls(options.customRpcUrls)
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
@@ -214,6 +217,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
+    OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
@@ -262,57 +266,17 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Network Initialization ---------------------------------------------------
-  protected getUnsupportedNetwork(caipNetworkId: CaipNetworkId) {
-    return {
-      id: caipNetworkId.split(':')[1],
-      caipNetworkId,
-      name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
-      chainNamespace: caipNetworkId.split(':')[0],
-      nativeCurrency: {
-        name: '',
-        decimals: 0,
-        symbol: ''
-      },
-      rpcUrls: {
-        default: {
-          http: []
-        }
-      }
-    } as CaipNetwork
-  }
-
   protected setUnsupportedNetwork(chainId: string | number) {
     const namespace = this.getActiveChainNamespace()
 
     if (namespace) {
-      const unsupportedNetwork = this.getUnsupportedNetwork(`${namespace}:${chainId}`)
+      const unsupportedNetwork = CaipNetworksUtil.getUnsupportedNetwork(`${namespace}:${chainId}`)
       ChainController.setActiveCaipNetwork(unsupportedNetwork)
     }
   }
 
   protected getDefaultNetwork() {
-    const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
-
-    if (caipNetworkIdFromStorage) {
-      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkIdFromStorage)
-
-      if (caipNetwork) {
-        return caipNetwork
-      }
-
-      if (this.defaultCaipNetwork) {
-        // It's still a case that the network in storage might not be found in the networks array
-        return this.defaultCaipNetwork
-      }
-
-      return this.getUnsupportedNetwork(caipNetworkIdFromStorage)
-    }
-
-    if (this.defaultCaipNetwork) {
-      return this.defaultCaipNetwork
-    }
-
-    return this.caipNetworks?.[0]
+    return CaipNetworksUtil.getCaipNetworkFromStorage(this.defaultCaipNetwork)
   }
 
   protected extendCaipNetwork(network: AppKitNetwork, options: AppKitOptions) {
@@ -327,6 +291,7 @@ export abstract class AppKitBaseClient {
   protected extendCaipNetworks(options: AppKitOptions) {
     const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
+      customRpcUrls: options.customRpcUrls,
       projectId: options.projectId
     })
 
@@ -338,6 +303,7 @@ export abstract class AppKitBaseClient {
     const extendedNetwork = defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
           customNetworkImageUrls: options.chainImages,
+          customRpcUrls: options.customRpcUrls,
           projectId: options.projectId
         })
       : undefined
@@ -431,6 +397,7 @@ export abstract class AppKitBaseClient {
         ProviderUtil.resetChain(namespace)
         this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
+        this.hasSwitchedToPreferredAccountTypeOnConnect = false
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -456,7 +423,11 @@ export abstract class AppKitBaseClient {
           const provider = ProviderUtil.getProvider(
             ChainController.state.activeChain as ChainNamespace
           )
-          const result = await adapter?.sendTransaction({ ...args, provider })
+          const result = await adapter?.sendTransaction({
+            ...args,
+            caipNetwork: this.getCaipNetwork(),
+            provider
+          })
 
           return result?.hash || ''
         }
@@ -717,7 +688,7 @@ export abstract class AppKitBaseClient {
         const account = isSameNamespace && address ? address : accountAddress
 
         if (account) {
-          this.syncAccount({ address: account, chainId, chainNamespace })
+          this.syncAccount({ address: account, chainId: caipNetwork.id, chainNamespace })
         }
       } else {
         this.setUnsupportedNetwork(chainId)
@@ -1003,6 +974,7 @@ export abstract class AppKitBaseClient {
       if (network?.chainNamespace === ChainController.state.activeChain) {
         // If the network is unsupported and the user doesn't allow unsupported chains, we show the unsupported chain UI
         if (
+          OptionsController.state.enableNetworkSwitch &&
           !OptionsController.state.allowUnsupportedChain &&
           ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
         ) {
@@ -1133,12 +1105,13 @@ export abstract class AppKitBaseClient {
     namespace: ChainNamespace
   ) {
     const adapter = this.getAdapter(namespace)
+    const caipNetwork = ChainController.getCaipNetworkByNamespace(namespace, chainId)
 
     if (adapter) {
       const balance = await adapter.getBalance({
         address,
         chainId,
-        caipNetwork: this.getCaipNetwork(namespace),
+        caipNetwork,
         tokens: this.options.tokens
       })
       this.setBalance(balance.balance, balance.symbol, namespace)
@@ -1235,8 +1208,18 @@ export abstract class AppKitBaseClient {
     if (!this.universalProvider) {
       try {
         await this.createUniversalProvider()
-      } catch (error) {
-        throw new Error('AppKit:getUniversalProvider - Cannot create provider')
+      } catch (err) {
+        EventsController.sendEvent({
+          type: 'error',
+          event: 'INTERNAL_SDK_ERROR',
+          properties: {
+            errorType: 'UniversalProviderInitError',
+            errorMessage: err instanceof Error ? err.message : 'Unknown',
+            uncaught: false
+          }
+        })
+        // eslint-disable-next-line no-console
+        console.error('AppKit:getUniversalProvider - Cannot create provider', err)
       }
     }
 
@@ -1302,8 +1285,16 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Public Internal ---------------------------------------------------
-  public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
+  public getCaipNetwork = (chainNamespace?: ChainNamespace, id?: string | number) => {
     if (chainNamespace) {
+      const caipNetworkWithId = ChainController.getNetworkData(
+        chainNamespace
+      )?.requestedCaipNetworks?.find(c => c.id === id)
+
+      if (caipNetworkWithId) {
+        return caipNetworkWithId
+      }
+
       const namespaceCaipNetwork = ChainController.getNetworkData(chainNamespace)?.caipNetwork
 
       if (namespaceCaipNetwork) {
