@@ -164,7 +164,7 @@ jobs:
         run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
 
       - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Cache Playwright Browsers
         id: playwright-cache # Give the step an ID to reference its output
@@ -223,11 +223,13 @@ jobs:
         run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
       - name: Run canary with minimal environment config
+        if: matrix.shard == 1 # Run canary only on the first shard
         env:
           # DO NOT MODIFY THESE VARIABLES. If you need to add a variable here you MUST add it to the canary deployment first before publishing the canary.
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright # Explicitly set cache path
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
