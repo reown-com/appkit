@@ -8,23 +8,16 @@ import { ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
 import {
   type AppKitNetwork,
   arbitrum,
-  aurora,
+  avalanche,
   base,
-  baseSepolia,
-  berachain,
   bitcoin,
   bitcoinTestnet,
-  gnosis,
-  hedera,
+  bsc,
   mainnet,
-  mantle,
   optimism,
   polygon,
-  sepolia,
   solana,
   solanaDevnet,
-  solanaTestnet,
-  unichainSepolia,
   zksync
 } from '@reown/appkit/networks'
 import { CreateAppKit } from '@reown/appkit/react'
@@ -40,24 +33,12 @@ if (!projectId) {
 // Networks
 type AppKitNetworksType = [AppKitNetwork, ...AppKitNetwork[]]
 
-export const evmNetworks = [
-  mainnet,
-  optimism,
-  polygon,
-  zksync,
-  arbitrum,
-  base,
-  baseSepolia,
-  unichainSepolia,
-  berachain,
-  sepolia,
-  gnosis,
-  hedera,
-  aurora,
-  mantle
-] as [AppKitNetwork, ...AppKitNetwork[]]
+export const evmNetworks = [mainnet, optimism, bsc, polygon, avalanche, arbitrum, zksync, base] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
-export const solanaNetworks = [solana, solanaTestnet, solanaDevnet] as AppKitNetworksType
+export const solanaNetworks = [solana, solanaDevnet] as AppKitNetworksType
 
 export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as AppKitNetworksType
 
