@@ -102,7 +102,6 @@ jobs:
             apps/*/dist/
             apps/*/.next/
             apps/*/out/
-            apps/*/node_modules/
             .turbo/
           retention-days: 1
 
