@@ -53,7 +53,7 @@ on:
 jobs:
   build_lab_and_extension:
     name: 'Build Lab and Extension'
-    runs-on: ubuntu-latest # Using ubuntu-latest similar to pr_checks build job
+    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -93,7 +93,6 @@ jobs:
 
       # Upload actual artifact in GitHub Actions
       - name: Upload build artifacts (GitHub Actions)
-        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v4
         with:
           name: ui-build-output
@@ -108,35 +107,13 @@ jobs:
             .turbo/
           retention-days: 1
 
-      # Copy files locally for act
-      - name: Copy build output locally (act)
-        if: ${{ env.ACT }}
-        run: |
-          mkdir -p /tmp/build-output-artifact
-          # Copy the directories containing the build outputs
-          # Note: This might copy slightly more than the exact artifact paths, but simplifies the cp command
-          cp -r dist /tmp/build-output-artifact/ || true # Use || true in case dir doesn't exist
-          cp -r .next /tmp/build-output-artifact/ || true
-          cp -r turbo /tmp/build-output-artifact/ || true
-          cp -r packages /tmp/build-output-artifact/ || true # Copy parent dir containing relevant dist/*
-          cp -r apps /tmp/build-output-artifact/ || true # Copy parent dir containing relevant dist/*, .next/*, out/*
-          cp -r .turbo /tmp/build-output-artifact/ || true
-
       # Upload actual artifact in GitHub Actions
       - name: Upload node_modules (GitHub Actions)
-        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v4
         with:
           name: ui-node-modules
           path: node_modules
           retention-days: 1
-
-      # Copy node_modules locally for act
-      - name: Copy node_modules locally (act)
-        if: ${{ env.ACT }}
-        run: |
-          mkdir -p /tmp/node-modules-artifact
-          cp -r node_modules /tmp/node-modules-artifact/
 
   ui_tests:
     name: 'Playwright Tests'
@@ -171,35 +148,17 @@ jobs:
 
       # Download actual artifact in GitHub Actions
       - name: Download build artifacts (GitHub Actions)
-        if: ${{ !env.ACT }}
         uses: actions/download-artifact@v4
         with:
           name: ui-build-output
           # Note: download-artifact downloads into the workspace root by default
 
-      # Use local build output for act
-      - name: Use local build output (act)
-        if: ${{ env.ACT }}
-        run: |
-          # Copy contents from the temp location back to the workspace
-          # Ensure target directories exist before copying into them
-          mkdir -p dist .next turbo packages apps .turbo
-          cp -r /tmp/build-output-artifact/. ./
-
       # Download actual artifact in GitHub Actions
       - name: Download node_modules (GitHub Actions)
-        if: ${{ !env.ACT }}
         uses: actions/download-artifact@v4
         with:
           name: ui-node-modules
           path: node_modules # Specify path to download into
-
-      # Use local node_modules for act
-      - name: Use local node_modules (act)
-        if: ${{ env.ACT }}
-        run: |
-          mkdir -p ./node_modules
-          cp -r /tmp/node-modules-artifact/node_modules/. ./node_modules/
 
       # Restore executable permissions for binaries (keep this after potential copy)
       - name: Fix permissions
@@ -209,7 +168,7 @@ jobs:
         run: pnpm install
 
       - name: Install Playwright Browsers
-        # if: steps.playwright-cache.outputs.cache-hit != 'true' # Cache disabled for now
+        if: steps.playwright-cache.outputs.cache-hit != 'true' # Cache disabled for now
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
