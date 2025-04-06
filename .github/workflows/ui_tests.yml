@@ -166,8 +166,24 @@ jobs:
       - name: Install dependencies # Install again to link binaries, etc.
         run: pnpm install
 
+      - name: Cache Playwright Browsers
+        id: playwright-cache # Give the step an ID to reference its output
+        uses: actions/cache@v4
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright # Explicitly set cache path
+        with:
+          path: ~/.cache/ms-playwright # Default Playwright browser cache directory
+          # Key based on OS and the hash of the lock file
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          # Restore key fallback (useful if lock file changes but browsers might still be compatible)
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        # Only run this step if the cache was not hit
+        if: steps.playwright-cache.outputs.cache-hit != 'true' # Re-enabled condition
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright # Explicitly set cache path
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
@@ -192,6 +208,7 @@ jobs:
 
       - name: Run Playwright tests
         env:
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright # Explicitly set cache path
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
