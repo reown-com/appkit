@@ -221,7 +221,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       if (chainId && currentChainId !== chainId && activeNamespace) {
         const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
-        const appKitCaipNetworks = appKit?.getCaipNetworks(activeNamespace as ChainNamespace)
+        const appKitCaipNetworks = appKit.getCaipNetworks(activeNamespace as ChainNamespace)
         const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {

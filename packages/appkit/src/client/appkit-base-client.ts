@@ -619,12 +619,12 @@ export abstract class AppKitBaseClient {
         adapters[namespace].construct({
           namespace,
           projectId: this.options?.projectId,
-          networks: ChainController.getCaipNetworks()
+          networks: this.getCaipNetworks()
         })
       } else {
         adapters[namespace as ChainNamespace] = new UniversalAdapter({
           namespace: namespace as ChainNamespace,
-          networks: ChainController.getCaipNetworks()
+          networks: this.getCaipNetworks()
         })
       }
 
@@ -1317,6 +1317,10 @@ export abstract class AppKitBaseClient {
     return undefined
   }
 
+  public getCaipNetworks = (namespace?: ChainNamespace) => {
+    return ChainController.getCaipNetworks(namespace)
+  }
+
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
   public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
@@ -1853,6 +1857,7 @@ export abstract class AppKitBaseClient {
       throw new Error(`Adapter for namespace ${namespace} doesn't exist`)
     }
 
+    console.log('>>> removeNetwork', this.caipNetworks)
     const networkToRemove = this.caipNetworks?.find(n => n.id === networkId)
     if (!networkToRemove) {
       throw new Error(`Network with ID ${networkId} not found`)
