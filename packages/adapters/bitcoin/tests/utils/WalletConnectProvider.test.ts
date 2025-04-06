@@ -3,7 +3,7 @@ import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
-import { BitcoinWalletConnectConnector } from '../../src/connectors/BitcoinWalletConnectProvider'
+import { BitcoinWalletConnectConnector } from '../../src/connectors/BitcoinWalletConnectConnector'
 import { mockUniversalProvider } from '../mocks/mockUniversalProvider'
 
 describe('LeatherConnector', () => {

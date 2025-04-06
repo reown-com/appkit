@@ -11,6 +11,7 @@ import {
   type AccountControllerState,
   type AccountType,
   type Connector as AppKitConnector,
+  ChainController,
   OptionsController,
   type Tokens,
   type WriteContractArgs
@@ -49,7 +50,7 @@ export abstract class AdapterBlueprint<
   public caipNetworks?: CaipNetwork[]
   public projectId?: string
   public adapterType: string | undefined
-
+  public getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   protected availableConnectors: Connector[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
@@ -61,6 +62,7 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
   constructor(params?: AdapterBlueprint.Params) {
+    this.getCaipNetworks = ChainController.getCaipNetworks.bind(ChainController)
     if (params) {
       this.construct(params)
     }
@@ -90,7 +92,7 @@ export abstract class AdapterBlueprint<
    * @returns {CaipNetwork[]} An array of supported networks
    */
   public get networks(): CaipNetwork[] {
-    return this.caipNetworks || []
+    return this.getCaipNetworks(this.namespace)
   }
 
   /**

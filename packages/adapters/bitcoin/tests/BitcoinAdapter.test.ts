@@ -15,7 +15,7 @@ import { StorageUtil } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
-import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectProvider'
+import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectConnector'
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
 import { OKXConnector } from '../src/connectors/OKXConnector'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
