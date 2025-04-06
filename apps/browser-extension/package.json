@@ -16,7 +16,7 @@
     "@reown/appkit-ui-new": "workspace:*",
     "@solana/wallet-standard": "1.1.2",
     "@solana/web3.js": "1.95.3",
-    "@tanstack/react-query": "5.56.2",
+    "@tanstack/react-query": "5.68.0",
     "@vanilla-extract/css": "1.16.0",
     "@vanilla-extract/css-utils": "0.1.4",
     "@vanilla-extract/sprinkles": "1.6.3",
