@@ -6,7 +6,7 @@ import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
-import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.jss'
+import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
