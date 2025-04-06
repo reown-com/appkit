@@ -87,13 +87,16 @@ jobs:
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+          NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
         working-directory: ./apps/browser-extension/
         run: pnpm build
 
-      - name: Upload build artifacts
+      # Upload actual artifact in GitHub Actions
+      - name: Upload build artifacts (GitHub Actions)
+        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v4
         with:
-          name: build-output
+          name: ui-build-output
           path: |
             dist/
             .next/
@@ -105,13 +108,35 @@ jobs:
             .turbo/
           retention-days: 1
 
-      # Create a separate artifact for node_modules to preserve symlinks and permissions
-      - name: Upload node_modules
+      # Copy files locally for act
+      - name: Copy build output locally (act)
+        if: ${{ env.ACT }}
+        run: |
+          mkdir -p /tmp/build-output-artifact
+          # Copy the directories containing the build outputs
+          # Note: This might copy slightly more than the exact artifact paths, but simplifies the cp command
+          cp -r dist /tmp/build-output-artifact/ || true # Use || true in case dir doesn't exist
+          cp -r .next /tmp/build-output-artifact/ || true
+          cp -r turbo /tmp/build-output-artifact/ || true
+          cp -r packages /tmp/build-output-artifact/ || true # Copy parent dir containing relevant dist/*
+          cp -r apps /tmp/build-output-artifact/ || true # Copy parent dir containing relevant dist/*, .next/*, out/*
+          cp -r .turbo /tmp/build-output-artifact/ || true
+
+      # Upload actual artifact in GitHub Actions
+      - name: Upload node_modules (GitHub Actions)
+        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v4
         with:
-          name: node-modules
+          name: ui-node-modules
           path: node_modules
           retention-days: 1
+
+      # Copy node_modules locally for act
+      - name: Copy node_modules locally (act)
+        if: ${{ env.ACT }}
+        run: |
+          mkdir -p /tmp/node-modules-artifact
+          cp -r node_modules /tmp/node-modules-artifact/
 
   ui_tests:
     name: 'Playwright Tests'
@@ -144,26 +169,44 @@ jobs:
           node-version: 22.x
           cache: 'pnpm'
 
-      - name: Download build artifacts
+      # Download actual artifact in GitHub Actions
+      - name: Download build artifacts (GitHub Actions)
+        if: ${{ !env.ACT }}
         uses: actions/download-artifact@v4
         with:
-          name: build-output
+          name: ui-build-output
+          # Note: download-artifact downloads into the workspace root by default
 
-      - name: Download node_modules
+      # Use local build output for act
+      - name: Use local build output (act)
+        if: ${{ env.ACT }}
+        run: |
+          # Copy contents from the temp location back to the workspace
+          # Ensure target directories exist before copying into them
+          mkdir -p dist .next turbo packages apps .turbo
+          cp -r /tmp/build-output-artifact/. ./
+
+      # Download actual artifact in GitHub Actions
+      - name: Download node_modules (GitHub Actions)
+        if: ${{ !env.ACT }}
         uses: actions/download-artifact@v4
         with:
-          name: node-modules
-          path: node_modules
+          name: ui-node-modules
+          path: node_modules # Specify path to download into
 
-      # Restore executable permissions for binaries
+      # Use local node_modules for act
+      - name: Use local node_modules (act)
+        if: ${{ env.ACT }}
+        run: |
+          mkdir -p ./node_modules
+          cp -r /tmp/node-modules-artifact/node_modules/. ./node_modules/
+
+      # Restore executable permissions for binaries (keep this after potential copy)
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
 
       - name: Install dependencies # Install again to link binaries, etc.
         run: pnpm install
-
-      # Removed build packages and lab step
-      # Removed build extension step
 
       - name: Install Playwright Browsers
         # if: steps.playwright-cache.outputs.cache-hit != 'true' # Cache disabled for now
