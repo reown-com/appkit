@@ -11,7 +11,12 @@ import {
 } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
@@ -38,6 +43,11 @@ describe('BitcoinAdapter', () => {
   beforeEach(() => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
+    ChainController.initialize([adapter], [bitcoin], {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
   })
 
   describe('constructor', () => {

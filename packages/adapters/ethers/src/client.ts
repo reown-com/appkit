@@ -466,6 +466,7 @@ export class EthersAdapter extends AdapterBlueprint {
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
     const caipNetwork = this.getCaipNetworks().find(network => network.id === params.chainId)
+    console.log('>>> getBalance', this.getCaipNetworks())
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'ETH' })

@@ -3,7 +3,12 @@ import { providers } from 'ethers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
-import type { Provider } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient,
+  type Provider
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -71,6 +76,11 @@ describe('Ethers5Adapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new Ethers5Adapter()
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
   describe('Ethers5Adapter -constructor', () => {
