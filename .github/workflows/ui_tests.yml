@@ -1,6 +1,7 @@
 name: UI Tests
 
 on:
+  workflow_dispatch:
   workflow_call:
     inputs:
       branch:
@@ -50,21 +51,10 @@ on:
         required: false
 
 jobs:
-  ui_tests:
-    name: 'Playwright Tests'
-    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5]
-        shardTotal: [5]
-    timeout-minutes: 20
+  build_lab_and_extension:
+    name: 'Build Lab and Extension'
+    runs-on: ubuntu-latest # Using ubuntu-latest similar to pr_checks build job
     steps:
-      # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
-      # It's not supported in self-hosted runners, however, so commenting it out for now
-      # - name: Tune GitHub-hosted runner network
-      #   uses: smorimoto/tune-github-hosted-runner-network@v1
-
       - name: checkout
         uses: actions/checkout@v4
         with:
@@ -79,19 +69,6 @@ jobs:
         with:
           node-version: 22.x
           cache: 'pnpm'
-
-      # - name: Get installed Playwright version
-      #   id: playwright-version
-      #   run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
-
-      # This cache causes weird errors on retry runs when using the self-hosted runners, disabling for now
-      # - name: Cache playwright binaries
-      #   uses: actions/cache@v4
-      #   id: playwright-cache
-      #   with:
-      #     path: |
-      #       ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
 
       - name: Install dependencies
         run: pnpm install
@@ -113,8 +90,84 @@ jobs:
         working-directory: ./apps/browser-extension/
         run: pnpm build
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            dist/
+            .next/
+            turbo/
+            packages/*/dist/
+            apps/*/dist/
+            apps/*/.next/
+            apps/*/out/
+            apps/*/node_modules/
+            .turbo/
+          retention-days: 1
+
+      # Create a separate artifact for node_modules to preserve symlinks and permissions
+      - name: Upload node_modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+          retention-days: 1
+
+  ui_tests:
+    name: 'Playwright Tests'
+    needs: build_lab_and_extension # Depend on the build job
+    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5]
+        shardTotal: [5]
+    timeout-minutes: 20
+    steps:
+      # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
+      # It's not supported in self-hosted runners, however, so commenting it out for now
+      # - name: Tune GitHub-hosted runner network
+      #   uses: smorimoto/tune-github-hosted-runner-network@v1
+
+      - name: checkout # Checkout is still needed for pnpm install and playwright config
+        uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
+
+      - name: Install dependencies # Install again to link binaries, etc.
+        run: pnpm install
+
+      # Removed build packages and lab step
+      # Removed build extension step
+
       - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        # if: steps.playwright-cache.outputs.cache-hit != 'true' # Cache disabled for now
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
