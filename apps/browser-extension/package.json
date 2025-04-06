@@ -20,7 +20,7 @@
     "@vanilla-extract/css": "1.16.0",
     "@vanilla-extract/css-utils": "0.1.4",
     "@vanilla-extract/sprinkles": "1.6.3",
-    "@vanilla-extract/webpack-plugin": "2.3.14",
+    "@vanilla-extract/webpack-plugin": "2.3.18",
     "@wagmi/core": "2.16.5",
     "@wallet-standard/core": "1.1.0",
     "babel-loader": "9.1.3",
