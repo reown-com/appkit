@@ -1317,9 +1317,8 @@ export abstract class AppKitBaseClient {
     return undefined
   }
 
-  public getCaipNetworks = (namespace?: ChainNamespace) => {
-    return ChainController.getCaipNetworks(namespace)
-  }
+  public getCaipNetworks = (namespace?: ChainNamespace) =>
+    ChainController.getCaipNetworks(namespace)
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
@@ -1857,7 +1856,6 @@ export abstract class AppKitBaseClient {
       throw new Error(`Adapter for namespace ${namespace} doesn't exist`)
     }
 
-    console.log('>>> removeNetwork', this.caipNetworks)
     const networkToRemove = this.caipNetworks?.find(n => n.id === networkId)
     if (!networkToRemove) {
       throw new Error(`Network with ID ${networkId} not found`)
