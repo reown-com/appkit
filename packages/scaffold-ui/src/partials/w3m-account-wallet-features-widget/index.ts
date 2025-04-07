@@ -24,7 +24,7 @@ import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-account-activity-widget/index.js'
 import '../w3m-account-nfts-widget/index.js'
 import '../w3m-account-tokens-widget/index.js'
@@ -271,9 +271,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private tabsTemplate() {
-    const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+    const tabsByNamespace = HelpersUtil.getTabsByNamespace(ChainController.state.activeChain)
 
-    if (!isEVM) {
+    if (tabsByNamespace.length === 0) {
       return null
     }
 
@@ -283,7 +283,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
         ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
         : '104px'}
-      .tabs=${ConstantsUtil.ACCOUNT_TABS}
+      .tabs=${tabsByNamespace}
     ></wui-tabs>`
   }
 
