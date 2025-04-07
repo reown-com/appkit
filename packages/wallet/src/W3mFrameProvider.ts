@@ -42,7 +42,6 @@ export class W3mFrameProvider {
     isConnected: undefined,
     getSmartAccountEnabledNetworks: undefined
   }
-  private requestsSent = {}
   public constructor({
     projectId,
     chainId,
@@ -65,7 +64,6 @@ export class W3mFrameProvider {
         }
       })
     })
-    window['requestsSent'] = this.requestsSent
   }
 
   public async init() {
@@ -581,11 +579,6 @@ export class W3mFrameProvider {
     const abortController = new AbortController()
 
     const type = replaceEventType(event.type)
-    if (this.requestsSent[type]) {
-      this.requestsSent[type] = this.requestsSent[type] + 1
-    } else {
-      this.requestsSent[type] = 1
-    }
 
     const shouldCheckForTimeout = [
       W3mFrameConstants.APP_CONNECT_EMAIL,
