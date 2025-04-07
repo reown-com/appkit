@@ -139,6 +139,7 @@ emailTestAfterFarcaster(
   'it should disconnect correctly after abort login with farcaster',
   async () => {
     await page.page.context().setOffline(false)
+    await page.page.reload()
     await page.goToSettings()
     await page.disconnect()
     await validator.expectDisconnected()
