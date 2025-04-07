@@ -203,8 +203,7 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
 
   ui-test:
-    needs: [code_style, test]
-    if: ${{ needs.code_style.result == 'success' && needs.test.result == 'success' && github.event.pull_request.draft == false }}
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     permissions:
