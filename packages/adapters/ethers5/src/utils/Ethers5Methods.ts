@@ -152,6 +152,8 @@ export const Ethers5Methods = {
     }
   },
 
-  parseUnits: (value: string, _: number) => ethers.utils.parseUnits(value, 'gwei').toBigInt(),
+  parseUnits: (value: string, decimals: number) =>
+    ethers.utils.parseUnits(value, decimals).toBigInt(),
+
   formatUnits: ethers.utils.formatUnits
 }

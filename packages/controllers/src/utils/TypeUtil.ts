@@ -303,6 +303,7 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
     slippage: string
     permit?: string
   }
+  disableEstimate?: boolean
 }
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
@@ -467,6 +468,16 @@ export type Event =
       event: 'DISCONNECT_ERROR'
       properties?: {
         message: string
+      }
+    }
+  | {
+      type: 'error'
+      event: 'INTERNAL_SDK_ERROR'
+      properties: {
+        errorType?: string
+        errorMessage?: string
+        stackTrace?: string
+        uncaught?: boolean
       }
     }
   | {

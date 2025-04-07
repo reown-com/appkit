@@ -178,6 +178,11 @@ export interface OptionsControllerStatePublic {
     rpcMap?: Record<string, string>
     defaultChain?: string
   }
+  /**
+   * Enable or disable the network switching functionality in the modal.
+   * @default true
+   */
+  enableNetworkSwitch?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -197,7 +202,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
+  enableNetworkSwitch: true
 })
 
 // -- Controller ---------------------------------------- //
@@ -359,6 +365,10 @@ export const OptionsController = {
 
   setManualWCControl(manualWCControl: OptionsControllerState['manualWCControl']) {
     state.manualWCControl = manualWCControl
+  },
+
+  setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
+    state.enableNetworkSwitch = enableNetworkSwitch
   },
 
   setDefaultAccountTypes(
