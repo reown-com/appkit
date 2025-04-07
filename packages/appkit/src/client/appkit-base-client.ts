@@ -115,15 +115,28 @@ export abstract class AppKitBaseClient {
     this.options = options
     this.version = options.sdkVersion
     this.caipNetworks = this.extendCaipNetworks(options)
-    this.chainNamespaces = [
-      ...new Set(
-        options.adapters?.map(a => a.namespace).filter((n): n is ChainNamespace => !!n) || []
-      )
-    ]
+    this.chainNamespaces = this.getChainNamespacesSet(
+      options.adapters as AdapterBlueprint[],
+      this.caipNetworks
+    )
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
     this.sendInitializeEvent(options)
+  }
+
+  private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
+    const adapterNamespaces = adapters
+      ?.map(adapter => adapter.namespace)
+      .filter((namespace): namespace is ChainNamespace => Boolean(namespace))
+
+    if (adapterNamespaces?.length) {
+      return [...new Set(adapterNamespaces)]
+    }
+
+    const networkNamespaces = caipNetworks?.map(network => network.chainNamespace)
+
+    return [...new Set(networkNamespaces)]
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
