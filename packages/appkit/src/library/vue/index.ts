@@ -1,7 +1,11 @@
 import { onUnmounted, reactive, ref } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type ConnectorType, type Event } from '@reown/appkit-controllers'
+import {
+  type ConnectorType,
+  type Event,
+  type RouterControllerState
+} from '@reown/appkit-controllers'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -36,6 +40,7 @@ type OpenOptions = {
     | 'WalletSend'
   uri?: string
   namespace?: ChainNamespace
+  data?: RouterControllerState['data']
 }
 
 type ThemeModeOptions = AppKitOptions['themeMode']

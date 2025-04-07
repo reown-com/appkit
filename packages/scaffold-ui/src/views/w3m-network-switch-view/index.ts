@@ -34,8 +34,18 @@ export class W3mNetworkSwitchView extends LitElement {
 
   @state() public error = false
 
+  @state() public activeNetwork = ChainController.state.activeCaipNetwork
+
   public constructor() {
     super()
+    this.unsubscribe.push(
+      ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
+        if (newCaipNetwork?.caipNetworkId === this.network?.caipNetworkId) {
+          // RouterController.goBack()
+        }
+        this.activeNetwork = newCaipNetwork
+      })
+    )
   }
 
   public override disconnectedCallback() {
@@ -43,7 +53,11 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   public override firstUpdated() {
-    this.onSwitchNetwork()
+    if (this.activeNetwork?.caipNetworkId === this.network?.caipNetworkId) {
+      RouterController.goBack()
+    } else {
+      this.onSwitchNetwork()
+    }
   }
 
   // -- Render -------------------------------------------- //

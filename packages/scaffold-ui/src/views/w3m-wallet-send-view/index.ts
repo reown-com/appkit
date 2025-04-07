@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import {
   ChainController,
@@ -12,6 +12,7 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-box'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-input-address/index.js'
 import '../../partials/w3m-input-token/index.js'
@@ -23,6 +24,8 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
+
+  @property({ type: Object }) initialParams = RouterController.state.data?.sendParams
 
   // -- State & Properties -------------------------------- //
   @state() private token = SendController.state.token
@@ -67,6 +70,10 @@ export class W3mWalletSendView extends LitElement {
     )
   }
 
+  public override firstUpdated() {
+    this.handleSendParameters()
+  }
+
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
@@ -81,7 +88,7 @@ export class W3mWalletSendView extends LitElement {
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
           .gasPriceInUSD=${this.gasPriceInUSD}
-          .gasPrice=${this.gasPrice}
+          .gasPrice=${this.gasPrice ? Number(this.gasPrice.toString()) : undefined}
         ></w3m-input-token>
         <wui-icon-box
           size="inherit"
@@ -170,6 +177,70 @@ export class W3mWalletSendView extends LitElement {
     if (!this.token) {
       this.message = 'Select Token'
     }
+  }
+
+  /**
+   * Processes token and address parameters for sending tokens
+   */
+  private async handleSendParameters(): Promise<void> {
+    // Get URL search parameters
+    const sourceTokenSymbol = this.initialParams?.sourceToken
+    const amount = this.initialParams?.amount
+    const receiverAddress = this.initialParams?.address
+    const chainId = this.initialParams?.chainId
+
+    if (!sourceTokenSymbol || !amount || !receiverAddress || !chainId) {
+      return
+    }
+
+    await this.handleChainSwitch(chainId)
+
+    // Wait for token balances to be loaded
+    if (SendController.state.tokenBalances.length === 0) {
+      await SendController.fetchTokenBalance()
+    }
+
+    // Set token based on symbol
+    if (sourceTokenSymbol) {
+      const token = SendController.state.tokenBalances.find(
+        token => token.symbol.toLowerCase() === sourceTokenSymbol.toLowerCase()
+      )
+      if (token) {
+        SendController.setToken(token)
+      }
+    }
+
+    // Set amount if provided
+    if (amount) {
+      SendController.setTokenAmount(parseFloat(amount))
+    }
+
+    // Set receiver address if provided
+    if (receiverAddress) {
+      SendController.setReceiverAddress(receiverAddress)
+    }
+
+    // Clear the URL parameters
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+
+  /**
+   * Handles switching to the appropriate chain based on chainId
+   * @param chainId - The chain ID to switch to
+   */
+  private async handleChainSwitch(chainId: string): Promise<void> {
+    // Get requested networks to find the one with matching chainId
+    const requestedNetworks = ChainController.getAllRequestedCaipNetworks()
+    const targetNetwork = requestedNetworks.find(network => {
+      return network.id.toString() === chainId
+    })
+
+    // If no matching network found, return
+    if (!targetNetwork) {
+      return
+    }
+
+    CaipNetworksUtil.onSwitchNetwork(targetNetwork)
   }
 }
 

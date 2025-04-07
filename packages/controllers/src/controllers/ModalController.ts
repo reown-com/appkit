@@ -28,6 +28,7 @@ export interface ModalControllerArguments {
   open: {
     view?: RouterControllerState['view']
     namespace?: ChainNamespace
+    data?: RouterControllerState['data']
   }
 }
 
@@ -86,7 +87,7 @@ export const ModalController = {
         RouterController.reset('ConnectingWalletConnectBasic')
       }
     } else if (options?.view) {
-      RouterController.reset(options.view)
+      RouterController.reset(options.view, options.data)
     } else if (caipAddress) {
       RouterController.reset('Account')
     } else {
