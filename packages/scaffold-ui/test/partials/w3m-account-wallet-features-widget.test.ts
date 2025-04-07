@@ -1,5 +1,5 @@
 import { elementUpdated, fixture } from '@open-wc/testing'
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -12,7 +12,6 @@ import {
 } from '@reown/appkit-controllers'
 
 import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
-import { ConstantsUtil } from '../../src/utils/ConstantsUtil'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
