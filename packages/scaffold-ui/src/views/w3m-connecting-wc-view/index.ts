@@ -65,12 +65,12 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry, status } = ConnectionController.state
 
-      const shouldRetry =
-        retry || OptionsController.state.enableEmbedded
-          ? true
-          : CoreHelperUtil.isPairingExpired(wcPairingExpiry)
-
-      if (shouldRetry || status === 'connecting') {
+      if (
+        retry ||
+        OptionsController.state.enableEmbedded ||
+        CoreHelperUtil.isPairingExpired(wcPairingExpiry) ||
+        status === 'connecting'
+      ) {
         await ConnectionController.connectWalletConnect()
         if (!this.isSiwxEnabled) {
           ModalController.close()
