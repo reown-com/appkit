@@ -20,8 +20,10 @@ const emailSiweTest = timingFixture.extend<{ library: string }>({
 
 emailSiweTest.describe.configure({ mode: 'serial' })
 
-emailSiweTest.beforeAll(async ({ browser, library }) => {
+emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
   emailSiweTest.setTimeout(300000)
+
+  const start = new Date()
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -45,6 +47,10 @@ emailSiweTest.beforeAll(async ({ browser, library }) => {
 
   await validator.expectConnected()
   await validator.expectAuthenticated()
+  timingRecords.push({
+    item: 'beforeAll',
+    timeMs: new Date().getTime() - start.getTime()
+  })
 })
 
 emailSiweTest.afterAll(async () => {

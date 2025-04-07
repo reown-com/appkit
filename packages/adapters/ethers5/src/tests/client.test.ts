@@ -2,7 +2,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { providers } from 'ethers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Emitter } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import type { Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
@@ -36,20 +36,6 @@ vi.mock('ethers', async importOriginal => {
     }
   }
 })
-
-vi.mock('../utils/Ethers5Methods', () => ({
-  Ethers5Methods: {
-    signMessage: vi.fn(),
-    sendTransaction: vi.fn(),
-    writeContract: vi.fn(),
-    estimateGas: vi.fn(),
-    getEnsAddress: vi.fn(),
-    parseUnits: vi.fn(),
-    formatUnits: vi.fn(),
-    hexStringToNumber: vi.fn(hex => parseInt(hex, 16)),
-    numberToHexString: vi.fn(num => `0x${num.toString(16)}`)
-  }
-}))
 
 const mockProvider = {
   request: vi.fn(),
@@ -88,9 +74,12 @@ describe('Ethers5Adapter', () => {
   })
 
   describe('Ethers5Adapter -constructor', () => {
-    it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('ethers')
-      expect(adapter.namespace).toBe('eip155')
+    it('should set adapterType', () => {
+      expect(adapter.adapterType).toEqual(CommonConstantsUtil.ADAPTER_TYPES.ETHERS5)
+    })
+
+    it('should set namespace', () => {
+      expect(adapter.namespace).toEqual(CommonConstantsUtil.CHAIN.EVM)
     })
 
     it('should not set info property for injected connector', () => {
@@ -114,7 +103,8 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter - signMessage', () => {
     it('should sign message successfully', async () => {
       const mockSignature = '0xmocksignature'
-      vi.mocked(Ethers5Methods.signMessage).mockResolvedValue(mockSignature)
+
+      vi.spyOn(mockProvider, 'request').mockResolvedValue(mockSignature)
 
       const result = await adapter.signMessage({
         message: 'Hello',
@@ -138,7 +128,8 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter -sendTransaction', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
-      vi.mocked(Ethers5Methods.sendTransaction).mockResolvedValue(mockTxHash)
+
+      vi.spyOn(Ethers5Methods, 'sendTransaction').mockResolvedValue(mockTxHash)
 
       const result = await adapter.sendTransaction({
         value: BigInt(1000),
@@ -171,7 +162,7 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter -writeContract', () => {
     it('should write contract successfully', async () => {
       const mockTxHash = '0xtxhash'
-      vi.mocked(Ethers5Methods.writeContract).mockResolvedValue(mockTxHash)
+      vi.spyOn(Ethers5Methods, 'writeContract').mockResolvedValue(mockTxHash)
 
       const result = await adapter.writeContract({
         abi: [],
@@ -349,6 +340,10 @@ describe('Ethers5Adapter', () => {
   })
 
   describe('Ethers5Adapter -getProfile', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should get profile successfully', async () => {
       const mockEnsName = 'test.eth'
       const mockAvatar = 'https://avatar.com/test.jpg'
@@ -435,26 +430,35 @@ describe('Ethers5Adapter', () => {
 
   describe('Ethers5Adapter -parseUnits and formatUnits', () => {
     it('should parse units correctly', () => {
-      const mockBigInt = BigInt('1500000000000000000')
-      vi.mocked(Ethers5Methods.parseUnits).mockReturnValue(mockBigInt)
+      expect(
+        adapter.parseUnits({
+          value: '1.5',
+          decimals: 18
+        })
+      ).toBe(BigInt('1500000000000000000'))
 
-      const result = adapter.parseUnits({
-        value: '1.5',
-        decimals: 18
-      })
-
-      expect(result).toBe(mockBigInt)
+      expect(
+        adapter.parseUnits({
+          value: '1.5',
+          decimals: 6
+        })
+      ).toBe(BigInt('1500000'))
     })
 
     it('should format units correctly', () => {
-      vi.mocked(Ethers5Methods.formatUnits).mockReturnValue('1.5')
+      expect(
+        adapter.formatUnits({
+          value: BigInt('1500000000000000000'),
+          decimals: 18
+        })
+      ).toBe('1.5')
 
-      const result = adapter.formatUnits({
-        value: BigInt('1500000000000000000'),
-        decimals: 18
-      })
-
-      expect(result).toBe('1.5')
+      expect(
+        adapter.formatUnits({
+          value: BigInt('1500000'),
+          decimals: 6
+        })
+      ).toBe('1.5')
     })
   })
 

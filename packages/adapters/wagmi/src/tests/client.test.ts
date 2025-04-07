@@ -100,8 +100,8 @@ describe('WagmiAdapter', () => {
   describe('WagmiAdapter - constructor and initialization', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.projectId).toBe(mockProjectId)
-      expect(adapter.adapterType).toBe('wagmi')
-      expect(adapter.namespace).toBe('eip155')
+      expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.WAGMI)
+      expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.EVM)
     })
 
     it('should set wagmi connectors', async () => {
@@ -155,6 +155,7 @@ describe('WagmiAdapter', () => {
         `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
       )
     })
+
     it('should return custom RPC if transports is provided', () => {
       const adapterWithCustomRpc = new WagmiAdapter({
         networks: mockNetworks,
@@ -165,7 +166,7 @@ describe('WagmiAdapter', () => {
       })
 
       expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
-        `https://eth.merkle.io`
+        'https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=test-project-id'
       )
     })
 

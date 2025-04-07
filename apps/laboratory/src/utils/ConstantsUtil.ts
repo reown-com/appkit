@@ -1,6 +1,7 @@
 import type { CaipNetwork, SocialProvider } from '@reown/appkit'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import {
+  abstract,
   arbitrum,
   aurora,
   base,
@@ -37,6 +38,11 @@ export const DOCS_URL = 'https://docs.reown.com/appkit/overview'
 export const REPO_URL = 'https://github.com/reown-com/appkit'
 
 export function getPublicUrl() {
+  const isProduction = process.env['NODE_ENV'] === 'production'
+  if (isProduction) {
+    return 'https://appkit-lab.reown.com'
+  }
+
   const publicUrl = process.env['NEXT_PUBLIC_PUBLIC_URL']
   if (publicUrl) {
     return publicUrl
@@ -74,7 +80,8 @@ const EvmNetworks = [
   gnosis,
   hedera,
   aurora,
-  mantle
+  mantle,
+  abstract
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
