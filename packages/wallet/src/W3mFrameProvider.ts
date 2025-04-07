@@ -147,13 +147,17 @@ export class W3mFrameProvider {
         return this.pendingCalls.isConnected
       }
 
-      this.pendingCalls.isConnected = new Promise(async resolve => {
-        const response = await this.appEvent<'IsConnected'>({
-          type: W3mFrameConstants.APP_IS_CONNECTED
-        } as W3mFrameTypes.AppEvent)
-        resolve(response)
+      this.pendingCalls.isConnected = new Promise(async (resolve, reject) => {
+        try {
+          const response = await this.appEvent<'IsConnected'>({
+            type: W3mFrameConstants.APP_IS_CONNECTED
+          } as W3mFrameTypes.AppEvent)
+          resolve(response)
+        } catch (error) {
+          this.pendingCalls.isConnected = undefined
+          reject(error)
+        }
       })
-
       const response = await this.pendingCalls.isConnected
       if (!response?.isConnected) {
         this.deleteAuthLoginCache()
@@ -278,11 +282,16 @@ export class W3mFrameProvider {
         return this.pendingCalls.getSmartAccountEnabledNetworks
       }
 
-      this.pendingCalls.getSmartAccountEnabledNetworks = new Promise(async resolve => {
-        const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
-          type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
-        } as W3mFrameTypes.AppEvent)
-        resolve(response.smartAccountEnabledNetworks)
+      this.pendingCalls.getSmartAccountEnabledNetworks = new Promise(async (resolve, reject) => {
+        try {
+          const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
+            type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
+          } as W3mFrameTypes.AppEvent)
+          resolve(response.smartAccountEnabledNetworks)
+        } catch (error) {
+          this.pendingCalls.getSmartAccountEnabledNetworks = undefined
+          reject(error)
+        }
       })
 
       const response = await this.pendingCalls.getSmartAccountEnabledNetworks
@@ -336,12 +345,17 @@ export class W3mFrameProvider {
         return this.pendingCalls.getUser
       }
 
-      this.pendingCalls.getUser = new Promise(async resolve => {
-        const response = await this.appEvent<'GetUser'>({
-          type: W3mFrameConstants.APP_GET_USER,
-          payload: { ...payload, chainId }
-        } as W3mFrameTypes.AppEvent)
-        resolve(response)
+      this.pendingCalls.getUser = new Promise(async (resolve, reject) => {
+        try {
+          const response = await this.appEvent<'GetUser'>({
+            type: W3mFrameConstants.APP_GET_USER,
+            payload: { ...payload, chainId }
+          } as W3mFrameTypes.AppEvent)
+          resolve(response)
+        } catch (error) {
+          this.pendingCalls.getUser = undefined
+          reject(error)
+        }
       })
 
       const response = await this.pendingCalls.getUser
