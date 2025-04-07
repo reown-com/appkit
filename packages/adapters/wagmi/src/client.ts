@@ -27,23 +27,23 @@ import {
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import {
-  type GetEnsAddressReturnType,
-  type Hex,
-  type HttpTransport,
-  formatUnits,
-  parseUnits
-} from 'viem'
+import { type GetEnsAddressReturnType, type Hex, formatUnits, parseUnits } from 'viem'
 import { normalize } from 'viem/ens'
 
 import { AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
-import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type {
+  AppKitNetwork,
+  BaseNetwork,
+  CaipNetwork,
+  ChainNamespace,
+  CustomRpcUrlMap
+} from '@reown/appkit-common'
 import {
   ConstantsUtil as CommonConstantsUtil,
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import { CoreHelperUtil, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
@@ -73,7 +73,6 @@ const DEFAULT_PENDING_TRANSACTIONS_FILTER = {
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
   public wagmiConfig!: Config
-  public adapterType = 'wagmi'
 
   private pendingTransactionsFilter: PendingTransactionsFilter
   private unwatchPendingTransactions: (() => void) | undefined
@@ -84,17 +83,19 @@ export class WagmiAdapter extends AdapterBlueprint {
       networks: AppKitNetwork[]
       pendingTransactionsFilter?: PendingTransactionsFilter
       projectId: string
+      customRpcUrls?: CustomRpcUrlMap
     }
   ) {
+    const networks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
+      projectId: configParams.projectId,
+      customNetworkImageUrls: {},
+      customRpcUrls: configParams.customRpcUrls
+    }) as [CaipNetwork, ...CaipNetwork[]]
+
     super({
       projectId: configParams.projectId,
-      networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
-        projectId: configParams.projectId,
-        customNetworkImageUrls: {},
-        customRpcChainIds: configParams.transports
-          ? Object.keys(configParams.transports).map(Number)
-          : []
-      }) as [CaipNetwork, ...CaipNetwork[]]
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.WAGMI,
+      namespace: CommonConstantsUtil.CHAIN.EVM
     })
 
     this.pendingTransactionsFilter = {
@@ -102,20 +103,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       ...(configParams.pendingTransactionsFilter ?? {})
     }
 
-    this.namespace = CommonConstantsUtil.CHAIN.EVM
-
-    this.createConfig({
-      ...configParams,
-      networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
-        projectId: configParams.projectId,
-        customNetworkImageUrls: {},
-        customRpcChainIds: configParams.transports
-          ? Object.keys(configParams.transports).map(Number)
-          : []
-      }) as [CaipNetwork, ...CaipNetwork[]],
-      projectId: configParams.projectId
-    })
-
+    this.createConfig({ ...configParams, networks })
     this.setupWatchers()
   }
 
@@ -130,7 +118,9 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
-      const { address, accounts } = await provider.connect()
+      const { address, accounts } = await provider.connect({
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+      })
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
@@ -156,36 +146,41 @@ export class WagmiAdapter extends AdapterBlueprint {
     configParams: Partial<CreateConfigParameters> & {
       networks: CaipNetwork[]
       projectId: string
+      customRpcUrls?: CustomRpcUrlMap
     }
   ) {
-    this.caipNetworks = configParams.networks
-    this.wagmiChains = this.caipNetworks.filter(
+    this.wagmiChains = configParams.networks.filter(
       caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
     ) as unknown as [BaseNetwork, ...BaseNetwork[]]
 
-    const transportsArr = this.wagmiChains.map(chain => [
-      chain.id,
-      CaipNetworksUtil.getViemTransport(chain as CaipNetwork)
-    ])
+    const transports: CreateConfigParameters['transports'] = {}
+    const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
-    Object.entries(configParams.transports ?? {}).forEach(([chainId, transport]) => {
-      const index = transportsArr.findIndex(([id]) => id === Number(chainId))
-      if (index === -1) {
-        transportsArr.push([Number(chainId), transport as HttpTransport])
+    this.wagmiChains.forEach(element => {
+      const fromTransportProp = configParams.transports?.[element.id]
+      const caipNetworkId = CaipNetworksUtil.getCaipNetworkId(element)
+
+      if (fromTransportProp) {
+        transports[element.id] = CaipNetworksUtil.extendWagmiTransports(
+          element as CaipNetwork,
+          configParams.projectId,
+          fromTransportProp
+        )
       } else {
-        transportsArr[index] = [Number(chainId), transport as HttpTransport]
+        transports[element.id] = CaipNetworksUtil.getViemTransport(
+          element as CaipNetwork,
+          configParams.projectId,
+          configParams.customRpcUrls?.[caipNetworkId]
+        )
       }
     })
-
-    const transports = Object.fromEntries(transportsArr)
-    const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
     this.wagmiConfig = createConfig({
       ...configParams,
       chains: this.wagmiChains,
-      transports,
-      connectors
-    })
+      connectors,
+      transports
+    } as CreateConfigParameters)
   }
 
   private setupWatchPendingTransactions() {
@@ -275,9 +270,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const customConnectors: CreateConnectorFn[] = []
 
     if (options.enableWalletConnect !== false) {
-      customConnectors.push(
-        walletConnect(options, appKit, this.caipNetworks as [CaipNetwork, ...CaipNetwork[]])
-      )
+      customConnectors.push(walletConnect(options, appKit))
     }
 
     if (options.enableInjected !== false) {
@@ -334,7 +327,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       gasPrice: params.gasPrice as bigint,
       data: params.data as Hex,
       chainId,
-      type: 'legacy' as const
+      type: 'legacy' as const,
+      parameters: ['nonce'] as const
     }
 
     await prepareTransactionRequest(this.wagmiConfig, txParams)
@@ -558,7 +552,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+    const caipNetwork = this.getCaipNetworks().find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
@@ -756,7 +750,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.caipNetworks || [],
+        caipNetworks: this.getCaipNetworks(),
         namespace: 'eip155'
       })
     )

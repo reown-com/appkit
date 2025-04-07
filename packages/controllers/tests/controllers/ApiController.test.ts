@@ -104,7 +104,7 @@ describe('ApiController', () => {
       wallets: [],
       search: [],
       isAnalyticsEnabled: false,
-      excludedRDNS: [],
+      excludedWallets: [],
       isFetchingRecommendedWallets: false,
       promises: {}
     })
@@ -514,9 +514,9 @@ describe('ApiController', () => {
     OptionsController.setExcludeWalletIds(excludeWalletIds)
 
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
-    const fetchWalletsSpy = vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
+    const fetchWalletsSpy = vi.spyOn(ApiController, 'initializeExcludedWallets')
 
-    await ApiController.initializeExcludedWalletRdns({ ids: excludeWalletIds })
+    await ApiController.initializeExcludedWallets({ ids: excludeWalletIds })
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
@@ -531,9 +531,15 @@ describe('ApiController', () => {
     })
 
     expect(fetchWalletsSpy).toHaveBeenCalledOnce()
-    expect(ApiController.state.excludedRDNS).toEqual(['io.metamask', 'app.phantom'])
+    expect(ApiController.state.excludedWallets).toEqual([
+      { name: 'MetaMask', rdns: 'io.metamask' },
+      { name: 'Phantom', rdns: 'app.phantom' }
+    ])
     const result = EIP6963Wallets.filter(
-      wallet => !ApiController.state.excludedRDNS.includes(wallet.rdns)
+      wallet =>
+        !ApiController.state.excludedWallets.some(
+          excludedWallet => excludedWallet.rdns === wallet.rdns
+        )
     )
     expect(result).toEqual(filteredWallet)
   })

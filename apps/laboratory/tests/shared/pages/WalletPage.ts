@@ -12,6 +12,7 @@ export class WalletPage {
 
   public connectToSingleAccount = false
   public page: Page
+  public isPageLoaded = false
 
   constructor(page: Page) {
     this.page = page
@@ -21,6 +22,7 @@ export class WalletPage {
 
   async load() {
     await this.page.goto(this.baseURL)
+    this.isPageLoaded = true
   }
 
   loadNewPage(page: Page) {
@@ -34,6 +36,7 @@ export class WalletPage {
    */
 
   async connectWithUri(uri: string) {
+    await this.page.waitForLoadState()
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
       await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
@@ -44,13 +47,14 @@ export class WalletPage {
      */
     if (this.connectToSingleAccount) {
       await this.page.goto(`${this.baseURL}/walletconnect?addressesToApprove=1`)
+      await this.page.waitForLoadState()
     } else {
       await this.gotoHome.click()
     }
     const input = this.page.getByTestId('uri-input')
     await input.waitFor({
       state: 'visible',
-      timeout: 5000
+      timeout: 10000
     })
     await input.fill(uri)
     const connectButton = this.page.getByTestId('uri-connect-button')
@@ -67,12 +71,14 @@ export class WalletPage {
    * @param accept - accept or reject the session
    */
   async handleSessionProposal(opts: SessionParams) {
+    await this.page.waitForLoadState()
     const variant = opts.accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     await this.performRequestAction(variant)
   }
 
   async handleRequest({ accept }: { accept: boolean }) {
+    await this.page.waitForLoadState()
     const variant = accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     await this.performRequestAction(variant)

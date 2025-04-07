@@ -1,5 +1,6 @@
 import {
   AddressPurpose,
+  BitcoinNetworkType,
   type BitcoinProvider,
   type BtcRequestMethod,
   type BtcRequests,
@@ -18,6 +19,7 @@ import type { RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { mapCaipNetworkToXverseName, mapXverseNameToCaipNetwork } from '../utils/HelperUtil.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
 export class SatsConnectConnector extends ProviderEventEmitter implements BitcoinConnector {
@@ -146,6 +148,11 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     return res
   }
 
+  public async switchNetwork(caipNetworkId: string): Promise<void> {
+    const networkName = mapCaipNetworkToXverseName(caipNetworkId)
+    await this.internalRequest('wallet_changeNetwork', { name: networkName })
+  }
+
   public async sendTransfer({
     amount,
     recipient
@@ -212,7 +219,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       }),
 
       provider.addListener('networkChange', _data => {
-        this.emit('chainChanged', this.chains)
+        const chainId = mapXverseNameToCaipNetwork(_data.stacks.name as BitcoinNetworkType)
+        this.emit('chainChanged', chainId)
       })
     )
   }

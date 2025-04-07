@@ -1,10 +1,15 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { InfuraProvider, JsonRpcProvider } from 'ethers'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil } from '@reown/appkit'
-import { Emitter } from '@reown/appkit-common'
-import type { Provider } from '@reown/appkit-controllers'
+import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient,
+  type Provider
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -90,15 +95,25 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
 describe('EthersAdapter', () => {
   let adapter: EthersAdapter
 
+  beforeAll(() => {})
+
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new EthersAdapter()
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
   describe('EthersAdapter -constructor', () => {
-    it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('ethers')
-      expect(adapter.namespace).toBe('eip155')
+    it('should set adapterType', () => {
+      expect(adapter.adapterType).toEqual(CommonConstantsUtil.ADAPTER_TYPES.ETHERS)
+    })
+
+    it('should set namespace', () => {
+      expect(adapter.namespace).toEqual(CommonConstantsUtil.CHAIN.EVM)
     })
 
     it('should not set info property for injected connector', () => {
@@ -199,7 +214,6 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter -connect', () => {
     it('should connect with external provider', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
         if (request.method === 'eth_chainId') return Promise.resolve('0x1')
@@ -231,8 +245,6 @@ describe('EthersAdapter', () => {
     })
 
     it('should call switch network if wallet chain id is different than requested chain id', async () => {
-      adapter.caipNetworks = mockCaipNetworks
-
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
         if (request.method === 'eth_chainId') return Promise.resolve('137') // Return a different chain id
@@ -293,7 +305,6 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter -getBalance', () => {
     it('should get balance successfully', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const mockBalance = BigInt(1500000000000000000)
       vi.mocked(JsonRpcProvider).mockImplementation(
         () =>
@@ -314,7 +325,6 @@ describe('EthersAdapter', () => {
     })
 
     it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const mockBalance = BigInt(1500000000000000000)
       // delay the response to simulate http request latency
       const latency = 1000
@@ -601,7 +611,6 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter - provider listener', () => {
     it('should disconnect if accountsChanged event emits no accounts', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const emitter = new Emitter()
 
       const mockProvider = {
