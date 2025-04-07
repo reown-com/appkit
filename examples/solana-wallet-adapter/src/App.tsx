@@ -5,7 +5,6 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletDisconnectButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 import './App.css'
-import { SolanaContext } from './SolanaContext'
 import { RequestAirdrop } from './components/RequestAirdrop'
 import { SendLegacyTransaction } from './components/SendLegacyTransaction'
 import { SendTransaction } from './components/SendTransaction'
@@ -13,7 +12,7 @@ import { SendV0Transaction } from './components/SendV0Transaction'
 import { SignTransaction } from './components/SignTransaction'
 import { SignMessage } from './components/signMessage'
 
-function App2() {
+function App() {
   const walletState = useWallet()
 
   useEffect(() => {
@@ -39,14 +38,6 @@ function App2() {
         </>
       )}
     </div>
-  )
-}
-
-function App() {
-  return (
-    <SolanaContext>
-      <App2 />
-    </SolanaContext>
   )
 }
 
