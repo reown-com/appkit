@@ -783,5 +783,13 @@ export const ChainController = {
     return chains
       .flatMap(chain => chain?.caipNetworks || [])
       .map(caipNetwork => caipNetwork.caipNetworkId)
+  },
+
+  getCaipNetworks(namespace?: ChainNamespace) {
+    if (namespace) {
+      return ChainController.getRequestedCaipNetworks(namespace)
+    }
+
+    return ChainController.getAllRequestedCaipNetworks()
   }
 }
