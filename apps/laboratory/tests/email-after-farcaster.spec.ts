@@ -126,7 +126,9 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should show snackbar error if failed to fetch token balance after abort login with farcaster',
   async () => {
-    await new Promise(resolve => setTimeout(resolve, 10000))
+    await new Promise(resolve => {
+      setTimeout(resolve, 10000)
+    })
     // Clear cache and set offline to simulate token balance fetch failure
     await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
     await page.page.context().route('**/*', route => {
@@ -143,7 +145,9 @@ emailTestAfterFarcaster(
   'it should disconnect correctly after abort login with farcaster',
   async () => {
     await page.page.reload()
-    await new Promise(resolve => setTimeout(resolve, 10000))
+    await new Promise(resolve => {
+      setTimeout(resolve, 10000)
+    })
     await page.goToSettings()
     await page.disconnect()
     await validator.expectDisconnected()
