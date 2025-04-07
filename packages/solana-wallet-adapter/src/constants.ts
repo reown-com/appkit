@@ -10,6 +10,7 @@ export enum WalletConnectRPCMethods {
   signTransaction = 'solana_signTransaction',
   signMessage = 'solana_signMessage',
   signAndSendTransaction = 'solana_signAndSendTransaction',
+  signAndSendAllTransactions = 'solana_signAndSendAllTransactions',
   signAllTransactions = 'solana_signAllTransactions'
 }
 
