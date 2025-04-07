@@ -116,7 +116,9 @@ export abstract class AppKitBaseClient {
     this.version = options.sdkVersion
     this.caipNetworks = this.extendCaipNetworks(options)
     this.chainNamespaces = [
-      ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
+      ...new Set(
+        options.adapters?.map(a => a.namespace).filter((n): n is ChainNamespace => !!n) || []
+      )
     ]
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
@@ -340,7 +342,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(chainToUse)
 
         if (chain && chain !== activeChain && !caipNetwork) {
-          const toConnectNetwork = this.caipNetworks?.find(
+          const toConnectNetwork = this.getCaipNetworks()?.find(
             network => network.chainNamespace === chain
           )
           if (toConnectNetwork) {
@@ -676,7 +678,7 @@ export abstract class AppKitBaseClient {
     }
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
-      const caipNetwork = this.caipNetworks?.find(
+      const caipNetwork = this.getCaipNetworks()?.find(
         n => n.id === chainId || n.caipNetworkId === chainId
       )
       const isSameNamespace = ChainController.state.activeChain === chainNamespace
@@ -849,7 +851,7 @@ export abstract class AppKitBaseClient {
           (adapter as ChainAdapter)?.namespace !== ConstantsUtil.CHAIN.EVM
         ) {
           const provider = adapter?.getWalletConnectProvider({
-            caipNetworks: this.caipNetworks,
+            caipNetworks: this.getCaipNetworks(),
             provider: this.universalProvider,
             activeCaipNetwork: ChainController.state.activeCaipNetwork
           })
@@ -944,8 +946,12 @@ export abstract class AppKitBaseClient {
     }
 
     if (chainIdToUse) {
-      let caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
-      let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
+      let caipNetwork = this.getCaipNetworks()?.find(
+        n => n.id.toString() === chainIdToUse.toString()
+      )
+      let fallbackCaipNetwork = this.getCaipNetworks()?.find(
+        n => n.chainNamespace === chainNamespace
+      )
 
       // If doesn't support all networks, we need to use approved networks
       if (!shouldSupportAllNetworks && !caipNetwork && !fallbackCaipNetwork) {
@@ -958,8 +964,8 @@ export abstract class AppKitBaseClient {
           id => ParseUtil.parseCaipNetworkId(id)?.chainNamespace === chainNamespace
         )
 
-        caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
-        fallbackCaipNetwork = this.caipNetworks?.find(
+        caipNetwork = this.getCaipNetworks()?.find(n => n.caipNetworkId === caipNetworkId)
+        fallbackCaipNetwork = this.getCaipNetworks()?.find(
           n =>
             n.caipNetworkId === fallBackCaipNetworkId ||
             // This is a workaround used in Solana network to support deprecated caipNetworkId
@@ -1086,7 +1092,7 @@ export abstract class AppKitBaseClient {
     chainNamespace: ChainNamespace
   }) {
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
-      this.caipNetworks,
+      this.getCaipNetworks(),
       params.chainNamespace
     ).find(n => n.id.toString() === params.chainId?.toString())
 
@@ -1160,7 +1166,7 @@ export abstract class AppKitBaseClient {
 
       this.universalProvider.on('chainChanged', (chainId: number | string) => {
         // eslint-disable-next-line eqeqeq
-        const caipNetwork = this.caipNetworks?.find(c => c.id == chainId)
+        const caipNetwork = this.getCaipNetworks()?.find(c => c.id == chainId)
         const currentCaipNetwork = this.getCaipNetwork()
 
         if (!caipNetwork) {
@@ -1270,7 +1276,7 @@ export abstract class AppKitBaseClient {
     adapterBlueprint.construct({
       namespace,
       projectId: this.options?.projectId,
-      networks: this.caipNetworks
+      networks: this.getCaipNetworks()
     })
 
     if (!this.chainNamespaces.includes(namespace)) {
@@ -1465,7 +1471,7 @@ export abstract class AppKitBaseClient {
   }
 
   public async switchNetwork(appKitNetwork: AppKitNetwork) {
-    const network = this.caipNetworks?.find(n => n.id === appKitNetwork.id)
+    const network = this.getCaipNetworks()?.find(n => n.id === appKitNetwork.id)
 
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
@@ -1770,62 +1776,6 @@ export abstract class AppKitBaseClient {
   }
 
   /**
-   * Removes an adapter from the AppKit.
-   * @param namespace - The namespace of the adapter to remove.
-   */
-  public removeAdapter(namespace: ChainNamespace) {
-    const isConnected = this.getIsConnectedState()
-    const adapter = this.getAdapter(namespace)
-
-    if (!adapter || !this.chainAdapters || isConnected) {
-      return
-    }
-
-    const newCaipNetworks = this.caipNetworks?.filter(
-      network => network.chainNamespace !== namespace
-    )
-
-    ChainController.removeAdapter(namespace)
-    ConnectorController.removeAdapter(namespace)
-    this.chainNamespaces = this.chainNamespaces.filter(n => n !== namespace)
-    this.caipNetworks = newCaipNetworks as [CaipNetwork, ...CaipNetwork[]]
-    adapter.removeAllEventListeners()
-    Reflect.deleteProperty(this.chainAdapters, namespace)
-  }
-
-  /**
-   * Adds an adapter to the AppKit.
-   * @param adapter - The adapter instance.
-   * @param networks - The list of networks that this adapter supports / uses.
-   */
-  public addAdapter(adapter: ChainAdapter, networks: [AppKitNetwork, ...AppKitNetwork[]]) {
-    const namespace = adapter.namespace
-
-    if (!this.connectionControllerClient || !this.networkControllerClient) {
-      return
-    }
-
-    if (!this.chainAdapters || !namespace) {
-      return
-    }
-
-    const extendedAdapterNetworks = this.extendCaipNetworks({ ...this.options, networks })
-    this.caipNetworks = [...(this.caipNetworks || []), ...extendedAdapterNetworks]
-
-    this.createAdapter(adapter as unknown as AdapterBlueprint)
-    this.initChainAdapter(namespace)
-
-    ChainController.addAdapter(
-      adapter,
-      {
-        connectionControllerClient: this.connectionControllerClient,
-        networkControllerClient: this.networkControllerClient
-      },
-      extendedAdapterNetworks
-    )
-  }
-
-  /**
    * Adds a network to an existing adapter in AppKit.
    * @param namespace - The chain namespace to add the network to (e.g. 'eip155', 'solana')
    * @param network - The network configuration to add
@@ -1838,10 +1788,8 @@ export abstract class AppKitBaseClient {
 
     const extendedNetwork = this.extendCaipNetwork(network, this.options)
 
-    ChainController.addNetwork(extendedNetwork)
-
-    if (this.caipNetworks && !this.caipNetworks?.find(n => n.id === extendedNetwork.id)) {
-      this.caipNetworks.push(extendedNetwork)
+    if (!this.getCaipNetworks()?.find(n => n.id === extendedNetwork.id)) {
+      ChainController.addNetwork(extendedNetwork)
     }
   }
 
@@ -1856,18 +1804,16 @@ export abstract class AppKitBaseClient {
       throw new Error(`Adapter for namespace ${namespace} doesn't exist`)
     }
 
-    const networkToRemove = this.caipNetworks?.find(n => n.id === networkId)
+    const networkToRemove = this.getCaipNetworks()?.find(n => n.id === networkId)
+
     if (!networkToRemove) {
-      throw new Error(`Network with ID ${networkId} not found`)
+      return
     }
 
     if (!this.caipNetworks) {
       return
     }
 
-    const remainingNetworks = this.caipNetworks.filter(n => n.id !== networkId)
-
     ChainController.removeNetwork(namespace, networkId)
-    this.caipNetworks = [...remainingNetworks] as [CaipNetwork, ...CaipNetwork[]]
   }
 }
