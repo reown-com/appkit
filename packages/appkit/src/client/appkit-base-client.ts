@@ -366,6 +366,7 @@ export abstract class AppKitBaseClient {
               fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
           })
           .catch(error => {
+            // eslint-disable-next-line no-console
             console.error('@appkit-base-client: connectExternal: error', error)
           })
 
