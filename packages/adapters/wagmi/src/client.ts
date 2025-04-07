@@ -94,7 +94,6 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     super({
       projectId: configParams.projectId,
-      networks,
       adapterType: CommonConstantsUtil.ADAPTER_TYPES.WAGMI,
       namespace: CommonConstantsUtil.CHAIN.EVM
     })
@@ -150,8 +149,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customRpcUrls?: CustomRpcUrlMap
     }
   ) {
-    this.caipNetworks = configParams.networks
-    this.wagmiChains = this.caipNetworks.filter(
+    this.wagmiChains = configParams.networks.filter(
       caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
     ) as unknown as [BaseNetwork, ...BaseNetwork[]]
 

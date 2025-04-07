@@ -47,7 +47,6 @@ export abstract class AdapterBlueprint<
   Connector extends ChainAdapterConnector = ChainAdapterConnector
 > {
   public namespace: ChainNamespace | undefined
-  public caipNetworks?: CaipNetwork[]
   public projectId?: string
   public adapterType: string | undefined
   public getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
@@ -74,7 +73,6 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
   construct(params: AdapterBlueprint.Params) {
-    this.caipNetworks = params.networks
     this.projectId = params.projectId
     this.namespace = params.namespace
     this.adapterType = params.adapterType

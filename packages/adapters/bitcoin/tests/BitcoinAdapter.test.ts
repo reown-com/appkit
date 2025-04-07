@@ -86,7 +86,6 @@ describe('BitcoinAdapter', () => {
     })
 
     it('should set BitcoinWalletConnectConnector', async () => {
-      delete adapter.caipNetworks
       adapter.setUniversalProvider(mockUniversalProvider())
       expect(adapter.connectors[0]).toBeInstanceOf(BitcoinWalletConnectConnector)
       expect(adapter.connectors[0]?.chains).toEqual([])
