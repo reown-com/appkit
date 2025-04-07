@@ -271,9 +271,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private tabsTemplate() {
-    const isSolana = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA
+    const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
 
-    if (isSolana) {
+    if (!isEVM) {
       return null
     }
 
