@@ -4,13 +4,13 @@ type Hex = `0x${string}`
 type Address = Hex
 export type AddressOrNative = Address | 'native'
 
-type AssetMetadata = {
+export type AssetMetadata = {
   name: string
   symbol: string
   decimals: number
 }
 
-type PaymentAsset = {
+export type PaymentAsset = {
   network: CaipNetworkId
   recipient: string
   asset: AddressOrNative

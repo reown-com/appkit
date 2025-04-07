@@ -63,6 +63,10 @@ export async function processEvmNativePayment(
   chainNamespace: ChainNamespace,
   fromAddress: `0x${string}`
 ): Promise<string | undefined> {
+  if (chainNamespace !== ConstantsUtil.CHAIN.EVM) {
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
+  }
+
   const amountValue =
     typeof paymentAsset.amount === 'string' ? parseFloat(paymentAsset.amount) : paymentAsset.amount
   if (isNaN(amountValue)) {

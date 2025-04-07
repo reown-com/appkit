@@ -1,0 +1,322 @@
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
+
+import { html } from 'lit'
+
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  AccountController,
+  ChainController,
+  ConnectionController,
+  ModalController,
+  SnackController
+} from '@reown/appkit-controllers'
+
+import { PayController } from '../../src/controllers/PayController'
+import { AppKitPayError, AppKitPayErrorCodes } from '../../src/types/errors'
+import type { Exchange } from '../../src/types/exchange'
+import type { PaymentAsset } from '../../src/types/options'
+import { W3mPayView } from '../../src/ui/w3m-pay-view'
+
+// -- Test Constants --------------------------------------------- //
+const mockExchanges: Exchange[] = [
+  {
+    id: 'coinbase',
+    name: 'Coinbase',
+    imageUrl: 'https://example.com/coinbase.png'
+  },
+  {
+    id: 'binance',
+    name: 'Binance',
+    imageUrl: 'https://example.com/binance.png'
+  }
+]
+
+const mockPaymentAsset: PaymentAsset = {
+  network: 'eip155:1',
+  recipient: '0x1234567890123456789012345678901234567890',
+  asset: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC on Ethereum
+  amount: 10000000, // 10 USDC with 6 decimals
+  metadata: {
+    name: 'USD Coin',
+    symbol: 'USDC',
+    decimals: 6
+  }
+}
+
+describe('W3mPayView', () => {
+  beforeAll(() => {
+    if (!customElements.get('w3m-pay-view')) {
+      customElements.define('w3m-pay-view', W3mPayView)
+    }
+  })
+
+  beforeEach(() => {
+    // Reset PayController state
+    PayController.state.isLoading = false
+    PayController.state.exchanges = []
+    PayController.state.paymentAsset = mockPaymentAsset
+
+    // Reset AccountController state
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      status: 'disconnected',
+      caipAddress: undefined,
+      connectedWalletInfo: undefined
+    })
+
+    // Mock ChainController
+    vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue([
+      {
+        id: 1,
+        chainNamespace: 'eip155' as ChainNamespace,
+        caipNetworkId: 'eip155:1',
+        name: 'Ethereum',
+        nativeCurrency: {
+          name: 'Ether',
+          symbol: 'ETH',
+          decimals: 18
+        },
+        rpcUrls: {
+          default: {
+            http: ['https://ethereum.rpc.example']
+          }
+        }
+      } as CaipNetwork
+    ])
+
+    // Mock PayController methods
+    vi.spyOn(PayController, 'fetchExchanges').mockImplementation(async () => {
+      PayController.state.exchanges = mockExchanges
+    })
+    vi.spyOn(PayController, 'handlePayWithWallet').mockImplementation(() => {})
+    vi.spyOn(PayController, 'handlePayWithExchange').mockImplementation(async () => {})
+
+    // Mock ConnectionController and ModalController
+    vi.spyOn(ConnectionController, 'disconnect').mockImplementation(async () => {})
+    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+    vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
+  })
+
+  test('should render payment header with correct amount and token', async () => {
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const amountText = element.shadowRoot?.querySelector('wui-text[variant="large-700"]')
+    const tokenText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-600"]')
+    const networkText = element.shadowRoot?.querySelector('wui-text[variant="small-500"]')
+
+    expect(amountText?.textContent).toBe('10.0000')
+    expect(tokenText?.textContent?.trim()).toBe('USDC')
+    expect(networkText?.textContent?.trim()).toBe('on Ethereum')
+  })
+
+  test('should render disconnected wallet view when not connected', async () => {
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const disconnectedView = element.shadowRoot?.querySelector(
+      '[data-testid="wallet-payment-option"]'
+    )
+    expect(disconnectedView).not.toBeNull()
+    expect(disconnectedView?.querySelector('wui-text')?.textContent).toBe('Pay from wallet')
+  })
+
+  test('should render connected wallet view when connected', async () => {
+    // Mock connected state
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      status: 'connected',
+      caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+      connectedWalletInfo: {
+        name: 'MetaMask',
+        icon: 'https://example.com/metamask.png'
+      }
+    })
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const connectedView = element.shadowRoot?.querySelector('[data-testid="wallet-payment-option"]')
+    const disconnectButton = element.shadowRoot?.querySelector('[data-testid="disconnect-button"]')
+
+    expect(connectedView).not.toBeNull()
+    expect(connectedView?.querySelector('wui-text')?.textContent).toBe('Pay with MetaMask')
+    expect(disconnectButton).not.toBeNull()
+  })
+
+  test('should render loading state when exchanges are loading', async () => {
+    // Set loading state
+    PayController.state.isLoading = true
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const spinner = element.shadowRoot?.querySelector('wui-spinner')
+    expect(spinner).not.toBeNull()
+  })
+
+  test('should render exchanges when available', async () => {
+    // Populate exchanges
+    PayController.state.exchanges = mockExchanges
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const coinbaseOption = element.shadowRoot?.querySelector(
+      '[data-testid="exchange-option-coinbase"]'
+    )
+    const binanceOption = element.shadowRoot?.querySelector(
+      '[data-testid="exchange-option-binance"]'
+    )
+
+    expect(coinbaseOption).not.toBeNull()
+    expect(binanceOption).not.toBeNull()
+    expect(
+      coinbaseOption?.querySelector('wui-text')?.textContent?.includes('Pay with Coinbase')
+    ).toBe(true)
+    expect(
+      binanceOption?.querySelector('wui-text')?.textContent?.includes('Pay with Binance')
+    ).toBe(true)
+  })
+
+  test('should call handlePayWithWallet when wallet payment option is clicked', async () => {
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const walletPaymentOption = element.shadowRoot?.querySelector(
+      '[data-testid="wallet-payment-option"]'
+    )
+    await walletPaymentOption?.dispatchEvent(new Event('click'))
+
+    expect(PayController.handlePayWithWallet).toHaveBeenCalledOnce()
+  })
+
+  test('should call handlePayWithExchange when an exchange option is clicked', async () => {
+    // Populate exchanges
+    PayController.state.exchanges = mockExchanges
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const coinbaseOption = element.shadowRoot?.querySelector(
+      '[data-testid="exchange-option-coinbase"]'
+    )
+    await coinbaseOption?.dispatchEvent(new Event('click'))
+
+    expect(PayController.handlePayWithExchange).toHaveBeenCalledWith('coinbase')
+  })
+
+  test('should show error snackbar if exchange payment fails', async () => {
+    // Populate exchanges
+    PayController.state.exchanges = mockExchanges
+
+    // Mock exchange payment error
+    vi.spyOn(PayController, 'handlePayWithExchange').mockRejectedValueOnce(
+      new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
+    )
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const coinbaseOption = element.shadowRoot?.querySelector(
+      '[data-testid="exchange-option-coinbase"]'
+    )
+    await coinbaseOption?.dispatchEvent(new Event('click'))
+
+    // Give time for the async operation to complete
+    await elementUpdated(element)
+
+    expect(SnackController.showError).toHaveBeenCalledWith(expect.any(String))
+  })
+
+  test('should disconnect wallet when disconnect button is clicked', async () => {
+    // Mock connected state
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      status: 'connected',
+      caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+      connectedWalletInfo: {
+        name: 'MetaMask',
+        icon: 'https://example.com/metamask.png'
+      }
+    })
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const disconnectButton = element.shadowRoot?.querySelector('[data-testid="disconnect-button"]')
+    await disconnectButton?.dispatchEvent(new Event('click'))
+
+    expect(ConnectionController.disconnect).toHaveBeenCalledOnce()
+    expect(ModalController.close).toHaveBeenCalledOnce()
+  })
+
+  test('should show error snackbar if disconnection fails', async () => {
+    // Mock connected state
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      status: 'connected',
+      caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+      connectedWalletInfo: {
+        name: 'MetaMask',
+        icon: 'https://example.com/metamask.png'
+      }
+    })
+
+    // Mock disconnect error
+    vi.spyOn(ConnectionController, 'disconnect').mockRejectedValueOnce(
+      new Error('Disconnect failed')
+    )
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const disconnectButton = element.shadowRoot?.querySelector('[data-testid="disconnect-button"]')
+    await disconnectButton?.dispatchEvent(new Event('click'))
+
+    // Give time for the async operation to complete
+    await elementUpdated(element)
+
+    expect(SnackController.showError).toHaveBeenCalledWith('Failed to disconnect')
+  })
+
+  test('should show "no exchanges available" when exchanges array is empty', async () => {
+    PayController.state.exchanges = []
+    PayController.state.isLoading = false
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const noExchangesText = Array.from(element.shadowRoot?.querySelectorAll('wui-text') || []).find(
+      el => el.textContent?.includes('No exchanges available')
+    )
+
+    expect(noExchangesText).not.toBeNull()
+  })
+
+  test('should clean up subscriptions when disconnected', async () => {
+    const unsubscribeSpy = vi.fn()
+    const subscribeSpy = vi.spyOn(PayController, 'subscribeKey').mockReturnValue(unsubscribeSpy)
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    expect(subscribeSpy).toHaveBeenCalled()
+
+    // Simulate disconnectedCallback
+    element.remove()
+
+    expect(unsubscribeSpy).toHaveBeenCalled()
+  })
+})

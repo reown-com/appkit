@@ -21,7 +21,7 @@ type GetExchangesParams = {
   amount?: string
 }
 
-type GetExchangesResult = {
+export type GetExchangesResult = {
   exchanges: Exchange[]
   total: number
 }

@@ -84,6 +84,10 @@ export const PayController = {
 
   // -- Setters ----------------------------------------- //
   setPaymentConfig(config: PaymentOptions) {
+    if (!config.paymentAsset) {
+      throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
+    }
+
     try {
       state.paymentAsset = config.paymentAsset
       state.openInNewTab = config.openInNewTab
