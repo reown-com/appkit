@@ -50,6 +50,29 @@ export function AppKitPay() {
     }
   })
 
+  async function handleOpenPay() {
+    if (!paymentDetails.recipient) {
+      console.warn('Please enter a recipient address.')
+
+      return
+    }
+    if (!/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient)) {
+      console.warn('Please enter a valid Ethereum address for the recipient.')
+
+      return
+    }
+
+    try {
+      await openPay({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        paymentAsset: paymentDetails as any
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error opening pay modal:', error)
+    }
+  }
+
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target
     if (name.startsWith('metadata.')) {
@@ -78,29 +101,6 @@ export function AppKitPay() {
       ...prev,
       metadata: { ...prev.metadata, decimals: isNaN(valueAsNumber) ? 0 : valueAsNumber }
     }))
-  }
-
-  async function handleOpenPay() {
-    if (!paymentDetails.recipient) {
-      console.warn('Please enter a recipient address.')
-
-      return
-    }
-    if (!/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient)) {
-      console.warn('Please enter a valid Ethereum address for the recipient.')
-
-      return
-    }
-
-    try {
-      await openPay({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paymentAsset: paymentDetails as any
-      })
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error opening pay modal:', error)
-    }
   }
 
   return (

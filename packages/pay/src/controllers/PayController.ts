@@ -11,7 +11,7 @@ import {
 } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
 
-import { AppKitPayErrorCodes } from '../types/errors.js'
+import { AppKitPayErrorCodes, AppKitPayErrorMessages } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
 import type { PaymentOptions } from '../types/options.js'
@@ -210,7 +210,10 @@ export const PayController = {
           throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error processing payment:', error)
       state.error = (error as Error).message
+      SnackController.showError(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
     } finally {
       state.isPaymentInProgress = false
     }

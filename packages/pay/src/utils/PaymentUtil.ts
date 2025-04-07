@@ -7,6 +7,8 @@ import {
 } from '@reown/appkit-common'
 import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
 
+import { AppKitPayError } from '../types/errors.js'
+import { AppKitPayErrorCodes } from '../types/errors.js'
 import type { PaymentOptions } from '../types/options.js'
 
 interface EnsureNetworkOptions {
@@ -30,9 +32,7 @@ export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promi
   )
 
   if (!assetCaipNetwork) {
-    throw new Error(
-      `Payment asset network (${paymentAssetNetwork}) not found in available networks.`
-    )
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
   }
 
   if (assetCaipNetwork.caipNetworkId === activeCaipNetwork.caipNetworkId) {
@@ -48,15 +48,13 @@ export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promi
     approvedCaipNetworkIds?.includes(assetCaipNetwork.caipNetworkId) || isSupportingAllNetworks
 
   if (!isSwitchAllowed) {
-    throw new Error(
-      `Switching to network ${assetCaipNetwork.caipNetworkId} is not permitted. It's not in the approved list and the wallet does not support adding it automatically.`
-    )
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
   }
 
   try {
     await ChainController.switchActiveNetwork(assetCaipNetwork)
   } catch (error) {
-    throw new Error(`Failed to switch to network ${assetCaipNetwork.caipNetworkId}: ${error}`)
+    throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR, error)
   }
 }
 
@@ -68,18 +66,18 @@ export async function processEvmNativePayment(
   const amountValue =
     typeof paymentAsset.amount === 'string' ? parseFloat(paymentAsset.amount) : paymentAsset.amount
   if (isNaN(amountValue)) {
-    throw new Error('Invalid payment amount for native transfer')
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
   }
 
   const decimals = paymentAsset.metadata?.decimals ?? 18
   const amountBigInt = ConnectionController.parseUnits(amountValue.toString(), decimals)
 
   if (typeof amountBigInt !== 'bigint') {
-    throw new Error('Failed to parse amount into BigInt for native transfer')
+    throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
   if (chainNamespace !== ConstantsUtil.CHAIN.EVM) {
-    throw new Error(`Unsupported chain namespace for EVM native payment: ${chainNamespace}`)
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
   }
 
   const txResponse = await ConnectionController.sendTransaction({
@@ -103,7 +101,7 @@ export async function processEvmErc20Payment(
   const amount = ConnectionController.parseUnits(paymentAsset.amount.toString(), decimals)
 
   if (typeof amount !== 'bigint') {
-    throw new Error('Failed to parse amount into BigInt for native transfer')
+    throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
   await ConnectionController.writeContract({
