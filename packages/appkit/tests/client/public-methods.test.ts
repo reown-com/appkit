@@ -1,10 +1,11 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { AuthConnector, Connector, SocialProvider } from '@reown/appkit'
+import type { AdapterNetworkState, AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
   type Balance,
   type CaipNetwork,
+  ConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
@@ -1047,5 +1048,70 @@ describe('Base Public methods', () => {
         isSmartAccountDeployed: true
       }
     })
+  })
+
+  it('should handle network switcher UI when enableNetworkSwitch is true', async () => {
+    vi.spyOn(ChainController, 'getNetworkData').mockReturnValue(
+      mainnet as unknown as AdapterNetworkState
+    )
+    vi.spyOn(ChainController, 'getCaipNetworkByNamespace').mockReturnValue(mainnet)
+    vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(true)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: {
+        ...mainnet,
+        name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+      },
+      activeChain: 'eip155'
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      allowUnsupportedChain: false,
+      enableNetworkSwitch: true
+    })
+
+    const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+    const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+    const appKit = new AppKit(mockOptions)
+    await appKit['syncAccount']({
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    })
+
+    expect(showUnsupportedChainUI).toHaveBeenCalled()
+    expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
+  })
+
+  it('should handle network switcher UI when enableNetworkSwitch is false', async () => {
+    vi.spyOn(ChainController, 'getNetworkData').mockReturnValue(
+      mainnet as unknown as AdapterNetworkState
+    )
+    vi.spyOn(ChainController, 'getCaipNetworkByNamespace').mockReturnValue(mainnet)
+    vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(true)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: mainnet,
+      activeChain: 'eip155'
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      allowUnsupportedChain: false,
+      enableNetworkSwitch: false
+    })
+
+    const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+    const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+    const appKit = new AppKit(mockOptions)
+    await appKit['syncAccount']({
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    })
+
+    expect(showUnsupportedChainUI).not.toHaveBeenCalled()
+    expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
 })
