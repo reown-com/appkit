@@ -1,21 +1,9 @@
 {
   "compilerOptions": {
-    "declarationDir": "dist/types",
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "noEmitOnError": true,
-    "resolveJsonModule": true,
-    "strict": true,
-    "stripInternal": true,
-    "skipLibCheck": true,
-    "outDir": "dist/",
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true
+    "composite": true,
+    "outDir": "./dist/esm",
+    "declarationDir": "./dist/types"
   },
   "extends": "../../tsconfig.json",
-  "exclude": ["/dist", "dist/**/*.d.ts"]
+  "include": ["exports", "src"]
 }

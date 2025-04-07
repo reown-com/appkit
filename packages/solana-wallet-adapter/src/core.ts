@@ -38,6 +38,7 @@ export class WalletConnectWallet {
   }
 
   async connect(): Promise<WalletConnectWalletInit> {
+    console.log('>>> connect')
     if (!this._UniversalProvider) {
       await new Promise(res => {
         this._ConnectQueueResolver = res
@@ -257,7 +258,8 @@ export class WalletConnectWallet {
     this._modal = createAppKit({
       projectId: this._projectId,
       universalProvider: this._UniversalProvider,
-      networks: [solana, solanaDevnet, solanaTestnet]
+      networks: [solana, solanaDevnet, solanaTestnet],
+      manualWCControl: true
     })
   }
 

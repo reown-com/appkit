@@ -40,10 +40,9 @@ export class WalletConnectWalletAdapter extends BaseSignerWalletAdapter {
 
   private _publicKey: PublicKey | null
   private _connecting: boolean
-  private _wallet: WalletConnectWallet
+  private _wallet: WalletConnectWallet | null
   private _config: WalletConnectWalletAdapterConfig
-  private _readyState: WalletReadyState =
-    typeof window === 'undefined' ? WalletReadyState.Unsupported : WalletReadyState.Loadable
+  private _readyState: WalletReadyState
 
   private _onDisconnect: WalletConnectWalletAdapter['disconnect'] | undefined
 
@@ -53,13 +52,9 @@ export class WalletConnectWalletAdapter extends BaseSignerWalletAdapter {
     this._publicKey = null
     this._connecting = false
     this._config = config
-    this._wallet = new WalletConnectWallet({
-      network:
-        this._config.network === WalletAdapterNetwork.Mainnet
-          ? WalletConnectChainID.Mainnet
-          : WalletConnectChainID.Devnet,
-      options: this._config.options
-    })
+    this._wallet = null
+    this._readyState =
+      typeof window === 'undefined' ? WalletReadyState.Unsupported : WalletReadyState.Loadable
 
     this._onDisconnect = this.disconnect.bind(this)
   }
@@ -86,7 +81,13 @@ export class WalletConnectWalletAdapter extends BaseSignerWalletAdapter {
       }
 
       this._connecting = true
-
+      this._wallet = new WalletConnectWallet({
+        network:
+          this._config.network === WalletAdapterNetwork.Mainnet
+            ? WalletConnectChainID.Mainnet
+            : WalletConnectChainID.Devnet,
+        options: this._config.options
+      })
       const { publicKey } = await this._wallet.connect()
       this._publicKey = publicKey
       this.emit('connect', publicKey)
