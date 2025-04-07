@@ -38,7 +38,6 @@ export class WalletConnectWallet {
   }
 
   async connect(): Promise<WalletConnectWalletInit> {
-    console.log('>>> connect')
     if (!this._UniversalProvider) {
       await new Promise(res => {
         this._ConnectQueueResolver = res
