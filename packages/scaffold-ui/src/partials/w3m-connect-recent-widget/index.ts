@@ -44,29 +44,11 @@ export class W3mConnectRecentWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const currentNamespace = ChainController.state.activeChain
     const recentWallets = StorageUtil.getRecentWallets()
 
     const filteredRecentWallets = recentWallets
-      .filter(
-        wallet =>
-          !this.connectors.some(
-            connector => connector.id === wallet.id || connector.name === wallet.name
-          )
-      )
-      .filter(wallet => {
-        if (currentNamespace && wallet.chains) {
-          const hasMatchingNamespace = wallet.chains.some(c => {
-            const chainNamespace = c.split(':')[0] as ChainNamespace
-
-            return currentNamespace === chainNamespace
-          })
-
-          return hasMatchingNamespace
-        }
-
-        return true
-      })
+      .filter(wallet => this.hasNoWalletConnector(wallet))
+      .filter(wallet => this.isWalletCompatibleWithCurrentChain(wallet))
 
     if (!filteredRecentWallets.length) {
       this.style.cssText = `display: none`
@@ -101,6 +83,26 @@ export class W3mConnectRecentWidget extends LitElement {
     }
 
     ConnectorController.selectWalletConnector(wallet)
+  }
+
+  private hasNoWalletConnector(wallet: WcWallet) {
+    return !this.connectors.some(
+      connector => connector.id === wallet.id || connector.name === wallet.name
+    )
+  }
+
+  private isWalletCompatibleWithCurrentChain(wallet: WcWallet) {
+    const currentNamespace = ChainController.state.activeChain
+
+    if (currentNamespace && wallet.chains) {
+      return wallet.chains.some(c => {
+        const chainNamespace = c.split(':')[0] as ChainNamespace
+
+        return currentNamespace === chainNamespace
+      })
+    }
+
+    return true
   }
 }
 
