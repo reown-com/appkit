@@ -121,9 +121,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
-        shardTotal: [5]
-    timeout-minutes: 20
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+        shardTotal: [8]
+    timeout-minutes: 10
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
       # It's not supported in self-hosted runners, however, so commenting it out for now
@@ -187,6 +187,13 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
+      - name: Verify Cache Dir Exists After Install
+        if: steps.playwright-cache.outputs.cache-hit != 'true' # Only relevant if install ran
+        run: |
+          echo "Checking cache directory after install:"
+          ls -la ~/.cache/ms-playwright
+        continue-on-error: true # Don't fail the job if ls fails
+
       # - name: Build MetaMask wallet cache
       #   working-directory: ./apps/laboratory/
       #   run: xvfb-run pnpm synpress
@@ -240,3 +247,9 @@ jobs:
           name: playwright-report-${{ matrix.shard }}
           path: ./apps/laboratory/playwright-report/
           retention-days: 7
+
+      - name: Verify Cache Dir Exists Before Post Job
+        run: |
+          echo "Checking cache directory just before post-job phase:"
+          ls -la ~/.cache/ms-playwright
+        continue-on-error: true # Don't fail the job if ls fails
