@@ -2,9 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-controllers'
 import {
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -42,13 +44,29 @@ export class W3mConnectRecentWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const currentNamespace = ChainController.state.activeChain
     const recentWallets = StorageUtil.getRecentWallets()
-    const filteredRecentWallets = recentWallets.filter(
-      wallet =>
-        !this.connectors.some(
-          connector => connector.id === wallet.id || connector.name === wallet.name
-        )
-    )
+
+    const filteredRecentWallets = recentWallets
+      .filter(
+        wallet =>
+          !this.connectors.some(
+            connector => connector.id === wallet.id || connector.name === wallet.name
+          )
+      )
+      .filter(wallet => {
+        if (currentNamespace && wallet.chains) {
+          const hasMatchingNamespace = wallet.chains.some(c => {
+            const chainNamespace = c.split(':')[0] as ChainNamespace
+
+            return currentNamespace === chainNamespace
+          })
+
+          return hasMatchingNamespace
+        }
+
+        return true
+      })
 
     if (!filteredRecentWallets.length) {
       this.style.cssText = `display: none`
