@@ -47,7 +47,7 @@ export class W3mConnectRecentWidget extends LitElement {
     const recentWallets = StorageUtil.getRecentWallets()
 
     const filteredRecentWallets = recentWallets
-      .filter(wallet => this.hasNoWalletConnector(wallet))
+      .filter(wallet => !this.hasWalletConnector(wallet))
       .filter(wallet => this.isWalletCompatibleWithCurrentChain(wallet))
 
     if (!filteredRecentWallets.length) {
@@ -85,8 +85,8 @@ export class W3mConnectRecentWidget extends LitElement {
     ConnectorController.selectWalletConnector(wallet)
   }
 
-  private hasNoWalletConnector(wallet: WcWallet) {
-    return !this.connectors.some(
+  private hasWalletConnector(wallet: WcWallet) {
+    return this.connectors.some(
       connector => connector.id === wallet.id || connector.name === wallet.name
     )
   }
