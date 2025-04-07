@@ -619,12 +619,12 @@ export abstract class AppKitBaseClient {
         adapters[namespace].construct({
           namespace,
           projectId: this.options?.projectId,
-          networks: this.caipNetworks
+          networks: this.getCaipNetworks()
         })
       } else {
-        adapters[namespace] = new UniversalAdapter({
-          namespace,
-          networks: this.caipNetworks
+        adapters[namespace as ChainNamespace] = new UniversalAdapter({
+          namespace: namespace as ChainNamespace,
+          networks: this.getCaipNetworks()
         })
       }
 
@@ -686,7 +686,7 @@ export abstract class AppKitBaseClient {
         const account = isSameNamespace && address ? address : accountAddress
 
         if (account) {
-          this.syncAccount({ address: account, chainId, chainNamespace })
+          this.syncAccount({ address: account, chainId: caipNetwork.id, chainNamespace })
         }
       } else {
         this.setUnsupportedNetwork(chainId)
@@ -1103,12 +1103,13 @@ export abstract class AppKitBaseClient {
     namespace: ChainNamespace
   ) {
     const adapter = this.getAdapter(namespace)
+    const caipNetwork = ChainController.getCaipNetworkByNamespace(namespace, chainId)
 
     if (adapter) {
       const balance = await adapter.getBalance({
         address,
         chainId,
-        caipNetwork: this.getCaipNetwork(namespace),
+        caipNetwork,
         tokens: this.options.tokens
       })
       this.setBalance(balance.balance, balance.symbol, namespace)
@@ -1282,8 +1283,16 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Public Internal ---------------------------------------------------
-  public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
+  public getCaipNetwork = (chainNamespace?: ChainNamespace, id?: string | number) => {
     if (chainNamespace) {
+      const caipNetworkWithId = ChainController.getNetworkData(
+        chainNamespace
+      )?.requestedCaipNetworks?.find(c => c.id === id)
+
+      if (caipNetworkWithId) {
+        return caipNetworkWithId
+      }
+
       const namespaceCaipNetwork = ChainController.getNetworkData(chainNamespace)?.caipNetwork
 
       if (namespaceCaipNetwork) {
@@ -1308,8 +1317,8 @@ export abstract class AppKitBaseClient {
     return undefined
   }
 
-  public getCaipNetworks = (namespace: ChainNamespace) =>
-    ChainController.getRequestedCaipNetworks(namespace)
+  public getCaipNetworks = (namespace?: ChainNamespace) =>
+    ChainController.getCaipNetworks(namespace)
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
@@ -1856,12 +1865,7 @@ export abstract class AppKitBaseClient {
       return
     }
 
-    const remainingNetworks = this.caipNetworks.filter(
-      n => n.chainNamespace === namespace && n.id !== networkId
-    )
-    if (!remainingNetworks?.length) {
-      throw new Error('Cannot remove last network for a namespace')
-    }
+    const remainingNetworks = this.caipNetworks.filter(n => n.id !== networkId)
 
     ChainController.removeNetwork(namespace, networkId)
     this.caipNetworks = [...remainingNetworks] as [CaipNetwork, ...CaipNetwork[]]
