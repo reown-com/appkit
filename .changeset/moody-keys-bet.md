@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Removed activity and nft tabs from account modal when using Solana
+Removed activity and nft tabs from account modal when using solana
