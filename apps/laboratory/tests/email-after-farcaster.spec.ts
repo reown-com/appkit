@@ -142,6 +142,7 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should disconnect correctly after abort login with farcaster',
   async () => {
+    await page.page.reload()
     await new Promise(resolve => setTimeout(resolve, 10000))
     await page.goToSettings()
     await page.disconnect()
