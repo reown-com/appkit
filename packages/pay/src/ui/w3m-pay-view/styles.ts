@@ -18,4 +18,8 @@ export default css`
   .token-display wui-text {
     text-transform: none;
   }
+
+  wui-loading-spinner {
+    padding: var(--wui-spacing-xs);
+  }
 `

@@ -1,12 +1,10 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, ConstantsUtil, ContractUtil, ParseUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
-  ConnectionController,
-  CoreHelperUtil,
   ModalController,
   RouterController,
   SnackController
@@ -19,12 +17,17 @@ import type { Exchange } from '../types/exchange.js'
 import type { PaymentOptions } from '../types/options.js'
 import { getExchanges, getPayUrl } from '../utils/ApiUtil.js'
 import { formatCaip19Asset } from '../utils/AssetUtil.js'
+import {
+  ensureCorrectNetwork,
+  processEvmErc20Payment,
+  processEvmNativePayment
+} from '../utils/PaymentUtil.js'
 
 const DEFAULT_PAGE = 0
 
 // -- Types --------------------------------------------- //
 
-export interface PayControllerState extends Pick<PaymentOptions, 'paymentAsset'> {
+export interface PayControllerState extends PaymentOptions {
   isConfigured: boolean
   error: string | null
   isPaymentInProgress: boolean
@@ -51,7 +54,10 @@ const state = proxy<PayControllerState>({
   error: null,
   isPaymentInProgress: false,
   exchanges: [],
-  isLoading: false
+  isLoading: false,
+  openInNewTab: true,
+  redirectUrl: undefined,
+  payWithExchange: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -80,10 +86,12 @@ export const PayController = {
   setPaymentConfig(config: PaymentOptions) {
     try {
       state.paymentAsset = config.paymentAsset
-
+      state.openInNewTab = config.openInNewTab
+      state.redirectUrl = config.redirectUrl
+      state.payWithExchange = config.payWithExchange
       state.error = null
     } catch (error) {
-      state.error = (error as Error).message
+      throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, (error as Error).message)
     }
   },
 
@@ -170,71 +178,36 @@ export const PayController = {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
-    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+    await ensureCorrectNetwork({
+      paymentAssetNetwork: state.paymentAsset.network,
+      activeCaipNetwork: caipNetwork,
       approvedCaipNetworkIds,
       requestedCaipNetworks
-    )
-
-    const assetCaipNetwork = sortedNetworks.find(
-      network => network.caipNetworkId === state.paymentAsset.network
-    )
-
-    if (!assetCaipNetwork) {
-      return
-    }
-
-    if (assetCaipNetwork.caipNetworkId !== caipNetwork.caipNetworkId) {
-      try {
-        const isSupportingAllNetworks = ChainController.getNetworkProp(
-          'supportsAllNetworks',
-          assetCaipNetwork.chainNamespace
-        )
-        if (
-          approvedCaipNetworkIds?.includes(assetCaipNetwork.caipNetworkId) ||
-          isSupportingAllNetworks
-        ) {
-          await ChainController.switchActiveNetwork(assetCaipNetwork)
-        }
-      } catch (error) {
-        SnackController.showError('Unable to switch network to the configured asset network')
-
-        return
-      }
-    }
+    })
 
     try {
       state.isPaymentInProgress = true
       await ModalController.open({
         view: 'PayLoading'
       })
-      if (chainNamespace === ConstantsUtil.CHAIN.EVM) {
-        if (state.paymentAsset.asset === 'native') {
-          const amount = state.paymentAsset.amount / Number(10 ** 18)
-          const res = await ConnectionController.sendTransaction({
-            chainNamespace,
-            to: state.paymentAsset.recipient as `0x${string}`,
-            address: address as `0x${string}`,
-            value: BigInt(amount),
-            data: '0x'
-          })
-          // eslint-disable-next-line no-console
-          console.log('res', { res })
-        }
-        if (state.paymentAsset.asset.startsWith('0x')) {
-          const tokenAddress = state.paymentAsset.asset as `0x${string}`
-          const amount = ConnectionController.parseUnits(
-            state.paymentAsset.amount.toString(),
-            Number(state.paymentAsset.metadata.decimals)
-          )
-          await ConnectionController.writeContract({
-            fromAddress: AccountController.state.address as `0x${string}`,
-            tokenAddress,
-            args: [state.paymentAsset.recipient as `0x${string}`, amount ?? BigInt(0)],
-            method: 'transfer',
-            abi: ContractUtil.getERC20Abi(tokenAddress),
-            chainNamespace: 'eip155'
-          })
-        }
+
+      switch (chainNamespace) {
+        case ConstantsUtil.CHAIN.EVM:
+          if (state.paymentAsset.asset === 'native') {
+            await processEvmNativePayment(
+              state.paymentAsset,
+              chainNamespace,
+              address as `0x${string}`
+            )
+          }
+          if (state.paymentAsset.asset.startsWith('0x')) {
+            await processEvmErc20Payment(state.paymentAsset, address as `0x${string}`)
+          }
+          break
+        case ConstantsUtil.CHAIN.SOLANA:
+          break
+        default:
+          throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
       }
     } catch (error) {
       state.error = (error as Error).message
@@ -265,13 +238,28 @@ export const PayController = {
   handlePayWithWallet() {
     const caipAddress = AccountController.state.caipAddress
     if (!caipAddress) {
+      RouterController.push('Connect')
+
       return
     }
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
     const chainNamespace = ChainController.state.activeChain as ChainNamespace
     if (!address || !chainId || !chainNamespace) {
       RouterController.push('Connect')
+
+      return
     }
     this.handlePayment()
+  },
+
+  async handlePayWithExchange(exchangeId: string) {
+    const payUrl = await this.getPayUrl(exchangeId)
+    if (!payUrl) {
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
+    }
+
+    RouterController.push('PayLoading')
+    const target = state.openInNewTab ? '_blank' : '_self'
+    window.open(payUrl, target)
   }
 }

@@ -20,4 +20,13 @@ type PaymentAsset = {
 
 export type PaymentOptions = {
   paymentAsset: PaymentAsset
+  openInNewTab?: boolean
+  redirectUrl?: {
+    success: string
+    failure: string
+  }
+  payWithExchange?: {
+    includeOnly?: string[]
+    exclude?: string[]
+  }
 }

@@ -9,7 +9,9 @@ export const AppKitPayErrorCodes = {
   INVALID_AMOUNT: 'INVALID_AMOUNT',
 
   // General errors
-  UNKNOWN_ERROR: 'UNKNOWN_ERROR'
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+  UNABLE_TO_INITIATE_PAYMENT: 'UNABLE_TO_INITIATE_PAYMENT',
+  INVALID_CHAIN_NAMESPACE: 'INVALID_CHAIN_NAMESPACE'
 } as const
 
 export type AppKitPayErrorCode = (typeof AppKitPayErrorCodes)[keyof typeof AppKitPayErrorCodes]
@@ -23,7 +25,9 @@ export const AppKitPayErrorMessages: Record<AppKitPayErrorCode, string> = {
   [AppKitPayErrorCodes.INVALID_ASSET]: 'Invalid asset specified',
   [AppKitPayErrorCodes.INVALID_AMOUNT]: 'Invalid payment amount',
 
-  [AppKitPayErrorCodes.UNKNOWN_ERROR]: 'Unknown payment error occurred'
+  [AppKitPayErrorCodes.UNKNOWN_ERROR]: 'Unknown payment error occurred',
+  [AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT]: 'Unable to initiate payment',
+  [AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE]: 'Invalid chain namespace'
 }
 
 /**

@@ -8,7 +8,6 @@ import {
   ChainController,
   ConnectionController,
   ModalController,
-  RouterController,
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -19,12 +18,14 @@ import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-image'
 import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-network-image'
 import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
+import { AppKitPayError } from '../../types/errors.js'
 import styles from './styles.js'
 
 @customElement('w3m-pay-view')
@@ -40,6 +41,7 @@ export class W3mPayView extends LitElement {
   @state() private networkName = ''
   @state() private exchanges = PayController.state.exchanges
   @state() private isLoading = PayController.state.isLoading
+  @state() private loadingExchangeId: string | null = null
   @state() private connectedWalletInfo = AccountController.state.connectedWalletInfo
 
   public constructor() {
@@ -196,16 +198,19 @@ export class W3mPayView extends LitElement {
           @click=${() => this.onExchangePayment(exchange.id)}
           data-testid="exchange-option-${exchange.id}"
           ?chevron=${true}
+          ?disabled=${this.loadingExchangeId !== null}
         >
           <wui-flex alignItems="center" gap="s">
-            <wui-wallet-image
-              size="sm"
-              imageSrc=${ifDefined(exchange.imageUrl)}
-              name=${exchange.name}
-            ></wui-wallet-image>
+            ${this.loadingExchangeId === exchange.id
+              ? html`<wui-loading-spinner color="accent-100" size="md"></wui-loading-spinner>`
+              : html`<wui-wallet-image
+                  size="sm"
+                  imageSrc=${ifDefined(exchange.imageUrl)}
+                  name=${exchange.name}
+                ></wui-wallet-image>`}
             <wui-text flexGrow="1" variant="paragraph-500" color="inherit"
-              >Pay with ${exchange.name}</wui-text
-            >
+              >Pay with ${exchange.name} <wui-spinner size="sm" color="fg-200"></wui-spinner
+            ></wui-text>
           </wui-flex>
         </wui-list-item>
       `
@@ -217,9 +222,18 @@ export class W3mPayView extends LitElement {
   }
 
   private async onExchangePayment(exchangeId: string) {
-    const payUrl = await PayController.getPayUrl(exchangeId)
-    RouterController.push('PayLoading')
-    window.open(payUrl, '_blank')
+    this.loadingExchangeId = exchangeId
+    try {
+      await PayController.handlePayWithExchange(exchangeId)
+    } catch (error) {
+      if (error instanceof AppKitPayError) {
+        SnackController.showError(error.message)
+      } else {
+        SnackController.showError('Failed to initiate payment')
+      }
+    } finally {
+      this.loadingExchangeId = null
+    }
   }
 
   private async onDisconnect(e: Event) {
