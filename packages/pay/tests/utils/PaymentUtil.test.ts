@@ -33,7 +33,7 @@ vi.mock('@reown/appkit-controllers', () => ({
 const MOCK_EVM_NETWORK: CaipNetwork = {
   caipNetworkId: 'eip155:1',
   chainNamespace: ConstantsUtil.CHAIN.EVM,
-  rpcUrls: { default: { http: ['http://localhost:8545'] } },
+  rpcUrls: { default: { http: ['http://example.com:8545'] } },
   id: '1',
   name: 'Ethereum',
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }
@@ -42,7 +42,7 @@ const MOCK_EVM_NETWORK: CaipNetwork = {
 const MOCK_OTHER_EVM_NETWORK: CaipNetwork = {
   caipNetworkId: 'eip155:137',
   chainNamespace: ConstantsUtil.CHAIN.EVM,
-  rpcUrls: { default: { http: ['http://localhost:8546'] } },
+  rpcUrls: { default: { http: ['http://example:8546'] } },
   id: '137',
   name: 'Polygon',
   nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 }
