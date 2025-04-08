@@ -21,4 +21,4 @@
 '@reown/appkit-ui': patch
 ---
 
-Test version for social login improvements
+This change includes social login improvments. We will remove an abudant call that we make to our backend to receive the users data. Also changed the wallet schema according to the new data that we receive.
