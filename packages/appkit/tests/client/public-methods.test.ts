@@ -439,7 +439,24 @@ describe('Base Public methods', () => {
     expect(setRequestedCaipNetworks).toHaveBeenCalledWith(requestedNetworks, mainnet.chainNamespace)
   })
 
-  it('should set connectors correctly', () => {
+  it('should set connectors', () => {
+    const existingConnectors = [
+      { id: 'phantom', name: 'Phantom', chain: 'eip155', type: 'INJECTED' }
+    ] as Connector[]
+    const newConnectors = [
+      { id: 'metamask', name: 'MetaMask', chain: 'eip155', type: 'INJECTED' }
+    ] as Connector[]
+
+    const combinedConnectors = [...existingConnectors, ...newConnectors]
+
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectors(combinedConnectors)
+
+    expect(ConnectorController.state.connectors).toEqual(combinedConnectors)
+    expect(ConnectorController.state.allConnectors).toEqual(combinedConnectors)
+  })
+
+  it('should set multichain connectors', () => {
     // Reset connectors state
     ConnectorController.state.allConnectors = []
     ConnectorController.state.connectors = []
@@ -447,14 +464,14 @@ describe('Base Public methods', () => {
     const ethConnector = {
       id: 'mock',
       name: 'Mock',
-      type: 'injected',
+      type: 'INJECTED',
       chain: 'eip155'
     } as unknown as Connector
 
     const solConnector = {
       id: 'mock',
       name: 'Mock',
-      type: 'injected',
+      type: 'INJECTED',
       chain: 'solana'
     } as unknown as Connector
 
