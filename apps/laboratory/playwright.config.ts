@@ -43,6 +43,6 @@ export default defineConfig<ModalFixture>({
   webServer: {
     command: 'exit 0',
     url: BASE_URL,
-    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
+    reuseExistingServer: true
   }
 })
