@@ -94,7 +94,6 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     super({
       projectId: configParams.projectId,
-      networks,
       adapterType: CommonConstantsUtil.ADAPTER_TYPES.WAGMI,
       namespace: CommonConstantsUtil.CHAIN.EVM
     })
@@ -150,8 +149,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customRpcUrls?: CustomRpcUrlMap
     }
   ) {
-    this.caipNetworks = configParams.networks
-    this.wagmiChains = this.caipNetworks.filter(
+    this.wagmiChains = configParams.networks.filter(
       caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
     ) as unknown as [BaseNetwork, ...BaseNetwork[]]
 
@@ -272,9 +270,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const customConnectors: CreateConnectorFn[] = []
 
     if (options.enableWalletConnect !== false) {
-      customConnectors.push(
-        walletConnect(options, appKit, this.caipNetworks as [CaipNetwork, ...CaipNetwork[]])
-      )
+      customConnectors.push(walletConnect(options, appKit))
     }
 
     if (options.enableInjected !== false) {
@@ -556,7 +552,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+    const caipNetwork = this.getCaipNetworks().find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
@@ -754,7 +750,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.caipNetworks || [],
+        caipNetworks: this.getCaipNetworks(),
         namespace: 'eip155'
       })
     )

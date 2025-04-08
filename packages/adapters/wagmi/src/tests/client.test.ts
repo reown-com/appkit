@@ -22,6 +22,11 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import { WagmiAdapter } from '../client'
@@ -95,6 +100,11 @@ describe('WagmiAdapter', () => {
       networks: mockNetworks,
       projectId: mockProjectId
     })
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
   describe('WagmiAdapter - constructor and initialization', () => {
