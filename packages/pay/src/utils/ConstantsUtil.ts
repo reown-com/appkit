@@ -1,1 +1,1 @@
-export const API_URL = 'http://localhost:3000/v1/json-rpc'
+export const API_URL = 'https://rpc.walletconnect.org/v1/json-rpc'

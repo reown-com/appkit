@@ -1,10 +1,14 @@
+import { OptionsController } from '@reown/appkit-controllers'
+
 import type { Exchange } from '../types/exchange.js'
 import { API_URL } from './ConstantsUtil.js'
 
 class JsonRpcError extends Error {}
 
 export function getApiUrl() {
-  return `${API_URL}?projectId=test`
+  const projectId = OptionsController.getSnapshot().projectId
+
+  return `${API_URL}?projectId=${projectId}`
 }
 
 type JsonRpcResponse<T> = {

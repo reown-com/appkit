@@ -3,10 +3,25 @@ import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vites
 import { getApiUrl, getExchanges, getPayUrl } from '../../src/utils/ApiUtil.js'
 import { API_URL } from '../../src/utils/ConstantsUtil.js'
 
+// --- Mocks -------------------------------------------------------------------
+const MOCK_PROJECT_ID = 'mockProjectId'
+
+vi.mock('@reown/appkit-controllers', () => ({
+  OptionsController: {
+    getSnapshot: vi.fn(
+      () =>
+        ({
+          projectId: MOCK_PROJECT_ID
+        }) as any
+    )
+  }
+}))
+
 // Mock the global fetch function
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
 
+// --- Tests -------------------------------------------------------------------
 describe('ApiUtil', () => {
   beforeEach(() => {
     mockFetch.mockReset()
@@ -15,15 +30,14 @@ describe('ApiUtil', () => {
   afterEach(() => {
     vi.restoreAllMocks()
   })
+
   afterAll(() => {
     vi.unstubAllGlobals()
   })
 
   describe('getApiUrl', () => {
-    it('should return the correct API URL with projectId', () => {
-      // Assuming a default projectId is appended, adjust if needed based on actual implementation
-      // Currently it seems hardcoded to 'test'
-      expect(getApiUrl()).toBe(`${API_URL}?projectId=test`)
+    it('should return the correct API URL with projectId from OptionsController', () => {
+      expect(getApiUrl()).toBe(`${API_URL}?projectId=${MOCK_PROJECT_ID}`)
     })
   })
 
@@ -49,7 +63,7 @@ describe('ApiUtil', () => {
       const result = await getExchanges(mockParams)
 
       expect(mockFetch).toHaveBeenCalledWith(
-        `${API_URL}?projectId=test`,
+        `${API_URL}?projectId=${MOCK_PROJECT_ID}`,
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -110,7 +124,7 @@ describe('ApiUtil', () => {
       const result = await getPayUrl(mockParams)
 
       expect(mockFetch).toHaveBeenCalledWith(
-        `${API_URL}?projectId=test`,
+        `${API_URL}?projectId=${MOCK_PROJECT_ID}`,
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
