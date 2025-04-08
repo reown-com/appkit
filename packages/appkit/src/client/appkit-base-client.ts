@@ -1439,7 +1439,7 @@ export abstract class AppKitBaseClient {
     ChainController.getAccountProp('address', chainNamespace)
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
-    const allConnectors = [...ConnectorController.getConnectors(), ...connectors]
+    const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
     ConnectorController.setConnectors(allConnectors)
   }
 
