@@ -510,6 +510,7 @@ export class W3mFrameProvider {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
     /*
      * This.w3mFrame.events.onFrameEvent(event => {
