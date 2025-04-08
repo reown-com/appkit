@@ -440,22 +440,62 @@ describe('Base Public methods', () => {
   })
 
   it('should set connectors', () => {
-    const getConnectors = vi.spyOn(ConnectorController, 'getConnectors')
-    const setConnectors = vi.spyOn(ConnectorController, 'setConnectors')
     const existingConnectors = [
       { id: 'phantom', name: 'Phantom', chain: 'eip155', type: 'INJECTED' }
     ] as Connector[]
-    // Mock getConnectors to return existing connectors
-    vi.mocked(getConnectors).mockReturnValue(existingConnectors)
     const newConnectors = [
       { id: 'metamask', name: 'MetaMask', chain: 'eip155', type: 'INJECTED' }
     ] as Connector[]
 
-    const appKit = new AppKit(mockOptions)
-    appKit.setConnectors(newConnectors)
+    const combinedConnectors = [...existingConnectors, ...newConnectors]
 
-    // Verify that setConnectors was called with combined array
-    expect(setConnectors).toHaveBeenCalledWith([...existingConnectors, ...newConnectors])
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectors(combinedConnectors)
+
+    expect(ConnectorController.state.connectors).toEqual(combinedConnectors)
+    expect(ConnectorController.state.allConnectors).toEqual(combinedConnectors)
+  })
+
+  it('should set multichain connectors', () => {
+    // Reset connectors state
+    ConnectorController.state.allConnectors = []
+    ConnectorController.state.connectors = []
+
+    const ethConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'INJECTED',
+      chain: 'eip155'
+    } as unknown as Connector
+
+    const solConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'INJECTED',
+      chain: 'solana'
+    } as unknown as Connector
+
+    const appKit = new AppKit(mockOptions)
+
+    appKit.setConnectors([ethConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector])
+
+    appKit.setConnectors([solConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector, solConnector])
+    expect(ConnectorController.state.connectors.length).toEqual(1)
+
+    // Handle merged connectors
+    const hasMergedConnectorFromAllConnectors = ConnectorController.state.allConnectors.some(
+      c => c.connectors && c.connectors.length > 0
+    )
+    const hasMergedConnectorFromConnectors = ConnectorController.state.connectors.some(
+      c => c.connectors && c.connectors.length > 0
+    )
+
+    expect(hasMergedConnectorFromAllConnectors).toBe(false)
+    expect(hasMergedConnectorFromConnectors).toBe(true)
   })
 
   it('should add connector', () => {
