@@ -26,7 +26,7 @@ interface UsePayReturn {
   /**
    * Stores the result of a successful payment, typically a transaction hash or identifier. Undefined if the payment hasn't completed or failed.
    */
-  result: string | undefined
+  result: string | null
 }
 
 /**
@@ -115,6 +115,6 @@ export function usePay(): UsePayReturn {
     open,
     isLoading: isControllerLoading || isPaymentInProgress,
     error,
-    result
+    result: result ?? null
   }
 }
