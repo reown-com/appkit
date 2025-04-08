@@ -22,6 +22,7 @@ import type {
   EstimateGasTransactionArgs,
   EventsControllerState,
   Features,
+  ModalControllerArguments,
   ModalControllerState,
   NetworkControllerClient,
   OptionsControllerState,
@@ -78,21 +79,29 @@ export interface AppKitOptionsWithSdk extends AppKitOptions {
 }
 
 // -- Types --------------------------------------------------------------------
-export interface OpenOptions {
-  view?:
-    | 'Account'
-    | 'Connect'
-    | 'Networks'
-    | 'ApproveTransaction'
-    | 'OnRampProviders'
-    | 'ConnectingWalletConnectBasic'
-    | 'Swap'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'AllWallets'
-    | 'WalletSend'
+
+export type Views =
+  | 'Account'
+  | 'Connect'
+  | 'Networks'
+  | 'ApproveTransaction'
+  | 'OnRampProviders'
+  | 'ConnectingWalletConnectBasic'
+  | 'Swap'
+  | 'WhatIsAWallet'
+  | 'WhatIsANetwork'
+  | 'AllWallets'
+  | 'WalletSend'
+
+type ViewArguments = {
+  Swap: NonNullable<RouterControllerState['data']>['swap']
+}
+
+export interface OpenOptions<View extends Views> {
+  view?: View
   uri?: string
   namespace?: ChainNamespace
+  arguments?: View extends keyof ViewArguments ? ViewArguments[View] : never
 }
 
 export abstract class AppKitBaseClient {
@@ -1456,14 +1465,23 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open(options?: OpenOptions) {
+  public async open<View extends Views>(options?: OpenOptions<View>) {
     await this.injectModalUi()
 
     if (options?.uri) {
       ConnectionController.setUri(options.uri)
     }
 
-    await ModalController.open(options)
+    const data: ModalControllerArguments['open']['data'] = {}
+
+    switch (options?.view) {
+      case 'Swap':
+        data.swap = options.arguments
+        break
+      default:
+    }
+
+    await ModalController.open({ ...options, data })
   }
 
   public async close() {
