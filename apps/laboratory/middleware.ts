@@ -25,7 +25,6 @@ export function middleware(request: NextRequest) {
     frame-ancestors ${verifyApiNestedIframesTestOuterDomain};
     report-uri https://o1095249.ingest.sentry.io/api/4505685639364608/security/?sentry_key=36ff1e79c60877fce6c0273e94a8ed69;
     report-to csp-endpoint
-    upgrade-insecure-requests
 `
   const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/gu, ' ').trim()
 
