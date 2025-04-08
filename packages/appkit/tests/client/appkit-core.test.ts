@@ -81,14 +81,14 @@ describe('AppKitCore', () => {
 
   describe('initialize', () => {
     it('should not initialize excluded wallet rdns if basic is true', () => {
-      vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
+      vi.spyOn(ApiController, 'initializeExcludedWallets')
 
       new AppKit({
         ...mockOptions,
         excludeWalletIds: ['eoa', 'ordinal']
       })
 
-      expect(ApiController.initializeExcludedWalletRdns).not.toHaveBeenCalled()
+      expect(ApiController.initializeExcludedWallets).not.toHaveBeenCalled()
     })
   })
 

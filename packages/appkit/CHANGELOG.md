@@ -1,5 +1,42 @@
 # @reown/appkit
 
+## 1.7.2
+
+### Patch Changes
+
+- [#4100](https://github.com/reown-com/appkit/pull/4100) [`848ad47`](https://github.com/reown-com/appkit/commit/848ad47d64ddbea4cbe4768f7374f63f2fcdf8a5) Thanks [@KannuSingh](https://github.com/KannuSingh)! - adds support for customizing universal provider configuration via a new universalProviderConfigOverride option
+
+- [#4104](https://github.com/reown-com/appkit/pull/4104) [`b18d2a9`](https://github.com/reown-com/appkit/commit/b18d2a958d5f9d60e6e88f35e6f2c99d8f9291d6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `createAppKit` would throw an error if the universal provider failed to initialize
+
+- [#4127](https://github.com/reown-com/appkit/pull/4127) [`542985c`](https://github.com/reown-com/appkit/commit/542985c79888e9753a51466b098aff65898eeb00) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where swaps were not working properly when using the ethers/ethers5 adapter
+
+- [#4091](https://github.com/reown-com/appkit/pull/4091) [`1fc664d`](https://github.com/reown-com/appkit/commit/1fc664db6b109ac2ce9c66aec31a3ae2d6419589) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the WalletConnect wallet button wasn't opening the "All Wallets" modal view on mobile devices
+
+- [#4102](https://github.com/reown-com/appkit/pull/4102) [`ae79b16`](https://github.com/reown-com/appkit/commit/ae79b164833193c363abfc42d9dd9ce0864d81ca) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the swap screen froze if allowance approval failed
+
+- [#3883](https://github.com/reown-com/appkit/pull/3883) [`4b951b1`](https://github.com/reown-com/appkit/commit/4b951b14faea38b465295f53ed0c70820ebea63c) Thanks [@tomiir](https://github.com/tomiir)! - Adds `enableNetworkSwitcher` prop to allow disabling of network switching in the modal
+
+- [#4094](https://github.com/reown-com/appkit/pull/4094) [`af1e79a`](https://github.com/reown-com/appkit/commit/af1e79a76d32def90c9605dc8e53a2ade002033c) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where users were required to re-check the legal checkbox after navigating away and returning to the connect view
+
+- [#4109](https://github.com/reown-com/appkit/pull/4109) [`07e8b4e`](https://github.com/reown-com/appkit/commit/07e8b4e373181eb74af75c7a758998c5f129921e) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `useAppKitProvider` hook from vue wasn't reflecting state changes in real-time
+
+- [#4118](https://github.com/reown-com/appkit/pull/4118) [`b9871dc`](https://github.com/reown-com/appkit/commit/b9871dcea4f7e7aefa412f8a19318e7b60eda8a3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where preferred account type wasn't properly switching on initial connection when using email/social login
+
+- [#4103](https://github.com/reown-com/appkit/pull/4103) [`afc0739`](https://github.com/reown-com/appkit/commit/afc073935348bc90414fda0c26134938383d9fcc) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue where switchin between appkit instances result network to be not detected as expected.
+
+  When AppKit initialized, if local storage active CAIP network value is something AppKit doesn't support, AppKit will redirect to first available network.
+
+- [#4120](https://github.com/reown-com/appkit/pull/4120) [`ab75760`](https://github.com/reown-com/appkit/commit/ab757609cd28340d2bffb8ef718a4bb3df9d85ad) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `excludeWalletIds` option wasn't properly filtering Bitcoin wallets
+
+- Updated dependencies [[`848ad47`](https://github.com/reown-com/appkit/commit/848ad47d64ddbea4cbe4768f7374f63f2fcdf8a5), [`b18d2a9`](https://github.com/reown-com/appkit/commit/b18d2a958d5f9d60e6e88f35e6f2c99d8f9291d6), [`542985c`](https://github.com/reown-com/appkit/commit/542985c79888e9753a51466b098aff65898eeb00), [`1fc664d`](https://github.com/reown-com/appkit/commit/1fc664db6b109ac2ce9c66aec31a3ae2d6419589), [`ae79b16`](https://github.com/reown-com/appkit/commit/ae79b164833193c363abfc42d9dd9ce0864d81ca), [`4b951b1`](https://github.com/reown-com/appkit/commit/4b951b14faea38b465295f53ed0c70820ebea63c), [`af1e79a`](https://github.com/reown-com/appkit/commit/af1e79a76d32def90c9605dc8e53a2ade002033c), [`07e8b4e`](https://github.com/reown-com/appkit/commit/07e8b4e373181eb74af75c7a758998c5f129921e), [`b9871dc`](https://github.com/reown-com/appkit/commit/b9871dcea4f7e7aefa412f8a19318e7b60eda8a3), [`afc0739`](https://github.com/reown-com/appkit/commit/afc073935348bc90414fda0c26134938383d9fcc), [`ab75760`](https://github.com/reown-com/appkit/commit/ab757609cd28340d2bffb8ef718a4bb3df9d85ad)]:
+  - @reown/appkit-controllers@1.7.2
+  - @reown/appkit-utils@1.7.2
+  - @reown/appkit-common@1.7.2
+  - @reown/appkit-polyfills@1.7.2
+  - @reown/appkit-scaffold-ui@1.7.2
+  - @reown/appkit-ui@1.7.2
+  - @reown/appkit-wallet@1.7.2
+
 ## 1.7.1
 
 ### Patch Changes

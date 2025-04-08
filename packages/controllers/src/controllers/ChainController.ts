@@ -356,6 +356,7 @@ const controller = {
 
     if (
       !isSupported &&
+      OptionsController.state.enableNetworkSwitch &&
       !OptionsController.state.allowUnsupportedChain &&
       !ConnectionController.state.wcBasic
     ) {
@@ -783,6 +784,14 @@ const controller = {
     return chains
       .flatMap(chain => chain?.caipNetworks || [])
       .map(caipNetwork => caipNetwork.caipNetworkId)
+  },
+
+  getCaipNetworks(namespace?: ChainNamespace) {
+    if (namespace) {
+      return ChainController.getRequestedCaipNetworks(namespace)
+    }
+
+    return ChainController.getAllRequestedCaipNetworks()
   }
 }
 

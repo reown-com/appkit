@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where users were required to re-check the legal checkbox after navigating away and returning to the connect view
+Fixes swap balance recent on network and account change

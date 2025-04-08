@@ -44,7 +44,7 @@ describe('W3mConnectInjectedWidget', () => {
   beforeEach(() => {
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
-      excludedRDNS: []
+      excludedWallets: []
     })
     vi.spyOn(ConnectionController, 'checkInstalled').mockReturnValue(true)
   })
@@ -84,7 +84,7 @@ describe('W3mConnectInjectedWidget', () => {
   it('should not render excluded RDNS wallets', async () => {
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
-      excludedRDNS: ['mock.injected.wallet']
+      excludedWallets: [{ name: 'Mock Wallet', rdns: 'mock.injected.wallet' }]
     })
 
     const element: W3mConnectInjectedWidget = await fixture(
@@ -100,6 +100,7 @@ describe('W3mConnectInjectedWidget', () => {
       element,
       `wallet-selector-${MOCK_INJECTED_CONNECTOR.id}`
     )
+
     expect(walletSelector).toBeNull()
   })
 

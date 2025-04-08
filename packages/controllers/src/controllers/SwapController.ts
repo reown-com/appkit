@@ -7,6 +7,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { SendApiUtil } from '../utils/SendApiUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
@@ -303,6 +304,7 @@ const controller = {
     state.networkTokenSymbol = initialState.networkTokenSymbol
     state.networkBalanceInUSD = initialState.networkBalanceInUSD
     state.inputError = initialState.inputError
+    state.myTokensWithBalance = initialState.myTokensWithBalance
   },
 
   resetValues() {
@@ -418,14 +420,14 @@ const controller = {
   },
 
   async getMyTokensWithBalance(forceUpdate?: string) {
-    const balances = await SwapApiUtil.getMyTokensWithBalance(forceUpdate)
-
-    if (!balances) {
+    const balances = await SendApiUtil.getMyTokensWithBalance(forceUpdate)
+    const swapBalances = SendApiUtil.mapBalancesToSwapTokens(balances)
+    if (!swapBalances) {
       return
     }
 
     await this.getInitialGasPrice()
-    this.setBalances(balances)
+    this.setBalances(swapBalances)
   },
 
   setBalances(balances: SwapTokenWithBalance[]) {
@@ -677,7 +679,8 @@ const controller = {
         userAddress: fromCaipAddress,
         from: sourceToken.address,
         to: toToken.address,
-        amount: amount as string
+        amount: amount as string,
+        disableEstimate: true
       })
 
       const isSourceTokenIsNetworkToken = sourceToken.address === networkAddress
