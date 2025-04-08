@@ -433,12 +433,6 @@ importers:
       '@coinbase/wallet-sdk':
         specifier: 4.3.0
         version: 4.3.0
-      '@emotion/react':
-        specifier: 11.14.0
-        version: 11.14.0(@types/react@19.0.0)(react@19.0.0)
-      '@emotion/styled':
-        specifier: 11.14.0
-        version: 11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@19.0.0))(@types/react@19.0.0)(react@19.0.0)
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
