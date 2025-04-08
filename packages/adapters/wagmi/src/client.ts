@@ -520,6 +520,19 @@ export class WagmiAdapter extends AdapterBlueprint {
       connector.setEip6963Wallet?.({ provider, info })
     }
 
+    // If the connector is already connected, return the connection
+    if (connector.uid === this.wagmiConfig?.state?.current) {
+      const connection = this.wagmiConfig.state.connections.get(connector.uid)
+
+      return {
+        address: connection?.accounts[0] as string,
+        chainId: connection?.chainId as number,
+        provider: provider as Provider,
+        type: type as ConnectorType,
+        id
+      }
+    }
+
     const res = await connect(this.wagmiConfig, {
       connector,
       chainId: chainId ? Number(chainId) : undefined

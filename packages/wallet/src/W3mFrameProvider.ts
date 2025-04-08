@@ -511,11 +511,13 @@ export class W3mFrameProvider {
   }
 
   public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
-    this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
-        callback(event.payload)
-      }
-    })
+    /*
+     * This.w3mFrame.events.onFrameEvent(event => {
+     *   if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+     *     callback(event.payload)
+     *   }
+     * })
+     */
   }
 
   public onSocialConnected(

@@ -381,8 +381,7 @@ export abstract class AppKitBaseClient {
               fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
           })
           .catch(error => {
-            // eslint-disable-next-line no-console
-            console.error('@appkit-base-client: connectExternal: error', error)
+            console.warn('@appkit: connectExternal: error', error)
           })
 
         if (!res) {
@@ -391,7 +390,6 @@ export abstract class AppKitBaseClient {
 
         StorageUtil.addConnectedNamespace(chainToUse)
         this.syncProvider({ ...res, chainNamespace: chainToUse })
-        await this.syncAccount({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
       },
