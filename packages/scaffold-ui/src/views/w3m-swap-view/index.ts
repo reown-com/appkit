@@ -117,10 +117,10 @@ export class W3mSwapView extends LitElement {
     )
   }
 
-  public override firstUpdated() {
+  public override async firstUpdated() {
     SwapController.initializeState()
     this.watchTokensAndValues()
-    this.handleSwapParameters()
+    await this.handleSwapParameters()
   }
 
   public override disconnectedCallback() {
