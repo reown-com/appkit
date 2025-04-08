@@ -487,15 +487,15 @@ describe('Base Public methods', () => {
     expect(ConnectorController.state.connectors.length).toEqual(1)
 
     // Handle merged connectors
-    const hasMergedConnectorFromAllConnectors = ConnectorController.state.allConnectors.find(
+    const hasMergedConnectorFromAllConnectors = ConnectorController.state.allConnectors.some(
       c => c.connectors && c.connectors.length > 0
     )
-    const hasMergedConnectorFromConnectors = ConnectorController.state.connectors.find(
+    const hasMergedConnectorFromConnectors = ConnectorController.state.connectors.some(
       c => c.connectors && c.connectors.length > 0
     )
 
-    expect(hasMergedConnectorFromAllConnectors).toBeUndefined()
-    expect(hasMergedConnectorFromConnectors).toBeDefined()
+    expect(hasMergedConnectorFromAllConnectors).toBe(false)
+    expect(hasMergedConnectorFromConnectors).toBe(true)
   })
 
   it('should add connector', () => {
