@@ -1149,11 +1149,11 @@ describe('Base Public methods', () => {
     const hasMergedConnectorFromAllConnectors = ConnectorController.state.allConnectors.find(
       c => c.connectors && c.connectors.length > 0
     )
-    expect(hasMergedConnectorFromAllConnectors).toBeUndefined()
-
     const hasMergedConnectorFromConnectors = ConnectorController.state.connectors.find(
       c => c.connectors && c.connectors.length > 0
     )
+
+    expect(hasMergedConnectorFromAllConnectors).toBeUndefined()
     expect(hasMergedConnectorFromConnectors).toBeDefined()
   })
 })
