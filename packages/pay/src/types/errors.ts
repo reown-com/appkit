@@ -12,7 +12,8 @@ export const AppKitPayErrorCodes = {
   UNKNOWN_ERROR: 'UNKNOWN_ERROR',
   UNABLE_TO_INITIATE_PAYMENT: 'UNABLE_TO_INITIATE_PAYMENT',
   INVALID_CHAIN_NAMESPACE: 'INVALID_CHAIN_NAMESPACE',
-  GENERIC_PAYMENT_ERROR: 'GENERIC_PAYMENT_ERROR'
+  GENERIC_PAYMENT_ERROR: 'GENERIC_PAYMENT_ERROR',
+  UNABLE_TO_GET_EXCHANGES: 'UNABLE_TO_GET_EXCHANGES'
 } as const
 
 export type AppKitPayErrorCode = (typeof AppKitPayErrorCodes)[keyof typeof AppKitPayErrorCodes]
@@ -26,7 +27,8 @@ export const AppKitPayErrorMessages: Record<AppKitPayErrorCode, string> = {
   [AppKitPayErrorCodes.UNKNOWN_ERROR]: 'Unknown payment error occurred',
   [AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT]: 'Unable to initiate payment',
   [AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE]: 'Invalid chain namespace',
-  [AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR]: 'Unable to process payment'
+  [AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR]: 'Unable to process payment',
+  [AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES]: 'Unable to get exchanges'
 }
 export class AppKitPayError extends Error {
   public readonly code: AppKitPayErrorCode

@@ -116,6 +116,9 @@ export const PayController = {
       })
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
+    } catch (error) {
+      SnackController.showError(AppKitPayErrorMessages.UNABLE_TO_GET_EXCHANGES)
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES)
     } finally {
       state.isLoading = false
     }
