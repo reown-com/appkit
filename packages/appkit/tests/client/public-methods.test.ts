@@ -1114,4 +1114,46 @@ describe('Base Public methods', () => {
     expect(showUnsupportedChainUI).not.toHaveBeenCalled()
     expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
+
+  it('should set connectors correctly', () => {
+    // Reset connectors state
+    ConnectorController.state.allConnectors = []
+    ConnectorController.state.connectors = []
+
+    const ethConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'injected',
+      chain: 'eip155'
+    } as unknown as Connector
+
+    const solConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'injected',
+      chain: 'solana'
+    } as unknown as Connector
+
+    const appKit = new AppKit(mockOptions)
+
+    appKit.setConnectors([ethConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector])
+
+    appKit.setConnectors([solConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector, solConnector])
+    expect(ConnectorController.state.connectors.length).toEqual(1)
+
+    // Handle merged connectors
+    const hasMergedConnectorFromAllConnectors = ConnectorController.state.allConnectors.find(
+      c => c.connectors && c.connectors.length > 0
+    )
+    expect(hasMergedConnectorFromAllConnectors).toBeUndefined()
+
+    const hasMergedConnectorFromConnectors = ConnectorController.state.connectors.find(
+      c => c.connectors && c.connectors.length > 0
+    )
+    expect(hasMergedConnectorFromConnectors).toBeDefined()
+  })
 })
