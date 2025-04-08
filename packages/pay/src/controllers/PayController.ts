@@ -142,7 +142,6 @@ export const PayController = {
     if (state.isConfigured) {
       return
     }
-
     ProviderUtil.subscribeProviders(async _ => {
       const chainNamespace = ChainController.state.activeChain as ChainNamespace
       const provider = ProviderUtil.getProvider(chainNamespace)
@@ -214,8 +213,6 @@ export const PayController = {
           throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error processing payment:', error)
       state.error = (error as Error).message
       SnackController.showError(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
     } finally {

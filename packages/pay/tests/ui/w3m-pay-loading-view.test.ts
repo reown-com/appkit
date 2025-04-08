@@ -32,7 +32,6 @@ describe('W3mPayLoadingView', () => {
       }
     })
 
-    // Mock subscriptions
     vi.spyOn(PayController, 'subscribeKey').mockImplementation((key, callback) => {
       if (key === 'isPaymentInProgress') {
         paymentProgressCallback = callback
@@ -43,14 +42,10 @@ describe('W3mPayLoadingView', () => {
       return vi.fn()
     })
 
-    // Clear mock timers
     vi.useRealTimers()
-
-    // Reset modal
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
   })
 
-  // Store callbacks for testing
   let paymentProgressCallback: ((value: boolean) => void) | null = null
   let errorCallback: ((value: string | null) => void) | null = null
 
@@ -79,7 +74,6 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    // Simulate payment completion
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
     }
@@ -102,7 +96,6 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    // Simulate payment error
     PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR
     if (errorCallback) {
       errorCallback(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
@@ -126,10 +119,8 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    // Set error state first
     PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR
 
-    // Then simulate payment completion
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
     }
@@ -150,12 +141,10 @@ describe('W3mPayLoadingView', () => {
 
     await fixture<W3mPayLoadingView>(html`<w3m-pay-loading-view></w3m-pay-loading-view>`)
 
-    // Simulate payment completion
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
     }
 
-    // Fast-forward time
     vi.advanceTimersByTime(3000)
 
     expect(ModalController.close).toHaveBeenCalledOnce()
@@ -168,15 +157,12 @@ describe('W3mPayLoadingView', () => {
 
     await fixture<W3mPayLoadingView>(html`<w3m-pay-loading-view></w3m-pay-loading-view>`)
 
-    // Set error state first
     PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR
 
-    // Then simulate payment completion
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
     }
 
-    // Fast-forward time
     vi.advanceTimersByTime(3000)
 
     expect(ModalController.close).toHaveBeenCalledOnce()
@@ -213,6 +199,6 @@ describe('W3mPayLoadingView', () => {
     await elementUpdated(element)
 
     const loadingThumbnail = element.shadowRoot?.querySelector('wui-loading-thumbnail')
-    expect(loadingThumbnail?.getAttribute('radius')).toBe('72') // 8px * 9
+    expect(loadingThumbnail?.getAttribute('radius')).toBe('72')
   })
 })

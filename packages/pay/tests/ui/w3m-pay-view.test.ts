@@ -3,7 +3,6 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -14,35 +13,13 @@ import {
 
 import { PayController } from '../../src/controllers/PayController'
 import { AppKitPayError, AppKitPayErrorCodes } from '../../src/types/errors'
-import type { Exchange } from '../../src/types/exchange'
-import type { PaymentAsset } from '../../src/types/options'
 import { W3mPayView } from '../../src/ui/w3m-pay-view'
-
-// -- Test Constants --------------------------------------------- //
-const mockExchanges: Exchange[] = [
-  {
-    id: 'coinbase',
-    name: 'Coinbase',
-    imageUrl: 'https://example.com/coinbase.png'
-  },
-  {
-    id: 'binance',
-    name: 'Binance',
-    imageUrl: 'https://example.com/binance.png'
-  }
-]
-
-const mockPaymentAsset: PaymentAsset = {
-  network: 'eip155:1',
-  recipient: '0x1234567890123456789012345678901234567890',
-  asset: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC on Ethereum
-  amount: 10000000, // 10 USDC with 6 decimals
-  metadata: {
-    name: 'USD Coin',
-    symbol: 'USDC',
-    decimals: 6
-  }
-}
+import {
+  mockConnectionState,
+  mockExchanges,
+  mockPaymentAsset,
+  mockRequestedCaipNetworks
+} from '../mocks/State'
 
 describe('W3mPayView', () => {
   beforeAll(() => {
@@ -66,24 +43,9 @@ describe('W3mPayView', () => {
     })
 
     // Mock ChainController
-    vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue([
-      {
-        id: 1,
-        chainNamespace: 'eip155' as ChainNamespace,
-        caipNetworkId: 'eip155:1',
-        name: 'Ethereum',
-        nativeCurrency: {
-          name: 'Ether',
-          symbol: 'ETH',
-          decimals: 18
-        },
-        rpcUrls: {
-          default: {
-            http: ['https://ethereum.rpc.example']
-          }
-        }
-      } as CaipNetwork
-    ])
+    vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue(
+      mockRequestedCaipNetworks
+    )
 
     // Mock PayController methods
     vi.spyOn(PayController, 'fetchExchanges').mockImplementation(async () => {
@@ -128,12 +90,7 @@ describe('W3mPayView', () => {
     // Mock connected state
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      status: 'connected',
-      caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
-      connectedWalletInfo: {
-        name: 'MetaMask',
-        icon: 'https://example.com/metamask.png'
-      }
+      ...(mockConnectionState as any)
     })
 
     const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
@@ -161,7 +118,6 @@ describe('W3mPayView', () => {
   })
 
   test('should render exchanges when available', async () => {
-    // Populate exchanges
     PayController.state.exchanges = mockExchanges
 
     const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
@@ -215,10 +171,8 @@ describe('W3mPayView', () => {
   })
 
   test('should show error snackbar if exchange payment fails', async () => {
-    // Populate exchanges
     PayController.state.exchanges = mockExchanges
 
-    // Mock exchange payment error
     vi.spyOn(PayController, 'handlePayWithExchange').mockRejectedValueOnce(
       new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
     )
@@ -239,15 +193,9 @@ describe('W3mPayView', () => {
   })
 
   test('should disconnect wallet when disconnect button is clicked', async () => {
-    // Mock connected state
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      status: 'connected',
-      caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
-      connectedWalletInfo: {
-        name: 'MetaMask',
-        icon: 'https://example.com/metamask.png'
-      }
+      ...(mockConnectionState as any)
     })
 
     const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
@@ -262,18 +210,11 @@ describe('W3mPayView', () => {
   })
 
   test('should show error snackbar if disconnection fails', async () => {
-    // Mock connected state
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      status: 'connected',
-      caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
-      connectedWalletInfo: {
-        name: 'MetaMask',
-        icon: 'https://example.com/metamask.png'
-      }
+      ...(mockConnectionState as any)
     })
 
-    // Mock disconnect error
     vi.spyOn(ConnectionController, 'disconnect').mockRejectedValueOnce(
       new Error('Disconnect failed')
     )
@@ -285,7 +226,6 @@ describe('W3mPayView', () => {
     const disconnectButton = element.shadowRoot?.querySelector('[data-testid="disconnect-button"]')
     await disconnectButton?.dispatchEvent(new Event('click'))
 
-    // Give time for the async operation to complete
     await elementUpdated(element)
 
     expect(SnackController.showError).toHaveBeenCalledWith('Failed to disconnect')
@@ -314,7 +254,6 @@ describe('W3mPayView', () => {
 
     expect(subscribeSpy).toHaveBeenCalled()
 
-    // Simulate disconnectedCallback
     element.remove()
 
     expect(unsubscribeSpy).toHaveBeenCalled()

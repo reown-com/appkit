@@ -104,7 +104,7 @@ export async function processEvmErc20Payment(
   const decimals = Number(paymentAsset.metadata.decimals)
   const amount = ConnectionController.parseUnits(paymentAsset.amount.toString(), decimals)
 
-  if (typeof amount !== 'bigint') {
+  if (amount === undefined) {
     throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
