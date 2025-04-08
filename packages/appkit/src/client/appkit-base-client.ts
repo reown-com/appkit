@@ -354,16 +354,21 @@ export abstract class AppKitBaseClient {
 
         const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
 
-        const res = await adapter.connect({
-          id,
-          info,
-          type,
-          provider,
-          chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
-          rpcUrl:
-            caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
-        })
+        const res = await adapter
+          .connect({
+            id,
+            info,
+            type,
+            provider,
+            chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
+            rpcUrl:
+              caipNetwork?.rpcUrls?.default?.http?.[0] ||
+              fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
+          })
+          .catch(error => {
+            // eslint-disable-next-line no-console
+            console.error('@appkit-base-client: connectExternal: error', error)
+          })
 
         if (!res) {
           return
@@ -619,12 +624,12 @@ export abstract class AppKitBaseClient {
         adapters[namespace].construct({
           namespace,
           projectId: this.options?.projectId,
-          networks: this.caipNetworks
+          networks: this.getCaipNetworks()
         })
       } else {
-        adapters[namespace] = new UniversalAdapter({
-          namespace,
-          networks: this.caipNetworks
+        adapters[namespace as ChainNamespace] = new UniversalAdapter({
+          namespace: namespace as ChainNamespace,
+          networks: this.getCaipNetworks()
         })
       }
 
@@ -1317,8 +1322,8 @@ export abstract class AppKitBaseClient {
     return undefined
   }
 
-  public getCaipNetworks = (namespace: ChainNamespace) =>
-    ChainController.getRequestedCaipNetworks(namespace)
+  public getCaipNetworks = (namespace?: ChainNamespace) =>
+    ChainController.getCaipNetworks(namespace)
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
@@ -1865,12 +1870,7 @@ export abstract class AppKitBaseClient {
       return
     }
 
-    const remainingNetworks = this.caipNetworks.filter(
-      n => n.chainNamespace === namespace && n.id !== networkId
-    )
-    if (!remainingNetworks?.length) {
-      throw new Error('Cannot remove last network for a namespace')
-    }
+    const remainingNetworks = this.caipNetworks.filter(n => n.id !== networkId)
 
     ChainController.removeNetwork(namespace, networkId)
     this.caipNetworks = [...remainingNetworks] as [CaipNetwork, ...CaipNetwork[]]
