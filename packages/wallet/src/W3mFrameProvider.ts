@@ -512,6 +512,8 @@ export class W3mFrameProvider {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
+    // eslint-disable-next-line no-console
+    console.log('onConnect', callback)
     /*
      * This.w3mFrame.events.onFrameEvent(event => {
      *   if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
