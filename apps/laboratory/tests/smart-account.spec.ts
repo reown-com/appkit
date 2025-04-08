@@ -86,15 +86,11 @@ smartAccountTest(
     await page.switchNetwork(targetChain)
     await validator.expectSwitchedNetwork(targetChain)
     await page.closeModal()
+
     await page.openAccount()
     await page.openProfileView()
     await validator.expectTogglePreferredTypeVisible(false)
     await page.closeModal()
-
-    //Requesting a sign immediately after login or after switch network causes a 'user rejected' error from embedded wallet so a small delay is needed
-    await new Promise<void>(resolve => {
-      setTimeout(resolve, 1000)
-    })
 
     await page.sign(namespace)
     await page.approveSign()
@@ -116,10 +112,6 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
-  // Requesting a sign immediately after login or after switch network causes a 'user rejected' error from embedded wallet so a small delay is needed
-  await new Promise<void>(resolve => {
-    setTimeout(resolve, 1000)
-  })
   await page.sign(namespace)
   await page.approveSign()
   await validator.expectAcceptedSign()
@@ -146,6 +138,7 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
 })
 
 smartAccountTest('it should disconnect correctly', async () => {
+  await page.page.reload()
   await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()

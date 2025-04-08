@@ -30,7 +30,7 @@ emailTest.beforeAll(async ({ browser, library }) => {
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
-  await context.setOffline(false)
+  await context.unroute('**/*')
   await page.load()
 
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -121,24 +121,27 @@ emailTest('it should show names feature only for EVM networks', async ({ library
 
 emailTest('it should show loading on page refresh', async () => {
   await page.page.reload()
-  // Await validator.expectConnectButtonLoading()
+  /*
+   * Disable loading animation check as reload happens before the page is loaded
+   * TODO: figure out how to validate the loader before the page is loaded
+   * await validator.expectConnectButtonLoading()
+   */
   await validator.expectAccountButtonReady()
 })
 
 emailTest('it should show snackbar error if failed to fetch token balance', async () => {
   // Clear cache and set offline to simulate token balance fetch failure
   await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
-  await context.route('**/*', route => {
+  await page.page.context().route('**/*', route => {
     route.abort()
   })
   await page.openAccount()
   await validator.expectSnackbar('Token Balance Unavailable')
-  await context.unroute('**/*')
   await page.closeModal()
+  await page.page.context().unroute('**/*')
 })
 
 emailTest('it should disconnect correctly', async ({ library }) => {
-  await page.page.reload()
   if (library === 'solana') {
     await page.openAccount()
     await page.openProfileView()
@@ -150,11 +153,11 @@ emailTest('it should disconnect correctly', async ({ library }) => {
 })
 
 emailTest('it should abort request if it takes more than 30 seconds', async () => {
-  await context.route('**/*', route => {
+  await page.page.context().route('**/*', route => {
     route.abort()
   })
   await page.loginWithEmail(tempEmail, false)
   await page.page.waitForTimeout(30_000)
   await validator.expectSnackbar('Something went wrong')
-  await context.unroute('**/*')
+  await page.page.context().unroute('**/*')
 })
