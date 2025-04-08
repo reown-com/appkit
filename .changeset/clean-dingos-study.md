@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Removed the activity button for non eip155 namespaces
+Enabled the activity button only for eip155 namespace
