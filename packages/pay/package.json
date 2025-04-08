@@ -13,6 +13,11 @@
       "types": "./dist/types/exports/index.d.ts",
       "import": "./dist/esm/exports/index.js",
       "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
     }
   },
   "scripts": {

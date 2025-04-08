@@ -8,3 +8,13 @@ export async function openPay(options: PaymentOptions) {
 export function getExchanges() {
   return PayController.getExchanges()
 }
+
+export function getPayResult() {
+  return PayController.state.payResult
+}
+export function getPayError() {
+  return PayController.state.error
+}
+export function getIsPaymentInProgress() {
+  return PayController.state.isPaymentInProgress
+}

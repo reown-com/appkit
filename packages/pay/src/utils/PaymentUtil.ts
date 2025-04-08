@@ -98,7 +98,7 @@ export async function processEvmNativePayment(
 export async function processEvmErc20Payment(
   paymentAsset: PaymentOptions['paymentAsset'],
   fromAddress: `0x${string}`
-): Promise<void> {
+): Promise<string | undefined> {
   const tokenAddress = paymentAsset.asset as `0x${string}`
   const recipientAddress = paymentAsset.recipient as `0x${string}`
   const decimals = Number(paymentAsset.metadata.decimals)
@@ -108,7 +108,7 @@ export async function processEvmErc20Payment(
     throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
-  await ConnectionController.writeContract({
+  const txResponse = await ConnectionController.writeContract({
     fromAddress,
     tokenAddress,
     args: [recipientAddress, amount],
@@ -116,4 +116,6 @@ export async function processEvmErc20Payment(
     abi: ContractUtil.getERC20Abi(tokenAddress),
     chainNamespace: ConstantsUtil.CHAIN.EVM
   })
+
+  return txResponse ?? undefined
 }

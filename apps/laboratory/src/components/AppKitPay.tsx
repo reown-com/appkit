@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Box,
@@ -15,12 +15,15 @@ import {
   Input,
   NumberInput,
   NumberInputField,
+  Spinner,
   Stack,
   useDisclosure
 } from '@chakra-ui/react'
 import { Card } from '@chakra-ui/react'
 
-import { openPay } from '@reown/appkit-pay'
+import { usePay } from '@reown/appkit-pay/react'
+
+import { useChakraToast } from './Toast'
 
 interface Metadata {
   name: string
@@ -38,17 +41,36 @@ interface AppKitPaymentAsset {
 
 export function AppKitPay() {
   const { isOpen, onToggle } = useDisclosure()
+  const { open, isLoading, error, result } = usePay()
+  const toast = useChakraToast()
   const [paymentDetails, setPaymentDetails] = useState<AppKitPaymentAsset>({
     network: 'eip155:8453',
     recipient: '',
-    asset: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-    amount: 20,
+    asset: 'native',
+    amount: 0.00001,
     metadata: {
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18
     }
   })
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: 'Transaction failed',
+        description: error,
+        type: 'error'
+      })
+    }
+
+    if (result) {
+      toast({
+        title: 'Transaction successful',
+        description: result,
+        type: 'success'
+      })
+    }
+  }, [error, isLoading, result])
 
   async function handleOpenPay() {
     if (!paymentDetails.recipient) {
@@ -62,15 +84,10 @@ export function AppKitPay() {
       return
     }
 
-    try {
-      await openPay({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paymentAsset: paymentDetails as any
-      })
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error opening pay modal:', error)
-    }
+    await open({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      paymentAsset: paymentDetails as any
+    })
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -198,10 +215,12 @@ export function AppKitPay() {
           <Button
             onClick={handleOpenPay}
             isDisabled={
-              !paymentDetails.recipient || !/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient)
+              !paymentDetails.recipient ||
+              !/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient) ||
+              isLoading
             }
           >
-            Open Pay
+            {isLoading ? <Spinner /> : 'Open Pay'}
           </Button>
         </Stack>
       </CardBody>

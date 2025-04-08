@@ -33,6 +33,7 @@ export interface PayControllerState extends PaymentOptions {
   isPaymentInProgress: boolean
   isLoading: boolean
   exchanges: Exchange[]
+  payResult?: string
 }
 
 type StateKey = keyof PayControllerState
@@ -57,7 +58,8 @@ const state = proxy<PayControllerState>({
   isLoading: false,
   openInNewTab: true,
   redirectUrl: undefined,
-  payWithExchange: undefined
+  payWithExchange: undefined,
+  payResult: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -192,6 +194,7 @@ export const PayController = {
     })
 
     try {
+      state.payResult = undefined
       state.isPaymentInProgress = true
       await ModalController.open({
         view: 'PayLoading'
@@ -200,14 +203,17 @@ export const PayController = {
       switch (chainNamespace) {
         case ConstantsUtil.CHAIN.EVM:
           if (state.paymentAsset.asset === 'native') {
-            await processEvmNativePayment(
+            state.payResult = await processEvmNativePayment(
               state.paymentAsset,
               chainNamespace,
               address as `0x${string}`
             )
           }
           if (state.paymentAsset.asset.startsWith('0x')) {
-            await processEvmErc20Payment(state.paymentAsset, address as `0x${string}`)
+            state.payResult = await processEvmErc20Payment(
+              state.paymentAsset,
+              address as `0x${string}`
+            )
           }
           break
         case ConstantsUtil.CHAIN.SOLANA:
@@ -217,6 +223,8 @@ export const PayController = {
       }
     } catch (error) {
       state.error = (error as Error).message
+      // eslint-disable-next-line no-console
+      console.log(state.error)
       SnackController.showError(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
     } finally {
       state.isPaymentInProgress = false

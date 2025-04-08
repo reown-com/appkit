@@ -51,10 +51,9 @@ const modal = createAppKit({
 ThemeStore.setModal(modal)
 
 export default function Page() {
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('test')
-  }, [])
+  // Only way I was able to remove the SSR errors, for some reason its still being rendered on the server even with 'use client'
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  useEffect(() => () => {}, [])
 
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
