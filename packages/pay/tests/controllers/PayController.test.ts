@@ -183,7 +183,7 @@ describe('PayController', () => {
     it('should set isLoading to false even if fetch fails', async () => {
       vi.spyOn(ApiUtil, 'getExchanges').mockRejectedValueOnce(new Error('API error'))
 
-      await expect(PayController.fetchExchanges()).rejects.toThrow('API error')
+      await expect(PayController.fetchExchanges()).rejects.toThrow('Unable to get exchanges')
 
       expect(PayController.state.isLoading).toBe(false)
     })
