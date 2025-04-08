@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { Connector, ConnectorWithProviders } from '@reown/appkit-controllers'
 import {
-  ApiController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
@@ -14,6 +13,8 @@ import {
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
+
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 
 @customElement('w3m-connect-injected-widget')
 export class W3mConnectInjectedWidget extends LitElement {
@@ -40,22 +41,20 @@ export class W3mConnectInjectedWidget extends LitElement {
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${injectedConnectors.map(connector => {
+          const walletRDNS = connector.info?.rdns
+
           if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
             return null
           }
 
-          const walletRDNS = connector.info?.rdns
-
-          if (!walletRDNS && !ConnectionController.checkInstalled(undefined)) {
+          if (!walletRDNS && !ConnectionController.checkInstalled()) {
             this.style.cssText = `display: none`
 
             return null
           }
 
-          if (walletRDNS && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(walletRDNS)) {
-              return null
-            }
+          if (!ConnectorUtil.showConnector(connector)) {
+            return null
           }
 
           return html`

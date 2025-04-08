@@ -214,4 +214,12 @@ describe('OKXConnector', () => {
       expect(wallet.getPublicKey).toHaveBeenCalled()
     })
   })
+
+  describe('switchNetwork', () => {
+    it('should throw error saying network switching is not supported', async () => {
+      await expect(
+        connector.switchNetwork('bip122:000000000019d6689c085ae165831e93')
+      ).rejects.toThrow('OKX Wallet wallet does not support network switching')
+    })
+  })
 })

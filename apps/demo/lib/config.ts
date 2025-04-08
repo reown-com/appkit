@@ -112,7 +112,7 @@ initialEnabledChains.forEach(chain => {
 })
 
 export const appKitConfigs = {
-  adapters,
+  adapters: allAdapters,
   projectId,
   networks: initialNetworks as AppKitNetworksType,
   defaultNetwork: mainnet,

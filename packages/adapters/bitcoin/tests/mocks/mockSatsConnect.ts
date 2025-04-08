@@ -69,7 +69,8 @@ export function mockSatsConnectWindowProvider(id: string): SatsConnectWindowProv
     sendBtcTransaction: vi.fn(),
     signMessage: vi.fn(),
     signMultipleTransactions: vi.fn(),
-    signTransaction: vi.fn()
+    signTransaction: vi.fn(),
+    wallet_changeNetwork: vi.fn()
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
