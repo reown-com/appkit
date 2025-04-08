@@ -5,20 +5,18 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { EventsController } from './EventsController.js'
 
-// -- Types --------------------------------------------- //
-export enum TelemetryEventType {
-  ERROR = 'error'
-}
+export const TelemetryErrorCategory = {
+  API_ERROR: 'API_ERROR',
+  DATA_PARSING_ERROR: 'DATA_PARSING_ERROR',
+  SECURE_SITE_ERROR: 'SECURE_SITE_ERROR',
+  INTERNAL_SDK_ERROR: 'INTERNAL_SDK_ERROR'
+} as const
 
-export enum TelemetryErrorCategory {
-  API_ERROR = 'API_ERROR',
-  DATA_PARSING_ERROR = 'DATA_PARSING_ERROR',
-  SECURE_SITE_ERROR = 'SECURE_SITE_ERROR',
-  INTERNAL_SDK_ERROR = 'INTERNAL_SDK_ERROR'
-}
+export type TelemetryErrorCategory =
+  (typeof TelemetryErrorCategory)[keyof typeof TelemetryErrorCategory]
 
 export interface TelemetryEvent {
-  type: TelemetryEventType
+  type: 'error'
   event: string
   properties: {
     errorType?: string
@@ -81,7 +79,7 @@ export const TelemetryController = {
     }
 
     const errorEvent: TelemetryEvent = {
-      type: TelemetryEventType.ERROR,
+      type: 'error',
       event: category,
       properties: {
         errorType: error.name,
@@ -106,7 +104,7 @@ export const TelemetryController = {
           domain: window.location.hostname,
           timestamp: new Date().toISOString(),
           props: {
-            type: TelemetryEventType.ERROR,
+            type: 'error',
             event: category,
             errorType: error.name,
             errorMessage: error.message,
