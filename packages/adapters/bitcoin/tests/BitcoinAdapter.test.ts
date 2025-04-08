@@ -11,11 +11,16 @@ import {
 } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
-import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectProvider'
+import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectConnector'
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
 import { OKXConnector } from '../src/connectors/OKXConnector'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
@@ -38,6 +43,11 @@ describe('BitcoinAdapter', () => {
   beforeEach(() => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
+    ChainController.initialize([adapter], [bitcoin], {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
   })
 
   describe('constructor', () => {
@@ -76,7 +86,6 @@ describe('BitcoinAdapter', () => {
     })
 
     it('should set BitcoinWalletConnectConnector', async () => {
-      delete adapter.caipNetworks
       adapter.setUniversalProvider(mockUniversalProvider())
       expect(adapter.connectors[0]).toBeInstanceOf(BitcoinWalletConnectConnector)
       expect(adapter.connectors[0]?.chains).toEqual([])

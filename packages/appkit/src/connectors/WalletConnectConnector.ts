@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { OptionsController, SIWXUtil } from '@reown/appkit-controllers'
+import { ChainController, OptionsController, SIWXUtil } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
 import type { ChainAdapterConnector } from '../adapters/ChainAdapterConnector.js'
@@ -18,34 +18,32 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
   public readonly type = 'WALLET_CONNECT'
   public readonly imageId = PresetsUtil.ConnectorImageIds[ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]
   public readonly chain: Namespace
-
   public provider: UniversalProvider
-
   protected caipNetworks: CaipNetwork[]
+  private getCaipNetworks = ChainController.getCaipNetworks.bind(ChainController)
 
-  constructor({ provider, caipNetworks, namespace }: WalletConnectConnector.Options<Namespace>) {
-    this.caipNetworks = caipNetworks
+  constructor({ provider, namespace }: WalletConnectConnector.Options<Namespace>) {
+    this.caipNetworks = this.getCaipNetworks()
     this.provider = provider
     this.chain = namespace
   }
 
   get chains() {
-    return this.caipNetworks
+    return this.getCaipNetworks()
   }
 
   async connectWalletConnect() {
     const isAuthenticated = await this.authenticate()
 
     if (!isAuthenticated) {
+      const caipNetworks = this.getCaipNetworks()
       const universalProviderConfigOverride =
         OptionsController.state.universalProviderConfigOverride
       const namespaces = WcHelpersUtil.createNamespaces(
-        this.caipNetworks,
+        caipNetworks,
         universalProviderConfigOverride
       )
-      await this.provider.connect({
-        optionalNamespaces: namespaces
-      })
+      await this.provider.connect({ optionalNamespaces: namespaces })
     }
 
     return {

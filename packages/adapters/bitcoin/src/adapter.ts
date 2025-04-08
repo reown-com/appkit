@@ -6,7 +6,7 @@ import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
-import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectProvider.js'
+import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
@@ -354,7 +354,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.addConnector(
       new BitcoinWalletConnectConnector({
         provider: universalProvider,
-        chains: this.caipNetworks || [],
+        chains: this.getCaipNetworks(),
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
       })
     )
