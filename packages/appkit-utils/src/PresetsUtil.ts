@@ -100,7 +100,7 @@ export const PresetsUtil = {
     // Berachain Mainnet
     80094: 'e329c2c9-59b0-4a02-83e4-212ff3779900',
     // Abstract Mainnet
-    2741: 'e329c2c9-59b0-4a02-83e4-212ff3779900',
+    2741: 'fc2427d1-5af9-4a9c-8da5-6f94627cd900',
     // Solana networks
     '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',

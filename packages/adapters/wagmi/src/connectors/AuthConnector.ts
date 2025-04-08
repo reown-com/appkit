@@ -52,6 +52,7 @@ export function authConnector(parameters: AuthParameters) {
           throw new Error('ChainId not found in provider')
         }
       }
+
       const {
         address,
         chainId: frameChainId,
@@ -62,8 +63,6 @@ export function authConnector(parameters: AuthParameters) {
       })
 
       currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
-
-      await provider.getSmartAccountEnabledNetworks()
 
       const parsedChainId = parseChainId(frameChainId)
 
