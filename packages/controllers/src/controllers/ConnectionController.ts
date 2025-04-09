@@ -16,6 +16,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -154,7 +155,10 @@ export const ConnectionController = {
     if (!authConnector) {
       return
     }
-    await authConnector?.provider.setPreferredAccount(accountType)
+    AccountController.setPreferredAccountType(
+      accountType,
+      ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
+    )
     await this.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)
     EventsController.sendEvent({

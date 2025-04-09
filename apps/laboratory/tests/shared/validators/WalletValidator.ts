@@ -7,8 +7,10 @@ const MAX_WAIT = getMaximumWaitConnections()
 
 export class WalletValidator {
   private gotoSessions: Locator
+  public page: Page
 
-  constructor(public page: Page) {
+  constructor(page: Page) {
+    this.page = page
     this.gotoSessions = this.page.getByTestId('sessions')
   }
 
