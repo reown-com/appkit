@@ -97,7 +97,8 @@ const mockConnect = vi.fn(() => ({
 const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
-  switchNetwork: vi.fn()
+  switchNetwork: vi.fn(),
+  getUser: vi.fn()
 } as unknown as W3mFrameProvider
 
 describe('WagmiAdapter', () => {
@@ -547,7 +548,6 @@ describe('WagmiAdapter', () => {
           eip155: 'smartAccount'
         } as OptionsControllerState['defaultAccountTypes']
       })
-      const connectSpy = vi.spyOn(mockAuthProvider, 'connect').mockResolvedValue({} as any)
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],
@@ -555,10 +555,11 @@ describe('WagmiAdapter', () => {
         providerType: 'AUTH'
       })
 
-      expect(connectSpy).toHaveBeenCalledWith({
+      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
       })
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
     })
   })
 
