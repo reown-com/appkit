@@ -288,7 +288,7 @@ export class W3mModal extends LitElement {
       if (isNotConnected) {
         /*
          * If not connected at all, changing network doesn't necessarily warrant going back from all views.
-         * Let's keep the previous logic's intent: go back if not connected *and* network changed.
+         * Let's keep the previous logic's intent: go back if not connected and network changed.
          * This handles cases like being on the network selection view.
          */
         if (networkIdChanged) {
@@ -307,7 +307,7 @@ export class W3mModal extends LitElement {
       /*
        * Note: We are not explicitly checking `ChainController.state.isSwitchingNamespace` here.
        * The `onNewAddress` handler specifically covers the `goBack` logic for successful
-       * connections *during* a namespace switch. This handler focuses on same-namespace
+       * connections during a namespace switch. This handler focuses on same-namespace
        * switches, leaving the unsupported screen, or initial connection state.
        */
     }
