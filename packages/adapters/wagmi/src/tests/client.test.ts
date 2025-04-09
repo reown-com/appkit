@@ -25,9 +25,12 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
-  type NetworkControllerClient
+  type NetworkControllerClient,
+  OptionsController,
+  type OptionsControllerState
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { WagmiAdapter } from '../client'
 import { LimitterUtil } from '../utils/LimitterUtil'
@@ -90,6 +93,12 @@ const mockConnect = vi.fn(() => ({
   address: '0x123',
   accounts: ['0x123']
 }))
+
+const mockAuthProvider = {
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  switchNetwork: vi.fn()
+} as unknown as W3mFrameProvider
 
 describe('WagmiAdapter', () => {
   let adapter: WagmiAdapter
@@ -529,6 +538,27 @@ describe('WagmiAdapter', () => {
           chainId: 1
         })
       )
+    })
+
+    it('should respect preferred account type when switching network with AUTH provider', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        defaultAccountTypes: {
+          eip155: 'smartAccount'
+        } as OptionsControllerState['defaultAccountTypes']
+      })
+      const connectSpy = vi.spyOn(mockAuthProvider, 'connect').mockResolvedValue({} as any)
+
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetworks[0],
+        provider: mockAuthProvider,
+        providerType: 'AUTH'
+      })
+
+      expect(connectSpy).toHaveBeenCalledWith({
+        chainId: 'eip155:1',
+        preferredAccountType: 'smartAccount'
+      })
     })
   })
 
