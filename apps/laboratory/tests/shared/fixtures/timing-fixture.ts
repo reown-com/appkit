@@ -7,5 +7,8 @@ export interface TimingFixture {
 }
 
 export const timingFixture = base.extend<TimingFixture>({
-  timingRecords: [[], { scope: 'worker' }]
+  // eslint-disable-next-line no-empty-pattern
+  timingRecords: async ({}, use) => {
+    await use([])
+  }
 })
