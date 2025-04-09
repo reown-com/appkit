@@ -30,7 +30,7 @@ export namespace BitcoinConnector {
     /**
      * The purpose of the address
      */
-    purpose: 'payment' | 'ordinal' | 'stx'
+    purpose: 'payment' | 'ordinal' | 'stx' | 'ordinals' | 'stacks'
   }
 
   export type SignMessageParams = {
