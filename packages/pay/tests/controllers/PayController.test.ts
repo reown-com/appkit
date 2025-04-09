@@ -204,12 +204,20 @@ describe('PayController', () => {
       expect(result).toEqual(mockPayUrlResponse.url)
     })
 
-    it('should handle API errors and show snackbar', async () => {
+    it('should handle API errors', async () => {
       vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(new Error('API error'))
 
       await expect(PayController.getPayUrl('coinbase')).rejects.toThrow('API error')
+    })
 
-      expect(SnackController.showError).toHaveBeenCalledWith('API error')
+    it('should handle asset not supported error', async () => {
+      vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(
+        new Error('Asset is not supported by the selected exchange')
+      )
+
+      await expect(PayController.getPayUrl('coinbase')).rejects.toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
+      )
     })
   })
 

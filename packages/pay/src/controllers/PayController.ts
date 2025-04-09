@@ -138,7 +138,9 @@ export const PayController = {
 
       return response.url
     } catch (error) {
-      SnackController.showError((error as Error).message)
+      if ((error as Error).message.includes('is not supported')) {
+        throw new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
+      }
       throw new Error((error as Error).message)
     }
   },
@@ -272,7 +274,6 @@ export const PayController = {
     if (!payUrl) {
       throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
     }
-
     RouterController.push('PayLoading')
     const target = state.openInNewTab ? '_blank' : '_self'
     window.open(payUrl, target)

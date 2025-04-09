@@ -13,7 +13,8 @@ export const AppKitPayErrorCodes = {
   UNABLE_TO_INITIATE_PAYMENT: 'UNABLE_TO_INITIATE_PAYMENT',
   INVALID_CHAIN_NAMESPACE: 'INVALID_CHAIN_NAMESPACE',
   GENERIC_PAYMENT_ERROR: 'GENERIC_PAYMENT_ERROR',
-  UNABLE_TO_GET_EXCHANGES: 'UNABLE_TO_GET_EXCHANGES'
+  UNABLE_TO_GET_EXCHANGES: 'UNABLE_TO_GET_EXCHANGES',
+  ASSET_NOT_SUPPORTED: 'ASSET_NOT_SUPPORTED'
 } as const
 
 export type AppKitPayErrorCode = (typeof AppKitPayErrorCodes)[keyof typeof AppKitPayErrorCodes]
@@ -28,7 +29,8 @@ export const AppKitPayErrorMessages: Record<AppKitPayErrorCode, string> = {
   [AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT]: 'Unable to initiate payment',
   [AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE]: 'Invalid chain namespace',
   [AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR]: 'Unable to process payment',
-  [AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES]: 'Unable to get exchanges'
+  [AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES]: 'Unable to get exchanges',
+  [AppKitPayErrorCodes.ASSET_NOT_SUPPORTED]: 'Asset not supported by the selected exchange'
 }
 export class AppKitPayError extends Error {
   public readonly code: AppKitPayErrorCode
