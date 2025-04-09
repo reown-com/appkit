@@ -83,6 +83,37 @@ describe('W3mFrameProvider', () => {
     expect(postAppEventSpy).toHaveBeenCalled()
   })
 
+  it('should connect social', async () => {
+    const payload = { chainId: 1, socialUri: '?auth=12345678' }
+    const responsePayload = {
+      address: '0xd34db33f',
+      chainId: 1,
+      email: 'test@walletconnect.com',
+      preferredAccountType: 'eoa',
+      accounts: [
+        {
+          type: 'eoa',
+          address: '0xd34db33f'
+        }
+      ]
+    }
+
+    const postAppEventSpy = vi
+      .spyOn(provider['w3mFrame'].events, 'postAppEvent')
+      .mockImplementation(({ id }) => {
+        SecureSiteMock.approveRequest({
+          id: id as string,
+          type: 'CONNECT_SOCIAL',
+          response: responsePayload
+        })
+      })
+
+    const response = await provider.connect(payload)
+
+    expect(response).toEqual(responsePayload)
+    expect(postAppEventSpy).toHaveBeenCalled()
+  })
+
   it('should switch network', async () => {
     const chainId = 42
     const responsePayload = { chainId: 42 }
