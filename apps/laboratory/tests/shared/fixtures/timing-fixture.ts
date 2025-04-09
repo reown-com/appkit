@@ -7,5 +7,5 @@ export interface TimingFixture {
 }
 
 export const timingFixture = base.extend<TimingFixture>({
-  timingRecords: []
+  timingRecords: [[], { scope: 'worker' }]
 })
