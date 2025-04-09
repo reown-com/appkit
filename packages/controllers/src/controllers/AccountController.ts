@@ -6,6 +6,7 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   AccountType,
   AccountTypeMap,
@@ -196,6 +197,7 @@ export const AccountController = {
     chain: ChainNamespace
   ) {
     ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
+    StorageUtil.setPreferredAccountType(chain, preferredAccountType as W3mFrameTypes.AccountType)
   },
 
   setSocialProvider(

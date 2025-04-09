@@ -13,6 +13,7 @@ import {
   type Connector as AppKitConnector,
   ChainController,
   OptionsController,
+  StorageUtil,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
@@ -396,6 +397,16 @@ export abstract class AdapterBlueprint<
     }
 
     return connector
+  }
+
+  protected getPreferredAccountType() {
+    if (!this.namespace) {
+      return undefined
+    }
+
+    const preferredAccountType = StorageUtil.getPreferredAccountType(this.namespace)
+
+    return preferredAccountType || OptionsController.state.defaultAccountTypes[this.namespace]
   }
 }
 

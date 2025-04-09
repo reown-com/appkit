@@ -125,9 +125,8 @@ export class AppKit extends AppKitBaseClient {
           : (`${user.chainId}:${user.address}` as CaipAddress)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
 
-      const preferredAccountType = OptionsController.state.defaultAccountTypes[
-        namespace
-      ] as W3mFrameTypes.AccountType
+      const preferredAccountType = this.getPreferredAccountType(namespace)
+      console.log('>>> preferredAccountType', preferredAccountType)
 
       const isPreferredAccountTypeSame =
         Boolean(user.preferredAccountType) &&
@@ -137,7 +136,9 @@ export class AppKit extends AppKitBaseClient {
         // Prevent duplicate attempts during async operation
         this.hasSwitchedToPreferredAccountTypeOnConnect = true
 
-        const { success } = await ConnectionController.setPreferredAccountType(preferredAccountType)
+        const { success } = await ConnectionController.setPreferredAccountType(
+          preferredAccountType as W3mFrameTypes.AccountType
+        )
           .then(() => ({ success: false }))
           .catch(error => {
             // eslint-disable-next-line no-console

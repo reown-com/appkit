@@ -65,7 +65,6 @@ import {
 } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 import type { ProviderStoreUtilState } from '@reown/appkit-utils'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
@@ -1372,8 +1371,19 @@ export abstract class AppKitBaseClient {
 
   public getProviderType = (namespace: ChainNamespace) => ProviderUtil.getProviderId(namespace)
 
-  public getPreferredAccountType = () =>
-    AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
+  public getPreferredAccountType = (namespace?: ChainNamespace) => {
+    if (!namespace) {
+      return undefined
+    }
+
+    const preferredAccountType = StorageUtil.getPreferredAccountType(namespace)
+
+    return (
+      preferredAccountType ||
+      ChainController.getAccountProp('preferredAccountType', namespace) ||
+      OptionsController.state.defaultAccountTypes[namespace]
+    )
+  }
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)

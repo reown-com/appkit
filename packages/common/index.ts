@@ -14,7 +14,8 @@ export {
   SafeLocalStorageKeys,
   isSafe,
   type SafeLocalStorageKey,
-  getSafeConnectorIdKey
+  getSafeConnectorIdKey,
+  getSafePreferredAccountTypeKey
 } from './src/utils/SafeLocalStorage.js'
 export { getW3mThemeVariables } from './src/utils/ThemeUtil.js'
 export { isReownName } from './src/utils/NamesUtil.js'

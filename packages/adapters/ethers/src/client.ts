@@ -350,7 +350,7 @@ export class EthersAdapter extends AdapterBlueprint {
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        preferredAccountType: this.getPreferredAccountType()
       })
 
       accounts = [address]

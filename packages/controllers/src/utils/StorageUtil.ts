@@ -4,7 +4,8 @@ import {
   type ChainNamespace,
   SafeLocalStorage,
   SafeLocalStorageKeys,
-  getSafeConnectorIdKey
+  getSafeConnectorIdKey,
+  getSafePreferredAccountTypeKey
 } from '@reown/appkit-common'
 
 import type {
@@ -12,6 +13,7 @@ import type {
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
   ConnectionStatus,
+  NamespaceTypeMap,
   SocialProvider,
   WcWallet
 } from './TypeUtil.js'
@@ -560,5 +562,28 @@ export const StorageUtil = {
     } catch {
       console.info('Unable to clear address cache')
     }
+  },
+
+  setPreferredAccountType(
+    namespace: ChainNamespace,
+    accountType: NamespaceTypeMap[keyof NamespaceTypeMap]
+  ) {
+    try {
+      SafeLocalStorage.setItem(getSafePreferredAccountTypeKey(namespace), accountType)
+    } catch {
+      console.info('Unable to set preferred account type')
+    }
+  },
+
+  getPreferredAccountType(namespace: ChainNamespace) {
+    try {
+      return SafeLocalStorage.getItem(getSafePreferredAccountTypeKey(namespace)) as
+        | NamespaceTypeMap[keyof NamespaceTypeMap]
+        | undefined
+    } catch {
+      console.info('Unable to get default account type')
+    }
+
+    return undefined
   }
 }

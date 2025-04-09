@@ -1,6 +1,8 @@
 import type { ChainNamespace } from './TypeUtil.js'
 
 export type NamespacedConnectorKey = `@appkit/${ChainNamespace}:connected_connector_id`
+export type NamespacedPreferredAccountTypeKey = `@appkit/${ChainNamespace}:preferred_account_type`
+
 export type SafeLocalStorageItems = {
   '@appkit/wallet_id': string
   '@appkit/wallet_name': string
@@ -49,7 +51,10 @@ export const SafeLocalStorageKeys = {
   IDENTITY_CACHE: '@appkit/identity_cache'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
-export type SafeLocalStorageKey = keyof SafeLocalStorageItems | NamespacedConnectorKey
+export type SafeLocalStorageKey =
+  | keyof SafeLocalStorageItems
+  | NamespacedConnectorKey
+  | NamespacedPreferredAccountTypeKey
 
 export function getSafeConnectorIdKey(namespace?: ChainNamespace): NamespacedConnectorKey {
   if (!namespace) {
@@ -57,6 +62,16 @@ export function getSafeConnectorIdKey(namespace?: ChainNamespace): NamespacedCon
   }
 
   return `@appkit/${namespace}:connected_connector_id`
+}
+
+export function getSafePreferredAccountTypeKey(
+  namespace?: ChainNamespace
+): NamespacedPreferredAccountTypeKey {
+  if (!namespace) {
+    throw new Error('Namespace is required for PREFERRED_ACCOUNT_TYPE')
+  }
+
+  return `@appkit/${namespace}:preferred_account_type`
 }
 
 export const SafeLocalStorage = {
