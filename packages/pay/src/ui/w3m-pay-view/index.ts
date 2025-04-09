@@ -95,15 +95,7 @@ export class W3mPayView extends LitElement {
     const paymentAsset = PayController.getPaymentAsset()
     this.networkName = paymentAsset.network
     this.tokenSymbol = paymentAsset.metadata.symbol
-
-    if (paymentAsset.amount && paymentAsset.amount > 0) {
-      try {
-        const divisor = 10 ** paymentAsset.metadata.decimals
-        this.amount = (Number(paymentAsset.amount) / divisor).toFixed(4)
-      } catch (error) {
-        this.amount = '0.0000'
-      }
-    }
+    this.amount = paymentAsset.amount.toString()
   }
 
   private renderPaymentHeader() {
@@ -122,7 +114,7 @@ export class W3mPayView extends LitElement {
           <wui-text variant="large-700" color="fg-100">${this.amount || '0.0000'}</wui-text>
           <wui-flex class="token-display" alignItems="center" gap="xxs">
             <wui-text variant="paragraph-600" color="fg-100">
-              ${this.tokenSymbol || 'ETH'}
+              ${this.tokenSymbol || 'Unknown Asset'}
             </wui-text>
             ${displayNetworkName
               ? html`

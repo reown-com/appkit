@@ -69,7 +69,7 @@ describe('W3mPayView', () => {
     const tokenText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-600"]')
     const networkText = element.shadowRoot?.querySelector('wui-text[variant="small-500"]')
 
-    expect(amountText?.textContent).toBe('10.0000')
+    expect(amountText?.textContent).toBe('10000000')
     expect(tokenText?.textContent?.trim()).toBe('USDC')
     expect(networkText?.textContent?.trim()).toBe('on Ethereum')
   })
