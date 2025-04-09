@@ -19,6 +19,7 @@ import type {
   ChainAdapter,
   NetworkControllerClient
 } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -28,6 +29,7 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -77,7 +79,7 @@ const state = proxy<ChainControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ChainController = {
+const controller = {
   state,
 
   subscribe(callback: (value: ChainControllerState) => void) {
@@ -485,7 +487,6 @@ export const ChainController = {
 
   getRequestedCaipNetworks(chainToFilter: ChainNamespace) {
     const adapter = state.chains.get(chainToFilter)
-
     const { approvedCaipNetworkIds = [], requestedCaipNetworks = [] } = adapter?.networkState || {}
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -793,3 +794,9 @@ export const ChainController = {
     return ChainController.getAllRequestedCaipNetworks()
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ChainController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.INTERNAL_SDK_ERROR
+)

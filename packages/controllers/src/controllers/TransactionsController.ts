@@ -4,12 +4,14 @@ import type { Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
+import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -37,7 +39,7 @@ const state = proxy<TransactionsControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const TransactionsController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: TransactionsControllerState) => void) {
@@ -164,3 +166,9 @@ export const TransactionsController = {
     state.next = undefined
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const TransactionsController = withErrorBoundary(
+  controller,
+  TelemetryErrorCategory.API_ERROR
+)
