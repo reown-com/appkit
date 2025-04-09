@@ -367,8 +367,8 @@ export abstract class AppKitBaseClient {
           throw new Error('Adapter not found')
         }
 
-        const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
 
+        const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
         const res = await adapter
           .connect({
             id,
