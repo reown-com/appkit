@@ -11,7 +11,6 @@ config({ path: './.env.local' })
 export default defineConfig<ModalFixture>({
   testDir: './tests',
   fullyParallel: true,
-  retries: 1,
   workers: getValue(8, 4),
   reporter: getValue(
     [['list'], ['html', { host: '0.0.0.0' }]],

@@ -5,6 +5,14 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - main
+  merge_group:
+    # The merge queue provides the same benefits
+    # as the Require branches to be up to date before merging branch protection,
+    # but does not require a pull request author to update their pull
+    # request branch and wait for status checks to finish before trying to merge.
+    # See https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue
+    branches:
+      - main
 
 permissions:
   pull-requests: write
