@@ -526,7 +526,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     // If the connector is already connected, return the connection
     if (connector.uid === this.wagmiConfig?.state?.current) {
       const connection = this.wagmiConfig.state?.connections?.get(connector.uid)
-      console.log('connection exist already, returning')
       if (connection) {
         return {
           address: connection?.accounts[0] as string,
