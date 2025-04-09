@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 
 import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { WalletConnectMethodNotSupportedError } from '../providers/shared/Errors.js'
@@ -25,6 +26,7 @@ describe('WalletConnectProvider specific tests', () => {
       chains: TestConstants.chains,
       getActiveChain
     })
+    vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue(TestConstants.chains)
   })
 
   it('should call connect', async () => {
