@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { Provider as CoreProvider } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type Provider as CoreProvider,
+  type NetworkControllerClient
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 
@@ -56,6 +61,7 @@ const mockWalletConnectConnector = vi.mocked(
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
   vi.spyOn(SolStoreUtil, 'setConnection')
+  vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue(mockNetworks)
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -66,6 +72,11 @@ describe('SolanaAdapter', () => {
       namespace: ConstantsUtil.CHAIN.SOLANA,
       adapterType: ConstantsUtil.ADAPTER_TYPES.SOLANA
     })
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'solana')
   })
 
   describe('SolanaAdapter - syncConnectors', () => {

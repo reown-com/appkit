@@ -3,7 +3,7 @@ import {
   createAppKit,
   networks
 } from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.7.0/dist/appkit.js'
-import { reconnect } from 'https://esm.sh/@wagmi/core@2.x'
+import { reconnect, watchConnectors } from 'https://esm.sh/@wagmi/core@2.x'
 
 // Get projectId
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
@@ -33,7 +33,13 @@ const modal = createAppKit({
   }
 })
 
-reconnect(wagmiAdapter.wagmiConfig)
+watchConnectors(wagmiAdapter.wagmiConfig, {
+  onChange(connectors) {
+    if (connectors.length > 4) {
+      reconnect(wagmiAdapter.wagmiConfig)
+    }
+  }
+})
 
 // State objects
 let accountState = {}

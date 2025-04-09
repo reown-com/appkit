@@ -75,7 +75,7 @@ const mockApiState: ApiControllerState = {
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
-  excludedRDNS: [],
+  excludedWallets: [],
   isFetchingRecommendedWallets: false
 }
 

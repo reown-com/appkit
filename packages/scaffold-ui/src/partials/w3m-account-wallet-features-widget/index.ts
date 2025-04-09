@@ -24,7 +24,7 @@ import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-account-activity-widget/index.js'
 import '../w3m-account-nfts-widget/index.js'
 import '../w3m-account-tokens-widget/index.js'
@@ -119,16 +119,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         data-testid="w3m-profile-button"
       ></wui-profile-button>
 
-      ${this.tokenBalanceTemplate()} ${this.orderedWalletFeatures()}
-
-      <wui-tabs
-        .onTabChange=${this.onTabChange.bind(this)}
-        .activeTab=${this.currentTab}
-        localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-          ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
-          : '104px'}
-        .tabs=${ConstantsUtil.ACCOUNT_TABS}
-      ></wui-tabs>
+      ${this.tokenBalanceTemplate()} ${this.orderedWalletFeatures()} ${this.tabsTemplate()}
       ${this.listContentTemplate()}
     </wui-flex>`
   }
@@ -277,6 +268,23 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     }
 
     return html`<wui-balance dollars="0" pennies="00"></wui-balance>`
+  }
+
+  private tabsTemplate() {
+    const tabsByNamespace = HelpersUtil.getTabsByNamespace(ChainController.state.activeChain)
+
+    if (tabsByNamespace.length === 0) {
+      return null
+    }
+
+    return html`<wui-tabs
+      .onTabChange=${this.onTabChange.bind(this)}
+      .activeTab=${this.currentTab}
+      localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
+        ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
+        : '104px'}
+      .tabs=${tabsByNamespace}
+    ></wui-tabs>`
   }
 
   private onTabChange(index: number) {

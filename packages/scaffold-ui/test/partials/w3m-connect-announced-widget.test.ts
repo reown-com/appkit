@@ -44,7 +44,7 @@ describe('W3mConnectAnnouncedWidget', () => {
   beforeEach(() => {
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
-      excludedRDNS: []
+      excludedWallets: []
     })
   })
 
@@ -93,7 +93,7 @@ describe('W3mConnectAnnouncedWidget', () => {
 
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
-      excludedRDNS: ['mock.wallet']
+      excludedWallets: [{ name: 'Mock Wallet', rdns: 'mock.wallet' }]
     })
 
     const element: W3mConnectAnnouncedWidget = await fixture(

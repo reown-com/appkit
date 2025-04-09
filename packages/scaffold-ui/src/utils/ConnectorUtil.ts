@@ -12,6 +12,7 @@ import {
   StorageUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from './WalletUtil.js'
 
@@ -57,30 +58,33 @@ export const ConnectorUtil = {
   },
 
   showConnector(connector: ConnectorWithProviders) {
+    const rdns = connector.info?.rdns
+
+    const isRDNSExcluded =
+      Boolean(rdns) && ApiController.state.excludedWallets.some(wallet => wallet.rdns === rdns)
+
+    const isNameExcluded =
+      Boolean(connector.name) &&
+      ApiController.state.excludedWallets.some(wallet =>
+        HelpersUtil.isLowerCaseMatch(wallet.name, connector.name)
+      )
+
     if (connector.type === 'INJECTED') {
       if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
         return false
       }
 
-      const walletRDNS = connector.info?.rdns
-
-      if (!walletRDNS && !ConnectionController.checkInstalled()) {
+      if (!rdns && !ConnectionController.checkInstalled()) {
         return false
       }
 
-      if (walletRDNS && ApiController.state.excludedRDNS) {
-        if (ApiController.state.excludedRDNS.includes(walletRDNS)) {
-          return false
-        }
+      if (isRDNSExcluded || isNameExcluded) {
+        return false
       }
     }
 
-    if (connector.type === 'ANNOUNCED') {
-      const rdns = connector.info?.rdns
-
-      if (rdns && ApiController.state.excludedRDNS.includes(rdns)) {
-        return false
-      }
+    if (connector.type === 'ANNOUNCED' && (isRDNSExcluded || isNameExcluded)) {
+      return false
     }
 
     return true

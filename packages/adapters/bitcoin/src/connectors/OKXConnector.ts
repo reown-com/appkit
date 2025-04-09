@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
@@ -108,6 +109,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       psbt: Buffer.from(signedPsbtHex, 'hex').toString('base64'),
       txid
     }
+  }
+
+  public async switchNetwork(_caipNetworkId: string): Promise<void> {
+    throw new Error(`${this.name} wallet does not support network switching`)
   }
 
   public request<T>(_args: RequestArguments): Promise<T> {

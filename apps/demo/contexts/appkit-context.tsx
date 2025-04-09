@@ -17,8 +17,8 @@ interface AppKitContextType {
   socialsEnabled: boolean
   isDraggingByKey: Record<string, boolean>
   enabledChains: ChainNamespace[]
-  removeChain: (chain: ChainNamespace) => void
-  addChain: (chain: ChainNamespace, network: AppKitNetwork | undefined) => void
+  disableChain: (chain: ChainNamespace) => void
+  enableChain: (chain: ChainNamespace, network: AppKitNetwork | undefined) => void
   removeNetwork: (network: NetworkOption) => void
   addNetwork: (network: NetworkOption) => void
   updateThemeMode: (mode: ThemeMode) => void

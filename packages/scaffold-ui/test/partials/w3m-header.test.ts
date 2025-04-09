@@ -18,6 +18,18 @@ import {
 import { W3mHeader } from '../../src/partials/w3m-header'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
+// -- Constants ------------------------------------------------------------
+const mockNetwork = {
+  id: '1',
+  name: 'Test Network',
+  chainNamespace: 'eip155',
+  caipNetworkId: 'eip155:1',
+  nativeCurrency: { name: 'Test', symbol: 'TEST', decimals: 18 },
+  rpcUrls: { default: { http: ['https://test.com'] } }
+} as unknown as CaipNetwork
+
+const ACCOUNT_SELECT_NETWORK_TEST_ID = 'w3m-account-select-network'
+
 describe('W3mHeader', () => {
   let element: W3mHeader
 
@@ -33,15 +45,6 @@ describe('W3mHeader', () => {
   })
 
   describe('Network Selection', () => {
-    const mockNetwork = {
-      id: '1',
-      name: 'Test Network',
-      chainNamespace: 'eip155',
-      caipNetworkId: 'eip155:1',
-      nativeCurrency: { name: 'Test', symbol: 'TEST', decimals: 18 },
-      rpcUrls: { default: { http: ['https://test.com'] } }
-    } as unknown as CaipNetwork
-
     it('should render network select in Account view', async () => {
       RouterController.state.view = 'Account'
       element.requestUpdate()
@@ -228,6 +231,50 @@ describe('W3mHeader', () => {
       helpButton?.dispatchEvent(new Event('click'))
 
       expect(trackSpy).toHaveBeenCalledWith({ type: 'track', event: 'CLICK_WALLET_HELP' })
+    })
+  })
+
+  describe('Network Selector Visibility', () => {
+    it('should show network selector in Account view when enableNetworkSwitch is true', async () => {
+      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+        ...RouterController.state,
+        view: 'Account'
+      })
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: mockNetwork
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableNetworkSwitch: true
+      })
+
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      const networkSelect = HelpersUtil.getByTestId(element, ACCOUNT_SELECT_NETWORK_TEST_ID)
+      expect(networkSelect).not.toBeNull()
+    })
+
+    it('should hide network selector in Account view when enableNetworkSwitch is false', async () => {
+      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+        ...RouterController.state,
+        view: 'Account'
+      })
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: mockNetwork
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableNetworkSwitch: false
+      })
+
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      const networkSelect = HelpersUtil.getByTestId(element, ACCOUNT_SELECT_NETWORK_TEST_ID)
+      expect(networkSelect).toBeNull()
     })
   })
 })

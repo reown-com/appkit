@@ -38,7 +38,7 @@ export interface ApiControllerState {
   wallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
-  excludedRDNS: string[]
+  excludedWallets: { rdns: string; name: string }[]
   isFetchingRecommendedWallets: boolean
 }
 
@@ -63,7 +63,7 @@ const state = proxy<ApiControllerState>({
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
-  excludedRDNS: [],
+  excludedWallets: [],
   isFetchingRecommendedWallets: false
 })
 
@@ -244,7 +244,7 @@ export const ApiController = {
     state.page = page
   },
 
-  async initializeExcludedWalletRdns({ ids }: { ids: string[] }) {
+  async initializeExcludedWallets({ ids }: { ids: string[] }) {
     const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
 
     const { data } = await api.get<ApiGetWalletsResponse>({
@@ -261,7 +261,7 @@ export const ApiController = {
     if (data) {
       data.forEach(wallet => {
         if (wallet?.rdns) {
-          state.excludedRDNS.push(wallet.rdns)
+          state.excludedWallets.push({ rdns: wallet.rdns, name: wallet.name })
         }
       })
     }

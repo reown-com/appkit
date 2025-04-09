@@ -84,13 +84,17 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     )
   }
 
-  function removeChain(chain: ChainNamespace) {
+  function disableChain(chain: ChainNamespace) {
     setEnabledChains(prev => {
       const newEnabledChains = prev.filter(c => c !== chain)
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
       return newEnabledChains
     })
-    appKit?.removeAdapter(chain)
+
+    // Remove all networks in the chain namespace before adding new ones
+    NAMESPACE_NETWORK_IDS_MAP[chain].forEach(networkId => {
+      appKit?.removeNetwork(chain, networkId)
+    })
 
     // Update enabled networks state
     setEnabledNetworks(prev => {
@@ -103,22 +107,28 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     })
   }
 
-  function addChain(chain: ChainNamespace, network: AppKitNetwork | undefined) {
+  function enableNetworksOfChain(chain: ChainNamespace) {
+    NAMESPACE_NETWORK_IDS_MAP[chain].forEach(networkId => {
+      const network = NETWORK_OPTIONS.find(no => no.network.id === networkId)
+      if (network?.network) {
+        appKit?.addNetwork(chain, network.network)
+      }
+    })
+  }
+
+  function enableSingleNetwork(network: NetworkOption) {
+    setEnabledNetworks(prev => {
+      const newNetworks = [...prev, network.network.id]
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+      return newNetworks
+    })
+  }
+
+  function enableChain(chain: ChainNamespace, network: AppKitNetwork | undefined) {
     setEnabledChains(prev => {
       const newEnabledChains = [...prev, chain]
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
       return newEnabledChains
-    })
-    const adapter = allAdapters.find(a => a.namespace === chain)
-    if (adapter) {
-      appKit?.addAdapter(adapter, network ? [network] : namespaceNetworksMap[chain])
-    }
-
-    // Update enabled networks state
-    setEnabledNetworks(prev => {
-      const newNetworks = [...prev, ...(network ? [network.id] : NAMESPACE_NETWORK_IDS_MAP[chain])]
-      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
-      return newNetworks
     })
   }
 
@@ -126,7 +136,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     const enabledNetworksInNamespace = getEnabledNetworksInNamespace(network.namespace)
 
     if (enabledNetworksInNamespace.length === 1) {
-      removeChain(network.namespace)
+      disableChain(network.namespace)
     } else {
       setEnabledNetworks(prev => {
         if (
@@ -146,13 +156,10 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
   function addNetwork(network: NetworkOption) {
     if (!enabledChains.includes(network.namespace)) {
-      addChain(network.namespace, network.network)
+      enableChain(network.namespace, network.network)
+      enableNetworksOfChain(network.namespace)
     } else {
-      setEnabledNetworks(prev => {
-        const newNetworks = [...prev, network.network.id]
-        urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
-        return newNetworks
-      })
+      enableSingleNetwork(network)
       appKit?.addNetwork(network.namespace, network.network)
     }
   }
@@ -265,8 +272,8 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
           privacyPolicyUrl
         },
         enabledChains,
-        removeChain,
-        addChain,
+        disableChain,
+        enableChain,
         enabledNetworks,
         removeNetwork,
         addNetwork,

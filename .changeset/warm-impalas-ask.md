@@ -1,5 +1,4 @@
 ---
-'@reown/appkit-controllers': patch
 '@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -10,6 +9,7 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where `createAppKit` would throw an error if the universal provider failed to initialize
+Removes add/remove chain adapter functionality for the Demo app use case and use CAIP networks by getCaipNetworks function in Base client

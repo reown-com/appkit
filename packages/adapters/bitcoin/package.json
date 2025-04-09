@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-bitcoin",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -30,11 +30,12 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@walletconnect/universal-provider": "2.19.1",
     "bitcoinjs-lib": "6.1.7",
-    "sats-connect": "3.2.0"
+    "sats-connect": "3.3.0"
   },
   "devDependencies": {
     "@leather.io/rpc": "2.1.21",
