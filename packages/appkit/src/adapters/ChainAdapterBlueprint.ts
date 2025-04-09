@@ -241,11 +241,12 @@ export abstract class AdapterBlueprint<
 
     if (provider && providerType === 'AUTH') {
       const authProvider = provider as W3mFrameProvider
-      await authProvider.switchNetwork(caipNetwork.caipNetworkId)
-      const user = await authProvider.getUser({
+      const preferredAccountType =
+        AccountController.state.preferredAccountType ||
+        OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
+      const user = await authProvider.connect({
         chainId: caipNetwork.caipNetworkId,
-        preferredAccountType:
-          OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
+        preferredAccountType
       })
 
       this.emit('switchNetwork', user)
