@@ -63,7 +63,6 @@ export function authConnector(parameters: AuthParameters) {
       isReconnecting?: boolean
     } = {}
   ) {
-
     const provider = getProviderInstance()
     let chainId = options.chainId
 
@@ -113,7 +112,6 @@ export function authConnector(parameters: AuthParameters) {
     chain: CommonConstantsUtil.CHAIN.EVM,
     async connect(options = {}) {
       if (connectSocialPromise) {
-
         return connectSocialPromise
       }
 
