@@ -22,7 +22,6 @@ import type {
   EstimateGasTransactionArgs,
   EventsControllerState,
   Features,
-  ModalControllerArguments,
   ModalControllerState,
   NetworkControllerClient,
   OptionsControllerState,
@@ -1472,16 +1471,15 @@ export abstract class AppKitBaseClient {
       ConnectionController.setUri(options.uri)
     }
 
-    const data: ModalControllerArguments['open']['data'] = {}
-
-    switch (options?.view) {
-      case 'Swap':
-        data.swap = options.arguments
-        break
-      default:
+    if (options?.arguments) {
+      switch (options?.view) {
+        case 'Swap':
+          return ModalController.open({ ...options, data: { swap: options.arguments } })
+        default:
+      }
     }
 
-    await ModalController.open({ ...options, data })
+    return ModalController.open(options)
   }
 
   public async close() {
