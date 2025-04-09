@@ -69,6 +69,17 @@ walletFeaturesTest('it should initialize swap as expected', async () => {
   await page.closeModal()
 })
 
+walletFeaturesTest('it should show swap view with preselected tokens', async () => {
+  await page.page.getByTestId('open-swap-with-arguments-hook-button').click()
+
+  await expect(page.page.getByTestId('swap-input-token-sourceToken')).toHaveText('USDC')
+  await expect(page.page.getByTestId('swap-input-token-toToken')).toHaveText('ETH')
+  await expect(page.page.getByTestId('swap-input-sourceToken')).toHaveValue('321.123')
+  await expect(page.page.getByTestId('swap-action-button')).toHaveText('Insufficient balance')
+
+  await page.closeModal()
+})
+
 walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
@@ -126,16 +137,4 @@ walletFeaturesTest('it should search for a certified wallet', async () => {
   await page.clickCertifiedToggle()
   await page.search('MetaMask')
   await validator.expectAllWalletsListSearchItem(METAMASK_WALLET_ID)
-})
-
-walletFeaturesTest('it should show swap view with preselected tokens', async () => {
-  await page.page.getByTestId('open-swap-with-arguments-hook-button').click()
-
-  await expect(page.page.getByTestId('swap-input-token-sourceToken')).toHaveText('USDC')
-  await expect(page.page.getByTestId('swap-input-token-toToken')).toHaveText('ETH')
-  await expect(page.page.getByTestId('swap-input-sourceToken')).toHaveText('321.123')
-  const actionButton = page.page.getByTestId('swap-action-button')
-  await expect(actionButton).toHaveText('Insufficient Balance')
-
-  await page.closeModal()
 })
