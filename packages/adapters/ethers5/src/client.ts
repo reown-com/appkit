@@ -384,6 +384,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
       }
 
+      this.emit('accountChanged', {
+        address: accounts[0] as `0x${string}`,
+        chainId: Number(chainId)
+      })
+
       this.listenProviderEvents(selectedProvider)
     }
 
