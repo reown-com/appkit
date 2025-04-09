@@ -392,6 +392,7 @@ export abstract class AppKitBaseClient {
         this.syncProvider({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
+        this.setStatus('connected', chainToUse)
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
