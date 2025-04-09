@@ -162,6 +162,27 @@ export interface OptionsControllerStatePublic {
    * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
    */
   manualWCControl?: boolean
+  /**
+   * Custom Universal Provider configuration to override the default one.
+   * If `methods` is provided, it will override the default methods.
+   * If `chains` is provided, it will override the default chains.
+   * If `events` is provided, it will override the default events.
+   * If `rpcMap` is provided, it will override the default rpcMap.
+   * If `defaultChain` is provided, it will override the default defaultChain.
+   * @default undefined
+   */
+  universalProviderConfigOverride?: {
+    methods?: Record<string, string[]>
+    chains?: Record<string, string[]>
+    events?: Record<string, string[]>
+    rpcMap?: Record<string, string>
+    defaultChain?: string
+  }
+  /**
+   * Enable or disable the network switching functionality in the modal.
+   * @default true
+   */
+  enableNetworkSwitch?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -181,7 +202,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
+  enableNetworkSwitch: true
 })
 
 // -- Controller ---------------------------------------- //
@@ -345,6 +367,10 @@ export const OptionsController = {
     state.manualWCControl = manualWCControl
   },
 
+  setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
+    state.enableNetworkSwitch = enableNetworkSwitch
+  },
+
   setDefaultAccountTypes(
     defaultAccountType: Partial<OptionsControllerState['defaultAccountTypes']> = {}
   ) {
@@ -354,6 +380,16 @@ export const OptionsController = {
         state.defaultAccountTypes[namespace] = accountType
       }
     })
+  },
+
+  setUniversalProviderConfigOverride(
+    universalProviderConfigOverride: OptionsControllerState['universalProviderConfigOverride']
+  ) {
+    state.universalProviderConfigOverride = universalProviderConfigOverride
+  },
+
+  getUniversalProviderConfigOverride() {
+    return state.universalProviderConfigOverride
   },
 
   getSnapshot() {

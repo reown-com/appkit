@@ -4,10 +4,12 @@ import {
   type AppKitNetwork,
   type CaipNetwork,
   type CaipNetworkId,
+  type ChainNamespace,
   ConstantsUtil,
   type CustomRpcUrl,
   type CustomRpcUrlMap
 } from '@reown/appkit-common'
+import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 
 import { PresetsUtil } from './PresetsUtil.js'
 
@@ -239,5 +241,57 @@ export const CaipNetworksUtil = {
     }
 
     return transport
+  },
+
+  /**
+   * Generates the unsupported network object with the given CaipNetwork ID
+   * @param caipNetworkId - The CAIP network ID
+   * @returns The unsupported CAIP network object
+   */
+  getUnsupportedNetwork(caipNetworkId: CaipNetworkId) {
+    return {
+      id: caipNetworkId.split(':')[1],
+      caipNetworkId,
+      name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
+      chainNamespace: caipNetworkId.split(':')[0],
+      nativeCurrency: {
+        name: '',
+        decimals: 0,
+        symbol: ''
+      },
+      rpcUrls: {
+        default: {
+          http: []
+        }
+      }
+    } as CaipNetwork
+  },
+
+  /**
+   * Gets the CaipNetwork object from the storage if `@appkit/active_caip_network_id` is being set
+   * @returns CaipNetwork or undefined
+   */
+  getCaipNetworkFromStorage(defaultCaipNetwork?: CaipNetwork) {
+    const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
+    const caipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const availableNamespaces = Array.from(ChainController.state.chains?.keys() || [])
+    const namespace = caipNetworkIdFromStorage?.split(':')[0] as ChainNamespace | undefined
+    const isNamespaceAvailable = namespace ? availableNamespaces.includes(namespace) : false
+    const caipNetwork = caipNetworks?.find(cn => cn.caipNetworkId === caipNetworkIdFromStorage)
+    const isUnsupportedNetwork = isNamespaceAvailable && !caipNetwork && caipNetworkIdFromStorage
+
+    if (isUnsupportedNetwork) {
+      return this.getUnsupportedNetwork(caipNetworkIdFromStorage)
+    }
+
+    if (caipNetwork) {
+      return caipNetwork
+    }
+
+    if (defaultCaipNetwork) {
+      return defaultCaipNetwork
+    }
+
+    return caipNetworks?.[0]
   }
 }

@@ -21,21 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Added support for customizing connector positions in connect modal. 
-
-The array order determines the exact display order, in the example below the injected wallets will appear first, followed by WalletConnect and then recent wallets.
-
-**Example usage**
-
-```tsx
-import { createAppKit } from '@reown/appkit'
-
-const modal = createAppKit({
-  adapters: [], // Add your adapters here
-  networks: [], // Add your networks here
-  projectId: 'YOUR_PROJECT_ID',
-  features: {
-    connectorTypeOrder: ['injected', 'walletConnect', 'recent']
-  }
-})
-```
+Fixes swap balance recent on network and account change

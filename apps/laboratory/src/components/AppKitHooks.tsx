@@ -1,4 +1,5 @@
 import { Box, Button, Heading } from '@chakra-ui/react'
+import { usePathname } from 'next/navigation'
 
 import {
   bitcoin,
@@ -36,6 +37,8 @@ export function AppKitHooks() {
   const { isConnected } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
+  const pathname = usePathname()
+  const isMultichainPage = pathname?.includes('multichain-no-adapters')
 
   function handleSwitchNetwork() {
     const networkToSwitch = getNetworkToSwitch(caipNetwork)
@@ -63,9 +66,20 @@ export function AppKitHooks() {
           </Button>
         )}
 
-        <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
-          Switch Network
-        </Button>
+        {!isMultichainPage && (
+          <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+            Switch Network
+          </Button>
+        )}
+
+        {isMultichainPage && (
+          <>
+            <Button onClick={() => switchNetwork(mainnet)}>Switch to Ethereum</Button>
+            <Button onClick={() => switchNetwork(polygon)}>Switch to Polygon</Button>
+            <Button onClick={() => switchNetwork(solana)}>Switch to Solana</Button>
+            <Button onClick={() => switchNetwork(bitcoin)}>Switch to Bitcoin</Button>
+          </>
+        )}
       </Box>
     </Box>
   )

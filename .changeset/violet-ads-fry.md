@@ -1,5 +1,5 @@
 ---
-'@reown/appkit-ui': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
@@ -14,11 +14,11 @@
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
+'@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Declares appkit packages in ui dependencies
+Updated recent wallet list to only show wallets that match the current chain namespace

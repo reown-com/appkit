@@ -303,6 +303,7 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
     slippage: string
     permit?: string
   }
+  disableEstimate?: boolean
 }
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
@@ -467,6 +468,16 @@ export type Event =
       event: 'DISCONNECT_ERROR'
       properties?: {
         message: string
+      }
+    }
+  | {
+      type: 'error'
+      event: 'INTERNAL_SDK_ERROR'
+      properties: {
+        errorType?: string
+        errorMessage?: string
+        stackTrace?: string
+        uncaught?: boolean
       }
     }
   | {
@@ -964,7 +975,7 @@ export type SendTransactionArgs =
       data: `0x${string}`
       value: bigint
       gas?: bigint
-      gasPrice: bigint
+      gasPrice?: bigint
       address: `0x${string}`
     }
   | { chainNamespace: 'solana'; to: string; value: number }

@@ -11,6 +11,7 @@ import {
   type AccountControllerState,
   type AccountType,
   type Connector as AppKitConnector,
+  ChainController,
   OptionsController,
   type Tokens,
   type WriteContractArgs
@@ -46,9 +47,9 @@ export abstract class AdapterBlueprint<
   Connector extends ChainAdapterConnector = ChainAdapterConnector
 > {
   public namespace: ChainNamespace | undefined
-  public caipNetworks?: CaipNetwork[]
   public projectId?: string
-
+  public adapterType: string | undefined
+  public getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   protected availableConnectors: Connector[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
@@ -60,6 +61,8 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
   constructor(params?: AdapterBlueprint.Params) {
+    this.getCaipNetworks = (namespace?: ChainNamespace) =>
+      ChainController.getCaipNetworks(namespace)
     if (params) {
       this.construct(params)
     }
@@ -70,9 +73,9 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
   construct(params: AdapterBlueprint.Params) {
-    this.caipNetworks = params.networks
     this.projectId = params.projectId
     this.namespace = params.namespace
+    this.adapterType = params.adapterType
   }
 
   /**
@@ -88,7 +91,7 @@ export abstract class AdapterBlueprint<
    * @returns {CaipNetwork[]} An array of supported networks
    */
   public get networks(): CaipNetwork[] {
-    return this.caipNetworks || []
+    return this.getCaipNetworks(this.namespace)
   }
 
   /**
@@ -401,6 +404,7 @@ export namespace AdapterBlueprint {
     namespace?: ChainNamespace
     networks?: CaipNetwork[]
     projectId?: string
+    adapterType?: string
   }
 
   export type SwitchNetworkParams = {
@@ -533,7 +537,7 @@ export namespace AdapterBlueprint {
     to: string
     data: string
     value: bigint | number
-    gasPrice: bigint | number
+    gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
     provider?: AppKitConnector['provider']

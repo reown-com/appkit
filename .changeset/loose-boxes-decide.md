@@ -1,9 +1,9 @@
 ---
-'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the CAIP address was not set for the namespace when using multichain
+Added required polyfills to `@reown/appkit-adapter-bitcoin` adapter package

@@ -40,12 +40,19 @@ export const ConnectorUtil = {
       }
 
       await ModalController.open()
-      RouterController.push('ConnectingWalletConnect', { wallet })
+
+      if (CoreHelperUtil.isMobile() && walletConnect) {
+        RouterController.replace('AllWallets')
+      } else {
+        RouterController.replace('ConnectingWalletConnect', {
+          wallet
+        })
+      }
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
           if (RouterController.state.view !== 'Connect') {
-            RouterController.push('Connect')
+            RouterController.replace('Connect')
           }
           unsubscribeModalController()
           reject(new Error('Modal closed'))

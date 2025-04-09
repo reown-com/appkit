@@ -28,12 +28,13 @@ export interface EIP6963ProviderDetail {
 
 export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
-  public adapterType = 'ethers'
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor() {
-    super({})
-    this.namespace = CommonConstantsUtil.CHAIN.EVM
+    super({
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS,
+      namespace: CommonConstantsUtil.CHAIN.EVM
+    })
   }
 
   private async createEthersConfig(options: AppKitOptions) {
@@ -291,7 +292,7 @@ export class EthersAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.caipNetworks || [],
+        caipNetworks: this.getCaipNetworks(),
         namespace: 'eip155'
       })
     )
@@ -363,7 +364,7 @@ export class EthersAdapter extends AdapterBlueprint {
       })
 
       if (requestChainId !== chainId) {
-        const caipNetwork = this.caipNetworks?.find(n => n.id === chainId)
+        const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
 
         if (!caipNetwork) {
           throw new Error('EthersAdapter:connect - could not find the caipNetwork to switch')
@@ -417,7 +418,9 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
-      const { address, accounts } = await provider.connect()
+      const { address, accounts } = await provider.connect({
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+      })
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
@@ -462,7 +465,7 @@ export class EthersAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+    const caipNetwork = this.getCaipNetworks().find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
