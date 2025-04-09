@@ -1,4 +1,4 @@
-import { type CreateConfigParameters, createConnector, disconnect } from '@wagmi/core'
+import { type CreateConfigParameters, createConnector } from '@wagmi/core'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
@@ -24,7 +24,17 @@ export type AuthParameters = {
 export function authConnector(parameters: AuthParameters) {
   let currentAccounts: Address[] = []
   let socialProvider: W3mFrameProvider | undefined = undefined
-  let connectSocialPromise: Promise<any> | undefined = undefined
+  let connectSocialPromise:
+    | Promise<{
+        accounts: Address[]
+        account: Address
+        chainId: number
+        chain: {
+          id: number
+          unsuported: boolean
+        }
+      }>
+    | undefined = undefined
   type Properties = {
     provider?: W3mFrameProvider
   }
