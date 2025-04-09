@@ -1,10 +1,11 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { AuthConnector, Connector, SocialProvider } from '@reown/appkit'
+import type { AdapterNetworkState, AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
   type Balance,
   type CaipNetwork,
+  ConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
@@ -439,22 +440,62 @@ describe('Base Public methods', () => {
   })
 
   it('should set connectors', () => {
-    const getConnectors = vi.spyOn(ConnectorController, 'getConnectors')
-    const setConnectors = vi.spyOn(ConnectorController, 'setConnectors')
     const existingConnectors = [
       { id: 'phantom', name: 'Phantom', chain: 'eip155', type: 'INJECTED' }
     ] as Connector[]
-    // Mock getConnectors to return existing connectors
-    vi.mocked(getConnectors).mockReturnValue(existingConnectors)
     const newConnectors = [
       { id: 'metamask', name: 'MetaMask', chain: 'eip155', type: 'INJECTED' }
     ] as Connector[]
 
-    const appKit = new AppKit(mockOptions)
-    appKit.setConnectors(newConnectors)
+    const combinedConnectors = [...existingConnectors, ...newConnectors]
 
-    // Verify that setConnectors was called with combined array
-    expect(setConnectors).toHaveBeenCalledWith([...existingConnectors, ...newConnectors])
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectors(combinedConnectors)
+
+    expect(ConnectorController.state.connectors).toEqual(combinedConnectors)
+    expect(ConnectorController.state.allConnectors).toEqual(combinedConnectors)
+  })
+
+  it('should set multichain connectors', () => {
+    // Reset connectors state
+    ConnectorController.state.allConnectors = []
+    ConnectorController.state.connectors = []
+
+    const ethConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'INJECTED',
+      chain: 'eip155'
+    } as unknown as Connector
+
+    const solConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'INJECTED',
+      chain: 'solana'
+    } as unknown as Connector
+
+    const appKit = new AppKit(mockOptions)
+
+    appKit.setConnectors([ethConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector])
+
+    appKit.setConnectors([solConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector, solConnector])
+    expect(ConnectorController.state.connectors.length).toEqual(1)
+
+    // Handle merged connectors
+    const hasMergedConnectorFromAllConnectors = ConnectorController.state.allConnectors.some(
+      c => c.connectors && c.connectors.length > 0
+    )
+    const hasMergedConnectorFromConnectors = ConnectorController.state.connectors.some(
+      c => c.connectors && c.connectors.length > 0
+    )
+
+    expect(hasMergedConnectorFromAllConnectors).toBe(false)
+    expect(hasMergedConnectorFromConnectors).toBe(true)
   })
 
   it('should add connector', () => {
@@ -615,16 +656,21 @@ describe('Base Public methods', () => {
 
     await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider, mainnet.chainNamespace)
 
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
-    expect(setAllAccounts).toHaveBeenCalledWith(
-      [
-        { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
-        { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
-      ],
-      mainnet.chainNamespace
+    await vi.waitFor(
+      () => {
+        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
+        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
+        expect(setAllAccounts).toHaveBeenCalledWith(
+          [
+            { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
+            { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
+          ],
+          mainnet.chainNamespace
+        )
+        expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
+      },
+      { interval: 100, timeout: 2000 }
     )
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
   })
 
   it('should get Reown name', async () => {
@@ -1042,5 +1088,70 @@ describe('Base Public methods', () => {
         isSmartAccountDeployed: true
       }
     })
+  })
+
+  it('should handle network switcher UI when enableNetworkSwitch is true', async () => {
+    vi.spyOn(ChainController, 'getNetworkData').mockReturnValue(
+      mainnet as unknown as AdapterNetworkState
+    )
+    vi.spyOn(ChainController, 'getCaipNetworkByNamespace').mockReturnValue(mainnet)
+    vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(true)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: {
+        ...mainnet,
+        name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+      },
+      activeChain: 'eip155'
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      allowUnsupportedChain: false,
+      enableNetworkSwitch: true
+    })
+
+    const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+    const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+    const appKit = new AppKit(mockOptions)
+    await appKit['syncAccount']({
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    })
+
+    expect(showUnsupportedChainUI).toHaveBeenCalled()
+    expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
+  })
+
+  it('should handle network switcher UI when enableNetworkSwitch is false', async () => {
+    vi.spyOn(ChainController, 'getNetworkData').mockReturnValue(
+      mainnet as unknown as AdapterNetworkState
+    )
+    vi.spyOn(ChainController, 'getCaipNetworkByNamespace').mockReturnValue(mainnet)
+    vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(true)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: mainnet,
+      activeChain: 'eip155'
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      allowUnsupportedChain: false,
+      enableNetworkSwitch: false
+    })
+
+    const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+    const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+    const appKit = new AppKit(mockOptions)
+    await appKit['syncAccount']({
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    })
+
+    expect(showUnsupportedChainUI).not.toHaveBeenCalled()
+    expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
 })

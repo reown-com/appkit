@@ -4,7 +4,12 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { AccountController, CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import {
+  AccountController,
+  ChainController,
+  CoreHelperUtil,
+  RouterController
+} from '@reown/appkit-controllers'
 
 import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -28,7 +33,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   afterEach(() => {
-    vi.resetAllMocks()
+    vi.clearAllMocks()
   })
 
   it('it should not return any components if address is not provided in AccountController', () => {
@@ -83,6 +88,44 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     button.click()
 
     expect(pushSpy).toHaveBeenCalledWith('AccountSettings')
+  })
+
+  it('should show tabs for eip155 namespace', async () => {
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      address: MOCK_ADDRESS
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
+    })
+
+    const element: W3mAccountWalletFeaturesWidget = await fixture(
+      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+    )
+
+    await elementUpdated(element)
+    const tabs = HelpersUtil.querySelect(element, 'wui-tabs')
+    expect(tabs).not.toBeNull()
+  })
+
+  it('should not show tabs for solana namespace', async () => {
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      address: MOCK_ADDRESS
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.SOLANA
+    })
+
+    const element: W3mAccountWalletFeaturesWidget = await fixture(
+      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+    )
+
+    await elementUpdated(element)
+    const tabs = HelpersUtil.querySelect(element, 'wui-tabs')
+    expect(tabs).toBeNull()
   })
 
   it('should redirect to Profile view if has more than one account', async () => {

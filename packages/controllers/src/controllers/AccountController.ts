@@ -6,7 +6,6 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type {
   AccountType,
   AccountTypeMap,
@@ -17,7 +16,6 @@ import type {
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { SnackController } from './SnackController.js'
-import { SwapController } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -255,7 +253,6 @@ export const AccountController = {
         )
 
         this.setTokenBalance(filteredBalances, chain)
-        SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
         state.lastRetry = undefined
         state.balanceLoading = false
 
