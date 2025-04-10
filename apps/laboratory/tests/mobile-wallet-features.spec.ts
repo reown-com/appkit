@@ -4,6 +4,7 @@ import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 const TRUST_WALLET_ID = '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0'
+const OKX_WALLET_ID = '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -18,7 +19,7 @@ const mobileWalletFeaturesTest = test.extend<{ library: string }>({
 mobileWalletFeaturesTest.describe.configure({ mode: 'serial' })
 
 mobileWalletFeaturesTest.beforeAll(async ({ browser, library }) => {
-  context = await browser.newContext()
+    context = await browser.newContext()
   const browserPage = await context.newPage()
 
   modalPage = new ModalPage(browserPage, library, 'default')
@@ -37,11 +38,12 @@ mobileWalletFeaturesTest('it should show all wallets option', async () => {
   await modalValidator.expectAllWallets()
 })
 
-mobileWalletFeaturesTest('it should show all wallets view and connect to a wallet', async () => {
+mobileWalletFeaturesTest('it should show all wallets view and connect to a wallet', async ({ library }) => {
+  const isBitcoin = library === 'bitcoin'
   await modalPage.openAllWallets()
   await modalPage.page.waitForTimeout(500)
-  await modalPage.search('trust')
-  await modalPage.clickAllWalletsListSearchItem(TRUST_WALLET_ID)
+  await modalPage.search(isBitcoin ? 'okx' : 'trust')
+  await modalPage.clickAllWalletsListSearchItem(isBitcoin ? OKX_WALLET_ID : TRUST_WALLET_ID)
 })
 
 mobileWalletFeaturesTest('it should show try again button after 5 seconds', async () => {
