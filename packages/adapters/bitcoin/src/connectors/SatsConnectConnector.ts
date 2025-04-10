@@ -124,12 +124,9 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     )
   }
 
-  public async signMessage(
-    params: BitcoinConnector.SignMessageParams<
-      MessageSigningProtocols.ECDSA | MessageSigningProtocols.BIP322 | undefined
-    >
-  ): Promise<string> {
-    const res = await this.internalRequest('signMessage', params)
+  public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    const protocol = params.protocol?.toUpperCase() as MessageSigningProtocols
+    const res = await this.internalRequest('signMessage', { ...params, protocol })
 
     return res.signature
   }

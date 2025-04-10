@@ -98,6 +98,12 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    if (params.protocol) {
+      console.warn(
+        'WalletStandardConnector:signMessage - protocol parameter not supported in WalletStandard:bitcoin - signMessage'
+      )
+    }
+
     const feature = this.getWalletFeature('bitcoin:signMessage')
 
     const account = this.wallet.accounts.find(acc => acc.address === params.address)

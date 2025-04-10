@@ -42,11 +42,7 @@ export class BitcoinWalletConnectConnector
     )
   }
 
-  public async signMessage({
-    message,
-    address,
-    protocol
-  }: BitcoinConnector.SignMessageParams<'ecdsa' | 'bip322' | undefined>) {
+  public async signMessage({ message, address, protocol }: BitcoinConnector.SignMessageParams) {
     this.checkIfMethodIsSupported('signMessage')
 
     const signedMessage = await this.internalRequest({

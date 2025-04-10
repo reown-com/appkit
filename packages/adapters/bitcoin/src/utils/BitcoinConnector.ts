@@ -33,7 +33,7 @@ export namespace BitcoinConnector {
     purpose: 'payment' | 'ordinal' | 'stx'
   }
 
-  export type SignMessageParams<SignatureType extends string | undefined = undefined> = {
+  export type SignMessageParams = {
     /**
      * The message to be signed
      */
@@ -45,7 +45,7 @@ export namespace BitcoinConnector {
     /**
      * The type of signature to use
      */
-    protocol?: SignatureType
+    protocol?: 'ecdsa' | 'bip322'
   }
 
   export type SendTransferParams = {
