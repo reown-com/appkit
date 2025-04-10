@@ -500,10 +500,14 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
     }
 
-    await connect(this.wagmiConfig, {
+    const res = await connect(this.wagmiConfig, {
       connector: wagmiConnector,
       chainId: chainId ? Number(chainId) : undefined
     })
+
+    if (res.chainId !== Number(chainId)) {
+      await switchChain(this.wagmiConfig, { chainId: res.chainId })
+    }
 
     return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
   }
@@ -641,6 +645,8 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
+    console.log('wagmi disconnect')
+
     const connections = getConnections(this.wagmiConfig)
     await Promise.all(
       connections.map(async connection => {
