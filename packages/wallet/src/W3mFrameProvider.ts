@@ -48,9 +48,12 @@ export class W3mFrameProvider {
       this.w3mFrame.initFrame()
     }
     this.initPromise = new Promise<void>(resolve => {
-      this.w3mFrame.events.onFrameEvent(event => {
+      this.w3mFrame.events.onFrameEvent(async event => {
         if (event.type === W3mFrameConstants.FRAME_READY) {
           this.initPromise = undefined
+          await new Promise(_resolve => {
+            setTimeout(_resolve, 500)
+          })
           resolve()
         }
       })
