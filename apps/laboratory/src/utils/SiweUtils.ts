@@ -72,8 +72,11 @@ export const siweConfig = createSIWEConfig({
           redirect: false
         })
       }
+
       return true
     } catch (error) {
+      console.warn('@@siweConfig: signOut error', error)
+
       return false
     }
   },
