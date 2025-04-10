@@ -6,7 +6,7 @@ import { html } from 'lit'
 import { ConnectionController, ModalController, ThemeController } from '@reown/appkit-controllers'
 
 import { PayController } from '../../src/controllers/PayController'
-import { AppKitPayErrorCodes } from '../../src/types/errors'
+import { AppKitPayErrorCodes, type AppKitPayErrorMessage } from '../../src/types/errors'
 import { W3mPayLoadingView } from '../../src/ui/w3m-pay-loading-view'
 
 describe('W3mPayLoadingView', () => {
@@ -96,7 +96,7 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR
+    PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
     if (errorCallback) {
       errorCallback(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
     }
@@ -119,7 +119,7 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR
+    PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
 
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
@@ -157,7 +157,7 @@ describe('W3mPayLoadingView', () => {
 
     await fixture<W3mPayLoadingView>(html`<w3m-pay-loading-view></w3m-pay-loading-view>`)
 
-    PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR
+    PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
 
     if (paymentProgressCallback) {
       paymentProgressCallback(false)

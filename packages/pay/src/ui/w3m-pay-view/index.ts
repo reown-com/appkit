@@ -46,6 +46,7 @@ export class W3mPayView extends LitElement {
 
   public constructor() {
     super()
+    this.initializePaymentDetails()
     this.unsubscribe.push(PayController.subscribeKey('exchanges', val => (this.exchanges = val)))
     this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
     this.unsubscribe.push(
@@ -63,12 +64,6 @@ export class W3mPayView extends LitElement {
    */
   private get isWalletConnected(): boolean {
     return AccountController.state.status === 'connected'
-  }
-
-  // -- Lifecycle ----------------------------------------- //
-  public override connectedCallback() {
-    super.connectedCallback()
-    this.initializePaymentDetails()
   }
 
   // -- Render -------------------------------------------- //

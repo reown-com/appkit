@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { PayController } from '../src/controllers/PayController.js'
+import type { AppKitPayErrorMessage } from '../src/types/errors.js'
 import type { PaymentOptions } from '../src/types/options.js'
 
 /**
@@ -21,7 +22,7 @@ interface UsePayReturn {
   /**
    * Stores any error message encountered during the payment process. Null if no error.
    */
-  error: string | null
+  error: AppKitPayErrorMessage | null
 
   /**
    * Stores the result of a successful payment, typically a transaction hash or identifier. Undefined if the payment hasn't completed or failed.
@@ -88,7 +89,7 @@ export function usePay(): UsePayReturn {
   const [isPaymentInProgress, setIsPaymentInProgress] = useState(
     PayController.state.isPaymentInProgress
   )
-  const [error, setError] = useState(PayController.state.error)
+  const [error, setError] = useState<AppKitPayErrorMessage | null>(PayController.state.error)
   const [result, setResult] = useState(PayController.state.payResult)
 
   useEffect(() => {

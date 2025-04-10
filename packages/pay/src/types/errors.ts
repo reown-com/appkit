@@ -19,7 +19,7 @@ export const AppKitPayErrorCodes = {
 
 export type AppKitPayErrorCode = (typeof AppKitPayErrorCodes)[keyof typeof AppKitPayErrorCodes]
 
-export const AppKitPayErrorMessages: Record<AppKitPayErrorCode, string> = {
+export const AppKitPayErrorMessages = {
   [AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG]: 'Invalid payment configuration',
   [AppKitPayErrorCodes.INVALID_RECIPIENT]: 'Invalid recipient address',
   [AppKitPayErrorCodes.INVALID_ASSET]: 'Invalid asset specified',
@@ -31,14 +31,21 @@ export const AppKitPayErrorMessages: Record<AppKitPayErrorCode, string> = {
   [AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR]: 'Unable to process payment',
   [AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES]: 'Unable to get exchanges',
   [AppKitPayErrorCodes.ASSET_NOT_SUPPORTED]: 'Asset not supported by the selected exchange'
-}
+} as const
+
+export type AppKitPayErrorMessage =
+  (typeof AppKitPayErrorMessages)[keyof typeof AppKitPayErrorMessages]
+
 export class AppKitPayError extends Error {
   public readonly code: AppKitPayErrorCode
   public readonly details?: unknown
 
+  public override get message(): AppKitPayErrorMessage {
+    return AppKitPayErrorMessages[this.code]
+  }
+
   constructor(code: AppKitPayErrorCode, details?: unknown) {
-    const message = AppKitPayErrorMessages[code]
-    super(message)
+    super(AppKitPayErrorMessages[code])
 
     this.name = 'AppKitPayError'
     this.code = code

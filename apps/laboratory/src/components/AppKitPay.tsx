@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import {
   Box,
   Button,
+  ButtonGroup,
   CardBody,
   CardHeader,
   Collapse,
@@ -39,6 +40,44 @@ interface AppKitPaymentAsset {
   metadata: Metadata
 }
 
+// Define preset keys
+type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE'
+
+const PRESETS: Record<PresetKey, Omit<AppKitPaymentAsset, 'recipient'>> = {
+  NATIVE_BASE: {
+    network: 'eip155:8453',
+    asset: 'native',
+    amount: 0.00001,
+    metadata: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
+    }
+  },
+  NATIVE_BASE_SEPOLIA: {
+    // Base Sepolia
+    network: 'eip155:84532',
+    asset: 'native',
+    amount: 0.00001,
+    metadata: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
+    }
+  },
+  USDC_BASE: {
+    network: 'eip155:8453',
+    // USDC on Base
+    asset: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+    amount: 20,
+    metadata: {
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6
+    }
+  }
+}
+
 export function AppKitPay() {
   const { isOpen, onToggle } = useDisclosure()
   const { open, isLoading, error, result } = usePay()
@@ -54,6 +93,25 @@ export function AppKitPay() {
       decimals: 18
     }
   })
+
+  function isPresetActive(preset: Omit<AppKitPaymentAsset, 'recipient'>): boolean {
+    return (
+      paymentDetails.network === preset.network &&
+      paymentDetails.asset === preset.asset &&
+      paymentDetails.amount === preset.amount &&
+      paymentDetails.metadata.name === preset.metadata.name &&
+      paymentDetails.metadata.symbol === preset.metadata.symbol &&
+      paymentDetails.metadata.decimals === preset.metadata.decimals
+    )
+  }
+
+  function handlePresetClick(preset: Omit<AppKitPaymentAsset, 'recipient'>) {
+    setPaymentDetails(prev => ({
+      ...preset,
+      recipient: prev.recipient
+    }))
+  }
+
   useEffect(() => {
     if (error) {
       toast({
@@ -136,6 +194,37 @@ export function AppKitPay() {
               value={paymentDetails.recipient}
               onChange={handleInputChange}
             />
+          </FormControl>
+
+          {/* Preset Buttons */}
+          <FormControl>
+            <FormLabel>Presets</FormLabel>
+            <ButtonGroup spacing="4" width="full">
+              <Button
+                onClick={() => handlePresetClick(PRESETS['NATIVE_BASE'])}
+                isActive={isPresetActive(PRESETS['NATIVE_BASE'])}
+                variant={isPresetActive(PRESETS['NATIVE_BASE']) ? 'solid' : 'outline'}
+                flex="1"
+              >
+                Native Base
+              </Button>
+              <Button
+                onClick={() => handlePresetClick(PRESETS['NATIVE_BASE_SEPOLIA'])}
+                isActive={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA'])}
+                variant={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA']) ? 'solid' : 'outline'}
+                flex="1"
+              >
+                Native Base Sepolia
+              </Button>
+              <Button
+                onClick={() => handlePresetClick(PRESETS['USDC_BASE'])}
+                isActive={isPresetActive(PRESETS['USDC_BASE'])}
+                variant={isPresetActive(PRESETS['USDC_BASE']) ? 'solid' : 'outline'}
+                flex="1"
+              >
+                USDC Base
+              </Button>
+            </ButtonGroup>
           </FormControl>
 
           <Button onClick={onToggle} variant="outline" width="full">

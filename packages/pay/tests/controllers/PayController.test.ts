@@ -259,7 +259,7 @@ describe('PayController', () => {
 
       await PayController.handlePayment()
 
-      expect(PayController.state.error).toBe('Payment error')
+      expect(PayController.state.error).toBe(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
       expect(SnackController.showError).toHaveBeenCalled()
     })
 

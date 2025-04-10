@@ -11,7 +11,11 @@ import {
 } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
 
-import { AppKitPayErrorCodes, AppKitPayErrorMessages } from '../types/errors.js'
+import {
+  AppKitPayErrorCodes,
+  type AppKitPayErrorMessage,
+  AppKitPayErrorMessages
+} from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
 import type { PaymentOptions } from '../types/options.js'
@@ -29,7 +33,7 @@ const DEFAULT_PAGE = 0
 
 export interface PayControllerState extends PaymentOptions {
   isConfigured: boolean
-  error: string | null
+  error: AppKitPayErrorMessage | null
   isPaymentInProgress: boolean
   isLoading: boolean
   exchanges: Exchange[]
@@ -224,10 +228,12 @@ export const PayController = {
           throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
       }
     } catch (error) {
-      state.error = (error as Error).message
-      // eslint-disable-next-line no-console
-      console.log(state.error)
-      SnackController.showError(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
+      if (error instanceof AppKitPayError) {
+        state.error = error.message
+      } else {
+        state.error = AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
+      }
+      SnackController.showError(state.error)
     } finally {
       state.isPaymentInProgress = false
     }
