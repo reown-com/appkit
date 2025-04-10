@@ -5,6 +5,7 @@ import { type CaipNetwork, createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
@@ -31,9 +32,9 @@ ThemeStore.setModal(modal)
 
 export default function Wagmi() {
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <AppKitWalletButtons wallets={ConstantsUtil.BitcoinWalletButtons} showActions={false} />
-    </>
+    </InitializeBoundary>
   )
 }
