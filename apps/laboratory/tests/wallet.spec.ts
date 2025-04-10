@@ -278,7 +278,7 @@ sampleWalletTest(
 )
 
 sampleWalletTest(
-  "it should switch to first available network when wallet doesn't support the active network of the appkit",
+  "it should switch to first available network when wallet doesn't support the active network of the appkit and sign message",
   async ({ library }) => {
     if (library === 'solana' || library === 'bitcoin') {
       return
@@ -297,6 +297,9 @@ sampleWalletTest(
     await modalPage.openNetworks()
     await modalValidator.expectSwitchedNetwork('Ethereum')
     await modalPage.closeModal()
+    await modalPage.sign()
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
   }
 )
 
