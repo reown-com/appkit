@@ -87,7 +87,9 @@ describe('WalletStandardConnector', () => {
 
   describe('connect', () => {
     it('connect correctly', async () => {
+      const bindEventsSpy = vi.spyOn(connector as any, 'bindEvents')
       await expect(connector.connect()).resolves.not.toThrow()
+      expect(bindEventsSpy).toHaveBeenCalled()
     })
 
     it('should throw if account is not found', async () => {
