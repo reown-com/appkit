@@ -179,8 +179,6 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
     },
     async disconnect() {
-      console.log('disconnect uc')
-
       const provider = await this.getProvider()
       try {
         await provider?.disconnect()

@@ -645,8 +645,6 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
-    console.log('wagmi disconnect')
-
     const connections = getConnections(this.wagmiConfig)
     await Promise.all(
       connections.map(async connection => {
