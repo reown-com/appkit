@@ -191,7 +191,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
     const isEnabled =
       this.features?.history &&
       CoreConstantsUtil.ACTIVITY_ENABLED_CHAIN_NAMESPACES.includes(this.namespace)
@@ -201,14 +200,11 @@ export class W3mAccountDefaultWidget extends LitElement {
           iconVariant="blue"
           icon="clock"
           iconSize="sm"
-          ?chevron=${!isSolana}
-          ?disabled=${isSolana}
+          ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
+          data-testid="w3m-account-default-activity-button"
         >
-          <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}>
-            Activity
-          </wui-text>
-          ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
         </wui-list-item>`
       : null
   }

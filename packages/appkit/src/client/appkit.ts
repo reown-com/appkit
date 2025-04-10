@@ -129,31 +129,6 @@ export class AppKit extends AppKitBaseClient {
         namespace
       ] as W3mFrameTypes.AccountType
 
-      const isPreferredAccountTypeSame =
-        Boolean(user.preferredAccountType) &&
-        HelpersUtil.isLowerCaseMatch(user.preferredAccountType, preferredAccountType)
-
-      if (!isPreferredAccountTypeSame && !this.hasSwitchedToPreferredAccountTypeOnConnect) {
-        // Prevent duplicate attempts during async operation
-        this.hasSwitchedToPreferredAccountTypeOnConnect = true
-
-        const { success } = await ConnectionController.setPreferredAccountType(preferredAccountType)
-          .then(() => ({ success: false }))
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.error('setPreferredAccountType error:', error)
-
-            return { success: false }
-          })
-
-        // If successful it should reconnect and call provider.onConnect again
-        if (success) {
-          return
-        }
-      } else {
-        this.hasSwitchedToPreferredAccountTypeOnConnect = true
-      }
-
       /*
        * This covers the case where user switches back from a smart account supported
        *  network to a non-smart account supported network resulting in a different address

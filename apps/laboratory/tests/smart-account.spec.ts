@@ -107,8 +107,9 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await page.closeModal()
 
   await page.goToSettings()
-  await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
@@ -127,8 +128,9 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
   const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.goToSettings()
-  await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(EOA)
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
@@ -138,7 +140,6 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
 })
 
 smartAccountTest('it should disconnect correctly', async () => {
-  await page.page.reload()
   await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()

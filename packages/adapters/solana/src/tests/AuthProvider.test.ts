@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import { OptionsController, type OptionsControllerState } from '@reown/appkit-controllers'
 
 import { AuthProvider } from '../providers/AuthProvider'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
@@ -42,6 +43,22 @@ describe('AuthProvider specific tests', () => {
     await authProvider.connect()
 
     expect(provider.connect).toHaveBeenCalled()
+  })
+
+  it('should respect preferred account type on connect', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      defaultAccountTypes: {
+        solana: 'eoa'
+      } as OptionsControllerState['defaultAccountTypes']
+    })
+
+    await authProvider.connect()
+
+    expect(provider.connect).toHaveBeenCalledWith({
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      preferredAccountType: 'eoa'
+    })
   })
 
   it('should call disconnect', async () => {

@@ -24,6 +24,7 @@ siweWalletTest.describe.configure({ mode: 'serial' })
 siweWalletTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   browserPage = await context.newPage()
+  await context.clearCookies()
 
   modalPage = new ModalPage(browserPage, library, 'siwe')
   walletPage = new WalletPage(await context.newPage())

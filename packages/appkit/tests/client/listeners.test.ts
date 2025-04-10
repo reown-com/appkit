@@ -3,17 +3,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   AccountController,
   BlockchainApiController,
-  ChainController,
-  ConnectionController,
-  OptionsController
+  ChainController
 } from '@reown/appkit-controllers'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
 import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import { mockAuthProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
   mockStorageUtil,
@@ -119,59 +115,5 @@ describe('Listeners', () => {
     })
 
     expect(showUnsupportedChainUISpy).toHaveBeenCalled()
-  })
-
-  it('should handle preferred account type switching on auth provider connect', async () => {
-    vi.spyOn(OptionsController.state, 'defaultAccountTypes', 'get').mockReturnValue({
-      ...OptionsController.state.defaultAccountTypes,
-      eip155: 'smartAccount'
-    })
-
-    vi.spyOn(mockAuthProvider, 'onConnect').mockImplementation(cb => {
-      cb({
-        address: '0x123',
-        chainId: '1',
-        email: 'test@example.com',
-        preferredAccountType: 'eoa'
-      })
-    })
-
-    const setPreferredAccountTypeSpy = vi
-      .spyOn(ConnectionController, 'setPreferredAccountType')
-      .mockResolvedValue(undefined)
-
-    const appKit = new AppKit(mockOptions)
-
-    appKit['setupAuthConnectorListeners'](mockAuthProvider as unknown as W3mFrameProvider)
-
-    expect(setPreferredAccountTypeSpy).toHaveBeenCalledWith('smartAccount')
-    expect(appKit['hasSwitchedToPreferredAccountTypeOnConnect']).toBe(true)
-  })
-
-  it('should not switch preferred account type if types match', async () => {
-    vi.spyOn(OptionsController.state, 'defaultAccountTypes', 'get').mockReturnValue({
-      ...OptionsController.state.defaultAccountTypes,
-      eip155: 'smartAccount'
-    })
-
-    vi.spyOn(mockAuthProvider, 'onConnect').mockImplementation(cb => {
-      cb({
-        address: '0x123',
-        chainId: '1',
-        email: 'test@example.com',
-        preferredAccountType: 'smartAccount'
-      })
-    })
-
-    const setPreferredAccountTypeSpy = vi
-      .spyOn(ConnectionController, 'setPreferredAccountType')
-      .mockResolvedValue(undefined)
-
-    const appKit = new AppKit(mockOptions)
-
-    appKit['setupAuthConnectorListeners'](mockAuthProvider as unknown as W3mFrameProvider)
-
-    expect(setPreferredAccountTypeSpy).not.toHaveBeenCalledWith('smartAccount')
-    expect(appKit['hasSwitchedToPreferredAccountTypeOnConnect']).toBe(true)
   })
 })

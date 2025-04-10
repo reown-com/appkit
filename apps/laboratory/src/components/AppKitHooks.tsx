@@ -50,6 +50,17 @@ export function AppKitHooks() {
     switchNetwork(networkToSwitch)
   }
 
+  function handleOpenSwapWithArguments() {
+    open({
+      view: 'Swap',
+      arguments: {
+        amount: '321.123',
+        fromToken: 'USDC',
+        toToken: 'ETH'
+      }
+    })
+  }
+
   return (
     <Box>
       <Heading size="xs" textTransform="uppercase" pb="2">
@@ -80,6 +91,13 @@ export function AppKitHooks() {
             <Button onClick={() => switchNetwork(bitcoin)}>Switch to Bitcoin</Button>
           </>
         )}
+
+        <Button
+          data-testid="open-swap-with-arguments-hook-button"
+          onClick={handleOpenSwapWithArguments}
+        >
+          Open Swap with Arguments
+        </Button>
       </Box>
     </Box>
   )

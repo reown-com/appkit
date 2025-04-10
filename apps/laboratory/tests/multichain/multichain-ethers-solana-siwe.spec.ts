@@ -19,6 +19,7 @@ test.describe.configure({ mode: 'serial' })
 test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
+  await context.clearCookies()
 
   modalPage = new ModalPage(browserPage, 'multichain-ethers-solana-siwe', 'default')
   walletPage = new WalletPage(await context.newPage())
