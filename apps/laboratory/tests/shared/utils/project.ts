@@ -2,7 +2,7 @@ import { devices } from '@playwright/test'
 
 import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
 
-const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const
+const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
