@@ -15,24 +15,12 @@ import type {
 } from '@reown/appkit-scaffold-ui'
 import { ProviderUtil } from '@reown/appkit-utils'
 
-import type { AppKitBaseClient as AppKit } from '../../client/appkit-base-client.js'
+import type {
+  AppKitBaseClient as AppKit,
+  OpenOptions,
+  Views
+} from '../../client/appkit-base-client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
-
-type OpenOptions = {
-  view?:
-    | 'Account'
-    | 'Connect'
-    | 'Networks'
-    | 'ApproveTransaction'
-    | 'OnRampProviders'
-    | 'Swap'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'AllWallets'
-    | 'WalletSend'
-  uri?: string
-  namespace?: ChainNamespace
-}
 
 type ThemeModeOptions = AppKitOptions['themeMode']
 
@@ -123,7 +111,7 @@ export function useAppKit() {
     throw new Error('Please call "createAppKit" before using "useAppKit" hook')
   }
 
-  async function open(options?: OpenOptions) {
+  async function open<View extends Views>(options?: OpenOptions<View>) {
     await modal?.open(options)
   }
 
