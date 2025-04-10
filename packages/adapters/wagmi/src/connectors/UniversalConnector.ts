@@ -123,7 +123,22 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If session exists and chains are authorized, enable provider for required chain
         const accounts = await this.getAccounts()
-        const currentChainId = await this.getChainId()
+
+        /**
+         * Check if the chain is supported by the wallet. If not default back to the first chain that is provided.
+         */
+        const requestChainId = await this.getChainId()
+        const chains = provider.session?.namespaces?.['eip155']?.chains
+        const isRequestedChainSupported = chains?.some(
+          chain => Number(chain.split(':')[1]) === requestChainId
+        )
+
+        let currentChainId = 1
+        if (isRequestedChainSupported) {
+          currentChainId = requestChainId
+        } else if (chains?.[0]) {
+          currentChainId = Number(chains[0].split(':')[1])
+        }
 
         if (displayUri) {
           provider.removeListener('display_uri', displayUri)

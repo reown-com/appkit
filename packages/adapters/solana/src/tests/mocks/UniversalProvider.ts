@@ -107,7 +107,7 @@ export function mockUniversalProviderSession(
         name: 'AppKit Lab',
         description: 'Laboratory environment for AppKit testing',
         url: 'https://appkit-lab.reown.org',
-        icons: ['https://appkit-lab.reown.org/metadata-icon.svg'],
+        icons: ['https://appkit-lab.reown.org/logo.png'],
         verifyUrl: ''
       }
     },

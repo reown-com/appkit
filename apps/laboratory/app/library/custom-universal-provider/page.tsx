@@ -8,6 +8,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { AppKit, createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { MultiChainInfo } from '@/src/components/MultiChainInfo'
 import { UpaTests } from '@/src/components/UPA/UpaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -47,7 +48,7 @@ export default function MultiChainWagmiAdapterOnly() {
   }, [])
 
   return (
-    <>
+    <InitializeBoundary>
       {uprovider && appkit ? (
         <>
           <AppKitButtons />
@@ -57,6 +58,6 @@ export default function MultiChainWagmiAdapterOnly() {
       ) : (
         ''
       )}
-    </>
+    </InitializeBoundary>
   )
 }

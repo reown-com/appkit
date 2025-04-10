@@ -9,6 +9,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
@@ -30,7 +31,7 @@ ThemeStore.setModal(modal)
 
 export default function Solana() {
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <AppKitInfo />
       <AppKitWalletButtons
@@ -41,6 +42,6 @@ export default function Solana() {
         ]}
       />
       <SolanaTests />
-    </>
+    </InitializeBoundary>
   )
 }
