@@ -8,6 +8,8 @@ import {
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
+  OptionsController,
+  type OptionsControllerState,
   type Provider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -280,6 +282,47 @@ describe('EthersAdapter', () => {
 
       expect(result.address).toBe('0x123')
       expect(result.chainId).toBe(1)
+    })
+
+    it('should respect defaultAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        defaultAccountTypes: {
+          eip155: 'smartAccount'
+        } as OptionsControllerState['defaultAccountTypes']
+      })
+
+      const ethersAdapter = new EthersAdapter()
+
+      const connect = vi.fn().mockResolvedValue({ address: '0x123' })
+
+      const mockAuthProviderWithConnect = {
+        ...mockAuthProvider,
+        connect
+      } as unknown as W3mFrameProvider
+
+      Object.defineProperty(ethersAdapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockAuthProviderWithConnect,
+            chains: [1],
+            type: 'AUTH',
+            chain: 1
+          }
+        ]
+      })
+
+      await ethersAdapter.connect({
+        id: 'test',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(connect).toHaveBeenCalledWith({
+        chainId: 1,
+        preferredAccountType: 'smartAccount'
+      })
     })
   })
 
