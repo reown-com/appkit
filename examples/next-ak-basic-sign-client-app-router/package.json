@@ -13,7 +13,7 @@
     "@tanstack/react-query": "5.56.2",
     "@walletconnect/sign-client": "2.19.2",
     "@walletconnect/types": "2.19.2",
-    "next": "14.2.25",
+    "next": "14.2.28",
     "next-themes": "0.4.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",

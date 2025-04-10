@@ -13,6 +13,7 @@ import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -52,10 +53,12 @@ export default function MultiChainWagmiSolana() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <AppKitButtons />
-        <AppKitInfo />
-        <WagmiTests />
-        <SolanaTests />
+        <InitializeBoundary>
+          <AppKitButtons />
+          <AppKitInfo />
+          <WagmiTests />
+          <SolanaTests />
+        </InitializeBoundary>
       </QueryClientProvider>
     </WagmiProvider>
   )

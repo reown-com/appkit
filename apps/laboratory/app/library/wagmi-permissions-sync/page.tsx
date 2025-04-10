@@ -8,6 +8,7 @@ import { type AppKitNetwork, base, baseSepolia, sepolia } from '@reown/appkit/ne
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { WagmiPermissionsSyncTest } from '@/src/components/Wagmi/WagmiPermissionsSyncTest'
 import { ERC7715PermissionsProvider } from '@/src/context/ERC7715PermissionsContext'
 import { PasskeyProvider } from '@/src/context/PasskeyContext'
@@ -44,8 +45,10 @@ export default function Wagmi() {
       <QueryClientProvider client={queryClient}>
         <ERC7715PermissionsProvider>
           <PasskeyProvider>
-            <AppKitButtons />
-            <WagmiPermissionsSyncTest />
+            <InitializeBoundary>
+              <AppKitButtons />
+              <WagmiPermissionsSyncTest />
+            </InitializeBoundary>
           </PasskeyProvider>
         </ERC7715PermissionsProvider>
       </QueryClientProvider>

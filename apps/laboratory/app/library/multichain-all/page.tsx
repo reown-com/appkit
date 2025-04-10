@@ -16,6 +16,7 @@ import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChai
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -54,12 +55,14 @@ export default function Page() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <AppKitButtonsMultiChain />
-        <AppKitInfoMultiChain />
-        <AppKitInfo />
-        <WagmiTests />
-        <SolanaTests />
-        <BitcoinTests />
+        <InitializeBoundary>
+          <AppKitButtonsMultiChain />
+          <AppKitInfoMultiChain />
+          <AppKitInfo />
+          <WagmiTests />
+          <SolanaTests />
+          <BitcoinTests />
+        </InitializeBoundary>
       </QueryClientProvider>
     </WagmiProvider>
   )
