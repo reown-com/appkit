@@ -113,7 +113,7 @@ export function AppKitPay() {
   }
 
   useEffect(() => {
-    if (error) {
+    if (error && error !== null) {
       toast({
         title: 'Transaction failed',
         description: error,
@@ -121,7 +121,7 @@ export function AppKitPay() {
       })
     }
 
-    if (result) {
+    if (result && result !== null) {
       toast({
         title: 'Transaction successful',
         description: result,

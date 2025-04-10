@@ -80,12 +80,28 @@ export const PayController = {
   },
 
   async handleOpenPay(options: PaymentOptions) {
+    this.resetState()
     this.setPaymentConfig(options)
     this.subscribeEvents()
     state.isConfigured = true
     await ModalController.open({
       view: 'Pay'
     })
+  },
+
+  resetState() {
+    state.paymentAsset = {
+      network: 'eip155:1',
+      recipient: '0x0',
+      asset: '0x0',
+      amount: 0,
+      metadata: { name: '0x0', symbol: '0x0', decimals: 0 }
+    }
+    state.isConfigured = false
+    state.error = null
+    state.isPaymentInProgress = false
+    state.isLoading = false
+    state.payResult = undefined
   },
 
   // -- Setters ----------------------------------------- //
