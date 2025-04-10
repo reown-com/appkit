@@ -1,11 +1,9 @@
 'use client'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { immutableZkEvmTestnet } from 'viem/chains'
 import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import type { AppKitNetwork } from '@reown/appkit-common'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
@@ -15,22 +13,17 @@ import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
-const networks = [...ConstantsUtil.EvmNetworks, immutableZkEvmTestnet] as [
-  AppKitNetwork,
-  ...AppKitNetwork[]
-]
-
 const queryClient = new QueryClient()
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  networks,
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks,
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
