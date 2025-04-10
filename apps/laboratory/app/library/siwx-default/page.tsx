@@ -14,6 +14,7 @@ import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { DefaultSIWXStatus } from '@/src/components/DefaultSIWXStatus'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
@@ -48,7 +49,7 @@ export default function SIWXDefault() {
   const { caipNetwork } = useAppKitNetwork()
 
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <AppKitInfo />
       <DefaultSIWXStatus />
@@ -56,6 +57,6 @@ export default function SIWXDefault() {
       {caipNetwork?.chainNamespace === 'eip155' && <EthersTests />}
       {caipNetwork?.chainNamespace === 'solana' && <SolanaTests />}
       {caipNetwork?.chainNamespace === 'bip122' && <BitcoinTests />}
-    </>
+    </InitializeBoundary>
   )
 }
