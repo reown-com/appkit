@@ -72,22 +72,23 @@ export class W3mSwapView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
-      if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
-        this.caipNetworkId = newCaipNetwork?.caipNetworkId
-        SwapController.resetState()
-        SwapController.initializeState()
-      }
-    })
-    AccountController.subscribeKey('caipAddress', newCaipAddress => {
-      if (this.caipAddress !== newCaipAddress) {
-        this.caipAddress = newCaipAddress
-        SwapController.resetState()
-        SwapController.initializeState()
-      }
-    })
+
     this.unsubscribe.push(
       ...[
+        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
+          if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
+            this.caipNetworkId = newCaipNetwork?.caipNetworkId
+            SwapController.resetState()
+            SwapController.initializeState()
+          }
+        }),
+        AccountController.subscribeKey('caipAddress', newCaipAddress => {
+          if (this.caipAddress !== newCaipAddress) {
+            this.caipAddress = newCaipAddress
+            SwapController.resetState()
+            SwapController.initializeState()
+          }
+        }),
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             SwapController.resetState()

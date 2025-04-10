@@ -353,4 +353,22 @@ describe('W3mSwapView', () => {
     )
     vitestExpect(SwapController.setSourceTokenAmount).toHaveBeenCalledWith('321.123')
   })
+
+  it('should call unsubscribe when unmounted', async () => {
+    const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
+    await element.updateComplete
+
+    const unsubscribeSpies = element['unsubscribe'].map(unsubscribe => {
+      return vi.fn(unsubscribe)
+    })
+
+    element['unsubscribe'] = unsubscribeSpies
+
+    element.disconnectedCallback()
+
+    // Verify each unsubscribe function was called
+    unsubscribeSpies.forEach(spy => {
+      expect(spy.mock.calls.length).to.equal(1)
+    })
+  })
 })
