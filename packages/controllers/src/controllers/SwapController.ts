@@ -28,6 +28,12 @@ export const TO_AMOUNT_DECIMALS = 6
 // -- Types --------------------------------------------- //
 export type SwapInputTarget = 'sourceToken' | 'toToken'
 
+export type SwapInputArguments = Partial<{
+  fromToken: string
+  toToken: string
+  amount: string
+}>
+
 type TransactionParams = {
   data: string
   to: string

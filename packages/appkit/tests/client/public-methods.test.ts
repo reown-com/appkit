@@ -87,6 +87,29 @@ describe('Base Public methods', () => {
     }
   })
 
+  it.each([
+    {
+      view: 'Swap',
+      viewArguments: { fromToken: 'USDC', toToken: 'ETH', amount: '100' },
+      data: { swap: { fromToken: 'USDC', toToken: 'ETH', amount: '100' } }
+    }
+  ] as const)('should open swap view with arguments', async ({ view, viewArguments, data }) => {
+    const open = vi.spyOn(ModalController, 'open')
+
+    const appkit = new AppKit(mockOptions)
+    await appkit.open({
+      view,
+      arguments: viewArguments
+    })
+
+    expect(open).toHaveBeenCalledWith(
+      expect.objectContaining({
+        view,
+        data
+      })
+    )
+  })
+
   it('should filter connectors by namespace when opening modal', async () => {
     const openSpy = vi.spyOn(ModalController, 'open')
     const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
