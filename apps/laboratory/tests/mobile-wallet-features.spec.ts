@@ -19,7 +19,7 @@ const mobileWalletFeaturesTest = test.extend<{ library: string }>({
 mobileWalletFeaturesTest.describe.configure({ mode: 'serial' })
 
 mobileWalletFeaturesTest.beforeAll(async ({ browser, library }) => {
-    context = await browser.newContext()
+  context = await browser.newContext()
   const browserPage = await context.newPage()
 
   modalPage = new ModalPage(browserPage, library, 'default')
@@ -38,13 +38,16 @@ mobileWalletFeaturesTest('it should show all wallets option', async () => {
   await modalValidator.expectAllWallets()
 })
 
-mobileWalletFeaturesTest('it should show all wallets view and connect to a wallet', async ({ library }) => {
-  const isBitcoin = library === 'bitcoin'
-  await modalPage.openAllWallets()
-  await modalPage.page.waitForTimeout(500)
-  await modalPage.search(isBitcoin ? 'okx' : 'trust')
-  await modalPage.clickAllWalletsListSearchItem(isBitcoin ? OKX_WALLET_ID : TRUST_WALLET_ID)
-})
+mobileWalletFeaturesTest(
+  'it should show all wallets view and connect to a wallet',
+  async ({ library }) => {
+    const isBitcoin = library === 'bitcoin'
+    await modalPage.openAllWallets()
+    await modalPage.page.waitForTimeout(500)
+    await modalPage.search(isBitcoin ? 'okx' : 'trust')
+    await modalPage.clickAllWalletsListSearchItem(isBitcoin ? OKX_WALLET_ID : TRUST_WALLET_ID)
+  }
+)
 
 mobileWalletFeaturesTest('it should show try again button after 5 seconds', async () => {
   await modalValidator.expectNoTryAgainButton()
