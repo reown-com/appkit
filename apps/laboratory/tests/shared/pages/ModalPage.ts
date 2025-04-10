@@ -79,11 +79,13 @@ export class ModalPage {
       const args = msg.args()
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < args.length; i++) {
-        try {
-          const val = await args[i]?.jsonValue()
-          console.log(`[console.${msg.type()}]`, val)
-        } catch (err) {
-          console.log(`[console.${msg.type()}] Could not serialize arg`, i, msg.text())
+        if (msg.type() === 'error' && msg.type() === 'warning') {
+          try {
+            const val = await args[i]?.jsonValue()
+            console.log(`[console.${msg.type()}]`, val)
+          } catch (err) {
+            console.log(`[console.${msg.type()}] Could not serialize arg`, i, msg.text())
+          }
         }
       }
     })
