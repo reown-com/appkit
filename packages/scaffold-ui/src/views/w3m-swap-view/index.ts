@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 import {
@@ -20,6 +20,7 @@ import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import type { SwapInputArguments } from '../../../../controllers/dist/types/src/controllers/SwapController.js'
 import '../../partials/w3m-swap-details/index.js'
 import '../../partials/w3m-swap-input-skeleton/index.js'
 import '../../partials/w3m-swap-input/index.js'
@@ -32,6 +33,8 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property({ type: Object }) initialParams = RouterController.state.data?.swap
+
   @state() private interval?: ReturnType<typeof setInterval>
 
   @state() private detailsOpen = false
@@ -114,9 +117,10 @@ export class W3mSwapView extends LitElement {
     )
   }
 
-  public override firstUpdated() {
+  public override async firstUpdated() {
     SwapController.initializeState()
     this.watchTokensAndValues()
+    await this.handleSwapParameters()
   }
 
   public override disconnectedCallback() {
@@ -315,6 +319,89 @@ export class W3mSwapView extends LitElement {
       }
     })
     RouterController.push('SwapPreview')
+  }
+  /**
+   * Processes token and amount parameters for swap
+   */
+  private async handleSwapParameters(): Promise<void> {
+    if (!this.initialParams) {
+      return
+    }
+
+    // Wait for initialization to complete
+    if (!SwapController.state.initialized) {
+      const waitForInitialization = new Promise<void>(resolve => {
+        const unsubscribe = SwapController.subscribeKey('initialized', initialized => {
+          if (initialized) {
+            unsubscribe?.()
+            resolve()
+          }
+        })
+      })
+      await waitForInitialization
+    }
+
+    await this.setSwapParameters(this.initialParams)
+  }
+
+  /**
+   * Sets the swap parameters based on URL parameters
+   * @param sourceTokenSymbol - The symbol of the source token
+   * @param toTokenSymbol - The symbol of the destination token
+   * @param amount - The amount to swap
+   */
+  private async setSwapParameters({
+    amount,
+    fromToken,
+    toToken
+  }: Omit<SwapInputArguments, 'caipNetworkId'>): Promise<void> {
+    // Wait for token list to be available
+    if (!SwapController.state.tokens || !SwapController.state.myTokensWithBalance) {
+      const waitForTokens = new Promise<void>(resolve => {
+        const unsubscribe = SwapController.subscribeKey('myTokensWithBalance', tokens => {
+          if (tokens && tokens.length > 0) {
+            unsubscribe?.()
+            resolve()
+          }
+        })
+
+        // Set a timeout to resolve anyway after 5 seconds
+        setTimeout(() => {
+          unsubscribe?.()
+          resolve()
+        }, 5000)
+      })
+
+      await waitForTokens
+    }
+
+    const allTokens = [
+      ...(SwapController.state.tokens || []),
+      ...(SwapController.state.myTokensWithBalance || [])
+    ]
+
+    // Find source token by symbol
+    if (fromToken) {
+      const token = allTokens.find(t => t.symbol.toLowerCase() === fromToken.toLowerCase())
+
+      if (token) {
+        SwapController.setSourceToken(token)
+      }
+    }
+
+    // Find destination token by symbol
+    if (toToken) {
+      const token = allTokens.find(t => t.symbol.toLowerCase() === toToken.toLowerCase())
+
+      if (token) {
+        SwapController.setToToken(token)
+      }
+    }
+
+    // Set amount if provided
+    if (amount && !isNaN(Number(amount))) {
+      SwapController.setSourceTokenAmount(amount)
+    }
   }
 }
 

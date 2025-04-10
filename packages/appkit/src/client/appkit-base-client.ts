@@ -78,21 +78,29 @@ export interface AppKitOptionsWithSdk extends AppKitOptions {
 }
 
 // -- Types --------------------------------------------------------------------
-export interface OpenOptions {
-  view?:
-    | 'Account'
-    | 'Connect'
-    | 'Networks'
-    | 'ApproveTransaction'
-    | 'OnRampProviders'
-    | 'ConnectingWalletConnectBasic'
-    | 'Swap'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'AllWallets'
-    | 'WalletSend'
+
+export type Views =
+  | 'Account'
+  | 'Connect'
+  | 'Networks'
+  | 'ApproveTransaction'
+  | 'OnRampProviders'
+  | 'ConnectingWalletConnectBasic'
+  | 'Swap'
+  | 'WhatIsAWallet'
+  | 'WhatIsANetwork'
+  | 'AllWallets'
+  | 'WalletSend'
+
+type ViewArguments = {
+  Swap: NonNullable<RouterControllerState['data']>['swap']
+}
+
+export interface OpenOptions<View extends Views> {
+  view?: View
   uri?: string
   namespace?: ChainNamespace
+  arguments?: View extends keyof ViewArguments ? ViewArguments[View] : never
 }
 
 export abstract class AppKitBaseClient {
@@ -103,7 +111,6 @@ export abstract class AppKitBaseClient {
   protected universalProviderInitPromise?: Promise<void>
   protected caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
   protected defaultCaipNetwork?: CaipNetwork
-  protected hasSwitchedToPreferredAccountTypeOnConnect = false
 
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
@@ -413,7 +420,6 @@ export abstract class AppKitBaseClient {
         ProviderUtil.resetChain(namespace)
         this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
-        this.hasSwitchedToPreferredAccountTypeOnConnect = false
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -1454,14 +1460,22 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open(options?: OpenOptions) {
+  public async open<View extends Views>(options?: OpenOptions<View>) {
     await this.injectModalUi()
 
     if (options?.uri) {
       ConnectionController.setUri(options.uri)
     }
 
-    await ModalController.open(options)
+    if (options?.arguments) {
+      switch (options?.view) {
+        case 'Swap':
+          return ModalController.open({ ...options, data: { swap: options.arguments } })
+        default:
+      }
+    }
+
+    return ModalController.open(options)
   }
 
   public async close() {

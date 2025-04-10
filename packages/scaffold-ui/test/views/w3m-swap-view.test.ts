@@ -1,5 +1,5 @@
 import { expect, fixture, html } from '@open-wc/testing'
-import { afterEach, beforeEach, describe, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 'vitest'
 
 import {
   AccountController,
@@ -101,7 +101,11 @@ describe('W3mSwapView', () => {
       networkTokenSymbol: '',
       inputError: undefined,
       slippage: 0.5,
-      tokens: [mockToken],
+      tokens: [
+        mockToken,
+        Object.assign({}, mockToken, { symbol: 'AAAA' }),
+        Object.assign({}, mockToken, { symbol: 'BBBB' })
+      ],
       suggestedTokens: undefined,
       popularTokens: undefined,
       foundTokens: undefined,
@@ -123,6 +127,9 @@ describe('W3mSwapView', () => {
     vi.spyOn(SwapController, 'switchTokens').mockImplementation(() => {})
     vi.spyOn(SwapController, 'resetState').mockImplementation(() => {})
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setSourceToken').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setToToken').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setSourceTokenAmount').mockImplementation(() => {})
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
@@ -323,5 +330,27 @@ describe('W3mSwapView', () => {
     // Verify methods were called when address changed
     expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(1)
     expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(1)
+  })
+
+  it('should set initial state with preselected tokens', async () => {
+    const element = await fixture<W3mSwapView>(
+      html`<w3m-swap-view
+        initialParams='{"fromToken": "AAAA","toToken":"BBBB","amount":"321.123"}'
+      ></w3m-swap-view>`
+    )
+
+    await element.updateComplete
+
+    vitestExpect(SwapController.setSourceToken).toHaveBeenCalledWith(
+      vitestExpect.objectContaining({
+        symbol: 'AAAA'
+      })
+    )
+    vitestExpect(SwapController.setToToken).toHaveBeenCalledWith(
+      vitestExpect.objectContaining({
+        symbol: 'BBBB'
+      })
+    )
+    vitestExpect(SwapController.setSourceTokenAmount).toHaveBeenCalledWith('321.123')
   })
 })
