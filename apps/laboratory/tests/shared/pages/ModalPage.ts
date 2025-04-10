@@ -74,6 +74,15 @@ export class ModalPage {
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
+    this.page.on('console', async msg => {
+      const args = msg.args()
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < args.length; i++) {
+        const val = await args[i]?.jsonValue()
+        // eslint-disable-next-line no-console
+        console.log(`Console arg ${i}:`, val)
+      }
+    })
   }
 
   async load() {
