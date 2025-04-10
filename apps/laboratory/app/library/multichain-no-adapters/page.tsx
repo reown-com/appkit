@@ -5,6 +5,7 @@ import { createAppKit, useAppKitNetwork } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { MultiChainInfo } from '@/src/components/MultiChainInfo'
 import { UpaTests } from '@/src/components/UPA/UpaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -25,7 +26,7 @@ export default function MultiChainWagmiAdapterOnly() {
   const { switchNetwork } = useAppKitNetwork()
 
   return (
-    <>
+    <InitializeBoundary>
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
         <button onClick={() => switchNetwork(solana)}>Switch to Solana</button>
         <button onClick={() => switchNetwork(bitcoin)}>Switch to Bitcoin</button>
@@ -34,6 +35,6 @@ export default function MultiChainWagmiAdapterOnly() {
       <AppKitInfo />
       <MultiChainInfo />
       <UpaTests />
-    </>
+    </InitializeBoundary>
   )
 }

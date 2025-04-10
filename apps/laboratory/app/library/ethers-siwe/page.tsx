@@ -7,6 +7,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SiweData } from '@/src/components/Siwe/SiweData'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
@@ -32,11 +33,11 @@ ThemeStore.setModal(modal)
 
 export default function EthersSiwe() {
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <AppKitInfo />
       <SiweData />
       <EthersTests />
-    </>
+    </InitializeBoundary>
   )
 }

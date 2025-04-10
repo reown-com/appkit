@@ -9,6 +9,7 @@ import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { externalTestConnector } from '@/src/utils/ConnectorUtil'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -45,9 +46,11 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <AppKitButtons />
-        <AppKitInfo />
-        <WagmiTests />
+        <InitializeBoundary>
+          <AppKitButtons />
+          <AppKitInfo />
+          <WagmiTests />
+        </InitializeBoundary>
       </QueryClientProvider>
     </WagmiProvider>
   )

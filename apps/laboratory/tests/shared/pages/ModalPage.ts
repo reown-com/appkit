@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
@@ -74,6 +75,20 @@ export class ModalPage {
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
+    this.page.on('console', async msg => {
+      const args = msg.args()
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < args.length; i++) {
+        if (msg.type() === 'error' && msg.type() === 'warning') {
+          try {
+            const val = await args[i]?.jsonValue()
+            console.log(`[console.${msg.type()}]`, val)
+          } catch (err) {
+            console.log(`[console.${msg.type()}] Could not serialize arg`, i, msg.text())
+          }
+        }
+      }
+    })
   }
 
   async load() {
