@@ -254,21 +254,16 @@ export class W3mModal extends LitElement {
     const prevCaipNetwork = this.caipNetwork
     const prevCaipNetworkId = prevCaipNetwork?.caipNetworkId?.toString()
     const prevChainNamespace = prevCaipNetwork?.chainNamespace
-
     // Next network information
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const nextChainNamespace = nextCaipNetwork?.chainNamespace
-
     const networkIdChanged = prevCaipNetworkId !== nextNetworkId
     const namespaceChanged = prevChainNamespace !== nextChainNamespace
-
     // Determine if the network change happened within the same namespace
     const isNetworkChangedInSameNamespace = networkIdChanged && !namespaceChanged
-
     // Use previous network's unsupported status for comparison if namespace hasn't changed
     const wasUnsupportedNetwork =
       prevCaipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
-
     /**
      * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
      * In this case, we are switching both network and namespace. And this logic will be triggered.
@@ -279,11 +274,8 @@ export class W3mModal extends LitElement {
     const isNotConnected = !this.caipAddress
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
-
     const isModalOpen = ModalController.state.open
-
     let shouldGoBack = false
-
     if (isModalOpen && !isConnectingExternal) {
       if (isNotConnected) {
         /*
@@ -311,11 +303,10 @@ export class W3mModal extends LitElement {
        * switches, leaving the unsupported screen, or initial connection state.
        */
     }
-
-    if (shouldGoBack) {
+    // Don't go back if the user is on the SIWXSignMessage view
+    if (shouldGoBack && RouterController.state.view !== 'SIWXSignMessage') {
       RouterController.goBack()
     }
-
     // Update the component's state *after* potential goBack()
     this.caipNetwork = nextCaipNetwork
   }
