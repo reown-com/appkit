@@ -230,3 +230,11 @@ export const siwxSdkOptions: SdkOption[] = [
     description: 'EVM SIWX configuration with Ethers and Cloud Auth'
   }
 ]
+
+export const paySdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/library/pay-default',
+    description: 'AppKit Pay with default configuration'
+  }
+]

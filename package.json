@@ -17,6 +17,7 @@
     "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
     "build:example:parcel-react-wagmi": "pnpm --filter @examples/parcel-react-wagmi build",
     "build:example:wagmi-app-router": "pnpm --filter @examples/next-wagmi-app-router build",
+    "build:local": "turbo run build --filter={./packages/**/*} --filter=!{./packages/cdn} --concurrency=31",
     "build": "turbo run build --filter={./packages/**/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",

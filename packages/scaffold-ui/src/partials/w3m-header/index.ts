@@ -63,6 +63,7 @@ function headings() {
     OnRampActivity: 'Activity',
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
+    Pay: 'How you pay',
     Profile: undefined,
     SwitchNetwork: networkName ?? 'Switch Network',
     SwitchAddress: 'Switch Address',
@@ -95,7 +96,8 @@ function headings() {
     SwitchActiveChain: 'Switch chain',
     SmartSessionCreated: undefined,
     SmartSessionList: 'Smart Sessions',
-    SIWXSignMessage: 'Sign In'
+    SIWXSignMessage: 'Sign In',
+    PayLoading: 'Payment in progress'
   }
 }
 
