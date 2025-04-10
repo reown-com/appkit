@@ -66,6 +66,12 @@ export const siweConfig = createSIWEConfig({
         redirect: false
       })
 
+      const session = await getSession()
+      if (session) {
+        await signOut({
+          redirect: false
+        })
+      }
       return true
     } catch (error) {
       return false
