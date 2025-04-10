@@ -103,7 +103,6 @@ export abstract class AppKitBaseClient {
   protected universalProviderInitPromise?: Promise<void>
   protected caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
   protected defaultCaipNetwork?: CaipNetwork
-  protected hasSwitchedToPreferredAccountTypeOnConnect = false
 
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
@@ -413,7 +412,6 @@ export abstract class AppKitBaseClient {
         ProviderUtil.resetChain(namespace)
         this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
-        this.hasSwitchedToPreferredAccountTypeOnConnect = false
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
