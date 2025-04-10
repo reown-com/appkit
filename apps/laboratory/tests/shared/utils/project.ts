@@ -86,8 +86,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'wallet-button.spec'
 ]
 
-function createRegex(tests: string[], isDesktop = true) {
-  const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
+function createRegex(tests: string[], isDesktop = true, forceIncludeMobilePath = false) {
+  const desktopCheck = isDesktop && !forceIncludeMobilePath ? '(?!.*/mobile-)' : ''
 
   return new RegExp(`^(?!.*/multichain/)${desktopCheck}.*(?:${tests.join('|')})`, 'u')
 }
@@ -98,7 +98,8 @@ const SINGLE_ADAPTER_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_MOBILE_TESTS, fal
 
 const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
-const BITCOIN_IGNORE_TESTS_REGEX = createRegex(BITCOIN_IGNORE_TESTS)
+
+const BITCOIN_IGNORE_TESTS_REGEX = createRegex(BITCOIN_IGNORE_TESTS, true, true)
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/core': {

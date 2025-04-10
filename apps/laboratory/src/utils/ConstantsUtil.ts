@@ -26,7 +26,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import { getLocalStorageItem } from './LocalStorage'
 
-const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+const projectId = '702e2d45d9debca66795614cddb5c1ca'
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
