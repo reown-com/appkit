@@ -112,6 +112,7 @@ describe('SatsConnectConnector', () => {
   })
 
   it('should connect correctly with wallet not connected', async () => {
+    const emitSpy = vi.spyOn(connector, 'emit')
     const spy = vi.spyOn(mocks.wallet, 'request')
 
     spy.mockResolvedValueOnce(
@@ -142,6 +143,7 @@ describe('SatsConnectConnector', () => {
 
     const result = await connector.connect()
 
+    expect(emitSpy).toHaveBeenCalledWith('accountsChanged', ['mock_address'])
     expect(result).toBe('mock_address')
     expect(mocks.wallet.request).toHaveBeenNthCalledWith(1, 'getAddresses', {
       purposes: expect.arrayContaining(['payment', 'ordinals', 'stacks']),
