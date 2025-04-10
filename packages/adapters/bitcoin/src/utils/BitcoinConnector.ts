@@ -33,7 +33,7 @@ export namespace BitcoinConnector {
     purpose: 'payment' | 'ordinal' | 'stx'
   }
 
-  export type SignMessageParams = {
+  export type SignMessageParams<SignatureType extends string | undefined = undefined> = {
     /**
      * The message to be signed
      */
@@ -42,6 +42,10 @@ export namespace BitcoinConnector {
      * The address to sign the message with
      */
     address: string
+    /**
+     * The type of signature to use
+     */
+    protocol?: SignatureType
   }
 
   export type SendTransferParams = {

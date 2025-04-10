@@ -42,12 +42,16 @@ export class BitcoinWalletConnectConnector
     )
   }
 
-  public async signMessage({ message, address }: BitcoinConnector.SignMessageParams) {
+  public async signMessage({
+    message,
+    address,
+    protocol
+  }: BitcoinConnector.SignMessageParams<'ecdsa' | 'bip322' | undefined>) {
     this.checkIfMethodIsSupported('signMessage')
 
     const signedMessage = await this.internalRequest({
       method: 'signMessage',
-      params: { message, account: address, address }
+      params: { message, account: address, address, protocol }
     })
 
     return Buffer.from(signedMessage.signature, 'hex').toString('base64')
@@ -177,6 +181,7 @@ export namespace WalletConnectProvider {
     message: string
     account: string
     address: string
+    protocol?: 'ecdsa' | 'bip322'
   }
 
   export type WCSignMessageResponse = {

@@ -67,8 +67,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     return accountList
   }
 
-  public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    return this.wallet.signMessage(params.message)
+  public async signMessage(
+    params: BitcoinConnector.SignMessageParams<'ecdsa' | 'bip322-simple' | undefined>
+  ): Promise<string> {
+    return this.wallet.signMessage(params.message, params.protocol)
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
