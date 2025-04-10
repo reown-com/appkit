@@ -87,6 +87,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
     this.bindEvents()
 
+    this.emit('accountsChanged', [address])
+
     return address
   }
 
