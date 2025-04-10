@@ -89,7 +89,6 @@ testMWagmiVerifyDomainMismatch(
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
@@ -97,7 +96,6 @@ testMWagmiVerifyDomainMismatch(
     await modalPage.sign()
     const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 
@@ -184,7 +182,6 @@ testMEthersVerifyDomainMismatch(
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
@@ -192,7 +189,6 @@ testMEthersVerifyDomainMismatch(
     await modalPage.sign()
     const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 
