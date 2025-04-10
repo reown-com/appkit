@@ -43,7 +43,7 @@ import {
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil, OptionsController, StorageUtil } from '@reown/appkit-controllers'
+import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
@@ -118,9 +118,12 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
-      const { address, accounts } = await provider.connect({
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
-      })
+
+      if (!provider.user) {
+        return { accounts: [] }
+      }
+
+      const { address, accounts } = provider.user
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
@@ -518,6 +521,20 @@ export class WagmiAdapter extends AdapterBlueprint {
     if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
       // @ts-expect-error Exists on EIP6963Connector
       connector.setEip6963Wallet?.({ provider, info })
+    }
+
+    // If the connector is already connected, return the connection
+    if (connector.uid === this.wagmiConfig?.state?.current) {
+      const connection = this.wagmiConfig.state?.connections?.get(connector.uid)
+      if (connection) {
+        return {
+          address: connection?.accounts[0] as string,
+          chainId: connection?.chainId,
+          provider: provider as Provider,
+          type: type as ConnectorType,
+          id
+        }
+      }
     }
 
     const res = await connect(this.wagmiConfig, {

@@ -33,15 +33,6 @@ export class W3mFrameProvider {
   public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
 
   private initPromise: Promise<void> | undefined
-  private pendingCalls: {
-    getUser: Promise<W3mFrameTypes.Responses['FrameGetUserResponse']> | undefined
-    isConnected: Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']> | undefined
-    getSmartAccountEnabledNetworks: Promise<number[]> | undefined
-  } = {
-    getUser: undefined,
-    isConnected: undefined,
-    getSmartAccountEnabledNetworks: undefined
-  }
   public constructor({
     projectId,
     chainId,
@@ -143,26 +134,14 @@ export class W3mFrameProvider {
       if (!this.getLoginEmailUsed()) {
         return { isConnected: false }
       }
-      if (this.pendingCalls.isConnected) {
-        return this.pendingCalls.isConnected
-      }
 
-      this.pendingCalls.isConnected = new Promise(async (resolve, reject) => {
-        try {
-          const response = await this.appEvent<'IsConnected'>({
-            type: W3mFrameConstants.APP_IS_CONNECTED
-          } as W3mFrameTypes.AppEvent)
-          resolve(response)
-        } catch (error) {
-          this.pendingCalls.isConnected = undefined
-          reject(error)
-        }
-      })
-      const response = await this.pendingCalls.isConnected
+      const response = await this.appEvent<'IsConnected'>({
+        type: W3mFrameConstants.APP_IS_CONNECTED
+      } as W3mFrameTypes.AppEvent)
+
       if (!response?.isConnected) {
         this.deleteAuthLoginCache()
       }
-      this.pendingCalls.isConnected = undefined
 
       return response
     } catch (error) {
@@ -278,25 +257,11 @@ export class W3mFrameProvider {
 
   public async getSmartAccountEnabledNetworks() {
     try {
-      if (this.pendingCalls.getSmartAccountEnabledNetworks) {
-        return this.pendingCalls.getSmartAccountEnabledNetworks
-      }
+      const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
+        type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
+      } as W3mFrameTypes.AppEvent)
 
-      this.pendingCalls.getSmartAccountEnabledNetworks = new Promise(async (resolve, reject) => {
-        try {
-          const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
-            type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
-          } as W3mFrameTypes.AppEvent)
-          resolve(response.smartAccountEnabledNetworks)
-        } catch (error) {
-          this.pendingCalls.getSmartAccountEnabledNetworks = undefined
-          reject(error)
-        }
-      })
-
-      const response = await this.pendingCalls.getSmartAccountEnabledNetworks
-      this.persistSmartAccountEnabledNetworks(response)
-      this.pendingCalls.getSmartAccountEnabledNetworks = undefined
+      this.persistSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks)
 
       return response
     } catch (error) {
@@ -322,6 +287,9 @@ export class W3mFrameProvider {
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
+      if (payload?.preferredAccountType) {
+        await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
+      }
       const response = await this.getUser({
         chainId,
         preferredAccountType: payload?.preferredAccountType
@@ -340,27 +308,11 @@ export class W3mFrameProvider {
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
-
-      if (this.pendingCalls.getUser) {
-        return this.pendingCalls.getUser
-      }
-
-      this.pendingCalls.getUser = new Promise(async (resolve, reject) => {
-        try {
-          const response = await this.appEvent<'GetUser'>({
-            type: W3mFrameConstants.APP_GET_USER,
-            payload: { ...payload, chainId }
-          } as W3mFrameTypes.AppEvent)
-          resolve(response)
-        } catch (error) {
-          this.pendingCalls.getUser = undefined
-          reject(error)
-        }
-      })
-
-      const response = await this.pendingCalls.getUser
+      const response = await this.appEvent<'GetUser'>({
+        type: W3mFrameConstants.APP_GET_USER,
+        payload: { ...payload, chainId }
+      } as W3mFrameTypes.AppEvent)
       this.user = response
-      this.pendingCalls.getUser = undefined
 
       return response
     } catch (error) {
@@ -510,6 +462,7 @@ export class W3mFrameProvider {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
