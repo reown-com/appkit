@@ -1,11 +1,11 @@
 ---
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit-utils': patch
-'@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
+'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
+'@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes issue where networks not supported by Blockchain API would fail to execute requests in wagmi
+Fixes XVerse wallet doesn't emitting accountChanged event on connection
