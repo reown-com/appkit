@@ -159,6 +159,7 @@ export const ConnectionController = {
       accountType,
       ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
     )
+    await authConnector.provider.setPreferredAccount(accountType)
     await this.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)
     EventsController.sendEvent({

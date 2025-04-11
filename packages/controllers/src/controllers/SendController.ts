@@ -1,7 +1,12 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type Balance, type CaipAddress, NumberUtil } from '@reown/appkit-common'
+import {
+  type Balance,
+  type CaipAddress,
+  type ChainNamespace,
+  NumberUtil
+} from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -120,14 +125,14 @@ export const SendController = {
   },
 
   sendEvmToken() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+    const activeAccountType = AccountController.state.preferredAccountTypes?.[activeChainNamespace]
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
-          isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
@@ -149,9 +154,7 @@ export const SendController = {
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
-          isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
@@ -235,9 +238,10 @@ export const SendController = {
   },
 
   hasInsufficientGasFunds() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     let isInsufficientNetworkTokenForGas = true
     if (
-      AccountController.state.preferredAccountType ===
+      AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       // Smart Accounts may pay gas in any ERC20 token
@@ -253,6 +257,7 @@ export const SendController = {
   },
 
   async sendNativeToken(params: TxParams) {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     RouterController.pushTransactionStack({
       view: 'Account',
       goBack: false
@@ -282,7 +287,7 @@ export const SendController = {
         event: 'SEND_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
@@ -300,7 +305,7 @@ export const SendController = {
         properties: {
           message: errorMessage,
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
@@ -355,7 +360,7 @@ export const SendController = {
         properties: {
           message: errorMessage,
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,

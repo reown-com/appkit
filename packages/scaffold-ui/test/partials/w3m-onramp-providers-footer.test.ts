@@ -78,7 +78,9 @@ describe('W3mOnRampProvidersFooter', () => {
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      preferredAccountTypes: {
+        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
     })
 
     const element: W3mOnRampProvidersFooter = await fixture(
@@ -107,7 +109,9 @@ describe('W3mOnRampProvidersFooter', () => {
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+      preferredAccountTypes: {
+        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+      }
     })
 
     const element: W3mOnRampProvidersFooter = await fixture(

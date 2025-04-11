@@ -5,6 +5,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { WcConstantsUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
@@ -284,12 +285,12 @@ describe('EthersAdapter', () => {
       expect(result.chainId).toBe(1)
     })
 
-    it('should respect defaultAccountType when calling connect with AUTH provider', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        defaultAccountTypes: {
+    it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
           eip155: 'smartAccount'
-        } as OptionsControllerState['defaultAccountTypes']
+        }
       })
 
       const ethersAdapter = new EthersAdapter()
@@ -321,7 +322,9 @@ describe('EthersAdapter', () => {
 
       expect(connect).toHaveBeenCalledWith({
         chainId: 1,
-        preferredAccountType: 'smartAccount'
+        preferredAccountTypes: {
+          eip155: 'smartAccount'
+        }
       })
     })
   })

@@ -50,7 +50,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
       ? {
           user: chainAccountState?.user,
           authProvider: chainAccountState?.socialProvider || 'email',
-          accountType: chainAccountState?.preferredAccountType,
+          accountType: chainAccountState?.preferredAccountTypes?.[chainNamespace],
           isSmartAccountDeployed: Boolean(chainAccountState?.smartAccountDeployed)
         }
       : undefined
