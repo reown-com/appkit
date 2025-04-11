@@ -250,37 +250,64 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
+    // Previous network information
+    const prevCaipNetwork = this.caipNetwork
+    const prevCaipNetworkId = prevCaipNetwork?.caipNetworkId?.toString()
+    const prevChainNamespace = prevCaipNetwork?.chainNamespace
+    // Next network information
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
-    const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
-    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const isUnsupportedNetwork =
-      this.caipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
-
+    const nextChainNamespace = nextCaipNetwork?.chainNamespace
+    const networkIdChanged = prevCaipNetworkId !== nextNetworkId
+    const namespaceChanged = prevChainNamespace !== nextChainNamespace
+    // Determine if the network change happened within the same namespace
+    const isNetworkChangedInSameNamespace = networkIdChanged && !namespaceChanged
+    // Use previous network's unsupported status for comparison if namespace hasn't changed
+    const wasUnsupportedNetwork =
+      prevCaipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
     /**
      * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
      * In this case, we are switching both network and namespace. And this logic will be triggered.
      * But we don't want to go back because we are already on the connecting external view.
      */
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
-    // If user is not connected, we should go back
+    // Check connection status based on the address state *before* this update cycle potentially finishes
     const isNotConnected = !this.caipAddress
-    // If network has been changed in the same namespace and it's not an unsupported network, we should go back
-    const isNetworkChangedInSameNamespace =
-      networkChanged && !isUnsupportedNetwork && !isSwitchingNamespace
-    // If user is on the unsupported network screen, we should go back when network has been changed
+    // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
-
     const isModalOpen = ModalController.state.open
-    const shouldGoBack =
-      isModalOpen &&
-      !isConnectingExternal &&
-      (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace)
-
-    if (shouldGoBack) {
+    let shouldGoBack = false
+    if (isModalOpen && !isConnectingExternal) {
+      if (isNotConnected) {
+        /*
+         * If not connected at all, changing network doesn't necessarily warrant going back from all views.
+         * Let's keep the previous logic's intent: go back if not connected and network changed.
+         * This handles cases like being on the network selection view.
+         */
+        if (networkIdChanged) {
+          shouldGoBack = true
+        }
+      } else if (isUnsupportedNetworkScreen) {
+        // If on the unsupported screen, any network change should likely go back
+        shouldGoBack = true
+      } else if (isNetworkChangedInSameNamespace && !wasUnsupportedNetwork) {
+        /*
+         * If network changed within the *same* namespace, and it wasn't previously unsupported, go back.
+         * This handles the case where the user explicitly switches networks via the UI.
+         */
+        shouldGoBack = true
+      }
+      /*
+       * Note: We are not explicitly checking `ChainController.state.isSwitchingNamespace` here.
+       * The `onNewAddress` handler specifically covers the `goBack` logic for successful
+       * connections during a namespace switch. This handler focuses on same-namespace
+       * switches, leaving the unsupported screen, or initial connection state.
+       */
+    }
+    // Don't go back if the user is on the SIWXSignMessage view
+    if (shouldGoBack && RouterController.state.view !== 'SIWXSignMessage') {
       RouterController.goBack()
     }
-
+    // Update the component's state *after* potential goBack()
     this.caipNetwork = nextCaipNetwork
   }
 

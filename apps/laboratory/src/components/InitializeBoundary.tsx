@@ -5,7 +5,7 @@ export default function InitializeBoundary({ children }: { children: React.React
 
   // Add a loading skeleton
   if (!initialized) {
-    return <div>Initializing...</div>
+    return <div data-testid="w3m-page-loading">Initializing...</div>
   }
 
   return children

@@ -41,10 +41,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    const address = await connector.connect()
-
     this.connector = connector
     this.bindEvents(this.connector)
+
+    const address = await connector.connect()
 
     const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
 

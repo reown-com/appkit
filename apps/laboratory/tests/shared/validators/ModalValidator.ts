@@ -390,6 +390,9 @@ export class ModalValidator {
   }
 
   async expectToBeConnectedInstantly() {
+    // Wait for the page to be loaded
+    const initializeBoundary = this.page.getByTestId('w3m-page-loading')
+    await expect(initializeBoundary).toBeHidden()
     const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: 1000

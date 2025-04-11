@@ -96,7 +96,29 @@ describe('OKXConnector', () => {
       const signature = await connector.signMessage({ address: 'mock_address', message: 'message' })
 
       expect(signature).toBe('mock_signature')
-      expect(wallet.signMessage).toHaveBeenCalledWith('message')
+      expect(wallet.signMessage).toHaveBeenCalledWith('message', undefined)
+    })
+
+    it('should sign a message with ecdsa protocol', async () => {
+      const signature = await connector.signMessage({
+        address: 'mock_address',
+        message: 'message',
+        protocol: 'ecdsa'
+      })
+
+      expect(signature).toBe('mock_signature')
+      expect(wallet.signMessage).toHaveBeenCalledWith('message', 'ecdsa')
+    })
+
+    it('should sign a message with bip322 protocol', async () => {
+      const signature = await connector.signMessage({
+        address: 'mock_address',
+        message: 'message',
+        protocol: 'bip322'
+      })
+
+      expect(signature).toBe('mock_signature')
+      expect(wallet.signMessage).toHaveBeenCalledWith('message', 'bip322-simple')
     })
   })
 
