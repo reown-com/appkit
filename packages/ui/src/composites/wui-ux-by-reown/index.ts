@@ -14,12 +14,7 @@ export class WuiUxByReown extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <a 
-        href="https://reown.com"
-        rel="noreferrer"
-        target="_blank"
-        style="text-decoration: none;"
-      >
+      <a href="https://reown.com" rel="noreferrer" target="_blank" style="text-decoration: none;">
         <wui-flex
           justifyContent="center"
           alignItems="center"
