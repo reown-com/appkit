@@ -14,9 +14,9 @@
     "@solana/wallet-adapter-backpack": "0.1.14",
     "@solana/wallet-adapter-wallets": "0.19.32",
     "@tanstack/vue-query": "5.69.0",
-    "@wagmi/connectors": "5.7.7",
+    "@wagmi/connectors": "5.7.12",
     "@wagmi/core": "2.16.5",
-    "@wagmi/vue": "0.1.11",
+    "@wagmi/vue": "0.1.15",
     "viem": "2.23.13",
     "vue": "3.4.3"
   },
