@@ -938,7 +938,7 @@ export type GetQuoteArgs = {
 export type NamespaceTypeMap = {
   eip155: 'eoa' | 'smartAccount'
   solana: 'eoa'
-  bip122: 'payment' | 'ordinal' | 'stx'
+  bip122: 'payment' | 'ordinal' | 'stx' | 'ordinals' | 'stacks'
   polkadot: 'eoa'
 }
 
