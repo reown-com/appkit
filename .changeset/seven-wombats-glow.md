@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes issue wherenetworks not supported by Blockchain API would fail to execute requests in wagmi
+Fixes issue where networks not supported by Blockchain API would fail to execute requests in wagmi
