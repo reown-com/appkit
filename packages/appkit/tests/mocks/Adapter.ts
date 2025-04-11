@@ -81,7 +81,8 @@ export const mockEvmAdapter = {
   on: emitter.on.bind(emitter),
   off: emitter.off.bind(emitter),
   emit: emitter.emit.bind(emitter),
-  removeAllEventListeners: vi.fn()
+  removeAllEventListeners: vi.fn(),
+  connect: vi.fn().mockResolvedValue({ address: '0x123' })
 } as unknown as AdapterBlueprint
 
 export const mockSolanaAdapter = {

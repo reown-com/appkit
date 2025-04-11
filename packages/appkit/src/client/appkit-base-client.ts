@@ -376,20 +376,17 @@ export abstract class AppKitBaseClient {
         }
 
         const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
-        const res = await adapter
-          .connect({
-            id,
-            info,
-            type,
-            provider,
-            chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
-            rpcUrl:
-              caipNetwork?.rpcUrls?.default?.http?.[0] ||
-              fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
-          })
-          .catch(error => {
-            console.warn('@appkit: connectExternal: error', error)
-          })
+
+        const res = await adapter.connect({
+          id,
+          info,
+          type,
+          provider,
+          chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
+          rpcUrl:
+            caipNetwork?.rpcUrls?.default?.http?.[0] ||
+            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
+        })
 
         if (!res) {
           return
