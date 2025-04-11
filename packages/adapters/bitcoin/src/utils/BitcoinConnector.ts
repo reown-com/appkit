@@ -42,6 +42,10 @@ export namespace BitcoinConnector {
      * The address to sign the message with
      */
     address: string
+    /**
+     * The type of signature to use
+     */
+    protocol?: 'ecdsa' | 'bip322'
   }
 
   export type SendTransferParams = {
