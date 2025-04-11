@@ -30,7 +30,6 @@ describe('Base', () => {
 
   describe('Base Initialization', () => {
     it('should initialize controllers', async () => {
-      const sendEvent = vi.spyOn(EventsController, 'sendEvent')
       const initialize = vi.spyOn(ChainController, 'initialize')
 
       new AppKit({
@@ -38,6 +37,20 @@ describe('Base', () => {
         universalProvider: mockUniversalProvider as unknown as UniversalProvider
       })
 
+      expect(initialize).toHaveBeenCalledOnce()
+      expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
+        connectionControllerClient: expect.any(Object),
+        networkControllerClient: expect.any(Object)
+      })
+    })
+
+    it('should send initialize event', () => {
+      const sendEvent = vi.spyOn(EventsController, 'sendEvent')
+
+      new AppKit({
+        ...mockOptions,
+        universalProvider: mockUniversalProvider as unknown as UniversalProvider
+      })
       const options = { ...mockOptions }
       delete options.adapters
 
@@ -53,14 +66,7 @@ describe('Base', () => {
           }
         }
       })
-
-      expect(initialize).toHaveBeenCalledOnce()
-      expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
-        connectionControllerClient: expect.any(Object),
-        networkControllerClient: expect.any(Object)
-      })
     })
-
     it('should set EIP6963 enabled by default', () => {
       const setEIP6963Enabled = vi.spyOn(OptionsController, 'setEIP6963Enabled')
 
