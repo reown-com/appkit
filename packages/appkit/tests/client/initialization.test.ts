@@ -32,10 +32,7 @@ describe('Base', () => {
     it('should initialize controllers', async () => {
       const initialize = vi.spyOn(ChainController, 'initialize')
 
-      new AppKit({
-        ...mockOptions,
-        universalProvider: mockUniversalProvider as unknown as UniversalProvider
-      })
+      new AppKit(mockOptions)
 
       expect(initialize).toHaveBeenCalledOnce()
       expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
@@ -44,8 +41,8 @@ describe('Base', () => {
       })
     })
 
-    it('should send initialize event', () => {
-      const sendEvent = vi.spyOn(EventsController, 'sendEvent')
+    it('should send initialize event', async () => {
+      const sendEvent = vi.spyOn(EventsController, 'sendEvent').mockResolvedValue()
 
       new AppKit({
         ...mockOptions,
@@ -54,7 +51,9 @@ describe('Base', () => {
       const options = { ...mockOptions }
       delete options.adapters
 
-      expect(sendEvent).toHaveBeenCalled()
+      // Event is sent at the end of the initialize method, we need to wait for it to be sent
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
       expect(sendEvent).toHaveBeenCalledWith({
         type: 'track',
         event: 'INITIALIZE',
