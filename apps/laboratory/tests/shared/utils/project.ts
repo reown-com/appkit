@@ -13,6 +13,8 @@ const MULTICHAIN_LIBRARIES = [
 
 const CORE_LIRARIES = ['core'] as const
 
+const CLOUD_AUTH_LIBRARIES = ['cloud-auth'] as const
+
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
 )
@@ -27,6 +29,10 @@ const MULTICHAIN_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
 
 const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   CORE_LIRARIES.map(library => ({ device, library }))
+)
+
+const CLOUD_AUTH_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  CLOUD_AUTH_LIBRARIES.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -86,6 +92,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'wallet-button.spec'
 ]
 
+const CLOUD_AUTH_TESTS = ['cloud-auth.spec.ts']
+
 function createRegex(tests: string[], isDesktop = true) {
   const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
 
@@ -99,7 +107,7 @@ const SINGLE_ADAPTER_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_MOBILE_TESTS, fal
 const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
 const BITCOIN_IGNORE_TESTS_REGEX = createRegex(BITCOIN_IGNORE_TESTS)
-
+const CLOUD_AUTH_TESTS_REGEX = createRegex(CLOUD_AUTH_TESTS)
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/core': {
     testMatch: CORE_TESTS_REGEX
@@ -207,6 +215,13 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Galaxy S5/solana': {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
+  },
+
+  'Desktop Chrome/cloud-auth': {
+    testMatch: CLOUD_AUTH_TESTS_REGEX
+  },
+  'Desktop Firefox/cloud-auth': {
+    testMatch: CLOUD_AUTH_TESTS_REGEX
   }
 }
 
@@ -242,12 +257,14 @@ export function getProjects() {
   const libraryMobileProjects = LIBRARY_MOBILE_PERMUTATIONS.map(createProject)
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
+  const cloudAuthProjects = CLOUD_AUTH_PERMUTATIONS.map(createProject)
 
   const projects = [
     ...libraryDesktopProjects,
     ...libraryMobileProjects,
     ...multichainProjects,
-    ...coreProjects
+    ...coreProjects,
+    ...cloudAuthProjects
   ]
 
   return projects
