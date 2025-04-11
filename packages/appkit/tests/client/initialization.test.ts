@@ -1,3 +1,4 @@
+import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
@@ -13,6 +14,7 @@ import { ErrorUtil } from '@reown/appkit-utils'
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
+import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
   mockStorageUtil,
@@ -31,7 +33,10 @@ describe('Base', () => {
       const sendEvent = vi.spyOn(EventsController, 'sendEvent')
       const initialize = vi.spyOn(ChainController, 'initialize')
 
-      new AppKit(mockOptions)
+      new AppKit({
+        ...mockOptions,
+        universalProvider: mockUniversalProvider as unknown as UniversalProvider
+      })
 
       const options = { ...mockOptions }
       delete options.adapters
