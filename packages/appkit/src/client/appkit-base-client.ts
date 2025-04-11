@@ -129,7 +129,6 @@ export abstract class AppKitBaseClient {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
-    this.sendInitializeEvent(options)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -151,13 +150,14 @@ export abstract class AppKitBaseClient {
     await this.initChainAdapters()
     await this.injectModalUi()
     await this.syncExistingConnection()
-
+    this.sendInitializeEvent(options)
     PublicStateController.set({ initialized: true })
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
+    delete optionsCopy.universalProvider
 
     EventsController.sendEvent({
       type: 'track',
