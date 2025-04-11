@@ -177,6 +177,36 @@ describe('WalletStandardConnector', () => {
       })
     })
 
+    it('should log warning when protocol parameter is provided', async () => {
+      const accountMock = mockWalletStandardProvider.mockAccount({
+        address: 'address',
+        publicKey: new Uint8Array(Buffer.from('publicKey1'))
+      })
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
+
+      const signMessageFeatureSpy = vi.spyOn(
+        wallet.features['bitcoin:signMessage'] as any,
+        'signMessage'
+      )
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      await connector.signMessage({
+        address: 'address',
+        message: 'message1',
+        protocol: 'bip322'
+      })
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'WalletStandardConnector:signMessage - protocol parameter not supported in WalletStandard:bitcoin - signMessage'
+      )
+      expect(signMessageFeatureSpy).toHaveBeenCalledWith({
+        message: expect.objectContaining(Uint8Array.from([109, 101, 115, 115, 97, 103, 101, 49])),
+        account: expect.objectContaining(accountMock)
+      })
+
+      consoleSpy.mockRestore()
+    })
+
     it('should throw if account is not found', async () => {
       wallet = mockWalletStandardProvider({
         features: {
