@@ -14,15 +14,22 @@ export class WuiUxByReown extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex
-        justifyContent="center"
-        alignItems="center"
-        gap="xs"
-        .padding=${['0', '0', 'l', '0']}
+      <a 
+        href="https://reown.com"
+        rel="noreferrer"
+        target="_blank"
+        style="text-decoration: none;"
       >
-        <wui-text variant="small-500" color="fg-100"> UX by </wui-text>
-        <wui-icon name="reown" size="xxxl" class="reown-logo"></wui-icon>
-      </wui-flex>
+        <wui-flex
+          justifyContent="center"
+          alignItems="center"
+          gap="xs"
+          .padding=${['0', '0', 'l', '0']}
+        >
+          <wui-text variant="small-500" color="fg-100"> UX by </wui-text>
+          <wui-icon name="reown" size="xxxl" class="reown-logo"></wui-icon>
+        </wui-flex>
+      </a>
     `
   }
 }
