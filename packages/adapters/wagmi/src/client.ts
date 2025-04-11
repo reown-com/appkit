@@ -610,7 +610,7 @@ export class WagmiAdapter extends AdapterBlueprint {
             resolve({ balance: balance.formatted, symbol: balance.symbol })
           } catch (error) {
             // eslint-disable-next-line no-console
-            console.error('>> Error getting balance', error)
+            console.warn('Appkit:WagmiAdapter:getBalance - Error getting balance', error)
             resolve({ balance: '0.00', symbol: 'ETH' })
           }
         }
