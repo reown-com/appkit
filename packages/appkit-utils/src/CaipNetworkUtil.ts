@@ -209,14 +209,15 @@ export const CaipNetworksUtil = {
   getViemTransport(caipNetwork: CaipNetwork, projectId: string, customRpcUrls?: CustomRpcUrl[]) {
     const transports: HttpTransport[] = []
 
+    // Add custom RPC URLs
     customRpcUrls?.forEach(rpcUrl => {
       transports.push(http(rpcUrl.url, rpcUrl.config))
     })
 
+    // Add Reown RPC URL
     if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetwork.caipNetworkId)) {
-      const reownRpcUrl = this.getDefaultRpcUrl(caipNetwork, caipNetwork.caipNetworkId, projectId)
       transports.push(
-        http(reownRpcUrl, {
+        http(getBlockchainApiRpcUrl(caipNetwork.caipNetworkId, projectId), {
           /*
            * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
            * It will only work for viem >= 2.17.7
@@ -229,6 +230,11 @@ export const CaipNetworksUtil = {
         })
       )
     }
+
+    // Add original fallback transports
+    caipNetwork?.rpcUrls?.default?.http?.forEach(rpcUrl => {
+      transports.push(http(rpcUrl))
+    })
 
     return fallback(transports)
   },

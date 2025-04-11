@@ -149,9 +149,11 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
-    await this.syncExistingConnection()
+
     this.sendInitializeEvent(options)
     PublicStateController.set({ initialized: true })
+
+    await this.syncExistingConnection()
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
