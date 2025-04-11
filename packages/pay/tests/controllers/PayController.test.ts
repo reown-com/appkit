@@ -373,19 +373,63 @@ describe('PayController', () => {
     })
 
     it('should get pay URL and open it in same tab', async () => {
-      global.window = { open: vi.fn() } as any
+      vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValue(mockPayUrlResponse)
+      vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+      const locationMock = {
+        _href: '',
+        set href(url: string) {
+          this._href = url
+        },
+        get href(): string {
+          return this._href
+        }
+      }
+
+      const originalLocation = window.location
+      delete (window as any).location
+      Object.defineProperty(window, 'location', {
+        value: locationMock,
+        writable: true,
+        configurable: true
+      })
+
       PayController.state.openInNewTab = false
+      await PayController.handlePayWithExchange('coinbase')
+
+      expect(RouterController.push).toHaveBeenCalledWith('PayLoading')
+      expect(locationMock._href).toBe(mockPayUrlResponse.url)
+
+      // Restore original location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: false,
+        configurable: false
+      })
+    })
+
+    it('should set error state and show snackbar if unable to get pay URL', async () => {
+      vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValueOnce({ url: null } as any)
+      vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
       await PayController.handlePayWithExchange('coinbase')
 
-      expect(window.open).toHaveBeenCalledWith(mockPayUrlResponse.url, '_self')
+      expect(PayController.state.error).toBe(AppKitPayErrorMessages.UNABLE_TO_INITIATE_PAYMENT)
+      expect(SnackController.showError).toHaveBeenCalledWith(
+        AppKitPayErrorMessages.UNABLE_TO_INITIATE_PAYMENT
+      )
     })
 
-    it('should throw error if unable to get pay URL', async () => {
-      vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValueOnce({ url: null } as any)
+    it('should handle generic error during exchange payment', async () => {
+      const genericError = new Error('Generic Error')
+      vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(genericError)
+      vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
-      await expect(PayController.handlePayWithExchange('coinbase')).rejects.toThrow(
-        new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
+      await PayController.handlePayWithExchange('coinbase')
+
+      expect(PayController.state.error).toBe(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
+      expect(SnackController.showError).toHaveBeenCalledWith(
+        AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
       )
     })
   })

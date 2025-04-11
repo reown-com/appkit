@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { PayController } from '../src/controllers/PayController.js'
+import { PayController, type PayResult } from '../src/controllers/PayController.js'
 import type { AppKitPayErrorMessage } from '../src/types/errors.js'
 import type { PaymentOptions } from '../src/types/options.js'
 
@@ -27,7 +27,7 @@ interface UsePayReturn {
   /**
    * Stores the result of a successful payment, typically a transaction hash or identifier. Undefined if the payment hasn't completed or failed.
    */
-  result: string | null
+  result: PayResult | null
 }
 
 /**

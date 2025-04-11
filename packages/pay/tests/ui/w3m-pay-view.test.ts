@@ -12,7 +12,6 @@ import {
 } from '@reown/appkit-controllers'
 
 import { PayController } from '../../src/controllers/PayController'
-import { AppKitPayError, AppKitPayErrorCodes } from '../../src/types/errors'
 import { W3mPayView } from '../../src/ui/w3m-pay-view'
 import {
   mockConnectionState,
@@ -170,28 +169,6 @@ describe('W3mPayView', () => {
     expect(PayController.handlePayWithExchange).toHaveBeenCalledWith('coinbase')
   })
 
-  test('should show error snackbar if exchange payment fails', async () => {
-    PayController.state.exchanges = mockExchanges
-
-    vi.spyOn(PayController, 'handlePayWithExchange').mockRejectedValueOnce(
-      new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
-    )
-
-    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
-
-    await elementUpdated(element)
-
-    const coinbaseOption = element.shadowRoot?.querySelector(
-      '[data-testid="exchange-option-coinbase"]'
-    )
-    await coinbaseOption?.dispatchEvent(new Event('click'))
-
-    // Give time for the async operation to complete
-    await elementUpdated(element)
-
-    expect(SnackController.showError).toHaveBeenCalledWith(expect.any(String))
-  })
-
   test('should disconnect wallet when disconnect button is clicked', async () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
@@ -257,5 +234,22 @@ describe('W3mPayView', () => {
     element.remove()
 
     expect(unsubscribeSpy).toHaveBeenCalled()
+  })
+
+  test('should call handlePayment on main button click if wallet connected', async () => {
+    // Mock connected state
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      ...(mockConnectionState as any)
+    })
+
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+
+    await elementUpdated(element)
+
+    const connectedView = element.shadowRoot?.querySelector('[data-testid="wallet-payment-option"]')
+    await connectedView?.dispatchEvent(new Event('click'))
+
+    expect(PayController.handlePayWithWallet).toHaveBeenCalledOnce()
   })
 })

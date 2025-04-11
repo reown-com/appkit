@@ -23,9 +23,9 @@ export class W3mPayLoadingView extends LitElement {
   @state() private subMessage = ''
   @state() private paymentState: PaymentState = 'in-progress'
 
-  // -- Lifecycle ----------------------------------------- //
-  public override connectedCallback() {
-    super.connectedCallback()
+  constructor() {
+    super()
+    this.paymentState = PayController.state.isPaymentInProgress ? 'in-progress' : 'completed'
     this.updateMessages()
     this.setupSubscription()
   }
@@ -56,8 +56,14 @@ export class W3mPayLoadingView extends LitElement {
   private updateMessages() {
     switch (this.paymentState) {
       case 'completed':
-        this.loadingMessage = 'Payment completed'
-        this.subMessage = 'Your transaction has been successfully processed'
+        if (PayController.state.paymentType === 'wallet') {
+          this.loadingMessage = 'Payment completed'
+          this.subMessage = 'Your transaction has been successfully processed'
+        }
+        if (PayController.state.paymentType === 'exchange') {
+          this.loadingMessage = 'Payment initiated'
+          this.subMessage = `Please complete the payment on the exchange`
+        }
         break
       case 'error':
         this.loadingMessage = 'Payment failed'
@@ -84,11 +90,10 @@ export class W3mPayLoadingView extends LitElement {
   }
 
   private setupSubscription() {
-    // Subscribe to payment progress state
     PayController.subscribeKey('isPaymentInProgress', (inProgress: boolean) => {
       if (!inProgress && this.paymentState === 'in-progress') {
         // Check for error state
-        if (PayController.state.error) {
+        if (PayController.state.error || !PayController.state.payResult) {
           this.paymentState = 'error'
         } else {
           this.paymentState = 'completed'

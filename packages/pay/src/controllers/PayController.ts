@@ -37,11 +37,22 @@ export interface PayControllerState extends PaymentOptions {
   isPaymentInProgress: boolean
   isLoading: boolean
   exchanges: Exchange[]
-  payResult?: string
+  payResult?: PayResult
+  paymentType: PaymentType
 }
 
 type StateKey = keyof PayControllerState
+type PaymentType = 'wallet' | 'exchange'
 
+type WalletPayResult = {
+  type: 'wallet'
+  result?: string
+}
+type ExchangePayResult = {
+  type: 'exchange'
+  exchangeId: string
+}
+export type PayResult = WalletPayResult | ExchangePayResult
 // -- State --------------------------------------------- //
 const state = proxy<PayControllerState>({
   paymentAsset: {
@@ -63,7 +74,8 @@ const state = proxy<PayControllerState>({
   openInNewTab: true,
   redirectUrl: undefined,
   payWithExchange: undefined,
-  payResult: undefined
+  payResult: undefined,
+  paymentType: 'wallet'
 })
 
 // -- Controller ---------------------------------------- //
@@ -102,6 +114,7 @@ export const PayController = {
     state.isPaymentInProgress = false
     state.isLoading = false
     state.payResult = undefined
+    state.paymentType = 'wallet'
   },
 
   // -- Setters ----------------------------------------- //
@@ -112,7 +125,7 @@ export const PayController = {
 
     try {
       state.paymentAsset = config.paymentAsset
-      state.openInNewTab = config.openInNewTab
+      state.openInNewTab = config.openInNewTab ?? true
       state.redirectUrl = config.redirectUrl
       state.payWithExchange = config.payWithExchange
       state.error = null
@@ -186,6 +199,7 @@ export const PayController = {
     })
   },
   async handlePayment() {
+    state.paymentType = 'wallet'
     const caipAddress = AccountController.state.caipAddress
     if (!caipAddress) {
       return
@@ -225,17 +239,20 @@ export const PayController = {
       switch (chainNamespace) {
         case ConstantsUtil.CHAIN.EVM:
           if (state.paymentAsset.asset === 'native') {
-            state.payResult = await processEvmNativePayment(
-              state.paymentAsset,
-              chainNamespace,
-              address as `0x${string}`
-            )
+            state.payResult = {
+              type: 'wallet',
+              result: await processEvmNativePayment(
+                state.paymentAsset,
+                chainNamespace,
+                address as `0x${string}`
+              )
+            }
           }
           if (state.paymentAsset.asset.startsWith('0x')) {
-            state.payResult = await processEvmErc20Payment(
-              state.paymentAsset,
-              address as `0x${string}`
-            )
+            state.payResult = {
+              type: 'wallet',
+              result: await processEvmErc20Payment(state.paymentAsset, address as `0x${string}`)
+            }
           }
           break
         case ConstantsUtil.CHAIN.SOLANA:
@@ -254,6 +271,11 @@ export const PayController = {
       state.isPaymentInProgress = false
     }
   },
+
+  getExchangeById(exchangeId: string) {
+    return state.exchanges.find(exchange => exchange.id === exchangeId)
+  },
+
   validatePayConfig(config: PaymentOptions) {
     const { paymentAsset } = config
 
@@ -292,12 +314,35 @@ export const PayController = {
   },
 
   async handlePayWithExchange(exchangeId: string) {
-    const payUrl = await this.getPayUrl(exchangeId)
-    if (!payUrl) {
-      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
+    try {
+      state.paymentType = 'exchange'
+      state.isPaymentInProgress = false
+      const payUrl = await this.getPayUrl(exchangeId)
+      if (!payUrl) {
+        throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
+      }
+      RouterController.push('PayLoading')
+
+      if (state.openInNewTab) {
+        window.open(payUrl, '_blank')
+        state.payResult = {
+          type: 'exchange',
+          exchangeId
+        }
+        await ModalController.open({
+          view: 'PayLoading'
+        })
+
+        return
+      }
+      window.location.href = payUrl
+    } catch (error) {
+      if (error instanceof AppKitPayError) {
+        state.error = error.message
+      } else {
+        state.error = AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
+      }
+      SnackController.showError(state.error)
     }
-    RouterController.push('PayLoading')
-    const target = state.openInNewTab ? '_blank' : '_self'
-    window.open(payUrl, target)
   }
 }

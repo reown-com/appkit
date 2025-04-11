@@ -124,7 +124,7 @@ export function AppKitPay() {
     if (result && result !== null) {
       toast({
         title: 'Transaction successful',
-        description: result,
+        description: result.type === 'wallet' ? result.result : result.exchangeId,
         type: 'success'
       })
     }

@@ -32,12 +32,19 @@ describe('W3mPayLoadingView', () => {
       }
     })
 
+    const originalSubscribeKey = PayController.subscribeKey
     vi.spyOn(PayController, 'subscribeKey').mockImplementation((key, callback) => {
       if (key === 'isPaymentInProgress') {
-        paymentProgressCallback = callback
-      }
-      if (key === 'error') {
-        errorCallback = callback
+        paymentProgressCallback = (inProgress: boolean) => {
+          ;(callback as (value: boolean) => void)(inProgress)
+          if (!inProgress) {
+            setTimeout(() => {}, 0)
+          }
+        }
+      } else if (key === 'error') {
+        errorCallback = callback as (value: string | null) => void
+      } else {
+        return originalSubscribeKey(key, callback)
       }
       return vi.fn()
     })
@@ -74,6 +81,9 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
+    PayController.state.paymentType = 'wallet'
+    PayController.state.payResult = { type: 'wallet', result: '0xSuccessHash' }
+
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
     }
@@ -97,6 +107,8 @@ describe('W3mPayLoadingView', () => {
     await elementUpdated(element)
 
     PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
+    PayController.state.payResult = undefined
+
     if (errorCallback) {
       errorCallback(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
     }
@@ -120,6 +132,7 @@ describe('W3mPayLoadingView', () => {
     await elementUpdated(element)
 
     PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
+    PayController.state.payResult = undefined
 
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
@@ -156,8 +169,6 @@ describe('W3mPayLoadingView', () => {
     vi.useFakeTimers()
 
     await fixture<W3mPayLoadingView>(html`<w3m-pay-loading-view></w3m-pay-loading-view>`)
-
-    PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
 
     if (paymentProgressCallback) {
       paymentProgressCallback(false)

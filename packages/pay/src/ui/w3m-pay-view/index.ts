@@ -25,7 +25,6 @@ import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
-import { AppKitPayError } from '../../types/errors.js'
 import styles from './styles.js'
 
 @customElement('w3m-pay-view')
@@ -209,15 +208,9 @@ export class W3mPayView extends LitElement {
   }
 
   private async onExchangePayment(exchangeId: string) {
-    this.loadingExchangeId = exchangeId
     try {
+      this.loadingExchangeId = exchangeId
       await PayController.handlePayWithExchange(exchangeId)
-    } catch (error) {
-      if (error instanceof AppKitPayError) {
-        SnackController.showError(error.message)
-      } else {
-        SnackController.showError('Failed to initiate payment')
-      }
     } finally {
       this.loadingExchangeId = null
     }
