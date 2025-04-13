@@ -16,6 +16,8 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
 
+import { WalletUtil } from '../../utils/WalletUtil.js'
+
 @customElement('w3m-connect-recent-widget')
 export class W3mConnectRecentWidget extends LitElement {
   // -- Members ------------------------------------------- //
@@ -47,6 +49,7 @@ export class W3mConnectRecentWidget extends LitElement {
     const recentWallets = StorageUtil.getRecentWallets()
 
     const filteredRecentWallets = recentWallets
+      .filter(wallet => !WalletUtil.isExcluded(wallet))
       .filter(wallet => !this.hasWalletConnector(wallet))
       .filter(wallet => this.isWalletCompatibleWithCurrentChain(wallet))
 

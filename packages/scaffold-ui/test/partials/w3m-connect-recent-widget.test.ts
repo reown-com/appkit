@@ -5,6 +5,7 @@ import { html } from 'lit'
 
 import type { CaipNetworkId } from '@reown/appkit-common'
 import {
+  ApiController,
   ChainController,
   ConnectorController,
   RouterController,
@@ -244,5 +245,93 @@ describe('W3mConnectRecentWidget', () => {
 
     const walletName = walletElements?.[0]?.getAttribute('name')
     expect(walletName).toBe('Solana Wallet')
+  })
+
+  it('should filter out excluded wallets by rdns', async () => {
+    const recentWallets = [
+      {
+        id: 'excluded1',
+        name: 'Excluded Wallet 1',
+        rdns: 'io.excluded.wallet1',
+        chains: ['eip155:1'] as CaipNetworkId[]
+      },
+      {
+        id: 'included1',
+        name: 'Included Wallet 1',
+        rdns: 'io.included.wallet1',
+        chains: ['eip155:1'] as CaipNetworkId[]
+      },
+      {
+        id: 'included2',
+        name: 'Included Wallet 2',
+        rdns: 'io.included.wallet2',
+        chains: ['eip155:1'] as CaipNetworkId[]
+      }
+    ]
+
+    const excludedWallets = [{ rdns: 'io.excluded.wallet1', name: 'Excluded Wallet 1' }]
+
+    vi.spyOn(ApiController.state, 'excludedWallets', 'get').mockReturnValue(excludedWallets)
+    vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue(recentWallets)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
+
+    const element: W3mConnectRecentWidget = await fixture(
+      html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
+    )
+
+    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    expect(walletElements?.length).toBe(2)
+
+    const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
+    expect(walletNames).toContain('Included Wallet 1')
+    expect(walletNames).toContain('Included Wallet 2')
+    expect(walletNames).not.toContain('Excluded Wallet 1')
+  })
+
+  it('should filter out wallets excluded by name', async () => {
+    const recentWallets = [
+      {
+        id: 'excluded1',
+        name: 'Excluded Wallet 1',
+        rdns: 'io.wallet1',
+        chains: ['eip155:1'] as CaipNetworkId[]
+      },
+      {
+        id: 'excluded2',
+        name: 'Excluded Wallet 2',
+        rdns: 'io.wallet2',
+        chains: ['eip155:1'] as CaipNetworkId[]
+      },
+      {
+        id: 'included1',
+        name: 'Included Wallet 1',
+        rdns: 'io.wallet3',
+        chains: ['eip155:1'] as CaipNetworkId[]
+      }
+    ]
+
+    const excludedWallets = [{ rdns: '', name: 'Excluded Wallet 2' }]
+
+    vi.spyOn(ApiController.state, 'excludedWallets', 'get').mockReturnValue(excludedWallets)
+    vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue(recentWallets)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
+
+    const element: W3mConnectRecentWidget = await fixture(
+      html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
+    )
+
+    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    expect(walletElements?.length).toBe(2)
+
+    const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
+    expect(walletNames).toContain('Excluded Wallet 1')
+    expect(walletNames).toContain('Included Wallet 1')
+    expect(walletNames).not.toContain('Excluded Wallet 2')
   })
 })
