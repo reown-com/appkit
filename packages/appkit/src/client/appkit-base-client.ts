@@ -1575,7 +1575,12 @@ export abstract class AppKitBaseClient {
       status: accountState.status,
       embeddedWalletInfo: authConnector
         ? {
-            user: accountState.user,
+            user: accountState.user
+              ? {
+                  ...accountState.user,
+                  username: StorageUtil.getConnectedSocialUsername()
+                }
+              : undefined,
             authProvider:
               accountState.socialProvider ||
               ('email' as AccountControllerState['socialProvider'] | 'email'),
