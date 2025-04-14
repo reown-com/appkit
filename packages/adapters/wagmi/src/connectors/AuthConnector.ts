@@ -4,7 +4,7 @@ import type { Address } from 'viem'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { NetworkUtil } from '@reown/appkit-common'
-import { AccountController, AlertController, OptionsController } from '@reown/appkit-controllers'
+import { AccountController, AlertController } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
@@ -77,9 +77,7 @@ export function authConnector(parameters: AuthParameters) {
       }
     }
 
-    const preferredAccountType =
-      AccountController.state.preferredAccountType ||
-      OptionsController.state.defaultAccountTypes.eip155
+    const preferredAccountType = AccountController.state.preferredAccountTypes?.eip155
 
     const {
       address,
@@ -176,9 +174,7 @@ export function authConnector(parameters: AuthParameters) {
         }
         const provider = await this.getProvider()
 
-        const preferredAccountType =
-          AccountController.state.preferredAccountType ||
-          OptionsController.state.defaultAccountTypes.eip155
+        const preferredAccountType = AccountController.state.preferredAccountTypes?.eip155
 
         // We connect instead, since changing the chain may cause the address to change as well
         const response = await provider.connect({
