@@ -1,7 +1,12 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil,
+  ParseUtil
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -19,7 +24,7 @@ import {
 } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
-import type { PaymentOptions } from '../types/options.js'
+import type { AddressOrNative, PaymentOptions } from '../types/options.js'
 import { getExchanges, getPayUrl } from '../utils/ApiUtil.js'
 import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
@@ -40,6 +45,14 @@ export interface PayControllerState extends PaymentOptions {
   exchanges: Exchange[]
   payResult?: PayResult
   paymentType: PaymentType
+}
+
+// Define a type for the parameters passed to getPayUrl
+type PayUrlParams = {
+  network: CaipNetworkId
+  asset: AddressOrNative
+  amount: number | string
+  recipient: string
 }
 
 type StateKey = keyof PayControllerState
@@ -160,14 +173,14 @@ export const PayController = {
     }
   },
 
-  async getPayUrl(exchangeId: string) {
+  async getPayUrl(exchangeId: string, params: PayUrlParams) {
     try {
-      const amount = Number(state.paymentAsset.amount)
+      const numericAmount = Number(params.amount)
       const response = await getPayUrl({
         exchangeId,
-        asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
-        amount: amount.toString(16),
-        recipient: `${state.paymentAsset.network}:${state.paymentAsset.recipient}`
+        asset: formatCaip19Asset(params.network, params.asset),
+        amount: numericAmount.toString(16),
+        recipient: `${params.network}:${params.recipient}`
       })
 
       return response.url
@@ -176,6 +189,25 @@ export const PayController = {
         throw new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
       }
       throw new Error((error as Error).message)
+    }
+  },
+
+  async openPayUrl(exchangeId: string, params: PayUrlParams, openInNewTab = true) {
+    try {
+      const payUrl = await this.getPayUrl(exchangeId, params)
+      if (!payUrl) {
+        throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
+      }
+
+      const target = openInNewTab ? '_blank' : '_self'
+      CoreHelperUtil.openHref(payUrl, target)
+    } catch (error) {
+      if (error instanceof AppKitPayError) {
+        state.error = error.message
+      } else {
+        state.error = AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
+      }
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
     }
   },
 
@@ -318,7 +350,9 @@ export const PayController = {
     try {
       state.paymentType = 'exchange'
       state.isPaymentInProgress = false
-      const payUrl = await this.getPayUrl(exchangeId)
+      const { network, asset, amount, recipient } = state.paymentAsset
+      const payUrlParams: PayUrlParams = { network, asset, amount, recipient }
+      const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
         throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
       }

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -195,9 +195,14 @@ describe('PayController', () => {
 
   describe('getPayUrl', () => {
     it('should return pay URL from API', async () => {
-      PayController.setPaymentConfig(mockPaymentOptions)
-
-      const result = await PayController.getPayUrl('coinbase')
+      // No need to setPaymentConfig here, as parameters are passed directly
+      const params = {
+        network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
+        asset: mockPaymentOptions.paymentAsset.asset,
+        amount: mockPaymentOptions.paymentAsset.amount,
+        recipient: mockPaymentOptions.paymentAsset.recipient
+      }
+      const result = await PayController.getPayUrl('coinbase', params)
 
       expect(ApiUtil.getPayUrl).toHaveBeenCalledWith({
         exchangeId: 'coinbase',
@@ -210,16 +215,28 @@ describe('PayController', () => {
 
     it('should handle API errors', async () => {
       vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(new Error('API error'))
+      const params = {
+        network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
+        asset: mockPaymentOptions.paymentAsset.asset,
+        amount: mockPaymentOptions.paymentAsset.amount,
+        recipient: mockPaymentOptions.paymentAsset.recipient
+      }
 
-      await expect(PayController.getPayUrl('coinbase')).rejects.toThrow('API error')
+      await expect(PayController.getPayUrl('coinbase', params)).rejects.toThrow('API error')
     })
 
     it('should handle asset not supported error', async () => {
       vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(
         new Error('Asset is not supported by the selected exchange')
       )
+      const params = {
+        network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
+        asset: mockPaymentOptions.paymentAsset.asset,
+        amount: mockPaymentOptions.paymentAsset.amount,
+        recipient: mockPaymentOptions.paymentAsset.recipient
+      }
 
-      await expect(PayController.getPayUrl('coinbase')).rejects.toThrow(
+      await expect(PayController.getPayUrl('coinbase', params)).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
       )
     })
@@ -329,7 +346,6 @@ describe('PayController', () => {
 
   describe('handlePayWithWallet', () => {
     it('should redirect to Connect if no caipAddress', () => {
-      // Mock no address
       Object.defineProperty(AccountController.state, 'caipAddress', {
         get: vi.fn(() => null),
         configurable: true
@@ -341,7 +357,6 @@ describe('PayController', () => {
     })
 
     it('should redirect to Connect if parseCaipAddress returns incomplete data', () => {
-      // Use any to bypass type checking for test purposes
       vi.spyOn(ParseUtil, 'parseCaipAddress').mockReturnValueOnce({
         chainId: null,
         address: null,
@@ -367,29 +382,45 @@ describe('PayController', () => {
   describe('handlePayWithExchange', () => {
     it('should get pay URL and open it in new tab', async () => {
       PayController.state.openInNewTab = true
+      PayController.setPaymentConfig(mockPaymentOptions)
+      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl')
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
       await PayController.handlePayWithExchange('coinbase')
 
-      expect(ApiUtil.getPayUrl).toHaveBeenCalled()
+      expect(getPayUrlSpy).toHaveBeenCalledWith('coinbase', {
+        network: mockPaymentOptions.paymentAsset.network,
+        asset: mockPaymentOptions.paymentAsset.asset,
+        amount: mockPaymentOptions.paymentAsset.amount,
+        recipient: mockPaymentOptions.paymentAsset.recipient
+      })
       expect(RouterController.push).toHaveBeenCalledWith('PayLoading')
       expect(openHrefSpy).toHaveBeenCalledWith(mockPayUrlResponse.url, '_blank')
     })
 
     it('should get pay URL and open it in same tab', async () => {
-      vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValue(mockPayUrlResponse)
-      vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+      PayController.setPaymentConfig(mockPaymentOptions)
+
+      const getPayUrlSpy = vi
+        .spyOn(PayController, 'getPayUrl')
+        .mockResolvedValue(mockPayUrlResponse.url)
+
+      const routerPushSpy = vi.spyOn(RouterController, 'push')
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+      const snackErrorSpy = vi.spyOn(SnackController, 'showError')
 
       PayController.state.openInNewTab = false
       await PayController.handlePayWithExchange('coinbase')
 
-      expect(RouterController.push).toHaveBeenCalledWith('PayLoading')
+      expect(getPayUrlSpy).toHaveBeenCalled()
+      expect(snackErrorSpy).not.toHaveBeenCalled()
+      expect(routerPushSpy).toHaveBeenCalledWith('PayLoading')
       expect(openHrefSpy).toHaveBeenCalledWith(mockPayUrlResponse.url, '_self')
     })
 
     it('should set error state and show snackbar if unable to get pay URL', async () => {
-      vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValueOnce({ url: null } as any)
+      PayController.setPaymentConfig(mockPaymentOptions)
+      vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(null as any)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
       await PayController.handlePayWithExchange('coinbase')
@@ -401,8 +432,9 @@ describe('PayController', () => {
     })
 
     it('should handle generic error during exchange payment', async () => {
+      PayController.setPaymentConfig(mockPaymentOptions)
       const genericError = new Error('Generic Error')
-      vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(genericError)
+      vi.spyOn(PayController, 'getPayUrl').mockRejectedValueOnce(genericError)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
       await PayController.handlePayWithExchange('coinbase')
@@ -411,6 +443,80 @@ describe('PayController', () => {
       expect(SnackController.showError).toHaveBeenCalledWith(
         AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
       )
+    })
+  })
+
+  describe('openPayUrl', () => {
+    const params = {
+      network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
+      asset: mockPaymentOptions.paymentAsset.asset,
+      amount: mockPaymentOptions.paymentAsset.amount,
+      recipient: mockPaymentOptions.paymentAsset.recipient
+    }
+    const exchangeId = 'coinbase'
+    const mockUrl = 'https://pay.test/url'
+
+    it('should get pay URL and open it in new tab by default', async () => {
+      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(mockUrl)
+      const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+
+      await PayController.openPayUrl(exchangeId, params)
+
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(openHrefSpy).toHaveBeenCalledWith(mockUrl, '_blank')
+      expect(SnackController.showError).not.toHaveBeenCalled()
+    })
+
+    it('should get pay URL and open it in same tab when openInNewTab is false', async () => {
+      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(mockUrl)
+      const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+
+      await PayController.openPayUrl(exchangeId, params, false)
+
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(openHrefSpy).toHaveBeenCalledWith(mockUrl, '_self')
+      expect(SnackController.showError).not.toHaveBeenCalled()
+    })
+
+    it('should handle error if getPayUrl returns null', async () => {
+      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(null as any)
+      const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+
+      await expect(PayController.openPayUrl(exchangeId, params)).rejects.toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
+      )
+
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(openHrefSpy).not.toHaveBeenCalled()
+      expect(PayController.state.error).toBe(AppKitPayErrorMessages.UNABLE_TO_GET_PAY_URL)
+    })
+
+    it('should handle AppKitPayError from getPayUrl', async () => {
+      const originalError = new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
+      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockRejectedValue(originalError)
+      const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+
+      await expect(PayController.openPayUrl(exchangeId, params)).rejects.toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
+      )
+
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(openHrefSpy).not.toHaveBeenCalled()
+      expect(PayController.state.error).toBe(AppKitPayErrorMessages.ASSET_NOT_SUPPORTED)
+    })
+
+    it('should handle generic error from getPayUrl', async () => {
+      const originalError = new Error('Generic network error')
+      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockRejectedValue(originalError)
+      const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+
+      await expect(PayController.openPayUrl(exchangeId, params)).rejects.toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
+      )
+
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(openHrefSpy).not.toHaveBeenCalled()
+      expect(PayController.state.error).toBe(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
     })
   })
 
