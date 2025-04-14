@@ -48,6 +48,10 @@ export const PublicStateController = {
     return sub(state, () => callback(state))
   },
 
+  subscribeOpen(callback: (newState: PublicStateControllerState['open']) => void) {
+    return sub(state, () => callback(state.open))
+  },
+
   set(newState: Partial<PublicStateControllerState>) {
     Object.assign(state, { ...state, ...newState })
   }
