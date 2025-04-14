@@ -4,6 +4,7 @@ import {
   type BitcoinProvider,
   type BtcRequestMethod,
   type BtcRequests,
+  MessageSigningProtocols,
   type Params,
   type RpcErrorResponse,
   type RpcSuccessResponse,
@@ -87,6 +88,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
     this.bindEvents()
 
+    this.emit('accountsChanged', [address])
+
     return address
   }
 
@@ -124,7 +127,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    const res = await this.internalRequest('signMessage', params)
+    const protocol = params.protocol?.toUpperCase() as MessageSigningProtocols
+    const res = await this.internalRequest('signMessage', { ...params, protocol })
 
     return res.signature
   }

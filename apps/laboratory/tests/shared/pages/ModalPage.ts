@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
@@ -74,6 +75,20 @@ export class ModalPage {
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
+    this.page.on('console', async msg => {
+      const args = msg.args()
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < args.length; i++) {
+        if (msg.type() === 'error' && msg.type() === 'warning') {
+          try {
+            const val = await args[i]?.jsonValue()
+            console.log(`[console.${msg.type()}]`, val)
+          } catch (err) {
+            console.log(`[console.${msg.type()}] Could not serialize arg`, i, msg.text())
+          }
+        }
+      }
+    })
   }
 
   async load() {
@@ -375,36 +390,34 @@ export class ModalPage {
     }
   }
 
-  async signatureRequestFrameShouldVisible(headerText: string) {
-    await expect(
-      this.page.frameLocator('#w3m-iframe').getByText(headerText),
-      'AppKit iframe should be visible'
-    ).toBeVisible({
-      timeout: 10000
-    })
-    await this.page.waitForTimeout(500)
+  async waitForFrameWithHeader(headerText: string) {
+    const signatureHeader = this.page.frameLocator('#w3m-iframe').getByText(headerText)
+    await signatureHeader.waitFor({ state: 'visible', timeout: 15_000 })
   }
 
   async clickSignatureRequestButton(name: string) {
     const signatureHeader = this.page.getByText('Approve Transaction')
-    await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
-    await expect(signatureHeader, 'Signature request should be closed').not.toBeVisible()
-    await this.page.waitForTimeout(500)
+    const signatureButton = this.page
+      .frameLocator('#w3m-iframe')
+      .getByRole('button', { name, exact: true })
+    await signatureButton.waitFor({ state: 'visible', timeout: 15_000 })
+    await signatureButton.click()
+    await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
   async approveSign() {
-    await this.signatureRequestFrameShouldVisible('requests a signature')
+    await this.waitForFrameWithHeader('requests a signature')
     await this.clickSignatureRequestButton('Sign')
     await this.page.waitForTimeout(1000)
   }
 
   async rejectSign() {
-    await this.signatureRequestFrameShouldVisible('requests a signature')
+    await this.waitForFrameWithHeader('requests a signature')
     await this.clickSignatureRequestButton('Cancel')
   }
 
   async approveMultipleTransactions() {
-    await this.signatureRequestFrameShouldVisible('requests multiple transactions')
+    await this.waitForFrameWithHeader('requests multiple transactions')
     await this.clickSignatureRequestButton('Approve')
   }
 
@@ -476,7 +489,10 @@ export class ModalPage {
   }
 
   async closeModal() {
-    await this.page.getByTestId('w3m-header-close')?.click?.()
+    const closeButton = this.page.getByTestId('w3m-header-close')
+    await closeButton.waitFor({ state: 'visible' })
+    await closeButton.click()
+    await closeButton.waitFor({ state: 'hidden' })
     // Wait for the modal fade out animation
     await this.page.waitForTimeout(300)
   }
@@ -498,8 +514,8 @@ export class ModalPage {
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
       timeout: 20_000
     })
-    const confirmCurrentEmail = await this.page.getByText('Confirm Current Email').isVisible()
-    if (confirmCurrentEmail) {
+    const shouldConfirmEmail = await this.page.getByText('Confirm Current Email').isVisible()
+    if (shouldConfirmEmail) {
       await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm Current Email')
     }
 

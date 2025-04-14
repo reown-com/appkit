@@ -76,6 +76,7 @@ smartAccountSiweTest('it should switch to a smart account enabled network and si
   await validator.expectSwitchedNetworkWithNetworkView()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
 
   await page.sign()
   await page.approveSign()
@@ -89,7 +90,7 @@ smartAccountSiweTest('it should switch to a not enabled network and sign with EO
   await page.page.waitForTimeout(1000)
   await page.promptSiwe()
   await page.approveSign()
-
+  await validator.expectAuthenticated()
   await page.openAccount()
   // Shouldn't show the toggle on a non enabled network
   await validator.expectTogglePreferredTypeVisible(false)
