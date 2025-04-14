@@ -61,7 +61,10 @@ export const ConnectorUtil = {
     const rdns = connector.info?.rdns
 
     const isRDNSExcluded =
-      Boolean(rdns) && ApiController.state.excludedWallets.some(wallet => wallet.rdns === rdns)
+      Boolean(rdns) &&
+      ApiController.state.excludedWallets.some(
+        wallet => Boolean(wallet.rdns) && wallet.rdns === rdns
+      )
 
     const isNameExcluded =
       Boolean(connector.name) &&
@@ -83,7 +86,10 @@ export const ConnectorUtil = {
       }
     }
 
-    if (connector.type === 'ANNOUNCED' && (isRDNSExcluded || isNameExcluded)) {
+    if (
+      (connector.type === 'ANNOUNCED' || connector.type === 'EXTERNAL') &&
+      (isRDNSExcluded || isNameExcluded)
+    ) {
       return false
     }
 
