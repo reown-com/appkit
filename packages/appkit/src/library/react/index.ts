@@ -1,7 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 
-import { useSnapshot } from 'valtio'
-
 import type { ChainNamespace } from '@reown/appkit-common'
 import type {
   AppKitAccountButton,
@@ -13,6 +11,7 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
+import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import type {
@@ -56,14 +55,22 @@ export function getAppKit(appKit: AppKit) {
 export * from '@reown/appkit-controllers/react'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
-  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
+  const [state, setState] = useState<ProviderStoreUtilState>(() => ({
+    providers: { ...ProviderUtil.state.providers },
+    providerIds: { ...ProviderUtil.state.providerIds }
+  }))
 
-  const walletProvider = providers[chainNamespace] as T
-  const walletProviderType = providerIds[chainNamespace]
+  useEffect(() => {
+    const unsubscribe = ProviderUtil.subscribe(newState => {
+      setState(newState)
+    })
+
+    return unsubscribe
+  }, [])
 
   return {
-    walletProvider,
-    walletProviderType
+    walletProvider: state.providers[chainNamespace] as T,
+    walletProviderType: state.providerIds[chainNamespace]
   }
 }
 
