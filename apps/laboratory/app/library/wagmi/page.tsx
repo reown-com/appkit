@@ -15,12 +15,14 @@ import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
+console.log('Creating wagmi adapter')
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId
 })
 
+console.log('Creating appkit')
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,

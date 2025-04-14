@@ -1196,5 +1196,5 @@ export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 're
  * @default
  */
 export type PreferredAccountTypes = {
-  [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key] | undefined
+  [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key]
 }

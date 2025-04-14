@@ -71,7 +71,7 @@ const DEFAULT_PENDING_TRANSACTIONS_FILTER = {
 }
 
 export class WagmiAdapter extends AdapterBlueprint {
-  public wagmiChains: readonly [Chain, ...Chain[]] | undefined
+  public wagmiChains: readonly [Chain, ...Chain[]]
   public wagmiConfig!: Config
 
   private pendingTransactionsFilter: PendingTransactionsFilter
@@ -103,7 +103,19 @@ export class WagmiAdapter extends AdapterBlueprint {
       ...(configParams.pendingTransactionsFilter ?? {})
     }
 
-    this.createConfig({ ...configParams, networks })
+    this.wagmiChains = networks.filter(
+      caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
+    ) as unknown as [BaseNetwork, ...BaseNetwork[]]
+    this.wagmiConfig = createConfig({
+      ...configParams,
+      chains: this.wagmiChains,
+      connectors: [...(configParams.connectors ?? [])],
+      transports: this.getTransports(configParams)
+    } as CreateConfigParameters)
+  }
+
+  public override construct(params: AdapterBlueprint.Params): void {
+    super.construct(params)
     this.setupWatchers()
   }
 
@@ -145,19 +157,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     return this.wagmiConfig.connectors.find(c => c.id === id)
   }
 
-  private createConfig(
+  private getTransports(
     configParams: Partial<CreateConfigParameters> & {
-      networks: CaipNetwork[]
       projectId: string
       customRpcUrls?: CustomRpcUrlMap
     }
   ) {
-    this.wagmiChains = configParams.networks.filter(
-      caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
-    ) as unknown as [BaseNetwork, ...BaseNetwork[]]
-
     const transports: CreateConfigParameters['transports'] = {}
-    const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
     this.wagmiChains.forEach(element => {
       const fromTransportProp = configParams.transports?.[element.id]
@@ -178,12 +184,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     })
 
-    this.wagmiConfig = createConfig({
-      ...configParams,
-      chains: this.wagmiChains,
-      connectors,
-      transports
-    } as CreateConfigParameters)
+    return transports
   }
 
   private setupWatchPendingTransactions() {
@@ -211,6 +212,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchers() {
+    console.log('setupWatchers', this.wagmiConfig)
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
         if (accountData.status === 'disconnected' && prevAccountData.address) {

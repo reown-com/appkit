@@ -290,7 +290,7 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
-    await ConnectionController.setPreferredAccountType(accountTypeTarget)
+    await ConnectionController.setPreferredAccountType(accountTypeTarget, namespace)
 
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

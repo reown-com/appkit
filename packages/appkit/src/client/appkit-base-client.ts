@@ -238,10 +238,16 @@ export abstract class AppKitBaseClient {
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
-    if (options.defaultAccountTypes) {
-      OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
-      AccountController.setPreferredAccountTypes(OptionsController.state.defaultAccountTypes)
-    }
+
+    // Save option in controller
+    OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
+
+    // Get stored account types
+    const storedAccountTypes = StorageUtil.getPreferredAccountTypes()
+    const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
+
+    console.log('defaultTypes', defaultTypes)
+    AccountController.setPreferredAccountTypes(defaultTypes)
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
@@ -641,13 +647,12 @@ export abstract class AppKitBaseClient {
       const blueprint = blueprints?.find(b => b.namespace === namespace)
 
       if (blueprint) {
-        adapters[namespace] = blueprint
-        adapters[namespace].namespace = namespace
-        adapters[namespace].construct({
+        blueprint.construct({
           namespace,
           projectId: this.options?.projectId,
           networks: this.getCaipNetworks()
         })
+        adapters[namespace] = blueprint
       } else {
         adapters[namespace as ChainNamespace] = new UniversalAdapter({
           namespace: namespace as ChainNamespace,

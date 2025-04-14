@@ -205,7 +205,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   defaultAccountTypes: {
     solana: 'eoa',
     bip122: 'payment',
-    polkadot: 'eoa'
+    polkadot: 'eoa',
+    eip155: 'smartAccount'
   },
   enableNetworkSwitch: true
 })

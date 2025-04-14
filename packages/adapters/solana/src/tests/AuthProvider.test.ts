@@ -1,12 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import {
-  AccountController,
-  OptionsController,
-  type OptionsControllerState,
-  type PreferredAccountTypes
-} from '@reown/appkit-controllers'
+import { AccountController, type PreferredAccountTypes } from '@reown/appkit-controllers'
 
 import { AuthProvider } from '../providers/AuthProvider'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'

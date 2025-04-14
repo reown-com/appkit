@@ -27,8 +27,6 @@ import {
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  OptionsController,
-  type OptionsControllerState,
   type PreferredAccountTypes
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'

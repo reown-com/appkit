@@ -9,8 +9,6 @@ import {
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  OptionsController,
-  type OptionsControllerState,
   type Provider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
