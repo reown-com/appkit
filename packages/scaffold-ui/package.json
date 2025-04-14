@@ -89,7 +89,7 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "lit": "3.1.0"
+    "lit": "3.2.1"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
