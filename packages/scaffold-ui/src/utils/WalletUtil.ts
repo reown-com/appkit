@@ -6,6 +6,7 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
@@ -108,5 +109,17 @@ export const WalletUtil = {
     }
 
     return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
+  },
+  isExcluded(wallet: WcWallet) {
+    const isRDNSExcluded =
+      Boolean(wallet.rdns) && ApiController.state.excludedWallets.some(w => w.rdns === wallet.rdns)
+
+    const isNameExcluded =
+      Boolean(wallet.name) &&
+      ApiController.state.excludedWallets.some(w =>
+        HelpersUtil.isLowerCaseMatch(w.name, wallet.name)
+      )
+
+    return isRDNSExcluded || isNameExcluded
   }
 }
