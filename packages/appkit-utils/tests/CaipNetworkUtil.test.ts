@@ -1,4 +1,5 @@
 import { http } from 'viem'
+import { immutableZkEvmTestnet } from 'viem/chains'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork, ConstantsUtil, type CustomRpcUrlMap } from '@reown/appkit-common'
@@ -268,6 +269,15 @@ describe('CaipNetworksUtil', () => {
           }
         }
       )
+    })
+
+    it('should create transport with deafult RPC URL if blockchain API is not supported', () => {
+      CaipNetworksUtil.getViemTransport(
+        { ...immutableZkEvmTestnet, chainNamespace: 'eip155', caipNetworkId: 'eip155:1' },
+        mockProjectId
+      )
+
+      expect(http).toHaveBeenCalledWith(immutableZkEvmTestnet.rpcUrls.default.http?.[0])
     })
   })
 

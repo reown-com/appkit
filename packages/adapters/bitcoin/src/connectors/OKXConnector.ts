@@ -68,7 +68,9 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    return this.wallet.signMessage(params.message)
+    const protocol = params.protocol === 'bip322' ? 'bip322-simple' : params.protocol
+
+    return this.wallet.signMessage(params.message, protocol)
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {

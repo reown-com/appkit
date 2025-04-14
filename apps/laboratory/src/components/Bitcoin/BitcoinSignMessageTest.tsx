@@ -13,20 +13,21 @@ export function BitcoinSignMessageTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount({ namespace: 'bip122' })
 
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<string>('Hello, World!')
-
+  const [protocol, setProtocol] = useState<'bip322' | 'ecdsa'>()
   async function onSignMessage() {
     if (!walletProvider || !address) {
       throw Error('No connection detected')
     }
 
-    setLoading(true)
+    setIsLoading(true)
 
     try {
       const signature = await walletProvider.signMessage({
         address,
-        message
+        message,
+        protocol
       })
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
@@ -40,16 +41,28 @@ export function BitcoinSignMessageTest() {
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   return (
     <>
-      <Box display="flex" width="100%" gap="2" mb="2">
+      <Box display="flex" width="100%" gap="2" mb="2" flexDirection="column">
         <InputGroup>
           <InputLeftAddon>Message</InputLeftAddon>
           <Input value={message} onChange={e => setMessage(e.currentTarget.value)} />
+        </InputGroup>
+        <InputGroup>
+          <InputLeftAddon>Protocol</InputLeftAddon>
+          <Input
+            as="select"
+            value={protocol}
+            onChange={e => setProtocol(e.currentTarget.value as 'bip322' | 'ecdsa')}
+          >
+            <option value="">Select</option>
+            <option value="bip322">BIP-322</option>
+            <option value="ecdsa">ECDSA</option>
+          </Input>
         </InputGroup>
       </Box>
 
@@ -57,7 +70,7 @@ export function BitcoinSignMessageTest() {
         data-testid="sign-message-button"
         onClick={onSignMessage}
         width="auto"
-        isLoading={loading}
+        isLoading={isLoading}
       >
         Sign Message
       </Button>

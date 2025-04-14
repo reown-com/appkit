@@ -78,21 +78,29 @@ export interface AppKitOptionsWithSdk extends AppKitOptions {
 }
 
 // -- Types --------------------------------------------------------------------
-export interface OpenOptions {
-  view?:
-    | 'Account'
-    | 'Connect'
-    | 'Networks'
-    | 'ApproveTransaction'
-    | 'OnRampProviders'
-    | 'ConnectingWalletConnectBasic'
-    | 'Swap'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'AllWallets'
-    | 'WalletSend'
+
+export type Views =
+  | 'Account'
+  | 'Connect'
+  | 'Networks'
+  | 'ApproveTransaction'
+  | 'OnRampProviders'
+  | 'ConnectingWalletConnectBasic'
+  | 'Swap'
+  | 'WhatIsAWallet'
+  | 'WhatIsANetwork'
+  | 'AllWallets'
+  | 'WalletSend'
+
+type ViewArguments = {
+  Swap: NonNullable<RouterControllerState['data']>['swap']
+}
+
+export interface OpenOptions<View extends Views> {
+  view?: View
   uri?: string
   namespace?: ChainNamespace
+  arguments?: View extends keyof ViewArguments ? ViewArguments[View] : never
 }
 
 export abstract class AppKitBaseClient {
@@ -103,7 +111,6 @@ export abstract class AppKitBaseClient {
   protected universalProviderInitPromise?: Promise<void>
   protected caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
   protected defaultCaipNetwork?: CaipNetwork
-  protected hasSwitchedToPreferredAccountTypeOnConnect = false
 
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
@@ -122,7 +129,6 @@ export abstract class AppKitBaseClient {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
-    this.sendInitializeEvent(options)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -143,14 +149,17 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
-    await this.syncExistingConnection()
 
+    this.sendInitializeEvent(options)
     PublicStateController.set({ initialized: true })
+
+    await this.syncExistingConnection()
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
+    delete optionsCopy.universalProvider
 
     EventsController.sendEvent({
       type: 'track',
@@ -369,21 +378,16 @@ export abstract class AppKitBaseClient {
 
         const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
 
-        const res = await adapter
-          .connect({
-            id,
-            info,
-            type,
-            provider,
-            chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
-            rpcUrl:
-              caipNetwork?.rpcUrls?.default?.http?.[0] ||
-              fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
-          })
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.error('@appkit-base-client: connectExternal: error', error)
-          })
+        const res = await adapter.connect({
+          id,
+          info,
+          type,
+          provider,
+          chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
+          rpcUrl:
+            caipNetwork?.rpcUrls?.default?.http?.[0] ||
+            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
+        })
 
         if (!res) {
           return
@@ -391,9 +395,9 @@ export abstract class AppKitBaseClient {
 
         StorageUtil.addConnectedNamespace(chainToUse)
         this.syncProvider({ ...res, chainNamespace: chainToUse })
-        await this.syncAccount({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
+        this.setStatus('connected', chainToUse)
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -415,7 +419,6 @@ export abstract class AppKitBaseClient {
         ProviderUtil.resetChain(namespace)
         this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
-        this.hasSwitchedToPreferredAccountTypeOnConnect = false
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -1456,14 +1459,22 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open(options?: OpenOptions) {
+  public async open<View extends Views>(options?: OpenOptions<View>) {
     await this.injectModalUi()
 
     if (options?.uri) {
       ConnectionController.setUri(options.uri)
     }
 
-    await ModalController.open(options)
+    if (options?.arguments) {
+      switch (options?.view) {
+        case 'Swap':
+          return ModalController.open({ ...options, data: { swap: options.arguments } })
+        default:
+      }
+    }
+
+    return ModalController.open(options)
   }
 
   public async close() {
