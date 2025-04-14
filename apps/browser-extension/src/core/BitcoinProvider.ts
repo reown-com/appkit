@@ -3,12 +3,13 @@ import * as bip39 from 'bip39'
 import * as bitcoin from 'bitcoinjs-lib'
 import * as ecc from 'tiny-secp256k1'
 
+import { AccountUtil } from '../utils/AccountUtil'
 import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 bitcoin.initEccLib(ecc)
 
 const bip32 = BIP32Factory(ecc)
-const privateKey = '0x0000000000000000000000000000000000000000000000000000000000000000'
+const privateKey = AccountUtil.privateKeyBitcoin
 const mnemonic = privateKey ? privateKey : bip39.generateMnemonic()
 const seed = bip39.mnemonicToSeedSync(mnemonic)
 const root = bip32.fromSeed(seed)
