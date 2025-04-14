@@ -173,6 +173,18 @@ export const PayController = {
     }
   },
 
+  async getAvailableExchanges(page: number = DEFAULT_PAGE) {
+    try {
+      const response = await getExchanges({
+        page
+      })
+
+      return response.exchanges
+    } catch (error) {
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES)
+    }
+  },
+
   async getPayUrl(exchangeId: string, params: PayUrlParams) {
     try {
       const numericAmount = Number(params.amount)

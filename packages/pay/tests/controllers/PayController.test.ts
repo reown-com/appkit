@@ -540,4 +540,31 @@ describe('PayController', () => {
       expect(result).toEqual(mockExchanges)
     })
   })
+
+  describe('getAvailableExchanges', () => {
+    it('should call getExchanges with default page 0 and return exchanges', async () => {
+      const result = await PayController.getAvailableExchanges()
+
+      expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page: 0 })
+      expect(result).toEqual(mockExchanges)
+    })
+
+    it('should call getExchanges with the specified page number and return exchanges', async () => {
+      const page = 1
+      const result = await PayController.getAvailableExchanges(page)
+
+      expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page })
+      expect(result).toEqual(mockExchanges)
+    })
+
+    it('should throw AppKitPayError if getExchanges fails', async () => {
+      const apiError = new Error('API Error')
+      vi.spyOn(ApiUtil, 'getExchanges').mockRejectedValueOnce(apiError)
+
+      await expect(PayController.getAvailableExchanges()).rejects.toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES)
+      )
+      expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page: 0 })
+    })
+  })
 })
