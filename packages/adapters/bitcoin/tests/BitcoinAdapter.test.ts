@@ -94,6 +94,7 @@ describe('BitcoinAdapter', () => {
 
   describe('connect', () => {
     it('should return the chainId of the available chain from connector', async () => {
+      const bindEventsSpy = vi.spyOn(adapter as any, 'bindEvents')
       const connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
@@ -110,6 +111,7 @@ describe('BitcoinAdapter', () => {
         type: 'mock_type'
       })
 
+      expect(bindEventsSpy).toHaveBeenCalled()
       expect(result).toEqual({
         id: connector.id,
         type: connector.type,

@@ -263,3 +263,21 @@ describe('syncAdapterConnection', () => {
     expect(getCaipNetwork).toHaveBeenCalledWith('eip155')
   })
 })
+
+describe('connectExternal', () => {
+  it('should throw an error if connection gets declined', async () => {
+    const appKit = new AppKit(mockOptions)
+
+    vi.spyOn(mockEvmAdapter, 'connect').mockRejectedValue(new Error('Connection declined'))
+
+    await expect(
+      (appKit as any).connectionControllerClient['connectExternal']({
+        id: 'test-connector',
+        info: { name: 'Test Connector' },
+        type: 'injected',
+        provider: {},
+        chain: 'eip155'
+      })
+    ).rejects.toThrow('Connection declined')
+  })
+})
