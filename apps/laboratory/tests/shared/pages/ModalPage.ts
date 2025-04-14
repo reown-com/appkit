@@ -408,6 +408,7 @@ export class ModalPage {
   async approveSign() {
     await this.waitForFrameWithHeader('requests a signature')
     await this.clickSignatureRequestButton('Sign')
+    await this.page.waitForTimeout(1000)
   }
 
   async rejectSign() {

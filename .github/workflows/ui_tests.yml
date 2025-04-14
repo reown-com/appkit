@@ -8,11 +8,6 @@ on:
         default: 'main'
         required: false
         type: string
-      base-url:
-        description: 'The AppKit lab url'
-        default: 'http://localhost:3000/'
-        required: false
-        type: string
       wallet-url:
         description: 'The wallet url'
         default: 'https://react-wallet.walletconnect.com/'
@@ -72,17 +67,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: build packages and lab
-        run: pnpm build:laboratory
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
-          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-          SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-          SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
+      - name: build packages
+        run: pnpm build
 
-      - name: build extension
+      - name: Build extension
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
@@ -171,28 +159,22 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
-      # - name: Build MetaMask wallet cache
-      #   working-directory: ./apps/laboratory/
-      #   run: xvfb-run pnpm synpress
+      - name: Wait for Vercel Preview URL
+        uses: UnlyEd/github-action-await-vercel@v2.0
+        id: await-vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        with:
+          deployment-url: appkit-lab.reown.com # TODO Replace by the domain you want to test
+          timeout: 10 # Wait for 10 seconds before failing
+          poll-interval: 1 # Wait for 1 second before each retry
 
-      # - name: Run MetaMask Playwright tests (headful)
-      #   working-directory: ./apps/laboratory/
-      #   env:
-      #     BASE_URL: ${{ inputs.base-url }}
-      #     WALLET_URL: ${{ inputs.wallet-url }}
-      #     NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      #     SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
-      #     NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-      #     MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
-      #     NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-      #     SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-      #     SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-      #     CI: true
-      #   run: xvfb-run pnpm playwright:test:metamask
+      - name: Display deployment status
+        run: 'echo The deployment at ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }} is ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).readyState }}'
 
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ inputs.base-url }}
+          BASE_URL: https://${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }}/
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
@@ -209,6 +191,7 @@ jobs:
         if: matrix.shard == 1 # Run canary only on the first shard
         env:
           # DO NOT MODIFY THESE VARIABLES. If you need to add a variable here you MUST add it to the canary deployment first before publishing the canary.
+          BASE_URL: https://${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }}/
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
