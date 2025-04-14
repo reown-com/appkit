@@ -342,7 +342,7 @@ export class AppKit extends AppKitBaseClient {
         }
       })
       PublicStateController.subscribeOpen(isOpen => {
-        if (!isOpen) {
+        if (!isOpen && this.isTransactionStackEmpty()) {
           this.authProvider?.rejectRpcRequests()
         }
       })
