@@ -318,7 +318,7 @@ export class W3mModal extends LitElement {
   private prefetch() {
     if (!this.hasPrefetched) {
       ApiController.prefetch()
-      ApiController.fetchWallets({ page: 1 })
+      ApiController.fetchWalletsByPage({ page: 1 })
       this.hasPrefetched = true
     }
   }

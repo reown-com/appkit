@@ -75,7 +75,7 @@ export class W3mAllWalletsList extends LitElement {
     this.loading = true
     const gridEl = this.shadowRoot?.querySelector('wui-grid')
     if (gridEl) {
-      await ApiController.fetchWallets({ page: 1 })
+      await ApiController.fetchWalletsByPage({ page: 1 })
       await gridEl.animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: 200,
         fill: 'forwards',
@@ -141,7 +141,7 @@ export class W3mAllWalletsList extends LitElement {
         if (element?.isIntersecting && !this.loading) {
           const { page, count, wallets } = ApiController.state
           if (wallets.length < count) {
-            ApiController.fetchWallets({ page: page + 1 })
+            ApiController.fetchWalletsByPage({ page: page + 1 })
           }
         }
       })
