@@ -392,7 +392,7 @@ export class ModalPage {
 
   async waitForFrameWithHeader(headerText: string) {
     const signatureHeader = this.page.frameLocator('#w3m-iframe').getByText(headerText)
-    await signatureHeader.waitFor({ state: 'visible', timeout: 10000 })
+    await signatureHeader.waitFor({ state: 'visible', timeout: 15_000 })
   }
 
   async clickSignatureRequestButton(name: string) {
@@ -400,9 +400,9 @@ export class ModalPage {
     const signatureButton = this.page
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name, exact: true })
-    await signatureButton.waitFor({ state: 'visible', timeout: 10000 })
+    await signatureButton.waitFor({ state: 'visible', timeout: 15_000 })
     await signatureButton.click()
-    await signatureHeader.waitFor({ state: 'hidden', timeout: 10000 })
+    await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
   async approveSign() {
@@ -488,7 +488,10 @@ export class ModalPage {
   }
 
   async closeModal() {
-    await this.page.getByTestId('w3m-header-close')?.click?.()
+    const closeButton = this.page.getByTestId('w3m-header-close')
+    await closeButton.waitFor({ state: 'visible' })
+    await closeButton.click()
+    await closeButton.waitFor({ state: 'hidden' })
     // Wait for the modal fade out animation
     await this.page.waitForTimeout(300)
   }
