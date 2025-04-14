@@ -412,12 +412,14 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onTransactions() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     EventsController.sendEvent({
       type: 'track',
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { type CaipAddress, type CaipNetwork, NumberUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  NumberUtil
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -327,6 +332,8 @@ export class W3mSwapView extends LitElement {
   }
 
   private async onSwapPreview() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     if (this.fetchError) {
       await SwapController.swapTokens()
     }
@@ -340,7 +347,7 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

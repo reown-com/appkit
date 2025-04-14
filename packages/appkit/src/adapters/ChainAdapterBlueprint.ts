@@ -12,7 +12,6 @@ import {
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
-  OptionsController,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
@@ -242,8 +241,7 @@ export abstract class AdapterBlueprint<
     if (provider && providerType === 'AUTH') {
       const authProvider = provider as W3mFrameProvider
       const preferredAccountType =
-        AccountController.state.preferredAccountType ||
-        OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
+        AccountController.state.preferredAccountTypes?.[caipNetwork.chainNamespace]
       await authProvider.switchNetwork(caipNetwork.caipNetworkId)
       const user = await authProvider.getUser({
         chainId: caipNetwork.caipNetworkId,

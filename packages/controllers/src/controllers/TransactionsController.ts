@@ -1,6 +1,6 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 
-import type { Transaction } from '@reown/appkit-common'
+import type { ChainNamespace, Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -87,6 +87,7 @@ export const TransactionsController = {
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
     } catch (error) {
+      const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
       EventsController.sendEvent({
         type: 'track',
         event: 'ERROR_FETCH_TRANSACTIONS',
@@ -95,7 +96,7 @@ export const TransactionsController = {
           projectId: OptionsController.state.projectId,
           cursor: state.next,
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })

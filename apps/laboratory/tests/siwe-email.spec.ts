@@ -98,6 +98,7 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
 
   await page.sign(namespace)
   await page.approveSign()
@@ -108,6 +109,7 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
 
   await page.sign(namespace)
   await page.approveSign()
