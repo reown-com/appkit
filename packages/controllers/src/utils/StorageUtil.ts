@@ -575,7 +575,6 @@ export const StorageUtil = {
   getPreferredAccountTypes() {
     try {
       const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES)
-      console.log('result', result)
 
       return JSON.parse(result as string) as PreferredAccountTypes
     } catch {
