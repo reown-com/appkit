@@ -26,7 +26,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.19.2",
-    "valtio": "2.1.4"
+    "valtio": "1.13.2"
   },
   "optionalDependencies": {
     "@wagmi/connectors": ">=5.7.11"

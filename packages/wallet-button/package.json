@@ -41,7 +41,7 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.3.0",
-    "valtio": "2.1.4"
+    "valtio": "1.13.2"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
