@@ -131,7 +131,7 @@
     "valtio": "1.13.2",
     "viem": "2.23.13",
     "wagmi": "2.14.16",
-    "webauthn-p256": "0.0.10"
+    "webauthn-p256": "0.0.2"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.787.0",
