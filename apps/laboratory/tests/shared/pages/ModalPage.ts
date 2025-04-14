@@ -400,7 +400,7 @@ export class ModalPage {
     const signatureButton = this.page
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name, exact: true })
-    await signatureButton.waitFor({ state: 'visible' })
+    await signatureButton.waitFor({ state: 'visible', timeout: 10000 })
     await signatureButton.click()
     await signatureHeader.waitFor({ state: 'hidden', timeout: 10000 })
   }
