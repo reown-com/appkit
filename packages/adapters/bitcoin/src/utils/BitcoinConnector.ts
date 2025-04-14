@@ -106,7 +106,9 @@ export namespace BitcoinConnector {
   }
 }
 
-export function mapSatsConnectAddressPurpose(purpose: SatsConnectAddressPurpose): AddressPurpose {
+export function mapSatsConnectAddressPurpose(
+  purpose: SatsConnectAddressPurpose
+): AddressPurpose | undefined {
   switch (purpose) {
     case SatsConnectAddressPurpose.Payment:
       return AddressPurpose.Payment
@@ -115,6 +117,6 @@ export function mapSatsConnectAddressPurpose(purpose: SatsConnectAddressPurpose)
     case SatsConnectAddressPurpose.Stacks:
       return AddressPurpose.Stacks
     default:
-      throw new Error(`Unknown address purpose: ${purpose}`)
+      return undefined
   }
 }
