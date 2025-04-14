@@ -74,7 +74,6 @@ export class AppKit extends AppKitBaseClient {
         setTimeout(() => {
           this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
         }, 300)
-        console.log('>> REJECTING IN SETUP AUTH CONNECTOR LISTENERS')
         provider.rejectRpcRequests()
       }
     })
@@ -344,7 +343,6 @@ export class AppKit extends AppKitBaseClient {
       })
       PublicStateController.subscribeOpen(isOpen => {
         if (!isOpen) {
-          console.log('>> REJECTING IN PUBLIC STATE CONTROLLER')
           this.authProvider?.rejectRpcRequests()
         }
       })
