@@ -245,6 +245,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
 
+    this.emit('accountChanged', {
+      address,
+      chainId: params.chainId as string
+    })
+
     return {
       id: connector.id,
       address,

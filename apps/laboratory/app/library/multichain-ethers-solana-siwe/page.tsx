@@ -10,6 +10,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SiweData } from '@/src/components/Siwe/SiweData'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -44,12 +45,12 @@ ThemeStore.setModal(modal)
 
 export default function MultiChainEthersSolana() {
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <SiweData />
       <AppKitInfo />
       <EthersTests />
       <SolanaTests />
-    </>
+    </InitializeBoundary>
   )
 }

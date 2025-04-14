@@ -38,7 +38,7 @@ export interface ApiControllerState {
   wallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
-  excludedWallets: { rdns: string; name: string }[]
+  excludedWallets: { rdns?: string | null; name: string }[]
   isFetchingRecommendedWallets: boolean
 }
 
@@ -260,9 +260,7 @@ export const ApiController = {
 
     if (data) {
       data.forEach(wallet => {
-        if (wallet?.rdns) {
-          state.excludedWallets.push({ rdns: wallet.rdns, name: wallet.name })
-        }
+        state.excludedWallets.push({ rdns: wallet.rdns, name: wallet.name })
       })
     }
   },
