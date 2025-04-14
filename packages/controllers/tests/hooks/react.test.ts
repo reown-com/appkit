@@ -2,7 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 
-import { ChainController, ConnectionController, ConnectorController } from '../../exports/index.js'
+import {
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  StorageUtil
+} from '../../exports/index.js'
 import { useAppKitAccount, useAppKitNetworkCore, useDisconnect } from '../../exports/react.js'
 
 vi.mock('valtio', () => ({
@@ -123,6 +128,7 @@ describe('useAppKitAccount', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValueOnce({} as any)
+    vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
 
     useSnapshot.mockReturnValueOnce({
       activeChain: 'eip155',
@@ -139,8 +145,7 @@ describe('useAppKitAccount', () => {
               socialProvider: 'google',
               smartAccountDeployed: false,
               user: {
-                email: 'email@email.test',
-                userName: 'test'
+                email: 'email@email.test'
               }
             }
           }
@@ -159,7 +164,7 @@ describe('useAppKitAccount', () => {
       embeddedWalletInfo: {
         user: {
           email: 'email@email.test',
-          userName: 'test'
+          username: 'test-username'
         },
         authProvider: 'google',
         accountType: 'eoa',
