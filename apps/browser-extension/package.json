@@ -27,11 +27,11 @@
     "@wallet-standard/core": "1.1.0",
     "babel-loader": "9.1.3",
     "big.js": "6.2.2",
-    "bip32": "^4.0.0",
+    "bip32": "4.0.0",
     "bip39": "3.1.0",
     "bitcoinjs-lib": "6.1.7",
     "bs58": "6.0.0",
-    "buffer": "^6.0.3",
+    "buffer": "6.0.3",
     "clsx": "2.1.0",
     "copy-webpack-plugin": "12.0.2",
     "crypto": "1.0.1",
@@ -45,12 +45,12 @@
     "process": "0.11.10",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "stream-browserify": "^3.0.0",
+    "stream-browserify": "3.0.0",
     "tiny-secp256k1": "2.2.3",
     "tweetnacl": "1.0.3",
     "uuid": "10.0.0",
     "viem": "2.23.13",
-    "vm-browserify": "^1.1.2",
+    "vm-browserify": "1.1.2",
     "wagmi": "2.14.16",
     "wasm-loader": "1.3.0",
     "webpack": "5.94.0"
@@ -67,6 +67,6 @@
     "ts-loader": "9.5.1",
     "typescript": "5.7.3",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "5.2.1"
   }
 }
