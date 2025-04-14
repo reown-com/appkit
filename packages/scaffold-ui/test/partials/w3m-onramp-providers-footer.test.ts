@@ -5,6 +5,8 @@ import { html } from 'lit'
 
 import {
   AccountController,
+  ChainController,
+  type ChainControllerState,
   EventsController,
   OptionsController,
   RouterController
@@ -75,6 +77,10 @@ describe('W3mOnRampProvidersFooter', () => {
   it('should handle "How does it work?" click event', async () => {
     const eventsControllerSpy = vi.spyOn(EventsController, 'sendEvent')
     const routerControllerSpy = vi.spyOn(RouterController, 'push')
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    } as ChainControllerState)
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,

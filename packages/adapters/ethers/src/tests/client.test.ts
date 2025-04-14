@@ -320,9 +320,7 @@ describe('EthersAdapter', () => {
 
       expect(connect).toHaveBeenCalledWith({
         chainId: 1,
-        preferredAccountTypes: {
-          eip155: 'smartAccount'
-        }
+        preferredAccountType: 'smartAccount'
       })
     })
   })

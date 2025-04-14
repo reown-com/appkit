@@ -195,10 +195,14 @@ export const AccountController = {
     preferredAccountType: PreferredAccountTypes[ChainNamespace],
     chain: ChainNamespace
   ) {
-    state.preferredAccountTypes = {
-      ...state.preferredAccountTypes,
-      [chain]: preferredAccountType
-    }
+    ChainController.setAccountProp(
+      'preferredAccountTypes',
+      {
+        ...state.preferredAccountTypes,
+        [chain]: preferredAccountType
+      },
+      chain
+    )
   },
 
   setPreferredAccountTypes(preferredAccountTypes: PreferredAccountTypes) {
