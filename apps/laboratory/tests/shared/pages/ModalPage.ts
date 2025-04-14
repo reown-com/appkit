@@ -390,14 +390,9 @@ export class ModalPage {
     }
   }
 
-  async signatureRequestFrameShouldVisible(headerText: string) {
-    await expect(
-      this.page.frameLocator('#w3m-iframe').getByText(headerText),
-      'AppKit iframe should be visible'
-    ).toBeVisible({
-      timeout: 10000
-    })
-    await this.page.waitForTimeout(500)
+  async waitForFrameWithHeader(headerText: string) {
+    const signatureHeader = this.page.frameLocator('#w3m-iframe').getByText(headerText)
+    await signatureHeader.waitFor({ state: 'visible', timeout: 10000 })
   }
 
   async clickSignatureRequestButton(name: string) {
@@ -411,17 +406,17 @@ export class ModalPage {
   }
 
   async approveSign() {
-    await this.signatureRequestFrameShouldVisible('requests a signature')
+    await this.waitForFrameWithHeader('requests a signature')
     await this.clickSignatureRequestButton('Sign')
   }
 
   async rejectSign() {
-    await this.signatureRequestFrameShouldVisible('requests a signature')
+    await this.waitForFrameWithHeader('requests a signature')
     await this.clickSignatureRequestButton('Cancel')
   }
 
   async approveMultipleTransactions() {
-    await this.signatureRequestFrameShouldVisible('requests multiple transactions')
+    await this.waitForFrameWithHeader('requests multiple transactions')
     await this.clickSignatureRequestButton('Approve')
   }
 
@@ -515,8 +510,8 @@ export class ModalPage {
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
       timeout: 20_000
     })
-    const confirmCurrentEmail = await this.page.getByText('Confirm Current Email').isVisible()
-    if (confirmCurrentEmail) {
+    const shouldConfirmEmail = await this.page.getByText('Confirm Current Email').isVisible()
+    if (shouldConfirmEmail) {
       await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm Current Email')
     }
 
