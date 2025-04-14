@@ -500,10 +500,14 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
     }
 
-    await connect(this.wagmiConfig, {
+    const res = await connect(this.wagmiConfig, {
       connector: wagmiConnector,
       chainId: chainId ? Number(chainId) : undefined
     })
+
+    if (res.chainId !== Number(chainId)) {
+      await switchChain(this.wagmiConfig, { chainId: res.chainId })
+    }
 
     return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
   }
@@ -589,20 +593,26 @@ export class WagmiAdapter extends AdapterBlueprint {
 
       this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
         async resolve => {
-          const chainId = Number(params.chainId)
-          const balance = await getBalance(this.wagmiConfig, {
-            address: params.address as Hex,
-            chainId,
-            token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
-          })
+          try {
+            const chainId = Number(params.chainId)
+            const balance = await getBalance(this.wagmiConfig, {
+              address: params.address as Hex,
+              chainId,
+              token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
+            })
 
-          StorageUtil.updateNativeBalanceCache({
-            caipAddress,
-            balance: balance.formatted,
-            symbol: balance.symbol,
-            timestamp: Date.now()
-          })
-          resolve({ balance: balance.formatted, symbol: balance.symbol })
+            StorageUtil.updateNativeBalanceCache({
+              caipAddress,
+              balance: balance.formatted,
+              symbol: balance.symbol,
+              timestamp: Date.now()
+            })
+            resolve({ balance: balance.formatted, symbol: balance.symbol })
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.warn('Appkit:WagmiAdapter:getBalance - Error getting balance', error)
+            resolve({ balance: '0.00', symbol: 'ETH' })
+          }
         }
       ).finally(() => {
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete

@@ -129,7 +129,6 @@ export abstract class AppKitBaseClient {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
-    this.sendInitializeEvent(options)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -150,14 +149,17 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
-    await this.syncExistingConnection()
 
+    this.sendInitializeEvent(options)
     PublicStateController.set({ initialized: true })
+
+    await this.syncExistingConnection()
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
+    delete optionsCopy.universalProvider
 
     EventsController.sendEvent({
       type: 'track',
@@ -375,20 +377,17 @@ export abstract class AppKitBaseClient {
         }
 
         const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
-        const res = await adapter
-          .connect({
-            id,
-            info,
-            type,
-            provider,
-            chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
-            rpcUrl:
-              caipNetwork?.rpcUrls?.default?.http?.[0] ||
-              fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
-          })
-          .catch(error => {
-            console.warn('@appkit: connectExternal: error', error)
-          })
+
+        const res = await adapter.connect({
+          id,
+          info,
+          type,
+          provider,
+          chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
+          rpcUrl:
+            caipNetwork?.rpcUrls?.default?.http?.[0] ||
+            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
+        })
 
         if (!res) {
           return
@@ -1576,7 +1575,18 @@ export abstract class AppKitBaseClient {
       status: accountState.status,
       embeddedWalletInfo: authConnector
         ? {
-            user: accountState.user,
+            user: accountState.user
+              ? {
+                  ...accountState.user,
+                  /*
+                   * Getting the username from the chain controller works well for social logins,
+                   * but Farcaster uses a different connection flow and doesn’t emit the username via events.
+                   * Since the username is stored in local storage before the chain controller updates,
+                   * it’s safe to use the local storage value here.
+                   */
+                  username: StorageUtil.getConnectedSocialUsername()
+                }
+              : undefined,
             authProvider:
               accountState.socialProvider ||
               ('email' as AccountControllerState['socialProvider'] | 'email'),
