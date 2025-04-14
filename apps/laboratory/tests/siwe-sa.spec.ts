@@ -81,6 +81,7 @@ smartAccountSiweTest(
     await validator.expectSwitchedNetworkWithNetworkView()
     await page.promptSiwe()
     await page.approveSign()
+    await validator.expectAuthenticated()
 
     await page.sign(namespace)
     await page.approveSign()
