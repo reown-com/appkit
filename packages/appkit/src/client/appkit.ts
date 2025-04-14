@@ -14,7 +14,8 @@ import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
-  type Metadata
+  type Metadata,
+  PublicStateController
 } from '@reown/appkit-controllers'
 import {
   AccountController,
@@ -340,8 +341,8 @@ export class AppKit extends AppKitBaseClient {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
-      this.subscribeState(val => {
-        if (!val.open) {
+      PublicStateController.subscribeOpen(isOpen => {
+        if (!isOpen && this.isTransactionStackEmpty()) {
           this.authProvider?.rejectRpcRequests()
         }
       })
