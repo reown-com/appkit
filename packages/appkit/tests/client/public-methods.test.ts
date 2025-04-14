@@ -1082,6 +1082,7 @@ describe('Base Public methods', () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       id: 'auth-connector'
     } as unknown as AuthConnector)
+    vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
@@ -1105,7 +1106,7 @@ describe('Base Public methods', () => {
       isConnected: true,
       status: 'connected',
       embeddedWalletInfo: {
-        user: { email: 'test@example.com' },
+        user: { email: 'test@example.com', username: 'test-username' },
         authProvider: 'email',
         accountType: 'eoa',
         isSmartAccountDeployed: true
