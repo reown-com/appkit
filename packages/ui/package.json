@@ -429,22 +429,22 @@
     }
   },
   "dependencies": {
-    "lit": "3.1.0",
-    "qrcode": "1.5.3",
-    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-common": "workspace:*"
+    "@reown/appkit-wallet": "workspace:*",
+    "lit": "3.1.0",
+    "qrcode": "1.5.4"
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.1.2",
     "@vitest/coverage-v8": "2.1.9",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4",
-    "vitest": "2.1.9",
-    "@types/react": "19.0.0",
-    "@types/react-dom": "19.0.0",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "vitest": "2.1.9"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

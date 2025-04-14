@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-8",
+    "@walletconnect/ethereum-provider": "2.19.2",
     "ethers": "6.13.5",
     "react": "19.0.0",
     "react-dom": "19.0.0"
