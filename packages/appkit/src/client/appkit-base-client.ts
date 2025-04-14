@@ -128,7 +128,6 @@ export abstract class AppKitBaseClient {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
-    this.sendInitializeEvent(options)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -150,6 +149,7 @@ export abstract class AppKitBaseClient {
     await this.initChainAdapters()
     await this.injectModalUi()
 
+    this.sendInitializeEvent(options)
     PublicStateController.set({ initialized: true })
 
     await this.syncExistingConnection()
@@ -158,6 +158,7 @@ export abstract class AppKitBaseClient {
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
+    delete optionsCopy.universalProvider
 
     EventsController.sendEvent({
       type: 'track',
@@ -383,20 +384,17 @@ export abstract class AppKitBaseClient {
         }
 
         const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
-        const res = await adapter
-          .connect({
-            id,
-            info,
-            type,
-            provider,
-            chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
-            rpcUrl:
-              caipNetwork?.rpcUrls?.default?.http?.[0] ||
-              fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
-          })
-          .catch(error => {
-            console.warn('@appkit: connectExternal: error', error)
-          })
+
+        const res = await adapter.connect({
+          id,
+          info,
+          type,
+          provider,
+          chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
+          rpcUrl:
+            caipNetwork?.rpcUrls?.default?.http?.[0] ||
+            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
+        })
 
         if (!res) {
           return
