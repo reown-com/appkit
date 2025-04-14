@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -79,7 +80,11 @@ describe('W3mOnRampProvidersFooter', () => {
     const routerControllerSpy = vi.spyOn(RouterController, 'push')
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
-      activeChain: 'eip155'
+      activeChain: 'eip155',
+      activeCaipNetwork: {
+        chainNamespace: 'eip155',
+        chainId: '1'
+      } as unknown as CaipNetwork
     } as ChainControllerState)
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
@@ -112,6 +117,15 @@ describe('W3mOnRampProvidersFooter', () => {
   it('should handle "How does it work?" click event with non-smart account', async () => {
     const eventsControllerSpy = vi.spyOn(EventsController, 'sendEvent')
     const routerControllerSpy = vi.spyOn(RouterController, 'push')
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      activeCaipNetwork: {
+        chainNamespace: 'eip155',
+        chainId: '1'
+      } as unknown as CaipNetwork
+    } as ChainControllerState)
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
