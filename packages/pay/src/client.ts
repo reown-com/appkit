@@ -1,8 +1,20 @@
 import { PayController, type PayControllerState } from './controllers/PayController.js'
-import type { PaymentOptions } from './types/options.js'
+import type { PayUrlParams, PaymentOptions } from './types/options.js'
 
 export async function openPay(options: PaymentOptions) {
   return PayController.handleOpenPay(options)
+}
+
+export function getAvailableExchanges(page?: number) {
+  return PayController.getAvailableExchanges(page)
+}
+
+export function getPayUrl(exchangeId: string, params: PayUrlParams) {
+  return PayController.getPayUrl(exchangeId, params)
+}
+
+export function openPayUrl(exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) {
+  return PayController.openPayUrl(exchangeId, params, openInNewTab)
 }
 
 export function getExchanges() {
@@ -12,9 +24,11 @@ export function getExchanges() {
 export function getPayResult() {
   return PayController.state.payResult
 }
+
 export function getPayError() {
   return PayController.state.error
 }
+
 export function getIsPaymentInProgress() {
   return PayController.state.isPaymentInProgress
 }

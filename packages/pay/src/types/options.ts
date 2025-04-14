@@ -30,3 +30,10 @@ export type PaymentOptions = {
     exclude?: string[]
   }
 }
+
+export type PayUrlParams = {
+  network: CaipNetworkId
+  asset: AddressOrNative
+  amount: number | string
+  recipient: string
+}

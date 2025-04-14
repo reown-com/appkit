@@ -1,8 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import {
+  getPayUrl as clientGetPayUrl,
+  openPayUrl as clientOpenPayUrl,
+  getAvailableExchanges
+} from '../src/client.js'
 import { PayController, type PayResult } from '../src/controllers/PayController.js'
-import type { AppKitPayErrorMessage } from '../src/types/errors.js'
-import type { PaymentOptions } from '../src/types/options.js'
+import {
+  AppKitPayError,
+  AppKitPayErrorCodes,
+  type AppKitPayErrorMessage
+} from '../src/types/errors.js'
+import type { Exchange } from '../src/types/exchange.js'
+import type { PayUrlParams, PaymentOptions } from '../src/types/options.js'
 
 /**
  * Represents the state and actions returned by the usePay hook.
@@ -159,4 +169,148 @@ export function usePay(parameters?: UsePayParameters): UsePayReturn {
     error,
     data
   }
+}
+
+// --- New Hooks ---
+
+interface UseAvailableExchangesReturn {
+  /** The fetched exchange data, or null if not yet fetched or an error occurred. */
+  data: Exchange[] | null
+  /** Indicates if the exchange data is currently being fetched. */
+  isLoading: boolean
+  /** Stores any error encountered during fetching. Null if no error. */
+  error: Error | null
+  /** Function to manually trigger fetching exchanges. Can optionally take a page number. */
+  fetch: (page?: number) => Promise<void>
+}
+
+/**
+ * React hook to fetch available exchanges.
+ *
+ * @param {object} [options] - Optional configuration for the hook.
+ * @param {boolean} [options.fetchOnInit=true] - Whether to fetch exchanges when the hook mounts.
+ * @param {number} [options.initialPage] - The initial page number to fetch if `fetchOnInit` is true.
+ * @returns {UseAvailableExchangesReturn} An object containing the exchange data, loading state, error state, and a function to trigger fetching.
+ *
+ * @example
+ * ```tsx
+ * import { useAvailableExchanges } from '@reown/appkit-pay/react';
+ *
+ * function ExchangeList() {
+ *   const { data, isLoading, error, fetch } = useAvailableExchanges();
+ *
+ *   if (isLoading) return <p>Loading exchanges...</p>;
+ *   if (error) return <p>Error loading exchanges: {error.message}</p>;
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={() => fetch()}>Refresh Exchanges</button>
+ *       {data ? (
+ *         <ul>
+ *           {data.map(exchange => <li key={exchange.id}>{exchange.name}</li>)}
+ *         </ul>
+ *       ) : (
+ *         <p>No exchanges found.</p>
+ *       )}
+ *     </div>
+ *
+ *   );
+ * }
+ * ```
+ */
+export function useAvailableExchanges(options?: {
+  isFetchOnInit?: boolean
+  initialPage?: number
+}): UseAvailableExchangesReturn {
+  const { isFetchOnInit = true, initialPage } = options ?? {}
+  const [data, setData] = useState<Exchange[] | null>(null)
+  const [isLoading, setIsLoading] = useState(isFetchOnInit)
+  const [error, setError] = useState<Error | null>(null)
+
+  const fetchExchanges = useCallback(async (page?: number) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await getAvailableExchanges(page)
+      setData(response.exchanges)
+    } catch (err) {
+      const fetchError =
+        err instanceof Error ? err : new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES)
+      setError(fetchError)
+      setData(null)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isFetchOnInit) {
+      fetchExchanges(initialPage).catch(() => {
+        // Error is already handled and set in state by fetchExchanges
+      })
+    }
+  }, [isFetchOnInit, initialPage])
+
+  const fetch = useCallback(
+    async (page?: number) => {
+      await fetchExchanges(page)
+    },
+    [fetchExchanges]
+  )
+
+  return { data, isLoading, error, fetch }
+}
+
+/**
+ * React hook providing memoized functions for generating and opening pay URLs.
+ *
+ * @returns {{ getUrl: (exchangeId: string, params: PayUrlParams) => Promise<string>; openUrl: (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) => void; }} An object containing memoized functions `getUrl` and `openUrl`.
+ *
+ * @example
+ * ```tsx
+ * import { usePayUrlActions } from '@reown/appkit-pay/react';
+ *
+ * function PayActionsComponent({ exchangeId, params }) {
+ *   const { getUrl, openUrl } = usePayUrlActions();
+ *
+ *   const handleGenerateLink = async () => {
+ *     try {
+ *       const url = await getUrl(exchangeId, params);
+ *       console.log('Generated Pay URL:', url);
+ *       // You could display this URL or use it in an <a> tag
+ *     } catch (error) {
+ *       console.error('Failed to generate pay URL:', error);
+ *     }
+ *   };
+ *
+ *   const handleOpenLink = () => {
+ *     openUrl(exchangeId, params, true); // Opens in a new tab
+ *   };
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={handleGenerateLink}>Generate Pay Link</button>
+ *       <button onClick={handleOpenLink}>Open Pay Link in New Tab</button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function usePayUrlActions(): {
+  getUrl: (exchangeId: string, params: PayUrlParams) => Promise<string>
+  openUrl: (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) => void
+} {
+  const getUrl = useCallback(
+    async (exchangeId: string, params: PayUrlParams): Promise<string> =>
+      clientGetPayUrl(exchangeId, params),
+    []
+  )
+
+  const openUrl = useCallback(
+    (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) =>
+      clientOpenPayUrl(exchangeId, params, openInNewTab),
+    []
+  )
+
+  return { getUrl, openUrl }
 }

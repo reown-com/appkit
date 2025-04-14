@@ -1,12 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import {
-  type CaipNetworkId,
-  type ChainNamespace,
-  ConstantsUtil,
-  ParseUtil
-} from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -24,7 +19,7 @@ import {
 } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
-import type { AddressOrNative, PaymentOptions } from '../types/options.js'
+import type { PayUrlParams, PaymentOptions } from '../types/options.js'
 import { getExchanges, getPayUrl } from '../utils/ApiUtil.js'
 import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
@@ -48,12 +43,6 @@ export interface PayControllerState extends PaymentOptions {
 }
 
 // Define a type for the parameters passed to getPayUrl
-type PayUrlParams = {
-  network: CaipNetworkId
-  asset: AddressOrNative
-  amount: number | string
-  recipient: string
-}
 
 type StateKey = keyof PayControllerState
 type PaymentType = 'wallet' | 'exchange'
@@ -179,7 +168,7 @@ export const PayController = {
         page
       })
 
-      return response.exchanges
+      return response
     } catch (error) {
       throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES)
     }

@@ -546,7 +546,7 @@ describe('PayController', () => {
       const result = await PayController.getAvailableExchanges()
 
       expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page: 0 })
-      expect(result).toEqual(mockExchanges)
+      expect(result).toEqual(mockExchangesResponse)
     })
 
     it('should call getExchanges with the specified page number and return exchanges', async () => {
@@ -554,7 +554,7 @@ describe('PayController', () => {
       const result = await PayController.getAvailableExchanges(page)
 
       expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page })
-      expect(result).toEqual(mockExchanges)
+      expect(result).toEqual(mockExchangesResponse)
     })
 
     it('should throw AppKitPayError if getExchanges fails', async () => {
