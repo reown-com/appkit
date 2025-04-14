@@ -16,8 +16,19 @@ interface UsePayReturn {
 
   /**
    * Indicates whether a payment process is currently in progress (e.g., loading exchanges, waiting for transaction).
+   * Alias for `isLoading`.
    */
-  isLoading: boolean
+  isPending: boolean
+
+  /**
+   * Indicates if the payment process completed successfully.
+   */
+  isSuccess: boolean
+
+  /**
+   * Indicates if the payment process resulted in an error.
+   */
+  isError: boolean
 
   /**
    * Stores any error message encountered during the payment process. Null if no error.
@@ -25,80 +36,102 @@ interface UsePayReturn {
   error: AppKitPayErrorMessage | null
 
   /**
-   * Stores the result of a successful payment, typically a transaction hash or identifier. Undefined if the payment hasn't completed or failed.
+   * Stores the result of a successful payment, typically a transaction hash or identifier. Null if the payment hasn't completed successfully or failed.
    */
-  result: PayResult | null
+  data: PayResult | null
+}
+
+/**
+ * Parameters for the usePay hook.
+ */
+interface UsePayParameters {
+  /**
+   * Callback function triggered when the payment is successful.
+   * @param data - The result of the successful payment.
+   */
+  onSuccess?: (data: PayResult) => void
+
+  /**
+   * Callback function triggered when an error occurs during the payment process.
+   * @param error - The error message encountered.
+   */
+  onError?: (error: AppKitPayErrorMessage) => void
 }
 
 /**
  * React hook for interacting with the AppKit Pay modal
  *
- * @returns {UsePayReturn} An object containing:
- *   - `open`: A function to initiate the payment modal.
- *   - `isLoading`: A boolean indicating if a payment operation is in progress.
- *   - `error`: A string containing an error message if an error occurred, otherwise null.
- *   - `result`: A string containing the payment result (e.g., transaction hash) upon success, otherwise undefined.
+ * @param {UsePayParameters} [parameters] - Optional configuration for the hook, including success and error callbacks.
+ * @returns {UsePayReturn} An object containing the payment state and actions.
  *
  * @example
  * ```tsx
  * import { usePay } from '@reown/appkit-pay/react';
  *
  * function PayButton() {
- *   const { open, isLoading, error, result } = usePay();
+ *   const { open, isPending, isSuccess, isError, data, error } = usePay({
+ *     onSuccess: (result) => console.log('Payment successful:', result),
+ *     onError: (err) => console.error('Payment failed:', err),
+ *   });
  *
  *   const handlePay = () => {
  *     open({
- *       paymentAsset: {
- *         network: 'eip155:1', // Example: Ethereum Mainnet
- *         recipient: '0xRecipientAddress...',
- *         asset: 'native', // or '0xTokenAddress...' for ERC20
- *         amount: 1000000000000000000, // Example: 1 ETH in wei
- *         metadata: {
- *           name: 'Ether',
- *           symbol: 'ETH',
- *           decimals: 18
- *         }
- *       },
- *       // Optional configuration
- *       // openInNewTab: true,
- *       // redirectUrl: {
- *         success: 'https://yourapp.com/payment-success',
- *         failure: 'https://yourapp.com/payment-failure'
- *       },
- *       // payWithExchange: {
- *         includeOnly: ['binance'], // Pre-select an exchange
- *         exclude: ['coinbase'] // Exclude an exchange
- *       }
+ *       // Add your payment options here, e.g.:
+ *       // paymentAsset: { network: 'eip155:1', recipient: '...', ... },
+ *       // redirectUrl: { success: '...', failure: '...' }
  *     });
  *   };
  *
  *   return (
  *     <div>
- *       <button onClick={handlePay} disabled={isLoading}>
- *         {isLoading ? 'Processing...' : 'Pay Now'}
+ *       <button onClick={handlePay} disabled={isPending}>
+ *         {isPending ? 'Processing...' : 'Pay Now'}
  *       </button>
- *       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
- *       {result && <p style={{ color: 'green' }}>Payment Successful! Result: {result}</p>}
+ *       {isError && <p style={{ color: 'red' }}>Error: {error?.message}</p>}
+ *       {isSuccess && <p style={{ color: 'green' }}>Payment Successful! Result: {JSON.stringify(data)}</p>}
  *     </div>
  *   );
  * }
  * ```
  */
-export function usePay(): UsePayReturn {
+export function usePay(parameters?: UsePayParameters): UsePayReturn {
+  const { onSuccess, onError } = parameters ?? {}
+
   const [isControllerLoading, setIsControllerLoading] = useState(PayController.state.isLoading)
   const [isPaymentInProgress, setIsPaymentInProgress] = useState(
     PayController.state.isPaymentInProgress
   )
   const [error, setError] = useState<AppKitPayErrorMessage | null>(PayController.state.error)
-  const [result, setResult] = useState(PayController.state.payResult)
+  const [data, setData] = useState<PayResult | null>(PayController.state.payResult ?? null)
 
   useEffect(() => {
     const unsubLoading = PayController.subscribeKey('isLoading', val => setIsControllerLoading(val))
     const unsubProgress = PayController.subscribeKey('isPaymentInProgress', val =>
       setIsPaymentInProgress(val)
     )
-    const unsubError = PayController.subscribeKey('error', val => setError(val))
-    const unsubResult = PayController.subscribeKey('payResult', val => setResult(val))
+
+    const unsubError = PayController.subscribeKey('error', val => {
+      setError(val)
+      if (val && onError) {
+        onError(val)
+      }
+      // Clear data if an error occurs after success
+      if (val) {
+        setData(null)
+      }
+    })
+
+    const unsubResult = PayController.subscribeKey('payResult', val => {
+      const resultData = val ?? null
+      setData(resultData)
+      if (resultData && onSuccess) {
+        onSuccess(resultData)
+      }
+      // Clear error if success occurs after an error
+      if (resultData) {
+        setError(null)
+      }
+    })
 
     return () => {
       unsubLoading()
@@ -106,16 +139,24 @@ export function usePay(): UsePayReturn {
       unsubError()
       unsubResult()
     }
-  }, [])
+  }, [onSuccess, onError])
 
   const open = useCallback(async (options: PaymentOptions) => {
+    setError(null)
+    setData(null)
     await PayController.handleOpenPay(options)
   }, [])
 
+  const isPending = isControllerLoading || isPaymentInProgress
+  const isError = error !== null
+  const isSuccess = data !== null && !isError
+
   return {
     open,
-    isLoading: isControllerLoading || isPaymentInProgress,
+    isPending,
+    isSuccess,
+    isError,
     error,
-    result: result ?? null
+    data
   }
 }

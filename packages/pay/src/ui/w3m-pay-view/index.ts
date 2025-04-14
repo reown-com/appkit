@@ -222,6 +222,7 @@ export class W3mPayView extends LitElement {
       await ConnectionController.disconnect()
       ModalController.close()
     } catch {
+      console.error('Failed to disconnect')
       SnackController.showError('Failed to disconnect')
     }
   }

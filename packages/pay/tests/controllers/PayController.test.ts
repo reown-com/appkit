@@ -4,6 +4,7 @@ import { ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  CoreHelperUtil,
   ModalController,
   RouterController,
   SnackController
@@ -127,6 +128,9 @@ describe('PayController', () => {
     vi.spyOn(AssetUtil, 'formatCaip19Asset').mockReturnValue(
       'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
     )
+
+    // Mock CoreHelperUtil
+    vi.spyOn(CoreHelperUtil, 'openHref').mockImplementation(() => {})
   })
 
   describe('setPaymentConfig', () => {
@@ -362,50 +366,26 @@ describe('PayController', () => {
 
   describe('handlePayWithExchange', () => {
     it('should get pay URL and open it in new tab', async () => {
-      global.window = { open: vi.fn() } as any
       PayController.state.openInNewTab = true
+      const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
       await PayController.handlePayWithExchange('coinbase')
 
       expect(ApiUtil.getPayUrl).toHaveBeenCalled()
       expect(RouterController.push).toHaveBeenCalledWith('PayLoading')
-      expect(window.open).toHaveBeenCalledWith(mockPayUrlResponse.url, '_blank')
+      expect(openHrefSpy).toHaveBeenCalledWith(mockPayUrlResponse.url, '_blank')
     })
 
     it('should get pay URL and open it in same tab', async () => {
       vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValue(mockPayUrlResponse)
       vi.spyOn(RouterController, 'push').mockImplementation(() => {})
-
-      const locationMock = {
-        _href: '',
-        set href(url: string) {
-          this._href = url
-        },
-        get href(): string {
-          return this._href
-        }
-      }
-
-      const originalLocation = window.location
-      delete (window as any).location
-      Object.defineProperty(window, 'location', {
-        value: locationMock,
-        writable: true,
-        configurable: true
-      })
+      const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
       PayController.state.openInNewTab = false
       await PayController.handlePayWithExchange('coinbase')
 
       expect(RouterController.push).toHaveBeenCalledWith('PayLoading')
-      expect(locationMock._href).toBe(mockPayUrlResponse.url)
-
-      // Restore original location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: false,
-        configurable: false
-      })
+      expect(openHrefSpy).toHaveBeenCalledWith(mockPayUrlResponse.url, '_self')
     })
 
     it('should set error state and show snackbar if unable to get pay URL', async () => {

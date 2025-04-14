@@ -5,6 +5,7 @@ import { type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-com
 import {
   AccountController,
   ChainController,
+  CoreHelperUtil,
   ModalController,
   RouterController,
   SnackController
@@ -171,7 +172,7 @@ export const PayController = {
 
       return response.url
     } catch (error) {
-      if ((error as Error).message.includes('is not supported')) {
+      if (error instanceof Error && error.message.includes('is not supported')) {
         throw new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
       }
       throw new Error((error as Error).message)
@@ -324,7 +325,7 @@ export const PayController = {
       RouterController.push('PayLoading')
 
       if (state.openInNewTab) {
-        window.open(payUrl, '_blank')
+        CoreHelperUtil.openHref(payUrl, '_blank')
         state.payResult = {
           type: 'exchange',
           exchangeId
@@ -335,7 +336,7 @@ export const PayController = {
 
         return
       }
-      window.location.href = payUrl
+      CoreHelperUtil.openHref(payUrl, '_self')
     } catch (error) {
       if (error instanceof AppKitPayError) {
         state.error = error.message

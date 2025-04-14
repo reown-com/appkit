@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import {
   Box,
@@ -22,6 +22,7 @@ import {
 } from '@chakra-ui/react'
 import { Card } from '@chakra-ui/react'
 
+import type { AppKitPayErrorMessage, PayResult, PaymentAsset } from '@reown/appkit-pay'
 import { usePay } from '@reown/appkit-pay/react'
 
 import { useChakraToast } from './Toast'
@@ -32,7 +33,7 @@ interface Metadata {
   decimals: number
 }
 
-interface AppKitPaymentAsset {
+interface AppKitPaymentAssetState {
   network: string
   recipient: string
   asset: string
@@ -40,10 +41,9 @@ interface AppKitPaymentAsset {
   metadata: Metadata
 }
 
-// Define preset keys
 type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE'
 
-const PRESETS: Record<PresetKey, Omit<AppKitPaymentAsset, 'recipient'>> = {
+const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   NATIVE_BASE: {
     network: 'eip155:8453',
     asset: 'native',
@@ -55,7 +55,6 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAsset, 'recipient'>> = {
     }
   },
   NATIVE_BASE_SEPOLIA: {
-    // Base Sepolia
     network: 'eip155:84532',
     asset: 'native',
     amount: 0.00001,
@@ -67,7 +66,6 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAsset, 'recipient'>> = {
   },
   USDC_BASE: {
     network: 'eip155:8453',
-    // USDC on Base
     asset: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
     amount: 20,
     metadata: {
@@ -80,9 +78,30 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAsset, 'recipient'>> = {
 
 export function AppKitPay() {
   const { isOpen, onToggle } = useDisclosure()
-  const { open, isLoading, error, result } = usePay()
   const toast = useChakraToast()
-  const [paymentDetails, setPaymentDetails] = useState<AppKitPaymentAsset>({
+
+  function handleSuccess(resultData: PayResult) {
+    toast({
+      title: 'Transaction successful',
+      description: resultData.type === 'wallet' ? resultData.result : resultData.exchangeId,
+      type: 'success'
+    })
+  }
+
+  function handleError(errorData: AppKitPayErrorMessage) {
+    toast({
+      title: 'Transaction failed',
+      description: errorData,
+      type: 'error'
+    })
+  }
+
+  const { open, isPending } = usePay({
+    onSuccess: handleSuccess,
+    onError: handleError
+  })
+
+  const [paymentDetails, setPaymentDetails] = useState<AppKitPaymentAssetState>({
     network: 'eip155:8453',
     recipient: '',
     asset: 'native',
@@ -94,7 +113,7 @@ export function AppKitPay() {
     }
   })
 
-  function isPresetActive(preset: Omit<AppKitPaymentAsset, 'recipient'>): boolean {
+  function isPresetActive(preset: Omit<AppKitPaymentAssetState, 'recipient'>): boolean {
     return (
       paymentDetails.network === preset.network &&
       paymentDetails.asset === preset.asset &&
@@ -105,46 +124,34 @@ export function AppKitPay() {
     )
   }
 
-  function handlePresetClick(preset: Omit<AppKitPaymentAsset, 'recipient'>) {
+  function handlePresetClick(preset: Omit<AppKitPaymentAssetState, 'recipient'>) {
     setPaymentDetails(prev => ({
       ...preset,
       recipient: prev.recipient
     }))
   }
 
-  useEffect(() => {
-    if (error && error !== null) {
-      toast({
-        title: 'Transaction failed',
-        description: error,
-        type: 'error'
-      })
-    }
-
-    if (result && result !== null) {
-      toast({
-        title: 'Transaction successful',
-        description: result.type === 'wallet' ? result.result : result.exchangeId,
-        type: 'success'
-      })
-    }
-  }, [error, isLoading, result])
-
   async function handleOpenPay() {
     if (!paymentDetails.recipient) {
-      console.warn('Please enter a recipient address.')
+      toast({ title: 'Missing Recipient', description: 'Please enter a recipient address.' })
 
       return
     }
     if (!/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient)) {
-      console.warn('Please enter a valid Ethereum address for the recipient.')
+      toast({ title: 'Invalid Recipient', description: 'Please enter a valid Ethereum address.' })
 
       return
     }
 
+    const paymentAsset: PaymentAsset = {
+      ...paymentDetails,
+      network: paymentDetails.network as PaymentAsset['network'],
+      asset: paymentDetails.asset as PaymentAsset['asset'],
+      amount: paymentDetails.amount
+    }
+
     await open({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      paymentAsset: paymentDetails as any
+      paymentAsset
     })
   }
 
@@ -152,27 +159,30 @@ export function AppKitPay() {
     const { name, value } = e.target
     if (name.startsWith('metadata.')) {
       const key = name.split('.')[1] as keyof Metadata
-      setPaymentDetails((prev: AppKitPaymentAsset) => ({
+      const processedValue = key === 'decimals' ? parseInt(value, 10) || 0 : value
+      setPaymentDetails((prev: AppKitPaymentAssetState) => ({
         ...prev,
-        metadata: { ...prev.metadata, [key]: value }
+        metadata: { ...prev.metadata, [key]: processedValue }
       }))
     } else {
-      setPaymentDetails((prev: AppKitPaymentAsset) => ({
+      const fieldName = name as keyof Omit<AppKitPaymentAssetState, 'metadata'>
+      const processedValue: string | number = value
+      setPaymentDetails((prev: AppKitPaymentAssetState) => ({
         ...prev,
-        [name as keyof Omit<AppKitPaymentAsset, 'metadata'>]: value
+        [fieldName]: processedValue
       }))
     }
   }
 
   function handleAmountChange(_valueAsString: string, valueAsNumber: number) {
-    setPaymentDetails((prev: AppKitPaymentAsset) => ({
+    setPaymentDetails((prev: AppKitPaymentAssetState) => ({
       ...prev,
       amount: isNaN(valueAsNumber) ? 0 : valueAsNumber
     }))
   }
 
   function handleDecimalsChange(_valueAsString: string, valueAsNumber: number) {
-    setPaymentDetails((prev: AppKitPaymentAsset) => ({
+    setPaymentDetails((prev: AppKitPaymentAssetState) => ({
       ...prev,
       metadata: { ...prev.metadata, decimals: isNaN(valueAsNumber) ? 0 : valueAsNumber }
     }))
@@ -196,7 +206,6 @@ export function AppKitPay() {
             />
           </FormControl>
 
-          {/* Preset Buttons */}
           <FormControl>
             <FormLabel>Presets</FormLabel>
             <ButtonGroup spacing="4" width="full">
@@ -256,13 +265,15 @@ export function AppKitPay() {
                   <FormLabel>Amount</FormLabel>
                   <NumberInput
                     name="amount"
-                    value={paymentDetails.amount}
+                    value={paymentDetails.amount.toString()}
                     onChange={handleAmountChange}
                     min={0}
+                    precision={paymentDetails.metadata.decimals}
+                    step={1 / 10 ** paymentDetails.metadata.decimals}
                   >
                     <NumberInputField />
                   </NumberInput>
-                  <FormHelperText>Example: 20</FormHelperText>
+                  <FormHelperText>Example: 20 (Input as float)</FormHelperText>
                 </FormControl>
 
                 <FormControl>
@@ -292,6 +303,7 @@ export function AppKitPay() {
                     value={paymentDetails.metadata.decimals}
                     onChange={handleDecimalsChange}
                     min={0}
+                    precision={0}
                   >
                     <NumberInputField />
                   </NumberInput>
@@ -306,10 +318,10 @@ export function AppKitPay() {
             isDisabled={
               !paymentDetails.recipient ||
               !/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient) ||
-              isLoading
+              isPending
             }
           >
-            {isLoading ? <Spinner /> : 'Open Pay'}
+            {isPending ? <Spinner /> : 'Open Pay'}
           </Button>
         </Stack>
       </CardBody>

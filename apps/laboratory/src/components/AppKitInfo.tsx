@@ -21,11 +21,6 @@ import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 export function AppKitInfo() {
   const { caipAddress, address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
-  const [isMounted, setIsMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
   const erc3770Address = React.useMemo(() => {
@@ -74,7 +69,7 @@ export function AppKitInfo() {
             </Box>
           ) : null}
 
-          {isMounted && chainId !== undefined && (
+          {chainId !== undefined && (
             <Box>
               <Heading size="xs" textTransform="uppercase" pb="2">
                 Chain Id

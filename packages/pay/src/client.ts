@@ -1,4 +1,4 @@
-import { PayController } from './controllers/PayController.js'
+import { PayController, type PayControllerState } from './controllers/PayController.js'
 import type { PaymentOptions } from './types/options.js'
 
 export async function openPay(options: PaymentOptions) {
@@ -17,4 +17,16 @@ export function getPayError() {
 }
 export function getIsPaymentInProgress() {
   return PayController.state.isPaymentInProgress
+}
+
+export type PayControllerPublicState = Pick<
+  PayControllerState,
+  'isPaymentInProgress' | 'payResult' | 'error' | 'paymentType'
+>
+
+export function subscribeStateKey<K extends keyof PayControllerPublicState>(
+  key: K,
+  callback: (value: PayControllerPublicState[K]) => void
+) {
+  return PayController.subscribeKey(key, callback)
 }

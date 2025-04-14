@@ -10,3 +10,8 @@ export {
   getPayError,
   getIsPaymentInProgress
 } from '../src/client.js'
+
+// -- Types ----------------------------------------- //
+export type { PayResult } from '../src/controllers/PayController.js'
+export type { PaymentAsset } from '../src/types/options.js'
+export type { AppKitPayErrorMessage } from '../src/types/errors.js'
