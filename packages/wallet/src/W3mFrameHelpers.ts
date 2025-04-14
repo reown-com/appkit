@@ -30,6 +30,13 @@ export const W3mFrameHelpers = {
   },
 
   checkIfRequestExists(request: W3mFrameTypes.RPCRequest) {
+    console.log('>> CHECK IF REQUEST EXISTS', request)
+    console.log(
+      '>> ',
+      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(request.method) ||
+        W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
+    )
+
     return (
       W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(request.method) ||
       W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)

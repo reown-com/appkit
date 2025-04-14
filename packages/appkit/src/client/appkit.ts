@@ -14,7 +14,8 @@ import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
-  type Metadata
+  type Metadata,
+  PublicStateController
 } from '@reown/appkit-controllers'
 import {
   AccountController,
@@ -73,6 +74,7 @@ export class AppKit extends AppKitBaseClient {
         setTimeout(() => {
           this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
         }, 300)
+        console.log('>> REJECTING IN SETUP AUTH CONNECTOR LISTENERS')
         provider.rejectRpcRequests()
       }
     })
@@ -340,8 +342,9 @@ export class AppKit extends AppKitBaseClient {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
-      this.subscribeState(val => {
-        if (!val.open) {
+      PublicStateController.subscribeOpen(isOpen => {
+        if (!isOpen) {
+          console.log('>> REJECTING IN PUBLIC STATE CONTROLLER')
           this.authProvider?.rejectRpcRequests()
         }
       })
