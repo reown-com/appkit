@@ -26,6 +26,7 @@ import { OKXConnector } from '../src/connectors/OKXConnector'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
 import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
 import type { BitcoinApi } from '../src/utils/BitcoinApi'
+import { AddressPurpose } from '../src/utils/BitcoinConnector'
 import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
 import { mockUTXO } from './mocks/mockUTXO'
 import { mockUniversalProvider } from './mocks/mockUniversalProvider'
@@ -159,19 +160,19 @@ describe('BitcoinAdapter', () => {
       vi.spyOn(connector, 'getAccountAddresses').mockResolvedValueOnce([
         {
           address: 'mock_address_1',
-          purpose: 'payment',
+          purpose: AddressPurpose.Payment,
           publicKey: 'mock_public_key_1',
           path: 'mock_path_1'
         },
         {
           address: 'mock_address_2',
-          purpose: 'ordinal',
+          purpose: AddressPurpose.Ordinal,
           publicKey: 'mock_public_key_2',
           path: 'mock_path_2'
         },
         {
           address: 'mock_address_3',
-          purpose: 'stx',
+          purpose: AddressPurpose.Stacks,
           publicKey: 'mock_public_key_3',
           path: 'mock_path_3'
         }
@@ -482,7 +483,7 @@ describe('BitcoinAdapter', () => {
       })
       vi.spyOn(connector, 'disconnect')
       vi.spyOn(connector, 'getAccountAddresses').mockResolvedValueOnce([
-        { address: 'mock_address', purpose: 'payment' }
+        { address: 'mock_address', purpose: AddressPurpose.Payment }
       ])
 
       adapter.connectors.push(connector)
