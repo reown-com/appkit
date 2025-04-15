@@ -99,7 +99,6 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await page.promptSiwe()
   await page.approveSign()
   await validator.expectAuthenticated()
-  // TODO: Remove this once we have a better way to wait for the page to load
   await page.page.waitForTimeout(1000)
 
   await page.sign(namespace)
@@ -112,7 +111,6 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await page.promptSiwe()
   await page.approveSign()
   await validator.expectAuthenticated()
-  // TODO: Remove this once we have a better way to wait for the page to load
   await page.page.waitForTimeout(1000)
 
   await page.sign(namespace)
