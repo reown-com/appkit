@@ -34,7 +34,6 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
 
   async connectWalletConnect() {
     const isAuthenticated = await this.authenticate()
-    const activeChain = ChainController.state.activeChain
 
     if (!isAuthenticated) {
       const caipNetworks = this.getCaipNetworks()
@@ -46,7 +45,12 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
       )
       const res = await this.provider.connect({ optionalNamespaces: namespaces })
 
-      const chain = res?.namespaces?.[activeChain as ChainNamespace]?.chains?.[0]
+      // If the active chain is not set, use the first namespace connected
+      const activeChain =
+        ChainController.state.activeChain ??
+        (Object.keys(res?.namespaces || {})[0] as ChainNamespace)
+
+      const chain = res?.namespaces?.[activeChain]?.chains?.[0]
       if (chain) {
         this.provider.setDefaultChain(chain)
       }
