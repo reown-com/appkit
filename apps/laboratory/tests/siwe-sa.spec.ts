@@ -81,6 +81,8 @@ smartAccountSiweTest(
     await validator.expectSwitchedNetworkWithNetworkView()
     await page.promptSiwe()
     await page.approveSign()
+    await validator.expectConnected()
+    await validator.expectAuthenticated()
 
     await page.sign(namespace)
     await page.approveSign()
@@ -95,9 +97,10 @@ smartAccountSiweTest(
     const namespace = library === 'solana' ? 'solana' : 'eip155'
 
     await page.switchNetwork(targetChain)
-    await page.page.waitForTimeout(1000)
     await page.promptSiwe()
     await page.approveSign()
+    await validator.expectConnected()
+    await validator.expectAuthenticated()
 
     await page.openAccount()
     // Shouldn't show the toggle on a non enabled network

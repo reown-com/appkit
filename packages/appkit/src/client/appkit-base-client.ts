@@ -65,7 +65,6 @@ import {
 } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 import type { ProviderStoreUtilState } from '@reown/appkit-utils'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
@@ -239,8 +238,16 @@ export abstract class AppKitBaseClient {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
-    OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
+
+    // Save option in controller
+    OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
+
+    // Get stored account types
+    const storedAccountTypes = StorageUtil.getPreferredAccountTypes()
+    const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
+
+    AccountController.setPreferredAccountTypes(defaultTypes)
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
@@ -637,13 +644,12 @@ export abstract class AppKitBaseClient {
       const blueprint = blueprints?.find(b => b.namespace === namespace)
 
       if (blueprint) {
-        adapters[namespace] = blueprint
-        adapters[namespace].namespace = namespace
-        adapters[namespace].construct({
+        blueprint.construct({
           namespace,
           projectId: this.options?.projectId,
           networks: this.getCaipNetworks()
         })
+        adapters[namespace] = blueprint
       } else {
         adapters[namespace as ChainNamespace] = new UniversalAdapter({
           namespace: namespace as ChainNamespace,
@@ -1375,8 +1381,8 @@ export abstract class AppKitBaseClient {
 
   public getProviderType = (namespace: ChainNamespace) => ProviderUtil.getProviderId(namespace)
 
-  public getPreferredAccountType = () =>
-    AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
+  public getPreferredAccountType = (namespace: ChainNamespace) =>
+    AccountController.state.preferredAccountTypes?.[namespace]
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
@@ -1562,6 +1568,7 @@ export abstract class AppKitBaseClient {
   public getAccount(namespace?: ChainNamespace) {
     const authConnector = ConnectorController.getAuthConnector(namespace)
     const accountState = ChainController.getAccountData(namespace)
+    const activeChain = ChainController.state.activeChain as ChainNamespace
 
     if (!accountState) {
       return undefined
@@ -1590,7 +1597,7 @@ export abstract class AppKitBaseClient {
             authProvider:
               accountState.socialProvider ||
               ('email' as AccountControllerState['socialProvider'] | 'email'),
-            accountType: accountState.preferredAccountType,
+            accountType: accountState.preferredAccountTypes?.[namespace || activeChain],
             isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
           }
         : undefined

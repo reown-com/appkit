@@ -48,6 +48,7 @@ test('it should switch networks and sign', async () => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
 
   // -- Sign ------------------------------------------------------------------
   await page.sign('eip155')
