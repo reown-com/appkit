@@ -899,6 +899,7 @@ export abstract class AppKitBaseClient {
           chainId,
           chainNamespace
         })
+        this.universalProvider?.setDefaultChain(`${chainNamespace}:${chainId}`)
       } else {
         this.setStatus('disconnected', chainNamespace)
       }
