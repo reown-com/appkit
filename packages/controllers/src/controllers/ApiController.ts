@@ -158,7 +158,7 @@ export const ApiController = {
     await Promise.allSettled(tokens.map(token => ApiController._fetchTokenImage(token)))
   },
 
-  async fetchWallets(params: Omit<ApiGetWalletsRequest, 'chains'>) {
+  async fetchWallets(params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string }) {
     const exclude = params.exclude ?? []
     const sdkProperties = ApiController._getSdkProperties()
     if (sdkProperties.sv.startsWith('html-core-')) {
@@ -173,8 +173,7 @@ export const ApiController = {
         page: String(params.page),
         entries: String(params.entries),
         include: params.include?.join(','),
-        exclude: params.exclude?.join(','),
-        chains: ChainController.getRequestedCaipNetworkIds().join(',')
+        exclude: params.exclude?.join(',')
       }
     })
   },
@@ -202,12 +201,13 @@ export const ApiController = {
       state.isFetchingRecommendedWallets = true
       const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
-
+      const chains = ChainController.getRequestedCaipNetworkIds().join(',')
       const params = {
         page: 1,
         entries: recommendedEntries,
         include: includeWalletIds,
-        exclude
+        exclude,
+        chains
       }
       const { data, count } = await ApiController.fetchWallets(params)
       const recent = StorageUtil.getRecentWallets()
@@ -230,7 +230,7 @@ export const ApiController = {
 
   async fetchWalletsByPage({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
-
+    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     const exclude = [
       ...state.recommended.map(({ id }) => id),
       ...(excludeWalletIds ?? []),
@@ -240,7 +240,8 @@ export const ApiController = {
       page,
       entries,
       include: includeWalletIds,
-      exclude
+      exclude,
+      chains
     }
     const { data, count } = await ApiController.fetchWallets(params)
     const images = data
@@ -258,10 +259,12 @@ export const ApiController = {
   },
 
   async initializeExcludedWallets({ ids }: { ids: string[] }) {
+    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     const params = {
       page: 1,
       entries: ids.length,
-      include: ids
+      include: ids,
+      chains
     }
     const { data } = await ApiController.fetchWallets(params)
 
@@ -274,6 +277,7 @@ export const ApiController = {
 
   async searchWallet({ search, badge }: Pick<ApiGetWalletsRequest, 'search' | 'badge'>) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     state.search = []
 
     const params = {
@@ -282,7 +286,8 @@ export const ApiController = {
       search: search?.trim(),
       badge_type: badge,
       include: includeWalletIds,
-      exclude: excludeWalletIds
+      exclude: excludeWalletIds,
+      chains
     }
 
     const { data } = await ApiController.fetchWallets(params)
