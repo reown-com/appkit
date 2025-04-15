@@ -101,6 +101,7 @@ smartAccountSiweTest(
     await page.approveSign()
     await validator.expectConnected()
     await validator.expectAuthenticated()
+    await page.page.waitForTimeout(1000)
 
     await page.openAccount()
     // Shouldn't show the toggle on a non enabled network
