@@ -19,6 +19,13 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 
+/*
+ * Exclude wallets that do not support relay connections on Core
+ * Excludes:
+ * - Phantom
+ * - Solflare
+ * - Coinbase
+ */
 const CORE_UNSUPPORTED_WALLET_IDS = [
   '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
