@@ -5,7 +5,8 @@
   "description": "",
   "scripts": {
     "build": "webpack",
-    "dev": "webpack --watch --mode=production"
+    "dev": "webpack --watch --mode=production",
+    "start": "webpack serve --mode=development --open"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
     "@babel/preset-env": "7.24.7",
     "@babel/preset-react": "7.24.7",
     "@reown/appkit-ui-new": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
     "@solana/wallet-standard": "1.1.2",
     "@solana/web3.js": "1.98.0",
     "@tanstack/react-query": "5.56.2",
@@ -25,24 +27,36 @@
     "@wallet-standard/core": "1.1.0",
     "babel-loader": "9.1.3",
     "big.js": "6.2.2",
+    "bip32": "4.0.0",
+    "bip39": "3.1.0",
+    "bitcoinjs-lib": "6.1.7",
     "bs58": "6.0.0",
+    "buffer": "6.0.3",
     "clsx": "2.1.0",
     "copy-webpack-plugin": "12.0.2",
+    "crypto-browserify": "3.12.1",
     "css-loader": "7.1.2",
+    "ecpair": "3.0.0",
     "eventemitter3": "5.0.1",
     "html-webpack-plugin": "5.6.0",
     "mini-css-extract-plugin": "2.9.2",
     "mipd": "0.0.7",
+    "process": "0.11.10",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "stream-browserify": "3.0.0",
+    "tiny-secp256k1": "2.2.3",
     "tweetnacl": "1.0.3",
     "uuid": "10.0.0",
     "viem": "2.23.13",
+    "vm-browserify": "1.1.2",
     "wagmi": "2.14.16",
+    "wasm-loader": "1.3.0",
     "webpack": "5.94.0"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",
+    "@types/bitcoinjs-lib": "5.0.4",
     "@types/chrome": "0.0.268",
     "@types/node": "22.13.4",
     "@types/react": "19.0.0",
@@ -51,6 +65,7 @@
     "dotenv-webpack": "8.1.0",
     "ts-loader": "9.5.1",
     "typescript": "5.7.3",
-    "webpack-cli": "5.1.4"
+    "webpack-cli": "5.1.4",
+    "webpack-dev-server": "5.2.1"
   }
 }
