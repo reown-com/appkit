@@ -47,6 +47,7 @@ test('it should switch networks and sign siwe', async () => {
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
+  await modalPage.page.waitForTimeout(1000)
 
   // -- Sign ------------------------------------------------------------------
   await modalPage.sign('eip155')

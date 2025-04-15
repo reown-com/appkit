@@ -45,11 +45,13 @@ export function useAppKitAccount(options?: {
     state.value.caipAddress = accountState?.caipAddress
     state.value.status = accountState?.status
     state.value.isConnected = Boolean(accountState?.caipAddress)
+    const activeChainNamespace =
+      _chainNamespace || (ChainController.state.activeChain as ChainNamespace)
     state.value.embeddedWalletInfo = authConnector
       ? {
           user: accountState?.user,
           authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
-          accountType: accountState?.preferredAccountType,
+          accountType: accountState?.preferredAccountTypes?.[activeChainNamespace],
           isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
         }
       : undefined

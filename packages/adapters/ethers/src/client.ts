@@ -9,7 +9,6 @@ import {
   type Connector,
   type ConnectorType,
   CoreHelperUtil,
-  OptionsController,
   type Provider,
   StorageUtil
 } from '@reown/appkit-controllers'
@@ -351,7 +350,7 @@ export class EthersAdapter extends AdapterBlueprint {
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: this.getPreferredAccountType()
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
 
       accounts = [address]
@@ -412,7 +411,7 @@ export class EthersAdapter extends AdapterBlueprint {
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: this.getPreferredAccountType()
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
     }
   }
@@ -707,12 +706,5 @@ export class EthersAdapter extends AdapterBlueprint {
       method: 'wallet_getAssets',
       params: [params]
     })
-  }
-
-  private getPreferredAccountType() {
-    return (
-      AccountController.state.preferredAccountType ||
-      OptionsController.state.defaultAccountTypes.eip155
-    )
   }
 }

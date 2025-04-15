@@ -6,6 +6,7 @@ import { bitcoin } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
@@ -60,7 +61,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     const accountList = accounts.map(account => ({
       address: account,
-      purpose: 'payment' as const,
+      purpose: AddressPurpose.Payment,
       publicKey: publicKeyOfActiveAccount
     }))
 
