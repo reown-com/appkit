@@ -141,7 +141,7 @@ describe('useAppKitAccount', () => {
               caipAddress: mockCaipAddress,
               allAccounts: [],
               status: 'connected',
-              preferredAccountType: 'eoa',
+              preferredAccountTypes: { eip155: 'eoa' },
               socialProvider: 'google',
               smartAccountDeployed: false,
               user: {

@@ -7,6 +7,7 @@ import {
   ChainController,
   EventsController,
   OptionsController,
+  PublicStateController,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
@@ -52,7 +53,13 @@ describe('Base', () => {
       delete options.adapters
 
       // Event is sent at the end of the initialize method, we need to wait for it to be sent
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await new Promise(resolve =>
+        PublicStateController.subscribe(state => {
+          if (state.initialized) {
+            resolve(true)
+          }
+        })
+      )
 
       expect(sendEvent).toHaveBeenCalledWith({
         type: 'track',

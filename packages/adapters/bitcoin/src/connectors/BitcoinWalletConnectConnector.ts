@@ -5,6 +5,7 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
 export type WalletConnectProviderConfig = {
@@ -77,7 +78,7 @@ export class BitcoinWalletConnectConnector
       params: undefined
     })
 
-    return addresses.map(address => ({ address, purpose: 'payment' }))
+    return addresses.map(address => ({ address, purpose: AddressPurpose.Payment }))
   }
 
   public async signPSBT(

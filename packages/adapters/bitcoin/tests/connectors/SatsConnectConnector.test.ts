@@ -155,7 +155,7 @@ describe('SatsConnectConnector', () => {
   it('should throw if connect with empty addresses', async () => {
     const spy = vi.spyOn(mocks.wallet, 'request')
 
-    spy.mockResolvedValueOnce(
+    spy.mockResolvedValue(
       mockSatsConnectProvider.mockRequestResolve({
         addresses: [],
         walletType: 'software',
