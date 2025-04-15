@@ -94,6 +94,15 @@ export const ModalController = {
       RouterController.reset('Connect')
     }
 
+    // eslint-disable-next-line no-console
+    console.trace('open', {
+      isConnected,
+      open: state.open,
+      hasNoAdapters,
+      caipAddress,
+      options
+    })
+
     state.open = true
     PublicStateController.set({ open: true })
     EventsController.sendEvent({
@@ -128,6 +137,13 @@ export const ModalController = {
     } else {
       PublicStateController.set({ open: false })
     }
+
+    // eslint-disable-next-line no-console
+    console.trace('close', {
+      isEmbeddedEnabled,
+      isConnected,
+      open: state.open
+    })
 
     ConnectionController.resetUri()
   },

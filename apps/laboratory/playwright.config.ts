@@ -33,7 +33,15 @@ export default defineConfig<ModalFixture>({
     /* Collect trace regardless so we can debug latency regressions. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
 
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
+
+    /* Add realistic throttling to simulate real user experience */
+    launchOptions: {
+      slowMo: 50
+    },
+
+    /* Add a small delay between actions to simulate human behavior */
+    actionTimeout: 15 * 1000
   },
 
   /* Configure projects for major browsers */
