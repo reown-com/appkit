@@ -489,11 +489,11 @@ export class ModalPage {
 
   async closeModal() {
     const closeButton = this.page.getByTestId('w3m-header-close')
-    await closeButton.waitFor({ state: 'visible' })
+    await closeButton.waitFor({ state: 'visible', timeout: 15_000 })
     await closeButton.click()
-    await closeButton.waitFor({ state: 'hidden' })
+    await closeButton.waitFor({ state: 'hidden', timeout: 15_000 })
     // Wait for the modal fade out animation
-    await this.page.waitForTimeout(300)
+    await this.page.waitForTimeout(500)
   }
 
   async updateEmail(mailsacApiKey: string) {

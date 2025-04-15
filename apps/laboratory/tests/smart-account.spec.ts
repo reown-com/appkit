@@ -86,11 +86,13 @@ smartAccountTest(
     await page.switchNetwork(targetChain)
     await validator.expectSwitchedNetwork(targetChain)
     await page.closeModal()
+    await validator.expectAccountButtonReady()
 
     await page.openAccount()
     await page.openProfileView()
     await validator.expectTogglePreferredTypeVisible(false)
     await page.closeModal()
+    await validator.expectAccountButtonReady()
 
     await page.sign(namespace)
     await page.approveSign()
@@ -105,6 +107,7 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
+  await validator.expectAccountButtonReady()
 
   await page.goToSettings()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
