@@ -765,7 +765,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -823,7 +823,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -850,7 +850,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -869,7 +869,7 @@ export const SwapController = {
 
     let insufficientNetworkTokenForGas = true
     if (
-      AccountController.state.preferredAccountType ===
+      AccountController.state.preferredAccountTypes?.eip155 ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       // Smart Accounts may pay gas in any ERC20 token

@@ -9,6 +9,7 @@ import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 
@@ -82,7 +83,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     const mappedAccounts = this.wallet.accounts
       .map<BitcoinConnector.AccountAddress>(acc => ({
         address: acc.address,
-        purpose: 'payment',
+        purpose: AddressPurpose.Payment,
         publicKey: Buffer.from(acc.publicKey).toString('hex')
       }))
       .filter(acc => {
