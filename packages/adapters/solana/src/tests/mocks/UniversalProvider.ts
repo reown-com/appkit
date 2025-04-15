@@ -26,7 +26,8 @@ export function mockUniversalProvider() {
           getClientId: vi.fn(() => Promise.resolve('client-id'))
         }
       }
-    }
+    },
+    setDefaultChain: vi.fn()
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
