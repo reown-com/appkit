@@ -149,15 +149,16 @@ export const ConnectionController = {
     }
   },
 
-  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
+  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType, namespace: ChainNamespace) {
     ModalController.setLoading(true, ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (!authConnector) {
       return
     }
-    AccountController.setPreferredAccountType(
-      accountType,
-      ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
+    AccountController.setPreferredAccountType(accountType, namespace)
+    await authConnector.provider.setPreferredAccount(accountType)
+    StorageUtil.setPreferredAccountTypes(
+      AccountController.state.preferredAccountTypes ?? { [namespace]: accountType }
     )
     await this.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)

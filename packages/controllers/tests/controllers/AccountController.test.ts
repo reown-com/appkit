@@ -92,10 +92,14 @@ describe('AccountController', () => {
 
   it('should update state correctly on setPreferredAccountType()', () => {
     AccountController.setPreferredAccountType('eoa', chain)
-    expect(AccountController.state.preferredAccountType).toEqual('eoa')
+    expect(AccountController.state.preferredAccountTypes).toEqual({
+      eip155: 'eoa'
+    })
 
     AccountController.setPreferredAccountType('smartAccount', chain)
-    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
+    expect(AccountController.state.preferredAccountTypes).toEqual({
+      eip155: 'smartAccount'
+    })
   })
 
   it('should update state correctly on resetAccount()', () => {

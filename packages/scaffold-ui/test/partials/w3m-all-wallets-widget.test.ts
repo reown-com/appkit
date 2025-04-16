@@ -10,11 +10,11 @@ import {
   type ConnectorControllerState,
   type ConnectorWithProviders,
   CoreHelperUtil,
-  type DefaultAccountTypes,
   EventsController,
   OptionsController,
   type OptionsControllerState,
   type OptionsControllerStateInternal,
+  type PreferredAccountTypes,
   RouterController,
   type SdkVersion
 } from '@reown/appkit-controllers'
@@ -44,7 +44,7 @@ const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal 
   projectId: 'test-project-id',
   sdkVersion: '1.0.0' as SdkVersion,
   sdkType: 'appkit' as const,
-  defaultAccountTypes: {} as DefaultAccountTypes
+  defaultAccountTypes: {} as PreferredAccountTypes
 }
 
 const mockConnector: ConnectorWithProviders = {

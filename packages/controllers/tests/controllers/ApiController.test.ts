@@ -471,7 +471,7 @@ describe('ApiController', () => {
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
 
-    await ApiController.fetchWallets({ page: 1 })
+    await ApiController.fetchWalletsByPage({ page: 1 })
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',

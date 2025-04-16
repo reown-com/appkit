@@ -1,6 +1,6 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 
-import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
+import type { Features, PreferredAccountTypes, SocialProvider } from './TypeUtil.js'
 
 const SECURE_SITE =
   // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -261,7 +261,7 @@ export const ConstantsUtil = {
     eip155: 'smartAccount',
     polkadot: 'eoa',
     solana: 'eoa'
-  } as const satisfies DefaultAccountTypes,
+  } as const satisfies PreferredAccountTypes,
   ADAPTER_TYPES: {
     UNIVERSAL: 'universal',
     SOLANA: 'solana',
