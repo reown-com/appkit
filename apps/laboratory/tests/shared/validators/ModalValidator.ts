@@ -39,7 +39,7 @@ export class ModalValidator {
       await this.page.waitForTimeout(interval)
     }
     throw new Error(
-      `Element with data-testid="${testId}" did not become visible within ${timeout}ms`
+      `Element with data-testid="${testId}" was not found within ${timeout}ms`
     )
   }
 
