@@ -211,8 +211,6 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
           restore-keys: |
             ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
-            ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true' # <-- Re-enable condition
