@@ -114,6 +114,11 @@ emailTest('it should show names feature only for EVM networks', async ({ library
   } else {
     await page.goToSettings()
   }
+  /*
+   * There are cases that AppKit tries to close while the modal is animating to the next view
+   * So we need to wait for 300ms to ensure the names feature is visible
+   */
+  await page.page.waitForTimeout(300)
   await validator.expectNamesFeatureVisible(library !== 'solana')
   await page.closeModal()
 })
