@@ -4,6 +4,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { REOWN_URL } from '../../utils/ConstantsUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -14,7 +15,7 @@ export class WuiUxByReown extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <a href="https://reown.com" rel="noreferrer" target="_blank" style="text-decoration: none;">
+      <a href=${REOWN_URL} rel="noreferrer" target="_blank" style="text-decoration: none;">
         <wui-flex
           justifyContent="center"
           alignItems="center"
