@@ -207,7 +207,6 @@ describe('W3mAllWalletsWidget', () => {
     let walletList = HelpersUtil.getByTestId(element, ALL_WALLETS_TEST_ID)
     expect(walletList.getAttribute('tagLabel')).toBe('1')
 
-    // Update filteredWallets
     apiState.filteredWallets = [
       ...initialFilteredWallets,
       {

@@ -789,7 +789,6 @@ describe('ApiController', () => {
     expect(ApiController.state.isAnalyticsEnabled).toBe(true)
   })
 
-  // Filter by namespaces
   it('should reset filters when no namespaces are provided', () => {
     const allFeatured = [
       { id: '1', name: 'Wallet1' },
