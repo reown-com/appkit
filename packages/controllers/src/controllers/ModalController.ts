@@ -101,9 +101,18 @@ export const ModalController = {
       event: 'MODAL_OPEN',
       properties: { connected: Boolean(caipAddress) }
     })
+
+    // eslint-disable-next-line no-console
+    console.trace('@modalController @opening')
+    // eslint-disable-next-line no-console
+    console.log('@modalController @opening', JSON.stringify(new Error().stack, null, 2))
   },
 
   close() {
+    // eslint-disable-next-line no-console
+    console.trace('@modalController @closing')
+    // eslint-disable-next-line no-console
+    console.log('@modalController @closing', JSON.stringify(new Error().stack, null, 2))
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
     const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
