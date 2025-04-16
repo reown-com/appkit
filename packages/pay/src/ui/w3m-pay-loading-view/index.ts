@@ -64,10 +64,8 @@ export class W3mPayLoadingView extends LitElement {
   private updateMessages() {
     switch (this.paymentState) {
       case 'completed':
-        if (PayController.state.currentPayment?.type === 'wallet') {
-          this.loadingMessage = 'Payment completed'
-          this.subMessage = 'Your transaction has been successfully processed'
-        }
+        this.loadingMessage = 'Payment completed'
+        this.subMessage = 'Your transaction has been successfully processed'
         break
       case 'error':
         this.loadingMessage = 'Payment failed'

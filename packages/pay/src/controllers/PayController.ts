@@ -398,9 +398,10 @@ export const PayController = {
         state.currentPayment.status = status.status
         state.currentPayment.result = status.txHash
       }
+      if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+        state.isPaymentInProgress = false
+      }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
       throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
     }
   }

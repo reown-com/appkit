@@ -119,9 +119,18 @@ export function usePay(parameters?: UsePayParameters): UsePayReturn {
 
   useEffect(() => {
     const unsubLoading = PayController.subscribeKey('isLoading', val => setIsControllerLoading(val))
-    const unsubProgress = PayController.subscribeKey('isPaymentInProgress', val =>
+    const unsubProgress = PayController.subscribeKey('isPaymentInProgress', val => {
       setIsPaymentInProgress(val)
-    )
+      const payResult = PayController.state.currentPayment?.result ?? null
+      setData(payResult)
+      if (payResult && onSuccess) {
+        onSuccess(payResult)
+      }
+      // Clear error if success occurs after an error
+      if (payResult) {
+        setError(null)
+      }
+    })
 
     const unsubError = PayController.subscribeKey('error', val => {
       setError(val)
@@ -134,23 +143,10 @@ export function usePay(parameters?: UsePayParameters): UsePayReturn {
       }
     })
 
-    const unsubResult = PayController.subscribeKey('currentPayment', val => {
-      const payResult = val?.result ?? null
-      setData(payResult)
-      if (payResult && onSuccess) {
-        onSuccess(payResult)
-      }
-      // Clear error if success occurs after an error
-      if (payResult) {
-        setError(null)
-      }
-    })
-
     return () => {
       unsubLoading()
       unsubProgress()
       unsubError()
-      unsubResult()
     }
   }, [onSuccess, onError])
 

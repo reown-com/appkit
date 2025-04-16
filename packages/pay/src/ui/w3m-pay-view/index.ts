@@ -212,10 +212,10 @@ export class W3mPayView extends LitElement {
     try {
       this.loadingExchangeId = exchangeId
       const result = await PayController.handlePayWithExchange(exchangeId)
-      await ModalController.open({
-        view: 'PayLoading'
-      })
       if (result) {
+        await ModalController.open({
+          view: 'PayLoading'
+        })
         CoreHelperUtil.openHref(result.url, result.openInNewTab ? '_blank' : '_self')
       }
     } finally {
