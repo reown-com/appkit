@@ -29,7 +29,6 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -796,7 +795,4 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const ChainController = withErrorBoundary(
-  controller,
-  TelemetryErrorCategory.INTERNAL_SDK_ERROR
-)
+export const ChainController = withErrorBoundary(controller)

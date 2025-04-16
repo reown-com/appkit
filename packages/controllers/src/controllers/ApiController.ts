@@ -13,13 +13,11 @@ import type {
   ApiGetWalletsResponse,
   WcWallet
 } from '../utils/TypeUtil.js'
-import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AssetController } from './AssetController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 /*
  * Exclude wallets that do not support relay connections on Core
@@ -83,7 +81,7 @@ const state = proxy<ApiControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-const controller = {
+export const ApiController = {
   state,
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ApiControllerState[K]) => void) {
@@ -262,7 +260,8 @@ const controller = {
     state.wallets = CoreHelperUtil.uniqueBy(
       [...state.wallets, ...ApiController._filterOutExtensions(data)],
       'id'
-    )
+    ).filter(w => w.chains?.some(chain => chains.includes(chain)))
+
     state.count = count > state.count ? count : state.count
     state.page = page
   },
@@ -381,6 +380,3 @@ const controller = {
     )
   }
 }
-
-// Export the controller wrapped with our error boundary
-export const ApiController = withErrorBoundary(controller, TelemetryErrorCategory.API_ERROR)

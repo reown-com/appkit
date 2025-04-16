@@ -11,7 +11,6 @@ import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -169,7 +168,4 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const TransactionsController = withErrorBoundary(
-  controller,
-  TelemetryErrorCategory.API_ERROR
-)
+export const TransactionsController = withErrorBoundary(controller, 'API_ERROR')

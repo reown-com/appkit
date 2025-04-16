@@ -11,7 +11,6 @@ import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -244,7 +243,4 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const RouterController = withErrorBoundary(
-  controller,
-  TelemetryErrorCategory.INTERNAL_SDK_ERROR
-)
+export const RouterController = withErrorBoundary(controller)

@@ -23,7 +23,6 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { RouterController } from './RouterController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -296,17 +295,10 @@ const controller = {
       ModalController.setLoading(false, namespace)
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {
-      throw new AppKitError(
-        'Failed to disconnect',
-        TelemetryErrorCategory.INTERNAL_SDK_ERROR,
-        error
-      )
+      throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
   }
 }
 
 // Export the controller wrapped with our error boundary
-export const ConnectionController = withErrorBoundary(
-  controller,
-  TelemetryErrorCategory.INTERNAL_SDK_ERROR
-)
+export const ConnectionController = withErrorBoundary(controller)

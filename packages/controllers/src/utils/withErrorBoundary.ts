@@ -1,4 +1,5 @@
-import { TelemetryController, TelemetryErrorCategory } from '../controllers/TelemetryController.js'
+import type { TelemetryErrorCategory } from '../controllers/TelemetryController.js'
+import { TelemetryController } from '../controllers/TelemetryController.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Controller = Record<string, any>
@@ -22,7 +23,7 @@ export class AppKitError extends Error {
 
 export function withErrorBoundary<T extends Controller>(
   controller: T,
-  defaultCategory: TelemetryErrorCategory = TelemetryErrorCategory.INTERNAL_SDK_ERROR
+  defaultCategory: TelemetryErrorCategory = 'INTERNAL_SDK_ERROR'
 ): T {
   const newController: Controller = {}
 

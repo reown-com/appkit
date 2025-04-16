@@ -11,7 +11,6 @@ import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -178,7 +177,4 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const EnsController = withErrorBoundary(
-  controller,
-  TelemetryErrorCategory.INTERNAL_SDK_ERROR
-)
+export const EnsController = withErrorBoundary(controller)

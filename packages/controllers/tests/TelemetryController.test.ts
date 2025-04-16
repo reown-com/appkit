@@ -1,10 +1,7 @@
 /// <reference types="vitest" />
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-  TelemetryController,
-  TelemetryErrorCategory
-} from '../src/controllers/TelemetryController.js'
+import { TelemetryController } from '../src/controllers/TelemetryController.js'
 
 // Mock dependencies
 vi.mock('../src/utils/CoreHelperUtil', () => ({
@@ -43,14 +40,14 @@ describe('TelemetryController', () => {
 
       // Send 5 errors
       for (let i = 0; i < 5; i++) {
-        await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
+        await TelemetryController.sendError(error, 'API_ERROR')
       }
 
       // Verify 5 errors were sent
       expect(TelemetryController.state.events.length).toBe(5)
 
       // Try to send a 6th error
-      await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
+      await TelemetryController.sendError(error, 'API_ERROR')
 
       // Verify no additional error was sent
       expect(TelemetryController.state.events.length).toBe(5)
@@ -61,7 +58,7 @@ describe('TelemetryController', () => {
 
       // Send 5 errors
       for (let i = 0; i < 5; i++) {
-        await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
+        await TelemetryController.sendError(error, 'API_ERROR')
       }
 
       // Verify 5 errors were sent
@@ -71,7 +68,7 @@ describe('TelemetryController', () => {
       vi.advanceTimersByTime(2 * 60 * 1000)
 
       // Try to send a new error
-      await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
+      await TelemetryController.sendError(error, 'API_ERROR')
 
       // Verify the new error was sent
       expect(TelemetryController.state.events.length).toBe(6)
@@ -85,7 +82,7 @@ describe('TelemetryController', () => {
 
       // Try to send errors
       for (let i = 0; i < 10; i++) {
-        await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
+        await TelemetryController.sendError(error, 'API_ERROR')
       }
 
       // Verify no errors were sent
@@ -97,7 +94,7 @@ describe('TelemetryController', () => {
 
       // Send 5 errors
       for (let i = 0; i < 5; i++) {
-        await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
+        await TelemetryController.sendError(error, 'API_ERROR')
       }
 
       // Clear events
@@ -105,7 +102,7 @@ describe('TelemetryController', () => {
 
       // Try to send new errors
       for (let i = 0; i < 5; i++) {
-        await TelemetryController.sendError(error, TelemetryErrorCategory.API_ERROR)
+        await TelemetryController.sendError(error, 'API_ERROR')
       }
 
       // Verify new errors were sent

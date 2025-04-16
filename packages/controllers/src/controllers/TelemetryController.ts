@@ -5,16 +5,11 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { EventsController } from './EventsController.js'
 
-export const TelemetryErrorCategory = {
-  API_ERROR: 'API_ERROR',
-  DATA_PARSING_ERROR: 'DATA_PARSING_ERROR',
-  SECURE_SITE_ERROR: 'SECURE_SITE_ERROR',
-  INTERNAL_SDK_ERROR: 'INTERNAL_SDK_ERROR'
-} as const
-
 export type TelemetryErrorCategory =
-  (typeof TelemetryErrorCategory)[keyof typeof TelemetryErrorCategory]
-
+  | 'API_ERROR'
+  | 'DATA_PARSING_ERROR'
+  | 'SECURE_SITE_ERROR'
+  | 'INTERNAL_SDK_ERROR'
 export interface TelemetryEvent {
   type: 'error'
   event: string

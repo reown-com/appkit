@@ -21,7 +21,6 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -911,7 +910,4 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const SwapController = withErrorBoundary(
-  controller,
-  TelemetryErrorCategory.INTERNAL_SDK_ERROR
-)
+export const SwapController = withErrorBoundary(controller)

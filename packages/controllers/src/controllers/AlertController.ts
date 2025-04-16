@@ -3,7 +3,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { OptionsController } from './OptionsController.js'
-import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
 export interface AlertControllerState {
@@ -59,7 +58,4 @@ const controller = {
 }
 
 // Export the controller wrapped with our error boundary
-export const AlertController = withErrorBoundary(
-  controller,
-  TelemetryErrorCategory.INTERNAL_SDK_ERROR
-)
+export const AlertController = withErrorBoundary(controller)
