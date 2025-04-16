@@ -6,7 +6,6 @@ import { getMaximumWaitConnections } from '../utils/timeouts'
 const MAX_WAIT = getMaximumWaitConnections()
 
 export class WalletValidator {
-  public page: Page
   private gotoSessions: Locator
   public page: Page
 
