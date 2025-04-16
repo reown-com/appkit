@@ -39,6 +39,10 @@ describe('W3mConnectorList', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      excludedWallets: []
+    })
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,

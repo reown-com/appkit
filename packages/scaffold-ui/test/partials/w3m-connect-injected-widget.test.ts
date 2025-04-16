@@ -183,18 +183,114 @@ describe('W3mConnectInjectedWidget', () => {
     expect(walletSelector.getAttribute('name')).toBe('Unknown')
   })
 
-  it('should not render when no RDNS and not installed', async () => {
-    const noRdnsConnector: ConnectorWithProviders = {
-      ...MOCK_INJECTED_CONNECTOR,
-      info: undefined
-    }
-
+  it('should not render Browser Wallet on mobile when no RDNS and not installed', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
     vi.spyOn(ConnectionController, 'checkInstalled').mockReturnValue(false)
 
     const element: W3mConnectInjectedWidget = await fixture(
       html`<w3m-connect-injected-widget
-        .connectors=${[noRdnsConnector]}
+        .connectors=${[BROWSER_WALLET_CONNECTOR]}
       ></w3m-connect-injected-widget>`
+    )
+
+    element.requestUpdate()
+    await elementUpdated(element)
+
+    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    expect(walletList.length).toBe(0)
+
+    const browserWalletSelector = HelpersUtil.getByTestId(
+      element,
+      `wallet-selector-${BROWSER_WALLET_CONNECTOR.id}`
+    )
+    expect(browserWalletSelector).toBeNull()
+  })
+
+  it('should render Browser Wallet and other connectors on mobile when installed', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(ConnectionController, 'checkInstalled').mockReturnValue(true)
+
+    const element: W3mConnectInjectedWidget = await fixture(
+      html`<w3m-connect-injected-widget
+        .connectors=${[BROWSER_WALLET_CONNECTOR, MOCK_INJECTED_CONNECTOR]}
+      ></w3m-connect-injected-widget>`
+    )
+
+    element.requestUpdate()
+    await elementUpdated(element)
+
+    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    expect(walletList.length).toBe(2)
+
+    const browserWalletSelector = HelpersUtil.getByTestId(
+      element,
+      `wallet-selector-${BROWSER_WALLET_CONNECTOR.id}`
+    )
+    expect(browserWalletSelector).not.toBeNull()
+
+    const customInjectedSelector = HelpersUtil.getByTestId(
+      element,
+      `wallet-selector-${MOCK_INJECTED_CONNECTOR.id}`
+    )
+    expect(customInjectedSelector).not.toBeNull()
+  })
+
+  it('should render other connectors regardless of mobile status or installation', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    vi.spyOn(ConnectionController, 'checkInstalled').mockReturnValue(true)
+
+    const otherConnector = {
+      ...MOCK_INJECTED_CONNECTOR,
+      id: 'otherWallet',
+      name: 'Other Wallet',
+      info: undefined
+    }
+
+    const element: W3mConnectInjectedWidget = await fixture(
+      html`<w3m-connect-injected-widget
+        .connectors=${[otherConnector]}
+      ></w3m-connect-injected-widget>`
+    )
+
+    element.requestUpdate()
+    await elementUpdated(element)
+
+    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    expect(walletList.length).toBe(1)
+
+    const walletSelector = HelpersUtil.getByTestId(element, `wallet-selector-${otherConnector.id}`)
+    expect(walletSelector).not.toBeNull()
+  })
+
+  it('should hide if browser wallet is not installed on mobile', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(ConnectionController, 'checkInstalled').mockReturnValue(false)
+
+    const element: W3mConnectInjectedWidget = await fixture(
+      html`<w3m-connect-injected-widget
+        .connectors=${[BROWSER_WALLET_CONNECTOR]}
+      ></w3m-connect-injected-widget>`
+    )
+
+    expect(element.style.display).toBe('none')
+  })
+
+  it('should not hide if browser wallet is installed on mobile', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(ConnectionController, 'checkInstalled').mockReturnValue(true)
+
+    const element: W3mConnectInjectedWidget = await fixture(
+      html`<w3m-connect-injected-widget
+        .connectors=${[BROWSER_WALLET_CONNECTOR]}
+      ></w3m-connect-injected-widget>`
+    )
+
+    expect(element.style.display).not.toBe('none')
+  })
+
+  it('should hide if there are no injected connectors', async () => {
+    const element: W3mConnectInjectedWidget = await fixture(
+      html`<w3m-connect-injected-widget .connectors=${[]}></w3m-connect-injected-widget>`
     )
 
     expect(element.style.display).toBe('none')
