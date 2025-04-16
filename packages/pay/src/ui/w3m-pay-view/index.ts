@@ -7,6 +7,7 @@ import {
   AccountController,
   ChainController,
   ConnectionController,
+  CoreHelperUtil,
   ModalController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -210,7 +211,13 @@ export class W3mPayView extends LitElement {
   private async onExchangePayment(exchangeId: string) {
     try {
       this.loadingExchangeId = exchangeId
-      await PayController.handlePayWithExchange(exchangeId)
+      const result = await PayController.handlePayWithExchange(exchangeId)
+      await ModalController.open({
+        view: 'PayLoading'
+      })
+      if (result) {
+        CoreHelperUtil.openHref(result.url, result.openInNewTab ? '_blank' : '_self')
+      }
     } finally {
       this.loadingExchangeId = null
     }

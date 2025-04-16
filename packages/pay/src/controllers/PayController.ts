@@ -358,20 +358,15 @@ export const PayController = {
       if (!payUrl) {
         throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
       }
-      if (state.openInNewTab) {
-        CoreHelperUtil.openHref(payUrl.url, '_blank')
-        state.currentPayment.sessionId = payUrl.sessionId
-        state.currentPayment.status = 'IN_PROGRESS'
-        state.currentPayment.exchangeId = exchangeId
 
-        await ModalController.open({
-          view: 'PayLoading'
-        })
+      state.currentPayment.sessionId = payUrl.sessionId
+      state.currentPayment.status = 'IN_PROGRESS'
+      state.currentPayment.exchangeId = exchangeId
 
-        return
+      return {
+        url: payUrl.url,
+        openInNewTab: state.openInNewTab
       }
-      RouterController.push('PayLoading')
-      CoreHelperUtil.openHref(payUrl.url, '_self')
     } catch (error) {
       if (error instanceof AppKitPayError) {
         state.error = error.message
@@ -380,6 +375,8 @@ export const PayController = {
       }
       state.isPaymentInProgress = false
       SnackController.showError(state.error)
+
+      return null
     }
   },
 

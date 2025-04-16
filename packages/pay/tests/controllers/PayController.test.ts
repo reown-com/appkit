@@ -381,13 +381,13 @@ describe('PayController', () => {
   })
 
   describe('handlePayWithExchange', () => {
-    it('should get pay URL and open it in new tab', async () => {
+    it('should get pay URL and return object for opening in new tab', async () => {
       PayController.state.openInNewTab = true
       PayController.setPaymentConfig(mockPaymentOptions)
       const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl')
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
-      await PayController.handlePayWithExchange('coinbase')
+      const result = await PayController.handlePayWithExchange('coinbase')
 
       expect(getPayUrlSpy).toHaveBeenCalledWith('coinbase', {
         network: mockPaymentOptions.paymentAsset.network,
@@ -395,12 +395,24 @@ describe('PayController', () => {
         amount: mockPaymentOptions.paymentAsset.amount,
         recipient: mockPaymentOptions.paymentAsset.recipient
       })
-      expect(ModalController.open).toHaveBeenCalledWith({ view: 'PayLoading' })
-      expect(openHrefSpy).toHaveBeenCalledWith(mockPayUrlResponse.url, '_blank')
+      expect(PayController.state.isPaymentInProgress).toBe(true)
+      expect(PayController.state.currentPayment).toEqual({
+        type: 'exchange',
+        exchangeId: 'coinbase',
+        sessionId: mockPayUrlResponse.sessionId,
+        status: 'IN_PROGRESS'
+      })
+      expect(result).toEqual({
+        url: mockPayUrlResponse.url,
+        openInNewTab: true
+      })
+      expect(ModalController.open).not.toHaveBeenCalled()
+      expect(openHrefSpy).not.toHaveBeenCalled()
     })
 
-    it('should get pay URL and open it in same tab', async () => {
+    it('should get pay URL and return object for opening in same tab', async () => {
       PayController.setPaymentConfig(mockPaymentOptions)
+      PayController.state.openInNewTab = false
 
       const getPayUrlSpy = vi
         .spyOn(PayController, 'getPayUrl')
@@ -410,13 +422,23 @@ describe('PayController', () => {
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
       const snackErrorSpy = vi.spyOn(SnackController, 'showError')
 
-      PayController.state.openInNewTab = false
-      await PayController.handlePayWithExchange('coinbase')
+      const result = await PayController.handlePayWithExchange('coinbase')
 
       expect(getPayUrlSpy).toHaveBeenCalled()
+      expect(PayController.state.isPaymentInProgress).toBe(true)
+      expect(PayController.state.currentPayment).toEqual({
+        type: 'exchange',
+        exchangeId: 'coinbase',
+        sessionId: mockPayUrlResponse.sessionId,
+        status: 'IN_PROGRESS'
+      })
+      expect(result).toEqual({
+        url: mockPayUrlResponse.url,
+        openInNewTab: false
+      })
       expect(snackErrorSpy).not.toHaveBeenCalled()
-      expect(routerPushSpy).toHaveBeenCalledWith('PayLoading')
-      expect(openHrefSpy).toHaveBeenCalledWith(mockPayUrlResponse.url, '_self')
+      expect(routerPushSpy).not.toHaveBeenCalled()
+      expect(openHrefSpy).not.toHaveBeenCalled()
     })
 
     it('should set error state and show snackbar if unable to get pay URL', async () => {
@@ -424,9 +446,11 @@ describe('PayController', () => {
       vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(null as any)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
-      await PayController.handlePayWithExchange('coinbase')
+      const result = await PayController.handlePayWithExchange('coinbase')
 
+      expect(result).toBeNull()
       expect(PayController.state.error).toBe(AppKitPayErrorMessages.UNABLE_TO_INITIATE_PAYMENT)
+      expect(PayController.state.isPaymentInProgress).toBe(false)
       expect(SnackController.showError).toHaveBeenCalledWith(
         AppKitPayErrorMessages.UNABLE_TO_INITIATE_PAYMENT
       )
