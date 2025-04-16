@@ -51,7 +51,7 @@ describe('W3mPayView', () => {
       PayController.state.exchanges = mockExchanges
     })
     vi.spyOn(PayController, 'handlePayWithWallet').mockImplementation(() => {})
-    vi.spyOn(PayController, 'handlePayWithExchange').mockImplementation(async () => {})
+    vi.spyOn(PayController, 'handlePayWithExchange').mockImplementation(async () => null)
 
     // Mock ConnectionController and ModalController
     vi.spyOn(ConnectionController, 'disconnect').mockImplementation(async () => {})
