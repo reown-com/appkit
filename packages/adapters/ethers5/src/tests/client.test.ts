@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
@@ -258,6 +259,47 @@ describe('Ethers5Adapter', () => {
 
       expect(result.address).toBe('0x123')
       expect(result.chainId).toBe(1)
+    })
+
+    it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
+          eip155: 'smartAccount'
+        }
+      })
+
+      const ethers5Adapter = new Ethers5Adapter()
+
+      const connect = vi.fn().mockResolvedValue({ address: '0x123' })
+
+      const mockAuthProviderWithConnect = {
+        ...mockAuthProvider,
+        connect
+      } as unknown as W3mFrameProvider
+
+      Object.defineProperty(ethers5Adapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockAuthProviderWithConnect,
+            chains: [1],
+            type: 'AUTH',
+            chain: 1
+          }
+        ]
+      })
+
+      await ethers5Adapter.connect({
+        id: 'test',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(connect).toHaveBeenCalledWith({
+        chainId: 1,
+        preferredAccountType: 'smartAccount'
+      })
     })
   })
 

@@ -19,3 +19,4 @@ tsconfig.tsbuildinfo
 .parcel-cache
 .coverage
 .cursor
+.envrc*

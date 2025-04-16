@@ -12,6 +12,7 @@ import type {
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
   ConnectionStatus,
+  PreferredAccountTypes,
   SocialProvider,
   WcWallet
 } from './TypeUtil.js'
@@ -560,5 +561,26 @@ export const StorageUtil = {
     } catch {
       console.info('Unable to clear address cache')
     }
+  },
+  setPreferredAccountTypes(accountTypes: PreferredAccountTypes) {
+    try {
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES,
+        JSON.stringify(accountTypes)
+      )
+    } catch {
+      console.info('Unable to set preferred account types', accountTypes)
+    }
+  },
+  getPreferredAccountTypes() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES)
+
+      return JSON.parse(result as string) as PreferredAccountTypes
+    } catch {
+      console.info('Unable to get preferred account types')
+    }
+
+    return undefined
   }
 }

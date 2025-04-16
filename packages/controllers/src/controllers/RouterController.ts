@@ -10,7 +10,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
-import type { SwapInputTarget } from './SwapController.js'
+import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 import { TelemetryErrorCategory } from './TelemetryController.js'
 
 // -- Types --------------------------------------------- //
@@ -105,6 +105,7 @@ export interface RouterControllerState {
     switchToChain?: ChainNamespace
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
+    swap?: SwapInputArguments
   }
   transactionStack: TransactionAction[]
 }

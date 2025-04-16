@@ -638,7 +638,7 @@ const controller = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountType: undefined,
+      preferredAccountTypes: undefined,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
