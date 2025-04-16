@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start --port 3003",
+    "playwright:start": "pnpm start",
     "playwright:test": "HEADLESS=true playwright test",
     "playwright:debug": "pnpm playwright:test --debug"
   },
