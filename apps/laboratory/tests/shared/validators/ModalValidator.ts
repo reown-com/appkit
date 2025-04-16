@@ -23,7 +23,7 @@ export class ModalValidator {
         return element
       }
       // eslint-disable-next-line no-await-in-loop
-      await this.page.waitForTimeout(interval) // Wait before rechecking
+      await this.page.waitForTimeout(interval)
     }
     throw new Error(`Element ${selector} did not become visible within ${timeout}ms`)
   }
@@ -36,7 +36,7 @@ export class ModalValidator {
         return element
       }
       // eslint-disable-next-line no-await-in-loop
-      await this.page.waitForTimeout(interval) // Wait before rechecking
+      await this.page.waitForTimeout(interval)
     }
     throw new Error(
       `Element with data-testid="${testId}" did not become visible within ${timeout}ms`
