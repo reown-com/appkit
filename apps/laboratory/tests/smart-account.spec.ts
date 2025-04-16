@@ -86,11 +86,13 @@ smartAccountTest(
     await page.switchNetwork(targetChain)
     await validator.expectSwitchedNetwork(targetChain)
     await page.closeModal()
+    await validator.expectAccountButtonReady()
 
     await page.openAccount()
     await page.openProfileView()
     await validator.expectTogglePreferredTypeVisible(false)
     await page.closeModal()
+    await validator.expectAccountButtonReady()
 
     await page.sign(namespace)
     await page.approveSign()
@@ -105,10 +107,12 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
+  await validator.expectAccountButtonReady()
 
   await page.goToSettings()
-  await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
@@ -127,8 +131,9 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
   const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.goToSettings()
-  await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(EOA)
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 

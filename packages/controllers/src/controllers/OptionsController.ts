@@ -9,9 +9,9 @@ import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
   ConnectMethod,
   CustomWallet,
-  DefaultAccountTypes,
   Features,
   Metadata,
+  PreferredAccountTypes,
   ProjectId,
   SdkVersion,
   SocialProvider,
@@ -155,7 +155,7 @@ export interface OptionsControllerStatePublic {
    * Default account types for each namespace.
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
-  defaultAccountTypes: DefaultAccountTypes
+  defaultAccountTypes: PreferredAccountTypes
   /**
    * Allows users to indicate if they want to handle the WC connection themselves.
    * @default false
@@ -178,6 +178,11 @@ export interface OptionsControllerStatePublic {
     rpcMap?: Record<string, string>
     defaultChain?: string
   }
+  /**
+   * Enable or disable the network switching functionality in the modal.
+   * @default true
+   */
+  enableNetworkSwitch?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -197,7 +202,13 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+  defaultAccountTypes: {
+    solana: 'eoa',
+    bip122: 'payment',
+    polkadot: 'eoa',
+    eip155: 'smartAccount'
+  },
+  enableNetworkSwitch: true
 })
 
 // -- Controller ---------------------------------------- //
@@ -359,6 +370,10 @@ export const OptionsController = {
 
   setManualWCControl(manualWCControl: OptionsControllerState['manualWCControl']) {
     state.manualWCControl = manualWCControl
+  },
+
+  setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
+    state.enableNetworkSwitch = enableNetworkSwitch
   },
 
   setDefaultAccountTypes(

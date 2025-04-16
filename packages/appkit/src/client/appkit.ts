@@ -14,7 +14,8 @@ import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
-  type Metadata
+  type Metadata,
+  PublicStateController
 } from '@reown/appkit-controllers'
 import {
   AccountController,
@@ -123,7 +124,12 @@ export class AppKit extends AppKitBaseClient {
         namespace === ConstantsUtil.CHAIN.EVM
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
-      this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
+
+      const preferredAccountType =
+        (user.preferredAccountType as W3mFrameTypes.AccountType) ||
+        (AccountController.state.preferredAccountTypes?.[namespace] as W3mFrameTypes.AccountType) ||
+        OptionsController.state.defaultAccountTypes[namespace]
+
       /*
        * This covers the case where user switches back from a smart account supported
        *  network to a non-smart account supported network resulting in a different address
@@ -138,23 +144,29 @@ export class AppKit extends AppKitBaseClient {
       }
       this.setCaipAddress(caipAddress, namespace)
 
-      this.setUser({ ...(AccountController.state.user || {}), email: user.email }, namespace)
-
-      const preferredAccountType = (user.preferredAccountType ||
-        OptionsController.state.defaultAccountTypes[namespace]) as W3mFrameTypes.AccountType
+      this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
+      this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
 
       const userAccounts = user.accounts?.map(account =>
         CoreHelperUtil.createAccount(
           namespace,
           account.address,
-          account.type || OptionsController.state.defaultAccountTypes[namespace]
+          account.type ||
+            (AccountController.state.preferredAccountTypes?.[
+              namespace
+            ] as W3mFrameTypes.AccountType) ||
+            OptionsController.state.defaultAccountTypes[namespace]
         )
       )
 
       this.setAllAccounts(
         userAccounts || [
-          CoreHelperUtil.createAccount(namespace, user.address, preferredAccountType)
+          CoreHelperUtil.createAccount(
+            namespace,
+            user.address,
+            (user.preferredAccountType as W3mFrameTypes.AccountType) || preferredAccountType
+          )
         ],
         namespace
       )
@@ -178,6 +190,7 @@ export class AppKit extends AppKitBaseClient {
       if (!address) {
         return
       }
+
       this.setPreferredAccountType(
         type as W3mFrameTypes.AccountType,
         ChainController.state.activeChain as ChainNamespace
@@ -328,11 +341,17 @@ export class AppKit extends AppKitBaseClient {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
-      this.subscribeState(val => {
-        if (!val.open) {
+      PublicStateController.subscribeOpen(isOpen => {
+        if (!isOpen && this.isTransactionStackEmpty()) {
           this.authProvider?.rejectRpcRequests()
         }
       })
+      if (
+        chainNamespace === ConstantsUtil.CHAIN.EVM &&
+        AccountController.state.preferredAccountTypes?.eip155
+      ) {
+        this.authProvider.setPreferredAccount(AccountController.state.preferredAccountTypes?.eip155)
+      }
       this.syncAuthConnector(this.authProvider, chainNamespace)
       this.checkExistingTelegramSocialConnection(chainNamespace)
     }
@@ -352,7 +371,7 @@ export class AppKit extends AppKitBaseClient {
     super.initControllers(options)
 
     if (this.options.excludeWalletIds) {
-      ApiController.initializeExcludedWalletRdns({ ids: this.options.excludeWalletIds })
+      ApiController.initializeExcludedWallets({ ids: this.options.excludeWalletIds })
     }
   }
 

@@ -303,6 +303,7 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
     slippage: string
     permit?: string
   }
+  disableEstimate?: boolean
 }
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
@@ -1173,7 +1174,7 @@ export type UseAppKitAccountReturn = {
   embeddedWalletInfo?: {
     user: AccountControllerState['user']
     authProvider: AccountControllerState['socialProvider'] | 'email'
-    accountType: W3mFrameTypes.AccountType | undefined
+    accountType: PreferredAccountTypes[ChainNamespace] | undefined
     isSmartAccountDeployed: boolean
   }
   status: AccountControllerState['status']
@@ -1194,4 +1195,6 @@ export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 're
  * @description The default account types for each namespace.
  * @default
  */
-export type DefaultAccountTypes = { [Key in keyof NamespaceTypeMap]: NamespaceTypeMap[Key] }
+export type PreferredAccountTypes = {
+  [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key]
+}

@@ -1,3 +1,5 @@
+import { AddressPurpose as SatsConnectAddressPurpose } from 'sats-connect'
+
 import type { Provider } from '@reown/appkit-controllers'
 
 import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/adapters/ChainAdapterConnector.js'
@@ -10,6 +12,14 @@ export interface BitcoinConnector extends ChainAdapterConnector, Provider {
   signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
   sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string>
   signPSBT(params: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse>
+  switchNetwork(caipNetworkId: string): Promise<void>
+}
+
+// eslint-disable-next-line no-shadow
+export enum AddressPurpose {
+  Ordinal = 'ordinal',
+  Payment = 'payment',
+  Stacks = 'stx'
 }
 
 export namespace BitcoinConnector {
@@ -29,7 +39,7 @@ export namespace BitcoinConnector {
     /**
      * The purpose of the address
      */
-    purpose: 'payment' | 'ordinal' | 'stx'
+    purpose: AddressPurpose
   }
 
   export type SignMessageParams = {
@@ -41,6 +51,10 @@ export namespace BitcoinConnector {
      * The address to sign the message with
      */
     address: string
+    /**
+     * The type of signature to use
+     */
+    protocol?: 'ecdsa' | 'bip322'
   }
 
   export type SendTransferParams = {
@@ -89,5 +103,20 @@ export namespace BitcoinConnector {
      * The `string` transaction id of the broadcasted transaction or `undefined` if not broadcasted
      */
     txid?: string
+  }
+}
+
+export function mapSatsConnectAddressPurpose(
+  purpose: SatsConnectAddressPurpose
+): AddressPurpose | undefined {
+  switch (purpose) {
+    case SatsConnectAddressPurpose.Payment:
+      return AddressPurpose.Payment
+    case SatsConnectAddressPurpose.Ordinals:
+      return AddressPurpose.Ordinal
+    case SatsConnectAddressPurpose.Stacks:
+      return AddressPurpose.Stacks
+    default:
+      return undefined
   }
 }

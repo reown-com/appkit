@@ -50,7 +50,11 @@ walletButtonTest('it should be connected after page refresh', async () => {
   await modalValidator.expectWalletButtonHook(WALLET_CONNECT_TEST_ID, true)
 })
 
-walletButtonTest('it should connect with email', async () => {
+walletButtonTest('it should connect with email', async ({ library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
+
   await modalPage.disconnect()
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {

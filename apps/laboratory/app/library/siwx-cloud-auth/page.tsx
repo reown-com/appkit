@@ -8,6 +8,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
@@ -35,12 +36,12 @@ ThemeStore.setModal(modal)
 
 export default function SIWXCloudAuth() {
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <AppKitInfo />
       <CloudAuthTests />
       <EthersTests />
       <SolanaTests />
-    </>
+    </InitializeBoundary>
   )
 }

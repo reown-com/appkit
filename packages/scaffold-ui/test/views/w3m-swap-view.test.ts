@@ -1,7 +1,9 @@
 import { expect, fixture, html } from '@open-wc/testing'
-import { afterEach, beforeEach, describe, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 'vitest'
 
+import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ChainControllerState,
   RouterController,
@@ -100,7 +102,11 @@ describe('W3mSwapView', () => {
       networkTokenSymbol: '',
       inputError: undefined,
       slippage: 0.5,
-      tokens: [mockToken],
+      tokens: [
+        mockToken,
+        Object.assign({}, mockToken, { symbol: 'AAAA' }),
+        Object.assign({}, mockToken, { symbol: 'BBBB' })
+      ],
       suggestedTokens: undefined,
       popularTokens: undefined,
       foundTokens: undefined,
@@ -122,6 +128,15 @@ describe('W3mSwapView', () => {
     vi.spyOn(SwapController, 'switchTokens').mockImplementation(() => {})
     vi.spyOn(SwapController, 'resetState').mockImplementation(() => {})
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setSourceToken').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setToToken').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setSourceTokenAmount').mockImplementation(() => {})
+
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      caipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
+      address: '0x123456789abcdef123456789abcdef123456789a'
+    })
   })
 
   afterEach(() => {
@@ -268,5 +283,149 @@ describe('W3mSwapView', () => {
     })
     expect(routerPushSpy.mock.calls.length).to.equal(1)
     expect(routerPushSpy.mock.calls[0]?.[0]).to.equal('SwapPreview')
+  })
+
+  it('should handle caipAddress change', async () => {
+    vi.mocked(SwapController.resetState).mockClear()
+    vi.mocked(SwapController.initializeState).mockClear()
+
+    // Spy on AccountController.subscribeKey to capture subscription callbacks
+    const subscribeKeySpy = vi.spyOn(AccountController, 'subscribeKey')
+
+    // Create the component which will register subscriptions
+    const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
+    await element.updateComplete
+
+    // Verify AccountController.subscribeKey was called
+    expect(subscribeKeySpy.mock.calls.length).to.be.greaterThan(0)
+
+    // Verify one of the calls was for caipAddress
+    const hasCaipAddressCall = subscribeKeySpy.mock.calls.some(call => call[0] === 'caipAddress')
+    expect(hasCaipAddressCall).to.be.true
+
+    // Get the callback function that was registered for caipAddress changes
+    const caipAddressCallArgs = subscribeKeySpy.mock.calls
+      .filter(call => call[0] === 'caipAddress')
+      .map(call => call[1])
+    const callbacks = caipAddressCallArgs.map((call: any) => call)
+
+    // Verify callback exists
+    expect(callbacks.length > 0).to.be.true
+
+    // Test 1: Same caipAddress should not trigger resets
+    const currentCaipAddress = 'eip155:1:0x123456789abcdef123456789abcdef123456789a'
+    vi.mocked(SwapController.resetState).mockClear()
+    vi.mocked(SwapController.initializeState).mockClear()
+
+    for (const callback of callbacks) {
+      callback!(currentCaipAddress)
+    }
+
+    // Verify methods were NOT called when address hasn't changed
+    expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(0)
+    expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
+
+    // Test 2: Different caipAddress should trigger resets
+    vi.mocked(SwapController.resetState).mockClear()
+    vi.mocked(SwapController.initializeState).mockClear()
+
+    const newCaipAddress = 'eip155:1:0xabcdef123456789abcdef123456789abcdef1234'
+
+    // Call the first callback (from constructor) which should reset state
+    callbacks[0]!(newCaipAddress)
+
+    // Verify resetState was called
+    expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(1)
+    expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
+
+    // Clear mocks for the second callback
+    vi.mocked(SwapController.resetState).mockClear()
+    vi.mocked(SwapController.initializeState).mockClear()
+
+    // Call the second callback (from unsubscribe array) which should NOT initialize state
+    // because the caipAddress property has already been updated by the first callback
+    callbacks[1]!(newCaipAddress)
+
+    // Verify initializeState was NOT called
+    expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(0)
+    expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
+  })
+
+  it('should set initial state with preselected tokens', async () => {
+    const element = await fixture<W3mSwapView>(
+      html`<w3m-swap-view
+        initialParams='{"fromToken": "AAAA","toToken":"BBBB","amount":"321.123"}'
+      ></w3m-swap-view>`
+    )
+
+    await element.updateComplete
+
+    vitestExpect(SwapController.setSourceToken).toHaveBeenCalledWith(
+      vitestExpect.objectContaining({
+        symbol: 'AAAA'
+      })
+    )
+    vitestExpect(SwapController.setToToken).toHaveBeenCalledWith(
+      vitestExpect.objectContaining({
+        symbol: 'BBBB'
+      })
+    )
+    vitestExpect(SwapController.setSourceTokenAmount).toHaveBeenCalledWith('321.123')
+  })
+
+  it('should call unsubscribe when unmounted', async () => {
+    const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
+    await element.updateComplete
+
+    const unsubscribeSpies = element['unsubscribe'].map(unsubscribe => {
+      return vi.fn(unsubscribe)
+    })
+
+    element['unsubscribe'] = unsubscribeSpies
+
+    element.disconnectedCallback()
+
+    // Verify each unsubscribe function was called
+    unsubscribeSpies.forEach(spy => {
+      expect(spy.mock.calls.length).to.equal(1)
+    })
+  })
+
+  it('should still react to network and address change events after being unmounted', async () => {
+    const resetStateSpy = vi.spyOn(SwapController, 'resetState')
+    const initializeStateSpy = vi.spyOn(SwapController, 'initializeState')
+
+    const subscribeKeySpy = vi.spyOn(ChainController, 'subscribeKey')
+    const accountSubscribeKeySpy = vi.spyOn(AccountController, 'subscribeKey')
+
+    const element: W3mSwapView = await fixture(html`<w3m-swap-view></w3m-swap-view>`)
+    await element.updateComplete
+
+    const chainCallbacks = subscribeKeySpy.mock.calls
+      .filter(call => call[0] === 'activeCaipNetwork')
+      .map(call => call[1])
+    const accountCallbacks = accountSubscribeKeySpy.mock.calls
+      .filter(call => call[0] === 'caipAddress')
+      .map(call => call[1])
+
+    vitestExpect(chainCallbacks.length).toBe(2)
+    vitestExpect(accountCallbacks.length).toBe(2)
+
+    element.disconnectedCallback()
+
+    resetStateSpy.mockClear()
+    initializeStateSpy.mockClear()
+
+    const mockNetwork = {
+      id: 2,
+      chainNamespace: 'eip155',
+      caipNetworkId: 'eip155:2'
+    } as unknown as CaipNetwork
+
+    chainCallbacks[0]?.(mockNetwork)
+    accountCallbacks[0]?.('eip155:2:0x456' as CaipAddress)
+
+    vitestExpect(resetStateSpy).toHaveBeenCalled()
+    vitestExpect(initializeStateSpy).not.toHaveBeenCalled()
   })
 })
