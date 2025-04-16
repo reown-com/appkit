@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   getPayUrl as clientGetPayUrl,
@@ -12,8 +12,9 @@ import {
   type AppKitPayErrorMessage
 } from '../src/types/errors.js'
 import type { Exchange } from '../src/types/exchange.js'
-import type { PayUrlParams, PaymentOptions } from '../src/types/options.js'
+import type { PayUrlParams, PayUrlResponse, PaymentOptions } from '../src/types/options.js'
 
+const MINIMUM_POLLING_INTERVAL = 3000
 /**
  * Represents the state and actions returned by the usePay hook.
  */
@@ -112,7 +113,9 @@ export function usePay(parameters?: UsePayParameters): UsePayReturn {
     PayController.state.isPaymentInProgress
   )
   const [error, setError] = useState<AppKitPayErrorMessage | null>(PayController.state.error)
-  const [data, setData] = useState<PayResult | null>(PayController.state.payResult ?? null)
+  const [data, setData] = useState<PayResult | null>(
+    PayController.state.currentPayment?.result ?? null
+  )
 
   useEffect(() => {
     const unsubLoading = PayController.subscribeKey('isLoading', val => setIsControllerLoading(val))
@@ -131,14 +134,14 @@ export function usePay(parameters?: UsePayParameters): UsePayReturn {
       }
     })
 
-    const unsubResult = PayController.subscribeKey('payResult', val => {
-      const resultData = val ?? null
-      setData(resultData)
-      if (resultData && onSuccess) {
-        onSuccess(resultData)
+    const unsubResult = PayController.subscribeKey('currentPayment', val => {
+      const payResult = val?.result ?? null
+      setData(payResult)
+      if (payResult && onSuccess) {
+        onSuccess(payResult)
       }
       // Clear error if success occurs after an error
-      if (resultData) {
+      if (payResult) {
         setError(null)
       }
     })
@@ -297,11 +300,11 @@ export function useAvailableExchanges(options?: {
  * ```
  */
 export function usePayUrlActions(): {
-  getUrl: (exchangeId: string, params: PayUrlParams) => Promise<string>
+  getUrl: (exchangeId: string, params: PayUrlParams) => Promise<PayUrlResponse>
   openUrl: (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) => void
 } {
   const getUrl = useCallback(
-    async (exchangeId: string, params: PayUrlParams): Promise<string> =>
+    async (exchangeId: string, params: PayUrlParams): Promise<PayUrlResponse> =>
       clientGetPayUrl(exchangeId, params),
     []
   )
@@ -313,4 +316,180 @@ export function usePayUrlActions(): {
   )
 
   return { getUrl, openUrl }
+}
+
+// --- New Hook: useExchangeBuyStatus ---
+
+/** Represents the status response from the getBuyStatus API. */
+export interface ExchangeBuyStatus {
+  status: 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
+  txHash?: string
+}
+
+/** Parameters for the useExchangeBuyStatus hook. */
+interface UseExchangeBuyStatusParameters {
+  /** The ID of the exchange. */
+  exchangeId: string
+  /** The session ID for the buy transaction. */
+  sessionId: string
+  /** Optional polling interval in milliseconds. If set, the hook will poll for status updates. Defaults to `undefined` (no polling). */
+  pollingInterval?: number
+  /** Whether the hook is enabled and should start fetching/polling. Defaults to `true`. */
+  isEnabled?: boolean
+  /** Callback function triggered when the status is successfully fetched or updated. */
+  onSuccess?: (data: ExchangeBuyStatus) => void
+  /** Callback function triggered when an error occurs during fetching. */
+  onError?: (error: Error) => void
+}
+
+/** Return value of the useExchangeBuyStatus hook. */
+interface UseExchangeBuyStatusReturn {
+  /** The fetched buy status data, or null if not yet fetched or an error occurred. */
+  data: ExchangeBuyStatus | null
+  /**
+   * Indicates if the status is currently being fetched for the first time or via manual refetch.
+   * Does not indicate background polling activity.
+   */
+  isLoading: boolean
+  /** Stores any error encountered during fetching. Null if no error. */
+  error: Error | null
+  /** Function to manually trigger fetching the status. Shows loading indicator. */
+  refetch: () => Promise<void>
+}
+
+/**
+ * React hook to fetch and optionally poll the status of an exchange buy transaction.
+ * Provides improved readability and separation of concerns for fetching and polling logic.
+ *
+ * @param {UseExchangeBuyStatusParameters} params - Parameters including exchangeId, sessionId, and optional polling configuration.
+ * @returns {UseExchangeBuyStatusReturn} An object containing the status data, loading state, error state, and a refetch function.
+ *
+ * @example
+ * ```tsx
+ * import { useExchangeBuyStatus } from '@reown/appkit-pay/react';
+ *
+ * function BuyStatusChecker({ exchangeId, sessionId }) {
+ *   const { data, isLoading, error, refetch } = useExchangeBuyStatus({
+ *     exchangeId,
+ *     sessionId,
+ *     pollingInterval: 5000, // Poll every 5 seconds
+ *     onSuccess: (statusData) => console.log('Status updated:', statusData),
+ *     onError: (err) => console.error('Error fetching status:', err),
+ *   });
+ *
+ *   if (isLoading && !data) return <p>Loading initial status...</p>; // Show initial loading indicator
+ *   if (error) return <p>Error fetching status: {error.message}</p>;
+ *
+ *   return (
+ *     <div>
+ *       <p>Current Status: {data?.status ?? 'Unknown'}</p>
+ *       {data?.txHash && <p>Transaction Hash: {data.txHash}</p>}
+ *       {isLoading && <p> (Checking status...)</p>}
+ *       <button onClick={refetch} disabled={isLoading}>Refresh Status</button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function useExchangeBuyStatus(
+  params: UseExchangeBuyStatusParameters
+): UseExchangeBuyStatusReturn {
+  const { exchangeId, sessionId, pollingInterval, isEnabled = true, onSuccess, onError } = params
+  const [data, setData] = useState<ExchangeBuyStatus | null>(null)
+  const [isLoading, setIsLoading] = useState(isEnabled)
+  const [error, setError] = useState<Error | null>(null)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  /**
+   * Internal function to fetch the status, update state, and handle callbacks.
+   * @param options - Configuration for the fetch operation.
+   * @param options.showLoading - Whether to set the `isLoading` state during this fetch.
+   * @returns The fetched status or throws an error.
+   */
+  const fetchAndSetStatus = useCallback(
+    async (options: { showLoading: boolean }): Promise<ExchangeBuyStatus> => {
+      if (options.showLoading) {
+        setIsLoading(true)
+      }
+      if (options.showLoading) {
+        setError(null)
+      }
+
+      try {
+        const status = await PayController.getBuyStatus(exchangeId, sessionId)
+        setData(status)
+        setError(null)
+        if (onSuccess) {
+          onSuccess(status)
+        }
+
+        return status
+      } catch (err) {
+        const fetchError =
+          err instanceof Error
+            ? err
+            : new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
+        setError(fetchError)
+        if (onError) {
+          onError(fetchError)
+        }
+        throw fetchError
+      } finally {
+        if (options.showLoading) {
+          setIsLoading(false)
+        }
+      }
+    },
+    [exchangeId, sessionId, onSuccess, onError]
+  )
+
+  useEffect(() => {
+    if (isEnabled) {
+      fetchAndSetStatus({ showLoading: true })
+    } else {
+      setData(null)
+      setError(null)
+      setIsLoading(false)
+      if (intervalRef.current !== null) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [isEnabled, exchangeId, sessionId, fetchAndSetStatus])
+
+  useEffect(() => {
+    const isTerminalStatus = data?.status === 'SUCCESS' || data?.status === 'FAILED'
+    const shouldPoll = isEnabled && pollingInterval && pollingInterval > 0 && !isTerminalStatus
+
+    function clearPollingInterval() {
+      if (intervalRef.current !== null) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+
+    if (shouldPoll) {
+      clearPollingInterval()
+      const interval =
+        pollingInterval < MINIMUM_POLLING_INTERVAL ? MINIMUM_POLLING_INTERVAL : pollingInterval
+      intervalRef.current = setInterval(() => {
+        fetchAndSetStatus({ showLoading: false }).catch(() => {
+          clearPollingInterval()
+        })
+      }, interval)
+    } else {
+      clearPollingInterval()
+    }
+
+    return clearPollingInterval
+  }, [isEnabled, pollingInterval, data?.status, fetchAndSetStatus])
+
+  const refetch = useCallback(async () => {
+    if (!isEnabled) {
+      return
+    }
+    await fetchAndSetStatus({ showLoading: true })
+  }, [fetchAndSetStatus, isEnabled])
+
+  return { data, isLoading, error, refetch }
 }

@@ -1,6 +1,6 @@
 import { OptionsController } from '@reown/appkit-controllers'
 
-import type { Exchange } from '../types/exchange.js'
+import type { Exchange, ExchangeBuyStatus } from '../types/exchange.js'
 import { API_URL } from './ConstantsUtil.js'
 
 class JsonRpcError extends Error {}
@@ -39,6 +39,17 @@ type GetPayUrlParams = {
 
 type GetPayUrlResult = {
   url: string
+  sessionId: string
+}
+
+type GetBuyStatusParams = {
+  sessionId: string
+  exchangeId: string
+}
+
+type GetBuyStatusResult = {
+  status: ExchangeBuyStatus
+  txHash?: string
 }
 
 async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcResponse<T>> {
@@ -72,6 +83,12 @@ export async function getExchanges(params: GetExchangesParams) {
 
 export async function getPayUrl(params: GetPayUrlParams) {
   const response = await sendRequest<GetPayUrlResult>('reown_getExchangePayUrl', params)
+
+  return response.result
+}
+
+export async function getBuyStatus(params: GetBuyStatusParams) {
+  const response = await sendRequest<GetBuyStatusResult>('reown_getExchangeBuyStatus', params)
 
   return response.result
 }

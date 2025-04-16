@@ -81,8 +81,7 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    PayController.state.paymentType = 'wallet'
-    PayController.state.payResult = { type: 'wallet', result: '0xSuccessHash' }
+    PayController.state.currentPayment = { type: 'wallet', result: '0xSuccessHash' }
 
     if (paymentProgressCallback) {
       paymentProgressCallback(false)
@@ -107,7 +106,7 @@ describe('W3mPayLoadingView', () => {
     await elementUpdated(element)
 
     PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
-    PayController.state.payResult = undefined
+    PayController.state.currentPayment = undefined
 
     if (errorCallback) {
       errorCallback(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
@@ -132,7 +131,7 @@ describe('W3mPayLoadingView', () => {
     await elementUpdated(element)
 
     PayController.state.error = AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR as AppKitPayErrorMessage
-    PayController.state.payResult = undefined
+    PayController.state.currentPayment = undefined
 
     if (paymentProgressCallback) {
       paymentProgressCallback(false)

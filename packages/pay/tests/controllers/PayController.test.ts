@@ -61,7 +61,8 @@ describe('PayController', () => {
   }
 
   const mockPayUrlResponse = {
-    url: 'https://exchange.com/buy?asset=eth&amount=10'
+    url: 'https://exchange.com/buy?asset=eth&amount=10',
+    sessionId: '123'
   }
 
   beforeEach(() => {
@@ -210,7 +211,7 @@ describe('PayController', () => {
         amount: 'a', // hex of 10
         recipient: 'eip155:1:0x1234567890123456789012345678901234567890'
       })
-      expect(result).toEqual(mockPayUrlResponse.url)
+      expect(result).toEqual(mockPayUrlResponse)
     })
 
     it('should handle API errors', async () => {
@@ -394,7 +395,7 @@ describe('PayController', () => {
         amount: mockPaymentOptions.paymentAsset.amount,
         recipient: mockPaymentOptions.paymentAsset.recipient
       })
-      expect(RouterController.push).toHaveBeenCalledWith('PayLoading')
+      expect(ModalController.open).toHaveBeenCalledWith({ view: 'PayLoading' })
       expect(openHrefSpy).toHaveBeenCalledWith(mockPayUrlResponse.url, '_blank')
     })
 
@@ -403,7 +404,7 @@ describe('PayController', () => {
 
       const getPayUrlSpy = vi
         .spyOn(PayController, 'getPayUrl')
-        .mockResolvedValue(mockPayUrlResponse.url)
+        .mockResolvedValue(mockPayUrlResponse)
 
       const routerPushSpy = vi.spyOn(RouterController, 'push')
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
@@ -454,10 +455,12 @@ describe('PayController', () => {
       recipient: mockPaymentOptions.paymentAsset.recipient
     }
     const exchangeId = 'coinbase'
-    const mockUrl = 'https://pay.test/url'
+    const mockUrl = mockPayUrlResponse.url
 
     it('should get pay URL and open it in new tab by default', async () => {
-      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(mockUrl)
+      const getPayUrlSpy = vi
+        .spyOn(PayController, 'getPayUrl')
+        .mockResolvedValue(mockPayUrlResponse)
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
       await PayController.openPayUrl(exchangeId, params)
@@ -468,7 +471,9 @@ describe('PayController', () => {
     })
 
     it('should get pay URL and open it in same tab when openInNewTab is false', async () => {
-      const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(mockUrl)
+      const getPayUrlSpy = vi
+        .spyOn(PayController, 'getPayUrl')
+        .mockResolvedValue(mockPayUrlResponse)
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
       await PayController.openPayUrl(exchangeId, params, false)

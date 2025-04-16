@@ -22,7 +22,7 @@ export function getExchanges() {
 }
 
 export function getPayResult() {
-  return PayController.state.payResult
+  return PayController.state.currentPayment?.result
 }
 
 export function getPayError() {
@@ -35,12 +35,12 @@ export function getIsPaymentInProgress() {
 
 export type PayControllerPublicState = Pick<
   PayControllerState,
-  'isPaymentInProgress' | 'payResult' | 'error' | 'paymentType'
+  'isPaymentInProgress' | 'currentPayment' | 'error'
 >
 
 export function subscribeStateKey<K extends keyof PayControllerPublicState>(
   key: K,
   callback: (value: PayControllerPublicState[K]) => void
 ) {
-  return PayController.subscribeKey(key, callback)
+  return PayController.subscribeKey(key, callback as (value: PayControllerState[K]) => void)
 }

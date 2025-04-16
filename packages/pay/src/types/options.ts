@@ -37,3 +37,8 @@ export type PayUrlParams = {
   amount: number | string
   recipient: string
 }
+
+export type PayUrlResponse = {
+  url: string
+  sessionId: string
+}

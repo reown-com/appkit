@@ -15,7 +15,8 @@ export const AppKitPayErrorCodes = {
   GENERIC_PAYMENT_ERROR: 'GENERIC_PAYMENT_ERROR',
   UNABLE_TO_GET_EXCHANGES: 'UNABLE_TO_GET_EXCHANGES',
   ASSET_NOT_SUPPORTED: 'ASSET_NOT_SUPPORTED',
-  UNABLE_TO_GET_PAY_URL: 'UNABLE_TO_GET_PAY_URL'
+  UNABLE_TO_GET_PAY_URL: 'UNABLE_TO_GET_PAY_URL',
+  UNABLE_TO_GET_BUY_STATUS: 'UNABLE_TO_GET_BUY_STATUS'
 } as const
 
 export type AppKitPayErrorCode = (typeof AppKitPayErrorCodes)[keyof typeof AppKitPayErrorCodes]
@@ -32,7 +33,8 @@ export const AppKitPayErrorMessages = {
   [AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR]: 'Unable to process payment',
   [AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES]: 'Unable to get exchanges',
   [AppKitPayErrorCodes.ASSET_NOT_SUPPORTED]: 'Asset not supported by the selected exchange',
-  [AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL]: 'Unable to get payment URL'
+  [AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL]: 'Unable to get payment URL',
+  [AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS]: 'Unable to get buy status'
 } as const
 
 export type AppKitPayErrorMessage =

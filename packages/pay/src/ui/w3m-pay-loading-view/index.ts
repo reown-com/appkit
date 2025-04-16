@@ -14,6 +14,8 @@ import styles from './styles.js'
 // Define payment states
 type PaymentState = 'in-progress' | 'completed' | 'error'
 
+const EXCHANGE_STATUS_CHECK_INTERVAL = 4000
+
 @customElement('w3m-pay-loading-view')
 export class W3mPayLoadingView extends LitElement {
   public static override styles = styles
@@ -22,12 +24,18 @@ export class W3mPayLoadingView extends LitElement {
   @state() private loadingMessage = ''
   @state() private subMessage = ''
   @state() private paymentState: PaymentState = 'in-progress'
+  private exchangeSubscription?: ReturnType<typeof setInterval>
 
   constructor() {
     super()
     this.paymentState = PayController.state.isPaymentInProgress ? 'in-progress' : 'completed'
     this.updateMessages()
     this.setupSubscription()
+    this.setupExchangeSubscription()
+  }
+
+  public override disconnectedCallback() {
+    clearInterval(this.exchangeSubscription)
   }
 
   // -- Render -------------------------------------------- //
@@ -56,13 +64,9 @@ export class W3mPayLoadingView extends LitElement {
   private updateMessages() {
     switch (this.paymentState) {
       case 'completed':
-        if (PayController.state.paymentType === 'wallet') {
+        if (PayController.state.currentPayment?.type === 'wallet') {
           this.loadingMessage = 'Payment completed'
           this.subMessage = 'Your transaction has been successfully processed'
-        }
-        if (PayController.state.paymentType === 'exchange') {
-          this.loadingMessage = 'Payment initiated'
-          this.subMessage = `Please complete the payment on the exchange`
         }
         break
       case 'error':
@@ -71,8 +75,13 @@ export class W3mPayLoadingView extends LitElement {
         break
       case 'in-progress':
       default:
-        this.loadingMessage = 'Awaiting payment confirmation'
-        this.subMessage = 'Please confirm the payment transaction in your wallet'
+        if (PayController.state.currentPayment?.type === 'exchange') {
+          this.loadingMessage = 'Payment initiated'
+          this.subMessage = `Please complete the payment on the exchange`
+        } else {
+          this.loadingMessage = 'Awaiting payment confirmation'
+          this.subMessage = 'Please confirm the payment transaction in your wallet'
+        }
         break
     }
   }
@@ -89,11 +98,28 @@ export class W3mPayLoadingView extends LitElement {
     }
   }
 
+  private setupExchangeSubscription() {
+    if (PayController.state.currentPayment?.type !== 'exchange') {
+      return
+    }
+
+    this.exchangeSubscription = setInterval(async () => {
+      const exchangeId = PayController.state.currentPayment?.exchangeId
+      const sessionId = PayController.state.currentPayment?.sessionId
+      if (exchangeId && sessionId) {
+        await PayController.updateBuyStatus(exchangeId, sessionId)
+        if (PayController.state.currentPayment?.status === 'SUCCESS') {
+          clearInterval(this.exchangeSubscription)
+        }
+      }
+    }, EXCHANGE_STATUS_CHECK_INTERVAL)
+  }
+
   private setupSubscription() {
     PayController.subscribeKey('isPaymentInProgress', (inProgress: boolean) => {
       if (!inProgress && this.paymentState === 'in-progress') {
         // Check for error state
-        if (PayController.state.error || !PayController.state.payResult) {
+        if (PayController.state.error || !PayController.state.currentPayment?.result) {
           this.paymentState = 'error'
         } else {
           this.paymentState = 'completed'

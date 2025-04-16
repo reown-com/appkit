@@ -20,7 +20,7 @@ import {
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
 import type { PayUrlParams, PaymentOptions } from '../types/options.js'
-import { getExchanges, getPayUrl } from '../utils/ApiUtil.js'
+import { getBuyStatus, getExchanges, getPayUrl } from '../utils/ApiUtil.js'
 import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
   ensureCorrectNetwork,
@@ -31,6 +31,16 @@ import {
 const DEFAULT_PAGE = 0
 
 // -- Types --------------------------------------------- //
+type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
+
+export type CurrentPayment = {
+  type: PaymentType
+  exchangeId?: string
+  sessionId?: string
+  status?: PayStatus
+  result?: string
+}
+export type PayResult = CurrentPayment['result']
 
 export interface PayControllerState extends PaymentOptions {
   isConfigured: boolean
@@ -38,8 +48,7 @@ export interface PayControllerState extends PaymentOptions {
   isPaymentInProgress: boolean
   isLoading: boolean
   exchanges: Exchange[]
-  payResult?: PayResult
-  paymentType: PaymentType
+  currentPayment?: CurrentPayment
 }
 
 // Define a type for the parameters passed to getPayUrl
@@ -47,15 +56,6 @@ export interface PayControllerState extends PaymentOptions {
 type StateKey = keyof PayControllerState
 type PaymentType = 'wallet' | 'exchange'
 
-type WalletPayResult = {
-  type: 'wallet'
-  result?: string
-}
-type ExchangePayResult = {
-  type: 'exchange'
-  exchangeId: string
-}
-export type PayResult = WalletPayResult | ExchangePayResult
 // -- State --------------------------------------------- //
 const state = proxy<PayControllerState>({
   paymentAsset: {
@@ -77,8 +77,7 @@ const state = proxy<PayControllerState>({
   openInNewTab: true,
   redirectUrl: undefined,
   payWithExchange: undefined,
-  payResult: undefined,
-  paymentType: 'wallet'
+  currentPayment: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -116,8 +115,7 @@ export const PayController = {
     state.error = null
     state.isPaymentInProgress = false
     state.isLoading = false
-    state.payResult = undefined
-    state.paymentType = 'wallet'
+    state.currentPayment = undefined
   },
 
   // -- Setters ----------------------------------------- //
@@ -184,7 +182,7 @@ export const PayController = {
         recipient: `${params.network}:${params.recipient}`
       })
 
-      return response.url
+      return response
     } catch (error) {
       if (error instanceof Error && error.message.includes('is not supported')) {
         throw new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
@@ -201,7 +199,7 @@ export const PayController = {
       }
 
       const target = openInNewTab ? '_blank' : '_self'
-      CoreHelperUtil.openHref(payUrl, target)
+      CoreHelperUtil.openHref(payUrl.url, target)
     } catch (error) {
       if (error instanceof AppKitPayError) {
         state.error = error.message
@@ -233,7 +231,9 @@ export const PayController = {
     })
   },
   async handlePayment() {
-    state.paymentType = 'wallet'
+    state.currentPayment = {
+      type: 'wallet'
+    }
     const caipAddress = AccountController.state.caipAddress
     if (!caipAddress) {
       return
@@ -264,7 +264,6 @@ export const PayController = {
     })
 
     try {
-      state.payResult = undefined
       state.isPaymentInProgress = true
       await ModalController.open({
         view: 'PayLoading'
@@ -273,20 +272,17 @@ export const PayController = {
       switch (chainNamespace) {
         case ConstantsUtil.CHAIN.EVM:
           if (state.paymentAsset.asset === 'native') {
-            state.payResult = {
-              type: 'wallet',
-              result: await processEvmNativePayment(
-                state.paymentAsset,
-                chainNamespace,
-                address as `0x${string}`
-              )
-            }
+            state.currentPayment.result = await processEvmNativePayment(
+              state.paymentAsset,
+              chainNamespace,
+              address as `0x${string}`
+            )
           }
           if (state.paymentAsset.asset.startsWith('0x')) {
-            state.payResult = {
-              type: 'wallet',
-              result: await processEvmErc20Payment(state.paymentAsset, address as `0x${string}`)
-            }
+            state.currentPayment.result = await processEvmErc20Payment(
+              state.paymentAsset,
+              address as `0x${string}`
+            )
           }
           break
         case ConstantsUtil.CHAIN.SOLANA:
@@ -349,36 +345,64 @@ export const PayController = {
 
   async handlePayWithExchange(exchangeId: string) {
     try {
-      state.paymentType = 'exchange'
-      state.isPaymentInProgress = false
+      state.currentPayment = {
+        type: 'exchange',
+        exchangeId
+      }
+      state.isPaymentInProgress = true
       const { network, asset, amount, recipient } = state.paymentAsset
       const payUrlParams: PayUrlParams = { network, asset, amount, recipient }
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
         throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
       }
-      RouterController.push('PayLoading')
-
       if (state.openInNewTab) {
-        CoreHelperUtil.openHref(payUrl, '_blank')
-        state.payResult = {
-          type: 'exchange',
-          exchangeId
-        }
+        CoreHelperUtil.openHref(payUrl.url, '_blank')
+        state.currentPayment.sessionId = payUrl.sessionId
+        state.currentPayment.status = 'IN_PROGRESS'
+        state.currentPayment.exchangeId = exchangeId
+
         await ModalController.open({
           view: 'PayLoading'
         })
 
         return
       }
-      CoreHelperUtil.openHref(payUrl, '_self')
+      RouterController.push('PayLoading')
+      CoreHelperUtil.openHref(payUrl.url, '_self')
     } catch (error) {
       if (error instanceof AppKitPayError) {
         state.error = error.message
       } else {
         state.error = AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
       }
+      state.isPaymentInProgress = false
       SnackController.showError(state.error)
+    }
+  },
+
+  async getBuyStatus(exchangeId: string, sessionId: string) {
+    try {
+      const status = await getBuyStatus({ sessionId, exchangeId })
+
+      return status
+    } catch (error) {
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
+    }
+  },
+
+  async updateBuyStatus(exchangeId: string, sessionId: string) {
+    try {
+      const status = await this.getBuyStatus(exchangeId, sessionId)
+
+      if (state.currentPayment) {
+        state.currentPayment.status = status.status
+        state.currentPayment.result = status.txHash
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
     }
   }
 }
