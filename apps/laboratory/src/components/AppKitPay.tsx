@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import {
   Alert,
@@ -136,17 +136,30 @@ export function AppKitPay() {
   const { openUrl } = usePayUrlActions()
   const [displayedExchanges, setDisplayedExchanges] = useState<Exchange[] | null>(null)
 
-  const [paymentDetails, setPaymentDetails] = useState<AppKitPaymentAssetState>({
-    network: 'eip155:8453',
-    recipient: '',
-    asset: 'native',
-    amount: 0.00001,
-    metadata: {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      decimals: 18
+  const [paymentDetails, setPaymentDetails] = useState<AppKitPaymentAssetState>(() => {
+    let initialRecipient = ''
+    if (typeof window !== 'undefined') {
+      initialRecipient = localStorage.getItem('appkitPayRecipient') || ''
+    }
+
+    return {
+      network: 'eip155:8453',
+      recipient: initialRecipient,
+      asset: 'native',
+      amount: 0.00001,
+      metadata: {
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18
+      }
     }
   })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('appkitPayRecipient', paymentDetails.recipient)
+    }
+  }, [paymentDetails.recipient])
 
   const [activeCheck, setActiveCheck] = useState<ActiveStatusCheck | null>(null)
 
