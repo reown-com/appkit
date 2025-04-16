@@ -301,7 +301,11 @@ export function useAvailableExchanges(options?: {
  */
 export function usePayUrlActions(): {
   getUrl: (exchangeId: string, params: PayUrlParams) => Promise<PayUrlResponse>
-  openUrl: (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) => void
+  openUrl: (
+    exchangeId: string,
+    params: PayUrlParams,
+    openInNewTab?: boolean
+  ) => Promise<PayUrlResponse>
 } {
   const getUrl = useCallback(
     async (exchangeId: string, params: PayUrlParams): Promise<PayUrlResponse> =>
@@ -310,7 +314,7 @@ export function usePayUrlActions(): {
   )
 
   const openUrl = useCallback(
-    (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) =>
+    async (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) =>
       clientOpenPayUrl(exchangeId, params, openInNewTab),
     []
   )

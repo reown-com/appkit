@@ -95,7 +95,7 @@ export function AppKitPay() {
   function handleSuccess(resultData: PayResult) {
     toast({
       title: 'Transaction successful',
-      description: resultData.type === 'wallet' ? resultData.result : resultData.exchangeId,
+      description: resultData,
       type: 'success'
     })
   }

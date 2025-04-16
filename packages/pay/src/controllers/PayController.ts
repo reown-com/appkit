@@ -200,6 +200,8 @@ export const PayController = {
 
       const target = openInNewTab ? '_blank' : '_self'
       CoreHelperUtil.openHref(payUrl.url, target)
+
+      return payUrl
     } catch (error) {
       if (error instanceof AppKitPayError) {
         state.error = error.message
