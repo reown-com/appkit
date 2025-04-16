@@ -4,11 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  OptionsController,
-  type OptionsControllerState,
   type Provider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -262,12 +261,12 @@ describe('Ethers5Adapter', () => {
       expect(result.chainId).toBe(1)
     })
 
-    it('should respect defaultAccountType when calling connect with AUTH provider', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        defaultAccountTypes: {
+    it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
           eip155: 'smartAccount'
-        } as OptionsControllerState['defaultAccountTypes']
+        }
       })
 
       const ethers5Adapter = new Ethers5Adapter()

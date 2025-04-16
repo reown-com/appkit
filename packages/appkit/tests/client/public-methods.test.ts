@@ -388,7 +388,7 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     appKit.setPreferredAccountType('eoa', mainnet.chainNamespace)
 
-    expect(appKit.getPreferredAccountType()).toBe('eoa')
+    expect(appKit.getPreferredAccountType(mainnet.chainNamespace)).toBe('eoa')
   })
 
   it('should set CAIP address', () => {
@@ -1089,7 +1089,9 @@ describe('Base Public methods', () => {
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountType: 'eoa',
+      preferredAccountTypes: {
+        eip155: 'eoa'
+      },
       smartAccountDeployed: true,
       currentTab: 0,
       addressLabels: new Map([['eip155:1:0x123', 'test-label']])
