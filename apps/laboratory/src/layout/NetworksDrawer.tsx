@@ -23,18 +23,21 @@ import {
   useDisclosure,
   useToast
 } from '@chakra-ui/react'
+import { useSnapshot } from 'valtio/react'
 
 import type { AppKitNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+
+import { AppKitStore } from '../utils/AppKitStore'
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>
   onAddNetwork?: (network: AppKitNetwork) => void
 }
 
-export function NetworksDrawer({ controls, onAddNetwork }: Props) {
+export function NetworksDrawer({ controls }: Props) {
   const { isOpen, onClose } = controls
   const toast = useToast()
-
+  const { appKit } = useSnapshot(AppKitStore)
   const [networkName, setNetworkName] = useState('')
   const [networkId, setNetworkId] = useState('')
   const [namespaceType, setNamespaceType] = useState<'predefined' | 'custom'>('predefined')
@@ -85,22 +88,18 @@ export function NetworksDrawer({ controls, onAddNetwork }: Props) {
             }
           }
         : undefined,
-      // CAIP-specific properties if chain namespace is selected
-      ...(chainNamespace && {
-        chainNamespace: chainNamespace as ChainNamespace,
-        caipNetworkId: caipNetworkId as CaipNetworkId,
-        assets: iconUrl
-          ? {
-              imageId: networkName.toLowerCase(),
-              imageUrl: iconUrl
-            }
-          : undefined
-      })
+
+      chainNamespace: chainNamespace as ChainNamespace,
+      caipNetworkId: caipNetworkId as CaipNetworkId,
+      assets: iconUrl
+        ? {
+            imageId: networkName.toLowerCase(),
+            imageUrl: iconUrl
+          }
+        : undefined
     }
 
-    if (onAddNetwork) {
-      onAddNetwork(network)
-    }
+    appKit?.addNetwork(network.chainNamespace, network)
 
     toast({
       title: 'Network Added',
