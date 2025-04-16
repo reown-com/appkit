@@ -205,9 +205,9 @@ jobs:
         id: playwright-cache
         uses: actions/cache@v4
         env:
-          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
         with:
-          path: ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          path: /tmp/playwright_cache # Use workspace path
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
           restore-keys: |
             ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
@@ -215,17 +215,17 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true' # <-- Re-enable condition
         env:
-          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
         working-directory: ./apps/laboratory/
         run: |
-          mkdir -p ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          mkdir -p /tmp/playwright_cache # Use workspace path
           pnpm -ddd playwright:install # Add -ddd for max debug logging
 
       - name: Verify Cache Dir Exists After Install
         if: steps.playwright-cache.outputs.cache-hit != 'true' # Only relevant if install ran
         run: |
           echo "Checking cache directory after install:"
-          ls -la ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
 
       # - name: Build MetaMask wallet cache
@@ -249,7 +249,7 @@ jobs:
 
       - name: Run Playwright tests
         env:
-          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
@@ -270,7 +270,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
-          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
@@ -285,5 +285,5 @@ jobs:
       - name: Verify Cache Dir Exists Before Post Job
         run: |
           echo "Checking cache directory just before post-job phase:"
-          ls -la ${{ github.workspace }}/.cache/ms-playwright # Use workspace path
+          ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
