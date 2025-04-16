@@ -54,8 +54,6 @@ export function LayoutHeader() {
     setOrigin(window.location.origin)
   }, [])
 
-  console.log('>> Helo?')
-
   return (
     <>
       <Stack direction={['column', 'column', 'row']} marginBlockStart={10} justifyContent="center">
