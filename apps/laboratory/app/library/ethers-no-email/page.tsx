@@ -7,6 +7,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
@@ -34,10 +35,10 @@ ThemeStore.setModal(modal)
 
 export default function Ethers() {
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <AppKitInfo />
       <EthersTests />
-    </>
+    </InitializeBoundary>
   )
 }

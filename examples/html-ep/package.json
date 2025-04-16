@@ -7,7 +7,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-8"
+    "@walletconnect/ethereum-provider": "2.19.0-canary-ak-4"
   },
   "devDependencies": {
     "vite": "5.4.12"

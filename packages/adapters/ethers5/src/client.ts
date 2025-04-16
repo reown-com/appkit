@@ -5,11 +5,11 @@ import { formatEther } from 'ethers/lib/utils.js'
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
+  AccountController,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
   CoreHelperUtil,
-  OptionsController,
   type Provider,
   StorageUtil
 } from '@reown/appkit-controllers'
@@ -349,10 +349,13 @@ export class Ethers5Adapter extends AdapterBlueprint {
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
 
-      accounts = [address]
+      this.emit('accountChanged', {
+        address: address as `0x${string}`,
+        chainId: Number(chainId)
+      })
     } else {
       accounts = await selectedProvider.request({
         method: 'eth_requestAccounts'
@@ -380,6 +383,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
       }
 
+      this.emit('accountChanged', {
+        address: accounts[0] as `0x${string}`,
+        chainId: Number(chainId)
+      })
+
       this.listenProviderEvents(selectedProvider)
     }
 
@@ -404,9 +412,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
-      const { address, accounts } = await provider.connect({
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
-      })
+
+      if (!provider.user) {
+        return { accounts: [] }
+      }
+      const { accounts, address } = provider.user
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
@@ -432,7 +442,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
     }
   }

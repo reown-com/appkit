@@ -6,6 +6,7 @@ import { type CaipNetwork, createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
@@ -31,12 +32,12 @@ const appkit = createAppKit({
 
 ThemeStore.setModal(appkit)
 
-export default function MultiChainBitcoinAdapterOnly() {
+export default function BitcoinPage() {
   return (
-    <>
+    <InitializeBoundary>
       <AppKitButtons />
       <AppKitInfo />
       <BitcoinTests />
-    </>
+    </InitializeBoundary>
   )
 }
