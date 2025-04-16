@@ -240,6 +240,7 @@ export const PayController = {
     if (!caipAddress) {
       return
     }
+
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
     const chainNamespace = ChainController.state.activeChain as ChainNamespace
     if (!address || !chainId || !chainNamespace) {
@@ -255,18 +256,24 @@ export const PayController = {
     if (!caipNetwork) {
       return
     }
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
-    await ensureCorrectNetwork({
-      paymentAssetNetwork: state.paymentAsset.network,
-      activeCaipNetwork: caipNetwork,
-      approvedCaipNetworkIds,
-      requestedCaipNetworks
-    })
+    if (state.isPaymentInProgress) {
+      return
+    }
 
     try {
       state.isPaymentInProgress = true
+
+      const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+      const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+
+      await ensureCorrectNetwork({
+        paymentAssetNetwork: state.paymentAsset.network,
+        activeCaipNetwork: caipNetwork,
+        approvedCaipNetworkIds,
+        requestedCaipNetworks
+      })
+
       await ModalController.open({
         view: 'PayLoading'
       })
