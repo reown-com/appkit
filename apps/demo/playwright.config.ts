@@ -30,8 +30,8 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'exit 0',
+    command: 'pnpm playwright:start',
     url: BASE_URL,
-    reuseExistingServer: true
+    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
   }
 })

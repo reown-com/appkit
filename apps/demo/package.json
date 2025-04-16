@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 3003",
     "playwright:test": "HEADLESS=true playwright test",
     "playwright:debug": "pnpm playwright:test --debug"
   },

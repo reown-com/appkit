@@ -219,13 +219,3 @@ jobs:
       pull-requests: write
     with:
       branch: ${{ github.ref }}
-
-  ui-test-demo-app:
-    if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/ui_tests_demo_app.yml
-    secrets: inherit
-    permissions:
-      contents: write
-      pull-requests: write
-    with:
-      branch: ${{ github.ref }}
