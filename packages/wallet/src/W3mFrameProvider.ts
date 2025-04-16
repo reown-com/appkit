@@ -290,9 +290,6 @@ export class W3mFrameProvider {
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
-      if (payload?.preferredAccountType) {
-        await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
-      }
       const response = await this.getUser({
         chainId,
         preferredAccountType: payload?.preferredAccountType

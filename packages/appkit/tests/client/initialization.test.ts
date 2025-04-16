@@ -1,3 +1,4 @@
+import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
@@ -6,6 +7,7 @@ import {
   ChainController,
   EventsController,
   OptionsController,
+  PublicStateController,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
@@ -13,6 +15,7 @@ import { ErrorUtil } from '@reown/appkit-utils'
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
+import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
   mockStorageUtil,
@@ -28,15 +31,36 @@ describe('Base', () => {
 
   describe('Base Initialization', () => {
     it('should initialize controllers', async () => {
-      const sendEvent = vi.spyOn(EventsController, 'sendEvent')
       const initialize = vi.spyOn(ChainController, 'initialize')
 
       new AppKit(mockOptions)
 
+      expect(initialize).toHaveBeenCalledOnce()
+      expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
+        connectionControllerClient: expect.any(Object),
+        networkControllerClient: expect.any(Object)
+      })
+    })
+
+    it('should send initialize event', async () => {
+      const sendEvent = vi.spyOn(EventsController, 'sendEvent').mockResolvedValue()
+
+      new AppKit({
+        ...mockOptions,
+        universalProvider: mockUniversalProvider as unknown as UniversalProvider
+      })
       const options = { ...mockOptions }
       delete options.adapters
 
-      expect(sendEvent).toHaveBeenCalled()
+      // Event is sent at the end of the initialize method, we need to wait for it to be sent
+      await new Promise(resolve =>
+        PublicStateController.subscribe(state => {
+          if (state.initialized) {
+            resolve(true)
+          }
+        })
+      )
+
       expect(sendEvent).toHaveBeenCalledWith({
         type: 'track',
         event: 'INITIALIZE',
@@ -48,14 +72,7 @@ describe('Base', () => {
           }
         }
       })
-
-      expect(initialize).toHaveBeenCalledOnce()
-      expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
-        connectionControllerClient: expect.any(Object),
-        networkControllerClient: expect.any(Object)
-      })
     })
-
     it('should set EIP6963 enabled by default', () => {
       const setEIP6963Enabled = vi.spyOn(OptionsController, 'setEIP6963Enabled')
 

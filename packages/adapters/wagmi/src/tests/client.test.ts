@@ -23,11 +23,11 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  OptionsController,
-  type OptionsControllerState
+  type PreferredAccountTypes
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -542,11 +542,11 @@ describe('WagmiAdapter', () => {
     })
 
     it('should respect preferred account type when switching network with AUTH provider', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        defaultAccountTypes: {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
           eip155: 'smartAccount'
-        } as OptionsControllerState['defaultAccountTypes']
+        } as PreferredAccountTypes
       })
 
       await adapter.switchNetwork({
