@@ -205,13 +205,18 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install-deps
 
-      - name: Cache Playwright Browsers # <-- Re-enable cache step
+      # The cache is scoped to the key, version, and branch.
+      # Version includes the path e.g. /tmp/playwright_cache
+      # which thus needs to be static across runs.
+      # The default branch cache is available to other branches.
+      # See https://github.com/actions/cache
+      - name: Cache Playwright Browsers
         id: playwright-cache
         uses: actions/cache@v4
         env:
-          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
         with:
-          path: /tmp/playwright_cache # Use workspace path
+          path: /tmp/playwright_cache
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
           restore-keys: |
             ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
@@ -224,10 +229,10 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true' # <-- Re-enable condition
         env:
-          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
         working-directory: ./apps/laboratory/
         run: |
-          mkdir -p /tmp/playwright_cache # Use workspace path
+          mkdir -p /tmp/playwright_cache
           pnpm -ddd playwright:install # Add -ddd for max debug logging
 
       - name: Verify Cache Dir Exists After Install
