@@ -136,6 +136,41 @@ jobs:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
 
+      - name: Get Playwright version
+        id: playwright-version
+        run: |
+          # Find the block starting with '@playwright/test': and get the next 5 lines
+          PLAYWRIGHT_BLOCK=$(grep -A 5 "'@playwright/test':" pnpm-lock.yaml)
+
+          echo "--- Playwright Block ---"
+          echo "$PLAYWRIGHT_BLOCK"
+          echo "------------------------"
+
+          if [ -z "$PLAYWRIGHT_BLOCK" ]; then
+            echo "PLAYWRIGHT_VERSION=unknown_block_not_found" >> $GITHUB_ENV
+            echo "Extracted Playwright version: [Block Not Found]"
+          else
+            # Find the line starting with 'version:' within the block
+            VERSION_LINE=$(echo "$PLAYWRIGHT_BLOCK" | grep -m 1 '^\s*version:')
+            echo "Version line found: $VERSION_LINE"
+
+            if [ -z "$VERSION_LINE" ]; then
+              echo "PLAYWRIGHT_VERSION=unknown_version_line_not_found" >> $GITHUB_ENV
+              echo "Extracted Playwright version: [Version Line Not Found in Block]"
+            else
+              # Extract X.Y.Z version from the version line
+              EXTRACTED_VERSION=$(echo "$VERSION_LINE" | sed -n 's|.*version:\s*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*|\1|p')
+              if [ -z "$EXTRACTED_VERSION" ]; then
+                echo "PLAYWRIGHT_VERSION=unknown_sed_failed" >> $GITHUB_ENV
+                echo "Extracted Playwright version: [sed failed to extract from version line]"
+              else
+                echo "PLAYWRIGHT_VERSION=$EXTRACTED_VERSION" >> $GITHUB_ENV
+                echo "Extracted Playwright version: $EXTRACTED_VERSION"
+              fi
+            fi
+          fi
+        continue-on-error: true
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
@@ -164,12 +199,44 @@ jobs:
         run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
 
       - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      # The cache is scoped to the key, version, and branch.
+      # Version includes the path e.g. /tmp/playwright_cache
+      # which thus needs to be static across runs.
+      # The default branch cache is available to other branches.
+      # See https://github.com/actions/cache
+      - name: Cache Playwright Browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
+        with:
+          path: /tmp/playwright_cache
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
+        working-directory: ./apps/laboratory/
+        run: pnpm playwright:install-deps
 
       - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        if: steps.playwright-cache.outputs.cache-hit != 'true' # <-- Re-enable condition
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
         working-directory: ./apps/laboratory/
-        run: pnpm playwright:install
+        run: |
+          mkdir -p /tmp/playwright_cache
+          pnpm -ddd playwright:install # Add -ddd for max debug logging
+
+      - name: Verify Cache Dir Exists After Install
+        if: steps.playwright-cache.outputs.cache-hit != 'true' # Only relevant if install ran
+        run: |
+          echo "Checking cache directory after install:"
+          ls -la /tmp/playwright_cache # Use workspace path
+        continue-on-error: true # Don't fail the job if ls fails
 
       # - name: Build MetaMask wallet cache
       #   working-directory: ./apps/laboratory/
@@ -192,6 +259,7 @@ jobs:
 
       - name: Run Playwright tests
         env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
@@ -212,6 +280,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
@@ -222,3 +291,9 @@ jobs:
           name: playwright-report-${{ matrix.shard }}
           path: ./apps/laboratory/playwright-report/
           retention-days: 7
+
+      - name: Verify Cache Dir Exists Before Post Job
+        run: |
+          echo "Checking cache directory just before post-job phase:"
+          ls -la /tmp/playwright_cache # Use workspace path
+        continue-on-error: true # Don't fail the job if ls fails
