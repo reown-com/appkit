@@ -6,6 +6,7 @@ import classNames from 'classnames'
 
 import { SocialProvider } from '@reown/appkit-controllers'
 import '@reown/appkit-ui/jsx'
+import '@reown/appkit-ui/wui-logo'
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 
