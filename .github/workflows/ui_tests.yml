@@ -114,6 +114,7 @@ jobs:
             apps/*/dist/
             apps/*/.next/
             apps/*/out/
+            apps/demo/.next/
             .turbo/
           retention-days: 1
 
