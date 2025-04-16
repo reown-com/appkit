@@ -201,10 +201,6 @@ jobs:
       - name: Install dependencies # Install again to link binaries, etc.
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright system dependencies
-        working-directory: ./apps/laboratory/
-        run: pnpm playwright:install-deps
-
       # The cache is scoped to the key, version, and branch.
       # Version includes the path e.g. /tmp/playwright_cache
       # which thus needs to be static across runs.
