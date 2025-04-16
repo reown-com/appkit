@@ -219,6 +219,8 @@ jobs:
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install-deps
 
