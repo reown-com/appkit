@@ -330,18 +330,32 @@ export function AppKitPay() {
     setDisplayedExchanges(null)
     try {
       await triggerFetchExchanges()
-      if (!errorExchanges) {
-        setDisplayedExchanges(fetchedExchangesData || [])
-      }
     } catch (err) {
       setDisplayedExchanges(null)
       toast({
-        title: 'Fetch Failed',
+        title: 'Fetch Trigger Failed',
         description: err instanceof Error ? err.message : String(err),
         type: 'error'
       })
     }
   }
+
+  useEffect(() => {
+    if (!isLoadingExchanges) {
+      if (errorExchanges) {
+        setDisplayedExchanges(null)
+        toast({
+          title: 'Fetch Failed',
+          description: errorExchanges.message,
+          type: 'error'
+        })
+      } else if (fetchedExchangesData) {
+        setDisplayedExchanges(fetchedExchangesData)
+      } else {
+        setDisplayedExchanges(null)
+      }
+    }
+  }, [fetchedExchangesData, isLoadingExchanges, errorExchanges])
 
   function handleClearExchanges() {
     setDisplayedExchanges(null)
