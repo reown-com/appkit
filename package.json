@@ -111,7 +111,7 @@
     "find-up": "^7.0.0",
     "flag": "^5.0.1",
     "prettier-linter-helpers": "^1.0.0",
-    "svelte-eslint-parser": "^0.43.0"
+    "svelte-eslint-parser": "^1.1.0"
   },
   "keywords": [],
   "author": "",
