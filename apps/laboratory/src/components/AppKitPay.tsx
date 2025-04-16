@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import {
   Alert,
@@ -11,9 +11,11 @@ import {
   CardBody,
   CardHeader,
   Collapse,
+  Divider,
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   Heading,
   Image,
   Input,
@@ -35,7 +37,13 @@ import type {
   PayUrlParams,
   PaymentAsset
 } from '@reown/appkit-pay'
-import { useAvailableExchanges, usePay, usePayUrlActions } from '@reown/appkit-pay/react'
+import {
+  type ExchangeBuyStatus,
+  useAvailableExchanges,
+  useExchangeBuyStatus,
+  usePay,
+  usePayUrlActions
+} from '@reown/appkit-pay/react'
 
 import { useChakraToast } from './Toast'
 
@@ -88,6 +96,12 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   }
 }
 
+interface ActiveStatusCheck {
+  exchangeId: string
+  sessionId: string
+  exchangeName: string
+}
+
 export function AppKitPay() {
   const { isOpen, onToggle } = useDisclosure()
   const toast = useChakraToast()
@@ -134,6 +148,8 @@ export function AppKitPay() {
     }
   })
 
+  const [activeCheck, setActiveCheck] = useState<ActiveStatusCheck | null>(null)
+
   function isPresetActive(preset: Omit<AppKitPaymentAssetState, 'recipient'>): boolean {
     return (
       paymentDetails.network === preset.network &&
@@ -151,6 +167,46 @@ export function AppKitPay() {
       recipient: prev.recipient
     }))
   }
+
+  const handleSuccessStatus = useCallback(
+    (status: ExchangeBuyStatus) => {
+      if (status.status === 'SUCCESS') {
+        toast({
+          title: 'Payment Succeeded',
+          description: `Tx: ${status.txHash ?? 'N/A'}`,
+          type: 'success'
+        })
+      } else if (status.status === 'FAILED') {
+        toast({
+          title: 'Payment Failed',
+          description: 'The exchange reported a failure.',
+          type: 'error'
+        })
+      }
+    },
+    [toast]
+  )
+
+  const handleErrorStatus = useCallback(
+    (err: Error) => {
+      toast({ title: 'Status Check Error', description: err.message, type: 'error' })
+    },
+    [toast]
+  )
+
+  const {
+    data: statusCheckResult,
+    isLoading: isStatusCheckLoading,
+    error: statusCheckError,
+    refetch: refetchStatus
+  } = useExchangeBuyStatus({
+    exchangeId: activeCheck?.exchangeId ?? '',
+    sessionId: activeCheck?.sessionId ?? '',
+    pollingInterval: 5000,
+    isEnabled: Boolean(activeCheck),
+    onSuccess: handleSuccessStatus,
+    onError: handleErrorStatus
+  })
 
   async function handleOpenPay() {
     if (!paymentDetails.recipient) {
@@ -209,7 +265,15 @@ export function AppKitPay() {
     }))
   }
 
-  function handleOpenPayUrl(exchangeId: string) {
+  async function handleOpenPayUrl(exchangeId: string) {
+    if (activeCheck) {
+      toast({
+        title: 'Check in Progress',
+        description: 'Please wait for the current status check to complete or stop it.'
+      })
+
+      return
+    }
     if (!paymentDetails.recipient) {
       toast({ title: 'Missing Recipient', description: 'Please enter a recipient address.' })
 
@@ -229,13 +293,23 @@ export function AppKitPay() {
     }
 
     try {
-      openUrl(exchangeId, params, true)
+      // eslint-disable-next-line @typescript-eslint/await-thenable
+      const result = await openUrl(exchangeId, params, true)
+
+      if (result.sessionId) {
+        const exchangeName =
+          displayedExchanges?.find(ex => ex.id === exchangeId)?.name ?? exchangeId
+        setActiveCheck({ exchangeId, sessionId: result.sessionId, exchangeName })
+      } else {
+        toast({ title: 'Session ID Missing', description: 'Could not start status check.' })
+      }
     } catch (error) {
       toast({
         title: 'Failed to open Pay URL',
         description: error instanceof Error ? error.message : String(error),
         type: 'error'
       })
+      setActiveCheck(null)
     }
   }
 
@@ -258,6 +332,11 @@ export function AppKitPay() {
 
   function handleClearExchanges() {
     setDisplayedExchanges(null)
+    setActiveCheck(null)
+  }
+
+  function handleStopCheck() {
+    setActiveCheck(null)
   }
 
   return (
@@ -423,12 +502,16 @@ export function AppKitPay() {
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel mb="0">Exchanges</FormLabel>
                 <ButtonGroup size="sm" isAttached variant="outline">
-                  <Button onClick={handleFetchExchanges} isLoading={isLoadingExchanges}>
+                  <Button
+                    onClick={handleFetchExchanges}
+                    isLoading={isLoadingExchanges}
+                    isDisabled={Boolean(activeCheck)}
+                  >
                     Fetch
                   </Button>
                   <Button
                     onClick={handleClearExchanges}
-                    isDisabled={!displayedExchanges || isLoadingExchanges}
+                    isDisabled={!displayedExchanges || isLoadingExchanges || Boolean(activeCheck)}
                   >
                     Clear
                   </Button>
@@ -455,6 +538,7 @@ export function AppKitPay() {
                         variant="outline"
                         onClick={() => handleOpenPayUrl(exchange.id)}
                         isDisabled={
+                          Boolean(activeCheck) ||
                           !paymentDetails.recipient ||
                           !/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient)
                         }
@@ -489,7 +573,71 @@ export function AppKitPay() {
                 )}
             </FormControl>
 
-            <Text fontSize="sm" color="gray.500">
+            {activeCheck && (
+              <>
+                <Divider />
+                <Box mt={4}>
+                  <HStack justifyContent="space-between" mb={2}>
+                    <Heading size="sm">
+                      Status Check: {activeCheck.exchangeName} (Session: ...
+                      {activeCheck.sessionId.slice(-6)})
+                    </Heading>
+                    <Button size="sm" onClick={handleStopCheck} variant="outline" colorScheme="red">
+                      Stop Checking
+                    </Button>
+                  </HStack>
+
+                  {isStatusCheckLoading && !statusCheckResult && !statusCheckError && (
+                    <HStack>
+                      <Spinner size="sm" />
+                      <Text>Loading initial status...</Text>
+                    </HStack>
+                  )}
+
+                  {statusCheckError && (
+                    <Alert status="error" mt={2}>
+                      <AlertIcon />
+                      Error: {statusCheckError.message}
+                      <Button
+                        size="xs"
+                        ml="auto"
+                        onClick={refetchStatus}
+                        isDisabled={isStatusCheckLoading}
+                      >
+                        Retry
+                      </Button>
+                    </Alert>
+                  )}
+
+                  {statusCheckResult && (
+                    <Box borderWidth="1px" borderRadius="md" p={3} mt={2}>
+                      <HStack justifyContent="space-between">
+                        <Text fontWeight="medium">Current Status: {statusCheckResult.status}</Text>
+                        {isStatusCheckLoading && <Spinner size="xs" />}
+                      </HStack>
+                      {statusCheckResult.txHash && (
+                        <Text fontSize="sm" color="gray.600">
+                          Transaction Hash: {statusCheckResult.txHash}
+                        </Text>
+                      )}
+                      {(statusCheckResult.status === 'SUCCESS' ||
+                        statusCheckResult.status === 'FAILED') && (
+                        <Text fontSize="xs" color="gray.500" mt={1}>
+                          Polling stopped.
+                        </Text>
+                      )}
+                      {statusCheckResult.status === 'IN_PROGRESS' && !isStatusCheckLoading && (
+                        <Text fontSize="xs" color="gray.500" mt={1}>
+                          Polling for updates...
+                        </Text>
+                      )}
+                    </Box>
+                  )}
+                </Box>
+              </>
+            )}
+
+            <Text fontSize="sm" color="gray.500" mt={activeCheck ? 2 : 0}>
               Uses the Recipient Address and Asset Configuration from the form above. Click an
               exchange button above to open its payment page directly in a new tab.
             </Text>

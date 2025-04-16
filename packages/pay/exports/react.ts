@@ -459,7 +459,7 @@ export function useExchangeBuyStatus(
         intervalRef.current = null
       }
     }
-  }, [isEnabled, exchangeId, sessionId, fetchAndSetStatus])
+  }, [isEnabled, exchangeId, sessionId])
 
   useEffect(() => {
     const isTerminalStatus = data?.status === 'SUCCESS' || data?.status === 'FAILED'
@@ -486,7 +486,7 @@ export function useExchangeBuyStatus(
     }
 
     return clearPollingInterval
-  }, [isEnabled, pollingInterval, data?.status, fetchAndSetStatus])
+  }, [isEnabled, pollingInterval, data?.status])
 
   const refetch = useCallback(async () => {
     if (!isEnabled) {
