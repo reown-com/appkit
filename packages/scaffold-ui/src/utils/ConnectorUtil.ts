@@ -73,12 +73,16 @@ export const ConnectorUtil = {
       )
 
     if (connector.type === 'INJECTED') {
-      if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
-        return false
-      }
+      const isBrowserWallet = connector.name === 'Browser Wallet'
 
-      if (!rdns && !ConnectionController.checkInstalled()) {
-        return false
+      if (isBrowserWallet) {
+        if (!CoreHelperUtil.isMobile()) {
+          return false
+        }
+
+        if (CoreHelperUtil.isMobile() && !rdns && !ConnectionController.checkInstalled()) {
+          return false
+        }
       }
 
       if (isRDNSExcluded || isNameExcluded) {
