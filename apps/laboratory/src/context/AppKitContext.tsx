@@ -3,7 +3,7 @@ import { createContext, useEffect } from 'react'
 import { useSnapshot } from 'valtio/react'
 
 import type { AppKit, CreateAppKit } from '@reown/appkit'
-import { recreateAppKit } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 
 import InitializeBoundary from '../components/InitializeBoundary'
 import { AppKitStore, setAppKit } from '../utils/AppKitStore'
@@ -34,7 +34,7 @@ export function AppKitProvider({
 
   useEffect(() => {
     if (config) {
-      const modal = recreateAppKit({
+      const modal = createAppKit({
         ...config,
         projectId
       })

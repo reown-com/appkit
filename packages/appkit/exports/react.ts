@@ -36,13 +36,6 @@ export function createAppKit(options: CreateAppKit) {
   return modal
 }
 
-export function recreateAppKit(options: CreateAppKit) {
-  modal = createAppKit(options)
-  getAppKit(modal)
-
-  return modal
-}
-
 export { AppKit }
 export type { AppKitOptions }
 

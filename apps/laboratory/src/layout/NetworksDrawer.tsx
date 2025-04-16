@@ -26,6 +26,7 @@ import {
 import { useSnapshot } from 'valtio/react'
 
 import type { AppKitNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import { defineChain } from '@reown/appkit/networks'
 
 import { AppKitStore } from '../utils/AppKitStore'
 
@@ -68,7 +69,7 @@ export function NetworksDrawer({ controls }: Props) {
     const caipNetworkId = `${chainNamespace}:${networkId}`
 
     // Create network object
-    const network: AppKitNetwork = {
+    const network = defineChain({
       id: Number(networkId) || networkId,
       name: networkName,
       nativeCurrency: {
@@ -97,7 +98,7 @@ export function NetworksDrawer({ controls }: Props) {
             imageUrl: iconUrl
           }
         : undefined
-    }
+    })
 
     appKit?.addNetwork(network.chainNamespace, network)
 
