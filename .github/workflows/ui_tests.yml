@@ -96,11 +96,10 @@ jobs:
         run: pnpm build
 
       - name: build Demo app
+        run: pnpm build:demo
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
-        working-directory: ./apps/demo/
-        run: pnpm build
 
       # Upload actual artifact in GitHub Actions
       - name: Upload build artifacts (GitHub Actions)
