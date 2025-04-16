@@ -25,7 +25,7 @@ export class ModalValidator {
       // eslint-disable-next-line no-await-in-loop
       await this.page.waitForTimeout(interval)
     }
-    throw new Error(`Element ${selector} did not become visible within ${timeout}ms`)
+    throw new Error(`Element ${selector} was not found within ${timeout}ms`)
   }
 
   async getByTestId(testId: string | RegExp, timeout = 5000, interval = 500): Promise<Locator> {
