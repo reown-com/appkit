@@ -108,14 +108,25 @@ export const ConnectorController = {
     state.filterByNamespaceMap[namespace] = enabled
 
     const newConnectors: Connector[] = []
+    const enabledNamespaces: ChainNamespace[] = []
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const allNamespacesEnabled = Object.values(state.filterByNamespaceMap).every(value => value)
 
     Object.keys(state.filterByNamespaceMap).forEach(key => {
       if (state.filterByNamespaceMap[key as ChainNamespace]) {
+        enabledNamespaces.push(key as ChainNamespace)
         newConnectors.push(...state.allConnectors.filter(connector => connector.chain === key))
       }
     })
 
     state.connectors = this.mergeMultiChainConnectors(newConnectors)
+
+    if (allNamespacesEnabled) {
+      ApiController.state.filteredWallets = []
+    } else {
+      ApiController.filterByNamespaces(enabledNamespaces)
+    }
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {
