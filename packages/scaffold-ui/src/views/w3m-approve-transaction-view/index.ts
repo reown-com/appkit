@@ -38,7 +38,6 @@ export class W3mApproveTransactionView extends LitElement {
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             this.onHideIframe()
-            RouterController.popTransactionStack()
           }
         }),
         ModalController.subscribeKey('shake', val => {
