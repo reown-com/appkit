@@ -225,10 +225,6 @@ export const ChainController = {
         ...(chainAdapter.caipNetworks?.filter(network => network.id !== networkId) || [])
       ]
 
-      if (newCaipNetworksOfAdapter.length === 0) {
-        ConnectorController.updateAdapter(namespace, false)
-      }
-
       // If active network was removed and there are other networks available, switch to first one
       if (isActiveNetwork && chainAdapter?.caipNetworks?.[0]) {
         this.setActiveCaipNetwork(chainAdapter.caipNetworks[0])
@@ -236,6 +232,10 @@ export const ChainController = {
 
       state.chains.set(namespace, { ...chainAdapter, caipNetworks: newCaipNetworksOfAdapter })
       this.setRequestedCaipNetworks(newCaipNetworksOfAdapter || [], namespace)
+
+      if (newCaipNetworksOfAdapter.length === 0) {
+        ConnectorController.updateAdapter(namespace, false)
+      }
     }
   },
 
