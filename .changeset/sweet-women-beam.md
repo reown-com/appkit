@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed a UI border issue with the modal when signing in with the embedded wallet
+Fixed an issue causing a broken modal layout when using the embedded wallet
