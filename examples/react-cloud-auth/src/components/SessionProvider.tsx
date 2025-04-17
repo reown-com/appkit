@@ -15,7 +15,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!siwx) return
 
-    const unsubscribe = siwx.on('session-changed', session => {
+    const unsubscribe = siwx.on('sessionChanged', session => {
       setValue(session)
     })
 

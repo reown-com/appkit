@@ -33,7 +33,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   private required: boolean
 
   private listeners: CloudAuthSIWX.EventListeners = {
-    'session-changed': []
+    sessionChanged: []
   }
 
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
@@ -69,7 +69,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       'nonceJwt'
     )
     this.setStorageToken(response.token, this.localAuthStorageKey)
-    this.emit('session-changed', session)
+    this.emit('sessionChanged', session)
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
@@ -94,7 +94,7 @@ export class CloudAuthSIWX implements SIWXConfig {
         signature: ''
       }
 
-      this.emit('session-changed', session)
+      this.emit('sessionChanged', session)
 
       return [session]
     } catch {
@@ -208,7 +208,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   private clearStorageTokens(): void {
     SafeLocalStorage.removeItem(this.localAuthStorageKey)
     SafeLocalStorage.removeItem(this.localNonceStorageKey)
-    this.emit('session-changed', undefined)
+    this.emit('sessionChanged', undefined)
   }
 
   private async getNonce(): Promise<string> {
@@ -338,7 +338,7 @@ export namespace CloudAuthSIWX {
     | { type: 'social'; social: string; identifier: string }
 
   export type Events = {
-    'session-changed': SIWXSession | undefined
+    sessionChanged: SIWXSession | undefined
   }
 
   export type Listener<Event extends keyof Events> = (event: Events[Event]) => void

@@ -38,7 +38,7 @@ export default {
     // Listen to the SIWX session changes
     const session = ref()
     onMounted(() => {
-      siwx.value.on('session-changed', newSession => {
+      siwx.value.on('sessionChanged', newSession => {
         session.value = newSession
       })
     })

@@ -413,14 +413,14 @@ Issued At: 2024-12-05T16:02:32.905Z`)
   describe('events', () => {
     it('should register event listeners with on() method', () => {
       const callback = vi.fn()
-      const unsubscribe = siwx.on('session-changed', callback)
+      const unsubscribe = siwx.on('sessionChanged', callback)
 
       expect(unsubscribe).toBeInstanceOf(Function)
     })
 
     it('should emit session-changed event when a session is added', async () => {
       const callback = vi.fn()
-      siwx.on('session-changed', callback)
+      siwx.on('sessionChanged', callback)
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
       vi.spyOn(global, 'fetch').mockResolvedValueOnce(
@@ -435,7 +435,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
     it('should emit session-changed event when sessions are retrieved', async () => {
       const callback = vi.fn()
-      siwx.on('session-changed', callback)
+      siwx.on('sessionChanged', callback)
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_token')
       vi.spyOn(global, 'fetch').mockResolvedValueOnce(
@@ -459,7 +459,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
     it('should emit session-changed event with undefined when a session is revoked', async () => {
       const callback = vi.fn()
-      siwx.on('session-changed', callback)
+      siwx.on('sessionChanged', callback)
 
       await siwx.revokeSession('eip155:1', '0x1234567890abcdef1234567890abcdef12345678')
 
@@ -468,7 +468,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
     it('should emit session-changed event with undefined when sessions are cleared', async () => {
       const callback = vi.fn()
-      siwx.on('session-changed', callback)
+      siwx.on('sessionChanged', callback)
 
       await siwx.setSessions([])
 
@@ -477,7 +477,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
     it('should properly unsubscribe listener when unsubscribe function is called', async () => {
       const callback = vi.fn()
-      const unsubscribe = siwx.on('session-changed', callback)
+      const unsubscribe = siwx.on('sessionChanged', callback)
 
       unsubscribe()
 
@@ -495,8 +495,8 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       const callback1 = vi.fn()
       const callback2 = vi.fn()
 
-      siwx.on('session-changed', callback1)
-      siwx.on('session-changed', callback2)
+      siwx.on('sessionChanged', callback1)
+      siwx.on('sessionChanged', callback2)
 
       siwx.removeAllListeners()
 

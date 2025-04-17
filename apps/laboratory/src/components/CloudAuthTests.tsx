@@ -44,7 +44,7 @@ function SessionStatus() {
       return undefined
     }
 
-    siwx.on('session-changed', newSession => {
+    siwx.on('sessionChanged', newSession => {
       setSession(newSession)
     })
 
