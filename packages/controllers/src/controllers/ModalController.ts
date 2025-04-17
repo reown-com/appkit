@@ -129,9 +129,8 @@ export const ModalController = {
       } else {
         PublicStateController.set({ open: false })
       }
-
-      ConnectionController.resetUri()
     }
+    ConnectionController.resetUri()
   },
 
   setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
