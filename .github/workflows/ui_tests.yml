@@ -13,6 +13,11 @@ on:
         default: 'http://localhost:3000/'
         required: false
         type: string
+      demo-base-url:
+        description: 'The AppKit Demo app url'
+        default: 'http://localhost:3003/'
+        required: false
+        type: string
       wallet-url:
         description: 'The wallet url'
         default: 'https://react-wallet.walletconnect.com/'
@@ -89,6 +94,13 @@ jobs:
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
         working-directory: ./apps/browser-extension/
         run: pnpm build
+
+      - name: build Demo app
+        run: pnpm build:demo
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          BASE_URL: ${{ inputs.demo-base-url }}
+          NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
 
       # Upload actual artifact in GitHub Actions
       - name: Upload build artifacts (GitHub Actions)
@@ -237,25 +249,6 @@ jobs:
           echo "Checking cache directory after install:"
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
-
-      # - name: Build MetaMask wallet cache
-      #   working-directory: ./apps/laboratory/
-      #   run: xvfb-run pnpm synpress
-
-      # - name: Run MetaMask Playwright tests (headful)
-      #   working-directory: ./apps/laboratory/
-      #   env:
-      #     BASE_URL: ${{ inputs.base-url }}
-      #     WALLET_URL: ${{ inputs.wallet-url }}
-      #     NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      #     SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
-      #     NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-      #     MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
-      #     NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-      #     SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-      #     SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-      #     CI: true
-      #   run: xvfb-run pnpm playwright:test:metamask
 
       - name: Run Playwright tests
         env:
