@@ -209,6 +209,7 @@ export const ChainController = {
       }
       state.chains.set(network.chainNamespace, { ...chainAdapter, caipNetworks: newNetworks })
       this.setRequestedCaipNetworks(newNetworks, network.chainNamespace)
+      ConnectorController.updateAdapter(network.chainNamespace, true)
     }
   },
 
@@ -231,6 +232,10 @@ export const ChainController = {
 
       state.chains.set(namespace, { ...chainAdapter, caipNetworks: newCaipNetworksOfAdapter })
       this.setRequestedCaipNetworks(newCaipNetworksOfAdapter || [], namespace)
+
+      if (newCaipNetworksOfAdapter.length === 0) {
+        ConnectorController.updateAdapter(namespace, false)
+      }
     }
   },
 
