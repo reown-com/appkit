@@ -33,13 +33,16 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private featured = ApiController.state.featured
 
+  @state() private filteredWallets = ApiController.state.filteredWallets
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
         ApiController.subscribeKey('wallets', val => (this.wallets = val)),
         ApiController.subscribeKey('recommended', val => (this.recommended = val)),
-        ApiController.subscribeKey('featured', val => (this.featured = val))
+        ApiController.subscribeKey('featured', val => (this.featured = val)),
+        ApiController.subscribeKey('filteredWallets', val => (this.filteredWallets = val))
       ]
     )
   }
@@ -99,10 +102,13 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const wallets = CoreHelperUtil.uniqueBy(
-      [...this.featured, ...this.recommended, ...this.wallets],
-      'id'
-    )
+    const wallets =
+      this.filteredWallets?.length > 0
+        ? CoreHelperUtil.uniqueBy(
+            [...this.featured, ...this.recommended, ...this.filteredWallets],
+            'id'
+          )
+        : CoreHelperUtil.uniqueBy([...this.featured, ...this.recommended, ...this.wallets], 'id')
     const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(wallets)
 
     return walletsWithInstalled.map(

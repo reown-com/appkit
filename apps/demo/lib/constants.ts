@@ -57,6 +57,10 @@ export const NETWORK_OPTIONS = [
   { namespace: 'bip122', network: bitcoinTestnet }
 ] as NetworkOption[]
 
+export function getNamespaceNetworks(namespace: ChainNamespace) {
+  return NETWORK_OPTIONS.filter(n => n.namespace === namespace).map(n => n.network)
+}
+
 export const NETWORK_ID_NAMESPACE_MAP = {
   1: 'eip155',
   42161: 'eip155',
