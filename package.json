@@ -32,6 +32,7 @@
     "build:gallery": "pnpm build; pnpm --filter=./apps/gallery build",
     "build:gallery-new": "pnpm build; pnpm --filter=./apps/gallery-new build",
     "build:laboratory": "pnpm build; pnpm --filter=./apps/laboratory build",
+    "build:demo": "pnpm --filter=./apps/demo build",
     "build:laboratory-new": "pnpm build; pnpm --filter=./apps/laboratory-new build",
     "build:examples": "pnpm build; pnpm --filter=./examples -r build",
     "build:browser-extension": "pnpm --filter @apps/browser-extension build",
