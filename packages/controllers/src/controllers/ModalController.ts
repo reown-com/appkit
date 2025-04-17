@@ -104,7 +104,6 @@ export const ModalController = {
   },
 
   close(force = false) {
-    console.trace('trace: closing modal')
     if (force || RouterController.state.view !== 'ApproveTransaction') {
       const isEmbeddedEnabled = OptionsController.state.enableEmbedded
       const isConnected = Boolean(ChainController.state.activeCaipAddress)
