@@ -3,6 +3,7 @@
 import * as React from 'react'
 
 import Link from 'next/link'
+import { useSnapshot } from 'valtio'
 
 import { BrandingHeader } from '@/components/branding-header'
 import { SectionConnectOptions } from '@/components/configuration-sections/section-connect-options'
@@ -11,9 +12,14 @@ import { SectionWalletFeatures } from '@/components/configuration-sections/secti
 import { BookIcon } from '@/components/icon/book'
 import { buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useAppKitContext } from '@/hooks/use-appkit'
+import { appKitConfigs } from '@/lib/config'
+import { ThemeStore } from '@/lib/theme-store'
 import { cn } from '@/lib/utils'
 
 export function SidebarContent() {
+  const themeStore = useSnapshot(ThemeStore.state)
+  const appKit = themeStore.modal
   const [activeTab, setActiveTab] = React.useState('auth')
 
   return (
@@ -43,6 +49,15 @@ export function SidebarContent() {
       </div>
 
       <div className="flex flex-col items-center w-full gap-2 mt-8 pb-2">
+        <button
+          data-testid="open-networks"
+          className="hidden"
+          onClick={() => {
+            appKit?.open({ view: 'Networks' })
+          }}
+        >
+          Open networks
+        </button>
         <Link
           href="https://docs.reown.com/appkit/overview"
           target="_blank"

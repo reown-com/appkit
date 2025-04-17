@@ -396,6 +396,9 @@ importers:
         specifier: 2.14.16
         version: 2.14.16(@tanstack/query-core@5.67.1)(@tanstack/react-query@5.56.2(react@19.0.0))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(viem@2.23.13(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
     devDependencies:
+      '@playwright/test':
+        specifier: 1.48.2
+        version: 1.48.2
       '@types/node':
         specifier: 22.13.4
         version: 22.13.4

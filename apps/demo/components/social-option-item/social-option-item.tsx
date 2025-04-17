@@ -6,6 +6,7 @@ import classNames from 'classnames'
 
 import { SocialProvider } from '@reown/appkit-controllers'
 import '@reown/appkit-ui/jsx'
+import '@reown/appkit-ui/wui-logo'
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 
@@ -164,6 +165,7 @@ export const SocialOptionItem = React.memo(
             {...props}
             tabIndex={!handle ? 0 : undefined}
           >
+            {/* @ts-ignore */}
             <wui-logo logo={value as SocialProvider}></wui-logo>
           </div>
         </li>
