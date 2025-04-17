@@ -25,6 +25,8 @@ export class W3mAllWalletsWidget extends LitElement {
 
   @state() private count = ApiController.state.count
 
+  @state() private filteredCount = ApiController.state.filteredWallets.length
+
   @state() private isFetchingRecommendedWallets = ApiController.state.isFetchingRecommendedWallets
 
   public constructor() {
@@ -32,6 +34,7 @@ export class W3mAllWalletsWidget extends LitElement {
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
       ApiController.subscribeKey('count', val => (this.count = val)),
+      ApiController.subscribeKey('filteredWallets', val => (this.filteredCount = val.length)),
       ApiController.subscribeKey(
         'isFetchingRecommendedWallets',
         val => (this.isFetchingRecommendedWallets = val)
@@ -59,7 +62,14 @@ export class W3mAllWalletsWidget extends LitElement {
     const featuredCount = ApiController.state.featured.length
     const rawCount = this.count + featuredCount
     const roundedCount = rawCount < 10 ? rawCount : Math.floor(rawCount / 10) * 10
-    const tagLabel = roundedCount < rawCount ? `${roundedCount}+` : `${roundedCount}`
+
+    const count = this.filteredCount > 0 ? this.filteredCount : roundedCount
+    let tagLabel = `${count}`
+    if (this.filteredCount > 0) {
+      tagLabel = `${this.filteredCount}`
+    } else if (count < rawCount) {
+      tagLabel = `${count}+`
+    }
 
     return html`
       <wui-list-wallet

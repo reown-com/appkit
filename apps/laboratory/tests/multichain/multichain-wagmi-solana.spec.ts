@@ -101,3 +101,20 @@ test('it should disconnect as expected', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
 })
+
+test('it should also connect wagmi and sign a message if connecting from a different namespace', async () => {
+  await modalPage.switchNetworkWithNetworkButton('Solana')
+  await modalPage.closeModal()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+
+  await modalPage.sign('eip155')
+  await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+
+  await modalPage.sign('solana')
+  await walletValidator.expectReceivedSign({ chainName: 'Solana' })
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+})
