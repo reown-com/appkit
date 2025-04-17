@@ -103,6 +103,15 @@ export const ModalController = {
     })
   },
 
+  /**
+   * To close the modal on the ApproveTransaction view, call close() with force=true:
+   * ModalController.close(true)
+   * this prevents accidental closing during transaction approval from secure sites
+   * @param force - If true, the modal will close regardless of the current view
+   */
+  canClose(force = false) {
+    return force || RouterController.state.view !== 'ApproveTransaction'
+  },
   close(force = false) {
     if (force || RouterController.state.view !== 'ApproveTransaction') {
       const isEmbeddedEnabled = OptionsController.state.enableEmbedded
