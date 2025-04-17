@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 
-import { ModalValidator } from './shared/validators/ModalValidator'
+import { ModalValidator } from './ModalValidator'
 
 export class CloudAuthModalValidator extends ModalValidator {
   get sessionStatus() {

@@ -1,4 +1,6 @@
-import { ModalPage } from './shared/pages/ModalPage'
+import { expect } from '@playwright/test'
+
+import { ModalPage } from './ModalPage'
 
 export class CloudAuthModalPage extends ModalPage {
   get sessionAccountButton() {

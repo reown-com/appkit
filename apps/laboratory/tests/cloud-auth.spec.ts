@@ -1,4 +1,4 @@
-import { type BrowserContext, test } from '@playwright/test'
+import { type BrowserContext, expect, test } from '@playwright/test'
 
 import { BASE_URL } from './shared/constants'
 import { CloudAuthModalPage } from './shared/pages/CloudAuthModalPage'
