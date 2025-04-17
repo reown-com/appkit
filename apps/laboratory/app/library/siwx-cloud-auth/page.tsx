@@ -7,13 +7,12 @@ import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
+import { CloudAuthTests } from '@/src/components/CloudAuthTests'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
 import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
-
-import { CloudAuthTests } from './_components/CloudAuthTests'
 
 const networks = ConstantsUtil.EvmNetworks
 
