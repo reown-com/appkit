@@ -1,71 +1,9 @@
-/* eslint-disable max-classes-per-file */
-import { type BrowserContext, expect, test } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
 
 import { BASE_URL } from './shared/constants'
-import { ModalPage } from './shared/pages/ModalPage'
+import { CloudAuthModalPage } from './shared/pages/CloudAuthModalPage'
 import { WalletPage } from './shared/pages/WalletPage'
-import { ModalValidator } from './shared/validators/ModalValidator'
-
-class CloudAuthModalValidator extends ModalValidator {
-  get sessionStatus() {
-    return this.page.getByTestId('cloud-auth-session-status')
-  }
-
-  get sessionAccount() {
-    return this.page.getByTestId('cloud-auth-session-account')
-  }
-
-  async expectEmptySession() {
-    await expect(this.sessionStatus).toHaveText('No session detected yet')
-  }
-
-  async expectSession() {
-    const text = await this.sessionStatus.innerText()
-    const object = JSON.parse(text)
-
-    expect(object).toMatchObject({
-      message: expect.any(String),
-      signature: expect.any(String),
-      data: expect.any(Object)
-    })
-
-    return object
-  }
-
-  async expectSessionAccount() {
-    const text = await this.sessionAccount.innerText()
-    const object = JSON.parse(text)
-
-    expect(object).toMatchObject(expect.any(Object))
-
-    return object
-  }
-}
-
-class CloudAuthModalPage extends ModalPage {
-  get sessionAccountButton() {
-    return this.page.getByTestId('cloud-auth-get-session-account-button')
-  }
-
-  get updateSessionAccountMetadataInput() {
-    return this.page.getByTestId('cloud-auth-update-session-account-metadata')
-  }
-
-  get updateSessionAccountMetadataButton() {
-    return this.page.locator('button', { hasText: 'Update Session Account Metadata' })
-  }
-
-  async requestSessionAccount() {
-    await this.sessionAccountButton.click()
-  }
-
-  async updateSessionAccountMetadata(data: unknown) {
-    await this.updateSessionAccountMetadataInput.fill(JSON.stringify(data))
-    await this.updateSessionAccountMetadataButton.click()
-
-    await expect(this.page.getByText('The metadata has been updated successfully')).toBeVisible()
-  }
-}
+import { CloudAuthModalValidator } from './shared/validators/CloudAuthModalValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: CloudAuthModalPage
