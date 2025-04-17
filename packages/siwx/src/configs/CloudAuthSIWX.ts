@@ -22,8 +22,6 @@ import { InformalMessenger } from '../index.js'
 /**
  * This is the configuration for using SIWX with Cloud Auth service.
  * It allows you to authenticate and capture user sessions through the Cloud Dashboard.
- *
- * WARNING: The Claud Auth is only available in EVM networks.
  */
 export class CloudAuthSIWX implements SIWXConfig {
   private readonly localAuthStorageKey: keyof SafeLocalStorageItems
@@ -49,7 +47,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
       uri: typeof document === 'undefined' ? 'Unknown URI' : document.location.href,
       getNonce: this.getNonce.bind(this),
-      clearChainIdNamespace: true
+      clearChainIdNamespace: false
     })
   }
 
@@ -61,6 +59,7 @@ export class CloudAuthSIWX implements SIWXConfig {
     const response = await this.request(
       'authenticate',
       {
+        data: session.data,
         message: session.message,
         signature: session.signature,
         clientId: this.getClientId(),
@@ -76,10 +75,8 @@ export class CloudAuthSIWX implements SIWXConfig {
     try {
       const siweSession = await this.request('me', undefined)
 
-      const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-
       const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
-      const isSameNetwork = siweCaipNetworkId === chainId
+      const isSameNetwork = siweSession?.caip2Network === chainId
 
       if (!isSameAddress || !isSameNetwork) {
         return []
@@ -88,7 +85,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       const session: SIWXSession = {
         data: {
           accountAddress: siweSession.address,
-          chainId: siweCaipNetworkId
+          chainId: siweSession.caip2Network
         } as SIWXMessage.Data,
         message: '',
         signature: ''
@@ -309,11 +306,12 @@ export namespace CloudAuthSIWX {
 
   export type Requests = {
     nonce: Request<'GET', undefined, { nonce: string; token: string }>
-    me: Request<'GET', undefined, { address: string; chainId: number }>
+    me: Request<'GET', undefined, Omit<SessionAccount, 'appKitAccount'>>
     'me?includeAppKitAccount=true': Request<'GET', undefined, SessionAccount>
     authenticate: Request<
       'POST',
       {
+        data?: SIWXMessage.Data
         message: string
         signature: string
         clientId?: string | null
@@ -354,7 +352,9 @@ export namespace CloudAuthSIWX {
     projectIdKey: string
     sub: string
     address: string
-    chainId: number
+    chainId: number | string
+    chainIdNamespace: string
+    caip2Network: string
     uri: string
     domain: string
     projectUuid: string
