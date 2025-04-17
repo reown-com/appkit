@@ -103,33 +103,36 @@ export const ModalController = {
     })
   },
 
-  close() {
-    const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const isConnected = Boolean(ChainController.state.activeCaipAddress)
+  close(force = false) {
+    console.trace('trace: closing modal')
+    if (force || RouterController.state.view !== 'ApproveTransaction') {
+      const isEmbeddedEnabled = OptionsController.state.enableEmbedded
+      const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
-    // Only send the event if the modal is open and is about to be closed
-    if (state.open) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'MODAL_CLOSE',
-        properties: { connected: isConnected }
-      })
-    }
-
-    state.open = false
-    ModalController.clearLoading()
-
-    if (isEmbeddedEnabled) {
-      if (isConnected) {
-        RouterController.replace('Account')
-      } else {
-        RouterController.push('Connect')
+      // Only send the event if the modal is open and is about to be closed
+      if (state.open) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'MODAL_CLOSE',
+          properties: { connected: isConnected }
+        })
       }
-    } else {
-      PublicStateController.set({ open: false })
-    }
 
-    ConnectionController.resetUri()
+      state.open = false
+      ModalController.clearLoading()
+
+      if (isEmbeddedEnabled) {
+        if (isConnected) {
+          RouterController.replace('Account')
+        } else {
+          RouterController.push('Connect')
+        }
+      } else {
+        PublicStateController.set({ open: false })
+      }
+
+      ConnectionController.resetUri()
+    }
   },
 
   setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
