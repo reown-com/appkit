@@ -1483,9 +1483,9 @@ export abstract class AppKitBaseClient {
     return ModalController.open(options)
   }
 
-  public async close() {
+  public async close(force = false) {
     await this.injectModalUi()
-    ModalController.close()
+    ModalController.close(force)
   }
 
   public setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
