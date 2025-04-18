@@ -502,6 +502,9 @@ importers:
       '@reown/appkit-experimental':
         specifier: workspace:*
         version: link:../../packages/experimental
+      '@reown/appkit-pay':
+        specifier: workspace:*
+        version: link:../../packages/pay
       '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
@@ -2301,6 +2304,9 @@ importers:
       '@reown/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
+      '@reown/appkit-pay':
+        specifier: workspace:*
+        version: link:../pay
       '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -2579,6 +2585,40 @@ importers:
         specifier: 3.22.4
         version: 3.22.4
     devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 2.1.9
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.3)(terser@5.39.0))
+      vitest:
+        specifier: 2.1.9
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.3)(terser@5.39.0)
+
+  packages/pay:
+    dependencies:
+      '@reown/appkit-common':
+        specifier: workspace:*
+        version: link:../common
+      '@reown/appkit-controllers':
+        specifier: workspace:*
+        version: link:../controllers
+      '@reown/appkit-ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      lit:
+        specifier: 3.2.1
+        version: 3.2.1
+      valtio:
+        specifier: 1.13.2
+        version: 1.13.2(@types/react@19.0.0)(react@19.0.0)
+    devDependencies:
+      '@open-wc/testing':
+        specifier: 4.0.0
+        version: 4.0.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      '@types/react':
+        specifier: 19.0.0
+        version: 19.0.0
       '@vitest/coverage-v8':
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.3)(terser@5.39.0))

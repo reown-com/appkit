@@ -69,12 +69,14 @@ export function AppKitInfo() {
             </Box>
           ) : null}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Chain Id
-            </Heading>
-            <Text data-testid="w3m-chain-id">{chainId}</Text>
-          </Box>
+          {chainId !== undefined && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Id
+              </Heading>
+              <Text data-testid="w3m-chain-id">{chainId}</Text>
+            </Box>
+          )}
 
           <RelayClientInfo />
 
