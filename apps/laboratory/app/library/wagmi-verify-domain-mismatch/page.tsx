@@ -34,7 +34,8 @@ const config = {
     description: 'AppKit Laboratory',
     url: 'https://example.com',
     icons: []
-  }
+  },
+  projectId
 }
 
 export default function Wagmi() {

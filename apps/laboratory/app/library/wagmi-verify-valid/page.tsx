@@ -30,7 +30,8 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   termsConditionsUrl: 'https://reown.com/terms-of-service',
-  privacyPolicyUrl: 'https://reown.com/privacy-policy'
+  privacyPolicyUrl: 'https://reown.com/privacy-policy',
+  projectId
 }
 
 export default function Wagmi() {

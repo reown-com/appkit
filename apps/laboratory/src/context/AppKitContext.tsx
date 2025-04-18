@@ -24,10 +24,10 @@ export function AppKitProvider({
   config
 }: {
   children: React.ReactNode
-  config: Omit<CreateAppKit, 'projectId'>
+  config: Omit<CreateAppKit, 'projectId'> & { projectId?: string }
 }) {
   const { appKit } = useSnapshot(AppKitStore)
-  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  const projectId = config.projectId || process.env['NEXT_PUBLIC_PROJECT_ID']
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
