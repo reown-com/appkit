@@ -250,6 +250,16 @@ jobs:
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
 
+      - name: Run Playwright tests for Demo
+        if: matrix.shard == 2
+        env:
+          BASE_URL: ${{ inputs.demo-base-url }}
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
+          CI: true
+        working-directory: ./apps/demo/
+        run: pnpm playwright:test
+
       - name: Run Playwright tests
         env:
           PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
@@ -277,16 +287,6 @@ jobs:
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
-
-      - name: Run Playwright tests for Demo
-        if: matrix.shard == 2
-        env:
-          BASE_URL: ${{ inputs.demo-base-url }}
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
-          CI: true
-        working-directory: ./apps/demo/
-        run: pnpm playwright:test
 
       - uses: actions/upload-artifact@v4
         if: failure()
