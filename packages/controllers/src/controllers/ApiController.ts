@@ -385,6 +385,10 @@ export const ApiController = {
     )
   },
 
+  clearFilterByNamespaces() {
+    state.filteredWallets = []
+  },
+
   setFilterByNamespace(namespace: ChainNamespace | undefined) {
     if (!namespace) {
       state.featured = state.allFeatured
