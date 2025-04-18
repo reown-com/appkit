@@ -104,6 +104,7 @@ test('it should disconnect as expected', async () => {
 
 test('it should also connect wagmi and sign a message if connecting from a different namespace', async () => {
   await modalPage.switchNetworkWithNetworkButton('Solana')
+  await modalValidator.expectSwitchedNetworkOnNetworksView('Solana')
   await modalPage.closeModal()
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
