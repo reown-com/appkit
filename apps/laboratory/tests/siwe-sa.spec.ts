@@ -83,6 +83,7 @@ smartAccountSiweTest(
     await page.approveSign()
     await validator.expectConnected()
     await validator.expectAuthenticated()
+    await page.page.waitForTimeout(1000)
 
     await page.sign(namespace)
     await page.approveSign()
