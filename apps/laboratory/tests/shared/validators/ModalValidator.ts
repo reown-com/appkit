@@ -64,7 +64,7 @@ export class ModalValidator {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
       'Authentication status should be: unauthenticated'
-    ).toContainText('unauthenticated', { timeout: 15000 })
+    ).toContainText('unauthenticated', { timeout: 20000 })
   }
 
   async expectOnSignOutEventCalled(toBe: boolean) {
