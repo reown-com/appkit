@@ -731,9 +731,9 @@ export class ModalPage {
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
     await this.page.getByTestId('social-selector-farcaster').click()
-    await this.page.waitForTimeout(500)
+    await this.page.locator('wui-qr-code').waitFor({ state: 'visible' })
     await this.page.getByTestId('header-back').click()
-    await this.page.waitForTimeout(500)
+    await this.page.waitForTimeout(1000)
     await this.closeModal()
   }
 

@@ -160,7 +160,7 @@ const controller = {
           this.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
-          ModalController.close()
+          ModalController.close(true)
           state.history = []
         }
       } else if (action.view) {
