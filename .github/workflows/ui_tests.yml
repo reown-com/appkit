@@ -113,8 +113,8 @@ jobs:
             turbo/
             packages/*/dist/
             apps/*/dist/
-            apps/*/.next/
-            apps/*/out/
+            apps/demo/.next/
+            apps/laboratory/out/
             .turbo/
           retention-days: 1
 
