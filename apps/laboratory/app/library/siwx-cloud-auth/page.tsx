@@ -8,6 +8,7 @@ import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
+import { CloudAuthTests } from '@/src/components/CloudAuthTests'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
 import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
@@ -37,6 +38,7 @@ export default function SIWXCloudAuth() {
     <InitializeBoundary>
       <AppKitButtons />
       <AppKitInfo />
+      <CloudAuthTests />
       <EthersTests />
       <SolanaTests />
     </InitializeBoundary>
