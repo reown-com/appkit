@@ -31,7 +31,8 @@ const config = {
   features: {
     analytics: true
   },
-  siweConfig
+  siweConfig,
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function Wagmi() {

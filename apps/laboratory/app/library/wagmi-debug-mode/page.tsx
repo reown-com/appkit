@@ -26,8 +26,10 @@ const config = {
   adapters: [wagmiAdapter],
   networks,
   defaultNetwork: mainnet,
+  projectId: '',
   features: {
-    analytics: true
+    analytics: true,
+    socials: []
   },
   debug: true
 }

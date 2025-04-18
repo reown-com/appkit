@@ -3,6 +3,7 @@
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import { solana } from '@reown/appkit/networks'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
@@ -18,10 +19,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
-  features: {
-    analytics: true
-  },
-  metadata: ConstantsUtil.Metadata
+  defaultNetwork: solana
 }
 
 export default function SolanaWalletButton() {
