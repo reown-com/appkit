@@ -279,6 +279,7 @@ jobs:
         run: pnpm playwright:test:canary
 
       - name: Run Playwright tests for Demo
+        if: matrix.shard == 2
         env:
           BASE_URL: ${{ inputs.demo-base-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
