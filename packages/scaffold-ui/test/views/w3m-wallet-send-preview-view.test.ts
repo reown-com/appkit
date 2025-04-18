@@ -263,4 +263,22 @@ describe('W3mWalletSendPreviewView', () => {
     viExpect(sendSpy).toHaveBeenCalled()
     viExpect(routerSpy).toHaveBeenCalledWith('Account')
   })
+
+  it('should show loading state when sending', async () => {
+    // Mock SendController.state to have loading=true
+    vi.spyOn(SendController, 'state', 'get').mockReturnValue({
+      ...mockSendControllerState,
+      loading: true
+    })
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    // Get the button and check if it has the loading property set
+    const button = element.shadowRoot?.querySelector('.sendButton') as WuiButton
+    expect(button?.loading).to.equal(true)
+  })
 })
