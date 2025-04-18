@@ -1,4 +1,4 @@
-import { expect, fixture, html, waitUntil } from '@open-wc/testing'
+import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
 import type { Balance, CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
