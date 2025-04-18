@@ -81,7 +81,7 @@ export class AppKit extends AppKitBaseClient {
       const isModalOpen = this.isOpen()
       if (isModalOpen) {
         if (this.isTransactionStackEmpty()) {
-          this.close()
+          this.close(true)
         } else {
           this.popTransactionStack(true)
         }
@@ -96,7 +96,7 @@ export class AppKit extends AppKitBaseClient {
         return
       }
       if (this.isTransactionStackEmpty()) {
-        this.close()
+        this.close(true)
         if (address && caipNetwork?.id) {
           this.updateNativeBalance(address, caipNetwork.id, caipNetwork.chainNamespace)
         }
