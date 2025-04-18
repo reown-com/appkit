@@ -283,6 +283,7 @@ jobs:
         env:
           BASE_URL: ${{ inputs.demo-base-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           CI: true
         working-directory: ./apps/demo/
         run: pnpm playwright:test
