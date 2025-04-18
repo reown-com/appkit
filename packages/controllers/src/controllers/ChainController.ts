@@ -129,7 +129,7 @@ export const ChainController = {
 
     const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
     const adapterToActivate = defaultAdapter || adapters?.[0]
-    const namespaces = new Set([...(caipNetworks?.map(network => network.chainNamespace) ?? [])])
+    const namespaces = new Set(adapters.map(a => a.namespace).filter(n => n !== undefined))
     if (adapters?.length === 0 || !adapterToActivate) {
       state.noAdapters = true
     }
@@ -209,7 +209,7 @@ export const ChainController = {
       }
       state.chains.set(network.chainNamespace, { ...chainAdapter, caipNetworks: newNetworks })
       this.setRequestedCaipNetworks(newNetworks, network.chainNamespace)
-      ConnectorController.updateAdapter(network.chainNamespace, true)
+      ConnectorController.filterByNamespace(network.chainNamespace, true)
     }
   },
 
@@ -234,7 +234,7 @@ export const ChainController = {
       this.setRequestedCaipNetworks(newCaipNetworksOfAdapter || [], namespace)
 
       if (newCaipNetworksOfAdapter.length === 0) {
-        ConnectorController.updateAdapter(namespace, false)
+        ConnectorController.filterByNamespace(namespace, false)
       }
     }
   },
@@ -513,6 +513,10 @@ export const ChainController = {
 
   setRequestedCaipNetworks(requestedCaipNetworks: CaipNetwork[], chain: ChainNamespace) {
     this.setAdapterNetworkState(chain, { requestedCaipNetworks })
+    const availableNamespaces = Array.from(
+      new Set(this.getAllRequestedCaipNetworks().map(network => network.chainNamespace))
+    )
+    ConnectorController.filterByNamespaces(availableNamespaces)
   },
 
   getAllApprovedCaipNetworkIds(): CaipNetworkId[] {
