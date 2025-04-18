@@ -12,14 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "5.4.1",
-    "figlet": "1.8.0",
-    "inquirer": "12.4.2",
+    "figlet": "1.8.1",
+    "inquirer": "12.5.2",
     "tiged": "2.12.7"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "7.26.9",
+    "@babel/plugin-transform-runtime": "7.26.10",
     "@babel/preset-env": "7.26.9",
-    "@babel/runtime": "7.26.9",
+    "@babel/runtime": "7.27.0",
     "cross-env": "7.0.3",
     "esm": "3.2.25",
     "ts-node": "10.9.2"

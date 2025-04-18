@@ -29,8 +29,8 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@walletconnect/universal-provider": "2.19.2",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@leather.io/rpc": "2.1.21",
     "@vitest/coverage-v8": "2.1.9",
-    "@wallet-standard/features": "1.0.3",
+    "@wallet-standard/features": "1.1.0",
     "@walletconnect/types": "2.19.2",
     "vitest": "2.1.9"
   },

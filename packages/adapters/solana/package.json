@@ -45,7 +45,6 @@
     }
   },
   "dependencies": {
-    "@walletconnect/types": "2.19.2",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
@@ -59,6 +58,7 @@
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@wallet-standard/features": "1.1.0",
+    "@walletconnect/types": "2.19.2",
     "@walletconnect/universal-provider": "2.19.2",
     "valtio": "1.13.2"
   },
@@ -74,7 +74,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "vitest": "2.1.9",
-    "vue": "3.4.3"
+    "vue": "3.5.13"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
