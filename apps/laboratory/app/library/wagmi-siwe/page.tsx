@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet } from '@reown/appkit/networks'
+import { base } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
@@ -19,14 +19,14 @@ const queryClient = new QueryClient()
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  networks: ConstantsUtil.EvmNetworks,
+  networks: [base],
   projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: ConstantsUtil.EvmNetworks,
-  defaultNetwork: mainnet,
+  networks: [base],
+  defaultNetwork: base,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

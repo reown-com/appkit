@@ -7,8 +7,9 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
     "ethers": "6.13.5"
   },
   "devDependencies": {
