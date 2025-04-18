@@ -5,15 +5,13 @@ import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { type AppKitNetwork, base, baseSepolia, sepolia } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { WagmiPermissionsAsyncTest } from '@/src/components/Wagmi/WagmiPermissionsAsyncTest'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ERC7715PermissionsProvider } from '@/src/context/ERC7715PermissionsContext'
 import { LocalEcdsaKeyProvider } from '@/src/context/LocalEcdsaKeyContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
@@ -25,7 +23,7 @@ const wagmiAdapter = new WagmiAdapter({
   projectId: ConstantsUtil.ProjectId
 })
 
-const modal = createAppKit({
+const config = {
   adapters: [wagmiAdapter],
   networks,
   defaultNetwork: sepolia,
@@ -36,9 +34,7 @@ const modal = createAppKit({
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'
-})
-
-ThemeStore.setModal(modal)
+}
 
 export default function Wagmi() {
   return (
@@ -46,10 +42,10 @@ export default function Wagmi() {
       <QueryClientProvider client={queryClient}>
         <ERC7715PermissionsProvider>
           <LocalEcdsaKeyProvider>
-            <InitializeBoundary>
+            <AppKitProvider config={config}>
               <AppKitButtons />
               <WagmiPermissionsAsyncTest />
-            </InitializeBoundary>
+            </AppKitProvider>
           </LocalEcdsaKeyProvider>
         </ERC7715PermissionsProvider>
       </QueryClientProvider>

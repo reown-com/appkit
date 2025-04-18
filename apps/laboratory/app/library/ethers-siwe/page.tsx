@@ -2,22 +2,20 @@
 
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
-import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SiweData } from '@/src/components/Siwe/SiweData'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const networks = ConstantsUtil.EvmNetworks
 
 const ethersAdapter = new EthersAdapter()
 
-const modal = createAppKit({
+const config = {
   adapters: [ethersAdapter],
   networks,
   defaultNetwork: mainnet,
@@ -27,17 +25,15 @@ const modal = createAppKit({
   },
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
-})
-
-ThemeStore.setModal(modal)
+}
 
 export default function EthersSiwe() {
   return (
-    <InitializeBoundary>
+    <AppKitProvider config={config}>
       <AppKitButtons />
       <AppKitInfo />
       <SiweData />
       <EthersTests />
-    </InitializeBoundary>
+    </AppKitProvider>
   )
 }
