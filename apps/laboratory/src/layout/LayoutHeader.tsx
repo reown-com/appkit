@@ -22,6 +22,7 @@ import { useChakraToast } from '@/src/components/Toast'
 import { DOCS_URL, GALLERY_URL, REPO_URL } from '@/src/utils/ConstantsUtil'
 
 import { CustomWallet } from './CustomWallet'
+import { NetworksDrawer } from './NetworksDrawer'
 import { OptionsDrawer } from './OptionsDrawer'
 
 function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
@@ -45,6 +46,7 @@ export function LayoutHeader() {
   const pathname = usePathname()
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
+  const controlsNW = useDisclosure({ id: 'networks' })
   const toast = useChakraToast()
   const { colorMode } = useColorMode()
   const [origin, setOrigin] = useState('')
@@ -76,6 +78,9 @@ export function LayoutHeader() {
         <Button rightIcon={<IoSettingsOutline />} onClick={controlsCW.onOpen}>
           Custom Wallet
         </Button>
+        <Button rightIcon={<IoSettingsOutline />} onClick={controlsNW.onOpen}>
+          Networks
+        </Button>
         <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>
           Options
         </Button>
@@ -86,6 +91,8 @@ export function LayoutHeader() {
       <Text fontSize="2xs">{origin + pathname}</Text>
 
       <OptionsDrawer controls={controls} />
+      <OptionsDrawer controls={controls} />
+      <NetworksDrawer controls={controlsNW} />
       <CustomWallet controls={controlsCW} />
     </>
   )
