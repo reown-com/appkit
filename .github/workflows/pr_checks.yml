@@ -13,6 +13,10 @@ on:
     # See https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue
     branches:
       - main
+  push:
+    branches:
+      - chore/turbo-cache
+      # - main
 
 permissions:
   pull-requests: write
@@ -43,6 +47,14 @@ jobs:
 
       - name: install
         run: pnpm install
+      
+      - name: Cache Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-build-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-build-
 
       - name: build
         run: pnpm build
@@ -50,6 +62,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
       - name: Upload build artifacts
+        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
         with:
           name: build-output
@@ -67,6 +80,7 @@ jobs:
 
       # Create a separate artifact for node_modules to preserve symlinks and permissions
       - name: Upload node_modules
+        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
         with:
           name: node-modules
@@ -74,6 +88,7 @@ jobs:
           retention-days: 1
 
   code_style:
+    if: github.event_name != 'push'
     needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
@@ -125,6 +140,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   build_sample_apps:
+    if: github.event_name != 'push'
     needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
@@ -167,6 +183,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   test:
+    if: github.event_name != 'push'
     needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
@@ -211,6 +228,7 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
 
   ui-test:
+    if: github.event_name != 'push'
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
