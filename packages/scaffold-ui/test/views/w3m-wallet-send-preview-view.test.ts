@@ -1,4 +1,4 @@
-import { expect, fixture, html } from '@open-wc/testing'
+import { expect, fixture, html, waitUntil } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
 import type { Balance, CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
@@ -10,6 +10,7 @@ import {
   RouterController,
   SendController
 } from '@reown/appkit-controllers'
+import type { WuiButton } from '@reown/appkit-ui/wui-button'
 
 import { W3mWalletSendPreviewView } from '../../src/views/w3m-wallet-send-preview-view'
 
@@ -239,5 +240,27 @@ describe('W3mWalletSendPreviewView', () => {
 
     const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
     expect(valueText?.textContent?.trim()).to.equal('$100.00')
+  })
+
+  it('should redirect to account view when send is successful', async () => {
+    const sendSpy = vi.spyOn(SendController, 'sendToken').mockResolvedValue()
+    const routerSpy = vi.spyOn(RouterController, 'replace')
+    vi.spyOn(SendController, 'state', 'get').mockReturnValue({
+      ...mockSendControllerState
+    })
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    let button: WuiButton = element.shadowRoot?.querySelector('.sendButton') as WuiButton
+    button?.click()
+
+    await element.updateComplete
+
+    viExpect(sendSpy).toHaveBeenCalled()
+    viExpect(routerSpy).toHaveBeenCalledWith('Account')
   })
 })
