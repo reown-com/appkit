@@ -21,6 +21,7 @@ export interface ConnectorControllerState {
   connectors: ConnectorWithProviders[]
   activeConnector: Connector | undefined
   filterByNamespace: ChainNamespace | undefined
+  filterByNamespaceMap: Record<ChainNamespace, boolean>
   activeConnectorIds: Record<ChainNamespace, string | undefined>
 }
 
@@ -39,7 +40,13 @@ const state = proxy<ConnectorControllerState>({
   connectors: [],
   activeConnector: undefined,
   filterByNamespace: undefined,
-  activeConnectorIds: { ...defaultActiveConnectors }
+  activeConnectorIds: { ...defaultActiveConnectors },
+  filterByNamespaceMap: {
+    eip155: true,
+    solana: true,
+    polkadot: true,
+    bip122: true
+  }
 })
 
 // -- Controller ---------------------------------------- //
@@ -97,9 +104,29 @@ export const ConnectorController = {
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 
-  removeAdapter(namespace: ChainNamespace) {
-    state.allConnectors = state.allConnectors.filter(connector => connector.chain !== namespace)
-    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+  updateAdapter(namespace: ChainNamespace, enabled: boolean) {
+    state.filterByNamespaceMap[namespace] = enabled
+
+    const newConnectors: Connector[] = []
+    const enabledNamespaces: ChainNamespace[] = []
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const allNamespacesEnabled = Object.values(state.filterByNamespaceMap).every(value => value)
+
+    Object.keys(state.filterByNamespaceMap).forEach(key => {
+      if (state.filterByNamespaceMap[key as ChainNamespace]) {
+        enabledNamespaces.push(key as ChainNamespace)
+        newConnectors.push(...state.allConnectors.filter(connector => connector.chain === key))
+      }
+    })
+
+    state.connectors = this.mergeMultiChainConnectors(newConnectors)
+
+    if (allNamespacesEnabled) {
+      ApiController.state.filteredWallets = []
+    } else {
+      ApiController.filterByNamespaces(enabledNamespaces)
+    }
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {

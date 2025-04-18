@@ -68,6 +68,8 @@ siweWalletTest('it should disconnect when cancel siwe from AppKit', async () => 
 siweWalletTest('it should be authenticated when refresh page', async () => {
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
+  // Wait to be authenticated before reloading the page
+  await modalValidator.expectAuthenticated()
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalValidator.expectAuthenticated()
