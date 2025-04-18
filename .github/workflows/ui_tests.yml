@@ -278,6 +278,14 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
 
+      - name: Run Playwright tests for Demo
+        env:
+          BASE_URL: ${{ inputs.demo-base-url }}
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          CI: true
+        working-directory: ./apps/demo/
+        run: pnpm playwright:test
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
