@@ -9,7 +9,7 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",
-    "ethers": "5.8.0",
+    "ethers": "6.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
