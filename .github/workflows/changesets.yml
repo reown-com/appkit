@@ -34,7 +34,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile 
+        run: pnpm install 
         shell: bash
 
       - name: PR or publish
