@@ -28,6 +28,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ECR_PUBLISHER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ECR_PUBLISHER_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+      - name: Debug Secrets
+        run: 
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ECR_PUBLISHER_ACCESS_KEY_ID }}"
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2

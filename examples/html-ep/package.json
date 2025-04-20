@@ -10,6 +10,6 @@
     "@walletconnect/ethereum-provider": "2.19.0-canary-ak-4"
   },
   "devDependencies": {
-    "vite": "5.4.12"
+    "vite": "5.4.18"
   }
 }

@@ -11,6 +11,6 @@
     "@reown/appkit": "workspace:*"
   },
   "devDependencies": {
-    "vite": "5.4.12"
+    "vite": "5.4.18"
   }
 }
