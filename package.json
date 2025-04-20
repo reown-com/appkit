@@ -42,6 +42,7 @@
     "test:static": "pnpm run typecheck; pnpm run lint; pnpm run prettier",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
+    "turbo:verify-cache": "turbo run build lint typecheck --force",
     "danger": "danger ci",
     "prettier": "prettier --check .",
     "prettier:format": "prettier --write .",
