@@ -15,8 +15,11 @@ on:
       - main
   push:
     branches:
-      - chore/turbo-cache
-      # - main
+      # Build against main to prime turbocache
+      # GitHub Actions is branch-specific but falls
+      # back to the default branch (main) if no
+      # branch specific cache is found.
+      - main
 
 permissions:
   pull-requests: write
