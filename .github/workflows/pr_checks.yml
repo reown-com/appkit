@@ -68,7 +68,7 @@ jobs:
             ${{ runner.os }}-turbo-build-
 
       - name: build
-        run: pnpm build -vvv
+        run: pnpm build
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
