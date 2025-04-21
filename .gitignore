@@ -19,3 +19,5 @@ tsconfig.tsbuildinfo
 .parcel-cache
 .coverage
 .envrc*
+file.txt
+.env*.local

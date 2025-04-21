@@ -112,5 +112,8 @@
   },
   "@parcel/resolver-default": {
     "packageExports": true
+  },
+  "dependencies": {
+    "vercel": "^41.6.1"
   }
 }

@@ -1,0 +1,113 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+section {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  padding: 13px;
+  margin: 10px;
+  width: 90%;
+  text-align: left;
+}
+
+.pages {
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+button {
+  padding: 10px 15px;
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 15px; /* Space between buttons */
+}
+
+button:hover {
+  background-color: black;
+    color: white;
+}
+
+button:active {
+  background-color: #333; /* Dark gray on click */
+    color: white;
+}
+
+h1 {
+  margin: 20px;
+}
+
+h2 {
+  padding-bottom: 6px;
+}
+
+pre {
+  white-space: pre-wrap; /* Wrap text */
+  word-wrap: break-word; /* Break long words */
+  word-break: break-all;
+}
+
+
+.link-button {
+  background-color: black;
+  color: white;
+  padding: 5px 10px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.link-button:hover {
+  background-color: #333;  /* Darken the background on hover */
+}
+
+.link-button:hover {
+  background-color: white;  /* Change background to white on hover */
+  color: black;  /* Change text color to black on hover */
+}
+
+.advice {
+  text-align: 'center';
+   margin-bottom: 10px;
+   line-height: 25px;
+}
