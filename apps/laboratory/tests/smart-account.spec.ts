@@ -1,7 +1,5 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { setupNetworkListener } from '@/src/utils/NetworkUtil'
-
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { EOA, ModalWalletValidator, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
@@ -23,7 +21,6 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
   smartAccountTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
-  setupNetworkListener(browserPage)
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 

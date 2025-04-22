@@ -1,5 +1,3 @@
-import { setupNetworkListener } from '@/src/utils/NetworkUtil'
-
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
@@ -40,7 +38,6 @@ extensionTest.describe.configure({ mode: 'serial' })
 
 extensionTest.beforeAll(async ({ context, library }) => {
   const browserPage = await context.newPage()
-  setupNetworkListener(browserPage)
   const path = PATH_FOR_LIBRARIES[library as keyof typeof PATH_FOR_LIBRARIES]
 
   if (!path) {

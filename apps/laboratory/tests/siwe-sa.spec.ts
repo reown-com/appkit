@@ -1,7 +1,5 @@
 import { type BrowserContext, expect, test } from '@playwright/test'
 
-import { setupNetworkListener } from '@/src/utils/NetworkUtil'
-
 import { SECURE_WEBSITE_URL } from './shared/constants'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
@@ -24,7 +22,6 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   smartAccountSiweTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
-  setupNetworkListener(browserPage)
   page = new ModalWalletPage(browserPage, library, 'all')
   validator = new ModalWalletValidator(browserPage)
 
