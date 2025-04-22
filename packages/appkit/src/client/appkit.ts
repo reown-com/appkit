@@ -228,17 +228,26 @@ export class AppKit extends AppKitBaseClient {
     const theme = ThemeController.getSnapshot()
     const options = OptionsController.getSnapshot()
 
-    provider.syncDappData({
-      metadata: options.metadata as Metadata,
-      sdkVersion: options.sdkVersion,
-      projectId: options.projectId,
-      sdkType: options.sdkType
-    })
-    provider.syncTheme({
-      themeMode: theme.themeMode,
-      themeVariables: theme.themeVariables,
-      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-    })
+    await Promise.all([
+      provider.syncDappData({
+        metadata: options.metadata as Metadata,
+        sdkVersion: options.sdkVersion,
+        projectId: options.projectId,
+        sdkType: options.sdkType
+      }),
+      provider.syncTheme({
+        themeMode: theme.themeMode,
+        themeVariables: theme.themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+      })
+    ])
+
+    if (
+      chainNamespace === ConstantsUtil.CHAIN.EVM &&
+      AccountController.state.preferredAccountTypes?.eip155
+    ) {
+      await provider.setPreferredAccount(AccountController.state.preferredAccountTypes?.eip155)
+    }
 
     if (chainNamespace && isAuthSupported) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
@@ -314,7 +323,7 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private createAuthProvider(chainNamespace: ChainNamespace) {
+  private async createAuthProvider(chainNamespace: ChainNamespace) {
     const isSupported = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(chainNamespace)
 
     if (!isSupported) {
@@ -346,20 +355,17 @@ export class AppKit extends AppKitBaseClient {
           this.authProvider?.rejectRpcRequests()
         }
       })
-      if (
-        chainNamespace === ConstantsUtil.CHAIN.EVM &&
-        AccountController.state.preferredAccountTypes?.eip155
-      ) {
-        this.authProvider.setPreferredAccount(AccountController.state.preferredAccountTypes?.eip155)
-      }
-      this.syncAuthConnector(this.authProvider, chainNamespace)
-      this.checkExistingTelegramSocialConnection(chainNamespace)
+
+      await Promise.all([
+        this.syncAuthConnector(this.authProvider, chainNamespace),
+        this.checkExistingTelegramSocialConnection(chainNamespace)
+      ])
     }
   }
 
-  private createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
+  private async createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
     // Override as we need to set authProvider for each adapter
-    this.createAuthProvider(chainNamespace)
+    await this.createAuthProvider(chainNamespace)
 
     if (this.authProvider) {
       this.chainAdapters?.[chainNamespace]?.setAuthProvider?.(this.authProvider)
@@ -444,7 +450,7 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async initChainAdapter(namespace: ChainNamespace): Promise<void> {
     await super.initChainAdapter(namespace)
-    this.createAuthProviderForAdapter(namespace)
+    await this.createAuthProviderForAdapter(namespace)
   }
 
   public override async syncIdentity({
