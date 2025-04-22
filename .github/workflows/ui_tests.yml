@@ -77,6 +77,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Cache Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: build packages and lab
         run: pnpm build:laboratory
         env:
@@ -133,9 +141,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
-        shardTotal: [5]
-    timeout-minutes: 20
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        shardTotal: [10]
+    timeout-minutes: 15
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
       # It's not supported in self-hosted runners, however, so commenting it out for now

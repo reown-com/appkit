@@ -753,6 +753,7 @@ export abstract class AppKitBaseClient {
       } else {
         this.syncAccountInfo(address, chainId, chainNamespace)
       }
+      this.syncAllAccounts(chainNamespace)
     })
   }
 
@@ -943,6 +944,21 @@ export abstract class AppKitBaseClient {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
     ConnectorController.setConnectorId(id, chainNamespace)
+  }
+
+  protected async syncAllAccounts(namespace: ChainNamespace) {
+    const connectorId = ConnectorController.getConnectorId(namespace)
+
+    if (!connectorId) {
+      return
+    }
+
+    const adapter = this.getAdapter(namespace)
+    const accounts = await adapter?.getAccounts({ namespace, id: connectorId })
+
+    if (accounts && accounts.accounts.length > 0) {
+      this.setAllAccounts(accounts.accounts, namespace)
+    }
   }
 
   protected async syncAccount(
