@@ -3,6 +3,8 @@ import { type BrowserContext, type Page, expect, test } from '@playwright/test'
 import type { CaipNetworkId } from '@reown/appkit'
 import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
 
+import { setupNetworkListener } from '@/src/utils/NetworkUtil'
+
 import { SECURE_WEBSITE_URL } from './shared/constants'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
@@ -27,7 +29,7 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
   emailTestAfterFarcaster.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
-
+  setupNetworkListener(browserPage)
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
