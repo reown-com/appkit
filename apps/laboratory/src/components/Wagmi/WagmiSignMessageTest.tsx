@@ -37,6 +37,8 @@ export function WagmiSignMessageTest() {
         type: 'success'
       })
     } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
