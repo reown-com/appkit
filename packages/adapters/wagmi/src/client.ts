@@ -223,6 +223,7 @@ export class WagmiAdapter extends AdapterBlueprint {
             prevAccountData.status !== 'connected'
           ) {
             this.setupWatchPendingTransactions()
+
             this.emit('accountChanged', {
               address: accountData.address,
               chainId: accountData.chainId
@@ -280,7 +281,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
-    const emailEnabled =
+    const isEmailEnabled =
       options.features?.email === undefined
         ? CoreConstantsUtil.DEFAULT_FEATURES.email
         : options.features?.email
@@ -288,7 +289,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       ? options.features?.socials?.length > 0
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
-    if (emailEnabled || socialsEnabled) {
+    if (isEmailEnabled || socialsEnabled) {
       customConnectors.push(
         authConnector({
           chains: this.wagmiChains,
@@ -774,6 +775,15 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    universalProvider.on('connect', () => {
+      const connections = getConnections(this.wagmiConfig)
+      const connector = this.getWagmiConnector('walletConnect')
+      if (connector && !connections.find(c => c.connector.id === connector.id)) {
+        reconnect(this.wagmiConfig, {
+          connectors: [connector]
+        })
+      }
+    })
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,

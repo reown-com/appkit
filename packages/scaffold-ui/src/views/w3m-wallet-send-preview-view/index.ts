@@ -1,13 +1,22 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ChainController, RouterController, SendController } from '@reown/appkit-controllers'
+import type { ChainNamespace } from '@reown/appkit-common'
+import {
+  AccountController,
+  ChainController,
+  EventsController,
+  RouterController,
+  SendController,
+  SnackController
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-preview-item'
 import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
@@ -34,6 +43,8 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
+  @state() private loading = SendController.state.loading
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -45,6 +56,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.gasPriceInUSD = val.gasPriceInUSD
           this.receiverProfileName = val.receiverProfileName
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
+          this.loading = val.loading
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val))
       ]
@@ -120,6 +132,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             @click=${this.onSendClick.bind(this)}
             size="lg"
             variant="main"
+            .loading=${this.loading}
           >
             Send
           </wui-button>
@@ -142,8 +155,39 @@ export class W3mWalletSendPreviewView extends LitElement {
     return null
   }
 
-  onSendClick() {
-    SendController.sendToken()
+  async onSendClick() {
+    if (!this.sendTokenAmount || !this.receiverAddress) {
+      SnackController.showError('Please enter a valid amount and receiver address')
+
+      return
+    }
+
+    try {
+      await SendController.sendToken()
+      SnackController.showSuccess('Transaction started')
+      RouterController.replace('Account')
+    } catch (error) {
+      SnackController.showError('Failed to send transaction. Please try again.')
+      // eslint-disable-next-line no-console
+      console.error('SendController:sendToken - failed to send transaction', error)
+
+      const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_ERROR',
+        properties: {
+          message: errorMessage,
+          isSmartAccount:
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.token?.symbol || '',
+          amount: this.sendTokenAmount,
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        }
+      })
+    }
   }
 
   private onCancelClick() {

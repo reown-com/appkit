@@ -219,14 +219,14 @@ export const bitcoinSdkOptions: SdkOption[] = [
 
 export const siwxSdkOptions: SdkOption[] = [
   {
+    title: 'Cloud Auth SIWX',
+    link: '/library/siwx-cloud-auth',
+    description: 'SIWX configuration using Cloud Auth'
+  },
+  {
     title: 'Default SIWX',
     link: '/library/siwx-default',
     description:
       'Multichain SIWX configuration with Ethers, Solana and Bitcoin adapters enabled for AppKit'
-  },
-  {
-    title: 'Cloud Auth SIWX',
-    link: '/library/siwx-cloud-auth',
-    description: 'EVM SIWX configuration with Ethers and Cloud Auth'
   }
 ]
