@@ -1,5 +1,7 @@
 import { type BrowserContext, expect } from '@playwright/test'
 
+import { setupNetworkListener } from '@/src/utils/NetworkUtil'
+
 import { SECURE_WEBSITE_URL } from './shared/constants'
 import { timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
@@ -26,7 +28,7 @@ emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
   const start = new Date()
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
+  setupNetworkListener(browserPage)
   page = new ModalWalletPage(browserPage, library, 'siwe')
   validator = new ModalWalletValidator(browserPage)
 

@@ -1,3 +1,4 @@
+import { setupNetworkListener } from '@/src/utils/NetworkUtil'
 import { getNamespaceByNetworkName } from '@/tests/shared/utils/namespace'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
@@ -41,6 +42,7 @@ extensionTest.describe.configure({ mode: 'serial' })
 extensionTest.beforeAll(async ({ context, library }) => {
   const browserPage = await context.newPage()
 
+  setupNetworkListener(browserPage)
   const path = PATH_FOR_LIBRARIES[library as keyof typeof PATH_FOR_LIBRARIES]
 
   if (!path) {
