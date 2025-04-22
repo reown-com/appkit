@@ -13,6 +13,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SendApiUtil } from '../utils/SendApiUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -58,7 +59,7 @@ const state = proxy<SendControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const SendController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: SendControllerState) => void) {
@@ -365,3 +366,6 @@ export const SendController = {
     state.tokenBalances = []
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const SendController = withErrorBoundary(controller)
