@@ -38,6 +38,11 @@ on:
         default: 'https://secure.walletconnect.org/sdk'
         required: false
         type: string
+      build-and-cache-only:
+        description: 'If true, only run the build job and skip the tests.'
+        required: false
+        default: false
+        type: boolean
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -85,6 +90,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
+      - name: Cache NextJS Apps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/apps/laboratory/out/cache
+            ${{ github.workspace }}/apps/demo/.next/cache
+          # NOTE: apps/browser-extension likely does NOT use .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
       - name: build packages and lab
         run: pnpm build:laboratory
         env:
@@ -96,6 +112,7 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
 
       - name: build extension
+        if: inputs.build-and-cache-only == false
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
@@ -112,6 +129,7 @@ jobs:
 
       # Upload actual artifact in GitHub Actions
       - name: Upload build artifacts (GitHub Actions)
+        if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
           name: ui-build-output
@@ -128,6 +146,7 @@ jobs:
 
       # Upload actual artifact in GitHub Actions
       - name: Upload node_modules (GitHub Actions)
+        if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
           name: ui-node-modules
@@ -135,6 +154,7 @@ jobs:
           retention-days: 1
 
   ui_tests:
+    if: inputs.build-and-cache-only == false
     name: 'Playwright Tests'
     needs: build_lab_and_extension # Depend on the build job
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
@@ -249,7 +269,7 @@ jobs:
         working-directory: ./apps/laboratory/
         run: |
           mkdir -p /tmp/playwright_cache
-          pnpm -ddd playwright:install # Add -ddd for max debug logging
+          pnpm playwright:install # Add -ddd for max debug logging
 
       - name: Verify Cache Dir Exists After Install
         if: steps.playwright-cache.outputs.cache-hit != 'true' # Only relevant if install ran

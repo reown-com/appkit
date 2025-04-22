@@ -239,7 +239,7 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
 
   ui-test:
-    if: github.event.pull_request.draft == false && github.event_name != 'push'
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     permissions:
@@ -247,3 +247,4 @@ jobs:
       pull-requests: write
     with:
       branch: ${{ github.ref }}
+      build-and-cache-only: ${{ github.event_name == 'push' }}
