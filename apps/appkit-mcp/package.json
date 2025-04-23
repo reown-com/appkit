@@ -30,7 +30,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
-    "@reown/appkit-blockchain-api": "1.7.1-b-api-client.0",
+    "@reown/appkit-blockchain-api": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@sentry/core": "9.8.0",

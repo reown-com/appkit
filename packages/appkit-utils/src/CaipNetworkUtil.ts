@@ -4,6 +4,7 @@ import {
   type AppKitNetwork,
   type CaipNetwork,
   type CaipNetworkId,
+  type ChainNamespace,
   ConstantsUtil,
   type CustomRpcUrl,
   type CustomRpcUrlMap

@@ -23,7 +23,6 @@ import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-text'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import type { SwapInputArguments } from '../../../../controllers/dist/types/src/controllers/SwapController.js'
