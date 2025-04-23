@@ -27,7 +27,6 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
   emailTestAfterFarcaster.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
