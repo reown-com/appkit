@@ -150,6 +150,11 @@ export const ConnectionController = {
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType, namespace: ChainNamespace) {
+    // eslint-disable-next-line no-console
+    console.log('setPreferredAccountType', {
+      accountType,
+      namespace
+    })
     ModalController.setLoading(true, ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (!authConnector) {

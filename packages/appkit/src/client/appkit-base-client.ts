@@ -1783,6 +1783,8 @@ export abstract class AppKitBaseClient {
     preferredAccountType,
     chain
   ) => {
+    // eslint-disable-next-line no-console
+    console.trace('setPreferredAccountType', preferredAccountType, chain)
     AccountController.setPreferredAccountType(preferredAccountType, chain)
   }
 

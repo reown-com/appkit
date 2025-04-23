@@ -125,10 +125,18 @@ export class AppKit extends AppKitBaseClient {
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
 
+      // TODO: look here
       const preferredAccountType =
         (user.preferredAccountType as W3mFrameTypes.AccountType) ||
         (AccountController.state.preferredAccountTypes?.[namespace] as W3mFrameTypes.AccountType) ||
         OptionsController.state.defaultAccountTypes[namespace]
+
+      // eslint-disable-next-line no-console
+      console.log({
+        userPreferredAccountType: user.preferredAccountType,
+        statePreferredAccountType: AccountController.state.preferredAccountTypes?.[namespace],
+        defaultAccountType: OptionsController.state.defaultAccountTypes[namespace]
+      })
 
       /*
        * This covers the case where user switches back from a smart account supported
@@ -190,6 +198,12 @@ export class AppKit extends AppKitBaseClient {
       if (!address) {
         return
       }
+
+      // eslint-disable-next-line no-console
+      console.log('onSetPreferredAccount', {
+        address,
+        type
+      })
 
       this.setPreferredAccountType(
         type as W3mFrameTypes.AccountType,

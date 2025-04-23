@@ -288,6 +288,11 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
+    // eslint-disable-next-line no-console
+    console.log('changePreferredAccountType', {
+      accountTypeTarget,
+      namespace
+    })
     await ConnectionController.setPreferredAccountType(accountTypeTarget, namespace)
 
     this.text =

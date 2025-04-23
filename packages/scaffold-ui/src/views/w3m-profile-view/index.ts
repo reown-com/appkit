@@ -143,6 +143,11 @@ export class W3mProfileView extends LitElement {
     const emailConnector = ConnectorController.getAuthConnector()
     if (emailConnector) {
       const type = account.type as W3mFrameTypes.AccountType
+      // eslint-disable-next-line no-console
+      console.log('onSwitchAccount', {
+        type,
+        namespace
+      })
       await ConnectionController.setPreferredAccountType(type, namespace)
     }
 
