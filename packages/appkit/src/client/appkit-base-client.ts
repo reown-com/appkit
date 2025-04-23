@@ -356,7 +356,7 @@ export abstract class AppKitBaseClient {
         const result = await adapter.connectWalletConnect(chainId)
 
         this.close()
-        this.setClientId(result?.clientId || undefined)
+        this.setClientId(result?.clientId)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         this.chainNamespaces.forEach(namespace => {
           ConnectorController.setConnectorId(

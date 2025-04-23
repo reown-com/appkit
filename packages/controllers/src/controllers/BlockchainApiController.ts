@@ -53,6 +53,20 @@ export const BlockchainApiController = {
     state.client.setSdkVersion(OptionsController.state.sdkVersion)
   },
 
+  setClientId(clientId: string | undefined) {
+    state.client.setClientId(clientId)
+  },
+
+  getSdkProperties() {
+    const { sdkType, sdkVersion, projectId } = OptionsController.state
+
+    return {
+      st: sdkType || 'unknown',
+      sv: sdkVersion || 'unknown',
+      projectId
+    }
+  },
+
   async isNetworkSupported(networkId?: CaipNetworkId) {
     if (!networkId) {
       return false
@@ -215,12 +229,29 @@ export const BlockchainApiController = {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
+
     if (!isSupported) {
-      SnackController.showError('Token Balance Unavailable')
+      SnackController.showError('Token balance unavailable')
+
       return { balances: [] }
     }
 
-    return state.client.getBalance(address, chainId, forceUpdate)
+    const caipAddress = `${chainId}:${address}`
+    const cachedBalance = StorageUtil.getBalanceCacheForCaipAddress(caipAddress)
+
+    if (cachedBalance) {
+      return cachedBalance
+    }
+
+    const balance = await state.client.getBalance(address, chainId, forceUpdate)
+
+    StorageUtil.updateBalanceCache({
+      caipAddress,
+      balance,
+      timestamp: Date.now()
+    })
+
+    return balance
   },
 
   async lookupEnsName(name: string) {
@@ -352,9 +383,5 @@ export const BlockchainApiController = {
     }
 
     return state.client.revokeSmartSession(address, pci, signature)
-  },
-
-  setClientId(clientId: string | undefined) {
-    state.client.setClientId(clientId)
   }
 }

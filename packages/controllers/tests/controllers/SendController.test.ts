@@ -145,7 +145,7 @@ describe('SendController', () => {
       expect(result).toEqual([])
       expect(SendController.state.lastRetry).toBe(now)
       expect(onError).toHaveBeenCalledWith(mockError)
-      expect(SnackController.showError).toHaveBeenCalledWith('Token Balance Unavailable')
+      expect(SnackController.showError).toHaveBeenCalledWith('Token balance unavailable')
     })
 
     it('should fetch balance if everything is correct', async () => {

@@ -1,11 +1,11 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { FetchUtil } from '@reown/appkit-blockchain-api'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetAnalyticsConfigResponse,
@@ -34,7 +34,7 @@ const CORE_UNSUPPORTED_WALLET_IDS = [
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl, clientId: null })
+export const api = new FetchUtil({ baseUrl })
 const entries = 40
 const recommendedEntries = 4
 const imageCountToFetch = 20

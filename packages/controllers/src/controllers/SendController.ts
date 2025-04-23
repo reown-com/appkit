@@ -201,7 +201,7 @@ export const SendController = {
       state.lastRetry = Date.now()
 
       onError?.(error)
-      SnackController.showError('Token Balance Unavailable')
+      SnackController.showError('Token balance unavailable')
     } finally {
       state.loading = false
     }
