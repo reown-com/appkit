@@ -104,6 +104,10 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     this.createConfig({ ...configParams, networks })
+  }
+
+  override construct(options: AdapterBlueprint.Params) {
+    super.construct(options)
     this.setupWatchers()
   }
 

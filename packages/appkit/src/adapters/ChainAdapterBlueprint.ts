@@ -59,12 +59,9 @@ export abstract class AdapterBlueprint<
    * Creates an instance of AdapterBlueprint.
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
-  constructor(params?: AdapterBlueprint.Params) {
+  constructor(_params?: AdapterBlueprint.Params) {
     this.getCaipNetworks = (namespace?: ChainNamespace) =>
       ChainController.getCaipNetworks(namespace)
-    if (params) {
-      this.construct(params)
-    }
   }
 
   /**
