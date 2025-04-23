@@ -33,7 +33,6 @@ export class W3mFrameProvider {
   public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
 
   private initPromise: Promise<void> | undefined
-
   public constructor({
     projectId,
     chainId,
@@ -49,9 +48,12 @@ export class W3mFrameProvider {
       this.w3mFrame.initFrame()
     }
     this.initPromise = new Promise<void>(resolve => {
-      this.w3mFrame.events.onFrameEvent(event => {
+      this.w3mFrame.events.onFrameEvent(async event => {
         if (event.type === W3mFrameConstants.FRAME_READY) {
           this.initPromise = undefined
+          await new Promise(_resolve => {
+            setTimeout(_resolve, 500)
+          })
           resolve()
         }
       })
@@ -135,10 +137,12 @@ export class W3mFrameProvider {
       if (!this.getLoginEmailUsed()) {
         return { isConnected: false }
       }
+
       const response = await this.appEvent<'IsConnected'>({
         type: W3mFrameConstants.APP_IS_CONNECTED
       } as W3mFrameTypes.AppEvent)
-      if (!response.isConnected) {
+
+      if (!response?.isConnected) {
         this.deleteAuthLoginCache()
       }
 
@@ -286,13 +290,12 @@ export class W3mFrameProvider {
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
-      const response = await this.appEvent<'GetUser'>({
-        type: W3mFrameConstants.APP_GET_USER,
-        payload: { ...payload, chainId }
-      } as W3mFrameTypes.AppEvent)
+      const response = await this.getUser({
+        chainId,
+        preferredAccountType: payload?.preferredAccountType
+      })
       this.setLoginSuccess(response.email)
       this.setLastUsedChainId(response.chainId)
-
       this.user = response
 
       return response
@@ -459,6 +462,7 @@ export class W3mFrameProvider {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
@@ -580,7 +584,6 @@ export class W3mFrameProvider {
         if (framEvent.id !== id) {
           return
         }
-
         logger?.logger.info?.({ framEvent, id }, 'Received frame response')
 
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {

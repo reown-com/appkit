@@ -13,6 +13,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
+import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
@@ -49,10 +50,12 @@ export default function MultiChainWagmiSolana() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <AppKitButtons />
-        <AppKitInfo />
-        <WagmiTests />
-        <BitcoinTests />
+        <InitializeBoundary>
+          <AppKitButtons />
+          <AppKitInfo />
+          <WagmiTests />
+          <BitcoinTests />
+        </InitializeBoundary>
       </QueryClientProvider>
     </WagmiProvider>
   )

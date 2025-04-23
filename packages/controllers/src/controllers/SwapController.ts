@@ -28,6 +28,12 @@ export const TO_AMOUNT_DECIMALS = 6
 // -- Types --------------------------------------------- //
 export type SwapInputTarget = 'sourceToken' | 'toToken'
 
+export type SwapInputArguments = Partial<{
+  fromToken: string
+  toToken: string
+  amount: string
+}>
+
 type TransactionParams = {
   data: string
   to: string
@@ -759,7 +765,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -817,7 +823,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -844,7 +850,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -863,7 +869,7 @@ export const SwapController = {
 
     let insufficientNetworkTokenForGas = true
     if (
-      AccountController.state.preferredAccountType ===
+      AccountController.state.preferredAccountTypes?.eip155 ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       // Smart Accounts may pay gas in any ERC20 token

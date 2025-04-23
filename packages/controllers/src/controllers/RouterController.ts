@@ -9,7 +9,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
-import type { SwapInputTarget } from './SwapController.js'
+import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -103,12 +103,7 @@ export interface RouterControllerState {
     switchToChain?: ChainNamespace
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
-    swapParams?: {
-      sourceToken: string
-      toToken: string
-      amount: string
-      chainId: string
-    }
+    swap?: SwapInputArguments
     sendParams?: {
       sourceToken: string
       address: string
@@ -170,7 +165,7 @@ export const RouterController = {
           this.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
-          ModalController.close()
+          ModalController.close(true)
           state.history = []
         }
       } else if (action.view) {

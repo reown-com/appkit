@@ -6,6 +6,7 @@ import { bitcoin } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
@@ -60,7 +61,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     const accountList = accounts.map(account => ({
       address: account,
-      purpose: 'payment' as const,
+      purpose: AddressPurpose.Payment,
       publicKey: publicKeyOfActiveAccount
     }))
 
@@ -68,7 +69,9 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    return this.wallet.signMessage(params.message)
+    const protocol = params.protocol === 'bip322' ? 'bip322-simple' : params.protocol
+
+    return this.wallet.signMessage(params.message, protocol)
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {

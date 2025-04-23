@@ -33,7 +33,7 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public network = ChainController.state.activeCaipNetwork
 
-  @state() public requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+  @state() public requestedCaipNetworks = ChainController.getCaipNetworks()
 
   @state() private filteredNetworks?: CaipNetwork[]
 
@@ -45,10 +45,9 @@ export class W3mNetworksView extends LitElement {
     this.unsubscribe.push(
       AssetController.subscribeNetworkImages(() => this.requestUpdate()),
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
-      ChainController.subscribeKey(
-        'chains',
-        () => (this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks())
-      )
+      ChainController.subscribe(() => {
+        this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+      })
     )
   }
 
@@ -112,12 +111,11 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
-      requestedCaipNetworks
+      this.requestedCaipNetworks
     )
 
     if (this.search) {

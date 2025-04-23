@@ -209,6 +209,7 @@ export const ChainController = {
       }
       state.chains.set(network.chainNamespace, { ...chainAdapter, caipNetworks: newNetworks })
       this.setRequestedCaipNetworks(newNetworks, network.chainNamespace)
+      ConnectorController.updateAdapter(network.chainNamespace, true)
     }
   },
 
@@ -231,6 +232,10 @@ export const ChainController = {
 
       state.chains.set(namespace, { ...chainAdapter, caipNetworks: newCaipNetworksOfAdapter })
       this.setRequestedCaipNetworks(newCaipNetworksOfAdapter || [], namespace)
+
+      if (newCaipNetworksOfAdapter.length === 0) {
+        ConnectorController.updateAdapter(namespace, false)
+      }
     }
   },
 
@@ -637,7 +642,7 @@ export const ChainController = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountType: undefined,
+      preferredAccountTypes: undefined,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
@@ -783,5 +788,13 @@ export const ChainController = {
     return chains
       .flatMap(chain => chain?.caipNetworks || [])
       .map(caipNetwork => caipNetwork.caipNetworkId)
+  },
+
+  getCaipNetworks(namespace?: ChainNamespace) {
+    if (namespace) {
+      return ChainController.getRequestedCaipNetworks(namespace)
+    }
+
+    return ChainController.getAllRequestedCaipNetworks()
   }
 }

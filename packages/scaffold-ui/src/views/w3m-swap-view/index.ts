@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { NumberUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  NumberUtil
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -21,10 +26,23 @@ import '@reown/appkit-ui/wui-text'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import type { SwapInputArguments } from '../../../../controllers/dist/types/src/controllers/SwapController.js'
 import '../../partials/w3m-swap-details/index.js'
 import '../../partials/w3m-swap-input-skeleton/index.js'
 import '../../partials/w3m-swap-input/index.js'
 import styles from './styles.js'
+
+interface OnCaipAddressChangeParams {
+  newCaipAddress?: CaipAddress
+  resetSwapState: boolean
+  initializeSwapState: boolean
+}
+
+interface OnCaipNetworkChangeParams {
+  newCaipNetwork?: CaipNetwork
+  resetSwapState: boolean
+  initializeSwapState: boolean
+}
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
@@ -33,7 +51,7 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Object }) initialParams = RouterController.state.data?.swapParams
+  @property({ type: Object }) initialParams = RouterController.state.data?.swap
 
   @state() private interval?: ReturnType<typeof setInterval>
 
@@ -72,22 +90,36 @@ export class W3mSwapView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
-      if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
-        this.caipNetworkId = newCaipNetwork?.caipNetworkId
-        SwapController.resetState()
-        SwapController.initializeState()
-      }
-    })
-    AccountController.subscribeKey('caipAddress', newCaipAddress => {
-      if (this.caipAddress !== newCaipAddress) {
-        this.caipAddress = newCaipAddress
-        SwapController.resetState()
-        SwapController.initializeState()
-      }
-    })
+    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+      this.onCaipNetworkChange({
+        newCaipNetwork,
+        resetSwapState: true,
+        initializeSwapState: false
+      })
+    )
+    AccountController.subscribeKey('caipAddress', newCaipAddress =>
+      this.onCaipAddressChange({
+        newCaipAddress,
+        resetSwapState: true,
+        initializeSwapState: false
+      })
+    )
     this.unsubscribe.push(
       ...[
+        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+          this.onCaipNetworkChange({
+            newCaipNetwork,
+            resetSwapState: false,
+            initializeSwapState: true
+          })
+        ),
+        AccountController.subscribeKey('caipAddress', newCaipAddress =>
+          this.onCaipAddressChange({
+            newCaipAddress,
+            resetSwapState: false,
+            initializeSwapState: true
+          })
+        ),
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             SwapController.resetState()
@@ -117,10 +149,10 @@ export class W3mSwapView extends LitElement {
     )
   }
 
-  public override firstUpdated() {
+  public override async firstUpdated() {
     SwapController.initializeState()
     this.watchTokensAndValues()
-    this.handleSwapParameters()
+    await this.handleSwapParameters()
   }
 
   public override disconnectedCallback() {
@@ -301,6 +333,8 @@ export class W3mSwapView extends LitElement {
   }
 
   private async onSwapPreview() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     if (this.fetchError) {
       await SwapController.swapTokens()
     }
@@ -314,28 +348,19 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     RouterController.push('SwapPreview')
   }
-
   /**
    * Processes token and amount parameters for swap
    */
   private async handleSwapParameters(): Promise<void> {
-    // Get URL search parameters
-    const toTokenSymbol = this.initialParams?.toToken
-    const sourceTokenSymbol = this.initialParams?.sourceToken
-    const amount = this.initialParams?.amount
-    const chainId = this.initialParams?.chainId
-
-    if (!toTokenSymbol || !sourceTokenSymbol || !amount || !chainId) {
+    if (!this.initialParams) {
       return
     }
-
-    await this.handleChainSwitch(chainId)
 
     // Wait for initialization to complete
     if (!SwapController.state.initialized) {
@@ -350,8 +375,7 @@ export class W3mSwapView extends LitElement {
       await waitForInitialization
     }
 
-    // Set tokens and amount
-    await this.setSwapParameters(sourceTokenSymbol, toTokenSymbol, amount)
+    await this.setSwapParameters(this.initialParams)
   }
 
   /**
@@ -360,11 +384,11 @@ export class W3mSwapView extends LitElement {
    * @param toTokenSymbol - The symbol of the destination token
    * @param amount - The amount to swap
    */
-  private async setSwapParameters(
-    sourceTokenSymbol: string | null,
-    toTokenSymbol: string | null,
-    amount: string | null
-  ): Promise<void> {
+  private async setSwapParameters({
+    amount,
+    fromToken,
+    toToken
+  }: Omit<SwapInputArguments, 'caipNetworkId'>): Promise<void> {
     // Wait for token list to be available
     if (!SwapController.state.tokens || !SwapController.state.myTokensWithBalance) {
       const waitForTokens = new Promise<void>(resolve => {
@@ -385,73 +409,69 @@ export class W3mSwapView extends LitElement {
       await waitForTokens
     }
 
+    const allTokens = [
+      ...(SwapController.state.tokens || []),
+      ...(SwapController.state.myTokensWithBalance || [])
+    ]
+
     // Find source token by symbol
-    if (sourceTokenSymbol) {
-      const allTokens = [
-        ...(SwapController.state.tokens || []),
-        ...(SwapController.state.myTokensWithBalance || [])
-      ]
+    if (fromToken) {
+      const token = allTokens.find(t => t.symbol.toLowerCase() === fromToken.toLowerCase())
 
-      const sourceToken = allTokens.find(
-        token => token.symbol.toLowerCase() === sourceTokenSymbol.toLowerCase()
-      )
-
-      if (sourceToken) {
-        SwapController.setSourceToken(sourceToken)
+      if (token) {
+        SwapController.setSourceToken(token)
       }
     }
 
     // Find destination token by symbol
-    if (toTokenSymbol) {
-      const allTokens = [
-        ...(SwapController.state.tokens || []),
-        ...(SwapController.state.myTokensWithBalance || [])
-      ]
+    if (toToken) {
+      const token = allTokens.find(t => t.symbol.toLowerCase() === toToken.toLowerCase())
 
-      const toToken = allTokens.find(
-        token => token.symbol.toLowerCase() === toTokenSymbol.toLowerCase()
-      )
-
-      if (toToken) {
-        SwapController.setToToken(toToken)
+      if (token) {
+        SwapController.setToToken(token)
       }
     }
 
     // Set amount if provided
-    if (amount && sourceTokenSymbol) {
+    if (amount && !isNaN(Number(amount))) {
       SwapController.setSourceTokenAmount(amount)
     }
-
-    // Trigger swap calculation
-    if (sourceTokenSymbol && toTokenSymbol && amount) {
-      await SwapController.swapTokens()
-    }
-
-    // Clear the URL parameters
-    const urlParams = new URLSearchParams(window.location.search)
-    urlParams.delete('sourceToken')
-    urlParams.delete('toToken')
-    urlParams.delete('amount')
-    window.history.replaceState({}, '', window.location.pathname)
   }
 
-  /**
-   * Handles switching to the appropriate chain based on chainId
-   * @param chainId - The chain ID to switch to
-   */
-  private async handleChainSwitch(chainId: string): Promise<void> {
-    // Get requested networks to find the one with matching chainId
-    const requestedNetworks = ChainController.getAllRequestedCaipNetworks()
-    const targetNetwork = requestedNetworks.find(network => {
-      return network.id.toString() === chainId
-    })
+  private onCaipAddressChange({
+    newCaipAddress,
+    resetSwapState,
+    initializeSwapState
+  }: OnCaipAddressChangeParams) {
+    if (this.caipAddress !== newCaipAddress) {
+      this.caipAddress = newCaipAddress
 
-    // If no matching network found, return
-    if (!targetNetwork) {
-      return
+      if (resetSwapState) {
+        SwapController.resetState()
+      }
+
+      if (initializeSwapState) {
+        SwapController.initializeState()
+      }
     }
+  }
 
-    CaipNetworksUtil.onSwitchNetwork(targetNetwork)
+  private onCaipNetworkChange({
+    newCaipNetwork,
+    resetSwapState,
+    initializeSwapState
+  }: OnCaipNetworkChangeParams) {
+    if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
+      this.caipNetworkId = newCaipNetwork?.caipNetworkId
+
+      if (resetSwapState) {
+        SwapController.resetState()
+      }
+
+      if (initializeSwapState) {
+        SwapController.initializeState()
+      }
+    }
   }
 }
 

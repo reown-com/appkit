@@ -1,5 +1,63 @@
 # @reown/appkit-scaffold-ui
 
+## 1.7.3
+
+### Patch Changes
+
+- [#4168](https://github.com/reown-com/appkit/pull/4168) [`ef34442`](https://github.com/reown-com/appkit/commit/ef344422ed50ce4b57b51858d477cd9a35513240) Thanks [@magiziz](https://github.com/magiziz)! - Enabled the activity button only for eip155 namespace
+
+- [#4195](https://github.com/reown-com/appkit/pull/4195) [`318171e`](https://github.com/reown-com/appkit/commit/318171e7bcba74befb097e07d85ea83bf28982c0) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where failing to get balance would result in unhandled error thrown
+
+- [#4203](https://github.com/reown-com/appkit/pull/4203) [`cd48c5c`](https://github.com/reown-com/appkit/commit/cd48c5cc0878d4744a2021f96678b87726ad91c7) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where preferred account types would not be respected.
+  Adds support for multi-chain account types, respecting default account types format.
+
+- [#4172](https://github.com/reown-com/appkit/pull/4172) [`e73b101`](https://github.com/reown-com/appkit/commit/e73b101431197c72bd02101d767a4e0befecb47a) Thanks [@zoruka](https://github.com/zoruka)! - Add `arguments` param for `appkit.open` function and attach swap initial arguments when opening Swap view.
+
+- [#4199](https://github.com/reown-com/appkit/pull/4199) [`9864836`](https://github.com/reown-com/appkit/commit/986483689adeb9d4c173f12f0ab67559db4f3a0b) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the wallet connection would remain in a pending state after a user rejected the connection request
+
+- [#4194](https://github.com/reown-com/appkit/pull/4194) [`de6daa7`](https://github.com/reown-com/appkit/commit/de6daa7ca6f8ef950be7008dc606415dd2843055) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes XVerse wallet doesn't emitting accountChanged event on connection
+
+- [#4126](https://github.com/reown-com/appkit/pull/4126) [`116b854`](https://github.com/reown-com/appkit/commit/116b854b9d94192fad1d6a6f1b9b7e511ff118fe) Thanks [@KannuSingh](https://github.com/KannuSingh)! - Fixes swap balance recent on network and account change
+
+- [#4164](https://github.com/reown-com/appkit/pull/4164) [`c538a60`](https://github.com/reown-com/appkit/commit/c538a60c49c27ba32a8bb8362fe398811e624b47) Thanks [@magiziz](https://github.com/magiziz)! - Added required polyfills to `@reown/appkit-adapter-bitcoin` adapter package
+
+- [#4205](https://github.com/reown-com/appkit/pull/4205) [`9a07836`](https://github.com/reown-com/appkit/commit/9a0783699bdb5d8cb211eef391227acd0ac2f1b6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed issue where `safe` wagmi connector was not hidden when excluded
+
+- [#4157](https://github.com/reown-com/appkit/pull/4157) [`8b29cab`](https://github.com/reown-com/appkit/commit/8b29cab1b560351479f343e815f66e31fef184b3) Thanks [@magiziz](https://github.com/magiziz)! - Removed activity and nft tabs from account modal when using solana
+
+- [#4186](https://github.com/reown-com/appkit/pull/4186) [`36c8b88`](https://github.com/reown-com/appkit/commit/36c8b88fd354503d2a4ca659870ca68f99a71248) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where a random swap error occurred when switching networks
+
+- [#4195](https://github.com/reown-com/appkit/pull/4195) [`318171e`](https://github.com/reown-com/appkit/commit/318171e7bcba74befb097e07d85ea83bf28982c0) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where networks not supported by Blockchain API would fail to execute requests in wagmi
+
+- [#4151](https://github.com/reown-com/appkit/pull/4151) [`24f46dc`](https://github.com/reown-com/appkit/commit/24f46dcf1431f24a58e5fbd2d5e390e3e7a8cf0d) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors CAIP networks state read logics in connectors and adapters
+
+- [#4177](https://github.com/reown-com/appkit/pull/4177) [`7c37818`](https://github.com/reown-com/appkit/commit/7c37818eaefe729c13c321a2e939df2a3c3242a1) Thanks [@enesozturk](https://github.com/enesozturk)! - Maps the sats-connect address type to AppKit's Bitcoin address purpose
+
+- [#4143](https://github.com/reown-com/appkit/pull/4143) [`37b8f58`](https://github.com/reown-com/appkit/commit/37b8f581e6617678cec18578c280d4a002dba5d7) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades WalletConnect dependencies
+
+- [#4187](https://github.com/reown-com/appkit/pull/4187) [`fd380eb`](https://github.com/reown-com/appkit/commit/fd380eb099c043db8c203f943692af94e8b00f5b) Thanks [@tomiir](https://github.com/tomiir)! - Adds `protocol` parameter to Bitcoin connectors' `signMessage`
+
+- [#4197](https://github.com/reown-com/appkit/pull/4197) [`90d0f62`](https://github.com/reown-com/appkit/commit/90d0f626868258022cba7ab1ba04ac3abb759722) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where passing universalProvider parameter would cause INITIALIZE to not be fired
+
+- [#4206](https://github.com/reown-com/appkit/pull/4206) [`e6cb6d1`](https://github.com/reown-com/appkit/commit/e6cb6d17276fbf66f3285e29b3a7507cd2a8b8cb) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where recent wallets were not hidden when included in `excludeWalletIds`
+
+- [#4207](https://github.com/reown-com/appkit/pull/4207) [`55af442`](https://github.com/reown-com/appkit/commit/55af442d4d5d8ea6c8034309d759a6bb45128709) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the username from the embedded wallet info wasn’t properly synchronized
+
+- [#4152](https://github.com/reown-com/appkit/pull/4152) [`08746a4`](https://github.com/reown-com/appkit/commit/08746a45d11ae994ede74c4309722a01c68e4c6c) Thanks [@magiziz](https://github.com/magiziz)! - Updated recent wallet list to only show wallets that match the current chain namespace
+
+- [#4158](https://github.com/reown-com/appkit/pull/4158) [`12c3c3e`](https://github.com/reown-com/appkit/commit/12c3c3e15b162353666ca012cce51378dbc1aa40) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes add/remove chain adapter functionality for the Demo app use case and use CAIP networks by getCaipNetworks function in Base client
+
+- [#4110](https://github.com/reown-com/appkit/pull/4110) [`7ee1f83`](https://github.com/reown-com/appkit/commit/7ee1f836670dea6d1b7ae6e5932157a7856595f5) Thanks [@arein](https://github.com/arein)! - Disable "Try Again" button when the client is not connected
+
+- [#4195](https://github.com/reown-com/appkit/pull/4195) [`318171e`](https://github.com/reown-com/appkit/commit/318171e7bcba74befb097e07d85ea83bf28982c0) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where `initialized` would not be set if an issue occurred during account sync.
+
+- Updated dependencies [[`ef34442`](https://github.com/reown-com/appkit/commit/ef344422ed50ce4b57b51858d477cd9a35513240), [`318171e`](https://github.com/reown-com/appkit/commit/318171e7bcba74befb097e07d85ea83bf28982c0), [`cd48c5c`](https://github.com/reown-com/appkit/commit/cd48c5cc0878d4744a2021f96678b87726ad91c7), [`e73b101`](https://github.com/reown-com/appkit/commit/e73b101431197c72bd02101d767a4e0befecb47a), [`9864836`](https://github.com/reown-com/appkit/commit/986483689adeb9d4c173f12f0ab67559db4f3a0b), [`de6daa7`](https://github.com/reown-com/appkit/commit/de6daa7ca6f8ef950be7008dc606415dd2843055), [`116b854`](https://github.com/reown-com/appkit/commit/116b854b9d94192fad1d6a6f1b9b7e511ff118fe), [`c538a60`](https://github.com/reown-com/appkit/commit/c538a60c49c27ba32a8bb8362fe398811e624b47), [`9a07836`](https://github.com/reown-com/appkit/commit/9a0783699bdb5d8cb211eef391227acd0ac2f1b6), [`8b29cab`](https://github.com/reown-com/appkit/commit/8b29cab1b560351479f343e815f66e31fef184b3), [`36c8b88`](https://github.com/reown-com/appkit/commit/36c8b88fd354503d2a4ca659870ca68f99a71248), [`318171e`](https://github.com/reown-com/appkit/commit/318171e7bcba74befb097e07d85ea83bf28982c0), [`24f46dc`](https://github.com/reown-com/appkit/commit/24f46dcf1431f24a58e5fbd2d5e390e3e7a8cf0d), [`7c37818`](https://github.com/reown-com/appkit/commit/7c37818eaefe729c13c321a2e939df2a3c3242a1), [`37b8f58`](https://github.com/reown-com/appkit/commit/37b8f581e6617678cec18578c280d4a002dba5d7), [`fd380eb`](https://github.com/reown-com/appkit/commit/fd380eb099c043db8c203f943692af94e8b00f5b), [`90d0f62`](https://github.com/reown-com/appkit/commit/90d0f626868258022cba7ab1ba04ac3abb759722), [`e6cb6d1`](https://github.com/reown-com/appkit/commit/e6cb6d17276fbf66f3285e29b3a7507cd2a8b8cb), [`55af442`](https://github.com/reown-com/appkit/commit/55af442d4d5d8ea6c8034309d759a6bb45128709), [`08746a4`](https://github.com/reown-com/appkit/commit/08746a45d11ae994ede74c4309722a01c68e4c6c), [`12c3c3e`](https://github.com/reown-com/appkit/commit/12c3c3e15b162353666ca012cce51378dbc1aa40), [`7ee1f83`](https://github.com/reown-com/appkit/commit/7ee1f836670dea6d1b7ae6e5932157a7856595f5), [`318171e`](https://github.com/reown-com/appkit/commit/318171e7bcba74befb097e07d85ea83bf28982c0)]:
+  - @reown/appkit-controllers@1.7.3
+  - @reown/appkit-utils@1.7.3
+  - @reown/appkit-common@1.7.3
+  - @reown/appkit-ui@1.7.3
+  - @reown/appkit-wallet@1.7.3
+
 ## 1.7.2
 
 ### Patch Changes

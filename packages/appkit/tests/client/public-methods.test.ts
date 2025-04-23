@@ -87,6 +87,29 @@ describe('Base Public methods', () => {
     }
   })
 
+  it.each([
+    {
+      view: 'Swap',
+      viewArguments: { fromToken: 'USDC', toToken: 'ETH', amount: '100' },
+      data: { swap: { fromToken: 'USDC', toToken: 'ETH', amount: '100' } }
+    }
+  ] as const)('should open swap view with arguments', async ({ view, viewArguments, data }) => {
+    const open = vi.spyOn(ModalController, 'open')
+
+    const appkit = new AppKit(mockOptions)
+    await appkit.open({
+      view,
+      arguments: viewArguments
+    })
+
+    expect(open).toHaveBeenCalledWith(
+      expect.objectContaining({
+        view,
+        data
+      })
+    )
+  })
+
   it('should filter connectors by namespace when opening modal', async () => {
     const openSpy = vi.spyOn(ModalController, 'open')
     const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
@@ -365,7 +388,7 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     appKit.setPreferredAccountType('eoa', mainnet.chainNamespace)
 
-    expect(appKit.getPreferredAccountType()).toBe('eoa')
+    expect(appKit.getPreferredAccountType(mainnet.chainNamespace)).toBe('eoa')
   })
 
   it('should set CAIP address', () => {
@@ -440,22 +463,62 @@ describe('Base Public methods', () => {
   })
 
   it('should set connectors', () => {
-    const getConnectors = vi.spyOn(ConnectorController, 'getConnectors')
-    const setConnectors = vi.spyOn(ConnectorController, 'setConnectors')
     const existingConnectors = [
       { id: 'phantom', name: 'Phantom', chain: 'eip155', type: 'INJECTED' }
     ] as Connector[]
-    // Mock getConnectors to return existing connectors
-    vi.mocked(getConnectors).mockReturnValue(existingConnectors)
     const newConnectors = [
       { id: 'metamask', name: 'MetaMask', chain: 'eip155', type: 'INJECTED' }
     ] as Connector[]
 
-    const appKit = new AppKit(mockOptions)
-    appKit.setConnectors(newConnectors)
+    const combinedConnectors = [...existingConnectors, ...newConnectors]
 
-    // Verify that setConnectors was called with combined array
-    expect(setConnectors).toHaveBeenCalledWith([...existingConnectors, ...newConnectors])
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectors(combinedConnectors)
+
+    expect(ConnectorController.state.connectors).toEqual(combinedConnectors)
+    expect(ConnectorController.state.allConnectors).toEqual(combinedConnectors)
+  })
+
+  it('should set multichain connectors', () => {
+    // Reset connectors state
+    ConnectorController.state.allConnectors = []
+    ConnectorController.state.connectors = []
+
+    const ethConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'INJECTED',
+      chain: 'eip155'
+    } as unknown as Connector
+
+    const solConnector = {
+      id: 'mock',
+      name: 'Mock',
+      type: 'INJECTED',
+      chain: 'solana'
+    } as unknown as Connector
+
+    const appKit = new AppKit(mockOptions)
+
+    appKit.setConnectors([ethConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector])
+
+    appKit.setConnectors([solConnector])
+
+    expect(ConnectorController.state.allConnectors).toEqual([ethConnector, solConnector])
+    expect(ConnectorController.state.connectors.length).toEqual(1)
+
+    // Handle merged connectors
+    const hasMergedConnectorFromAllConnectors = ConnectorController.state.allConnectors.some(
+      c => c.connectors && c.connectors.length > 0
+    )
+    const hasMergedConnectorFromConnectors = ConnectorController.state.connectors.some(
+      c => c.connectors && c.connectors.length > 0
+    )
+
+    expect(hasMergedConnectorFromAllConnectors).toBe(false)
+    expect(hasMergedConnectorFromConnectors).toBe(true)
   })
 
   it('should add connector', () => {
@@ -1019,13 +1082,16 @@ describe('Base Public methods', () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       id: 'auth-connector'
     } as unknown as AuthConnector)
+    vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountType: 'eoa',
+      preferredAccountTypes: {
+        eip155: 'eoa'
+      },
       smartAccountDeployed: true,
       currentTab: 0,
       addressLabels: new Map([['eip155:1:0x123', 'test-label']])
@@ -1042,7 +1108,7 @@ describe('Base Public methods', () => {
       isConnected: true,
       status: 'connected',
       embeddedWalletInfo: {
-        user: { email: 'test@example.com' },
+        user: { email: 'test@example.com', username: 'test-username' },
         authProvider: 'email',
         accountType: 'eoa',
         isSmartAccountDeployed: true

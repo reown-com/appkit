@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { NavigationUtil } from '@reown/appkit-common'
+import { type ChainNamespace, NavigationUtil } from '@reown/appkit-common'
 import {
   AccountController,
+  ChainController,
   CoreHelperUtil,
   EventsController,
   RouterController
@@ -95,13 +96,15 @@ export class W3mChooseAccountNameView extends LitElement {
   }
 
   private handleContinue() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     RouterController.push('RegisterAccountName')
     EventsController.sendEvent({
       type: 'track',
       event: 'OPEN_ENS_FLOW',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
