@@ -55,6 +55,8 @@ describe('Universal Adapter', () => {
   it('should set universal provider and auth provider for each adapter', async () => {
     new AppKit(mockOptions)
 
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
     expect(mockEvmAdapter.setUniversalProvider).toHaveBeenCalled()
     expect(mockEvmAdapter.setAuthProvider).toHaveBeenCalled()
     expect(mockSolanaAdapter.setUniversalProvider).toHaveBeenCalled()

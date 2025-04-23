@@ -40,8 +40,9 @@ export const mockAuthProvider = {
   onRpcSuccess: vi.fn(),
   onSetPreferredAccount: vi.fn(),
   onSocialConnected: vi.fn(),
-  syncDappData: vi.fn(),
-  syncTheme: vi.fn()
+  syncDappData: vi.fn().mockResolvedValue({}),
+  syncTheme: vi.fn().mockResolvedValue({}),
+  setPreferredAccount: vi.fn().mockResolvedValue({})
 }
 
 export const mockUniversalProvider: Mocked<Pick<UniversalProvider, 'on' | 'off'>> = {

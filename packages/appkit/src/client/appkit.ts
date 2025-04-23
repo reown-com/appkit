@@ -356,10 +356,8 @@ export class AppKit extends AppKitBaseClient {
         }
       })
 
-      await Promise.all([
-        this.syncAuthConnector(this.authProvider, chainNamespace),
-        this.checkExistingTelegramSocialConnection(chainNamespace)
-      ])
+      await this.syncAuthConnector(this.authProvider, chainNamespace)
+      await this.checkExistingTelegramSocialConnection(chainNamespace)
     }
   }
 
