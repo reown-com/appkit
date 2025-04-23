@@ -246,7 +246,6 @@ export class W3mHeader extends LitElement {
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
-        ?disabled=${this.buffering}
         @click=${this.onGoBack.bind(this)}
       ></wui-icon-link>`
     }
