@@ -135,9 +135,10 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
   to: string
   amount: string
   eip155?: {
-    slippage: string
+    slippage: string | number
     permit?: string
   }
+  disableEstimate?: boolean
 }
 
 export interface BlockchainApiGenerateSwapCalldataResponse {

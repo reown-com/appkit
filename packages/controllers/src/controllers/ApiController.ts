@@ -34,7 +34,7 @@ const CORE_UNSUPPORTED_WALLET_IDS = [
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl, clientId: null })
+export const api = new FetchUtil({ baseUrl })
 const entries = 40
 const recommendedEntries = 4
 const imageCountToFetch = 20
