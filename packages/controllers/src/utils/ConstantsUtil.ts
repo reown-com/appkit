@@ -1,6 +1,6 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 
-import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
+import type { Features, PreferredAccountTypes, SocialProvider } from './TypeUtil.js'
 
 const SECURE_SITE =
   // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -207,7 +207,7 @@ export const ConstantsUtil = {
 
   NAMES_SUPPORTED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
   ONRAMP_SUPPORTED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
-  ACTIVITY_ENABLED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
+  ACTIVITY_ENABLED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
@@ -237,6 +237,15 @@ export const ConstantsUtil = {
       'apple',
       'facebook'
     ] as SocialProvider[],
+    connectorTypeOrder: [
+      'walletConnect',
+      'recent',
+      'injected',
+      'featured',
+      'custom',
+      'external',
+      'recommended'
+    ],
     history: true,
     analytics: true,
     allWallets: true,
@@ -252,7 +261,7 @@ export const ConstantsUtil = {
     eip155: 'smartAccount',
     polkadot: 'eoa',
     solana: 'eoa'
-  } as const satisfies DefaultAccountTypes,
+  } as const satisfies PreferredAccountTypes,
   ADAPTER_TYPES: {
     UNIVERSAL: 'universal',
     SOLANA: 'solana',

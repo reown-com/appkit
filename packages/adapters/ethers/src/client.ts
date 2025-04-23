@@ -4,11 +4,11 @@ import { InfuraProvider, JsonRpcProvider, formatEther } from 'ethers'
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
+  AccountController,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
   CoreHelperUtil,
-  OptionsController,
   type Provider,
   StorageUtil
 } from '@reown/appkit-controllers'
@@ -28,12 +28,13 @@ export interface EIP6963ProviderDetail {
 
 export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
-  public adapterType = 'ethers'
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor() {
-    super({})
-    this.namespace = CommonConstantsUtil.CHAIN.EVM
+    super({
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS,
+      namespace: CommonConstantsUtil.CHAIN.EVM
+    })
   }
 
   private async createEthersConfig(options: AppKitOptions) {
@@ -291,7 +292,7 @@ export class EthersAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.caipNetworks || [],
+        caipNetworks: this.getCaipNetworks(),
         namespace: 'eip155'
       })
     )
@@ -349,10 +350,15 @@ export class EthersAdapter extends AdapterBlueprint {
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
 
       accounts = [address]
+
+      this.emit('accountChanged', {
+        address: accounts[0] as `0x${string}`,
+        chainId: Number(chainId)
+      })
     } else {
       accounts = await selectedProvider.request({
         method: 'eth_requestAccounts'
@@ -363,7 +369,7 @@ export class EthersAdapter extends AdapterBlueprint {
       })
 
       if (requestChainId !== chainId) {
-        const caipNetwork = this.caipNetworks?.find(n => n.id === chainId)
+        const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
 
         if (!caipNetwork) {
           throw new Error('EthersAdapter:connect - could not find the caipNetwork to switch')
@@ -379,6 +385,11 @@ export class EthersAdapter extends AdapterBlueprint {
           throw new Error('EthersAdapter:connect - Switch network failed')
         }
       }
+
+      this.emit('accountChanged', {
+        address: accounts[0] as `0x${string}`,
+        chainId: Number(chainId)
+      })
 
       this.listenProviderEvents(selectedProvider)
     }
@@ -400,7 +411,7 @@ export class EthersAdapter extends AdapterBlueprint {
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
     }
   }
@@ -417,7 +428,10 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
-      const { address, accounts } = await provider.connect()
+      if (!provider.user) {
+        return { accounts: [] }
+      }
+      const { accounts, address } = provider.user
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
@@ -462,7 +476,7 @@ export class EthersAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+    const caipNetwork = this.getCaipNetworks().find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'ETH' })

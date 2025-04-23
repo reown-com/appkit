@@ -22,7 +22,15 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient,
+  type PreferredAccountTypes
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { WagmiAdapter } from '../client'
 import { LimitterUtil } from '../utils/LimitterUtil'
@@ -86,6 +94,13 @@ const mockConnect = vi.fn(() => ({
   accounts: ['0x123']
 }))
 
+const mockAuthProvider = {
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  switchNetwork: vi.fn(),
+  getUser: vi.fn()
+} as unknown as W3mFrameProvider
+
 describe('WagmiAdapter', () => {
   let adapter: WagmiAdapter
 
@@ -95,13 +110,18 @@ describe('WagmiAdapter', () => {
       networks: mockNetworks,
       projectId: mockProjectId
     })
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
   describe('WagmiAdapter - constructor and initialization', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.projectId).toBe(mockProjectId)
-      expect(adapter.adapterType).toBe('wagmi')
-      expect(adapter.namespace).toBe('eip155')
+      expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.WAGMI)
+      expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.EVM)
     })
 
     it('should set wagmi connectors', async () => {
@@ -155,6 +175,7 @@ describe('WagmiAdapter', () => {
         `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
       )
     })
+
     it('should return custom RPC if transports is provided', () => {
       const adapterWithCustomRpc = new WagmiAdapter({
         networks: mockNetworks,
@@ -165,7 +186,7 @@ describe('WagmiAdapter', () => {
       })
 
       expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
-        `https://eth.merkle.io`
+        'https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=test-project-id'
       )
     })
 
@@ -518,6 +539,27 @@ describe('WagmiAdapter', () => {
           chainId: 1
         })
       )
+    })
+
+    it('should respect preferred account type when switching network with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
+          eip155: 'smartAccount'
+        } as PreferredAccountTypes
+      })
+
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetworks[0],
+        provider: mockAuthProvider,
+        providerType: 'AUTH'
+      })
+
+      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
+        chainId: 'eip155:1',
+        preferredAccountType: 'smartAccount'
+      })
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
     })
   })
 

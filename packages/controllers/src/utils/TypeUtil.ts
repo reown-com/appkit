@@ -303,6 +303,7 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
     slippage: string
     permit?: string
   }
+  disableEstimate?: boolean
 }
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
@@ -467,6 +468,16 @@ export type Event =
       event: 'DISCONNECT_ERROR'
       properties?: {
         message: string
+      }
+    }
+  | {
+      type: 'error'
+      event: 'INTERNAL_SDK_ERROR'
+      properties: {
+        errorType?: string
+        errorMessage?: string
+        stackTrace?: string
+        uncaught?: boolean
       }
     }
   | {
@@ -964,7 +975,7 @@ export type SendTransactionArgs =
       data: `0x${string}`
       value: bigint
       gas?: bigint
-      gasPrice: bigint
+      gasPrice?: bigint
       address: `0x${string}`
     }
   | { chainNamespace: 'solana'; to: string; value: number }
@@ -1052,6 +1063,15 @@ export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
 
 export type ConnectMethod = 'email' | 'social' | 'wallet'
 
+export type ConnectorTypeOrder =
+  | 'walletConnect'
+  | 'recent'
+  | 'injected'
+  | 'featured'
+  | 'custom'
+  | 'external'
+  | 'recommended'
+
 export type Features = {
   /**
    * @description Enable or disable the swaps feature. Enabled by default.
@@ -1116,6 +1136,12 @@ export type Features = {
    */
   legalCheckbox?: boolean
   /**
+   * @description The order of the connectors
+   * @default ['walletConnect', 'recent', 'injected', 'featured', 'custom', 'external', 'recommended']
+   * @type {('walletConnect' | 'recent' | 'injected' | 'featured' | 'custom' | 'external' | 'recommended')[]}
+   */
+  connectorTypeOrder?: ConnectorTypeOrder[]
+  /**
    * @description The order of the connect methods. This is experimental and subject to change.
    * @default ['email', 'social', 'wallet']
    * @type {('email' | 'social' | 'wallet')[]}
@@ -1148,7 +1174,7 @@ export type UseAppKitAccountReturn = {
   embeddedWalletInfo?: {
     user: AccountControllerState['user']
     authProvider: AccountControllerState['socialProvider'] | 'email'
-    accountType: W3mFrameTypes.AccountType | undefined
+    accountType: PreferredAccountTypes[ChainNamespace] | undefined
     isSmartAccountDeployed: boolean
   }
   status: AccountControllerState['status']
@@ -1169,4 +1195,6 @@ export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 're
  * @description The default account types for each namespace.
  * @default
  */
-export type DefaultAccountTypes = { [Key in keyof NamespaceTypeMap]: NamespaceTypeMap[Key] }
+export type PreferredAccountTypes = {
+  [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key]
+}

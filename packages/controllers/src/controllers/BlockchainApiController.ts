@@ -198,7 +198,8 @@ export const BlockchainApiController = {
     amount,
     from,
     to,
-    userAddress
+    userAddress,
+    disableEstimate
   }: BlockchainApiGenerateSwapCalldataRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
@@ -210,11 +211,12 @@ export const BlockchainApiController = {
     return state.client.generateSwapCalldata({
       amount,
       eip155: {
-        slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE.toString()
+        slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
       },
       from,
       to,
-      userAddress
+      userAddress,
+      disableEstimate
     })
   },
 

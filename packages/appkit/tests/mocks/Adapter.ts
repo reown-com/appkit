@@ -77,10 +77,12 @@ export const mockEvmAdapter = {
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'ETH' }),
   getProfile: vi.fn().mockResolvedValue({}),
   getWalletConnectProvider: vi.fn().mockResolvedValue(mockProvider),
+  estimateGas: vi.fn().mockResolvedValue({ gas: 21000n }),
   on: emitter.on.bind(emitter),
   off: emitter.off.bind(emitter),
   emit: emitter.emit.bind(emitter),
-  removeAllEventListeners: vi.fn()
+  removeAllEventListeners: vi.fn(),
+  connect: vi.fn().mockResolvedValue({ address: '0x123' })
 } as unknown as AdapterBlueprint
 
 export const mockSolanaAdapter = {
@@ -98,6 +100,7 @@ export const mockSolanaAdapter = {
   }),
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'SOL' }),
   getProfile: vi.fn().mockResolvedValue({}),
+  estimateGas: vi.fn().mockResolvedValue({ gas: 0n }),
   on: solanaEmitter.on.bind(solanaEmitter),
   off: solanaEmitter.off.bind(solanaEmitter),
   emit: solanaEmitter.emit.bind(solanaEmitter),

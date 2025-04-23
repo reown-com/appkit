@@ -20,11 +20,12 @@ const emailSiweTest = timingFixture.extend<{ library: string }>({
 
 emailSiweTest.describe.configure({ mode: 'serial' })
 
-emailSiweTest.beforeAll(async ({ browser, library }) => {
+emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
   emailSiweTest.setTimeout(300000)
+
+  const start = new Date()
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'siwe')
   validator = new ModalWalletValidator(browserPage)
 
@@ -39,12 +40,16 @@ emailSiweTest.beforeAll(async ({ browser, library }) => {
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
   await page.promptSiwe()
   await page.approveSign()
 
   await validator.expectConnected()
   await validator.expectAuthenticated()
+  timingRecords.push({
+    item: 'beforeAll',
+    timeMs: new Date().getTime() - start.getTime()
+  })
 })
 
 emailSiweTest.afterAll(async () => {
@@ -92,6 +97,8 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
+  await page.page.waitForTimeout(1000)
 
   await page.sign(namespace)
   await page.approveSign()
@@ -102,6 +109,8 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
+  await page.page.waitForTimeout(1000)
 
   await page.sign(namespace)
   await page.approveSign()

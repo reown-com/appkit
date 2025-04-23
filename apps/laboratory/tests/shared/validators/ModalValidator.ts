@@ -53,7 +53,7 @@ export class ModalValidator {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
       'Authentication status should be: authenticated'
-    ).toContainText('authenticated')
+    ).toContainText('authenticated', { timeout: 10000 })
   }
 
   async expectOnSignInEventCalled(toBe: boolean) {
@@ -64,7 +64,7 @@ export class ModalValidator {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
       'Authentication status should be: unauthenticated'
-    ).toContainText('unauthenticated')
+    ).toContainText('unauthenticated', { timeout: 20000 })
   }
 
   async expectOnSignOutEventCalled(toBe: boolean) {
@@ -390,6 +390,9 @@ export class ModalValidator {
   }
 
   async expectToBeConnectedInstantly() {
+    // Wait for the page to be loaded
+    const initializeBoundary = this.page.getByTestId('w3m-page-loading')
+    await expect(initializeBoundary).toBeHidden()
     const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: 1000

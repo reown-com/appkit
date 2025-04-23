@@ -38,6 +38,13 @@ export const ConstantsUtil = {
     polkadot: 'Polkadot',
     bip122: 'Bitcoin'
   } as const satisfies Record<ChainNamespace, string>,
+  ADAPTER_TYPES: {
+    BITCOIN: 'bitcoin',
+    SOLANA: 'solana',
+    WAGMI: 'wagmi',
+    ETHERS: 'ethers',
+    ETHERS5: 'ethers5'
+  } as const satisfies Record<string, string>,
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
     '0xdac17f958d2ee523a2206206994597c13d831ec7',

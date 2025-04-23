@@ -2,22 +2,20 @@ import { proxy, ref } from 'valtio/vanilla'
 
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import type { Balance } from '@reown/appkit-common'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type {
   AccountType,
   AccountTypeMap,
   ConnectedWalletInfo,
+  PreferredAccountTypes,
   SocialProvider,
   User
 } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { SnackController } from './SnackController.js'
-import { SwapController } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -38,7 +36,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   shouldUpdateToAddress?: string
   connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountType?: W3mFrameTypes.AccountType
+  preferredAccountTypes?: PreferredAccountTypes
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
@@ -194,10 +192,21 @@ export const AccountController = {
   },
 
   setPreferredAccountType(
-    preferredAccountType: AccountControllerState['preferredAccountType'],
+    preferredAccountType: PreferredAccountTypes[ChainNamespace],
     chain: ChainNamespace
   ) {
-    ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
+    ChainController.setAccountProp(
+      'preferredAccountTypes',
+      {
+        ...state.preferredAccountTypes,
+        [chain]: preferredAccountType
+      },
+      chain
+    )
+  },
+
+  setPreferredAccountTypes(preferredAccountTypes: PreferredAccountTypes) {
+    state.preferredAccountTypes = preferredAccountTypes
   },
 
   setSocialProvider(
@@ -255,7 +264,6 @@ export const AccountController = {
         )
 
         this.setTokenBalance(filteredBalances, chain)
-        SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
         state.lastRetry = undefined
         state.balanceLoading = false
 

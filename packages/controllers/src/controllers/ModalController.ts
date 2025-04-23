@@ -28,6 +28,7 @@ export interface ModalControllerArguments {
   open: {
     view?: RouterControllerState['view']
     namespace?: ChainNamespace
+    data?: RouterControllerState['data']
   }
 }
 
@@ -86,7 +87,7 @@ export const ModalController = {
         RouterController.reset('ConnectingWalletConnectBasic')
       }
     } else if (options?.view) {
-      RouterController.reset(options.view)
+      RouterController.reset(options.view, options.data)
     } else if (caipAddress) {
       RouterController.reset('Account')
     } else {
@@ -102,32 +103,39 @@ export const ModalController = {
     })
   },
 
-  close() {
-    const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const isConnected = Boolean(ChainController.state.activeCaipAddress)
+  /**
+   * To close the modal on the ApproveTransaction view, call close() with force=true:
+   * ModalController.close(true)
+   * this prevents accidental closing during transaction approval from secure sites
+   * @param force - If true, the modal will close regardless of the current view
+   */
+  close(force = false) {
+    if (force || RouterController.state.view !== 'ApproveTransaction') {
+      const isEmbeddedEnabled = OptionsController.state.enableEmbedded
+      const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
-    // Only send the event if the modal is open and is about to be closed
-    if (state.open) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'MODAL_CLOSE',
-        properties: { connected: isConnected }
-      })
-    }
-
-    state.open = false
-    ModalController.clearLoading()
-
-    if (isEmbeddedEnabled) {
-      if (isConnected) {
-        RouterController.replace('Account')
-      } else {
-        RouterController.push('Connect')
+      // Only send the event if the modal is open and is about to be closed
+      if (state.open) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'MODAL_CLOSE',
+          properties: { connected: isConnected }
+        })
       }
-    } else {
-      PublicStateController.set({ open: false })
-    }
 
+      state.open = false
+      ModalController.clearLoading()
+
+      if (isEmbeddedEnabled) {
+        if (isConnected) {
+          RouterController.replace('Account')
+        } else {
+          RouterController.push('Connect')
+        }
+      } else {
+        PublicStateController.set({ open: false })
+      }
+    }
     ConnectionController.resetUri()
   },
 

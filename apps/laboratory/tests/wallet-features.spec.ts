@@ -44,7 +44,7 @@ walletFeaturesTest.beforeAll(async ({ browser, browserName, library }) => {
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
 })
@@ -66,6 +66,17 @@ walletFeaturesTest('it should initialize swap as expected', async () => {
     .fill('USDC')
   await page.page.getByTestId('swap-select-token-item-USDC').click()
   await expect(page.page.getByTestId('swap-action-button')).toHaveText('Insufficient balance')
+  await page.closeModal()
+})
+
+walletFeaturesTest('it should show swap view with preselected tokens', async () => {
+  await page.page.getByTestId('open-swap-with-arguments-hook-button').click()
+
+  await expect(page.page.getByTestId('swap-input-token-sourceToken')).toHaveText('USDC')
+  await expect(page.page.getByTestId('swap-input-token-toToken')).toHaveText('ETH')
+  await expect(page.page.getByTestId('swap-input-sourceToken')).toHaveValue('321.123')
+  await expect(page.page.getByTestId('swap-action-button')).toHaveText('Insufficient balance')
+
   await page.closeModal()
 })
 
