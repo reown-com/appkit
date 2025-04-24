@@ -38,9 +38,7 @@ export class ModalValidator {
       // eslint-disable-next-line no-await-in-loop
       await this.page.waitForTimeout(interval)
     }
-    throw new Error(
-      `Element with data-testid="${testId}" was not found within ${timeout}ms`
-    )
+    throw new Error(`Element with data-testid="${testId}" was not found within ${timeout}ms`)
   }
 
   async expectConnected() {
