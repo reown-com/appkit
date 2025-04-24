@@ -4,14 +4,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
-import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
@@ -21,7 +19,7 @@ const wagmiAdapter = new WagmiAdapter({
   projectId: ConstantsUtil.ProjectId
 })
 
-const modal = createAppKit({
+const config = {
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
@@ -29,20 +27,18 @@ const modal = createAppKit({
     analytics: true
   },
   customWallets: ConstantsUtil.CustomWallets
-})
-
-const config = wagmiAdapter.wagmiConfig
-ThemeStore.setModal(modal)
+}
+const wagmiConfig = wagmiAdapter.wagmiConfig
 
 export default function Wagmi() {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <InitializeBoundary>
+        <AppKitProvider config={config}>
           <AppKitButtons />
           <AppKitInfo />
-          <WagmiTests config={config} />
-        </InitializeBoundary>
+          <WagmiTests config={wagmiConfig} />
+        </AppKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

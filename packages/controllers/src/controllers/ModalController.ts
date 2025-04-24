@@ -56,6 +56,8 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
+    // eslint-disable-next-line no-console
+    console.log('>> open', JSON.stringify(new Error().stack, null, 2))
     const isConnected = AccountController.state.status === 'connected'
 
     if (ConnectionController.state.wcBasic) {
@@ -108,36 +110,41 @@ export const ModalController = {
     console.log('@modalController @opening', JSON.stringify(new Error().stack, null, 2))
   },
 
-  close() {
+  /**
+   * To close the modal on the ApproveTransaction view, call close() with force=true:
+   * ModalController.close(true)
+   * this prevents accidental closing during transaction approval from secure sites
+   * @param force - If true, the modal will close regardless of the current view
+   */
+  close(force = false) {
     // eslint-disable-next-line no-console
-    console.trace('@modalController @closing')
-    // eslint-disable-next-line no-console
-    console.log('@modalController @closing', JSON.stringify(new Error().stack, null, 2))
-    const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const isConnected = Boolean(ChainController.state.activeCaipAddress)
+    console.log('>> close', JSON.stringify(new Error().stack, null, 2))
+    if (force || RouterController.state.view !== 'ApproveTransaction') {
+      const isEmbeddedEnabled = OptionsController.state.enableEmbedded
+      const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
-    // Only send the event if the modal is open and is about to be closed
-    if (state.open) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'MODAL_CLOSE',
-        properties: { connected: isConnected }
-      })
-    }
-
-    state.open = false
-    ModalController.clearLoading()
-
-    if (isEmbeddedEnabled) {
-      if (isConnected) {
-        RouterController.replace('Account')
-      } else {
-        RouterController.push('Connect')
+      // Only send the event if the modal is open and is about to be closed
+      if (state.open) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'MODAL_CLOSE',
+          properties: { connected: isConnected }
+        })
       }
-    } else {
-      PublicStateController.set({ open: false })
-    }
 
+      state.open = false
+      ModalController.clearLoading()
+
+      if (isEmbeddedEnabled) {
+        if (isConnected) {
+          RouterController.replace('Account')
+        } else {
+          RouterController.push('Connect')
+        }
+      } else {
+        PublicStateController.set({ open: false })
+      }
+    }
     ConnectionController.resetUri()
   },
 

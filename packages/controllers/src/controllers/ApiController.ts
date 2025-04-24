@@ -49,6 +49,7 @@ export interface ApiControllerState {
   recommended: WcWallet[]
   allRecommended: WcWallet[]
   wallets: WcWallet[]
+  filteredWallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
   excludedWallets: { rdns?: string | null; name: string }[]
@@ -74,6 +75,7 @@ const state = proxy<ApiControllerState>({
   recommended: [],
   allRecommended: [],
   wallets: [],
+  filteredWallets: [],
   search: [],
   isAnalyticsEnabled: false,
   excludedWallets: [],
@@ -360,6 +362,29 @@ export const ApiController = {
     }
   },
 
+  filterByNamespaces(namespaces: ChainNamespace[] | undefined) {
+    if (!namespaces?.length) {
+      state.featured = state.allFeatured
+      state.recommended = state.allRecommended
+
+      return
+    }
+
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
+    state.featured = state.allFeatured.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.recommended = state.allRecommended.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.filteredWallets = state.wallets.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+  },
+
   setFilterByNamespace(namespace: ChainNamespace | undefined) {
     if (!namespace) {
       state.featured = state.allFeatured
@@ -375,6 +400,10 @@ export const ApiController = {
     )
 
     state.recommended = state.allRecommended.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.filteredWallets = state.wallets.filter(wallet =>
       wallet.chains?.some(chain => caipNetworkIds.includes(chain))
     )
   }

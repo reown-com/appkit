@@ -64,8 +64,6 @@ export class W3mAccountSettingsView extends LitElement {
             this.profileImage = val.profileImage
             this.profileName = val.profileName
             this.preferredAccountTypes = val.preferredAccountTypes
-          } else {
-            ModalController.close()
           }
         }),
         AccountController.subscribeKey(
