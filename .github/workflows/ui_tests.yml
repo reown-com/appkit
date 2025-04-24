@@ -332,7 +332,7 @@ jobs:
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
 
-# Add this new job AFTER the ui_tests job
+  # Add this new job AFTER the ui_tests job
   summarize_test_logs:
     name: Summarize Test Logs
     needs: ui_tests # Run after all ui_tests shards are done
