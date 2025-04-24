@@ -303,10 +303,12 @@ jobs:
         run: |
           CMD="${{ inputs.command }}"
           SHARD="--shard=${{ matrix.shard }}/${{ matrix.shardTotal }}"
-          if [[ "$CMD" =~ ^playwright\ test ]]; then
-            # Inject the shard argument right after "playwright test"
+
+          # Only inject shard if the command contains "playwright test"
+          if [[ "$CMD" == *"playwright test"* ]]; then
             CMD=$(echo "$CMD" | sed "s|playwright test|playwright test $SHARD|")
           fi
+
           pnpm $CMD
 
       - name: Run canary with minimal environment config
