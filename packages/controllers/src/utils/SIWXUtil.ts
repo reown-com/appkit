@@ -108,7 +108,7 @@ export const SIWXUtil = {
         signature: signature as `0x${string}`
       })
 
-      ModalController.close()
+      // ModalController.close()
 
       EventsController.sendEvent({
         type: 'track',
