@@ -296,7 +296,18 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: pnpm --shard=${{ matrix.shard }}/${{ matrix.shardTotal }} ${{ inputs.command }}
+        # Insert the shard argument immediately after "playwright test"
+        # This ensures that sharding applies even when additional args like "--grep" are passed later.
+        # We use `sed` to inject the --shard=X/Y portion right after the test command.
+        # This is important because passing --shard after "--" would make it ignored by Playwright.
+        run: |
+          CMD="${{ inputs.command }}"
+          SHARD="--shard=${{ matrix.shard }}/${{ matrix.shardTotal }}"
+          if [[ "$CMD" =~ ^playwright\ test ]]; then
+            # Inject the shard argument right after "playwright test"
+            CMD=$(echo "$CMD" | sed "s|playwright test|playwright test $SHARD|")
+          fi
+          pnpm $CMD
 
       - name: Run canary with minimal environment config
         if: matrix.shard == 1 # Run canary only on the first shard
