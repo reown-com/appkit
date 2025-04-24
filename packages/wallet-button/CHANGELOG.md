@@ -1,5 +1,27 @@
 # @reown/appkit-wallet-button
 
+## 1.7.4
+
+### Patch Changes
+
+- [#4220](https://github.com/reown-com/appkit/pull/4220) [`f2f1b72`](https://github.com/reown-com/appkit/commit/f2f1b72387a7658abd6e8c3061c51e9811e8ce69) Thanks [@zoruka](https://github.com/zoruka)! - Update `CloudAuthSIWX` adding `data` allowing Cloud Auth to parse data from Solana and allowing user data to be displayed in Cloud dashboard.
+
+- [#4224](https://github.com/reown-com/appkit/pull/4224) [`f6bddff`](https://github.com/reown-com/appkit/commit/f6bddffe8cea2d6696a6dd98ec8a57c17c6a02ac) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes synchronizing for all account types after account change
+
+- [#4228](https://github.com/reown-com/appkit/pull/4228) [`bc0f260`](https://github.com/reown-com/appkit/commit/bc0f260beac036571c6e820953e69d14e087048b) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes network enable/disable logics on Demo app
+
+- [#4248](https://github.com/reown-com/appkit/pull/4248) [`4aeb703`](https://github.com/reown-com/appkit/commit/4aeb703fc5bc44cfc6cb34b43758eb3fbb8ab005) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where sending an asset from a non-embedded wallet resulted in blank send view'
+
+- [#4242](https://github.com/reown-com/appkit/pull/4242) [`a775335`](https://github.com/reown-com/appkit/commit/a775335b37e2080b3a181e57ccafda3dd196b836) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue causing a broken modal layout when using the embedded wallet
+
+- [#4226](https://github.com/reown-com/appkit/pull/4226) [`fae99c0`](https://github.com/reown-com/appkit/commit/fae99c0c160d62ca4e87716dedc91de2c4fdbd4e) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where custom connectors weren't showing on mobile
+
+- Updated dependencies [[`f2f1b72`](https://github.com/reown-com/appkit/commit/f2f1b72387a7658abd6e8c3061c51e9811e8ce69), [`f6bddff`](https://github.com/reown-com/appkit/commit/f6bddffe8cea2d6696a6dd98ec8a57c17c6a02ac), [`bc0f260`](https://github.com/reown-com/appkit/commit/bc0f260beac036571c6e820953e69d14e087048b), [`4aeb703`](https://github.com/reown-com/appkit/commit/4aeb703fc5bc44cfc6cb34b43758eb3fbb8ab005), [`a775335`](https://github.com/reown-com/appkit/commit/a775335b37e2080b3a181e57ccafda3dd196b836), [`fae99c0`](https://github.com/reown-com/appkit/commit/fae99c0c160d62ca4e87716dedc91de2c4fdbd4e)]:
+  - @reown/appkit-utils@1.7.4
+  - @reown/appkit-common@1.7.4
+  - @reown/appkit-controllers@1.7.4
+  - @reown/appkit-ui@1.7.4
+
 ## 1.7.3
 
 ### Patch Changes
