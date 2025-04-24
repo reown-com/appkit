@@ -292,7 +292,20 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+        run: |
+          # Use pipefail to ensure the command fails if pnpm fails, even with tee
+          set -o pipefail
+          # Run the command, tee output to a file, redirect stderr to stdout
+          pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }} 2>&1 | tee playwright_shard_${{ matrix.shard }}.log
+
+      # Add this step to upload the log file
+      - name: Upload Playwright Log Shard
+        if: always() # Upload logs even if the test step failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-logs-${{ matrix.shard }}
+          path: ./apps/laboratory/playwright_shard_${{ matrix.shard }}.log
+          retention-days: 1 # Keep logs for 1 day
 
       - name: Run canary with minimal environment config
         if: matrix.shard == 1 # Run canary only on the first shard
@@ -318,3 +331,42 @@ jobs:
           echo "Checking cache directory just before post-job phase:"
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
+
+# Add this new job AFTER the ui_tests job
+  summarize_test_logs:
+    name: Summarize Test Logs
+    needs: ui_tests # Run after all ui_tests shards are done
+    runs-on: ubuntu-latest
+    if: always() # Run even if ui_tests job fails partially or completely
+
+    steps:
+      - name: Download all log artifacts
+        uses: actions/download-artifact@v4
+        with:
+          # Download all artifacts starting with 'playwright-logs-'
+          pattern: playwright-logs-*
+          path: all-playwright-logs # Download into this directory
+          merge-multiple: true # Merge artifacts with same name (not strictly needed here but good practice)
+
+      - name: Analyze Logs for Magic Link Errors
+        id: analyze
+        run: |
+          echo "Analyzing logs in $(pwd)/all-playwright-logs"
+          # Count lines containing both 'magic' (case-insensitive) and 'Status: 5'
+          # Use -h to suppress filenames from grep output
+          COUNT=$(grep -ih 'magic' all-playwright-logs/playwright_shard_*.log | grep -c 'Status: 5' || echo 0)
+
+          echo "Found $COUNT occurrences of 'magic' and 'Status: 5xx' errors."
+          echo "magic_error_count=$COUNT" >> $GITHUB_OUTPUT
+
+          # Optional: Output the first 20 matching lines for context
+          echo "--- First 20 matching lines ---"
+          grep -ih 'magic' all-playwright-logs/playwright_shard_*.log | grep 'Status: 5' | head -n 20 || echo "No matching lines found."
+          echo "-----------------------------"
+
+      - name: Output Summary
+        run: |
+          echo "## Magic Link 5xx Error Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Total occurrences found across all shards: ${{ steps.analyze.outputs.magic_error_count }}" >> $GITHUB_STEP_SUMMARY
+          # Use a ::notice annotation for better visibility in the main checks view
+          echo "::notice title=Magic Link 5xx Summary::Found ${{ steps.analyze.outputs.magic_error_count }} occurrences."
