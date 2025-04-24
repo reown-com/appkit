@@ -7,7 +7,6 @@ import {
   AssetController,
   AssetUtil,
   ChainController,
-  ConnectionController,
   ConnectorController,
   EventsController,
   ModalController,
@@ -113,8 +112,6 @@ export class W3mHeader extends LitElement {
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
-  @state() private buffering = false
-
   @state() private showBack = false
 
   @state() private prevHistoryLength = 1
@@ -139,7 +136,6 @@ export class W3mHeader extends LitElement {
         this.onViewChange()
         this.onHistoryChange()
       }),
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
       ChainController.subscribeKey('activeCaipNetwork', val => {
         this.network = val
         this.networkImage = AssetUtil.getNetworkImage(this.network)
@@ -198,7 +194,6 @@ export class W3mHeader extends LitElement {
   private closeButtonTemplate() {
     return html`
       <wui-icon-link
-        ?disabled=${this.buffering}
         icon="close"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
@@ -251,7 +246,6 @@ export class W3mHeader extends LitElement {
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
-        ?disabled=${this.buffering}
         @click=${this.onGoBack.bind(this)}
       ></wui-icon-link>`
     }
