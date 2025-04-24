@@ -63,6 +63,8 @@ jobs:
   build_lab_and_extension:
     name: 'Build Lab and Extension'
     runs-on: ubuntu-latest
+    outputs:
+      matrix_config: ${{ steps.set_matrix.outputs.matrix_config }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -153,6 +155,20 @@ jobs:
           path: node_modules
           retention-days: 1
 
+      # Add step to set matrix configuration based on input
+      - name: Set Matrix Configuration
+        id: set_matrix
+        run: |
+          if [[ "${{ inputs.secure-site-url }}" != "https://secure.walletconnect.org/sdk" ]]; then
+            echo "Matrix: Using 10 shards because secure-site-url ('${{ inputs.secure-site-url }}') is not the default."
+            # Use JSON format compatible with fromJson for strategy.matrix
+            echo 'matrix_config={"shard":[1,2,3,4,5,6,7,8,9,10], "shardTotal":[10]}' >> $GITHUB_OUTPUT
+          else
+            echo "Matrix: Using 1 shard because secure-site-url ('${{ inputs.secure-site-url }}') is the default."
+            # Use JSON format compatible with fromJson for strategy.matrix
+            echo 'matrix_config={"shard":[1], "shardTotal":[1]}' >> $GITHUB_OUTPUT
+          fi
+
   ui_tests:
     if: inputs.build-and-cache-only == false
     name: 'Playwright Tests'
@@ -160,9 +176,8 @@ jobs:
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
     strategy:
       fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        shardTotal: [10]
+      # Update matrix to use fromJson with the output from the build job
+      matrix: ${{ fromJson(needs.build_lab_and_extension.outputs.matrix_config) }}
     timeout-minutes: 15
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
@@ -292,7 +307,17 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+        run: |
+          COMMAND="pnpm ${{ inputs.command }}"
+          # Append shard argument only if using the default secure site URL
+          if [[ "${{ inputs.secure-site-url }}" == "https://secure.walletconnect.org/sdk" ]]; then
+            echo "Using default secure site URL, running with shards: --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}"
+            COMMAND="$COMMAND --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}"
+          else
+            echo "Using custom secure site URL ('${{ inputs.secure-site-url }}'), running without shards."
+          fi
+          echo "Executing command: $COMMAND"
+          $COMMAND
 
       - name: Run canary with minimal environment config
         if: matrix.shard == 1 # Run canary only on the first shard
