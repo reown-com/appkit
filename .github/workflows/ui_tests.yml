@@ -43,6 +43,11 @@ on:
         required: false
         default: false
         type: boolean
+      matrix_config:
+        description: 'The matrix configuration for sharding as a JSON string.'
+        required: false
+        default: '{"shard":[1,2,3,4,5,6,7,8,9,10], "shardTotal":[10]}'
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -63,8 +68,6 @@ jobs:
   build_lab_and_extension:
     name: 'Build Lab and Extension'
     runs-on: ubuntu-latest
-    outputs:
-      matrix_config: ${{ steps.set_matrix.outputs.matrix_config }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -155,20 +158,6 @@ jobs:
           path: node_modules
           retention-days: 1
 
-      # Add step to set matrix configuration based on input
-      - name: Set Matrix Configuration
-        id: set_matrix
-        run: |
-          if [[ "${{ inputs.secure-site-url }}" != "https://secure.walletconnect.org/sdk" ]]; then
-            echo "Matrix: Using 10 shards because secure-site-url ('${{ inputs.secure-site-url }}') is not the default."
-            # Use JSON format compatible with fromJson for strategy.matrix
-            echo 'matrix_config={"shard":[1,2,3,4,5,6,7,8,9,10], "shardTotal":[10]}' >> $GITHUB_OUTPUT
-          else
-            echo "Matrix: Using 1 shard because secure-site-url ('${{ inputs.secure-site-url }}') is the default."
-            # Use JSON format compatible with fromJson for strategy.matrix
-            echo 'matrix_config={"shard":[1], "shardTotal":[1]}' >> $GITHUB_OUTPUT
-          fi
-
   ui_tests:
     if: inputs.build-and-cache-only == false
     name: 'Playwright Tests'
@@ -176,8 +165,8 @@ jobs:
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
     strategy:
       fail-fast: false
-      # Update matrix to use fromJson with the output from the build job
-      matrix: ${{ fromJson(needs.build_lab_and_extension.outputs.matrix_config) }}
+      # Update matrix to use fromJson with the new input
+      matrix: ${{ fromJson(inputs.matrix_config) }}
     timeout-minutes: 15
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
