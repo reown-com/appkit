@@ -46,7 +46,7 @@ on:
       matrix_config:
         description: 'The matrix configuration for sharding as a JSON string.'
         required: false
-        default: '{"shard":[1,2,3,4,5,6,7,8,9,10], "shardTotal":[10]}'
+        default: '{"shard":[1], "shardTotal":[1]}'
         type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
@@ -296,17 +296,7 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: |
-          COMMAND="pnpm ${{ inputs.command }}"
-          # Append shard argument only if using the default secure site URL
-          if [[ "${{ inputs.secure-site-url }}" == "https://secure.walletconnect.org/sdk" ]]; then
-            echo "Using default secure site URL, running with shards: --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}"
-            COMMAND="$COMMAND --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}"
-          else
-            echo "Using custom secure site URL ('${{ inputs.secure-site-url }}'), running without shards."
-          fi
-          echo "Executing command: $COMMAND"
-          $COMMAND
+        run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
       - name: Run canary with minimal environment config
         if: matrix.shard == 1 # Run canary only on the first shard
