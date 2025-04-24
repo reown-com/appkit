@@ -1,7 +1,13 @@
-import { openai } from '@ai-sdk/openai'
+import { createOpenAI } from '@ai-sdk/openai'
 import { experimental_createMCPClient as createMCPClient, streamText } from 'ai'
 
 export const maxDuration = 30
+
+const openai = createOpenAI({
+  // custom settings, e.g.
+  compatibility: 'strict', // strict mode, enable when using the OpenAI API
+  apiKey: process.env.OPENAI_API_KEY
+})
 
 export async function POST(req: Request) {
   const { messages, address } = await req.json()

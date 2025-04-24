@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'node:http'
 
-import { getTransport } from '@/server/transportStore'
+import { getTransport } from '@reown/mcp-server'
 
 // Prevents this route's response from being cached on Vercel
 export const dynamic = 'force-dynamic'

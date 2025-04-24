@@ -2,8 +2,7 @@ import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js'
 import { EventEmitter } from 'node:events'
 import { ServerResponse } from 'node:http'
 
-import { server } from '@/server'
-import { removeTransport, storeTransport } from '@/server/transportStore'
+import { removeTransport, server, storeTransport } from '@reown/mcp-server'
 
 // Prevents this route's response from being cached on Vercel
 export const dynamic = 'force-dynamic'

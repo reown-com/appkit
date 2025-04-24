@@ -1,8 +1,7 @@
 import Lottie from 'lottie-react'
 import Link from 'next/link'
 
-import { useAppKitAccount } from '@reown/appkit-controllers/react'
-import { useAppKit } from '@reown/appkit/react'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 
 import { lottieAnimationData } from '@/app/constants/lottie'
 import { getTruncateString } from '@/lib/utils'
@@ -14,7 +13,7 @@ export default function DisconnectedSection() {
   return (
     <section className="w-[90%] px-6 fixed z-10 h-screen left-1/2 -translate-x-1/2 top-0 flex flex-col items-center justify-center">
       <div className="z-10 absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 pt-5 pr-5 pl-5 w-96">
-        <Lottie animationData={lottieAnimationData} loop={true} />
+        {/* <Lottie animationData={lottieAnimationData} loop={true} /> */}
       </div>
 
       <div className="marquee-header-titles backdrop-blur-sm bg-fg-primary/50 pt-48 lg:pt-24 relative z-20 flex flex-col gap-2 items-center mb-0 md:mb-12">
