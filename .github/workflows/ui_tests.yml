@@ -292,7 +292,7 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+        run: pnpm --shard=${{ matrix.shard }}/${{ matrix.shardTotal }} ${{ inputs.command }}
 
       - name: Run canary with minimal environment config
         if: matrix.shard == 1 # Run canary only on the first shard
