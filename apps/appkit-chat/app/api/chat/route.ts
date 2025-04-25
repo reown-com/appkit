@@ -1,11 +1,10 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { experimental_createMCPClient as createMCPClient, streamText } from 'ai'
+import { z } from 'zod'
 
 export const maxDuration = 30
 
 const openai = createOpenAI({
-  // custom settings, e.g.
-  compatibility: 'strict', // strict mode, enable when using the OpenAI API
   apiKey: process.env.OPENAI_API_KEY
 })
 
@@ -15,9 +14,11 @@ export async function POST(req: Request) {
   const mcpClient = await createMCPClient({
     transport: {
       type: 'sse',
-      url: process.env.MCP_URL!
+      url: 'http://localhost:3004/sse/'
     }
   })
+
+  console.log('>>> MCP Client created')
 
   const result = streamText({
     model: openai('gpt-4o-mini'),
@@ -27,8 +28,28 @@ export async function POST(req: Request) {
     If necessary, ask some data to call the tools.
     When you return some set of data, return in markdown table format.
     `,
-    tools: await mcpClient.tools(), // use MCP tools
-    messages
+    tools: {
+      getWeather: {
+        description: 'Get the weather for a location',
+        parameters: z.object({
+          city: z.string().describe('The city to get the weather for'),
+          unit: z.enum(['C', 'F']).describe('The unit to display the temperature in')
+        }),
+        execute: async ({ city, unit }) => {
+          const weather = {
+            value: 24,
+            description: 'Sunny'
+          }
+
+          return `It is currently ${weather.value}°${unit} and ${weather.description} in ${city}!`
+        }
+      },
+      ...(await mcpClient.tools())
+    },
+    messages,
+    onFinish: async () => {
+      await mcpClient.close()
+    }
   })
 
   return result.toDataStreamResponse()
