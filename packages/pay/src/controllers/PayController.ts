@@ -294,8 +294,6 @@ export const PayController = {
             )
           }
           break
-        case ConstantsUtil.CHAIN.SOLANA:
-          break
         default:
           throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
       }

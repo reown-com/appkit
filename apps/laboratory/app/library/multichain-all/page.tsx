@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -48,10 +48,6 @@ const config = {
 }
 
 export default function Page() {
-  // Only way I was able to remove the SSR errors, for some reason its still being rendered on the server even with 'use client'
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  useEffect(() => () => {}, [])
-
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>

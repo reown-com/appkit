@@ -218,6 +218,9 @@ export class W3mPayView extends LitElement {
         })
         CoreHelperUtil.openHref(result.url, result.openInNewTab ? '_blank' : '_self')
       }
+    } catch (error) {
+      console.error('Failed to pay with exchange', error)
+      SnackController.showError('Failed to pay with exchange')
     } finally {
       this.loadingExchangeId = null
     }
