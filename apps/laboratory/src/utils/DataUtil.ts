@@ -230,3 +230,11 @@ export const siwxSdkOptions: SdkOption[] = [
       'Multichain SIWX configuration with Ethers, Solana and Bitcoin adapters enabled for AppKit'
   }
 ]
+
+export const paySdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/library/pay-default',
+    description: 'AppKit Pay with default configuration'
+  }
+]
