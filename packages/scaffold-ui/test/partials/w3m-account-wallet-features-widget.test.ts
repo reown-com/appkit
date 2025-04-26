@@ -188,4 +188,30 @@ describe('W3mAccountWalletFeaturesWidget', () => {
 
     vi.useRealTimers()
   })
+
+  // TODO => Have AI complete this / reformat for better structre
+  describe('wallet features', () => {
+    describe('all features enabled', () => {})
+    describe('evm', () => {
+      it('should show all features when enabled')
+      it('should not show onramp if disabled')
+      it('should not show swaps if disabled')
+      it('should not show receive if disabled')
+      it('should not show send if disabled')
+    })
+
+    describe('solana', () => {
+      it('should show all features but swaps when enabled')
+      it('should not show onramp if disabled')
+      it('should not show receive if disabled')
+      it('should not show send if disabled')
+    })
+
+    describe('bitcoin', () => {
+      it('should only ')
+      it('should not show onramp if disabled')
+      it('should not show receive if disabled')
+      it('should not show send if disabled')
+    })
+  })
 })
