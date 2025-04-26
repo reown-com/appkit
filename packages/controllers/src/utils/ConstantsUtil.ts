@@ -253,7 +253,8 @@ export const ConstantsUtil = {
     smartSessions: false,
     collapseWallets: false,
     walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
-    connectMethodsOrder: undefined
+    connectMethodsOrder: undefined,
+    pay: false
   } satisfies Features,
 
   DEFAULT_ACCOUNT_TYPES: {
