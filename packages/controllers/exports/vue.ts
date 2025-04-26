@@ -1,6 +1,6 @@
 import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
 import { AccountController } from '../src/controllers/AccountController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
@@ -33,6 +33,7 @@ export function useAppKitAccount(options?: {
     _chains: Map<ChainNamespace, ChainAdapter>,
     _chainNamespace: ChainNamespace | undefined
   ) {
+    const activeConnectorId = ConnectorController.state.activeConnector?.id
     const authConnector = _chainNamespace
       ? ConnectorController.getAuthConnector(_chainNamespace)
       : undefined
@@ -47,14 +48,15 @@ export function useAppKitAccount(options?: {
     state.value.isConnected = Boolean(accountState?.caipAddress)
     const activeChainNamespace =
       _chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-    state.value.embeddedWalletInfo = authConnector
-      ? {
-          user: accountState?.user,
-          authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
-          accountType: accountState?.preferredAccountTypes?.[activeChainNamespace],
-          isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
-        }
-      : undefined
+    state.value.embeddedWalletInfo =
+      authConnector && activeConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+        ? {
+            user: accountState?.user,
+            authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
+            accountType: accountState?.preferredAccountTypes?.[activeChainNamespace],
+            isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
+          }
+        : undefined
   }
 
   const unsubscribeActiveChain = ChainController.subscribeKey('activeChain', val => {
