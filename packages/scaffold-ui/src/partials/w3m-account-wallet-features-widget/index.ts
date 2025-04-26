@@ -216,7 +216,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private sendTemplate() {
     const isSendEnabled = this.features?.send
     const activeNamespace = ChainController.state.activeChain as ChainNamespace
-    const isSendSupported = ConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace)
+    const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace)
 
     if (!isSendEnabled || !isSendSupported) {
       return null

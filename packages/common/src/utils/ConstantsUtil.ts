@@ -22,7 +22,6 @@ export const ConstantsUtil = {
   CONNECTOR_NAMES: {
     AUTH: 'Auth'
   },
-  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   AUTH_CONNECTOR_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
   LIMITS: {
     PENDING_TRANSACTIONS: 99
