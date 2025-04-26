@@ -4,14 +4,12 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
-import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const networks = ConstantsUtil.SolanaNetworks
 
@@ -19,26 +17,23 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
-const modal = createAppKit({
+const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
   defaultNetwork: solana,
-  projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   features: {
     socials: [],
     emailShowWallets: false
   }
-})
-
-ThemeStore.setModal(modal)
+}
 
 export default function Solana() {
   return (
-    <InitializeBoundary>
+    <AppKitProvider config={config}>
       <AppKitButtons />
       <AppKitInfo />
       <SolanaTests />
-    </InitializeBoundary>
+    </AppKitProvider>
   )
 }

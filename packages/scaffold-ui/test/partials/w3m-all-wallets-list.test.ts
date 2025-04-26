@@ -74,6 +74,7 @@ describe('W3mAllWalletsList', () => {
       wallets: [],
       recommended: [],
       featured: [],
+      filteredWallets: [],
       count: 0,
       page: 1
     } as unknown as ApiControllerState)

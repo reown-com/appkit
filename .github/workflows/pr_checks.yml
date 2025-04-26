@@ -13,6 +13,13 @@ on:
     # See https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue
     branches:
       - main
+  push:
+    branches:
+      # Build against main to prime turbocache
+      # GitHub Actions is branch-specific but falls
+      # back to the default branch (main) if no
+      # branch specific cache is found.
+      - main
 
 permissions:
   pull-requests: write
@@ -44,12 +51,29 @@ jobs:
       - name: install
         run: pnpm install
 
+      # Cache Turborepo's build outputs (.turbo directory).
+      # This speeds up the 'pnpm build' step significantly if inputs haven't changed.
+      # The key includes the OS and a hash of the lockfile, ensuring dependency changes
+      # invalidate the cache.
+      # The restore-key provides a fallback to the latest cache without the specific lockfile hash.
+      # Running this on the target branch (e.g., 'main' via push or merge_group) aims to
+      # populate a shared cache that subsequent PR/branch builds can use as a fallback,
+      # further speeding up their builds if only a few packages changed.
+      - name: Cache Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-build-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-build-
+
       - name: build
         run: pnpm build
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
       - name: Upload build artifacts
+        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
         with:
           name: build-output
@@ -67,6 +91,7 @@ jobs:
 
       # Create a separate artifact for node_modules to preserve symlinks and permissions
       - name: Upload node_modules
+        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
         with:
           name: node-modules
@@ -74,6 +99,7 @@ jobs:
           retention-days: 1
 
   code_style:
+    if: github.event_name != 'push'
     needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
@@ -125,6 +151,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   build_sample_apps:
+    if: github.event_name != 'push'
     needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
@@ -167,6 +194,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   test:
+    if: github.event_name != 'push'
     needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
@@ -219,3 +247,5 @@ jobs:
       pull-requests: write
     with:
       branch: ${{ github.ref }}
+      build-and-cache-only: ${{ github.event_name == 'push' }}
+      matrix_config: '{"shard":[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "shardTotal":[10]}'

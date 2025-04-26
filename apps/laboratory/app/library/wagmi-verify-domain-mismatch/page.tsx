@@ -5,14 +5,12 @@ import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
-import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 // Special project ID with verify enabled on localhost
 const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
@@ -27,30 +25,28 @@ const wagmiAdapter = new WagmiAdapter({
   projectId
 })
 
-const modal = createAppKit({
+const config = {
   adapters: [wagmiAdapter],
   networks,
   defaultNetwork: mainnet,
-  projectId,
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: 'https://example.com',
     icons: []
-  }
-})
-
-ThemeStore.setModal(modal)
+  },
+  projectId
+}
 
 export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <InitializeBoundary>
+        <AppKitProvider config={config}>
           <AppKitButtons />
           <AppKitInfo />
           <WagmiTests />
-        </InitializeBoundary>
+        </AppKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

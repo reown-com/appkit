@@ -79,7 +79,7 @@ export class ModalPage {
       const args = msg.args()
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < args.length; i++) {
-        if (msg.type() === 'error' && msg.type() === 'warning') {
+        if (msg.type() === 'error' || msg.type() === 'warning') {
           try {
             const val = await args[i]?.jsonValue()
             console.log(`[console.${msg.type()}]`, val)
@@ -731,9 +731,9 @@ export class ModalPage {
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
     await this.page.getByTestId('social-selector-farcaster').click()
-    await this.page.waitForTimeout(500)
+    await this.page.locator('wui-qr-code').waitFor({ state: 'visible' })
     await this.page.getByTestId('header-back').click()
-    await this.page.waitForTimeout(500)
+    await this.page.waitForTimeout(1000)
     await this.closeModal()
   }
 
