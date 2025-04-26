@@ -38,7 +38,6 @@ extensionTest.describe.configure({ mode: 'serial' })
 
 extensionTest.beforeAll(async ({ context, library }) => {
   const browserPage = await context.newPage()
-
   const path = PATH_FOR_LIBRARIES[library as keyof typeof PATH_FOR_LIBRARIES]
 
   if (!path) {

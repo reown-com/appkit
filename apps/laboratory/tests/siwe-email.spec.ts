@@ -26,7 +26,6 @@ emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
   const start = new Date()
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'siwe')
   validator = new ModalWalletValidator(browserPage)
 

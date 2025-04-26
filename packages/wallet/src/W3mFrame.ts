@@ -59,6 +59,7 @@ export class W3mFrame {
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
+        iframe.style.border = 'none'
         iframe.style.animationDelay = '0s, 50ms'
         iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`

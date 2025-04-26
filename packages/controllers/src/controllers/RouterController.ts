@@ -89,6 +89,8 @@ export interface RouterControllerState {
     | 'SmartSessionCreated'
     | 'SmartSessionList'
     | 'SIWXSignMessage'
+    | 'Pay'
+    | 'PayLoading'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -159,7 +161,7 @@ export const RouterController = {
           this.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
-          ModalController.close()
+          ModalController.close(true)
           state.history = []
         }
       } else if (action.view) {
