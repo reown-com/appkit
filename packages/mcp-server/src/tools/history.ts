@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
-import { BlockchainApiClient } from '@reown/appkit-blockchain-api'
+import { blockchainApiClient } from '../api-client.js'
 
-export const getTransactionHistoryTool = (server: McpServer, client: BlockchainApiClient) =>
+export const getTransactionHistoryTool = (server: McpServer) =>
   server.tool(
     'transactionHistory',
     'Get the transaction history of an address on a specific network. Returns a list of transactions with hash, from, to, value, and timestamp etc.',
@@ -14,7 +14,7 @@ export const getTransactionHistoryTool = (server: McpServer, client: BlockchainA
     },
     async ({ address, chainId, cursor }) => {
       try {
-        const transactions = await client.fetchTransactions({
+        const transactions = await blockchainApiClient.fetchTransactions({
           account: address,
           chainId,
           cursor

@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
-import { BlockchainApiClient } from '@reown/appkit-blockchain-api'
+import { blockchainApiClient } from '../api-client.js'
 
-export const getGasPriceTool = (server: McpServer, client: BlockchainApiClient) =>
+export const getGasPriceTool = (server: McpServer) =>
   server.tool(
     'fetchGasPrice',
     'Fetch the current gas price for a specific network. Returns the gas price in wei with standard, fast, and instant options.',
@@ -14,7 +14,7 @@ export const getGasPriceTool = (server: McpServer, client: BlockchainApiClient) 
     },
     async ({ chainId }) => {
       try {
-        const gasPrice = await client.fetchGasPrice({ chainId })
+        const gasPrice = await blockchainApiClient.fetchGasPrice({ chainId })
 
         return {
           content: [

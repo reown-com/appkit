@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
-import { BlockchainApiClient } from '@reown/appkit-blockchain-api'
+import { blockchainApiClient } from '../api-client.js'
 
-export const getEnsLookupTool = (server: McpServer, client: BlockchainApiClient) =>
+export const getEnsLookupTool = (server: McpServer) =>
   server.tool(
     'ensLookup',
     'Lookup an ENS name to get the address of the owner',
@@ -12,7 +12,7 @@ export const getEnsLookupTool = (server: McpServer, client: BlockchainApiClient)
     },
     async ({ name }) => {
       try {
-        const data = await client.lookupEnsName(name)
+        const data = await blockchainApiClient.lookupEnsName(name)
 
         return {
           content: [

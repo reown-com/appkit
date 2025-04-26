@@ -1,10 +1,11 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
-import { BlockchainApiClient } from '@reown/appkit-blockchain-api'
 import { type CaipNetworkId } from '@reown/appkit-common'
 
-export const getEnsFetchIdentityTool = (server: McpServer, client: BlockchainApiClient) =>
+import { blockchainApiClient } from '../api-client.js'
+
+export const getEnsFetchIdentityTool = (server: McpServer) =>
   server.tool(
     'fetchIdentity',
     'Fetch the identity of an address on a specific network. Returns the avatar and ENS name of the address.',
@@ -15,7 +16,7 @@ export const getEnsFetchIdentityTool = (server: McpServer, client: BlockchainApi
     async ({ address, chainId }) => {
       try {
         const caipNetworkId = `eip155:${chainId}` as CaipNetworkId
-        const identity = await client.fetchIdentity({ address, caipNetworkId })
+        const identity = await blockchainApiClient.fetchIdentity({ address, caipNetworkId })
 
         return {
           content: [

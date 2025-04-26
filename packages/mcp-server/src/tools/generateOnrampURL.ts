@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
-import { BlockchainApiClient } from '@reown/appkit-blockchain-api'
+import { blockchainApiClient } from '../api-client.js'
 
-export const getGenerateOnrampURLTool = (server: McpServer, client: BlockchainApiClient) =>
+export const getGenerateOnrampURLTool = (server: McpServer) =>
   server.tool(
     'generateOnrampURL',
     'Generate an on-ramp URL for a specific destination wallet address. Returns a URL to the on-ramp provider.',
@@ -29,7 +29,7 @@ export const getGenerateOnrampURLTool = (server: McpServer, client: BlockchainAp
       paymentAmount
     }) => {
       try {
-        const url = await client.generateOnRampURL({
+        const url = await blockchainApiClient.generateOnRampURL({
           destinationWallets: [{ address, blockchains, assets: [] }],
           partnerUserId: partnerUserId || address,
           defaultNetwork,

@@ -1,6 +1,6 @@
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 
-import { server } from '../index.js'
+import { server } from '../src/server.js'
 
 async function runServer() {
   const transport = new StdioServerTransport()

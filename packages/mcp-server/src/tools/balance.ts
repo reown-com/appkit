@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
-import { BlockchainApiClient } from '@reown/appkit-blockchain-api'
+import { blockchainApiClient } from '../api-client.js'
 
-export const getBalanceTool = (server: McpServer, client: BlockchainApiClient) =>
+export const getBalanceTool = (server: McpServer) =>
   server.tool(
     'getBalance',
     'Get the owned tokens of an address on a specific network. Returns a list of tokens with name, symbol, amount, value, price, and icon url etc.',
@@ -13,7 +13,7 @@ export const getBalanceTool = (server: McpServer, client: BlockchainApiClient) =
     },
     async ({ address, chainId }) => {
       try {
-        const data = await client.getBalance(address, chainId)
+        const data = await blockchainApiClient.getBalance(address, chainId)
 
         // Format the balances for better readability
         const formattedBalances = data.balances.map(balance => ({

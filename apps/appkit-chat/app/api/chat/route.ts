@@ -28,24 +28,7 @@ export async function POST(req: Request) {
     If necessary, ask some data to call the tools.
     When you return some set of data, return in markdown table format.
     `,
-    tools: {
-      getWeather: {
-        description: 'Get the weather for a location',
-        parameters: z.object({
-          city: z.string().describe('The city to get the weather for'),
-          unit: z.enum(['C', 'F']).describe('The unit to display the temperature in')
-        }),
-        execute: async ({ city, unit }) => {
-          const weather = {
-            value: 24,
-            description: 'Sunny'
-          }
-
-          return `It is currently ${weather.value}°${unit} and ${weather.description} in ${city}!`
-        }
-      },
-      ...(await mcpClient.tools())
-    },
+    tools: await mcpClient.tools(),
     messages,
     onFinish: async () => {
       await mcpClient.close()

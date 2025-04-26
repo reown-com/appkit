@@ -1,9 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
-import { BlockchainApiClient } from '@reown/appkit-blockchain-api'
+import { blockchainApiClient } from '../api-client.js'
 
-export const getEnsReverseLookupTool = (server: McpServer, client: BlockchainApiClient) =>
+export const getEnsReverseLookupTool = (server: McpServer) =>
   server.tool(
     'ensReverseLookup',
     'Find ENS names for an address. Returns a list of ENS names.',
@@ -12,7 +12,7 @@ export const getEnsReverseLookupTool = (server: McpServer, client: BlockchainApi
     },
     async ({ address }) => {
       try {
-        const ensNames = await client.reverseLookupEnsName({ address })
+        const ensNames = await blockchainApiClient.reverseLookupEnsName({ address })
 
         if (ensNames.length === 0) {
           return {
