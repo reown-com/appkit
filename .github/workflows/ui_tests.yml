@@ -117,7 +117,7 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
 
       - name: build extension
-        if: inputs.build-and-cache-only == false
+        if: inputs.build-and-cache-only == false && inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
@@ -126,6 +126,7 @@ jobs:
         run: pnpm build
 
       - name: build Demo app
+        if: inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
         run: pnpm build:demo
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
