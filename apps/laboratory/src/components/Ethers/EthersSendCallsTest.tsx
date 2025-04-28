@@ -11,7 +11,7 @@ import {
   StatNumber
 } from '@chakra-ui/react'
 import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
-import { AddIcon, DeleteIcon } from '@radix-ui/react-icons'
+import { PlusIcon, TrashIcon } from '@radix-ui/react-icons'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
 import { type Address, parseGwei } from 'viem'
@@ -192,7 +192,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
                       <Stat>
                         <StatLabel>
                           ({index + 1}) Sending
-                          <DeleteIcon
+                          <TrashIcon
                             style={{ float: 'right', cursor: 'pointer' }}
                             onClick={() => onRemoveTransaction(index)}
                           />
@@ -215,7 +215,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
           <Spacer />
           <Link onClick={onAddTransactionButtonClick}>
             <Button variant="outline" colorScheme="blue" isDisabled={loading}>
-              <AddIcon mr={2} /> Add Transaction
+              <PlusIcon /> Add Transaction
             </Button>
           </Link>
         </Stack>

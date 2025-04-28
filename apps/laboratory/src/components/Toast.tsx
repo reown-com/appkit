@@ -63,7 +63,7 @@ export default function CustomToast({
           </Text>
           {allowCopy && typeof description === 'string' && type !== 'error' ? (
             <Button minWidth="auto" size="xs" onClick={() => copyToClipboard(description)}>
-              <CopyIcon width="3" height="3" marginRight="2" />
+              <CopyIcon width="3" height="3" style={{ marginRight: '4px' }} />
               <Text>{copied ? 'Signature copied' : 'Copy'}</Text>
             </Button>
           ) : null}

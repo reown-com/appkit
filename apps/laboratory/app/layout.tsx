@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 import Layout from '@/src/layout'
 import { bootstrapSentry } from '@/src/utils/SentryUtil'
-import { getSession } from '@/src/utils/auth'
+import { auth } from '@/src/utils/auth'
 
 bootstrapSentry()
 
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 }
 
 export default async function App({ children }: { children: React.ReactNode }) {
-  const session = await getSession()
+  const session = await auth()
 
   return (
     <html>

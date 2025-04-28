@@ -12,12 +12,12 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@solana/wallet-adapter-backpack": "0.1.14",
-    "@solana/wallet-adapter-wallets": "0.19.32",
+    "@solana/wallet-adapter-wallets": "0.19.36",
     "@tanstack/vue-query": "5.67.1",
-    "@wagmi/connectors": "5.7.12",
-    "@wagmi/core": "2.16.7",
+    "@wagmi/connectors": "5.7.13",
+    "@wagmi/core": "2.17.0",
     "@wagmi/vue": "0.1.15",
-    "viem": "2.23.13",
+    "viem": "2.28.0",
     "vue": "3.4.3"
   },
   "devDependencies": {

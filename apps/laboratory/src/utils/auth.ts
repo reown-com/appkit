@@ -1,72 +1,72 @@
-import { type AuthOptions, getServerSession } from 'next-auth'
+import NextAuth, { type NextAuthConfig } from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
 
 import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@reown/appkit-siwe'
 
-export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOptions {
-  const nextAuthSecret = process.env['NEXTAUTH_SECRET']
-  if (!nextAuthSecret) {
-    throw new Error('NEXTAUTH_SECRET is not set')
-  }
-
+function getSiweProvider() {
   const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
 
-  const providers = [
-    credentialsProvider({
-      name: 'Ethereum',
-      credentials: {
-        message: {
-          label: 'Message',
-          type: 'text',
-          placeholder: '0x0'
-        },
-        signature: {
-          label: 'Signature',
-          type: 'text',
-          placeholder: '0x0'
-        }
+  return credentialsProvider({
+    name: 'Ethereum',
+    credentials: {
+      message: {
+        label: 'Message',
+        type: 'text',
+        placeholder: '0x0'
       },
-      async authorize(credentials) {
-        try {
-          if (!credentials?.message) {
-            throw new Error('SiweMessage is undefined')
-          }
-          const { message, signature } = credentials
-          const address = getAddressFromMessage(message)
-          const chainId = getChainIdFromMessage(message)
-          const isValid = await verifySignature({
-            address,
-            message,
-            signature,
-            chainId,
-            projectId
-          })
-
-          if (isValid) {
-            return {
-              id: `${chainId}:${address}`
-            }
-          }
-
-          return null
-        } catch (e) {
-          return null
-        }
+      signature: {
+        label: 'Signature',
+        type: 'text',
+        placeholder: '0x0'
       }
-    })
-  ]
+    },
+    async authorize(credentials) {
+      try {
+        if (!credentials?.message) {
+          throw new Error('SiweMessage is undefined')
+        }
+        const { message, signature } = credentials
+        const address = getAddressFromMessage(message as string)
+        const chainId = getChainIdFromMessage(message as string)
 
-  // Hide Sign-In with Ethereum from default sign page
-  if (isDefaultSigninPage) {
-    providers.pop()
+        const isValid = await verifySignature({
+          address,
+          message: message as string,
+          signature: signature as string,
+          chainId,
+          projectId
+        })
+
+        if (isValid) {
+          const user = {
+            id: `${chainId}:${address}`
+          }
+
+          return user
+        }
+
+        return null
+      } catch (e) {
+        return null
+      }
+    }
+  })
+}
+
+export function getAuthOptions() {
+  const nextAuthSecret = process.env['AUTH_SECRET']
+
+  if (!nextAuthSecret) {
+    throw new Error('AUTH_SECRET is not set')
   }
 
-  return {
+  const config = {
     secret: nextAuthSecret,
-    providers,
+    providers: [getSiweProvider()],
     session: {
       strategy: 'jwt'
     },
@@ -78,20 +78,20 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
 
         const [, chainId, address] = token.sub.split(':')
         if (chainId && address) {
+          // @ts-expect-error session type should be overridden to handle address and chainId
           session.address = address
+          // @ts-expect-error session type should be overridden to handle address and chainId
           session.chainId = parseInt(chainId, 10)
         }
 
         return session
       }
-    }
-  }
+    },
+    trustHost: true
+  } satisfies NextAuthConfig
+
+  return config
 }
 
-/**
- * Helper function to get the session on the server without having to import the authOptions object every single time
- * @returns The session object or null
- */
-export async function getSession() {
-  return await getServerSession(getAuthOptions(true))
-}
+// eslint-disable-next-line new-cap
+export const { auth, handlers, signIn, signOut } = NextAuth(getAuthOptions())

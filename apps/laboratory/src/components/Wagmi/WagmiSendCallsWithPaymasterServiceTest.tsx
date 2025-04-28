@@ -139,7 +139,7 @@ function AvailableTestContent() {
         setLoading(false)
         toast({
           title: 'SendCalls Success',
-          description: hash,
+          description: hash.id,
           type: 'success'
         })
       },

@@ -11,7 +11,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@solana/wallet-adapter-backpack": "0.1.14",
-    "@solana/wallet-adapter-wallets": "0.19.32",
+    "@solana/wallet-adapter-wallets": "0.19.36",
     "vue": "3.4.3"
   },
   "devDependencies": {

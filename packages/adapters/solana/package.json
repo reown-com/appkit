@@ -45,21 +45,21 @@
     }
   },
   "dependencies": {
-    "@walletconnect/types": "2.19.2",
+    "@walletconnect/types": "2.20.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@solana/wallet-adapter-base": "0.9.24",
+    "@solana/wallet-adapter-base": "0.9.26",
     "@solana/wallet-standard-features": "1.3.0",
     "@solana/wallet-standard-util": "1.1.2",
     "@solana/web3.js": "1.98.0",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@wallet-standard/features": "1.1.0",
-    "@walletconnect/universal-provider": "2.19.2",
+    "@walletconnect/universal-provider": "2.20.0",
     "valtio": "2.1.4"
   },
   "optionalDependencies": {
