@@ -70,8 +70,7 @@ export function decodeDIDToPublicKey(did: string): {
 
   return {
     key: formattedPublicKey as `0x${string}`,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    keyType: keyType!
+    keyType
   }
 }
 export function decodeUncompressedPublicKey(uncompressedPublicKey: string): `0x${string}` {

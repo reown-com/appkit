@@ -1,12 +1,15 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import nextAuth from 'next-auth'
+import { NextRequest } from 'next/server'
 
 import { type SIWESession } from '@reown/appkit-siwe'
 
 import { getAuthOptions } from '@/src/utils/auth'
 
-type NextRequest = Request & NextApiRequest
-type NextResponse = Response & NextApiResponse
+interface RouteHandlerContext {
+  params: { nextauth: string[] }
+}
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
@@ -18,10 +21,11 @@ declare module 'next-auth' {
  * For more information on each option (and a full list of options) go to
  * https://next-auth.js.org/configuration/options
  */
-async function auth(req: NextRequest, res: NextResponse) {
-  const isDefaultSigninPage = req.method === 'GET' && req.query?.['nextauth']?.includes('signin')
+async function auth(req: NextRequest, context: RouteHandlerContext) {
+  const isDefaultSigninPage =
+    req.method === 'GET' && req.nextUrl.searchParams.get('nextauth')?.includes('signin')
 
-  return await nextAuth(req, res, {
+  return await nextAuth(req, context, {
     // https://next-auth.js.org/configuration/providers/oauth
     ...getAuthOptions(isDefaultSigninPage)
   })

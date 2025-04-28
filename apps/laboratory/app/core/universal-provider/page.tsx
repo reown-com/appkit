@@ -240,10 +240,7 @@ export default function UniversalProviderPage() {
 
     const [namespace] = newNetwork.split(':')
 
-    const isChainAllowed =
-      provider?.session?.namespaces?.[
-        namespace as keyof typeof provider.session.namespaces
-      ]?.chains?.includes(newNetwork)
+    const isChainAllowed = provider?.session?.namespaces?.[namespace]?.chains?.includes(newNetwork)
     const isSameNetwork = network === newNetwork
 
     if (isSameNetwork) {
@@ -281,11 +278,7 @@ export default function UniversalProviderPage() {
         return
       }
 
-      setAccount(
-        provider.session?.namespaces?.[
-          namespace as keyof typeof provider.session.namespaces
-        ]?.accounts?.[0]?.split(':')[2]
-      )
+      setAccount(provider.session?.namespaces?.[namespace]?.accounts?.[0]?.split(':')[2])
       setNetwork(newNetwork)
     } catch (error) {
       console.error('Network switch error:', error)
