@@ -35,8 +35,6 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private loading = SendController.state.loading
 
-  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
-
   @state() private gasPrice = SendController.state.gasPrice
 
   @state() private message:
@@ -59,7 +57,6 @@ export class W3mWalletSendView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
-          this.gasPriceInUSD = val.gasPriceInUSD
           this.receiverProfileName = val.receiverProfileName
           this.loading = val.loading
         })
@@ -80,7 +77,6 @@ export class W3mWalletSendView extends LitElement {
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
-          .gasPriceInUSD=${this.gasPriceInUSD}
           .gasPrice=${this.gasPrice}
         ></w3m-input-token>
         <wui-icon-box
@@ -118,12 +114,6 @@ export class W3mWalletSendView extends LitElement {
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
-    const gas = await SwapController.getInitialGasPrice()
-
-    if (gas?.gasPrice && gas?.gasPriceInUSD) {
-      SendController.setGasPrice(gas.gasPrice)
-      SendController.setGasPriceInUsd(gas.gasPriceInUSD)
-    }
   }
 
   private onButtonClick() {
@@ -142,10 +132,6 @@ export class W3mWalletSendView extends LitElement {
 
     if (!this.receiverAddress) {
       this.message = 'Add Address'
-    }
-
-    if (SendController.hasInsufficientGasFunds()) {
-      this.message = 'Insufficient Gas Funds'
     }
 
     if (

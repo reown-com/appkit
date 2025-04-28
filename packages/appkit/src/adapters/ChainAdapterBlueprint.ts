@@ -465,6 +465,7 @@ export namespace AdapterBlueprint {
     data: string
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
+    value?: bigint | number
   }
 
   export type EstimateGasTransactionResult = {

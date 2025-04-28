@@ -22,10 +22,6 @@ const mockToken: Balance = {
 describe('W3mWalletSendView', () => {
   beforeEach(() => {
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
-    vi.spyOn(SwapController, 'getInitialGasPrice').mockResolvedValue({
-      gasPrice: BigInt(1000),
-      gasPriceInUSD: 0.1
-    })
     vi.spyOn(SendController, 'fetchTokenBalance').mockResolvedValue([])
   })
 

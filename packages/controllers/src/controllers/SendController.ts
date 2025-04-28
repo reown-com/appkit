@@ -43,7 +43,6 @@ export interface SendControllerState {
   receiverProfileName?: string
   receiverProfileImageUrl?: string
   gasPrice?: bigint
-  gasPriceInUSD?: number
   networkBalanceInUSD?: string
   loading: boolean
   lastRetry?: number
@@ -95,10 +94,6 @@ export const SendController = {
 
   setGasPrice(gasPrice: SendControllerState['gasPrice']) {
     state.gasPrice = gasPrice
-  },
-
-  setGasPriceInUsd(gasPriceInUSD: SendControllerState['gasPriceInUSD']) {
-    state.gasPriceInUSD = gasPriceInUSD
   },
 
   setNetworkBalanceInUsd(networkBalanceInUSD: SendControllerState['networkBalanceInUSD']) {
@@ -230,35 +225,6 @@ export const SendController = {
     state.networkBalanceInUSD = networkToken
       ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
       : '0'
-  },
-
-  isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
-    const gasPrice = gasPriceInUSD || '0'
-
-    if (NumberUtil.bigNumber(networkBalanceInUSD).eq(0)) {
-      return true
-    }
-
-    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).gt(networkBalanceInUSD)
-  },
-
-  hasInsufficientGasFunds() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-    let isInsufficientNetworkTokenForGas = true
-    if (
-      AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
-      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    ) {
-      // Smart Accounts may pay gas in any ERC20 token
-      isInsufficientNetworkTokenForGas = false
-    } else if (state.networkBalanceInUSD) {
-      isInsufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
-        state.networkBalanceInUSD,
-        state.gasPriceInUSD
-      )
-    }
-
-    return isInsufficientNetworkTokenForGas
   },
 
   async sendNativeToken(params: TxParams) {
