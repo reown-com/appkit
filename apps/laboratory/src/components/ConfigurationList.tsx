@@ -12,6 +12,7 @@ import {
   Heading,
   Link,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
 import { ArrowRightIcon } from '@radix-ui/react-icons'
@@ -32,7 +33,7 @@ export function ConfigurationList({ title, sdkOptions }: Props) {
           <Heading size="md">{title}</Heading>
         </CardHeader>
         <CardBody>
-          <Stack spacing="4">
+          <Stack divider={<StackDivider />} spacing="4">
             {sdkOptions.map(option => (
               <Box key={option.link + option.title}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">

@@ -46,6 +46,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
    */
   public async addSession(session: SIWXSession): Promise<void> {
     const isValid = await this.verifySession(session)
+
     if (!isValid) {
       throw new Error('The signature is not valid')
     }

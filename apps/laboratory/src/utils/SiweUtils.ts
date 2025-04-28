@@ -31,6 +31,7 @@ export const siweConfig = createSIWEConfig({
   },
   getSession: async () => {
     const session = await getSession()
+
     if (!session) {
       return null
     }

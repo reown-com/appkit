@@ -125,7 +125,7 @@
     "ethers5": "npm:ethers@5.7.2",
     "framer-motion": "10.17.9",
     "next": "15.4.0-canary.12",
-    "next-auth": "5.0.0-beta.27",
+    "next-auth": "4.24.11",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "rpc-websockets": "7.11.0",
