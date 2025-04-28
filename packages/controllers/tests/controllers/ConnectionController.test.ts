@@ -215,10 +215,7 @@ describe('ConnectionController', () => {
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
       bip122: 'bip122-connector',
-      starknet: 'starknet-connector',
-      cosmos: 'cosmos-connector',
-      avalanche: 'avalanche-connector',
-      algorand: 'algorand-connector'
+      cosmos: 'cosmos-connector'
     }
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
@@ -250,10 +247,7 @@ describe('ConnectionController', () => {
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
       bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      starknet: 'starknet-connector',
-      cosmos: 'cosmos-connector',
-      avalanche: 'avalanche-connector',
-      algorand: 'algorand-connector'
+      cosmos: 'cosmos-connector'
     }
     ChainController.state.chains.set('eip155', {
       accountState: {
@@ -290,10 +284,7 @@ describe('ConnectionController', () => {
       solana: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       polkadot: 'polkadot-connector',
       bip122: 'bip122-connector',
-      starknet: 'starknet-connector',
-      cosmos: 'cosmos-connector',
-      avalanche: 'avalanche-connector',
-      algorand: 'algorand-connector'
+      cosmos: 'cosmos-connector'
     }
     ChainController.state.chains.set('eip155', {
       accountState: {

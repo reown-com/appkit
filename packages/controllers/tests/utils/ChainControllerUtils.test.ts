@@ -21,10 +21,7 @@ describe('getChainsToDisconnect', () => {
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
       bip122: 'bip122-connector',
-      starknet: 'starknet-connector',
-      cosmos: 'cosmos-connector',
-      avalanche: 'avalanche-connector',
-      algorand: 'algorand-connector'
+      cosmos: 'cosmos-connector'
     }
 
     const result = getChainsToDisconnect()
@@ -44,10 +41,7 @@ describe('getChainsToDisconnect', () => {
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
       bip122: ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      starknet: 'starknet-connector',
-      cosmos: 'cosmos-connector',
-      avalanche: 'avalanche-connector',
-      algorand: 'algorand-connector'
+      cosmos: 'cosmos-connector'
     }
 
     const result = getChainsToDisconnect('eip155')
@@ -71,10 +65,7 @@ describe('getChainsToDisconnect', () => {
       solana: ConstantsUtil.CONNECTOR_ID.AUTH,
       polkadot: 'polkadot-connector',
       bip122: 'bip122-connector',
-      starknet: 'starknet-connector',
-      cosmos: 'cosmos-connector',
-      avalanche: 'avalanche-connector',
-      algorand: 'algorand-connector'
+      cosmos: 'cosmos-connector'
     }
 
     const result = getChainsToDisconnect('solana')

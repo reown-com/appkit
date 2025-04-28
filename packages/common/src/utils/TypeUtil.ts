@@ -41,10 +41,7 @@ export type ChainNamespace =
   | 'solana'
   | 'polkadot'
   | 'bip122'
-  | 'starknet'
   | 'cosmos'
-  | 'avalanche'
-  | 'algorand'
 
 export type AdapterType =
   | 'solana'

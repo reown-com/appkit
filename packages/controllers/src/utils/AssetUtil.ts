@@ -20,14 +20,8 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   polkadot: '',
   // Bitcoin
   bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
-  // Starknet
-  starknet: '',
   // Cosmos
-  cosmos: '',
-  // Avalanche
-  avalanche: '',
-  // Algorand
-  algorand: ''
+  cosmos: ''
 }
 
 // -- State --------------------------------------------- //

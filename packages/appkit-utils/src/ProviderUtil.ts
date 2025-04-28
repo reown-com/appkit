@@ -26,10 +26,7 @@ const CLEAN_PROVIDERS_STATE = {
   solana: undefined,
   polkadot: undefined,
   bip122: undefined,
-  starknet: undefined,
   cosmos: undefined,
-  avalanche: undefined,
-  algorand: undefined
 }
 
 const state = proxy<ProviderStoreUtilState>({
