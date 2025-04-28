@@ -1,13 +1,28 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { BlockchainApiController, FetchUtil, OptionsController } from '../../exports/index.js'
+import { FetchUtil } from '@reown/appkit-blockchain-api'
+
+import { BlockchainApiController, OptionsController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('BlockchainApiController', () => {
+  beforeAll(() => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      projectId: 'test-project-id',
+      sdkType: 'appkit',
+      sdkVersion: 'html-wagmi-1.7.0'
+    })
+    BlockchainApiController.initializeClient()
+  })
+
+  afterAll(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should include sdk properties when fetching swap allowance data', async () => {
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
     vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
-    OptionsController.state.projectId = 'test-project-id'
 
     const swapAllowance = {
       tokenAddress: '0x123',
@@ -20,9 +35,10 @@ describe('BlockchainApiController', () => {
       expect.objectContaining({
         path: '/v1/convert/allowance',
         params: {
-          projectId: 'test-project-id',
           ...swapAllowance,
-          ...BlockchainApiController.getSdkProperties()
+          sv: 'html-wagmi-1.7.0',
+          st: 'appkit',
+          projectId: 'test-project-id'
         }
       })
     )
@@ -31,7 +47,6 @@ describe('BlockchainApiController', () => {
     const address = '0x123'
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
     vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
-    OptionsController.state.projectId = 'test-project-id'
 
     await BlockchainApiController.fetchIdentity({ address, caipNetworkId: 'eip155:1' })
 
@@ -39,8 +54,9 @@ describe('BlockchainApiController', () => {
       expect.objectContaining({
         path: `/v1/identity/${address}`,
         params: {
-          projectId: 'test-project-id',
-          ...BlockchainApiController.getSdkProperties()
+          sv: 'html-wagmi-1.7.0',
+          st: 'appkit',
+          projectId: 'test-project-id'
         }
       })
     )

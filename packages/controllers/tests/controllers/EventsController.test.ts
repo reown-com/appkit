@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 
+import { FetchUtil } from '@reown/appkit-blockchain-api'
 import { ConstantsUtil } from '@reown/appkit-common'
 
-import { AlertController, EventsController, FetchUtil } from '../../exports/index.js'
+import { AlertController, EventsController } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: true } } as const

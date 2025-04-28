@@ -1,12 +1,8 @@
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
+import { FetchUtil } from '@reown/appkit-blockchain-api'
 import type { ParsedCaipAddress } from '@reown/appkit-common'
-import {
-  type Connector,
-  ConnectorController,
-  FetchUtil,
-  type WcWallet
-} from '@reown/appkit-controllers'
+import { type Connector, ConnectorController, type WcWallet } from '@reown/appkit-controllers'
 
 import { AppKitWalletButton } from '../client'
 import { ApiController } from '../controllers/ApiController'
