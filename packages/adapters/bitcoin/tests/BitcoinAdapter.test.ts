@@ -575,8 +575,8 @@ describe('BitcoinAdapter', () => {
 
       await callback({
         type: 'networkChange',
-        stacks: { name: BitcoinNetworkType.Signet },
-        bitcoin: { name: BitcoinNetworkType.Signet }
+        stacks: { name: BitcoinNetworkType.Testnet4 },
+        bitcoin: { name: BitcoinNetworkType.Testnet4 }
       })
 
       expect(listeners.switchNetwork).toHaveBeenCalled()

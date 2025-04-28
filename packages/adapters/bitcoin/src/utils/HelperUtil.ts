@@ -2,7 +2,11 @@ import { BitcoinNetworkType } from 'sats-connect'
 
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
-export function mapCaipNetworkToXverseName(caipNetworkId: string): BitcoinNetworkType {
+export function mapCaipNetworkToXverseName(caipNetworkId: string | undefined): BitcoinNetworkType {
+  if (!caipNetworkId) {
+    throw new Error('mapCaipNetworkToXverseName: Invalid caipNetworkId provided')
+  }
+
   switch (caipNetworkId) {
     case bitcoin.caipNetworkId:
       return BitcoinNetworkType.Mainnet

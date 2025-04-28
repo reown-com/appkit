@@ -76,9 +76,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
   async connect() {
     const currentNetwork = this.getActiveNetwork()
-    const networkName = currentNetwork
-      ? mapCaipNetworkToXverseName(currentNetwork.caipNetworkId)
-      : BitcoinNetworkType.Mainnet
+    const networkName = mapCaipNetworkToXverseName(currentNetwork?.caipNetworkId)
 
     const address = await this.getAccountAddresses()
       .then(addresses => addresses[0]?.address)
