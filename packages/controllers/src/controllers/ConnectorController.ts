@@ -47,7 +47,7 @@ const state = proxy<ConnectorControllerState>({
     solana: true,
     polkadot: true,
     bip122: true,
-    cosmos: true,
+    cosmos: true
   }
 })
 

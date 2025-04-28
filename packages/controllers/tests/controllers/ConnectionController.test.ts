@@ -231,7 +231,8 @@ describe('ConnectionController', () => {
       eip155: 'eip155-connector',
       solana: undefined,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     })
   })
 
@@ -268,7 +269,8 @@ describe('ConnectionController', () => {
       eip155: undefined,
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: undefined
+      bip122: undefined,
+      cosmos: 'cosmos-connector'
     })
   })
 
@@ -311,7 +313,8 @@ describe('ConnectionController', () => {
       eip155: undefined,
       solana: undefined,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     })
   })
 })
