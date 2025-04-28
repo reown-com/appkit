@@ -287,7 +287,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         : options.features?.email
     const socialsEnabled = options.features?.socials
       ? options.features?.socials?.length > 0
-      : CoreConstantsUtil.DEFAULT_FEATURES.socials
+      : (options.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
 
     if (isEmailEnabled || socialsEnabled) {
       customConnectors.push(

@@ -21,18 +21,20 @@ import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type AppKitNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  type PreferredAccountTypes
+  type PreferredAccountTypes,
+  type SocialProvider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { WagmiAdapter } from '../client'
+import * as auth from '../connectors/AuthConnector'
 import { LimitterUtil } from '../utils/LimitterUtil'
 import { mockAppKit } from './mocks/AppKit'
 
@@ -168,6 +170,126 @@ describe('WagmiAdapter', () => {
       const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
 
       expect(injectedConnector?.info).toBeUndefined()
+    })
+
+    it('should not add auth connector when email and socials are both false', async () => {
+      const authConnectorSpy = vi.spyOn(auth, 'authConnector')
+
+      const options = {
+        enableWalletConnect: false,
+        enableInjected: false,
+        features: {
+          email: false,
+          socials: false as const
+        },
+        projectId: mockProjectId,
+        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      adapter.syncConnectors(options, mockAppKit)
+
+      expect(authConnectorSpy).not.toHaveBeenCalled()
+    })
+
+    it('should not add auth connector when email is true and socials is false', async () => {
+      const authConnectorSpy = vi.spyOn(auth, 'authConnector')
+
+      const options = {
+        enableWalletConnect: false,
+        enableInjected: false,
+        features: {
+          email: true,
+          socials: false as const
+        },
+        projectId: mockProjectId,
+        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      adapter.syncConnectors(options, mockAppKit)
+
+      expect(authConnectorSpy).not.toHaveBeenCalled()
+    })
+
+    it('should not add auth connector when email is false and socials is an empty array', async () => {
+      const authConnectorSpy = vi.spyOn(auth, 'authConnector')
+
+      const options = {
+        enableWalletConnect: false,
+        enableInjected: false,
+        features: {
+          email: false,
+          socials: [] as SocialProvider[]
+        },
+        projectId: mockProjectId,
+        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      adapter.syncConnectors(options, mockAppKit)
+
+      expect(authConnectorSpy).not.toHaveBeenCalled()
+    })
+
+    it('should add auth connector when email is true and socials are not false', async () => {
+      const authConnectorSpy = vi.spyOn(auth, 'authConnector')
+
+      const options = {
+        enableWalletConnect: false,
+        enableInjected: false,
+        features: {
+          email: true,
+          socials: ['facebook'] as SocialProvider[]
+        },
+        projectId: mockProjectId,
+        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      adapter.syncConnectors(options, mockAppKit)
+
+      await vi.waitFor(() => {
+        expect(authConnectorSpy).toHaveBeenCalled()
+      })
+    })
+
+    it('should add auth connector when email is false and socials contain providers', async () => {
+      const authConnectorSpy = vi.spyOn(auth, 'authConnector')
+
+      const options = {
+        enableWalletConnect: false,
+        enableInjected: false,
+        features: {
+          email: false,
+          socials: ['x'] as SocialProvider[]
+        },
+        projectId: mockProjectId,
+        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      adapter.syncConnectors(options, mockAppKit)
+
+      await vi.waitFor(() => {
+        expect(authConnectorSpy).toHaveBeenCalled()
+      })
+    })
+
+    it('should add auth connector when both email and socials are true', async () => {
+      const authConnectorSpy = vi.spyOn(auth, 'authConnector')
+
+      const options = {
+        enableWalletConnect: false,
+        enableInjected: false,
+        features: {
+          email: true,
+          socials: ['google'] as SocialProvider[]
+        },
+        projectId: mockProjectId,
+        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      adapter.syncConnectors(options, mockAppKit)
+
+      await vi.waitFor(() => {
+        expect(authConnectorSpy).toHaveBeenCalled()
+      })
     })
 
     it('should return reown RPC by default', () => {
