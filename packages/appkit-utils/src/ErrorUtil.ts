@@ -1,4 +1,7 @@
+const abortController = new AbortController()
+
 export const ErrorUtil = {
+  EmbeddedWalletAbortController: abortController,
   UniversalProviderErrors: {
     UNAUTHORIZED_DOMAIN_NOT_ALLOWED: {
       message: 'Unauthorized: origin not allowed',
@@ -25,6 +28,21 @@ export const ErrorUtil = {
         `Origin ${
           isSafe() ? window.origin : 'unknown'
         } not found on Allowlist - update configuration on cloud.reown.com`
+    },
+    IFRAME_LOAD_FAILED: {
+      shortMessage: 'Network Error - Could not load embedded wallet',
+      longMessage: () =>
+        'There was an issue loading the embedded wallet. Please check your internet connection and try again.'
+    },
+    IFRAME_REQUEST_TIMEOUT: {
+      shortMessage: 'Embedded Wallet Request Timed Out',
+      longMessage: () =>
+        'There was an issue doing the request to the embedded wallet. Please check your internet connection and try again.'
+    },
+    UNVERIFIED_DOMAIN: {
+      shortMessage: 'Invalid App Configuration',
+      longMessage: () =>
+        'There was an issue loading the embedded wallet. Please verify that your domain is allowed at cloud.reown.com'
     },
     SOCIALS_TIMEOUT: {
       shortMessage: 'Invalid App Configuration',
