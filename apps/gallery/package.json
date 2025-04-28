@@ -12,7 +12,7 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "lit": "3.1.0",
-    "react": "19.0.0",
+    "react": "19.1.0",
     "storybook": "7.6.20"
   },
   "devDependencies": {

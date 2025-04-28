@@ -12,9 +12,7 @@ const cspReportToHeader = {
 }
 
 const nextConfig = {
-  reactStrictMode: true,
   trailingSlash: true,
-  distDir: 'out',
   cleanDistDir: true,
   webpack: config => {
     config.externals.push('pino-pretty', 'lokijs', 'encoding')

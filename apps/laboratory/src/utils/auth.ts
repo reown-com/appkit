@@ -1,9 +1,9 @@
-import { type AuthOptions, getServerSession } from 'next-auth'
+import NextAuth, { type NextAuthConfig } from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
 
 import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@reown/appkit-siwe'
 
-export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOptions {
+export function getAuthConfig(isDefaultSigninPage: boolean | undefined) {
   const nextAuthSecret = process.env['NEXTAUTH_SECRET']
   if (!nextAuthSecret) {
     throw new Error('NEXTAUTH_SECRET is not set')
@@ -35,12 +35,12 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
             throw new Error('SiweMessage is undefined')
           }
           const { message, signature } = credentials
-          const address = getAddressFromMessage(message)
-          const chainId = getChainIdFromMessage(message)
+          const address = getAddressFromMessage(JSON.stringify(message))
+          const chainId = getChainIdFromMessage(JSON.stringify(message))
           const isValid = await verifySignature({
             address,
-            message,
-            signature,
+            message: JSON.stringify(message),
+            signature: JSON.stringify(signature),
             chainId,
             projectId
           })
@@ -76,22 +76,20 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
           return session
         }
 
-        const [, chainId, address] = token.sub.split(':')
-        if (chainId && address) {
-          session.address = address
-          session.chainId = parseInt(chainId, 10)
-        }
-
         return session
       }
-    }
-  }
+    },
+    trustHost: true
+  } as NextAuthConfig
 }
+
+// eslint-disable-next-line new-cap
+export const { auth, handlers, signIn, signOut } = NextAuth(getAuthConfig(true))
 
 /**
  * Helper function to get the session on the server without having to import the authOptions object every single time
  * @returns The session object or null
  */
 export async function getSession() {
-  return await getServerSession(getAuthOptions(true))
+  return await auth()
 }

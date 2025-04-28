@@ -1,9 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { IoSettingsOutline } from 'react-icons/io5'
 
-import { DownloadIcon } from '@chakra-ui/icons'
 import {
   Button,
   Link as CLink,
@@ -15,6 +13,7 @@ import {
   useColorMode,
   useDisclosure
 } from '@chakra-ui/react'
+import { DownloadIcon, GearIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -75,13 +74,13 @@ export function LayoutHeader() {
           </CLink>
         </HStack>
 
-        <Button rightIcon={<IoSettingsOutline />} onClick={controlsCW.onOpen}>
+        <Button rightIcon={<GearIcon />} onClick={controlsCW.onOpen}>
           Custom Wallet
         </Button>
-        <Button rightIcon={<IoSettingsOutline />} onClick={controlsNW.onOpen}>
+        <Button rightIcon={<GearIcon />} onClick={controlsNW.onOpen}>
           Networks
         </Button>
-        <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>
+        <Button rightIcon={<GearIcon />} onClick={controls.onOpen}>
           Options
         </Button>
         <Button rightIcon={<DownloadIcon />} onClick={() => downloadLogs(toast)}>

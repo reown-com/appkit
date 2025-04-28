@@ -2,7 +2,6 @@
 
 /* eslint-disable no-negated-condition */
 import type { ReactNode } from 'react'
-import { IoArrowForward } from 'react-icons/io5'
 
 import {
   Box,
@@ -13,12 +12,11 @@ import {
   Heading,
   Link,
   Stack,
-  StackDivider,
   Text
 } from '@chakra-ui/react'
+import { ArrowRightIcon } from '@radix-ui/react-icons'
 
-import type { SdkOption } from '@/src/utils/DataUtil'
-
+import type { SdkOption } from '../utils/DataUtil'
 import { RandomLink } from './RandomLink'
 
 type Props = {
@@ -34,7 +32,7 @@ export function ConfigurationList({ title, sdkOptions }: Props) {
           <Heading size="md">{title}</Heading>
         </CardHeader>
         <CardBody>
-          <Stack divider={<StackDivider />} spacing="4">
+          <Stack spacing="4">
             {sdkOptions.map(option => (
               <Box key={option.link + option.title}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -48,11 +46,11 @@ export function ConfigurationList({ title, sdkOptions }: Props) {
                   </Box>
                   {option.randomLinks !== undefined && option.randomLinks.length > 0 ? (
                     <RandomLink hrefs={option.randomLinks}>
-                      <Button rightIcon={<IoArrowForward />}>Go</Button>
+                      <Button rightIcon={<ArrowRightIcon />}>Go</Button>
                     </RandomLink>
                   ) : (
                     <Link href={option.link}>
-                      <Button rightIcon={<IoArrowForward />}>Go</Button>
+                      <Button rightIcon={<ArrowRightIcon />}>Go</Button>
                     </Link>
                   )}
                 </Stack>

@@ -5,8 +5,8 @@ import {
 } from '@aws-sdk/client-cloudwatch'
 import type { TestInfo } from '@playwright/test'
 
-import { timeEnd, timeStart } from '../../shared/utils/logs'
 import type { TimingRecords } from '../fixtures/timing-fixture'
+import { timeEnd, timeStart } from './logs'
 
 export const CANARY_TAG = '@canary'
 export const CANARY_METRIC_NAME_ANNOTATION = 'canary-metric-name'

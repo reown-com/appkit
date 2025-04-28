@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs'
 
 import {
   Drawer,
@@ -13,6 +12,7 @@ import {
   useColorMode,
   useDisclosure
 } from '@chakra-ui/react'
+import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
 
 import AccentColorInput from '@/src/components/Theming/AccentColorInput'
 import BorderRadiusInput from '@/src/components/Theming/BorderRadiusInput'
@@ -53,7 +53,7 @@ export function OptionsDrawer({ controls }: Props) {
               cursor={'pointer'}
               onClick={toggleColorMode}
             >
-              <Icon width={'12px'} height={'12px'} as={BsFillMoonFill} />
+              <Icon width={'12px'} height={'12px'} as={MoonIcon} />
             </Flex>
           ) : (
             <Flex
@@ -67,7 +67,7 @@ export function OptionsDrawer({ controls }: Props) {
               cursor={'pointer'}
               onClick={toggleColorMode}
             >
-              <Icon width={'12px'} height={'12px'} as={BsFillSunFill} />
+              <Icon width={'12px'} height={'12px'} as={SunIcon} />
             </Flex>
           )}
 

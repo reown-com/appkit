@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
   Box,
   Card,
@@ -12,6 +11,7 @@ import {
   StatNumber
 } from '@chakra-ui/react'
 import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
+import { AddIcon, DeleteIcon } from '@radix-ui/react-icons'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
 import { type Address, parseGwei } from 'viem'

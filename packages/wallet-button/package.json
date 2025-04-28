@@ -41,7 +41,7 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.2.1",
-    "valtio": "1.13.2"
+    "valtio": "2.1.4"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
@@ -55,10 +55,10 @@
   },
   "devDependencies": {
     "@open-wc/testing": "4.0.0",
-    "@types/react": "19.0.0",
+    "@types/react": "19.1.2",
     "@vitest/coverage-v8": "2.1.9",
     "eslint-plugin-react-hooks": "5.2.0",
-    "react": "19.0.0",
+    "react": "19.1.0",
     "vitest": "2.1.9"
   },
   "keywords": [

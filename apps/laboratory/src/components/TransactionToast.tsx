@@ -7,7 +7,6 @@ import {
   AlertTitle,
   Box,
   CloseButton,
-  Spinner,
   useToast
 } from '@chakra-ui/react'
 
@@ -84,7 +83,6 @@ function TransactionToast({
     return (
       <Alert status="info" bg={bgColor} color="white">
         <Box display="flex" alignItems="center" width="100%">
-          <Spinner size="sm" mr={3} flexShrink={0} />
           <Box flex="1" minWidth="0">
             <AlertTitle>Transaction Pending</AlertTitle>
             <AlertDescription display="block" wordBreak="break-word">

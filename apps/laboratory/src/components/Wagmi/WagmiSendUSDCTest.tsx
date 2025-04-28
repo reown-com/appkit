@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import React from 'react'
 
-import { WarningIcon } from '@chakra-ui/icons'
 import {
   Button,
   Input,
@@ -17,6 +16,7 @@ import {
   VStack,
   useDisclosure
 } from '@chakra-ui/react'
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { type Chain, type Hex, erc20Abi } from 'viem'
 import { type Config, useAccount } from 'wagmi'
 import { getWalletClient } from 'wagmi/actions'
@@ -114,7 +114,7 @@ function SendUSDCForm({ isOpen, onClose, chain, config, balance }: SendUSDCFormP
             />
             {hasInsufficientBalance && (
               <Stack direction="row" spacing={1} align="center">
-                <WarningIcon color="yellow.500" />
+                <ExclamationTriangleIcon color="yellow.500" />
                 <Text color="yellow.500" fontSize="sm">
                   The amount entered exceeds your available balance.
                 </Text>

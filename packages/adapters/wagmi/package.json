@@ -26,7 +26,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.19.2",
-    "valtio": "1.13.2"
+    "valtio": "2.1.4"
   },
   "optionalDependencies": {
     "@wagmi/connectors": ">=5.7.11"
@@ -37,8 +37,8 @@
     "wagmi": ">=2.14.15"
   },
   "devDependencies": {
-    "@types/react": "19.0.0",
-    "@types/react-dom": "19.0.0",
+    "@types/react": "19.1.2",
+    "@types/react-dom": "19.1.2",
     "@vitest/coverage-v8": "2.1.9",
     "@walletconnect/types": "2.19.2",
     "vitest": "2.1.9"

@@ -45,7 +45,7 @@ export function AppKitProvider({
 
   return (
     <AppKitContext.Provider value={{ projectId, appKit: appKit as AppKit | undefined }}>
-      {appKit && <InitializeBoundary>{children}</InitializeBoundary>}
+      {appKit ? <InitializeBoundary>{children}</InitializeBoundary> : null}
     </AppKitContext.Provider>
   )
 }

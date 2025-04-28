@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { CloseIcon, CopyIcon } from '@chakra-ui/icons'
 import { Box, Button, Text, useToast } from '@chakra-ui/react'
+import { CopyIcon, Cross1Icon } from '@radix-ui/react-icons'
 
 type CustomToastProps = {
   allowCopy?: boolean
@@ -53,7 +53,7 @@ export default function CustomToast({
           {title}
         </Text>
         <Button id="toast-close-button" size="xs" onClick={onClose}>
-          <CloseIcon width="2" height="2" />
+          <Cross1Icon width="2" height="2" />
         </Button>
       </Box>
       {description ? (

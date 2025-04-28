@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
+    "target": "ES2017",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "skipLibCheck": true,
@@ -26,5 +26,6 @@
     "sourceMap": true,
     "incremental": true
   },
-  "exclude": ["node_modules", "dist", "types", "out", ".next", ".turbo", "coverage", "package.json"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
