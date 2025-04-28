@@ -79,7 +79,7 @@ export class ModalPage {
       const args = msg.args()
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < args.length; i++) {
-        if (msg.type() === 'error' && msg.type() === 'warning') {
+        if (msg.type() === 'error' || msg.type() === 'warning') {
           try {
             const val = await args[i]?.jsonValue()
             console.log(`[console.${msg.type()}]`, val)
