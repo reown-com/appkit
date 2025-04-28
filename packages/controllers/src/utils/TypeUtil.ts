@@ -940,6 +940,10 @@ export type NamespaceTypeMap = {
   solana: 'eoa'
   bip122: 'payment' | 'ordinal' | 'stx'
   polkadot: 'eoa'
+  starknet: 'eoa'
+  cosmos: 'eoa'
+  avalanche: 'eoa'
+  algorand: 'eoa'
 }
 
 export type AccountTypeMap = {

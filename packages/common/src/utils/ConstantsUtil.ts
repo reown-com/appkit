@@ -36,7 +36,11 @@ export const ConstantsUtil = {
     eip155: 'EVM Networks',
     solana: 'Solana',
     polkadot: 'Polkadot',
-    bip122: 'Bitcoin'
+    bip122: 'Bitcoin',
+    starknet: 'Starknet',
+    cosmos: 'Cosmos',
+    avalanche: 'Avalanche',
+    algorand: 'Algorand'
   } as const satisfies Record<ChainNamespace, string>,
   ADAPTER_TYPES: {
     BITCOIN: 'bitcoin',
