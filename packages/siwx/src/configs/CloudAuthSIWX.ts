@@ -73,7 +73,7 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
     try {
-      const siweSession = await this.request('me', undefined)
+      const siweSession = await this.request('me', undefined, 'authJwt')
 
       const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
       const isSameNetwork = siweSession?.caip2Network === chainId
@@ -124,7 +124,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       throw new Error('Not authenticated')
     }
 
-    return this.request('me?includeAppKitAccount=true', undefined)
+    return this.request('me?includeAppKitAccount=true', undefined, 'authJwt')
   }
 
   async setSessionAccountMetadata(metadata: object | null = null) {
@@ -132,7 +132,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       throw new Error('Not authenticated')
     }
 
-    return this.request('account-metadata', { metadata })
+    return this.request('account-metadata', { metadata }, 'authJwt')
   }
 
   on<Event extends keyof CloudAuthSIWX.Events>(
@@ -158,23 +158,26 @@ export class CloudAuthSIWX implements SIWXConfig {
   private async request<Key extends CloudAuthSIWX.RequestKey>(
     key: Key,
     params: CloudAuthSIWX.Requests[Key]['body'],
-    tokenType: 'authJwt' | 'nonceJwt' = 'authJwt'
+    tokenType?: 'authJwt' | 'nonceJwt'
   ): Promise<CloudAuthSIWX.Requests[Key]['response']> {
     const { projectId, st, sv } = this.getSDKProperties()
 
-    const token =
-      tokenType === 'nonceJwt'
-        ? this.getStorageToken(this.localNonceStorageKey)
-        : this.getStorageToken(this.localAuthStorageKey)
+    let headers: Record<string, string> | undefined = undefined
 
-    const jwtHeader: { 'x-nonce-jwt': string } | { Authorization: string } =
-      tokenType === 'nonceJwt'
-        ? {
-            'x-nonce-jwt': `Bearer ${token}`
-          }
-        : {
-            Authorization: `Bearer ${token}`
-          }
+    switch (tokenType) {
+      case 'nonceJwt':
+        headers = {
+          'x-nonce-jwt': `Bearer ${this.getStorageToken(this.localNonceStorageKey)}`
+        }
+        break
+      case 'authJwt':
+        headers = {
+          Authorization: `Bearer ${this.getStorageToken(this.localAuthStorageKey)}`
+        }
+        break
+      default:
+        break
+    }
 
     const response = await fetch(
       new URL(
@@ -183,7 +186,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       {
         method: RequestMethod[key],
         body: params ? JSON.stringify(params) : undefined,
-        headers: token ? jwtHeader : undefined
+        headers
       }
     )
 

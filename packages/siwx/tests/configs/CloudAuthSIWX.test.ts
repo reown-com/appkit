@@ -446,17 +446,18 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_token')
       vi.spyOn(global, 'fetch').mockResolvedValueOnce(
         mocks.mockFetchResponse({
-          address: '0x1234567890abcdef1234567890abcdef12345678',
-          chainId: 1
+          address: address,
+          chainId: id,
+          caip2Network: `${namespace}:${id}`
         })
       )
 
-      await siwx.getSessions('eip155:1', '0x1234567890abcdef1234567890abcdef12345678')
+      await siwx.getSessions(`${namespace}:${id}`, address)
 
       expect(callback).toHaveBeenCalledWith({
         data: {
-          accountAddress: '0x1234567890abcdef1234567890abcdef12345678',
-          chainId: 'eip155:1'
+          accountAddress: address,
+          chainId: `${namespace}:${id}`
         },
         message: '',
         signature: ''
@@ -467,7 +468,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       const callback = vi.fn()
       siwx.on('sessionChanged', callback)
 
-      await siwx.revokeSession('eip155:1', '0x1234567890abcdef1234567890abcdef12345678')
+      await siwx.revokeSession(`${namespace}:${id}`, address)
 
       expect(callback).toHaveBeenCalledWith(undefined)
     })
