@@ -122,20 +122,8 @@ export class W3mInputToken extends LitElement {
   }
 
   private onMaxClick() {
-    if (this.token && typeof this.gasPrice !== 'undefined') {
-      const isNetworkToken =
-        this.token.address === undefined ||
-        Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
-          nativeAddress => this.token?.address === nativeAddress
-        )
-
-      const numericGas = NumberUtil.bigNumber(this.gasPrice).div(
-        NumberUtil.bigNumber(10).pow(Number(this.token.quantity.decimals))
-      )
-
-      const maxValue = isNetworkToken
-        ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(numericGas)
-        : NumberUtil.bigNumber(this.token.quantity.numeric)
+    if (this.token) {
+      const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)))
     }
