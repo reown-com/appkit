@@ -16,7 +16,6 @@ import {
 } from '@reown/appkit-controllers'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
@@ -202,7 +201,7 @@ export const ConnectorUtil = {
         } else {
           const authConnector = ConnectorController.getAuthConnector()
           popupWindow = CoreHelperUtil.returnOpenHref(
-            `${ConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
+            `${CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
             'popupWindow',
             'width=600,height=800,scrollbars=yes'
           )
