@@ -405,6 +405,7 @@ export abstract class AppKitBaseClient {
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
+        this.syncConnectedWalletInfo(chainToUse)
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -412,6 +413,7 @@ export abstract class AppKitBaseClient {
         if (adapter?.reconnect) {
           await adapter?.reconnect({ id, info, type, provider, chainId: this.getCaipNetwork()?.id })
           StorageUtil.addConnectedNamespace(namespace)
+          this.syncConnectedWalletInfo(namespace)
         }
       },
       disconnect: async (chainNamespace?: ChainNamespace) => {
@@ -426,6 +428,7 @@ export abstract class AppKitBaseClient {
         ProviderUtil.resetChain(namespace)
         this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
+        this.setConnectedWalletInfo(undefined, namespace)
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -904,6 +907,7 @@ export abstract class AppKitBaseClient {
         this.setStatus('disconnected', chainNamespace)
       }
 
+      this.syncConnectedWalletInfo(chainNamespace)
       await ChainController.setApprovedCaipNetworksData(chainNamespace)
     })
 
@@ -1585,6 +1589,7 @@ export abstract class AppKitBaseClient {
     const authConnector = ConnectorController.getAuthConnector(namespace)
     const accountState = ChainController.getAccountData(namespace)
     const activeChain = ChainController.state.activeChain as ChainNamespace
+    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     if (!accountState) {
       return undefined
@@ -1596,27 +1601,28 @@ export abstract class AppKitBaseClient {
       address: CoreHelperUtil.getPlainAddress(accountState.caipAddress),
       isConnected: Boolean(accountState.caipAddress),
       status: accountState.status,
-      embeddedWalletInfo: authConnector
-        ? {
-            user: accountState.user
-              ? {
-                  ...accountState.user,
-                  /*
-                   * Getting the username from the chain controller works well for social logins,
-                   * but Farcaster uses a different connection flow and doesn’t emit the username via events.
-                   * Since the username is stored in local storage before the chain controller updates,
-                   * it’s safe to use the local storage value here.
-                   */
-                  username: StorageUtil.getConnectedSocialUsername()
-                }
-              : undefined,
-            authProvider:
-              accountState.socialProvider ||
-              ('email' as AccountControllerState['socialProvider'] | 'email'),
-            accountType: accountState.preferredAccountTypes?.[namespace || activeChain],
-            isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
-          }
-        : undefined
+      embeddedWalletInfo:
+        authConnector && activeConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+          ? {
+              user: accountState.user
+                ? {
+                    ...accountState.user,
+                    /*
+                     * Getting the username from the chain controller works well for social logins,
+                     * but Farcaster uses a different connection flow and doesn’t emit the username via events.
+                     * Since the username is stored in local storage before the chain controller updates,
+                     * it’s safe to use the local storage value here.
+                     */
+                    username: StorageUtil.getConnectedSocialUsername()
+                  }
+                : undefined,
+              authProvider:
+                accountState.socialProvider ||
+                ('email' as AccountControllerState['socialProvider'] | 'email'),
+              accountType: accountState.preferredAccountTypes?.[namespace || activeChain],
+              isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
+            }
+          : undefined
     }
   }
 

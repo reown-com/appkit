@@ -1079,9 +1079,13 @@ describe('Base Public methods', () => {
   })
 
   it('should get account information', () => {
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
-      id: 'auth-connector'
-    } as unknown as AuthConnector)
+    const authConnector = {
+      id: 'ID_AUTH',
+      name: 'ID Auth',
+      imageUrl: 'https://example.com/id-auth.png'
+    } as AuthConnector
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
