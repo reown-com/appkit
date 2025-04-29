@@ -251,13 +251,8 @@ export class W3mSwapView extends LitElement {
   }
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
-    if (!balance) {
-      this.handleChangeAmount(target, '0')
-    } else {
-      const maxValue = NumberUtil.bigNumber(balance)
-
-      this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
-    }
+    const maxValue = NumberUtil.bigNumber(balance || '0')
+    this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
   }
 
   private templateDetails() {
