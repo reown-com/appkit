@@ -100,7 +100,7 @@ export const ConnectorUtil = {
     return new Promise((resolve, reject) => {
       async function handleSocialConnection(event: MessageEvent) {
         if (event.data?.resultUri) {
-          if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
+          if (event.origin === CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN) {
             window.removeEventListener('message', handleSocialConnection, false)
             try {
               const authConnector = ConnectorController.getAuthConnector()
@@ -202,7 +202,7 @@ export const ConnectorUtil = {
         } else {
           const authConnector = ConnectorController.getAuthConnector()
           popupWindow = CoreHelperUtil.returnOpenHref(
-            '',
+            `${ConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
             'popupWindow',
             'width=600,height=800,scrollbars=yes'
           )
