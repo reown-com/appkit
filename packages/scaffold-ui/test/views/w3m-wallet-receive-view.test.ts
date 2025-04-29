@@ -12,10 +12,7 @@ import {
   CoreHelperUtil,
   type NetworkControllerClient,
   RouterController,
-  SnackController,
-  ThemeController,
-  type ThemeControllerState,
-  type ThemeVariables
+  SnackController
 } from '@reown/appkit-controllers'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
