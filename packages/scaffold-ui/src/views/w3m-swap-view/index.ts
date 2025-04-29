@@ -162,7 +162,7 @@ export class W3mSwapView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="s">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -242,13 +242,13 @@ export class W3mSwapView extends LitElement {
 
     return html`<w3m-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
-      .disabled=${target === 'toToken'}
+      .disabled=${Boolean(target === 'toToken')}
       .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
       .balance=${myToken?.quantity?.numeric}
-      .price=${myToken?.price}
-      .marketValue=${marketValue}
+      .price=${Number(myToken?.price || 0)}
+      .marketValue=${(marketValue || 0).toString()}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></w3m-swap-input>`
   }
@@ -303,8 +303,8 @@ export class W3mSwapView extends LitElement {
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
     const haveNoAmount = !this.sourceTokenAmount
-    const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
-    const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
+    const loading = Boolean(this.loadingQuote || this.loadingPrices || this.loadingTransaction)
+    const disabled = Boolean(loading || haveNoTokenSelected || haveNoAmount || this.inputError)
 
     return html` <wui-flex gap="xs">
       <wui-button

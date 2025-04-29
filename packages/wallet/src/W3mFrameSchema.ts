@@ -483,8 +483,10 @@ export const W3mFrameSchema = {
     )
 
     .or(
+      // @ts-expect-error - zod is not able to infer the type correctly
       EventSchema.extend({
         type: zType('APP_RPC_REQUEST'),
+        // @ts-expect-error - zod is not able to infer the type correctly
         payload: RpcPersonalSignRequest.or(WalletGetAssetsRequest)
           .or(RpcEthAccountsRequest)
           .or(RpcEthBlockNumber)

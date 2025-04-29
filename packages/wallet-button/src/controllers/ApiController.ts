@@ -1,11 +1,11 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { FetchUtil } from '@reown/appkit-blockchain-api'
 import {
   type ApiGetWalletsResponse,
   ApiController as CoreApiController,
   CoreHelperUtil,
-  FetchUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
 
@@ -13,7 +13,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl, clientId: null })
+export const api = new FetchUtil({ baseUrl })
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {

@@ -17,6 +17,8 @@ export class W3mInputAddress extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
+  public unsubscribe: (() => void)[] = []
+
   public inputElementRef: Ref<HTMLInputElement> = createRef()
 
   public instructionElementRef: Ref<HTMLElement> = createRef()
@@ -28,6 +30,21 @@ export class W3mInputAddress extends LitElement {
 
   @state() private pasting = false
 
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      SendController.subscribeKey('receiverAddress', newAddress => {
+        if (newAddress) {
+          this.focusInput()
+        }
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
   protected override firstUpdated() {
     if (this.value) {
       this.instructionHidden = true
@@ -38,6 +55,7 @@ export class W3mInputAddress extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <wui-flex
+      id="w3m-input-address-box"
       @click=${this.onBoxClick.bind(this)}
       flexDirection="column"
       justifyContent="center"

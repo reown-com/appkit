@@ -48,12 +48,13 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-blockchain-api": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.1.0",
     "valtio": "1.13.2",
     "viem": "2.23.13",
-    "zod": "3.22.4"
+    "zod": "3.24.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
