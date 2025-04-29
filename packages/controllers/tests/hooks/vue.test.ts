@@ -9,7 +9,8 @@ import {
   type AuthConnector,
   ChainController,
   ConnectionController,
-  ConnectorController
+  ConnectorController,
+  StorageUtil
 } from '../../exports/index.js'
 import { useAppKitAccount, useDisconnect } from '../../exports/vue.js'
 import {
@@ -87,7 +88,7 @@ describe('useAppKitAccount', () => {
       type: 'ID_AUTH'
     } as AuthConnector
     ConnectorController.state.connectors = [authConnector]
-    ConnectorController.state.activeConnector = authConnector
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
 
     await nextTick()
 

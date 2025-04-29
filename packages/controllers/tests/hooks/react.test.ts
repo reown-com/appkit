@@ -135,12 +135,7 @@ describe('useAppKitAccount', () => {
       imageUrl: 'https://example.com/id-auth.png'
     } as AuthConnector
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
-    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
-      ...ConnectorController.state,
-      allConnectors: [authConnector],
-      connected: true,
-      activeConnector: authConnector
-    } as unknown as ConnectorControllerState)
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
 
     useSnapshot.mockReturnValueOnce({

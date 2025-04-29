@@ -1,13 +1,7 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type {
-  AdapterNetworkState,
-  AuthConnector,
-  Connector,
-  ConnectorControllerState,
-  SocialProvider
-} from '@reown/appkit'
+import type { AdapterNetworkState, AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
   type Balance,
   type CaipNetwork,
@@ -1091,12 +1085,7 @@ describe('Base Public methods', () => {
       imageUrl: 'https://example.com/id-auth.png'
     } as AuthConnector
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
-    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
-      ...ConnectorController.state,
-      allConnectors: [authConnector],
-      connected: true,
-      activeConnector: authConnector
-    } as unknown as ConnectorControllerState)
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
