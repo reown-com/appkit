@@ -7,7 +7,7 @@ import { StorageUtil } from './StorageUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
-type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
+export type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -126,7 +126,8 @@ export const CoreHelperUtil = {
       return this.formatUniversalUrl(appUrl, wcUri)
     }
 
-    let safeAppUrl = universalLink || appUrl
+    let safeAppUrl = appUrl
+    let safeUniversalLink = universalLink
 
     if (!safeAppUrl.includes('://')) {
       safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
@@ -135,6 +136,10 @@ export const CoreHelperUtil = {
 
     if (!safeAppUrl.endsWith('/')) {
       safeAppUrl = `${safeAppUrl}/`
+    }
+
+    if (!safeUniversalLink?.endsWith('/')) {
+      safeUniversalLink = `${safeUniversalLink}/`
     }
 
     // Android deeplinks in tg context require the uri to be encoded twice
@@ -146,6 +151,9 @@ export const CoreHelperUtil = {
 
     return {
       redirect: `${safeAppUrl}wc?uri=${encodedWcUrl}`,
+      redirectUniversalLink: safeUniversalLink
+        ? `${safeUniversalLink}wc?uri=${encodedWcUrl}`
+        : undefined,
       href: safeAppUrl
     }
   },

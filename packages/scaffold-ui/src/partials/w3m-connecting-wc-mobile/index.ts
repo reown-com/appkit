@@ -1,8 +1,11 @@
+import { state } from 'lit/decorators.js'
+
 import {
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
-  EventsController
+  EventsController,
+  type OpenTarget
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -12,7 +15,15 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
   // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
+
   private labelTimeout?: ReturnType<typeof setTimeout> = undefined
+
+  // -- State --------------------------------------------- //
+  @state() protected redirectDeeplink: string | undefined = undefined
+
+  @state() protected redirectUniversalLink: string | undefined = undefined
+
+  @state() protected target: OpenTarget | undefined = undefined
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -50,6 +61,9 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     }, ConstantsUtil.FIVE_SEC_MS)
     this.labelTimeout = setTimeout(() => {
+      if (this.redirectUniversalLink) {
+        CoreHelperUtil.openHref(this.redirectUniversalLink, this.target)
+      }
       this.secondaryLabel = `Hold tight... it's taking longer than expected`
     }, ConstantsUtil.THREE_SEC_MS)
   }
@@ -66,11 +80,19 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       try {
         this.error = false
         const { mobile_link, link_mode, name } = this.wallet
-        const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, this.uri, link_mode)
+        const { redirect, redirectUniversalLink, href } = CoreHelperUtil.formatNativeUrl(
+          mobile_link,
+          this.uri,
+          link_mode
+        )
+
+        this.redirectDeeplink = redirect
+        this.redirectUniversalLink = redirectUniversalLink
+        this.target = CoreHelperUtil.isIframe() ? '_top' : '_self'
+
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
-        const target = CoreHelperUtil.isIframe() ? '_top' : '_self'
-        CoreHelperUtil.openHref(redirect, target)
+        CoreHelperUtil.openHref(this.redirectDeeplink, this.target)
         clearTimeout(this.labelTimeout)
         this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
       } catch (e) {

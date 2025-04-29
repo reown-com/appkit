@@ -65,6 +65,7 @@ export type User = {
 
 export interface LinkingRecord {
   redirect: string
+  redirectUniversalLink?: string
   href: string
 }
 
