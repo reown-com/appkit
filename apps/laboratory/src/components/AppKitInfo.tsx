@@ -34,8 +34,6 @@ export function AppKitInfo() {
     }
   }, [caipAddress, isEIP155])
 
-  console.log('>> embeddedWalletInfo', embeddedWalletInfo)
-
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
