@@ -505,8 +505,10 @@ describe('BitcoinAdapter', () => {
     }
 
     beforeEach(async () => {
+      const getCaipNetwork = vi.fn(() => bitcoin)
+
       mocks = mockSatsConnectProvider()
-      adapter.syncConnectors()
+      adapter.syncConnectors(undefined, { getCaipNetwork } as any)
 
       vi.spyOn(mocks.wallet, 'request').mockResolvedValue(
         mockSatsConnectProvider.mockRequestResolve({
@@ -575,8 +577,8 @@ describe('BitcoinAdapter', () => {
 
       await callback({
         type: 'networkChange',
-        stacks: { name: BitcoinNetworkType.Signet },
-        bitcoin: { name: BitcoinNetworkType.Signet }
+        stacks: { name: BitcoinNetworkType.Testnet4 },
+        bitcoin: { name: BitcoinNetworkType.Testnet4 }
       })
 
       expect(listeners.switchNetwork).toHaveBeenCalled()
