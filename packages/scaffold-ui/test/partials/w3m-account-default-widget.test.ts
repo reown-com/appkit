@@ -1,104 +1,322 @@
 import { fixture } from '@open-wc/testing'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { AccountController, ChainController, OptionsController } from '@reown/appkit-controllers'
 
+import { W3mAccountDefaultWidget } from '../../src/partials/w3m-account-default-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ---------------------------------------------------------------
 const ACTIVITY_BUTTON_TEST_ID = 'w3m-account-default-activity-button'
+const MOCK_ADDRESS = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
 
 describe('W3mAccountDefaultWidget', () => {
   beforeAll(() => {
     vi.clearAllMocks()
+  })
 
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-      features: {
-        history: true
-      }
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  describe('activity button visibility', () => {
+    beforeEach(() => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        allAccounts: [],
+        caipAddress: 'eip155:1:0x123'
+      })
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      allAccounts: [],
-      caipAddress: 'eip155:1:0x123'
+
+    it('should not show activity button for solana namespace', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'solana'
+      })
+
+      const element = await fixture(html`<w3m-account-default-widget></w3m-account-default-widget>`)
+      const activityButton = HelpersUtil.getByTestId(element, ACTIVITY_BUTTON_TEST_ID)
+
+      expect(activityButton).toBeNull()
+    })
+
+    it('should show activity button for eip155 namespace', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'eip155'
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          history: true
+        }
+      })
+
+      const element = await fixture(html`<w3m-account-default-widget></w3m-account-default-widget>`)
+      const activityButton = HelpersUtil.getByTestId(element, ACTIVITY_BUTTON_TEST_ID)
+
+      expect(activityButton).not.toBeNull()
+      expect(activityButton?.textContent).toContain('Activity')
+    })
+
+    it('should not show activity button when history feature is disabled', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'eip155'
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          history: false
+        }
+      })
+
+      const element = await fixture(html`<w3m-account-default-widget></w3m-account-default-widget>`)
+      const activityButton = HelpersUtil.getByTestId(element, ACTIVITY_BUTTON_TEST_ID)
+
+      expect(activityButton).toBeNull()
     })
   })
 
-  it('should not show activity button for solana namespace', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'solana'
+  describe('wallet features visibility', () => {
+    beforeEach(() => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
     })
 
-    const element = await fixture(html`<w3m-account-default-widget></w3m-account-default-widget>`)
-    const activityButton = HelpersUtil.getByTestId(element, ACTIVITY_BUTTON_TEST_ID)
+    describe('evm wallet features', () => {
+      beforeEach(() => {
+        vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+          ...ChainController.state,
+          activeChain: CommonConstantsUtil.CHAIN.EVM
+        })
+      })
 
-    expect(activityButton).toBeNull()
+      it('should show all features when enabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            onramp: true,
+            swaps: true,
+            send: true
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).not.toBeNull()
+        expect(swapButton).not.toBeNull()
+        expect(sendButton).not.toBeNull()
+      })
+
+      it('should not show onramp if disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            onramp: false,
+            swaps: true,
+            send: true
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).toBeNull()
+        expect(swapButton).not.toBeNull()
+        expect(sendButton).not.toBeNull()
+      })
+
+      it('should not show swaps if disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            onramp: true,
+            swaps: false,
+            send: true
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).not.toBeNull()
+        expect(swapButton).toBeNull()
+        expect(sendButton).not.toBeNull()
+      })
+
+      it('should not show send if disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            onramp: true,
+            swaps: true,
+            send: false
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).not.toBeNull()
+        expect(swapButton).not.toBeNull()
+        expect(sendButton).toBeNull()
+      })
+    })
+
+    describe('solana wallet features', () => {
+      beforeEach(() => {
+        vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+          ...ChainController.state,
+          activeChain: CommonConstantsUtil.CHAIN.SOLANA
+        })
+      })
+
+      it('should show all features except swaps when enabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            onramp: true,
+            swaps: true,
+            send: true
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).not.toBeNull()
+        expect(swapButton).toBeNull()
+        expect(sendButton).not.toBeNull()
+      })
+
+      it('should not show onramp if disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            onramp: false,
+            swaps: true,
+            send: true
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).toBeNull()
+        expect(swapButton).toBeNull()
+        expect(sendButton).not.toBeNull()
+      })
+
+      it('should not show send if disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            onramp: true,
+            swaps: true,
+            send: false
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).not.toBeNull()
+        expect(swapButton).toBeNull()
+        expect(sendButton).toBeNull()
+      })
+    })
+
+    describe('bitcoin wallet features', () => {
+      beforeEach(() => {
+        vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+          ...ChainController.state,
+          activeChain: CommonConstantsUtil.CHAIN.BITCOIN
+        })
+        vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+          ...AccountController.state,
+          caipAddress: 'bip122:1:bc1qa1234567890'
+        })
+      })
+
+      it('should not have any features enabled', async () => {
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
+        const swapButton = HelpersUtil.querySelect(
+          element,
+          'wui-list-item[icon="recycleHorizontal"]'
+        )
+        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+
+        expect(onrampButton).toBeNull()
+        expect(swapButton).toBeNull()
+        expect(sendButton).toBeNull()
+      })
+    })
   })
-
-  it('should show activity button for eip155 namespace', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155'
-    })
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-      features: {
-        history: true
-      }
-    })
-
-    const element = await fixture(html`<w3m-account-default-widget></w3m-account-default-widget>`)
-    const activityButton = HelpersUtil.getByTestId(element, ACTIVITY_BUTTON_TEST_ID)
-
-    expect(activityButton).not.toBeNull()
-    expect(activityButton?.textContent).toContain('Activity')
-  })
-
-  it('should not show activity button when history feature is disabled', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155'
-    })
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-      features: {
-        history: false
-      }
-    })
-
-    const element = await fixture(html`<w3m-account-default-widget></w3m-account-default-widget>`)
-    const activityButton = HelpersUtil.getByTestId(element, ACTIVITY_BUTTON_TEST_ID)
-
-    expect(activityButton).toBeNull()
-  })
-
-  // TODO => Have AI complete this / reformat for better structre
-  // describe('wallet features', () => {
-  //   describe('all features enabled', () => {})
-  //   describe('evm', () => {
-  //     it('should show all features when enabled')
-  //     it('should not show onramp if disabled')
-  //     it('should not show swaps if disabled')
-  //     it('should not show receive if disabled')
-  //     it('should not show send if disabled')
-  //   })
-
-  //   describe('solana', () => {
-  //     it('should show all features but swaps when enabled')
-  //     it('should not show onramp if disabled')
-  //     it('should not show receive if disabled')
-  //     it('should not show send if disabled')
-  //   })
-
-  //   describe('bitcoin', () => {
-  //     it('should only ')
-  //     it('should not show onramp if disabled')
-  //     it('should not show receive if disabled')
-  //     it('should not show send if disabled')
-  //   })
-  // })
 })
