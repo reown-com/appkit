@@ -88,10 +88,12 @@ export const ModalController = {
       }
     } else if (options?.view) {
       RouterController.reset(options.view, options.data)
-    } else if (caipAddress) {
-      RouterController.reset('Account')
-    } else {
-      RouterController.reset('Connect')
+    } else if (!OptionsController.state.manualWCControl) {
+      if (caipAddress) {
+        RouterController.reset('Account')
+      } else {
+        RouterController.reset('Connect')
+      }
     }
 
     state.open = true
