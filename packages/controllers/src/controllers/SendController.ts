@@ -25,7 +25,6 @@ import { SnackController } from './SnackController.js'
 export interface TxParams {
   receiverAddress: string
   sendTokenAmount: number
-  gasPrice: bigint
   decimals: string
 }
 
@@ -127,7 +126,16 @@ export const SendController = {
   async sendEvmToken() {
     const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     const activeAccountType = AccountController.state.preferredAccountTypes?.[activeChainNamespace]
-    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      throw new Error('An amount and receiver address are required')
+    }
+
+    if (!this.state.token) {
+      throw new Error('A token is required')
+    }
+
+    if (this.state.token?.address) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
@@ -144,18 +152,13 @@ export const SendController = {
         sendTokenAmount: this.state.sendTokenAmount,
         decimals: this.state.token.quantity.decimals
       })
-    } else if (
-      this.state.receiverAddress &&
-      this.state.sendTokenAmount &&
-      this.state.gasPrice &&
-      this.state.token?.quantity.decimals
-    ) {
+    } else {
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.state.token?.symbol,
+          token: this.state.token.symbol || '',
           amount: this.state.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
@@ -163,7 +166,6 @@ export const SendController = {
       await this.sendNativeToken({
         receiverAddress: this.state.receiverAddress,
         sendTokenAmount: this.state.sendTokenAmount,
-        gasPrice: this.state.gasPrice,
         decimals: this.state.token.quantity.decimals
       })
     }
@@ -247,8 +249,7 @@ export const SendController = {
       to,
       address,
       data,
-      value: value ?? BigInt(0),
-      gasPrice: params.gasPrice
+      value: value ?? BigInt(0)
     })
 
     EventsController.sendEvent({
