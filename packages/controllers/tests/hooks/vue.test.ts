@@ -82,12 +82,12 @@ describe('useAppKitAccount', () => {
     AccountController.setUser({ username: 'test', email: 'testuser@example.com' }, 'eip155')
     AccountController.setSmartAccountDeployed(true, 'eip155')
     AccountController.setPreferredAccountType('smartAccount', 'eip155')
-    ConnectorController.state.connectors = [
-      {
-        id: ConstantsUtil.CONNECTOR_ID.AUTH,
-        type: 'AUTH'
-      } as AuthConnector
-    ]
+    const authConnector = {
+      id: ConstantsUtil.CONNECTOR_ID.AUTH,
+      type: 'ID_AUTH'
+    } as AuthConnector
+    ConnectorController.state.connectors = [authConnector]
+    ConnectorController.state.activeConnector = authConnector
 
     await nextTick()
 

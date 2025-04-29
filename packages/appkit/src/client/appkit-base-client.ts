@@ -1591,6 +1591,8 @@ export abstract class AppKitBaseClient {
       return undefined
     }
 
+    console.log('>> getAccount', authConnector, activeConnectorId)
+
     return {
       allAccounts: accountState.allAccounts,
       caipAddress: accountState.caipAddress,
