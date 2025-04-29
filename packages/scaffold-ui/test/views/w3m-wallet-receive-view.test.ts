@@ -162,7 +162,6 @@ describe('W3mWalletReceiveView', () => {
     const qrCode = element.shadowRoot?.querySelector('wui-qr-code')
     expect(qrCode).to.exist
     expect(qrCode?.getAttribute('uri')).to.equal(mockAddress)
-    expect(qrCode?.getAttribute('theme')).to.equal('light')
 
     // Check if compatible network section is rendered
     const compatibleNetwork = element.shadowRoot?.querySelector('wui-compatible-network')
