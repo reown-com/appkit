@@ -550,14 +550,14 @@ export const SwapController = {
       )
 
       if (isInsufficientToken) {
-        state.inputError = 'Insufficient funds'
+        state.inputError = 'Insufficient balance'
       } else {
         state.inputError = undefined
         this.setTransactionDetails()
       }
     } catch (error) {
       state.loadingQuote = false
-      state.inputError = 'Insufficient funds'
+      state.inputError = 'Insufficient balance'
     }
   },
 
