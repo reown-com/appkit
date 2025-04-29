@@ -364,7 +364,6 @@ export abstract class AppKitBaseClient {
           )
         })
         await this.syncWalletConnectAccount()
-        this.syncConnectedWalletInfo(activeChain as ChainNamespace)
       },
       connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
@@ -908,6 +907,7 @@ export abstract class AppKitBaseClient {
         this.setStatus('disconnected', chainNamespace)
       }
 
+      this.syncConnectedWalletInfo(chainNamespace)
       await ChainController.setApprovedCaipNetworksData(chainNamespace)
     })
 
