@@ -96,7 +96,6 @@ describe('W3mWalletSendView', () => {
 
     SendController.setToken(mockToken)
     SendController.setTokenAmount(50)
-    SendController.setGasPrice(BigInt(1))
     SendController.setNetworkBalanceInUsd('100')
 
     SendController.setReceiverAddress('invalid-address')
@@ -146,7 +145,6 @@ describe('W3mWalletSendView', () => {
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
 
     viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
-    viExpect(SwapController.getInitialGasPrice).toHaveBeenCalled()
   })
 
   it('should fetch balances on initialization', async () => {

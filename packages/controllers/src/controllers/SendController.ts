@@ -41,7 +41,6 @@ export interface SendControllerState {
   receiverAddress?: string
   receiverProfileName?: string
   receiverProfileImageUrl?: string
-  gasPrice?: bigint
   networkBalanceInUSD?: string
   loading: boolean
   lastRetry?: number
@@ -89,10 +88,6 @@ export const SendController = {
 
   setReceiverProfileName(receiverProfileName: SendControllerState['receiverProfileName']) {
     state.receiverProfileName = receiverProfileName
-  },
-
-  setGasPrice(gasPrice: SendControllerState['gasPrice']) {
-    state.gasPrice = gasPrice
   },
 
   setNetworkBalanceInUsd(networkBalanceInUSD: SendControllerState['networkBalanceInUSD']) {

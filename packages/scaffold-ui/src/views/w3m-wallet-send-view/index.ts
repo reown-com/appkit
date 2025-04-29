@@ -35,8 +35,6 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private loading = SendController.state.loading
 
-  @state() private gasPrice = SendController.state.gasPrice
-
   @state() private message:
     | 'Preview Send'
     | 'Select Token'
@@ -44,7 +42,6 @@ export class W3mWalletSendView extends LitElement {
     | 'Add Amount'
     | 'Insufficient Funds'
     | 'Incorrect Value'
-    | 'Insufficient Gas Funds'
     | 'Invalid Address' = 'Preview Send'
 
   public constructor() {
@@ -77,7 +74,6 @@ export class W3mWalletSendView extends LitElement {
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
-          .gasPrice=${this.gasPrice}
         ></w3m-input-token>
         <wui-icon-box
           size="inherit"
