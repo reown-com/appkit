@@ -36,7 +36,8 @@ test('should have no session account', async () => {
 
 test('should be authenticated', async () => {
   await modalPage.qrCodeFlow(modalPage, walletPage)
-  await modalValidator.expectConnected()
+  await modalPage.promptSiwe()
+  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectSession()
 })
 

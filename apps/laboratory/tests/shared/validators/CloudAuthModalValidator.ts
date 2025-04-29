@@ -16,16 +16,18 @@ export class CloudAuthModalValidator extends ModalValidator {
   }
 
   async expectSession() {
-    const text = await this.sessionStatus.innerText()
-    const object = JSON.parse(text)
+    await expect(async () => {
+      const text = await this.sessionStatus.innerText().catch(() => '""')
+      const object = JSON.parse(text)
 
-    expect(object).toMatchObject({
-      message: expect.any(String),
-      signature: expect.any(String),
-      data: expect.any(Object)
+      expect(object).toMatchObject({
+        message: expect.any(String),
+        signature: expect.any(String),
+        data: expect.any(Object)
+      })
+    }).toPass({
+      timeout: 10_000
     })
-
-    return object
   }
 
   async expectSessionAccount() {
