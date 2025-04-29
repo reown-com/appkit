@@ -52,7 +52,7 @@ describe('W3mSocialLoginWidget', () => {
     await googleButton.click()
 
     expect(CoreHelperUtil.returnOpenHref).toHaveBeenCalledWith(
-      'https://secure.walletconnect.org/sdk/loading',
+      'https://secure.walletconnect.org/loading',
       'popupWindow',
       'width=600,height=800,scrollbars=yes'
     )
