@@ -223,6 +223,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="recycleHorizontal"
         ?chevron=${true}
         @click=${this.handleClickSwap.bind(this)}
+        data-testid="w3m-account-default-swaps-button"
       >
         <wui-text variant="paragraph-500" color="fg-100">Swap</wui-text>
       </wui-list-item>
@@ -244,6 +245,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="send"
         ?chevron=${true}
         @click=${this.handleClickSend.bind(this)}
+        data-testid="w3m-account-default-send-button"
       >
         <wui-text variant="paragraph-500" color="fg-100">Send</wui-text>
       </wui-list-item>

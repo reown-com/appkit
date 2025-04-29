@@ -11,7 +11,9 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ---------------------------------------------------------------
 const ACTIVITY_BUTTON_TEST_ID = 'w3m-account-default-activity-button'
-const MOCK_ADDRESS = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
+const ONRAMP_BUTTON_TEST_ID = 'w3m-account-default-onramp-button'
+const SWAPS_BUTTON_TEST_ID = 'w3m-account-default-swaps-button'
+const SEND_BUTTON_TEST_ID = 'w3m-account-default-send-button'
 
 describe('W3mAccountDefaultWidget', () => {
   beforeAll(() => {
@@ -111,12 +113,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).not.toBeNull()
         expect(swapButton).not.toBeNull()
@@ -137,12 +136,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).toBeNull()
         expect(swapButton).not.toBeNull()
@@ -163,12 +159,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).not.toBeNull()
         expect(swapButton).toBeNull()
@@ -189,12 +182,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).not.toBeNull()
         expect(swapButton).not.toBeNull()
@@ -224,12 +214,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).not.toBeNull()
         expect(swapButton).toBeNull()
@@ -250,12 +237,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).toBeNull()
         expect(swapButton).toBeNull()
@@ -276,12 +260,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).not.toBeNull()
         expect(swapButton).toBeNull()
@@ -306,12 +287,9 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')
-        const swapButton = HelpersUtil.querySelect(
-          element,
-          'wui-list-item[icon="recycleHorizontal"]'
-        )
-        const sendButton = HelpersUtil.querySelect(element, 'wui-list-item[icon="send"]')
+        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
+        const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
         expect(onrampButton).toBeNull()
         expect(swapButton).toBeNull()
