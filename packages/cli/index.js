@@ -41,7 +41,7 @@ async function questionLibrary() {
       choices: [
         { name: 'AppKit Core', value: 'core' },
         { name: 'wagmi', value: 'wagmi' },
-        { name: 'ethers', value: 'ethers' },
+        { name: 'Ethers', value: 'ethers' },
         { name: 'Solana', value: 'solana' },
         { name: 'Bitcoin', value: 'bitcoin' },
         { name: 'Multichain', value: 'multichain' }
