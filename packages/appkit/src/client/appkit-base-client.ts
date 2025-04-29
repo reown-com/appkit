@@ -1585,7 +1585,7 @@ export abstract class AppKitBaseClient {
     const authConnector = ConnectorController.getAuthConnector(namespace)
     const accountState = ChainController.getAccountData(namespace)
     const activeChain = ChainController.state.activeChain as ChainNamespace
-    const activeConnectorId = ConnectorController.state.activeConnector?.id
+    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     if (!accountState) {
       return undefined

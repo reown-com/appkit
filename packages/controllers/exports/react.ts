@@ -40,7 +40,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 
   const chainAccountState = state.chains.get(chainNamespace)?.accountState
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
-  const activeConnectorId = ConnectorController.state.activeConnector?.id
+  const activeConnectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
 
   return {
     allAccounts: chainAccountState?.allAccounts || [],

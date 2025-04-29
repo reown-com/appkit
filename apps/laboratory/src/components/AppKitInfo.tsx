@@ -19,7 +19,7 @@ import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 export function AppKitInfo() {
-  const { caipAddress, address } = useAppKitAccount()
+  const { caipAddress, address, embeddedWalletInfo } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
@@ -33,6 +33,8 @@ export function AppKitInfo() {
       return null
     }
   }, [caipAddress, isEIP155])
+
+  console.log('>> embeddedWalletInfo', embeddedWalletInfo)
 
   return (
     <Card marginTop={10} marginBottom={10}>
@@ -75,6 +77,17 @@ export function AppKitInfo() {
                 Chain Id
               </Heading>
               <Text data-testid="w3m-chain-id">{chainId}</Text>
+            </Box>
+          )}
+
+          {embeddedWalletInfo && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Embedded Wallet Info
+              </Heading>
+              <Text data-testid="w3m-embedded-wallet-info">
+                {JSON.stringify(embeddedWalletInfo, null, 2)}
+              </Text>
             </Box>
           )}
 

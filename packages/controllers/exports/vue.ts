@@ -7,6 +7,7 @@ import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
+import { StorageUtil } from '../src/utils/StorageUtil.js'
 import type {
   AccountType,
   ChainAdapter,
@@ -33,7 +34,7 @@ export function useAppKitAccount(options?: {
     _chains: Map<ChainNamespace, ChainAdapter>,
     _chainNamespace: ChainNamespace | undefined
   ) {
-    const activeConnectorId = ConnectorController.state.activeConnector?.id
+    const activeConnectorId = StorageUtil.getConnectedConnectorId(_chainNamespace)
     const authConnector = _chainNamespace
       ? ConnectorController.getAuthConnector(_chainNamespace)
       : undefined
