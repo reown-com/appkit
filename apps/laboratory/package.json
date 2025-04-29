@@ -106,6 +106,7 @@
     "@reown/appkit-siwx": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@reown/appkit-wallet-button": "workspace:*",
+    "@reown/appkit-pay": "workspace:*",
     "@sentry/browser": "7.119.1",
     "@sentry/react": "7.92.0",
     "@solana/wallet-adapter-wallets": "0.19.32",
