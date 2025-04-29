@@ -502,6 +502,9 @@ importers:
       '@reown/appkit-experimental':
         specifier: workspace:*
         version: link:../../packages/experimental
+      '@reown/appkit-pay':
+        specifier: workspace:*
+        version: link:../../packages/pay
       '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
@@ -2075,8 +2078,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7
       sats-connect:
-        specifier: 3.3.0
-        version: 3.3.0(typescript@5.8.2)
+        specifier: 3.5.0
+        version: 3.5.0(typescript@5.8.2)
     devDependencies:
       '@leather.io/rpc':
         specifier: 2.1.21
@@ -2363,6 +2366,9 @@ importers:
       '@reown/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
+      '@reown/appkit-pay':
+        specifier: workspace:*
+        version: link:../pay
       '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -2641,6 +2647,40 @@ importers:
         specifier: 3.22.4
         version: 3.22.4
     devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 2.1.9
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.3)(terser@5.39.0))
+      vitest:
+        specifier: 2.1.9
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.3)(terser@5.39.0)
+
+  packages/pay:
+    dependencies:
+      '@reown/appkit-common':
+        specifier: workspace:*
+        version: link:../common
+      '@reown/appkit-controllers':
+        specifier: workspace:*
+        version: link:../controllers
+      '@reown/appkit-ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      lit:
+        specifier: 3.2.1
+        version: 3.2.1
+      valtio:
+        specifier: 1.13.2
+        version: 1.13.2(@types/react@19.0.0)(react@19.0.0)
+    devDependencies:
+      '@open-wc/testing':
+        specifier: 4.0.0
+        version: 4.0.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      '@types/react':
+        specifier: 19.0.0
+        version: 19.0.0
       '@vitest/coverage-v8':
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.3)(terser@5.39.0))
@@ -7961,8 +8001,8 @@ packages:
     resolution: {integrity: sha512-7ojVK/crhOaGowEO8uYWaopZzcr5rR76emgllGIfjCLR70aY4PbASpi9Pbs+7jIRzPDBBkM0RBo+zYx5UduX8Q==}
     engines: {node: '>=16'}
 
-  '@sats-connect/core@0.5.8':
-    resolution: {integrity: sha512-jT+Hp7ERko2PWElprbDME0IPBx1abEQHHLf9+f+VDBi+NRKQsfAOWnLGY8geaEgRp51tnqPHZ7v9o8zDcnfyIQ==}
+  '@sats-connect/core@0.6.5':
+    resolution: {integrity: sha512-jltPdG3RzY6NPSp/ldoVTu7hOmMiuXr90osTHFPoQzprxcOs/1U4sZt/qAyGhfOM6B+ZXb7DF686BmFkUpPCJA==}
 
   '@sats-connect/make-default-provider-config@0.0.10':
     resolution: {integrity: sha512-BBot3Ofa2J7OwXprgYPD4C8dppX4nnPxj4FXWq1H7fDsvwJmW4sAnfmnAIzwmyWZJOR2uZqtTkXAA08sVkoN5g==}
@@ -16372,8 +16412,8 @@ packages:
   sander@0.5.1:
     resolution: {integrity: sha512-3lVqBir7WuKDHGrKRDn/1Ye3kwpXaDOMsiRP1wd6wpZW56gJhsbp5RqQpA6JG/P+pkXizygnr1dKR8vzWaVsfA==}
 
-  sats-connect@3.3.0:
-    resolution: {integrity: sha512-rzWhSVzCeYAGYs2+RrVtU/jGdnobx83JuVdjN3fGSOa3s/6FIKXtV84nRlH111sE7yaUcTcqWy8K7UQ7uIOUvQ==}
+  sats-connect@3.5.0:
+    resolution: {integrity: sha512-/Czx9XcBV57ubAMrII3WaQG4kq7imdgGUOU9IRg0/8AWdjFczOq9wu1i7vCnxENm8MoRLuCfhMIHbekxUn23HA==}
 
   saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
@@ -25752,7 +25792,7 @@ snapshots:
 
   '@safe-global/safe-gateway-typescript-sdk@3.22.9': {}
 
-  '@sats-connect/core@0.5.8(typescript@5.8.2)':
+  '@sats-connect/core@0.6.5(typescript@5.8.2)':
     dependencies:
       axios: 1.8.4
       bitcoin-address-validation: 2.2.3
@@ -25763,9 +25803,9 @@ snapshots:
       - debug
       - typescript
 
-  '@sats-connect/make-default-provider-config@0.0.10(@sats-connect/core@0.5.8(typescript@5.8.2))(typescript@5.8.2)':
+  '@sats-connect/make-default-provider-config@0.0.10(@sats-connect/core@0.6.5(typescript@5.8.2))(typescript@5.8.2)':
     dependencies:
-      '@sats-connect/core': 0.5.8(typescript@5.8.2)
+      '@sats-connect/core': 0.6.5(typescript@5.8.2)
       '@sats-connect/ui': 0.0.6
       bowser: 2.11.0
       typescript: 5.8.2
@@ -40525,10 +40565,10 @@ snapshots:
       mkdirp: 0.5.6
       rimraf: 2.7.1
 
-  sats-connect@3.3.0(typescript@5.8.2):
+  sats-connect@3.5.0(typescript@5.8.2):
     dependencies:
-      '@sats-connect/core': 0.5.8(typescript@5.8.2)
-      '@sats-connect/make-default-provider-config': 0.0.10(@sats-connect/core@0.5.8(typescript@5.8.2))(typescript@5.8.2)
+      '@sats-connect/core': 0.6.5(typescript@5.8.2)
+      '@sats-connect/make-default-provider-config': 0.0.10(@sats-connect/core@0.6.5(typescript@5.8.2))(typescript@5.8.2)
       '@sats-connect/ui': 0.0.7
     transitivePeerDependencies:
       - debug

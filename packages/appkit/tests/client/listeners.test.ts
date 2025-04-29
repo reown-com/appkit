@@ -42,6 +42,8 @@ describe('Listeners', () => {
     const appKit = new AppKit(mockOptions)
     const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName').mockImplementation(() => {})
     const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage').mockImplementation(() => {})
+    // @ts-expect-error syncAllAccounts is protected method on AppKitBaseClient
+    const syncAllAccountsSpy = vi.spyOn(appKit, 'syncAllAccounts').mockImplementation(() => {})
 
     await appKit['syncAccount'](mockAccount)
     // @ts-expect-error private event
@@ -57,6 +59,7 @@ describe('Listeners', () => {
     })
     expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
     expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
+    expect(syncAllAccountsSpy).toHaveBeenCalledWith('eip155')
   })
 
   it('should call syncAccountInfo when namespace is different than active namespace', async () => {

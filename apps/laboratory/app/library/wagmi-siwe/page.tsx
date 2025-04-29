@@ -5,49 +5,46 @@ import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
-import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SiweData } from '@/src/components/Siwe/SiweData'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
+const networks = ConstantsUtil.EvmNetworks
+
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  networks: ConstantsUtil.EvmNetworks,
+  networks,
   projectId: ConstantsUtil.ProjectId
 })
 
-const modal = createAppKit({
+const config = {
   adapters: [wagmiAdapter],
-  networks: ConstantsUtil.EvmNetworks,
+  networks,
   defaultNetwork: mainnet,
-  projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
   },
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
-})
-
-ThemeStore.setModal(modal)
+}
 
 export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <InitializeBoundary>
+        <AppKitProvider config={config}>
           <AppKitButtons />
           <AppKitInfo />
           <SiweData />
           <WagmiTests />
-        </InitializeBoundary>
+        </AppKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

@@ -9,7 +9,8 @@ import {
   type AuthConnector,
   ChainController,
   ConnectionController,
-  ConnectorController
+  ConnectorController,
+  StorageUtil
 } from '../../exports/index.js'
 import { useAppKitAccount, useDisconnect } from '../../exports/vue.js'
 import {
@@ -82,12 +83,12 @@ describe('useAppKitAccount', () => {
     AccountController.setUser({ username: 'test', email: 'testuser@example.com' }, 'eip155')
     AccountController.setSmartAccountDeployed(true, 'eip155')
     AccountController.setPreferredAccountType('smartAccount', 'eip155')
-    ConnectorController.state.connectors = [
-      {
-        id: ConstantsUtil.CONNECTOR_ID.AUTH,
-        type: 'AUTH'
-      } as AuthConnector
-    ]
+    const authConnector = {
+      id: ConstantsUtil.CONNECTOR_ID.AUTH,
+      type: 'ID_AUTH'
+    } as AuthConnector
+    ConnectorController.state.connectors = [authConnector]
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
 
     await nextTick()
 
