@@ -303,8 +303,8 @@ export const SendController = {
   },
 
   async sendSolanaToken() {
-    if (!this.state.sendTokenAmount) {
-      throw new Error('SendTokenAmount is required')
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      throw new Error('An amount and receiver address are required')
     }
 
     RouterController.pushTransactionStack({
@@ -314,7 +314,7 @@ export const SendController = {
 
     await ConnectionController.sendTransaction({
       chainNamespace: 'solana',
-      to: this.state.receiverAddress as `0x${string}`,
+      to: this.state.receiverAddress,
       value: this.state.sendTokenAmount
     })
 

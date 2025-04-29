@@ -133,15 +133,15 @@ export class EthersAdapter extends AdapterBlueprint {
 
     const tx = await EthersMethods.sendTransaction(
       {
-        value: params.value as bigint,
+        value: BigInt(params.value),
         to: params.to as `0x${string}`,
-        data: params.data as `0x${string}`,
-        gas: params.gas as bigint,
-        gasPrice: params.gasPrice as bigint,
-        address: params.address
+        data: params.data ? (params.data as `0x${string}`) : '0x',
+        gas: params.gas ? BigInt(params.gas) : undefined,
+        gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
+        address: AccountController.state.address as `0x${string}`
       },
       params.provider as Provider,
-      params.address,
+      AccountController.state.address as `0x${string}`,
       Number(params.caipNetwork?.id)
     )
 
