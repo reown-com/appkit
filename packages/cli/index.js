@@ -39,6 +39,7 @@ async function questionLibrary() {
       name: 'library',
       message: 'wagmi, ethers, solana, bitcoin or EVM+Solana ?',
       choices: [
+        { name: 'AppKit Core', value: 'core' },
         { name: 'wagmi', value: 'wagmi' },
         { name: 'ethers', value: 'ethers' },
         { name: 'Solana', value: 'solana' },
