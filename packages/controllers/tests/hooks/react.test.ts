@@ -3,9 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { CaipNetwork } from '@reown/appkit-common'
 
 import {
+  type AuthConnector,
   ChainController,
   ConnectionController,
   ConnectorController,
+  type ConnectorControllerState,
   StorageUtil
 } from '../../exports/index.js'
 import { useAppKitAccount, useAppKitNetworkCore, useDisconnect } from '../../exports/react.js'
@@ -127,7 +129,13 @@ describe('useAppKitAccount', () => {
   it('should return correct embedded wallet info when connected with social provider', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValueOnce({} as any)
+    const authConnector = {
+      id: 'ID_AUTH',
+      name: 'ID Auth',
+      imageUrl: 'https://example.com/id-auth.png'
+    } as AuthConnector
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
 
     useSnapshot.mockReturnValueOnce({
@@ -174,6 +182,13 @@ describe('useAppKitAccount', () => {
   })
 
   it('should return account state with namespace parameter', async () => {
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      allConnectors: [{}],
+      connected: true,
+      activeConnector: {}
+    } as unknown as ConnectorControllerState)
+
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
 
