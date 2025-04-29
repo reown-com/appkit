@@ -149,7 +149,9 @@ describe('SatsConnectConnector', () => {
       purposes: expect.arrayContaining(['payment', 'ordinals', 'stacks']),
       message: 'Connect to your wallet'
     })
-    expect(mocks.wallet.request).toHaveBeenNthCalledWith(2, 'wallet_connect', null)
+    expect(mocks.wallet.request).toHaveBeenNthCalledWith(2, 'wallet_connect', {
+      network: BitcoinNetworkType.Mainnet
+    })
   })
 
   it('should throw if connect with empty addresses', async () => {

@@ -89,6 +89,8 @@ export interface RouterControllerState {
     | 'SmartSessionCreated'
     | 'SmartSessionList'
     | 'SIWXSignMessage'
+    | 'Pay'
+    | 'PayLoading'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
