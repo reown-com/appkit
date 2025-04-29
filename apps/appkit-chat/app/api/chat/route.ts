@@ -1,6 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { experimental_createMCPClient as createMCPClient, streamText } from 'ai'
-import { z } from 'zod'
 
 export const maxDuration = 30
 
@@ -14,7 +13,7 @@ export async function POST(req: Request) {
   const mcpClient = await createMCPClient({
     transport: {
       type: 'sse',
-      url: 'http://localhost:3004/sse/'
+      url: 'http://localhost:3003/sse'
     }
   })
 
