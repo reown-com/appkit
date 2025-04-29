@@ -65,8 +65,8 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
-        const { mobile_link, name } = this.wallet
-        const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, this.uri)
+        const { mobile_link, link_mode, name } = this.wallet
+        const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, this.uri, link_mode)
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
         const target = CoreHelperUtil.isIframe() ? '_top' : '_self'

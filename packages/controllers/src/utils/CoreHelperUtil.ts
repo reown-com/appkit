@@ -117,18 +117,26 @@ export const CoreHelperUtil = {
     return url.startsWith('http://') || url.startsWith('https://')
   },
 
-  formatNativeUrl(appUrl: string, wcUri: string): LinkingRecord {
+  formatNativeUrl(
+    appUrl: string,
+    wcUri: string,
+    universalLink: string | null = null
+  ): LinkingRecord {
     if (CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri)
     }
-    let safeAppUrl = appUrl
+
+    let safeAppUrl = universalLink || appUrl
+
     if (!safeAppUrl.includes('://')) {
       safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
       safeAppUrl = `${safeAppUrl}://`
     }
+
     if (!safeAppUrl.endsWith('/')) {
       safeAppUrl = `${safeAppUrl}/`
     }
+
     // Android deeplinks in tg context require the uri to be encoded twice
     if (this.isTelegram() && this.isAndroid()) {
       // eslint-disable-next-line no-param-reassign
