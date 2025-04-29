@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "pnpm start",
     "playwright:install": "playwright install --with-deps",
+    "playwright:install-deps": "pnpm playwright install-deps",
     "synpress": "synpress ./tests/wallet-setup",
     "playwright:test": "HEADLESS=true playwright test",
     "playwright:test:mobile-wallet-features": "playwright test --grep 'mobile-wallet-features.spec.ts'",
@@ -105,6 +106,7 @@
     "@reown/appkit-siwx": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@reown/appkit-wallet-button": "workspace:*",
+    "@reown/appkit-pay": "workspace:*",
     "@sentry/browser": "7.119.1",
     "@sentry/react": "7.92.0",
     "@solana/wallet-adapter-wallets": "0.19.32",
@@ -112,8 +114,8 @@
     "@tanstack/react-query": "5.24.8",
     "@wagmi/connectors": "5.7.12",
     "@wagmi/core": "2.16.7",
-    "@walletconnect/universal-provider": "2.19.2",
-    "@walletconnect/utils": "2.19.2",
+    "@walletconnect/universal-provider": "2.20.0",
+    "@walletconnect/utils": "2.20.0",
     "axios": "1.8.3",
     "bitcoinjs-lib": "7.0.0-rc.0",
     "bs58": "6.0.0",
@@ -131,7 +133,7 @@
     "viem": "2.23.13",
     "wagmi": "2.14.16",
     "webauthn-p256": "0.0.2",
-    "@walletconnect/sign-client": "2.19.2"
+    "@walletconnect/sign-client": "2.20.0"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.758.0",

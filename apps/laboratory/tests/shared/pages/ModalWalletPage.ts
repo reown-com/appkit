@@ -2,6 +2,8 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 
+import { setupNetworkListener } from '@/src/utils/NetworkUtil'
+
 import { ModalPage } from './ModalPage'
 
 export class ModalWalletPage extends ModalPage {
@@ -11,6 +13,7 @@ export class ModalWalletPage extends ModalPage {
 
   constructor(page: Page, library: string, flavor: 'default' | 'all' | 'siwe') {
     super(page, library, flavor)
+    setupNetworkListener(page)
     this.page = page
     this.library = library
     this.flavor = flavor

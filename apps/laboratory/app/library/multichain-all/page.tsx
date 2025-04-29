@@ -10,24 +10,22 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChain'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
-import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
 const networks = ConstantsUtil.AllNetworks
 
 const wagmiAdapter = new WagmiAdapter({
-  ssr: true,
+  ssr: false,
   networks,
   projectId: ConstantsUtil.ProjectId
 })
@@ -38,7 +36,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 
 const bitcoinAdapter = new BitcoinAdapter()
 
-const modal = createAppKit({
+const config = {
   adapters: [wagmiAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
   networks,
   defaultNetwork: mainnet,
@@ -47,22 +45,20 @@ const modal = createAppKit({
     analytics: true
   },
   metadata: ConstantsUtil.Metadata
-})
-
-ThemeStore.setModal(modal)
+}
 
 export default function Page() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <InitializeBoundary>
+        <AppKitProvider config={config}>
           <AppKitButtonsMultiChain />
           <AppKitInfoMultiChain />
           <AppKitInfo />
           <WagmiTests />
           <SolanaTests />
           <BitcoinTests />
-        </InitializeBoundary>
+        </AppKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

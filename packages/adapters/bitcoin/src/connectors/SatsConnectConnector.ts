@@ -75,10 +75,15 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   async connect() {
+    const currentNetwork = this.getActiveNetwork()
+    const networkName = mapCaipNetworkToXverseName(currentNetwork?.caipNetworkId)
+
     const address = await this.getAccountAddresses()
       .then(addresses => addresses[0]?.address)
       .catch(() =>
-        this.internalRequest('wallet_connect', null).then(
+        this.internalRequest('wallet_connect', {
+          network: networkName
+        }).then(
           response =>
             response?.addresses
               .map(add => ({ ...add, purpose: mapSatsConnectAddressPurpose(add.purpose) }))
