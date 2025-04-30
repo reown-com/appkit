@@ -4,7 +4,10 @@ import {
   ApiController,
   ChainController,
   ConnectorController,
+  CoreHelperUtil,
+  EventsController,
   ModalController,
+  OptionsController,
   RouterController
 } from '../../exports/index.js'
 
@@ -12,6 +15,7 @@ import {
 describe('ModalController', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValueOnce(false)
   })
 
   it('should have valid default state', () => {
@@ -87,5 +91,89 @@ describe('ModalController', () => {
     await ModalController.open({ namespace: 'bip122' })
 
     expect(resetSpy).toHaveBeenCalledWith('Connect')
+  })
+
+  it('should not open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is false', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      manualWCControl: false
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      ...ChainController.state,
+      noAdapters: true
+    })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      caipAddress: 'eip155:0x123'
+    } as any)
+    vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const resetSpy = vi.spyOn(RouterController, 'reset')
+
+    await ModalController.open()
+
+    expect(resetSpy).not.toHaveBeenCalledWith('ConnectingWalletConnectBasic')
+  })
+
+  it('should open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is true', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      manualWCControl: true
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      ...ChainController.state,
+      noAdapters: true
+    })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      caipAddress: undefined
+    } as any)
+    vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const resetSpy = vi.spyOn(RouterController, 'reset')
+
+    await ModalController.open()
+
+    expect(resetSpy).toHaveBeenCalledWith('ConnectingWalletConnectBasic')
+  })
+
+  it('should not open the ConnectingWalletConnectBasic modal view when not connected and manualWCControl is false', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      manualWCControl: false
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      ...ChainController.state,
+      noAdapters: false
+    })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      caipAddress: undefined
+    } as any)
+    vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const resetSpy = vi.spyOn(RouterController, 'reset')
+
+    await ModalController.open()
+
+    expect(resetSpy).not.toHaveBeenCalledWith('ConnectingWalletConnectBasic')
+  })
+
+  it('should open the ConnectingWalletConnectBasic modal view when not connected and manualWCControl is true', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      manualWCControl: true
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      ...ChainController.state,
+      noAdapters: false
+    })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      caipAddress: undefined
+    } as any)
+    vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const resetSpy = vi.spyOn(RouterController, 'reset')
+
+    await ModalController.open()
+
+    expect(resetSpy).toHaveBeenCalledWith('ConnectingWalletConnectBasic')
   })
 })
