@@ -10,7 +10,6 @@ import {
   ConstantsUtil,
   OptionsController,
   RouterController,
-  SnackController,
   type SocialProvider,
   type WalletGuideType
 } from '@reown/appkit-controllers'
