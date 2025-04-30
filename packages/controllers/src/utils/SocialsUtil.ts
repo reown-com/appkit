@@ -48,25 +48,19 @@ export async function connectSocial(
     }, 45_000)
 
     if (authConnector && socialProvider) {
-      if (!CoreHelperUtil.isTelegram() && !CoreHelperUtil.isPWA()) {
+      if (!CoreHelperUtil.isTelegram()) {
         popupWindow = getPopupWindow()
       }
 
       if (popupWindow) {
         AccountController.setSocialWindow(popupWindow, ChainController.state.activeChain)
-      } else if (!CoreHelperUtil.isTelegram() && !CoreHelperUtil.isPWA()) {
+      } else if (!CoreHelperUtil.isTelegram()) {
         throw new Error('Could not create social popup')
       }
 
-      const socialRedirectPromise = authConnector.provider.getSocialRedirectUri({
+      const { uri } = await authConnector.provider.getSocialRedirectUri({
         provider: socialProvider
       })
-      const { uri } = (await Promise.race([
-        socialRedirectPromise,
-        new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Social redirect URI request timed out')), 10000)
-        })
-      ])) as { uri: string }
 
       if (!uri) {
         popupWindow?.close()
@@ -80,9 +74,8 @@ export async function connectSocial(
       if (CoreHelperUtil.isTelegram()) {
         StorageUtil.setTelegramSocialProvider(socialProvider)
         const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+
         CoreHelperUtil.openHref(parsedUri, '_top')
-      } else if (CoreHelperUtil.isPWA()) {
-        throw new Error('PWA not supported')
       }
 
       clearTimeout(timeout)

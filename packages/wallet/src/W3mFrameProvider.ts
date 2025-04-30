@@ -58,6 +58,11 @@ export class W3mFrameProvider {
         }
       })
     })
+    this.loadFrame()
+  }
+
+  private async loadFrame() {
+    await this.w3mFrame.frameLoadPromise
   }
 
   public async init() {
