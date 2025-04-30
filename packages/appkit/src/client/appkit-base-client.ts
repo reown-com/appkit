@@ -27,6 +27,7 @@ import type {
   OptionsControllerState,
   PublicStateControllerState,
   RouterControllerState,
+  SIWXConfig,
   SendTransactionArgs,
   SocialProvider,
   ThemeControllerState,
@@ -1514,6 +1515,10 @@ export abstract class AppKitBaseClient {
 
   public async disconnect(chainNamespace?: ChainNamespace) {
     await ConnectionController.disconnect(chainNamespace)
+  }
+
+  public getSIWX<SIWXConfigInterface = SIWXConfig>() {
+    return OptionsController.state.siwx as SIWXConfigInterface | undefined
   }
 
   // -- review these -------------------------------------------------------------------

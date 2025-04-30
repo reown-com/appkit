@@ -48,6 +48,7 @@
     "playwright:test:multichain-ethers5-auth-siwe": "playwright test --grep multichain-ethers5-solana-email-siwe.spec.ts",
     "playwright:test:multichain-ethers5-siwe": "playwright test --grep multichain-ethers5-solana-siwe.spec.ts",
     "playwright:test:core-sign-client": "playwright test --grep sign-client.spec.ts",
+    "playwright:test:cloud-auth": "playwright test --grep cloud-auth.spec.ts",
     "playwright:debug:core-sign-client": "pnpm playwright:test:core-sign-client --debug",
     "playwright:test:core": "playwright test --grep core.spec.ts",
     "playwright:debug:core": "pnpm playwright:test:core --debug",
@@ -87,7 +88,8 @@
     "playwright:debug:multichain-ethers5": "pnpm playwright:test:multichain-ethers5 --debug",
     "playwright:debug:multichain-ethers5-auth": "pnpm playwright:test:multichain-ethers5-auth --debug",
     "playwright:debug:multichain-ethers5-auth-siwe": "pnpm playwright:test:multichain-ethers5-auth-siwe --debug",
-    "playwright:debug:multichain-ethers5-siwe": "pnpm playwright:test:multichain-ethers5-siwe --debug"
+    "playwright:debug:multichain-ethers5-siwe": "pnpm playwright:test:multichain-ethers5-siwe --debug",
+    "playwright:debug:cloud-auth": "pnpm playwright:test:cloud-auth --debug"
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "1.2.0",
