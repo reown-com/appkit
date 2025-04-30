@@ -54,7 +54,7 @@ export async function connectSocial(
 
       if (popupWindow) {
         AccountController.setSocialWindow(popupWindow, ChainController.state.activeChain)
-      } else if (!CoreHelperUtil.isTelegram()) {
+      } else if (!CoreHelperUtil.isTelegram() && !CoreHelperUtil.isPWA()) {
         throw new Error('Could not create social popup')
       }
 
