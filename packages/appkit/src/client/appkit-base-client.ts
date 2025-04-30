@@ -405,6 +405,7 @@ export abstract class AppKitBaseClient {
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
+        this.syncConnectedWalletInfo(chainToUse)
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -412,6 +413,7 @@ export abstract class AppKitBaseClient {
         if (adapter?.reconnect) {
           await adapter?.reconnect({ id, info, type, provider, chainId: this.getCaipNetwork()?.id })
           StorageUtil.addConnectedNamespace(namespace)
+          this.syncConnectedWalletInfo(namespace)
         }
       },
       disconnect: async (chainNamespace?: ChainNamespace) => {
@@ -426,6 +428,7 @@ export abstract class AppKitBaseClient {
         ProviderUtil.resetChain(namespace)
         this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
+        this.setConnectedWalletInfo(undefined, namespace)
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -904,6 +907,7 @@ export abstract class AppKitBaseClient {
         this.setStatus('disconnected', chainNamespace)
       }
 
+      this.syncConnectedWalletInfo(chainNamespace)
       await ChainController.setApprovedCaipNetworksData(chainNamespace)
     })
 
