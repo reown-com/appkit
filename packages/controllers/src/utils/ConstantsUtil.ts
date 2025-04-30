@@ -222,6 +222,7 @@ export const ConstantsUtil = {
     MOBILE: 'Open and continue in a new browser tab'
   },
 
+  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   DEFAULT_FEATURES: {
     swaps: true,
     onramp: true,

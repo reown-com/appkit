@@ -15,7 +15,7 @@ import {
 } from '@reown/appkit-controllers'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
-import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
+import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
@@ -134,15 +134,15 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     const tx = await Ethers5Methods.sendTransaction(
       {
-        value: params.value as bigint,
-        to: params.to as `0x${string}`,
-        data: params.data as `0x${string}`,
-        gas: params.gas as bigint,
-        gasPrice: params.gasPrice as bigint,
-        address: params.address
+        value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
+        to: params.to as Address,
+        data: params.data ? (params.data as Address) : '0x',
+        gas: params.gas ? BigInt(params.gas) : undefined,
+        gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
+        address: AccountController.state.address as Address
       },
       params.provider as Provider,
-      params.address,
+      AccountController.state.address as Address,
       Number(params.caipNetwork?.id)
     )
 
@@ -178,12 +178,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
     try {
       const result = await Ethers5Methods.estimateGas(
         {
-          data: params.data as `0x${string}`,
-          to: params.to as `0x${string}`,
-          address: address as `0x${string}`
+          data: params.data as Address,
+          to: params.to as Address,
+          address: address as Address
         },
         provider as Provider,
-        address as `0x${string}`,
+        address as Address,
         Number(caipNetwork?.id)
       )
 
@@ -353,7 +353,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       })
 
       this.emit('accountChanged', {
-        address: address as `0x${string}`,
+        address: address as Address,
         chainId: Number(chainId)
       })
     } else {
@@ -384,7 +384,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       }
 
       this.emit('accountChanged', {
-        address: accounts[0] as `0x${string}`,
+        address: accounts[0] as Address,
         chainId: Number(chainId)
       })
 
@@ -392,7 +392,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     return {
-      address: accounts[0] as `0x${string}`,
+      address: accounts[0] as Address,
       chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
@@ -561,7 +561,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
         this.emit('accountChanged', {
-          address: accounts[0] as `0x${string}`
+          address: accounts[0] as Address
         })
       } else {
         disconnect()
@@ -684,7 +684,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
   public async revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
-  ): Promise<`0x${string}`> {
+  ): Promise<Address> {
     const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
