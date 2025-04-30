@@ -82,7 +82,7 @@ export async function connectSocial(
         const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
         CoreHelperUtil.openHref(parsedUri, '_top')
       } else if (CoreHelperUtil.isPWA()) {
-        CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+        throw new Error('PWA not supported')
       }
 
       clearTimeout(timeout)
