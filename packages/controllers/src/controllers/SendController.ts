@@ -25,7 +25,6 @@ import { SnackController } from './SnackController.js'
 export interface TxParams {
   receiverAddress: string
   sendTokenAmount: number
-  gasPrice: bigint
   decimals: string
 }
 
@@ -42,8 +41,6 @@ export interface SendControllerState {
   receiverAddress?: string
   receiverProfileName?: string
   receiverProfileImageUrl?: string
-  gasPrice?: bigint
-  gasPriceInUSD?: number
   networkBalanceInUSD?: string
   loading: boolean
   lastRetry?: number
@@ -93,14 +90,6 @@ export const SendController = {
     state.receiverProfileName = receiverProfileName
   },
 
-  setGasPrice(gasPrice: SendControllerState['gasPrice']) {
-    state.gasPrice = gasPrice
-  },
-
-  setGasPriceInUsd(gasPriceInUSD: SendControllerState['gasPriceInUSD']) {
-    state.gasPriceInUSD = gasPriceInUSD
-  },
-
   setNetworkBalanceInUsd(networkBalanceInUSD: SendControllerState['networkBalanceInUSD']) {
     state.networkBalanceInUSD = networkBalanceInUSD
   },
@@ -132,7 +121,16 @@ export const SendController = {
   async sendEvmToken() {
     const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     const activeAccountType = AccountController.state.preferredAccountTypes?.[activeChainNamespace]
-    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      throw new Error('An amount and receiver address are required')
+    }
+
+    if (!this.state.token) {
+      throw new Error('A token is required')
+    }
+
+    if (this.state.token?.address) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
@@ -149,18 +147,13 @@ export const SendController = {
         sendTokenAmount: this.state.sendTokenAmount,
         decimals: this.state.token.quantity.decimals
       })
-    } else if (
-      this.state.receiverAddress &&
-      this.state.sendTokenAmount &&
-      this.state.gasPrice &&
-      this.state.token?.quantity.decimals
-    ) {
+    } else {
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.state.token?.symbol,
+          token: this.state.token.symbol || '',
           amount: this.state.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
@@ -168,7 +161,6 @@ export const SendController = {
       await this.sendNativeToken({
         receiverAddress: this.state.receiverAddress,
         sendTokenAmount: this.state.sendTokenAmount,
-        gasPrice: this.state.gasPrice,
         decimals: this.state.token.quantity.decimals
       })
     }
@@ -232,35 +224,6 @@ export const SendController = {
       : '0'
   },
 
-  isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
-    const gasPrice = gasPriceInUSD || '0'
-
-    if (NumberUtil.bigNumber(networkBalanceInUSD).eq(0)) {
-      return true
-    }
-
-    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).gt(networkBalanceInUSD)
-  },
-
-  hasInsufficientGasFunds() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-    let isInsufficientNetworkTokenForGas = true
-    if (
-      AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
-      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    ) {
-      // Smart Accounts may pay gas in any ERC20 token
-      isInsufficientNetworkTokenForGas = false
-    } else if (state.networkBalanceInUSD) {
-      isInsufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
-        state.networkBalanceInUSD,
-        state.gasPriceInUSD
-      )
-    }
-
-    return isInsufficientNetworkTokenForGas
-  },
-
   async sendNativeToken(params: TxParams) {
     const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     RouterController.pushTransactionStack({
@@ -281,8 +244,7 @@ export const SendController = {
       to,
       address,
       data,
-      value: value ?? BigInt(0),
-      gasPrice: params.gasPrice
+      value: value ?? BigInt(0)
     })
 
     EventsController.sendEvent({
@@ -336,8 +298,8 @@ export const SendController = {
   },
 
   async sendSolanaToken() {
-    if (!this.state.sendTokenAmount) {
-      throw new Error('SendTokenAmount is required')
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      throw new Error('An amount and receiver address are required')
     }
 
     RouterController.pushTransactionStack({
@@ -347,7 +309,7 @@ export const SendController = {
 
     await ConnectionController.sendTransaction({
       chainNamespace: 'solana',
-      to: this.state.receiverAddress as `0x${string}`,
+      to: this.state.receiverAddress,
       value: this.state.sendTokenAmount
     })
 

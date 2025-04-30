@@ -182,7 +182,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     const connection = SolStoreUtil.state.connection
 
-    if (!connection || !params.address || !params.provider) {
+    if (!connection || !params.provider) {
       throw new Error('Connection is not set')
     }
 
@@ -192,7 +192,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       provider,
       connection,
       to: params.to,
-      value: params.value as number
+      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
     })
 
     const result = await provider.sendTransaction(transaction, connection)
