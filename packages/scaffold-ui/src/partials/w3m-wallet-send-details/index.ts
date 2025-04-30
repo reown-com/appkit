@@ -20,15 +20,10 @@ export class W3mWalletSendDetails extends LitElement {
 
   @property({ type: Object }) public caipNetwork?: CaipNetwork
 
-  @property({ type: Number }) public networkFee?: number
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <wui-text variant="small-400" color="fg-200">Details</wui-text>
       <wui-flex flexDirection="column" gap="xxs">
-        <wui-list-content textTitle="Network cost" textValue="$${ifDefined(
-          UiHelperUtil.formatNumberToLocalString(this.networkFee, 2)
-        )}"></wui-list-content></wui-list-content>
         <wui-list-content
           textTitle="Address"
           textValue=${UiHelperUtil.getTruncateString({
