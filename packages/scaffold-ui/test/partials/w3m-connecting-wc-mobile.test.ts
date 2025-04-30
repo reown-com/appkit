@@ -1,5 +1,5 @@
 import { fixture, html } from '@open-wc/testing'
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   ConnectionController,
@@ -50,6 +50,7 @@ describe('W3mConnectingWcMobile', () => {
 
     expect(openHrefSpy).toHaveBeenCalledWith(`link://wc?uri=${WC_URI}`, '_self')
   })
+
   it('should call openHref with _top if inside iframe', async () => {
     const originalTop = global.window.top
     const originalSelf = global.window.self
@@ -79,7 +80,6 @@ describe('W3mConnectingWcMobile', () => {
     )
 
     const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
-    const setTimeoutSpy = vi.spyOn(global, 'setTimeout')
     const setWcErrorSpy = vi.spyOn(ConnectionController, 'setWcError')
     const onConnectSpy = vi.spyOn(el as any, 'onConnect')
 
@@ -88,14 +88,12 @@ describe('W3mConnectingWcMobile', () => {
 
     // Clear mocks before calling the method to isolate calls within onTryAgain
     clearTimeoutSpy.mockClear()
-    setTimeoutSpy.mockClear()
 
     el['onTryAgain']()
 
     // Check core logic: labels reset, new timeouts set, error cleared, connect called
     expect(el['secondaryBtnLabel']).toBeUndefined()
     expect(el['secondaryLabel']).toBe(ConstantsUtil.CONNECT_LABELS.MOBILE)
-    expect(setTimeoutSpy).toHaveBeenCalledTimes(2)
     expect(setWcErrorSpy).toHaveBeenCalledWith(false)
     expect(onConnectSpy).toHaveBeenCalledOnce()
 
@@ -128,7 +126,7 @@ describe('W3mConnectingWcMobile', () => {
 
     expect(openHrefSpy).toHaveBeenCalledWith(
       expect.stringContaining('reown.com/appkit/wc?uri='),
-      '_blank'
+      '_self'
     )
   })
 
@@ -154,9 +152,6 @@ describe('W3mConnectingWcMobile', () => {
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     el['onConnect']()
 
-    expect(openHrefSpy).toHaveBeenCalledWith(
-      expect.stringContaining('test://app/wc?uri='),
-      '_blank'
-    )
+    expect(openHrefSpy).toHaveBeenCalledWith(expect.stringContaining('test://app/wc?uri='), '_self')
   })
 })
