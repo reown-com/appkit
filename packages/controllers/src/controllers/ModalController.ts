@@ -80,7 +80,7 @@ export const ModalController = {
     const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
     const hasNoAdapters = ChainController.state.noAdapters
 
-    if (hasNoAdapters && !caipAddress) {
+    if (OptionsController.state.manualWCControl || (hasNoAdapters && !caipAddress)) {
       if (CoreHelperUtil.isMobile()) {
         RouterController.reset('AllWallets')
       } else {
@@ -88,12 +88,10 @@ export const ModalController = {
       }
     } else if (options?.view) {
       RouterController.reset(options.view, options.data)
-    } else if (!OptionsController.state.manualWCControl) {
-      if (caipAddress) {
-        RouterController.reset('Account')
-      } else {
-        RouterController.reset('Connect')
-      }
+    } else if (caipAddress) {
+      RouterController.reset('Account')
+    } else {
+      RouterController.reset('Connect')
     }
 
     state.open = true
