@@ -78,13 +78,14 @@ describe('CoreHelperUtil', () => {
 
     it('should format Binance Wallet URL with universal link', () => {
       const appUrl = 'bnc://app.binance.com/cedefi/'
-      const universalLink = 'https://app.binance.com/cedefi'
+      const universalLink = 'https://app.binance.com/cedefi/'
 
       const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, universalLink)
 
       expect(result).toEqual({
-        redirect: `${universalLink}/wc?uri=${encodeURIComponent(wcUri)}`,
-        href: universalLink
+        redirect: `${appUrl}wc?uri=${encodeURIComponent(wcUri)}`,
+        redirectUniversalLink: `${universalLink}wc?uri=${encodeURIComponent(wcUri)}`,
+        href: appUrl
       })
     })
 
