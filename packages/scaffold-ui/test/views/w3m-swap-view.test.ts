@@ -429,7 +429,7 @@ describe('W3mSwapView', () => {
   })
 
   it('should call handleChangeAmount with max value when setting max value', async () => {
-    const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens')
+    const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens').mockImplementation(vi.fn())
 
     const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
     await element.updateComplete
