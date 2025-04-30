@@ -23,10 +23,6 @@ export class W3mInputToken extends LitElement {
 
   @property({ type: Number }) public sendTokenAmount?: number
 
-  @property({ type: Number }) public gasPriceInUSD?: number
-
-  @property({ type: Number }) public gasPrice?: number
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <wui-flex

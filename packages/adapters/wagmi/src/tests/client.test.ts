@@ -239,6 +239,10 @@ describe('WagmiAdapter', () => {
   describe('WagmiAdapter - sendTransaction', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       vi.mocked(getAccount).mockReturnValue({
         chainId: 1,
         address: '0x123',
@@ -255,7 +259,6 @@ describe('WagmiAdapter', () => {
       vi.mocked(waitForTransactionReceipt).mockResolvedValue({} as any)
 
       const result = await adapter.sendTransaction({
-        address: '0x123',
         to: '0x456',
         value: BigInt(1000),
         gas: BigInt(21000),
