@@ -102,4 +102,61 @@ describe('W3mConnectingWcMobile', () => {
     // Check that the original timeouts were cleared at least once during the process
     expect(clearTimeoutSpy).toHaveBeenCalled()
   })
+
+  it('should use link_mode when enableUniversalLinks is true and wallet has link_mode', async () => {
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValueOnce({
+      ...RouterController.state,
+      data: {
+        wallet: {
+          id: 'test',
+          name: 'test',
+          mobile_link: 'link',
+          link_mode: 'reown.com/appkit'
+        }
+      }
+    })
+
+    const el: W3mConnectingWcMobile = await fixture(
+      html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
+    )
+
+    // Mock enableUniversalLinks to true
+    el['enableUniversalLinks'] = true
+
+    const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+    el['onConnect']()
+
+    expect(openHrefSpy).toHaveBeenCalledWith(
+      expect.stringContaining('reown.com/appkit/wc?uri='),
+      '_blank'
+    )
+  })
+
+  it('should use deeplink if enableUniversalLinks is enabled but wallet has no link_mode', async () => {
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValueOnce({
+      ...RouterController.state,
+      data: {
+        wallet: {
+          id: 'test',
+          name: 'test',
+          mobile_link: 'test://app'
+        }
+      }
+    })
+
+    const el: W3mConnectingWcMobile = await fixture(
+      html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
+    )
+
+    // Mock enableUniversalLinks to true
+    el['enableUniversalLinks'] = true
+
+    const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+    el['onConnect']()
+
+    expect(openHrefSpy).toHaveBeenCalledWith(
+      expect.stringContaining('test://app/wc?uri='),
+      '_blank'
+    )
+  })
 })
