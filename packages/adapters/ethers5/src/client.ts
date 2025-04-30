@@ -134,7 +134,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     const tx = await Ethers5Methods.sendTransaction(
       {
-        value: BigInt(params.value),
+        value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
         to: params.to as Address,
         data: params.data ? (params.data as Address) : '0x',
         gas: params.gas ? BigInt(params.gas) : undefined,

@@ -192,7 +192,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       provider,
       connection,
       to: params.to,
-      value: Number(params.value)
+      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
     })
 
     const result = await provider.sendTransaction(transaction, connection)
