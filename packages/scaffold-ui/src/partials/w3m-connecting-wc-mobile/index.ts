@@ -5,7 +5,8 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  type OpenTarget
+  type OpenTarget,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -24,6 +25,8 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   @state() protected redirectUniversalLink: string | undefined = undefined
 
   @state() protected target: OpenTarget | undefined = undefined
+
+  @state() protected enableUniversalLinks = OptionsController.state.enableUniversalLinks
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -61,9 +64,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     }, ConstantsUtil.FIVE_SEC_MS)
     this.labelTimeout = setTimeout(() => {
-      if (this.redirectUniversalLink) {
-        CoreHelperUtil.openHref(this.redirectUniversalLink, this.target)
-      }
       this.secondaryLabel = `Hold tight... it's taking longer than expected`
     }, ConstantsUtil.THREE_SEC_MS)
   }
@@ -92,7 +92,13 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
 
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
-        CoreHelperUtil.openHref(this.redirectDeeplink, this.target)
+
+        if (this.enableUniversalLinks && this.redirectUniversalLink) {
+          CoreHelperUtil.openHref(this.redirectUniversalLink, this.target)
+        } else {
+          CoreHelperUtil.openHref(this.redirectDeeplink, this.target)
+        }
+
         clearTimeout(this.labelTimeout)
         this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
       } catch (e) {
