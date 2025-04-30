@@ -47,7 +47,7 @@ export class W3mFrame {
     })
 
     // Create iframe only when sdk is initialised from dapp / appkit
-    if (isAppClient) {
+    if (isAppClient || W3mFrameHelpers.isPWA()) {
       this.frameLoadPromise = new Promise((resolve, reject) => {
         this.frameLoadPromiseResolver = { resolve, reject }
       })
@@ -75,6 +75,10 @@ export class W3mFrame {
         })
       }
     }
+
+    if (W3mFrameHelpers.isPWA()) {
+      this.loadFrame()
+    }
   }
 
   public initFrame = () => {
@@ -82,6 +86,11 @@ export class W3mFrame {
     if (this.iframe && !isFrameInitialized) {
       document.body.appendChild(this.iframe)
     }
+  }
+
+  private loadFrame = async () => {
+    await this.frameLoadPromise
+    this.initFrame()
   }
 
   // -- Networks --------------------------------------------------------------

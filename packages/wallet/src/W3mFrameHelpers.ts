@@ -53,5 +53,15 @@ export const W3mFrameHelpers = {
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
   },
 
-  isClient: typeof window !== 'undefined'
+  isClient: typeof window !== 'undefined',
+  isPWA() {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    const isStandaloneDisplayMode = window.matchMedia?.('(display-mode: standalone)').matches
+    const isIOSStandalone = (window.navigator as unknown as { standalone: boolean }).standalone
+
+    return isStandaloneDisplayMode || isIOSStandalone
+  }
 }
