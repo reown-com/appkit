@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type AuthConnector,
+  ChainController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -18,6 +19,8 @@ describe('W3mSocialLoginList', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
+
+    vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
 
     vi.spyOn(OptionsController.state, 'features', 'get').mockReturnValue({
       socials: ['google', 'github']
