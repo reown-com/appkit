@@ -138,7 +138,7 @@ export const CoreHelperUtil = {
       safeAppUrl = `${safeAppUrl}/`
     }
 
-    if (!safeUniversalLink?.endsWith('/')) {
+    if (safeUniversalLink && !safeUniversalLink?.endsWith('/')) {
       safeUniversalLink = `${safeUniversalLink}/`
     }
 
