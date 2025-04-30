@@ -328,7 +328,7 @@ export class AppKit extends AppKitBaseClient {
 
     const isSocialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
-      : CoreConstantsUtil.DEFAULT_FEATURES.socials
+      : (this.options?.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
 
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
 
