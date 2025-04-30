@@ -58,9 +58,15 @@ export async function connectSocial(
         throw new Error('Could not create social popup')
       }
 
-      const { uri } = await authConnector.provider.getSocialRedirectUri({
+      const socialRedirectPromise = authConnector.provider.getSocialRedirectUri({
         provider: socialProvider
       })
+      const { uri } = (await Promise.race([
+        socialRedirectPromise,
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Social redirect URI request timed out')), 10000)
+        })
+      ])) as { uri: string }
 
       if (!uri) {
         popupWindow?.close()
