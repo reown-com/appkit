@@ -427,10 +427,9 @@ describe('W3mSwapView', () => {
     vitestExpect(resetStateSpy).toHaveBeenCalled()
     vitestExpect(initializeStateSpy).not.toHaveBeenCalled()
   })
-
   it('should call handleChangeAmount with max value when setting max value', async () => {
-    const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens').mockImplementation(vi.fn())
-
+    vi.useFakeTimers()
+    const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens')
     const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
     await element.updateComplete
 
@@ -443,6 +442,11 @@ describe('W3mSwapView', () => {
       'sourceToken',
       '100.00000000000000000000'
     )
-    swapTokensSpy.mockClear()
+
+    // Wait for debounce timeout
+    await vi.advanceTimersByTime(200)
+
+    vitestExpect(swapTokensSpy).toHaveBeenCalledOnce()
+    vi.useRealTimers()
   })
 })
