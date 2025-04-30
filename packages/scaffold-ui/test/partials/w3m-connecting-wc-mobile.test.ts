@@ -1,5 +1,5 @@
 import { fixture, html } from '@open-wc/testing'
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   ConnectionController,
