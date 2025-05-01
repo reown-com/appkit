@@ -841,7 +841,8 @@ describe('ApiController', () => {
     const result = await ApiController.fetchAllowedOrigins()
 
     expect(fetchSpy).toHaveBeenCalledWith({
-      path: `/projects/v1/origins?projectId=${sdkProperties.projectId}&st=${sdkProperties.st}&sv=${sdkProperties.sv}`
+      path: '/projects/v1/origins',
+      params: sdkProperties
     })
     expect(result).toEqual(mockOrigins)
   })
