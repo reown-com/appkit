@@ -20,7 +20,6 @@ describe('W3mFrameProvider', () => {
   beforeEach(() => {
     abortController = new AbortController()
     provider = new W3mFrameProvider({ projectId, abortController, onTimeout: mockTimeout })
-    // Remove: provider['w3mFrame'].frameLoadPromise = Promise.resolve() - will be added per test
     window.postMessage = vi.fn()
     mockTimeout.mockClear()
   })
