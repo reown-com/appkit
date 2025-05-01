@@ -162,29 +162,22 @@ export abstract class AppKitBaseClient {
       (Array.isArray(OptionsController.state.features?.socials) &&
         OptionsController.state.features?.socials.length > 0)
     ) {
-      ApiController.fetchAllowedOrigins()
-        .then(allowedOrigins => {
-          if (allowedOrigins) {
-            const currentOrigin = window.location.origin
-            const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
-              currentOrigin,
-              allowedOrigins,
-              WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
-            )
-            if (!isOriginAllowed) {
-              AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
-            }
-          }
-        })
-        .catch(error => {
-          AlertController.open(
-            {
-              shortMessage: 'Failed to fetch allowed origins',
-              longMessage: error.message
-            },
-            'error'
-          )
-        })
+      await this.checkAllowedOrigins()
+    }
+  }
+
+  private async checkAllowedOrigins() {
+    const allowedOrigins = await ApiController._fetchAllowedOrigins()
+    if (allowedOrigins) {
+      const currentOrigin = window.location.origin
+      const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
+        currentOrigin,
+        allowedOrigins,
+        WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+      )
+      if (!isOriginAllowed) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+      }
     }
   }
 

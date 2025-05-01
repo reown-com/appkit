@@ -24,8 +24,6 @@ export class W3mFrame {
 
   public iframeIsReady = false
 
-  public projectId: string
-
   private rpcUrl = ConstantsUtil.BLOCKCHAIN_API_RPC_URL
 
   public frameLoadPromise: Promise<void>
@@ -71,8 +69,6 @@ export class W3mFrame {
         }
 
         this.events.onFrameEvent(event => {
-          console.log('event', event)
-
           if (event.type === '@w3m-frame/READY') {
             this.iframeIsReady = true
             this.frameLoadPromiseResolver?.resolve(undefined)

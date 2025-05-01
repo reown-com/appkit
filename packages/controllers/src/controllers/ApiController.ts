@@ -139,6 +139,15 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
+  async _fetchAllowedOrigins() {
+    const { projectId, st, sv } = ApiController._getSdkProperties()
+    const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
+      path: `/projects/v1/origins?projectId=${projectId}&st=${st}&sv=${sv}`
+    })
+
+    return allowedOrigins
+  },
+
   async fetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
@@ -266,15 +275,6 @@ export const ApiController = {
     )
     state.count = count > state.count ? count : state.count
     state.page = page
-  },
-
-  async fetchAllowedOrigins() {
-    const { projectId, st, sv } = ApiController._getSdkProperties()
-    const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
-      path: `/projects/v1/origins?projectId=${projectId}&st=${st}&sv=${sv}`
-    })
-
-    return allowedOrigins
   },
 
   async initializeExcludedWallets({ ids }: { ids: string[] }) {
