@@ -129,7 +129,6 @@ export class W3mFrameProvider {
 
   public async connectOtp(payload: W3mFrameTypes.Requests['AppConnectOtpRequest']) {
     try {
-      o
       return this.appEvent<'ConnectOtp'>({
         type: W3mFrameConstants.APP_CONNECT_OTP,
         payload
