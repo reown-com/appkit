@@ -139,13 +139,17 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
-  async _fetchAllowedOrigins() {
-    const { projectId, st, sv } = ApiController._getSdkProperties()
-    const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
-      path: `/projects/v1/origins?projectId=${projectId}&st=${st}&sv=${sv}`
-    })
+  async fetchAllowedOrigins() {
+    try {
+      const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
+        path: '/projects/v1/origins',
+        params: ApiController._getSdkProperties()
+      })
 
-    return allowedOrigins
+      return allowedOrigins
+    } catch (error) {
+      return []
+    }
   },
 
   async fetchNetworkImages() {

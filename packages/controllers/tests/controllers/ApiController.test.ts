@@ -838,7 +838,7 @@ describe('ApiController', () => {
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ allowedOrigins: mockOrigins })
     const sdkProperties = ApiController._getSdkProperties()
 
-    const result = await ApiController._fetchAllowedOrigins()
+    const result = await ApiController.fetchAllowedOrigins()
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `/projects/v1/origins?projectId=${sdkProperties.projectId}&st=${sdkProperties.st}&sv=${sdkProperties.sv}`

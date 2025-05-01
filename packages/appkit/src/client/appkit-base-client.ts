@@ -167,7 +167,7 @@ export abstract class AppKitBaseClient {
   }
 
   private async checkAllowedOrigins() {
-    const allowedOrigins = await ApiController._fetchAllowedOrigins()
+    const allowedOrigins = await ApiController.fetchAllowedOrigins()
     if (allowedOrigins) {
       const currentOrigin = window.location.origin
       const isOriginAllowed = WcHelpersUtil.isOriginAllowed(

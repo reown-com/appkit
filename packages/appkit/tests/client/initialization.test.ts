@@ -148,7 +148,7 @@ describe('Base', () => {
 
     it('should check allowed origins if social or email feature is enabled', async () => {
       const fetchAllowedOriginsSpy = vi
-        .spyOn(ApiController, '_fetchAllowedOrigins')
+        .spyOn(ApiController, 'fetchAllowedOrigins')
         .mockResolvedValue(['http://localhost:3000'])
 
       new AppKit({
