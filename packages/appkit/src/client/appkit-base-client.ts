@@ -1638,19 +1638,16 @@ export abstract class AppKitBaseClient {
                     ...accountState.user,
                     /*
                      * Getting the username from the chain controller works well for social logins,
-                     * but Farcaster uses a different connection flow and doesn't emit the username via events.
+                     * but Farcaster uses a different connection flow and doesn’t emit the username via events.
                      * Since the username is stored in local storage before the chain controller updates,
-                     * it's safe to use the local storage value here.
+                     * it’s safe to use the local storage value here.
                      */
-                    username: StorageUtil.getConnectedSocialUsername(),
-                    authProvider: (accountState.socialProvider || 'email') as SocialProvider,
-                    accountType: accountState.preferredAccountTypes?.[namespace || activeChain],
-                    isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
+                    username: StorageUtil.getConnectedSocialUsername()
                   }
                 : undefined,
-              authProvider: (accountState.socialProvider || 'email') as
-                | AccountControllerState['socialProvider']
-                | 'email' as SocialProvider,
+              authProvider:
+                accountState.socialProvider ||
+                ('email' as AccountControllerState['socialProvider'] | 'email'),
               accountType: accountState.preferredAccountTypes?.[namespace || activeChain],
               isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
             }
