@@ -168,7 +168,7 @@ export abstract class AppKitBaseClient {
 
   private async checkAllowedOrigins() {
     const allowedOrigins = await ApiController.fetchAllowedOrigins()
-    if (allowedOrigins) {
+    if (allowedOrigins && typeof window !== 'undefined') {
       const currentOrigin = window.location.origin
       const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
         currentOrigin,
@@ -178,6 +178,8 @@ export abstract class AppKitBaseClient {
       if (!isOriginAllowed) {
         AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
       }
+    } else {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
     }
   }
 
