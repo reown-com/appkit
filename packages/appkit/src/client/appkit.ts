@@ -472,24 +472,6 @@ export class AppKit extends AppKitBaseClient {
 
       this.setProfileName(name, chainNamespace)
       this.setProfileImage(avatar, chainNamespace)
-
-      if (!name) {
-        const adapter = this.getAdapter(chainNamespace)
-        const result = await adapter?.getProfile({
-          address,
-          chainId: Number(chainId)
-        })
-
-        if (result?.profileName) {
-          this.setProfileName(result.profileName, chainNamespace)
-          if (result.profileImage) {
-            this.setProfileImage(result.profileImage, chainNamespace)
-          }
-        } else {
-          await this.syncReownName(address, chainNamespace)
-          this.setProfileImage(null, chainNamespace)
-        }
-      }
     } catch {
       await this.syncReownName(address, chainNamespace)
       if (chainId !== 1) {
