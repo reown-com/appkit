@@ -202,10 +202,10 @@ export const CoreHelperUtil = {
       return false
     }
 
-    const isStandaloneDisplayMode = window.matchMedia?.('(display-mode: standalone)').matches
-    const isIOSStandalone = (window.navigator as unknown as { standalone: boolean }).standalone
+    const isStandaloneDisplayMode = window.matchMedia?.('(display-mode: standalone)')?.matches
+    const isIOSStandalone = (window?.navigator as unknown as { standalone: boolean })?.standalone
 
-    return isStandaloneDisplayMode || isIOSStandalone
+    return Boolean(isStandaloneDisplayMode || isIOSStandalone)
   },
 
   async preloadImage(src: string) {
