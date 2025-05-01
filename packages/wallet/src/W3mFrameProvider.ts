@@ -1,7 +1,7 @@
 import type { EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
 
 import { W3mFrame } from './W3mFrame.js'
-import { SECURE_SITE_ORIGIN, W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import { W3mFrameLogger } from './W3mFrameLogger.js'
 import { W3mFrameStorage } from './W3mFrameStorage.js'
