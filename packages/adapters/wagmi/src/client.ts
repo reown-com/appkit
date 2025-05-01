@@ -287,7 +287,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         : options.features?.email
     const socialsEnabled = options.features?.socials
       ? options.features?.socials?.length > 0
-      : CoreConstantsUtil.DEFAULT_FEATURES.socials
+      : (options.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
 
     if (isEmailEnabled || socialsEnabled) {
       customConnectors.push(
@@ -322,13 +322,13 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async sendTransaction(
     params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
-    const { chainId } = getAccount(this.wagmiConfig)
+    const { chainId, address } = getAccount(this.wagmiConfig)
     const txParams = {
-      account: params.address,
+      account: address,
       to: params.to as Hex,
-      value: params.value as bigint,
-      gas: params.gas as bigint,
-      gasPrice: params.gasPrice as bigint,
+      value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
+      gas: params.gas ? BigInt(params.gas) : undefined,
+      gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
       data: params.data as Hex,
       chainId,
       type: 'legacy' as const,

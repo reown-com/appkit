@@ -163,14 +163,16 @@ describe('EthersAdapter', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
       vi.mocked(EthersMethods.sendTransaction).mockResolvedValue(mockTxHash)
-
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       const result = await adapter.sendTransaction({
         value: BigInt(1000),
         to: '0x456',
         data: '0x',
         gas: BigInt(21000),
         gasPrice: BigInt(2000000000),
-        address: '0x123',
         provider: mockProvider,
         caipNetwork: mockCaipNetworks[0]
       })
@@ -179,14 +181,17 @@ describe('EthersAdapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       await expect(
         adapter.sendTransaction({
           value: BigInt(1000),
           to: '0x456',
           data: '0x',
           gas: BigInt(21000),
-          gasPrice: BigInt(2000000000),
-          address: '0x123'
+          gasPrice: BigInt(2000000000)
         })
       ).rejects.toThrow('Provider is undefined')
     })

@@ -560,7 +560,7 @@ export class W3mFrameProvider {
 
     const type = replaceEventType(event.type)
 
-    // If the iframe is not ready being initialized after 10 seconds, timeout.
+    // If the iframe is not ready being initialized after 20 seconds, timeout.
     if (
       !this.w3mFrame.iframeIsReady &&
       !safeEventTypes.includes(event.type as (typeof safeEventTypes)[number])
@@ -568,7 +568,7 @@ export class W3mFrameProvider {
       iframeReadyTimeout = setTimeout(() => {
         this.onTimeout?.('iframe_load_failed')
         this.abortController.abort()
-      }, 10_000)
+      }, 20_000)
     }
 
     await this.w3mFrame.frameLoadPromise
@@ -585,12 +585,12 @@ export class W3mFrameProvider {
       .map(replaceEventType)
       .includes(type)
 
-    // If the request is not being resolved after 45 seconds, timeout.
+    // If the request is not being resolved after 30 seconds, timeout.
     if (shouldCheckForTimeout) {
       requestTimeout = setTimeout(() => {
         this.onTimeout?.('iframe_request_timeout')
         this.abortController.abort()
-      }, 45_000)
+      }, 30_000)
     }
 
     return new Promise((resolve, reject) => {

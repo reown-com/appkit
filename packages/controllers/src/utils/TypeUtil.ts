@@ -175,6 +175,10 @@ export interface ApiGetWalletsResponse {
   count: number
 }
 
+export interface ApiGetAllowedOriginsResponse {
+  allowedOrigins: string[]
+}
+
 export interface ApiGetAnalyticsConfigResponse {
   isAnalyticsEnabled: boolean
 }
@@ -940,6 +944,7 @@ export type NamespaceTypeMap = {
   solana: 'eoa'
   bip122: 'payment' | 'ordinal' | 'stx'
   polkadot: 'eoa'
+  cosmos: 'eoa'
 }
 
 export type AccountTypeMap = {

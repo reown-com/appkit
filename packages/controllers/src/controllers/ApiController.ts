@@ -8,6 +8,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
+  ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
@@ -265,6 +266,15 @@ export const ApiController = {
     )
     state.count = count > state.count ? count : state.count
     state.page = page
+  },
+
+  async fetchAllowedOrigins() {
+    const { projectId, st, sv } = ApiController._getSdkProperties()
+    const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
+      path: `/projects/v1/origins?projectId=${projectId}&st=${st}&sv=${sv}`
+    })
+
+    return allowedOrigins
   },
 
   async initializeExcludedWallets({ ids }: { ids: string[] }) {

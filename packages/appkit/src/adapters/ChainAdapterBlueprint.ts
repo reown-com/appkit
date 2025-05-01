@@ -465,6 +465,7 @@ export namespace AdapterBlueprint {
     data: string
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
+    value?: bigint | number
   }
 
   export type EstimateGasTransactionResult = {
@@ -533,10 +534,9 @@ export namespace AdapterBlueprint {
   >
 
   export type SendTransactionParams = {
-    address: `0x${string}`
     to: string
-    data: string
     value: bigint | number
+    data?: string
     gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
