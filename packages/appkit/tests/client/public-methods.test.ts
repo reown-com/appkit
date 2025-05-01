@@ -1118,7 +1118,13 @@ describe('Base Public methods', () => {
       isConnected: true,
       status: 'connected',
       embeddedWalletInfo: {
-        user: { email: 'test@example.com', username: 'test-username' },
+        user: {
+          accountType: 'eoa',
+          authProvider: 'email',
+          email: 'test@example.com',
+          isSmartAccountDeployed: true,
+          username: 'test-username'
+        },
         authProvider: 'email',
         accountType: 'eoa',
         isSmartAccountDeployed: true
