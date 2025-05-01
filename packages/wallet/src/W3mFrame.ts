@@ -24,6 +24,8 @@ export class W3mFrame {
 
   public iframeIsReady = false
 
+  private projectId: string
+
   private rpcUrl = ConstantsUtil.BLOCKCHAIN_API_RPC_URL
 
   public frameLoadPromise: Promise<void>
