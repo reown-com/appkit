@@ -4,10 +4,10 @@ export const WcConstantsUtil = {
   ERROR_INVALID_CHAIN_ID: 32603,
   DEFAULT_ALLOWED_ANCESTORS: [
     'http://localhost:*',
-    'https://*.pages\.dev',
-    'https://*.vercel\.app',
-    'https://*.ngrok-free\.app',
-    'https://secure-mobile.walletconnect\.com',
-    'https://secure-mobile.walletconnect\.org'
+    'https://*.pages.dev',
+    'https://*.vercel.app',
+    'https://*.ngrok-free.app',
+    'https://secure-mobile.walletconnect.com',
+    'https://secure-mobile.walletconnect.org'
   ]
 }
