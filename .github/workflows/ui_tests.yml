@@ -100,7 +100,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/apps/laboratory/out/cache
-            ${{ github.workspace }}/apps/demo/.next/cache
+            ${{ github.workspace }}/apps/demo/out/cache
           # NOTE: apps/browser-extension likely does NOT use .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
           restore-keys: |
@@ -145,7 +145,7 @@ jobs:
             turbo/
             packages/*/dist/
             apps/*/dist/
-            apps/demo/.next/
+            apps/demo/out/
             apps/laboratory/out/
             .turbo/
           retention-days: 1
