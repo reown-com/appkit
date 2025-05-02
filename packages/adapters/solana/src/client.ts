@@ -98,11 +98,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
    * These function definition is to have a type parity between the clients. Currently not in use.
    */
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    return { address: params.name }
-  }
 
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
@@ -182,7 +177,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     const connection = SolStoreUtil.state.connection
 
-    if (!connection || !params.address || !params.provider) {
+    if (!connection || !params.provider) {
       throw new Error('Connection is not set')
     }
 
@@ -192,7 +187,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       provider,
       connection,
       to: params.to,
-      value: params.value as number
+      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
     })
 
     const result = await provider.sendTransaction(transaction, connection)
@@ -396,13 +391,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
 
     await params.provider.disconnect()
-  }
-
-  public async getProfile(): Promise<AdapterBlueprint.GetProfileResult> {
-    return Promise.resolve({
-      profileName: undefined,
-      profileImage: undefined
-    })
   }
 
   public async syncConnection(

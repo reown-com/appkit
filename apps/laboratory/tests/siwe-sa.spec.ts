@@ -22,7 +22,6 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   smartAccountSiweTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'all')
   validator = new ModalWalletValidator(browserPage)
 

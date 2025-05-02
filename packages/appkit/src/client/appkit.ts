@@ -328,7 +328,7 @@ export class AppKit extends AppKitBaseClient {
 
     const isSocialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
-      : CoreConstantsUtil.DEFAULT_FEATURES.socials
+      : (this.options?.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
 
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
 
@@ -472,24 +472,6 @@ export class AppKit extends AppKitBaseClient {
 
       this.setProfileName(name, chainNamespace)
       this.setProfileImage(avatar, chainNamespace)
-
-      if (!name) {
-        const adapter = this.getAdapter(chainNamespace)
-        const result = await adapter?.getProfile({
-          address,
-          chainId: Number(chainId)
-        })
-
-        if (result?.profileName) {
-          this.setProfileName(result.profileName, chainNamespace)
-          if (result.profileImage) {
-            this.setProfileImage(result.profileImage, chainNamespace)
-          }
-        } else {
-          await this.syncReownName(address, chainNamespace)
-          this.setProfileImage(null, chainNamespace)
-        }
-      }
     } catch {
       await this.syncReownName(address, chainNamespace)
       if (chainId !== 1) {
@@ -552,6 +534,10 @@ export class AppKit extends AppKitBaseClient {
 
         if (features.history) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
+        }
+
+        if (features.pay) {
+          featureImportPromises.push(import('@reown/appkit-pay'))
         }
       }
 

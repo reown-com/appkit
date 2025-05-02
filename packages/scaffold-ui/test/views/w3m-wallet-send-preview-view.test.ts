@@ -10,6 +10,7 @@ import {
   RouterController,
   SendController
 } from '@reown/appkit-controllers'
+import type { WuiButton } from '@reown/appkit-ui/wui-button'
 
 import { W3mWalletSendPreviewView } from '../../src/views/w3m-wallet-send-preview-view'
 
@@ -48,7 +49,6 @@ const mockSendControllerState = {
   token: mockToken,
   sendTokenAmount: 5,
   receiverAddress: '0x456',
-  gasPriceInUSD: 2.5,
   loading: false,
   tokenBalances: [mockToken]
 }
@@ -204,7 +204,6 @@ describe('W3mWalletSendPreviewView', () => {
 
     const detailsElement = element.shadowRoot?.querySelector('w3m-wallet-send-details')
     expect(detailsElement).to.exist
-    expect(detailsElement?.networkFee).to.equal(2.5)
     expect(detailsElement?.receiverAddress).to.equal('0x456')
     expect(detailsElement?.caipNetwork).to.deep.equal(mockNetwork)
   })
@@ -239,5 +238,45 @@ describe('W3mWalletSendPreviewView', () => {
 
     const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
     expect(valueText?.textContent?.trim()).to.equal('$100.00')
+  })
+
+  it('should redirect to account view when send is successful', async () => {
+    const sendSpy = vi.spyOn(SendController, 'sendToken').mockResolvedValue()
+    const routerSpy = vi.spyOn(RouterController, 'replace')
+    vi.spyOn(SendController, 'state', 'get').mockReturnValue({
+      ...mockSendControllerState
+    })
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    let button: WuiButton = element.shadowRoot?.querySelector('.sendButton') as WuiButton
+    button?.click()
+
+    await element.updateComplete
+
+    viExpect(sendSpy).toHaveBeenCalled()
+    viExpect(routerSpy).toHaveBeenCalledWith('Account')
+  })
+
+  it('should show loading state when sending', async () => {
+    // Mock SendController.state to have loading=true
+    vi.spyOn(SendController, 'state', 'get').mockReturnValue({
+      ...mockSendControllerState,
+      loading: true
+    })
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    // Get the button and check if it has the loading property set
+    const button = element.shadowRoot?.querySelector('.sendButton') as WuiButton
+    expect(button?.loading).to.equal(true)
   })
 })
