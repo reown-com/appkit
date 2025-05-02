@@ -17,8 +17,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
 
-  private labelTimeout?: ReturnType<typeof setTimeout> = undefined
-
   // -- State --------------------------------------------- //
   @state() protected redirectDeeplink: string | undefined = undefined
 
@@ -35,8 +33,10 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       throw new Error('w3m-connecting-wc-mobile: No wallet provided')
     }
 
-    this.initializeStateAndTimers()
-    document.addEventListener('visibilitychange', this.onBuffering.bind(this))
+    this.secondaryBtnLabel = 'Open'
+    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+    this.secondaryBtnIcon = 'externalLink'
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
@@ -46,28 +46,10 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
 
   public override disconnectedCallback() {
     super.disconnectedCallback()
-    document.removeEventListener('visibilitychange', this.onBuffering.bind(this))
     clearTimeout(this.btnLabelTimeout)
-    clearTimeout(this.labelTimeout)
   }
 
   // -- Private ------------------------------------------- //
-
-  private initializeStateAndTimers() {
-    // Reset labels to initial state
-    this.secondaryBtnLabel = undefined
-    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
-
-    // Start timeouts
-    this.btnLabelTimeout = setTimeout(() => {
-      this.secondaryBtnLabel = 'Try again'
-      this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
-    }, ConstantsUtil.FIVE_SEC_MS)
-    this.labelTimeout = setTimeout(() => {
-      this.secondaryLabel = `Hold tight... it's taking longer than expected`
-    }, ConstantsUtil.THREE_SEC_MS)
-  }
-
   protected override onRender = () => {
     if (!this.ready && this.uri) {
       this.ready = true
@@ -98,9 +80,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
         } else {
           CoreHelperUtil.openHref(this.redirectDeeplink, this.target)
         }
-
-        clearTimeout(this.labelTimeout)
-        this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
       } catch (e) {
         EventsController.sendEvent({
           type: 'track',
@@ -117,29 +96,10 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     }
   }
 
-  private onBuffering() {
-    const isIos = CoreHelperUtil.isIos()
-    if (document?.visibilityState === 'visible' && !this.error && isIos) {
-      ConnectionController.setBuffering(true)
-      setTimeout(() => {
-        ConnectionController.setBuffering(false)
-      }, 5000)
-    }
-  }
-
   protected override onTryAgain() {
-    if (!this.buffering) {
-      // Clear existing timeouts
-      clearTimeout(this.btnLabelTimeout)
-      clearTimeout(this.labelTimeout)
-
-      // Restart state and timers
-      this.initializeStateAndTimers()
-
-      // Reset error state and attempt connection again
-      ConnectionController.setWcError(false)
-      this.onConnect()
-    }
+    // Reset error state and attempt connection again
+    ConnectionController.setWcError(false)
+    this.onConnect?.()
   }
 }
 

@@ -17,7 +17,7 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
     }
     this.onConnect = this.onConnectProxy.bind(this)
     this.secondaryBtnLabel = 'Open'
-    this.secondaryLabel = 'Open and continue in a new browser tab'
+    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     this.secondaryBtnIcon = 'externalLink'
 
     // Update isLoading state initially and whenever URI changes
