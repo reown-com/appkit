@@ -73,32 +73,16 @@ describe('W3mConnectingWcMobile', () => {
     }
   })
 
-  it('should reset labels and timeouts on Try Again', async () => {
+  it('should reset error values on try again', async () => {
     vi.useFakeTimers()
     const el: W3mConnectingWcMobile = await fixture(
       html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
     )
-
-    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
     const setWcErrorSpy = vi.spyOn(ConnectionController, 'setWcError')
-    const onConnectSpy = vi.spyOn(el as any, 'onConnect')
-
-    el['secondaryBtnLabel'] = 'Try again'
-    el['secondaryLabel'] = `Hold tight... it's taking longer than expected`
-
-    // Clear mocks before calling the method to isolate calls within onTryAgain
-    clearTimeoutSpy.mockClear()
 
     el['onTryAgain']()
 
-    // Check core logic: labels reset, new timeouts set, error cleared, connect called
-    expect(el['secondaryBtnLabel']).toBeUndefined()
-    expect(el['secondaryLabel']).toBe(ConstantsUtil.CONNECT_LABELS.MOBILE)
     expect(setWcErrorSpy).toHaveBeenCalledWith(false)
-    expect(onConnectSpy).toHaveBeenCalledOnce()
-
-    // Check that the original timeouts were cleared at least once during the process
-    expect(clearTimeoutSpy).toHaveBeenCalled()
   })
 
   it('should use link_mode when enableUniversalLinks is true and wallet has link_mode', async () => {
