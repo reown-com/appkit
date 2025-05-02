@@ -916,26 +916,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected syncWalletConnectAccounts(chainNamespace: ChainNamespace) {
-    const addresses = this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts
-      ?.map(account => {
-        const { address } = ParseUtil.parseCaipAddress(account as CaipAddress)
-
-        return address
-      })
-      .filter((address, index, self) => self.indexOf(address) === index) as string[]
-
-    if (addresses) {
-      this.setAllAccounts<typeof chainNamespace>(
-        addresses.map(address =>
-          CoreHelperUtil.createAccount(
-            chainNamespace,
-            address,
-            chainNamespace === 'bip122' ? 'payment' : 'eoa'
-          )
-        ),
-        chainNamespace
-      )
-    }
+    this.syncAllAccounts(chainNamespace)
   }
 
   protected syncProvider({
