@@ -328,9 +328,7 @@ describe('ConnectionController', () => {
     vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
 
     expect(ConnectionController.state.status).toEqual('disconnected')
-
     await ConnectionController.connectWalletConnect()
-
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
     expect(ConnectionController.state.status).toEqual('connected')
   })
