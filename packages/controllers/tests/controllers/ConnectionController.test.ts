@@ -214,7 +214,8 @@ describe('ConnectionController', () => {
       eip155: 'eip155-connector',
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     }
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
@@ -230,7 +231,8 @@ describe('ConnectionController', () => {
       eip155: 'eip155-connector',
       solana: undefined,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     })
   })
 
@@ -245,7 +247,8 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+      cosmos: 'cosmos-connector'
     }
     ChainController.state.chains.set('eip155', {
       accountState: {
@@ -266,7 +269,8 @@ describe('ConnectionController', () => {
       eip155: undefined,
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: undefined
+      bip122: undefined,
+      cosmos: 'cosmos-connector'
     })
   })
 
@@ -281,7 +285,8 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       solana: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     }
     ChainController.state.chains.set('eip155', {
       accountState: {
@@ -308,7 +313,8 @@ describe('ConnectionController', () => {
       eip155: undefined,
       solana: undefined,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     })
   })
 })

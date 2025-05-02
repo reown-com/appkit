@@ -11,7 +11,7 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@tanstack/react-query": "5.56.2",
-    "@walletconnect/universal-provider": "2.20.0",
+    "@walletconnect/universal-provider": "2.20.1",
     "next": "14.2.28",
     "next-themes": "0.4.3",
     "react": "19.0.0",
