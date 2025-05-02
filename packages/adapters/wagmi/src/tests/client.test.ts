@@ -4,12 +4,9 @@ import {
   getAccount,
   getBalance,
   getConnections,
-  getEnsAvatar,
-  getEnsName,
   http,
   signMessage,
   switchChain,
-  getEnsAddress as wagmiGetEnsAddress,
   sendTransaction as wagmiSendTransaction,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
@@ -49,12 +46,9 @@ vi.mock('@wagmi/core', async () => {
     getConnections: vi.fn(),
     switchChain: vi.fn(),
     getBalance: vi.fn(),
-    getEnsName: vi.fn(),
-    getEnsAvatar: vi.fn(),
     signMessage: vi.fn(),
     estimateGas: vi.fn(),
     sendTransaction: vi.fn(),
-    getEnsAddress: vi.fn(),
     writeContract: vi.fn(),
     waitForTransactionReceipt: vi.fn(),
     getAccount: vi.fn(),
@@ -412,31 +406,6 @@ describe('WagmiAdapter', () => {
     })
   })
 
-  describe('WagmiAdapter - getEnsAddress', () => {
-    it('should resolve ENS address successfully', async () => {
-      const mockAddress = '0x123'
-      vi.mocked(wagmiGetEnsAddress).mockResolvedValue(mockAddress)
-
-      const result = await adapter.getEnsAddress({
-        name: 'test.eth',
-        caipNetwork: mockCaipNetworks[0]
-      })
-
-      expect(result.address).toBe(mockAddress)
-    })
-
-    it('should return false for unresolvable ENS', async () => {
-      vi.mocked(wagmiGetEnsAddress).mockResolvedValue(null)
-
-      const result = await adapter.getEnsAddress({
-        name: 'nonexistent.eth',
-        caipNetwork: mockCaipNetworks[0]
-      })
-
-      expect(result.address).toBe(false)
-    })
-  })
-
   describe('WagmiAdapter - estimateGas', () => {
     it('should estimate gas successfully', async () => {
       const mockGas = BigInt(21000)
@@ -552,26 +521,6 @@ describe('WagmiAdapter', () => {
       expect(result).toEqual({
         balance: '',
         symbol: ''
-      })
-    })
-  })
-
-  describe('WagmiAdapter - getProfile', () => {
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
-      vi.mocked(getEnsName).mockResolvedValue(mockEnsName)
-      vi.mocked(getEnsAvatar).mockResolvedValue(mockAvatar)
-
-      const result = await adapter.getProfile({
-        address: '0x123',
-        chainId: 1
-      })
-
-      expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
       })
     })
   })

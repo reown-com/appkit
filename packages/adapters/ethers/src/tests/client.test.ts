@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { InfuraProvider, JsonRpcProvider } from 'ethers'
+import { JsonRpcProvider } from 'ethers'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil } from '@reown/appkit'
@@ -34,10 +34,6 @@ vi.mock('ethers', async importOriginal => {
   return {
     ...actual,
     formatEther: vi.fn(() => '1.5'),
-    InfuraProvider: vi.fn(() => ({
-      lookupAddress: vi.fn(),
-      getAvatar: vi.fn()
-    })),
     JsonRpcProvider: vi.fn(() => ({
       getBalance: vi.fn()
     })),
@@ -57,7 +53,6 @@ vi.mock('../utils/EthersMethods', () => ({
     sendTransaction: vi.fn(),
     writeContract: vi.fn(),
     estimateGas: vi.fn(),
-    getEnsAddress: vi.fn(),
     parseUnits: vi.fn(),
     formatUnits: vi.fn(),
     hexStringToNumber: vi.fn(hex => parseInt(hex, 16)),
@@ -410,31 +405,6 @@ describe('EthersAdapter', () => {
           symbol: 'ETH'
         })
       }
-    })
-  })
-
-  describe('EthersAdapter -getProfile', () => {
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
-      vi.mocked(InfuraProvider).mockImplementation(
-        () =>
-          ({
-            lookupAddress: vi.fn().mockResolvedValue(mockEnsName),
-            getAvatar: vi.fn().mockResolvedValue(mockAvatar)
-          }) as any
-      )
-
-      const result = await adapter.getProfile({
-        address: '0x123',
-        chainId: 1
-      })
-
-      expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
-      })
     })
   })
 
