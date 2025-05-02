@@ -233,6 +233,7 @@ export const ConnectionController = {
   resetUri() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
+    wcConnectionPromise = undefined
   },
 
   finalizeWcConnection() {
