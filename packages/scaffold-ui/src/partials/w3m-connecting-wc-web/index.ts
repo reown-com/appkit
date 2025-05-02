@@ -1,6 +1,11 @@
 import { state } from 'lit/decorators.js'
 
-import { ConnectionController, CoreHelperUtil, EventsController } from '@reown/appkit-controllers'
+import {
+  ConnectionController,
+  ConstantsUtil,
+  CoreHelperUtil,
+  EventsController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
