@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
 import type { ChainNamespace } from './TypeUtil.js'
 
 export const ConstantsUtil = {
@@ -66,5 +67,9 @@ export const ConstantsUtil = {
     SERVICE_UNAVAILABLE: 503,
     FORBIDDEN: 403
   },
-  UNSUPPORTED_NETWORK_NAME: 'Unknown Network'
+  UNSUPPORTED_NETWORK_NAME: 'Unknown Network',
+  SECURE_SITE_SDK_ORIGIN:
+    (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+      : undefined) || 'https://secure.walletconnect.org'
 } as const
