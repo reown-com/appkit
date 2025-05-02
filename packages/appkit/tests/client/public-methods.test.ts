@@ -54,6 +54,7 @@ describe('Base Public methods', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue(['http://localhost:3000'])
   })
 
   it('should open modal', async () => {
