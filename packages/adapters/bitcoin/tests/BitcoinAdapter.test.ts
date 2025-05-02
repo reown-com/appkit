@@ -505,8 +505,10 @@ describe('BitcoinAdapter', () => {
     }
 
     beforeEach(async () => {
+      const getCaipNetwork = vi.fn(() => bitcoin)
+
       mocks = mockSatsConnectProvider()
-      adapter.syncConnectors()
+      adapter.syncConnectors(undefined, { getCaipNetwork } as any)
 
       vi.spyOn(mocks.wallet, 'request').mockResolvedValue(
         mockSatsConnectProvider.mockRequestResolve({
@@ -575,8 +577,8 @@ describe('BitcoinAdapter', () => {
 
       await callback({
         type: 'networkChange',
-        stacks: { name: BitcoinNetworkType.Signet },
-        bitcoin: { name: BitcoinNetworkType.Signet }
+        stacks: { name: BitcoinNetworkType.Testnet4 },
+        bitcoin: { name: BitcoinNetworkType.Testnet4 }
       })
 
       expect(listeners.switchNetwork).toHaveBeenCalled()
@@ -664,11 +666,9 @@ describe('BitcoinAdapter', () => {
   })
 
   it('should not throw for not used methods', async () => {
-    expect(await adapter.getProfile({} as any)).toEqual({})
     expect(await adapter.estimateGas({} as any)).toEqual({})
     expect(await adapter.sendTransaction({} as any)).toEqual({})
     expect(await adapter.writeContract({} as any)).toEqual({})
-    expect(await adapter.getEnsAddress({} as any)).toEqual({})
     expect(adapter.parseUnits({} as any)).toEqual(BigInt(0))
     expect(adapter.formatUnits({} as any)).toEqual('')
     expect(await adapter.grantPermissions({})).toEqual({})

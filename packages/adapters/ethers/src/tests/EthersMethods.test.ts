@@ -1,17 +1,6 @@
 // Import mocked modules after mocking
-import {
-  BrowserProvider,
-  Contract,
-  InfuraProvider,
-  JsonRpcSigner,
-  hexlify,
-  isHexString,
-  toUtf8Bytes
-} from 'ethers'
+import { BrowserProvider, Contract, JsonRpcSigner, hexlify, isHexString, toUtf8Bytes } from 'ethers'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
-import { WcHelpersUtil } from '@reown/appkit'
-import { isReownName } from '@reown/appkit-common'
 
 import { EthersMethods } from '../utils/EthersMethods'
 
@@ -24,7 +13,6 @@ vi.mock('ethers', async () => {
     ...actual,
     BrowserProvider: vi.fn(),
     Contract: vi.fn(),
-    InfuraProvider: vi.fn(),
     JsonRpcSigner: vi.fn(),
     hexlify: vi.fn(() => '0xmockedhex'),
     isHexString: vi.fn(),
@@ -84,12 +72,6 @@ describe('EthersMethods', () => {
 
     // Setup JsonRpcSigner mock
     ;(JsonRpcSigner as any).mockImplementation(() => mockSigner)
-
-    // Setup InfuraProvider mock
-    ;(InfuraProvider as any).mockImplementation(() => ({
-      resolveName: vi.fn().mockResolvedValue('0xmockaddress'),
-      getAvatar: vi.fn().mockResolvedValue('https://example.com/avatar.png')
-    }))
   })
 
   afterEach(() => {
@@ -364,149 +346,6 @@ describe('EthersMethods', () => {
       await expect(
         EthersMethods.writeContract(invalidMethodData as any, mockProvider as any, address, chainId)
       ).rejects.toThrow('Contract method is undefined')
-    })
-  })
-
-  describe('getEnsAddress', () => {
-    const caipNetwork = { id: '1' }
-
-    it('should resolve an ENS name on mainnet', async () => {
-      // Setup
-      const ensName = 'vitalik.eth'
-      const resolvedAddress = '0xmockaddress'
-
-      // Mock dependencies
-      vi.mocked(isReownName).mockReturnValue(false)
-      const mockResolveName = vi.fn().mockResolvedValue(resolvedAddress)
-      ;(InfuraProvider as any).mockImplementation(() => ({
-        resolveName: mockResolveName
-      }))
-
-      // Execute
-      const result = await EthersMethods.getEnsAddress(ensName, caipNetwork as any)
-
-      // Verify
-      expect(isReownName).toHaveBeenCalledWith(ensName)
-      expect(InfuraProvider).toHaveBeenCalledWith('mainnet')
-      expect(mockResolveName).toHaveBeenCalledWith(ensName)
-      expect(result).toBe(resolvedAddress)
-    })
-
-    it('should resolve a ReownName if available', async () => {
-      // Setup
-      const wcName = 'user.reown'
-      const resolvedAddress = '0xwcaddress'
-
-      // Mock dependencies
-      vi.mocked(isReownName).mockReturnValue(true)
-      vi.spyOn(WcHelpersUtil, 'resolveReownName').mockResolvedValue(resolvedAddress)
-
-      // Mock ENS resolution (returns null for ReownName)
-      const mockResolveName = vi.fn().mockResolvedValue(null)
-      ;(InfuraProvider as any).mockImplementation(() => ({
-        resolveName: mockResolveName
-      }))
-
-      // Execute
-      const result = await EthersMethods.getEnsAddress(wcName, caipNetwork as any)
-
-      // Verify
-      expect(isReownName).toHaveBeenCalledWith(wcName)
-      expect(WcHelpersUtil.resolveReownName).toHaveBeenCalledWith(wcName)
-      expect(result).toBe(resolvedAddress)
-    })
-
-    it('should return false if neither ENS nor ReownName resolves', async () => {
-      // Setup
-      const invalidName = 'nonexistent.xyz'
-
-      // Mock dependencies
-      vi.mocked(isReownName).mockReturnValue(false)
-
-      // Mock ENS resolution (returns null)
-      const mockResolveName = vi.fn().mockResolvedValue(null)
-      ;(InfuraProvider as any).mockImplementation(() => ({
-        resolveName: mockResolveName
-      }))
-
-      // Execute
-      const result = await EthersMethods.getEnsAddress(invalidName, caipNetwork as any)
-
-      // Verify
-      expect(result).toBe(false)
-    })
-
-    it('should return false if there is an error', async () => {
-      // Setup
-      const ensName = 'vitalik.eth'
-
-      // Mock dependencies
-      vi.mocked(isReownName).mockReturnValue(false)
-
-      // Mock InfuraProvider to throw an error
-      ;(InfuraProvider as any).mockImplementation(() => {
-        throw new Error('Network error')
-      })
-
-      // Execute
-      const result = await EthersMethods.getEnsAddress(ensName, caipNetwork as any)
-
-      // Verify
-      expect(result).toBe(false)
-    })
-  })
-
-  describe('getEnsAvatar', () => {
-    it('should get an ENS avatar on mainnet', async () => {
-      // Setup
-      const ensName = 'vitalik.eth'
-      const avatarUrl = 'https://example.com/avatar.png'
-      const chainId = 1 // Mainnet
-
-      // Mock InfuraProvider
-      const mockGetAvatar = vi.fn().mockResolvedValue(avatarUrl)
-      ;(InfuraProvider as any).mockImplementation(() => ({
-        getAvatar: mockGetAvatar
-      }))
-
-      // Execute
-      const result = await EthersMethods.getEnsAvatar(ensName, chainId)
-
-      // Verify
-      expect(InfuraProvider).toHaveBeenCalledWith('mainnet')
-      expect(mockGetAvatar).toHaveBeenCalledWith(ensName)
-      expect(result).toBe(avatarUrl)
-    })
-
-    it('should return false if no avatar is found', async () => {
-      // Setup
-      const ensName = 'vitalik.eth'
-      const chainId = 1 // Mainnet
-
-      // Mock InfuraProvider (avatar not found)
-      const mockGetAvatar = vi.fn().mockResolvedValue(null)
-      ;(InfuraProvider as any).mockImplementation(() => ({
-        getAvatar: mockGetAvatar
-      }))
-
-      // Execute
-      const result = await EthersMethods.getEnsAvatar(ensName, chainId)
-
-      // Verify
-      expect(result).toBe(false)
-    })
-
-    it('should return false for non-mainnet chains', async () => {
-      // Setup
-      const ensName = 'vitalik.eth'
-      const chainId = 5 // Goerli
-
-      // Execute
-      const result = await EthersMethods.getEnsAvatar(ensName, chainId)
-
-      // Verify
-      expect(InfuraProvider).not.toHaveBeenCalled()
-      expect(result).toBe(false)
     })
   })
 

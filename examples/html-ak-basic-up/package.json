@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/universal-provider": "2.19.2",
+    "@walletconnect/universal-provider": "2.20.1",
     "bs58": "6.0.0"
   },
   "devDependencies": {

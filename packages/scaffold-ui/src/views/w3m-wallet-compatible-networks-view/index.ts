@@ -79,7 +79,11 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
       sortedNetworks = [caipNetwork]
     }
 
-    return sortedNetworks.map(
+    const namespaceNetworks = sortedNetworks.filter(
+      network => network.chainNamespace === caipNetwork?.chainNamespace
+    )
+
+    return namespaceNetworks.map(
       network => html`
         <wui-list-network
           imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}
