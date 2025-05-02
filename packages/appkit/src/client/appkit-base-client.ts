@@ -489,27 +489,15 @@ export abstract class AppKitBaseClient {
         return 0n
       },
       getEnsAvatar: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const result = await adapter?.getProfile({
+        await this.syncIdentity({
           address: AccountController.state.address as string,
-          chainId: Number(this.getCaipNetwork()?.id)
+          chainId: Number(this.getCaipNetwork()?.id),
+          chainNamespace: ChainController.state.activeChain as ChainNamespace
         })
 
-        return result?.profileImage || false
+        return AccountController.state.profileImage || false
       },
-      getEnsAddress: async (name: string) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const caipNetwork = this.getCaipNetwork()
-        if (!caipNetwork) {
-          return false
-        }
-        const result = await adapter?.getEnsAddress({
-          name,
-          caipNetwork
-        })
-
-        return result?.address || false
-      },
+      getEnsAddress: async (name: string) => await WcHelpersUtil.resolveReownName(name),
       writeContract: async (args: WriteContractArgs) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
         const caipNetwork = this.getCaipNetwork()
@@ -1614,9 +1602,9 @@ export abstract class AppKitBaseClient {
                     ...accountState.user,
                     /*
                      * Getting the username from the chain controller works well for social logins,
-                     * but Farcaster uses a different connection flow and doesn’t emit the username via events.
+                     * but Farcaster uses a different connection flow and doesn't emit the username via events.
                      * Since the username is stored in local storage before the chain controller updates,
-                     * it’s safe to use the local storage value here.
+                     * it's safe to use the local storage value here.
                      */
                     username: StorageUtil.getConnectedSocialUsername()
                   }

@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { InfuraProvider, JsonRpcProvider, formatEther } from 'ethers'
+import { JsonRpcProvider, formatEther } from 'ethers'
 
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
@@ -190,19 +190,6 @@ export class EthersAdapter extends AdapterBlueprint {
     } catch (error) {
       throw new Error('EthersAdapter:estimateGas - Estimate gas failed')
     }
-  }
-
-  public async getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    const { name, caipNetwork } = params
-    if (caipNetwork) {
-      const result = await EthersMethods.getEnsAddress(name, caipNetwork)
-
-      return { address: result as string }
-    }
-
-    return { address: '' }
   }
 
   public parseUnits(params: AdapterBlueprint.ParseUnitsParams): AdapterBlueprint.ParseUnitsResult {
@@ -529,20 +516,6 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return { balance: '0.00', symbol: 'ETH' }
-  }
-
-  public async getProfile(
-    params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult> {
-    if (params.chainId === 1) {
-      const ensProvider = new InfuraProvider('mainnet')
-      const name = await ensProvider.lookupAddress(params.address)
-      const avatar = await ensProvider.getAvatar(params.address)
-
-      return { profileName: name || undefined, profileImage: avatar || undefined }
-    }
-
-    return { profileName: undefined, profileImage: undefined }
   }
 
   private providerHandlers: {
