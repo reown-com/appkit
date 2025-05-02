@@ -130,11 +130,11 @@ export const ConnectorController = {
   updateConnectorsForEnabledNamespaces() {
     const enabledNamespaces = this.getEnabledNamespaces()
     const enabledConnectors = this.getEnabledConnectors(enabledNamespaces)
-    const allNamespacesEnabled = this.areAllNamespacesEnabled()
+    const areAllNamespacesEnabled = this.areAllNamespacesEnabled()
 
     state.connectors = this.mergeMultiChainConnectors(enabledConnectors)
 
-    if (allNamespacesEnabled) {
+    if (areAllNamespacesEnabled) {
       ApiController.clearFilterByNamespaces()
     } else {
       ApiController.filterByNamespaces(enabledNamespaces)

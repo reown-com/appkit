@@ -129,7 +129,16 @@ export const ChainController = {
 
     const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
     const adapterToActivate = defaultAdapter || adapters?.[0]
-    const namespaces = new Set(adapters.map(a => a.namespace).filter(n => n !== undefined))
+
+    const namespacesFromAdapters = adapters.map(a => a.namespace).filter(n => n !== undefined)
+
+    /**
+     * If the AppKit is in embedded mode (for Demo app), we should get the available namespaces from the adapters.
+     */
+    const namespaces = OptionsController.state.enableEmbedded
+      ? new Set([...namespacesFromAdapters])
+      : new Set([...(caipNetworks?.map(network => network.chainNamespace) ?? [])])
+
     if (adapters?.length === 0 || !adapterToActivate) {
       state.noAdapters = true
     }
@@ -511,12 +520,12 @@ export const ChainController = {
     return requestedCaipNetworks
   },
 
-  setRequestedCaipNetworks(requestedCaipNetworks: CaipNetwork[], chain: ChainNamespace) {
-    this.setAdapterNetworkState(chain, { requestedCaipNetworks })
-    const availableNamespaces = Array.from(
-      new Set(this.getAllRequestedCaipNetworks().map(network => network.chainNamespace))
-    )
-    ConnectorController.filterByNamespaces(availableNamespaces)
+  setRequestedCaipNetworks(caipNetworks: CaipNetwork[], chain: ChainNamespace) {
+    this.setAdapterNetworkState(chain, { requestedCaipNetworks: caipNetworks })
+    const allRequestedCaipNetworks = this.getAllRequestedCaipNetworks()
+    const namespaces = allRequestedCaipNetworks.map(network => network.chainNamespace)
+    const uniqueNamespaces = Array.from(new Set(namespaces))
+    ConnectorController.filterByNamespaces(uniqueNamespaces)
   },
 
   getAllApprovedCaipNetworkIds(): CaipNetworkId[] {
