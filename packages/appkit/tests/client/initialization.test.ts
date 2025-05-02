@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
   AlertController,
+  ApiController,
   ChainController,
   EventsController,
   OptionsController,
@@ -143,6 +144,23 @@ describe('Base', () => {
       })
 
       expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
+    })
+
+    it('should check allowed origins if social or email feature is enabled', async () => {
+      const fetchAllowedOriginsSpy = vi
+        .spyOn(ApiController, 'fetchAllowedOrigins')
+        .mockResolvedValue(['http://localhost:3000'])
+
+      new AppKit({
+        ...mockOptions,
+        features: {
+          socials: ['google']
+        }
+      })
+
+      await new Promise(resolve => setTimeout(resolve, 0))
+
+      expect(fetchAllowedOriginsSpy).toHaveBeenCalled()
     })
   })
 
