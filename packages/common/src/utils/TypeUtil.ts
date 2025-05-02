@@ -36,7 +36,7 @@ export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
 
 export type ChainId = string | number
 
-export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122'
+export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122' | 'cosmos'
 
 export type AdapterType =
   | 'solana'
