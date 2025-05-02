@@ -197,6 +197,17 @@ export const CoreHelperUtil = {
     )
   },
 
+  isPWA() {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    const isStandaloneDisplayMode = window.matchMedia?.('(display-mode: standalone)')?.matches
+    const isIOSStandalone = (window?.navigator as unknown as { standalone: boolean })?.standalone
+
+    return Boolean(isStandaloneDisplayMode || isIOSStandalone)
+  },
+
   async preloadImage(src: string) {
     const imagePromise = new Promise((resolve, reject) => {
       const image = new Image()
