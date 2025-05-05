@@ -139,6 +139,14 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
+  _filterWalletsByPlatform(wallets: WcWallet[]) {
+    const filteredWallets = CoreHelperUtil.isMobile()
+      ? wallets?.filter(w => w.mobile_link || w.name === 'Coinbase Wallet' || w.name === 'Phantom')
+      : wallets
+
+    return filteredWallets
+  },
+
   async fetchAllowedOrigins() {
     try {
       const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
@@ -188,7 +196,7 @@ export const ApiController = {
       exclude.push(...CORE_UNSUPPORTED_WALLET_IDS)
     }
 
-    return await api.get<ApiGetWalletsResponse>({
+    const wallets = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
@@ -199,6 +207,14 @@ export const ApiController = {
         exclude: params.exclude?.join(',')
       }
     })
+
+    const filteredWallets = ApiController._filterWalletsByPlatform(wallets?.data)
+
+    return {
+      data: filteredWallets || [],
+      // Keep original count for display on main page
+      count: wallets?.count
+    }
   },
 
   async fetchFeaturedWallets() {
@@ -286,7 +302,7 @@ export const ApiController = {
     const params = {
       page: 1,
       entries: ids.length,
-      include: ids,
+      exclude: ids,
       chains
     }
     const { data } = await ApiController.fetchWallets(params)
