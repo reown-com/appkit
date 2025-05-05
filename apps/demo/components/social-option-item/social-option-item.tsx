@@ -164,7 +164,6 @@ export const SocialOptionItem = React.memo(
             {...props}
             tabIndex={handle ? undefined : 0}
           >
-            {/* @ts-expect-error - Property 'w3m-modal' does not exist on type 'JSX.IntrinsicElements' */}
             <wui-logo logo={value as SocialProvider} />
           </div>
         </li>

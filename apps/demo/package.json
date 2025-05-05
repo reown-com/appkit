@@ -38,6 +38,7 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
     "@sentry/core": "8.49.0",
     "@sentry/nextjs": "8.49.0",
     "@solana/wallet-adapter-wallets": "0.19.32",

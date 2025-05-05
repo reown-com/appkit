@@ -332,6 +332,9 @@ importers:
       '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../packages/scaffold-ui
+      '@reown/appkit-ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@sentry/core':
         specifier: 8.49.0
         version: 8.49.0
