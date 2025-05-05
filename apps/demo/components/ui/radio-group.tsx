@@ -1,26 +1,12 @@
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
 'use client'
 
+// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
 import * as React from 'react'
 
 import { DotFilledIcon } from '@radix-ui/react-icons'
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 
 import { cn } from '@/lib/utils'
-
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
-
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
-
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
-
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
-
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
-
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
-
-// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
