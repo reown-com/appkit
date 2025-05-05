@@ -1,7 +1,7 @@
 name: "\U0001F41B Bug Report"
 description: 'Report a reproducible bug.'
 title: '[bug] '
-labels: ['bug', 'needs review']
+labels: ['bug external']
 body:
   - type: input
     attributes:
