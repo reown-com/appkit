@@ -17,6 +17,7 @@
     "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
     "build:example:parcel-react-wagmi": "pnpm --filter @examples/parcel-react-wagmi build",
     "build:example:wagmi-app-router": "pnpm --filter @examples/next-wagmi-app-router build",
+    "build:local": "turbo run build --filter={./packages/**/*} --filter=!{./packages/cdn} --concurrency=31",
     "build": "turbo run build --filter={./packages/**/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
@@ -32,6 +33,7 @@
     "build:gallery": "pnpm build; pnpm --filter=./apps/gallery build",
     "build:gallery-new": "pnpm build; pnpm --filter=./apps/gallery-new build",
     "build:laboratory": "pnpm build; pnpm --filter=./apps/laboratory build",
+    "build:demo": "pnpm --filter=./apps/demo build",
     "build:laboratory-new": "pnpm build; pnpm --filter=./apps/laboratory-new build",
     "build:examples": "pnpm build; pnpm --filter=./examples -r build",
     "build:browser-extension": "pnpm --filter @apps/browser-extension build",
@@ -54,7 +56,8 @@
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
     "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
-    "prepare": "husky"
+    "prepare": "husky",
+    "cli": "node packages/cli/index.js"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",

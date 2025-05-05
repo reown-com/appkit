@@ -46,9 +46,10 @@ export function NetworkList() {
                 isLastChainEnabled ? 'Have at least one chain enabled to disable network' : ''
               }
               size="sm"
+              dataTestId={`network-option-${n.network.id}`}
               key={n.network.id}
               enabled={enabledNetworks.includes(n.network.id)}
-              disabled={isLastChainEnabled}
+              disabled={Boolean(caipAddress) || isLastChainEnabled}
               imageSrc={getImageDeliveryURL(
                 networkImages[n.network.id as keyof typeof networkImages]
               )}

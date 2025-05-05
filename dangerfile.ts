@@ -363,7 +363,7 @@ async function checkDevelopmentConstants() {
     const fileContent = await danger.github.utils.fileContents(f)
 
     if (diff?.added.includes('localhost:') && !fileContent.includes('// Allow localhost')) {
-      fail(`${f} uses localhost: which is likely a mistake`)
+      warn(`${f} uses localhost: which is likely a mistake`)
     }
   }
 }

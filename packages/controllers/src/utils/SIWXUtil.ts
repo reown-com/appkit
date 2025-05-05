@@ -293,10 +293,12 @@ export const SIWXUtil = {
     return true
   },
   getSIWXEventProperties() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        AccountController.state.preferredAccountType ===
+        AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },

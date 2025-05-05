@@ -12,6 +12,7 @@ interface RoundOptionItemProps {
   name: string
   size?: 'sm' | 'md'
   message?: string
+  dataTestId: string
 }
 
 export function RoundOptionItem({
@@ -21,7 +22,8 @@ export function RoundOptionItem({
   disabled,
   name,
   size = 'md',
-  message
+  message,
+  dataTestId
 }: RoundOptionItemProps) {
   return (
     <TooltipProvider>
@@ -30,6 +32,8 @@ export function RoundOptionItem({
           <button
             onClick={onChange}
             disabled={disabled}
+            data-testid={dataTestId}
+            data-enabled={enabled}
             className={cn(
               'rounded-full transition-all flex items-center justify-center',
               size === 'sm' && 'w-10 h-10',
@@ -37,7 +41,7 @@ export function RoundOptionItem({
               enabled
                 ? 'border border-border-accent bg-background-accent-primary/10 dark:bg-background-accent-primary/10'
                 : 'border border-neutral-300 dark:border-neutral-700',
-              disabled && 'cursor-not-allowed'
+              disabled && 'cursor-not-allowed opacity-50'
             )}
           >
             <Image

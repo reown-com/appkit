@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { NumberUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  NumberUtil
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -25,6 +30,18 @@ import '../../partials/w3m-swap-details/index.js'
 import '../../partials/w3m-swap-input-skeleton/index.js'
 import '../../partials/w3m-swap-input/index.js'
 import styles from './styles.js'
+
+interface OnCaipAddressChangeParams {
+  newCaipAddress?: CaipAddress
+  resetSwapState: boolean
+  initializeSwapState: boolean
+}
+
+interface OnCaipNetworkChangeParams {
+  newCaipNetwork?: CaipNetwork
+  resetSwapState: boolean
+  initializeSwapState: boolean
+}
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
@@ -65,29 +82,41 @@ export class W3mSwapView extends LitElement {
 
   @state() private inputError = SwapController.state.inputError
 
-  @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
-
   @state() private fetchError = SwapController.state.fetchError
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
-      if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
-        this.caipNetworkId = newCaipNetwork?.caipNetworkId
-        SwapController.resetState()
-        SwapController.initializeState()
-      }
-    })
-    AccountController.subscribeKey('caipAddress', newCaipAddress => {
-      if (this.caipAddress !== newCaipAddress) {
-        this.caipAddress = newCaipAddress
-        SwapController.resetState()
-        SwapController.initializeState()
-      }
-    })
+    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+      this.onCaipNetworkChange({
+        newCaipNetwork,
+        resetSwapState: true,
+        initializeSwapState: false
+      })
+    )
+    AccountController.subscribeKey('caipAddress', newCaipAddress =>
+      this.onCaipAddressChange({
+        newCaipAddress,
+        resetSwapState: true,
+        initializeSwapState: false
+      })
+    )
     this.unsubscribe.push(
       ...[
+        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+          this.onCaipNetworkChange({
+            newCaipNetwork,
+            resetSwapState: false,
+            initializeSwapState: true
+          })
+        ),
+        AccountController.subscribeKey('caipAddress', newCaipAddress =>
+          this.onCaipAddressChange({
+            newCaipAddress,
+            resetSwapState: false,
+            initializeSwapState: true
+          })
+        ),
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             SwapController.resetState()
@@ -110,7 +139,6 @@ export class W3mSwapView extends LitElement {
           this.toTokenAmount = newState.toTokenAmount
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
-          this.gasPriceInUSD = newState.gasPriceInUSD
           this.fetchError = newState.fetchError
         })
       ]
@@ -223,31 +251,7 @@ export class W3mSwapView extends LitElement {
   }
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
-    const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === ChainController.getActiveNetworkTokenAddress()
-    let value = '0'
-
-    if (!balance) {
-      value = '0'
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    if (!this.gasPriceInUSD) {
-      value = balance
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).div(
-      this.sourceTokenPriceInUSD
-    )
-    const maxValue = isNetworkToken
-      ? NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
-      : NumberUtil.bigNumber(balance)
-
+    const maxValue = NumberUtil.bigNumber(balance || '0')
     this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
   }
 
@@ -301,6 +305,8 @@ export class W3mSwapView extends LitElement {
   }
 
   private async onSwapPreview() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     if (this.fetchError) {
       await SwapController.swapTokens()
     }
@@ -314,7 +320,7 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -401,6 +407,42 @@ export class W3mSwapView extends LitElement {
     // Set amount if provided
     if (amount && !isNaN(Number(amount))) {
       SwapController.setSourceTokenAmount(amount)
+    }
+  }
+
+  private onCaipAddressChange({
+    newCaipAddress,
+    resetSwapState,
+    initializeSwapState
+  }: OnCaipAddressChangeParams) {
+    if (this.caipAddress !== newCaipAddress) {
+      this.caipAddress = newCaipAddress
+
+      if (resetSwapState) {
+        SwapController.resetState()
+      }
+
+      if (initializeSwapState) {
+        SwapController.initializeState()
+      }
+    }
+  }
+
+  private onCaipNetworkChange({
+    newCaipNetwork,
+    resetSwapState,
+    initializeSwapState
+  }: OnCaipNetworkChangeParams) {
+    if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
+      this.caipNetworkId = newCaipNetwork?.caipNetworkId
+
+      if (resetSwapState) {
+        SwapController.resetState()
+      }
+
+      if (initializeSwapState) {
+        SwapController.initializeState()
+      }
     }
   }
 }

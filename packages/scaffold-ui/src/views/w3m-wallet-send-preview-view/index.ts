@@ -1,13 +1,22 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ChainController, RouterController, SendController } from '@reown/appkit-controllers'
+import type { ChainNamespace } from '@reown/appkit-common'
+import {
+  AccountController,
+  ChainController,
+  EventsController,
+  RouterController,
+  SendController,
+  SnackController
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-preview-item'
 import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
@@ -30,9 +39,9 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverProfileImageUrl = SendController.state.receiverProfileImageUrl
 
-  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
-
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
+
+  @state() private loading = SendController.state.loading
 
   public constructor() {
     super()
@@ -42,9 +51,9 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
-          this.gasPriceInUSD = val.gasPriceInUSD
           this.receiverProfileName = val.receiverProfileName
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
+          this.loading = val.loading
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val))
       ]
@@ -100,7 +109,6 @@ export class W3mWalletSendPreviewView extends LitElement {
         <w3m-wallet-send-details
           .caipNetwork=${this.caipNetwork}
           .receiverAddress=${this.receiverAddress}
-          .networkFee=${this.gasPriceInUSD}
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
@@ -120,6 +128,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             @click=${this.onSendClick.bind(this)}
             size="lg"
             variant="main"
+            .loading=${this.loading}
           >
             Send
           </wui-button>
@@ -142,8 +151,39 @@ export class W3mWalletSendPreviewView extends LitElement {
     return null
   }
 
-  onSendClick() {
-    SendController.sendToken()
+  async onSendClick() {
+    if (!this.sendTokenAmount || !this.receiverAddress) {
+      SnackController.showError('Please enter a valid amount and receiver address')
+
+      return
+    }
+
+    try {
+      await SendController.sendToken()
+      SnackController.showSuccess('Transaction started')
+      RouterController.replace('Account')
+    } catch (error) {
+      SnackController.showError('Failed to send transaction. Please try again.')
+      // eslint-disable-next-line no-console
+      console.error('SendController:sendToken - failed to send transaction', error)
+
+      const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_ERROR',
+        properties: {
+          message: errorMessage,
+          isSmartAccount:
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.token?.symbol || '',
+          amount: this.sendTokenAmount,
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        }
+      })
+    }
   }
 
   private onCancelClick() {

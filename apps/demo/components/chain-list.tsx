@@ -44,11 +44,12 @@ export function ChainList() {
           return (
             <RoundOptionItem
               key={chain.id}
+              dataTestId={`chain-option-${chain.id}`}
               enabled={enabledChains.includes(chain.id)}
               imageSrc={chain.imageSrc}
               onChange={() => handleChainChange(chain.id)}
               name={chain.name}
-              disabled={isLastChainInNamespace}
+              disabled={Boolean(caipAddress) || isLastChainInNamespace}
               message={isLastChainInNamespace ? 'Have at least one chain enabled' : ''}
             />
           )

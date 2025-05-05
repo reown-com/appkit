@@ -1,12 +1,13 @@
 import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
 import { AccountController } from '../src/controllers/AccountController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
+import { StorageUtil } from '../src/utils/StorageUtil.js'
 import type {
   AccountType,
   ChainAdapter,
@@ -33,6 +34,7 @@ export function useAppKitAccount(options?: {
     _chains: Map<ChainNamespace, ChainAdapter>,
     _chainNamespace: ChainNamespace | undefined
   ) {
+    const activeConnectorId = StorageUtil.getConnectedConnectorId(_chainNamespace)
     const authConnector = _chainNamespace
       ? ConnectorController.getAuthConnector(_chainNamespace)
       : undefined
@@ -45,14 +47,17 @@ export function useAppKitAccount(options?: {
     state.value.caipAddress = accountState?.caipAddress
     state.value.status = accountState?.status
     state.value.isConnected = Boolean(accountState?.caipAddress)
-    state.value.embeddedWalletInfo = authConnector
-      ? {
-          user: accountState?.user,
-          authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
-          accountType: accountState?.preferredAccountType,
-          isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
-        }
-      : undefined
+    const activeChainNamespace =
+      _chainNamespace || (ChainController.state.activeChain as ChainNamespace)
+    state.value.embeddedWalletInfo =
+      authConnector && activeConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+        ? {
+            user: accountState?.user,
+            authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
+            accountType: accountState?.preferredAccountTypes?.[activeChainNamespace],
+            isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
+          }
+        : undefined
   }
 
   const unsubscribeActiveChain = ChainController.subscribeKey('activeChain', val => {

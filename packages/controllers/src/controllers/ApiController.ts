@@ -8,6 +8,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
+  ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
@@ -19,11 +20,24 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 
+/*
+ * Exclude wallets that do not support relay connections on Core
+ * Excludes:
+ * - Phantom
+ * - Solflare
+ * - Coinbase
+ */
+const CORE_UNSUPPORTED_WALLET_IDS = [
+  '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+  'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
+]
+
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
 export const api = new FetchUtil({ baseUrl, clientId: null })
-const entries = '40'
-const recommendedEntries = '4'
+const entries = 40
+const recommendedEntries = 4
 const imageCountToFetch = 20
 
 // -- Types --------------------------------------------- //
@@ -36,9 +50,10 @@ export interface ApiControllerState {
   recommended: WcWallet[]
   allRecommended: WcWallet[]
   wallets: WcWallet[]
+  filteredWallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
-  excludedWallets: { rdns: string; name: string }[]
+  excludedWallets: { rdns?: string | null; name: string }[]
   isFetchingRecommendedWallets: boolean
 }
 
@@ -61,6 +76,7 @@ const state = proxy<ApiControllerState>({
   recommended: [],
   allRecommended: [],
   wallets: [],
+  filteredWallets: [],
   search: [],
   isAnalyticsEnabled: false,
   excludedWallets: [],
@@ -123,6 +139,19 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
+  async fetchAllowedOrigins() {
+    try {
+      const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
+        path: '/projects/v1/origins',
+        params: ApiController._getSdkProperties()
+      })
+
+      return allowedOrigins
+    } catch (error) {
+      return []
+    }
+  },
+
   async fetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
@@ -152,20 +181,36 @@ export const ApiController = {
     await Promise.allSettled(tokens.map(token => ApiController._fetchTokenImage(token)))
   },
 
+  async fetchWallets(params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string }) {
+    const exclude = params.exclude ?? []
+    const sdkProperties = ApiController._getSdkProperties()
+    if (sdkProperties.sv.startsWith('html-core-')) {
+      exclude.push(...CORE_UNSUPPORTED_WALLET_IDS)
+    }
+
+    return await api.get<ApiGetWalletsResponse>({
+      path: '/getWallets',
+      params: {
+        ...ApiController._getSdkProperties(),
+        ...params,
+        page: String(params.page),
+        entries: String(params.entries),
+        include: params.include?.join(','),
+        exclude: params.exclude?.join(',')
+      }
+    })
+  },
+
   async fetchFeaturedWallets() {
     const { featuredWalletIds } = OptionsController.state
     if (featuredWalletIds?.length) {
-      const { data } = await api.get<ApiGetWalletsResponse>({
-        path: '/getWallets',
-        params: {
-          ...ApiController._getSdkProperties(),
-          page: '1',
-          entries: featuredWalletIds?.length
-            ? String(featuredWalletIds.length)
-            : recommendedEntries,
-          include: featuredWalletIds?.join(',')
-        }
-      })
+      const params = {
+        ...ApiController._getSdkProperties(),
+        page: 1,
+        entries: featuredWalletIds?.length ?? recommendedEntries,
+        include: featuredWalletIds
+      }
+      const { data } = await ApiController.fetchWallets(params)
       data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id))
       const images = data.map(d => d.image_id).filter(Boolean)
       await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
@@ -179,19 +224,15 @@ export const ApiController = {
       state.isFetchingRecommendedWallets = true
       const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
-      const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
-
-      const { data, count } = await api.get<ApiGetWalletsResponse>({
-        path: '/getWallets',
-        params: {
-          ...ApiController._getSdkProperties(),
-          page: '1',
-          chains: caipNetworkIds,
-          entries: recommendedEntries,
-          include: includeWalletIds?.join(','),
-          exclude: exclude?.join(',')
-        }
-      })
+      const chains = ChainController.getRequestedCaipNetworkIds().join(',')
+      const params = {
+        page: 1,
+        entries: recommendedEntries,
+        include: includeWalletIds,
+        exclude,
+        chains
+      }
+      const { data, count } = await ApiController.fetchWallets(params)
       const recent = StorageUtil.getRecentWallets()
       const recommendedImages = data.map(d => d.image_id).filter(Boolean)
       const recentImages = recent.map(r => r.image_id).filter(Boolean)
@@ -210,26 +251,22 @@ export const ApiController = {
     }
   },
 
-  async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
+  async fetchWalletsByPage({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
-    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
-
+    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     const exclude = [
       ...state.recommended.map(({ id }) => id),
       ...(excludeWalletIds ?? []),
       ...(featuredWalletIds ?? [])
     ].filter(Boolean)
-    const { data, count } = await api.get<ApiGetWalletsResponse>({
-      path: '/getWallets',
-      params: {
-        ...ApiController._getSdkProperties(),
-        page: String(page),
-        entries,
-        chains: caipNetworkIds,
-        include: includeWalletIds?.join(','),
-        exclude: exclude.join(',')
-      }
-    })
+    const params = {
+      page,
+      entries,
+      include: includeWalletIds,
+      exclude,
+      chains
+    }
+    const { data, count } = await ApiController.fetchWallets(params)
     const images = data
       .slice(0, imageCountToFetch)
       .map(w => w.image_id)
@@ -245,46 +282,39 @@ export const ApiController = {
   },
 
   async initializeExcludedWallets({ ids }: { ids: string[] }) {
-    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
-
-    const { data } = await api.get<ApiGetWalletsResponse>({
-      path: '/getWallets',
-      params: {
-        ...ApiController._getSdkProperties(),
-        page: '1',
-        entries: String(ids.length),
-        chains: caipNetworkIds,
-        include: ids?.join(',')
-      }
-    })
+    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
+    const params = {
+      page: 1,
+      entries: ids.length,
+      include: ids,
+      chains
+    }
+    const { data } = await ApiController.fetchWallets(params)
 
     if (data) {
       data.forEach(wallet => {
-        if (wallet?.rdns) {
-          state.excludedWallets.push({ rdns: wallet.rdns, name: wallet.name })
-        }
+        state.excludedWallets.push({ rdns: wallet.rdns, name: wallet.name })
       })
     }
   },
 
   async searchWallet({ search, badge }: Pick<ApiGetWalletsRequest, 'search' | 'badge'>) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     state.search = []
-    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
 
-    const { data } = await api.get<ApiGetWalletsResponse>({
-      path: '/getWallets',
-      params: {
-        ...ApiController._getSdkProperties(),
-        page: '1',
-        entries: '100',
-        search: search?.trim(),
-        badge_type: badge,
-        chains: caipNetworkIds,
-        include: includeWalletIds?.join(','),
-        exclude: excludeWalletIds?.join(',')
-      }
-    })
+    const params = {
+      page: 1,
+      entries: 100,
+      search: search?.trim(),
+      badge_type: badge,
+      include: includeWalletIds,
+      exclude: excludeWalletIds,
+      chains
+    }
+
+    const { data } = await ApiController.fetchWallets(params)
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SEARCH_WALLET',
@@ -346,6 +376,33 @@ export const ApiController = {
     }
   },
 
+  filterByNamespaces(namespaces: ChainNamespace[] | undefined) {
+    if (!namespaces?.length) {
+      state.featured = state.allFeatured
+      state.recommended = state.allRecommended
+
+      return
+    }
+
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
+    state.featured = state.allFeatured.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.recommended = state.allRecommended.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.filteredWallets = state.wallets.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+  },
+
+  clearFilterByNamespaces() {
+    state.filteredWallets = []
+  },
+
   setFilterByNamespace(namespace: ChainNamespace | undefined) {
     if (!namespace) {
       state.featured = state.allFeatured
@@ -361,6 +418,10 @@ export const ApiController = {
     )
 
     state.recommended = state.allRecommended.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+
+    state.filteredWallets = state.wallets.filter(wallet =>
       wallet.chains?.some(chain => caipNetworkIds.includes(chain))
     )
   }

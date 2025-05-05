@@ -3,13 +3,7 @@ import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { Connector, ConnectorWithProviders } from '@reown/appkit-controllers'
-import {
-  AssetUtil,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  RouterController
-} from '@reown/appkit-controllers'
+import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
@@ -25,14 +19,9 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const injectedConnectors = this.connectors
+    const injectedConnectors = this.connectors.filter(ConnectorUtil.showConnector)
 
-    if (
-      !injectedConnectors?.length ||
-      (injectedConnectors.length === 1 &&
-        injectedConnectors[0]?.name === 'Browser Wallet' &&
-        !CoreHelperUtil.isMobile())
-    ) {
+    if (injectedConnectors.length === 0) {
       this.style.cssText = `display: none`
 
       return null
@@ -40,24 +29,8 @@ export class W3mConnectInjectedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${injectedConnectors.map(connector => {
-          const walletRDNS = connector.info?.rdns
-
-          if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
-            return null
-          }
-
-          if (!walletRDNS && !ConnectionController.checkInstalled()) {
-            this.style.cssText = `display: none`
-
-            return null
-          }
-
-          if (!ConnectorUtil.showConnector(connector)) {
-            return null
-          }
-
-          return html`
+        ${injectedConnectors.map(
+          connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
@@ -70,7 +43,7 @@ export class W3mConnectInjectedWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }

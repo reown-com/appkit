@@ -1,12 +1,13 @@
 import {
-  AddressPurpose,
   BitcoinNetworkType,
   type BitcoinProvider,
   type BtcRequestMethod,
   type BtcRequests,
+  MessageSigningProtocols,
   type Params,
   type RpcErrorResponse,
   type RpcSuccessResponse,
+  AddressPurpose as SatsConnectAddressPurpose,
   type Provider as SatsConnectProvider,
   type Requests as SatsConnectRequests,
   getProviderById,
@@ -18,7 +19,8 @@ import { CoreHelperUtil } from '@reown/appkit-controllers'
 import type { RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
-import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { type BitcoinConnector, mapSatsConnectAddressPurpose } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { mapCaipNetworkToXverseName, mapXverseNameToCaipNetwork } from '../utils/HelperUtil.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
@@ -73,11 +75,19 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   async connect() {
+    const currentNetwork = this.getActiveNetwork()
+    const networkName = mapCaipNetworkToXverseName(currentNetwork?.caipNetworkId)
+
     const address = await this.getAccountAddresses()
       .then(addresses => addresses[0]?.address)
       .catch(() =>
-        this.internalRequest('wallet_connect', null).then(
-          response => response?.addresses?.find(a => a?.purpose === AddressPurpose.Payment)?.address
+        this.internalRequest('wallet_connect', {
+          network: networkName
+        }).then(
+          response =>
+            response?.addresses
+              .map(add => ({ ...add, purpose: mapSatsConnectAddressPurpose(add.purpose) }))
+              .find(add => add.purpose === AddressPurpose.Payment)?.address
         )
       )
 
@@ -86,6 +96,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     }
 
     this.bindEvents()
+
+    this.emit('accountsChanged', [address])
 
     return address
   }
@@ -97,7 +109,11 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     const response = await this.internalRequest('getAddresses', {
-      purposes: [AddressPurpose.Payment, AddressPurpose.Ordinals, AddressPurpose.Stacks],
+      purposes: [
+        SatsConnectAddressPurpose.Payment,
+        SatsConnectAddressPurpose.Ordinals,
+        SatsConnectAddressPurpose.Stacks
+      ],
       message: 'Connect to your wallet'
     })
 
@@ -105,7 +121,10 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       throw new Error('No address available')
     }
 
-    return response.addresses as BitcoinConnector.AccountAddress[]
+    return response.addresses.map(address => ({
+      ...address,
+      purpose: mapSatsConnectAddressPurpose(address.purpose)
+    })) as BitcoinConnector.AccountAddress[]
   }
 
   public static getWallets({
@@ -124,7 +143,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    const res = await this.internalRequest('signMessage', params)
+    const protocol = params.protocol?.toUpperCase() as MessageSigningProtocols
+    const res = await this.internalRequest('signMessage', { ...params, protocol })
 
     return res.signature
   }

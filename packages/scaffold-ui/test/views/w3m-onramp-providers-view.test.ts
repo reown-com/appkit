@@ -64,7 +64,9 @@ describe('W3mOnRampProvidersView', () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
       address: '0x123',
-      preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      preferredAccountTypes: {
+        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
     })
 
     vi.spyOn(BlockchainApiController, 'generateOnRampURL').mockResolvedValue(

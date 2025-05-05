@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { InfuraProvider, JsonRpcProvider, formatEther } from 'ethers'
+import { JsonRpcProvider, formatEther } from 'ethers'
 
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
@@ -9,13 +9,12 @@ import {
   type Connector,
   type ConnectorType,
   CoreHelperUtil,
-  OptionsController,
   type Provider,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
-import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
+import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
@@ -134,15 +133,15 @@ export class EthersAdapter extends AdapterBlueprint {
 
     const tx = await EthersMethods.sendTransaction(
       {
-        value: params.value as bigint,
-        to: params.to as `0x${string}`,
-        data: params.data as `0x${string}`,
-        gas: params.gas as bigint,
-        gasPrice: params.gasPrice as bigint,
-        address: params.address
+        value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
+        to: params.to as Address,
+        data: params.data ? (params.data as Address) : '0x',
+        gas: params.gas ? BigInt(params.gas) : undefined,
+        gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
+        address: AccountController.state.address as Address
       },
       params.provider as Provider,
-      params.address,
+      AccountController.state.address as Address,
       Number(params.caipNetwork?.id)
     )
 
@@ -178,12 +177,12 @@ export class EthersAdapter extends AdapterBlueprint {
     try {
       const result = await EthersMethods.estimateGas(
         {
-          data: params.data as `0x${string}`,
-          to: params.to as `0x${string}`,
-          address: address as `0x${string}`
+          data: params.data as Address,
+          to: params.to as Address,
+          address: address as Address
         },
         provider as Provider,
-        address as `0x${string}`,
+        address as Address,
         Number(caipNetwork?.id)
       )
 
@@ -191,19 +190,6 @@ export class EthersAdapter extends AdapterBlueprint {
     } catch (error) {
       throw new Error('EthersAdapter:estimateGas - Estimate gas failed')
     }
-  }
-
-  public async getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    const { name, caipNetwork } = params
-    if (caipNetwork) {
-      const result = await EthersMethods.getEnsAddress(name, caipNetwork)
-
-      return { address: result as string }
-    }
-
-    return { address: '' }
   }
 
   public parseUnits(params: AdapterBlueprint.ParseUnitsParams): AdapterBlueprint.ParseUnitsResult {
@@ -351,13 +337,13 @@ export class EthersAdapter extends AdapterBlueprint {
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: this.getPreferredAccountType()
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
 
       accounts = [address]
 
       this.emit('accountChanged', {
-        address: accounts[0] as `0x${string}`,
+        address: accounts[0] as Address,
         chainId: Number(chainId)
       })
     } else {
@@ -388,7 +374,7 @@ export class EthersAdapter extends AdapterBlueprint {
       }
 
       this.emit('accountChanged', {
-        address: accounts[0] as `0x${string}`,
+        address: accounts[0] as Address,
         chainId: Number(chainId)
       })
 
@@ -396,7 +382,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return {
-      address: accounts[0] as `0x${string}`,
+      address: accounts[0] as Address,
       chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
@@ -412,7 +398,7 @@ export class EthersAdapter extends AdapterBlueprint {
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: this.getPreferredAccountType()
+        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
     }
   }
@@ -532,20 +518,6 @@ export class EthersAdapter extends AdapterBlueprint {
     return { balance: '0.00', symbol: 'ETH' }
   }
 
-  public async getProfile(
-    params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult> {
-    if (params.chainId === 1) {
-      const ensProvider = new InfuraProvider('mainnet')
-      const name = await ensProvider.lookupAddress(params.address)
-      const avatar = await ensProvider.getAvatar(params.address)
-
-      return { profileName: name || undefined, profileImage: avatar || undefined }
-    }
-
-    return { profileName: undefined, profileImage: undefined }
-  }
-
   private providerHandlers: {
     disconnect: () => void
     accountsChanged: (accounts: string[]) => void
@@ -561,7 +533,7 @@ export class EthersAdapter extends AdapterBlueprint {
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
         this.emit('accountChanged', {
-          address: accounts[0] as `0x${string}`
+          address: accounts[0] as Address
         })
       } else {
         disconnect()
@@ -684,7 +656,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
   public async revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
-  ): Promise<`0x${string}`> {
+  ): Promise<Address> {
     const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
@@ -707,12 +679,5 @@ export class EthersAdapter extends AdapterBlueprint {
       method: 'wallet_getAssets',
       params: [params]
     })
-  }
-
-  private getPreferredAccountType() {
-    return (
-      AccountController.state.preferredAccountType ||
-      OptionsController.state.defaultAccountTypes.eip155
-    )
   }
 }

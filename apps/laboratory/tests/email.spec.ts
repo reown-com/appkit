@@ -26,7 +26,6 @@ emailTest.describe.configure({ mode: 'serial' })
 emailTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
   await page.page.context().setOffline(false)
@@ -114,6 +113,11 @@ emailTest('it should show names feature only for EVM networks', async ({ library
   } else {
     await page.goToSettings()
   }
+  /*
+   * There are cases that AppKit tries to close while the modal is animating to the next view
+   * So we need to wait for 300ms to ensure the names feature is visible
+   */
+  await page.page.waitForTimeout(300)
   await validator.expectNamesFeatureVisible(library !== 'solana')
   await page.closeModal()
 })
@@ -149,10 +153,10 @@ emailTest('it should disconnect correctly', async ({ library }) => {
   await validator.expectDisconnected()
 })
 
-emailTest('it should abort request if it takes more than 30 seconds', async () => {
+emailTest('it should abort embedded wallet flow if it takes more than 20 seconds', async () => {
   await page.page.context().setOffline(true)
   await page.loginWithEmail(tempEmail, false)
-  await page.page.waitForTimeout(30_000)
-  await validator.expectSnackbar('Something went wrong')
+  await page.page.waitForTimeout(20_000)
+  await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
   await page.page.context().setOffline(false)
 })
