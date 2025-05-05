@@ -78,7 +78,8 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
   getCapabilities: vi.fn(),
-  walletGetAssets: vi.fn()
+  walletGetAssets: vi.fn(),
+  updateBalance: vi.fn()
 }
 
 const mockChainAdapter: ChainAdapter = {
