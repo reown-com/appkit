@@ -9,7 +9,8 @@ import {
   type ConnectionControllerClient,
   ConnectorController,
   type NetworkControllerClient,
-  OptionsController
+  OptionsController,
+  type WcWallet
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
 
@@ -101,10 +102,11 @@ describe('ApiController', () => {
       allFeatured: [],
       recommended: [],
       allRecommended: [],
+      filteredWallets: [],
       wallets: [],
       search: [],
       isAnalyticsEnabled: false,
-      excludedRDNS: [],
+      excludedWallets: [],
       isFetchingRecommendedWallets: false,
       promises: {}
     })
@@ -471,7 +473,7 @@ describe('ApiController', () => {
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
 
-    await ApiController.fetchWallets({ page: 1 })
+    await ApiController.fetchWalletsByPage({ page: 1 })
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
@@ -514,9 +516,9 @@ describe('ApiController', () => {
     OptionsController.setExcludeWalletIds(excludeWalletIds)
 
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
-    const fetchWalletsSpy = vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
+    const fetchWalletsSpy = vi.spyOn(ApiController, 'initializeExcludedWallets')
 
-    await ApiController.initializeExcludedWalletRdns({ ids: excludeWalletIds })
+    await ApiController.initializeExcludedWallets({ ids: excludeWalletIds })
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
@@ -531,9 +533,15 @@ describe('ApiController', () => {
     })
 
     expect(fetchWalletsSpy).toHaveBeenCalledOnce()
-    expect(ApiController.state.excludedRDNS).toEqual(['io.metamask', 'app.phantom'])
+    expect(ApiController.state.excludedWallets).toEqual([
+      { name: 'MetaMask', rdns: 'io.metamask' },
+      { name: 'Phantom', rdns: 'app.phantom' }
+    ])
     const result = EIP6963Wallets.filter(
-      wallet => !ApiController.state.excludedRDNS.includes(wallet.rdns)
+      wallet =>
+        !ApiController.state.excludedWallets.some(
+          excludedWallet => excludedWallet.rdns === wallet.rdns
+        )
     )
     expect(result).toEqual(filteredWallet)
   })
@@ -779,5 +787,63 @@ describe('ApiController', () => {
     })
 
     expect(ApiController.state.isAnalyticsEnabled).toBe(true)
+  })
+
+  it('should reset filters when no namespaces are provided', () => {
+    const allFeatured = [
+      { id: '1', name: 'Wallet1' },
+      { id: '2', name: 'Wallet2' }
+    ] as WcWallet[]
+    const allRecommended = [
+      { id: '3', name: 'Wallet3' },
+      { id: '4', name: 'Wallet4' }
+    ] as WcWallet[]
+
+    ApiController.state.allFeatured = allFeatured
+    ApiController.state.allRecommended = allRecommended
+    ApiController.state.featured = []
+    ApiController.state.recommended = []
+
+    ApiController.filterByNamespaces([])
+
+    expect(ApiController.state.featured).toEqual(allFeatured)
+    expect(ApiController.state.recommended).toEqual(allRecommended)
+  })
+
+  it('should filter wallets by provided namespaces', () => {
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', chains: ['eip155:1'] as const },
+      { id: '2', name: 'Wallet2', chains: ['solana:1'] as const },
+      { id: '3', name: 'Wallet3', chains: ['eip155:1', 'solana:1'] as const }
+    ] as WcWallet[]
+
+    const getRequestedCaipNetworkIdsSpy = vi
+      .spyOn(ChainController, 'getRequestedCaipNetworkIds')
+      .mockReturnValue(['eip155:1'])
+
+    ApiController.state.allFeatured = mockWallets
+    ApiController.state.allRecommended = mockWallets
+    ApiController.state.wallets = mockWallets
+
+    ApiController.filterByNamespaces(['eip155'])
+
+    expect(ApiController.state.featured).toEqual([mockWallets[0], mockWallets[2]])
+    expect(ApiController.state.recommended).toEqual([mockWallets[0], mockWallets[2]])
+    expect(ApiController.state.filteredWallets).toEqual([mockWallets[0], mockWallets[2]])
+    expect(getRequestedCaipNetworkIdsSpy).toHaveBeenCalled()
+  })
+
+  it('should fetch allowed origins', async () => {
+    const mockOrigins = ['https://example.com', 'https://*.test.org']
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ allowedOrigins: mockOrigins })
+    const sdkProperties = ApiController._getSdkProperties()
+
+    const result = await ApiController.fetchAllowedOrigins()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/projects/v1/origins',
+      params: sdkProperties
+    })
+    expect(result).toEqual(mockOrigins)
   })
 })

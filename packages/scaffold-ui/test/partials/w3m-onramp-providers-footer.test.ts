@@ -3,8 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
+  ChainController,
+  type ChainControllerState,
   EventsController,
   OptionsController,
   RouterController
@@ -75,10 +78,20 @@ describe('W3mOnRampProvidersFooter', () => {
   it('should handle "How does it work?" click event', async () => {
     const eventsControllerSpy = vi.spyOn(EventsController, 'sendEvent')
     const routerControllerSpy = vi.spyOn(RouterController, 'push')
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      activeCaipNetwork: {
+        chainNamespace: 'eip155',
+        chainId: '1'
+      } as unknown as CaipNetwork
+    } as ChainControllerState)
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      preferredAccountTypes: {
+        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
     })
 
     const element: W3mOnRampProvidersFooter = await fixture(
@@ -105,9 +118,20 @@ describe('W3mOnRampProvidersFooter', () => {
     const eventsControllerSpy = vi.spyOn(EventsController, 'sendEvent')
     const routerControllerSpy = vi.spyOn(RouterController, 'push')
 
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      activeCaipNetwork: {
+        chainNamespace: 'eip155',
+        chainId: '1'
+      } as unknown as CaipNetwork
+    } as ChainControllerState)
+
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+      preferredAccountTypes: {
+        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+      }
     })
 
     const element: W3mOnRampProvidersFooter = await fixture(

@@ -2,9 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-controllers'
 import {
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -13,6 +15,8 @@ import {
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
+
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-connect-recent-widget')
 export class W3mConnectRecentWidget extends LitElement {
@@ -43,12 +47,11 @@ export class W3mConnectRecentWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const recentWallets = StorageUtil.getRecentWallets()
-    const filteredRecentWallets = recentWallets.filter(
-      wallet =>
-        !this.connectors.some(
-          connector => connector.id === wallet.id || connector.name === wallet.name
-        )
-    )
+
+    const filteredRecentWallets = recentWallets
+      .filter(wallet => !WalletUtil.isExcluded(wallet))
+      .filter(wallet => !this.hasWalletConnector(wallet))
+      .filter(wallet => this.isWalletCompatibleWithCurrentChain(wallet))
 
     if (!filteredRecentWallets.length) {
       this.style.cssText = `display: none`
@@ -83,6 +86,26 @@ export class W3mConnectRecentWidget extends LitElement {
     }
 
     ConnectorController.selectWalletConnector(wallet)
+  }
+
+  private hasWalletConnector(wallet: WcWallet) {
+    return this.connectors.some(
+      connector => connector.id === wallet.id || connector.name === wallet.name
+    )
+  }
+
+  private isWalletCompatibleWithCurrentChain(wallet: WcWallet) {
+    const currentNamespace = ChainController.state.activeChain
+
+    if (currentNamespace && wallet.chains) {
+      return wallet.chains.some(c => {
+        const chainNamespace = c.split(':')[0] as ChainNamespace
+
+        return currentNamespace === chainNamespace
+      })
+    }
+
+    return true
   }
 }
 

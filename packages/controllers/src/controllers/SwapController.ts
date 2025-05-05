@@ -7,6 +7,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { SendApiUtil } from '../utils/SendApiUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
@@ -27,11 +28,17 @@ export const TO_AMOUNT_DECIMALS = 6
 // -- Types --------------------------------------------- //
 export type SwapInputTarget = 'sourceToken' | 'toToken'
 
+export type SwapInputArguments = Partial<{
+  fromToken: string
+  toToken: string
+  amount: string
+}>
+
 type TransactionParams = {
   data: string
   to: string
-  gas: bigint
-  gasPrice: bigint
+  gas?: bigint
+  gasPrice?: bigint
   value: bigint
   toAmount: string
 }
@@ -301,6 +308,7 @@ export const SwapController = {
     state.networkTokenSymbol = initialState.networkTokenSymbol
     state.networkBalanceInUSD = initialState.networkBalanceInUSD
     state.inputError = initialState.inputError
+    state.myTokensWithBalance = initialState.myTokensWithBalance
   },
 
   resetValues() {
@@ -416,14 +424,14 @@ export const SwapController = {
   },
 
   async getMyTokensWithBalance(forceUpdate?: string) {
-    const balances = await SwapApiUtil.getMyTokensWithBalance(forceUpdate)
-
-    if (!balances) {
+    const balances = await SendApiUtil.getMyTokensWithBalance(forceUpdate)
+    const swapBalances = SendApiUtil.mapBalancesToSwapTokens(balances)
+    if (!swapBalances) {
       return
     }
 
     await this.getInitialGasPrice()
-    this.setBalances(balances)
+    this.setBalances(swapBalances)
   },
 
   setBalances(balances: SwapTokenWithBalance[]) {
@@ -597,7 +605,7 @@ export const SwapController = {
   },
 
   async createAllowanceTransaction() {
-    const { fromCaipAddress, fromAddress, sourceTokenAddress, toTokenAddress } = this.getParams()
+    const { fromCaipAddress, sourceTokenAddress, toTokenAddress } = this.getParams()
 
     if (!fromCaipAddress || !toTokenAddress) {
       return undefined
@@ -613,17 +621,9 @@ export const SwapController = {
         to: toTokenAddress,
         userAddress: fromCaipAddress
       })
-      const gasLimit = await ConnectionController.estimateGas({
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-        address: fromAddress as `0x${string}`,
-        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
-        data: response.tx.data
-      })
-
       const transaction = {
         data: response.tx.data,
         to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
-        gas: gasLimit,
         gasPrice: BigInt(response.tx.eip155.gasPrice),
         value: BigInt(response.tx.value),
         toAmount: state.toTokenAmount
@@ -632,7 +632,6 @@ export const SwapController = {
       state.approvalTransaction = {
         data: transaction.data,
         to: transaction.to,
-        gas: transaction.gas ?? BigInt(0),
         gasPrice: transaction.gasPrice,
         value: transaction.value,
         toAmount: transaction.toAmount
@@ -641,7 +640,6 @@ export const SwapController = {
       return {
         data: transaction.data,
         to: transaction.to,
-        gas: transaction.gas ?? BigInt(0),
         gasPrice: transaction.gasPrice,
         value: transaction.value,
         toAmount: transaction.toAmount
@@ -676,7 +674,8 @@ export const SwapController = {
         userAddress: fromCaipAddress,
         from: sourceToken.address,
         to: toToken.address,
-        amount: amount as string
+        amount: amount as string,
+        disableEstimate: true
       })
 
       const isSourceTokenIsNetworkToken = sourceToken.address === networkAddress
@@ -694,7 +693,6 @@ export const SwapController = {
       }
 
       state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gas, gasPrice)
-
       state.approvalTransaction = undefined
       state.swapTransaction = transaction
 
@@ -734,8 +732,6 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        gas: data.gas,
-        gasPrice: BigInt(data.gasPrice),
         value: data.value,
         chainNamespace: 'eip155'
       })
@@ -760,7 +756,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -802,8 +798,6 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        gas: data.gas,
-        gasPrice: BigInt(data.gasPrice),
         value: data.value,
         chainNamespace: 'eip155'
       })
@@ -820,7 +814,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -847,7 +841,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.eip155 ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -864,21 +858,7 @@ export const SwapController = {
       state.myTokensWithBalance
     )
 
-    let insufficientNetworkTokenForGas = true
-    if (
-      AccountController.state.preferredAccountType ===
-      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    ) {
-      // Smart Accounts may pay gas in any ERC20 token
-      insufficientNetworkTokenForGas = false
-    } else {
-      insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-        state.networkBalanceInUSD,
-        state.gasPriceInUSD
-      )
-    }
-
-    return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
+    return isInsufficientSourceTokenForSwap
   },
 
   // -- Calculations -------------------------------------- //

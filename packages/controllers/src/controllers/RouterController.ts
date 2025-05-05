@@ -9,7 +9,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
-import type { SwapInputTarget } from './SwapController.js'
+import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -89,6 +89,8 @@ export interface RouterControllerState {
     | 'SmartSessionCreated'
     | 'SmartSessionList'
     | 'SIWXSignMessage'
+    | 'Pay'
+    | 'PayLoading'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -103,6 +105,7 @@ export interface RouterControllerState {
     switchToChain?: ChainNamespace
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
+    swap?: SwapInputArguments
   }
   transactionStack: TransactionAction[]
 }
@@ -158,7 +161,7 @@ export const RouterController = {
           this.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
-          ModalController.close()
+          ModalController.close(true)
           state.history = []
         }
       } else if (action.view) {

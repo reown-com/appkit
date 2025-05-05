@@ -23,8 +23,8 @@ import { WcHelpersUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-controllers'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -37,11 +37,7 @@ export type AppKitOptionsParams = AppKitOptions & {
 
 walletConnect.type = 'walletConnect' as const
 
-export function walletConnect(
-  parameters: AppKitOptionsParams,
-  appKit: AppKit,
-  caipNetworks: [CaipNetwork, ...CaipNetwork[]]
-) {
+export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
   const isNewChainsStale = parameters.isNewChainsStale ?? true
   type Provider = Awaited<ReturnType<(typeof UniversalProviderType)['init']>>
   type Properties = {
@@ -94,6 +90,7 @@ export function walletConnect(
 
     async connect({ ...rest } = {}) {
       try {
+        const caipNetworks = ChainController.getCaipNetworks()
         const provider = await this.getProvider()
         if (!provider) {
           throw new ProviderNotFoundError()
@@ -108,9 +105,14 @@ export function walletConnect(
         if (provider.session && isChainsStale) {
           await provider.disconnect()
         }
+        const universalProviderConfigOverride =
+          OptionsController.state.universalProviderConfigOverride
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
-          const namespaces = WcHelpersUtil.createNamespaces(caipNetworks)
+          const namespaces = WcHelpersUtil.createNamespaces(
+            caipNetworks,
+            universalProviderConfigOverride
+          )
           await provider.connect({
             optionalNamespaces: namespaces,
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
@@ -121,7 +123,22 @@ export function walletConnect(
 
         // If session exists and chains are authorized, enable provider for required chain
         const accounts = await this.getAccounts()
-        const currentChainId = await this.getChainId()
+
+        /**
+         * Check if the chain is supported by the wallet. If not default back to the first chain that is provided.
+         */
+        const requestChainId = await this.getChainId()
+        const chains = provider.session?.namespaces?.['eip155']?.chains
+        const isRequestedChainSupported = chains?.some(
+          chain => Number(chain.split(':')[1]) === requestChainId
+        )
+
+        let currentChainId = 1
+        if (isRequestedChainSupported) {
+          currentChainId = requestChainId
+        } else if (chains?.[0]) {
+          currentChainId = Number(chains[0].split(':')[1])
+        }
 
         if (displayUri) {
           provider.removeListener('display_uri', displayUri)
@@ -147,8 +164,8 @@ export function walletConnect(
           sessionDelete = this.onSessionDelete.bind(this)
           provider.on('session_delete', sessionDelete)
         }
-
-        provider.setDefaultChain(`eip155:${currentChainId}`)
+        const defaultChain = universalProviderConfigOverride?.defaultChain
+        provider.setDefaultChain(defaultChain ?? `eip155:${currentChainId}`)
 
         return { accounts, chainId: currentChainId }
       } catch (error) {
@@ -219,7 +236,7 @@ export function walletConnect(
 
       if (chainId && currentChainId !== chainId && activeNamespace) {
         const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
-        const appKitCaipNetworks = appKit?.getCaipNetworks(activeNamespace as ChainNamespace)
+        const appKitCaipNetworks = appKit.getCaipNetworks(activeNamespace as ChainNamespace)
         const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
@@ -240,7 +257,7 @@ export function walletConnect(
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.chains?.[0]
 
-      const network = caipNetworks.find(c => c.id === chain)
+      const network = ChainController.getCaipNetworks().find(c => c.id === chain)
 
       return network?.id as number
     },
@@ -273,7 +290,7 @@ export function walletConnect(
         throw new ProviderNotFoundError()
       }
 
-      const chainToSwitch = caipNetworks.find(x => x.id === chainId)
+      const chainToSwitch = ChainController.getCaipNetworks().find(x => x.id === chainId)
 
       if (!chainToSwitch) {
         throw new SwitchChainError(new ChainNotConfiguredError())
@@ -353,7 +370,7 @@ export function walletConnect(
       config.emitter.emit('change', { chainId })
     },
     onConnect(_connectInfo) {
-      this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
+      this.setRequestedChainsIds(ChainController.getCaipNetworks().map(x => Number(x.id)))
     },
     async onDisconnect(_error) {
       this.setRequestedChainsIds([])

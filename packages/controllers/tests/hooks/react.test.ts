@@ -2,7 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 
-import { ChainController, ConnectionController, ConnectorController } from '../../exports/index.js'
+import {
+  type AuthConnector,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  type ConnectorControllerState,
+  StorageUtil
+} from '../../exports/index.js'
 import { useAppKitAccount, useAppKitNetworkCore, useDisconnect } from '../../exports/react.js'
 
 vi.mock('valtio', () => ({
@@ -122,7 +129,14 @@ describe('useAppKitAccount', () => {
   it('should return correct embedded wallet info when connected with social provider', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValueOnce({} as any)
+    const authConnector = {
+      id: 'ID_AUTH',
+      name: 'ID Auth',
+      imageUrl: 'https://example.com/id-auth.png'
+    } as AuthConnector
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
 
     useSnapshot.mockReturnValueOnce({
       activeChain: 'eip155',
@@ -135,12 +149,11 @@ describe('useAppKitAccount', () => {
               caipAddress: mockCaipAddress,
               allAccounts: [],
               status: 'connected',
-              preferredAccountType: 'eoa',
+              preferredAccountTypes: { eip155: 'eoa' },
               socialProvider: 'google',
               smartAccountDeployed: false,
               user: {
-                email: 'email@email.test',
-                userName: 'test'
+                email: 'email@email.test'
               }
             }
           }
@@ -159,7 +172,7 @@ describe('useAppKitAccount', () => {
       embeddedWalletInfo: {
         user: {
           email: 'email@email.test',
-          userName: 'test'
+          username: 'test-username'
         },
         authProvider: 'google',
         accountType: 'eoa',
@@ -169,6 +182,13 @@ describe('useAppKitAccount', () => {
   })
 
   it('should return account state with namespace parameter', async () => {
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      allConnectors: [{}],
+      connected: true,
+      activeConnector: {}
+    } as unknown as ConnectorControllerState)
+
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
 

@@ -19,7 +19,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.caipNetworks || [],
+        caipNetworks: this.getCaipNetworks(),
         namespace: this.namespace as ChainNamespace
       })
     )
@@ -155,13 +155,6 @@ export class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
-  public async getProfile(): Promise<AdapterBlueprint.GetProfileResult> {
-    return Promise.resolve({
-      profileImage: '',
-      profileName: ''
-    })
-  }
-
   public async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
     return Promise.resolve({
       hash: ''
@@ -176,12 +169,6 @@ export class UniversalAdapter extends AdapterBlueprint {
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
       hash: ''
-    })
-  }
-
-  public async getEnsAddress(): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    return Promise.resolve({
-      address: false
     })
   }
 
