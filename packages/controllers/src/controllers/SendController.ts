@@ -313,8 +313,8 @@ export const SendController = {
       value: this.state.sendTokenAmount
     })
 
+    ConnectionController._getClient()?.updateBalance('solana')
     this.resetSend()
-    AccountController.fetchTokenBalance()
   },
 
   resetSend() {
