@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
@@ -8,6 +9,7 @@ import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 
@@ -64,14 +66,14 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
   async connect() {
     const connectFeature = this.getWalletFeature('bitcoin:connect')
+
+    this.bindEvents()
     const response = await connectFeature.connect({ purposes: ['payment', 'ordinals'] })
 
     const account = response.accounts[0]
     if (!account) {
       throw new Error('No account found')
     }
-
-    this.bindEvents()
 
     return account.address
   }
@@ -81,7 +83,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     const mappedAccounts = this.wallet.accounts
       .map<BitcoinConnector.AccountAddress>(acc => ({
         address: acc.address,
-        purpose: 'payment',
+        purpose: AddressPurpose.Payment,
         publicKey: Buffer.from(acc.publicKey).toString('hex')
       }))
       .filter(acc => {
@@ -97,6 +99,12 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    if (params.protocol) {
+      console.warn(
+        'WalletStandardConnector:signMessage - protocol parameter not supported in WalletStandard:bitcoin - signMessage'
+      )
+    }
+
     const feature = this.getWalletFeature('bitcoin:signMessage')
 
     const account = this.wallet.accounts.find(acc => acc.address === params.address)
@@ -237,6 +245,10 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     callback(...wrapWallets(get()))
 
     return on('register', (...wallets) => callback(...wrapWallets(wallets)))
+  }
+
+  public async switchNetwork(_caipNetworkId: string): Promise<void> {
+    throw new Error(`${this.name} wallet does not support network switching`)
   }
 }
 

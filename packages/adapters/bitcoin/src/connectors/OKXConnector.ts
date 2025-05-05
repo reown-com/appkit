@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
@@ -5,6 +6,7 @@ import { bitcoin } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
@@ -59,7 +61,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     const accountList = accounts.map(account => ({
       address: account,
-      purpose: 'payment' as const,
+      purpose: AddressPurpose.Payment,
       publicKey: publicKeyOfActiveAccount
     }))
 
@@ -67,7 +69,9 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    return this.wallet.signMessage(params.message)
+    const protocol = params.protocol === 'bip322' ? 'bip322-simple' : params.protocol
+
+    return this.wallet.signMessage(params.message, protocol)
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
@@ -108,6 +112,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       psbt: Buffer.from(signedPsbtHex, 'hex').toString('base64'),
       txid
     }
+  }
+
+  public async switchNetwork(_caipNetworkId: string): Promise<void> {
+    throw new Error(`${this.name} wallet does not support network switching`)
   }
 
   public request<T>(_args: RequestArguments): Promise<T> {

@@ -1,11 +1,15 @@
-import { fallback, http } from 'viem'
+import { type HttpTransport, type Transport, fallback, http } from 'viem'
 
 import {
   type AppKitNetwork,
   type CaipNetwork,
   type CaipNetworkId,
-  ConstantsUtil
+  type ChainNamespace,
+  ConstantsUtil,
+  type CustomRpcUrl,
+  type CustomRpcUrlMap
 } from '@reown/appkit-common'
+import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 
 import { PresetsUtil } from './PresetsUtil.js'
 
@@ -64,6 +68,7 @@ type ExtendCaipNetworkParams = {
   customNetworkImageUrls: Record<number | string, string> | undefined
   projectId: string
   customRpc?: boolean
+  customRpcUrls?: CustomRpcUrlMap
 }
 
 export const CaipNetworksUtil = {
@@ -133,23 +138,28 @@ export const CaipNetworksUtil = {
    * @param params.customNetworkImageUrls - The custom network image URLs
    * @param params.projectId - The project ID
    * @param params.customRpc - Boolean to indicate if the custom RPC URL should be used
+   * @param params.customRpcUrls - The map of chain and custom RPC URLs to be used by the AppKit
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetwork(
     caipNetwork: AppKitNetwork | CaipNetwork,
-    { customNetworkImageUrls, projectId, customRpc }: ExtendCaipNetworkParams
+    { customNetworkImageUrls, projectId, customRpcUrls }: ExtendCaipNetworkParams
   ): CaipNetwork {
-    const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
-    const chainDefaultUrl = caipNetwork?.rpcUrls?.['chainDefault']?.http?.[0]
+    const caipNetworkId = this.getCaipNetworkId(caipNetwork)
 
-    let rpcUrl = ''
-    if (customRpc) {
-      // If custom RPC is enabled, use the original RPC URL
-      rpcUrl = caipNetwork.rpcUrls.default.http?.[0] || ''
-    } else {
-      // If custom RPC is not enabled, get the default Reown RPC URL
-      rpcUrl = this.getDefaultRpcUrl(caipNetwork, caipNetworkId, projectId)
+    const networkDefaultRpcUrl = caipNetwork.rpcUrls.default.http?.[0]
+    const reownRpcUrl = this.getDefaultRpcUrl(caipNetwork, caipNetworkId, projectId)
+
+    const chainDefaultRpcUrl =
+      caipNetwork?.rpcUrls?.['chainDefault']?.http?.[0] || networkDefaultRpcUrl
+    const customRpcUrlsOfNetwork = customRpcUrls?.[caipNetworkId]?.map(i => i.url) || []
+
+    const rpcUrls = [...customRpcUrlsOfNetwork, reownRpcUrl]
+    const rpcUrlsWithoutReown = [...customRpcUrlsOfNetwork]
+
+    if (chainDefaultRpcUrl && !rpcUrlsWithoutReown.includes(chainDefaultRpcUrl)) {
+      rpcUrlsWithoutReown.push(chainDefaultRpcUrl)
     }
 
     return {
@@ -163,11 +173,11 @@ export const CaipNetworksUtil = {
       rpcUrls: {
         ...caipNetwork.rpcUrls,
         default: {
-          http: [rpcUrl]
+          http: rpcUrls
         },
         // Save the networks original RPC URL default
         chainDefault: {
-          http: [chainDefaultUrl || caipNetwork.rpcUrls.default.http[0] || '']
+          http: rpcUrlsWithoutReown
         }
       }
     }
@@ -179,46 +189,115 @@ export const CaipNetworksUtil = {
    * @param params - The parameters object
    * @param params.networkImageIds - The network image IDs
    * @param params.customNetworkImageUrls - The custom network image URLs
+   * @param params.customRpcUrls - The map of chain and custom RPC URLs to be used by the AppKit
    * @param params.projectId - The project ID
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetworks(
     caipNetworks: AppKitNetwork[],
-    {
-      customNetworkImageUrls,
-      projectId,
-      customRpcChainIds
-    }: ExtendCaipNetworkParams & { customRpcChainIds?: number[] }
+    { customNetworkImageUrls, projectId, customRpcUrls }: ExtendCaipNetworkParams
   ) {
     return caipNetworks.map(caipNetwork =>
       CaipNetworksUtil.extendCaipNetwork(caipNetwork, {
         customNetworkImageUrls,
-        projectId,
-        customRpc: customRpcChainIds?.includes(caipNetwork.id as number)
+        customRpcUrls,
+        projectId
       })
     ) as [CaipNetwork, ...CaipNetwork[]]
   },
 
-  getViemTransport(caipNetwork: CaipNetwork) {
-    const defaultRpcUrl = caipNetwork.rpcUrls.default.http?.[0]
+  getViemTransport(caipNetwork: CaipNetwork, projectId: string, customRpcUrls?: CustomRpcUrl[]) {
+    const transports: HttpTransport[] = []
 
-    if (!WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetwork.caipNetworkId)) {
-      return http(defaultRpcUrl)
+    // Add custom RPC URLs
+    customRpcUrls?.forEach(rpcUrl => {
+      transports.push(http(rpcUrl.url, rpcUrl.config))
+    })
+
+    // Add Reown RPC URL
+    if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetwork.caipNetworkId)) {
+      transports.push(
+        http(getBlockchainApiRpcUrl(caipNetwork.caipNetworkId, projectId), {
+          /*
+           * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
+           * It will only work for viem >= 2.17.7
+           */
+          fetchOptions: {
+            headers: {
+              'Content-Type': 'text/plain'
+            }
+          }
+        })
+      )
     }
 
-    return fallback([
-      http(defaultRpcUrl, {
-        /*
-         * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
-         * It will only work for viem >= 2.17.7
-         */
-        fetchOptions: {
-          headers: {
-            'Content-Type': 'text/plain'
-          }
+    // Add original fallback transports
+    caipNetwork?.rpcUrls?.default?.http?.forEach(rpcUrl => {
+      transports.push(http(rpcUrl))
+    })
+
+    return fallback(transports)
+  },
+
+  extendWagmiTransports(caipNetwork: CaipNetwork, projectId: string, transport: Transport) {
+    if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetwork.caipNetworkId)) {
+      const reownRpcUrl = this.getDefaultRpcUrl(caipNetwork, caipNetwork.caipNetworkId, projectId)
+
+      return fallback([transport, http(reownRpcUrl)])
+    }
+
+    return transport
+  },
+
+  /**
+   * Generates the unsupported network object with the given CaipNetwork ID
+   * @param caipNetworkId - The CAIP network ID
+   * @returns The unsupported CAIP network object
+   */
+  getUnsupportedNetwork(caipNetworkId: CaipNetworkId) {
+    return {
+      id: caipNetworkId.split(':')[1],
+      caipNetworkId,
+      name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
+      chainNamespace: caipNetworkId.split(':')[0],
+      nativeCurrency: {
+        name: '',
+        decimals: 0,
+        symbol: ''
+      },
+      rpcUrls: {
+        default: {
+          http: []
         }
-      }),
-      http(defaultRpcUrl)
-    ])
+      }
+    } as CaipNetwork
+  },
+
+  /**
+   * Gets the CaipNetwork object from the storage if `@appkit/active_caip_network_id` is being set
+   * @returns CaipNetwork or undefined
+   */
+  getCaipNetworkFromStorage(defaultCaipNetwork?: CaipNetwork) {
+    const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
+    const caipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const availableNamespaces = Array.from(ChainController.state.chains?.keys() || [])
+    const namespace = caipNetworkIdFromStorage?.split(':')[0] as ChainNamespace | undefined
+    const isNamespaceAvailable = namespace ? availableNamespaces.includes(namespace) : false
+    const caipNetwork = caipNetworks?.find(cn => cn.caipNetworkId === caipNetworkIdFromStorage)
+    const isUnsupportedNetwork = isNamespaceAvailable && !caipNetwork && caipNetworkIdFromStorage
+
+    if (isUnsupportedNetwork) {
+      return this.getUnsupportedNetwork(caipNetworkIdFromStorage)
+    }
+
+    if (caipNetwork) {
+      return caipNetwork
+    }
+
+    if (defaultCaipNetwork) {
+      return defaultCaipNetwork
+    }
+
+    return caipNetworks?.[0]
   }
 }

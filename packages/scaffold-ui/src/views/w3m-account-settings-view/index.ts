@@ -44,7 +44,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
 
   @state() private disconnecting = false
 
@@ -63,14 +63,12 @@ export class W3mAccountSettingsView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.preferredAccountType = val.preferredAccountType
-          } else {
-            ModalController.close()
+            this.preferredAccountTypes = val.preferredAccountTypes
           }
         }),
         AccountController.subscribeKey(
-          'preferredAccountType',
-          val => (this.preferredAccountType = val)
+          'preferredAccountTypes',
+          val => (this.preferredAccountTypes = val)
         ),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
@@ -249,7 +247,7 @@ export class W3mAccountSettingsView extends LitElement {
 
     if (!this.switched) {
       this.text =
-        this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        this.preferredAccountTypes?.[namespace] === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           ? 'Switch to your EOA'
           : 'Switch to your smart account'
     }
@@ -275,11 +273,12 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
+    const namespace = this.network?.chainNamespace as ChainNamespace
     const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
 
     const accountTypeTarget =
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
-      !isSmartAccountEnabled
+      this.preferredAccountTypes?.[namespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT || !isSmartAccountEnabled
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     const authConnector = ConnectorController.getAuthConnector()
@@ -289,7 +288,7 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
-    await ConnectionController.setPreferredAccountType(accountTypeTarget)
+    await ConnectionController.setPreferredAccountType(accountTypeTarget, namespace)
 
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

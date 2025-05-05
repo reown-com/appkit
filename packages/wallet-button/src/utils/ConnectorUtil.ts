@@ -16,7 +16,6 @@ import {
 } from '@reown/appkit-controllers'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
@@ -40,12 +39,19 @@ export const ConnectorUtil = {
       }
 
       await ModalController.open()
-      RouterController.push('ConnectingWalletConnect', { wallet })
+
+      if (CoreHelperUtil.isMobile() && walletConnect) {
+        RouterController.replace('AllWallets')
+      } else {
+        RouterController.replace('ConnectingWalletConnect', {
+          wallet
+        })
+      }
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
           if (RouterController.state.view !== 'Connect') {
-            RouterController.push('Connect')
+            RouterController.replace('Connect')
           }
           unsubscribeModalController()
           reject(new Error('Modal closed'))
@@ -93,7 +99,7 @@ export const ConnectorUtil = {
     return new Promise((resolve, reject) => {
       async function handleSocialConnection(event: MessageEvent) {
         if (event.data?.resultUri) {
-          if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
+          if (event.origin === CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN) {
             window.removeEventListener('message', handleSocialConnection, false)
             try {
               const authConnector = ConnectorController.getAuthConnector()
@@ -195,7 +201,7 @@ export const ConnectorUtil = {
         } else {
           const authConnector = ConnectorController.getAuthConnector()
           popupWindow = CoreHelperUtil.returnOpenHref(
-            '',
+            `${CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
             'popupWindow',
             'width=600,height=800,scrollbars=yes'
           )

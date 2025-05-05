@@ -16,6 +16,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -148,13 +149,17 @@ export const ConnectionController = {
     }
   },
 
-  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
+  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType, namespace: ChainNamespace) {
     ModalController.setLoading(true, ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (!authConnector) {
       return
     }
-    await authConnector?.provider.setPreferredAccount(accountType)
+    AccountController.setPreferredAccountType(accountType, namespace)
+    await authConnector.provider.setPreferredAccount(accountType)
+    StorageUtil.setPreferredAccountTypes(
+      AccountController.state.preferredAccountTypes ?? { [namespace]: accountType }
+    )
     await this.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)
     EventsController.sendEvent({
@@ -228,6 +233,7 @@ export const ConnectionController = {
   resetUri() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
+    wcConnectionPromise = undefined
   },
 
   finalizeWcConnection() {

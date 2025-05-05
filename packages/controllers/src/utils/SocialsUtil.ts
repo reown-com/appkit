@@ -1,3 +1,5 @@
+import { ConstantsUtil } from '@reown/appkit-common'
+
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
@@ -10,7 +12,11 @@ import type { SocialProvider } from './TypeUtil.js'
 
 function getPopupWindow() {
   try {
-    return CoreHelperUtil.returnOpenHref('', 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    return CoreHelperUtil.returnOpenHref(
+      `${ConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
+      'popupWindow',
+      'width=600,height=800,scrollbars=yes'
+    )
   } catch (error) {
     throw new Error('Could not open social popup')
   }

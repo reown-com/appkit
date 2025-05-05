@@ -4,11 +4,15 @@ import { Keypair } from '@solana/web3.js'
 import Big from 'big.js'
 import { privateKeyToAccount } from 'viem/accounts'
 
+import { ChainNamespace } from '@reown/appkit-common'
+
 import { Box } from '../../components/Box'
-import { IconButton, IconButtonKey } from '../../components/IconButton'
+import Tab from '../../components/ChainTabs'
+import { IconButton } from '../../components/IconButton'
 import { Text } from '../../components/Text'
 import { Token } from '../../components/Token'
 import { Zorb } from '../../components/Zorb'
+import { BitcoinProvider } from '../../core/BitcoinProvider'
 import { useBalance } from '../../hooks/useBalance'
 import { AccountUtil } from '../../utils/AccountUtil'
 import { HelperUtil } from '../../utils/HelperUtil'
@@ -20,48 +24,51 @@ const { address } = privateKeyToAccount(AccountUtil.privateKeyEvm)
 const keypair = Keypair.fromSecretKey(AccountUtil.privateKeySolana)
 const publicKey = keypair.publicKey
 
+// Bitcoin
+const bitcoinProvider = new BitcoinProvider()
+
 export function Home() {
   const [copied, setCopied] = useState(false)
-  const [page, setPage] = useState<'ethereum' | 'solana'>('ethereum')
+  const [page, setPage] = useState<ChainNamespace>('eip155')
 
-  const isEVM = page === 'ethereum'
+  const account = getAccount()
 
-  const account = isEVM ? address : publicKey.toString()
-
-  const balance = useBalance(page ?? 'ethereum', account)
+  const balance = useBalance(page, account)
   // eslint-disable-next-line new-cap
   const formattedBalance = Big(balance).round(4).toString()
 
-  const iconOptions = useMemo(
-    () => ({
-      [copied ? 'checkmark' : 'copy']: {
-        label: 'Copy',
-        onClick: () => {
-          setCopied(true)
-          navigator.clipboard.writeText(account)
-          setTimeout(() => setCopied(false), 1500)
-        }
-      },
-      switch: {
-        label: 'Switch',
-        onClick: () => {
-          setPage(isEVM ? 'solana' : 'ethereum')
-        }
-      },
-      arrowRightUp: {
-        label: 'View',
-        onClick: () => {
-          window.open(
-            isEVM
-              ? `https://etherscan.io/address/${account}`
-              : `https://explorer.solana.com/address/${account}`,
-            '_blank'
-          )
-        }
-      }
-    }),
-    [isEVM, copied]
-  )
+  function getAccount() {
+    switch (page) {
+      case 'eip155':
+        return address
+      case 'solana':
+        return publicKey.toString()
+      case 'bip122':
+        return bitcoinProvider.getAddress()
+      default:
+        return ''
+    }
+  }
+
+  function copyAddress(value: string) {
+    setCopied(true)
+    navigator.clipboard.writeText(value)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  function viewAddress() {
+    switch (page) {
+      case 'eip155':
+        window.open(`https://etherscan.io/address/${account}`, '_blank')
+        break
+      case 'solana':
+        window.open(`https://explorer.solana.com/address/${account}`, '_blank')
+        break
+      case 'bip122':
+        window.open(`https://btcscan.org/address/${account}`, '_blank')
+        break
+    }
+  }
 
   return (
     <Box
@@ -83,6 +90,7 @@ export function Home() {
         flexDirection="column"
         gap="8"
       >
+        <Tab onTabClick={setPage} />
         <Box
           display="flex"
           alignItems="center"
@@ -95,13 +103,24 @@ export function Home() {
             {HelperUtil.shortenAddress(account)}
           </Text>
           <Box display="flex" alignItems="center" gap="4">
-            {Object.entries(iconOptions).map(([icon, { label, onClick }]) => (
-              <IconButton key={icon} label={label} onClick={onClick} icon={icon as IconButtonKey} />
-            ))}
+            <IconButton
+              label={copied ? 'Copied' : 'Copy'}
+              onClick={() => {
+                copyAddress(account)
+              }}
+              icon={copied ? 'checkmark' : 'copy'}
+            />
+            <IconButton
+              label="View"
+              onClick={() => {
+                viewAddress()
+              }}
+              icon="arrowRightUp"
+            />
           </Box>
         </Box>
 
-        <Token token={isEVM ? 'ethereum' : 'solana'} balance={formattedBalance} />
+        <Token token={page} balance={formattedBalance} />
       </Box>
     </Box>
   )
