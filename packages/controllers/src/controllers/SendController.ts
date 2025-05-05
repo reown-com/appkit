@@ -225,7 +225,6 @@ export const SendController = {
   },
 
   async sendNativeToken(params: TxParams) {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     RouterController.pushTransactionStack({
       view: null,
       goBack: false
@@ -252,7 +251,7 @@ export const SendController = {
       event: 'SEND_SUCCESS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          AccountController.state.preferredAccountTypes?.['eip155'] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
         token: this.state.token?.symbol || '',
         amount: params.sendTokenAmount,
@@ -260,6 +259,7 @@ export const SendController = {
       }
     })
 
+    ConnectionController._getClient()?.updateBalance('eip155')
     this.resetSend()
   },
 
