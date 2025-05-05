@@ -9,6 +9,7 @@ import {
   ethersSdkOptions,
   featuredSdkOptions,
   multichainSdkOptions,
+  paySdkOptions,
   siwxSdkOptions,
   solanaSdkOptions,
   testingSdkOptions,
@@ -34,6 +35,7 @@ export default function HomePage() {
         sdkOptions={multichainSdkOptions}
       />
       <ConfigurationList title="SIWX" sdkOptions={siwxSdkOptions} />
+      <ConfigurationList title="Pay" sdkOptions={paySdkOptions} />
     </>
   )
 }

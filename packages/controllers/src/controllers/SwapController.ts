@@ -605,7 +605,7 @@ export const SwapController = {
   },
 
   async createAllowanceTransaction() {
-    const { fromCaipAddress, sourceTokenAddress, fromAddress, toTokenAddress } = this.getParams()
+    const { fromCaipAddress, sourceTokenAddress, toTokenAddress } = this.getParams()
 
     if (!fromCaipAddress || !toTokenAddress) {
       return undefined
@@ -621,16 +621,9 @@ export const SwapController = {
         to: toTokenAddress,
         userAddress: fromCaipAddress
       })
-      const gasLimit = await ConnectionController.estimateGas({
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-        address: fromAddress as `0x${string}`,
-        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
-        data: response.tx.data
-      })
       const transaction = {
         data: response.tx.data,
         to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
-        gas: gasLimit,
         gasPrice: BigInt(response.tx.eip155.gasPrice),
         value: BigInt(response.tx.value),
         toAmount: state.toTokenAmount
@@ -639,7 +632,6 @@ export const SwapController = {
       state.approvalTransaction = {
         data: transaction.data,
         to: transaction.to,
-        gas: transaction.gas ?? BigInt(0),
         gasPrice: transaction.gasPrice,
         value: transaction.value,
         toAmount: transaction.toAmount
@@ -648,7 +640,6 @@ export const SwapController = {
       return {
         data: transaction.data,
         to: transaction.to,
-        gas: transaction.gas ?? BigInt(0),
         gasPrice: transaction.gasPrice,
         value: transaction.value,
         toAmount: transaction.toAmount
@@ -867,21 +858,7 @@ export const SwapController = {
       state.myTokensWithBalance
     )
 
-    let insufficientNetworkTokenForGas = true
-    if (
-      AccountController.state.preferredAccountTypes?.eip155 ===
-      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    ) {
-      // Smart Accounts may pay gas in any ERC20 token
-      insufficientNetworkTokenForGas = false
-    } else {
-      insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-        state.networkBalanceInUSD,
-        state.gasPriceInUSD
-      )
-    }
-
-    return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
+    return isInsufficientSourceTokenForSwap
   },
 
   // -- Calculations -------------------------------------- //

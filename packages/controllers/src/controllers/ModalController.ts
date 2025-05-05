@@ -56,8 +56,6 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
-    // eslint-disable-next-line no-console
-    console.log('>> open', JSON.stringify(new Error().stack, null, 2))
     const isConnected = AccountController.state.status === 'connected'
 
     if (ConnectionController.state.wcBasic) {
@@ -82,7 +80,7 @@ export const ModalController = {
     const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
     const hasNoAdapters = ChainController.state.noAdapters
 
-    if (hasNoAdapters && !caipAddress) {
+    if (OptionsController.state.manualWCControl || (hasNoAdapters && !caipAddress)) {
       if (CoreHelperUtil.isMobile()) {
         RouterController.reset('AllWallets')
       } else {
@@ -103,11 +101,6 @@ export const ModalController = {
       event: 'MODAL_OPEN',
       properties: { connected: Boolean(caipAddress) }
     })
-
-    // eslint-disable-next-line no-console
-    console.trace('@modalController @opening')
-    // eslint-disable-next-line no-console
-    console.log('@modalController @opening', JSON.stringify(new Error().stack, null, 2))
   },
 
   /**
@@ -117,8 +110,6 @@ export const ModalController = {
    * @param force - If true, the modal will close regardless of the current view
    */
   close(force = false) {
-    // eslint-disable-next-line no-console
-    console.log('>> close', JSON.stringify(new Error().stack, null, 2))
     if (force || RouterController.state.view !== 'ApproveTransaction') {
       const isEmbeddedEnabled = OptionsController.state.enableEmbedded
       const isConnected = Boolean(ChainController.state.activeCaipAddress)

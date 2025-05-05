@@ -203,6 +203,75 @@ describe('syncConnectedWalletInfo', () => {
       'eip155'
     )
   })
+
+  describe('should be called on connection methods', () => {
+    let appKit: AppKit
+    let syncConnectedWalletInfoSpy: MockInstance<(chainNamespace: string) => void>
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+      mockWindowAndDocument()
+      mockStorageUtil()
+      mockBlockchainApiController()
+      appKit = new AppKit(mockOptions)
+      syncConnectedWalletInfoSpy = vi.spyOn(appKit as any, 'syncConnectedWalletInfo')
+    })
+
+    it('should call syncConnectedWalletInfo when using connectExternal', async () => {
+      vi.spyOn(mockEvmAdapter, 'connect').mockResolvedValue({
+        address: '0x123',
+        chainId: '1',
+        provider: {} as any,
+        id: 'test-connector',
+        type: 'INJECTED'
+      })
+      vi.spyOn(mockEvmAdapter, 'getAccounts').mockResolvedValue({
+        accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
+      })
+
+      await (appKit as any).connectionControllerClient.connectExternal({
+        id: 'test-connector',
+        info: { name: 'Test Connector' },
+        type: 'INJECTED',
+        provider: {} as any,
+        chain: 'eip155'
+      })
+
+      expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
+    })
+
+    it('should call syncConnectedWalletInfo when using reconnectExternal', async () => {
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue({
+        ...mockEvmAdapter,
+        reconnect: vi.fn().mockResolvedValue({
+          address: '0x123',
+          chainId: '1',
+          provider: {} as any,
+          id: 'test-connector',
+          type: 'INJECTED'
+        })
+      })
+
+      await (appKit as any).connectionControllerClient.reconnectExternal({
+        id: 'test-connector',
+        info: { name: 'Test Connector' },
+        type: 'INJECTED',
+        provider: {} as any
+      })
+
+      expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
+    })
+
+    it('should call syncConnectedWalletInfo when using connectWalletConnect', async () => {
+      vi.spyOn(mockEvmAdapter, 'connectWalletConnect').mockResolvedValue({
+        clientId: 'test-client'
+      })
+
+      await (appKit as any).connectionControllerClient.connectWalletConnect()
+
+      expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
+    })
+  })
 })
 
 describe('syncAdapterConnection', () => {
