@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 
-import { NETWORK_OPTIONS } from '@/lib/constants'
+import { NETWORK_OPTIONS } from '@/lib/networks'
 
 import { DemoPage } from './pages/DemoPage'
 

@@ -22,9 +22,8 @@ ThemeStore.initializeThemeVariables(initialConfig?.themeVariables || {})
 
 type AppKitProviderProps = {
   children: ReactNode
-  cookies: string | null
 }
 
-export function AppKitProvider({ children, cookies }: AppKitProviderProps) {
+export function AppKitProvider({ children }: AppKitProviderProps) {
   return <>{children}</>
 }

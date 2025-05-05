@@ -7,7 +7,7 @@ import { UniqueIdentifier } from '@dnd-kit/core'
 import type { AppKitNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { Features, SocialProvider, ThemeMode } from '@reown/appkit-controllers'
 
-import { NetworkOption } from '@/lib/constants'
+import { NetworkOption } from '@/lib/networks'
 import { URLState } from '@/lib/url-state'
 
 interface AppKitContextType {

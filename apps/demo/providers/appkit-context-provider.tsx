@@ -16,11 +16,11 @@ import { allAdapters, initialConfig, initialEnabledNetworks } from '@/lib/config
 import {
   NAMESPACE_NETWORK_IDS_MAP,
   NETWORK_ID_NAMESPACE_MAP,
-  NetworkOption,
   getNamespaceNetworks
 } from '@/lib/constants'
 import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import { inter } from '@/lib/fonts'
+import { NetworkOption } from '@/lib/networks'
 import { URLState, urlStateUtils } from '@/lib/url-state'
 
 import { ThemeStore } from '../lib/theme-store'

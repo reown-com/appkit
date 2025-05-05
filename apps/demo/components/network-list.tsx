@@ -7,7 +7,7 @@ import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { NETWORK_OPTIONS, NetworkOption } from '@/lib/constants'
+import { NETWORK_OPTIONS, NetworkOption } from '@/lib/networks'
 import { getImageDeliveryURL, networkImages } from '@/lib/presets'
 
 import { RoundOptionItem } from './ui/round-option-item'

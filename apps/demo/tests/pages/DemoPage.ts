@@ -7,11 +7,10 @@ import { BASE_URL } from '../constants'
 
 export class DemoPage {
   public readonly page: Page
-  private readonly url: string
+  private readonly url = BASE_URL
 
   constructor(page: Page) {
     this.page = page
-    this.url = BASE_URL
   }
 
   async load() {
