@@ -1,17 +1,16 @@
 import type { Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
-import { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@reown/appkit-common'
 
 import { BASE_URL } from '../constants'
 
 export class DemoPage {
   public readonly page: Page
-  private readonly url: string
+  private readonly url = BASE_URL
 
   constructor(page: Page) {
     this.page = page
-    this.url = BASE_URL
   }
 
   async load() {

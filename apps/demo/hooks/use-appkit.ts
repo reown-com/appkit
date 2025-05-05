@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
 
-export const useAppKitContext = () => {
+export function useAppKitContext() {
   const context = useContext(AppKitContext)
 
   if (!context) {
