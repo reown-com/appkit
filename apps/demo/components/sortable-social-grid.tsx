@@ -41,7 +41,7 @@ function defaultInitializer(index: number) {
   return index
 }
 
-export function createRange<T = number>(length: number, initializer = defaultInitializer): T[] {
+export function createRange(length: number, initializer = defaultInitializer): number[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -51,7 +51,8 @@ export interface Props {
   adjustScale?: boolean
   collisionDetection?: CollisionDetection
   coordinateGetter?: KeyboardCoordinateGetter
-  Container?: ReactNode
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Container?: any
   dropAnimation?: DropAnimation | null
   getNewIndex?: NewIndexGetter
   handle?: boolean
@@ -115,7 +116,7 @@ export function SortableSocialGrid({
   handleNewOrder
 }: Props) {
   const [items, setItems] = useState<UniqueIdentifier[]>(
-    () => initialItems ?? createRange<UniqueIdentifier>(itemCount, index => index)
+    () => initialItems ?? createRange(itemCount, index => index)
   )
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const sensors = useSensors(
@@ -127,7 +128,8 @@ export function SortableSocialGrid({
   function getIndex(id: UniqueIdentifier) {
     return items.indexOf(id)
   }
-  const activeIndex = activeId ? -1 : getIndex(activeId)
+  // eslint-disable-next-line no-negated-condition
+  const activeIndex = activeId !== null ? getIndex(activeId) : -1
   const handleRemove = removable
     ? (id: UniqueIdentifier) => setItems(itms => itms.filter(item => item !== id))
     : undefined

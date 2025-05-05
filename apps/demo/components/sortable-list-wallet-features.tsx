@@ -39,7 +39,7 @@ function defaultInitializer(index: number) {
   return index
 }
 
-export function createRange<T = number>(length: number, initializer = defaultInitializer): T[] {
+export function createRange(length: number, initializer = defaultInitializer): number[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -110,7 +110,7 @@ export function SortableWalletFeatureList({
   handleNewOrder
 }: Props) {
   const [items, setItems] = useState<UniqueIdentifier[]>(
-    () => initialItems ?? createRange<UniqueIdentifier>(itemCount, index => index)
+    () => initialItems ?? createRange(itemCount, index => index)
   )
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const sensors = useSensors(
@@ -129,7 +129,8 @@ export function SortableWalletFeatureList({
   function getIndex(id: UniqueIdentifier) {
     return items.indexOf(id)
   }
-  const activeIndex = activeId ? -1 : getIndex(activeId)
+  // eslint-disable-next-line no-negated-condition
+  const activeIndex = activeId !== null ? getIndex(activeId) : -1
 
   useEffect(() => {
     if (activeId === null) {

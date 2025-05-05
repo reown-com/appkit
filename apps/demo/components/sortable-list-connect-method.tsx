@@ -39,7 +39,7 @@ function defaultInitializer(index: number) {
   return index
 }
 
-export function createRange<T = number>(length: number, initializer = defaultInitializer): T[] {
+export function createRange(length: number, initializer = defaultInitializer): number[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -125,7 +125,8 @@ export function SortableConnectMethodList({
   function getIndex(id: UniqueIdentifier) {
     return items.indexOf(id)
   }
-  const activeIndex = activeId ? -1 : getIndex(activeId)
+  // eslint-disable-next-line no-negated-condition
+  const activeIndex = activeId !== null ? getIndex(activeId) : -1
 
   useEffect(() => {
     if (activeId === null) {

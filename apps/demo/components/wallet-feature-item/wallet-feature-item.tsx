@@ -39,16 +39,16 @@ export const WalletFeatureItem = React.memo(
       ref
     ) => {
       const { config } = useAppKitContext()
-      const onrampEnabled = config.features.onramp
-      const swapsEnabled = config.features.swaps
-      const receiveEnabled = config.features.receive
-      const sendEnabled = config.features.send
+      const isOnrampEnabled = config.features.onramp
+      const isSwapsEnabled = config.features.swaps
+      const isReceiveEnabled = config.features.receive
+      const isSendEnabled = config.features.send
 
       const featureEnabledMap = {
-        Buy: onrampEnabled,
-        Swap: swapsEnabled,
-        Receive: receiveEnabled,
-        Send: sendEnabled
+        Buy: isOnrampEnabled,
+        Swap: isSwapsEnabled,
+        Receive: isReceiveEnabled,
+        Send: isSendEnabled
       }
 
       const featureCanBeToggledMap = {

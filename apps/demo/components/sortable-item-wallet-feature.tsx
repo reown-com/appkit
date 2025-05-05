@@ -25,7 +25,7 @@ function defaultInitializer(index: number) {
   return index
 }
 
-export function createRange<T = number>(length: number, initializer = defaultInitializer): T[] {
+export function createRange(length: number, initializer = defaultInitializer): number[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -79,8 +79,10 @@ interface SortableItemProps {
   handle: boolean
   useDragOverlay?: boolean
   onRemove?(id: UniqueIdentifier): void
-  style(values): React.CSSProperties
-  renderItem?(args): React.ReactElement
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  style(values: any): React.CSSProperties
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  renderItem?(args: any): React.ReactElement
   wrapperStyle?: Props['wrapperStyle']
   onToggleOption?(name: 'Buy' | 'Receive' | 'Send' | 'Swap'): void
 }

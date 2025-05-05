@@ -53,11 +53,11 @@ const NetworkList = dynamic(
 
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
-  const collapseWallets = config.features.collapseWallets
+  const shouldCollapseWallets = config.features.collapseWallets
   const connectMethodsOrder = config.features.connectMethodsOrder
 
   function toggleCollapseWallets() {
-    updateFeatures({ collapseWallets: !collapseWallets })
+    updateFeatures({ collapseWallets: !shouldCollapseWallets })
   }
 
   function handleNewOrder(items: UniqueIdentifier[]) {
@@ -97,7 +97,7 @@ export function SectionConnectOptions() {
       <div className="text-sm text-text-secondary mt-4 mb-2">Layout options</div>
       <FeatureButton
         label="Collapse wallets"
-        isEnabled={collapseWallets}
+        isEnabled={shouldCollapseWallets}
         onClick={toggleCollapseWallets}
       />
       <div className="text-sm text-text-secondary mt-4 mb-2">Chains</div>

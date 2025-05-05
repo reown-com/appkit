@@ -74,10 +74,10 @@ export const SocialOptionItem = React.memo(
       const { config, updateFeatures } = useAppKitContext()
       const socials = config.features.socials || []
       const { isDraggingByKey } = useAppKitContext()
-      const emailDragging = isDraggingByKey['email']
-      const walletsDragging = isDraggingByKey['wallet']
-      const socialsDragging = isDraggingByKey['social']
-      const isAnyDragging = emailDragging || walletsDragging || socialsDragging
+      const isEmailDragging = isDraggingByKey['email']
+      const isWalletsDragging = isDraggingByKey['wallet']
+      const isSocialsDragging = isDraggingByKey['social']
+      const isAnyDragging = isEmailDragging || isWalletsDragging || isSocialsDragging
 
       useEffect(() => {
         if (!dragOverlay) {
@@ -164,6 +164,7 @@ export const SocialOptionItem = React.memo(
             {...props}
             tabIndex={handle ? undefined : 0}
           >
+            {/* @ts-expect-error - Property 'w3m-modal' does not exist on type 'JSX.IntrinsicElements' */}
             <wui-logo logo={value as SocialProvider}></wui-logo>
           </div>
         </li>

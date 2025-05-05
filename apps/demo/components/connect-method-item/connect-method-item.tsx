@@ -42,15 +42,15 @@ export const ConnectMethodItem = React.memo(
       ref
     ) => {
       const { config } = useAppKitContext()
-      const emailEnabled = config.features.email
-      const socialsEnabled = Array.isArray(config.features.socials)
-      const walletsEnabled = config.enableWallets
+      const isEmailEnabled = config.features.email
+      const isSocialsEnabled = Array.isArray(config.features.socials)
+      const isWalletsEnabled = config.enableWallets
       const themeMode = config.themeMode
 
       const featureEnabledMap = {
-        email: emailEnabled,
-        social: socialsEnabled,
-        wallet: walletsEnabled
+        email: isEmailEnabled,
+        social: isSocialsEnabled,
+        wallet: isWalletsEnabled
       }
 
       useEffect(() => {
