@@ -20,6 +20,8 @@ import { cn } from '@/lib/utils'
 
 // eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
 
+// eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
+
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
