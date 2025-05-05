@@ -18,6 +18,7 @@ import {
   ConnectionController,
   ConnectorController,
   ConstantsUtil,
+  CoreHelperUtil,
   ModalController,
   SIWXUtil
 } from '../../exports/index.js'
@@ -316,5 +317,19 @@ describe('ConnectionController', () => {
       bip122: 'bip122-connector',
       cosmos: 'cosmos-connector'
     })
+  })
+
+  it('should handle connectWalletConnect correctly on telegram or safari on ios', async () => {
+    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+
+    vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
+
+    expect(ConnectionController.state.status).toEqual('disconnected')
+    await ConnectionController.connectWalletConnect()
+    expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
+    expect(ConnectionController.state.status).toEqual('connected')
   })
 })

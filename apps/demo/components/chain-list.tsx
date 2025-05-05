@@ -49,7 +49,7 @@ export function ChainList() {
               imageSrc={chain.imageSrc}
               onChange={() => handleChainChange(chain.id)}
               name={chain.name}
-              disabled={isLastChainInNamespace}
+              disabled={Boolean(caipAddress) || isLastChainInNamespace}
               message={isLastChainInNamespace ? 'Have at least one chain enabled' : ''}
             />
           )
