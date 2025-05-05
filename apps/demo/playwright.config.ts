@@ -1,6 +1,9 @@
 import { defineConfig } from '@playwright/test'
+import { config } from 'dotenv'
 
 import { BASE_URL } from './tests/constants'
+
+config({ path: './.env.local' })
 
 export default defineConfig({
   testDir: './tests',

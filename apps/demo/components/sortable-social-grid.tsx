@@ -34,16 +34,14 @@ import { SocialProvider } from '@reown/appkit-controllers'
 import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
 import { List } from '@/components/ui/list'
 import { Wrapper } from '@/components/ui/wrapper'
-import { useAppKitContext } from '@/hooks/use-appkit'
 
 import { SocialOptionItem } from './social-option-item'
 
-const defaultInitializer = (index: number) => index
+function defaultInitializer(index: number) {
+  return index
+}
 
-export function createRange<T = number>(
-  length: number,
-  initializer: (index: number) => any = defaultInitializer
-): T[] {
+export function createRange<T = number>(length: number, initializer = defaultInitializer): T[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -53,7 +51,7 @@ export interface Props {
   adjustScale?: boolean
   collisionDetection?: CollisionDetection
   coordinateGetter?: KeyboardCoordinateGetter
-  Container?: any // To-do: Fix me
+  Container?: ReactNode
   dropAnimation?: DropAnimation | null
   getNewIndex?: NewIndexGetter
   handle?: boolean
@@ -61,6 +59,7 @@ export interface Props {
   items?: UniqueIdentifier[]
   measuring?: MeasuringConfiguration
   modifiers?: Modifiers
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderItem?: any
   removable?: boolean
   reorderItems?: typeof arrayMove
@@ -125,14 +124,16 @@ export function SortableSocialGrid({
     useSensor(KeyboardSensor, { scrollBehavior: 'auto', coordinateGetter })
   )
   const isFirstAnnouncement = useRef(true)
-  const getIndex = (id: UniqueIdentifier) => items.indexOf(id)
-  const activeIndex = activeId != null ? getIndex(activeId) : -1
+  function getIndex(id: UniqueIdentifier) {
+    return items.indexOf(id)
+  }
+  const activeIndex = activeId ? -1 : getIndex(activeId)
   const handleRemove = removable
-    ? (id: UniqueIdentifier) => setItems(items => items.filter(item => item !== id))
+    ? (id: UniqueIdentifier) => setItems(itms => itms.filter(item => item !== id))
     : undefined
 
   useEffect(() => {
-    if (activeId == null) {
+    if (activeId === null) {
       isFirstAnnouncement.current = true
     }
   }, [activeId])
@@ -162,7 +163,7 @@ export function SortableSocialGrid({
         if (over) {
           const overIndex = getIndex(over.id)
           if (activeIndex !== overIndex) {
-            setItems(items => reorderItems(items, activeIndex, overIndex))
+            setItems(itms => reorderItems(itms, activeIndex, overIndex))
           }
         }
       }}
@@ -195,7 +196,7 @@ export function SortableSocialGrid({
       {useDragOverlay
         ? createPortal(
             <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
-              {activeId != null ? (
+              {activeId ? (
                 <SocialOptionItem
                   value={items[activeIndex]}
                   handle={handle}
@@ -203,7 +204,7 @@ export function SortableSocialGrid({
                   style={getItemStyles({
                     id: items[activeIndex],
                     index: activeIndex,
-                    isSorting: activeId !== null,
+                    isSorting: Boolean(activeId),
                     isDragging: true,
                     overIndex: -1,
                     isDragOverlay: true

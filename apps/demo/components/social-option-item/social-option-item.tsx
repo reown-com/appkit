@@ -18,6 +18,7 @@ export interface Props {
   disabled?: boolean
   dragging?: boolean
   handle?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleProps?: any
   height?: number
   index?: number
@@ -57,11 +58,8 @@ export const SocialOptionItem = React.memo(
         disabled,
         fadeIn,
         handle,
-        handleProps,
-        height,
         index,
         listeners,
-        onRemove,
         renderItem,
         sorting,
         style,
@@ -69,8 +67,6 @@ export const SocialOptionItem = React.memo(
         transform,
         value,
         wrapperStyle,
-        onToggleOption,
-        connectMethodDragging,
         ...props
       },
       ref
@@ -90,6 +86,7 @@ export const SocialOptionItem = React.memo(
 
         document.body.style.cursor = 'grabbing'
 
+        // eslint-disable-next-line consistent-return
         return () => {
           document.body.style.cursor = ''
         }
@@ -133,11 +130,13 @@ export const SocialOptionItem = React.memo(
             {
               ...wrapperStyle,
               transition: [transition, wrapperStyle?.transition].filter(Boolean).join(', '),
+              // eslint-disable-next-line no-nested-ternary
               '--translate-x': isAnyDragging
                 ? '0px'
                 : transform
                   ? `${Math.round(transform.x)}px`
                   : undefined,
+              // eslint-disable-next-line no-nested-ternary
               '--translate-y': isAnyDragging
                 ? '0px'
                 : transform
@@ -161,11 +160,10 @@ export const SocialOptionItem = React.memo(
               color && styles.color
             )}
             style={style}
-            {...(!handle ? listeners : undefined)}
+            {...(handle ? undefined : listeners)}
             {...props}
-            tabIndex={!handle ? 0 : undefined}
+            tabIndex={handle ? undefined : 0}
           >
-            {/* @ts-ignore */}
             <wui-logo logo={value as SocialProvider}></wui-logo>
           </div>
         </li>

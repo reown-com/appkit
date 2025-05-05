@@ -24,10 +24,8 @@ export const WalletFeatureItem = React.memo(
         fadeIn,
         handle,
         handleProps,
-        height,
         index,
         listeners,
-        onRemove,
         renderItem,
         sorting,
         style,
@@ -67,6 +65,7 @@ export const WalletFeatureItem = React.memo(
 
         document.body.style.cursor = 'grabbing'
 
+        // eslint-disable-next-line consistent-return
         return () => {
           document.body.style.cursor = ''
         }
@@ -126,9 +125,9 @@ export const WalletFeatureItem = React.memo(
               )}
               style={style}
               data-cypress="draggable-item"
-              {...(!handle ? listeners : undefined)}
+              {...(handle ? undefined : listeners)}
               {...props}
-              tabIndex={!handle ? 0 : undefined}
+              tabIndex={handle ? undefined : 0}
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1">{value}</span>

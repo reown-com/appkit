@@ -5,7 +5,7 @@ import { ConstantsUtil, SocialProvider } from '@reown/appkit-controllers'
 import { SortableSocialGrid } from '@/components/sortable-social-grid'
 import { useAppKitContext } from '@/hooks/use-appkit'
 
-const allSocials = ConstantsUtil.DEFAULT_FEATURES.socials as SocialProvider[]
+const allSocials = ConstantsUtil.DEFAULT_FEATURES.socials
 
 export function SocialButtons() {
   const { updateFeatures } = useAppKitContext()

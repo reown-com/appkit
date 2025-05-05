@@ -21,14 +21,14 @@ export function SectionDesign() {
 
   function handleAccentColorChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newColor = e.target.value
-    if (/^#[0-9A-F]{6}$/i.test(newColor)) {
+    if (/^#[0-9A-F]{6}$/u.test(newColor)) {
       ThemeStore.setAccentColor(newColor)
     }
   }
 
   function handleMixColorChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newColor = e.target.value
-    if (/^#[0-9A-F]{6}$/i.test(newColor)) {
+    if (/^#[0-9A-F]{6}$/u.test(newColor)) {
       ThemeStore.setMixColor(newColor)
       ThemeStore.setMixColorStrength(8)
     }

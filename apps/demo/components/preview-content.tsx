@@ -21,6 +21,7 @@ export function PreviewContent() {
       await navigator.clipboard.writeText(window.location.href)
       toast('Link copied to clipboard')
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('Failed to copy URL:', err)
     }
   }
@@ -38,7 +39,6 @@ export function PreviewContent() {
       <div className="w-full max-w-[400px] py-8 mx-auto flex-grow flex-1 flex items-center justify-center">
         {shouldRender ? (
           <>
-            {/* @ts-ignore */}
             <w3m-modal
               style={{ positive: 'relative', width: '100%' }}
               enableEmbedded={true}

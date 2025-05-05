@@ -411,6 +411,9 @@ importers:
       '@types/react-dom':
         specifier: 19.0.0
         version: 19.0.0
+      dotenv:
+        specifier: 16.4.7
+        version: 16.4.7
       eslint:
         specifier: 8.56.0
         version: 8.56.0

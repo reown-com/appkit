@@ -27,10 +27,8 @@ export const ConnectMethodItem = React.memo(
         fadeIn,
         handle,
         handleProps,
-        height,
         index,
         listeners,
-        onRemove,
         renderItem,
         sorting,
         style,
@@ -62,6 +60,7 @@ export const ConnectMethodItem = React.memo(
 
         document.body.style.cursor = 'grabbing'
 
+        // eslint-disable-next-line consistent-return
         return () => {
           document.body.style.cursor = ''
         }
@@ -123,9 +122,9 @@ export const ConnectMethodItem = React.memo(
                 color && styles.color
               )}
               style={style}
-              {...(!handle ? listeners : undefined)}
+              {...(handle ? undefined : listeners)}
               {...props}
-              tabIndex={!handle ? 0 : undefined}
+              tabIndex={handle ? undefined : 0}
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1 text-text-primary capitalize">{value}</span>

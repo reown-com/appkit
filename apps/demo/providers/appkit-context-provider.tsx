@@ -7,12 +7,12 @@ import { useTheme } from 'next-themes'
 import { Toaster } from 'sonner'
 import { useSnapshot } from 'valtio'
 
-import { AppKitNetwork, type ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace } from '@reown/appkit-common'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
 import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
-import { allAdapters, initialConfig, initialEnabledNetworks } from '@/lib/config'
+import { initialConfig, initialEnabledNetworks } from '@/lib/config'
 import {
   NAMESPACE_NETWORK_IDS_MAP,
   NETWORK_ID_NAMESPACE_MAP,
@@ -34,7 +34,7 @@ interface AppKitProviderProps {
   initialConfig?: URLState | null
 }
 
-export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
+export function ContextProvider({ children }: AppKitProviderProps) {
   const { initialized } = useAppKitState()
 
   const [features, setFeatures] = useState<Features>(
@@ -83,6 +83,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     setEnabledChains(prev => {
       const newEnabledChains = prev.filter(c => c !== chain)
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+
       return newEnabledChains
     })
 
@@ -93,19 +94,18 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
     // Update enabled networks state
     setEnabledNetworks(prev => {
-      const newNetworks = prev.filter(n => {
-        // Keep networks that are not in the removed chain's namespace
-        return !NAMESPACE_NETWORK_IDS_MAP[chain].includes(n)
-      })
+      const newNetworks = prev.filter(n => !NAMESPACE_NETWORK_IDS_MAP[chain].includes(n))
       urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+
       return newNetworks
     })
   }
 
-  function enableChain(chain: ChainNamespace, network: AppKitNetwork | undefined) {
+  function enableChain(chain: ChainNamespace) {
     setEnabledChains(prev => {
       const newEnabledChains = [...prev, chain]
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+
       return newEnabledChains
     })
 
@@ -117,6 +117,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     setEnabledNetworks(prev => {
       const newNetworks = [...prev, ...getNamespaceNetworks(chain).map(n => n.id)]
       urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+
       return newNetworks
     })
   }
@@ -137,6 +138,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
         const newNetworks = prev.filter(n => n !== network.network.id)
         urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+
         return newNetworks
       })
       appKit?.removeNetwork(network.namespace, network.network.id)
@@ -151,6 +153,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
       setEnabledChains(prev => {
         const newEnabledChains = [...prev, network.namespace]
         urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+
         return newEnabledChains
       })
     }
@@ -158,6 +161,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     setEnabledNetworks(prev => {
       const newEnabledNetworks = [...prev, network.network.id]
       urlStateUtils.updateURLWithState({ enabledNetworks: newEnabledNetworks as string[] })
+
       return newEnabledNetworks
     })
 
@@ -188,6 +192,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     setEnableWallets(() => {
       appKit?.updateOptions({ enableWallets: enabled })
       urlStateUtils.updateURLWithState({ enableWallets: enabled })
+
       return enabled
     })
   }
@@ -196,6 +201,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     setTheme(() => {
       appKit?.setThemeMode(mode)
       urlStateUtils.updateURLWithState({ themeMode: mode })
+
       return mode
     })
   }

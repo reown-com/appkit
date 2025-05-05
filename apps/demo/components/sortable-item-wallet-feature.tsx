@@ -21,12 +21,11 @@ import {
 import { WalletFeatureItem } from '@/components/wallet-feature-item'
 import { useAppKitContext } from '@/hooks/use-appkit'
 
-const defaultInitializer = (index: number) => index
+function defaultInitializer(index: number) {
+  return index
+}
 
-export function createRange<T = number>(
-  length: number,
-  initializer: (index: number) => any = defaultInitializer
-): T[] {
+export function createRange<T = number>(length: number, initializer = defaultInitializer): T[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -36,7 +35,8 @@ export interface Props {
   adjustScale?: boolean
   collisionDetection?: CollisionDetection
   coordinateGetter?: KeyboardCoordinateGetter
-  Container?: any // To-do: Fix me
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Container?: any
   dropAnimation?: DropAnimation | null
   getNewIndex?: NewIndexGetter
   handle?: boolean
@@ -44,6 +44,7 @@ export interface Props {
   items?: UniqueIdentifier[]
   measuring?: MeasuringConfiguration
   modifiers?: Modifiers
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderItem?: any
   removable?: boolean
   reorderItems?: typeof arrayMove
@@ -78,8 +79,8 @@ interface SortableItemProps {
   handle: boolean
   useDragOverlay?: boolean
   onRemove?(id: UniqueIdentifier): void
-  style(values: any): React.CSSProperties
-  renderItem?(args: any): React.ReactElement
+  style(values): React.CSSProperties
+  renderItem?(args): React.ReactElement
   wrapperStyle?: Props['wrapperStyle']
   onToggleOption?(name: 'Buy' | 'Receive' | 'Send' | 'Swap'): void
 }

@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "pnpm start",
     "playwright:test": "playwright test",
     "playwright:debug": "pnpm playwright:test --debug"
@@ -66,6 +67,7 @@
     "@playwright/test": "1.52.0",
     "eslint": "8.56.0",
     "eslint-config-next": "14.1.0",
+    "dotenv": "16.4.7",
     "postcss": "8.5.3",
     "tailwindcss": "3.4.1",
     "typescript": "5.7.3"

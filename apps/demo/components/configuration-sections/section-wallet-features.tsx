@@ -35,12 +35,12 @@ export function SectionWalletFeatures() {
     switch (name) {
       case 'Buy':
         updateFeatures({ onramp: !config.features.onramp })
-        return
+        break
       case 'Swap':
         updateFeatures({ swaps: !config.features.swaps })
-        return
+        break
       default:
-        return
+        break
     }
   }
 
@@ -67,14 +67,14 @@ export function SectionWalletFeatures() {
         handleNewOrder={handleNewOrder}
         handle={true}
       />
-      {!caipAddress ? (
+      {caipAddress ? null : (
         <Alert>
           <div className="flex items-center gap-3">
             <ExclamationMarkIcon />
             <AlertDescription>Connect to a wallet to view feature customization</AlertDescription>
           </div>
         </Alert>
-      ) : null}
+      )}
     </div>
   )
 }

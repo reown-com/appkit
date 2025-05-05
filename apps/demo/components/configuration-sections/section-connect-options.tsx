@@ -73,15 +73,15 @@ export function SectionConnectOptions() {
     switch (name) {
       case 'email':
         updateFeatures({ email: !config.features.email })
-        return
+        break
       case 'social':
         updateSocials(!config.features.socials)
-        return
+        break
       case 'wallet':
         updateEnableWallets(!config.enableWallets)
-        return
+        break
       default:
-        return
+        break
     }
   }
 
