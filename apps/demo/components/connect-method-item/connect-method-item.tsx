@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 
 import classNames from 'classnames'
 
-import { ConnectMethod } from '@reown/appkit-controllers'
+import { type ConnectMethod } from '@reown/appkit-controllers'
 
 import { SocialButtons } from '@/components/social-buttons'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { BaseDraggableItemProps, ConnectMethodName } from '@/lib/types'
+import { type BaseDraggableItemProps, type ConnectMethodName } from '@/lib/types'
 
 import { Handle } from './components'
 import styles from './connect-method-item.module.css'
@@ -83,11 +83,11 @@ export const ConnectMethodItem = React.memo(
       ) : (
         <div
           className={classNames(
-            styles.Wrapper,
-            fadeIn && styles.fadeIn,
-            sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay,
-            dragging && styles.dragging,
+            styles['Wrapper'],
+            fadeIn && styles['fadeIn'],
+            sorting && styles['sorting'],
+            dragOverlay && styles['dragOverlay'],
+            dragging && styles['dragging'],
             'bg-fg-secondary',
             themeMode
           )}
@@ -114,12 +114,12 @@ export const ConnectMethodItem = React.memo(
           >
             <div
               className={classNames(
-                styles.Item,
+                styles['Item'],
                 'h-[28px]',
-                handle && styles.withHandle,
-                dragOverlay && styles.dragOverlay,
-                disabled && styles.disabled,
-                color && styles.color
+                handle && styles['withHandle'],
+                dragOverlay && styles['dragOverlay'],
+                disabled && styles['disabled'],
+                color && styles['color']
               )}
               style={style}
               {...(handle ? undefined : listeners)}

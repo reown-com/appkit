@@ -1,4 +1,4 @@
-import { ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace } from '@reown/appkit-common'
 import {
   type AppKitNetwork,
   arbitrum,

@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
-import { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@reown/appkit-common'
 
 import { BASE_URL } from '../constants'
 

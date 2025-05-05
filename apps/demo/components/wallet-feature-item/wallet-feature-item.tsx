@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { Checkbox } from '@/components/ui/checkbox'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { BaseDraggableItemProps, WalletFeatureName } from '@/lib/types'
+import type { BaseDraggableItemProps, WalletFeatureName } from '@/lib/types'
 
 import { Handle } from './components'
 import styles from './wallet-feature-item.module.css'
@@ -88,11 +88,11 @@ export const WalletFeatureItem = React.memo(
       ) : (
         <div
           className={classNames(
-            styles.Wrapper,
-            fadeIn && styles.fadeIn,
-            sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay,
-            dragging && styles.dragging
+            styles['Wrapper'],
+            fadeIn && styles['fadeIn'],
+            sorting && styles['sorting'],
+            dragOverlay && styles['dragOverlay'],
+            dragging && styles['dragging']
           )}
           style={
             {
@@ -117,11 +117,11 @@ export const WalletFeatureItem = React.memo(
           >
             <div
               className={classNames(
-                styles.Item,
-                handle && styles.withHandle,
-                dragOverlay && styles.dragOverlay,
-                disabled && styles.disabled,
-                color && styles.color
+                styles['Item'],
+                handle && styles['withHandle'],
+                dragOverlay && styles['dragOverlay'],
+                disabled && styles['disabled'],
+                color && styles['color']
               )}
               style={style}
               data-cypress="draggable-item"

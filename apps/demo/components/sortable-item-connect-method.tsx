@@ -1,7 +1,7 @@
 // eslint disable @typescript-eslint/no-explicit-any
 import React, { useEffect } from 'react'
 
-import {
+import type {
   Active,
   CollisionDetection,
   DropAnimation,
@@ -12,9 +12,9 @@ import {
   UniqueIdentifier
 } from '@dnd-kit/core'
 import {
-  AnimateLayoutChanges,
-  NewIndexGetter,
-  SortingStrategy,
+  type AnimateLayoutChanges,
+  type NewIndexGetter,
+  type SortingStrategy,
   arrayMove,
   useSortable
 } from '@dnd-kit/sortable'

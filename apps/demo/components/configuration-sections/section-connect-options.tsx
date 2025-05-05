@@ -1,9 +1,9 @@
 'use client'
 
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { type UniqueIdentifier } from '@dnd-kit/core'
 import dynamic from 'next/dynamic'
 
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
+import { type ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
 
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 import { FeatureButton } from '@/components/feature-button'

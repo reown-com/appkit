@@ -1,7 +1,7 @@
 // eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
 import React, { forwardRef } from 'react'
 
-import { Action, ActionProps } from '../Action'
+import { Action, type ActionProps } from '../Action'
 
 export const Handle = forwardRef<HTMLButtonElement, ActionProps>((props, ref) => (
   <Action ref={ref} cursor="grab" className="text-foreground" {...props}>

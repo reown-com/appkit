@@ -1,15 +1,20 @@
 'use client'
 
-import { ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { type UniqueIdentifier } from '@dnd-kit/core'
 import { useTheme } from 'next-themes'
 import { Toaster } from 'sonner'
 import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace } from '@reown/appkit-common'
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
-import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
+import { type ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
+import {
+  type Features,
+  type ThemeMode,
+  type ThemeVariables,
+  useAppKitState
+} from '@reown/appkit/react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
 import { initialConfig, initialEnabledNetworks } from '@/lib/config'
@@ -20,8 +25,8 @@ import {
 } from '@/lib/constants'
 import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import { inter } from '@/lib/fonts'
-import { NetworkOption } from '@/lib/networks'
-import { URLState, urlStateUtils } from '@/lib/url-state'
+import { type NetworkOption } from '@/lib/networks'
+import { type URLState, urlStateUtils } from '@/lib/url-state'
 
 import { ThemeStore } from '../lib/theme-store'
 
@@ -35,7 +40,7 @@ interface AppKitProviderProps {
 }
 
 export function ContextProvider({ children }: AppKitProviderProps) {
-  const { initialized } = useAppKitState()
+  const { initialized: isInitialized } = useAppKitState()
 
   const [features, setFeatures] = useState<Features>(
     initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES
@@ -45,7 +50,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
     initialConfig?.termsConditionsUrl || ''
   )
   const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState(initialConfig?.privacyPolicyUrl || '')
-  const [enableWallets, setEnableWallets] = useState<boolean>(
+  const [shouldEnableWallets, setShouldEnableWallets] = useState<boolean>(
     Boolean(initialConfig?.enableWallets) || true
   )
   const [isDraggingByKey, setIsDraggingByKey] = useState<Record<ConnectMethod, boolean>>({
@@ -189,7 +194,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   }
 
   function updateEnableWallets(enabled: boolean) {
-    setEnableWallets(() => {
+    setShouldEnableWallets(() => {
       appKit?.updateOptions({ enableWallets: enabled })
       urlStateUtils.updateURLWithState({ enableWallets: enabled })
 
@@ -247,25 +252,25 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   }
 
   useEffect(() => {
-    if (initialized) {
+    if (isInitialized) {
       const connectMethodsOrder = appKit?.getConnectMethodsOrder()
       const order = connectMethodsOrder
       updateFeatures({ connectMethodsOrder: order })
     }
-  }, [initialized])
+  }, [isInitialized])
 
   useEffect(() => {
     appKit?.setThemeMode(theme as ThemeMode)
   }, [])
 
-  const socialsEnabled = Array.isArray(features.socials)
+  const isSocialsEnabled = Array.isArray(features.socials)
 
   return (
     <AppKitContext.Provider
       value={{
         config: {
           features,
-          enableWallets,
+          enableWallets: shouldEnableWallets,
           themeMode: theme as ThemeMode,
           themeVariables: {
             '--w3m-color-mix': themeStore.mixColor,
@@ -283,8 +288,8 @@ export function ContextProvider({ children }: AppKitProviderProps) {
         enabledNetworks,
         removeNetwork,
         addNetwork,
-        socialsEnabled,
-        enableWallets,
+        socialsEnabled: isSocialsEnabled,
+        enableWallets: shouldEnableWallets,
         isDraggingByKey,
         updateFeatures,
         updateThemeMode,

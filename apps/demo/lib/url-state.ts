@@ -1,5 +1,5 @@
 import type { ChainNamespace } from '@reown/appkit-common'
-import {
+import type {
   ConnectMethod,
   Features,
   ThemeMode,

@@ -1,5 +1,5 @@
 // eslint-disable @typescript-eslint/no-empty-interface arrow-body-style
-import React, { CSSProperties, forwardRef } from 'react'
+import React, { type CSSProperties, forwardRef } from 'react'
 
 import classNames from 'classnames'
 

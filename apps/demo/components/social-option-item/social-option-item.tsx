@@ -4,7 +4,7 @@ import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
 import classNames from 'classnames'
 
-import { SocialProvider } from '@reown/appkit-controllers'
+import { type SocialProvider } from '@reown/appkit-controllers'
 import '@reown/appkit-ui/jsx'
 import '@reown/appkit-ui/wui-logo'
 
@@ -117,11 +117,11 @@ export const SocialOptionItem = React.memo(
       ) : (
         <li
           className={classNames(
-            styles.Wrapper,
+            styles['Wrapper'],
             'h-[44px] min-w-[44px]',
-            fadeIn && styles.fadeIn,
-            sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay,
+            fadeIn && styles['fadeIn'],
+            sorting && styles['sorting'],
+            dragOverlay && styles['dragOverlay'],
             socials.includes(value as SocialProvider)
               ? 'border border-border-accent bg-background-accent-primary/10'
               : 'border border-neutral-300 dark:border-neutral-700'
@@ -153,11 +153,11 @@ export const SocialOptionItem = React.memo(
         >
           <div
             className={classNames(
-              styles.Item,
-              dragging && styles.dragging,
-              dragOverlay && styles.dragOverlay,
-              disabled && styles.disabled,
-              color && styles.color
+              styles['Item'],
+              dragging && styles['dragging'],
+              dragOverlay && styles['dragOverlay'],
+              disabled && styles['disabled'],
+              color && styles['color']
             )}
             style={style}
             {...(handle ? undefined : listeners)}
@@ -165,7 +165,7 @@ export const SocialOptionItem = React.memo(
             tabIndex={handle ? undefined : 0}
           >
             {/* @ts-expect-error - Property 'w3m-modal' does not exist on type 'JSX.IntrinsicElements' */}
-            <wui-logo logo={value as SocialProvider}></wui-logo>
+            <wui-logo logo={value as SocialProvider} />
           </div>
         </li>
       )

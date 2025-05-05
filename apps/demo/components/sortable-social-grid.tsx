@@ -2,34 +2,34 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
-  CollisionDetection,
+  type CollisionDetection,
   DndContext,
   DragOverlay,
-  DropAnimation,
-  KeyboardCoordinateGetter,
+  type DropAnimation,
+  type KeyboardCoordinateGetter,
   KeyboardSensor,
-  MeasuringConfiguration,
-  Modifiers,
+  type MeasuringConfiguration,
+  type Modifiers,
   MouseSensor,
-  PointerActivationConstraint,
+  type PointerActivationConstraint,
   TouchSensor,
-  UniqueIdentifier,
+  type UniqueIdentifier,
   closestCenter,
   defaultDropAnimationSideEffects,
   useSensor,
   useSensors
 } from '@dnd-kit/core'
 import {
-  AnimateLayoutChanges,
-  NewIndexGetter,
+  type AnimateLayoutChanges,
+  type NewIndexGetter,
   SortableContext,
-  SortingStrategy,
+  type SortingStrategy,
   arrayMove,
   rectSortingStrategy,
   sortableKeyboardCoordinates
 } from '@dnd-kit/sortable'
 
-import { SocialProvider } from '@reown/appkit-controllers'
+import { type SocialProvider } from '@reown/appkit-controllers'
 
 import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
 import { List } from '@/components/ui/list'
@@ -204,7 +204,7 @@ export function SortableSocialGrid({
                   handle={handle}
                   renderItem={renderItem}
                   style={getItemStyles({
-                    id: items[activeIndex],
+                    id: items[activeIndex] as UniqueIdentifier,
                     index: activeIndex,
                     isSorting: Boolean(activeId),
                     isDragging: true,

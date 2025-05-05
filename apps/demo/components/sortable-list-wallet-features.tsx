@@ -2,28 +2,28 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
-  CollisionDetection,
+  type CollisionDetection,
   DndContext,
   DragOverlay,
-  DropAnimation,
-  KeyboardCoordinateGetter,
+  type DropAnimation,
+  type KeyboardCoordinateGetter,
   KeyboardSensor,
-  MeasuringConfiguration,
-  Modifiers,
+  type MeasuringConfiguration,
+  type Modifiers,
   MouseSensor,
-  PointerActivationConstraint,
+  type PointerActivationConstraint,
   TouchSensor,
-  UniqueIdentifier,
+  type UniqueIdentifier,
   closestCenter,
   defaultDropAnimationSideEffects,
   useSensor,
   useSensors
 } from '@dnd-kit/core'
 import {
-  AnimateLayoutChanges,
-  NewIndexGetter,
+  type AnimateLayoutChanges,
+  type NewIndexGetter,
   SortableContext,
-  SortingStrategy,
+  type SortingStrategy,
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy
@@ -33,7 +33,7 @@ import { SortableWalletFeatureItem } from '@/components/sortable-item-wallet-fea
 import { List } from '@/components/ui/list'
 import { Wrapper } from '@/components/ui/wrapper'
 import { WalletFeatureItem } from '@/components/wallet-feature-item'
-import { WalletFeatureName } from '@/lib/types'
+import type { WalletFeatureName } from '@/lib/types'
 
 function defaultInitializer(index: number) {
   return index
@@ -207,7 +207,7 @@ export function SortableWalletFeatureList({
                   handle={handle}
                   renderItem={renderItem}
                   style={getItemStyles({
-                    id: items[activeIndex],
+                    id: items[activeIndex] as UniqueIdentifier,
                     index: activeIndex,
                     isSorting: Boolean(activeId),
                     isDragging: true,

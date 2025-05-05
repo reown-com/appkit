@@ -1,10 +1,10 @@
 // eslint-disable @typescript-eslint/no-explicit-any
 import React from 'react'
 
-import { UniqueIdentifier } from '@dnd-kit/core'
-import { AnimateLayoutChanges, NewIndexGetter, useSortable } from '@dnd-kit/sortable'
+import { type UniqueIdentifier } from '@dnd-kit/core'
+import { type AnimateLayoutChanges, type NewIndexGetter, useSortable } from '@dnd-kit/sortable'
 
-import { SocialProvider } from '@reown/appkit-controllers'
+import { type SocialProvider } from '@reown/appkit-controllers'
 
 import { SocialOptionItem } from './social-option-item'
 

@@ -5,7 +5,7 @@ import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { type ChainNamespace } from '@reown/appkit-common'
-import { ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
+import { type ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
 import {
   type AppKitNetwork,
   arbitrum,
@@ -21,11 +21,11 @@ import {
   solanaDevnet,
   zksync
 } from '@reown/appkit/networks'
-import { CreateAppKit } from '@reown/appkit/react'
+import { type CreateAppKit } from '@reown/appkit/react'
 
 import { urlStateUtils } from '@/lib/url-state'
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 
 if (!projectId) {
   throw new Error('Project ID is not defined')
@@ -96,21 +96,21 @@ initialEnabledChains.forEach(chain => {
     )
     initialNetworks.push(...enabledNetworks)
 
-    return adapters.push(evmAdapter)
+    adapters.push(evmAdapter)
   } else if (chain === CommonConstantsUtil.CHAIN.SOLANA) {
     const enabledNetworks = solanaNetworks.filter(network =>
       initialEnabledNetworks.includes(network.id)
     )
     initialNetworks.push(...enabledNetworks)
 
-    return adapters.push(solanaAdapter)
+    adapters.push(solanaAdapter)
   } else if (chain === CommonConstantsUtil.CHAIN.BITCOIN) {
     const enabledNetworks = bitcoinNetworks.filter(network =>
       initialEnabledNetworks.includes(network.id)
     )
     initialNetworks.push(...enabledNetworks)
 
-    return adapters.push(bitcoinAdapter)
+    adapters.push(bitcoinAdapter)
   }
 })
 

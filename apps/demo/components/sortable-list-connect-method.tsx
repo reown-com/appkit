@@ -2,28 +2,28 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
-  CollisionDetection,
+  type CollisionDetection,
   DndContext,
   DragOverlay,
-  DropAnimation,
-  KeyboardCoordinateGetter,
+  type DropAnimation,
+  type KeyboardCoordinateGetter,
   KeyboardSensor,
-  MeasuringConfiguration,
-  Modifiers,
+  type MeasuringConfiguration,
+  type Modifiers,
   MouseSensor,
-  PointerActivationConstraint,
+  type PointerActivationConstraint,
   TouchSensor,
-  UniqueIdentifier,
+  type UniqueIdentifier,
   closestCenter,
   defaultDropAnimationSideEffects,
   useSensor,
   useSensors
 } from '@dnd-kit/core'
 import {
-  AnimateLayoutChanges,
-  NewIndexGetter,
+  type AnimateLayoutChanges,
+  type NewIndexGetter,
   SortableContext,
-  SortingStrategy,
+  type SortingStrategy,
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy
@@ -202,7 +202,7 @@ export function SortableConnectMethodList({
                   handle={handle}
                   renderItem={renderItem}
                   style={getItemStyles({
-                    id: items[activeIndex],
+                    id: items[activeIndex] as UniqueIdentifier,
                     index: activeIndex,
                     isSorting: activeId !== null,
                     isDragging: true,
