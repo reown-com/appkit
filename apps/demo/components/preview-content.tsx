@@ -37,16 +37,7 @@ export function PreviewContent() {
   return (
     <>
       <div className="w-full max-w-[400px] py-8 mx-auto flex-grow flex-1 flex items-center justify-center">
-        {shouldRender ? (
-          <>
-            {/* @ts-expect-error - Property 'w3m-modal' does not exist on type 'JSX.IntrinsicElements' */}
-            <w3m-modal
-              style={{ positive: 'relative', width: '100%' }}
-              enableEmbedded={true}
-              class="embedded"
-            />
-          </>
-        ) : null}
+        {shouldRender ? <appkit-modal class="appkit-modal" /> : null}
       </div>
 
       <div className="justify-center gap-2 hidden md:flex">
