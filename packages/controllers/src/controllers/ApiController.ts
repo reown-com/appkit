@@ -194,6 +194,12 @@ export const ApiController = {
   },
 
   async fetchWallets(params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string }) {
+    const exclude = params.exclude ?? []
+    const sdkProperties = ApiController._getSdkProperties()
+    if (sdkProperties.sv.startsWith('html-core-')) {
+      exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS))
+    }
+
     const wallets = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
@@ -202,7 +208,7 @@ export const ApiController = {
         page: String(params.page),
         entries: String(params.entries),
         include: params.include?.join(','),
-        exclude: params.exclude?.join(',')
+        exclude: exclude.join(',')
       }
     })
 
