@@ -572,6 +572,14 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
         return (await adapter?.walletGetAssets(params)) ?? {}
+      },
+      updateBalance: (namespace: ChainNamespace) => {
+        const caipNetwork = this.getCaipNetwork(namespace)
+        if (!caipNetwork || !AccountController.state.address) {
+          return
+        }
+
+        this.updateNativeBalance(AccountController.state.address, caipNetwork?.id, namespace)
       }
     }
 

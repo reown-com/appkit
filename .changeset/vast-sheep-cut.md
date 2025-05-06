@@ -1,6 +1,5 @@
 ---
 '@reown/appkit-controllers': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
@@ -15,6 +14,7 @@
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Removes gas estimations from swap inputs and calculations
+Adds try catch preventing error from bubbling up if fetching supported networks for Blockchain API fails'

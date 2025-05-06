@@ -12,8 +12,6 @@ import { SectionWalletFeatures } from '@/components/configuration-sections/secti
 import { BookIcon } from '@/components/icon/book'
 import { buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useAppKitContext } from '@/hooks/use-appkit'
-import { appKitConfigs } from '@/lib/config'
 import { ThemeStore } from '@/lib/theme-store'
 import { cn } from '@/lib/utils'
 

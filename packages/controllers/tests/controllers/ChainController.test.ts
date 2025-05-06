@@ -114,7 +114,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve(''),
   revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({})
+  walletGetAssets: async () => Promise.resolve({}),
+  updateBalance: () => Promise.resolve()
 }
 
 const networkControllerClient: NetworkControllerClient = {

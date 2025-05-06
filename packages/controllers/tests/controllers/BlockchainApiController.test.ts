@@ -45,4 +45,13 @@ describe('BlockchainApiController', () => {
       })
     )
   })
+
+  it('should return empty array if supported chains are not fetched', async () => {
+    vi.spyOn(FetchUtil.prototype, 'get').mockRejectedValue(new Error('Not implemented'))
+    const supportedChains = await BlockchainApiController.getSupportedNetworks()
+    expect(supportedChains).toEqual({
+      http: [],
+      ws: []
+    })
+  })
 })

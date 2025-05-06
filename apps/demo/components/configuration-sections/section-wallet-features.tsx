@@ -1,13 +1,13 @@
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { type UniqueIdentifier } from '@dnd-kit/core'
 
-import { ConstantsUtil, WalletFeature } from '@reown/appkit-controllers'
+import { ConstantsUtil, type WalletFeature } from '@reown/appkit-controllers'
 import { useAppKitAccount } from '@reown/appkit-controllers/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { SortableWalletFeatureList } from '@/components/sortable-list-wallet-features'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { WalletFeatureName } from '@/lib/types'
+import { type WalletFeatureName } from '@/lib/types'
 import { urlStateUtils } from '@/lib/url-state'
 
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
@@ -35,12 +35,12 @@ export function SectionWalletFeatures() {
     switch (name) {
       case 'Buy':
         updateFeatures({ onramp: !config.features.onramp })
-        return
+        break
       case 'Swap':
         updateFeatures({ swaps: !config.features.swaps })
-        return
+        break
       default:
-        return
+        break
     }
   }
 
@@ -67,14 +67,14 @@ export function SectionWalletFeatures() {
         handleNewOrder={handleNewOrder}
         handle={true}
       />
-      {!caipAddress ? (
+      {caipAddress ? null : (
         <Alert>
           <div className="flex items-center gap-3">
             <ExclamationMarkIcon />
             <AlertDescription>Connect to a wallet to view feature customization</AlertDescription>
           </div>
         </Alert>
-      ) : null}
+      )}
     </div>
   )
 }
