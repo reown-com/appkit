@@ -1875,20 +1875,6 @@ export abstract class AppKitBaseClient {
     )
   }
 
-  public fetchBalance = async (): Promise<AdapterBlueprint.GetBalanceResult | undefined> => {
-    const address = this.getAddress()
-    const chainNamespace = this.getActiveChainNamespace()
-    const chainId = this.getCaipNetwork()?.id
-
-    if (address && chainNamespace && chainId) {
-      const balance = await this.updateNativeBalance(address, chainId, chainNamespace)
-
-      return balance
-    }
-
-    return undefined
-  }
-
   /**
    * Adds a network to an existing adapter in AppKit.
    * @param namespace - The chain namespace to add the network to (e.g. 'eip155', 'solana')
