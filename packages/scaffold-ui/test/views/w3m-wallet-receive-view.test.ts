@@ -67,7 +67,8 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
   getCapabilities: vi.fn(),
-  walletGetAssets: vi.fn()
+  walletGetAssets: vi.fn(),
+  updateBalance: vi.fn()
 }
 
 // Create partial mock states to satisfy TypeScript

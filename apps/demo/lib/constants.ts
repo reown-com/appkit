@@ -1,21 +1,7 @@
-import { ChainNamespace } from '@reown/appkit-common'
-import {
-  type AppKitNetwork,
-  arbitrum,
-  avalanche,
-  base,
-  bitcoin,
-  bitcoinTestnet,
-  bsc,
-  mainnet,
-  optimism,
-  polygon,
-  solana,
-  solanaDevnet,
-  zksync
-} from '@reown/appkit/networks'
+import { type ChainNamespace } from '@reown/appkit-common'
 
 import { bellota, breeSerif, domine, ebGaramond, inter, notoSans } from '@/lib/fonts'
+import { NETWORK_OPTIONS } from '@/lib/networks'
 
 export const ACCENT_COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981']
 export const BG_COLORS = ['#202020', '#363636', '#FFFFFF']
@@ -36,26 +22,6 @@ export const FONT_OPTIONS = [
   { label: 'Bree Serif', value: breeSerif.style.fontFamily },
   { label: 'Bellota', value: bellota.style.fontFamily }
 ]
-
-export type NetworkOption = {
-  namespace: ChainNamespace
-  network: AppKitNetwork
-}
-
-export const NETWORK_OPTIONS = [
-  { namespace: 'eip155', network: mainnet },
-  { namespace: 'eip155', network: optimism },
-  { namespace: 'eip155', network: bsc },
-  { namespace: 'eip155', network: polygon },
-  { namespace: 'eip155', network: avalanche },
-  { namespace: 'eip155', network: arbitrum },
-  { namespace: 'eip155', network: zksync },
-  { namespace: 'eip155', network: base },
-  { namespace: 'solana', network: solana },
-  { namespace: 'solana', network: solanaDevnet },
-  { namespace: 'bip122', network: bitcoin },
-  { namespace: 'bip122', network: bitcoinTestnet }
-] as NetworkOption[]
 
 export function getNamespaceNetworks(namespace: ChainNamespace) {
   return NETWORK_OPTIONS.filter(n => n.namespace === namespace).map(n => n.network)

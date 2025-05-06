@@ -1,5 +1,6 @@
 ---
 '@reown/appkit-controllers': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -12,8 +13,8 @@
 '@reown/appkit-common': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
+'@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
@@ -21,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes network enable/disable logics on Demo app
+Fixes issue where balance would not be properly updated after a send flow transaction'
