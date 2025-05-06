@@ -52,7 +52,6 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    console.log('>> search', search)
     const wallets = WalletUtil.markWalletsAsInstalled(search)
 
     if (!search.length) {
