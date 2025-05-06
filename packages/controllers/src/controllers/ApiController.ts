@@ -21,17 +21,15 @@ import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 
 /*
- * Exclude wallets that do not support relay connections on Core
+ * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
  * Excludes:
  * - Phantom
- * - Solflare
  * - Coinbase
  */
-const CORE_UNSUPPORTED_WALLET_IDS = [
-  '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
-  'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-  'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
-]
+const CUSTOM_DEEPLINK_WALLETS = {
+  PHANTOM: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+  COINBASE: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
+}
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -141,7 +139,13 @@ export const ApiController = {
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
     const filteredWallets = CoreHelperUtil.isMobile()
-      ? wallets?.filter(w => w.mobile_link || w.name === 'Coinbase Wallet' || w.name === 'Phantom')
+      ? wallets?.filter(
+          w =>
+            w.mobile_link ||
+            w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE ||
+            (w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM &&
+              ChainController.state.activeChain === 'solana')
+        )
       : wallets
 
     return filteredWallets
@@ -190,12 +194,6 @@ export const ApiController = {
   },
 
   async fetchWallets(params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string }) {
-    const exclude = params.exclude ?? []
-    const sdkProperties = ApiController._getSdkProperties()
-    if (sdkProperties.sv.startsWith('html-core-')) {
-      exclude.push(...CORE_UNSUPPORTED_WALLET_IDS)
-    }
-
     const wallets = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
