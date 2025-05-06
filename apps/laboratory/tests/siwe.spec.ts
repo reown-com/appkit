@@ -1,4 +1,5 @@
-import { test, type BrowserContext, type Page } from '@playwright/test'
+import { type BrowserContext, type Page, test } from '@playwright/test'
+
 import { ModalPage } from './shared/pages/ModalPage'
 import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
@@ -23,6 +24,7 @@ siweWalletTest.describe.configure({ mode: 'serial' })
 siweWalletTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   browserPage = await context.newPage()
+  await context.clearCookies()
 
   modalPage = new ModalPage(browserPage, library, 'siwe')
   walletPage = new WalletPage(await context.newPage())
@@ -66,6 +68,8 @@ siweWalletTest('it should disconnect when cancel siwe from AppKit', async () => 
 siweWalletTest('it should be authenticated when refresh page', async () => {
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
+  // Wait to be authenticated before reloading the page
+  await modalValidator.expectAuthenticated()
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalValidator.expectAuthenticated()

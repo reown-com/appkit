@@ -1,4 +1,8 @@
 /* eslint-disable max-depth */
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   ChainController,
@@ -6,17 +10,22 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-logo'
+import '@reown/appkit-ui/wui-text'
+import { ErrorUtil } from '@reown/appkit-utils'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 @customElement('w3m-connecting-social-view')
 export class W3mConnectingSocialView extends LitElement {
@@ -40,6 +49,14 @@ export class W3mConnectingSocialView extends LitElement {
 
   public constructor() {
     super()
+    const abortController = ErrorUtil.EmbeddedWalletAbortController
+
+    abortController.signal.addEventListener('abort', () => {
+      if (this.socialWindow) {
+        this.socialWindow.close()
+        AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+      }
+    })
     this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
@@ -50,7 +67,7 @@ export class W3mConnectingSocialView extends LitElement {
             this.socialWindow = val.socialWindow
           }
           if (val.address) {
-            if (ModalController.state.open) {
+            if (ModalController.state.open || OptionsController.state.enableEmbedded) {
               ModalController.close()
             }
           }

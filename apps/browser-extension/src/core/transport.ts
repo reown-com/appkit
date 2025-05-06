@@ -1,9 +1,10 @@
-import { createWalletClient, EIP1193Parameters, EIP1193Provider, fromHex, http, toHex } from 'viem'
-import { ChainId, wagmiConfig } from './wagmi'
-import { AccountUtil } from '../utils/AccountUtil'
+import { getPublicClient } from '@wagmi/core'
+import { EIP1193Parameters, EIP1193Provider, createWalletClient, fromHex, http, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
-import { getPublicClient } from '@wagmi/core'
+
+import { AccountUtil } from '../utils/AccountUtil'
+import { ChainId, wagmiConfig } from './wagmi'
 
 // -- Constants -----------------------------------------------------------------
 const LOCAL_STORAGE_KEYS = {
@@ -37,19 +38,19 @@ export function createReownTransport() {
           return toHex(Number(chainId))
 
         case 'eth_estimateGas': {
-          const gas = await publicClient.estimateGas(params[0])
+          const gas = await publicClient?.estimateGas(params[0])
 
           return toHex(gas)
         }
 
         case 'eth_blockNumber': {
-          const blockNumber = await publicClient.getBlockNumber()
+          const blockNumber = await publicClient?.getBlockNumber()
 
           return toHex(blockNumber)
         }
 
         case 'eth_call':
-          return publicClient.call(params[0])
+          return publicClient?.call(params[0])
 
         case 'eth_requestAccounts':
           localStorage.setItem(LOCAL_STORAGE_KEYS.HAS_CONNECTED, 'true')

@@ -1,12 +1,14 @@
-import { vi, describe, expect, it, beforeEach } from 'vitest'
-import { createSIWEConfig, mapToSIWX } from '../exports'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   OptionsController,
   type SIWXSession
-} from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
+} from '@reown/appkit-controllers'
+
+import { createSIWEConfig, mapToSIWX } from '../exports'
 
 const siweConfig = createSIWEConfig({
   createMessage: () => {
@@ -55,11 +57,13 @@ const sessionMock = {
 const networks = {
   mainnet: {
     id: '1',
+    name: 'Ethereum',
     caipNetworkId: 'eip155:1',
     chainNamespace: 'eip155'
   } as unknown as CaipNetwork,
   polygon: {
     id: '137',
+    name: 'Polygon',
     caipNetworkId: 'eip155:137',
     chainNamespace: 'eip155'
   } as unknown as CaipNetwork
@@ -371,10 +375,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-
-      ChainController.setActiveCaipNetwork({
-        id: '1'
-      } as CaipNetwork)
+      ChainController.setActiveCaipNetwork(networks.polygon)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))

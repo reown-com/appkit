@@ -1,27 +1,25 @@
-import { AppKit } from '../src/client.js'
-import type { AppKitOptions } from '../src/utils/TypesUtil.js'
-import { getAppKit } from '../src/library/react/index.js'
-import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
-import { PACKAGE_VERSION } from './constants.js'
-import { useAppKitNetworkCore } from '@reown/appkit-core/react'
+import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-controllers'
+import { useAppKitNetworkCore } from '@reown/appkit-controllers/react'
 import type { AppKitNetwork } from '@reown/appkit/networks'
-import { fetchBalance } from '../src/utils/BalanceUtil.js'
 
-// -- Views ------------------------------------------------------------
-export * from '@reown/appkit-scaffold-ui'
+import { AppKit } from '../src/client/appkit.js'
+import { getAppKit } from '../src/library/react/index.js'
+import { fetchBalance } from '../src/utils/BalanceUtil.js'
+import type { AppKitOptions } from '../src/utils/TypesUtil.js'
+import { PACKAGE_VERSION } from './constants.js'
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@reown/appkit-core'
+export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
-export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
+export { CoreHelperUtil, AccountController } from '@reown/appkit-controllers'
 
 export let modal: AppKit | undefined = undefined
 
-export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion' | 'basic'>
 
 export function createAppKit(options: CreateAppKit) {
   if (!modal) {
@@ -60,12 +58,18 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
-export { useAppKitAccount } from '@reown/appkit-core/react'
-
-export async function useAppKitBalance() {
+export function useAppKitBalance() {
   if (!modal) {
     throw new Error('AppKit not initialized. Please call createAppKit first.')
   }
 
-  return await fetchBalance(modal)
+  async function updateBalance() {
+    return await modal?.fetchBalance()
+  }
+
+  return {
+    updateBalance
+  }
 }
+
+export { useAppKitAccount } from '@reown/appkit-controllers/react'

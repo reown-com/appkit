@@ -1,13 +1,14 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import '../../components/wui-text/index.js'
+
 import '../../components/wui-icon/index.js'
-import '../wui-avatar/index.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import '../../components/wui-text/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType } from '../../utils/TypeUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-avatar/index.js'
+import styles from './styles.js'
 
 @customElement('wui-list-select-account')
 export class WuiListSelectAccount extends LitElement {
@@ -29,7 +30,7 @@ export class WuiListSelectAccount extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         <wui-avatar size="sm" address=${this.address}></wui-avatar>
         <wui-icon class="avatarIcon" size="xs" name=${this.icon}></wui-icon>
 

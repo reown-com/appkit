@@ -1,14 +1,11 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import {
-  ModalController,
-  ConnectorController,
-  ThemeController,
-  RouterController
-} from '@reown/appkit-core'
+
 import { getW3mThemeVariables } from '@reown/appkit-common'
+import { ConnectorController, ModalController, ThemeController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 600
@@ -36,7 +33,6 @@ export class W3mApproveTransactionView extends LitElement {
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             this.onHideIframe()
-            RouterController.popTransactionStack()
           }
         }),
         ModalController.subscribeKey('shake', val => {

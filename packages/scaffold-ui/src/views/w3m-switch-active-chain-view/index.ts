@@ -1,9 +1,20 @@
-import { ChainController, ModalController, RouterController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { ConstantsUtil } from '@reown/appkit-common'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ChainController, ConnectorController, RouterController } from '@reown/appkit-controllers'
+import { type VisualType, customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
+
+const chainIconNameMap: Record<ChainNamespace, VisualType> = {
+  eip155: 'eth',
+  solana: 'solana',
+  bip122: 'bitcoin',
+  // @ts-expect-error we don't have Polkadot implemented yet
+  polkadot: undefined
+}
 
 @customElement('w3m-switch-active-chain-view')
 export class W3mSwitchActiveChainView extends LitElement {
@@ -13,10 +24,6 @@ export class W3mSwitchActiveChainView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   protected readonly switchToChain = RouterController.state.data?.switchToChain
-
-  protected readonly navigateTo = RouterController.state.data?.navigateTo
-
-  protected readonly navigateWithReplace = RouterController.state.data?.navigateWithReplace
 
   protected readonly caipNetwork = RouterController.state.data?.network
 
@@ -44,7 +51,7 @@ export class W3mSwitchActiveChainView extends LitElement {
       return null
     }
 
-    const nextChainName = this.switchToChain === 'eip155' ? 'Ethereum' : this.switchToChain
+    const nextChainName = ConstantsUtil.CHAIN_NAME_MAP[this.switchToChain]
 
     return html`
       <wui-flex
@@ -54,9 +61,7 @@ export class W3mSwitchActiveChainView extends LitElement {
         gap="xl"
       >
         <wui-flex justifyContent="center" flexDirection="column" alignItems="center" gap="xl">
-          <wui-visual
-            name=${this.switchToChain === 'eip155' ? 'eth' : this.switchToChain}
-          ></wui-visual>
+          <wui-visual name=${ifDefined(chainIconNameMap[this.switchToChain])}></wui-visual>
           <wui-text
             data-testid=${`w3m-switch-active-chain-to-${nextChainName}`}
             variant="paragraph-500"
@@ -68,7 +73,12 @@ export class W3mSwitchActiveChainView extends LitElement {
             Connected wallet doesn't support connecting to ${switchedChainNameString} chain. You
             need to connect with a different wallet.
           </wui-text>
-          <wui-button size="md" @click=${this.switchActiveChain.bind(this)}>Switch</wui-button>
+          <wui-button
+            data-testid="w3m-switch-active-chain-button"
+            size="md"
+            @click=${this.switchActiveChain.bind(this)}
+            >Switch</wui-button
+          >
         </wui-flex>
       </wui-flex>
     `
@@ -80,16 +90,16 @@ export class W3mSwitchActiveChainView extends LitElement {
       return
     }
 
+    ChainController.setIsSwitchingNamespace(true)
+    ConnectorController.setFilterByNamespace(this.switchToChain)
+
     if (this.caipNetwork) {
       await ChainController.switchActiveNetwork(this.caipNetwork)
     } else {
       ChainController.setActiveNamespace(this.switchToChain)
     }
 
-    ModalController.close()
-    ModalController.open({
-      view: 'Connect'
-    })
+    RouterController.reset('Connect')
   }
 }
 

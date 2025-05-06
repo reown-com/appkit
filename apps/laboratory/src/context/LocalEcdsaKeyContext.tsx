@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { getLocalStorageItem, LOCAL_SIGNER_KEY } from '../utils/LocalStorage'
-import { generatePrivateKey, privateKeyToAccount, type PrivateKeyAccount } from 'viem/accounts'
-import { useChakraToast } from '../components/Toast'
-import { useLocalStorageState } from '../hooks/useLocalStorageState'
+
+import { type PrivateKeyAccount, generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { useLocalStorageState } from '@/src/hooks/useLocalStorageState'
+import { LOCAL_SIGNER_KEY, getLocalStorageItem } from '@/src/utils/LocalStorage'
 
 type LocalEcdsaKeyContextType = {
   privateKey: string | undefined

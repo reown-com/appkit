@@ -1,11 +1,16 @@
-import { ConnectorController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { ref, createRef } from 'lit/directives/ref.js'
+import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
+
+import { ConnectorController } from '@reown/appkit-controllers'
+import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-email-input'
+import '@reown/appkit-ui/wui-flex'
+
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
 
 @customElement('w3m-update-email-wallet-view')
 export class W3mUpdateEmailWalletView extends LitElement {
@@ -15,6 +20,8 @@ export class W3mUpdateEmailWalletView extends LitElement {
   private formRef: Ref<HTMLFormElement> = createRef()
 
   private initialEmail = RouterController.state.data?.email ?? ''
+
+  private redirectView = RouterController.state.data?.redirectView
 
   // -- State & Properties -------------------------------- //
   @state() private email = ''
@@ -31,8 +38,6 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const showSubmit = !this.loading && this.email.length > 3 && this.email !== this.initialEmail
-
     return html`
       <wui-flex flexDirection="column" padding="m" gap="m">
         <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
@@ -44,23 +49,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
           </wui-email-input>
           <input type="submit" hidden />
         </form>
-
-        <wui-flex gap="s">
-          <wui-button size="md" variant="neutral" fullWidth @click=${RouterController.goBack}>
-            Cancel
-          </wui-button>
-
-          <wui-button
-            size="md"
-            variant="main"
-            fullWidth
-            @click=${this.onSubmitEmail.bind(this)}
-            .disabled=${!showSubmit}
-            .loading=${this.loading}
-          >
-            Save
-          </wui-button>
-        </wui-flex>
+        ${this.buttonsTemplate()}
       </wui-flex>
     `
   }
@@ -90,18 +79,58 @@ export class W3mUpdateEmailWalletView extends LitElement {
       if (response.action === 'VERIFY_SECONDARY_OTP') {
         RouterController.push('UpdateEmailSecondaryOtp', {
           email: this.initialEmail,
-          newEmail: this.email
+          newEmail: this.email,
+          redirectView: this.redirectView
         })
       } else {
         RouterController.push('UpdateEmailPrimaryOtp', {
           email: this.initialEmail,
-          newEmail: this.email
+          newEmail: this.email,
+          redirectView: this.redirectView
         })
       }
     } catch (error) {
       SnackController.showError(error)
       this.loading = false
     }
+  }
+
+  private buttonsTemplate() {
+    const showSubmit = !this.loading && this.email.length > 3 && this.email !== this.initialEmail
+
+    if (!this.redirectView) {
+      return html`
+        <wui-button
+          size="md"
+          variant="main"
+          fullWidth
+          @click=${this.onSubmitEmail.bind(this)}
+          .disabled=${!showSubmit}
+          .loading=${this.loading}
+        >
+          Save
+        </wui-button>
+      `
+    }
+
+    return html`
+      <wui-flex gap="s">
+        <wui-button size="md" variant="neutral" fullWidth @click=${RouterController.goBack}>
+          Cancel
+        </wui-button>
+
+        <wui-button
+          size="md"
+          variant="main"
+          fullWidth
+          @click=${this.onSubmitEmail.bind(this)}
+          .disabled=${!showSubmit}
+          .loading=${this.loading}
+        >
+          Save
+        </wui-button>
+      </wui-flex>
+    `
   }
 }
 

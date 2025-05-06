@@ -1,37 +1,31 @@
-import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { WcWallet } from '@reown/appkit-controllers'
+import { AssetUtil, ConnectorController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-featured-widget')
 export class W3mConnectFeaturedWidget extends LitElement {
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
 
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
+  @property() public wallets: WcWallet[] = []
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { featured } = ApiController.state
-    if (!featured.length) {
+    if (!this.wallets.length) {
       this.style.cssText = `display: none`
 
       return null
     }
 
-    const wallets = WalletUtil.filterOutDuplicateWallets(featured)
-
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${wallets.map(
+        ${this.wallets.map(
           wallet => html`
             <wui-list-wallet
               data-testid=${`wallet-selector-featured-${wallet.id}`}
@@ -49,12 +43,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnectWallet(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
-    }
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 

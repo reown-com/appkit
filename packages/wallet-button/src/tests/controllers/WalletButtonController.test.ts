@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { WalletButtonController } from '../../controllers/WalletButtonController'
+
 import type { ParsedCaipAddress } from '@reown/appkit-common'
+
+import { WalletButtonController } from '../../controllers/WalletButtonController'
 
 // -- Tests --------------------------------------------------------------------
 describe('WalletButtonController', () => {

@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
+
+import type { P256Credential } from 'webauthn-p256'
+
+import { useLocalStorageState } from '@/src/hooks/useLocalStorageState'
 import {
   PASSKEY_LOCALSTORAGE_KEY,
-  setLocalStorageItem,
-  type PasskeyLocalStorageFormat
-} from '../utils/LocalStorage'
-import { useLocalStorageState } from '../hooks/useLocalStorageState'
-import type { P256Credential } from 'webauthn-p256'
+  type PasskeyLocalStorageFormat,
+  setLocalStorageItem
+} from '@/src/utils/LocalStorage'
 
 export type PasskeyStorageType = P256Credential | PasskeyLocalStorageFormat | undefined
 type PasskeyContextType = {

@@ -1,21 +1,29 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
+  type AccountType,
   ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
   RouterController,
-  SnackController,
-  type AccountType
-} from '@reown/appkit-core'
-
+  SnackController
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-list-account'
+import '@reown/appkit-ui/wui-text'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-profile-view')
 export class W3mProfileView extends LitElement {
@@ -130,14 +138,15 @@ export class W3mProfileView extends LitElement {
   }
 
   private async onSwitchAccount(account: AccountType) {
+    const namespace = ChainController.state.activeCaipNetwork?.chainNamespace as ChainNamespace
     this.loading = true
     const emailConnector = ConnectorController.getAuthConnector()
     if (emailConnector) {
       const type = account.type as W3mFrameTypes.AccountType
-      await ConnectionController.setPreferredAccountType(type)
+      await ConnectionController.setPreferredAccountType(type, namespace)
     }
 
-    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
+    AccountController.setShouldUpdateToAddress(account.address, namespace)
     this.loading = false
   }
 

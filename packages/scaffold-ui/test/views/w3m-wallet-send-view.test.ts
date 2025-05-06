@@ -1,13 +1,10 @@
-import { expect, html, fixture } from '@open-wc/testing'
-import {
-  SendController,
-  RouterController,
-  SwapController,
-  AccountController
-} from '@reown/appkit-core'
-import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
-import { describe, it, afterEach, beforeEach, vi, expect as viExpect } from 'vitest'
+import { expect, fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
+
 import type { Balance } from '@reown/appkit-common'
+import { RouterController, SendController, SwapController } from '@reown/appkit-controllers'
+
+import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 
 const mockToken: Balance = {
   address: '0x123',
@@ -25,11 +22,7 @@ const mockToken: Balance = {
 describe('W3mWalletSendView', () => {
   beforeEach(() => {
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
-    vi.spyOn(SwapController, 'getInitialGasPrice').mockResolvedValue({
-      gasPrice: BigInt(1000),
-      gasPriceInUSD: 0.1
-    })
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([])
+    vi.spyOn(SendController, 'fetchTokenBalance').mockResolvedValue([])
   })
 
   afterEach(() => {
@@ -103,7 +96,6 @@ describe('W3mWalletSendView', () => {
 
     SendController.setToken(mockToken)
     SendController.setTokenAmount(50)
-    SendController.setGasPrice(BigInt(1))
     SendController.setNetworkBalanceInUsd('100')
 
     SendController.setReceiverAddress('invalid-address')
@@ -153,12 +145,11 @@ describe('W3mWalletSendView', () => {
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
 
     viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
-    viExpect(SwapController.getInitialGasPrice).toHaveBeenCalled()
   })
 
   it('should fetch balances on initialization', async () => {
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
-    viExpect(AccountController.fetchTokenBalance).toHaveBeenCalled()
+    viExpect(SendController.fetchTokenBalance).toHaveBeenCalled()
   })
 
   it('should cleanup subscriptions on disconnect', async () => {

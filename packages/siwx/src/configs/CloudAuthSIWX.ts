@@ -1,9 +1,9 @@
 import {
-  ConstantsUtil,
   type CaipNetworkId,
+  ConstantsUtil,
   SafeLocalStorage,
-  SafeLocalStorageKeys,
-  type SafeLocalStorageItems
+  type SafeLocalStorageItems,
+  SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -13,15 +13,15 @@ import {
   type SIWXConfig,
   type SIWXMessage,
   type SIWXSession
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import { ConstantsUtil as AppKitConstantUtil } from '@reown/appkit-utils'
+
 import type { SIWXMessenger } from '../core/SIWXMessenger.js'
 import { InformalMessenger } from '../index.js'
 
 /**
  * This is the configuration for using SIWX with Cloud Auth service.
  * It allows you to authenticate and capture user sessions through the Cloud Dashboard.
- *
- * WARNING: The Claud Auth is only available in EVM networks.
  */
 export class CloudAuthSIWX implements SIWXConfig {
   private readonly localAuthStorageKey: keyof SafeLocalStorageItems
@@ -29,6 +29,10 @@ export class CloudAuthSIWX implements SIWXConfig {
   private readonly messenger: SIWXMessenger
 
   private required: boolean
+
+  private listeners: CloudAuthSIWX.EventListeners = {
+    sessionChanged: []
+  }
 
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
     this.localAuthStorageKey =
@@ -43,7 +47,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
       uri: typeof document === 'undefined' ? 'Unknown URI' : document.location.href,
       getNonce: this.getNonce.bind(this),
-      clearChainIdNamespace: true
+      clearChainIdNamespace: false
     })
   }
 
@@ -55,6 +59,7 @@ export class CloudAuthSIWX implements SIWXConfig {
     const response = await this.request(
       'authenticate',
       {
+        data: session.data,
         message: session.message,
         signature: session.signature,
         clientId: this.getClientId(),
@@ -63,26 +68,30 @@ export class CloudAuthSIWX implements SIWXConfig {
       'nonceJwt'
     )
     this.setStorageToken(response.token, this.localAuthStorageKey)
+    this.emit('sessionChanged', session)
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
     try {
-      const siweSession = await this.request('me', undefined)
+      const siweSession = await this.request('me', undefined, 'authJwt')
 
-      const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
+      const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
+      const isSameNetwork = siweSession?.caip2Network === chainId
 
-      if (!siweSession || siweCaipNetworkId !== chainId || siweSession.address !== address) {
+      if (!isSameAddress || !isSameNetwork) {
         return []
       }
 
       const session: SIWXSession = {
         data: {
           accountAddress: siweSession.address,
-          chainId: siweCaipNetworkId
+          chainId: siweSession.caip2Network
         } as SIWXMessage.Data,
         message: '',
         signature: ''
       }
+
+      this.emit('sessionChanged', session)
 
       return [session]
     } catch {
@@ -110,33 +119,74 @@ export class CloudAuthSIWX implements SIWXConfig {
     return this.required
   }
 
+  async getSessionAccount() {
+    if (!this.getStorageToken(this.localAuthStorageKey)) {
+      throw new Error('Not authenticated')
+    }
+
+    return this.request('me?includeAppKitAccount=true', undefined, 'authJwt')
+  }
+
+  async setSessionAccountMetadata(metadata: object | null = null) {
+    if (!this.getStorageToken(this.localAuthStorageKey)) {
+      throw new Error('Not authenticated')
+    }
+
+    return this.request('account-metadata', { metadata }, 'authJwt')
+  }
+
+  on<Event extends keyof CloudAuthSIWX.Events>(
+    event: Event,
+    callback: CloudAuthSIWX.Listener<Event>
+  ) {
+    this.listeners[event].push(callback)
+
+    return () => {
+      this.listeners[event] = this.listeners[event].filter(
+        cb => cb !== callback
+      ) as CloudAuthSIWX.EventListeners[Event]
+    }
+  }
+
+  removeAllListeners() {
+    const keys = Object.keys(this.listeners) as (keyof CloudAuthSIWX.Events)[]
+    keys.forEach(key => {
+      this.listeners[key] = []
+    })
+  }
+
   private async request<Key extends CloudAuthSIWX.RequestKey>(
     key: Key,
     params: CloudAuthSIWX.Requests[Key]['body'],
-    tokenType: 'authJwt' | 'nonceJwt' = 'authJwt'
+    tokenType?: 'authJwt' | 'nonceJwt'
   ): Promise<CloudAuthSIWX.Requests[Key]['response']> {
     const { projectId, st, sv } = this.getSDKProperties()
 
-    const token =
-      tokenType === 'nonceJwt'
-        ? this.getStorageToken(this.localNonceStorageKey)
-        : this.getStorageToken(this.localAuthStorageKey)
+    let headers: Record<string, string> | undefined = undefined
 
-    const jwtHeader: { 'x-nonce-jwt': string } | { Authorization: string } =
-      tokenType === 'nonceJwt'
-        ? {
-            'x-nonce-jwt': `Bearer ${token}`
-          }
-        : {
-            Authorization: `Bearer ${token}`
-          }
+    switch (tokenType) {
+      case 'nonceJwt':
+        headers = {
+          'x-nonce-jwt': `Bearer ${this.getStorageToken(this.localNonceStorageKey)}`
+        }
+        break
+      case 'authJwt':
+        headers = {
+          Authorization: `Bearer ${this.getStorageToken(this.localAuthStorageKey)}`
+        }
+        break
+      default:
+        break
+    }
 
     const response = await fetch(
-      `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`,
+      new URL(
+        `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`
+      ),
       {
         method: RequestMethod[key],
         body: params ? JSON.stringify(params) : undefined,
-        headers: token ? jwtHeader : undefined
+        headers
       }
     )
 
@@ -158,6 +208,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   private clearStorageTokens(): void {
     SafeLocalStorage.removeItem(this.localAuthStorageKey)
     SafeLocalStorage.removeItem(this.localNonceStorageKey)
+    this.emit('sessionChanged', undefined)
   }
 
   private async getNonce(): Promise<string> {
@@ -172,24 +223,53 @@ export class CloudAuthSIWX implements SIWXConfig {
     return BlockchainApiController.state.clientId
   }
 
-  private getWalletInfo():
-    | {
-        name: string | undefined
-        icon: string | undefined
-      }
-    | undefined {
+  private getWalletInfo(): CloudAuthSIWX.WalletInfo | undefined {
     const { connectedWalletInfo } = AccountController.state
+
     if (!connectedWalletInfo) {
       return undefined
     }
 
+    if ('social' in connectedWalletInfo) {
+      const social = connectedWalletInfo['social'] as string
+      const identifier = connectedWalletInfo['identifier'] as string
+
+      return { type: 'social', social, identifier }
+    }
+
     const { name, icon } = connectedWalletInfo
 
-    return { name, icon }
+    let type: CloudAuthSIWX.WalletInfo['type'] = 'unknown'
+
+    switch (connectedWalletInfo['type']) {
+      case AppKitConstantUtil.CONNECTOR_TYPE_EXTERNAL:
+      case AppKitConstantUtil.CONNECTOR_TYPE_INJECTED:
+      case AppKitConstantUtil.CONNECTOR_TYPE_ANNOUNCED:
+        type = 'extension'
+        break
+      case AppKitConstantUtil.CONNECTOR_TYPE_WALLET_CONNECT:
+        type = 'walletconnect'
+        break
+      default:
+        type = 'unknown'
+    }
+
+    return {
+      type,
+      name,
+      icon
+    }
   }
 
   private getSDKProperties(): { projectId: string; st: string; sv: string } {
     return ApiController._getSdkProperties()
+  }
+
+  private emit<Event extends keyof CloudAuthSIWX.Events>(
+    event: Event,
+    data: CloudAuthSIWX.Events[Event]
+  ) {
+    this.listeners[event].forEach(listener => listener(data))
   }
 }
 
@@ -197,8 +277,9 @@ const RequestMethod = {
   nonce: 'GET',
   me: 'GET',
   authenticate: 'POST',
-  'update-user-metadata': 'PATCH',
-  'sign-out': 'POST'
+  'account-metadata': 'PUT',
+  'sign-out': 'POST',
+  'me?includeAppKitAccount=true': 'GET'
 } satisfies { [key in CloudAuthSIWX.RequestKey]: CloudAuthSIWX.Requests[key]['method'] }
 
 export namespace CloudAuthSIWX {
@@ -220,7 +301,7 @@ export namespace CloudAuthSIWX {
     required?: boolean
   }
 
-  export type Request<Method extends 'GET' | 'POST' | 'PATCH', Params, Response> = {
+  export type Request<Method extends 'GET' | 'POST' | 'PATCH' | 'PUT', Params, Response> = {
     method: Method
     body: Params
     response: Response
@@ -228,25 +309,73 @@ export namespace CloudAuthSIWX {
 
   export type Requests = {
     nonce: Request<'GET', undefined, { nonce: string; token: string }>
-    me: Request<'GET', undefined, { address: string; chainId: number }>
+    me: Request<'GET', undefined, Omit<SessionAccount, 'appKitAccount'>>
+    'me?includeAppKitAccount=true': Request<'GET', undefined, SessionAccount>
     authenticate: Request<
       'POST',
       {
+        data?: SIWXMessage.Data
         message: string
         signature: string
         clientId?: string | null
-        walletInfo?: {
-          name: string | undefined
-          icon: string | undefined
-        }
+        walletInfo?: WalletInfo
       },
       {
         token: string
       }
     >
-    'update-user-metadata': Request<'PATCH', Record<string, unknown>, unknown>
+    'account-metadata': Request<'PUT', { metadata: object | null }, unknown>
     'sign-out': Request<'POST', undefined, never>
   }
 
   export type RequestKey = keyof Requests
+
+  export type WalletInfo =
+    | {
+        type: 'walletconnect' | 'extension' | 'unknown'
+        name: string | undefined
+        icon: string | undefined
+      }
+    | { type: 'social'; social: string; identifier: string }
+
+  export type Events = {
+    sessionChanged: SIWXSession | undefined
+  }
+
+  export type Listener<Event extends keyof Events> = (event: Events[Event]) => void
+
+  export type EventListeners = {
+    [Key in keyof Events]: Listener<Key>[]
+  }
+
+  export type SessionAccount = {
+    aud: string
+    iss: string
+    exp: number
+    projectIdKey: string
+    sub: string
+    address: string
+    chainId: number | string
+    chainIdNamespace: string
+    caip2Network: string
+    uri: string
+    domain: string
+    projectUuid: string
+    profileUuid: string
+    nonce: string
+    appKitAccount?: {
+      uuid: string
+      caip2_chain: string
+      address: string
+      profile_uuid: string
+      created_at: string
+      is_main_account: boolean
+      verification_status: null
+      connection_method: object | null
+      metadata: object
+      last_signed_in_at: string
+      signed_up_at: string
+      updated_at: string
+    }
+  }
 }

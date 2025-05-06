@@ -1,19 +1,25 @@
-import {
-  CoreHelperUtil,
-  AccountController,
-  ConstantsUtil,
-  OnRampController,
-  type OnRampProvider,
-  RouterController,
-  BlockchainApiController,
-  EventsController,
-  ChainController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import type { ChainNamespace } from '@reown/appkit-common'
+import {
+  AccountController,
+  BlockchainApiController,
+  ChainController,
+  ConstantsUtil,
+  CoreHelperUtil,
+  EventsController,
+  OnRampController,
+  type OnRampProvider,
+  RouterController
+} from '@reown/appkit-controllers'
+import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import '../../partials/w3m-onramp-provider-item/index.js'
+import '../../partials/w3m-onramp-providers-footer/index.js'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
@@ -81,6 +87,8 @@ export class W3mOnRampProvidersView extends LitElement {
   }
 
   private onClickProvider(provider: OnRampProvider) {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
     CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
@@ -90,7 +98,7 @@ export class W3mOnRampProvidersView extends LitElement {
       properties: {
         provider: provider.name,
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

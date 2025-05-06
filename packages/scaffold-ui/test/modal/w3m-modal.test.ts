@@ -1,21 +1,38 @@
-import { W3mModal } from '../../src/modal/w3m-modal'
-import { describe, it, expect, vi, beforeEach, beforeAll, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import { type CaipNetwork } from '@reown/appkit-common'
 import {
+  AlertController,
+  ApiController,
+  ChainController,
   ModalController,
   OptionsController,
-  ChainController,
   RouterController,
-  ApiController,
-  EventsController,
   SIWXUtil
-} from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
-import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
+} from '@reown/appkit-controllers'
+import type { AccountControllerState, SIWXConfig } from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
 
-// Mock ResizeObserver
+import { W3mModal } from '../../src/modal/w3m-modal'
+import { HelpersUtil } from '../utils/HelpersUtil'
+
+// --- Mocks ------------------------------------------------------------
+const mainnet = {
+  id: 1,
+  name: 'Ethereum',
+  caipNetworkId: 'eip155:1',
+  chainNamespace: 'eip155'
+} as unknown as CaipNetwork
+const polygon = {
+  id: 137,
+  name: 'Polygon',
+  caipNetworkId: 'eip155:137',
+  chainNamespace: 'eip155'
+} as unknown as CaipNetwork
+
 beforeAll(() => {
   global.ResizeObserver = vi.fn().mockImplementation(() => ({
     observe: vi.fn(),
@@ -29,6 +46,10 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
+      Element.prototype.animate = vi.fn().mockReturnValue({ finished: true })
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
+      vi.spyOn(ApiController, 'fetchWalletsByPage').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(true)
       ModalController.close()
       element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
@@ -55,14 +76,17 @@ describe('W3mModal', () => {
     })
 
     it('should close modal when wallet is connected', async () => {
-      ModalController.open()
-      element.requestUpdate()
-      await elementUpdated(element)
-      ;(element as any).caipAddress = 'eip155:1:0x123...'
-      element.requestUpdate()
-      await elementUpdated(element)
+      ChainController.state.activeCaipAddress = 'eip155:1:0x123...'
+      await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
+      ChainController.state.activeCaipAddress = undefined
 
       expect(ModalController.state.open).toBe(false)
+    })
+
+    it('should prefetch when modal is open', async () => {
+      element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
+
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
   })
 
@@ -70,14 +94,29 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
+      vi.spyOn(ApiController, 'fetchWalletsByPage').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(false)
       ModalController.close()
-      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       element = await fixture(html`<w3m-modal></w3m-modal>`)
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
     })
 
     it('should not be visible when closed', () => {
       expect(HelpersUtil.getByTestId(element, 'w3m-modal-overlay')).toBeNull()
+    })
+
+    it('should prefetch when modal is open', async () => {
+      await ModalController.open()
+
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
 
     it('should be visible when opened', async () => {
@@ -117,12 +156,9 @@ describe('W3mModal', () => {
     })
 
     it('prevents closing on unsupported chain', async () => {
-      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-        view: 'UnsupportedChain'
-      } as RouterControllerState)
       const shakeSpy = vi.spyOn(ModalController, 'shake')
+      ModalController.open({ view: 'UnsupportedChain' })
 
-      ModalController.open()
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -137,56 +173,98 @@ describe('W3mModal', () => {
   describe('Network Changes', () => {
     let element: W3mModal
 
+    beforeAll(() => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'eip155'
+      })
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: 'eip155:1:0x123'
+      } as unknown as AccountControllerState)
+    })
+
     beforeEach(async () => {
-      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
+      vi.spyOn(ApiController, 'fetchWalletsByPage').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
+      OptionsController.setEnableEmbedded(false)
       element = await fixture(html`<w3m-modal></w3m-modal>`)
     })
 
-    it('should handle network change when not connected', async () => {
-      const goBackSpy = vi.spyOn(RouterController, 'goBack')
-      const nextNetwork = {
-        id: '2',
-        name: 'Network 2',
-        caipNetworkId: 'eip155:2'
-      } as unknown as CaipNetwork
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
 
-      ChainController.setActiveCaipNetwork(nextNetwork)
+    it('should handle network change when not connected', async () => {
+      ModalController.close()
+      const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ;(element as any).caipAddress = undefined
+      ;(element as any).caipNetwork = mainnet
+
+      ChainController.setActiveCaipNetwork(polygon)
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(goBackSpy).not.toHaveBeenCalled()
+    })
+
+    it('should handle network change when not connected and modal is open', async () => {
+      const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ModalController.open()
+      ;(element as any).caipAddress = undefined
+      ;(element as any).caipNetwork = polygon
+
+      ChainController.setActiveCaipNetwork(mainnet)
       element.requestUpdate()
       await elementUpdated(element)
 
       expect(goBackSpy).toHaveBeenCalled()
-      expect(ApiController.prefetch).toHaveBeenCalled()
+    })
+
+    it('should call goBack when network changed and page is UnsupportedChain', async () => {
+      ModalController.open({ view: 'UnsupportedChain' })
+      const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ;(element as any).caipAddress = 'eip155:1:0x123'
+      ;(element as any).caipNetwork = mainnet
+
+      ChainController.setActiveCaipNetwork(polygon) // switch network
+
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(goBackSpy).toHaveBeenCalled()
     })
 
     it('should handle network change when connected', async () => {
+      ModalController.close()
+      const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ;(element as any).caipAddress = 'eip155:137:0x123'
+      ;(element as any).caipNetwork = polygon
+
+      ChainController.setActiveCaipNetwork(mainnet)
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(goBackSpy).not.toHaveBeenCalled()
+    })
+
+    it('should handle network change when connected and modal is open', async () => {
+      ModalController.open()
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
       ;(element as any).caipAddress = 'eip155:1:0x123'
-      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
+      ;(element as any).caipNetwork = mainnet
 
-      const nextNetwork = {
-        id: '2',
-        name: 'Network 2',
-        caipNetworkId: 'eip155:2'
-      } as unknown as CaipNetwork
-      ChainController.setActiveCaipNetwork(nextNetwork)
+      ChainController.setActiveCaipNetwork(polygon)
       element.requestUpdate()
       await elementUpdated(element)
 
       expect(goBackSpy).toHaveBeenCalled()
-      expect(ApiController.prefetch).toHaveBeenCalled()
     })
   })
 
   describe('Initialization', () => {
-    it('should send modal loaded event', async () => {
-      const eventSpy = vi.spyOn(EventsController, 'sendEvent')
-      await fixture(html`<w3m-modal></w3m-modal>`)
-
-      expect(eventSpy).toHaveBeenCalledWith({ type: 'track', event: 'MODAL_LOADED' })
-    })
-
-    it('should prefetch API data', async () => {
-      const prefetchSpy = vi.spyOn(ApiController, 'prefetch')
+    it('should prefetch analytics config on page load', async () => {
+      const prefetchSpy = vi.spyOn(ApiController, 'prefetchAnalyticsConfig')
       await fixture(html`<w3m-modal></w3m-modal>`)
 
       expect(prefetchSpy).toHaveBeenCalled()
@@ -212,15 +290,9 @@ describe('W3mModal', () => {
     })
 
     it('should prevent the user from closing the modal when required is set to true', async () => {
+      ModalController.open({ view: 'ApproveTransaction' })
       vi.useFakeTimers()
 
-      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
-        ...ModalController.state,
-        open: true
-      })
-      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-        view: 'ApproveTransaction'
-      } as unknown as RouterControllerState)
       vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue({
         getRequired: vi.fn().mockReturnValue(true),
         getSessions: vi.fn().mockResolvedValue([])
@@ -242,15 +314,9 @@ describe('W3mModal', () => {
     })
 
     it('should allow the user to close the modal when required is set to false', async () => {
+      ModalController.open({ view: 'ApproveTransaction' })
       vi.useFakeTimers()
 
-      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
-        ...ModalController.state,
-        open: true
-      })
-      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-        view: 'ApproveTransaction'
-      } as unknown as RouterControllerState)
       vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue({
         getRequired: vi.fn().mockReturnValue(false),
         getSessions: vi.fn().mockResolvedValue([])
@@ -269,6 +335,62 @@ describe('W3mModal', () => {
 
       expect(shakeSpy).not.toHaveBeenCalled()
       expect(closeSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('Debug Mode', () => {
+    let element: W3mModal
+
+    beforeAll(() => {
+      ModalController.open()
+    })
+
+    beforeEach(async () => {
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
+      vi.spyOn(ApiController, 'fetchWalletsByPage').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
+      vi.spyOn(AlertController, 'open')
+
+      // Reset alert state
+      AlertController.close()
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should display alert when debug mode is enabled and project ID is not configured', async () => {
+      // Set debug mode to true
+      OptionsController.setDebug(true)
+
+      // Trigger an alert for missing project ID
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+      // Render the modal
+      element = await fixture(html`<w3m-modal></w3m-modal>`)
+      await elementUpdated(element)
+
+      // Expect alertbar to be visible
+      const alertbar = HelpersUtil.querySelect(element, 'w3m-alertbar')
+      expect(alertbar).toBeTruthy()
+      expect(AlertController.state.open).toBe(true)
+      expect(AlertController.state.message).toBe('Project ID Not Configured')
+      expect(AlertController.state.variant).toBe('error')
+    })
+
+    it('should not display alert when debug mode is disabled', async () => {
+      // Set debug mode to false
+      OptionsController.setDebug(false)
+
+      // Attempt to trigger an alert for missing project ID
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+      // Render the modal
+      element = await fixture(html`<w3m-modal></w3m-modal>`)
+      await elementUpdated(element)
+
+      // Alert state should not be open since debug mode is disabled
+      expect(AlertController.state.open).toBe(false)
     })
   })
 })

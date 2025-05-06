@@ -1,13 +1,21 @@
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+import { state } from 'lit/decorators.js'
+
 import {
   AccountController,
   ChainController,
   RouterController,
   SwapController
-} from '@reown/appkit-core'
-import { state } from 'lit/decorators.js'
+} from '@reown/appkit-controllers'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-token-button'
+
+import '../../partials/w3m-swap-details/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-swap-preview-view')
 export class W3mSwapPreviewView extends LitElement {
@@ -40,8 +48,6 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
-
   @state() private inputError = SwapController.state.inputError
 
   @state() private loadingQuote = SwapController.state.loadingQuote
@@ -73,9 +79,7 @@ export class W3mSwapPreviewView extends LitElement {
           this.approvalTransaction = newState.approvalTransaction
           this.swapTransaction = newState.swapTransaction
           this.sourceToken = newState.sourceToken
-          this.gasPriceInUSD = newState.gasPriceInUSD
           this.toToken = newState.toToken
-          this.gasPriceInUSD = newState.gasPriceInUSD
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
@@ -129,8 +133,7 @@ export class W3mSwapPreviewView extends LitElement {
     )} ${this.toToken?.symbol}`
 
     const sourceTokenValue = parseFloat(this.sourceTokenAmount) * this.sourceTokenPriceInUSD
-    const toTokenValue =
-      parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD - (this.gasPriceInUSD || 0)
+    const toTokenValue = parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD
     const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
     const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
 

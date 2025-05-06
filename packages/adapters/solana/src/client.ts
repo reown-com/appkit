@@ -1,32 +1,33 @@
-import { WcHelpersUtil, type AppKit, type AppKitOptions } from '@reown/appkit'
-import { ConstantsUtil as CommonConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import {
-  AlertController,
-  ChainController,
-  CoreHelperUtil,
-  EventsController,
-  type Provider as CoreProvider
-} from '@reown/appkit-core'
-import { ErrorUtil } from '@reown/appkit-utils'
-import { SolConstantsUtil } from '@reown/appkit-utils/solana'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
 import { Connection, PublicKey } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
+
+import { type AppKit, type AppKitOptions } from '@reown/appkit'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  AlertController,
+  ChainController,
+  CoreHelperUtil,
+  type Provider as CoreProvider,
+  StorageUtil
+} from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
+
 import { AuthProvider } from './providers/AuthProvider.js'
 import {
   CoinbaseWalletProvider,
   type SolanaCoinbaseWallet
 } from './providers/CoinbaseWalletProvider.js'
-import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
-import { createSendTransaction } from './utils/createSendTransaction.js'
-import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
+import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProvider.js'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import { createSendTransaction } from './utils/createSendTransaction.js'
 import { watchStandard } from './utils/watchStandard.js'
-import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -35,43 +36,44 @@ export interface AdapterOptions {
 
 export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
-  public adapterType = 'solana'
   public wallets?: BaseWalletAdapter[]
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(options: AdapterOptions = {}) {
-    super({})
-    this.namespace = CommonConstantsUtil.CHAIN.SOLANA
+    super({
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.SOLANA,
+      namespace: CommonConstantsUtil.CHAIN.SOLANA
+    })
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
+  }
 
-    EventsController.subscribe(state => {
-      if (state.data.event === 'SELECT_WALLET') {
-        const isMobile = CoreHelperUtil.isMobile()
-        const isClient = CoreHelperUtil.isClient()
-
-        if (isMobile && isClient) {
-          handleMobileWalletRedirection(state.data.properties)
-        }
-      }
-    })
+  public override construct(params: AdapterBlueprint.Params): void {
+    super.construct(params)
+    const connectedCaipNetwork = StorageUtil.getActiveCaipNetworkId()
+    const caipNetwork =
+      params.networks?.find(n => n.caipNetworkId === connectedCaipNetwork) || params.networks?.[0]
+    const rpcUrl = caipNetwork?.rpcUrls.default.http[0] as string
+    if (rpcUrl) {
+      SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+    }
   }
 
   public override setAuthProvider(w3mFrameProvider: W3mFrameProvider) {
     this.addConnector(
       new AuthProvider({
         w3mFrameProvider,
-        getActiveChain: () => ChainController.state.activeCaipNetwork,
-        chains: this.caipNetworks as CaipNetwork[]
+        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace),
+        chains: this.getCaipNetworks()
       })
     )
   }
 
-  public syncConnectors(options: AppKitOptions, appKit: AppKit) {
+  override syncConnectors(options: AppKitOptions, appKit: AppKit) {
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
     }
 
-    // eslint-disable-next-line arrow-body-style
     const getActiveChain = () => appKit.getCaipNetwork(this.namespace)
 
     // Add Coinbase Wallet if available
@@ -79,14 +81,14 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.addConnector(
         new CoinbaseWalletProvider({
           provider: window.coinbaseSolana as SolanaCoinbaseWallet,
-          chains: this.caipNetworks as CaipNetwork[],
+          chains: this.getCaipNetworks(),
           getActiveChain
         })
       )
     }
 
     // Watch for standard wallet adapters
-    watchStandard(this.caipNetworks as CaipNetwork[], getActiveChain, this.addConnector.bind(this))
+    watchStandard(this.getCaipNetworks(), getActiveChain, this.addConnector.bind(this))
   }
 
   // -- Transaction methods ---------------------------------------------------
@@ -96,11 +98,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
    * These function definition is to have a type parity between the clients. Currently not in use.
    */
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    return { address: params.name }
-  }
 
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
@@ -118,6 +115,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
   public async revokePermissions(): Promise<`0x${string}`> {
     return Promise.resolve('0x')
+  }
+
+  public override async walletGetAssets(
+    _params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    return Promise.resolve({})
   }
 
   public async getAccounts(
@@ -174,7 +177,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     const connection = SolStoreUtil.state.connection
 
-    if (!connection || !params.address || !params.provider) {
+    if (!connection || !params.provider) {
       throw new Error('Connection is not set')
     }
 
@@ -184,7 +187,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       provider,
       connection,
       to: params.to,
-      value: params.value as number
+      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
     })
 
     const result = await provider.sendTransaction(transaction, connection)
@@ -224,7 +227,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const rpcUrl =
       params.rpcUrl ||
-      this.caipNetworks?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
+      this.getCaipNetworks()?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
 
     if (!rpcUrl) {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
@@ -236,6 +239,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     this.listenProviderEvents(connector)
 
     SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+
+    this.emit('accountChanged', {
+      address,
+      chainId: params.chainId as string
+    })
 
     return {
       id: connector.id,
@@ -249,22 +257,58 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const address = params.address
+    const caipNetwork = this.getCaipNetworks()?.find(network => network.id === params.chainId)
+
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'SOL' })
+    }
+
     const connection = new Connection(
-      params.caipNetwork?.rpcUrls?.default?.http?.[0] as string,
+      caipNetwork?.rpcUrls?.default?.http?.[0] as string,
       this.connectionSettings
     )
 
-    const balance = await connection.getBalance(new PublicKey(params.address))
-    const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
-
-    if (!params.caipNetwork) {
-      throw new Error('caipNetwork is required')
+    const caipAddress = `${caipNetwork?.caipNetworkId}:${params.address}`
+    const cachedPromise = this.balancePromises[caipAddress]
+    if (cachedPromise) {
+      return cachedPromise
     }
-
-    return {
-      balance: formattedBalance,
-      symbol: params.caipNetwork?.nativeCurrency.symbol
+    const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+    if (cachedBalance) {
+      return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
     }
+    this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+      async resolve => {
+        try {
+          const balance = await connection.getBalance(new PublicKey(address))
+          const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
+
+          StorageUtil.updateNativeBalanceCache({
+            caipAddress,
+            balance: formattedBalance,
+            symbol: params.caipNetwork?.nativeCurrency.symbol || 'SOL',
+            timestamp: Date.now()
+          })
+
+          if (!params.caipNetwork) {
+            throw new Error('caipNetwork is required')
+          }
+
+          resolve({
+            balance: formattedBalance,
+            symbol: params.caipNetwork?.nativeCurrency.symbol
+          })
+        } catch (error) {
+          resolve({ balance: '0.00', symbol: 'SOL' })
+        }
+      }
+    ).finally(() => {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete this.balancePromises[caipAddress]
+    })
+
+    return this.balancePromises[caipAddress] || { balance: '0.00', symbol: 'SOL' }
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
@@ -319,24 +363,26 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
   }
 
-  public async connectWalletConnect(onUri: (uri: string) => void): Promise<void> {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    const provider = connector?.provider as UniversalProvider
+  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    this.addConnector(
+      new SolanaWalletConnectProvider({
+        provider: universalProvider,
+        chains: this.getCaipNetworks(),
+        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+      })
+    )
+  }
 
-    if (!this.caipNetworks || !provider) {
-      throw new Error(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
-      )
-    }
+  public override async connectWalletConnect(chainId?: string | number) {
+    const result = await super.connectWalletConnect(chainId)
 
-    provider.on('display_uri', onUri)
-
-    const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
-    await provider.connect({ optionalNamespaces: namespaces })
-    const rpcUrl = this.caipNetworks[0]?.rpcUrls?.default?.http?.[0] as string
-    const connection = new Connection(rpcUrl, 'confirmed')
+    const rpcUrl = this.getCaipNetworks()?.find(n => n.id === chainId)?.rpcUrls.default
+      .http[0] as string
+    const connection = new Connection(rpcUrl, this.connectionSettings)
 
     SolStoreUtil.setConnection(connection)
+
+    return result
   }
 
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
@@ -345,13 +391,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
 
     await params.provider.disconnect()
-  }
-
-  public async getProfile(): Promise<AdapterBlueprint.GetProfileResult> {
-    return Promise.resolve({
-      profileName: undefined,
-      profileImage: undefined
-    })
   }
 
   public async syncConnection(
@@ -366,10 +405,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
-    const walletConnectProvider = new WalletConnectProvider({
+    const walletConnectProvider = new SolanaWalletConnectProvider({
       provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
-      getActiveChain: () => ChainController.state.activeCaipNetwork
+      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
 
     return walletConnectProvider as unknown as UniversalProvider

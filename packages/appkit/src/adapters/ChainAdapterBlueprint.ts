@@ -1,23 +1,28 @@
+import UniversalProvider from '@walletconnect/universal-provider'
+
 import {
-  ConstantsUtil as CommonConstantsUtil,
   type CaipAddress,
   type CaipNetwork,
-  type ChainNamespace
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
-import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
   AccountController,
-  type AccountType,
   type AccountControllerState,
+  type AccountType,
   type Connector as AppKitConnector,
+  ChainController,
   type Tokens,
   type WriteContractArgs
-} from '@reown/appkit-core'
-import UniversalProvider from '@walletconnect/universal-provider'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+
+import type { AppKitBaseClient } from '../client/appkit-base-client.js'
+import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import type { AppKitOptions } from '../utils/index.js'
-import type { AppKit } from '../client.js'
+import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
+
 type EventName =
   | 'disconnect'
   | 'accountChanged'
@@ -41,9 +46,9 @@ export abstract class AdapterBlueprint<
   Connector extends ChainAdapterConnector = ChainAdapterConnector
 > {
   public namespace: ChainNamespace | undefined
-  public caipNetworks?: CaipNetwork[]
   public projectId?: string
-
+  public adapterType: string | undefined
+  public getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   protected availableConnectors: Connector[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
@@ -55,6 +60,8 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
   constructor(params?: AdapterBlueprint.Params) {
+    this.getCaipNetworks = (namespace?: ChainNamespace) =>
+      ChainController.getCaipNetworks(namespace)
     if (params) {
       this.construct(params)
     }
@@ -65,9 +72,9 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
   construct(params: AdapterBlueprint.Params) {
-    this.caipNetworks = params.networks
     this.projectId = params.projectId
     this.namespace = params.namespace
+    this.adapterType = params.adapterType
   }
 
   /**
@@ -83,24 +90,14 @@ export abstract class AdapterBlueprint<
    * @returns {CaipNetwork[]} An array of supported networks
    */
   public get networks(): CaipNetwork[] {
-    return this.caipNetworks || []
+    return this.getCaipNetworks(this.namespace)
   }
 
   /**
    * Sets the universal provider for WalletConnect.
    * @param {UniversalProvider} universalProvider - The universal provider instance
    */
-  public setUniversalProvider(universalProvider: UniversalProvider) {
-    this.addConnector({
-      id: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      type: 'WALLET_CONNECT',
-      name: PresetsUtil.ConnectorNamesMap[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
-      provider: universalProvider,
-      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
-      chain: this.namespace,
-      chains: []
-    } as unknown as Connector)
-  }
+  public abstract setUniversalProvider(universalProvider: UniversalProvider): void
 
   /**
    * Sets the auth provider.
@@ -110,7 +107,7 @@ export abstract class AdapterBlueprint<
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
-      name: 'Auth',
+      name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
       provider: authProvider,
       imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
       chain: this.namespace,
@@ -192,13 +189,17 @@ export abstract class AdapterBlueprint<
 
   /**
    * Connects to WalletConnect.
-   * @param {(uri: string) => void} onUri - Callback function to handle the WalletConnect URI
-   * @param {number | string} [chainId] - Optional chain ID to connect to
+   * @param {number | string} [_chainId] - Optional chain ID to connect to
    */
-  public abstract connectWalletConnect(
-    onUri: (uri: string) => void,
-    chainId?: number | string
-  ): Promise<void>
+  public async connectWalletConnect(
+    _chainId?: number | string
+  ): Promise<undefined | { clientId: string }> {
+    const connector = this.getWalletConnectConnector()
+
+    const result = await connector.connectWalletConnect()
+
+    return { clientId: result.clientId }
+  }
 
   /**
    * Connects to a wallet.
@@ -239,9 +240,12 @@ export abstract class AdapterBlueprint<
 
     if (provider && providerType === 'AUTH') {
       const authProvider = provider as W3mFrameProvider
+      const preferredAccountType =
+        AccountController.state.preferredAccountTypes?.[caipNetwork.chainNamespace]
       await authProvider.switchNetwork(caipNetwork.caipNetworkId)
       const user = await authProvider.getUser({
-        chainId: caipNetwork.caipNetworkId
+        chainId: caipNetwork.caipNetworkId,
+        preferredAccountType
       })
 
       this.emit('switchNetwork', user)
@@ -263,20 +267,14 @@ export abstract class AdapterBlueprint<
   ): Promise<AdapterBlueprint.GetBalanceResult>
 
   /**
-   * Gets the profile for a given address and chain ID.
-   * @param {AdapterBlueprint.GetProfileParams} params - Profile retrieval parameters
-   * @returns {Promise<AdapterBlueprint.GetProfileResult>} Profile result
-   */
-  public abstract getProfile(
-    params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult>
-
-  /**
    * Synchronizes the connectors with the given options and AppKit instance.
    * @param {AppKitOptions} [options] - Optional AppKit options
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
-  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void
+  public abstract syncConnectors(
+    options?: AppKitOptions,
+    appKit?: AppKitBaseClient
+  ): void | Promise<void>
 
   /**
    * Synchronizes the connection with the given parameters.
@@ -324,15 +322,6 @@ export abstract class AdapterBlueprint<
   ): Promise<AdapterBlueprint.WriteContractResult>
 
   /**
-   * Gets the ENS address for a given name.
-   * @param {AdapterBlueprint.GetEnsAddressParams} params - Parameters including name
-   * @returns {Promise<AdapterBlueprint.GetEnsAddressResult>} Object containing the ENS address
-   */
-  public abstract getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult>
-
-  /**
    * Parses a decimal string value into a bigint with the specified number of decimals.
    * @param {AdapterBlueprint.ParseUnitsParams} params - Parameters including value and decimals
    * @returns {AdapterBlueprint.ParseUnitsResult} The parsed bigint value
@@ -374,6 +363,22 @@ export abstract class AdapterBlueprint<
   public abstract revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
+
+  public abstract walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse>
+
+  protected getWalletConnectConnector(): WalletConnectConnector {
+    const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
+      | WalletConnectConnector
+      | undefined
+
+    if (!connector) {
+      throw new Error('WalletConnectConnector not found')
+    }
+
+    return connector
+  }
 }
 
 export namespace AdapterBlueprint {
@@ -381,6 +386,7 @@ export namespace AdapterBlueprint {
     namespace?: ChainNamespace
     networks?: CaipNetwork[]
     projectId?: string
+    adapterType?: string
   }
 
   export type SwitchNetworkParams = {
@@ -390,15 +396,10 @@ export namespace AdapterBlueprint {
   }
 
   export type GetBalanceParams = {
-    address: string
-    chainId: number | string
+    address: string | undefined
+    chainId: number | string | undefined
     caipNetwork?: CaipNetwork
     tokens?: Tokens
-  }
-
-  export type GetProfileParams = {
-    address: string
-    chainId: number | string
   }
 
   export type DisconnectParams = {
@@ -441,6 +442,7 @@ export namespace AdapterBlueprint {
     data: string
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
+    value?: bigint | number
   }
 
   export type EstimateGasTransactionResult = {
@@ -491,12 +493,28 @@ export namespace AdapterBlueprint {
     address: `0x${string}`
   }
 
+  export type WalletGetAssetsParams = {
+    account: `0x${string}`
+    assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+    assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+    chainFilter?: `0x${string}`[]
+  }
+
+  export type WalletGetAssetsResponse = Record<
+    `0x${string}`,
+    {
+      address: `0x${string}` | 'native'
+      balance: `0x${string}`
+      type: 'NATIVE' | 'ERC20'
+      metadata: Record<string, unknown>
+    }[]
+  >
+
   export type SendTransactionParams = {
-    address: `0x${string}`
     to: string
-    data: string
     value: bigint | number
-    gasPrice: bigint | number
+    data?: string
+    gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
     provider?: AppKitConnector['provider']
@@ -506,23 +524,9 @@ export namespace AdapterBlueprint {
     hash: string
   }
 
-  export type GetEnsAddressParams = {
-    name: string
-    caipNetwork: CaipNetwork
-  }
-
-  export type GetEnsAddressResult = {
-    address: string | false
-  }
-
   export type GetBalanceResult = {
     balance: string
     symbol: string
-  }
-
-  export type GetProfileResult = {
-    profileImage?: string
-    profileName?: string
   }
 
   export type ConnectResult = {

@@ -1,16 +1,24 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+import { state } from 'lit/decorators.js'
+
+import type { Balance } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   RouterController,
   SendController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-list-token'
+import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-text'
 
-import { state } from 'lit/decorators.js'
-import type { Balance } from '@reown/appkit-common'
+import styles from './styles.js'
 
 @customElement('w3m-wallet-send-select-token-view')
 export class W3mSendSelectTokenView extends LitElement {
@@ -20,7 +28,7 @@ export class W3mSendSelectTokenView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private tokenBalances = SendController.state.tokenBalances
 
   @state() private tokens?: Balance[]
 
@@ -33,8 +41,8 @@ export class W3mSendSelectTokenView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          this.tokenBalance = val.tokenBalance
+        SendController.subscribe(val => {
+          this.tokenBalances = val.tokenBalances
         })
       ]
     )
@@ -70,11 +78,11 @@ export class W3mSendSelectTokenView extends LitElement {
   }
 
   private templateTokens() {
-    this.tokens = this.tokenBalance?.filter(
+    this.tokens = this.tokenBalances?.filter(
       token => token.chainId === ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (this.search) {
-      this.filteredTokens = this.tokenBalance?.filter(token =>
+      this.filteredTokens = this.tokenBalances?.filter(token =>
         token.name.toLowerCase().includes(this.search.toLowerCase())
       )
     } else {

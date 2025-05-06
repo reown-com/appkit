@@ -1,16 +1,38 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-
-import styles from './styles.js'
-import { OptionsController } from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { OptionsController, OptionsStateController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
+import '../../partials/w3m-social-login-list/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-connect-socials-view')
 export class W3mConnectSocialsView extends LitElement {
   public static override styles = styles
 
-  @state() private checked = false
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
+  // -- State & Properties -------------------------------- //
+  @state() private checked = OptionsStateController.state.isLegalCheckboxChecked
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => {
+        this.checked = val
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -26,7 +48,7 @@ export class W3mConnectSocialsView extends LitElement {
     const tabIndex = disabled ? -1 : undefined
 
     return html`
-      <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
+      <w3m-legal-checkbox></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
         .padding=${showLegalCheckbox ? ['0', 's', 's', 's'] : 's'}
@@ -37,11 +59,6 @@ export class W3mConnectSocialsView extends LitElement {
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
-  }
-
-  // -- Private Methods ----------------------------------- //
-  private onCheckboxChange(event: CustomEvent<string>) {
-    this.checked = Boolean(event.detail)
   }
 }
 

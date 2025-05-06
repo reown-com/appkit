@@ -1,9 +1,9 @@
 import {
-  createAppKit,
   WagmiAdapter,
+  createAppKit,
   networks
-} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.6.2/dist/appkit.js'
-import { reconnect } from 'https://esm.sh/@wagmi/core@2.x'
+} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.7.0/dist/appkit.js'
+import { reconnect, watchConnectors } from 'https://esm.sh/@wagmi/core@2.x'
 
 // Get projectId
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
@@ -33,7 +33,13 @@ const modal = createAppKit({
   }
 })
 
-reconnect(wagmiAdapter.wagmiConfig)
+watchConnectors(wagmiAdapter.wagmiConfig, {
+  onChange(connectors) {
+    if (connectors.length > 4) {
+      reconnect(wagmiAdapter.wagmiConfig)
+    }
+  }
+})
 
 // State objects
 let accountState = {}
@@ -125,6 +131,19 @@ document.getElementById('disconnect')?.addEventListener('click', () => {
 document.getElementById('switch-to-ethereum')?.addEventListener('click', () => {
   modal.switchNetwork(networks.mainnet)
 })
+
+async function signMessage() {
+  if (eip155Provider && accountState.address) {
+    try {
+      await eip155Provider.request({
+        method: 'personal_sign',
+        params: ['Hello from AppKit!', accountState.address]
+      })
+    } catch (error) {
+      console.error('Error signing message:', error)
+    }
+  }
+}
 
 // Set initial theme and UI state
 updateTheme(themeState.themeMode)

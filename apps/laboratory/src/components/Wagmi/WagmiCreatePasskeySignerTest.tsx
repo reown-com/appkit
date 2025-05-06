@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
+
 import { Button, Stack } from '@chakra-ui/react'
 import { privateKeyToAccount } from 'viem/accounts'
-import { useChakraToast } from '../Toast'
-import { LOCAL_SIGNER_KEY, getLocalStorageItem } from '../../utils/LocalStorage'
 import { createCredential } from 'webauthn-p256'
-import { usePasskey } from '../../context/PasskeyContext'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { usePasskey } from '@/src/context/PasskeyContext'
+import { LOCAL_SIGNER_KEY, getLocalStorageItem } from '@/src/utils/LocalStorage'
 
 export function WagmiCreatePasskeySignerTest() {
   const { isPasskeyAvailable, setPasskey, passkeyId } = usePasskey()

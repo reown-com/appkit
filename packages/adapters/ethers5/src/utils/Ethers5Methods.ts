@@ -1,13 +1,12 @@
 /* eslint-disable max-params */
-import { ethers, Contract } from 'ethers'
-import { type Provider } from '@reown/appkit-utils/ethers'
+import { Contract, ethers } from 'ethers'
+
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@reown/appkit-core'
-import { isReownName, type CaipNetwork } from '@reown/appkit-common'
-import { WcHelpersUtil } from '@reown/appkit'
+} from '@reown/appkit-controllers'
+import { type Provider } from '@reown/appkit-utils/ethers'
 
 export const Ethers5Methods = {
   signMessage: async (message: string, provider: Provider, address: string) => {
@@ -111,38 +110,6 @@ export const Ethers5Methods = {
     throw new Error('Contract method is undefined')
   },
 
-  getEnsAddress: async (value: string, caipNetwork: CaipNetwork) => {
-    try {
-      const chainId = Number(caipNetwork.id)
-      let ensName: string | null = null
-      let wcName: boolean | string = false
-
-      if (isReownName(value)) {
-        wcName = (await WcHelpersUtil.resolveReownName(value)) || false
-      }
-
-      if (chainId === 1) {
-        const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-        ensName = await ensProvider.resolveName(value)
-      }
-
-      return ensName || wcName || false
-    } catch {
-      return false
-    }
-  },
-
-  getEnsAvatar: async (value: string, chainId: number) => {
-    if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-      const avatar = await ensProvider.getAvatar(value)
-
-      return avatar || false
-    }
-
-    return false
-  },
-
   parseWalletCapabilities: (str: string) => {
     try {
       return JSON.parse(str)
@@ -151,6 +118,8 @@ export const Ethers5Methods = {
     }
   },
 
-  parseUnits: (value: string, _: number) => ethers.utils.parseUnits(value, 'gwei').toBigInt(),
+  parseUnits: (value: string, decimals: number) =>
+    ethers.utils.parseUnits(value, decimals).toBigInt(),
+
   formatUnits: ethers.utils.formatUnits
 }

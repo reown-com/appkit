@@ -1,4 +1,5 @@
 import { Mailsac } from '@mailsac/api'
+
 const EMAIL_CHECK_INTERVAL = 2500
 const MAX_EMAIL_CHECK = 96
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
@@ -9,7 +10,9 @@ const EMAIL_DOMAIN = 'web3modal.msdc.co'
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   private readonly mailsac: Mailsac<any>
-  constructor(public readonly apiKey: string) {
+  public readonly apiKey: string
+  constructor(apiKey: string) {
+    this.apiKey = apiKey
     this.mailsac = new Mailsac({ headers: { 'Mailsac-Key': apiKey } })
   }
 

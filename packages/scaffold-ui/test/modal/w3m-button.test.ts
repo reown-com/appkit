@@ -1,14 +1,16 @@
 import { fixture, html } from '@open-wc/testing'
-import { vi, describe, it, beforeEach, afterEach, expect } from 'vitest'
-import { W3mButton } from '../../src/modal/w3m-button'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
   ChainController,
-  ModalController,
   type ChainControllerState,
+  ModalController,
   type ModalControllerState
-} from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
+} from '@reown/appkit-controllers'
+
 import type { W3mAccountButton } from '../../exports'
+import { W3mButton } from '../../src/modal/w3m-button'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mButton', () => {
   beforeEach(() => {
@@ -98,12 +100,9 @@ describe('W3mButton', () => {
 
   it('unsubscribe from state changes on disconnect', async () => {
     const mockUnsubscribeChain = vi.fn()
-    const mockUnsubscribeModal = vi.fn()
     vi.spyOn(ChainController, 'subscribeKey').mockReturnValue(mockUnsubscribeChain)
-    vi.spyOn(ModalController, 'subscribeKey').mockReturnValue(mockUnsubscribeModal)
     const element: W3mButton = await fixture(html`<appkit-button></appkit-button>`)
     element.disconnectedCallback()
     expect(mockUnsubscribeChain).toHaveBeenCalled()
-    expect(mockUnsubscribeModal).toHaveBeenCalled()
   })
 })

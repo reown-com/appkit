@@ -1,13 +1,21 @@
+import { useCallback, useMemo, useState } from 'react'
+
 import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
+import { encodeFunctionData, parseEther } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback, useMemo, useState } from 'react'
-import { useChakraToast } from '../Toast'
-import { encodeFunctionData, parseEther } from 'viem'
-import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
-import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
+
 import { useAppKitAccount } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
+import {
+  abi as donutContractAbi,
+  donutContractSupportedChains,
+  donutContractSupportedChainsName,
+  address as donutContractaddress
+} from '@/src/utils/DonutContract'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
 const purchaseDonutCallData = encodeFunctionData({
   abi: donutContractAbi,
@@ -17,7 +25,7 @@ const purchaseDonutCallData = encodeFunctionData({
 
 const TEST_TX = {
   to: donutContractaddress as `0x${string}`,
-  value: parseEther('0.0001'),
+  value: parseEther('0.00001'),
   data: purchaseDonutCallData
 }
 
@@ -35,16 +43,33 @@ const BICONOMY_PAYMASTER_CONTEXT = {
 }
 
 export function WagmiSendCallsWithPaymasterServiceTest() {
-  const { provider, supportedChains, supportedChainsName, currentChainsInfo, supported } =
-    useWagmiAvailableCapabilities({
-      capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-      method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-    })
+  const {
+    provider,
+    supportedChains: capabilitySupportedChains,
+    currentChainsInfo,
+    supported
+  } = useWagmiAvailableCapabilities({
+    capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
+    method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+  })
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'
+  const isFeatureSupported = useMemo(
+    () =>
+      currentChainsInfo &&
+      donutContractSupportedChains.some(chain => chain.id === currentChainsInfo.chainId),
+    [currentChainsInfo]
+  )
+
+  const doWalletSupportCapability = useMemo(
+    () =>
+      currentChainsInfo &&
+      capabilitySupportedChains.some(chain => chain.chainId === currentChainsInfo.chainId),
+    [capabilitySupportedChains]
+  )
 
   if (!isConnected || !provider || !address) {
     return (
@@ -62,18 +87,18 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     )
   }
 
-  if (supportedChains.length === 0) {
+  if (!isFeatureSupported) {
     return (
       <Text fontSize="md" color="yellow">
-        Account does not support paymaster service feature
+        Switch to {donutContractSupportedChainsName} to test this feature
       </Text>
     )
   }
 
-  if (!currentChainsInfo) {
+  if (!doWalletSupportCapability) {
     return (
       <Text fontSize="md" color="yellow">
-        Switch to {supportedChainsName} to test this feature
+        Account does not support paymaster service feature on {currentChainsInfo?.chainName}
       </Text>
     )
   }
@@ -149,7 +174,7 @@ function AvailableTestContent() {
     <Stack direction={['column', 'column', 'column']}>
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
-          placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
+          placeholder="https://paymaster-api.reown.com/11155111/rpc?projectId=..."
           onChange={e => onPaymasterUrlChange(e.target.value)}
           value={paymasterServiceUrl}
           isDisabled={isLoading}

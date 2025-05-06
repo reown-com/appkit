@@ -1,7 +1,9 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+
+import { AccountController, OptionsController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
-import { AccountController, OptionsController } from '@reown/appkit-core'
 
 @customElement('w3m-connecting-siwe')
 export class W3mConnectingSiwe extends LitElement {
@@ -16,10 +18,10 @@ export class W3mConnectingSiwe extends LitElement {
     const visuals = this.shadowRoot?.querySelectorAll('wui-visual-thumbnail')
 
     if (visuals?.[0]) {
-      this.createAnimation(visuals[0], 'translate(18px)')
+      this.createAnimation(visuals[0] as HTMLElement, 'translate(18px)')
     }
     if (visuals?.[1]) {
-      this.createAnimation(visuals[1], 'translate(-18px)')
+      this.createAnimation(visuals[1] as HTMLElement, 'translate(-18px)')
     }
   }
 

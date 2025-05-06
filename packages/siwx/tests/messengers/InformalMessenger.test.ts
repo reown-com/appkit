@@ -1,5 +1,7 @@
-import { describe, test, expect, beforeAll, vi, afterAll } from 'vitest'
-import { type SIWXMessage } from '@reown/appkit-core'
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest'
+
+import { type SIWXMessage } from '@reown/appkit-controllers'
+
 import { InformalMessenger } from '../../src/index.js'
 
 type Case = {

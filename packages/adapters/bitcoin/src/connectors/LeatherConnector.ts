@@ -1,12 +1,14 @@
-import type { BitcoinConnector } from '../index.js'
-import { SatsConnectConnector } from './SatsConnectConnector.js'
 import type {
   SendTransferRequestParams,
   SendTransferResponseBody,
   SignPsbtRequestParams,
   SignPsbtResponseBody
 } from '@leather.io/rpc'
+
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+
+import type { BitcoinConnector } from '../index.js'
+import { SatsConnectConnector } from './SatsConnectConnector.js'
 
 export class LeatherConnector extends SatsConnectConnector {
   static readonly ProviderId = 'LeatherProvider'
@@ -23,6 +25,10 @@ export class LeatherConnector extends SatsConnectConnector {
       requestedChains: connector.requestedChains,
       getActiveNetwork: connector.getActiveNetwork
     })
+  }
+
+  public override get imageUrl() {
+    return this.wallet?.icon?.replace('data:image/svg', 'data:image/svg+xml')
   }
 
   override async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {

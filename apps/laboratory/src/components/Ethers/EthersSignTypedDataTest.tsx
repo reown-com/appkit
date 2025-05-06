@@ -1,8 +1,10 @@
 import { Button } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitProvider, type Provider } from '@reown/appkit/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import type { TypedDataField } from 'ethers'
-import { useChakraToast } from '../Toast'
+
+import { type Provider, useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
 
 const types: Record<string, TypedDataField[]> = {
   Person: [
@@ -30,7 +32,7 @@ const message = {
 
 export function EthersSignTypedDataTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignTypedData() {

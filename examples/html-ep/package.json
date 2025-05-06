@@ -1,0 +1,15 @@
+{
+  "name": "@examples/html-ep",
+  "private": true,
+  "version": "1.2.0",
+  "scripts": {
+    "dev": "vite --port 3011",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@walletconnect/ethereum-provider": "2.19.0-canary-ak-4"
+  },
+  "devDependencies": {
+    "vite": "5.4.12"
+  }
+}

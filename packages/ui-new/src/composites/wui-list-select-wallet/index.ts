@@ -1,11 +1,12 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
+
 import '../../components/wui-image/index.js'
-import '../wui-icon-box/index.js'
-import '../wui-tag/index.js'
+import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-icon-box/index.js'
+import '../wui-tag/index.js'
 import styles from './styles.js'
 
 @customElement('wui-list-select-wallet')
@@ -28,7 +29,7 @@ export class WuiListSelectWallet extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         ${this.leftImageTemplate()}
         <wui-text color="primary" variant="lg-regular" lineClamp="1">${this.name}</wui-text>
         <wui-tag variant=${this.allWallets ? 'info' : 'accent'} size="sm">${this.tagLabel}</wui-tag>

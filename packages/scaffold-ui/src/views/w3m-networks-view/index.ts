@@ -1,18 +1,26 @@
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  RouterController,
-  StorageUtil
-} from '@reown/appkit-core'
+  RouterController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-list-network'
+import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-text'
+
 import styles from './styles.js'
 
 @customElement('w3m-networks-view')
@@ -24,7 +32,7 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public network = ChainController.state.activeCaipNetwork
 
-  @state() public requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+  @state() public requestedCaipNetworks = ChainController.getCaipNetworks()
 
   @state() private filteredNetworks?: CaipNetwork[]
 
@@ -34,11 +42,11 @@ export class W3mNetworksView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
+      AssetController.subscribeNetworkImages(() => this.requestUpdate()),
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
-      ChainController.subscribeKey(
-        'chains',
-        () => (this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks())
-      )
+      ChainController.subscribe(() => {
+        this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+      })
     )
   }
 
@@ -102,17 +110,16 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
-      requestedCaipNetworks
+      this.requestedCaipNetworks
     )
 
     if (this.search) {
-      this.filteredNetworks = sortedNetworks?.filter(
-        network => network?.name?.toLowerCase().includes(this.search.toLowerCase())
+      this.filteredNetworks = sortedNetworks?.filter(network =>
+        network?.name?.toLowerCase().includes(this.search.toLowerCase())
       )
     } else {
       this.filteredNetworks = sortedNetworks
@@ -135,15 +142,15 @@ export class W3mNetworksView extends LitElement {
 
   private getNetworkDisabled(network: CaipNetwork) {
     const networkNamespace = network.chainNamespace
-    const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
+    const isNextNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
-    const connectorId = StorageUtil.getConnectedConnectorId(networkNamespace)
+    const connectorId = ConnectorController.getConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
-    if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
+    if (!isNextNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
       return false
     }
 
@@ -159,25 +166,39 @@ export class W3mNetworksView extends LitElement {
     }
 
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
-    const isNewNetworkConnected = ChainController.getAccountProp(
-      'caipAddress',
-      network.chainNamespace
-    )
-    const isCurrentNetworkConnected = AccountController.state.caipAddress
-    const isAuthConnected = Boolean(ConnectorController.getAuthConnector())
+    const isCurrentNamespaceConnected = AccountController.state.caipAddress
+    const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
 
-    if (
-      isDifferentNamespace &&
-      isCurrentNetworkConnected &&
-      !isNewNetworkConnected &&
-      !isAuthConnected
-    ) {
-      RouterController.push('SwitchActiveChain', {
-        switchToChain: network.chainNamespace,
-        navigateTo: 'Connect',
-        navigateWithReplace: true,
-        network
-      })
+    /**
+     * If the network is supported by the auth connector, we don't need to show switch active chain view.
+     * But there are some cases like switching from Ethereum to Bitcoin where Bitcoin is not supported by the auth connector and users should connect with another connector.
+     */
+    const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+    const isSupportedForAuthConnector = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
+      c => c === network.chainNamespace
+    )
+
+    if (isCurrentNamespaceConnected) {
+      if (isConnectedWithAuth && isSupportedForAuthConnector) {
+        // If user connected with auth connector and the next network is supported by the auth connector, we don't need to show switch active chain view.
+        RouterController.push('SwitchNetwork', { ...routerData, network })
+      } else if (
+        // 1. If user connected with auth connector and the next network is not supported by the auth connector, we need to show switch active chain view.
+        (isConnectedWithAuth && !isSupportedForAuthConnector) ||
+        // 2. If user connected with non-auth connector, we should check if user switching to a different namespace and next namespace is not connected.
+        (isDifferentNamespace && !isNextNamespaceConnected)
+      ) {
+        RouterController.push('SwitchActiveChain', {
+          switchToChain: network.chainNamespace,
+          navigateTo: 'Connect',
+          navigateWithReplace: true,
+          network
+        })
+      } else {
+        // For any other case, we redirect to switch network page
+        RouterController.push('SwitchNetwork', { ...routerData, network })
+      }
     } else {
       RouterController.push('SwitchNetwork', { ...routerData, network })
     }

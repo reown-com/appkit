@@ -1,17 +1,27 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import styles from './styles.js'
-import { createRef, ref, type Ref } from 'lit/directives/ref.js'
+import { type Ref, createRef, ref } from 'lit/directives/ref.js'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
+  AccountController,
+  ChainController,
   CoreHelperUtil,
-  SnackController,
   EnsController,
   EventsController,
-  AccountController
-} from '@reown/appkit-core'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ConstantsUtil } from '@reown/appkit-common'
+  SnackController
+} from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-ens-input'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-tag'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import styles from './styles.js'
 
 @customElement('w3m-register-account-name-view')
 export class W3mRegisterAccountNameView extends LitElement {
@@ -192,6 +202,7 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private async onSubmitName() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     try {
       if (!this.isAllowedToSubmit()) {
         return
@@ -202,7 +213,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName
         }
@@ -213,7 +224,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName
         }
@@ -225,7 +236,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_ERROR',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}`,
           error: (error as Error)?.message || 'Unknown error'

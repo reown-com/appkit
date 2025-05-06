@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   ConnectionController,
@@ -9,12 +13,20 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-logo'
+import '@reown/appkit-ui/wui-qr-code'
+import '@reown/appkit-ui/wui-shimmer'
+import '@reown/appkit-ui/wui-text'
+
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-farcaster-view')
 export class W3mConnectingFarcasterView extends LitElement {

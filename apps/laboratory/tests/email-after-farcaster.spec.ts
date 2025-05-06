@@ -1,10 +1,12 @@
-import { expect, test, type BrowserContext, type Page } from '@playwright/test'
-import { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { Email } from './shared/utils/email'
-import { SECURE_WEBSITE_URL } from './shared/constants'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import { type BrowserContext, type Page, expect, test } from '@playwright/test'
+
 import type { CaipNetworkId } from '@reown/appkit'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+
+import { SECURE_WEBSITE_URL } from './shared/constants'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { Email } from './shared/utils/email'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -25,7 +27,6 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
   emailTestAfterFarcaster.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
@@ -42,7 +43,7 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
   await page.abortLoginWithFarcaster()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
 })
@@ -53,7 +54,7 @@ emailTestAfterFarcaster.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 emailTestAfterFarcaster('it should sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
@@ -66,7 +67,7 @@ emailTestAfterFarcaster('it should upgrade wallet after abort login with farcast
 })
 
 emailTestAfterFarcaster('it should reject sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.rejectSign()
   await validator.expectRejectedSign()
 })
@@ -82,7 +83,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
 
@@ -93,7 +94,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
   }
@@ -112,7 +113,11 @@ emailTestAfterFarcaster(
   'it should show loading on page refresh after abort login with farcaster',
   async () => {
     await page.page.reload()
-    await validator.expectConnectButtonLoading()
+    /*
+     * Disable loading animation check as reload happens before the page is loaded
+     * TODO: figure out how to validate the loader before the page is loaded
+     * await validator.expectConnectButtonLoading()
+     */
     await validator.expectAccountButtonReady()
   }
 )
@@ -120,17 +125,19 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should show snackbar error if failed to fetch token balance after abort login with farcaster',
   async () => {
+    // Clear cache and set offline to simulate token balance fetch failure
+    await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
     await page.page.context().setOffline(true)
     await page.openAccount()
     await validator.expectSnackbar('Token Balance Unavailable')
     await page.closeModal()
+    await page.page.context().setOffline(false)
   }
 )
 
 emailTestAfterFarcaster(
   'it should disconnect correctly after abort login with farcaster',
   async () => {
-    await page.page.context().setOffline(false)
     await page.goToSettings()
     await page.disconnect()
     await validator.expectDisconnected()
@@ -138,11 +145,12 @@ emailTestAfterFarcaster(
 )
 
 emailTestAfterFarcaster(
-  'it should abort request if it takes more than 30 seconds after abort login with farcaster',
+  'it should abort embedded wallet flow if it takes more than 20 seconds after abort login with farcaster',
   async () => {
     await page.page.context().setOffline(true)
     await page.loginWithEmail(tempEmail, false)
-    await page.page.waitForTimeout(30_000)
-    await validator.expectSnackbar('Something went wrong')
+    await page.page.waitForTimeout(20_000)
+    await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
+    await page.page.context().setOffline(false)
   }
 )

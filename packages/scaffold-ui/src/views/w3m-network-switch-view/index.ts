@@ -1,15 +1,23 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  RouterController,
-  StorageUtil
-} from '@reown/appkit-core'
+  RouterController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-loading-hexagon'
+import '@reown/appkit-ui/wui-network-image'
+import '@reown/appkit-ui/wui-text'
+
 import styles from './styles.js'
 
 @customElement('w3m-network-switch-view')
@@ -97,7 +105,7 @@ export class W3mNetworkSwitchView extends LitElement {
   // -- Private ------------------------------------------- //
   private getSubLabel() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return ''
@@ -110,7 +118,7 @@ export class W3mNetworkSwitchView extends LitElement {
 
   private getLabel() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`
@@ -133,6 +141,9 @@ export class W3mNetworkSwitchView extends LitElement {
   private async onSwitchNetwork() {
     try {
       this.error = false
+      if (ChainController.state.activeChain !== this.network?.chainNamespace) {
+        ChainController.setIsSwitchingNamespace(true)
+      }
       if (this.network) {
         await ChainController.switchActiveNetwork(this.network)
       }

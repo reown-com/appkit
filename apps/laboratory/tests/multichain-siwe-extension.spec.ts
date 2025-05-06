@@ -1,6 +1,6 @@
+import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { extensionFixture } from './shared/fixtures/extension-fixture'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -16,11 +16,16 @@ const PATH_FOR_LIBRARIES = {
 // -- Helpers ------------------------------------------------------------------
 async function switchNetworkAndMaybeSignSiwe(network: string, siwe = true) {
   await modalPage.switchNetwork(network)
+  if (network === 'Solana') {
+    await modalPage.switchActiveChain()
+    modalPage.closeModal()
+  }
   await modalValidator.expectOnSignOutEventCalled(true)
   if (siwe) {
     await modalPage.promptSiwe()
     await modalValidator.expectOnSignOutEventCalled(true)
   }
+
   await modalValidator.expectNetworkButton(network)
 }
 
@@ -33,7 +38,6 @@ extensionTest.describe.configure({ mode: 'serial' })
 
 extensionTest.beforeAll(async ({ context, library }) => {
   const browserPage = await context.newPage()
-
   const path = PATH_FOR_LIBRARIES[library as keyof typeof PATH_FOR_LIBRARIES]
 
   if (!path) {
@@ -79,7 +83,7 @@ extensionTest('it should switch networks and sign siwe', async () => {
 })
 
 extensionTest('it should reload the page and sign siwe if not authenticated', async () => {
-  await modalPage.connectToExtensionMultichain('eip155')
+  await modalPage.connectToExtensionMultichain('eip155', false, true)
   await modalValidator.expectConnected()
   await modalPage.page.reload()
   await modalValidator.expectConnected()

@@ -1,15 +1,23 @@
-import {
-  OnRampController,
-  ModalController,
-  AssetController,
-  OptionsController
-} from '@reown/appkit-core'
-import type { PaymentCurrency } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import {
+  AssetController,
+  ModalController,
+  OnRampController,
+  OptionsController,
+  OptionsStateController
+} from '@reown/appkit-controllers'
+import type { PaymentCurrency } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-text'
+
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-onramp-fiat-select-view')
 export class W3mOnrampFiatSelectView extends LitElement {
@@ -22,7 +30,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
   @state() public selectedCurrency = OnRampController.state.paymentCurrency
   @state() public currencies = OnRampController.state.paymentCurrencies
   @state() private currencyImages = AssetController.state.currencyImages
-  @state() private checked = false
+  @state() private checked = OptionsStateController.state.isLegalCheckboxChecked
 
   public constructor() {
     super()
@@ -32,7 +40,10 @@ export class W3mOnrampFiatSelectView extends LitElement {
           this.selectedCurrency = val.paymentCurrency
           this.currencies = val.paymentCurrencies
         }),
-        AssetController.subscribeKey('currencyImages', val => (this.currencyImages = val))
+        AssetController.subscribeKey('currencyImages', val => (this.currencyImages = val)),
+        OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => {
+          this.checked = val
+        })
       ]
     )
   }
@@ -53,7 +64,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
     const disabled = showLegalCheckbox && !this.checked
 
     return html`
-      <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
+      <w3m-legal-checkbox></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
         .padding=${['0', 's', 's', 's']}
@@ -89,11 +100,6 @@ export class W3mOnrampFiatSelectView extends LitElement {
 
     OnRampController.setPaymentCurrency(currency)
     ModalController.close()
-  }
-
-  // -- Private Methods ----------------------------------- //
-  private onCheckboxChange(event: CustomEvent<string>) {
-    this.checked = Boolean(event.detail)
   }
 }
 

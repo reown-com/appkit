@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetUtil,
   ConnectionController,
@@ -5,11 +9,18 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type { IconType } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
+
+import '../../partials/w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 export class W3mConnectingWidget extends LitElement {
@@ -56,6 +67,8 @@ export class W3mConnectingWidget extends LitElement {
 
   @state() public buffering = false
 
+  @state() protected isLoading = false
+
   @property({ type: Boolean }) public isMobile = false
 
   @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
@@ -76,7 +89,11 @@ export class W3mConnectingWidget extends LitElement {
       ]
     )
     // The uri should be preloaded in the tg ios context so we can safely init as the subscribeKey won't trigger
-    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos() && ConnectionController.state.wcUri) {
+    if (
+      (CoreHelperUtil.isTelegram() || CoreHelperUtil.isSafari()) &&
+      CoreHelperUtil.isIos() &&
+      ConnectionController.state.wcUri
+    ) {
       this.onConnect?.()
     }
   }
@@ -147,7 +164,7 @@ export class W3mConnectingWidget extends LitElement {
               <wui-button
                 variant="accent"
                 size="md"
-                ?disabled=${this.isRetrying || (!this.error && this.buffering)}
+                ?disabled=${this.isRetrying || (!this.error && this.buffering) || this.isLoading}
                 @click=${this.onTryAgain.bind(this)}
                 data-testid="w3m-connecting-widget-secondary-button"
               >
@@ -185,7 +202,7 @@ export class W3mConnectingWidget extends LitElement {
     }
   }
 
-  private onTryAgain() {
+  protected onTryAgain() {
     if (!this.buffering) {
       ConnectionController.setWcError(false)
       if (this.onRetry) {

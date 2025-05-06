@@ -1,8 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
+
+import { ConstantsUtil } from '@reown/appkit-common'
+import { AccountController, type PreferredAccountTypes } from '@reown/appkit-controllers'
+
 import { AuthProvider } from '../providers/AuthProvider'
-import { TestConstants } from './util/TestConstants'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
+import { TestConstants } from './util/TestConstants'
 
 describe('AuthProvider specific tests', () => {
   let provider = mockW3mFrameProvider()
@@ -23,10 +27,38 @@ describe('AuthProvider specific tests', () => {
     })
   })
 
+  it('should have correct metadata', () => {
+    expect(authProvider).toEqual(
+      expect.objectContaining({
+        id: ConstantsUtil.CONNECTOR_ID.AUTH,
+        name: ConstantsUtil.CONNECTOR_NAMES.AUTH,
+        type: 'AUTH',
+        chain: ConstantsUtil.CHAIN.SOLANA,
+        provider
+      })
+    )
+  })
+
   it('should call connect', async () => {
     await authProvider.connect()
 
     expect(provider.connect).toHaveBeenCalled()
+  })
+
+  it('should respect preferred account type on connect', async () => {
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      preferredAccountTypes: {
+        solana: 'eoa'
+      } as PreferredAccountTypes
+    })
+
+    await authProvider.connect()
+
+    expect(provider.connect).toHaveBeenCalledWith({
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      preferredAccountType: 'eoa'
+    })
   })
 
   it('should call disconnect', async () => {

@@ -1,9 +1,13 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
+import { BitcoinNetworkType } from 'sats-connect'
+import type { AddressPurpose, AddressType } from 'sats-connect'
+import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
+import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+
+import { LeatherConnector } from '../../src/connectors/LeatherConnector'
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { LeatherConnector } from '../../src/connectors/LeatherConnector'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 describe('LeatherConnector', () => {
   let satsConnectConnector: SatsConnectConnector
@@ -118,13 +122,20 @@ describe('LeatherConnector', () => {
         addresses: [
           {
             address: 'mock_address',
-            purpose: 'receive',
-            addressType: 'p2pkh',
+            purpose: 'payment' as AddressPurpose,
+            addressType: 'p2pkh' as AddressType,
             gaiaAppKey: 'mock_gaia_app_key',
             gaiaHubUrl: 'mock_gaia_hub_url',
-            publicKey: 'mock_public_key'
+            publicKey: 'mock_public_key',
+            walletType: 'software'
           }
-        ]
+        ],
+        network: {
+          name: 'Bitcoin',
+          stacks: { name: BitcoinNetworkType.Mainnet },
+          bitcoin: { name: BitcoinNetworkType.Mainnet }
+        },
+        walletType: 'software'
       })
     )
 
@@ -143,13 +154,20 @@ describe('LeatherConnector', () => {
         addresses: [
           {
             address: 'mock_address',
-            purpose: 'receive',
-            addressType: 'p2pkh',
+            purpose: 'payment' as AddressPurpose,
+            addressType: 'p2pkh' as AddressType,
             gaiaAppKey: 'mock_gaia_app_key',
             gaiaHubUrl: 'mock_gaia_hub_url',
-            publicKey: 'mock_public_key'
+            publicKey: 'mock_public_key',
+            walletType: 'software'
           }
-        ]
+        ],
+        network: {
+          name: 'Bitcoin',
+          stacks: { name: BitcoinNetworkType.Mainnet },
+          bitcoin: { name: BitcoinNetworkType.Mainnet }
+        },
+        walletType: 'software'
       })
     )
 
@@ -161,13 +179,20 @@ describe('LeatherConnector', () => {
         addresses: [
           {
             address: 'mock_address_2',
-            purpose: 'receive',
-            addressType: 'p2pkh',
+            purpose: 'payment' as AddressPurpose,
+            addressType: 'p2pkh' as AddressType,
             gaiaAppKey: 'mock_gaia_app_key',
             gaiaHubUrl: 'mock_gaia_hub_url',
-            publicKey: 'mock_public_key'
+            publicKey: 'mock_public_key',
+            walletType: 'software'
           }
-        ]
+        ],
+        network: {
+          name: 'Bitcoin',
+          stacks: { name: BitcoinNetworkType.Mainnet },
+          bitcoin: { name: BitcoinNetworkType.Mainnet }
+        },
+        walletType: 'software'
       })
     )
     const addressesSecondCall = await connector.getAccountAddresses()
@@ -176,5 +201,13 @@ describe('LeatherConnector', () => {
     expect(addressesFirstCall).not.toBe(addressesSecondCall)
 
     requestSpy.mockRestore()
+  })
+
+  it('should replace image/svg with image/svg+xml', () => {
+    const connector = new LeatherConnector({
+      connector: satsConnectConnector
+    })
+
+    expect(connector.imageUrl).toBe('data:image/svg+xml;')
   })
 })

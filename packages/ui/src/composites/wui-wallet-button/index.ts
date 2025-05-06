@@ -1,13 +1,15 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
+import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import '../../components/wui-text/index.js'
 import '../../components/wui-loading-spinner/index.js'
+import '../../components/wui-text/index.js'
 import '../../composites/wui-icon-box/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import type { IconType } from '../../utils/TypeUtil.js'
 
 @customElement('wui-wallet-button')
 export class WuiWalletButton extends LitElement {
@@ -20,7 +22,9 @@ export class WuiWalletButton extends LitElement {
 
   @property({ type: Boolean }) public walletConnect = false
 
-  @property({ type: Boolean }) public icon?: IconType
+  @property() public icon?: IconType
+
+  @property() public iconSize?: SizeType
 
   @property({ type: Boolean }) public loading = false
 
@@ -35,7 +39,7 @@ export class WuiWalletButton extends LitElement {
     this.dataset['error'] = `${this.error}`
 
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         ${this.leftViewTemplate()} ${this.rightViewTemplate()}
       </button>
     `
@@ -58,7 +62,11 @@ export class WuiWalletButton extends LitElement {
     }
 
     if (this.icon) {
-      return html`<wui-icon size="xl" color="inherit" name=${this.icon}></wui-icon>`
+      return html`<wui-icon
+        size=${this.iconSize ?? 'xl'}
+        color="inherit"
+        name=${this.icon}
+      ></wui-icon>`
     }
 
     if (this.imageSrc) {

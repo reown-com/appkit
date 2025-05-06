@@ -1,22 +1,24 @@
+import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import { PublicKey, type SendOptions, Transaction, VersionedTransaction } from '@solana/web3.js'
+import base58 from 'bs58'
+
+import type { CaipNetwork } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
+import { AccountController, type RequestArguments } from '@reown/appkit-controllers'
 import type {
   AnyTransaction,
   Connection,
   GetActiveChain,
   Provider as SolanaProvider
 } from '@reown/appkit-utils/solana'
-import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
-import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
-import base58 from 'bs58'
-import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-core'
+
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
+import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 
 export class AuthProvider extends ProviderEventEmitter implements SolanaProvider {
   public readonly id = ConstantsUtil.CONNECTOR_ID.AUTH
-  public readonly name = ConstantsUtil.CONNECTOR_ID.AUTH
+  public readonly name = ConstantsUtil.CONNECTOR_NAMES.AUTH
   public readonly type = 'AUTH'
   public readonly chain = ConstantsUtil.CHAIN.SOLANA
   public readonly provider: W3mFrameProvider
@@ -48,8 +50,12 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
   public async connect(params: { chainId?: string } = {}) {
     const chainId = params.chainId || this.getActiveChain()?.id
+
+    const preferredAccountType = AccountController.state.preferredAccountTypes?.solana
+
     await this.provider.connect({
-      chainId: withSolanaNamespace(chainId)
+      chainId: withSolanaNamespace(chainId),
+      preferredAccountType
     })
 
     if (!this.publicKey) {
@@ -168,7 +174,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
   // -- Private ------------------------------------------- //
   private serializeTransaction(transaction: AnyTransaction) {
-    return base58.encode(transaction.serialize({ verifySignatures: false }))
+    return base58.encode(new Uint8Array(transaction.serialize({ verifySignatures: false })))
   }
 }
 

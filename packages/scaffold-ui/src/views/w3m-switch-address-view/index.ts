@@ -1,19 +1,27 @@
-import {
-  AccountController,
-  BlockchainApiController,
-  ChainController,
-  ModalController,
-  OptionsController,
-  StorageUtil,
-  type AccountType
-} from '@reown/appkit-core'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  type AccountType,
+  BlockchainApiController,
+  ChainController,
+  ConnectorController,
+  ModalController,
+  OptionsController
+} from '@reown/appkit-controllers'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-banner-img'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-text'
+
+import styles from './styles.js'
 
 @customElement('w3m-switch-address-view')
 export class W3mSwitchAddressView extends LitElement {
@@ -83,7 +91,7 @@ export class W3mSwitchAddressView extends LitElement {
   private getAddressTemplate(account: AccountType, index: number) {
     const label = this.labels?.get(account.address)
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     // Only show icon for AUTH accounts
     const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 

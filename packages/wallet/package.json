@@ -1,13 +1,26 @@
 {
   "name": "@reown/appkit-wallet",
-  "version": "1.6.4",
+  "version": "1.7.4",
+  "sideEffects": false,
   "type": "module",
-  "main": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build",
@@ -17,9 +30,9 @@
     "test": "vitest run --dir tests"
   },
   "dependencies": {
-    "@walletconnect/logger": "2.1.2",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
+    "@walletconnect/logger": "2.1.2",
     "zod": "3.22.4"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
@@ -33,8 +46,20 @@
     "url": "https://github.com/reown-com/appkit/issues"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "2.1.9",
     "jsdom": "24.1.0",
-    "vitest": "2.1.3",
-    "@vitest/coverage-v8": "2.1.3"
-  }
+    "vitest": "2.1.9"
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

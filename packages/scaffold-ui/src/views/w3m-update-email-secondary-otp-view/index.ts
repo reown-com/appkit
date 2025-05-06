@@ -1,7 +1,8 @@
+import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn } from '../../utils/w3m-email-otp-widget/index.js'
-import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-core'
 
 @customElement('w3m-update-email-secondary-otp-view')
 export class W3mUpdateEmailSecondaryOtpView extends W3mEmailOtpWidget {
@@ -12,12 +13,17 @@ export class W3mUpdateEmailSecondaryOtpView extends W3mEmailOtpWidget {
   // --  Private ------------------------------------------ //
   override email = RouterController.state.data?.newEmail
 
+  private redirectView = RouterController.state.data?.redirectView
+
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.authConnector) {
         await this.authConnector.provider.updateEmailSecondaryOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        RouterController.reset('Account')
+
+        if (this.redirectView) {
+          RouterController.reset(this.redirectView)
+        }
       }
     } catch (error) {
       EventsController.sendEvent({

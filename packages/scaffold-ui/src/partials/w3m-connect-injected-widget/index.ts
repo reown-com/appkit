@@ -1,48 +1,27 @@
-import type { Connector } from '@reown/appkit-core'
-import {
-  ApiController,
-  AssetUtil,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  RouterController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { Connector, ConnectorWithProviders } from '@reown/appkit-controllers'
+import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
+
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 
 @customElement('w3m-connect-injected-widget')
 export class W3mConnectInjectedWidget extends LitElement {
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //  // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
 
-  @state() private connectors = ConnectorController.state.connectors
-
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
-    )
-  }
-
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
+  @property() public connectors: ConnectorWithProviders[] = []
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const injectedConnectors = this.connectors.filter(connector => connector.type === 'INJECTED')
+    const injectedConnectors = this.connectors.filter(ConnectorUtil.showConnector)
 
-    if (
-      !injectedConnectors?.length ||
-      (injectedConnectors.length === 1 &&
-        injectedConnectors[0]?.name === 'Browser Wallet' &&
-        !CoreHelperUtil.isMobile())
-    ) {
+    if (injectedConnectors.length === 0) {
       this.style.cssText = `display: none`
 
       return null
@@ -50,26 +29,8 @@ export class W3mConnectInjectedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${injectedConnectors.map(connector => {
-          if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
-            return null
-          }
-
-          const walletRDNS = connector.info?.rdns
-
-          if (!walletRDNS && !ConnectionController.checkInstalled(undefined)) {
-            this.style.cssText = `display: none`
-
-            return null
-          }
-
-          if (walletRDNS && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(walletRDNS)) {
-              return null
-            }
-          }
-
-          return html`
+        ${injectedConnectors.map(
+          connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
@@ -82,7 +43,7 @@ export class W3mConnectInjectedWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }

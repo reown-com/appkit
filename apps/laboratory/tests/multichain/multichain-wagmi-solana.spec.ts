@@ -1,8 +1,9 @@
-import { test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { DEFAULT_CHAIN_NAME } from '../shared/constants'
 import { ModalPage } from '../shared/pages/ModalPage'
-import { ModalValidator } from '../shared/validators/ModalValidator'
 import { WalletPage } from '../shared/pages/WalletPage'
+import { ModalValidator } from '../shared/validators/ModalValidator'
 import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
@@ -57,11 +58,12 @@ test('it should switch networks and sign', async () => {
     }
 
     const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
+    const namespace = chainName === 'Solana' ? 'solana' : 'eip155'
     await modalPage.switchNetwork(chainName)
     await modalPage.closeModal()
 
     // -- Sign ------------------------------------------------------------------
-    await modalPage.sign()
+    await modalPage.sign(namespace)
     await walletValidator.expectReceivedSign({ chainName })
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
@@ -98,4 +100,22 @@ test('it should disconnect as expected', async () => {
   await modalValidator.expectConnected()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
+})
+
+test('it should also connect wagmi and sign a message if connecting from a different namespace', async () => {
+  await modalPage.switchNetworkWithNetworkButton('Solana')
+  await modalValidator.expectSwitchedNetworkOnNetworksView('Solana')
+  await modalPage.closeModal()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+
+  await modalPage.sign('eip155')
+  await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+
+  await modalPage.sign('solana')
+  await walletValidator.expectReceivedSign({ chainName: 'Solana' })
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
 })

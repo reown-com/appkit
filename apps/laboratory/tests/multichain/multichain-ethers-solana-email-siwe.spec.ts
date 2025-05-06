@@ -1,7 +1,8 @@
-import { test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { ModalWalletPage } from '../shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 import { Email } from '../shared/utils/email'
+import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -27,7 +28,7 @@ test.beforeAll(async ({ browser }) => {
   }
   const email = new Email(mailsacApiKey)
   const tempEmail = await email.getEmailAddressToUse()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
   await page.promptSiwe()
   await page.approveSign()
 
@@ -47,9 +48,11 @@ test('it should switch networks and sign', async () => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
+  await page.page.waitForTimeout(1000)
 
   // -- Sign ------------------------------------------------------------------
-  await page.sign()
+  await page.sign('eip155')
   await validator.expectReceivedSign({ chainName })
   await page.approveSign()
   await validator.expectAcceptedSign()
@@ -64,7 +67,7 @@ test('it should switch to different namespace', async () => {
   await page.closeModal()
 
   // -- Sign ------------------------------------------------------------------
-  await page.sign()
+  await page.sign('solana')
   await validator.expectReceivedSign({ chainName })
   await page.approveSign()
   await validator.expectAcceptedSign()

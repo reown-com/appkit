@@ -1,8 +1,7 @@
-import { useAppKitTheme } from './config'
-
 import ActionButtonList from './components/ActionButton'
-import InfoList from './components/InfoList'
 import Footer from './components/Footer'
+import InfoList from './components/InfoList'
+import { useAppKitTheme } from './config'
 
 export default function App() {
   const { themeMode } = useAppKitTheme()
@@ -18,14 +17,11 @@ export default function App() {
         />
         <img src="/appkit-logo.png" alt="Reown" width="150" />
       </div>
-
       <h1 className="page-title">React Ethers v5 Example</h1>
-
       <div className="appkit-buttons-container">
         <appkit-button />
         <appkit-network-button />
       </div>
-
       <ActionButtonList />
       <InfoList />
       <Footer />

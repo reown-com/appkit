@@ -1,18 +1,20 @@
-import { html, fixture } from '@open-wc/testing'
+import { fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
-  ChainController,
-  OptionsController,
-  ModalController,
   AssetController,
   AssetUtil,
-  type OptionsControllerState
-} from '@reown/appkit-core'
+  ChainController,
+  ModalController,
+  OptionsController,
+  type OptionsControllerState,
+  type OptionsControllerStateInternal
+} from '@reown/appkit-controllers'
+import type { WuiNetworkButton } from '@reown/appkit-ui/wui-network-button'
+
 import { W3mNetworkButton } from '../../src/modal/w3m-network-button'
-import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest'
-import type { CaipNetwork } from '@reown/appkit-common'
 import { HelpersUtil } from '../utils/HelpersUtil'
-import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
-import type { WuiNetworkButton } from '@reown/appkit-ui'
 
 const mockCaipNetwork: CaipNetwork = {
   chainNamespace: 'eip155',
@@ -41,7 +43,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: true
-      } as unknown as OptionsControllerState & OptionsControllerStateInternal)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`
@@ -57,7 +59,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: false
-      } as unknown as OptionsControllerState & OptionsControllerStateInternal)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`
@@ -75,7 +77,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: true
-      } as unknown as OptionsControllerState & OptionsControllerStateInternal)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`
@@ -92,7 +94,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: false
-      } as unknown as OptionsControllerState & OptionsControllerStateInternal)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`

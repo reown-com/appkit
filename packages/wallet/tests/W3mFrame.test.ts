@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { W3mFrame } from '../src/W3mFrame.js'
-import { W3mFrameHelpers } from '../src/W3mFrameHelpers.js'
 import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
-import * as logger from '@walletconnect/logger'
+import { W3mFrameHelpers } from '../src/W3mFrameHelpers.js'
 
 describe('W3mFrame', () => {
   const PROJECT_ID = 'test-project-id'
@@ -168,6 +168,35 @@ describe('W3mFrame', () => {
     it('should include enableLogger=false query param when enableLogger is set to false', async () => {
       w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true, enableLogger: false })
       expect(w3mFrame['iframe']?.src).toContain('enableLogger=false')
+    })
+  })
+
+  describe('iframe styles', () => {
+    it('should have correct initial CSS styles', () => {
+      const mockStyle: Record<string, string> = {}
+
+      const mockIframeElement = {
+        style: mockStyle,
+        addEventListener: vi.fn(),
+        setAttribute: vi.fn(),
+        onerror: null
+      }
+
+      mockDocument.createElement.mockReturnValue(mockIframeElement)
+
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
+
+      expect(mockStyle['position']).toBe('fixed')
+      expect(mockStyle['zIndex']).toBe('999999')
+      expect(mockStyle['display']).toBe('none')
+      expect(mockStyle['border']).toBe('none')
+      expect(mockStyle['animationDelay']).toBe('0s, 50ms')
+      expect(mockStyle['borderBottomLeftRadius']).toBe(
+        'clamp(0px, var(--wui-border-radius-l), 44px)'
+      )
+      expect(mockStyle['borderBottomRightRadius']).toBe(
+        'clamp(0px, var(--wui-border-radius-l), 44px)'
+      )
     })
   })
 })

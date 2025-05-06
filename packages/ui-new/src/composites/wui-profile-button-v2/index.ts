@@ -1,18 +1,20 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ChainController, ConnectorController } from '@reown/appkit-controllers'
+
 import '../../components/wui-icon/index.js'
-import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
+import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
-import '../wui-avatar/index.js'
-import '../wui-icon-box/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { ChainController, StorageUtil } from '@reown/appkit-core'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-avatar/index.js'
+import '../wui-icon-box/index.js'
+import styles from './styles.js'
 
 @customElement('wui-profile-button-v2')
 export class WuiProfileButtonV2 extends LitElement {
@@ -34,10 +36,10 @@ export class WuiProfileButtonV2 extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
-    return html`<button ontouchstart data-testid="wui-profile-button" @click=${this.handleClick}>
+    return html`<button data-testid="wui-profile-button" @click=${this.handleClick}>
       <wui-flex gap="xs" alignItems="center">
         <wui-avatar
           .imageSrc=${this.avatarSrc}

@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
 import { WalletStandardConnector } from '../../src/connectors/WalletStandardConnector'
-import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
+import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 
 vi.mock('@wallet-standard/app', async () =>
   Promise.resolve({
@@ -85,7 +87,9 @@ describe('WalletStandardConnector', () => {
 
   describe('connect', () => {
     it('connect correctly', async () => {
+      const bindEventsSpy = vi.spyOn(connector as any, 'bindEvents')
       await expect(connector.connect()).resolves.not.toThrow()
+      expect(bindEventsSpy).toHaveBeenCalled()
     })
 
     it('should throw if account is not found', async () => {
@@ -117,7 +121,7 @@ describe('WalletStandardConnector', () => {
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: Buffer.from('publicKey1')
+          publicKey: new Uint8Array(Buffer.from('publicKey1'))
         })
       ])
 
@@ -135,11 +139,11 @@ describe('WalletStandardConnector', () => {
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: Buffer.from('publicKey1')
+          publicKey: new Uint8Array(Buffer.from('publicKey1'))
         }),
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: Buffer.from('publicKey2')
+          publicKey: new Uint8Array(Buffer.from('publicKey2'))
         })
       ])
 
@@ -158,7 +162,7 @@ describe('WalletStandardConnector', () => {
     it('should sign message correctly', async () => {
       const accountMock = mockWalletStandardProvider.mockAccount({
         address: 'address',
-        publicKey: Buffer.from('publicKey1')
+        publicKey: new Uint8Array(Buffer.from('publicKey1'))
       })
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
 
@@ -171,6 +175,36 @@ describe('WalletStandardConnector', () => {
         message: expect.objectContaining(Uint8Array.from([109, 101, 115, 115, 97, 103, 101, 49])),
         account: expect.objectContaining(accountMock)
       })
+    })
+
+    it('should log warning when protocol parameter is provided', async () => {
+      const accountMock = mockWalletStandardProvider.mockAccount({
+        address: 'address',
+        publicKey: new Uint8Array(Buffer.from('publicKey1'))
+      })
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
+
+      const signMessageFeatureSpy = vi.spyOn(
+        wallet.features['bitcoin:signMessage'] as any,
+        'signMessage'
+      )
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      await connector.signMessage({
+        address: 'address',
+        message: 'message1',
+        protocol: 'bip322'
+      })
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'WalletStandardConnector:signMessage - protocol parameter not supported in WalletStandard:bitcoin - signMessage'
+      )
+      expect(signMessageFeatureSpy).toHaveBeenCalledWith({
+        message: expect.objectContaining(Uint8Array.from([109, 101, 115, 115, 97, 103, 101, 49])),
+        account: expect.objectContaining(accountMock)
+      })
+
+      consoleSpy.mockRestore()
     })
 
     it('should throw if account is not found', async () => {
@@ -213,7 +247,7 @@ describe('WalletStandardConnector', () => {
     it('should sign PSBT correctly', async () => {
       const accountMock = mockWalletStandardProvider.mockAccount({
         address: 'address',
-        publicKey: Buffer.from('publicKey1')
+        publicKey: new Uint8Array(Buffer.from('publicKey1'))
       })
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
 

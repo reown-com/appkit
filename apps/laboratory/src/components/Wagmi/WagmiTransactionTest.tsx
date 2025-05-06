@@ -1,10 +1,12 @@
-import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { parseGwei, type Address } from 'viem'
-import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useState } from 'react'
+
+import { Button, Link, Spacer, Stack, Text } from '@chakra-ui/react'
+import { type Address, parseGwei } from 'viem'
+import { useAccount, useEstimateGas, useSendTransaction } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
-import { useChakraToast } from '../Toast'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,

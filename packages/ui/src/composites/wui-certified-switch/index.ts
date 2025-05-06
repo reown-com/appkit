@@ -1,9 +1,12 @@
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import '../../components/wui-icon/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-switch/index.js'
+import styles from './styles.js'
 
 @customElement('wui-certified-switch')
 export class WuiCertifiedSwitch extends LitElement {

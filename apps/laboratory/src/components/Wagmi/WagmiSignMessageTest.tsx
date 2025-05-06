@@ -1,17 +1,19 @@
 import * as React from 'react'
+
 import { Button } from '@chakra-ui/react'
-import { useSignMessage } from 'wagmi'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
-import { useAppKitAccount } from '@reown/appkit/react'
 import { type Address } from 'viem'
+import { useSignMessage } from 'wagmi'
+
+import { useAppKitAccount } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   const { signMessageAsync, isPending } = useSignMessage()
-  const { isConnected } = useAppKitAccount()
 
   const [signature, setSignature] = React.useState<string | undefined>()
 

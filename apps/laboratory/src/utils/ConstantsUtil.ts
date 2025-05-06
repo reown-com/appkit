@@ -1,27 +1,30 @@
-import {
-  arbitrum,
-  mainnet,
-  optimism,
-  polygon,
-  zkSync,
-  sepolia,
-  solana,
-  solanaTestnet,
-  solanaDevnet,
-  base,
-  baseSepolia,
-  gnosis,
-  unichainSepolia,
-  hedera,
-  aurora,
-  mantle,
-  bitcoin,
-  bitcoinTestnet
-} from '@reown/appkit/networks'
-import type { AppKitNetwork } from '@reown/appkit/networks'
-import { getLocalStorageItem } from './LocalStorage'
 import type { CaipNetwork, SocialProvider } from '@reown/appkit'
 import type { Wallet } from '@reown/appkit-wallet-button'
+import {
+  abstract,
+  arbitrum,
+  aurora,
+  base,
+  baseSepolia,
+  berachain,
+  bitcoin,
+  bitcoinTestnet,
+  gnosis,
+  hedera,
+  mainnet,
+  mantle,
+  optimism,
+  polygon,
+  sepolia,
+  solana,
+  solanaDevnet,
+  solanaTestnet,
+  unichainSepolia,
+  zkSync
+} from '@reown/appkit/networks'
+import type { AppKitNetwork } from '@reown/appkit/networks'
+
+import { getLocalStorageItem } from './LocalStorage'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
@@ -35,6 +38,11 @@ export const DOCS_URL = 'https://docs.reown.com/appkit/overview'
 export const REPO_URL = 'https://github.com/reown-com/appkit'
 
 export function getPublicUrl() {
+  const isProduction = process.env['NODE_ENV'] === 'production'
+  if (isProduction) {
+    return 'https://appkit-lab.reown.com'
+  }
+
   const publicUrl = process.env['NEXT_PUBLIC_PUBLIC_URL']
   if (publicUrl) {
     return publicUrl
@@ -67,11 +75,13 @@ const EvmNetworks = [
   base,
   baseSepolia,
   unichainSepolia,
+  berachain,
   sepolia,
   gnosis,
   hedera,
   aurora,
-  mantle
+  mantle,
+  abstract
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
@@ -112,8 +122,6 @@ export const ConstantsUtil = {
       id: 'react-wallet-v2',
       name: 'React Sample Wallet',
       homepage: WALLET_URL,
-      mobile_link: WALLET_URL,
-      desktop_link: WALLET_URL,
       webapp_link: WALLET_URL,
       image_url: '/sample-wallets/react.svg'
     },
@@ -150,7 +158,10 @@ export const ConstantsUtil = {
   EvmNetworks,
   SolanaNetworks,
   BitcoinNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]],
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks] as [
+    AppKitNetwork,
+    ...AppKitNetwork[]
+  ],
   EvmWalletButtons: [
     'walletConnect',
     'metamask',
@@ -160,6 +171,7 @@ export const ConstantsUtil = {
     'phantom'
   ] as Wallet[],
   SolanaWalletButtons: [
+    'walletConnect',
     'metamask',
     'trust',
     'coinbase',
@@ -171,6 +183,7 @@ export const ConstantsUtil = {
     'backpack',
     'frontier'
   ] as Wallet[],
+  BitcoinWalletButtons: ['walletConnect', 'xverse', 'leather', 'okx', 'phantom'] as Wallet[],
   Socials: [
     'google',
     'github',
@@ -179,5 +192,6 @@ export const ConstantsUtil = {
     'x',
     'discord',
     'farcaster'
-  ] as SocialProvider[]
+  ] as SocialProvider[],
+  Email: 'email' as const
 }

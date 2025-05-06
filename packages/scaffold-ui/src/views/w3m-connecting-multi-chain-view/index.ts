@@ -1,18 +1,23 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AssetUtil,
+  type Connector,
   ConnectorController,
   CoreHelperUtil,
   RouterController,
-  SnackController,
-  type Connector
-} from '@reown/appkit-core'
+  SnackController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
 
-import { html, LitElement } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-connecting-multi-chain-view')
 export class W3mConnectingMultiChainView extends LitElement {

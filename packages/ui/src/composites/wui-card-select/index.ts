@@ -1,6 +1,7 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { CardSelectType } from '../../utils/TypeUtil.js'
@@ -30,7 +31,7 @@ export class WuiCardSelect extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-selected=${ifDefined(this.selected)} ?disabled=${this.disabled} ontouchstart>
+      <button data-selected=${ifDefined(this.selected)} ?disabled=${this.disabled}>
         ${this.imageTemplate()}
         <wui-text variant="tiny-500" color=${this.selected ? 'accent-100' : 'inherit'}>
           ${this.name}

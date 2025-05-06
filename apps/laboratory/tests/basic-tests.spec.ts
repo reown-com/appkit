@@ -1,8 +1,9 @@
-import { test, type BrowserContext, type Page } from '@playwright/test'
+import { type BrowserContext, type Page, test } from '@playwright/test'
+
+import { BASE_URL } from './shared/constants'
 import { expect } from './shared/fixtures/w3m-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { BASE_URL } from './shared/constants'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -46,7 +47,11 @@ basicTest('Should be able to open modal with the open hook', async () => {
   await modalPage.closeModal()
 })
 
-basicTest('Should show socials enabled by default', async () => {
+basicTest('Should show socials enabled by default', async ({ library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
+
   await modalPage.page.getByTestId('connect-button').click()
   await modalValidator.expectSocialsVisible()
   await modalPage.closeModal()

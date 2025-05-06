@@ -1,15 +1,22 @@
 /* eslint-disable no-await-in-loop */
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
+
+import { setupNetworkListener } from '@/src/utils/NetworkUtil'
+
 import { ModalPage } from './ModalPage'
 
 export class ModalWalletPage extends ModalPage {
-  constructor(
-    public override readonly page: Page,
-    public override readonly library: string,
-    public override readonly flavor: 'default' | 'all' | 'siwe'
-  ) {
+  public override readonly page: Page
+  public override readonly library: string
+  public override readonly flavor: 'default' | 'all' | 'siwe'
+
+  constructor(page: Page, library: string, flavor: 'default' | 'all' | 'siwe') {
     super(page, library, flavor)
+    setupNetworkListener(page)
+    this.page = page
+    this.library = library
+    this.flavor = flavor
   }
 
   async goToSettings() {
@@ -45,6 +52,9 @@ export class ModalWalletPage extends ModalPage {
     await expect(toggleButton, 'Toggle button should be visible').toBeVisible()
     await expect(toggleButton, 'Toggle button should be enabled').toBeEnabled()
     await toggleButton.click()
+    const loadingSpinner = this.page.getByTestId('wui-list-item-loading-spinner')
+    await expect(loadingSpinner, 'Loading spinner should be visible').toBeVisible()
+    await expect(loadingSpinner, 'Loading spinner should not be visible').toBeHidden()
   }
 
   override async disconnect(): Promise<void> {

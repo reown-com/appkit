@@ -1,15 +1,22 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { customElement } from '@reown/appkit-ui'
-import styles from './styles.js'
+
 import {
   AssetController,
   ModalController,
   OnRampController,
   type PaymentCurrency,
   type PurchaseCurrency
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-image'
+import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-text'
+
+import styles from './styles.js'
 
 type Currency = {
   name: string

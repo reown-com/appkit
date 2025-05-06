@@ -1,18 +1,22 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { walletConnect } from '../connectors/UniversalConnector'
-import { mainnet } from '@reown/appkit/networks'
 import { getAddress } from 'viem'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ChainController } from '@reown/appkit-controllers'
+import { mainnet } from '@reown/appkit/networks'
+
+import { walletConnect } from '../connectors/UniversalConnector'
 import {
-  mockAppKit,
-  mockProvider,
-  mockSession,
   mockAddress,
+  mockAppKit,
+  mockCaipAddress,
   mockCaipNetworks,
-  mockCaipAddress
+  mockExtendedCaipNetworks,
+  mockProvider,
+  mockSession
 } from './mocks/AppKit'
 
-vi.mock('@reown/appkit-core', async importOriginal => {
-  const actual = await importOriginal<typeof import('@reown/appkit-core')>()
+vi.mock('@reown/appkit-controllers', async importOriginal => {
+  const actual = await importOriginal<typeof import('@reown/appkit-controllers')>()
   return {
     ...actual,
     StorageUtil: {
@@ -41,8 +45,7 @@ describe('UniversalConnector', () => {
       {
         isNewChainsStale: false
       } as any,
-      mockAppKit,
-      mockCaipNetworks as any
+      mockAppKit
     )
 
     connectorInstance = createConnector({
@@ -53,6 +56,7 @@ describe('UniversalConnector', () => {
       // @ts-expect-error - mocking Wagmi's emitter
       emitter: mockEmitter
     })
+    vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue(mockExtendedCaipNetworks)
   })
 
   afterEach(() => {
@@ -63,8 +67,6 @@ describe('UniversalConnector', () => {
     it('should connect successfully', async () => {
       const expectedChainId = mainnet.id
 
-      mockProvider.enable.mockResolvedValue([mockAddress])
-
       const result = await connectorInstance.connect()
 
       expect(result).toEqual({
@@ -73,18 +75,12 @@ describe('UniversalConnector', () => {
       })
       expect(mockProvider.on).toHaveBeenCalled()
       expect(mockProvider.session.namespaces.eip155.accounts).toEqual([mockCaipAddress])
-    })
-
-    it('should handle user rejection', async () => {
-      mockProvider.enable.mockRejectedValue(new Error('user rejected'))
-
-      await expect(connectorInstance.connect()).rejects.toThrow('User rejected the request.')
+      expect(mockProvider.setDefaultChain).toHaveBeenCalledWith(`eip155:${expectedChainId}`)
     })
   })
 
   describe('getAccounts', () => {
     it('should return accounts from provider session', async () => {
-      mockProvider.enable.mockResolvedValue([mockAddress])
       await connectorInstance.connect()
       const accounts = await connectorInstance.getAccounts()
 

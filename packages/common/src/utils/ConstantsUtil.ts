@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
 import type { ChainNamespace } from './TypeUtil.js'
 
 export const ConstantsUtil = {
@@ -15,9 +16,14 @@ export const ConstantsUtil = {
     COINBASE_SDK: 'coinbaseWalletSDK',
     SAFE: 'safe',
     LEDGER: 'ledger',
+    OKX: 'okx',
     EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
   },
+  CONNECTOR_NAMES: {
+    AUTH: 'Auth'
+  },
+  AUTH_CONNECTOR_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
   LIMITS: {
     PENDING_TRANSACTIONS: 99
   },
@@ -28,11 +34,19 @@ export const ConstantsUtil = {
     BITCOIN: 'bip122'
   } as const satisfies Record<string, ChainNamespace>,
   CHAIN_NAME_MAP: {
-    eip155: 'Ethereum',
+    eip155: 'EVM Networks',
     solana: 'Solana',
     polkadot: 'Polkadot',
-    bip122: 'Bitcoin'
+    bip122: 'Bitcoin',
+    cosmos: 'Cosmos'
   } as const satisfies Record<ChainNamespace, string>,
+  ADAPTER_TYPES: {
+    BITCOIN: 'bitcoin',
+    SOLANA: 'solana',
+    WAGMI: 'wagmi',
+    ETHERS: 'ethers',
+    ETHERS5: 'ethers5'
+  } as const satisfies Record<string, string>,
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
     '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -50,6 +64,12 @@ export const ConstantsUtil = {
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
   ],
   HTTP_STATUS_CODES: {
-    SERVICE_UNAVAILABLE: 503
-  }
+    SERVICE_UNAVAILABLE: 503,
+    FORBIDDEN: 403
+  },
+  UNSUPPORTED_NETWORK_NAME: 'Unknown Network',
+  SECURE_SITE_SDK_ORIGIN:
+    (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+      : undefined) || 'https://secure.walletconnect.org'
 } as const

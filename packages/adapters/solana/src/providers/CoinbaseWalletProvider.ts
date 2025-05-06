@@ -1,11 +1,14 @@
-import { type AnyTransaction, type Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import { solana } from '@reown/appkit/networks'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { RequestArguments } from '@reown/appkit-controllers'
+import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
-import type { RequestArguments } from '@reown/appkit-core'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
+import { type AnyTransaction, type Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { solana } from '@reown/appkit/networks'
+
+import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 
 export type SolanaCoinbaseWallet = {
   publicKey?: PublicKey
@@ -55,6 +58,10 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Sola
 
   public get publicKey() {
     return this.coinbase.publicKey
+  }
+
+  public get imageId() {
+    return PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE]
   }
 
   public async connect() {

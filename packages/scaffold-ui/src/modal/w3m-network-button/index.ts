@@ -1,4 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetController,
   AssetUtil,
@@ -6,11 +9,10 @@ import {
   EventsController,
   ModalController,
   OptionsController
-} from '@reown/appkit-core'
-import type { WuiNetworkButton } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+} from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-network-button'
+
 import styles from './styles.js'
 
 class W3mNetworkButtonBase extends LitElement {
@@ -20,7 +22,7 @@ class W3mNetworkButtonBase extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
+  @property({ type: Boolean }) public disabled? = false
 
   @property({ type: String }) public label?: string
 
@@ -56,10 +58,15 @@ class W3mNetworkButtonBase extends LitElement {
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val.chainNamespace)
             : true
+          AssetUtil.fetchNetworkImage(val?.assets?.imageId)
         }),
         ModalController.subscribeKey('loading', val => (this.loading = val))
       ]
     )
+  }
+
+  public override firstUpdated() {
+    AssetUtil.fetchNetworkImage(this.network?.assets?.imageId)
   }
 
   public override disconnectedCallback() {

@@ -1,7 +1,13 @@
-import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
-import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
-import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 import type UniversalProvider from '@walletconnect/universal-provider'
+
+import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
+import type {
+  ChainAdapter,
+  Metadata,
+  OptionsControllerState,
+  ThemeMode
+} from '@reown/appkit-controllers'
+import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 
 export type AppKitOptions = {
   /**
@@ -9,6 +15,11 @@ export type AppKitOptions = {
    * @default []
    */
   adapters?: ChainAdapter[]
+  /**
+   * This is only used for the @walletconnect/ethereum-provider package. We need this to determine which screens should be shown.
+   * @default false
+   */
+  basic?: boolean
   /**
    * Show or hide the wallets in the modal. This is available with the email and socials features
    * @default true
@@ -79,4 +90,9 @@ export type AppKitOptions = {
    * @default undefined
    */
   universalProvider?: UniversalProvider
-} & OptionsControllerState
+  /**
+   * The default account type used for each chain namespace.
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   */
+  defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
+} & Omit<OptionsControllerState, 'defaultAccountTypes'>

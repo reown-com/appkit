@@ -1,8 +1,16 @@
-import { customElement } from '@reown/appkit-ui'
-import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+
 import { NavigationUtil } from '@reown/appkit-common'
+import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-text'
+
+import styles from './styles.js'
 
 @customElement('w3m-register-account-name-success-view')
 export class W3mRegisterAccountNameSuccess extends LitElement {

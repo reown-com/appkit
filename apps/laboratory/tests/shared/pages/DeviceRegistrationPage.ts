@@ -1,12 +1,14 @@
-import { expect, type Page } from '@playwright/test'
+import { type Page, expect } from '@playwright/test'
 
 const LOGIN_APPROVED_SUCCESS_TEXT = 'approved'
 
 export class DeviceRegistrationPage {
-  constructor(
-    public readonly page: Page,
-    public readonly url: string
-  ) {}
+  public readonly page: Page
+  public readonly url: string
+  constructor(page: Page, url: string) {
+    this.page = page
+    this.url = url
+  }
 
   async load() {
     await this.page.goto(this.url)

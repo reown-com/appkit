@@ -1,18 +1,26 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
-  CoreHelperUtil,
   ChainController,
+  CoreHelperUtil,
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
+import '@reown/appkit-ui/wui-chip-button'
+import '@reown/appkit-ui/wui-compatible-network'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-qr-code'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
 import styles from './styles.js'
-import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {
@@ -28,7 +36,7 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
 
   public constructor() {
     super()
@@ -38,7 +46,7 @@ export class W3mWalletReceiveView extends LitElement {
           if (val.address) {
             this.address = val.address
             this.profileName = val.profileName
-            this.preferredAccountType = val.preferredAccountType
+            this.preferredAccountTypes = val.preferredAccountTypes
           } else {
             SnackController.showError('Account not found')
           }
@@ -110,9 +118,12 @@ export class W3mWalletReceiveView extends LitElement {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
     const caipNetwork = ChainController.state.activeCaipNetwork
-
+    const namespaceNetworks = requestedCaipNetworks.filter(
+      network => network?.chainNamespace === caipNetwork?.chainNamespace
+    )
     if (
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
+      this.preferredAccountTypes?.[caipNetwork?.chainNamespace as ChainNamespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
       isNetworkEnabledForSmartAccounts
     ) {
       if (!caipNetwork) {
@@ -125,7 +136,7 @@ export class W3mWalletReceiveView extends LitElement {
         .networkImages=${[AssetUtil.getNetworkImage(caipNetwork) ?? '']}
       ></wui-compatible-network>`
     }
-    const slicedNetworks = requestedCaipNetworks
+    const slicedNetworks = namespaceNetworks
       ?.filter(network => network?.assets?.imageId)
       ?.slice(0, 5)
     const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]

@@ -1,10 +1,18 @@
-import type { BadgeType, WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import styles from './styles.js'
+
+import type { BadgeType, WcWallet } from '@reown/appkit-controllers'
+import { ApiController, ConnectorController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-grid'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-text'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import '../w3m-all-wallets-list-item/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {
@@ -48,7 +56,13 @@ export class W3mAllWalletsSearch extends LitElement {
 
     if (!search.length) {
       return html`
-        <wui-flex justifyContent="center" alignItems="center" gap="s" flexDirection="column">
+        <wui-flex
+          data-testid="no-wallet-found"
+          justifyContent="center"
+          alignItems="center"
+          gap="s"
+          flexDirection="column"
+        >
           <wui-icon-box
             size="lg"
             iconColor="fg-200"
@@ -56,13 +70,16 @@ export class W3mAllWalletsSearch extends LitElement {
             icon="wallet"
             background="transparent"
           ></wui-icon-box>
-          <wui-text color="fg-200" variant="paragraph-500">No Wallet found</wui-text>
+          <wui-text data-testid="no-wallet-found-text" color="fg-200" variant="paragraph-500">
+            No Wallet found
+          </wui-text>
         </wui-flex>
       `
     }
 
     return html`
       <wui-grid
+        data-testid="wallet-list"
         .padding=${['0', 's', 's', 's'] as const}
         rowGap="l"
         columnGap="xs"
@@ -82,12 +99,7 @@ export class W3mAllWalletsSearch extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
-    }
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 

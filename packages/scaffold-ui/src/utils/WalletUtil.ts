@@ -1,10 +1,13 @@
 import {
+  ApiController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
-import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
+
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -92,7 +95,11 @@ export const WalletUtil = {
       return connectMethodOrder
     }
 
-    const { injected, announced } = ConnectorUtil.getConnectorsByType(connectors)
+    const { injected, announced } = ConnectorUtil.getConnectorsByType(
+      connectors,
+      ApiController.state.recommended,
+      ApiController.state.featured
+    )
 
     const shownInjected = injected.filter(ConnectorUtil.showConnector)
     const shownAnnounced = announced.filter(ConnectorUtil.showConnector)
@@ -102,5 +109,17 @@ export const WalletUtil = {
     }
 
     return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
+  },
+  isExcluded(wallet: WcWallet) {
+    const isRDNSExcluded =
+      Boolean(wallet.rdns) && ApiController.state.excludedWallets.some(w => w.rdns === wallet.rdns)
+
+    const isNameExcluded =
+      Boolean(wallet.name) &&
+      ApiController.state.excludedWallets.some(w =>
+        HelpersUtil.isLowerCaseMatch(w.name, wallet.name)
+      )
+
+    return isRDNSExcluded || isNameExcluded
   }
 }

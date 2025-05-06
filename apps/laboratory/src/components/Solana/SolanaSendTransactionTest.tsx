@@ -1,28 +1,39 @@
-import { useState } from 'react'
-import { Button, Stack, Spacer, Link } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import { useMemo, useState } from 'react'
+
+import {
+  Box,
+  Button,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  Link,
+  Spacer,
+  Stack
+} from '@chakra-ui/react'
 import {
   PublicKey,
+  SystemProgram,
   Transaction,
   TransactionMessage,
-  VersionedTransaction,
-  SystemProgram
+  VersionedTransaction
 } from '@solana/web3.js'
 
-import { useChakraToast } from '../Toast'
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { ErrorUtil } from '../../utils/ErrorUtil'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
-const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
-const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
-const amountInLamports = 10_000_000
+import { useChakraToast } from '@/src/components/Toast'
+import { ErrorUtil } from '@/src/utils/ErrorUtil'
 
 export function SolanaSendTransactionTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'solana' })
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
+  const [recipient, setRecipient] = useState('')
+  const [amount, setAmount] = useState('')
+
+  const amountInLamports = useMemo(() => Number(amount) * 10 ** 9, [amount])
 
   async function onSendTransaction() {
     try {
@@ -44,7 +55,7 @@ export function SolanaSendTransactionTest() {
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: walletProvider.publicKey,
-          toPubkey: recipientAddress,
+          toPubkey: new PublicKey(recipient),
           lamports: amountInLamports
         })
       )
@@ -94,7 +105,7 @@ export function SolanaSendTransactionTest() {
       const instructions = [
         SystemProgram.transfer({
           fromPubkey: walletProvider.publicKey,
-          toPubkey: recipientAddress,
+          toPubkey: new PublicKey(recipient),
           lamports: amountInLamports
         })
       ]
@@ -132,7 +143,19 @@ export function SolanaSendTransactionTest() {
   }
 
   return (
-    <Stack direction={['column', 'column', 'row']}>
+    <Stack direction="column" spacing={2}>
+      <Box display="flex" width="100%" gap="2" mb="2">
+        <InputGroup>
+          <InputLeftAddon>Recipient</InputLeftAddon>
+          <Input value={recipient} onChange={e => setRecipient(e.currentTarget.value)} />
+        </InputGroup>
+
+        <InputGroup>
+          <InputLeftAddon>Amount</InputLeftAddon>
+          <Input value={amount} onChange={e => setAmount(e.currentTarget.value)} type="number" />
+        </InputGroup>
+      </Box>
+
       <Button
         data-testid="sign-transaction-button"
         onClick={onSendTransaction}

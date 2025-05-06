@@ -1,15 +1,17 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectorController,
   RouterController,
-  StorageUtil,
-  type SocialProvider
-} from '@reown/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
-import { state } from 'lit/decorators.js'
+  type SocialProvider,
+  StorageUtil
+} from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-text'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {
@@ -38,7 +40,7 @@ export class W3mAccountAuthButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connectorId = StorageUtil.getConnectedConnectorId(this.namespace as ChainNamespace)
+    const connectorId = ConnectorController.getConnectorId(this.namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (!authConnector || connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {
@@ -47,6 +49,12 @@ export class W3mAccountAuthButton extends LitElement {
       return null
     }
     const email = authConnector.provider.getEmail() ?? ''
+
+    if (!email && !this.socialUsername) {
+      this.style.cssText = `display: none`
+
+      return null
+    }
 
     return html`
       <wui-list-item
@@ -68,7 +76,7 @@ export class W3mAccountAuthButton extends LitElement {
   // -- Private ------------------------------------------- //
   private onGoToUpdateEmail(email: string, socialProvider: SocialProvider | null) {
     if (!socialProvider) {
-      RouterController.push('UpdateEmailWallet', { email })
+      RouterController.push('UpdateEmailWallet', { email, redirectView: 'Account' })
     }
   }
 

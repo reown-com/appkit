@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { AppKit, type CaipNetwork } from '@reown/appkit'
 import {
   AccountController,
   ChainController,
@@ -7,18 +9,21 @@ import {
   OptionsController,
   RouterController,
   SIWXUtil
-} from '@reown/appkit-core'
-import { AppKit, type CaipNetwork } from '@reown/appkit'
+} from '@reown/appkit-controllers'
+import { type AppKitSIWEClient, createSIWEConfig } from '@reown/appkit-siwe'
 import * as networks from '@reown/appkit/networks'
-import { createSIWEConfig, type AppKitSIWEClient } from '@reown/appkit-siwe'
+
 import { mockUniversalAdapter } from './mocks/Adapter'
 import mockProvider from './mocks/UniversalProvider'
+import { mockWindowAndDocument } from './test-utils'
 
 describe('SIWE mapped to SIWX', () => {
   let siweConfig: AppKitSIWEClient
   let appkit: AppKit
 
   beforeEach(async () => {
+    mockWindowAndDocument()
+
     siweConfig = createSIWEConfig({
       createMessage: () => {
         return 'mock-message'
@@ -225,7 +230,8 @@ describe('SIWE mapped to SIWX', () => {
           name: 'mock-name',
           url: 'mock-url',
           description: 'mock-description',
-          icon: 'mock-icon'
+          icon: 'mock-icon',
+          type: 'WALLET_CONNECT'
         },
         'eip155'
       )

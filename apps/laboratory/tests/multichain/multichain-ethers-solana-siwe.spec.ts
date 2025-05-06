@@ -1,7 +1,8 @@
-import { test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { ModalPage } from '../shared/pages/ModalPage'
-import { ModalValidator } from '../shared/validators/ModalValidator'
 import { WalletPage } from '../shared/pages/WalletPage'
+import { ModalValidator } from '../shared/validators/ModalValidator'
 import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
@@ -18,6 +19,7 @@ test.describe.configure({ mode: 'serial' })
 test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
+  await context.clearCookies()
 
   modalPage = new ModalPage(browserPage, 'multichain-ethers-solana-siwe', 'default')
   walletPage = new WalletPage(await context.newPage())
@@ -45,9 +47,10 @@ test('it should switch networks and sign siwe', async () => {
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
+  await modalPage.page.waitForTimeout(1000)
 
   // -- Sign ------------------------------------------------------------------
-  await modalPage.sign()
+  await modalPage.sign('eip155')
   await walletValidator.expectReceivedSign({ chainName })
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()

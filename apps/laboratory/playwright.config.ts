@@ -1,16 +1,16 @@
 import { defineConfig } from '@playwright/test'
-import { BASE_URL } from './tests/shared/constants'
-
 import { config } from 'dotenv'
+
+import { BASE_URL } from './tests/shared/constants'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
-import { getProjects } from './tests/shared/utils/project'
 import { getValue } from './tests/shared/utils/config'
+import { getProjects } from './tests/shared/utils/project'
+
 config({ path: './.env.local' })
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
   fullyParallel: true,
-  retries: 1,
   workers: getValue(8, 4),
   reporter: getValue(
     [['list'], ['html', { host: '0.0.0.0' }]],

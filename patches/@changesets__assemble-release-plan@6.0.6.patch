@@ -1,0 +1,39 @@
+diff --git a/dist/changesets-assemble-release-plan.cjs.js b/dist/changesets-assemble-release-plan.cjs.js
+index e32a5e5d39c3bd920201b5694632d2b44c92d486..a17cda6d695c8eb47e89781ccdf2dc3a5eaa116f 100644
+--- a/dist/changesets-assemble-release-plan.cjs.js
++++ b/dist/changesets-assemble-release-plan.cjs.js
+@@ -444,7 +444,7 @@ function matchFixedConstraint(releases, packagesByName, config) {
+ 
+ function getPreVersion(version) {
+   let parsed = semverParse__default["default"](version);
+-  let preVersion = parsed.prerelease[1] === undefined ? -1 : parsed.prerelease[1];
++  let preVersion = parsed?.prerelease?.[1] === undefined ? -1 : parsed?.prerelease?.[1];
+ 
+   if (typeof preVersion !== "number") {
+     throw new errors.InternalError("preVersion is not a number");
+diff --git a/dist/changesets-assemble-release-plan.esm.js b/dist/changesets-assemble-release-plan.esm.js
+index 221822a2e3ac86431b8aadeaf5f01eaee72a5c8e..af37bc802f21e08cd8d1df446ca1da7f7eee8b48 100644
+--- a/dist/changesets-assemble-release-plan.esm.js
++++ b/dist/changesets-assemble-release-plan.esm.js
+@@ -433,7 +433,7 @@ function matchFixedConstraint(releases, packagesByName, config) {
+ 
+ function getPreVersion(version) {
+   let parsed = semverParse(version);
+-  let preVersion = parsed.prerelease[1] === undefined ? -1 : parsed.prerelease[1];
++  let preVersion = parsed?.prerelease?.[1] === undefined ? -1 : parsed?.prerelease?.[1];
+ 
+   if (typeof preVersion !== "number") {
+     throw new InternalError("preVersion is not a number");
+diff --git a/src/index.ts b/src/index.ts
+index 33dca862a2402768e3f2d0b533b744cd10dd4ff9..0092f604ab6a1eb9b5c00dafd087655d71e77f73 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -25,7 +25,7 @@ type SnapshotReleaseParameters = {
+ function getPreVersion(version: string) {
+   let parsed = semverParse(version)!;
+   let preVersion =
+-    parsed.prerelease[1] === undefined ? -1 : parsed.prerelease[1];
++    parsed?.prerelease?.[1] === undefined ? -1 : parsed?.prerelease?.[1];
+   if (typeof preVersion !== "number") {
+     throw new InternalError("preVersion is not a number");
+   }

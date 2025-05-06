@@ -1,24 +1,32 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
-  ConnectionController,
   AssetController,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   ModalController,
   RouterController,
-  SnackController,
-  StorageUtil,
-  ConnectorController,
   SendController,
-  ConstantsUtil,
-  ChainController
-} from '@reown/appkit-core'
+  SnackController
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-notice-card'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import '../../partials/w3m-account-auth-button/index.js'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -36,7 +44,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
 
   @state() private disconnecting = false
 
@@ -55,14 +63,12 @@ export class W3mAccountSettingsView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.preferredAccountType = val.preferredAccountType
-          } else {
-            ModalController.close()
+            this.preferredAccountTypes = val.preferredAccountTypes
           }
         }),
         AccountController.subscribeKey(
-          'preferredAccountType',
-          val => (this.preferredAccountType = val)
+          'preferredAccountTypes',
+          val => (this.preferredAccountTypes = val)
         ),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
@@ -154,7 +160,7 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
     const namespace = this.network?.chainNamespace as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
     if (
@@ -183,7 +189,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   private authCardTemplate() {
     const namespace = this.network?.chainNamespace as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (
@@ -228,7 +234,7 @@ export class W3mAccountSettingsView extends LitElement {
     const namespace = this.network?.chainNamespace as ChainNamespace
 
     const isNetworkEnabled = ChainController.checkIfSmartAccountEnabled()
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (
@@ -241,7 +247,7 @@ export class W3mAccountSettingsView extends LitElement {
 
     if (!this.switched) {
       this.text =
-        this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        this.preferredAccountTypes?.[namespace] === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           ? 'Switch to your EOA'
           : 'Switch to your smart account'
     }
@@ -267,11 +273,12 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
+    const namespace = this.network?.chainNamespace as ChainNamespace
     const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
 
     const accountTypeTarget =
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
-      !isSmartAccountEnabled
+      this.preferredAccountTypes?.[namespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT || !isSmartAccountEnabled
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     const authConnector = ConnectorController.getAuthConnector()
@@ -281,7 +288,7 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
-    await ConnectionController.setPreferredAccountType(accountTypeTarget)
+    await ConnectionController.setPreferredAccountType(accountTypeTarget, namespace)
 
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -304,7 +311,6 @@ export class W3mAccountSettingsView extends LitElement {
     try {
       this.disconnecting = true
       await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })

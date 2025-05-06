@@ -1,24 +1,38 @@
 import * as React from 'react'
+
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
-import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
+
+import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
-type AppKitInfoProps = {
-  clientId?: string
-}
+import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 
-export function AppKitInfo({ clientId }: AppKitInfoProps) {
-  const { caipAddress, address } = useAppKitAccount()
+import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
+
+export function AppKitInfo() {
+  const { caipAddress, address, embeddedWalletInfo } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
+
+  const isEIP155 = caipAddress?.startsWith('eip155:')
+  const erc3770Address = React.useMemo(() => {
+    if (!isEIP155 || !caipAddress) {
+      return null
+    }
+    try {
+      return convertCaip10ToErc3770(caipAddress)
+    } catch (e) {
+      return null
+    }
+  }, [caipAddress, isEIP155])
 
   return (
     <Card marginTop={10} marginBottom={10}>
@@ -28,35 +42,54 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
 
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              CAIP Address
-            </Heading>
-            <Text data-testid="w3m-caip-address">{caipAddress}</Text>
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Address
-            </Heading>
-            <Text data-testid="w3m-address">{address}</Text>
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Chain Id
-            </Heading>
-            <Text data-testid="w3m-chain-id">{chainId}</Text>
-          </Box>
-
-          {clientId && (
+          {caipAddress ? (
             <Box>
               <Heading size="xs" textTransform="uppercase" pb="2">
-                Relay Client ID
+                CAIP Address
               </Heading>
-              <Text data-testid="w3m-chain-id">{clientId}</Text>
+              <Text data-testid="w3m-caip-address">{caipAddress}</Text>
+            </Box>
+          ) : null}
+
+          {erc3770Address && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Specific Address (ERC-3770)
+              </Heading>
+              <Text data-testid="w3m-erc3770-address">{erc3770Address}</Text>
             </Box>
           )}
+
+          {address ? (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Address
+              </Heading>
+              <Text data-testid="w3m-address">{address}</Text>
+            </Box>
+          ) : null}
+
+          {chainId !== undefined && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Id
+              </Heading>
+              <Text data-testid="w3m-chain-id">{chainId}</Text>
+            </Box>
+          )}
+
+          {embeddedWalletInfo && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Embedded Wallet Info
+              </Heading>
+              <Text data-testid="w3m-embedded-wallet-info">
+                {JSON.stringify(embeddedWalletInfo, null, 2)}
+              </Text>
+            </Box>
+          )}
+
+          <RelayClientInfo />
 
           <EmbeddedWalletInfo />
         </Stack>

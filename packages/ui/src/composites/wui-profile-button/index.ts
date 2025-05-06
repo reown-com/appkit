@@ -1,16 +1,17 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import '../../components/wui-icon/index.js'
-import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
+import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
-import '../wui-avatar/index.js'
-import '../wui-icon-box/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-avatar/index.js'
+import '../wui-icon-box/index.js'
+import styles from './styles.js'
 
 @customElement('wui-profile-button')
 export class WuiProfileButton extends LitElement {
@@ -29,7 +30,7 @@ export class WuiProfileButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<button ontouchstart data-testid="wui-profile-button">
+    return html`<button data-testid="wui-profile-button">
       <wui-flex gap="xs" alignItems="center">
         <wui-avatar
           .imageSrc=${this.avatarSrc}

@@ -1,21 +1,24 @@
-import { describe, expect, vi, test, beforeEach } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
-import type { W3mProfileView } from '../../src/views/w3m-profile-view'
+
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
+  type AccountType,
+  type AuthConnector,
   ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
-  SnackController,
-  type AccountType,
-  type AuthConnector
-} from '@reown/appkit-core'
-import type { ChainNamespace } from '@reown/appkit-common'
+  SnackController
+} from '@reown/appkit-controllers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
+
+import type { W3mProfileView } from '../../src/views/w3m-profile-view'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const TEST_ADDRESS = '0x123...789'
@@ -60,8 +63,11 @@ describe('W3mProfileView - Render', () => {
       allAccounts: TEST_ACCOUNTS,
       addressLabels: new Map()
     })
-
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(MOCK_CHAIN_STATE)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   test('should render profile information correctly', async () => {
@@ -166,14 +172,18 @@ describe('W3mProfileView - Functions', () => {
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...MOCK_CHAIN_STATE,
-      activeChain: switchAccount.namespace
+      activeChain: switchAccount.namespace,
+      activeCaipNetwork: {
+        chainNamespace: switchAccount.namespace,
+        chainId: '1'
+      } as unknown as CaipNetwork
     })
 
     await (element as any).onSwitchAccount(switchAccount)
 
     await new Promise(resolve => setTimeout(resolve, 0))
 
-    expect(setPreferredAccountTypeMock).toHaveBeenCalledWith('eoa')
+    expect(setPreferredAccountTypeMock).toHaveBeenCalledWith('eoa', switchAccount.namespace)
     expect(setShouldUpdateToAddressMock).toHaveBeenCalledWith(
       switchAccount.address,
       switchAccount.namespace

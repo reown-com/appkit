@@ -1,14 +1,20 @@
-import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
+import { Connection, LAMPORTS_PER_SOL, PublicKey, clusterApiUrl } from '@solana/web3.js'
 import { useQuery } from '@tanstack/react-query'
 import Big from 'big.js'
 import { Address, formatEther } from 'viem'
 import { useBalance as useWagmiBalance } from 'wagmi'
 
-export function useBalance(chain: 'ethereum' | 'solana', account: string) {
+import { ChainNamespace } from '@reown/appkit-common'
+
+import { BitcoinProvider } from '../core/BitcoinProvider'
+
+const bitcoinProvider = new BitcoinProvider()
+
+export function useBalance(chain: ChainNamespace, account: string) {
   const { data: ethereumBalance } = useWagmiBalance({
     address: account as Address,
     query: {
-      enabled: chain === 'ethereum'
+      enabled: chain === 'eip155'
     }
   })
 
@@ -25,7 +31,18 @@ export function useBalance(chain: 'ethereum' | 'solana', account: string) {
     enabled: chain === 'solana'
   })
 
-  return chain === 'ethereum'
-    ? formatEther(ethereumBalance?.value ?? BigInt(0))
-    : solanaBalance.toString()
+  function getBalance() {
+    switch (chain) {
+      case 'eip155':
+        return formatEther(ethereumBalance?.value ?? BigInt(0))
+      case 'solana':
+        return solanaBalance.toString()
+      case 'bip122':
+        return bitcoinProvider.getBalance(account).toString()
+      default:
+        return '0'
+    }
+  }
+
+  return getBalance()
 }

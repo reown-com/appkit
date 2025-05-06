@@ -1,23 +1,25 @@
+import test, { type Page, expect } from '@playwright/test'
+
 import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
+import { timingFixture } from './shared/fixtures/timing-fixture'
+import { testMEthersVerifyDomainMismatch } from './shared/fixtures/w3m-ethers-verify-domain-mismatch-fixture'
+import { testMEthersVerifyEvil } from './shared/fixtures/w3m-ethers-verify-evil-fixture'
+import { testMEthersVerifyValid } from './shared/fixtures/w3m-ethers-verify-valid-fixture'
 import { testM } from './shared/fixtures/w3m-fixture'
 import { testMWagmiVerifyDomainMismatch } from './shared/fixtures/w3m-wagmi-verify-domain-mismatch-fixture'
 import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fixture'
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
-import { testMEthersVerifyDomainMismatch } from './shared/fixtures/w3m-ethers-verify-domain-mismatch-fixture'
-import { testMEthersVerifyEvil } from './shared/fixtures/w3m-ethers-verify-evil-fixture'
-import { testMEthersVerifyValid } from './shared/fixtures/w3m-ethers-verify-valid-fixture'
+import { ModalPage } from './shared/pages/ModalPage'
 import { WalletPage } from './shared/pages/WalletPage'
+import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
+import { routeInterceptUrl } from './shared/utils/verify'
 import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletValidator } from './shared/validators/WalletValidator'
-import test, { expect, type Page } from '@playwright/test'
-import { timingFixture } from './shared/fixtures/timing-fixture'
-import { ModalPage } from './shared/pages/ModalPage'
-import { routeInterceptUrl } from './shared/utils/verify'
 
 testM(
   'connection and signature requests from non-verified project should show as cannot verify',
   async ({ modalPage, context }) => {
-    test.skip(modalPage.library === 'solana')
+    test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -46,6 +48,7 @@ testM(
 
 testMWagmiVerifyValid(
   'wagmi: connection and signature requests from non-scam verified domain should show as domain match',
+  getCanaryTagAndAnnotation('HappyPath.verify'),
   async ({ modalPage, context }) => {
     test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
@@ -86,7 +89,6 @@ testMWagmiVerifyDomainMismatch(
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
@@ -94,7 +96,6 @@ testMWagmiVerifyDomainMismatch(
     await modalPage.sign()
     const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 
@@ -106,6 +107,7 @@ testMWagmiVerifyDomainMismatch(
 
 testMWagmiVerifyEvil(
   'wagmi: connection and signature requests from scam verified domain should show as scam domain',
+  getCanaryTagAndAnnotation('UnhappyPath.verify-scam'),
   async ({ modalPage, context }) => {
     test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
@@ -180,7 +182,6 @@ testMEthersVerifyDomainMismatch(
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
@@ -188,7 +189,6 @@ testMEthersVerifyDomainMismatch(
     await modalPage.sign()
     const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 

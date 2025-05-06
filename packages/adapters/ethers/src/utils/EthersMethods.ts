@@ -3,21 +3,19 @@ import {
   BrowserProvider,
   Contract,
   JsonRpcSigner,
-  InfuraProvider,
-  isHexString,
+  formatUnits,
   hexlify,
-  toUtf8Bytes,
+  isHexString,
   parseUnits,
-  formatUnits
+  toUtf8Bytes
 } from 'ethers'
+
 import type {
   EstimateGasTransactionArgs,
   Provider,
   SendTransactionArgs,
   WriteContractArgs
-} from '@reown/appkit-core'
-import { isReownName, type CaipNetwork } from '@reown/appkit-common'
-import { WcHelpersUtil } from '@reown/appkit'
+} from '@reown/appkit-controllers'
 
 export const EthersMethods = {
   signMessage: async (message: string, provider: Provider, address: string) => {
@@ -115,39 +113,6 @@ export const EthersMethods = {
       return await method(...data.args)
     }
     throw new Error('Contract method is undefined')
-  },
-
-  getEnsAddress: async (value: string, caipNetwork: CaipNetwork) => {
-    try {
-      const chainId = Number(caipNetwork.id)
-      let ensName: string | null = null
-      let wcName: boolean | string = false
-
-      if (isReownName(value)) {
-        wcName = (await WcHelpersUtil.resolveReownName(value)) || false
-      }
-
-      // If on mainnet, fetch from ENS
-      if (chainId === 1) {
-        const ensProvider = new InfuraProvider('mainnet')
-        ensName = await ensProvider.resolveName(value)
-      }
-
-      return ensName || wcName || false
-    } catch {
-      return false
-    }
-  },
-
-  getEnsAvatar: async (value: string, chainId: number) => {
-    if (chainId === 1) {
-      const ensProvider = new InfuraProvider('mainnet')
-      const avatar = await ensProvider.getAvatar(value)
-
-      return avatar || false
-    }
-
-    return false
   },
 
   parseWalletCapabilities: (str: string) => {

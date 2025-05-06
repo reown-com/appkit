@@ -1,8 +1,10 @@
 import { Grid, Heading, useRadioGroup } from '@chakra-ui/react'
-import { colors } from '../../utils/DataUtil'
-import RadioColor from './RadioColor'
-import { ThemeStore } from '../../utils/StoreUtil'
 import { useProxy } from 'valtio/utils'
+
+import { colors } from '@/src/utils/DataUtil'
+import { ThemeStore } from '@/src/utils/StoreUtil'
+
+import RadioColor from './RadioColor'
 
 export default function AccentColorInput() {
   const state = useProxy(ThemeStore.state)

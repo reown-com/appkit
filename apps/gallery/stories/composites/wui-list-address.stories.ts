@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-list-token'
-import type { WuiListAccount } from '@reown/appkit-ui/src/composites/wui-list-account'
+
 import { html } from 'lit'
+
+import type { WuiListAccount } from '@reown/appkit-ui/src/composites/wui-list-account'
+import '@reown/appkit-ui/src/composites/wui-list-token'
+
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'
 

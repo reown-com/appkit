@@ -3,37 +3,31 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
+  // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
   private labelTimeout?: ReturnType<typeof setTimeout> = undefined
 
+  // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-mobile: No wallet provided')
     }
-    this.secondaryBtnLabel = undefined
-    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
-    this.onConnect = this.onConnectProxy.bind(this)
-    this.onRender = this.onRenderProxy.bind(this)
+
+    this.initializeStateAndTimers()
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
       properties: { name: this.wallet.name, platform: 'mobile' }
     })
-    this.btnLabelTimeout = setTimeout(() => {
-      this.secondaryBtnLabel = 'Try again'
-      this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
-    }, ConstantsUtil.FIVE_SEC_MS)
-    this.labelTimeout = setTimeout(() => {
-      this.secondaryLabel = `Hold tight... it's taking longer than expected`
-    }, ConstantsUtil.THREE_SEC_MS)
   }
 
   public override disconnectedCallback() {
@@ -44,14 +38,30 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   // -- Private ------------------------------------------- //
-  private onRenderProxy() {
+
+  private initializeStateAndTimers() {
+    // Reset labels to initial state
+    this.secondaryBtnLabel = undefined
+    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+
+    // Start timeouts
+    this.btnLabelTimeout = setTimeout(() => {
+      this.secondaryBtnLabel = 'Try again'
+      this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+    }, ConstantsUtil.FIVE_SEC_MS)
+    this.labelTimeout = setTimeout(() => {
+      this.secondaryLabel = `Hold tight... it's taking longer than expected`
+    }, ConstantsUtil.THREE_SEC_MS)
+  }
+
+  protected override onRender = () => {
     if (!this.ready && this.uri) {
       this.ready = true
       this.onConnect?.()
     }
   }
 
-  private onConnectProxy() {
+  protected override onConnect = () => {
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
@@ -86,6 +96,21 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       setTimeout(() => {
         ConnectionController.setBuffering(false)
       }, 5000)
+    }
+  }
+
+  protected override onTryAgain() {
+    if (!this.buffering) {
+      // Clear existing timeouts
+      clearTimeout(this.btnLabelTimeout)
+      clearTimeout(this.labelTimeout)
+
+      // Restart state and timers
+      this.initializeStateAndTimers()
+
+      // Reset error state and attempt connection again
+      ConnectionController.setWcError(false)
+      this.onConnect()
     }
   }
 }

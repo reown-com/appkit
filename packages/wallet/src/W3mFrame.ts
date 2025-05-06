@@ -1,8 +1,9 @@
-import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
-import { W3mFrameSchema } from './W3mFrameSchema.js'
-import { W3mFrameHelpers } from './W3mFrameHelpers.js'
-import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { ConstantsUtil } from '@reown/appkit-common'
+
+import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameHelpers } from './W3mFrameHelpers.js'
+import { W3mFrameSchema } from './W3mFrameSchema.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 type EventKey = typeof W3mFrameConstants.APP_EVENT_KEY | typeof W3mFrameConstants.FRAME_EVENT_KEY
 
@@ -20,6 +21,8 @@ interface W3mFrameConfig {
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
   private iframe: HTMLIFrameElement | null = null
+
+  public iframeIsReady = false
 
   private projectId: string
 
@@ -58,6 +61,7 @@ export class W3mFrame {
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
+        iframe.style.border = 'none'
         iframe.style.animationDelay = '0s, 50ms'
         iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
@@ -68,6 +72,7 @@ export class W3mFrame {
 
         this.events.onFrameEvent(event => {
           if (event.type === '@w3m-frame/READY') {
+            this.iframeIsReady = true
             this.frameLoadPromiseResolver?.resolve(undefined)
           }
         })

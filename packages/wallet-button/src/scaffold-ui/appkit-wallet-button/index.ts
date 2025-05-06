@@ -1,19 +1,22 @@
 import { LitElement, html } from 'lit'
-import { customElement } from '@reown/appkit-ui'
 import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetUtil,
   ChainController,
-  ConnectorController,
   type Connector,
+  ConnectorController,
   ModalController
-} from '@reown/appkit-core'
-import type { SocialProvider, Wallet } from '../../utils/TypeUtil.js'
+} from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-wallet-button'
+
 import { ApiController } from '../../controllers/ApiController.js'
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import type { SocialProvider, Wallet } from '../../utils/TypeUtil.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('appkit-wallet-button')
 export class AppKitWalletButton extends LitElement {
@@ -68,6 +71,10 @@ export class AppKitWalletButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.wallet === 'email') {
+      return this.emailTemplate()
+    }
+
     if (ConstantsUtil.Socials.some(social => social === this.wallet)) {
       return this.socialTemplate()
     }
@@ -160,6 +167,25 @@ export class AppKitWalletButton extends LitElement {
           .finally(() => (this.loading = false))
       }}
       .icon=${this.wallet}
+      ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
+      ?loading=${this.loading || this.modalLoading}
+      ?error=${this.error}
+    ></wui-wallet-button>`
+  }
+
+  private emailTemplate() {
+    return html`<wui-wallet-button
+      data-testid="apkt-wallet-button-email"
+      name=${this.modalLoading ? 'Loading...' : 'Email'}
+      @click=${async () => {
+        this.loading = true
+        this.error = false
+        await ConnectorUtil.connectEmail()
+          .catch(() => (this.error = true))
+          .finally(() => (this.loading = false))
+      }}
+      .icon=${'mail'}
+      .iconSize=${'lg'}
       ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
       ?loading=${this.loading || this.modalLoading}
       ?error=${this.error}

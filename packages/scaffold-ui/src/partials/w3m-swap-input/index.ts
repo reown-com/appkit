@@ -1,13 +1,19 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
+import { InputUtil, NumberUtil } from '@reown/appkit-common'
 import {
   EventsController,
   RouterController,
-  type SwapToken,
-  type SwapInputTarget
-} from '@reown/appkit-core'
-import { InputUtil, NumberUtil } from '@reown/appkit-common'
+  type SwapInputTarget,
+  type SwapToken
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-token-button'
+
 import styles from './styles.js'
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005
@@ -42,7 +48,7 @@ export class W3mSwapInput extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const marketValue = this.marketValue || '0'
-    const isMarketValueGreaterThanZero = NumberUtil.bigNumber(marketValue).isGreaterThan('0')
+    const isMarketValueGreaterThanZero = NumberUtil.bigNumber(marketValue).gt('0')
 
     return html`
       <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
@@ -78,10 +84,8 @@ export class W3mSwapInput extends LitElement {
 
   // -- Private ------------------------------------------- //
   private handleKeydown(event: KeyboardEvent) {
-    return InputUtil.numericInputKeyDown(
-      event,
-      this.value,
-      (value: string) => this.onSetAmount?.(this.target, value)
+    return InputUtil.numericInputKeyDown(event, this.value, (value: string) =>
+      this.onSetAmount?.(this.target, value)
     )
   }
 
@@ -141,7 +145,7 @@ export class W3mSwapInput extends LitElement {
   private tokenBalanceTemplate() {
     const balanceValueInUSD = NumberUtil.multiply(this.balance, this.price)
     const haveBalance = balanceValueInUSD
-      ? balanceValueInUSD?.isGreaterThan(MINIMUM_USD_VALUE_TO_CONVERT)
+      ? balanceValueInUSD?.gt(MINIMUM_USD_VALUE_TO_CONVERT)
       : false
 
     return html`

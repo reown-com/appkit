@@ -1,12 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { WalletUtil } from '../src/utils/WalletUtil'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
-import type { WcWallet } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { WcWallet } from '@reown/appkit-controllers'
+
+import { WalletUtil } from '../src/utils/WalletUtil'
 
 // Connectors
 const mockMetamaskConnector = {

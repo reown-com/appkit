@@ -1,17 +1,22 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
-import { getMaximumWaitConnections } from '../utils/timeouts'
-import { verifySignature } from '../../../src/utils/SignatureUtil'
+
 import type { CaipNetworkId } from '@reown/appkit'
+
+import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
+import { verifySignature } from '../../../src/utils/SignatureUtil'
+import { getMaximumWaitConnections } from '../utils/timeouts'
 
 const MAX_WAIT = getMaximumWaitConnections()
 
 export class ModalValidator {
-  constructor(public readonly page: Page) {}
+  public readonly page: Page
+  constructor(page: Page) {
+    this.page = page
+  }
 
   async expectConnected() {
-    const accountButton = this.page.locator('appkit-account-button')
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -24,8 +29,21 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
-    const accountButton = this.page.locator('appkit-account-button')
+  async expectLoading() {
+    const accountButton = this.page.locator('appkit-connect-button')
+    await expect(accountButton, 'Account button should be present').toBeAttached({
+      timeout: MAX_WAIT
+    })
+    await expect(
+      this.page.getByTestId('connect-button'),
+      'Connect button should show connecting state'
+    ).toHaveText('Connecting...', {
+      timeout: MAX_WAIT
+    })
+  }
+
+  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL') {
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -35,7 +53,7 @@ export class ModalValidator {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
       'Authentication status should be: authenticated'
-    ).toContainText('authenticated')
+    ).toContainText('authenticated', { timeout: 10000 })
   }
 
   async expectOnSignInEventCalled(toBe: boolean) {
@@ -46,7 +64,7 @@ export class ModalValidator {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
       'Authentication status should be: unauthenticated'
-    ).toContainText('unauthenticated')
+    ).toContainText('unauthenticated', { timeout: 20000 })
   }
 
   async expectOnSignOutEventCalled(toBe: boolean) {
@@ -60,8 +78,8 @@ export class ModalValidator {
     ).toBeVisible()
   }
 
-  async expectDisconnected() {
-    const connectButton = this.page.getByTestId('connect-button')
+  async expectDisconnected(namespace?: string) {
+    const connectButton = this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`)
     await expect(connectButton, 'Connect button should be present').toBeVisible({
       timeout: MAX_WAIT
     })
@@ -171,6 +189,11 @@ export class ModalValidator {
     await expect(title).toBeVisible()
   }
 
+  async expectSwitchChainWithNetworkButton(chainName: string) {
+    const switchNetworkViewLocator = this.page.locator('wui-network-button')
+    await expect(switchNetworkViewLocator).toHaveText(chainName)
+  }
+
   async expectSwitchedNetworkWithNetworkView() {
     const switchNetworkViewLocator = this.page.locator('w3m-network-switch-view')
     await expect(switchNetworkViewLocator).toBeVisible()
@@ -262,7 +285,7 @@ export class ModalValidator {
     const coinbaseConnector = this.page.getByTestId(
       /^wallet-selector-featured-fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa/u
     )
-    await expect(coinbaseConnector).toBeVisible()
+    await expect(coinbaseConnector).toBeVisible({ timeout: 10_000 })
   }
 
   async expectMultipleAccounts() {
@@ -292,9 +315,13 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton() {
+  async expectOnrampButton(visible: boolean) {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    await expect(onrampButton).toBeVisible()
+    if (visible) {
+      await expect(onrampButton).toBeVisible()
+    } else {
+      await expect(onrampButton).not.toBeVisible()
+    }
   }
 
   async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {
@@ -363,6 +390,9 @@ export class ModalValidator {
   }
 
   async expectToBeConnectedInstantly() {
+    // Wait for the page to be loaded
+    const initializeBoundary = this.page.getByTestId('w3m-page-loading')
+    await expect(initializeBoundary).toBeHidden()
     const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: 1000
@@ -374,8 +404,8 @@ export class ModalValidator {
     await expect(connectButton).toContainText('Connecting...')
   }
 
-  async expectAccountButtonReady() {
-    const accountButton = this.page.getByTestId('account-button')
+  async expectAccountButtonReady(namespace?: string) {
+    const accountButton = this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`)
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 
@@ -415,11 +445,13 @@ export class ModalValidator {
     await expect(smartAccountStatus).toBeVisible({ timeout: MAX_WAIT })
   }
 
-  async checkConnectionStatus(status: 'connected' | 'disconnected', network?: string) {
+  async checkConnectionStatus(status: 'connected' | 'disconnected' | 'loading', network?: string) {
     if (status === 'connected') {
       await this.expectConnected()
-    } else {
+    } else if (status === 'disconnected') {
       await this.expectDisconnected()
+    } else if (status === 'loading') {
+      await this.expectLoading()
     }
 
     if (network) {

@@ -1,21 +1,28 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
-  ConnectionController,
   ConnectorController,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
   SIWXUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-select'
+import '@reown/appkit-ui/wui-tag'
+import '@reown/appkit-ui/wui-text'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
@@ -46,6 +53,7 @@ function headings() {
     ConvertSelectToken: 'Select token',
     ConvertPreview: 'Preview convert',
     Downloads: name ? `Get ${name}` : 'Downloads',
+    EmailLogin: 'Email Login',
     EmailVerifyOtp: 'Confirm Email',
     EmailVerifyDevice: 'Register Device',
     GetWallet: 'Get a wallet',
@@ -54,6 +62,7 @@ function headings() {
     OnRampActivity: 'Activity',
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
+    Pay: 'How you pay',
     Profile: undefined,
     SwitchNetwork: networkName ?? 'Switch Network',
     SwitchAddress: 'Switch Address',
@@ -86,7 +95,8 @@ function headings() {
     SwitchActiveChain: 'Switch chain',
     SmartSessionCreated: undefined,
     SmartSessionList: 'Smart Sessions',
-    SIWXSignMessage: 'Sign In'
+    SIWXSignMessage: 'Sign In',
+    PayLoading: 'Payment in progress'
   }
 }
 
@@ -102,7 +112,7 @@ export class W3mHeader extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private buffering = false
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
   @state() private showBack = false
 
@@ -117,6 +127,9 @@ export class W3mHeader extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
+      AssetController.subscribeNetworkImages(() => {
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      }),
       RouterController.subscribeKey('view', val => {
         setTimeout(() => {
           this.view = val
@@ -125,8 +138,10 @@ export class W3mHeader extends LitElement {
         this.onViewChange()
         this.onHistoryChange()
       }),
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.network = val
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      })
     )
   }
 
@@ -157,7 +172,7 @@ export class W3mHeader extends LitElement {
     if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
       ModalController.shake()
     } else {
-      ModalController.close()
+      ModalController.close(true)
     }
   }
 
@@ -181,7 +196,6 @@ export class W3mHeader extends LitElement {
   private closeButtonTemplate() {
     return html`
       <wui-icon-link
-        ?disabled=${this.buffering}
         icon="close"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
@@ -214,17 +228,18 @@ export class W3mHeader extends LitElement {
     const isApproveTransaction = view === 'ApproveTransaction'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
     const isAccountView = view === 'Account'
+    const enableNetworkSwitch = OptionsController.state.enableNetworkSwitch
 
     const shouldHideBack =
       isApproveTransaction || isConnectingSIWEView || (isConnectHelp && isEmbeddedEnable)
 
-    if (isAccountView) {
+    if (isAccountView && enableNetworkSwitch) {
       return html`<wui-select
         id="dynamic"
         data-testid="w3m-account-select-network"
         active-network=${ifDefined(this.network?.name)}
         @click=${this.onNetworks.bind(this)}
-        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
+        imageSrc=${ifDefined(this.networkImage)}
       ></wui-select>`
     }
 
@@ -233,7 +248,6 @@ export class W3mHeader extends LitElement {
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
-        ?disabled=${this.buffering}
         @click=${this.onGoBack.bind(this)}
       ></wui-icon-link>`
     }

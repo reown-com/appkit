@@ -1,23 +1,27 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
+  AlertController,
   ChainController,
   ConnectorController,
   ConstantsUtil,
-  CoreHelperUtil,
-  EventsController,
   OptionsController,
   RouterController,
-  SnackController,
   type SocialProvider,
   type WalletGuideType
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import { executeSocialLogin } from '@reown/appkit-controllers/utils'
+import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state, property } from 'lit/decorators.js'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-social'
+import '@reown/appkit-ui/wui-logo-select'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { SocialProviderEnum } from '@reown/appkit-utils'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6
@@ -28,8 +32,6 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
-
-  private popupWindow?: Window | null
 
   // -- State & Properties -------------------------------- //
   @property() public walletGuide: WalletGuideType = 'get-started'
@@ -42,6 +44,8 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
+  @state() private isPwaLoading = false
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -51,6 +55,11 @@ export class W3mSocialLoginWidget extends LitElement {
       }),
       OptionsController.subscribeKey('features', val => (this.features = val))
     )
+  }
+
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.handlePwaFrameLoad()
   }
 
   public override disconnectedCallback() {
@@ -101,6 +110,7 @@ export class W3mSocialLoginWidget extends LitElement {
               }}
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
+              ?disabled=${this.isPwaLoading}
             ></wui-logo-select>`
         )}
       </wui-flex>`
@@ -115,6 +125,7 @@ export class W3mSocialLoginWidget extends LitElement {
       align="center"
       name=${`Continue with ${socials[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
+      ?disabled=${this.isPwaLoading}
     ></wui-list-social>`
   }
 
@@ -146,12 +157,15 @@ export class W3mSocialLoginWidget extends LitElement {
               }}
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
+              ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
+              ?disabled=${this.isPwaLoading}
             ></wui-logo-select>`
         )}
         <wui-logo-select
           logo="more"
           tabIdx=${ifDefined(this.tabIdx)}
           @click=${this.onMoreSocialsClick.bind(this)}
+          ?disabled=${this.isPwaLoading}
         ></wui-logo-select>
       </wui-flex>`
     }
@@ -170,6 +184,8 @@ export class W3mSocialLoginWidget extends LitElement {
             }}
             logo=${social}
             tabIdx=${ifDefined(this.tabIdx)}
+            ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
+            ?disabled=${this.isPwaLoading}
           ></wui-logo-select>`
       )}
     </wui-flex>`
@@ -181,58 +197,46 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
-    if (socialProvider) {
-      AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
+    const isAvailableChain = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
+      chain => chain === ChainController.state.activeChain
+    )
 
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SOCIAL_LOGIN_STARTED',
-        properties: { provider: socialProvider }
-      })
-    }
-    if (socialProvider === SocialProviderEnum.Farcaster) {
-      RouterController.push('ConnectingFarcaster')
-      const authConnector = ConnectorController.getAuthConnector()
+    if (!isAvailableChain) {
+      /**
+       * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
+       * This will redirect us to SwitchNetwork screen and back to the current screen again
+       */
+      const caipNetwork = ChainController.getFirstCaipNetworkSupportsAuthConnector()
 
-      if (authConnector) {
-        if (!AccountController.state.farcasterUrl) {
-          try {
-            const { url } = await authConnector.provider.getFarcasterUri()
+      if (caipNetwork) {
+        RouterController.push('SwitchNetwork', { network: caipNetwork })
 
-            AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
-          } catch (error) {
-            RouterController.goBack()
-            SnackController.showError(error)
-          }
-        }
+        return
       }
-    } else {
-      RouterController.push('ConnectingSocial')
+    }
 
-      const authConnector = ConnectorController.getAuthConnector()
-      this.popupWindow = CoreHelperUtil.returnOpenHref(
-        '',
-        'popupWindow',
-        'width=600,height=800,scrollbars=yes'
-      )
+    if (socialProvider) {
+      await executeSocialLogin(socialProvider)
+    }
+  }
 
+  private async handlePwaFrameLoad() {
+    if (CoreHelperUtil.isPWA()) {
+      this.isPwaLoading = true
       try {
-        if (authConnector && socialProvider) {
-          const { uri } = await authConnector.provider.getSocialRedirectUri({
-            provider: socialProvider
-          })
-
-          if (this.popupWindow && uri) {
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-            this.popupWindow.location.href = uri
-          } else {
-            this.popupWindow?.close()
-            throw new Error('Something went wrong')
-          }
+        if (this.authConnector?.provider instanceof W3mFrameProvider) {
+          await this.authConnector.provider.init()
         }
       } catch (error) {
-        this.popupWindow?.close()
-        SnackController.showError('Something went wrong')
+        AlertController.open(
+          {
+            shortMessage: 'Error loading embedded wallet in PWA',
+            longMessage: (error as Error).message
+          },
+          'error'
+        )
+      } finally {
+        this.isPwaLoading = false
       }
     }
   }

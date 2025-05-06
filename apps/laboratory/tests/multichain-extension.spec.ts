@@ -1,6 +1,8 @@
+import { getNamespaceByNetworkName } from '@/tests/shared/utils/namespace'
+
+import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { extensionFixture } from './shared/fixtures/extension-fixture'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -17,14 +19,16 @@ const PATH_FOR_LIBRARIES = {
 async function reloadAndSign(network: string) {
   await modalPage.page.reload()
   await modalValidator.checkConnectionStatus('connected', network)
-  await modalPage.signMessageAndTypedData(modalValidator, network)
+  await modalPage.signMessageAndTypedData(modalValidator, network, 'eip155')
 }
 
 async function switchNetworkAndSign(network: string) {
+  const namespace = getNamespaceByNetworkName(network)
+
   await modalPage.switchNetwork(network, true)
   await modalValidator.checkConnectionStatus('connected', network)
   await modalPage.closeModal()
-  await modalPage.signMessageAndTypedData(modalValidator, network)
+  await modalPage.signMessageAndTypedData(modalValidator, network, namespace)
 }
 
 // -- Setup --------------------------------------------------------------------
@@ -61,24 +65,16 @@ extensionTest('it should connect', async () => {
   await modalValidator.expectConnected()
 })
 
-extensionTest('it should switch networks and sign', async ({ library }) => {
+extensionTest('it should switch networks and sign', async () => {
   let network = 'Polygon'
 
   await modalPage.switchNetwork(network, true)
-  await modalValidator.checkConnectionStatus('disconnected', network)
+  await modalPage.switchActiveChain()
+  await modalValidator.checkConnectionStatus('loading', network)
 
-  /*
-   * Wagmi is the only EVM adapter that remembers the last connected network after connection.
-   * Other adapters defaults to Ethereum as they don't sync the latest connected network.
-   */
-  if (library !== 'wagmi') {
-    network = 'Ethereum'
-  }
-
-  await modalPage.connectToExtensionMultichain('eip155')
+  await modalPage.connectToExtensionMultichain('eip155', true, true)
   await modalValidator.checkConnectionStatus('connected', network)
 
-  network = 'Polygon'
   await switchNetworkAndSign(network)
   await reloadAndSign(network)
 

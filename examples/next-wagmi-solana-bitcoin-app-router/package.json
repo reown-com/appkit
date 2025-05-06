@@ -1,0 +1,33 @@
+{
+  "name": "@examples/next-wagmi-solana-bitcoin-app-router",
+  "version": "1.0.5",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
+    "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@tanstack/react-query": "5.67.1",
+    "@wagmi/core": "2.16.7",
+    "next": "14.2.28",
+    "next-themes": "0.4.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "viem": "2.23.13",
+    "wagmi": "2.14.16"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.4",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "esbuild": "0.25.1",
+    "eslint-config-next": "14.1.0",
+    "typescript": "5.7.3"
+  }
+}

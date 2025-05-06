@@ -1,8 +1,11 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-link'
-import type { WuiLink } from '@reown/appkit-ui/src/composites/wui-link'
-import type { IconType } from '@reown/appkit-ui/src/utils/TypesUtil'
+
 import { html } from 'lit'
+
+import type { IconType } from '@reown/appkit-ui'
+import '@reown/appkit-ui/src/composites/wui-link'
+import type { WuiLink } from '@reown/appkit-ui/wui-link'
+
 import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLink & { iconLeft?: IconType; iconRight?: IconType }>

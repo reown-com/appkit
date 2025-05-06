@@ -1,11 +1,16 @@
-import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+
+import type { WcWallet } from '@reown/appkit-controllers'
+import { ApiController, ConnectorController, CoreHelperUtil } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-card-select-loader'
+import '@reown/appkit-ui/wui-grid'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import '../w3m-all-wallets-list-item/index.js'
+import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'local-paginator'
@@ -28,13 +33,16 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private featured = ApiController.state.featured
 
+  @state() private filteredWallets = ApiController.state.filteredWallets
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
         ApiController.subscribeKey('wallets', val => (this.wallets = val)),
         ApiController.subscribeKey('recommended', val => (this.recommended = val)),
-        ApiController.subscribeKey('featured', val => (this.featured = val))
+        ApiController.subscribeKey('featured', val => (this.featured = val)),
+        ApiController.subscribeKey('filteredWallets', val => (this.filteredWallets = val))
       ]
     )
   }
@@ -70,7 +78,7 @@ export class W3mAllWalletsList extends LitElement {
     this.loading = true
     const gridEl = this.shadowRoot?.querySelector('wui-grid')
     if (gridEl) {
-      await ApiController.fetchWallets({ page: 1 })
+      await ApiController.fetchWalletsByPage({ page: 1 })
       await gridEl.animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: 200,
         fill: 'forwards',
@@ -94,7 +102,13 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const wallets = [...this.featured, ...this.recommended, ...this.wallets]
+    const wallets =
+      this.filteredWallets?.length > 0
+        ? CoreHelperUtil.uniqueBy(
+            [...this.featured, ...this.recommended, ...this.filteredWallets],
+            'id'
+          )
+        : CoreHelperUtil.uniqueBy([...this.featured, ...this.recommended, ...this.wallets], 'id')
     const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(wallets)
 
     return walletsWithInstalled.map(
@@ -133,7 +147,7 @@ export class W3mAllWalletsList extends LitElement {
         if (element?.isIntersecting && !this.loading) {
           const { page, count, wallets } = ApiController.state
           if (wallets.length < count) {
-            ApiController.fetchWallets({ page: page + 1 })
+            ApiController.fetchWalletsByPage({ page: page + 1 })
           }
         }
       })
@@ -142,12 +156,7 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
-    }
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 
