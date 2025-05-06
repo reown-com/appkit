@@ -1,9 +1,10 @@
 import { test } from '@playwright/test'
 
-import { NETWORK_OPTIONS } from '@/lib/constants'
+import { NETWORK_OPTIONS } from '@/lib/networks'
 
 import { DemoPage } from './pages/DemoPage'
 
+// eslint-disable-next-line init-declarations
 let demoPage: DemoPage
 
 test.describe.configure({ mode: 'serial' })
@@ -25,7 +26,7 @@ test.afterAll(async () => {
 })
 
 // Test case 1: Disable chain with chain option
-test('Disable chain with chain option', async ({}) => {
+test('Disable chain with chain option', async () => {
   // Open networks page on AppKit
   await demoPage.openNetworks()
 
@@ -45,7 +46,7 @@ test('Disable chain with chain option', async ({}) => {
 })
 
 // Test case 2: Disable chain with network option
-test('Disable chain with network option', async ({}) => {
+test('Disable chain with network option', async () => {
   // Open networks page on AppKit
   await demoPage.openNetworks()
 
@@ -75,7 +76,7 @@ test('Disable chain with network option', async ({}) => {
 })
 
 // Test case 3: Refresh page keeps state
-test('Refresh page keeps state', async ({}) => {
+test('Refresh page keeps state', async () => {
   // Refresh the page
   await demoPage.page.reload()
 
