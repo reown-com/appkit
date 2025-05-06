@@ -1,6 +1,15 @@
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import type { AppKit } from '../client/appkit.js'
 
+// Unified method for fetching balance for vue/react
+export async function _internalFetchBalance(appKit: AppKit | undefined) {
+  if (!appKit) {
+    throw new Error('AppKit not initialized when fetchBalance was called.')
+  }
+
+  return await updateBalance(appKit)
+}
+
 export async function updateBalance(appKit: AppKit): Promise<{
   data: AdapterBlueprint.GetBalanceResult | undefined
   error: string | null
