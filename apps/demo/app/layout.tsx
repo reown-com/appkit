@@ -1,7 +1,6 @@
 import { GoogleTagManager } from '@next/third-parties/google'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import { headers } from 'next/headers'
 import Script from 'next/script'
 
 import { khTeka } from '@/lib/fonts'
@@ -67,14 +66,12 @@ export const metadata: Metadata = {
   }
 }
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const cookies = headers().get('cookie')
-
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(khTeka.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <AppKitProvider cookies={cookies}>
+          <AppKitProvider>
             <ContextProvider>{children}</ContextProvider>
           </AppKitProvider>
         </ThemeProvider>

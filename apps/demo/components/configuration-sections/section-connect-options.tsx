@@ -1,9 +1,9 @@
 'use client'
 
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { type UniqueIdentifier } from '@dnd-kit/core'
 import dynamic from 'next/dynamic'
 
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
+import { type ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
 
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 import { FeatureButton } from '@/components/feature-button'
@@ -53,11 +53,11 @@ const NetworkList = dynamic(
 
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
-  const collapseWallets = config.features.collapseWallets
+  const shouldCollapseWallets = config.features.collapseWallets
   const connectMethodsOrder = config.features.connectMethodsOrder
 
   function toggleCollapseWallets() {
-    updateFeatures({ collapseWallets: !collapseWallets })
+    updateFeatures({ collapseWallets: !shouldCollapseWallets })
   }
 
   function handleNewOrder(items: UniqueIdentifier[]) {
@@ -73,15 +73,15 @@ export function SectionConnectOptions() {
     switch (name) {
       case 'email':
         updateFeatures({ email: !config.features.email })
-        return
+        break
       case 'social':
         updateSocials(!config.features.socials)
-        return
+        break
       case 'wallet':
         updateEnableWallets(!config.enableWallets)
-        return
+        break
       default:
-        return
+        break
     }
   }
 
@@ -97,7 +97,7 @@ export function SectionConnectOptions() {
       <div className="text-sm text-text-secondary mt-4 mb-2">Layout options</div>
       <FeatureButton
         label="Collapse wallets"
-        isEnabled={collapseWallets}
+        isEnabled={shouldCollapseWallets}
         onClick={toggleCollapseWallets}
       />
       <div className="text-sm text-text-secondary mt-4 mb-2">Chains</div>
