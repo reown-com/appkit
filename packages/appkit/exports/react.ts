@@ -4,7 +4,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import { AppKit } from '../src/client/appkit.js'
 import { getAppKit } from '../src/library/react/index.js'
-import { fetchBalance } from '../src/utils/BalanceUtil.js'
+import { updateBalance } from '../src/utils/BalanceUtil.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 
@@ -59,16 +59,16 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
 }
 
 export function useAppKitBalance() {
-  if (!modal) {
-    throw new Error('AppKit not initialized. Please call createAppKit first.')
-  }
+  async function fetchBalance() {
+    if (!modal) {
+      throw new Error('AppKit not initialized when fetchBalance was called.')
+    }
 
-  async function updateBalance() {
-    return await modal?.fetchBalance()
+    return await updateBalance(modal)
   }
 
   return {
-    updateBalance
+    fetchBalance
   }
 }
 

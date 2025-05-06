@@ -74,8 +74,6 @@ import { UniversalAdapter } from '../universal-adapter/client.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
-i
-
 export type Adapters = Record<ChainNamespace, AdapterBlueprint>
 export interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion | AppKitSdkVersion

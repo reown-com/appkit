@@ -1,8 +1,8 @@
-import type { Balance } from '@reown/appkit-common'
-import type { AppKit } from '../client.js'
+import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
+import type { AppKit } from '../client/appkit.js'
 
-export async function fetchBalance(appKit: AppKit): Promise<{
-  data: Balance | undefined
+export async function updateBalance(appKit: AppKit): Promise<{
+  data: AdapterBlueprint.GetBalanceResult | undefined
   error: string | null
   isSuccess: boolean
   isError: boolean
