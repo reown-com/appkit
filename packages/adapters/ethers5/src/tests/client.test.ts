@@ -25,10 +25,6 @@ vi.mock('ethers', async importOriginal => {
     ...actual,
     formatEther: vi.fn(() => '1.5'),
     providers: {
-      InfuraProvider: vi.fn(() => ({
-        lookupAddress: vi.fn(),
-        getAvatar: vi.fn()
-      })),
       JsonRpcProvider: vi.fn(() => ({
         getBalance: vi.fn()
       })),
@@ -389,35 +385,6 @@ describe('Ethers5Adapter', () => {
         symbol: 'ETH'
       })
     }
-  })
-
-  describe('Ethers5Adapter -getProfile', () => {
-    beforeEach(() => {
-      vi.clearAllMocks()
-    })
-
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
-      vi.mocked(providers.InfuraProvider).mockImplementation(
-        () =>
-          ({
-            lookupAddress: vi.fn().mockResolvedValue(mockEnsName),
-            getAvatar: vi.fn().mockResolvedValue(mockAvatar)
-          }) as any
-      )
-
-      const result = await adapter.getProfile({
-        address: '0x123',
-        chainId: 1
-      })
-
-      expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
-      })
-    })
   })
 
   describe('Ethers5Adapter - switchNetwork', () => {

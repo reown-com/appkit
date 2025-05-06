@@ -1,3 +1,5 @@
+import type { EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
+
 import { W3mFrame } from './W3mFrame.js'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
@@ -11,13 +13,15 @@ interface W3mFrameProviderConfig {
   projectId: string
   chainId?: W3mFrameTypes.Network['chainId']
   enableLogger?: boolean
-  onTimeout?: () => void
+  onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
+  abortController: AbortController
 }
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   public w3mLogger?: W3mFrameLogger
   private w3mFrame: W3mFrame
+  private abortController: AbortController
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
@@ -28,7 +32,7 @@ export class W3mFrameProvider {
   ) => void
   private rpcErrorHandler?: (error: Error, request: W3mFrameTypes.RPCRequest) => void
 
-  public onTimeout?: () => void
+  public onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
 
   public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
 
@@ -37,11 +41,14 @@ export class W3mFrameProvider {
     projectId,
     chainId,
     enableLogger = true,
-    onTimeout
+    onTimeout,
+    abortController
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
     }
+    this.abortController = abortController
+
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
@@ -536,16 +543,36 @@ export class W3mFrameProvider {
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: AppEventType
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
-    await this.w3mFrame.frameLoadPromise
-    let timer: ReturnType<typeof setTimeout> | undefined = undefined
+    let requestTimeout: ReturnType<typeof setTimeout> | undefined = undefined
+
+    let iframeReadyTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
     function replaceEventType(type: AppEventType['type']) {
       return type.replace('@w3m-app/', '')
     }
 
-    const abortController = new AbortController()
+    const safeEventTypes = [
+      W3mFrameConstants.APP_SYNC_DAPP_DATA,
+      W3mFrameConstants.APP_SYNC_THEME,
+      W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT
+    ] as const
 
     const type = replaceEventType(event.type)
+
+    // If the iframe is not ready being initialized after 20 seconds, timeout.
+    if (
+      !this.w3mFrame.iframeIsReady &&
+      !safeEventTypes.includes(event.type as (typeof safeEventTypes)[number])
+    ) {
+      iframeReadyTimeout = setTimeout(() => {
+        this.onTimeout?.('iframe_load_failed')
+        this.abortController.abort()
+      }, 20_000)
+    }
+
+    await this.w3mFrame.frameLoadPromise
+
+    clearTimeout(iframeReadyTimeout)
 
     const shouldCheckForTimeout = [
       W3mFrameConstants.APP_CONNECT_EMAIL,
@@ -557,10 +584,11 @@ export class W3mFrameProvider {
       .map(replaceEventType)
       .includes(type)
 
+    // If the request is not being resolved after 30 seconds, timeout.
     if (shouldCheckForTimeout) {
-      timer = setTimeout(() => {
-        this.onTimeout?.()
-        abortController.abort()
+      requestTimeout = setTimeout(() => {
+        this.onTimeout?.('iframe_request_timeout')
+        this.abortController.abort()
       }, 30_000)
     }
 
@@ -568,6 +596,7 @@ export class W3mFrameProvider {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger?.logger.info?.({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
+      const abortController = new AbortController()
       if (type === 'RPC_REQUEST') {
         const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
         this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }]
@@ -587,16 +616,22 @@ export class W3mFrameProvider {
         logger?.logger.info?.({ framEvent, id }, 'Received frame response')
 
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
-          if (timer) {
-            clearTimeout(timer)
+          if (requestTimeout) {
+            clearTimeout(requestTimeout)
+          }
+          if (iframeReadyTimeout) {
+            clearTimeout(iframeReadyTimeout)
           }
           if ('payload' in framEvent) {
             resolve(framEvent.payload)
           }
           resolve(undefined as unknown as W3mFrameTypes.Responses[`Frame${T}Response`])
         } else if (framEvent.type === `@w3m-frame/${type}_ERROR`) {
-          if (timer) {
-            clearTimeout(timer)
+          if (requestTimeout) {
+            clearTimeout(requestTimeout)
+          }
+          if (iframeReadyTimeout) {
+            clearTimeout(iframeReadyTimeout)
           }
           if ('payload' in framEvent) {
             reject(new Error(framEvent.payload?.message || 'An error occurred'))
@@ -607,7 +642,7 @@ export class W3mFrameProvider {
       this.w3mFrame.events.registerFrameEventHandler(
         id,
         frameEvent => handler(frameEvent, this.w3mLogger),
-        abortController.signal
+        this.abortController.signal
       )
     })
   }

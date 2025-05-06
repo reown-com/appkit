@@ -39,6 +39,7 @@ import type {
 import {
   AccountController,
   AlertController,
+  ApiController,
   AssetUtil,
   BlockchainApiController,
   ChainController,
@@ -70,7 +71,7 @@ import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
-import { WcHelpersUtil } from '../utils/index.js'
+import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
 export type Adapters = Record<ChainNamespace, AdapterBlueprint>
@@ -155,6 +156,31 @@ export abstract class AppKitBaseClient {
     PublicStateController.set({ initialized: true })
 
     await this.syncExistingConnection()
+    // Check allowed origins only if email or social features are enabled
+    if (
+      OptionsController.state.features?.email ||
+      (Array.isArray(OptionsController.state.features?.socials) &&
+        OptionsController.state.features?.socials.length > 0)
+    ) {
+      await this.checkAllowedOrigins()
+    }
+  }
+
+  private async checkAllowedOrigins() {
+    const allowedOrigins = await ApiController.fetchAllowedOrigins()
+    if (allowedOrigins && CoreHelperUtil.isClient()) {
+      const currentOrigin = window.location.origin
+      const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
+        currentOrigin,
+        allowedOrigins,
+        WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+      )
+      if (!isOriginAllowed) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+      }
+    } else {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+    }
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
@@ -489,27 +515,15 @@ export abstract class AppKitBaseClient {
         return 0n
       },
       getEnsAvatar: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const result = await adapter?.getProfile({
+        await this.syncIdentity({
           address: AccountController.state.address as string,
-          chainId: Number(this.getCaipNetwork()?.id)
+          chainId: Number(this.getCaipNetwork()?.id),
+          chainNamespace: ChainController.state.activeChain as ChainNamespace
         })
 
-        return result?.profileImage || false
+        return AccountController.state.profileImage || false
       },
-      getEnsAddress: async (name: string) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const caipNetwork = this.getCaipNetwork()
-        if (!caipNetwork) {
-          return false
-        }
-        const result = await adapter?.getEnsAddress({
-          name,
-          caipNetwork
-        })
-
-        return result?.address || false
-      },
+      getEnsAddress: async (name: string) => await WcHelpersUtil.resolveReownName(name),
       writeContract: async (args: WriteContractArgs) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
         const caipNetwork = this.getCaipNetwork()
@@ -558,6 +572,14 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
         return (await adapter?.walletGetAssets(params)) ?? {}
+      },
+      updateBalance: (namespace: ChainNamespace) => {
+        const caipNetwork = this.getCaipNetwork(namespace)
+        if (!caipNetwork || !AccountController.state.address) {
+          return
+        }
+
+        this.updateNativeBalance(AccountController.state.address, caipNetwork?.id, namespace)
       }
     }
 
@@ -1614,9 +1636,9 @@ export abstract class AppKitBaseClient {
                     ...accountState.user,
                     /*
                      * Getting the username from the chain controller works well for social logins,
-                     * but Farcaster uses a different connection flow and doesn’t emit the username via events.
+                     * but Farcaster uses a different connection flow and doesn't emit the username via events.
                      * Since the username is stored in local storage before the chain controller updates,
-                     * it’s safe to use the local storage value here.
+                     * it's safe to use the local storage value here.
                      */
                     username: StorageUtil.getConnectedSocialUsername()
                   }

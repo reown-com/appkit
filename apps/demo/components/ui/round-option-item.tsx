@@ -41,7 +41,7 @@ export function RoundOptionItem({
               enabled
                 ? 'border border-border-accent bg-background-accent-primary/10 dark:bg-background-accent-primary/10'
                 : 'border border-neutral-300 dark:border-neutral-700',
-              disabled && 'cursor-not-allowed'
+              disabled && 'cursor-not-allowed opacity-50'
             )}
           >
             <Image

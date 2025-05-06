@@ -98,11 +98,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
    * These function definition is to have a type parity between the clients. Currently not in use.
    */
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    return { address: params.name }
-  }
 
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
@@ -396,13 +391,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
 
     await params.provider.disconnect()
-  }
-
-  public async getProfile(): Promise<AdapterBlueprint.GetProfileResult> {
-    return Promise.resolve({
-      profileName: undefined,
-      profileImage: undefined
-    })
   }
 
   public async syncConnection(

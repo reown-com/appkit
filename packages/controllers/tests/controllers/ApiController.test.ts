@@ -832,4 +832,18 @@ describe('ApiController', () => {
     expect(ApiController.state.filteredWallets).toEqual([mockWallets[0], mockWallets[2]])
     expect(getRequestedCaipNetworkIdsSpy).toHaveBeenCalled()
   })
+
+  it('should fetch allowed origins', async () => {
+    const mockOrigins = ['https://example.com', 'https://*.test.org']
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ allowedOrigins: mockOrigins })
+    const sdkProperties = ApiController._getSdkProperties()
+
+    const result = await ApiController.fetchAllowedOrigins()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/projects/v1/origins',
+      params: sdkProperties
+    })
+    expect(result).toEqual(mockOrigins)
+  })
 })

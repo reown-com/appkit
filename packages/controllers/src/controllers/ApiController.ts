@@ -8,6 +8,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
+  ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
@@ -136,6 +137,19 @@ export const ApiController = {
     const imageUrl = `${api.baseUrl}/public/getTokenImage/${symbol}`
     const blob = await api.getBlob({ path: imageUrl, params: ApiController._getSdkProperties() })
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
+  },
+
+  async fetchAllowedOrigins() {
+    try {
+      const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
+        path: '/projects/v1/origins',
+        params: ApiController._getSdkProperties()
+      })
+
+      return allowedOrigins
+    } catch (error) {
+      return []
+    }
   },
 
   async fetchNetworkImages() {
@@ -383,6 +397,10 @@ export const ApiController = {
     state.filteredWallets = state.wallets.filter(wallet =>
       wallet.chains?.some(chain => caipNetworkIds.includes(chain))
     )
+  },
+
+  clearFilterByNamespaces() {
+    state.filteredWallets = []
   },
 
   setFilterByNamespace(namespace: ChainNamespace | undefined) {

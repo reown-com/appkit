@@ -5,6 +5,7 @@ import {
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
+  type EmbeddedWalletTimeoutReason,
   getW3mThemeVariables
 } from '@reown/appkit-common'
 import {
@@ -337,8 +338,15 @@ export class AppKit extends AppKitBaseClient {
         projectId: this.options.projectId,
         enableLogger: this.options.enableAuthLogger,
         chainId: this.getCaipNetwork(chainNamespace)?.caipNetworkId,
-        onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
+        abortController: ErrorUtil.EmbeddedWalletAbortController,
+        onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
+          if (reason === 'iframe_load_failed') {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.IFRAME_LOAD_FAILED, 'error')
+          } else if (reason === 'iframe_request_timeout') {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.IFRAME_REQUEST_TIMEOUT, 'error')
+          } else if (reason === 'unverified_domain') {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
+          }
         }
       })
       PublicStateController.subscribeOpen(isOpen => {
@@ -472,24 +480,6 @@ export class AppKit extends AppKitBaseClient {
 
       this.setProfileName(name, chainNamespace)
       this.setProfileImage(avatar, chainNamespace)
-
-      if (!name) {
-        const adapter = this.getAdapter(chainNamespace)
-        const result = await adapter?.getProfile({
-          address,
-          chainId: Number(chainId)
-        })
-
-        if (result?.profileName) {
-          this.setProfileName(result.profileName, chainNamespace)
-          if (result.profileImage) {
-            this.setProfileImage(result.profileImage, chainNamespace)
-          }
-        } else {
-          await this.syncReownName(address, chainNamespace)
-          this.setProfileImage(null, chainNamespace)
-        }
-      }
     } catch {
       await this.syncReownName(address, chainNamespace)
       if (chainId !== 1) {
