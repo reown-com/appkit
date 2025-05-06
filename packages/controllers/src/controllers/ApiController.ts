@@ -306,7 +306,7 @@ export const ApiController = {
     const params = {
       page: 1,
       entries: ids.length,
-      exclude: ids,
+      include: ids,
       chains
     }
     const { data } = await ApiController.fetchWallets(params)

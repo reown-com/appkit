@@ -6,6 +6,7 @@ import {
   ApiController,
   AssetController,
   ChainController,
+  type ChainControllerState,
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
@@ -357,7 +358,8 @@ describe('ApiController', () => {
         ...ApiController._getSdkProperties(),
         page: '1',
         entries: '2',
-        include: '12341,12342'
+        include: '12341,12342',
+        exclude: ''
       }
     })
 
@@ -535,7 +537,8 @@ describe('ApiController', () => {
         badge_type: undefined,
         chains: 'eip155:1,eip155:4,eip155:42',
         entries: String(excludeWalletIds.length),
-        exclude: excludeWalletIds.join(',')
+        include: excludeWalletIds.join(','),
+        exclude: ''
       }
     })
 
@@ -861,14 +864,38 @@ describe('ApiController', () => {
     const mockWallets = [
       { id: '1', name: 'Wallet1', mobile_link: 'link1' },
       { id: '2', name: 'Wallet2' },
+      { id: '3', name: 'Wallet3', mobile_link: 'link3' }
+    ] as WcWallet[]
+
+    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    expect(filteredWallets).toHaveLength(2)
+    expect(filteredWallets.map(w => w.id)).toEqual(['1', '3'])
+  })
+
+  it('should filter out wallets without mobile_link in mobile environment but keep custom deeplink wallets', () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: 'solana'
+    } as ChainControllerState)
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', mobile_link: 'link1' },
+      { id: '2', name: 'Wallet2' },
       { id: '3', name: 'Wallet3', mobile_link: 'link3' },
-      { id: '4', name: 'Coinbase Wallet' },
-      { id: '5', name: 'Phantom' }
+      {
+        id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+        name: 'Coinbase Wallet'
+      },
+      { id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79', name: 'Phantom' }
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
     expect(filteredWallets).toHaveLength(4)
-    expect(filteredWallets.map(w => w.id)).toEqual(['1', '3', '4', '5'])
+    expect(filteredWallets.map(w => w.id)).toEqual([
+      '1',
+      '3',
+      'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+      '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79'
+    ])
   })
 
   it('should not filter wallets in non-mobile environment', () => {
