@@ -15,6 +15,7 @@ packages:
   - 'packages/cdn'
   - 'packages/experimental'
   - 'packages/cli'
+  - 'packages/pay'
   - 'apps/*'
   - 'examples/*'
   - 'services/*'

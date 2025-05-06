@@ -31,7 +31,8 @@ const defaultActiveConnectors = {
   eip155: undefined,
   solana: undefined,
   polkadot: undefined,
-  bip122: undefined
+  bip122: undefined,
+  cosmos: undefined
 }
 
 // -- State --------------------------------------------- //
@@ -45,7 +46,8 @@ const state = proxy<ConnectorControllerState>({
     eip155: true,
     solana: true,
     polkadot: true,
-    bip122: true
+    bip122: true,
+    cosmos: true
   }
 })
 
@@ -101,32 +103,58 @@ export const ConnectorController = {
       }
     })
 
-    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+    const enabledNamespaces = this.getEnabledNamespaces()
+    const connectorsFilteredByNamespaces = this.getEnabledConnectors(enabledNamespaces)
+
+    state.connectors = this.mergeMultiChainConnectors(connectorsFilteredByNamespaces)
   },
 
-  updateAdapter(namespace: ChainNamespace, enabled: boolean) {
-    state.filterByNamespaceMap[namespace] = enabled
-
-    const newConnectors: Connector[] = []
-    const enabledNamespaces: ChainNamespace[] = []
-
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const allNamespacesEnabled = Object.values(state.filterByNamespaceMap).every(value => value)
-
-    Object.keys(state.filterByNamespaceMap).forEach(key => {
-      if (state.filterByNamespaceMap[key as ChainNamespace]) {
-        enabledNamespaces.push(key as ChainNamespace)
-        newConnectors.push(...state.allConnectors.filter(connector => connector.chain === key))
-      }
+  filterByNamespaces(enabledNamespaces: ChainNamespace[]) {
+    Object.keys(state.filterByNamespaceMap).forEach(namespace => {
+      state.filterByNamespaceMap[namespace as ChainNamespace] = false
     })
 
-    state.connectors = this.mergeMultiChainConnectors(newConnectors)
+    enabledNamespaces.forEach(namespace => {
+      state.filterByNamespaceMap[namespace] = true
+    })
 
-    if (allNamespacesEnabled) {
-      ApiController.state.filteredWallets = []
+    this.updateConnectorsForEnabledNamespaces()
+  },
+
+  filterByNamespace(namespace: ChainNamespace, enabled: boolean) {
+    state.filterByNamespaceMap[namespace] = enabled
+
+    this.updateConnectorsForEnabledNamespaces()
+  },
+
+  updateConnectorsForEnabledNamespaces() {
+    const enabledNamespaces = this.getEnabledNamespaces()
+    const enabledConnectors = this.getEnabledConnectors(enabledNamespaces)
+    const areAllNamespacesEnabled = this.areAllNamespacesEnabled()
+
+    state.connectors = this.mergeMultiChainConnectors(enabledConnectors)
+
+    if (areAllNamespacesEnabled) {
+      ApiController.clearFilterByNamespaces()
     } else {
       ApiController.filterByNamespaces(enabledNamespaces)
     }
+  },
+
+  getEnabledNamespaces(): ChainNamespace[] {
+    return Object.entries(state.filterByNamespaceMap)
+      .filter(([_, enabled]) => enabled)
+      .map(([namespace]) => namespace as ChainNamespace)
+  },
+
+  getEnabledConnectors(enabledNamespaces: ChainNamespace[]): Connector[] {
+    return state.allConnectors.filter(connector =>
+      enabledNamespaces.includes(connector.chain as ChainNamespace)
+    )
+  },
+
+  areAllNamespacesEnabled(): boolean {
+    return Object.values(state.filterByNamespaceMap).every(enabled => enabled)
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {
@@ -251,6 +279,7 @@ export const ConnectorController = {
   getConnectorById(id: string) {
     return state.allConnectors.find(c => c.id === id)
   },
+
   getConnector(id: string, rdns?: string | null) {
     const connectorsByNamespace = state.allConnectors.filter(
       c => c.chain === ChainController.state.activeChain
