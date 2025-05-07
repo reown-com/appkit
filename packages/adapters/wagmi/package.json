@@ -25,7 +25,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.20.1",
+    "@walletconnect/universal-provider": "2.20.2",
     "valtio": "1.13.2"
   },
   "optionalDependencies": {
@@ -40,7 +40,7 @@
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "@vitest/coverage-v8": "2.1.9",
-    "@walletconnect/types": "2.20.1",
+    "@walletconnect/types": "2.20.2",
     "vitest": "2.1.9"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
