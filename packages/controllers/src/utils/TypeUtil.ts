@@ -905,6 +905,7 @@ type PayEvent =
       address?: string
       event: 'PAY_SUCCESS'
       properties: {
+        paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
       }
@@ -914,6 +915,7 @@ type PayEvent =
       address?: string
       event: 'PAY_ERROR'
       properties: {
+        paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
       }
@@ -923,6 +925,7 @@ type PayEvent =
       address?: string
       event: 'PAY_INITIATED'
       properties: {
+        paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
       }

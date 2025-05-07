@@ -65,6 +65,7 @@ describe('PayController', () => {
   }
 
   let eventsControllerSpy: ReturnType<typeof vi.spyOn>
+  const mockPaymentId = 'mock-payment-id'
 
   beforeEach(() => {
     vi.resetAllMocks()
@@ -138,6 +139,10 @@ describe('PayController', () => {
 
     // Mock CoreHelperUtil
     vi.spyOn(CoreHelperUtil, 'openHref').mockImplementation(() => {})
+
+    vi.stubGlobal('crypto', {
+      randomUUID: vi.fn(() => mockPaymentId)
+    })
   })
 
   describe('setPaymentConfig', () => {
@@ -269,6 +274,7 @@ describe('PayController', () => {
         type: 'track',
         event: 'PAY_INITIATED',
         properties: {
+          paymentId: mockPaymentId,
           configuration: {
             network: params.network,
             asset: params.asset,
@@ -331,6 +337,7 @@ describe('PayController', () => {
           type: 'track',
           event: 'PAY_INITIATED',
           properties: expect.objectContaining({
+            paymentId: mockPaymentId,
             configuration: expect.objectContaining({
               amount: mockPaymentOptions.amount,
               asset: 'native',
@@ -356,6 +363,7 @@ describe('PayController', () => {
           type: 'track',
           event: 'PAY_SUCCESS',
           properties: expect.objectContaining({
+            paymentId: mockPaymentId,
             configuration: expect.objectContaining({
               amount: mockPaymentOptions.amount,
               asset: 'native',
@@ -400,6 +408,7 @@ describe('PayController', () => {
           type: 'track',
           event: 'PAY_INITIATED',
           properties: expect.objectContaining({
+            paymentId: mockPaymentId,
             configuration: expect.objectContaining({
               amount: mockPaymentOptions.amount,
               asset: mockPaymentOptions.paymentAsset.asset,
@@ -420,6 +429,7 @@ describe('PayController', () => {
           type: 'track',
           event: 'PAY_SUCCESS',
           properties: expect.objectContaining({
+            paymentId: mockPaymentId,
             configuration: expect.objectContaining({
               amount: mockPaymentOptions.amount,
               asset: mockPaymentOptions.paymentAsset.asset,
@@ -453,6 +463,7 @@ describe('PayController', () => {
           type: 'track',
           event: 'PAY_INITIATED',
           properties: expect.objectContaining({
+            paymentId: mockPaymentId,
             configuration: expect.objectContaining({
               amount: mockPaymentOptions.amount,
               asset: mockPaymentOptions.paymentAsset.asset, // This assumes ERC20 context for error
@@ -473,6 +484,7 @@ describe('PayController', () => {
           type: 'track',
           event: 'PAY_ERROR',
           properties: expect.objectContaining({
+            paymentId: mockPaymentId,
             configuration: expect.objectContaining({
               amount: mockPaymentOptions.amount,
               asset: mockPaymentOptions.paymentAsset.asset, // This assumes ERC20 context for error
@@ -647,6 +659,7 @@ describe('PayController', () => {
           type: 'track',
           event: 'PAY_INITIATED',
           properties: expect.objectContaining({
+            paymentId: mockPaymentId,
             configuration: expect.objectContaining({
               amount: mockPaymentOptions.amount,
               asset: mockPaymentOptions.paymentAsset.asset,
@@ -883,6 +896,7 @@ describe('PayController', () => {
         type: 'track',
         event: 'PAY_SUCCESS',
         properties: {
+          paymentId: mockPaymentId,
           configuration: {
             network: mockPaymentOptions.paymentAsset.network,
             asset: mockPaymentOptions.paymentAsset.asset,
@@ -910,6 +924,7 @@ describe('PayController', () => {
         type: 'track',
         event: 'PAY_ERROR',
         properties: {
+          paymentId: mockPaymentId,
           configuration: {
             network: mockPaymentOptions.paymentAsset.network,
             asset: mockPaymentOptions.paymentAsset.asset,

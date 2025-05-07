@@ -31,6 +31,8 @@ import {
 
 const DEFAULT_PAGE = 0
 
+const DEFAULT_PAYMENT_ID = 'unknown'
+
 // -- Types --------------------------------------------- //
 type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
 
@@ -56,6 +58,7 @@ export interface PayControllerState extends PaymentOptions {
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
   analyticsSet: boolean
+  paymentId?: string
 }
 
 // Define a type for the parameters passed to getPayUrl
@@ -85,7 +88,8 @@ const state = proxy<PayControllerState>({
   redirectUrl: undefined,
   payWithExchange: undefined,
   currentPayment: undefined,
-  analyticsSet: false
+  analyticsSet: false,
+  paymentId: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -227,10 +231,12 @@ export const PayController = {
         }
       })
       if (headless) {
+        this.initiatePayment()
         EventsController.sendEvent({
           type: 'track',
           event: 'PAY_INITIATED',
           properties: {
+            paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
               network: params.network,
               asset: params.asset,
@@ -327,7 +333,7 @@ export const PayController = {
     }
 
     try {
-      state.isPaymentInProgress = true
+      this.initiatePayment()
 
       const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
       const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
@@ -444,7 +450,7 @@ export const PayController = {
       state.currentPayment.sessionId = payUrl.sessionId
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
-      state.isPaymentInProgress = true
+      this.initiatePayment()
 
       return {
         url: payUrl.url,
@@ -471,6 +477,7 @@ export const PayController = {
           type: 'track',
           event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
           properties: {
+            paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
               network: state.paymentAsset.network,
               asset: state.paymentAsset.asset,
@@ -508,6 +515,12 @@ export const PayController = {
       throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
     }
   },
+
+  initiatePayment() {
+    state.isPaymentInProgress = true
+    state.paymentId = crypto.randomUUID()
+  },
+
   initializeAnalytics() {
     if (state.analyticsSet) {
       return
@@ -525,6 +538,7 @@ export const PayController = {
           type: 'track',
           event: eventType as 'PAY_INITIATED' | 'PAY_SUCCESS' | 'PAY_ERROR',
           properties: {
+            paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
               network: state.paymentAsset.network,
               asset: state.paymentAsset.asset,
