@@ -112,6 +112,7 @@ describe('SatsConnectConnector', () => {
   })
 
   it('should connect correctly with wallet not connected', async () => {
+    const emitSpy = vi.spyOn(connector, 'emit')
     const spy = vi.spyOn(mocks.wallet, 'request')
 
     spy.mockResolvedValueOnce(
@@ -142,18 +143,21 @@ describe('SatsConnectConnector', () => {
 
     const result = await connector.connect()
 
+    expect(emitSpy).toHaveBeenCalledWith('accountsChanged', ['mock_address'])
     expect(result).toBe('mock_address')
     expect(mocks.wallet.request).toHaveBeenNthCalledWith(1, 'getAddresses', {
       purposes: expect.arrayContaining(['payment', 'ordinals', 'stacks']),
       message: 'Connect to your wallet'
     })
-    expect(mocks.wallet.request).toHaveBeenNthCalledWith(2, 'wallet_connect', null)
+    expect(mocks.wallet.request).toHaveBeenNthCalledWith(2, 'wallet_connect', {
+      network: BitcoinNetworkType.Mainnet
+    })
   })
 
   it('should throw if connect with empty addresses', async () => {
     const spy = vi.spyOn(mocks.wallet, 'request')
 
-    spy.mockResolvedValueOnce(
+    spy.mockResolvedValue(
       mockSatsConnectProvider.mockRequestResolve({
         addresses: [],
         walletType: 'software',
@@ -186,6 +190,58 @@ describe('SatsConnectConnector', () => {
 
     expect(result).toBe('mock_signature')
     expect(mocks.wallet.request).toHaveBeenCalledWith('signMessage', params)
+  })
+
+  it('should signMessage with ecdsa protocol correctly', async () => {
+    const params = {
+      message: 'mock_message',
+      address: 'mock_address',
+      protocol: 'ecdsa' as const
+    }
+    const spy = vi.spyOn(mocks.wallet, 'request')
+
+    spy.mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestResolve({
+        signature: 'mock_signature',
+        address: 'mock_address',
+        protocol: MessageSigningProtocols.ECDSA,
+        messageHash: 'mock_message_hash'
+      })
+    )
+
+    const result = await connector.signMessage(params)
+
+    expect(result).toBe('mock_signature')
+    expect(mocks.wallet.request).toHaveBeenCalledWith('signMessage', {
+      ...params,
+      protocol: MessageSigningProtocols.ECDSA
+    })
+  })
+
+  it('should signMessage with bip322 protocol correctly', async () => {
+    const params = {
+      message: 'mock_message',
+      address: 'mock_address',
+      protocol: 'bip322' as const
+    }
+    const spy = vi.spyOn(mocks.wallet, 'request')
+
+    spy.mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestResolve({
+        signature: 'mock_signature',
+        address: 'mock_address',
+        protocol: MessageSigningProtocols.BIP322,
+        messageHash: 'mock_message_hash'
+      })
+    )
+
+    const result = await connector.signMessage(params)
+
+    expect(result).toBe('mock_signature')
+    expect(mocks.wallet.request).toHaveBeenCalledWith('signMessage', {
+      ...params,
+      protocol: MessageSigningProtocols.BIP322
+    })
   })
 
   it('should sendTransfer correctly', async () => {

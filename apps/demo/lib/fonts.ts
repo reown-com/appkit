@@ -1,3 +1,4 @@
+// eslint-disable new-cap
 import { Bellota, Bree_Serif, Domine, EB_Garamond, Inter, Noto_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 
@@ -26,6 +27,7 @@ export const khTeka = localFont({
   ]
 })
 
+/* eslint-disable new-cap */
 export const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -61,3 +63,4 @@ export const notoSans = Noto_Sans({
   weight: ['400', '500', '600', '700'],
   style: ['normal']
 })
+/* eslint-enable new-cap */

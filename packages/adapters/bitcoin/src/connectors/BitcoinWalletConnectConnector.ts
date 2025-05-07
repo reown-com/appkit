@@ -5,6 +5,7 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
 export type WalletConnectProviderConfig = {
@@ -42,12 +43,12 @@ export class BitcoinWalletConnectConnector
     )
   }
 
-  public async signMessage({ message, address }: BitcoinConnector.SignMessageParams) {
+  public async signMessage({ message, address, protocol }: BitcoinConnector.SignMessageParams) {
     this.checkIfMethodIsSupported('signMessage')
 
     const signedMessage = await this.internalRequest({
       method: 'signMessage',
-      params: { message, account: address, address }
+      params: { message, account: address, address, protocol }
     })
 
     return Buffer.from(signedMessage.signature, 'hex').toString('base64')
@@ -77,7 +78,7 @@ export class BitcoinWalletConnectConnector
       params: undefined
     })
 
-    return addresses.map(address => ({ address, purpose: 'payment' }))
+    return addresses.map(address => ({ address, purpose: AddressPurpose.Payment }))
   }
 
   public async signPSBT(
@@ -177,6 +178,7 @@ export namespace WalletConnectProvider {
     message: string
     account: string
     address: string
+    protocol?: 'ecdsa' | 'bip322'
   }
 
   export type WCSignMessageResponse = {

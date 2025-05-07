@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -24,13 +25,13 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      AccountController.subscribeKey('preferredAccountType', val => {
-        this.preferredAccountType = val
+      AccountController.subscribeKey('preferredAccountTypes', val => {
+        this.preferredAccountTypes = val
       })
     )
   }
@@ -69,7 +70,8 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
     // For now, each network has a unique account
     if (
       isNetworkEnabledForSmartAccounts &&
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      this.preferredAccountTypes?.[caipNetwork?.chainNamespace as ChainNamespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       if (!caipNetwork) {
         return null
@@ -77,7 +79,11 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
       sortedNetworks = [caipNetwork]
     }
 
-    return sortedNetworks.map(
+    const namespaceNetworks = sortedNetworks.filter(
+      network => network.chainNamespace === caipNetwork?.chainNamespace
+    )
+
+    return namespaceNetworks.map(
       network => html`
         <wui-list-network
           imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}

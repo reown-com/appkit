@@ -175,6 +175,10 @@ export interface ApiGetWalletsResponse {
   count: number
 }
 
+export interface ApiGetAllowedOriginsResponse {
+  allowedOrigins: string[]
+}
+
 export interface ApiGetAnalyticsConfigResponse {
   isAnalyticsEnabled: boolean
 }
@@ -940,6 +944,7 @@ export type NamespaceTypeMap = {
   solana: 'eoa'
   bip122: 'payment' | 'ordinal' | 'stx'
   polkadot: 'eoa'
+  cosmos: 'eoa'
 }
 
 export type AccountTypeMap = {
@@ -1160,6 +1165,12 @@ export type Features = {
    * @default false
    */
   collapseWallets?: boolean
+
+  /**
+   * @description Enable or disable the pay feature. Disabled by default.
+   * @type {boolean}
+   */
+  pay?: boolean
 }
 
 export type FeaturesKeys = keyof Features
@@ -1174,7 +1185,7 @@ export type UseAppKitAccountReturn = {
   embeddedWalletInfo?: {
     user: AccountControllerState['user']
     authProvider: AccountControllerState['socialProvider'] | 'email'
-    accountType: W3mFrameTypes.AccountType | undefined
+    accountType: PreferredAccountTypes[ChainNamespace] | undefined
     isSmartAccountDeployed: boolean
   }
   status: AccountControllerState['status']
@@ -1195,4 +1206,6 @@ export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 're
  * @description The default account types for each namespace.
  * @default
  */
-export type DefaultAccountTypes = { [Key in keyof NamespaceTypeMap]: NamespaceTypeMap[Key] }
+export type PreferredAccountTypes = {
+  [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key]
+}

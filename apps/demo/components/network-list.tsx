@@ -1,13 +1,12 @@
 'use client'
 
-import { ConstantsUtil } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit-controllers/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { NETWORK_OPTIONS, NetworkOption } from '@/lib/constants'
+import { NETWORK_OPTIONS, type NetworkOption } from '@/lib/networks'
 import { getImageDeliveryURL, networkImages } from '@/lib/presets'
 
 import { RoundOptionItem } from './ui/round-option-item'
@@ -46,9 +45,10 @@ export function NetworkList() {
                 isLastChainEnabled ? 'Have at least one chain enabled to disable network' : ''
               }
               size="sm"
+              dataTestId={`network-option-${n.network.id}`}
               key={n.network.id}
               enabled={enabledNetworks.includes(n.network.id)}
-              disabled={isLastChainEnabled}
+              disabled={Boolean(caipAddress) || isLastChainEnabled}
               imageSrc={getImageDeliveryURL(
                 networkImages[n.network.id as keyof typeof networkImages]
               )}

@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { Checkbox } from '@/components/ui/checkbox'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { BaseDraggableItemProps, WalletFeatureName } from '@/lib/types'
+import type { BaseDraggableItemProps, WalletFeatureName } from '@/lib/types'
 
 import { Handle } from './components'
 import styles from './wallet-feature-item.module.css'
@@ -24,10 +24,8 @@ export const WalletFeatureItem = React.memo(
         fadeIn,
         handle,
         handleProps,
-        height,
         index,
         listeners,
-        onRemove,
         renderItem,
         sorting,
         style,
@@ -41,16 +39,16 @@ export const WalletFeatureItem = React.memo(
       ref
     ) => {
       const { config } = useAppKitContext()
-      const onrampEnabled = config.features.onramp
-      const swapsEnabled = config.features.swaps
-      const receiveEnabled = config.features.receive
-      const sendEnabled = config.features.send
+      const isOnrampEnabled = config.features.onramp
+      const isSwapsEnabled = config.features.swaps
+      const isReceiveEnabled = config.features.receive
+      const isSendEnabled = config.features.send
 
       const featureEnabledMap = {
-        Buy: onrampEnabled,
-        Swap: swapsEnabled,
-        Receive: receiveEnabled,
-        Send: sendEnabled
+        Buy: isOnrampEnabled,
+        Swap: isSwapsEnabled,
+        Receive: isReceiveEnabled,
+        Send: isSendEnabled
       }
 
       const featureCanBeToggledMap = {
@@ -67,6 +65,7 @@ export const WalletFeatureItem = React.memo(
 
         document.body.style.cursor = 'grabbing'
 
+        // eslint-disable-next-line consistent-return
         return () => {
           document.body.style.cursor = ''
         }
@@ -89,11 +88,11 @@ export const WalletFeatureItem = React.memo(
       ) : (
         <div
           className={classNames(
-            styles.Wrapper,
-            fadeIn && styles.fadeIn,
-            sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay,
-            dragging && styles.dragging
+            styles['Wrapper'],
+            fadeIn && styles['fadeIn'],
+            sorting && styles['sorting'],
+            dragOverlay && styles['dragOverlay'],
+            dragging && styles['dragging']
           )}
           style={
             {
@@ -118,17 +117,17 @@ export const WalletFeatureItem = React.memo(
           >
             <div
               className={classNames(
-                styles.Item,
-                handle && styles.withHandle,
-                dragOverlay && styles.dragOverlay,
-                disabled && styles.disabled,
-                color && styles.color
+                styles['Item'],
+                handle && styles['withHandle'],
+                dragOverlay && styles['dragOverlay'],
+                disabled && styles['disabled'],
+                color && styles['color']
               )}
               style={style}
               data-cypress="draggable-item"
-              {...(!handle ? listeners : undefined)}
+              {...(handle ? undefined : listeners)}
               {...props}
-              tabIndex={!handle ? 0 : undefined}
+              tabIndex={handle ? undefined : 0}
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1">{value}</span>

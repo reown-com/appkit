@@ -4,8 +4,9 @@ import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
 import classNames from 'classnames'
 
-import { SocialProvider } from '@reown/appkit-controllers'
+import { type SocialProvider } from '@reown/appkit-controllers'
 import '@reown/appkit-ui/jsx'
+import '@reown/appkit-ui/wui-logo'
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 
@@ -17,6 +18,7 @@ export interface Props {
   disabled?: boolean
   dragging?: boolean
   handle?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleProps?: any
   height?: number
   index?: number
@@ -56,11 +58,8 @@ export const SocialOptionItem = React.memo(
         disabled,
         fadeIn,
         handle,
-        handleProps,
-        height,
         index,
         listeners,
-        onRemove,
         renderItem,
         sorting,
         style,
@@ -68,8 +67,6 @@ export const SocialOptionItem = React.memo(
         transform,
         value,
         wrapperStyle,
-        onToggleOption,
-        connectMethodDragging,
         ...props
       },
       ref
@@ -77,10 +74,10 @@ export const SocialOptionItem = React.memo(
       const { config, updateFeatures } = useAppKitContext()
       const socials = config.features.socials || []
       const { isDraggingByKey } = useAppKitContext()
-      const emailDragging = isDraggingByKey['email']
-      const walletsDragging = isDraggingByKey['wallet']
-      const socialsDragging = isDraggingByKey['social']
-      const isAnyDragging = emailDragging || walletsDragging || socialsDragging
+      const isEmailDragging = isDraggingByKey['email']
+      const isWalletsDragging = isDraggingByKey['wallet']
+      const isSocialsDragging = isDraggingByKey['social']
+      const isAnyDragging = isEmailDragging || isWalletsDragging || isSocialsDragging
 
       useEffect(() => {
         if (!dragOverlay) {
@@ -89,6 +86,7 @@ export const SocialOptionItem = React.memo(
 
         document.body.style.cursor = 'grabbing'
 
+        // eslint-disable-next-line consistent-return
         return () => {
           document.body.style.cursor = ''
         }
@@ -119,11 +117,11 @@ export const SocialOptionItem = React.memo(
       ) : (
         <li
           className={classNames(
-            styles.Wrapper,
+            styles['Wrapper'],
             'h-[44px] min-w-[44px]',
-            fadeIn && styles.fadeIn,
-            sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay,
+            fadeIn && styles['fadeIn'],
+            sorting && styles['sorting'],
+            dragOverlay && styles['dragOverlay'],
             socials.includes(value as SocialProvider)
               ? 'border border-border-accent bg-background-accent-primary/10'
               : 'border border-neutral-300 dark:border-neutral-700'
@@ -132,11 +130,13 @@ export const SocialOptionItem = React.memo(
             {
               ...wrapperStyle,
               transition: [transition, wrapperStyle?.transition].filter(Boolean).join(', '),
+              // eslint-disable-next-line no-nested-ternary
               '--translate-x': isAnyDragging
                 ? '0px'
                 : transform
                   ? `${Math.round(transform.x)}px`
                   : undefined,
+              // eslint-disable-next-line no-nested-ternary
               '--translate-y': isAnyDragging
                 ? '0px'
                 : transform
@@ -153,18 +153,18 @@ export const SocialOptionItem = React.memo(
         >
           <div
             className={classNames(
-              styles.Item,
-              dragging && styles.dragging,
-              dragOverlay && styles.dragOverlay,
-              disabled && styles.disabled,
-              color && styles.color
+              styles['Item'],
+              dragging && styles['dragging'],
+              dragOverlay && styles['dragOverlay'],
+              disabled && styles['disabled'],
+              color && styles['color']
             )}
             style={style}
-            {...(!handle ? listeners : undefined)}
+            {...(handle ? undefined : listeners)}
             {...props}
-            tabIndex={!handle ? 0 : undefined}
+            tabIndex={handle ? undefined : 0}
           >
-            <wui-logo logo={value as SocialProvider}></wui-logo>
+            <wui-logo logo={value as SocialProvider} />
           </div>
         </li>
       )

@@ -457,4 +457,117 @@ describe('WcHelpersUtil', () => {
       })
     })
   })
+
+  describe('isOriginAllowed', () => {
+    const defaultOrigins = ['https://default.com', 'https://*.safe.org']
+    const allowedPatterns = [
+      'https://explicit.com',
+      'http://localhost:*',
+      'https://sub.*.example.net'
+    ]
+
+    test('should allow exact match from allowedPatterns', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://explicit.com', allowedPatterns, defaultOrigins)
+      ).toBe(true)
+    })
+
+    test('should allow exact match from defaultAllowedOrigins', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://default.com', allowedPatterns, defaultOrigins)
+      ).toBe(true)
+    })
+
+    test('should allow wildcard match from allowedPatterns (port)', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed('http://localhost:3000', allowedPatterns, defaultOrigins)
+      ).toBe(true)
+      expect(
+        WcHelpersUtil.isOriginAllowed('http://localhost:8080', allowedPatterns, defaultOrigins)
+      ).toBe(true)
+    })
+
+    test('should allow wildcard match from defaultAllowedOrigins (subdomain)', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://app.safe.org', allowedPatterns, defaultOrigins)
+      ).toBe(true)
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://api.safe.org', allowedPatterns, defaultOrigins)
+      ).toBe(true)
+    })
+
+    test('should allow wildcard match from allowedPatterns (middle)', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://sub.domain.example.net',
+          allowedPatterns,
+          defaultOrigins
+        )
+      ).toBe(true)
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://sub.another-domain.example.net',
+          allowedPatterns,
+          defaultOrigins
+        )
+      ).toBe(true)
+    })
+
+    test('should deny non-matching origin', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://unknown.com', allowedPatterns, defaultOrigins)
+      ).toBe(false)
+    })
+
+    test('should deny partial match without wildcard', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://explicit.com.hacker',
+          allowedPatterns,
+          defaultOrigins
+        )
+      ).toBe(false)
+      expect(
+        WcHelpersUtil.isOriginAllowed('http://safe.org', allowedPatterns, defaultOrigins) // Protocol mismatch
+      ).toBe(false)
+    })
+
+    test('should deny if allowed lists are empty', () => {
+      expect(WcHelpersUtil.isOriginAllowed('https://any.com', [], [])).toBe(false)
+    })
+
+    test('should handle origins and patterns with dots correctly', () => {
+      const patternsWithDots = ['https://test.example.com']
+      const defaultWithDots = ['https://*.another.test.org']
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://test.example.com', patternsWithDots, defaultWithDots)
+      ).toBe(true) // Exact match
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://sub.another.test.org',
+          patternsWithDots,
+          defaultWithDots
+        )
+      ).toBe(true) // Wildcard match
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://test-example.com', patternsWithDots, defaultWithDots)
+      ).toBe(false) // Dot treated literally
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://sub.another-test.org',
+          patternsWithDots,
+          defaultWithDots
+        )
+      ).toBe(false) // Dot treated literally in wildcard part
+    })
+
+    test('should be case-sensitive', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed('HTTPS://EXPLICIT.COM', allowedPatterns, defaultOrigins)
+      ).toBe(false)
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://app.SAFE.org', allowedPatterns, defaultOrigins)
+      ).toBe(false)
+    })
+  })
 })

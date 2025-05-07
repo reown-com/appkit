@@ -12,7 +12,6 @@ import {
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
-  OptionsController,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
@@ -241,11 +240,12 @@ export abstract class AdapterBlueprint<
 
     if (provider && providerType === 'AUTH') {
       const authProvider = provider as W3mFrameProvider
+      const preferredAccountType =
+        AccountController.state.preferredAccountTypes?.[caipNetwork.chainNamespace]
       await authProvider.switchNetwork(caipNetwork.caipNetworkId)
       const user = await authProvider.getUser({
         chainId: caipNetwork.caipNetworkId,
-        preferredAccountType:
-          OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
+        preferredAccountType
       })
 
       this.emit('switchNetwork', user)
@@ -265,15 +265,6 @@ export abstract class AdapterBlueprint<
   public abstract getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult>
-
-  /**
-   * Gets the profile for a given address and chain ID.
-   * @param {AdapterBlueprint.GetProfileParams} params - Profile retrieval parameters
-   * @returns {Promise<AdapterBlueprint.GetProfileResult>} Profile result
-   */
-  public abstract getProfile(
-    params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult>
 
   /**
    * Synchronizes the connectors with the given options and AppKit instance.
@@ -329,15 +320,6 @@ export abstract class AdapterBlueprint<
   public abstract writeContract(
     params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult>
-
-  /**
-   * Gets the ENS address for a given name.
-   * @param {AdapterBlueprint.GetEnsAddressParams} params - Parameters including name
-   * @returns {Promise<AdapterBlueprint.GetEnsAddressResult>} Object containing the ENS address
-   */
-  public abstract getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult>
 
   /**
    * Parses a decimal string value into a bigint with the specified number of decimals.
@@ -420,11 +402,6 @@ export namespace AdapterBlueprint {
     tokens?: Tokens
   }
 
-  export type GetProfileParams = {
-    address: string
-    chainId: number | string
-  }
-
   export type DisconnectParams = {
     provider?: AppKitConnector['provider']
     providerType?: AppKitConnector['type']
@@ -466,6 +443,7 @@ export namespace AdapterBlueprint {
     data: string
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
+    value?: bigint | number
   }
 
   export type EstimateGasTransactionResult = {
@@ -534,10 +512,9 @@ export namespace AdapterBlueprint {
   >
 
   export type SendTransactionParams = {
-    address: `0x${string}`
     to: string
-    data: string
     value: bigint | number
+    data?: string
     gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
@@ -548,23 +525,9 @@ export namespace AdapterBlueprint {
     hash: string
   }
 
-  export type GetEnsAddressParams = {
-    name: string
-    caipNetwork: CaipNetwork
-  }
-
-  export type GetEnsAddressResult = {
-    address: string | false
-  }
-
   export type GetBalanceResult = {
     balance: string
     symbol: string
-  }
-
-  export type GetProfileResult = {
-    profileImage?: string
-    profileName?: string
   }
 
   export type ConnectResult = {

@@ -1,10 +1,11 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { InfuraProvider, JsonRpcProvider } from 'ethers'
+import { JsonRpcProvider } from 'ethers'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
@@ -33,10 +34,6 @@ vi.mock('ethers', async importOriginal => {
   return {
     ...actual,
     formatEther: vi.fn(() => '1.5'),
-    InfuraProvider: vi.fn(() => ({
-      lookupAddress: vi.fn(),
-      getAvatar: vi.fn()
-    })),
     JsonRpcProvider: vi.fn(() => ({
       getBalance: vi.fn()
     })),
@@ -56,7 +53,6 @@ vi.mock('../utils/EthersMethods', () => ({
     sendTransaction: vi.fn(),
     writeContract: vi.fn(),
     estimateGas: vi.fn(),
-    getEnsAddress: vi.fn(),
     parseUnits: vi.fn(),
     formatUnits: vi.fn(),
     hexStringToNumber: vi.fn(hex => parseInt(hex, 16)),
@@ -162,14 +158,16 @@ describe('EthersAdapter', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
       vi.mocked(EthersMethods.sendTransaction).mockResolvedValue(mockTxHash)
-
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       const result = await adapter.sendTransaction({
         value: BigInt(1000),
         to: '0x456',
         data: '0x',
         gas: BigInt(21000),
         gasPrice: BigInt(2000000000),
-        address: '0x123',
         provider: mockProvider,
         caipNetwork: mockCaipNetworks[0]
       })
@@ -178,14 +176,17 @@ describe('EthersAdapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       await expect(
         adapter.sendTransaction({
           value: BigInt(1000),
           to: '0x456',
           data: '0x',
           gas: BigInt(21000),
-          gasPrice: BigInt(2000000000),
-          address: '0x123'
+          gasPrice: BigInt(2000000000)
         })
       ).rejects.toThrow('Provider is undefined')
     })
@@ -281,6 +282,47 @@ describe('EthersAdapter', () => {
       expect(result.address).toBe('0x123')
       expect(result.chainId).toBe(1)
     })
+
+    it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
+          eip155: 'smartAccount'
+        }
+      })
+
+      const ethersAdapter = new EthersAdapter()
+
+      const connect = vi.fn().mockResolvedValue({ address: '0x123' })
+
+      const mockAuthProviderWithConnect = {
+        ...mockAuthProvider,
+        connect
+      } as unknown as W3mFrameProvider
+
+      Object.defineProperty(ethersAdapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockAuthProviderWithConnect,
+            chains: [1],
+            type: 'AUTH',
+            chain: 1
+          }
+        ]
+      })
+
+      await ethersAdapter.connect({
+        id: 'test',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(connect).toHaveBeenCalledWith({
+        chainId: 1,
+        preferredAccountType: 'smartAccount'
+      })
+    })
   })
 
   describe('EthersAdapter -disconnect', () => {
@@ -363,31 +405,6 @@ describe('EthersAdapter', () => {
           symbol: 'ETH'
         })
       }
-    })
-  })
-
-  describe('EthersAdapter -getProfile', () => {
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
-      vi.mocked(InfuraProvider).mockImplementation(
-        () =>
-          ({
-            lookupAddress: vi.fn().mockResolvedValue(mockEnsName),
-            getAvatar: vi.fn().mockResolvedValue(mockAvatar)
-          }) as any
-      )
-
-      const result = await adapter.getProfile({
-        address: '0x123',
-        chainId: 1
-      })
-
-      expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
-      })
     })
   })
 

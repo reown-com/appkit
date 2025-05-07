@@ -26,7 +26,6 @@ emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
   const start = new Date()
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'siwe')
   validator = new ModalWalletValidator(browserPage)
 
@@ -98,6 +97,8 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
+  await page.page.waitForTimeout(1000)
 
   await page.sign(namespace)
   await page.approveSign()
@@ -108,6 +109,8 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
+  await validator.expectAuthenticated()
+  await page.page.waitForTimeout(1000)
 
   await page.sign(namespace)
   await page.approveSign()

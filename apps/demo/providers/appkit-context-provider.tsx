@@ -1,32 +1,32 @@
 'use client'
 
-import { ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { type UniqueIdentifier } from '@dnd-kit/core'
 import { useTheme } from 'next-themes'
 import { Toaster } from 'sonner'
 import { useSnapshot } from 'valtio'
 
-import { AppKitNetwork, type ChainNamespace } from '@reown/appkit-common'
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
-import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
+import { type ChainNamespace } from '@reown/appkit-common'
+import { type ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
+import {
+  type Features,
+  type ThemeMode,
+  type ThemeVariables,
+  useAppKitState
+} from '@reown/appkit/react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
-import {
-  allAdapters,
-  initialConfig,
-  initialEnabledNetworks,
-  namespaceNetworksMap
-} from '@/lib/config'
+import { initialConfig, initialEnabledNetworks } from '@/lib/config'
 import {
   NAMESPACE_NETWORK_IDS_MAP,
   NETWORK_ID_NAMESPACE_MAP,
-  NETWORK_OPTIONS,
-  NetworkOption
+  getNamespaceNetworks
 } from '@/lib/constants'
 import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import { inter } from '@/lib/fonts'
-import { URLState, urlStateUtils } from '@/lib/url-state'
+import { type NetworkOption } from '@/lib/networks'
+import { type URLState, urlStateUtils } from '@/lib/url-state'
 
 import { ThemeStore } from '../lib/theme-store'
 
@@ -39,8 +39,8 @@ interface AppKitProviderProps {
   initialConfig?: URLState | null
 }
 
-export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
-  const { initialized } = useAppKitState()
+export function ContextProvider({ children }: AppKitProviderProps) {
+  const { initialized: isInitialized } = useAppKitState()
 
   const [features, setFeatures] = useState<Features>(
     initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES
@@ -50,7 +50,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     initialConfig?.termsConditionsUrl || ''
   )
   const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState(initialConfig?.privacyPolicyUrl || '')
-  const [enableWallets, setEnableWallets] = useState<boolean>(
+  const [shouldEnableWallets, setShouldEnableWallets] = useState<boolean>(
     Boolean(initialConfig?.enableWallets) || true
   )
   const [isDraggingByKey, setIsDraggingByKey] = useState<Record<ConnectMethod, boolean>>({
@@ -88,6 +88,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     setEnabledChains(prev => {
       const newEnabledChains = prev.filter(c => c !== chain)
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+
       return newEnabledChains
     })
 
@@ -98,37 +99,31 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
     // Update enabled networks state
     setEnabledNetworks(prev => {
-      const newNetworks = prev.filter(n => {
-        // Keep networks that are not in the removed chain's namespace
-        return !NAMESPACE_NETWORK_IDS_MAP[chain].includes(n)
-      })
+      const newNetworks = prev.filter(n => !NAMESPACE_NETWORK_IDS_MAP[chain].includes(n))
       urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+
       return newNetworks
     })
   }
 
-  function enableNetworksOfChain(chain: ChainNamespace) {
-    NAMESPACE_NETWORK_IDS_MAP[chain].forEach(networkId => {
-      const network = NETWORK_OPTIONS.find(no => no.network.id === networkId)
-      if (network?.network) {
-        appKit?.addNetwork(chain, network.network)
-      }
-    })
-  }
-
-  function enableSingleNetwork(network: NetworkOption) {
-    setEnabledNetworks(prev => {
-      const newNetworks = [...prev, network.network.id]
-      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
-      return newNetworks
-    })
-  }
-
-  function enableChain(chain: ChainNamespace, network: AppKitNetwork | undefined) {
+  function enableChain(chain: ChainNamespace) {
     setEnabledChains(prev => {
       const newEnabledChains = [...prev, chain]
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+
       return newEnabledChains
+    })
+
+    // Remove all networks in the chain namespace before adding new ones
+    getNamespaceNetworks(chain).forEach(network => {
+      appKit?.addNetwork(chain, network)
+    })
+
+    setEnabledNetworks(prev => {
+      const newNetworks = [...prev, ...getNamespaceNetworks(chain).map(n => n.id)]
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+
+      return newNetworks
     })
   }
 
@@ -148,6 +143,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
         const newNetworks = prev.filter(n => n !== network.network.id)
         urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+
         return newNetworks
       })
       appKit?.removeNetwork(network.namespace, network.network.id)
@@ -155,13 +151,26 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   function addNetwork(network: NetworkOption) {
-    if (!enabledChains.includes(network.namespace)) {
-      enableChain(network.namespace, network.network)
-      enableNetworksOfChain(network.namespace)
-    } else {
-      enableSingleNetwork(network)
-      appKit?.addNetwork(network.namespace, network.network)
+    const isChainEnabled = enabledChains.includes(network.namespace)
+
+    if (!isChainEnabled) {
+      // Enable the chain
+      setEnabledChains(prev => {
+        const newEnabledChains = [...prev, network.namespace]
+        urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+
+        return newEnabledChains
+      })
     }
+
+    setEnabledNetworks(prev => {
+      const newEnabledNetworks = [...prev, network.network.id]
+      urlStateUtils.updateURLWithState({ enabledNetworks: newEnabledNetworks as string[] })
+
+      return newEnabledNetworks
+    })
+
+    appKit?.addNetwork(network.namespace, network.network)
   }
 
   function updateFeatures(newFeatures: Partial<Features>) {
@@ -185,9 +194,10 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   function updateEnableWallets(enabled: boolean) {
-    setEnableWallets(() => {
+    setShouldEnableWallets(() => {
       appKit?.updateOptions({ enableWallets: enabled })
       urlStateUtils.updateURLWithState({ enableWallets: enabled })
+
       return enabled
     })
   }
@@ -196,6 +206,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     setTheme(() => {
       appKit?.setThemeMode(mode)
       urlStateUtils.updateURLWithState({ themeMode: mode })
+
       return mode
     })
   }
@@ -241,25 +252,25 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   useEffect(() => {
-    if (initialized) {
+    if (isInitialized) {
       const connectMethodsOrder = appKit?.getConnectMethodsOrder()
       const order = connectMethodsOrder
       updateFeatures({ connectMethodsOrder: order })
     }
-  }, [initialized])
+  }, [isInitialized])
 
   useEffect(() => {
     appKit?.setThemeMode(theme as ThemeMode)
   }, [])
 
-  const socialsEnabled = Array.isArray(features.socials)
+  const isSocialsEnabled = Array.isArray(features.socials)
 
   return (
     <AppKitContext.Provider
       value={{
         config: {
           features,
-          enableWallets,
+          enableWallets: shouldEnableWallets,
           themeMode: theme as ThemeMode,
           themeVariables: {
             '--w3m-color-mix': themeStore.mixColor,
@@ -277,8 +288,8 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         enabledNetworks,
         removeNetwork,
         addNetwork,
-        socialsEnabled,
-        enableWallets,
+        socialsEnabled: isSocialsEnabled,
+        enableWallets: shouldEnableWallets,
         isDraggingByKey,
         updateFeatures,
         updateThemeMode,

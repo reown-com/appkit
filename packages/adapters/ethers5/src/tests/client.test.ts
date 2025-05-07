@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
@@ -24,10 +25,6 @@ vi.mock('ethers', async importOriginal => {
     ...actual,
     formatEther: vi.fn(() => '1.5'),
     providers: {
-      InfuraProvider: vi.fn(() => ({
-        lookupAddress: vi.fn(),
-        getAvatar: vi.fn()
-      })),
       JsonRpcProvider: vi.fn(() => ({
         getBalance: vi.fn()
       })),
@@ -138,7 +135,10 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter -sendTransaction', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
-
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       vi.spyOn(Ethers5Methods, 'sendTransaction').mockResolvedValue(mockTxHash)
 
       const result = await adapter.sendTransaction({
@@ -147,7 +147,6 @@ describe('Ethers5Adapter', () => {
         data: '0x',
         gas: BigInt(21000),
         gasPrice: BigInt(2000000000),
-        address: '0x123',
         provider: mockProvider,
         caipNetwork: mockCaipNetworks[0]
       })
@@ -156,14 +155,17 @@ describe('Ethers5Adapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       await expect(
         adapter.sendTransaction({
           value: BigInt(1000),
           to: '0x456',
           data: '0x',
           gas: BigInt(21000),
-          gasPrice: BigInt(2000000000),
-          address: '0x123'
+          gasPrice: BigInt(2000000000)
         })
       ).rejects.toThrow('Provider is undefined')
     })
@@ -259,6 +261,47 @@ describe('Ethers5Adapter', () => {
       expect(result.address).toBe('0x123')
       expect(result.chainId).toBe(1)
     })
+
+    it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
+          eip155: 'smartAccount'
+        }
+      })
+
+      const ethers5Adapter = new Ethers5Adapter()
+
+      const connect = vi.fn().mockResolvedValue({ address: '0x123' })
+
+      const mockAuthProviderWithConnect = {
+        ...mockAuthProvider,
+        connect
+      } as unknown as W3mFrameProvider
+
+      Object.defineProperty(ethers5Adapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockAuthProviderWithConnect,
+            chains: [1],
+            type: 'AUTH',
+            chain: 1
+          }
+        ]
+      })
+
+      await ethers5Adapter.connect({
+        id: 'test',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(connect).toHaveBeenCalledWith({
+        chainId: 1,
+        preferredAccountType: 'smartAccount'
+      })
+    })
   })
 
   describe('Ethers5Adapter -disconnect', () => {
@@ -342,35 +385,6 @@ describe('Ethers5Adapter', () => {
         symbol: 'ETH'
       })
     }
-  })
-
-  describe('Ethers5Adapter -getProfile', () => {
-    beforeEach(() => {
-      vi.clearAllMocks()
-    })
-
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
-      vi.mocked(providers.InfuraProvider).mockImplementation(
-        () =>
-          ({
-            lookupAddress: vi.fn().mockResolvedValue(mockEnsName),
-            getAvatar: vi.fn().mockResolvedValue(mockAvatar)
-          }) as any
-      )
-
-      const result = await adapter.getProfile({
-        address: '0x123',
-        chainId: 1
-      })
-
-      expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
-      })
-    })
   })
 
   describe('Ethers5Adapter - switchNetwork', () => {
