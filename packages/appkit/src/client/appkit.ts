@@ -556,8 +556,6 @@ export class AppKit extends AppKitBaseClient {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
         }
 
-        featureImportPromises.push(import('@reown/appkit-scaffold-ui/profile'))
-
         if (features.pay) {
           featureImportPromises.push(import('@reown/appkit-pay'))
         }

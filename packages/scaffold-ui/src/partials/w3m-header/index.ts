@@ -96,8 +96,7 @@ function headings() {
     SmartSessionCreated: undefined,
     SmartSessionList: 'Smart Sessions',
     SIWXSignMessage: 'Sign In',
-    PayLoading: 'Payment in progress',
-    ProfileWallets: 'Wallets'
+    PayLoading: 'Payment in progress'
   }
 }
 

@@ -19,7 +19,6 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
-  watchConnections,
   watchConnectors,
   watchPendingTransactions
 } from '@wagmi/core'
@@ -230,20 +229,6 @@ export class WagmiAdapter extends AdapterBlueprint {
             })
           }
         }
-      }
-    })
-
-    watchConnections(this.wagmiConfig, {
-      onChange: connections => {
-        this.emit(
-          'connections',
-          connections.map(connection => ({
-            accounts: connection.accounts.map(account => ({
-              address: account
-            })),
-            connectorId: connection.connector.id
-          }))
-        )
       }
     })
   }
