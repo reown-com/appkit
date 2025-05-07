@@ -46,7 +46,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     this.unsubscribe.push(
       ConnectionController.subscribeKey('wcUri', () => {
         this.onHandleURI()
-        this.onRender?.()
       })
     )
 
