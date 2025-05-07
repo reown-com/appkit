@@ -90,7 +90,7 @@ export class W3mPayView extends LitElement {
     const paymentAsset = PayController.getPaymentAsset()
     this.networkName = paymentAsset.network
     this.tokenSymbol = paymentAsset.metadata.symbol
-    this.amount = paymentAsset.amount.toString()
+    this.amount = PayController.state.amount.toString()
   }
 
   private renderPaymentHeader() {
