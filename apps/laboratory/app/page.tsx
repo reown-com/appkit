@@ -10,6 +10,7 @@ import {
   featuredSdkOptions,
   multichainSdkOptions,
   paySdkOptions,
+  remoteConfigOptions,
   siwxSdkOptions,
   solanaSdkOptions,
   testingSdkOptions,
@@ -20,6 +21,7 @@ export default function HomePage() {
   return (
     <>
       <ConfigurationList title="Featured" sdkOptions={featuredSdkOptions} />
+      <ConfigurationList title="Remote Config" sdkOptions={remoteConfigOptions} />
       <ConfigurationList title="Testing" sdkOptions={testingSdkOptions} />
       <ConfigurationList title="Wagmi" sdkOptions={wagmiSdkOptions} />
       <ConfigurationList title="Ethers" sdkOptions={ethersSdkOptions} />

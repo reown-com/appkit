@@ -71,6 +71,7 @@ import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
+import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
@@ -148,11 +149,16 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
-    this.initControllers(options)
+    this.initializeProjectSettings(options)
+
+    const updatedOptions = await ConfigUtil.checkConfig(options)
+    this.options = updatedOptions
+
+    this.initControllers(updatedOptions)
     await this.initChainAdapters()
     await this.injectModalUi()
 
-    this.sendInitializeEvent(options)
+    this.sendInitializeEvent(updatedOptions)
     PublicStateController.set({ initialized: true })
 
     await this.syncExistingConnection()
@@ -241,6 +247,11 @@ export abstract class AppKitBaseClient {
     ConnectorController.initialize(this.chainNamespaces)
   }
 
+  protected initializeProjectSettings(options: AppKitOptionsWithSdk) {
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setSdkVersion(options.sdkVersion)
+  }
+
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
     OptionsController.setDebug(options.debug !== false)
 
@@ -253,8 +264,7 @@ export abstract class AppKitBaseClient {
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
-    OptionsController.setSdkVersion(options.sdkVersion)
-    OptionsController.setProjectId(options.projectId)
+
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)

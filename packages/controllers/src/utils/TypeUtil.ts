@@ -9,7 +9,9 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
+  OnRampProvider,
   SdkFramework,
+  SwapProvider,
   Transaction
 } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
@@ -1082,12 +1084,12 @@ export type Features = {
    * @description Enable or disable the swaps feature. Enabled by default.
    * @type {boolean}
    */
-  swaps?: boolean
+  swaps?: SwapProvider[] | false
   /**
    * @description Enable or disable the onramp feature. Enabled by default.
    * @type {boolean}
    */
-  onramp?: boolean
+  onramp?: OnRampProvider[] | false
   /**
    * @description Enable or disable the receive feature. Enabled by default.
    * This feature is only visible when connected with email/social. It's not possible to configure when connected with wallet, which is enabled by default.
@@ -1209,3 +1211,21 @@ export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 're
 export type PreferredAccountTypes = {
   [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key]
 }
+
+// -- Feature Configuration Types -------------------------------------------------
+
+export type FeatureID = 'activity' | 'onramp' | 'swap' | 'social_login'
+
+interface BaseFeature<T extends FeatureID, C extends string[] | null> {
+  id: T
+  isEnabled: boolean
+  config: C
+}
+
+export type TypedFeatureConfig =
+  | BaseFeature<'activity', null>
+  | BaseFeature<'onramp', OnRampProvider[]>
+  | BaseFeature<'swap', SwapProvider[]>
+  | BaseFeature<'social_login', (SocialProvider | 'email')[]>
+
+export type ApiGetProjectConfigResponse = TypedFeatureConfig[]

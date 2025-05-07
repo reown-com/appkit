@@ -19,7 +19,7 @@
     "build:example:wagmi-app-router": "pnpm --filter @examples/next-wagmi-app-router build",
     "build:local": "turbo run build --filter={./packages/**/*} --filter=!{./packages/cdn} --concurrency=31",
     "build": "turbo run build --filter={./packages/**/*} --concurrency=31",
-    "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
+    "watch": "turbo run watch --filter={./packages/appkit,./packages/controllers} --concurrency=10 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "gallery-new": "turbo run dev --filter={./apps/gallery-new}",
     "laboratory": "pnpm --filter @apps/laboratory dev",

@@ -13,7 +13,11 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl, clientId: null })
+export const api = new FetchUtil({
+  baseUrl,
+  clientId: null,
+  stagingUrl: CoreHelperUtil.getStagingApiUrl()
+})
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
