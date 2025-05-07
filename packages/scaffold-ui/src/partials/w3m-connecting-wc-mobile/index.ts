@@ -46,6 +46,7 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     this.unsubscribe.push(
       ConnectionController.subscribeKey('wcUri', () => {
         this.onHandleURI()
+        this.onRender?.()
       })
     )
 
@@ -62,16 +63,12 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   // -- Private ------------------------------------------- //
-  protected override onRender = () => {
+  private onHandleURI() {
+    this.isLoading = !this.uri
     if (!this.ready && this.uri) {
       this.ready = true
       this.onConnect?.()
     }
-  }
-
-  // Update the isLoading state based on required conditions
-  private onHandleURI() {
-    this.isLoading = !this.uri
   }
 
   protected override onConnect = () => {

@@ -108,7 +108,6 @@ export class W3mConnectingWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.onRender?.()
     this.onShowRetry()
 
     const subLabel = this.error
