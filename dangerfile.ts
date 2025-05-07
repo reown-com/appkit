@@ -218,7 +218,7 @@ async function checkCorePackage() {
     fail('New controllers were added, but no tests were created')
   }
 
-  if (modified_core_controllers.length && !modified_core_controllers_tests) {
+  if (modified_core_controllers.length && !modified_core_controllers_tests.length) {
     message(`
       The following controllers were modified, but not tests were changed:
       ${modified_core_controllers.join('\n')}
