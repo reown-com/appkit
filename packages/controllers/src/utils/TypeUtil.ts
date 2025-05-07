@@ -177,6 +177,10 @@ export interface ApiGetWalletsResponse {
   count: number
 }
 
+export interface ApiGetAllowedOriginsResponse {
+  allowedOrigins: string[]
+}
+
 export interface ApiGetAnalyticsConfigResponse {
   isAnalyticsEnabled: boolean
 }

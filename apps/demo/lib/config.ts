@@ -3,8 +3,9 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { type ChainNamespace } from '@reown/appkit-common'
-import { ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
+import { type ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
 import {
   type AppKitNetwork,
   arbitrum,
@@ -20,11 +21,11 @@ import {
   solanaDevnet,
   zksync
 } from '@reown/appkit/networks'
-import { CreateAppKit } from '@reown/appkit/react'
+import { type CreateAppKit } from '@reown/appkit/react'
 
 import { urlStateUtils } from '@/lib/url-state'
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 
 if (!projectId) {
   throw new Error('Project ID is not defined')
@@ -72,7 +73,7 @@ export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
-  url: 'https://demo.reown.com', // origin must match your domain & subdomain
+  url: 'https://demo.reown.com',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
@@ -85,29 +86,31 @@ export const initialEnabledNetworks =
 // Enabled adapters
 const adapters: ChainAdapter[] = []
 // Enabled network object list
-let initialNetworks: AppKitNetwork[] = []
+const initialNetworks: AppKitNetwork[] = []
 
+// eslint-disable-next-line consistent-return
 initialEnabledChains.forEach(chain => {
-  if (chain === 'eip155') {
+  if (chain === CommonConstantsUtil.CHAIN.EVM) {
     const enabledNetworks = evmNetworks.filter(network =>
       initialEnabledNetworks.includes(network.id)
     )
     initialNetworks.push(...enabledNetworks)
-    return adapters.push(evmAdapter)
-  }
-  if (chain === 'solana') {
+
+    adapters.push(evmAdapter)
+  } else if (chain === CommonConstantsUtil.CHAIN.SOLANA) {
     const enabledNetworks = solanaNetworks.filter(network =>
       initialEnabledNetworks.includes(network.id)
     )
     initialNetworks.push(...enabledNetworks)
-    return adapters.push(solanaAdapter)
-  }
-  if (chain === 'bip122') {
+
+    adapters.push(solanaAdapter)
+  } else if (chain === CommonConstantsUtil.CHAIN.BITCOIN) {
     const enabledNetworks = bitcoinNetworks.filter(network =>
       initialEnabledNetworks.includes(network.id)
     )
     initialNetworks.push(...enabledNetworks)
-    return adapters.push(bitcoinAdapter)
+
+    adapters.push(bitcoinAdapter)
   }
 })
 
@@ -116,7 +119,7 @@ export const appKitConfigs = {
   projectId,
   networks: initialNetworks as AppKitNetworksType,
   defaultNetwork: mainnet,
-  metadata: metadata,
+  metadata,
   features: initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES,
   enableWallets: initialConfig?.enableWallets || true,
   themeMode: initialConfig?.themeMode || 'dark',

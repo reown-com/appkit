@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 
 import classNames from 'classnames'
 
-import { ConnectMethod } from '@reown/appkit-controllers'
+import { type ConnectMethod } from '@reown/appkit-controllers'
 
 import { SocialButtons } from '@/components/social-buttons'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { BaseDraggableItemProps, ConnectMethodName } from '@/lib/types'
+import { type BaseDraggableItemProps, type ConnectMethodName } from '@/lib/types'
 
 import { Handle } from './components'
 import styles from './connect-method-item.module.css'
@@ -27,10 +27,8 @@ export const ConnectMethodItem = React.memo(
         fadeIn,
         handle,
         handleProps,
-        height,
         index,
         listeners,
-        onRemove,
         renderItem,
         sorting,
         style,
@@ -44,15 +42,15 @@ export const ConnectMethodItem = React.memo(
       ref
     ) => {
       const { config } = useAppKitContext()
-      const emailEnabled = config.features.email
-      const socialsEnabled = Array.isArray(config.features.socials)
-      const walletsEnabled = config.enableWallets
+      const isEmailEnabled = config.features.email
+      const isSocialsEnabled = Array.isArray(config.features.socials)
+      const isWalletsEnabled = config.enableWallets
       const themeMode = config.themeMode
 
       const featureEnabledMap = {
-        email: emailEnabled,
-        social: socialsEnabled,
-        wallet: walletsEnabled
+        email: isEmailEnabled,
+        social: isSocialsEnabled,
+        wallet: isWalletsEnabled
       }
 
       useEffect(() => {
@@ -62,6 +60,7 @@ export const ConnectMethodItem = React.memo(
 
         document.body.style.cursor = 'grabbing'
 
+        // eslint-disable-next-line consistent-return
         return () => {
           document.body.style.cursor = ''
         }
@@ -84,11 +83,11 @@ export const ConnectMethodItem = React.memo(
       ) : (
         <div
           className={classNames(
-            styles.Wrapper,
-            fadeIn && styles.fadeIn,
-            sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay,
-            dragging && styles.dragging,
+            styles['Wrapper'],
+            fadeIn && styles['fadeIn'],
+            sorting && styles['sorting'],
+            dragOverlay && styles['dragOverlay'],
+            dragging && styles['dragging'],
             'bg-fg-secondary',
             themeMode
           )}
@@ -115,17 +114,17 @@ export const ConnectMethodItem = React.memo(
           >
             <div
               className={classNames(
-                styles.Item,
+                styles['Item'],
                 'h-[28px]',
-                handle && styles.withHandle,
-                dragOverlay && styles.dragOverlay,
-                disabled && styles.disabled,
-                color && styles.color
+                handle && styles['withHandle'],
+                dragOverlay && styles['dragOverlay'],
+                disabled && styles['disabled'],
+                color && styles['color']
               )}
               style={style}
-              {...(!handle ? listeners : undefined)}
+              {...(handle ? undefined : listeners)}
               {...props}
-              tabIndex={!handle ? 0 : undefined}
+              tabIndex={handle ? undefined : 0}
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1 text-text-primary capitalize">{value}</span>

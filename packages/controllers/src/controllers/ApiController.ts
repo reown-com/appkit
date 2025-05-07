@@ -8,6 +8,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
+  ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
@@ -20,17 +21,15 @@ import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 
 /*
- * Exclude wallets that do not support relay connections on Core
+ * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
  * Excludes:
  * - Phantom
- * - Solflare
  * - Coinbase
  */
-const CORE_UNSUPPORTED_WALLET_IDS = [
-  '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
-  'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-  'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
-]
+const CUSTOM_DEEPLINK_WALLETS = {
+  PHANTOM: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+  COINBASE: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
+}
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -138,6 +137,33 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
+  _filterWalletsByPlatform(wallets: WcWallet[]) {
+    const filteredWallets = CoreHelperUtil.isMobile()
+      ? wallets?.filter(
+          w =>
+            w.mobile_link ||
+            w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE ||
+            (w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM &&
+              ChainController.state.activeChain === 'solana')
+        )
+      : wallets
+
+    return filteredWallets
+  },
+
+  async fetchAllowedOrigins() {
+    try {
+      const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
+        path: '/projects/v1/origins',
+        params: ApiController._getSdkProperties()
+      })
+
+      return allowedOrigins
+    } catch (error) {
+      return []
+    }
+  },
+
   async fetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
@@ -171,10 +197,10 @@ export const ApiController = {
     const exclude = params.exclude ?? []
     const sdkProperties = ApiController._getSdkProperties()
     if (sdkProperties.sv.startsWith('html-core-')) {
-      exclude.push(...CORE_UNSUPPORTED_WALLET_IDS)
+      exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS))
     }
 
-    return await api.get<ApiGetWalletsResponse>({
+    const wallets = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
@@ -182,9 +208,17 @@ export const ApiController = {
         page: String(params.page),
         entries: String(params.entries),
         include: params.include?.join(','),
-        exclude: params.exclude?.join(',')
+        exclude: exclude.join(',')
       }
     })
+
+    const filteredWallets = ApiController._filterWalletsByPlatform(wallets?.data)
+
+    return {
+      data: filteredWallets || [],
+      // Keep original count for display on main page
+      count: wallets?.count
+    }
   },
 
   async fetchFeaturedWallets() {
@@ -383,6 +417,10 @@ export const ApiController = {
     state.filteredWallets = state.wallets.filter(wallet =>
       wallet.chains?.some(chain => caipNetworkIds.includes(chain))
     )
+  },
+
+  clearFilterByNamespaces() {
+    state.filteredWallets = []
   },
 
   setFilterByNamespace(namespace: ChainNamespace | undefined) {

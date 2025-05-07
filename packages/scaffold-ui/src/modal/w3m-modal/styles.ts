@@ -22,7 +22,7 @@ export default css`
     opacity: 1;
   }
 
-  :host(.embedded) {
+  :host(.appkit-modal) {
     position: relative;
     pointer-events: unset;
     background: none;
@@ -43,7 +43,7 @@ export default css`
     will-change: border-radius, background-color;
   }
 
-  :host(.embedded) wui-card {
+  :host(.appkit-modal) wui-card {
     max-width: 400px;
   }
 

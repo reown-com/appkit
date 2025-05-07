@@ -18,6 +18,7 @@ import {
   ConnectionController,
   ConnectorController,
   ConstantsUtil,
+  CoreHelperUtil,
   ModalController,
   SIWXUtil
 } from '../../exports/index.js'
@@ -47,7 +48,8 @@ const client: ConnectionControllerClient = {
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x'),
   revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({})
+  walletGetAssets: async () => Promise.resolve({}),
+  updateBalance: () => Promise.resolve()
 }
 
 const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
@@ -68,7 +70,8 @@ const partialClient: ConnectionControllerClient = {
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x'),
   revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({})
+  walletGetAssets: async () => Promise.resolve({}),
+  updateBalance: () => Promise.resolve()
 }
 
 const evmAdapter = {
@@ -316,5 +319,19 @@ describe('ConnectionController', () => {
       bip122: 'bip122-connector',
       cosmos: 'cosmos-connector'
     })
+  })
+
+  it('should handle connectWalletConnect correctly on telegram or safari on ios', async () => {
+    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+
+    vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
+
+    expect(ConnectionController.state.status).toEqual('disconnected')
+    await ConnectionController.connectWalletConnect()
+    expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
+    expect(ConnectionController.state.status).toEqual('connected')
   })
 })

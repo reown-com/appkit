@@ -222,6 +222,30 @@ export const WcHelpersUtil = {
       typeof data.params.event === 'object' &&
       data.params.event !== null
     )
+  },
+
+  isOriginAllowed(
+    currentOrigin: string,
+    allowedPatterns: string[],
+    defaultAllowedOrigins: string[]
+  ): boolean {
+    for (const pattern of [...allowedPatterns, ...defaultAllowedOrigins]) {
+      if (pattern.includes('*')) {
+        // Convert wildcard pattern to regex, escape special chars, replace *, match whole string
+        const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
+        const regexString = `^${escapedPattern.replace(/\\\*/gu, '.*')}$`
+        const regex = new RegExp(regexString, 'u')
+
+        if (regex.test(currentOrigin)) {
+          return true
+        }
+      } else if (pattern === currentOrigin) {
+        return true
+      }
+    }
+
+    // No match found
+    return false
   }
 }
 

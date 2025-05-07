@@ -25,29 +25,11 @@
 </template>
 
 <script>
-import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
+import { useAppKitTheme } from '@reown/appkit/vue'
 
 import ActionButtonList from './components/ActionButton.vue'
 import Footer from './components/Footer.vue'
 import InfoList from './components/InfoList.vue'
-import { networks, projectId, solanaWeb3JsAdapter, wagmiAdapter } from './config'
-
-// Initialize AppKit
-createAppKit({
-  adapters: [wagmiAdapter, solanaWeb3JsAdapter],
-  networks,
-  projectId,
-  themeMode: 'light',
-  features: {
-    analytics: true
-  },
-  metadata: {
-    name: 'AppKit Vue Example',
-    description: 'AppKit Vue Example',
-    url: 'https://reown.com/appkit',
-    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
-  }
-})
 
 export default {
   name: 'App',

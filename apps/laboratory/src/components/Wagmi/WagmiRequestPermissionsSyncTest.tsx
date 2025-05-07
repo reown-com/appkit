@@ -6,21 +6,26 @@ import { type P256Credential, serializePublicKey } from 'webauthn-p256'
 
 import {
   type SmartSessionGrantPermissionsRequest,
-  grantPermissions,
-  isSmartSessionSupported
+  grantPermissions
 } from '@reown/appkit-experimental/smart-session'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { usePasskey } from '@/src/context/PasskeyContext'
 import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 import { bigIntReplacer } from '@/src/utils/CommonUtils'
+import { EIP_7715_RPC_METHODS } from '@/src/utils/EIP5792Utils'
+import { WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 import { getPurchaseDonutPermissions } from '@/src/utils/ERC7715Utils'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
-  const isSupported = isSmartSessionSupported()
+  const { supported: isCapabiltySupported } = useWagmiAvailableCapabilities({
+    capability: WALLET_CAPABILITIES.PERMISSIONS,
+    method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
+  })
 
   if (!isConnected || !address || !chainId) {
     return (
@@ -29,10 +34,11 @@ export function WagmiRequestPermissionsSyncTest() {
       </Text>
     )
   }
-  if (!isSupported) {
+  if (!isCapabiltySupported) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_grantPermissions rpc method
+        Wallet does not support wallet_grantPermissions rpc method. Ensure connecting smart account
+        with email youremail+smart-sessions@domain.com
       </Text>
     )
   }

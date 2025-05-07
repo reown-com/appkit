@@ -179,3 +179,8 @@ export type TokenId = string
  * - eip155:1/erc721:0x06012c8cf97BEaD5deAe237070F9587f8E7A266d/771769 (CryptoKitties Collectible #771769)
  */
 export type CaipAsset = AssetType | `${AssetType}/${TokenId}`
+
+export type EmbeddedWalletTimeoutReason =
+  | 'iframe_load_failed'
+  | 'iframe_request_timeout'
+  | 'unverified_domain'
