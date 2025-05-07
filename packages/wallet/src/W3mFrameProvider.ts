@@ -64,18 +64,16 @@ export class W3mFrameProvider {
       return
     }
 
-    this.w3mFrame.initFrame()
     this.initPromise = new Promise<void>(resolve => {
-      this.w3mFrame.events.onFrameEvent(async event => {
+      this.w3mFrame.events.onFrameEvent(event => {
         if (event.type === W3mFrameConstants.FRAME_READY) {
-          this.initPromise = undefined
-          await new Promise(_resolve => {
-            setTimeout(_resolve, 500)
-          })
           resolve()
         }
       })
     })
+
+    this.w3mFrame.initFrame()
+
     await this.initPromise
     this.initPromise = undefined
     this.isInitialized = true
@@ -104,7 +102,6 @@ export class W3mFrameProvider {
 
   public async reload() {
     try {
-      await this.init()
       await this.appEvent<'Reload'>({
         type: W3mFrameConstants.APP_RELOAD
       } as W3mFrameTypes.AppEvent)
@@ -117,7 +114,6 @@ export class W3mFrameProvider {
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
-      await this.init()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
         payload
@@ -195,8 +191,6 @@ export class W3mFrameProvider {
     payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
     try {
-      await this.init()
-
       return this.appEvent<'GetSocialRedirectUri'>({
         type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
         payload
@@ -298,8 +292,6 @@ export class W3mFrameProvider {
 
   public async setPreferredAccount(type: W3mFrameTypes.AccountType) {
     try {
-      await this.init()
-
       return this.appEvent<'SetPreferredAccount'>({
         type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
         payload: { type }
@@ -313,7 +305,6 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.getUser({
         chainId,
@@ -332,7 +323,6 @@ export class W3mFrameProvider {
 
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
@@ -349,7 +339,6 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
-      await this.init()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
@@ -368,7 +357,6 @@ export class W3mFrameProvider {
 
   public async getFarcasterUri() {
     try {
-      await this.init()
       const response = await this.appEvent<'GetFarcasterUri'>({
         type: W3mFrameConstants.APP_GET_FARCASTER_URI
       } as W3mFrameTypes.AppEvent)
@@ -571,6 +559,7 @@ export class W3mFrameProvider {
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: AppEventType
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
+    await this.init()
     let requestTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
     let iframeReadyTimeout: ReturnType<typeof setTimeout> | undefined = undefined
