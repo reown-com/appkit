@@ -159,12 +159,12 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    const onramp = this.features?.onramp
+    const isOnrampEnabled = this.features?.onramp
     const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
       this.namespace
     )
 
-    if (!onramp || !hasNetworkSupport) {
+    if (!isOnrampEnabled || !hasNetworkSupport) {
       return null
     }
 
@@ -204,7 +204,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
     const isEnabled =
       this.features?.history &&
       CoreConstantsUtil.ACTIVITY_ENABLED_CHAIN_NAMESPACES.includes(this.namespace)
@@ -214,23 +213,20 @@ export class W3mAccountDefaultWidget extends LitElement {
           iconVariant="blue"
           icon="clock"
           iconSize="sm"
-          ?chevron=${!isSolana}
-          ?disabled=${isSolana}
+          ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
+          data-testid="w3m-account-default-activity-button"
         >
-          <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}>
-            Activity
-          </wui-text>
-          ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
         </wui-list-item>`
       : null
   }
 
   private swapsTemplate() {
-    const swaps = this.features?.swaps
+    const isSwapsEnabled = this.features?.swaps
     const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
 
-    if (!swaps || !isEvm) {
+    if (!isSwapsEnabled || !isEvm) {
       return null
     }
 
@@ -240,6 +236,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="recycleHorizontal"
         ?chevron=${true}
         @click=${this.handleClickSwap.bind(this)}
+        data-testid="w3m-account-default-swaps-button"
       >
         <wui-text variant="paragraph-500" color="fg-100">Swap</wui-text>
       </wui-list-item>
@@ -247,10 +244,11 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private sendTemplate() {
-    const send = this.features?.send
-    const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const isSendEnabled = this.features?.send
+    const activeNamespace = ChainController.state.activeChain as ChainNamespace
+    const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace)
 
-    if (!send || !isEvm) {
+    if (!isSendEnabled || !isSendSupported) {
       return null
     }
 
@@ -260,6 +258,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="send"
         ?chevron=${true}
         @click=${this.handleClickSend.bind(this)}
+        data-testid="w3m-account-default-send-button"
       >
         <wui-text variant="paragraph-500" color="fg-100">Send</wui-text>
       </wui-list-item>
@@ -433,12 +432,14 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onTransactions() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     EventsController.sendEvent({
       type: 'track',
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

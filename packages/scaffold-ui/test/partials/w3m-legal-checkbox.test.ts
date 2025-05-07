@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { OptionsController } from '@reown/appkit-controllers'
+import { OptionsController, OptionsStateController } from '@reown/appkit-controllers'
 
 import { W3mLegalCheckbox } from '../../src/partials/w3m-legal-checkbox/index'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -84,5 +84,26 @@ describe('W3mLegalCheckbox', () => {
     await elementUpdated(element)
 
     expect(HelpersUtil.querySelect(element, CHECKBOX_TEST_ID)).toBeNull()
+  })
+
+  it('should render checked checkbox when isLegalCheckboxChecked is true', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      termsConditionsUrl: TERMS_CONDITIONS_URL,
+      privacyPolicyUrl: PRIVACY_POLICY_URL,
+      features: {
+        legalCheckbox: true
+      }
+    })
+    vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
+      ...OptionsStateController.state,
+      isLegalCheckboxChecked: true
+    })
+
+    const element: W3mLegalCheckbox = await fixture(html`<w3m-legal-checkbox></w3m-legal-checkbox>`)
+
+    const checkbox = HelpersUtil.getByTestId(element, CHECKBOX_TEST_ID)
+    expect(checkbox).not.toBeNull()
+    expect(checkbox?.getAttribute('checked')).not.toBeNull()
   })
 })

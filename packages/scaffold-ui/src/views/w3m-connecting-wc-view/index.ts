@@ -65,7 +65,12 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry, status } = ConnectionController.state
 
-      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
+      if (
+        retry ||
+        OptionsController.state.enableEmbedded ||
+        CoreHelperUtil.isPairingExpired(wcPairingExpiry) ||
+        status === 'connecting'
+      ) {
         await ConnectionController.connectWalletConnect()
         if (!this.isSiwxEnabled) {
           ModalController.close()
@@ -100,7 +105,7 @@ export class W3mConnectingWcView extends LitElement {
     const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) as string[]
     const browserIds = [...(rdns ? [rdns] : (injectedIds ?? []))]
     const isBrowser = OptionsController.state.isUniversalProvider ? false : browserIds.length
-    const isMobileWc = mobile_link
+    const hasMobileWCLink = mobile_link
     const isWebWc = webapp_link
     const isBrowserInstalled = ConnectionController.checkInstalled(browserIds)
     const isBrowserWc = isBrowser && isBrowserInstalled
@@ -110,7 +115,7 @@ export class W3mConnectingWcView extends LitElement {
     if (isBrowserWc && !ChainController.state.noAdapters) {
       this.platforms.push('browser')
     }
-    if (isMobileWc) {
+    if (hasMobileWCLink) {
       this.platforms.push(CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode')
     }
     if (isWebWc) {

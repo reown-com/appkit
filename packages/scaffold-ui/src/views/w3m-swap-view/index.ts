@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
-import { NumberUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  NumberUtil
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -20,10 +25,23 @@ import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import type { SwapInputArguments } from '../../../../controllers/dist/types/src/controllers/SwapController.js'
 import '../../partials/w3m-swap-details/index.js'
 import '../../partials/w3m-swap-input-skeleton/index.js'
 import '../../partials/w3m-swap-input/index.js'
 import styles from './styles.js'
+
+interface OnCaipAddressChangeParams {
+  newCaipAddress?: CaipAddress
+  resetSwapState: boolean
+  initializeSwapState: boolean
+}
+
+interface OnCaipNetworkChangeParams {
+  newCaipNetwork?: CaipNetwork
+  resetSwapState: boolean
+  initializeSwapState: boolean
+}
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
@@ -32,9 +50,13 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property({ type: Object }) initialParams = RouterController.state.data?.swap
+
   @state() private interval?: ReturnType<typeof setInterval>
 
   @state() private detailsOpen = false
+
+  @state() private caipAddress = AccountController.state.caipAddress
 
   @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
 
@@ -60,22 +82,41 @@ export class W3mSwapView extends LitElement {
 
   @state() private inputError = SwapController.state.inputError
 
-  @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
-
   @state() private fetchError = SwapController.state.fetchError
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
-      if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
-        this.caipNetworkId = newCaipNetwork?.caipNetworkId
-        SwapController.resetState()
-        SwapController.initializeState()
-      }
-    })
+    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+      this.onCaipNetworkChange({
+        newCaipNetwork,
+        resetSwapState: true,
+        initializeSwapState: false
+      })
+    )
+    AccountController.subscribeKey('caipAddress', newCaipAddress =>
+      this.onCaipAddressChange({
+        newCaipAddress,
+        resetSwapState: true,
+        initializeSwapState: false
+      })
+    )
     this.unsubscribe.push(
       ...[
+        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+          this.onCaipNetworkChange({
+            newCaipNetwork,
+            resetSwapState: false,
+            initializeSwapState: true
+          })
+        ),
+        AccountController.subscribeKey('caipAddress', newCaipAddress =>
+          this.onCaipAddressChange({
+            newCaipAddress,
+            resetSwapState: false,
+            initializeSwapState: true
+          })
+        ),
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             SwapController.resetState()
@@ -98,16 +139,16 @@ export class W3mSwapView extends LitElement {
           this.toTokenAmount = newState.toTokenAmount
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
-          this.gasPriceInUSD = newState.gasPriceInUSD
           this.fetchError = newState.fetchError
         })
       ]
     )
   }
 
-  public override firstUpdated() {
+  public override async firstUpdated() {
     SwapController.initializeState()
     this.watchTokensAndValues()
+    await this.handleSwapParameters()
   }
 
   public override disconnectedCallback() {
@@ -210,31 +251,7 @@ export class W3mSwapView extends LitElement {
   }
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
-    const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === ChainController.getActiveNetworkTokenAddress()
-    let value = '0'
-
-    if (!balance) {
-      value = '0'
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    if (!this.gasPriceInUSD) {
-      value = balance
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).div(
-      this.sourceTokenPriceInUSD
-    )
-    const maxValue = isNetworkToken
-      ? NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
-      : NumberUtil.bigNumber(balance)
-
+    const maxValue = NumberUtil.bigNumber(balance || '0')
     this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
   }
 
@@ -287,11 +304,11 @@ export class W3mSwapView extends LitElement {
     SwapController.switchTokens()
   }
 
-  private onSwapPreview() {
-    if (this.fetchError) {
-      SwapController.swapTokens()
+  private async onSwapPreview() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
 
-      return
+    if (this.fetchError) {
+      await SwapController.swapTokens()
     }
     EventsController.sendEvent({
       type: 'track',
@@ -303,11 +320,130 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     RouterController.push('SwapPreview')
+  }
+  /**
+   * Processes token and amount parameters for swap
+   */
+  private async handleSwapParameters(): Promise<void> {
+    if (!this.initialParams) {
+      return
+    }
+
+    // Wait for initialization to complete
+    if (!SwapController.state.initialized) {
+      const waitForInitialization = new Promise<void>(resolve => {
+        const unsubscribe = SwapController.subscribeKey('initialized', initialized => {
+          if (initialized) {
+            unsubscribe?.()
+            resolve()
+          }
+        })
+      })
+      await waitForInitialization
+    }
+
+    await this.setSwapParameters(this.initialParams)
+  }
+
+  /**
+   * Sets the swap parameters based on URL parameters
+   * @param sourceTokenSymbol - The symbol of the source token
+   * @param toTokenSymbol - The symbol of the destination token
+   * @param amount - The amount to swap
+   */
+  private async setSwapParameters({
+    amount,
+    fromToken,
+    toToken
+  }: Omit<SwapInputArguments, 'caipNetworkId'>): Promise<void> {
+    // Wait for token list to be available
+    if (!SwapController.state.tokens || !SwapController.state.myTokensWithBalance) {
+      const waitForTokens = new Promise<void>(resolve => {
+        const unsubscribe = SwapController.subscribeKey('myTokensWithBalance', tokens => {
+          if (tokens && tokens.length > 0) {
+            unsubscribe?.()
+            resolve()
+          }
+        })
+
+        // Set a timeout to resolve anyway after 5 seconds
+        setTimeout(() => {
+          unsubscribe?.()
+          resolve()
+        }, 5000)
+      })
+
+      await waitForTokens
+    }
+
+    const allTokens = [
+      ...(SwapController.state.tokens || []),
+      ...(SwapController.state.myTokensWithBalance || [])
+    ]
+
+    // Find source token by symbol
+    if (fromToken) {
+      const token = allTokens.find(t => t.symbol.toLowerCase() === fromToken.toLowerCase())
+
+      if (token) {
+        SwapController.setSourceToken(token)
+      }
+    }
+
+    // Find destination token by symbol
+    if (toToken) {
+      const token = allTokens.find(t => t.symbol.toLowerCase() === toToken.toLowerCase())
+
+      if (token) {
+        SwapController.setToToken(token)
+      }
+    }
+
+    // Set amount if provided
+    if (amount && !isNaN(Number(amount))) {
+      SwapController.setSourceTokenAmount(amount)
+    }
+  }
+
+  private onCaipAddressChange({
+    newCaipAddress,
+    resetSwapState,
+    initializeSwapState
+  }: OnCaipAddressChangeParams) {
+    if (this.caipAddress !== newCaipAddress) {
+      this.caipAddress = newCaipAddress
+
+      if (resetSwapState) {
+        SwapController.resetState()
+      }
+
+      if (initializeSwapState) {
+        SwapController.initializeState()
+      }
+    }
+  }
+
+  private onCaipNetworkChange({
+    newCaipNetwork,
+    resetSwapState,
+    initializeSwapState
+  }: OnCaipNetworkChangeParams) {
+    if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
+      this.caipNetworkId = newCaipNetwork?.caipNetworkId
+
+      if (resetSwapState) {
+        SwapController.resetState()
+      }
+
+      if (initializeSwapState) {
+        SwapController.initializeState()
+      }
+    }
   }
 }
 

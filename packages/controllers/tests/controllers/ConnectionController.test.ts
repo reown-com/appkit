@@ -18,6 +18,7 @@ import {
   ConnectionController,
   ConnectorController,
   ConstantsUtil,
+  CoreHelperUtil,
   ModalController,
   SIWXUtil
 } from '../../exports/index.js'
@@ -47,7 +48,8 @@ const client: ConnectionControllerClient = {
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x'),
   revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({})
+  walletGetAssets: async () => Promise.resolve({}),
+  updateBalance: () => Promise.resolve()
 }
 
 const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
@@ -68,7 +70,8 @@ const partialClient: ConnectionControllerClient = {
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x'),
   revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({})
+  walletGetAssets: async () => Promise.resolve({}),
+  updateBalance: () => Promise.resolve()
 }
 
 const evmAdapter = {
@@ -215,7 +218,8 @@ describe('ConnectionController', () => {
       eip155: 'eip155-connector',
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     }
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
@@ -231,7 +235,8 @@ describe('ConnectionController', () => {
       eip155: 'eip155-connector',
       solana: undefined,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     })
   })
 
@@ -246,8 +251,14 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+      cosmos: 'cosmos-connector'
     }
+    ChainController.state.chains.set('eip155', {
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
@@ -262,7 +273,8 @@ describe('ConnectionController', () => {
       eip155: undefined,
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: undefined
+      bip122: undefined,
+      cosmos: 'cosmos-connector'
     })
   })
 
@@ -277,8 +289,20 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       solana: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     }
+    ChainController.state.chains.set('eip155', {
+      accountState: {
+        caipAddress: 'eip155:1'
+      }
+    } as unknown as ChainAdapter)
+    ChainController.state.chains.set('solana', {
+      accountState: {
+        caipAddress: 'solana:1'
+      }
+    } as unknown as ChainAdapter)
+
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
@@ -293,7 +317,22 @@ describe('ConnectionController', () => {
       eip155: undefined,
       solana: undefined,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     })
+  })
+
+  it('should handle connectWalletConnect correctly on telegram or safari on ios', async () => {
+    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+
+    vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
+
+    expect(ConnectionController.state.status).toEqual('disconnected')
+    await ConnectionController.connectWalletConnect()
+    expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
+    expect(ConnectionController.state.status).toEqual('connected')
   })
 })

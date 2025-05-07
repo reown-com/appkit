@@ -21,6 +21,7 @@ export interface ConnectorControllerState {
   connectors: ConnectorWithProviders[]
   activeConnector: Connector | undefined
   filterByNamespace: ChainNamespace | undefined
+  filterByNamespaceMap: Record<ChainNamespace, boolean>
   activeConnectorIds: Record<ChainNamespace, string | undefined>
 }
 
@@ -30,7 +31,8 @@ const defaultActiveConnectors = {
   eip155: undefined,
   solana: undefined,
   polkadot: undefined,
-  bip122: undefined
+  bip122: undefined,
+  cosmos: undefined
 }
 
 // -- State --------------------------------------------- //
@@ -39,7 +41,14 @@ const state = proxy<ConnectorControllerState>({
   connectors: [],
   activeConnector: undefined,
   filterByNamespace: undefined,
-  activeConnectorIds: { ...defaultActiveConnectors }
+  activeConnectorIds: { ...defaultActiveConnectors },
+  filterByNamespaceMap: {
+    eip155: true,
+    solana: true,
+    polkadot: true,
+    bip122: true,
+    cosmos: true
+  }
 })
 
 // -- Controller ---------------------------------------- //
@@ -94,12 +103,58 @@ export const ConnectorController = {
       }
     })
 
-    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+    const enabledNamespaces = this.getEnabledNamespaces()
+    const connectorsFilteredByNamespaces = this.getEnabledConnectors(enabledNamespaces)
+
+    state.connectors = this.mergeMultiChainConnectors(connectorsFilteredByNamespaces)
   },
 
-  removeAdapter(namespace: ChainNamespace) {
-    state.allConnectors = state.allConnectors.filter(connector => connector.chain !== namespace)
-    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+  filterByNamespaces(enabledNamespaces: ChainNamespace[]) {
+    Object.keys(state.filterByNamespaceMap).forEach(namespace => {
+      state.filterByNamespaceMap[namespace as ChainNamespace] = false
+    })
+
+    enabledNamespaces.forEach(namespace => {
+      state.filterByNamespaceMap[namespace] = true
+    })
+
+    this.updateConnectorsForEnabledNamespaces()
+  },
+
+  filterByNamespace(namespace: ChainNamespace, enabled: boolean) {
+    state.filterByNamespaceMap[namespace] = enabled
+
+    this.updateConnectorsForEnabledNamespaces()
+  },
+
+  updateConnectorsForEnabledNamespaces() {
+    const enabledNamespaces = this.getEnabledNamespaces()
+    const enabledConnectors = this.getEnabledConnectors(enabledNamespaces)
+    const areAllNamespacesEnabled = this.areAllNamespacesEnabled()
+
+    state.connectors = this.mergeMultiChainConnectors(enabledConnectors)
+
+    if (areAllNamespacesEnabled) {
+      ApiController.clearFilterByNamespaces()
+    } else {
+      ApiController.filterByNamespaces(enabledNamespaces)
+    }
+  },
+
+  getEnabledNamespaces(): ChainNamespace[] {
+    return Object.entries(state.filterByNamespaceMap)
+      .filter(([_, enabled]) => enabled)
+      .map(([namespace]) => namespace as ChainNamespace)
+  },
+
+  getEnabledConnectors(enabledNamespaces: ChainNamespace[]): Connector[] {
+    return state.allConnectors.filter(connector =>
+      enabledNamespaces.includes(connector.chain as ChainNamespace)
+    )
+  },
+
+  areAllNamespacesEnabled(): boolean {
+    return Object.values(state.filterByNamespaceMap).every(enabled => enabled)
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {
@@ -226,7 +281,11 @@ export const ConnectorController = {
   },
 
   getConnector(id: string, rdns?: string | null) {
-    return state.allConnectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
+    const connectorsByNamespace = state.allConnectors.filter(
+      c => c.chain === ChainController.state.activeChain
+    )
+
+    return connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {

@@ -25,7 +25,8 @@ const CLEAN_PROVIDERS_STATE = {
   eip155: undefined,
   solana: undefined,
   polkadot: undefined,
-  bip122: undefined
+  bip122: undefined,
+  cosmos: undefined
 }
 
 const state = proxy<ProviderStoreUtilState>({
@@ -38,6 +39,12 @@ export const ProviderUtil = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ProviderStoreUtilState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  subscribe(callback: (value: ProviderStoreUtilState) => void) {
+    return subscribe(state, () => {
+      callback(state)
+    })
   },
 
   subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {

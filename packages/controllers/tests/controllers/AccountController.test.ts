@@ -92,10 +92,14 @@ describe('AccountController', () => {
 
   it('should update state correctly on setPreferredAccountType()', () => {
     AccountController.setPreferredAccountType('eoa', chain)
-    expect(AccountController.state.preferredAccountType).toEqual('eoa')
+    expect(AccountController.state.preferredAccountTypes).toEqual({
+      eip155: 'eoa'
+    })
 
     AccountController.setPreferredAccountType('smartAccount', chain)
-    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
+    expect(AccountController.state.preferredAccountTypes).toEqual({
+      eip155: 'smartAccount'
+    })
   })
 
   it('should update state correctly on resetAccount()', () => {
@@ -216,7 +220,6 @@ describe('AccountController', () => {
 
       const setTokenBalanceSpy = vi.spyOn(AccountController, 'setTokenBalance')
       const setBalancesSpy = vi.spyOn(SwapController, 'setBalances')
-
       const result = await AccountController.fetchTokenBalance()
 
       expect(result).toEqual([
@@ -230,7 +233,7 @@ describe('AccountController', () => {
         ]),
         'eip155'
       )
-      expect(setBalancesSpy).toHaveBeenCalled()
+      expect(setBalancesSpy).not.toHaveBeenCalled()
       expect(AccountController.state.lastRetry).toBeUndefined()
       expect(AccountController.state.balanceLoading).toBe(false)
     })

@@ -84,7 +84,10 @@ describe('W3mAccountAuthButton', () => {
 
     accountEmail?.click()
 
-    expect(RouterController.push).toHaveBeenCalledWith('UpdateEmailWallet', { email: MOCK_EMAIL })
+    expect(RouterController.push).toHaveBeenCalledWith('UpdateEmailWallet', {
+      email: MOCK_EMAIL,
+      redirectView: 'Account'
+    })
   })
 
   test('it should not display when email is null, undefined and no username is set', async () => {

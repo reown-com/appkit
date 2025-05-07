@@ -1,7 +1,7 @@
 name: "\U0001F64B Feature Request"
 description: 'Want us to add something to AppKit?'
 title: '[feature] '
-labels: ['feature-request', 'needs review']
+labels: ['feature-request external']
 body:
   - type: textarea
     attributes:

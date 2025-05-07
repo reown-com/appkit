@@ -9,7 +9,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
-import type { SwapInputTarget } from './SwapController.js'
+import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -54,6 +54,7 @@ export interface RouterControllerState {
     | 'ConnectSocials'
     | 'ConnectWallets'
     | 'Downloads'
+    | 'EmailLogin'
     | 'EmailVerifyOtp'
     | 'EmailVerifyDevice'
     | 'GetWallet'
@@ -88,6 +89,8 @@ export interface RouterControllerState {
     | 'SmartSessionCreated'
     | 'SmartSessionList'
     | 'SIWXSignMessage'
+    | 'Pay'
+    | 'PayLoading'
     | 'ProfileWallets'
   history: RouterControllerState['view'][]
   data?: {
@@ -95,6 +98,7 @@ export interface RouterControllerState {
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
+    redirectView?: RouterControllerState['view']
     newEmail?: string
     target?: SwapInputTarget
     swapUnsupportedChain?: boolean
@@ -102,6 +106,7 @@ export interface RouterControllerState {
     switchToChain?: ChainNamespace
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
+    swap?: SwapInputArguments
   }
   transactionStack: TransactionAction[]
 }
@@ -157,7 +162,7 @@ export const RouterController = {
           this.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
-          ModalController.close()
+          ModalController.close(true)
           state.history = []
         }
       } else if (action.view) {

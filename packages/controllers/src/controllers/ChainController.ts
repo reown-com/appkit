@@ -129,7 +129,16 @@ export const ChainController = {
 
     const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
     const adapterToActivate = defaultAdapter || adapters?.[0]
-    const namespaces = new Set([...(caipNetworks?.map(network => network.chainNamespace) ?? [])])
+
+    const namespacesFromAdapters = adapters.map(a => a.namespace).filter(n => n !== undefined)
+
+    /**
+     * If the AppKit is in embedded mode (for Demo app), we should get the available namespaces from the adapters.
+     */
+    const namespaces = OptionsController.state.enableEmbedded
+      ? new Set([...namespacesFromAdapters])
+      : new Set([...(caipNetworks?.map(network => network.chainNamespace) ?? [])])
+
     if (adapters?.length === 0 || !adapterToActivate) {
       state.noAdapters = true
     }
@@ -209,6 +218,7 @@ export const ChainController = {
       }
       state.chains.set(network.chainNamespace, { ...chainAdapter, caipNetworks: newNetworks })
       this.setRequestedCaipNetworks(newNetworks, network.chainNamespace)
+      ConnectorController.filterByNamespace(network.chainNamespace, true)
     }
   },
 
@@ -231,6 +241,10 @@ export const ChainController = {
 
       state.chains.set(namespace, { ...chainAdapter, caipNetworks: newCaipNetworksOfAdapter })
       this.setRequestedCaipNetworks(newCaipNetworksOfAdapter || [], namespace)
+
+      if (newCaipNetworksOfAdapter.length === 0) {
+        ConnectorController.filterByNamespace(namespace, false)
+      }
     }
   },
 
@@ -354,6 +368,7 @@ export const ChainController = {
 
     if (
       !isSupported &&
+      OptionsController.state.enableNetworkSwitch &&
       !OptionsController.state.allowUnsupportedChain &&
       !ConnectionController.state.wcBasic
     ) {
@@ -505,8 +520,12 @@ export const ChainController = {
     return requestedCaipNetworks
   },
 
-  setRequestedCaipNetworks(requestedCaipNetworks: CaipNetwork[], chain: ChainNamespace) {
-    this.setAdapterNetworkState(chain, { requestedCaipNetworks })
+  setRequestedCaipNetworks(caipNetworks: CaipNetwork[], chain: ChainNamespace) {
+    this.setAdapterNetworkState(chain, { requestedCaipNetworks: caipNetworks })
+    const allRequestedCaipNetworks = this.getAllRequestedCaipNetworks()
+    const namespaces = allRequestedCaipNetworks.map(network => network.chainNamespace)
+    const uniqueNamespaces = Array.from(new Set(namespaces))
+    ConnectorController.filterByNamespaces(uniqueNamespaces)
   },
 
   getAllApprovedCaipNetworkIds(): CaipNetworkId[] {
@@ -636,7 +655,7 @@ export const ChainController = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountType: undefined,
+      preferredAccountTypes: undefined,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
@@ -656,9 +675,12 @@ export const ChainController = {
       const disconnectResults = await Promise.allSettled(
         chainsToDisconnect.map(async ([ns, adapter]) => {
           try {
-            if (adapter.connectionControllerClient?.disconnect) {
+            const { caipAddress } = this.getAccountData(ns) || {}
+
+            if (caipAddress && adapter.connectionControllerClient?.disconnect) {
               await adapter.connectionControllerClient.disconnect(ns)
             }
+
             this.resetAccount(ns)
             this.resetNetwork(ns)
           } catch (error) {
@@ -826,5 +848,13 @@ export const ChainController = {
     return chains
       .flatMap(chain => chain?.caipNetworks || [])
       .map(caipNetwork => caipNetwork.caipNetworkId)
+  },
+
+  getCaipNetworks(namespace?: ChainNamespace) {
+    if (namespace) {
+      return ChainController.getRequestedCaipNetworks(namespace)
+    }
+
+    return ChainController.getAllRequestedCaipNetworks()
   }
 }

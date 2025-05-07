@@ -47,7 +47,11 @@ basicTest('Should be able to open modal with the open hook', async () => {
   await modalPage.closeModal()
 })
 
-basicTest('Should show socials enabled by default', async () => {
+basicTest('Should show socials enabled by default', async ({ library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
+
   await modalPage.page.getByTestId('connect-button').click()
   await modalValidator.expectSocialsVisible()
   await modalPage.closeModal()

@@ -29,7 +29,7 @@ test.beforeAll(async ({ browser }) => {
   }
   const email = new Email(mailsacApiKey)
   const tempEmail = await email.getEmailAddressToUse()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
 })

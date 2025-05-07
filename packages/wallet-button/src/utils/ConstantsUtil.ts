@@ -6,6 +6,7 @@ export const ConstantsUtil = {
       : undefined) || 'https://secure.walletconnect.org',
 
   Socials: ['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'] as const,
+  Email: 'email' as const,
 
   WalletButtonsIds: {
     coinbase: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
