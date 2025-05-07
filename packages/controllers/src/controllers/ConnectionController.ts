@@ -59,6 +59,7 @@ export interface ConnectionControllerClient {
   }) => Promise<`0x${string}`>
   getCapabilities: (params: string) => Promise<unknown>
   walletGetAssets: (params: WalletGetAssetsParams) => Promise<WalletGetAssetsResponse>
+  updateBalance: (chainNamespace: ChainNamespace) => void
 }
 
 export interface ConnectionControllerState {
@@ -234,6 +235,7 @@ const controller = {
   resetUri() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
+    wcConnectionPromise = undefined
   },
 
   finalizeWcConnection() {

@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwx",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -9,6 +9,23 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build",
@@ -26,6 +43,14 @@
     "tweetnacl": "1.0.3",
     "viem": "2.23.13"
   },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "@vitest/coverage-v8": "2.1.9",
+    "happy-dom": "15.11.7",
+    "react": "19.0.0",
+    "vitest": "2.1.9",
+    "vue": "3.5.13"
+  },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
@@ -35,11 +60,6 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  },
-  "devDependencies": {
-    "@vitest/coverage-v8": "2.1.9",
-    "happy-dom": "15.11.7",
-    "vitest": "2.1.9"
   },
   "keywords": [
     "appkit",

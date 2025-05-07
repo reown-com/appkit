@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -73,6 +73,11 @@
       "types": "./dist/types/exports/email.d.ts",
       "import": "./dist/esm/exports/email.js",
       "default": "./dist/esm/exports/email.js"
+    },
+    "./pay": {
+      "types": "./dist/types/exports/pay.d.ts",
+      "import": "./dist/esm/exports/pay.js",
+      "default": "./dist/esm/exports/pay.js"
     }
   },
   "scripts": {

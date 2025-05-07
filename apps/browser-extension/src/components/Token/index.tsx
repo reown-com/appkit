@@ -24,6 +24,11 @@ const tokens: Record<ChainNamespace, { title: string; symbol: string; src: strin
     title: 'Polkadot',
     symbol: 'DOT',
     src: '/assets/images/dot.png'
+  },
+  cosmos: {
+    title: 'Cosmos',
+    symbol: 'ATOM',
+    src: '/assets/images/atom.png'
   }
 }
 

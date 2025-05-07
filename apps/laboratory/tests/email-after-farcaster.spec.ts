@@ -27,7 +27,6 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
   emailTestAfterFarcaster.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
@@ -146,12 +145,12 @@ emailTestAfterFarcaster(
 )
 
 emailTestAfterFarcaster(
-  'it should abort request if it takes more than 30 seconds after abort login with farcaster',
+  'it should abort embedded wallet flow if it takes more than 20 seconds after abort login with farcaster',
   async () => {
     await page.page.context().setOffline(true)
     await page.loginWithEmail(tempEmail, false)
-    await page.page.waitForTimeout(30_000)
-    await validator.expectSnackbar('Something went wrong')
+    await page.page.waitForTimeout(20_000)
+    await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
     await page.page.context().setOffline(false)
   }
 )

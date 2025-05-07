@@ -171,6 +171,10 @@ export class W3mRouter extends LitElement {
         return html`<w3m-smart-session-list-view></w3m-smart-session-list-view>`
       case 'SIWXSignMessage':
         return html`<w3m-siwx-sign-message-view></w3m-siwx-sign-message-view>`
+      case 'Pay':
+        return html`<w3m-pay-view></w3m-pay-view>`
+      case 'PayLoading':
+        return html`<w3m-pay-loading-view></w3m-pay-loading-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

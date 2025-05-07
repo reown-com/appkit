@@ -1,5 +1,5 @@
 import type { ChainNamespace } from '@reown/appkit-common'
-import {
+import type {
   ConnectMethod,
   Features,
   ThemeMode,
@@ -29,9 +29,7 @@ export type URLState = {
 }
 
 export const urlStateUtils = {
-  encodeState: (state: URLState): string => {
-    return btoa(JSON.stringify(state))
-  },
+  encodeState: (state: URLState): string => btoa(JSON.stringify(state)),
 
   decodeState: (encodedState: string): URLState | null => {
     try {
