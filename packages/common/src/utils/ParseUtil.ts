@@ -61,7 +61,7 @@ export const ParseUtil = {
       return value
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Unable to parse json array', error)
+      console.error('Unable to parse json object', error)
 
       return {} as T
     }

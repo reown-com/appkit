@@ -587,13 +587,12 @@ export const StorageUtil = {
   },
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
     try {
-      SafeLocalStorage.setItem(
-        SafeLocalStorageKeys.CONNECTIONS,
-        JSON.stringify({
-          ...StorageUtil.getConnections(),
-          [chainNamespace]: connections
-        })
-      )
+      const allConnections = {
+        ...StorageUtil.getConnections(),
+        [chainNamespace]: connections
+      }
+
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTIONS, JSON.stringify(allConnections))
     } catch (error) {
       console.error('Unable to sync connections to storage', error)
     }
