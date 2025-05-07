@@ -760,6 +760,7 @@ export const ChainController = {
 
     return ChainController.state.chains.get(chainNamespace)?.accountState
   },
+
   getNetworkData(chainNamespace?: ChainNamespace) {
     const namespace = chainNamespace || state.activeChain
 
