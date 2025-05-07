@@ -298,6 +298,8 @@ export class W3mFrameProvider {
 
   public async setPreferredAccount(type: W3mFrameTypes.AccountType) {
     try {
+      await this.init()
+
       return this.appEvent<'SetPreferredAccount'>({
         type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
         payload: { type }
@@ -311,6 +313,7 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
+      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.getUser({
         chainId,
@@ -329,6 +332,7 @@ export class W3mFrameProvider {
 
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
+      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
