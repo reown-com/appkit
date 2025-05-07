@@ -52,9 +52,6 @@ export class W3mFrameProvider {
 
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
     this.onTimeout = onTimeout
-    if (this.getLoginEmailUsed()) {
-      this.createFrame()
-    }
   }
 
   private async createFrame() {
