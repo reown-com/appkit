@@ -50,7 +50,8 @@ async function updateDependencies(packages) {
           const currentVersion =
             packageJson.dependencies?.[pkg] ||
             packageJson.peerDependencies?.[pkg] ||
-            packageJson.optionalDependencies?.[pkg]
+            packageJson.optionalDependencies?.[pkg] ||
+            packageJson.devDependencies?.[pkg]
           // Handle specific package names
           if (packageJson.dependencies && currentVersion) {
             await updatePackageVersion(packageJson, pkg, packageJsonPath)
@@ -69,7 +70,8 @@ async function updatePackageVersion(packageJson, pkg, packageJsonPath) {
     const currentVersion =
       packageJson.dependencies?.[pkg] ||
       packageJson.peerDependencies?.[pkg] ||
-      packageJson.optionalDependencies?.[pkg]
+      packageJson.optionalDependencies?.[pkg] ||
+      packageJson.devDependencies?.[pkg]
 
     const latest = await Promise.race([
       latestVersion(pkg),
@@ -81,12 +83,14 @@ async function updatePackageVersion(packageJson, pkg, packageJsonPath) {
     const newVersion = `${versionPrefix}${latest}`
 
     if (currentVersion !== newVersion) {
-      if (packageJson.dependencies && packageJson.dependencies[pkg]) {
+      if (packageJson.dependencies && packageJson.dependencies?.[pkg]) {
         packageJson.dependencies[pkg] = newVersion
-      } else if (packageJson.peerDependencies && packageJson.peerDependencies[pkg]) {
+      } else if (packageJson.peerDependencies && packageJson.peerDependencies?.[pkg]) {
         packageJson.peerDependencies[pkg] = newVersion
-      } else if (packageJson.optionalDependencies && packageJson.optionalDependencies[pkg]) {
+      } else if (packageJson.optionalDependencies && packageJson.optionalDependencies?.[pkg]) {
         packageJson.optionalDependencies[pkg] = newVersion
+      } else if (packageJson.devDependencies && packageJson.devDependencies?.[pkg]) {
+        packageJson.devDependencies[pkg] = newVersion
       }
 
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
