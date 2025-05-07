@@ -37,6 +37,7 @@ export class W3mFrameProvider {
   public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
 
   private initPromise: Promise<void> | undefined
+  private isInitialized = false
   public constructor({
     projectId,
     chainId,
@@ -52,8 +53,18 @@ export class W3mFrameProvider {
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
-      this.w3mFrame.initFrame()
+      this.createFrame()
     }
+  }
+
+  private async createFrame() {
+    if (this.initPromise) {
+      await this.initPromise
+
+      return
+    }
+
+    this.w3mFrame.initFrame()
     this.initPromise = new Promise<void>(resolve => {
       this.w3mFrame.events.onFrameEvent(async event => {
         if (event.type === W3mFrameConstants.FRAME_READY) {
@@ -65,13 +76,17 @@ export class W3mFrameProvider {
         }
       })
     })
+    await this.initPromise
+    this.initPromise = undefined
+    this.isInitialized = true
   }
 
   public async init() {
-    this.w3mFrame.initFrame()
-    if (this.initPromise) {
-      await this.initPromise
+    if (this.isInitialized) {
+      return
     }
+
+    await this.createFrame()
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -89,7 +104,7 @@ export class W3mFrameProvider {
 
   public async reload() {
     try {
-      this.w3mFrame.initFrame()
+      await this.init()
       await this.appEvent<'Reload'>({
         type: W3mFrameConstants.APP_RELOAD
       } as W3mFrameTypes.AppEvent)
@@ -102,7 +117,7 @@ export class W3mFrameProvider {
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
-      this.w3mFrame.initFrame()
+      await this.init()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
         payload
@@ -180,7 +195,7 @@ export class W3mFrameProvider {
     payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
     try {
-      this.w3mFrame.initFrame()
+      await this.init()
 
       return this.appEvent<'GetSocialRedirectUri'>({
         type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
@@ -330,7 +345,7 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
-      this.w3mFrame.initFrame()
+      await this.init()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
@@ -349,7 +364,7 @@ export class W3mFrameProvider {
 
   public async getFarcasterUri() {
     try {
-      this.w3mFrame.initFrame()
+      await this.init()
       const response = await this.appEvent<'GetFarcasterUri'>({
         type: W3mFrameConstants.APP_GET_FARCASTER_URI
       } as W3mFrameTypes.AppEvent)
