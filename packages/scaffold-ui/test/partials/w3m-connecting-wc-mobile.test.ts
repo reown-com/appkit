@@ -98,7 +98,7 @@ describe('W3mConnectingWcMobile', () => {
     )
 
     // Mock enableUniversalLinks to true
-    el['enableUniversalLinks'] = true
+    el['preferUniversalLinks'] = true
 
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     el['onConnect']()
@@ -126,7 +126,7 @@ describe('W3mConnectingWcMobile', () => {
     )
 
     // Mock enableUniversalLinks to true
-    el['enableUniversalLinks'] = true
+    el['preferUniversalLinks'] = true
 
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     el['onConnect']()

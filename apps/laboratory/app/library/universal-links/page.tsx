@@ -27,7 +27,7 @@ const config = {
     analytics: true
   },
   customWallets: ConstantsUtil.CustomWallets,
-  enableUniversalLinks: true
+  experimental_preferUniversalLinks: true
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 

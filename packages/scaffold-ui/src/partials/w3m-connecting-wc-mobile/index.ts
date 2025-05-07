@@ -24,7 +24,10 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
 
   @state() protected target: OpenTarget | undefined = undefined
 
-  @state() protected enableUniversalLinks = OptionsController.state.enableUniversalLinks
+  @state() protected preferUniversalLinks =
+    OptionsController.state.experimental_preferUniversalLinks
+
+  @state() protected override isLoading = true
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -36,6 +39,15 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     this.secondaryBtnLabel = 'Open'
     this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     this.secondaryBtnIcon = 'externalLink'
+
+    // Update isLoading state initially and whenever URI changes
+    this.onHandleURI()
+
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('wcUri', () => {
+        this.onHandleURI()
+      })
+    )
 
     EventsController.sendEvent({
       type: 'track',
@@ -57,6 +69,11 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     }
   }
 
+  // Update the isLoading state based on required conditions
+  private onHandleURI() {
+    this.isLoading = !this.uri
+  }
+
   protected override onConnect = () => {
     if (this.wallet?.mobile_link && this.uri) {
       try {
@@ -75,7 +92,7 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
 
-        if (this.enableUniversalLinks && this.redirectUniversalLink) {
+        if (this.preferUniversalLinks && this.redirectUniversalLink) {
           CoreHelperUtil.openHref(this.redirectUniversalLink, this.target)
         } else {
           CoreHelperUtil.openHref(this.redirectDeeplink, this.target)

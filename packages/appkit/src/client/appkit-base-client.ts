@@ -267,7 +267,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
-    OptionsController.setEnableUniversalLinks(options.enableUniversalLinks)
+    OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
