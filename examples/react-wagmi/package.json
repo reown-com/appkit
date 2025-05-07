@@ -9,11 +9,11 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
-    "@tanstack/react-query": "5.67.1",
+    "@tanstack/react-query": "5.75.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "viem": "2.29.0",
-    "vite": "5.4.12",
+    "vite": "5.4.19",
     "wagmi": "2.15.2"
   },
   "devDependencies": {
