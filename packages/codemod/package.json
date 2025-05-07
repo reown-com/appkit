@@ -6,7 +6,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "appkit-codemod": "./src/index.js"
+    "@reown/appkit-codemod": "./src/index.js"
   },
   "dependencies": {
     "latest-version": "5.1.0"
