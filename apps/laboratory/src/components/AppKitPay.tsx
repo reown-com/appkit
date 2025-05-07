@@ -34,8 +34,7 @@ import type {
   AppKitPayErrorMessage,
   Exchange,
   PayResult,
-  PayUrlParams,
-  PaymentAsset
+  PayUrlParams
 } from '@reown/appkit-pay'
 import {
   type ExchangeBuyStatus,
@@ -233,15 +232,14 @@ export function AppKitPay() {
       return
     }
 
-    const paymentAsset: PaymentAsset = {
-      ...paymentDetails,
-      network: paymentDetails.network as PaymentAsset['network'],
-      asset: paymentDetails.asset as PaymentAsset['asset'],
-      amount: paymentDetails.amount
-    }
-
     await open({
-      paymentAsset
+      recipient: paymentDetails.recipient,
+      amount: paymentDetails.amount,
+      paymentAsset: {
+        network: paymentDetails.network as `eip155:${string}`,
+        asset: paymentDetails.asset as AddressOrNative,
+        metadata: paymentDetails.metadata
+      }
     })
   }
 
