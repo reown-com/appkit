@@ -2,7 +2,6 @@
 import {
   type CaipNetworkId,
   type ChainNamespace,
-  ParseUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
@@ -598,10 +597,18 @@ export const StorageUtil = {
     }
   },
   getConnections() {
-    const connectionsStorage = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
+    try {
+      const connectionsStorage = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
 
-    return ParseUtil.safeParseJsonObject<{ [key in ChainNamespace]: Connection[] }>(
-      connectionsStorage
-    )
+      if (!connectionsStorage) {
+        return {}
+      }
+
+      return JSON.parse(connectionsStorage) as { [key in ChainNamespace]: Connection[] }
+    } catch (error) {
+      console.error('Unable to get connections from storage', error)
+
+      return {}
+    }
   }
 }
