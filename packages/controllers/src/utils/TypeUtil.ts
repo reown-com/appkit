@@ -878,6 +878,76 @@ export type Event =
       event: 'INITIALIZE'
       properties: InitializeAppKitConfigs
     }
+  | PayEvent
+
+type PayConfiguration = {
+  network: string
+  asset: string
+  amount: number
+  recipient: string
+}
+
+type PayExchange = {
+  id: string
+  name: string
+}
+
+type PayCurrentPayment = {
+  exchangeId?: string
+  sessionId?: string
+  status?: string
+  result?: string
+}
+
+type PayEvent =
+  | {
+      type: 'track'
+      address?: string
+      event: 'PAY_SUCCESS'
+      properties: {
+        configuration: PayConfiguration
+        currentPayment: PayCurrentPayment
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'PAY_ERROR'
+      properties: {
+        configuration: PayConfiguration
+        currentPayment: PayCurrentPayment
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'PAY_INITIATED'
+      properties: {
+        configuration: PayConfiguration
+        currentPayment: PayCurrentPayment
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'PAY_MODAL_OPEN'
+      properties: {
+        exchanges: PayExchange[]
+        configuration: PayConfiguration
+        currentPayment: PayCurrentPayment
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'PAY_EXCHANGE_SELECTED'
+      properties: {
+        exchange: PayExchange
+        configuration: PayConfiguration
+        currentPayment: PayCurrentPayment
+      }
+    }
+
 // Onramp Types
 export type DestinationWallet = {
   address: string
