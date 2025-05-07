@@ -60,15 +60,15 @@ type PaymentType = 'wallet' | 'exchange'
 const state = proxy<PayControllerState>({
   paymentAsset: {
     network: 'eip155:1',
-    recipient: '0x0',
     asset: '0x0',
-    amount: 0,
     metadata: {
       name: '0x0',
       symbol: '0x0',
       decimals: 0
     }
   },
+  recipient: '0x0',
+  amount: 0,
   isConfigured: false,
   error: null,
   isPaymentInProgress: false,
@@ -106,11 +106,11 @@ export const PayController = {
   resetState() {
     state.paymentAsset = {
       network: 'eip155:1',
-      recipient: '0x0',
       asset: '0x0',
-      amount: 0,
       metadata: { name: '0x0', symbol: '0x0', decimals: 0 }
     }
+    state.recipient = '0x0'
+    state.amount = 0
     state.isConfigured = false
     state.error = null
     state.isPaymentInProgress = false
@@ -126,6 +126,8 @@ export const PayController = {
 
     try {
       state.paymentAsset = config.paymentAsset
+      state.recipient = config.recipient
+      state.amount = config.amount
       state.openInNewTab = config.openInNewTab ?? true
       state.redirectUrl = config.redirectUrl
       state.payWithExchange = config.payWithExchange
@@ -284,14 +286,19 @@ export const PayController = {
             state.currentPayment.result = await processEvmNativePayment(
               state.paymentAsset,
               chainNamespace,
-              address as `0x${string}`
+              {
+                recipient: state.recipient as `0x${string}`,
+                amount: state.amount,
+                fromAddress: address as `0x${string}`
+              }
             )
           }
           if (state.paymentAsset.asset.startsWith('0x')) {
-            state.currentPayment.result = await processEvmErc20Payment(
-              state.paymentAsset,
-              address as `0x${string}`
-            )
+            state.currentPayment.result = await processEvmErc20Payment(state.paymentAsset, {
+              recipient: state.recipient as `0x${string}`,
+              amount: state.amount,
+              fromAddress: address as `0x${string}`
+            })
           }
           break
         default:
@@ -314,13 +321,13 @@ export const PayController = {
   },
 
   validatePayConfig(config: PaymentOptions) {
-    const { paymentAsset } = config
+    const { paymentAsset, recipient, amount } = config
 
     if (!paymentAsset) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
     }
 
-    if (!paymentAsset.recipient) {
+    if (!recipient) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_RECIPIENT)
     }
 
@@ -328,7 +335,7 @@ export const PayController = {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_ASSET)
     }
 
-    if (!paymentAsset.amount) {
+    if (amount === undefined || amount === null || amount <= 0) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_AMOUNT)
     }
   },
@@ -357,8 +364,13 @@ export const PayController = {
         exchangeId
       }
       state.isPaymentInProgress = true
-      const { network, asset, amount, recipient } = state.paymentAsset
-      const payUrlParams: PayUrlParams = { network, asset, amount, recipient }
+      const { network, asset } = state.paymentAsset
+      const payUrlParams: PayUrlParams = {
+        network,
+        asset,
+        amount: state.amount,
+        recipient: state.recipient
+      }
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
         throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
