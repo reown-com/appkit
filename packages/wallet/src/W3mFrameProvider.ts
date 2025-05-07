@@ -113,6 +113,7 @@ export class W3mFrameProvider {
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
+      await this.init()
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
@@ -292,6 +293,8 @@ export class W3mFrameProvider {
 
   public async setPreferredAccount(type: W3mFrameTypes.AccountType) {
     try {
+      await this.init()
+
       return this.appEvent<'SetPreferredAccount'>({
         type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
         payload: { type }
@@ -305,6 +308,7 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
+      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.getUser({
         chainId,
@@ -339,6 +343,7 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
+      await this.init()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
@@ -559,7 +564,6 @@ export class W3mFrameProvider {
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: AppEventType
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
-    await this.init()
     let requestTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
     let iframeReadyTimeout: ReturnType<typeof setTimeout> | undefined = undefined
