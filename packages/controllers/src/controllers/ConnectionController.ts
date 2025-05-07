@@ -6,13 +6,8 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
-import {
-  StorageUtil,
-  getConnectionsFromStorage,
-  syncConnectionsToStorage
-} from '../utils/StorageUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
-  AccountType,
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
@@ -31,9 +26,14 @@ import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
 export type Connection = {
-  accounts: AccountType[]
-  chain: ChainNamespace
+  accounts: { address: string }[]
   connectorId: string
+}
+
+interface SwitchAccountParams {
+  connection: Connection
+  address: string
+  namespace: ChainNamespace
 }
 
 export interface ConnectExternalOptions {
@@ -73,7 +73,7 @@ export interface ConnectionControllerClient {
 }
 
 export interface ConnectionControllerState {
-  connections: Connection[]
+  connections: Map<ChainNamespace, Connection[]>
   _client?: ConnectionControllerClient
   wcUri?: string
   wcPairingExpiry?: number
@@ -93,7 +93,7 @@ type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
-  connections: [],
+  connections: new Map(),
   wcError: false,
   buffering: false,
   status: 'disconnected'
@@ -101,6 +101,7 @@ const state = proxy<ConnectionControllerState>({
 
 // eslint-disable-next-line init-declarations
 let wcConnectionPromise: Promise<void> | undefined
+
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
@@ -110,11 +111,6 @@ export const ConnectionController = {
     callback: (value: ConnectionControllerState[K]) => void
   ) {
     return subKey(state, key, callback)
-  },
-
-  initialize() {
-    const connections = getConnectionsFromStorage()
-    state.connections = connections
   },
 
   _getClient() {
@@ -319,44 +315,31 @@ export const ConnectionController = {
     }
   },
 
-  addConnection(connection: Connection) {
-    const existingConnectionIndex = state.connections.findIndex(
-      conn => conn.connectorId === connection.connectorId && conn.chain === connection.chain
-    )
-
-    if (existingConnectionIndex === -1) {
-      // If the connector does not exist in the state.connections, add it to the state array
-      state.connections.push({ ...connection })
-    } else if (state.connections[existingConnectionIndex]) {
-      // If the connector exists, replace the accounts array
-      state.connections[existingConnectionIndex].accounts = [...connection.accounts]
-    }
-
-    syncConnectionsToStorage(state.connections)
+  setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
+    state.connections.set(chainNamespace, connections)
   },
 
-  switchAccount(connection: Connection, address: string) {
-    const connectedConnectorId = ConnectorController.getConnectorId(connection.chain)
+  switchAccount({ connection, address, namespace }: SwitchAccountParams) {
+    const connectedConnectorId = ConnectorController.state.activeConnectorIds[namespace]
     const isConnectorConnected = connectedConnectorId === connection.connectorId
-    const isDifferentNamespace = connection.chain !== ChainController.state.activeChain
-    const connectionNetwork = ChainController.getRequestedCaipNetworks(
-      connection.chain
-    )?.[0] as CaipNetwork
 
-    if (isDifferentNamespace) {
-      ChainController.onSwitchNetwork(connectionNetwork)
-    } else if (isConnectorConnected) {
+    if (isConnectorConnected) {
       const currentNetwork = ChainController.state.activeCaipNetwork
+
       if (currentNetwork) {
-        const caipAddress = `${connection.chain}:${currentNetwork.id}:${address}`
-        AccountController.setCaipAddress(caipAddress as CaipAddress, connection.chain)
+        const caipAddress = `${namespace}:${currentNetwork.id}:${address}`
+        AccountController.setCaipAddress(caipAddress as CaipAddress, namespace)
+      } else {
+        console.warn(`No current network found for namespace "${namespace}"`)
       }
     } else {
       const connector = ConnectorController.getConnector(connection.connectorId)
-      if (!connector) {
-        return
+
+      if (connector) {
+        this.connectExternal(connector, namespace)
+      } else {
+        console.warn(`No connector found for namespace "${namespace}"`)
       }
-      this.connectExternal(connector, connection.chain)
     }
   }
 }

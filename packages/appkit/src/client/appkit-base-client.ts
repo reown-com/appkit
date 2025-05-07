@@ -234,7 +234,6 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
-    ConnectionController.initialize()
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
@@ -768,6 +767,10 @@ export abstract class AppKitBaseClient {
       this.updateNativeBalance(address, activeCaipNetwork.id, activeCaipNetwork.chainNamespace)
     })
 
+    adapter.on('connections', connections => {
+      this.setConnections(connections, chainNamespace)
+    })
+
     adapter.on('accountChanged', ({ address, chainId }) => {
       const isActiveChain = ChainController.state.activeChain === chainNamespace
 
@@ -1063,8 +1066,6 @@ export abstract class AppKitBaseClient {
 
     const { accounts } = await adapter.getAccounts({ namespace: chainNamespace, id })
     this.setAllAccounts(accounts, chainNamespace)
-    ConnectionController.addConnection({ accounts, chain: chainNamespace, connectorId: id })
-    ConnectorController.setConnectorId(id, chainNamespace)
     ConnectorController.setConnectorId(id, chainNamespace)
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
@@ -1478,6 +1479,13 @@ export abstract class AppKitBaseClient {
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
     ConnectorController.setConnectors(allConnectors)
+  }
+
+  public setConnections: (typeof ConnectionController)['setConnections'] = (
+    connections,
+    chainNamespace
+  ) => {
+    ConnectionController.setConnections(connections, chainNamespace)
   }
 
   public fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>

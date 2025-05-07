@@ -34,6 +34,8 @@ export class W3mProfileWalletsView extends LitElement {
 
   @state() private activeConnectorId = ConnectorController.state.activeConnectorIds
 
+  @state() private namespace = ChainController.state.activeChain
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -47,6 +49,9 @@ export class W3mProfileWalletsView extends LitElement {
         }),
         ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
           this.activeConnectorId = newActiveConnectorIds
+        }),
+        ChainController.subscribeKey('activeChain', namespace => {
+          this.namespace = namespace
         })
       ]
     )
@@ -58,17 +63,24 @@ export class W3mProfileWalletsView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const namespace = this.namespace
+
+    if (!namespace) {
+      throw new Error('No active namespace found')
+    }
+
+    const connectionsByNamespace = this.connections.get(namespace) ?? []
+
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
-        ${this.connections.map(connection =>
+        ${connectionsByNamespace.map(connection =>
           connection.accounts?.map(account => {
             const connector = ConnectorController.getConnectorById(connection.connectorId)
             const connectorImageUrl = connector?.imageUrl || connector?.info?.icon
-            const namespaceConnector = this.activeConnectorId[connection.chain]
+            const namespaceConnector = this.activeConnectorId[namespace]
             const connected =
-              ChainController.getAccountData(connection.chain)?.address &&
+              ChainController.getAccountData(namespace)?.address &&
               namespaceConnector === connection.connectorId
-
             const isActive =
               account.address === this.address && namespaceConnector === connection.connectorId
 
@@ -107,8 +119,8 @@ export class W3mProfileWalletsView extends LitElement {
                     </wui-text>
                   </wui-flex>
                   ${connected
-                    ? this.switchButtonTemplate(account.address, connection)
-                    : this.connectButtonTemplate(connection)}
+                    ? this.switchButtonTemplate(account.address, connection, namespace)
+                    : this.connectButtonTemplate(connection, namespace)}
                 </wui-flex>
               `
             }
@@ -124,20 +136,19 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private connectButtonTemplate(connection: Connection) {
+  private connectButtonTemplate(connection: Connection, namespace: ChainNamespace) {
     return html`<wui-button
       variant="accent"
       size="md"
-      @click=${() => this.reconnectWallet(connection.connectorId, connection.chain)}
+      @click=${() => this.reconnectWallet(connection.connectorId, namespace)}
     >
       Connect
     </wui-button>`
   }
 
-  private switchButtonTemplate(address: string, connection: Connection) {
+  private switchButtonTemplate(address: string, connection: Connection, namespace: ChainNamespace) {
     const isActive =
-      address === this.address &&
-      connection.connectorId === this.activeConnectorId[connection.chain]
+      address === this.address && connection.connectorId === this.activeConnectorId[namespace]
 
     if (isActive) {
       return null
@@ -147,7 +158,9 @@ export class W3mProfileWalletsView extends LitElement {
       <wui-button
         variant="accent"
         size="md"
-        @click=${() => this.setActiveConnection(connection, address)}
+        @click=${() => {
+          ConnectionController.switchAccount({ connection, address, namespace })
+        }}
       >
         Switch
       </wui-button>
@@ -156,10 +169,6 @@ export class W3mProfileWalletsView extends LitElement {
 
   private handleAddWallet() {
     ModalController.open({ view: 'Connect' })
-  }
-
-  private setActiveConnection(connection: Connection, address: string) {
-    ConnectionController.switchAccount(connection, address)
   }
 
   private async reconnectWallet(connectorId: string, namespace: ChainNamespace) {

@@ -53,5 +53,17 @@ export const ParseUtil = {
       chainNamespace: chainNamespace as ChainNamespace,
       chainId: chainId as ChainId
     }
+  },
+  safeParseJsonObject<T>(string: string | null | undefined): T {
+    try {
+      const value = string ? JSON.parse(string) : {}
+
+      return value
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Unable to parse json array', error)
+
+      return {} as T
+    }
   }
 }

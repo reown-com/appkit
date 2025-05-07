@@ -2,6 +2,7 @@
 import {
   type CaipNetworkId,
   type ChainNamespace,
+  ParseUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
@@ -583,30 +584,25 @@ export const StorageUtil = {
     }
 
     return undefined
-  }
-}
+  },
+  setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
+    try {
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.CONNECTIONS,
+        JSON.stringify({
+          ...StorageUtil.getConnections(),
+          [chainNamespace]: connections
+        })
+      )
+    } catch (error) {
+      console.error('Unable to sync connections to storage', error)
+    }
+  },
+  getConnections() {
+    const connectionsStorage = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
 
-function connectionToStorage(connections: Connection[]): Connection[] {
-  return connections.map(connection => ({
-    accounts: connection.accounts,
-    chain: connection.chain,
-    connectorId: connection.connectorId
-  }))
-}
-
-export function syncConnectionsToStorage(connections: Connection[]) {
-  try {
-    SafeLocalStorage.setItem(
-      SafeLocalStorageKeys.CONNECTIONS,
-      JSON.stringify(connectionToStorage(connections))
+    return ParseUtil.safeParseJsonObject<{ [key in ChainNamespace]: Connection[] }>(
+      connectionsStorage
     )
-  } catch {
-    console.info('Unable to sync connections')
   }
-}
-
-export function getConnectionsFromStorage(): Connection[] {
-  const connections = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
-
-  return connections ? JSON.parse(connections) : []
 }
