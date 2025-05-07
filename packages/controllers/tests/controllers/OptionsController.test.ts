@@ -18,7 +18,7 @@ describe('OptionsController', () => {
         solana: 'eoa'
       },
       enableNetworkSwitch: true,
-      enableUniversalLinks: false
+      experimental_preferUniversalLinks: false
     })
   })
 
