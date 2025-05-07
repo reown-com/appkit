@@ -889,7 +889,6 @@ type PayConfiguration = {
 
 type PayExchange = {
   id: string
-  name: string
 }
 
 type PayCurrentPayment = {
@@ -897,6 +896,7 @@ type PayCurrentPayment = {
   sessionId?: string
   status?: string
   result?: string
+  type: 'exchange' | 'wallet'
 }
 
 type PayEvent =
@@ -934,7 +934,6 @@ type PayEvent =
       properties: {
         exchanges: PayExchange[]
         configuration: PayConfiguration
-        currentPayment: PayCurrentPayment
       }
     }
   | {
@@ -945,6 +944,7 @@ type PayEvent =
         exchange: PayExchange
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
+        headless: boolean
       }
     }
 
