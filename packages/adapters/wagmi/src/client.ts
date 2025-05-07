@@ -109,9 +109,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-      const provider = connector['provider'] as W3mFrameProvider
-
-      if (!provider.user) {
+      const provider = (await connector.getProvider()) as W3mFrameProvider | undefined
+      if (!provider?.user) {
         return { accounts: [] }
       }
 
