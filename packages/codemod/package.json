@@ -9,6 +9,7 @@
     "@reown/appkit-codemod": "./src/index.js"
   },
   "dependencies": {
+    "chalk": "5.4.1",
     "latest-version": "5.1.0"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
