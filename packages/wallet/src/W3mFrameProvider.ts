@@ -411,9 +411,18 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     try {
-      const response = await this.appEvent<'SignOut'>({
-        type: W3mFrameConstants.APP_SIGN_OUT
-      } as W3mFrameTypes.AppEvent)
+      const response = await new Promise<void>(async resolve => {
+        const timeout = setTimeout(() => {
+          console.log('disconnect timeout reached')
+          resolve()
+        }, 3_000)
+        await this.appEvent<'SignOut'>({
+          type: W3mFrameConstants.APP_SIGN_OUT
+        } as W3mFrameTypes.AppEvent)
+        clearTimeout(timeout)
+        resolve()
+      })
+
       this.deleteAuthLoginCache()
 
       return response
