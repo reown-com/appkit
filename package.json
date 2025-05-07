@@ -57,7 +57,10 @@
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
     "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
     "prepare": "husky",
-    "cli": "node packages/cli/index.js"
+    "cli": "node packages/cli/index.js",
+    "codemod:upgrade": "node packages/codemod/src/index.js upgrade",
+    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/*",
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade wagmi @wagmi/*"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
