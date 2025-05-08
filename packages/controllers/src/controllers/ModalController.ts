@@ -109,7 +109,7 @@ export const ModalController = {
    * this prevents accidental closing during transaction approval from secure sites
    * @param force - If true, the modal will close regardless of the current view
    */
-  close(force = false) {  
+  close(force = false) {
     if (force || RouterController.state.view !== 'ApproveTransaction') {
       const isEmbeddedEnabled = OptionsController.state.enableEmbedded
       const isConnected = Boolean(ChainController.state.activeCaipAddress)
