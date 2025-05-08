@@ -24,15 +24,15 @@ describe('PayController', () => {
   const mockPaymentOptions = {
     paymentAsset: {
       network: 'eip155:1',
-      recipient: '0x1234567890123456789012345678901234567890',
       asset: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC on Ethereum
-      amount: 10,
       metadata: {
         name: 'USD Coin',
         symbol: 'USDC',
         decimals: 6
       }
     },
+    recipient: '0x1234567890123456789012345678901234567890',
+    amount: 10,
     openInNewTab: true,
     redirectUrl: {
       success: 'https://example.com',
@@ -139,6 +139,8 @@ describe('PayController', () => {
       PayController.setPaymentConfig(mockPaymentOptions)
 
       expect(PayController.state.paymentAsset).toEqual(mockPaymentOptions.paymentAsset)
+      expect(PayController.state.recipient).toEqual(mockPaymentOptions.recipient)
+      expect(PayController.state.amount).toEqual(mockPaymentOptions.amount)
       expect(PayController.state.openInNewTab).toEqual(mockPaymentOptions.openInNewTab)
       expect(PayController.state.redirectUrl).toEqual(mockPaymentOptions.redirectUrl)
       expect(PayController.state.payWithExchange).toEqual(mockPaymentOptions.payWithExchange)
@@ -200,8 +202,8 @@ describe('PayController', () => {
       const params = {
         network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
         asset: mockPaymentOptions.paymentAsset.asset,
-        amount: mockPaymentOptions.paymentAsset.amount,
-        recipient: mockPaymentOptions.paymentAsset.recipient
+        amount: mockPaymentOptions.amount,
+        recipient: mockPaymentOptions.recipient
       }
       const result = await PayController.getPayUrl('coinbase', params)
 
@@ -219,8 +221,8 @@ describe('PayController', () => {
       const params = {
         network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
         asset: mockPaymentOptions.paymentAsset.asset,
-        amount: mockPaymentOptions.paymentAsset.amount,
-        recipient: mockPaymentOptions.paymentAsset.recipient
+        amount: mockPaymentOptions.amount,
+        recipient: mockPaymentOptions.recipient
       }
 
       await expect(PayController.getPayUrl('coinbase', params)).rejects.toThrow('API error')
@@ -233,8 +235,8 @@ describe('PayController', () => {
       const params = {
         network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
         asset: mockPaymentOptions.paymentAsset.asset,
-        amount: mockPaymentOptions.paymentAsset.amount,
-        recipient: mockPaymentOptions.paymentAsset.recipient
+        amount: mockPaymentOptions.amount,
+        recipient: mockPaymentOptions.recipient
       }
 
       await expect(PayController.getPayUrl('coinbase', params)).rejects.toThrow(
@@ -250,13 +252,20 @@ describe('PayController', () => {
         ...mockPaymentOptions.paymentAsset,
         asset: 'native'
       }
+      PayController.state.recipient = mockPaymentOptions.recipient
+      PayController.state.amount = mockPaymentOptions.amount
+      const expectedFromAddress = '0x1234567890123456789012345678901234567890'
 
       await PayController.handlePayment()
 
       expect(PaymentUtil.processEvmNativePayment).toHaveBeenCalledWith(
         PayController.state.paymentAsset,
         ConstantsUtil.CHAIN.EVM,
-        '0x1234567890123456789012345678901234567890'
+        {
+          recipient: mockPaymentOptions.recipient as `0x${string}`,
+          amount: mockPaymentOptions.amount,
+          fromAddress: expectedFromAddress as `0x${string}`
+        }
       )
       expect(ModalController.open).toHaveBeenCalledWith({ view: 'PayLoading' })
     })
@@ -266,11 +275,19 @@ describe('PayController', () => {
         ...mockPaymentOptions.paymentAsset,
         asset: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       }
+      PayController.state.recipient = mockPaymentOptions.recipient
+      PayController.state.amount = mockPaymentOptions.amount
+      const expectedFromAddress = '0x1234567890123456789012345678901234567890'
+
       await PayController.handlePayment()
 
       expect(PaymentUtil.processEvmErc20Payment).toHaveBeenCalledWith(
         PayController.state.paymentAsset,
-        '0x1234567890123456789012345678901234567890'
+        {
+          recipient: mockPaymentOptions.recipient as `0x${string}`,
+          amount: mockPaymentOptions.amount,
+          fromAddress: expectedFromAddress as `0x${string}`
+        }
       )
     })
 
@@ -314,7 +331,7 @@ describe('PayController', () => {
     it('should throw error for missing recipient', () => {
       const invalidConfig = {
         ...mockPaymentOptions,
-        paymentAsset: { ...mockPaymentOptions.paymentAsset, recipient: undefined }
+        recipient: undefined // recipient is now a top-level property
       } as any
 
       expect(() => PayController.validatePayConfig(invalidConfig)).toThrow(
@@ -336,7 +353,29 @@ describe('PayController', () => {
     it('should throw error for missing amount', () => {
       const invalidConfig = {
         ...mockPaymentOptions,
-        paymentAsset: { ...mockPaymentOptions.paymentAsset, amount: undefined }
+        amount: undefined // amount is now a top-level property
+      } as any
+
+      expect(() => PayController.validatePayConfig(invalidConfig)).toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.INVALID_AMOUNT)
+      )
+    })
+
+    it('should throw error for zero amount', () => {
+      const invalidConfig = {
+        ...mockPaymentOptions,
+        amount: 0 // amount should be positive
+      } as any
+
+      expect(() => PayController.validatePayConfig(invalidConfig)).toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.INVALID_AMOUNT)
+      )
+    })
+
+    it('should throw error for negative amount', () => {
+      const invalidConfig = {
+        ...mockPaymentOptions,
+        amount: -10 // amount should be positive
       } as any
 
       expect(() => PayController.validatePayConfig(invalidConfig)).toThrow(
@@ -392,8 +431,8 @@ describe('PayController', () => {
       expect(getPayUrlSpy).toHaveBeenCalledWith('coinbase', {
         network: mockPaymentOptions.paymentAsset.network,
         asset: mockPaymentOptions.paymentAsset.asset,
-        amount: mockPaymentOptions.paymentAsset.amount,
-        recipient: mockPaymentOptions.paymentAsset.recipient
+        amount: mockPaymentOptions.amount,
+        recipient: mockPaymentOptions.recipient
       })
       expect(PayController.state.isPaymentInProgress).toBe(true)
       expect(PayController.state.currentPayment).toEqual({
@@ -424,7 +463,12 @@ describe('PayController', () => {
 
       const result = await PayController.handlePayWithExchange('coinbase')
 
-      expect(getPayUrlSpy).toHaveBeenCalled()
+      expect(getPayUrlSpy).toHaveBeenCalledWith('coinbase', {
+        network: mockPaymentOptions.paymentAsset.network,
+        asset: mockPaymentOptions.paymentAsset.asset,
+        amount: mockPaymentOptions.amount,
+        recipient: mockPaymentOptions.recipient
+      })
       expect(PayController.state.isPaymentInProgress).toBe(true)
       expect(PayController.state.currentPayment).toEqual({
         type: 'exchange',
@@ -475,8 +519,8 @@ describe('PayController', () => {
     const params = {
       network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
       asset: mockPaymentOptions.paymentAsset.asset,
-      amount: mockPaymentOptions.paymentAsset.amount,
-      recipient: mockPaymentOptions.paymentAsset.recipient
+      amount: mockPaymentOptions.amount,
+      recipient: mockPaymentOptions.recipient
     }
     const exchangeId = 'coinbase'
     const mockUrl = mockPayUrlResponse.url
