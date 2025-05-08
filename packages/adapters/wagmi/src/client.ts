@@ -80,11 +80,10 @@ export class WagmiAdapter extends AdapterBlueprint {
       customRpcUrls: configParams.customRpcUrls
     }) as [CaipNetwork, ...CaipNetwork[]]
 
-    super({
-      projectId: configParams.projectId,
-      adapterType: CommonConstantsUtil.ADAPTER_TYPES.WAGMI,
-      namespace: CommonConstantsUtil.CHAIN.EVM
-    })
+    super()
+    this.namespace = CommonConstantsUtil.CHAIN.EVM
+    this.adapterType = CommonConstantsUtil.ADAPTER_TYPES.WAGMI
+    this.projectId = configParams.projectId
 
     this.pendingTransactionsFilter = {
       ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
@@ -92,6 +91,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     this.createConfig({ ...configParams, networks })
+  }
+
+  override construct(_options: AdapterBlueprint.Params) {
     this.setupWatchers()
   }
 
@@ -105,9 +107,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-      const provider = connector['provider'] as W3mFrameProvider
-
-      if (!provider.user) {
+      const provider = (await connector.getProvider()) as W3mFrameProvider | undefined
+      if (!provider?.user) {
         return { accounts: [] }
       }
 
