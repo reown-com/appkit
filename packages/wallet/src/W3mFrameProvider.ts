@@ -68,7 +68,7 @@ export class W3mFrameProvider {
         }
       })
     })
-
+    await this.initPromise
     this.isInitialized = true
     this.initPromise = undefined
   }
