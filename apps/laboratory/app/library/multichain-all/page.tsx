@@ -41,9 +41,7 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true
-  },
+
   metadata: ConstantsUtil.Metadata
 }
 

@@ -104,8 +104,7 @@ describe('Listeners', () => {
 
     const appKit = new AppKit({
       ...mockOptions,
-      allowUnsupportedChain: false,
-      features: { email: false, socials: [] }
+      allowUnsupportedChain: false
     })
 
     ChainController.state.activeChain = mainnet.chainNamespace

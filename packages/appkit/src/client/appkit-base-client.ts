@@ -195,6 +195,8 @@ export abstract class AppKitBaseClient {
     delete optionsCopy.adapters
     delete optionsCopy.universalProvider
 
+    console.log('send event')
+
     EventsController.sendEvent({
       type: 'track',
       event: 'INITIALIZE',

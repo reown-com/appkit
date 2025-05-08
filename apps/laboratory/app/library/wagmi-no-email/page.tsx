@@ -28,10 +28,7 @@ const config = {
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    email: false,
-    legalCheckbox: true,
-    socials: []
+    legalCheckbox: true
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',

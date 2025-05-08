@@ -23,8 +23,7 @@ const config = {
   defaultNetwork: solana,
   metadata: ConstantsUtil.Metadata,
   features: {
-    socials: [],
-    emailShowWallets: false
+    socials: []
   }
 }
 

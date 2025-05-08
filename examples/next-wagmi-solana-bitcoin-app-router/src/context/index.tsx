@@ -33,10 +33,7 @@ export const modal = createAppKit({
   networks,
   defaultNetwork: mainnet,
   metadata: appKitMetadata,
-  themeMode: 'light',
-  features: {
-    analytics: true // Optional - defaults to your Cloud configuration
-  }
+  themeMode: 'light'
 })
 
 function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {

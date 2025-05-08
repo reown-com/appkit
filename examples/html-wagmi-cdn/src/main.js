@@ -22,9 +22,6 @@ const modal = createAppKit({
   networks: appKitNetworks,
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: true
-  },
   metadata: {
     name: 'AppKit HTML Example',
     description: 'AppKit HTML Example',

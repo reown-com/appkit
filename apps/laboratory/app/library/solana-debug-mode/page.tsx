@@ -21,9 +21,6 @@ const config = {
   networks,
   projectId: '',
   metadata: ConstantsUtil.Metadata,
-  features: {
-    socials: []
-  },
   debug: true
 }
 

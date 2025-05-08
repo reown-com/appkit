@@ -32,10 +32,6 @@ if (browser) {
     networks: [arbitrum, mainnet, optimism, polygon],
     defaultNetwork: arbitrum,
     projectId,
-    features: {
-      email: false,
-      socials: false
-    },
     themeMode: 'light',
     metadata: {
       name: 'SvelteKit Example',
