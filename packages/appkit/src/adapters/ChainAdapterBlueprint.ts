@@ -12,6 +12,7 @@ import {
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
+  type Connection,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
@@ -26,6 +27,7 @@ import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 type EventName =
   | 'disconnect'
   | 'accountChanged'
+  | 'connections'
   | 'switchNetwork'
   | 'connectors'
   | 'pendingTransactions'
@@ -33,6 +35,7 @@ type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
+  connections: Connection[]
   connectors: ChainAdapterConnector[]
   pendingTransactions: () => void
 }

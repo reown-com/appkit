@@ -749,6 +749,10 @@ export abstract class AppKitBaseClient {
 
     adapter.on('disconnect', this.disconnect.bind(this, chainNamespace))
 
+    adapter.on('connections', connections => {
+      this.setConnections(connections, chainNamespace)
+    })
+
     adapter.on('pendingTransactions', () => {
       const address = AccountController.state.address
       const activeCaipNetwork = ChainController.state.activeCaipNetwork
@@ -1483,6 +1487,13 @@ export abstract class AppKitBaseClient {
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
     ConnectorController.setConnectors(allConnectors)
+  }
+
+  public setConnections: (typeof ConnectionController)['setConnections'] = (
+    connections,
+    chainNamespace
+  ) => {
+    ConnectionController.setConnections(connections, chainNamespace)
   }
 
   public fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
