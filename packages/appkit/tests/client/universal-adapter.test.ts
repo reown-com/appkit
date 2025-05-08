@@ -9,6 +9,7 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
+  mockRemoteFeatures,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -18,12 +19,14 @@ describe('Universal Adapter', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    mockRemoteFeatures()
   })
 
   it('should create UniversalAdapter when no blueprint is provided for namespace', async () => {
     const init = vi.spyOn(UniversalProvider, 'init').mockImplementationOnce(vi.fn())
 
-    new AppKit({ ...mockOptions, adapters: [] })
+    const appKit = new AppKit({ ...mockOptions, adapters: [] })
+    await appKit.ready()
 
     expect(init).toHaveBeenCalledOnce()
   })

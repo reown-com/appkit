@@ -56,31 +56,16 @@ describe('Base', () => {
     })
 
     it('should send initialize event', async () => {
-      let resolveInitializeEventSentPromise: (value?: unknown) => void
-      const initializeEventSentPromise = new Promise(resolve => {
-        resolveInitializeEventSentPromise = resolve
-      })
+      const sendEvent = vi.spyOn(EventsController, 'sendEvent')
 
-      const sendEvent = vi
-        .spyOn(EventsController, 'sendEvent')
-        .mockImplementation(async eventData => {
-          if (eventData.event === 'INITIALIZE') {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (resolveInitializeEventSentPromise) {
-              resolveInitializeEventSentPromise()
-            }
-          }
-          return Promise.resolve()
-        })
-
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         universalProvider: mockUniversalProvider as unknown as UniversalProvider
       })
       const options = { ...mockOptions }
       delete options.adapters
 
-      await initializeEventSentPromise // Wait for the INITIALIZE event to be processed by the spy
+      await appKit.ready()
 
       expect(sendEvent).toHaveBeenCalledWith({
         type: 'track',
@@ -97,16 +82,9 @@ describe('Base', () => {
     it('should set EIP6963 enabled by default', async () => {
       const setEIP6963Enabled = vi.spyOn(OptionsController, 'setEIP6963Enabled')
 
-      new AppKit(mockOptions)
+      const appKit = new AppKit(mockOptions)
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
+      await appKit.ready()
 
       expect(setEIP6963Enabled).toHaveBeenCalledWith(true)
     })
@@ -114,19 +92,12 @@ describe('Base', () => {
     it('should set EIP6963 disabled when option is disabled in config', async () => {
       const setEIP6963Enabled = vi.spyOn(OptionsController, 'setEIP6963Enabled')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         enableEIP6963: false
       })
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
+      await appKit.ready()
 
       expect(setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
@@ -134,7 +105,7 @@ describe('Base', () => {
     it('should set partially defaultAccountType', async () => {
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultAccountTypes: {
           eip155: 'eoa',
@@ -142,14 +113,7 @@ describe('Base', () => {
         }
       })
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
+      await appKit.ready()
 
       expect(setDefaultAccountTypes).toHaveBeenCalledWith({
         eip155: 'eoa',
@@ -161,19 +125,12 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultNetwork: polygon
       })
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
+      await appKit.ready()
 
       expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
     })
@@ -182,19 +139,12 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultNetwork: sepolia
       })
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
+      await appKit.ready()
 
       expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
     })
@@ -203,19 +153,12 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(sepolia.caipNetworkId)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultNetwork: polygon
       })
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
+      await appKit.ready()
 
       expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
     })
@@ -225,20 +168,11 @@ describe('Base', () => {
         .spyOn(ApiController, 'fetchAllowedOrigins')
         .mockResolvedValue([window.location.origin])
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions
       })
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
-
-      await new Promise(r => setTimeout(r, 0))
+      await appKit.ready()
 
       expect(fetchAllowedOriginsSpy).toHaveBeenCalled()
     })
