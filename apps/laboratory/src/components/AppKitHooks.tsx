@@ -1,26 +1,64 @@
 import { Box, Button, Heading } from '@chakra-ui/react'
+import { usePathname } from 'next/navigation'
 
-import { type AppKitNetwork, mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
-import { useAppKit, useAppKitAccount, useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
+import {
+  bitcoin,
+  bitcoinTestnet,
+  mainnet,
+  polygon,
+  solana,
+  solanaTestnet
+} from '@reown/appkit/networks'
+import {
+  type CaipNetwork,
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useDisconnect
+} from '@reown/appkit/react'
+
+function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
+  if (!activeNetwork) {
+    return mainnet
+  }
+
+  switch (activeNetwork.chainNamespace) {
+    case 'bip122':
+      return activeNetwork.id === bitcoin.id ? bitcoinTestnet : bitcoin
+    case 'solana':
+      return activeNetwork.id === solana.id ? solanaTestnet : solana
+    default:
+      return activeNetwork.id === polygon.id ? mainnet : polygon
+  }
+}
 
 export function AppKitHooks() {
   const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
+  const pathname = usePathname()
+  const isMultichainPage = pathname?.includes('multichain-no-adapters')
 
   function handleSwitchNetwork() {
-    const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
-    // eslint-disable-next-line no-nested-ternary
-    const networkToSwitch: AppKitNetwork = isEIPNamespace
-      ? caipNetwork?.id === polygon.id
-        ? mainnet
-        : polygon
-      : caipNetwork?.id === solana.id
-        ? solanaTestnet
-        : solana
+    const networkToSwitch = getNetworkToSwitch(caipNetwork)
+
+    if (!networkToSwitch) {
+      return
+    }
 
     switchNetwork(networkToSwitch)
+  }
+
+  function handleOpenSwapWithArguments() {
+    open({
+      view: 'Swap',
+      arguments: {
+        amount: '321.123',
+        fromToken: 'USDC',
+        toToken: 'ETH'
+      }
+    })
   }
 
   return (
@@ -34,13 +72,31 @@ export function AppKitHooks() {
         </Button>
 
         {isConnected && (
-          <Button data-testid="disconnect-hook-button" onClick={disconnect}>
+          <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
             Disconnect
           </Button>
         )}
 
-        <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
-          Switch Network
+        {!isMultichainPage && (
+          <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+            Switch Network
+          </Button>
+        )}
+
+        {isMultichainPage && (
+          <>
+            <Button onClick={() => switchNetwork(mainnet)}>Switch to Ethereum</Button>
+            <Button onClick={() => switchNetwork(polygon)}>Switch to Polygon</Button>
+            <Button onClick={() => switchNetwork(solana)}>Switch to Solana</Button>
+            <Button onClick={() => switchNetwork(bitcoin)}>Switch to Bitcoin</Button>
+          </>
+        )}
+
+        <Button
+          data-testid="open-swap-with-arguments-hook-button"
+          onClick={handleOpenSwapWithArguments}
+        >
+          Open Swap with Arguments
         </Button>
       </Box>
     </Box>

@@ -1,5 +1,6 @@
 /* eslint-disable max-depth */
 import { ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -12,11 +13,13 @@ import {
   RouterController,
   StorageUtil,
   type WcWallet
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
+
+// -- Constants ------------------------------------------ //
+const UPDATE_EMAIL_INTERVAL = 1_000
 
 interface ConnectWalletConnect {
   walletConnect: boolean
@@ -36,12 +39,19 @@ export const ConnectorUtil = {
       }
 
       await ModalController.open()
-      RouterController.push('ConnectingWalletConnect', { wallet })
+
+      if (CoreHelperUtil.isMobile() && walletConnect) {
+        RouterController.replace('AllWallets')
+      } else {
+        RouterController.replace('ConnectingWalletConnect', {
+          wallet
+        })
+      }
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
           if (RouterController.state.view !== 'Connect') {
-            RouterController.push('Connect')
+            RouterController.replace('Connect')
           }
           unsubscribeModalController()
           reject(new Error('Modal closed'))
@@ -89,7 +99,7 @@ export const ConnectorUtil = {
     return new Promise((resolve, reject) => {
       async function handleSocialConnection(event: MessageEvent) {
         if (event.data?.resultUri) {
-          if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
+          if (event.origin === CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN) {
             window.removeEventListener('message', handleSocialConnection, false)
             try {
               const authConnector = ConnectorController.getAuthConnector()
@@ -191,7 +201,7 @@ export const ConnectorUtil = {
         } else {
           const authConnector = ConnectorController.getAuthConnector()
           popupWindow = CoreHelperUtil.returnOpenHref(
-            '',
+            `${CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
             'popupWindow',
             'width=600,height=800,scrollbars=yes'
           )
@@ -228,6 +238,75 @@ export const ConnectorUtil = {
       }
 
       connectSocial()
+    })
+  },
+  connectEmail(): Promise<ParsedCaipAddress> {
+    return new Promise(async (resolve, reject) => {
+      await ModalController.open()
+      RouterController.push('EmailLogin')
+
+      const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+        if (!val) {
+          if (RouterController.state.view !== 'Connect') {
+            RouterController.push('Connect')
+          }
+          unsubscribeModalController()
+          reject(new Error('Modal closed'))
+        }
+      })
+
+      const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
+        if (val) {
+          ModalController.close()
+          unsubscribeChainController()
+          resolve(ParseUtil.parseCaipAddress(val))
+        }
+      })
+    })
+  },
+  async updateEmail(): Promise<{ email: string }> {
+    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
+    const authConnector = ConnectorController.getAuthConnector()
+
+    if (!authConnector) {
+      throw new Error('No auth connector found')
+    }
+
+    if (connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+      throw new Error('Not connected to email or social')
+    }
+
+    const initialEmail = authConnector.provider.getEmail() ?? ''
+
+    await ModalController.open()
+
+    RouterController.push('UpdateEmailWallet', {
+      email: initialEmail,
+      redirectView: undefined
+    })
+
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        const newEmail = authConnector.provider.getEmail() ?? ''
+
+        if (newEmail !== initialEmail) {
+          ModalController.close()
+          clearInterval(interval)
+          unsubscribeModalController()
+          resolve({ email: newEmail })
+        }
+      }, UPDATE_EMAIL_INTERVAL)
+
+      const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+        if (!val) {
+          if (RouterController.state.view !== 'Connect') {
+            RouterController.push('Connect')
+          }
+          clearInterval(interval)
+          unsubscribeModalController()
+          reject(new Error('Modal closed'))
+        }
+      })
     })
   }
 }

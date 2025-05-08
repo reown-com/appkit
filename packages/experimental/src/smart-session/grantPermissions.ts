@@ -4,8 +4,8 @@ import {
   ConnectionController,
   OptionsController,
   RouterController
-} from '@reown/appkit-core'
-import { ProviderUtil } from '@reown/appkit/store'
+} from '@reown/appkit-controllers'
+import { ProviderUtil } from '@reown/appkit-utils'
 
 import {
   assertWalletGrantPermissionsResponse,

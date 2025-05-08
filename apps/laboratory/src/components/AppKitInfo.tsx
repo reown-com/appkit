@@ -19,7 +19,7 @@ import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 export function AppKitInfo() {
-  const { caipAddress, address } = useAppKitAccount()
+  const { caipAddress, address, embeddedWalletInfo } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
@@ -42,12 +42,14 @@ export function AppKitInfo() {
 
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              CAIP Address
-            </Heading>
-            <Text data-testid="w3m-caip-address">{caipAddress}</Text>
-          </Box>
+          {caipAddress ? (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                CAIP Address
+              </Heading>
+              <Text data-testid="w3m-caip-address">{caipAddress}</Text>
+            </Box>
+          ) : null}
 
           {erc3770Address && (
             <Box>
@@ -58,19 +60,34 @@ export function AppKitInfo() {
             </Box>
           )}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Address
-            </Heading>
-            <Text data-testid="w3m-address">{address}</Text>
-          </Box>
+          {address ? (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Address
+              </Heading>
+              <Text data-testid="w3m-address">{address}</Text>
+            </Box>
+          ) : null}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Chain Id
-            </Heading>
-            <Text data-testid="w3m-chain-id">{chainId}</Text>
-          </Box>
+          {chainId !== undefined && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Id
+              </Heading>
+              <Text data-testid="w3m-chain-id">{chainId}</Text>
+            </Box>
+          )}
+
+          {embeddedWalletInfo && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Embedded Wallet Info
+              </Heading>
+              <Text data-testid="w3m-embedded-wallet-info">
+                {JSON.stringify(embeddedWalletInfo, null, 2)}
+              </Text>
+            </Box>
+          )}
 
           <RelayClientInfo />
 

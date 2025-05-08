@@ -22,7 +22,6 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   smartAccountSiweTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'all')
   validator = new ModalWalletValidator(browserPage)
 
@@ -43,7 +42,7 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
   await page.promptSiwe()
   await page.approveSign()
 
@@ -81,6 +80,9 @@ smartAccountSiweTest(
     await validator.expectSwitchedNetworkWithNetworkView()
     await page.promptSiwe()
     await page.approveSign()
+    await validator.expectConnected()
+    await validator.expectAuthenticated()
+    await page.page.waitForTimeout(1000)
 
     await page.sign(namespace)
     await page.approveSign()
@@ -95,9 +97,11 @@ smartAccountSiweTest(
     const namespace = library === 'solana' ? 'solana' : 'eip155'
 
     await page.switchNetwork(targetChain)
-    await page.page.waitForTimeout(1000)
     await page.promptSiwe()
     await page.approveSign()
+    await validator.expectConnected()
+    await validator.expectAuthenticated()
+    await page.page.waitForTimeout(1000)
 
     await page.openAccount()
     // Shouldn't show the toggle on a non enabled network

@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
@@ -14,7 +14,7 @@ import {
   ModalController,
   OptionsController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-balance'
 import '@reown/appkit-ui/wui-flex'
@@ -24,7 +24,7 @@ import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-account-activity-widget/index.js'
 import '../w3m-account-nfts-widget/index.js'
 import '../w3m-account-tokens-widget/index.js'
@@ -119,16 +119,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         data-testid="w3m-profile-button"
       ></wui-profile-button>
 
-      ${this.tokenBalanceTemplate()} ${this.orderedWalletFeatures()}
-
-      <wui-tabs
-        .onTabChange=${this.onTabChange.bind(this)}
-        .activeTab=${this.currentTab}
-        localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-          ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
-          : '104px'}
-        .tabs=${ConstantsUtil.ACCOUNT_TABS}
-      ></wui-tabs>
+      ${this.tokenBalanceTemplate()} ${this.orderedWalletFeatures()} ${this.tabsTemplate()}
       ${this.listContentTemplate()}
     </wui-flex>`
   }
@@ -162,9 +153,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onrampTemplate() {
-    const onramp = this.features?.onramp
+    const isOnrampEnabled = this.features?.onramp
 
-    if (!onramp) {
+    if (!isOnrampEnabled) {
       return null
     }
 
@@ -180,10 +171,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private swapsTemplate() {
-    const swaps = this.features?.swaps
+    const isSwapsEnabled = this.features?.swaps
     const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
 
-    if (!swaps || !isEvm) {
+    if (!isSwapsEnabled || !isEvm) {
       return null
     }
 
@@ -200,9 +191,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private receiveTemplate() {
-    const receive = this.features?.receive
+    const isReceiveEnabled = this.features?.receive
 
-    if (!receive) {
+    if (!isReceiveEnabled) {
       return null
     }
 
@@ -219,10 +210,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private sendTemplate() {
-    const send = this.features?.send
-    const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+    const isSendEnabled = this.features?.send
+    const activeNamespace = ChainController.state.activeChain as ChainNamespace
+    const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace)
 
-    if (!send || !isEvm) {
+    if (!isSendEnabled || !isSendSupported) {
       return null
     }
 
@@ -279,6 +271,23 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`<wui-balance dollars="0" pennies="00"></wui-balance>`
   }
 
+  private tabsTemplate() {
+    const tabsByNamespace = HelpersUtil.getTabsByNamespace(ChainController.state.activeChain)
+
+    if (tabsByNamespace.length === 0) {
+      return null
+    }
+
+    return html`<wui-tabs
+      .onTabChange=${this.onTabChange.bind(this)}
+      .activeTab=${this.currentTab}
+      localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
+        ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
+        : '104px'}
+      .tabs=${tabsByNamespace}
+    ></wui-tabs>`
+  }
+
   private onTabChange(index: number) {
     AccountController.setCurrentTab(index)
   }
@@ -292,6 +301,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSwapClick() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     if (
       this.network?.caipNetworkId &&
       !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.caipNetworkId)
@@ -306,7 +317,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         properties: {
           network: this.network?.caipNetworkId || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -319,13 +330,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSendClick() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     EventsController.sendEvent({
       type: 'track',
       event: 'OPEN_SEND',
       properties: {
         network: this.network?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

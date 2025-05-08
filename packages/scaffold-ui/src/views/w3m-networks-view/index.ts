@@ -11,9 +11,8 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  RouterController,
-  StorageUtil
-} from '@reown/appkit-core'
+  RouterController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-input-text'
@@ -33,7 +32,7 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public network = ChainController.state.activeCaipNetwork
 
-  @state() public requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+  @state() public requestedCaipNetworks = ChainController.getCaipNetworks()
 
   @state() private filteredNetworks?: CaipNetwork[]
 
@@ -45,10 +44,9 @@ export class W3mNetworksView extends LitElement {
     this.unsubscribe.push(
       AssetController.subscribeNetworkImages(() => this.requestUpdate()),
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
-      ChainController.subscribeKey(
-        'chains',
-        () => (this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks())
-      )
+      ChainController.subscribe(() => {
+        this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+      })
     )
   }
 
@@ -112,12 +110,11 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
-      requestedCaipNetworks
+      this.requestedCaipNetworks
     )
 
     if (this.search) {
@@ -149,7 +146,7 @@ export class W3mNetworksView extends LitElement {
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
-    const connectorId = StorageUtil.getConnectedConnectorId(networkNamespace)
+    const connectorId = ConnectorController.getConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
@@ -171,7 +168,7 @@ export class W3mNetworksView extends LitElement {
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
     const isCurrentNamespaceConnected = AccountController.state.caipAddress
     const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
-    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
 
     /**
      * If the network is supported by the auth connector, we don't need to show switch active chain view.

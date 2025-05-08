@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   type AccountType,
@@ -12,7 +13,7 @@ import {
   ModalController,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
 import '@reown/appkit-ui/wui-button'
@@ -137,14 +138,15 @@ export class W3mProfileView extends LitElement {
   }
 
   private async onSwitchAccount(account: AccountType) {
+    const namespace = ChainController.state.activeCaipNetwork?.chainNamespace as ChainNamespace
     this.loading = true
     const emailConnector = ConnectorController.getAuthConnector()
     if (emailConnector) {
       const type = account.type as W3mFrameTypes.AccountType
-      await ConnectionController.setPreferredAccountType(type)
+      await ConnectionController.setPreferredAccountType(type, namespace)
     }
 
-    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
+    AccountController.setShouldUpdateToAddress(account.address, namespace)
     this.loading = false
   }
 

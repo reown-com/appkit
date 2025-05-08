@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
@@ -11,8 +12,8 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController
-} from '@reown/appkit-core'
-import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -86,6 +87,8 @@ export class W3mOnRampProvidersView extends LitElement {
   }
 
   private onClickProvider(provider: OnRampProvider) {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
     CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
@@ -95,7 +98,7 @@ export class W3mOnRampProvidersView extends LitElement {
       properties: {
         provider: provider.name,
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

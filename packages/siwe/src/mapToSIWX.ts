@@ -5,7 +5,7 @@ import {
   type SIWXConfig,
   type SIWXMessage,
   type SIWXSession
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 
 import type { AppKitSIWEClient } from '../exports/index.js'
@@ -56,6 +56,11 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
       if (isDifferentNetwork) {
         await signOut()
+        // If signOut doesn't delete the cookie, we need to sign out again
+        const siweSession = await getSession()
+        if (siweSession) {
+          await signOut()
+        }
       }
     }),
     ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {

@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type Provider as CoreProvider,
+  type NetworkControllerClient
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 
@@ -24,15 +29,6 @@ vi.mock('@solana/web3.js', () => ({
     rpcEndpoint: endpoint
   })),
   PublicKey: vi.fn(key => ({ toBase58: () => key }))
-}))
-
-vi.mock('../utils/SolanaStoreUtil', () => ({
-  SolStoreUtil: {
-    state: {
-      connection: null
-    },
-    setConnection: vi.fn()
-  }
 }))
 
 vi.mock('../utils/watchStandard', () => ({
@@ -64,6 +60,8 @@ const mockWalletConnectConnector = vi.mocked(
 
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
+  vi.spyOn(SolStoreUtil, 'setConnection')
+  vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue(mockNetworks)
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -71,8 +69,14 @@ describe('SolanaAdapter', () => {
     adapter.construct({
       networks: mockNetworks,
       projectId: 'test-project-id',
-      namespace: 'solana'
+      namespace: ConstantsUtil.CHAIN.SOLANA,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.SOLANA
     })
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'solana')
   })
 
   describe('SolanaAdapter - syncConnectors', () => {
@@ -107,8 +111,13 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - constructor', () => {
     it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('solana')
-      expect(adapter.namespace).toBe('solana')
+      expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.SOLANA)
+      expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.SOLANA)
+      expect(adapter.networks).toEqual(mockNetworks)
+      expect(adapter.projectId).toBe('test-project-id')
+      expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
+      )
     })
   })
 

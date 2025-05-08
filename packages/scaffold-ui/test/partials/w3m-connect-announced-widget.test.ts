@@ -4,13 +4,13 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { ConnectorType, ConnectorWithProviders } from '@reown/appkit-core'
+import type { ConnectorType, ConnectorWithProviders } from '@reown/appkit-controllers'
 import {
   ApiController,
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ConstantsUtil } from '@reown/appkit-utils'
 
 import { W3mConnectAnnouncedWidget } from '../../src/partials/w3m-connect-announced-widget'
@@ -44,7 +44,7 @@ describe('W3mConnectAnnouncedWidget', () => {
   beforeEach(() => {
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
-      excludedRDNS: []
+      excludedWallets: []
     })
   })
 
@@ -93,7 +93,7 @@ describe('W3mConnectAnnouncedWidget', () => {
 
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
-      excludedRDNS: ['mock.wallet']
+      excludedWallets: [{ name: 'Mock Wallet', rdns: 'mock.wallet' }]
     })
 
     const element: W3mConnectAnnouncedWidget = await fixture(

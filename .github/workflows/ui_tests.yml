@@ -13,6 +13,11 @@ on:
         default: 'http://localhost:3000/'
         required: false
         type: string
+      demo-base-url:
+        description: 'The AppKit Demo app url'
+        default: 'http://localhost:3000/'
+        required: false
+        type: string
       wallet-url:
         description: 'The wallet url'
         default: 'https://react-wallet.walletconnect.com/'
@@ -33,6 +38,16 @@ on:
         default: 'https://secure.walletconnect.org/sdk'
         required: false
         type: string
+      build-and-cache-only:
+        description: 'If true, only run the build job and skip the tests.'
+        required: false
+        default: false
+        type: boolean
+      matrix_config:
+        description: 'The matrix configuration for sharding as a JSON string.'
+        required: false
+        default: '{"shard":[1], "shardTotal":[1]}'
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -50,21 +65,10 @@ on:
         required: false
 
 jobs:
-  ui_tests:
-    name: 'Playwright Tests'
-    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5]
-        shardTotal: [5]
-    timeout-minutes: 20
+  build_lab_and_extension:
+    name: 'Build Lab and Extension'
+    runs-on: ubuntu-latest
     steps:
-      # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
-      # It's not supported in self-hosted runners, however, so commenting it out for now
-      # - name: Tune GitHub-hosted runner network
-      #   uses: smorimoto/tune-github-hosted-runner-network@v1
-
       - name: checkout
         uses: actions/checkout@v4
         with:
@@ -75,26 +79,32 @@ jobs:
         name: Install pnpm
 
       - name: setup-node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: 'pnpm'
-
-      # - name: Get installed Playwright version
-      #   id: playwright-version
-      #   run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
-
-      # This cache causes weird errors on retry runs when using the self-hosted runners, disabling for now
-      # - name: Cache playwright binaries
-      #   uses: actions/cache@v4
-      #   id: playwright-cache
-      #   with:
-      #     path: |
-      #       ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Cache Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Cache NextJS Apps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/apps/laboratory/out/cache
+            ${{ github.workspace }}/apps/demo/out/cache
+          # NOTE: apps/browser-extension likely does NOT use .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: build packages and lab
         run: pnpm build:laboratory
@@ -107,38 +117,186 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
 
       - name: build extension
+        if: inputs.build-and-cache-only == false && inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+          NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
         working-directory: ./apps/browser-extension/
         run: pnpm build
 
-      - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: build Demo app
+        if: inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
+        run: pnpm build:demo
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          BASE_URL: ${{ inputs.demo-base-url }}
+          NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
+
+      # Upload actual artifact in GitHub Actions
+      - name: Upload build artifacts (GitHub Actions)
+        if: inputs.build-and-cache-only == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-build-output
+          path: |
+            dist/
+            .next/
+            turbo/
+            packages/*/dist/
+            apps/*/dist/
+            apps/demo/out/
+            apps/laboratory/out/
+            .turbo/
+          retention-days: 1
+
+      # Upload actual artifact in GitHub Actions
+      - name: Upload node_modules (GitHub Actions)
+        if: inputs.build-and-cache-only == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-node-modules
+          path: node_modules
+          retention-days: 1
+
+  ui_tests:
+    if: inputs.build-and-cache-only == false
+    name: 'Playwright Tests'
+    needs: build_lab_and_extension # Depend on the build job
+    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
+    strategy:
+      fail-fast: false
+      # Update matrix to use fromJson with the new input
+      matrix: ${{ fromJson(inputs.matrix_config) }}
+    timeout-minutes: 15
+    steps:
+      # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
+      # It's not supported in self-hosted runners, however, so commenting it out for now
+      # - name: Tune GitHub-hosted runner network
+      #   uses: smorimoto/tune-github-hosted-runner-network@v1
+
+      - name: checkout # Checkout is still needed for pnpm install and playwright config
+        uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: |
+          # Find the block starting with '@playwright/test': and get the next 5 lines
+          PLAYWRIGHT_BLOCK=$(grep -A 5 "'@playwright/test':" pnpm-lock.yaml)
+
+          echo "--- Playwright Block ---"
+          echo "$PLAYWRIGHT_BLOCK"
+          echo "------------------------"
+
+          if [ -z "$PLAYWRIGHT_BLOCK" ]; then
+            echo "PLAYWRIGHT_VERSION=unknown_block_not_found" >> $GITHUB_ENV
+            echo "Extracted Playwright version: [Block Not Found]"
+          else
+            # Find the line starting with 'version:' within the block
+            VERSION_LINE=$(echo "$PLAYWRIGHT_BLOCK" | grep -m 1 '^\s*version:')
+            echo "Version line found: $VERSION_LINE"
+
+            if [ -z "$VERSION_LINE" ]; then
+              echo "PLAYWRIGHT_VERSION=unknown_version_line_not_found" >> $GITHUB_ENV
+              echo "Extracted Playwright version: [Version Line Not Found in Block]"
+            else
+              # Extract X.Y.Z version from the version line
+              EXTRACTED_VERSION=$(echo "$VERSION_LINE" | sed -n 's|.*version:\s*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*|\1|p')
+              if [ -z "$EXTRACTED_VERSION" ]; then
+                echo "PLAYWRIGHT_VERSION=unknown_sed_failed" >> $GITHUB_ENV
+                echo "Extracted Playwright version: [sed failed to extract from version line]"
+              else
+                echo "PLAYWRIGHT_VERSION=$EXTRACTED_VERSION" >> $GITHUB_ENV
+                echo "Extracted Playwright version: $EXTRACTED_VERSION"
+              fi
+            fi
+          fi
+        continue-on-error: true
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      # Download actual artifact in GitHub Actions
+      - name: Download build artifacts (GitHub Actions)
+        uses: actions/download-artifact@v4
+        with:
+          name: ui-build-output
+          # Note: download-artifact downloads into the workspace root by default
+
+      # Download actual artifact in GitHub Actions
+      - name: Download node_modules (GitHub Actions)
+        uses: actions/download-artifact@v4
+        with:
+          name: ui-node-modules
+          path: node_modules # Specify path to download into
+
+      # Restore executable permissions for binaries (keep this after potential copy)
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
+
+      - name: Install dependencies # Install again to link binaries, etc.
+        run: pnpm install --frozen-lockfile
+
+      # The cache is scoped to the key, version, and branch.
+      # Version includes the path e.g. /tmp/playwright_cache
+      # which thus needs to be static across runs.
+      # The default branch cache is available to other branches.
+      # See https://github.com/actions/cache
+      - name: Cache Playwright Browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
+        with:
+          path: /tmp/playwright_cache
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
         working-directory: ./apps/laboratory/
-        run: pnpm playwright:install
+        run: pnpm playwright:install-deps
 
-      # - name: Build MetaMask wallet cache
-      #   working-directory: ./apps/laboratory/
-      #   run: xvfb-run pnpm synpress
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true' # <-- Re-enable condition
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
+        working-directory: ./apps/laboratory/
+        run: |
+          mkdir -p /tmp/playwright_cache
+          pnpm playwright:install # Add -ddd for max debug logging
 
-      # - name: Run MetaMask Playwright tests (headful)
-      #   working-directory: ./apps/laboratory/
-      #   env:
-      #     BASE_URL: ${{ inputs.base-url }}
-      #     WALLET_URL: ${{ inputs.wallet-url }}
-      #     NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      #     SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
-      #     NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-      #     MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
-      #     NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-      #     SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-      #     SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-      #     CI: true
-      #   run: xvfb-run pnpm playwright:test:metamask
+      - name: Verify Cache Dir Exists After Install
+        if: steps.playwright-cache.outputs.cache-hit != 'true' # Only relevant if install ran
+        run: |
+          echo "Checking cache directory after install:"
+          ls -la /tmp/playwright_cache # Use workspace path
+        continue-on-error: true # Don't fail the job if ls fails
+
+      - name: Run Playwright tests for Demo
+        if: matrix.shard == 2
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
+          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
+          BASE_URL: ${{ inputs.demo-base-url }}
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          CI: true
+        working-directory: ./apps/demo/
+        run: pnpm playwright:test
 
       - name: Run Playwright tests
         env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
@@ -153,11 +311,13 @@ jobs:
         run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
       - name: Run canary with minimal environment config
+        if: matrix.shard == 1 # Run canary only on the first shard
         env:
-          # DO NOT MODIFY THIS. If you are required to add variables here without adding
-          # them to the rs-relay repo it will cause alarms.
+          # DO NOT MODIFY THESE VARIABLES. If you need to add a variable here you MUST add it to the canary deployment first before publishing the canary.
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
@@ -168,3 +328,9 @@ jobs:
           name: playwright-report-${{ matrix.shard }}
           path: ./apps/laboratory/playwright-report/
           retention-days: 7
+
+      - name: Verify Cache Dir Exists Before Post Job
+        run: |
+          echo "Checking cache directory just before post-job phase:"
+          ls -la /tmp/playwright_cache # Use workspace path
+        continue-on-error: true # Don't fail the job if ls fails

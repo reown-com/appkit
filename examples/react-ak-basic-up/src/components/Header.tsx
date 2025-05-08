@@ -5,7 +5,7 @@ export default function Header() {
         <img src="/reown-logo.png" alt="Reown" width="150" />
         <img src="/appkit-logo.png" alt="Reown" width="150" />
       </div>
-      <h1 className="page-title">React AppKit Basic Universal Provider Example</h1>
+      <h1 className="page-title">React AppKit Core Universal Provider Example</h1>
     </>
   )
 }

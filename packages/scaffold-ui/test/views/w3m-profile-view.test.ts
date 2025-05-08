@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   type AccountType,
@@ -14,7 +14,7 @@ import {
   CoreHelperUtil,
   ModalController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { W3mProfileView } from '../../src/views/w3m-profile-view'
@@ -172,14 +172,18 @@ describe('W3mProfileView - Functions', () => {
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...MOCK_CHAIN_STATE,
-      activeChain: switchAccount.namespace
+      activeChain: switchAccount.namespace,
+      activeCaipNetwork: {
+        chainNamespace: switchAccount.namespace,
+        chainId: '1'
+      } as unknown as CaipNetwork
     })
 
     await (element as any).onSwitchAccount(switchAccount)
 
     await new Promise(resolve => setTimeout(resolve, 0))
 
-    expect(setPreferredAccountTypeMock).toHaveBeenCalledWith('eoa')
+    expect(setPreferredAccountTypeMock).toHaveBeenCalledWith('eoa', switchAccount.namespace)
     expect(setShouldUpdateToAddressMock).toHaveBeenCalledWith(
       switchAccount.address,
       switchAccount.namespace

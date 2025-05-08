@@ -1,9 +1,14 @@
 import { vi } from 'vitest'
 
 import type { AppKit } from '@reown/appkit'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { type Chain, mainnet } from '@reown/appkit/networks'
 
 export const mockCaipNetworks = [mainnet] as [Chain, ...Chain[]]
+export const mockExtendedCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockCaipNetworks, {
+  projectId: 'test-project-id',
+  customNetworkImageUrls: {}
+})
 export const mockAddress = '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831'
 export const mockCaipNetworkId = 'eip155:1'
 export const mockCaipAddress = `${mockCaipNetworkId}:${mockAddress}`
@@ -21,7 +26,7 @@ export const mockSession = {
 export const mockProvider = {
   on: vi.fn(),
   removeListener: vi.fn(),
-  enable: vi.fn().mockResolvedValue([mockAddress]),
+  getAccounts: vi.fn().mockResolvedValue([mockAddress]),
   request: vi.fn(),
   disconnect: vi.fn(),
   events: {
@@ -78,7 +83,6 @@ export const mockAppKit = {
   signMessage: vi.fn(),
   sendTransaction: vi.fn(),
   writeContract: vi.fn(),
-  getEnsAddress: vi.fn(),
   estimateGas: vi.fn(),
   parseUnits: vi.fn(),
   formatUnits: vi.fn(),
@@ -88,7 +92,6 @@ export const mockAppKit = {
   connect: vi.fn(),
   reconnect: vi.fn(),
   getBalance: vi.fn(),
-  getProfile: vi.fn(),
   getWalletConnectProvider: vi.fn(),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),

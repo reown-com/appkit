@@ -1,14 +1,20 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { InfuraProvider, JsonRpcProvider } from 'ethers'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { JsonRpcProvider } from 'ethers'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil } from '@reown/appkit'
-import { Emitter } from '@reown/appkit-common'
-import type { Provider } from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
+import {
+  AccountController,
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient,
+  type Provider
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { ProviderUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
-import { ProviderUtil } from '@reown/appkit/store'
 
 import { EthersAdapter } from '../client'
 import { EthersMethods } from '../utils/EthersMethods'
@@ -28,10 +34,6 @@ vi.mock('ethers', async importOriginal => {
   return {
     ...actual,
     formatEther: vi.fn(() => '1.5'),
-    InfuraProvider: vi.fn(() => ({
-      lookupAddress: vi.fn(),
-      getAvatar: vi.fn()
-    })),
     JsonRpcProvider: vi.fn(() => ({
       getBalance: vi.fn()
     })),
@@ -51,7 +53,6 @@ vi.mock('../utils/EthersMethods', () => ({
     sendTransaction: vi.fn(),
     writeContract: vi.fn(),
     estimateGas: vi.fn(),
-    getEnsAddress: vi.fn(),
     parseUnits: vi.fn(),
     formatUnits: vi.fn(),
     hexStringToNumber: vi.fn(hex => parseInt(hex, 16)),
@@ -90,15 +91,25 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
 describe('EthersAdapter', () => {
   let adapter: EthersAdapter
 
+  beforeAll(() => {})
+
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new EthersAdapter()
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
   describe('EthersAdapter -constructor', () => {
-    it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('ethers')
-      expect(adapter.namespace).toBe('eip155')
+    it('should set adapterType', () => {
+      expect(adapter.adapterType).toEqual(CommonConstantsUtil.ADAPTER_TYPES.ETHERS)
+    })
+
+    it('should set namespace', () => {
+      expect(adapter.namespace).toEqual(CommonConstantsUtil.CHAIN.EVM)
     })
 
     it('should not set info property for injected connector', () => {
@@ -147,14 +158,16 @@ describe('EthersAdapter', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
       vi.mocked(EthersMethods.sendTransaction).mockResolvedValue(mockTxHash)
-
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       const result = await adapter.sendTransaction({
         value: BigInt(1000),
         to: '0x456',
         data: '0x',
         gas: BigInt(21000),
         gasPrice: BigInt(2000000000),
-        address: '0x123',
         provider: mockProvider,
         caipNetwork: mockCaipNetworks[0]
       })
@@ -163,14 +176,17 @@ describe('EthersAdapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       await expect(
         adapter.sendTransaction({
           value: BigInt(1000),
           to: '0x456',
           data: '0x',
           gas: BigInt(21000),
-          gasPrice: BigInt(2000000000),
-          address: '0x123'
+          gasPrice: BigInt(2000000000)
         })
       ).rejects.toThrow('Provider is undefined')
     })
@@ -199,7 +215,6 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter -connect', () => {
     it('should connect with external provider', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
         if (request.method === 'eth_chainId') return Promise.resolve('0x1')
@@ -231,8 +246,6 @@ describe('EthersAdapter', () => {
     })
 
     it('should call switch network if wallet chain id is different than requested chain id', async () => {
-      adapter.caipNetworks = mockCaipNetworks
-
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
         if (request.method === 'eth_chainId') return Promise.resolve('137') // Return a different chain id
@@ -269,6 +282,47 @@ describe('EthersAdapter', () => {
       expect(result.address).toBe('0x123')
       expect(result.chainId).toBe(1)
     })
+
+    it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
+          eip155: 'smartAccount'
+        }
+      })
+
+      const ethersAdapter = new EthersAdapter()
+
+      const connect = vi.fn().mockResolvedValue({ address: '0x123' })
+
+      const mockAuthProviderWithConnect = {
+        ...mockAuthProvider,
+        connect
+      } as unknown as W3mFrameProvider
+
+      Object.defineProperty(ethersAdapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockAuthProviderWithConnect,
+            chains: [1],
+            type: 'AUTH',
+            chain: 1
+          }
+        ]
+      })
+
+      await ethersAdapter.connect({
+        id: 'test',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(connect).toHaveBeenCalledWith({
+        chainId: 1,
+        preferredAccountType: 'smartAccount'
+      })
+    })
   })
 
   describe('EthersAdapter -disconnect', () => {
@@ -293,7 +347,6 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter -getBalance', () => {
     it('should get balance successfully', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const mockBalance = BigInt(1500000000000000000)
       vi.mocked(JsonRpcProvider).mockImplementation(
         () =>
@@ -314,7 +367,6 @@ describe('EthersAdapter', () => {
     })
 
     it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const mockBalance = BigInt(1500000000000000000)
       // delay the response to simulate http request latency
       const latency = 1000
@@ -353,31 +405,6 @@ describe('EthersAdapter', () => {
           symbol: 'ETH'
         })
       }
-    })
-  })
-
-  describe('EthersAdapter -getProfile', () => {
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
-      vi.mocked(InfuraProvider).mockImplementation(
-        () =>
-          ({
-            lookupAddress: vi.fn().mockResolvedValue(mockEnsName),
-            getAvatar: vi.fn().mockResolvedValue(mockAvatar)
-          }) as any
-      )
-
-      const result = await adapter.getProfile({
-        address: '0x123',
-        chainId: 1
-      })
-
-      expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
-      })
     })
   })
 
@@ -601,7 +628,6 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter - provider listener', () => {
     it('should disconnect if accountsChanged event emits no accounts', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const emitter = new Emitter()
 
       const mockProvider = {

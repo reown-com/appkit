@@ -1,11 +1,13 @@
 import { LitElement, html } from 'lit'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
+  ChainController,
   EventsController,
   OptionsController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -54,12 +56,14 @@ export class W3mOnRampProvidersFooter extends LitElement {
   }
 
   private onWhatIsBuy() {
+    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WHAT_IS_A_BUY',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

@@ -2,12 +2,18 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { providers } from 'ethers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Emitter } from '@reown/appkit-common'
-import type { Provider } from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
+import {
+  AccountController,
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient,
+  type Provider
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { ProviderUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
-import { ProviderUtil } from '@reown/appkit/store'
 
 import { Ethers5Adapter } from '../client'
 import { Ethers5Methods } from '../utils/Ethers5Methods'
@@ -19,10 +25,6 @@ vi.mock('ethers', async importOriginal => {
     ...actual,
     formatEther: vi.fn(() => '1.5'),
     providers: {
-      InfuraProvider: vi.fn(() => ({
-        lookupAddress: vi.fn(),
-        getAvatar: vi.fn()
-      })),
       JsonRpcProvider: vi.fn(() => ({
         getBalance: vi.fn()
       })),
@@ -36,20 +38,6 @@ vi.mock('ethers', async importOriginal => {
     }
   }
 })
-
-vi.mock('../utils/Ethers5Methods', () => ({
-  Ethers5Methods: {
-    signMessage: vi.fn(),
-    sendTransaction: vi.fn(),
-    writeContract: vi.fn(),
-    estimateGas: vi.fn(),
-    getEnsAddress: vi.fn(),
-    parseUnits: vi.fn(),
-    formatUnits: vi.fn(),
-    hexStringToNumber: vi.fn(hex => parseInt(hex, 16)),
-    numberToHexString: vi.fn(num => `0x${num.toString(16)}`)
-  }
-}))
 
 const mockProvider = {
   request: vi.fn(),
@@ -85,12 +73,20 @@ describe('Ethers5Adapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new Ethers5Adapter()
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
   describe('Ethers5Adapter -constructor', () => {
-    it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('ethers')
-      expect(adapter.namespace).toBe('eip155')
+    it('should set adapterType', () => {
+      expect(adapter.adapterType).toEqual(CommonConstantsUtil.ADAPTER_TYPES.ETHERS5)
+    })
+
+    it('should set namespace', () => {
+      expect(adapter.namespace).toEqual(CommonConstantsUtil.CHAIN.EVM)
     })
 
     it('should not set info property for injected connector', () => {
@@ -114,7 +110,8 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter - signMessage', () => {
     it('should sign message successfully', async () => {
       const mockSignature = '0xmocksignature'
-      vi.mocked(Ethers5Methods.signMessage).mockResolvedValue(mockSignature)
+
+      vi.spyOn(mockProvider, 'request').mockResolvedValue(mockSignature)
 
       const result = await adapter.signMessage({
         message: 'Hello',
@@ -138,7 +135,11 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter -sendTransaction', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
-      vi.mocked(Ethers5Methods.sendTransaction).mockResolvedValue(mockTxHash)
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
+      vi.spyOn(Ethers5Methods, 'sendTransaction').mockResolvedValue(mockTxHash)
 
       const result = await adapter.sendTransaction({
         value: BigInt(1000),
@@ -146,7 +147,6 @@ describe('Ethers5Adapter', () => {
         data: '0x',
         gas: BigInt(21000),
         gasPrice: BigInt(2000000000),
-        address: '0x123',
         provider: mockProvider,
         caipNetwork: mockCaipNetworks[0]
       })
@@ -155,14 +155,17 @@ describe('Ethers5Adapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: 'eip155:1:0x123'
+      })
       await expect(
         adapter.sendTransaction({
           value: BigInt(1000),
           to: '0x456',
           data: '0x',
           gas: BigInt(21000),
-          gasPrice: BigInt(2000000000),
-          address: '0x123'
+          gasPrice: BigInt(2000000000)
         })
       ).rejects.toThrow('Provider is undefined')
     })
@@ -171,7 +174,7 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter -writeContract', () => {
     it('should write contract successfully', async () => {
       const mockTxHash = '0xtxhash'
-      vi.mocked(Ethers5Methods.writeContract).mockResolvedValue(mockTxHash)
+      vi.spyOn(Ethers5Methods, 'writeContract').mockResolvedValue(mockTxHash)
 
       const result = await adapter.writeContract({
         abi: [],
@@ -191,7 +194,6 @@ describe('Ethers5Adapter', () => {
 
   describe('Ethers5Adapter -connect', () => {
     it('should connect with external provider', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
         if (request.method === 'eth_chainId') return Promise.resolve('0x1')
@@ -223,8 +225,6 @@ describe('Ethers5Adapter', () => {
     })
 
     it('should call switch network if wallet chain id is different than requested chain id', async () => {
-      adapter.caipNetworks = mockCaipNetworks
-
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
         if (request.method === 'eth_chainId') return Promise.resolve('137') // Return a different chain id
@@ -261,6 +261,47 @@ describe('Ethers5Adapter', () => {
       expect(result.address).toBe('0x123')
       expect(result.chainId).toBe(1)
     })
+
+    it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        preferredAccountTypes: {
+          eip155: 'smartAccount'
+        }
+      })
+
+      const ethers5Adapter = new Ethers5Adapter()
+
+      const connect = vi.fn().mockResolvedValue({ address: '0x123' })
+
+      const mockAuthProviderWithConnect = {
+        ...mockAuthProvider,
+        connect
+      } as unknown as W3mFrameProvider
+
+      Object.defineProperty(ethers5Adapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockAuthProviderWithConnect,
+            chains: [1],
+            type: 'AUTH',
+            chain: 1
+          }
+        ]
+      })
+
+      await ethers5Adapter.connect({
+        id: 'test',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(connect).toHaveBeenCalledWith({
+        chainId: 1,
+        preferredAccountType: 'smartAccount'
+      })
+    })
   })
 
   describe('Ethers5Adapter -disconnect', () => {
@@ -285,7 +326,6 @@ describe('Ethers5Adapter', () => {
 
   describe('Ethers5Adapter -getBalance', () => {
     it('should get balance successfully', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const mockBalance = BigInt(1500000000000000000)
       vi.mocked(providers.JsonRpcProvider).mockImplementation(
         () =>
@@ -307,7 +347,6 @@ describe('Ethers5Adapter', () => {
   })
 
   it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
-    adapter.caipNetworks = mockCaipNetworks
     const mockBalance = BigInt(1500000000000000000)
     // delay the response to simulate http request latency
     const latency = 1000
@@ -346,31 +385,6 @@ describe('Ethers5Adapter', () => {
         symbol: 'ETH'
       })
     }
-  })
-
-  describe('Ethers5Adapter -getProfile', () => {
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
-      vi.mocked(providers.InfuraProvider).mockImplementation(
-        () =>
-          ({
-            lookupAddress: vi.fn().mockResolvedValue(mockEnsName),
-            getAvatar: vi.fn().mockResolvedValue(mockAvatar)
-          }) as any
-      )
-
-      const result = await adapter.getProfile({
-        address: '0x123',
-        chainId: 1
-      })
-
-      expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
-      })
-    })
   })
 
   describe('Ethers5Adapter - switchNetwork', () => {
@@ -435,26 +449,35 @@ describe('Ethers5Adapter', () => {
 
   describe('Ethers5Adapter -parseUnits and formatUnits', () => {
     it('should parse units correctly', () => {
-      const mockBigInt = BigInt('1500000000000000000')
-      vi.mocked(Ethers5Methods.parseUnits).mockReturnValue(mockBigInt)
+      expect(
+        adapter.parseUnits({
+          value: '1.5',
+          decimals: 18
+        })
+      ).toBe(BigInt('1500000000000000000'))
 
-      const result = adapter.parseUnits({
-        value: '1.5',
-        decimals: 18
-      })
-
-      expect(result).toBe(mockBigInt)
+      expect(
+        adapter.parseUnits({
+          value: '1.5',
+          decimals: 6
+        })
+      ).toBe(BigInt('1500000'))
     })
 
     it('should format units correctly', () => {
-      vi.mocked(Ethers5Methods.formatUnits).mockReturnValue('1.5')
+      expect(
+        adapter.formatUnits({
+          value: BigInt('1500000000000000000'),
+          decimals: 18
+        })
+      ).toBe('1.5')
 
-      const result = adapter.formatUnits({
-        value: BigInt('1500000000000000000'),
-        decimals: 18
-      })
-
-      expect(result).toBe('1.5')
+      expect(
+        adapter.formatUnits({
+          value: BigInt('1500000'),
+          decimals: 6
+        })
+      ).toBe('1.5')
     })
   })
 
@@ -516,7 +539,6 @@ describe('Ethers5Adapter', () => {
 
   describe('EthersAdapter - provider listener', () => {
     it('should disconnect if accountsChanged event emits no accounts', async () => {
-      adapter.caipNetworks = mockCaipNetworks
       const emitter = new Emitter()
 
       const mockProvider = {

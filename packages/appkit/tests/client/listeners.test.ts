@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
+import {
+  AccountController,
+  BlockchainApiController,
+  ChainController
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
@@ -8,18 +12,18 @@ import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import {
   mockBlockchainApiController,
-  mockChainControllerStateWithUnsupportedChain,
   mockStorageUtil,
   mockWindowAndDocument
-} from '../test-utils'
-
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
+} from '../test-utils.js'
 
 describe('Listeners', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    emitter.clearAll()
+    solanaEmitter.clearAll()
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
   })
 
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
@@ -38,6 +42,8 @@ describe('Listeners', () => {
     const appKit = new AppKit(mockOptions)
     const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName').mockImplementation(() => {})
     const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage').mockImplementation(() => {})
+    // @ts-expect-error syncAllAccounts is protected method on AppKitBaseClient
+    const syncAllAccountsSpy = vi.spyOn(appKit, 'syncAllAccounts').mockImplementation(() => {})
 
     await appKit['syncAccount'](mockAccount)
     // @ts-expect-error private event
@@ -53,9 +59,14 @@ describe('Listeners', () => {
     })
     expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
     expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
+    expect(syncAllAccountsSpy).toHaveBeenCalledWith('eip155')
   })
 
   it('should call syncAccountInfo when namespace is different than active namespace', async () => {
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      address: '0x1234'
+    })
     const appKit = new AppKit({ ...mockOptions, defaultNetwork: solana })
     const setCaipAddressSpy = vi.spyOn(appKit, 'setCaipAddress')
 
@@ -97,7 +108,8 @@ describe('Listeners', () => {
       features: { email: false, socials: [] }
     })
 
-    mockChainControllerStateWithUnsupportedChain()
+    ChainController.state.activeChain = mainnet.chainNamespace
+    ChainController.state.activeCaipNetwork = unsupportedNetwork
 
     await appKit['syncAccount']({
       address: '0x123',

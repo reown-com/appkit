@@ -5,7 +5,7 @@ import {
   EventsController,
   ModalController,
   OptionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'

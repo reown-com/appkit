@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
-import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-core'
+import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -36,8 +36,6 @@ export class WuiSwapDetails extends LitElement {
 
   @state() public toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() public gasPriceInUSD = SwapController.state.gasPriceInUSD
-
   @state() public priceImpact = SwapController.state.priceImpact
 
   @state() public maxSlippage = SwapController.state.maxSlippage
@@ -56,7 +54,6 @@ export class WuiSwapDetails extends LitElement {
           this.sourceToken = newState.sourceToken
           this.toToken = newState.toToken
           this.toTokenAmount = newState.toTokenAmount
-          this.gasPriceInUSD = newState.gasPriceInUSD
           this.priceImpact = newState.priceImpact
           this.maxSlippage = newState.maxSlippage
           this.sourceTokenPriceInUSD = newState.sourceTokenPriceInUSD
@@ -104,27 +101,6 @@ export class WuiSwapDetails extends LitElement {
           ${this.detailsOpen
             ? html`
                 <wui-flex flexDirection="column" gap="xs" class="details-content-container">
-                  <wui-flex flexDirection="column" gap="xs">
-                    <wui-flex
-                      justifyContent="space-between"
-                      alignItems="center"
-                      class="details-row"
-                    >
-                      <wui-flex alignItems="center" gap="xs">
-                        <wui-text class="details-row-title" variant="small-400" color="fg-150">
-                          Network cost
-                        </wui-text>
-                        <w3m-tooltip-trigger
-                          text=${`Network cost is paid in ${this.networkTokenSymbol} on the ${this.networkName} network in order to execute transaction.`}
-                        >
-                          <wui-icon size="xs" color="fg-250" name="infoCircle"></wui-icon>
-                        </w3m-tooltip-trigger>
-                      </wui-flex>
-                      <wui-text variant="small-400" color="fg-100">
-                        $${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
-                      </wui-text>
-                    </wui-flex>
-                  </wui-flex>
                   ${this.priceImpact
                     ? html` <wui-flex flexDirection="column" gap="xs">
                         <wui-flex

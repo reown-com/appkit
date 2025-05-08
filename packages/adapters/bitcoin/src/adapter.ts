@@ -2,11 +2,11 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { type AppKit, type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, StorageUtil } from '@reown/appkit-core'
+import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
-import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectProvider.js'
+import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
@@ -22,7 +22,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
-      namespace: 'bip122',
+      namespace: ConstantsUtil.CHAIN.BITCOIN,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.BITCOIN,
       ...params
     })
 
@@ -40,10 +41,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    const address = await connector.connect()
-
     this.connector = connector
     this.bindEvents(this.connector)
+
+    const address = await connector.connect()
 
     const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
 
@@ -152,7 +153,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const walletConnectProvider = new BitcoinWalletConnectConnector({
       provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
-      getActiveChain: () => params.activeCaipNetwork
+      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
 
     return walletConnectProvider as unknown as Provider
@@ -170,10 +171,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   override async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
-    const network = params.caipNetwork
+    const caipNetwork = params.caipNetwork
+    const address = params.address
 
-    if (network?.chainNamespace === 'bip122') {
-      const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'BTC' })
+    }
+
+    if (caipNetwork && caipNetwork.chainNamespace === this.namespace) {
+      const caipAddress = `${caipNetwork?.caipNetworkId}:${address}`
 
       const cachedPromise = this.balancePromises[caipAddress]
       if (cachedPromise) {
@@ -187,23 +193,23 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
         async resolve => {
           const utxos = await this.api.getUTXOs({
-            network,
-            address: params.address
+            network: caipNetwork,
+            address
           })
 
           const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
-          const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), network)
+          const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), caipNetwork)
 
           StorageUtil.updateNativeBalanceCache({
             caipAddress,
             balance: formattedBalance,
-            symbol: network.nativeCurrency.symbol,
+            symbol: caipNetwork.nativeCurrency.symbol,
             timestamp: Date.now()
           })
 
           resolve({
             balance: formattedBalance,
-            symbol: network.nativeCurrency.symbol
+            symbol: caipNetwork.nativeCurrency.symbol
           })
         }
       ).finally(() => {
@@ -211,7 +217,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         delete this.balancePromises[caipAddress]
       })
 
-      return this.balancePromises[caipAddress] || Promise.resolve({ balance: '0', symbol: '' })
+      return (
+        this.balancePromises[caipAddress] || Promise.resolve({ balance: '0.00', symbol: 'BTC' })
+      )
     }
 
     // Get balance
@@ -221,14 +229,21 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
   }
 
-  // -- Unused => Refactor ------------------------------------------- //
+  override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+    if (params.providerType === 'WALLET_CONNECT' || params.providerType === 'AUTH') {
+      return await super.switchNetwork(params)
+    }
 
-  override getProfile(
-    _params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult> {
-    // Get profile
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetProfileResult)
+    const connector = params.provider as BitcoinConnector
+
+    if (!connector) {
+      throw new Error('BitcoinAdapter:switchNetwork - provider is undefined')
+    }
+
+    return await connector.switchNetwork(params.caipNetwork.caipNetworkId)
   }
+
+  // -- Unused => Refactor ------------------------------------------- //
 
   override estimateGas(
     _params: AdapterBlueprint.EstimateGasTransactionArgs
@@ -249,13 +264,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.WriteContractResult> {
     // Write contract
     return Promise.resolve({} as unknown as AdapterBlueprint.WriteContractResult)
-  }
-
-  override getEnsAddress(
-    _params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    // Get ENS address
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetEnsAddressResult)
   }
 
   override parseUnits(_params: AdapterBlueprint.ParseUnitsParams): bigint {
@@ -305,8 +313,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     connector.on('accountsChanged', accountsChanged)
     this.eventsToUnbind.push(() => connector.removeListener('accountsChanged', accountsChanged))
 
-    const chainChanged = (data: string) => {
-      this.emit('switchNetwork', { chainId: data })
+    const chainChanged = async (data: string) => {
+      const address = await this.connect({
+        id: connector.id,
+        chainId: data,
+        type: ''
+      })
+      this.emit('switchNetwork', { chainId: data, address: address.address })
     }
     connector.on('chainChanged', chainChanged)
     this.eventsToUnbind.push(() => connector.removeListener('chainChanged', chainChanged))
@@ -327,8 +340,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.addConnector(
       new BitcoinWalletConnectConnector({
         provider: universalProvider,
-        chains: this.caipNetworks || [],
-        getActiveChain: () => ChainController.state.activeCaipNetwork
+        chains: this.getCaipNetworks(),
+        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
       })
     )
   }

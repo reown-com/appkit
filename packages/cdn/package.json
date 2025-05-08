@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.6.9",
+  "version": "1.7.4",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
@@ -16,7 +16,7 @@
     "serve": "http-server dist -p 8080 --cors"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.7.7",
+    "@wagmi/connectors": "5.7.12",
     "http-server": "14.1.1",
     "vite-plugin-node-polyfills": "0.23.0"
   },
@@ -35,11 +35,11 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@wagmi/connectors": "5.7.7",
-    "@wagmi/core": "2.16.5",
-    "viem": "2.23.5",
+    "@wagmi/connectors": "5.7.12",
+    "@wagmi/core": "2.16.7",
+    "viem": "2.23.13",
     "vite": "5.4.12",
-    "wagmi": "2.14.12"
+    "wagmi": "2.14.16"
   },
   "keywords": [
     "appkit",

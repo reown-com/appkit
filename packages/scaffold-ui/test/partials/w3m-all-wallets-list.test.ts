@@ -8,13 +8,13 @@ import {
   ChainController,
   ConnectorController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type {
   ApiControllerState,
   ChainControllerState,
   Connector,
   WcWallet
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mAllWalletsList } from '../../src/partials/w3m-all-wallets-list'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -51,7 +51,7 @@ describe('W3mAllWalletsList', () => {
       page: 1
     } as unknown as ApiControllerState)
 
-    vi.spyOn(ApiController, 'fetchWallets').mockResolvedValue()
+    vi.spyOn(ApiController, 'fetchWalletsByPage').mockResolvedValue()
     vi.spyOn(ApiController, 'subscribeKey').mockImplementation(() => () => {})
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
@@ -74,6 +74,7 @@ describe('W3mAllWalletsList', () => {
       wallets: [],
       recommended: [],
       featured: [],
+      filteredWallets: [],
       count: 0,
       page: 1
     } as unknown as ApiControllerState)

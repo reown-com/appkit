@@ -2,17 +2,18 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { Connector } from '@reown/appkit-core'
+import type { Connector } from '@reown/appkit-controllers'
 import {
-  ApiController,
   AssetUtil,
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
+
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 
 @customElement('w3m-connect-announced-widget')
 export class W3mConnectAnnouncedWidget extends LitElement {
@@ -47,27 +48,23 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${announcedConnectors.map(connector => {
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
-              return null
-            }
-          }
-
-          return html`
-            <wui-list-wallet
-              imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-              name=${connector.name ?? 'Unknown'}
-              @click=${() => this.onConnector(connector)}
-              tagVariant="success"
-              tagLabel="installed"
-              data-testid=${`wallet-selector-${connector.id}`}
-              .installed=${true}
-              tabIdx=${ifDefined(this.tabIdx)}
-            >
-            </wui-list-wallet>
-          `
-        })}
+        ${announcedConnectors
+          .filter(ConnectorUtil.showConnector)
+          .map(
+            connector => html`
+              <wui-list-wallet
+                imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+                name=${connector.name ?? 'Unknown'}
+                @click=${() => this.onConnector(connector)}
+                tagVariant="success"
+                tagLabel="installed"
+                data-testid=${`wallet-selector-${connector.id}`}
+                .installed=${true}
+                tabIdx=${ifDefined(this.tabIdx)}
+              >
+              </wui-list-wallet>
+            `
+          )}
       </wui-flex>
     `
   }

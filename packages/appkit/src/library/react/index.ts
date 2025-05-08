@@ -13,26 +13,14 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
+import { ProviderUtil } from '@reown/appkit-utils'
 
-import type { AppKit } from '../../../src/client/appkit.js'
-import { ProviderUtil } from '../../store/ProviderUtil.js'
+import type {
+  AppKitBaseClient as AppKit,
+  OpenOptions,
+  Views
+} from '../../client/appkit-base-client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
-
-type OpenOptions = {
-  view:
-    | 'Account'
-    | 'Connect'
-    | 'Networks'
-    | 'ApproveTransaction'
-    | 'OnRampProviders'
-    | 'Swap'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'AllWallets'
-    | 'WalletSend'
-  uri?: string
-  namespace?: ChainNamespace
-}
 
 type ThemeModeOptions = AppKitOptions['themeMode']
 
@@ -41,9 +29,12 @@ type ThemeVariablesOptions = AppKitOptions['themeVariables']
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
+      'appkit-modal': {
+        class?: string
+      }
       'appkit-button': Pick<
         AppKitButton,
-        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'
+        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
       >
       'appkit-connect-button': Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
       'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
@@ -65,7 +56,7 @@ export function getAppKit(appKit: AppKit) {
 }
 
 // -- Core Hooks ---------------------------------------------------------------
-export * from '@reown/appkit-core/react'
+export * from '@reown/appkit-controllers/react'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const { providers, providerIds } = useSnapshot(ProviderUtil.state)
@@ -123,7 +114,7 @@ export function useAppKit() {
     throw new Error('Please call "createAppKit" before using "useAppKit" hook')
   }
 
-  async function open(options?: OpenOptions) {
+  async function open<View extends Views>(options?: OpenOptions<View>) {
     await modal?.open(options)
   }
 
@@ -153,16 +144,21 @@ export function useAppKitState() {
     throw new Error('Please call "createAppKit" before using "useAppKitState" hook')
   }
 
-  const [state, setState] = useState(modal.getState())
+  const [state, setState] = useState({ ...modal.getState(), initialized: false })
 
   useEffect(() => {
-    const unsubscribe = modal?.subscribeState(newState => {
-      setState({ ...newState })
-    })
+    if (modal) {
+      setState({ ...modal.getState() })
+      const unsubscribe = modal?.subscribeState(newState => {
+        setState({ ...newState })
+      })
 
-    return () => {
-      unsubscribe?.()
+      return () => {
+        unsubscribe?.()
+      }
     }
+
+    return () => null
   }, [])
 
   return state

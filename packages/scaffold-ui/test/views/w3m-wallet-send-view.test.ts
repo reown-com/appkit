@@ -2,7 +2,7 @@ import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
-import { RouterController, SendController, SwapController } from '@reown/appkit-core'
+import { RouterController, SendController, SwapController } from '@reown/appkit-controllers'
 
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 
@@ -22,10 +22,6 @@ const mockToken: Balance = {
 describe('W3mWalletSendView', () => {
   beforeEach(() => {
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
-    vi.spyOn(SwapController, 'getInitialGasPrice').mockResolvedValue({
-      gasPrice: BigInt(1000),
-      gasPriceInUSD: 0.1
-    })
     vi.spyOn(SendController, 'fetchTokenBalance').mockResolvedValue([])
   })
 
@@ -100,7 +96,6 @@ describe('W3mWalletSendView', () => {
 
     SendController.setToken(mockToken)
     SendController.setTokenAmount(50)
-    SendController.setGasPrice(BigInt(1))
     SendController.setNetworkBalanceInUsd('100')
 
     SendController.setReceiverAddress('invalid-address')
@@ -150,7 +145,6 @@ describe('W3mWalletSendView', () => {
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
 
     viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
-    viExpect(SwapController.getInitialGasPrice).toHaveBeenCalled()
   })
 
   it('should fetch balances on initialization', async () => {

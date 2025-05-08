@@ -1,8 +1,14 @@
 {
-  "name": "shadow-test-apkt",
-  "version": "0.0.4",
+  "name": "@reown/appkit-monorepo",
+  "version": "1.7.1",
   "private": true,
   "type": "module",
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/reown-com/appkit",
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  },
   "scripts": {
     "prebuild": "node scripts/inject-version.js",
     "build:clean": "turbo run build:clean --filter={./packages/*}",
@@ -11,19 +17,23 @@
     "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
     "build:example:parcel-react-wagmi": "pnpm --filter @examples/parcel-react-wagmi build",
     "build:example:wagmi-app-router": "pnpm --filter @examples/next-wagmi-app-router build",
+    "build:local": "turbo run build --filter={./packages/**/*} --filter=!{./packages/cdn} --concurrency=31",
     "build": "turbo run build --filter={./packages/**/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "gallery-new": "turbo run dev --filter={./apps/gallery-new}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
-    "builder:dev": "pnpm --filter @apps/builder dev",
-    "builder:build": "pnpm build; pnpm --filter @apps/builder build",
+    "builder:dev": "pnpm --filter @apps/demo dev",
+    "demo:dev": "pnpm --filter @apps/demo dev",
+    "builder:build": "pnpm build; pnpm --filter @apps/demo build",
+    "demo:build": "pnpm build; pnpm --filter @apps/demo build",
     "laboratory-new": "pnpm --filter @apps/laboratory-new dev",
     "browser-extension": "pnpm --filter @apps/browser-extension dev",
     "examples": "turbo run dev --filter={./examples/*}",
     "build:gallery": "pnpm build; pnpm --filter=./apps/gallery build",
     "build:gallery-new": "pnpm build; pnpm --filter=./apps/gallery-new build",
     "build:laboratory": "pnpm build; pnpm --filter=./apps/laboratory build",
+    "build:demo": "pnpm --filter=./apps/demo build",
     "build:laboratory-new": "pnpm build; pnpm --filter=./apps/laboratory-new build",
     "build:examples": "pnpm build; pnpm --filter=./examples -r build",
     "build:browser-extension": "pnpm --filter @apps/browser-extension build",
@@ -46,18 +56,23 @@
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
     "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
-    "prepare": "husky"
+    "prepare": "husky",
+    "cli": "node packages/cli/index.js",
+    "codemod:upgrade": "node packages/codemod/src/index.js upgrade",
+    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/*",
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade wagmi @wagmi/*"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.12",
+    "@changesets/assemble-release-plan": "6.0.6",
+    "@changesets/changelog-github": "0.5.1",
+    "@changesets/cli": "2.28.1",
     "@trivago/prettier-plugin-sort-imports": "^5.2.1",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
-    "@vitest/coverage-v8": "2.1.3",
+    "@vitest/coverage-v8": "2.1.9",
     "@vitest/ui": "2.1.8",
     "buffer": "5.5.0||6.0.0",
-    "danger": "11.3.1",
+    "danger": "12.3.4",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.3",
@@ -65,7 +80,7 @@
     "husky": "9.1.7",
     "jsdom": "24.1.0",
     "pino": "7.11.0",
-    "prettier": "3.5.1",
+    "prettier": "3.5.3",
     "process": "0.11.10",
     "turbo": "2.0.6-canary.0",
     "typescript": "5.7.3",
@@ -75,18 +90,30 @@
   },
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
-    "patchedDependencies": {
-      "@synthetixio/synpress-metamask@0.0.1-alpha.7": "patches/@synthetixio__synpress-metamask@0.0.1-alpha.7.patch"
-    },
     "overrides": {
-      "@solana/web3.js": "1.95.8"
+      "@solana/web3.js": "1.98.0",
+      "elliptic": ">=6.6.1",
+      "axios": ">=1.8.2",
+      "ws": ">=7.5.10"
+    },
+    "patchedDependencies": {
+      "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
     }
   },
-  "resolutions": {
-    "@solana/web3.js": "1.95.8"
-  },
   "overrides": {
-    "@solana/web3.js": "1.95.8"
+    "@solana/web3.js": "1.98.0",
+    "elliptic": ">=6.6.1",
+    "axios": ">=1.8.2",
+    "ws": ">=7.5.10"
+  },
+  "resolutions": {
+    "@solana/web3.js": "1.98.0",
+    "elliptic": ">=6.6.1",
+    "axios": ">=1.8.2",
+    "ws": ">=7.5.10"
+  },
+  "patchedDependencies": {
+    "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
   },
   "@parcel/resolver-default": {
     "packageExports": true

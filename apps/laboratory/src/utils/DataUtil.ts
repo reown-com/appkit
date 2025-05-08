@@ -140,7 +140,7 @@ export const solanaSdkOptions: SdkOption[] = [
 export const multichainSdkOptions: SdkOption[] = [
   {
     title: 'Wagmi + Solana + Bitcoin',
-    link: '/library/multichain-wagmi-solana-bitcoin',
+    link: '/library/multichain-all',
     description: 'Configuration with Wagmi, Solana and Bitcoin adapters enabled for AppKit'
   },
   {
@@ -165,7 +165,7 @@ export const multichainSdkOptions: SdkOption[] = [
   },
   {
     title: 'Basic',
-    link: '/library/multichain-basic',
+    link: '/library/multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
   }
 ]
@@ -194,12 +194,12 @@ export const featuredSdkOptions: SdkOption[] = [
   },
   {
     title: 'Multichain',
-    link: '/library/multichain-wagmi-solana-bitcoin',
+    link: '/library/multichain-all',
     description: 'Configuration with Wagmi, Solana and Bitcoin adapters enabled for AppKit'
   },
   {
     title: 'Basic',
-    link: '/library/multichain-basic',
+    link: '/library/multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
   }
 ]
@@ -219,14 +219,22 @@ export const bitcoinSdkOptions: SdkOption[] = [
 
 export const siwxSdkOptions: SdkOption[] = [
   {
+    title: 'Cloud Auth SIWX',
+    link: '/library/siwx-cloud-auth',
+    description: 'SIWX configuration using Cloud Auth'
+  },
+  {
     title: 'Default SIWX',
     link: '/library/siwx-default',
     description:
       'Multichain SIWX configuration with Ethers, Solana and Bitcoin adapters enabled for AppKit'
-  },
+  }
+]
+
+export const paySdkOptions: SdkOption[] = [
   {
-    title: 'Cloud Auth SIWX',
-    link: '/library/siwx-cloud-auth',
-    description: 'EVM SIWX configuration with Ethers and Cloud Auth'
+    title: 'Default',
+    link: '/library/pay-default',
+    description: 'AppKit Pay with default configuration'
   }
 ]

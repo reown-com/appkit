@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import { AlertController } from '@reown/appkit-core'
+import { AlertController } from '@reown/appkit-controllers'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'

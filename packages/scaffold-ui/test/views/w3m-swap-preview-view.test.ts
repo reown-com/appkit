@@ -10,7 +10,7 @@ import {
   SwapController,
   type SwapControllerState,
   type SwapTokenWithBalance
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mSwapPreviewView } from '../../src/views/w3m-swap-preview-view/index.js'
 
@@ -70,7 +70,8 @@ const mockChainState: ChainControllerState = {
       grantPermissions: vi.fn(),
       revokePermissions: vi.fn(),
       getCapabilities: vi.fn(),
-      walletGetAssets: vi.fn()
+      walletGetAssets: vi.fn(),
+      updateBalance: vi.fn()
     }
   },
   noAdapters: false,
