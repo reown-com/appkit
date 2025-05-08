@@ -56,7 +56,22 @@ describe('Base', () => {
     })
 
     it('should send initialize event', async () => {
-      const sendEvent = vi.spyOn(EventsController, 'sendEvent').mockResolvedValue()
+      let resolveInitializeEventSentPromise: (value?: unknown) => void
+      const initializeEventSentPromise = new Promise(resolve => {
+        resolveInitializeEventSentPromise = resolve
+      })
+
+      const sendEvent = vi
+        .spyOn(EventsController, 'sendEvent')
+        .mockImplementation(async eventData => {
+          if (eventData.event === 'INITIALIZE') {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (resolveInitializeEventSentPromise) {
+              resolveInitializeEventSentPromise()
+            }
+          }
+          return Promise.resolve()
+        })
 
       new AppKit({
         ...mockOptions,
@@ -65,14 +80,7 @@ describe('Base', () => {
       const options = { ...mockOptions }
       delete options.adapters
 
-      await new Promise(resolve => {
-        const unsubscribe = PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            unsubscribe()
-            resolve(true)
-          }
-        })
-      })
+      await initializeEventSentPromise // Wait for the INITIALIZE event to be processed by the spy
 
       expect(sendEvent).toHaveBeenCalledWith({
         type: 'track',
@@ -229,6 +237,8 @@ describe('Base', () => {
           }
         })
       })
+
+      await new Promise(r => setTimeout(r, 0))
 
       expect(fetchAllowedOriginsSpy).toHaveBeenCalled()
     })

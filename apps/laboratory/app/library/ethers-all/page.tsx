@@ -1,6 +1,5 @@
 'use client'
 
-import type { SocialProvider } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet } from '@reown/appkit/networks'
 
