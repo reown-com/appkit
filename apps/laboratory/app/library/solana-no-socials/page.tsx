@@ -21,10 +21,7 @@ const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
   defaultNetwork: solana,
-  metadata: ConstantsUtil.Metadata,
-  features: {
-    socials: []
-  }
+  metadata: ConstantsUtil.Metadata
 }
 
 export default function Solana() {
