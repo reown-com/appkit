@@ -828,7 +828,7 @@ describe('WagmiAdapter', () => {
 
       vi.spyOn(wagmiCore, 'watchPendingTransactions').mockReturnValue(unsubscribe)
 
-      new WagmiAdapter({
+      const adapter = new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId,
         pendingTransactionsFilter: {
@@ -836,6 +836,8 @@ describe('WagmiAdapter', () => {
           pollingInterval: 500
         }
       })
+
+      adapter.construct({})
 
       // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
       LimitterUtil.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS

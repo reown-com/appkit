@@ -26,6 +26,7 @@ describe('W3mFrameProvider', () => {
 
   it('should connect email', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
+    provider.isInitialized = true
     const payload = { email: 'test@example.com' }
     W3mFrameHelpers.checkIfAllowedToTriggerEmail.mockReturnValue(true)
     const responsePayload = { action: 'VERIFY_OTP' }
@@ -52,6 +53,7 @@ describe('W3mFrameProvider', () => {
 
   it('should connect otp', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
+    provider.isInitialized = true
     const payload = { otp: '123456' }
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
@@ -71,6 +73,7 @@ describe('W3mFrameProvider', () => {
 
   it('should connect', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
+    provider.isInitialized = true
     const payload = { chainId: 1 }
     const responsePayload = { address: '0xd34db33f', chainId: 1, email: 'test@walletconnect.com' }
 
@@ -124,15 +127,16 @@ describe('W3mFrameProvider', () => {
 
     vi.spyOn(testProvider['w3mFrame'].events, 'postAppEvent').mockImplementation(() => {})
 
+    testProvider.isInitialized = true
     testProvider['w3mFrame'].iframeIsReady = true
     testProvider['w3mFrame'].frameLoadPromise = Promise.resolve()
 
     testProvider.connectEmail({ email: 'test@example.com' }).catch(() => {})
 
     await Promise.resolve()
-
-    vi.advanceTimersByTime(30_000)
-
+    await Promise.resolve()
+    vi.advanceTimersByTime(31_000)
+    await Promise.resolve()
     await Promise.resolve()
 
     expect(onTimeoutMock).toHaveBeenCalledWith('iframe_request_timeout')
@@ -176,9 +180,14 @@ describe('W3mFrameProvider', () => {
       abortController: testAbortController
     })
 
+    testProvider.isInitialized = true
+    testProvider['w3mFrame'].frameLoadPromise = Promise.resolve()
+
     testProvider.connectEmail({ email: 'test@example.com' }).catch(() => {})
 
-    vi.runAllTimers()
+    await Promise.resolve()
+
+    vi.advanceTimersByTime(31_000)
 
     await Promise.resolve()
 
