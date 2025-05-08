@@ -58,17 +58,28 @@ export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promi
   }
 }
 
+interface EvmPaymentParams {
+  recipient: `0x${string}`
+  amount: number | string
+  fromAddress?: `0x${string}`
+}
+
 export async function processEvmNativePayment(
   paymentAsset: PaymentOptions['paymentAsset'],
   chainNamespace: ChainNamespace,
-  fromAddress: `0x${string}`
+  params: EvmPaymentParams
 ): Promise<string | undefined> {
   if (chainNamespace !== ConstantsUtil.CHAIN.EVM) {
     throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
   }
+  if (!params.fromAddress) {
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG,
+      'fromAddress is required for native EVM payments.'
+    )
+  }
 
-  const amountValue =
-    typeof paymentAsset.amount === 'string' ? parseFloat(paymentAsset.amount) : paymentAsset.amount
+  const amountValue = typeof params.amount === 'string' ? parseFloat(params.amount) : params.amount
   if (isNaN(amountValue)) {
     throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
   }
@@ -80,14 +91,10 @@ export async function processEvmNativePayment(
     throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
-  if (chainNamespace !== ConstantsUtil.CHAIN.EVM) {
-    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
-  }
-
   const txResponse = await ConnectionController.sendTransaction({
     chainNamespace,
-    to: paymentAsset.recipient as `0x${string}`,
-    address: fromAddress,
+    to: params.recipient,
+    address: params.fromAddress,
     value: amountBigInt,
     data: '0x'
   })
@@ -97,21 +104,27 @@ export async function processEvmNativePayment(
 
 export async function processEvmErc20Payment(
   paymentAsset: PaymentOptions['paymentAsset'],
-  fromAddress: `0x${string}`
+  params: EvmPaymentParams
 ): Promise<string | undefined> {
+  if (!params.fromAddress) {
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG,
+      'fromAddress is required for ERC20 EVM payments.'
+    )
+  }
   const tokenAddress = paymentAsset.asset as `0x${string}`
-  const recipientAddress = paymentAsset.recipient as `0x${string}`
+  const recipientAddress = params.recipient
   const decimals = Number(paymentAsset.metadata.decimals)
-  const amount = ConnectionController.parseUnits(paymentAsset.amount.toString(), decimals)
+  const amountBigInt = ConnectionController.parseUnits(params.amount.toString(), decimals)
 
-  if (amount === undefined) {
+  if (amountBigInt === undefined) {
     throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
   const txResponse = await ConnectionController.writeContract({
-    fromAddress,
+    fromAddress: params.fromAddress,
     tokenAddress,
-    args: [recipientAddress, amount],
+    args: [recipientAddress, amountBigInt],
     method: 'transfer',
     abi: ContractUtil.getERC20Abi(tokenAddress),
     chainNamespace: ConstantsUtil.CHAIN.EVM
