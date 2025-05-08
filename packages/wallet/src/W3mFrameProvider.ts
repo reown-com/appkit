@@ -57,16 +57,6 @@ export class W3mFrameProvider {
   }
 
   private async createFrame() {
-    if (this.isInitialized) {
-      return
-    }
-
-    if (this.initPromise) {
-      await this.initPromise
-
-      return
-    }
-
     this.w3mFrame.initFrame()
 
     this.initPromise = new Promise<void>(resolve => {
@@ -81,6 +71,20 @@ export class W3mFrameProvider {
 
     this.isInitialized = true
     this.initPromise = undefined
+  }
+
+  public async init() {
+    if (this.isInitialized) {
+      return
+    }
+
+    if (this.initPromise) {
+      await this.initPromise
+
+      return
+    }
+
+    await this.createFrame()
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -110,7 +114,7 @@ export class W3mFrameProvider {
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
-      await this.createFrame()
+      await this.init()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
         payload
@@ -188,7 +192,7 @@ export class W3mFrameProvider {
     payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
     try {
-      await this.createFrame()
+      await this.init()
 
       return this.appEvent<'GetSocialRedirectUri'>({
         type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
@@ -322,7 +326,7 @@ export class W3mFrameProvider {
 
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      await this.createFrame()
+      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
@@ -339,7 +343,7 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
-      await this.createFrame()
+      await this.init()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
@@ -358,7 +362,7 @@ export class W3mFrameProvider {
 
   public async getFarcasterUri() {
     try {
-      await this.createFrame()
+      await this.init()
       const response = await this.appEvent<'GetFarcasterUri'>({
         type: W3mFrameConstants.APP_GET_FARCASTER_URI
       } as W3mFrameTypes.AppEvent)
