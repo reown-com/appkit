@@ -218,6 +218,7 @@ describe('AccountController', () => {
         balances: mockBalances as Balance[]
       })
 
+      console.log('>> setTokenBalanceSpy', AccountController.setTokenBalance)
       const setTokenBalanceSpy = vi.spyOn(AccountController, 'setTokenBalance')
       const setBalancesSpy = vi.spyOn(SwapController, 'setBalances')
       const result = await AccountController.fetchTokenBalance()

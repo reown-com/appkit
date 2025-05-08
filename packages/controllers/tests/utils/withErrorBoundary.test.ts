@@ -95,7 +95,7 @@ describe('withErrorBoundary', () => {
     const mockController = {
       value: 'test',
       async contextMethod() {
-        return this.value
+        return mockController.value
       }
     }
 

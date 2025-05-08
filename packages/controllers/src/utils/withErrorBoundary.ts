@@ -34,7 +34,7 @@ export function withErrorBoundary<T extends Controller>(
       // eslint-disable-next-line func-style
       const wrapped = (...args: Parameters<typeof original>) => {
         try {
-          const result = original.apply(controller, args)
+          const result = original(...args)
 
           return result
         } catch (err) {

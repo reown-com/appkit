@@ -3,7 +3,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
 
 export type TelemetryErrorCategory =
   | 'API_ERROR'
@@ -90,9 +90,15 @@ export const TelemetryController = {
         return
       }
 
+      const { projectId, sdkType, sdkVersion } = OptionsController.state
+
       await api.post({
         path: '/e',
-        params: EventsController.getSdkProperties(),
+        params: {
+          projectId,
+          st: sdkType,
+          sv: sdkVersion || 'html-wagmi-4.2.2'
+        },
         body: {
           eventId: CoreHelperUtil.getUUID(),
           url: window.location.href,
