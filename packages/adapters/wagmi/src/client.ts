@@ -84,11 +84,10 @@ export class WagmiAdapter extends AdapterBlueprint {
       customRpcUrls: configParams.customRpcUrls
     }) as [CaipNetwork, ...CaipNetwork[]]
 
-    super({
-      projectId: configParams.projectId,
-      adapterType: CommonConstantsUtil.ADAPTER_TYPES.WAGMI,
-      namespace: CommonConstantsUtil.CHAIN.EVM
-    })
+    super()
+    this.namespace = CommonConstantsUtil.CHAIN.EVM
+    this.adapterType = CommonConstantsUtil.ADAPTER_TYPES.WAGMI
+    this.projectId = configParams.projectId
 
     this.pendingTransactionsFilter = {
       ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
@@ -96,6 +95,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     this.createConfig({ ...configParams, networks })
+  }
+
+  override construct(_options: AdapterBlueprint.Params) {
     this.setupWatchers()
   }
 

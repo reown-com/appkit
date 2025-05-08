@@ -62,6 +62,7 @@ export abstract class AdapterBlueprint<
   constructor(params?: AdapterBlueprint.Params) {
     this.getCaipNetworks = (namespace?: ChainNamespace) =>
       ChainController.getCaipNetworks(namespace)
+
     if (params) {
       this.construct(params)
     }
