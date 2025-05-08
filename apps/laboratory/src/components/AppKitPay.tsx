@@ -412,12 +412,8 @@ export function AppKitPay() {
                   <FormControl>
                     <FormLabel>Amount</FormLabel>
                     <NumberInput
-                      name="amount"
                       value={paymentDetails.amount.toString()}
                       onChange={handleAmountChange}
-                      min={0}
-                      precision={paymentDetails.asset.metadata.decimals}
-                      step={1 / 10 ** paymentDetails.asset.metadata.decimals}
                     >
                       <NumberInputField />
                     </NumberInput>
