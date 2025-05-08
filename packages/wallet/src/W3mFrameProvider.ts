@@ -64,16 +64,18 @@ export class W3mFrameProvider {
       return
     }
 
+    this.w3mFrame.initFrame()
     this.initPromise = new Promise<void>(resolve => {
-      this.w3mFrame.events.onFrameEvent(event => {
+      this.w3mFrame.events.onFrameEvent(async event => {
         if (event.type === W3mFrameConstants.FRAME_READY) {
+          this.initPromise = undefined
+          await new Promise(_resolve => {
+            setTimeout(_resolve, 500)
+          })
           resolve()
         }
       })
     })
-
-    this.w3mFrame.initFrame()
-
     await this.initPromise
     this.initPromise = undefined
     this.isInitialized = true
@@ -102,6 +104,7 @@ export class W3mFrameProvider {
 
   public async reload() {
     try {
+      await this.init()
       await this.appEvent<'Reload'>({
         type: W3mFrameConstants.APP_RELOAD
       } as W3mFrameTypes.AppEvent)
@@ -113,8 +116,8 @@ export class W3mFrameProvider {
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
-      await this.init()
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
+      await this.init()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
         payload
@@ -193,6 +196,7 @@ export class W3mFrameProvider {
   ) {
     try {
       await this.init()
+
       return this.appEvent<'GetSocialRedirectUri'>({
         type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
         payload
@@ -294,18 +298,6 @@ export class W3mFrameProvider {
 
   public async setPreferredAccount(type: W3mFrameTypes.AccountType) {
     try {
-      /*
-       * `setPreferredAccount` is called everytime regadless if there is an active connection or not
-       * so only process if the frame is initialized
-       */
-      if (this.initPromise) {
-        await this.initPromise
-      }
-
-      if (!this.isInitialized) {
-        return Promise.resolve(undefined)
-      }
-
       return this.appEvent<'SetPreferredAccount'>({
         type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
         payload: { type }
@@ -337,7 +329,6 @@ export class W3mFrameProvider {
 
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
@@ -373,6 +364,7 @@ export class W3mFrameProvider {
 
   public async getFarcasterUri() {
     try {
+      await this.init()
       const response = await this.appEvent<'GetFarcasterUri'>({
         type: W3mFrameConstants.APP_GET_FARCASTER_URI
       } as W3mFrameTypes.AppEvent)
@@ -419,18 +411,9 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     try {
-      const response = await new Promise<void>(async resolve => {
-        const timeout = setTimeout(() => {
-          console.log('disconnect timeout reached')
-          resolve()
-        }, 3_000)
-        await this.appEvent<'SignOut'>({
-          type: W3mFrameConstants.APP_SIGN_OUT
-        } as W3mFrameTypes.AppEvent)
-        clearTimeout(timeout)
-        resolve()
-      })
-
+      const response = await this.appEvent<'SignOut'>({
+        type: W3mFrameConstants.APP_SIGN_OUT
+      } as W3mFrameTypes.AppEvent)
       this.deleteAuthLoginCache()
 
       return response
