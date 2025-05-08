@@ -411,10 +411,16 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     try {
-      const response = await this.appEvent<'SignOut'>({
-        type: W3mFrameConstants.APP_SIGN_OUT
-      } as W3mFrameTypes.AppEvent)
-      this.deleteAuthLoginCache()
+      const response = await new Promise<void>(async resolve => {
+        const timeout = setTimeout(() => {
+          resolve()
+        }, 3_000)
+        await this.appEvent<'SignOut'>({
+          type: W3mFrameConstants.APP_SIGN_OUT
+        } as W3mFrameTypes.AppEvent)
+        clearTimeout(timeout)
+        resolve()
+      })
 
       return response
     } catch (error) {
