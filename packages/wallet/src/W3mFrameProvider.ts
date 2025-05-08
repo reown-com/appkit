@@ -110,7 +110,6 @@ export class W3mFrameProvider {
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
-      await this.init()
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
@@ -153,6 +152,8 @@ export class W3mFrameProvider {
       if (!this.getLoginEmailUsed()) {
         return { isConnected: false }
       }
+
+      await this.init()
 
       const response = await this.appEvent<'IsConnected'>({
         type: W3mFrameConstants.APP_IS_CONNECTED
@@ -290,7 +291,17 @@ export class W3mFrameProvider {
 
   public async setPreferredAccount(type: W3mFrameTypes.AccountType) {
     try {
-      await this.init()
+      /*
+       * `setPreferredAccount` is called everytime regadless if there is an active connection or not
+       * so only process if the frame is initialized
+       */
+      if (this.initPromise) {
+        await this.initPromise
+      }
+
+      if (!this.isInitialized) {
+        return Promise.resolve(undefined)
+      }
 
       return this.appEvent<'SetPreferredAccount'>({
         type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
@@ -305,7 +316,6 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.getUser({
         chainId,
@@ -324,6 +334,7 @@ export class W3mFrameProvider {
 
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
+      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
@@ -340,7 +351,6 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
-      await this.init()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
