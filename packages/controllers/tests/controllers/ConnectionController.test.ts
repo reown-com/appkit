@@ -10,6 +10,7 @@ import {
 import type {
   ChainAdapter,
   ConnectionControllerClient,
+  Connector,
   ConnectorType,
   NetworkControllerClient
 } from '../../exports/index.js'
@@ -22,6 +23,7 @@ import {
   ModalController,
   SIWXUtil
 } from '../../exports/index.js'
+import { AccountController } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
@@ -118,6 +120,7 @@ describe('ConnectionController', () => {
     )
 
     expect(ConnectionController.state).toEqual({
+      connections: new Map(),
       wcError: false,
       buffering: false,
       status: 'disconnected',
@@ -333,5 +336,108 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
     expect(ConnectionController.state.status).toEqual('connected')
+  })
+
+  it('should set connections for a namespace', () => {
+    const connections = [{ connectorId: 'test-connector', accounts: [{ address: '0x123' }] }]
+    ConnectionController.setConnections(connections, chain)
+    expect(ConnectionController.state.connections.get(chain)).toEqual(connections)
+  })
+
+  it('should overwrite existing connections for a namespace', () => {
+    const initialConnections = [
+      { connectorId: 'initial-connector', accounts: [{ address: '0xabc' }] }
+    ]
+    const newConnections = [{ connectorId: 'new-connector', accounts: [{ address: '0xdef' }] }]
+    ConnectionController.setConnections(initialConnections, chain)
+    ConnectionController.setConnections(newConnections, chain)
+    expect(ConnectionController.state.connections.get(chain)).toEqual(newConnections)
+  })
+
+  it('should switch account if connector is connected', async () => {
+    const address = '0x123'
+    const connection = { connectorId: 'test-connector', accounts: [{ address }] }
+
+    const setCaipAddressSpy = vi.spyOn(AccountController, 'setCaipAddress')
+
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        ...(ConnectorController.state?.activeConnectorIds ?? {}),
+        [chain]: connection.connectorId
+      }
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: caipNetworks[0]
+    })
+
+    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+
+    expect(setCaipAddressSpy).toHaveBeenCalledWith('eip155:137:0x123', chain)
+  })
+
+  it('should connect to external connector if connector is not connected', async () => {
+    const address = '0x123'
+    const connection = { connectorId: 'test-connector', accounts: [{ address }] }
+    const mockConnector = {
+      ...connection,
+      provider: {
+        request: vi.fn().mockResolvedValue(['0x123'])
+      }
+    } as unknown as Connector
+
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      connections: new Map([])
+    })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        ...(ConnectorController.state?.activeConnectorIds ?? {}),
+        [chain]: undefined
+      }
+    })
+
+    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+
+    expect(clientConnectExternalSpy).toHaveBeenCalledWith(mockConnector)
+  })
+
+  it('should log warning if no current network found', async () => {
+    const connection = { connectorId: 'test-connector', accounts: [{ address: '0x123' }] }
+    const address = '0x123'
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: undefined
+    })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        ...(ConnectorController.state?.activeConnectorIds ?? {}),
+        [chain]: connection.connectorId
+      }
+    })
+
+    const consoleWarnSpy = vi.spyOn(console, 'warn')
+
+    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith('No current network found for namespace "eip155"')
+  })
+
+  it('should log warning if no connector found', async () => {
+    const address = '0x123'
+    const connection = { connectorId: 'non-existent-connector', accounts: [{ address }] }
+
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
+
+    const consoleWarnSpy = vi.spyOn(console, 'warn')
+
+    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith('No connector found for namespace "eip155"')
   })
 })
