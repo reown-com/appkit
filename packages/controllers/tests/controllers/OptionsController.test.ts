@@ -8,6 +8,7 @@ describe('OptionsController', () => {
   it('should have valid default state', () => {
     expect(OptionsController.state).toEqual({
       features: ConstantsUtil.DEFAULT_FEATURES,
+      remoteFeatures: {},
       projectId: '',
       sdkType: 'appkit',
       sdkVersion: 'html-wagmi-undefined',
