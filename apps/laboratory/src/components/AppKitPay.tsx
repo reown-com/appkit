@@ -131,7 +131,7 @@ export function AppKitPay() {
     isLoading: isLoadingExchanges,
     error: errorExchanges,
     fetch: triggerFetchExchanges
-  } = useAvailableExchanges({ isFetchOnInit: false })
+  } = useAvailableExchanges({ shouldFetchOnInit: false })
   const { openUrl } = usePayUrlActions()
   const [displayedExchanges, setDisplayedExchanges] = useState<Exchange[] | null>(null)
 
