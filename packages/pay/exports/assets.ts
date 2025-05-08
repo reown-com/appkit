@@ -1,0 +1,1 @@
+export * from '../src/assets/index.js'

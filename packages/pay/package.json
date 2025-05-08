@@ -18,6 +18,11 @@
       "types": "./dist/types/exports/react.d.ts",
       "import": "./dist/esm/exports/react.js",
       "default": "./dist/esm/exports/react.js"
+    },
+    "./assets": {
+      "types": "./dist/types/exports/assets.d.ts",
+      "import": "./dist/esm/exports/assets.js",
+      "default": "./dist/esm/exports/assets.js"
     }
   },
   "scripts": {
