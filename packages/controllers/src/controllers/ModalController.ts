@@ -56,8 +56,6 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
-    // eslint-disable-next-line no-console
-    console.log('>> open', JSON.stringify(new Error().stack, null, 2))
     const isConnected = AccountController.state.status === 'connected'
 
     if (ConnectionController.state.wcBasic) {
@@ -111,9 +109,7 @@ export const ModalController = {
    * this prevents accidental closing during transaction approval from secure sites
    * @param force - If true, the modal will close regardless of the current view
    */
-  close(force = false) {
-    // eslint-disable-next-line no-console
-    console.log('>> close', JSON.stringify(new Error().stack, null, 2))
+  close(force = false) {  
     if (force || RouterController.state.view !== 'ApproveTransaction') {
       const isEmbeddedEnabled = OptionsController.state.enableEmbedded
       const isConnected = Boolean(ChainController.state.activeCaipAddress)
