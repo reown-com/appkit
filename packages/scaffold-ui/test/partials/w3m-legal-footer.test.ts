@@ -1,5 +1,7 @@
-import { beforeEach, describe, expect, it, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+
 import { OptionsController } from '@reown/appkit-controllers'
+
 import '../../index'
 import { W3mLegalFooter } from '../../src/partials/w3m-legal-footer'
 
@@ -30,7 +32,7 @@ describe('W3mLegalFooter', () => {
 
       await element.updateComplete
       const flexElement = element.shadowRoot?.querySelector('wui-flex')
-      
+
       expect(flexElement).toBeDefined()
       const brandingElement = flexElement?.querySelector('wui-ux-by-reown')
       expect(brandingElement).toBeDefined()
@@ -54,7 +56,7 @@ describe('W3mLegalFooter', () => {
 
       await element.updateComplete
       const flexElement = element.shadowRoot?.querySelector('wui-flex')
-      
+
       expect(flexElement).toBeDefined()
       const brandingElement = flexElement?.querySelector('wui-ux-by-reown')
       expect(brandingElement).toBeDefined()
@@ -78,7 +80,7 @@ describe('W3mLegalFooter', () => {
 
       await element.updateComplete
       const flexElement = element.shadowRoot?.querySelector('wui-flex')
-      
+
       expect(flexElement).toBeDefined()
       const textElement = flexElement?.querySelector('wui-text')
       expect(textElement).toBeDefined()
