@@ -34,8 +34,10 @@ import type {
   AppKitPayErrorMessage,
   Exchange,
   PayResult,
-  PayUrlParams
+  PayUrlParams,
+  PaymentAsset
 } from '@reown/appkit-pay'
+import { baseETH, baseSepoliaETH, baseUSDC } from '@reown/appkit-pay'
 import {
   type ExchangeBuyStatus,
   useAvailableExchanges,
@@ -53,45 +55,25 @@ interface Metadata {
 }
 
 interface AppKitPaymentAssetState {
-  network: string
   recipient: string
-  asset: string
   amount: number
-  metadata: Metadata
+  asset: PaymentAsset
 }
 
 type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE'
 
 const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   NATIVE_BASE: {
-    network: 'eip155:8453',
-    asset: 'native',
-    amount: 0.00001,
-    metadata: {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      decimals: 18
-    }
+    asset: baseETH,
+    amount: 0.00001
   },
   NATIVE_BASE_SEPOLIA: {
-    network: 'eip155:84532',
-    asset: 'native',
-    amount: 0.00001,
-    metadata: {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      decimals: 18
-    }
+    asset: baseSepoliaETH,
+    amount: 0.00001
   },
   USDC_BASE: {
-    network: 'eip155:8453',
-    asset: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-    amount: 20,
-    metadata: {
-      name: 'USD Coin',
-      symbol: 'USDC',
-      decimals: 6
-    }
+    asset: baseUSDC,
+    amount: 12
   }
 }
 
@@ -142,15 +124,9 @@ export function AppKitPay() {
     }
 
     return {
-      network: 'eip155:8453',
       recipient: initialRecipient,
-      asset: 'native',
-      amount: 0.00001,
-      metadata: {
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18
-      }
+      asset: baseETH,
+      amount: 0.00001
     }
   })
 
@@ -163,14 +139,7 @@ export function AppKitPay() {
   const [activeCheck, setActiveCheck] = useState<ActiveStatusCheck | null>(null)
 
   function isPresetActive(preset: Omit<AppKitPaymentAssetState, 'recipient'>): boolean {
-    return (
-      paymentDetails.network === preset.network &&
-      paymentDetails.asset === preset.asset &&
-      paymentDetails.amount === preset.amount &&
-      paymentDetails.metadata.name === preset.metadata.name &&
-      paymentDetails.metadata.symbol === preset.metadata.symbol &&
-      paymentDetails.metadata.decimals === preset.metadata.decimals
-    )
+    return paymentDetails.asset === preset.asset && paymentDetails.amount === preset.amount
   }
 
   function handlePresetClick(preset: Omit<AppKitPaymentAssetState, 'recipient'>) {
@@ -235,11 +204,7 @@ export function AppKitPay() {
     await open({
       recipient: paymentDetails.recipient,
       amount: paymentDetails.amount,
-      paymentAsset: {
-        network: paymentDetails.network as `eip155:${string}`,
-        asset: paymentDetails.asset as AddressOrNative,
-        metadata: paymentDetails.metadata
-      }
+      paymentAsset: paymentDetails.asset
     })
   }
 
@@ -250,10 +215,10 @@ export function AppKitPay() {
       const processedValue = key === 'decimals' ? parseInt(value, 10) || 0 : value
       setPaymentDetails((prev: AppKitPaymentAssetState) => ({
         ...prev,
-        metadata: { ...prev.metadata, [key]: processedValue }
+        asset: { ...prev.asset, [key]: processedValue }
       }))
     } else {
-      const fieldName = name as keyof Omit<AppKitPaymentAssetState, 'metadata'>
+      const fieldName = name as keyof Omit<AppKitPaymentAssetState, 'asset'>
       const processedValue: string | number = value
       setPaymentDetails((prev: AppKitPaymentAssetState) => ({
         ...prev,
@@ -272,7 +237,10 @@ export function AppKitPay() {
   function handleDecimalsChange(_valueAsString: string, valueAsNumber: number) {
     setPaymentDetails((prev: AppKitPaymentAssetState) => ({
       ...prev,
-      metadata: { ...prev.metadata, decimals: isNaN(valueAsNumber) ? 0 : valueAsNumber }
+      asset: {
+        ...prev.asset,
+        metadata: { ...prev.asset.metadata, decimals: isNaN(valueAsNumber) ? 0 : valueAsNumber }
+      }
     }))
   }
 
@@ -297,8 +265,8 @@ export function AppKitPay() {
     }
 
     const params: PayUrlParams = {
-      network: paymentDetails.network as `eip155:${string}`,
-      asset: paymentDetails.asset as AddressOrNative,
+      network: paymentDetails.asset.network as `eip155:${string}`,
+      asset: paymentDetails.asset.asset as AddressOrNative,
       amount: paymentDetails.amount.toString(),
       recipient: paymentDetails.recipient
     }
@@ -423,7 +391,7 @@ export function AppKitPay() {
                     <FormLabel>Network (Chain ID)</FormLabel>
                     <Input
                       name="network"
-                      value={paymentDetails.network}
+                      value={paymentDetails.asset.network}
                       onChange={handleInputChange}
                     />
                     <FormHelperText>Example: eip155:8453 (Base Mainnet)</FormHelperText>
@@ -431,7 +399,11 @@ export function AppKitPay() {
 
                   <FormControl>
                     <FormLabel>Asset Address</FormLabel>
-                    <Input name="asset" value={paymentDetails.asset} onChange={handleInputChange} />
+                    <Input
+                      name="asset"
+                      value={paymentDetails.asset.asset}
+                      onChange={handleInputChange}
+                    />
                     <FormHelperText>
                       Example: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913 (USDC on Base)
                     </FormHelperText>
@@ -444,8 +416,8 @@ export function AppKitPay() {
                       value={paymentDetails.amount.toString()}
                       onChange={handleAmountChange}
                       min={0}
-                      precision={paymentDetails.metadata.decimals}
-                      step={1 / 10 ** paymentDetails.metadata.decimals}
+                      precision={paymentDetails.asset.metadata.decimals}
+                      step={1 / 10 ** paymentDetails.asset.metadata.decimals}
                     >
                       <NumberInputField />
                     </NumberInput>
@@ -456,7 +428,7 @@ export function AppKitPay() {
                     <FormLabel>Metadata: Name</FormLabel>
                     <Input
                       name="metadata.name"
-                      value={paymentDetails.metadata.name}
+                      value={paymentDetails.asset.metadata.name}
                       onChange={handleInputChange}
                     />
                     <FormHelperText>Example: USDC</FormHelperText>
@@ -466,7 +438,7 @@ export function AppKitPay() {
                     <FormLabel>Metadata: Symbol</FormLabel>
                     <Input
                       name="metadata.symbol"
-                      value={paymentDetails.metadata.symbol}
+                      value={paymentDetails.asset.metadata.symbol}
                       onChange={handleInputChange}
                     />
                     <FormHelperText>Example: USDC</FormHelperText>
@@ -476,7 +448,7 @@ export function AppKitPay() {
                     <FormLabel>Metadata: Decimals</FormLabel>
                     <NumberInput
                       name="metadata.decimals"
-                      value={paymentDetails.metadata.decimals}
+                      value={paymentDetails.asset.metadata.decimals}
                       onChange={handleDecimalsChange}
                       min={0}
                       precision={0}
