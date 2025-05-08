@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, afterEach } from 'vitest'
 import { OptionsController } from '@reown/appkit-controllers'
-import '../../../index'
-import { W3mLegalFooter } from '.'
+import '../../index'
+import { W3mLegalFooter } from '../../src/partials/w3m-legal-footer'
 
 describe('W3mLegalFooter', () => {
   let element: W3mLegalFooter
@@ -15,7 +15,7 @@ describe('W3mLegalFooter', () => {
     document.body.removeChild(element)
   })
 
-  it('renders null when legalCheckbox is enabled and URLs are set', async () => {
+  it('renders branding when legalCheckbox is enabled and URLs are set', async () => {
     const originalState = { ...OptionsController.state }
     try {
       OptionsController.state = {
@@ -79,11 +79,11 @@ describe('W3mLegalFooter', () => {
       await element.updateComplete
       const flexElement = element.shadowRoot?.querySelector('wui-flex')
       
-      expect(flexElement).to.exist
+      expect(flexElement).toBeDefined()
       const textElement = flexElement?.querySelector('wui-text')
-      expect(textElement).to.exist
+      expect(textElement).toBeDefined()
       const brandingElement = flexElement?.querySelector('wui-ux-by-reown')
-      expect(brandingElement).to.exist
+      expect(brandingElement).toBeDefined()
     } finally {
       OptionsController.state = originalState
     }
