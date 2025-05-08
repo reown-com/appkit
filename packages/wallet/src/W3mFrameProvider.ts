@@ -153,8 +153,6 @@ export class W3mFrameProvider {
         return { isConnected: false }
       }
 
-      await this.init()
-
       const response = await this.appEvent<'IsConnected'>({
         type: W3mFrameConstants.APP_IS_CONNECTED
       } as W3mFrameTypes.AppEvent)
@@ -334,7 +332,6 @@ export class W3mFrameProvider {
 
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
@@ -571,6 +568,7 @@ export class W3mFrameProvider {
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: AppEventType
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
+    await this.init()
     let requestTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
     let iframeReadyTimeout: ReturnType<typeof setTimeout> | undefined = undefined
