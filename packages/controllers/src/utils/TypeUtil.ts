@@ -1079,22 +1079,15 @@ export type ConnectorTypeOrder =
   | 'external'
   | 'recommended'
 
-export type Features = {
-  /**
-   * @description Enable or disable the swaps feature. Enabled by default.
-   * @type {boolean}
-   */
+export type RemoteFeatures = {
   swaps?: SwapProvider[] | false
-  /**
-   * @description Enable or disable the onramp feature. Enabled by default.
-   * @type {boolean}
-   */
   onramp?: OnRampProvider[] | false
-  /**
-   * @description Enable or disable the receive feature. Enabled by default.
-   * This feature is only visible when connected with email/social. It's not possible to configure when connected with wallet, which is enabled by default.
-   * @type {boolean}
-   */
+  email?: boolean
+  socials?: SocialProvider[] | false
+  analytics?: boolean
+}
+
+export type Features = {
   receive?: boolean
   /**
    * @description Enable or disable the send feature. Enabled by default.
@@ -1102,31 +1095,15 @@ export type Features = {
    */
   send?: boolean
   /**
-   * @description Enable or disable the email feature. Enabled by default.
-   * @type {boolean}
-   */
-  email?: boolean
-  /**
    * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
-   * @deprecated - This property will be removed in the next major release. Please use `features.collapseWallets` instead.
    * @type {boolean}
    */
   emailShowWallets?: boolean
-  /**
-   * @description Enable or disable the socials feature. Enabled by default.
-   * @type {SocialProvider[]}
-   */
-  socials?: SocialProvider[] | false
   /**
    * @description Enable or disable the history feature. Enabled by default.
    * @type {boolean}
    */
   history?: boolean
-  /**
-   * @description Enable or disable the analytics feature. Enabled by default.
-   * @type {boolean}
-   */
-  analytics?: boolean
   /**
    * @description Enable or disable the all wallets feature. Enabled by default.
    * @type {boolean}
@@ -1175,7 +1152,10 @@ export type Features = {
   pay?: boolean
 }
 
-export type FeaturesKeys = keyof Features
+export type FeaturesKeys = Exclude<
+  keyof Features,
+  'swaps' | 'onramp' | 'email' | 'socials' | 'analytics'
+>
 
 export type WalletGuideType = 'get-started' | 'explore'
 

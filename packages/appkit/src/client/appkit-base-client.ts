@@ -26,6 +26,7 @@ import type {
   NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
+  RemoteFeatures,
   RouterControllerState,
   SIWXConfig,
   SendTransactionArgs,
@@ -118,6 +119,7 @@ export abstract class AppKitBaseClient {
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
+  public remoteFeatures: RemoteFeatures = {}
   public version: SdkVersion | AppKitSdkVersion
   public reportedAlertErrors: Record<string, boolean> = {}
 
@@ -151,22 +153,21 @@ export abstract class AppKitBaseClient {
   protected async initialize(options: AppKitOptionsWithSdk) {
     this.initializeProjectSettings(options)
 
-    const updatedOptions = await ConfigUtil.checkConfig(options)
-    this.options = updatedOptions
+    this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
 
-    this.initControllers(updatedOptions)
+    this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
 
-    this.sendInitializeEvent(updatedOptions)
+    this.sendInitializeEvent(options)
     PublicStateController.set({ initialized: true })
 
     await this.syncExistingConnection()
     // Check allowed origins only if email or social features are enabled
     if (
-      OptionsController.state.features?.email ||
-      (Array.isArray(OptionsController.state.features?.socials) &&
-        OptionsController.state.features?.socials.length > 0)
+      OptionsController.state.remoteFeatures?.email ||
+      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
+        OptionsController.state.remoteFeatures?.socials.length > 0)
     ) {
       await this.checkAllowedOrigins()
     }
@@ -275,6 +276,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setFeatures(options.features)
+    OptionsController.setRemoteFeatures(this.remoteFeatures)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
 

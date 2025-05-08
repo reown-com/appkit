@@ -34,10 +34,20 @@ export function SectionWalletFeatures() {
   function handleToggleOption(name: WalletFeatureName) {
     switch (name) {
       case 'Buy':
-        updateFeatures({ onramp: !config.features.onramp })
+        updateFeatures({
+          onramp:
+            Array.isArray(config.features.onramp) && config.features.onramp.length > 0
+              ? false
+              : config.features.onramp
+        })
         break
       case 'Swap':
-        updateFeatures({ swaps: !config.features.swaps })
+        updateFeatures({
+          swaps:
+            Array.isArray(config.features.swaps) && config.features.swaps.length > 0
+              ? false
+              : config.features.swaps
+        })
         break
       default:
         break

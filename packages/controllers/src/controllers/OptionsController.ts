@@ -13,11 +13,13 @@ import type {
   Metadata,
   PreferredAccountTypes,
   ProjectId,
+  RemoteFeatures,
   SdkVersion,
   SocialProvider,
   Tokens,
   WalletFeature
 } from '../utils/TypeUtil.js'
+import { OnRampController } from './OnRampController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -131,7 +133,7 @@ export interface OptionsControllerStatePublic {
   debug?: boolean
   /**
    * Features configuration object.
-   * @default { swaps: true, onramp: true, email: true, socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'], history: true, analytics: true, allWallets: true }
+   * @default { history: true, allWallets: true }
    * @see https://docs.reown.com/appkit/react/core/options#features
    */
   features?: Features
@@ -191,6 +193,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  remoteFeatures?: RemoteFeatures
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -208,7 +211,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
     polkadot: 'eoa',
     eip155: 'smartAccount'
   },
-  enableNetworkSwitch: true
+  enableNetworkSwitch: true,
+  remoteFeatures: {}
 })
 
 // -- Controller ---------------------------------------- //
@@ -223,6 +227,25 @@ export const OptionsController = {
     Object.assign(state, options)
   },
 
+  setRemoteFeatures(remoteFeatures: OptionsControllerState['remoteFeatures']) {
+    if (!remoteFeatures) {
+      return
+    }
+
+    const newRemoteFeatures = { ...state.remoteFeatures, ...remoteFeatures }
+    state.remoteFeatures = newRemoteFeatures
+
+    if (state.remoteFeatures.onramp) {
+      OnRampController.setOnrampProviders(state.remoteFeatures.onramp)
+    }
+
+    if (state.remoteFeatures?.socials) {
+      state.remoteFeatures.socials = OptionsUtil.filterSocialsByPlatform(
+        state.remoteFeatures.socials
+      )
+    }
+  },
+
   setFeatures(features: OptionsControllerState['features'] | undefined) {
     if (!features) {
       return
@@ -234,10 +257,6 @@ export const OptionsController = {
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
-
-    if (state.features.socials) {
-      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
-    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -347,8 +366,8 @@ export const OptionsController = {
   },
 
   setSocialsOrder(socialsOrder: SocialProvider[]) {
-    state.features = {
-      ...state.features,
+    state.remoteFeatures = {
+      ...state.remoteFeatures,
       socials: socialsOrder
     }
   },

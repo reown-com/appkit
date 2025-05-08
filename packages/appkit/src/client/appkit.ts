@@ -322,14 +322,10 @@ export class AppKit extends AppKitBaseClient {
       return
     }
 
-    const isEmailEnabled =
-      this.options?.features?.email === undefined
-        ? CoreConstantsUtil.DEFAULT_FEATURES.email
-        : this.options?.features?.email
+    const isEmailEnabled = this.remoteFeatures?.email
 
-    const isSocialsEnabled = this.options?.features?.socials
-      ? this.options?.features?.socials?.length > 0
-      : (this.options?.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
+    const isSocialsEnabled =
+      Array.isArray(this.remoteFeatures?.socials) && this.remoteFeatures.socials.length > 0
 
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
 
@@ -522,21 +518,23 @@ export class AppKit extends AppKitBaseClient {
 
       // Selectively import views based on feature flags
       const featureImportPromises = []
-      if (features) {
+      if (this.remoteFeatures) {
         // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-        const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
+        const usingEmbeddedWallet =
+          this.remoteFeatures?.email ||
+          (this.remoteFeatures?.socials && this.remoteFeatures?.socials.length > 0)
         if (usingEmbeddedWallet) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))
         }
 
-        if (features.email) {
+        if (this.remoteFeatures?.email) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/email'))
         }
-        if (features.socials) {
+        if (this.remoteFeatures?.socials && this.remoteFeatures?.socials.length > 0) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/socials'))
         }
 
-        if (features.swaps) {
+        if (this.remoteFeatures?.swaps && this.remoteFeatures?.swaps.length > 0) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/swaps'))
         }
 
@@ -548,7 +546,7 @@ export class AppKit extends AppKitBaseClient {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
         }
 
-        if (features.onramp) {
+        if (this.remoteFeatures?.onramp && this.remoteFeatures?.onramp.length > 0) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
         }
 

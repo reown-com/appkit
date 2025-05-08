@@ -1,10 +1,48 @@
-import { ApiController } from '@reown/appkit-controllers'
-import type { FeatureID, SocialProvider, TypedFeatureConfig } from '@reown/appkit-controllers'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { AlertController, ApiController } from '@reown/appkit-controllers'
+import type {
+  FeatureID,
+  RemoteFeatures,
+  SocialProvider,
+  TypedFeatureConfig
+} from '@reown/appkit-controllers'
 
 import type { AppKitOptionsWithSdk } from '../client/appkit-base-client.js'
 
 export const ConfigUtil = {
-  async checkConfig(config: AppKitOptionsWithSdk) {
+  async fetchRemoteFeatures(config: AppKitOptionsWithSdk) {
+    const warnings = []
+
+    if ((config.features as any)?.analytics) {
+      warnings.push('The "features.analytics" flag is deprecated and no longer supported.')
+    }
+
+    if ((config.features as any)?.socials) {
+      warnings.push('The "features.socials" flag is deprecated and no longer supported.')
+    }
+
+    if ((config.features as any)?.swaps) {
+      warnings.push('The "features.swaps" flag is deprecated and no longer supported.')
+    }
+
+    if ((config.features as any)?.onramp) {
+      warnings.push('The "features.onramp" flag is deprecated and no longer supported.')
+    }
+
+    if ((config.features as any)?.email) {
+      warnings.push('The "features.email" flag is deprecated and no longer supported.')
+    }
+
+    if (warnings.length > 0) {
+      AlertController.open(
+        {
+          shortMessage: 'Local configuration overriden',
+          longMessage: `[Reown Config Warning] ${warnings.join(' ')} Your config has been overriden by the config from your project at cloud.reown.com. Please configure via the Cloud Dashboard: https://cloud.reown.com/`
+        },
+        'warning'
+      )
+    }
+
     const response = await ApiController.fetchProjectConfig()
 
     // Helper to get a specific feature config and narrow its type
@@ -17,10 +55,9 @@ export const ConfigUtil = {
     const onRampConfig = getSpecificConfig('onramp')
     const activityConfig = getSpecificConfig('activity')
 
-    const currentFeatures = config.features || {}
+    let remoteFeaturesConfig: RemoteFeatures = {}
 
-    config.features = {
-      ...currentFeatures,
+    remoteFeaturesConfig = {
       email:
         socialLoginConfig?.isEnabled && socialLoginConfig.config
           ? socialLoginConfig.config.includes('email')
@@ -42,6 +79,6 @@ export const ConfigUtil = {
       analytics: activityConfig?.isEnabled || false
     }
 
-    return config
+    return remoteFeaturesConfig
   }
 }

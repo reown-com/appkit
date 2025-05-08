@@ -25,24 +25,6 @@ export type SdkOption = {
 
 export const vitalikEthAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 
-export const remoteConfigOptions: SdkOption[] = [
-  {
-    title: 'Wagmi Remote Config',
-    link: '/library/remote-wagmi',
-    description: 'Remote config using wagmi'
-  },
-  {
-    title: 'Ethers Remote Config',
-    link: '/library/remote-ethers/',
-    description: 'Remote config using ethers'
-  },
-  {
-    title: 'Multichain Remote Config',
-    link: '/library/remote-multichain',
-    description: 'Remote config using multichain'
-  }
-]
-
 export const wagmiSdkOptions: SdkOption[] = [
   {
     title: 'Default',

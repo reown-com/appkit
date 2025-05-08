@@ -60,6 +60,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
   public constructor() {
@@ -82,7 +84,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         })
       ],
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
-      OptionsController.subscribeKey('features', val => (this.features = val))
+      OptionsController.subscribeKey('features', val => (this.features = val)),
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )
     this.watchSwapValues()
   }
@@ -128,7 +131,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private orderedWalletFeatures() {
     const walletFeaturesOrder =
       this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
-    const isAllDisabled = walletFeaturesOrder.every(feature => !this.features?.[feature])
+    const isAllDisabled = walletFeaturesOrder.every(feature => {
+      if (feature === 'send' || feature === 'receive') {
+        return !this.features?.[feature]
+      }
+      if (feature === 'swaps' || feature === 'onramp') {
+        return !this.remoteFeatures?.[feature]
+      }
+
+      return true
+    })
 
     if (isAllDisabled) {
       return null
@@ -153,7 +165,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onrampTemplate() {
-    const isOnrampEnabled = this.features?.onramp
+    const isOnrampEnabled = this.remoteFeatures?.onramp
 
     if (!isOnrampEnabled) {
       return null
@@ -171,7 +183,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private swapsTemplate() {
-    const isSwapsEnabled = this.features?.swaps
+    const isSwapsEnabled = this.remoteFeatures?.swaps
     const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
 
     if (!isSwapsEnabled || !isEvm) {

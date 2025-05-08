@@ -36,11 +36,7 @@ import type {
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
-import {
-  type ConnectorType,
-  ConstantsUtil as CoreConstantsUtil,
-  type Provider
-} from '@reown/appkit-controllers'
+import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -273,13 +269,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
-    const isEmailEnabled =
-      options.features?.email === undefined
-        ? CoreConstantsUtil.DEFAULT_FEATURES.email
-        : options.features?.email
-    const socialsEnabled = options.features?.socials
-      ? options.features?.socials?.length > 0
-      : (options.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
+    const isEmailEnabled = appKit.remoteFeatures?.email ?? true
+    const socialsEnabled =
+      Array.isArray(appKit.remoteFeatures?.socials) && appKit.remoteFeatures.socials.length > 0
 
     if (isEmailEnabled || socialsEnabled) {
       customConnectors.push(

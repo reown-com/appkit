@@ -95,7 +95,7 @@ export const EventsController = {
   sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now()
     state.data = data
-    if (OptionsController.state.features?.analytics) {
+    if (OptionsController.state.remoteFeatures?.analytics) {
       EventsController._sendAnalyticsEvent(state)
     }
   }
