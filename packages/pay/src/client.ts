@@ -10,11 +10,11 @@ export function getAvailableExchanges(page?: number) {
 }
 
 export function getPayUrl(exchangeId: string, params: PayUrlParams) {
-  return PayController.getPayUrl(exchangeId, params)
+  return PayController.getPayUrl(exchangeId, params, true)
 }
 
 export function openPayUrl(exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) {
-  return PayController.openPayUrl(exchangeId, params, openInNewTab)
+  return PayController.openPayUrl({ exchangeId, openInNewTab }, params, true)
 }
 
 export function getExchanges() {
