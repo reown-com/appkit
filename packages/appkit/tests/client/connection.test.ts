@@ -268,7 +268,7 @@ describe('syncConnectedWalletInfo', () => {
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
 
-    it('should call adater.getAccounts() when using connectExternal and AccountController.state.allAccounts is empty', async () => {
+    it('should call adapter.getAccounts() when using connectExternal and AccountController.state.allAccounts is empty', async () => {
       vi.spyOn(mockEvmAdapter, 'connect').mockResolvedValue({
         address: '0x123',
         chainId: '1',
