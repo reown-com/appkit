@@ -430,8 +430,15 @@ export abstract class AppKitBaseClient {
 
         StorageUtil.addConnectedNamespace(chainToUse)
         this.syncProvider({ ...res, chainNamespace: chainToUse })
-        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
-        this.setAllAccounts(accounts, chainToUse)
+        /*
+         * SyncAllAccounts already set the accounts in the state
+         * and its more efficient to use the stored accounts rather than fetching them again
+         */
+        const syncedAccounts = AccountController.state.allAccounts
+        if (!syncedAccounts || syncedAccounts?.length === 0) {
+          const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
+          this.setAllAccounts(accounts, chainToUse)
+        }
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
       },
