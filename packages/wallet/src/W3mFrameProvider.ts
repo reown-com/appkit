@@ -306,7 +306,7 @@ export class W3mFrameProvider {
   }
 
   // -- Provider Methods ------------------------------------------------
-  public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
+  public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     if (payload?.socialUri) {
       try {
         await this.init()
@@ -331,12 +331,18 @@ export class W3mFrameProvider {
       }
     } else {
       try {
-        await this.init()
         const chainId = payload?.chainId || this.getLastUsedChainId() || 1
-        const response = await this.appEvent<'GetUser'>({
-          type: W3mFrameConstants.APP_GET_USER,
-          payload: { ...payload, chainId }
-        } as W3mFrameTypes.AppEvent)
+
+        if (payload?.preferredAccountType) {
+          await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
+        }
+
+        const response = await this.getUser({
+          chainId,
+          preferredAccountType: payload?.preferredAccountType
+        })
+        this.setLoginSuccess(response.email)
+        this.setLastUsedChainId(response.chainId)
         this.user = response
 
         return response
@@ -344,6 +350,23 @@ export class W3mFrameProvider {
         this.w3mLogger?.logger.error({ error }, 'Error connecting')
         throw error
       }
+    }
+  }
+
+  public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
+    try {
+      await this.init()
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
+      const response = await this.appEvent<'GetUser'>({
+        type: W3mFrameConstants.APP_GET_USER,
+        payload: { ...payload, chainId }
+      } as W3mFrameTypes.AppEvent)
+      this.user = response
+
+      return response
+    } catch (error) {
+      this.w3mLogger?.logger.error({ error }, 'Error connecting')
+      throw error
     }
   }
 
