@@ -95,6 +95,7 @@ describe('W3mFrameProvider', () => {
 
   it('should connect social', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
+    provider.isInitialized = true
     const payload = { chainId: 1, socialUri: '?auth=12345678' }
     const responsePayload = {
       address: '0xd34db33f',
