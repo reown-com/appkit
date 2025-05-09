@@ -307,25 +307,49 @@ export class W3mFrameProvider {
 
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
-    try {
-      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
+    if (payload?.socialUri) {
+      try {
+        await this.init()
+        const response = await this.appEvent<'ConnectSocial'>({
+          type: W3mFrameConstants.APP_CONNECT_SOCIAL,
+          payload: { uri: payload.socialUri, preferredAccountType: payload.preferredAccountType }
+        } as W3mFrameTypes.AppEvent)
 
-      if (payload?.preferredAccountType) {
-        await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
+        if (response.userName) {
+          this.setSocialLoginSuccess(response.userName)
+        }
+
+        this.setLoginSuccess(response.email)
+        this.setLastUsedChainId(response.chainId)
+
+        this.user = response
+
+        return response
+      } catch (error) {
+        this.w3mLogger?.logger.error({ error }, 'Error connecting social')
+        throw error
       }
+    } else {
+      try {
+        const chainId = payload?.chainId || this.getLastUsedChainId() || 1
 
-      const response = await this.getUser({
-        chainId,
-        preferredAccountType: payload?.preferredAccountType
-      })
-      this.setLoginSuccess(response.email)
-      this.setLastUsedChainId(response.chainId)
-      this.user = response
+        if (payload?.preferredAccountType) {
+          await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
+        }
 
-      return response
-    } catch (error) {
-      this.w3mLogger?.logger.error({ error }, 'Error connecting')
-      throw error
+        const response = await this.getUser({
+          chainId,
+          preferredAccountType: payload?.preferredAccountType
+        })
+        this.setLoginSuccess(response.email)
+        this.setLastUsedChainId(response.chainId)
+        this.user = response
+
+        return response
+      } catch (error) {
+        this.w3mLogger?.logger.error({ error }, 'Error connecting')
+        throw error
+      }
     }
   }
 
