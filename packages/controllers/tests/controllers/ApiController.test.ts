@@ -695,7 +695,7 @@ describe('ApiController', () => {
 
   // Prefetch
   it('should prefetch without analytics', () => {
-    OptionsController.setRemoteFeatures({ analytics: false })
+    OptionsController.setFeatures({ analytics: false })
 
     const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig')
 
@@ -705,7 +705,7 @@ describe('ApiController', () => {
   })
 
   it('should prefetch with analytics', () => {
-    OptionsController.setRemoteFeatures({ analytics: true })
+    OptionsController.setFeatures({ analytics: true })
 
     const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig').mockResolvedValue()
 

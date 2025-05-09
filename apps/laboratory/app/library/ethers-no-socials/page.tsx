@@ -20,7 +20,8 @@ const config = {
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    emailShowWallets: false
+    emailShowWallets: false,
+    analytics: true
   },
   siweConfig
 }

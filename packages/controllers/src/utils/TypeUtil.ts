@@ -1084,7 +1084,7 @@ export type RemoteFeatures = {
   onramp?: OnRampProvider[] | false
   email?: boolean
   socials?: SocialProvider[] | false
-  analytics?: boolean
+  activity?: boolean
 }
 
 export type Features = {
@@ -1100,10 +1100,10 @@ export type Features = {
    */
   emailShowWallets?: boolean
   /**
-   * @description Enable or disable the history feature. Enabled by default.
+   * @description Enable or disable the analytics feature. Enabled by default.
    * @type {boolean}
    */
-  history?: boolean
+  analytics?: boolean
   /**
    * @description Enable or disable the all wallets feature. Enabled by default.
    * @type {boolean}
@@ -1154,7 +1154,7 @@ export type Features = {
 
 export type FeaturesKeys = Exclude<
   keyof Features,
-  'swaps' | 'onramp' | 'email' | 'socials' | 'analytics'
+  'swaps' | 'onramp' | 'email' | 'socials' | 'activity'
 >
 
 export type WalletGuideType = 'get-started' | 'explore'

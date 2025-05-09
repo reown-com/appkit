@@ -19,7 +19,10 @@ const config = {
   adapters: [bitcoinAdapter],
   networks,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  features: {
+    analytics: true
+  }
 }
 
 export default function Wagmi() {

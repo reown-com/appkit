@@ -80,6 +80,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         OptionsController.subscribeKey('features', val => (this.features = val)),
+        OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
         AccountController.subscribeKey('allAccounts', allAccounts => {
           this.allAccounts = allAccounts
         }),
@@ -196,7 +197,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     const isEnabled =
-      this.features?.history &&
+      this.remoteFeatures?.activity &&
       CoreConstantsUtil.ACTIVITY_ENABLED_CHAIN_NAMESPACES.includes(this.namespace)
 
     return isEnabled

@@ -21,7 +21,9 @@ const wagmiAdapter = new WagmiAdapter({
 const config = {
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
-
+  features: {
+    analytics: true
+  },
   customWallets: ConstantsUtil.CustomWallets
 }
 

@@ -545,7 +545,7 @@ export class AppKit extends AppKitBaseClient {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
         }
 
-        if (features.history) {
+        if (this.remoteFeatures?.activity) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
         }
 

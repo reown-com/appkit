@@ -21,7 +21,10 @@ const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
   defaultNetwork: solana,
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  features: {
+    emailShowWallets: false
+  }
 }
 
 export default function Solana() {

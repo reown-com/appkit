@@ -36,7 +36,9 @@ const config = {
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   networks,
   defaultNetwork: mainnet,
-
+  features: {
+    analytics: true
+  },
   metadata: ConstantsUtil.Metadata
 }
 

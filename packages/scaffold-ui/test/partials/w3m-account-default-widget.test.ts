@@ -52,8 +52,8 @@ describe('W3mAccountDefaultWidget', () => {
       })
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        features: {
-          history: true
+        remoteFeatures: {
+          activity: true
         }
       })
 
@@ -71,8 +71,8 @@ describe('W3mAccountDefaultWidget', () => {
       })
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        features: {
-          history: false
+        remoteFeatures: {
+          activity: false
         }
       })
 

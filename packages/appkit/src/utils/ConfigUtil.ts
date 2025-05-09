@@ -13,8 +13,8 @@ export const ConfigUtil = {
   async fetchRemoteFeatures(config: AppKitOptionsWithSdk) {
     const warnings = []
 
-    if ((config.features as any)?.analytics) {
-      warnings.push('The "features.analytics" flag is deprecated and no longer supported.')
+    if ((config.features as any)?.history) {
+      warnings.push('The "features.history" flag is deprecated and no longer supported.')
     }
 
     if ((config.features as any)?.socials) {
@@ -76,7 +76,7 @@ export const ConfigUtil = {
         onRampConfig?.isEnabled && onRampConfig.config && onRampConfig.config.length > 0
           ? onRampConfig.config
           : false,
-      analytics: activityConfig?.isEnabled || false
+      activity: activityConfig?.isEnabled || false
     }
 
     return remoteFeaturesConfig

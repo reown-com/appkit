@@ -20,6 +20,9 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: '',
+  features: {
+    analytics: true
+  },
   siweConfig,
   debug: true
 }

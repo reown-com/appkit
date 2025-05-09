@@ -20,6 +20,9 @@ const config = {
   adapters: [bitcoinAdapter],
   networks,
   projectId: ConstantsUtil.ProjectId,
+  features: {
+    analytics: true
+  },
   metadata: ConstantsUtil.Metadata,
   debug: true
 }

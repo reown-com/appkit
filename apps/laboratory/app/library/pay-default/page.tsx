@@ -37,6 +37,7 @@ createAppKit({
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
+    analytics: true,
     pay: true
   },
   metadata: ConstantsUtil.Metadata

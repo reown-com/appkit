@@ -28,6 +28,7 @@ const config = {
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
+    analytics: true,
     emailShowWallets: false
   }
 }

@@ -38,7 +38,9 @@ createAppKit({
   networks,
   projectId,
   themeMode: 'light',
-
+  features: {
+    analytics: true
+  },
   metadata: {
     name: 'AppKit Vue Example',
     description: 'AppKit Vue Example',

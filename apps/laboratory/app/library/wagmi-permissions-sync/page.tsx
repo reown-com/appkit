@@ -29,6 +29,7 @@ const config = {
   defaultNetwork: sepolia,
   projectId: ConstantsUtil.ProjectId,
   features: {
+    analytics: true,
     smartSessions: true,
     emailShowWallets: false
   },

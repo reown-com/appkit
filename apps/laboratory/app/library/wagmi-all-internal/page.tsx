@@ -29,7 +29,9 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-
+  features: {
+    analytics: true
+  },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   siweConfig,

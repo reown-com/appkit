@@ -33,7 +33,9 @@ const config = {
   adapters: [solanaWeb3JsAdapter, bitcoinAdapter, etherAdapter],
   networks,
   defaultNetwork: mainnet,
-
+  features: {
+    analytics: true
+  },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   siwx: new DefaultSIWX()

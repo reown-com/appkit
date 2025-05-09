@@ -75,7 +75,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
       onramp: remoteFeaturesObject.onramp ? [...remoteFeaturesObject.onramp] : undefined,
       email: remoteFeaturesObject.email,
       socials: remoteFeaturesObject.socials ? [...remoteFeaturesObject.socials] : undefined,
-      analytics: remoteFeaturesObject.analytics
+      activity: remoteFeaturesObject.activity
     }
   })
 

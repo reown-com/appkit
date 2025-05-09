@@ -38,7 +38,9 @@ createAppKit({
   networks,
   projectId,
   themeMode: 'light',
-
+  features: {
+    analytics: true
+  },
   metadata: {
     name: 'AppKit AppKit Core Example',
     description: 'AppKit AppKit Core Example',

@@ -34,7 +34,10 @@ const modal = createAppKit({
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
   projectId,
-  themeMode: 'light'
+  themeMode: 'light',
+  features: {
+    analytics: true
+  }
 })
 
 export {

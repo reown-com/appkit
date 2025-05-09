@@ -18,7 +18,8 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   features: {
-    legalCheckbox: true
+    legalCheckbox: true,
+    analytics: true
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',

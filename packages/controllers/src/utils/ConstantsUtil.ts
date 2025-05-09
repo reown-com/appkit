@@ -236,10 +236,11 @@ export const ConstantsUtil = {
       'external',
       'recommended'
     ],
-    history: true,
+    analytics: true,
     allWallets: true,
     legalCheckbox: false,
     smartSessions: false,
+
     collapseWallets: false,
     walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
     connectMethodsOrder: undefined,

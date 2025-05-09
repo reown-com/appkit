@@ -22,6 +22,9 @@ const modal = createAppKit({
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
+  features: {
+    analytics: true
+  },
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 })

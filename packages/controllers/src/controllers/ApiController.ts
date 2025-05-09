@@ -397,7 +397,7 @@ export const ApiController = {
   },
 
   prefetchAnalyticsConfig() {
-    if (OptionsController.state.remoteFeatures?.analytics) {
+    if (OptionsController.state.features?.analytics) {
       ApiController.fetchAnalyticsConfig()
     }
   },
@@ -408,9 +408,9 @@ export const ApiController = {
         path: '/getAnalyticsConfig',
         params: ApiController._getSdkProperties()
       })
-      OptionsController.setRemoteFeatures({ analytics: isAnalyticsEnabled })
+      OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
     } catch (error) {
-      OptionsController.setRemoteFeatures({ analytics: false })
+      OptionsController.setFeatures({ analytics: false })
     }
   },
 

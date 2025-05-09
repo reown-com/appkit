@@ -21,6 +21,9 @@ const config = {
   networks,
   projectId: '',
   metadata: ConstantsUtil.Metadata,
+  features: {
+    analytics: true
+  },
   debug: true
 }
 
