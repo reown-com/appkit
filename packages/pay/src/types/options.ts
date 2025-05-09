@@ -12,14 +12,14 @@ export type AssetMetadata = {
 
 export type PaymentAsset = {
   network: CaipNetworkId
-  recipient: string
   asset: AddressOrNative
-  amount: number
   metadata: AssetMetadata
 }
 
 export type PaymentOptions = {
   paymentAsset: PaymentAsset
+  recipient: string
+  amount: number
   openInNewTab?: boolean
   redirectUrl?: {
     success: string

@@ -74,6 +74,20 @@ const mockWagmiConfig = {
       getProvider() {
         return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
       }
+    },
+    {
+      id: 'ID_AUTH',
+      getProvider() {
+        return Promise.resolve({
+          user: {
+            address: '0x123',
+            accounts: [
+              { address: '0x123', type: 'eoa' },
+              { address: '0x456', type: 'smartAccount' }
+            ]
+          }
+        })
+      }
     }
   ],
   _internal: {
@@ -814,7 +828,7 @@ describe('WagmiAdapter', () => {
 
       vi.spyOn(wagmiCore, 'watchPendingTransactions').mockReturnValue(unsubscribe)
 
-      new WagmiAdapter({
+      const adapter = new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId,
         pendingTransactionsFilter: {
@@ -822,6 +836,8 @@ describe('WagmiAdapter', () => {
           pollingInterval: 500
         }
       })
+
+      adapter.construct({})
 
       // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
       LimitterUtil.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS
@@ -999,6 +1015,42 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(disconnectSpy).not.toHaveBeenCalled()
+    })
+
+    it('should return accounts successfully when using auth connector', async () => {
+      vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        connectors: mockWagmiConfig.connectors
+      } as any)
+
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        pendingTransactionsFilter: {
+          enable: true,
+          pollingInterval: 5000
+        }
+      })
+
+      const accounts = await adapter.getAccounts({ id: 'ID_AUTH' })
+
+      expect(accounts).toEqual({
+        accounts: [
+          {
+            namespace: 'eip155',
+            address: '0x123',
+            type: 'eoa',
+            publicKey: undefined,
+            path: undefined
+          },
+          {
+            namespace: 'eip155',
+            address: '0x456',
+            type: 'smartAccount',
+            publicKey: undefined,
+            path: undefined
+          }
+        ]
+      })
     })
   })
 })

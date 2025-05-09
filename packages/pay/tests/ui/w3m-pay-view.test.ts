@@ -32,6 +32,8 @@ describe('W3mPayView', () => {
     PayController.state.isLoading = false
     PayController.state.exchanges = []
     PayController.state.paymentAsset = mockPaymentAsset
+    PayController.state.amount = 10
+    PayController.state.recipient = '0x1234567890123456789012345678901234567890'
 
     // Reset AccountController state
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
@@ -68,7 +70,7 @@ describe('W3mPayView', () => {
     const tokenText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-600"]')
     const networkText = element.shadowRoot?.querySelector('wui-text[variant="small-500"]')
 
-    expect(amountText?.textContent).toBe('10000000')
+    expect(amountText?.textContent).toBe('10')
     expect(tokenText?.textContent?.trim()).toBe('USDC')
     expect(networkText?.textContent?.trim()).toBe('on Ethereum')
   })
