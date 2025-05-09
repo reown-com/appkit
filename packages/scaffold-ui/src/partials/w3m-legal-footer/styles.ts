@@ -6,6 +6,10 @@ export default css`
     margin-top: var(--wui-spacing-s);
   }
 
+  wui-ux-by-reown {
+    padding-top: var(--wui-spacing-m);
+  }
+
   a {
     text-decoration: none;
     color: var(--wui-color-fg-175);

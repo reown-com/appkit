@@ -18,12 +18,12 @@ export class W3mLegalFooter extends LitElement {
 
     const legalCheckbox = OptionsController.state.features?.legalCheckbox
 
-    if (!termsConditionsUrl && !privacyPolicyUrl) {
-      return null
-    }
-
-    if (legalCheckbox) {
-      return null
+    if ((!termsConditionsUrl && !privacyPolicyUrl) || legalCheckbox) {
+      return html`
+        <wui-flex flexDirection="column">
+          <wui-ux-by-reown></wui-ux-by-reown>
+        </wui-flex>
+      `
     }
 
     return html`
