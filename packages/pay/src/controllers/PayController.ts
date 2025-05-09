@@ -203,10 +203,11 @@ export const PayController = {
   async getPayUrl(exchangeId: string, params: PayUrlParams, headless = false) {
     try {
       const numericAmount = Number(params.amount)
+
       const response = await getPayUrl({
         exchangeId,
         asset: formatCaip19Asset(params.network, params.asset),
-        amount: numericAmount.toString(16),
+        amount: numericAmount.toString(),
         recipient: `${params.network}:${params.recipient}`
       })
 
