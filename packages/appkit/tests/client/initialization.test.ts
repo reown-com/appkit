@@ -15,7 +15,7 @@ import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
-import { mockOptions } from '../mocks/Options'
+import { mockOptions, mockRemoteFeaturesConfig } from '../mocks/Options'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
@@ -175,6 +175,16 @@ describe('Base', () => {
       await appKit.ready()
 
       expect(fetchAllowedOriginsSpy).toHaveBeenCalled()
+    })
+
+    it('should check if OptionsController.state.remoteFeatures is correctly updated', async () => {
+      const appKit = new AppKit({
+        ...mockOptions
+      })
+
+      await appKit.ready()
+
+      expect(OptionsController.state.remoteFeatures).toEqual(mockRemoteFeaturesConfig)
     })
   })
 

@@ -6,6 +6,7 @@ import { AccountController, BlockchainApiController, StorageUtil } from '@reown/
 import { ConfigUtil } from '../src/utils/ConfigUtil.js'
 import { mockLocalStorage } from './mocks/LocalStorage.js'
 import { mainnet } from './mocks/Networks.js'
+import { mockRemoteFeaturesConfig } from './mocks/Options.js'
 
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
@@ -64,12 +65,6 @@ export function mockFetchTokenBalanceOnce(response: Balance[]) {
 
 export function mockRemoteFeatures() {
   vi.spyOn(ConfigUtil, 'fetchRemoteFeatures').mockImplementation(() =>
-    Promise.resolve({
-      email: true,
-      socials: ['google', 'facebook'],
-      swaps: ['1inch'],
-      onramp: ['meld', 'coinbase'],
-      analytics: true
-    })
+    Promise.resolve(mockRemoteFeaturesConfig)
   )
 }
