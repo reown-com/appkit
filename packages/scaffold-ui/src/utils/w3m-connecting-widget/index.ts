@@ -65,8 +65,6 @@ export class W3mConnectingWidget extends LitElement {
 
   @state() protected secondaryLabel = 'Accept connection request in the wallet'
 
-  @state() public buffering = false
-
   @state() protected isLoading = false
 
   @property({ type: Boolean }) public isMobile = false
@@ -84,8 +82,7 @@ export class W3mConnectingWidget extends LitElement {
             this.onConnect?.()
           }
         }),
-        ConnectionController.subscribeKey('wcError', val => (this.error = val)),
-        ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
+        ConnectionController.subscribeKey('wcError', val => (this.error = val))
       ]
     )
     // The uri should be preloaded in the tg ios context so we can safely init as the subscribeKey won't trigger
@@ -105,6 +102,7 @@ export class W3mConnectingWidget extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    ConnectionController.setWcError(false)
     clearTimeout(this.timeout)
   }
 
@@ -118,10 +116,6 @@ export class W3mConnectingWidget extends LitElement {
       : this.secondaryLabel
 
     let label = `Continue in ${this.name}`
-
-    if (this.buffering) {
-      label = 'Connecting...'
-    }
 
     if (this.error) {
       label = 'Connection declined'
@@ -164,7 +158,7 @@ export class W3mConnectingWidget extends LitElement {
               <wui-button
                 variant="accent"
                 size="md"
-                ?disabled=${this.isRetrying || (!this.error && this.buffering) || this.isLoading}
+                ?disabled=${this.isRetrying || this.isLoading}
                 @click=${this.onTryAgain.bind(this)}
                 data-testid="w3m-connecting-widget-secondary-button"
               >
@@ -203,14 +197,12 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   protected onTryAgain() {
-    if (!this.buffering) {
-      ConnectionController.setWcError(false)
-      if (this.onRetry) {
-        this.isRetrying = true
-        this.onRetry?.()
-      } else {
-        this.onConnect?.()
-      }
+    ConnectionController.setWcError(false)
+    if (this.onRetry) {
+      this.isRetrying = true
+      this.onRetry?.()
+    } else {
+      this.onConnect?.()
     }
   }
 

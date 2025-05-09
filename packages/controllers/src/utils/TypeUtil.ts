@@ -65,6 +65,7 @@ export type User = {
 
 export interface LinkingRecord {
   redirect: string
+  redirectUniversalLink?: string
   href: string
 }
 
@@ -145,6 +146,7 @@ export interface WcWallet {
   image_id?: string
   image_url?: string
   order?: number
+  link_mode?: string | null
   mobile_link?: string | null
   desktop_link?: string | null
   webapp_link?: string | null
