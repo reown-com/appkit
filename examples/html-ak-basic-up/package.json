@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/universal-provider": "2.20.1",
+    "@walletconnect/universal-provider": "2.20.2",
     "bs58": "6.0.0"
   },
   "devDependencies": {
-    "vite": "5.4.12"
+    "vite": "5.4.19"
   }
 }

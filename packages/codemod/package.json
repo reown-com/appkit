@@ -1,0 +1,37 @@
+{
+  "name": "@reown/appkit-codemod",
+  "version": "1.7.4",
+  "sideEffects": false,
+  "description": "Reown AppKit Codemod",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "@reown/appkit-codemod": "./src/index.js"
+  },
+  "dependencies": {
+    "chalk": "5.4.1",
+    "latest-version": "5.1.0"
+  },
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/reown-com/appkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
+}
