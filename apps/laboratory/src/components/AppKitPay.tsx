@@ -130,6 +130,10 @@ export function AppKitPay() {
     }
   })
 
+  const [amountDisplayValue, setAmountDisplayValue] = useState<string>(() =>
+    paymentDetails.amount.toString()
+  )
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('appkitPayRecipient', paymentDetails.recipient)
@@ -147,6 +151,7 @@ export function AppKitPay() {
       ...preset,
       recipient: prev.recipient
     }))
+    setAmountDisplayValue(preset.amount.toString())
   }
 
   const handleSuccessStatus = useCallback(
@@ -227,7 +232,8 @@ export function AppKitPay() {
     }
   }
 
-  function handleAmountChange(_valueAsString: string, valueAsNumber: number) {
+  function handleAmountChange(valueAsString: string, valueAsNumber: number) {
+    setAmountDisplayValue(valueAsString)
     setPaymentDetails((prev: AppKitPaymentAssetState) => ({
       ...prev,
       amount: isNaN(valueAsNumber) ? 0 : valueAsNumber
@@ -411,10 +417,7 @@ export function AppKitPay() {
 
                   <FormControl>
                     <FormLabel>Amount</FormLabel>
-                    <NumberInput
-                      value={paymentDetails.amount.toString()}
-                      onChange={handleAmountChange}
-                    >
+                    <NumberInput value={amountDisplayValue} onChange={handleAmountChange} min={0}>
                       <NumberInputField />
                     </NumberInput>
                     <FormHelperText>Example: 20 (Input as float)</FormHelperText>
