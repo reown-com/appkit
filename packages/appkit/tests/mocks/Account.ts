@@ -10,3 +10,8 @@ export const mockUser = {
     username: 'test'
   }
 }
+
+export const mockUserBalance = {
+  symbol: 'ETH',
+  balance: '1000'
+}

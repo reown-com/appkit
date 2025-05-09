@@ -10,6 +10,6 @@
     "@walletconnect/ethereum-provider": "2.20.2"
   },
   "devDependencies": {
-    "vite": "5.4.12"
+    "vite": "5.4.19"
   }
 }
