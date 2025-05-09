@@ -437,7 +437,9 @@ export abstract class AppKitBaseClient {
         const syncedAccounts = AccountController.state.allAccounts
         const { accounts } =
           syncedAccounts?.length > 0
-            ? { accounts: syncedAccounts }
+            ? // eslint-disable-next-line line-comment-position
+              // Using new array else the accounts will have the same reference and react will not re-render
+              { accounts: [...syncedAccounts] }
             : await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
