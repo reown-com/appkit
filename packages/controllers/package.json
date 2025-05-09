@@ -54,11 +54,11 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.20.2",
     "valtio": "1.13.2",
-    "viem": ">=2.23.11"
+    "viem": ">=2.29.0"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
-    "vitest": "2.1.9",
+    "vitest": "3.1.3",
     "vue": "3.5.13"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
