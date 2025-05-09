@@ -230,7 +230,7 @@ describe('syncConnectedWalletInfo', () => {
         accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
       })
     })
-    it('should call adater.getAccounts() when using connectExternal and AccountController.state.allAccounts is undefined', async () => {
+    it('should call adapter.getAccounts() when using connectExternal and AccountController.state.allAccounts is undefined', async () => {
       vi.spyOn(mockEvmAdapter, 'connect').mockResolvedValue({
         address: '0x123',
         chainId: '1',
