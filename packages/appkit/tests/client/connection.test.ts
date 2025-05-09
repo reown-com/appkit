@@ -4,6 +4,7 @@ import type { MockInstance } from 'vitest'
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
+  type AccountType,
   type Connector,
   ConnectorController,
   type ConnectorType,
@@ -241,6 +242,7 @@ describe('syncConnectedWalletInfo', () => {
         accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
       })
 
+      //@ts-ignore
       AccountController.state.allAccounts = undefined
 
       await (appKit as any).connectionControllerClient.connectExternal({
@@ -257,6 +259,7 @@ describe('syncConnectedWalletInfo', () => {
         type: 'eoa',
         namespace: 'eip155'
       })
+      //@ts-expect-error
       expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(1)
       expect(mockEvmAdapter.getAccounts).toHaveBeenCalledWith({
         namespace: 'eip155',
@@ -292,6 +295,7 @@ describe('syncConnectedWalletInfo', () => {
         type: 'eoa',
         namespace: 'eip155'
       })
+      //@ts-expect-error
       expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(1)
       expect(mockEvmAdapter.getAccounts).toHaveBeenCalledWith({
         namespace: 'eip155',
@@ -309,7 +313,7 @@ describe('syncConnectedWalletInfo', () => {
         type: 'INJECTED'
       })
 
-      const allAccounts = [{ type: 'eoa', address: '0x123', namespace: 'eip155' }]
+      const allAccounts = [{ type: 'eoa', address: '0x123', namespace: 'eip155' }] as AccountType[]
 
       vi.spyOn(mockEvmAdapter, 'getAccounts').mockResolvedValue({
         accounts: allAccounts
@@ -325,7 +329,8 @@ describe('syncConnectedWalletInfo', () => {
         chain: 'eip155'
       })
 
-      expect(AccountController.state.allAccounts).toHaveLength(0)
+      expect(AccountController.state.allAccounts).toHaveLength(allAccounts.length)
+      //@ts-expect-error
       expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(0)
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })

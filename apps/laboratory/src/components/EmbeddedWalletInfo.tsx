@@ -6,8 +6,7 @@ export function EmbeddedWalletInfo() {
   const { embeddedWalletInfo } = useAppKitAccount()
 
   const { accountType, user, isSmartAccountDeployed } = embeddedWalletInfo ?? {}
-  // eslint-disable-next-line no-console
-  console.log('embeddedWalletInfo', JSON.stringify(embeddedWalletInfo, null, 2))
+
   const email = user?.email
   const username = user?.username
 
