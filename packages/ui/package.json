@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-ui",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
