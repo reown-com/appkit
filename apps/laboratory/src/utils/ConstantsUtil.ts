@@ -9,6 +9,7 @@ import {
   berachain,
   bitcoin,
   bitcoinTestnet,
+  eclipse,
   gnosis,
   hedera,
   mainnet,
@@ -96,7 +97,7 @@ export const solanaNotExist = {
   rpcUrls: { default: { http: ['https://api.unsupported.solana.com'] } }
 } as CaipNetwork
 
-const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as [
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist, eclipse] as [
   AppKitNetwork,
   ...AppKitNetwork[]
 ]
