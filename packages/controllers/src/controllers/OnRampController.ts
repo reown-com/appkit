@@ -2,6 +2,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
@@ -112,6 +113,18 @@ export const OnRampController = {
     state.selectedProvider = provider
   },
 
+  setOnrampProviders(providers: OnRampProviderName[]) {
+    if (Array.isArray(providers) && providers.every(item => typeof item === 'string')) {
+      const validOnramp = providers as string[]
+
+      const newProviders = ONRAMP_PROVIDERS.filter(provider => validOnramp.includes(provider.name))
+
+      state.providers = newProviders as OnRampProvider[]
+    } else {
+      state.providers = []
+    }
+  },
+
   setPurchaseCurrency(currency: PurchaseCurrency) {
     state.purchaseCurrency = currency
   },
@@ -164,7 +177,6 @@ export const OnRampController = {
   },
 
   resetState() {
-    state.providers = ONRAMP_PROVIDERS as OnRampProvider[]
     state.selectedProvider = null
     state.error = null
     state.purchaseCurrency = USDC_CURRENCY_DEFAULT

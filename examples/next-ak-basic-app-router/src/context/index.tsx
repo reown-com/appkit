@@ -28,12 +28,11 @@ export const modal = createAppKit({
   adapters: [],
   projectId,
   networks,
-
-  metadata: appKitMetadata,
-  themeMode: 'light',
   features: {
-    analytics: true // Optional - defaults to your Cloud configuration
-  }
+    analytics: true
+  },
+  metadata: appKitMetadata,
+  themeMode: 'light'
 })
 
 function ContextProvider({ children }: { children: ReactNode }) {

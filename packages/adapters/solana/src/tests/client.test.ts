@@ -82,20 +82,14 @@ describe('SolanaAdapter', () => {
   describe('SolanaAdapter - syncConnectors', () => {
     it('should not add coinbase connector if window.coinbaseSolana does not exist', async () => {
       const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
-      adapter.syncConnectors(
-        { networks: [solana], projectId: '123', features: { email: false } },
-        mockAppKit
-      )
+      adapter.syncConnectors({ networks: [solana], projectId: '123' }, mockAppKit)
       expect(addConnectorSpy).not.toHaveBeenCalled()
     })
 
     it('should add coinbase connector if window.coinbaseSolana exist', async () => {
       ;(window as any).coinbaseSolana = mockCoinbaseWallet()
       const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
-      adapter.syncConnectors(
-        { networks: [solana], projectId: '123', features: { email: false } },
-        mockAppKit
-      )
+      adapter.syncConnectors({ networks: [solana], projectId: '123' }, mockAppKit)
       expect(addConnectorSpy).toHaveBeenCalledOnce()
       expect(addConnectorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -302,10 +296,7 @@ describe('SolanaAdapter', () => {
       walletName => {
         const watchStandardSpy = vi.mocked(watchStandard)
         const addProviderSpy = vi.spyOn(adapter as any, 'addConnector')
-        adapter.syncConnectors(
-          { features: { email: false, socials: false }, projectId: '1234' } as any,
-          {} as any
-        )
+        adapter.syncConnectors({ features: {}, projectId: '1234' } as any, {} as any)
 
         const callback = watchStandardSpy.mock.calls[0]![2]
         callback({ name: walletName } as any)

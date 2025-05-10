@@ -259,6 +259,10 @@ export const CoreHelperUtil = {
     return CommonConstants.W3M_API_URL
   },
 
+  getStagingApiUrl() {
+    return CommonConstants.W3M_STAGING_API_URL
+  },
+
   getBlockchainApiUrl() {
     return CommonConstants.BLOCKCHAIN_API_RPC_URL
   },

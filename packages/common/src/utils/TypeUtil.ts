@@ -184,3 +184,16 @@ export type EmbeddedWalletTimeoutReason =
   | 'iframe_load_failed'
   | 'iframe_request_timeout'
   | 'unverified_domain'
+
+export type SocialProvider =
+  | 'google'
+  | 'github'
+  | 'apple'
+  | 'facebook'
+  | 'x'
+  | 'discord'
+  | 'farcaster'
+
+export type SwapProvider = '1inch'
+
+export type OnRampProvider = 'coinbase' | 'meld'

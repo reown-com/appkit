@@ -1,6 +1,6 @@
-import { type ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace, type SocialProvider } from '@reown/appkit-common'
 
-import type { Features, PreferredAccountTypes, SocialProvider } from './TypeUtil.js'
+import type { Features, PreferredAccountTypes } from './TypeUtil.js'
 
 const SECURE_SITE =
   // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -224,21 +224,9 @@ export const ConstantsUtil = {
 
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   DEFAULT_FEATURES: {
-    swaps: true,
-    onramp: true,
     receive: true,
     send: true,
-    email: true,
     emailShowWallets: true,
-    socials: [
-      'google',
-      'x',
-      'discord',
-      'farcaster',
-      'github',
-      'apple',
-      'facebook'
-    ] as SocialProvider[],
     connectorTypeOrder: [
       'walletConnect',
       'recent',
@@ -248,16 +236,26 @@ export const ConstantsUtil = {
       'external',
       'recommended'
     ],
-    history: true,
     analytics: true,
     allWallets: true,
     legalCheckbox: false,
     smartSessions: false,
+
     collapseWallets: false,
     walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
     connectMethodsOrder: undefined,
     pay: false
   } satisfies Features,
+
+  DEFAULT_SOCIALS: [
+    'google',
+    'x',
+    'farcaster',
+    'discord',
+    'apple',
+    'github',
+    'facebook'
+  ] as SocialProvider[],
 
   DEFAULT_ACCOUNT_TYPES: {
     bip122: 'payment',

@@ -15,10 +15,11 @@ import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
-import { mockOptions } from '../mocks/Options'
+import { mockOptions, mockRemoteFeaturesConfig } from '../mocks/Options'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
+  mockRemoteFeatures,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -28,6 +29,7 @@ describe('Base', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    mockRemoteFeatures()
   })
 
   describe('Base Initialization', () => {
@@ -36,7 +38,17 @@ describe('Base', () => {
 
       new AppKit(mockOptions)
 
+      await new Promise(resolve => {
+        const unsubscribe = PublicStateController.subscribe(state => {
+          if (state.initialized) {
+            unsubscribe()
+            resolve(true)
+          }
+        })
+      })
+
       expect(initialize).toHaveBeenCalledOnce()
+
       expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
         connectionControllerClient: expect.any(Object),
         networkControllerClient: expect.any(Object)
@@ -44,23 +56,16 @@ describe('Base', () => {
     })
 
     it('should send initialize event', async () => {
-      const sendEvent = vi.spyOn(EventsController, 'sendEvent').mockResolvedValue()
+      const sendEvent = vi.spyOn(EventsController, 'sendEvent')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         universalProvider: mockUniversalProvider as unknown as UniversalProvider
       })
       const options = { ...mockOptions }
       delete options.adapters
 
-      // Event is sent at the end of the initialize method, we need to wait for it to be sent
-      await new Promise(resolve =>
-        PublicStateController.subscribe(state => {
-          if (state.initialized) {
-            resolve(true)
-          }
-        })
-      )
+      await appKit.ready()
 
       expect(sendEvent).toHaveBeenCalledWith({
         type: 'track',
@@ -74,29 +79,33 @@ describe('Base', () => {
         }
       })
     })
-    it('should set EIP6963 enabled by default', () => {
+    it('should set EIP6963 enabled by default', async () => {
       const setEIP6963Enabled = vi.spyOn(OptionsController, 'setEIP6963Enabled')
 
-      new AppKit(mockOptions)
+      const appKit = new AppKit(mockOptions)
+
+      await appKit.ready()
 
       expect(setEIP6963Enabled).toHaveBeenCalledWith(true)
     })
 
-    it('should set EIP6963 disabled when option is disabled in config', () => {
+    it('should set EIP6963 disabled when option is disabled in config', async () => {
       const setEIP6963Enabled = vi.spyOn(OptionsController, 'setEIP6963Enabled')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         enableEIP6963: false
       })
 
+      await appKit.ready()
+
       expect(setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
 
-    it('should set partially defaultAccountType', () => {
+    it('should set partially defaultAccountType', async () => {
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultAccountTypes: {
           eip155: 'eoa',
@@ -104,44 +113,52 @@ describe('Base', () => {
         }
       })
 
+      await appKit.ready()
+
       expect(setDefaultAccountTypes).toHaveBeenCalledWith({
         eip155: 'eoa',
         bip122: 'ordinal'
       })
     })
 
-    it('should use default network prop when defaultNetwork prop is not included in the networks array', () => {
+    it('should use default network prop when defaultNetwork prop is not included in the networks array', async () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultNetwork: polygon
       })
+
+      await appKit.ready()
 
       expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
     })
 
-    it('should use default network prop when there is no network in storage', () => {
+    it('should use default network prop when there is no network in storage', async () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultNetwork: sepolia
       })
 
+      await appKit.ready()
+
       expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
     })
 
-    it('should not use default network prop when there is a network in storage', () => {
+    it('should not use default network prop when there is a network in storage', async () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(sepolia.caipNetworkId)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-      new AppKit({
+      const appKit = new AppKit({
         ...mockOptions,
         defaultNetwork: polygon
       })
+
+      await appKit.ready()
 
       expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
     })
@@ -149,18 +166,25 @@ describe('Base', () => {
     it('should check allowed origins if social or email feature is enabled', async () => {
       const fetchAllowedOriginsSpy = vi
         .spyOn(ApiController, 'fetchAllowedOrigins')
-        .mockResolvedValue(['http://localhost:3000'])
+        .mockResolvedValue([window.location.origin])
 
-      new AppKit({
-        ...mockOptions,
-        features: {
-          socials: ['google']
-        }
+      const appKit = new AppKit({
+        ...mockOptions
       })
 
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await appKit.ready()
 
       expect(fetchAllowedOriginsSpy).toHaveBeenCalled()
+    })
+
+    it('should check if OptionsController.state.remoteFeatures is correctly updated', async () => {
+      const appKit = new AppKit({
+        ...mockOptions
+      })
+
+      await appKit.ready()
+
+      expect(OptionsController.state.remoteFeatures).toEqual(mockRemoteFeaturesConfig)
     })
   })
 

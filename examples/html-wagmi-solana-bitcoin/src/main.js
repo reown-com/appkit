@@ -48,7 +48,6 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
-  featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   metadata: {
     name: 'AppKit HTML Example',
     description: 'AppKit HTML Example',

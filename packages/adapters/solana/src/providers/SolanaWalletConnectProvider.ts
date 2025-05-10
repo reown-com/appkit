@@ -34,8 +34,7 @@ export class SolanaWalletConnectProvider
   implements Omit<Provider, 'connect'>, ProviderEventEmitterMethods
 {
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
-
-  private eventEmitter = new ProviderEventEmitter()
+  private readonly eventEmitter = new ProviderEventEmitter()
   public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter)
   public readonly on = this.eventEmitter.on.bind(this.eventEmitter)
   public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)

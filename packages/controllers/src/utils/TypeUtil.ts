@@ -9,7 +9,9 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
+  OnRampProvider,
   SdkFramework,
+  SwapProvider,
   Transaction
 } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
@@ -1150,22 +1152,15 @@ export type ConnectorTypeOrder =
   | 'external'
   | 'recommended'
 
+export type RemoteFeatures = {
+  swaps?: SwapProvider[] | false
+  onramp?: OnRampProvider[] | false
+  email?: boolean
+  socials?: SocialProvider[] | false
+  activity?: boolean
+}
+
 export type Features = {
-  /**
-   * @description Enable or disable the swaps feature. Enabled by default.
-   * @type {boolean}
-   */
-  swaps?: boolean
-  /**
-   * @description Enable or disable the onramp feature. Enabled by default.
-   * @type {boolean}
-   */
-  onramp?: boolean
-  /**
-   * @description Enable or disable the receive feature. Enabled by default.
-   * This feature is only visible when connected with email/social. It's not possible to configure when connected with wallet, which is enabled by default.
-   * @type {boolean}
-   */
   receive?: boolean
   /**
    * @description Enable or disable the send feature. Enabled by default.
@@ -1173,26 +1168,10 @@ export type Features = {
    */
   send?: boolean
   /**
-   * @description Enable or disable the email feature. Enabled by default.
-   * @type {boolean}
-   */
-  email?: boolean
-  /**
    * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
-   * @deprecated - This property will be removed in the next major release. Please use `features.collapseWallets` instead.
    * @type {boolean}
    */
   emailShowWallets?: boolean
-  /**
-   * @description Enable or disable the socials feature. Enabled by default.
-   * @type {SocialProvider[]}
-   */
-  socials?: SocialProvider[] | false
-  /**
-   * @description Enable or disable the history feature. Enabled by default.
-   * @type {boolean}
-   */
-  history?: boolean
   /**
    * @description Enable or disable the analytics feature. Enabled by default.
    * @type {boolean}
@@ -1246,7 +1225,10 @@ export type Features = {
   pay?: boolean
 }
 
-export type FeaturesKeys = keyof Features
+export type FeaturesKeys = Exclude<
+  keyof Features,
+  'swaps' | 'onramp' | 'email' | 'socials' | 'activity'
+>
 
 export type WalletGuideType = 'get-started' | 'explore'
 
@@ -1282,3 +1264,21 @@ export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 're
 export type PreferredAccountTypes = {
   [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key]
 }
+
+// -- Feature Configuration Types -------------------------------------------------
+
+export type FeatureID = 'activity' | 'onramp' | 'swap' | 'social_login'
+
+interface BaseFeature<T extends FeatureID, C extends string[] | null> {
+  id: T
+  isEnabled: boolean
+  config: C
+}
+
+export type TypedFeatureConfig =
+  | BaseFeature<'activity', null>
+  | BaseFeature<'onramp', OnRampProvider[]>
+  | BaseFeature<'swap', SwapProvider[]>
+  | BaseFeature<'social_login', (SocialProvider | 'email')[]>
+
+export type ApiGetProjectConfigResponse = TypedFeatureConfig[]

@@ -71,8 +71,8 @@ export const SocialOptionItem = React.memo(
       },
       ref
     ) => {
-      const { config, updateFeatures } = useAppKitContext()
-      const socials = config.features.socials || []
+      const { config, updateRemoteFeatures } = useAppKitContext()
+      const socials = config.remoteFeatures.socials || []
       const { isDraggingByKey } = useAppKitContext()
       const isEmailDragging = isDraggingByKey['email']
       const isWalletsDragging = isDraggingByKey['wallet']
@@ -97,7 +97,7 @@ export const SocialOptionItem = React.memo(
           ? socials.filter(s => s !== social)
           : [...socials, social]
 
-        updateFeatures({ socials: newSocials.length ? newSocials : false })
+        updateRemoteFeatures({ socials: newSocials.length ? newSocials : false })
       }
 
       return renderItem ? (

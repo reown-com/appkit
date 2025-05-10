@@ -215,10 +215,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: true,
           send: true
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 
@@ -238,10 +240,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: false,
-          swaps: true,
           receive: true,
           send: true
+        },
+        remoteFeatures: {
+          onramp: false,
+          swaps: ['1inch']
         }
       })
 
@@ -261,10 +265,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: false,
           receive: true,
           send: true
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: false
         }
       })
 
@@ -284,10 +290,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: false,
           send: true
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 
@@ -307,10 +315,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: true,
           send: false
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 
@@ -343,10 +353,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: true,
           send: true
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 
@@ -366,10 +378,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: false,
-          swaps: true,
           receive: true,
           send: true
+        },
+        remoteFeatures: {
+          onramp: false,
+          swaps: ['1inch']
         }
       })
 
@@ -389,10 +403,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: false,
           send: true
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 
@@ -412,10 +428,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: true,
           send: false
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 
@@ -448,10 +466,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: true,
           send: true
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 
@@ -471,10 +491,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: false,
-          swaps: true,
           receive: true,
           send: true
+        },
+        remoteFeatures: {
+          onramp: false,
+          swaps: ['1inch']
         }
       })
 
@@ -494,10 +516,12 @@ describe('wallet features visibility', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          onramp: true,
-          swaps: true,
           receive: false,
           send: true
+        },
+        remoteFeatures: {
+          onramp: ['coinbase'],
+          swaps: ['1inch']
         }
       })
 

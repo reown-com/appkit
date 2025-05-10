@@ -31,8 +31,6 @@ const config = {
   features: {
     analytics: true,
     smartSessions: true,
-    email: true,
-    socials: [],
     emailShowWallets: false
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',

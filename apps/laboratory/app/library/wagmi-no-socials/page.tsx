@@ -29,7 +29,6 @@ const config = {
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    socials: [],
     emailShowWallets: false
   }
 }
