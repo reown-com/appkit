@@ -448,7 +448,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       chainId: Number(connection?.chainId),
       address: connection?.accounts[0] as string,
       provider,
-      type: connection?.connector.type as ConnectorType,
+      type: connection?.connector.type?.toUpperCase() as ConnectorType,
       id: connection?.connector.id as string
     }
   }
