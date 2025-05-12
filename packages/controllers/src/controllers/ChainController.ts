@@ -147,7 +147,9 @@ const controller = {
     if (!state.noAdapters) {
       state.activeChain = adapterToActivate?.namespace
       state.activeCaipNetwork = activeCaipNetwork
-      ChainController.setChainNetworkData(adapterToActivate?.namespace, { caipNetwork: activeCaipNetwork })
+      ChainController.setChainNetworkData(adapterToActivate?.namespace, {
+        caipNetwork: activeCaipNetwork
+      })
 
       if (state.activeChain) {
         PublicStateController.set({ activeChain: adapterToActivate?.namespace })
@@ -351,7 +353,11 @@ const controller = {
     }
 
     // Update the chain's account state with the new caip address value
-    ChainController.setAccountProp('caipAddress', state.activeCaipAddress, caipNetwork.chainNamespace)
+    ChainController.setAccountProp(
+      'caipAddress',
+      state.activeCaipAddress,
+      caipNetwork.chainNamespace
+    )
 
     if (newAdapter) {
       AccountController.replaceState(newAdapter.accountState)
@@ -418,7 +424,9 @@ const controller = {
       RouterController.goBack()
     }
 
-    const networkControllerClient = ChainController.getNetworkControllerClient(network.chainNamespace)
+    const networkControllerClient = ChainController.getNetworkControllerClient(
+      network.chainNamespace
+    )
 
     if (networkControllerClient) {
       await networkControllerClient.switchCaipNetwork(network)
@@ -513,7 +521,9 @@ const controller = {
     const requestedCaipNetworks: CaipNetwork[] = []
 
     state.chains.forEach(chainAdapter => {
-      const caipNetworks = ChainController.getRequestedCaipNetworks(chainAdapter.namespace as ChainNamespace)
+      const caipNetworks = ChainController.getRequestedCaipNetworks(
+        chainAdapter.namespace as ChainNamespace
+      )
       requestedCaipNetworks.push(...caipNetworks)
     })
 
@@ -532,7 +542,9 @@ const controller = {
     const approvedCaipNetworkIds: CaipNetworkId[] = []
 
     state.chains.forEach(chainAdapter => {
-      const approvedIds = ChainController.getApprovedCaipNetworkIds(chainAdapter.namespace as ChainNamespace)
+      const approvedIds = ChainController.getApprovedCaipNetworkIds(
+        chainAdapter.namespace as ChainNamespace
+      )
       approvedCaipNetworkIds.push(...approvedIds)
     })
 

@@ -67,7 +67,8 @@ const controller = {
       })
 
       const nonSpamTransactions = TransactionsController.filterSpamTransactions(response.data)
-      const sameChainTransactions = TransactionsController.filterByConnectedChain(nonSpamTransactions)
+      const sameChainTransactions =
+        TransactionsController.filterByConnectedChain(nonSpamTransactions)
       const filteredTransactions = [...state.transactions, ...sameChainTransactions]
 
       state.loading = false

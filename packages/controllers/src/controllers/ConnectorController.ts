@@ -105,7 +105,8 @@ const controller = {
     })
 
     const enabledNamespaces = ConnectorController.getEnabledNamespaces()
-    const connectorsFilteredByNamespaces = ConnectorController.getEnabledConnectors(enabledNamespaces)
+    const connectorsFilteredByNamespaces =
+      ConnectorController.getEnabledConnectors(enabledNamespaces)
 
     state.connectors = ConnectorController.mergeMultiChainConnectors(connectorsFilteredByNamespaces)
   },

@@ -21,15 +21,12 @@ export class AppKitError extends Error {
   }
 }
 
-const errorHandler = (err: any, defaultCategory: TelemetryErrorCategory) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function errorHandler(err: any, defaultCategory: TelemetryErrorCategory) {
   const error =
     err instanceof AppKitError
       ? err
-      : new AppKitError(
-          err instanceof Error ? err.message : String(err),
-          defaultCategory,
-          err
-        )
+      : new AppKitError(err instanceof Error ? err.message : String(err), defaultCategory, err)
 
   TelemetryController.sendError(error, error.category)
   throw error
@@ -45,7 +42,7 @@ export function withErrorBoundary<T extends Controller>(
     const original = controller[key]
 
     if (typeof original === 'function') {
-      let wrapped: any
+      let wrapped = original
 
       if (original.constructor.name === 'AsyncFunction') {
         wrapped = async (...args: Parameters<typeof original>) => {
@@ -64,7 +61,6 @@ export function withErrorBoundary<T extends Controller>(
           }
         }
       }
-    
 
       newController[key] = wrapped
     } else {
