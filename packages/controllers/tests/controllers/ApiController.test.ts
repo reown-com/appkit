@@ -455,7 +455,7 @@ describe('ApiController', () => {
   })
 
   // Fetch wallets
-  it.skip('should fetch wallets with configured recommended wallets', async () => {
+  it('should fetch wallets with configured recommended wallets', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
     const featuredWalletIds = ['12344']
@@ -464,13 +464,15 @@ describe('ApiController', () => {
         caipNetworkId: '12341',
         id: 12341,
         name: 'MetaMask',
-        image_id: '12341'
+        image_id: '12341',
+        chains: ['eip155:42']
       },
       {
         caipNetworkId: '12342',
         id: 12342,
         name: 'RandomWallet',
-        image_id: '12342'
+        image_id: '12342',
+        chains: ['eip155:1', 'eip155:4']
       }
     ]
     OptionsController.setIncludeWalletIds(includeWalletIds)
@@ -479,9 +481,9 @@ describe('ApiController', () => {
 
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
-
+    console.log('>> fetchWalletsByPage')
     await ApiController.fetchWalletsByPage({ page: 1 })
-
+    console.log('>> fetchWalletsByPage done')
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
       params: {

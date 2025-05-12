@@ -76,7 +76,6 @@ describe('withErrorBoundary', () => {
     try {
       await wrappedController.errorMethod()
     } catch (err: unknown) {
-      console.log('>> Caught error', err)
       expect(err).toBeInstanceOf(AppKitError)
       expect((err as AppKitError).category).toBe('API_ERROR')
     }
