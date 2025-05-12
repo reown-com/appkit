@@ -21,6 +21,21 @@ export class AppKitError extends Error {
   }
 }
 
+const errorHandler = (err: any, defaultCategory: TelemetryErrorCategory) => {
+  console.log('>> Err', err)
+  const error =
+    err instanceof AppKitError
+      ? err
+      : new AppKitError(
+          err instanceof Error ? err.message : String(err),
+          defaultCategory,
+          err
+        )
+
+  TelemetryController.sendError(error, error.category)
+  throw error
+}
+
 export function withErrorBoundary<T extends Controller>(
   controller: T,
   defaultCategory: TelemetryErrorCategory = 'INTERNAL_SDK_ERROR'
@@ -31,26 +46,27 @@ export function withErrorBoundary<T extends Controller>(
     const original = controller[key]
 
     if (typeof original === 'function') {
-      // eslint-disable-next-line func-style
-      const wrapped = (...args: Parameters<typeof original>) => {
-        try {
-          const result = original(...args)
+      let wrapped: any
 
-          return result
-        } catch (err) {
-          const error =
-            err instanceof AppKitError
-              ? err
-              : new AppKitError(
-                  err instanceof Error ? err.message : String(err),
-                  defaultCategory,
-                  err
-                )
-
-          TelemetryController.sendError(error, error.category)
-          throw error
+      console.log('>> Original', original.constructor.name)
+      if (original.constructor.name === 'AsyncFunction') {
+        wrapped = async (...args: Parameters<typeof original>) => {
+          try {
+            return await original(...args)
+          } catch (err) {
+            return errorHandler(err, defaultCategory)
+          }
+        }
+      } else {
+        wrapped = (...args: Parameters<typeof original>) => {
+          try {
+            return original(...args)
+          } catch (err) {
+            return errorHandler(err, defaultCategory)
+          }
         }
       }
+    
 
       newController[key] = wrapped
     } else {

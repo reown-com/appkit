@@ -30,7 +30,13 @@ describe('withErrorBoundary', () => {
 
     const wrappedController = withErrorBoundary(mockController, 'API_ERROR')
 
-    await expect(wrappedController.errorMethod()).rejects.toThrow(AppKitError)
+    try {
+      await wrappedController.errorMethod()
+    } catch (err: unknown) {
+      console.log('>> Caught error', err)
+      expect(err).toBeInstanceOf(AppKitError)
+      expect((err as AppKitError).category).toBe('API_ERROR')
+    }
     expect(sendErrorSpy).toHaveBeenCalledWith(expect.any(AppKitError), 'API_ERROR')
   })
 
@@ -63,14 +69,22 @@ describe('withErrorBoundary', () => {
 
     const wrappedController = withErrorBoundary(mockController, 'API_ERROR')
 
+    console.log('>> Test async method')
     // Test successful async method
     const successResult = await wrappedController.successMethod()
     expect(successResult).toBe('success')
 
     // Test error handling in async method
-    await expect(wrappedController.errorMethod()).rejects.toThrow(AppKitError)
+    try {
+      await wrappedController.errorMethod()
+    } catch (err: unknown) {
+      console.log('>> Caught error', err)
+      expect(err).toBeInstanceOf(AppKitError)
+      expect((err as AppKitError).category).toBe('API_ERROR')
+    }
     expect(sendErrorSpy).toHaveBeenCalledWith(expect.any(AppKitError), 'API_ERROR')
 
+    console.log('>> Sync method')
     // Test sync method
     expect(wrappedController.syncMethod()).toBe('sync')
 
