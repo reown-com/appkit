@@ -12,6 +12,7 @@ import {
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
+  type Connection,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
@@ -26,6 +27,7 @@ import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 type EventName =
   | 'disconnect'
   | 'accountChanged'
+  | 'connections'
   | 'switchNetwork'
   | 'connectors'
   | 'pendingTransactions'
@@ -33,6 +35,7 @@ type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
+  connections: Connection[]
   connectors: ChainAdapterConnector[]
   pendingTransactions: () => void
 }
@@ -62,6 +65,7 @@ export abstract class AdapterBlueprint<
   constructor(params?: AdapterBlueprint.Params) {
     this.getCaipNetworks = (namespace?: ChainNamespace) =>
       ChainController.getCaipNetworks(namespace)
+
     if (params) {
       this.construct(params)
     }
@@ -415,6 +419,7 @@ export namespace AdapterBlueprint {
     chain?: ChainNamespace
     chainId?: number | string
     rpcUrl?: string
+    socialUri?: string
   }
 
   export type ReconnectParams = ConnectParams

@@ -1,7 +1,7 @@
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -26,6 +26,17 @@ import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
+export type Connection = {
+  accounts: { address: string }[]
+  connectorId: string
+}
+
+interface SwitchAccountParams {
+  connection: Connection
+  address: string
+  namespace: ChainNamespace
+}
+
 export interface ConnectExternalOptions {
   id: Connector['id']
   type: Connector['type']
@@ -34,6 +45,7 @@ export interface ConnectExternalOptions {
   chain?: ChainNamespace
   chainId?: number | string
   caipNetwork?: CaipNetwork
+  socialUri?: string
 }
 
 export interface ConnectionControllerClient {
@@ -63,6 +75,7 @@ export interface ConnectionControllerClient {
 }
 
 export interface ConnectionControllerState {
+  connections: Map<ChainNamespace, Connection[]>
   _client?: ConnectionControllerClient
   wcUri?: string
   wcPairingExpiry?: number
@@ -82,6 +95,7 @@ type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
+  connections: new Map(),
   wcError: false,
   buffering: false,
   status: 'disconnected'
@@ -89,9 +103,11 @@ const state = proxy<ConnectionControllerState>({
 
 // eslint-disable-next-line init-declarations
 let wcConnectionPromise: Promise<void> | undefined
+
 // -- Controller ---------------------------------------- //
 const controller = {
   state,
+
   subscribeKey<K extends StateKey>(
     key: K,
     callback: (value: ConnectionControllerState[K]) => void
@@ -298,6 +314,34 @@ const controller = {
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
+    }
+  },
+
+  setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
+    state.connections.set(chainNamespace, connections)
+  },
+
+  switchAccount({ connection, address, namespace }: SwitchAccountParams) {
+    const connectedConnectorId = ConnectorController.state.activeConnectorIds[namespace]
+    const isConnectorConnected = connectedConnectorId === connection.connectorId
+
+    if (isConnectorConnected) {
+      const currentNetwork = ChainController.state.activeCaipNetwork
+
+      if (currentNetwork) {
+        const caipAddress = `${namespace}:${currentNetwork.id}:${address}`
+        AccountController.setCaipAddress(caipAddress as CaipAddress, namespace)
+      } else {
+        console.warn(`No current network found for namespace "${namespace}"`)
+      }
+    } else {
+      const connector = ConnectorController.getConnector(connection.connectorId)
+
+      if (connector) {
+        this.connectExternal(connector, namespace)
+      } else {
+        console.warn(`No connector found for namespace "${namespace}"`)
+      }
     }
   }
 }

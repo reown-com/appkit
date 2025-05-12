@@ -286,8 +286,15 @@ export class AppKit extends AppKitBaseClient {
       if (socialProviderToConnect && authConnector) {
         this.setLoading(true, chainNamespace)
 
-        await authConnector.provider.connectSocial(resultUri)
-        await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        await ConnectionController.connectExternal(
+          {
+            id: authConnector.id,
+            type: authConnector.type,
+            socialUri: resultUri
+          },
+          authConnector.chain
+        )
+
         StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         StorageUtil.removeTelegramSocialProvider()
 
@@ -354,12 +361,7 @@ export class AppKit extends AppKitBaseClient {
           this.authProvider?.rejectRpcRequests()
         }
       })
-      if (
-        chainNamespace === ConstantsUtil.CHAIN.EVM &&
-        AccountController.state.preferredAccountTypes?.eip155
-      ) {
-        this.authProvider.setPreferredAccount(AccountController.state.preferredAccountTypes?.eip155)
-      }
+
       this.syncAuthConnector(this.authProvider, chainNamespace)
       this.checkExistingTelegramSocialConnection(chainNamespace)
     }

@@ -39,6 +39,7 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
+import { mockUser, mockUserBalance } from '../mocks/Account.js'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
@@ -1200,5 +1201,18 @@ describe('Base Public methods', () => {
 
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({ siwx } as any)
     expect(appKit.getSIWX()).toEqual(siwx)
+  })
+
+  it('should fetch balance when address, namespace, and chainId are available', async () => {
+    const appKit = new AppKit(mockOptions)
+
+    const updateNativeBalanceSpy = vi
+      .spyOn(appKit, 'updateNativeBalance')
+      .mockResolvedValue(mockUserBalance)
+
+    const result = await appKit.updateNativeBalance(mockUser.address, 1, 'eip155')
+
+    expect(updateNativeBalanceSpy).toHaveBeenCalledWith(mockUser.address, 1, 'eip155')
+    expect(result).toEqual(mockUserBalance)
   })
 })

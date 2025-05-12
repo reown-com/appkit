@@ -120,7 +120,14 @@ export const ConnectorUtil = {
                     properties: { provider: socialProvider }
                   })
                 }
-                await authConnector.provider.connectSocial(uri)
+                await ConnectionController.connectExternal(
+                  {
+                    id: authConnector.id,
+                    type: authConnector.type,
+                    socialUri: uri
+                  },
+                  authConnector.chain
+                )
 
                 if (socialProvider) {
                   StorageUtil.setConnectedSocialProvider(socialProvider)
