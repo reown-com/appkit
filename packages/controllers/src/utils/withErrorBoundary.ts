@@ -22,7 +22,6 @@ export class AppKitError extends Error {
 }
 
 const errorHandler = (err: any, defaultCategory: TelemetryErrorCategory) => {
-  console.log('>> Err', err)
   const error =
     err instanceof AppKitError
       ? err
@@ -48,7 +47,6 @@ export function withErrorBoundary<T extends Controller>(
     if (typeof original === 'function') {
       let wrapped: any
 
-      console.log('>> Original', original.constructor.name)
       if (original.constructor.name === 'AsyncFunction') {
         wrapped = async (...args: Parameters<typeof original>) => {
           try {
