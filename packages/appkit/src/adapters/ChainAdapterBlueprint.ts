@@ -279,7 +279,7 @@ export abstract class AdapterBlueprint<
   public abstract disconnect(params?: AdapterBlueprint.DisconnectParams): Promise<void>
 
   /**
-   * Disconnects all wallets.
+   * Disconnects all connected wallets.
    */
   public abstract disconnectAll(): Promise<void>
 

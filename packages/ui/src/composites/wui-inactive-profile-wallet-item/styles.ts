@@ -4,14 +4,14 @@ import { css } from 'lit'
 // TODO: add spacing variables for 4px spacing
 
 export default css`
-  wui-icon {
-    width: 4px;
-    height: 4px;
-  }
-
-  wui-image {
+  wui-image,
+  .icon-box {
     width: var(--wui-spacing-2xl);
     height: var(--wui-spacing-2xl);
     border-radius: var(--wui-border-radius-3xs);
+  }
+
+  .icon-box {
+    background-color: var(--wui-color-gray-glass-002);
   }
 `

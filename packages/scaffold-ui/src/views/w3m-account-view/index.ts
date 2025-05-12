@@ -46,6 +46,10 @@ export class W3mAccountView extends LitElement {
   private walletFeaturesTemplate() {
     return html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
   }
+
+  private defaultTemplate() {
+    return html`<w3m-account-default-widget></w3m-account-default-widget>`
+  }
 }
 
 declare global {

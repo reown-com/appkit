@@ -1,8 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  AccountController,
   AssetUtil,
   ChainController,
   type Connection,
@@ -11,6 +12,7 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
+  type SocialProvider,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
@@ -25,8 +27,10 @@ import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-text'
 import { HelpersUtil } from '@reown/appkit-utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'
 
 // -- Types ------------------------------------------ //
@@ -66,6 +70,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private caipAddress = ChainController.state.activeCaipAddress
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private namespace = ChainController.state.activeChain
+  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
@@ -76,6 +81,9 @@ export class W3mProfileWalletsView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
+        AccountController.subscribeKey('preferredAccountTypes', preferredAccountTypes => {
+          this.preferredAccountTypes = preferredAccountTypes
+        }),
         ConnectionController.subscribeKey('connections', newConnections => {
           this.connections = newConnections
         }),
@@ -106,7 +114,7 @@ export class W3mProfileWalletsView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="l">
-        ${this.tabsTemplate()} ${this.balanceTemplate()} ${this.walletsTemplate()}
+        ${this.tabsTemplate()} ${this.headerTemplate()} ${this.walletsTemplate()}
         ${this.addWalletTemplate()}
       </wui-flex>
     `
@@ -132,12 +140,24 @@ export class W3mProfileWalletsView extends LitElement {
     `
   }
 
-  private balanceTemplate() {
+  private headerTemplate() {
+    const { connections } = this.getConnectionsData()
+
+    let totalConnections = connections.flatMap(({ accounts }) => accounts).length
+
+    if (this.caipAddress) {
+      totalConnections += 1
+    }
+
     return html`
       <wui-flex alignItems="center" columnGap="3xs">
         <wui-icon name="ethereum-black" size="lg"></wui-icon>
-        <wui-text color="fg-200" variant="small-400">Wallet</wui-text>
-        <wui-text color="fg-100" variant="small-400" class="balance-amount">7</wui-text>
+        <wui-text color="fg-200" variant="small-400">
+          Wallet${totalConnections > 1 ? 's' : ''}
+        </wui-text>
+        <wui-text color="fg-100" variant="small-400" class="balance-amount">
+          ${totalConnections}
+        </wui-text>
         <wui-link color="fg-200" @click=${() => ChainController.disconnect(this.namespace, true)}>
           Disconnect All
         </wui-link>
@@ -179,9 +199,22 @@ export class W3mProfileWalletsView extends LitElement {
       return null
     }
 
-    const { plainAddress, shouldShowLineSeparator } = this.getConnectedWalletData()
+    let description: string | undefined = undefined
+
     const connector = ConnectorController.getConnectorById(connectorId)
     const connectorImage = AssetUtil.getConnectorImage(connector)
+
+    const { plainAddress, shouldShowLineSeparator } = this.getConnectedWalletData()
+
+    const { name, isAuth, icon, iconSize } = this.getAuthData(connectorId)
+
+    const isSmartAccount =
+      this.preferredAccountTypes?.[this.namespace] ===
+      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+
+    if (isAuth) {
+      description = isSmartAccount ? 'Smart Account' : 'EOA Account'
+    }
 
     return html`<wui-flex flexDirection="column">
       <wui-active-profile-wallet-item
@@ -189,12 +222,16 @@ export class W3mProfileWalletsView extends LitElement {
         alt=${connector?.name}
         tagLabel="Active"
         tagVariant="success"
-        imageSrc=${connectorImage}
-        @copy=${this.handleCopyAddress.bind(this)}
-        @disconnect=${this.handleDisconnect.bind(this)}
+        .description=${description}
+        .domainName=${name}
         .loading=${this.isDisconnecting}
         .charsStart=${CHARS_START}
         .charsEnd=${CHARS_END}
+        .icon=${icon}
+        .iconSize=${iconSize}
+        imageSrc=${connectorImage}
+        @copy=${this.handleCopyAddress.bind(this)}
+        @disconnect=${this.handleDisconnect.bind(this)}
       ></wui-active-profile-wallet-item>
       ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
     </wui-flex>`
@@ -271,6 +308,37 @@ export class W3mProfileWalletsView extends LitElement {
     return { connections, storageConnections: dedupedStorageConnections }
   }
 
+  private getAuthData(connectorId: string) {
+    let icon: string | undefined = undefined
+    let iconSize: string | undefined = undefined
+
+    const isAuth = connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+    const socialProvider = StorageUtil.getConnectedSocialProvider() as SocialProvider | null
+    const socialUsername = StorageUtil.getConnectedSocialUsername() as string | null
+
+    if (isAuth) {
+      icon = socialProvider ?? 'mail'
+      iconSize = socialProvider ? 'xl' : 'md'
+    }
+
+    const authConnector = ConnectorController.getAuthConnector()
+    const email = authConnector?.provider.getEmail() ?? ''
+
+    return {
+      name: isAuth
+        ? ConnectorUtil.getAuthName({
+            email,
+            socialUsername,
+            socialProvider
+          })
+        : undefined,
+      isAuth,
+      icon,
+      iconSize
+    }
+  }
+
   private displayConnections({
     connections,
     includeSeparator = true,
@@ -283,6 +351,8 @@ export class W3mProfileWalletsView extends LitElement {
         const connectorImage = AssetUtil.getConnectorImage(connector)
 
         const isFirstConnection = connectionIdx === 0
+
+        const { icon, iconSize } = this.getAuthData(connection.connectorId)
 
         return connection.accounts.map((account, accountIdx) => {
           const isFirstAccount = accountIdx === 0
@@ -303,6 +373,8 @@ export class W3mProfileWalletsView extends LitElement {
               buttonLabel="Switch"
               buttonVariant="accent"
               imageSrc=${connectorImage}
+              .icon=${icon}
+              .iconSize=${iconSize}
               .loading=${isLoading}
               .showBalance=${false}
               .charsStart=${CHARS_START}

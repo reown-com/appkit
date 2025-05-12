@@ -2,12 +2,13 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
+import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonVariant, TagType } from '../../utils/TypeUtil.js'
+import type { ButtonVariant, IconType, SizeType, TagType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-button/index.js'
@@ -24,15 +25,19 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public domainName = ''
 
-  @property() public alt = ''
+  @property() public description = ''
 
-  @property({ type: Number }) public amount = 0
+  @property() public alt = ''
 
   @property() public tagLabel = ''
 
   @property() public tagVariant: TagType = 'success'
 
   @property() public imageSrc = ''
+
+  @property() public icon?: IconType = undefined
+
+  @property() public iconSize?: SizeType = 'md'
 
   @property() public buttonVariant: ButtonVariant = 'neutral'
 
@@ -55,10 +60,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
   public topTemplate() {
     return html`
       <wui-flex alignItems="center" justifyContent="space-between" columnGap="s">
-        <wui-flex flexGrow="1" alignItems="center">
-          <wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>
-        </wui-flex>
-
+        ${this.imageOrIconTemplate()}
         <wui-icon color="fg-275" size="md" name="copy" @click=${this.dispatchCopyEvent}></wui-icon>
         <wui-icon
           color="fg-275"
@@ -72,22 +74,45 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   public bottomTemplate() {
     return html`
-      <wui-flex flexDirection="column" rowGap="3xs">
+      <wui-flex flexDirection="column">
         ${this.labelAndTagTemplate()} ${this.labelAndDescriptionTemplate()}
       </wui-flex>
     `
   }
 
+  private imageOrIconTemplate() {
+    if (this.icon) {
+      return html`
+        <wui-flex flexGrow="1" alignItems="center">
+          <wui-flex alignItems="center" justifyContent="center" class="icon-box">
+            <wui-icon
+              size=${this.iconSize}
+              color="fg-275"
+              name=${this.icon}
+              class="custom-icon"
+            ></wui-icon>
+          </wui-flex>
+        </wui-flex>
+      `
+    }
+
+    return html`
+      <wui-flex flexGrow="1" alignItems="center">
+        <wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>
+      </wui-flex>
+    `
+  }
+
   private labelAndTagTemplate() {
-    if (this.domainName) {
+    if (this.description) {
       return html`
         <wui-flex alignItems="center" columnGap="3xs">
           <wui-text variant="small-500" color="fg-100">
             ${UiHelperUtil.getTruncateString({
-              string: this.address,
-              charsStart: this.charsStart,
-              charsEnd: this.charsEnd,
-              truncate: 'middle'
+              string: this.domainName || this.address,
+              charsStart: this.domainName ? 16 : this.charsStart,
+              charsEnd: this.domainName ? 0 : this.charsEnd,
+              truncate: this.domainName ? 'end' : 'middle'
             })}
           </wui-text>
 
@@ -101,10 +126,10 @@ export class WuiActiveProfileWalletItem extends LitElement {
         <wui-flex alignItems="center" columnGap="3xs">
           <wui-text variant="small-500" color="fg-100">
             ${UiHelperUtil.getTruncateString({
-              string: this.address,
-              charsStart: this.charsStart,
-              charsEnd: this.charsEnd,
-              truncate: 'middle'
+              string: this.domainName || this.address,
+              charsStart: this.domainName ? 16 : this.charsStart,
+              charsEnd: this.domainName ? 0 : this.charsEnd,
+              truncate: this.domainName ? 'end' : 'middle'
             })}
           </wui-text>
 
@@ -117,13 +142,13 @@ export class WuiActiveProfileWalletItem extends LitElement {
   }
 
   public labelAndDescriptionTemplate() {
-    if (!this.domainName) {
+    if (!this.description) {
       return null
     }
 
     return html`
-      <wui-flex alignItems="center" columnGap="3xs">
-        <wui-text variant="tiny-500" color="fg-200">${this.domainName}</wui-text>
+      <wui-flex alignItems="center" justifyContent="space-between" columnGap="3xs">
+        <wui-text variant="tiny-500" color="fg-200">${this.description}</wui-text>
         ${this.disconnectTemplate()}
       </wui-flex>
     `

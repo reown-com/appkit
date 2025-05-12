@@ -700,8 +700,6 @@ export const ChainController = {
         throw new Error(failures.map(f => f.reason.message).join(', '))
       }
 
-      StorageUtil.deleteConnectedSocialProvider()
-
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_SUCCESS',

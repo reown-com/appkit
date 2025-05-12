@@ -32,9 +32,7 @@ export class WuiProfileButton extends LitElement {
   public override render() {
     return html`<button data-testid="wui-profile-button">
       <wui-flex gap="xs" alignItems="center">
-        <wui-image
-          src=${'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=c1781fc385454899a2b1385a2b83df3b'}
-        ></wui-image>
+        <wui-image src=${this.avatarSrc}></wui-image>
 
         <wui-flex gap="xs" alignItems="center">
           <wui-text variant="small-600" color="fg-100">

@@ -25,10 +25,7 @@ const config = {
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
-  },
-  termsConditionsUrl: 'https://reown.com/terms',
-  privacyPolicyUrl: 'https://reown.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  }
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 

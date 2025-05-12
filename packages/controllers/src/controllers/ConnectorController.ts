@@ -365,8 +365,6 @@ export const ConnectorController = {
   },
 
   setConnectorId(connectorId: string, namespace: ChainNamespace) {
-    console.trace({ connectorId })
-
     if (connectorId) {
       state.activeConnectorIds = {
         ...state.activeConnectorIds,

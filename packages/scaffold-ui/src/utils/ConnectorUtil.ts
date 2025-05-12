@@ -9,6 +9,7 @@ import {
   CoreHelperUtil,
   type CustomWallet,
   OptionsController,
+  type SocialProvider,
   StorageUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
@@ -162,5 +163,25 @@ export const ConnectorUtil = {
     return Array.from(
       new Set([...prioritizedConnectors, ...remainingConnectors].map(({ type }) => type))
     )
-  }
+  },
+  getAuthName({
+    email,
+    socialUsername,
+    socialProvider
+  }: {
+    email: string
+    socialUsername?: string | null
+    socialProvider?: SocialProvider | null
+  }) {
+    if (socialUsername) {
+      if (socialProvider && socialProvider === 'discord' && socialUsername.endsWith('0')) {
+        return socialUsername.slice(0, -1)
+      }
+
+      return socialUsername
+    }
+
+    return email.length > 30 ? `${email.slice(0, -3)}...` : email
+  },
+  
 }

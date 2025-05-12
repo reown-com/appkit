@@ -6,12 +6,7 @@ import '@reown/appkit-ui/wui-inactive-profile-wallet-item'
 import type { WuiInactiveProfileWalletItem } from '@reown/appkit-ui/wui-inactive-profile-wallet-item'
 
 import '../../components/gallery-container'
-import {
-  address,
-  buttonOptions,
-  currencyOptions,
-  walletImagesOptions
-} from '../../utils/PresetUtils'
+import { address, buttonOptions, iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiInactiveProfileWalletItem>
 
@@ -21,14 +16,12 @@ export default {
     address,
     profileName: '',
     alt: 'MetaMask',
-    amount: 102.45,
-    currency: 'USD',
     buttonLabel: 'Switch',
     buttonVariant: 'accent',
     loading: false,
     imageSrc: walletImagesOptions[0]?.src,
-    totalNetworks: 2,
-    showBalance: true,
+    icon: undefined,
+    iconSize: 'md',
     charsStart: 4,
     charsEnd: 6
   },
@@ -42,13 +35,6 @@ export default {
     alt: {
       control: { type: 'text' }
     },
-    amount: {
-      control: { type: 'number' }
-    },
-    currency: {
-      options: currencyOptions,
-      control: { type: 'select' }
-    },
     buttonLabel: {
       control: { type: 'text' }
     },
@@ -59,13 +45,7 @@ export default {
     imageSrc: {
       control: { type: 'text' }
     },
-    totalNetworks: {
-      control: { type: 'number' }
-    },
     loading: {
-      control: { type: 'boolean' }
-    },
-    showBalance: {
       control: { type: 'boolean' }
     },
     charsStart: {
@@ -73,6 +53,14 @@ export default {
     },
     charsEnd: {
       control: { type: 'number' }
+    },
+    icon: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
+    },
+    iconSize: {
+      options: ['xl', 'md', 'sm', 'xs'],
+      control: { type: 'select' }
     }
   }
 } as Component
@@ -84,16 +72,14 @@ export const Default: Component = {
         address=${args.address}
         profileName=${args.profileName}
         alt=${args.alt}
-        amount=${args.amount}
-        currency=${args.currency}
         buttonLabel=${args.buttonLabel}
         buttonVariant=${args.buttonVariant}
         imageSrc=${args.imageSrc}
-        totalNetworks=${args.totalNetworks}
         .charsStart=${args.charsStart}
         .charsEnd=${args.charsEnd}
+        .icon=${args.icon}
+        .iconSize=${args.iconSize}
         ?loading=${args.loading}
-        ?showBalance=${args.showBalance}
       ></wui-inactive-profile-wallet-item>
     </gallery-container>
   `

@@ -51,7 +51,8 @@ const client: ConnectionControllerClient = {
   grantPermissions: async () => Promise.resolve('0x'),
   revokePermissions: async () => Promise.resolve('0x'),
   walletGetAssets: async () => Promise.resolve({}),
-  updateBalance: () => Promise.resolve()
+  updateBalance: () => Promise.resolve(),
+  disconnectAll: () => Promise.resolve()
 }
 
 const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
@@ -73,7 +74,8 @@ const partialClient: ConnectionControllerClient = {
   grantPermissions: async () => Promise.resolve('0x'),
   revokePermissions: async () => Promise.resolve('0x'),
   walletGetAssets: async () => Promise.resolve({}),
-  updateBalance: () => Promise.resolve()
+  updateBalance: () => Promise.resolve(),
+  disconnectAll: () => Promise.resolve()
 }
 
 const evmAdapter = {

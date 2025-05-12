@@ -46,6 +46,10 @@ export class UniversalAdapter extends AdapterBlueprint {
     }
   }
 
+  public async disconnectAll() {
+    return this.disconnect()
+  }
+
   public async getAccounts({
     namespace
   }: AdapterBlueprint.GetAccountsParams & {

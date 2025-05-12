@@ -7,7 +7,7 @@ import '@reown/appkit-ui/wui-active-profile-wallet-item'
 import type { WuiActiveProfileWalletItem } from '@reown/appkit-ui/wui-active-profile-wallet-item'
 
 import '../../components/gallery-container'
-import { address, currencyOptions, walletImagesOptions } from '../../utils/PresetUtils'
+import { address, buttonOptions, iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiActiveProfileWalletItem>
 
@@ -17,39 +17,34 @@ export default {
   title: 'Composites/wui-active-profile-wallet-item',
   args: {
     address,
-    profileName: '',
+    domainName: '',
+    description: '',
     alt: 'MetaMask',
-    amount: 102.45,
-    currency: 'USD',
     imageSrc: walletImagesOptions[0]?.src,
-    totalNetworks: 2,
     charsStart: 4,
     charsEnd: 6,
     tagLabel: 'Active',
-    tagVariant: 'success'
+    tagVariant: 'success',
+    buttonVariant: 'neutral',
+    icon: undefined,
+    loading: false,
+    iconSize: 'md'
   },
   argTypes: {
     address: {
       control: { type: 'text' }
     },
-    profileName: {
+    domainName: {
+      control: { type: 'text' }
+    },
+    description: {
       control: { type: 'text' }
     },
     alt: {
       control: { type: 'text' }
     },
-    amount: {
-      control: { type: 'number' }
-    },
-    currency: {
-      options: currencyOptions,
-      control: { type: 'select' }
-    },
     imageSrc: {
       control: { type: 'text' }
-    },
-    totalNetworks: {
-      control: { type: 'number' }
     },
     tagLabel: {
       control: { type: 'text' }
@@ -63,6 +58,21 @@ export default {
     },
     charsEnd: {
       control: { type: 'number' }
+    },
+    buttonVariant: {
+      options: buttonOptions,
+      control: { type: 'select' }
+    },
+    loading: {
+      control: { type: 'boolean' }
+    },
+    icon: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
+    },
+    iconSize: {
+      options: ['xl', 'md', 'sm', 'xs'],
+      control: { type: 'select' }
     }
   }
 } as Component
@@ -72,16 +82,16 @@ export const Default: Component = {
     <gallery-container width="336">
       <wui-active-profile-wallet-item
         address=${args.address}
-        profileName=${args.profileName}
+        domainName=${args.domainName}
+        description=${args.description}
         alt=${args.alt}
-        amount=${args.amount}
-        currency=${args.currency}
         imageSrc=${args.imageSrc}
-        totalNetworks=${args.totalNetworks}
         tagLabel=${args.tagLabel}
         tagVariant=${args.tagVariant}
-        .charsStart=${args.charsStart}
-        .charsEnd=${args.charsEnd}
+        icon=${args.icon}
+        iconSize=${args.iconSize}
+        charsStart=${args.charsStart}
+        charsEnd=${args.charsEnd}
         @disconnect=${() => alert('disconnect')}
         @copy=${() => alert('copied')}
       ></wui-active-profile-wallet-item>

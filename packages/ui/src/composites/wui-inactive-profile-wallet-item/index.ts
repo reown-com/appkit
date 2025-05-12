@@ -7,7 +7,7 @@ import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonVariant } from '../../utils/TypeUtil.js'
+import type { ButtonVariant, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-button/index.js'
@@ -31,6 +31,10 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public imageSrc = ''
 
+  @property() public icon?: IconType = undefined
+
+  @property() public iconSize?: SizeType = 'md'
+
   @property({ type: Boolean }) public loading = false
 
   @property({ type: Number }) public charsStart = 2
@@ -41,19 +45,38 @@ export class WuiInactiveProfileWalletItem extends LitElement {
   public override render() {
     return html`
       <wui-flex alignItems="center" columnGap="xs">
-        ${this.imageTemplate()} ${this.labelAndDescriptionTemplate()} ${this.buttonActionTemplate()}
+        ${this.imageOrIconTemplate()} ${this.labelAndDescriptionTemplate()}
+        ${this.buttonActionTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  public imageTemplate() {
+  private imageOrIconTemplate() {
+    if (this.icon) {
+      return html`
+        <wui-flex alignItems="center" justifyContent="center" class="icon-box">
+          <wui-icon
+            size=${this.iconSize}
+            color="fg-275"
+            name=${this.icon}
+            class="custom-icon"
+          ></wui-icon>
+        </wui-flex>
+      `
+    }
+
     return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
   }
 
   public labelAndDescriptionTemplate() {
     return html`
-      <wui-flex flexDirection="column" flexGrow="1">
+      <wui-flex
+        flexDirection="column"
+        flexGrow="1"
+        justifyContent="flex-start"
+        alignItems="flex-start"
+      >
         <wui-text variant="small-500" color="fg-100">
           ${this.profileName
             ? this.profileName

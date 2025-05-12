@@ -10,7 +10,18 @@ export default css`
     border-radius: var(--wui-border-radius-3xs);
   }
 
-  wui-icon {
+  wui-image,
+  .icon-box {
+    width: var(--wui-spacing-2xl);
+    height: var(--wui-spacing-2xl);
+    border-radius: var(--wui-border-radius-3xs);
+  }
+
+  wui-icon:not(.custom-icon) {
     cursor: pointer;
+  }
+
+  .icon-box {
+    background-color: var(--wui-color-gray-glass-002);
   }
 `

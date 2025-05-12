@@ -756,6 +756,7 @@ export abstract class AppKitBaseClient {
       ConnectorController.removeConnectorId(chainNamespace)
 
       StorageUtil.removeConnectedNamespace(chainNamespace)
+      StorageUtil.deleteConnectedSocialProvider()
       ProviderUtil.resetChain(chainNamespace)
 
       this.setUser(undefined, chainNamespace)
@@ -1250,6 +1251,7 @@ export abstract class AppKitBaseClient {
       this.universalProvider.on('connect', ConnectionController.finalizeWcConnection)
 
       this.universalProvider.on('disconnect', () => {
+        console.trace('disconnect')
         this.chainNamespaces.forEach(namespace => {
           this.resetAccount(namespace)
         })

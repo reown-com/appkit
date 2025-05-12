@@ -8,6 +8,7 @@ import {
   AssetController,
   AssetUtil,
   ChainController,
+  ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EventsController,
@@ -48,8 +49,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private address = AccountController.state.address
 
-  @state() private profileImage = AccountController.state.profileImage
-
   @state() private profileName = AccountController.state.profileName
 
   @state() private network = ChainController.state.activeCaipNetwork
@@ -62,6 +61,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
+  @state() private namespace = ChainController.state.activeChain
+
+  @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -72,7 +75,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         AccountController.subscribe(val => {
           if (val.address) {
             this.address = val.address
-            this.profileImage = val.profileImage
             this.profileName = val.profileName
             this.currentTab = val.currentTab
             this.tokenBalance = val.tokenBalance
@@ -81,7 +83,12 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
+      ConnectorController.subscribeKey(
+        'activeConnectorIds',
+        val => (this.activeConnectorIds = val)
+      ),
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
       OptionsController.subscribeKey('features', val => (this.features = val))
     )
     this.watchSwapValues()
@@ -102,6 +109,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
+    const connectorId = this.activeConnectorIds?.[this.namespace as ChainNamespace]
+    const connector = ConnectorController.getConnectorById(connectorId ?? '')
+
     return html`<wui-flex
       flexDirection="column"
       .padding=${['0', 'xl', 'm', 'xl'] as const}
@@ -114,7 +124,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         address=${ifDefined(this.address)}
         networkSrc=${ifDefined(this.networkImage)}
         icon="chevronBottom"
-        avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
+        avatarSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
         profileName=${ifDefined(this.profileName ?? undefined)}
         data-testid="w3m-profile-button"
       ></wui-profile-button>
