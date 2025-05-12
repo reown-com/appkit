@@ -464,13 +464,15 @@ describe('ApiController', () => {
         caipNetworkId: '12341',
         id: 12341,
         name: 'MetaMask',
-        image_id: '12341'
+        image_id: '12341',
+        chains: ['eip155:42']
       },
       {
         caipNetworkId: '12342',
         id: 12342,
         name: 'RandomWallet',
-        image_id: '12342'
+        image_id: '12342',
+        chains: ['eip155:1', 'eip155:4']
       }
     ]
     OptionsController.setIncludeWalletIds(includeWalletIds)
@@ -479,9 +481,7 @@ describe('ApiController', () => {
 
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
-
     await ApiController.fetchWalletsByPage({ page: 1 })
-
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
       params: {

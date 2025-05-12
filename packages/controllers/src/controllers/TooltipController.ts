@@ -1,6 +1,8 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+
 // -- Types --------------------------------------------- //
 type TriggerRect = {
   width: number
@@ -32,7 +34,7 @@ const state = proxy<TooltipControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const TooltipController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: TooltipControllerState) => void) {
@@ -69,3 +71,6 @@ export const TooltipController = {
     }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const TooltipController = withErrorBoundary(controller)
