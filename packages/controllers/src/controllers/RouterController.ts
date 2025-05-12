@@ -141,12 +141,12 @@ const controller = {
 
     if (cancel) {
       // When the transaction is cancelled, we go back to the previous view
-      this.goBack()
+      RouterController.goBack()
       action?.onCancel?.()
     } else {
       // When the transaction is successful, we do conditional navigation depending on the action properties
       if (action.goBack) {
-        this.goBack()
+        RouterController.goBack()
       } else if (action.replace) {
         /*
          *  If the history like ["ConnectingSiwe", "ApproveTransaction"], this means SIWE popup is opened after page rendered (not after user interaction)
@@ -159,14 +159,14 @@ const controller = {
 
         if (connectingSiweIndex > 0) {
           // There are views before ConnectingSiwe
-          this.goBackToIndex(connectingSiweIndex - 1)
+          RouterController.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
           ModalController.close(true)
           state.history = []
         }
       } else if (action.view) {
-        this.reset(action.view)
+        RouterController.reset(action.view)
       }
       action?.onSuccess?.()
     }
@@ -199,7 +199,7 @@ const controller = {
 
   goBack() {
     const shouldReload =
-      !ChainController.state.activeCaipAddress && this.state.view === 'ConnectingFarcaster'
+      !ChainController.state.activeCaipAddress && RouterController.state.view === 'ConnectingFarcaster'
 
     if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
       state.history.pop()

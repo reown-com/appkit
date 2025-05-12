@@ -66,20 +66,20 @@ const controller = {
         chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
       })
 
-      const nonSpamTransactions = this.filterSpamTransactions(response.data)
-      const sameChainTransactions = this.filterByConnectedChain(nonSpamTransactions)
+      const nonSpamTransactions = TransactionsController.filterSpamTransactions(response.data)
+      const sameChainTransactions = TransactionsController.filterByConnectedChain(nonSpamTransactions)
       const filteredTransactions = [...state.transactions, ...sameChainTransactions]
 
       state.loading = false
 
       if (onramp === 'coinbase') {
-        state.coinbaseTransactions = this.groupTransactionsByYearAndMonth(
+        state.coinbaseTransactions = TransactionsController.groupTransactionsByYearAndMonth(
           state.coinbaseTransactions,
           response.data
         )
       } else {
         state.transactions = filteredTransactions
-        state.transactionsByYear = this.groupTransactionsByYearAndMonth(
+        state.transactionsByYear = TransactionsController.groupTransactionsByYearAndMonth(
           state.transactionsByYear,
           sameChainTransactions
         )

@@ -77,7 +77,7 @@ const controller = {
 
       return state.suggestions
     } catch (e) {
-      const errorMessage = this.parseEnsApiError(e, 'Error fetching name suggestions')
+      const errorMessage = EnsController.parseEnsApiError(e, 'Error fetching name suggestions')
       throw new Error(errorMessage)
     } finally {
       state.loading = false
@@ -105,7 +105,7 @@ const controller = {
 
       return response
     } catch (e) {
-      const errorMessage = this.parseEnsApiError(e, 'Error fetching names for address')
+      const errorMessage = EnsController.parseEnsApiError(e, 'Error fetching names for address')
       throw new Error(errorMessage)
     }
   },
@@ -159,7 +159,7 @@ const controller = {
       AccountController.setProfileName(name, network.chainNamespace)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
-      const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
+      const errorMessage = EnsController.parseEnsApiError(e, `Error registering name ${name}`)
       RouterController.replace('RegisterAccountName')
       throw new Error(errorMessage)
     } finally {

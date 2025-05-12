@@ -122,11 +122,11 @@ const controller = {
   },
 
   setPurchaseAmount(amount: number) {
-    this.state.purchaseAmount = amount
+    OnRampController.state.purchaseAmount = amount
   },
 
   setPaymentAmount(amount: number) {
-    this.state.paymentAmount = amount
+    OnRampController.state.paymentAmount = amount
   },
 
   async getAvailableCurrencies() {

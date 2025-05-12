@@ -264,7 +264,7 @@ const controller = {
           balance => balance.quantity.decimals !== '0'
         )
 
-        this.setTokenBalance(filteredBalances, chain)
+        AccountController.setTokenBalance(filteredBalances, chain)
         state.lastRetry = undefined
         state.balanceLoading = false
 
