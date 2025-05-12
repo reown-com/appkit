@@ -200,7 +200,7 @@ export const RouterController = {
   goBack() {
     const shouldReload =
       !ChainController.state.activeCaipAddress && this.state.view === 'ConnectingFarcaster'
-
+    console.trace('123')
     if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
       state.history.pop()
       const [last] = state.history.slice(-1)

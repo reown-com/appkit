@@ -7,7 +7,7 @@ import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { TagType } from '../../utils/TypeUtil.js'
+import type { ButtonVariant, TagType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-button/index.js'
@@ -22,13 +22,11 @@ export class WuiActiveProfileWalletItem extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public address = ''
 
-  @property() public profileName = ''
+  @property() public domainName = ''
 
   @property() public alt = ''
 
   @property({ type: Number }) public amount = 0
-
-  @property() public currency: Intl.NumberFormatOptions['currency'] = 'USD'
 
   @property() public tagLabel = ''
 
@@ -36,7 +34,9 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public imageSrc = ''
 
-  @property({ type: Number }) public totalNetworks = 0
+  @property() public buttonVariant: ButtonVariant = 'neutral'
+
+  @property({ type: Boolean }) public loading = false
 
   @property({ type: Number }) public charsStart = 2
 
@@ -54,7 +54,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
   // -- Private ------------------------------------------- //
   public topTemplate() {
     return html`
-      <wui-flex alignItems="center" justifyContent="space-between" columnGap="xl">
+      <wui-flex alignItems="center" justifyContent="space-between" columnGap="s">
         <wui-flex flexGrow="1" alignItems="center">
           <wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>
         </wui-flex>
@@ -63,8 +63,8 @@ export class WuiActiveProfileWalletItem extends LitElement {
         <wui-icon
           color="fg-275"
           size="md"
-          name="off"
-          @click=${this.dispatchDisconnectEvent}
+          name="externalLink"
+          @click=${this.dispatchExternalLinkEvent}
         ></wui-icon>
       </wui-flex>
     `
@@ -79,42 +79,75 @@ export class WuiActiveProfileWalletItem extends LitElement {
   }
 
   private labelAndTagTemplate() {
-    return html`
-      <wui-flex alignItems="center" columnGap="3xs">
-        <wui-text variant="small-500" color="fg-100">
-          ${this.profileName || this.address
-            ? UiHelperUtil.getTruncateString({
-                string: this.profileName || this.address,
-                charsStart: this.profileName ? 18 : this.charsStart,
-                charsEnd: this.profileName ? 0 : this.charsEnd,
-                truncate: this.profileName ? 'end' : 'middle'
-              })
-            : null}
-        </wui-text>
+    if (this.domainName) {
+      return html`
+        <wui-flex alignItems="center" columnGap="3xs">
+          <wui-text variant="small-500" color="fg-100">
+            ${UiHelperUtil.getTruncateString({
+              string: this.address,
+              charsStart: this.charsStart,
+              charsEnd: this.charsEnd,
+              truncate: 'middle'
+            })}
+          </wui-text>
 
-        <wui-tag variant=${this.tagVariant} size="xs">${this.tagLabel}</wui-tag>
+          <wui-tag variant=${this.tagVariant} size="xs">${this.tagLabel}</wui-tag>
+        </wui-flex>
+      `
+    }
+
+    return html`
+      <wui-flex justifyContent="space-between" alignItems="center" columnGap="3xs">
+        <wui-flex alignItems="center" columnGap="3xs">
+          <wui-text variant="small-500" color="fg-100">
+            ${UiHelperUtil.getTruncateString({
+              string: this.address,
+              charsStart: this.charsStart,
+              charsEnd: this.charsEnd,
+              truncate: 'middle'
+            })}
+          </wui-text>
+
+          <wui-tag variant=${this.tagVariant} size="xs">${this.tagLabel}</wui-tag>
+        </wui-flex>
+
+        ${this.disconnectTemplate()}
       </wui-flex>
     `
   }
 
   public labelAndDescriptionTemplate() {
-    const totalNetworksLabel = `${this.totalNetworks} network${this.totalNetworks > 1 ? 's' : ''}`
+    if (!this.domainName) {
+      return null
+    }
 
     return html`
       <wui-flex alignItems="center" columnGap="3xs">
-        <wui-text variant="tiny-500" color="fg-200">
-          ${UiHelperUtil.formatCurrency(this.amount, { currency: this.currency })}
-        </wui-text>
-
-        <wui-icon class="circle" color="fg-100" size="inherit" name="circle"></wui-icon>
-
-        <wui-text variant="tiny-500" color="fg-200">${totalNetworksLabel}</wui-text>
+        <wui-text variant="tiny-500" color="fg-200">${this.domainName}</wui-text>
+        ${this.disconnectTemplate()}
       </wui-flex>
+    `
+  }
+
+  public disconnectTemplate() {
+    return html`
+      <wui-button
+        size="xs"
+        variant=${this.buttonVariant}
+        .loading=${this.loading}
+        @click=${this.dispatchDisconnectEvent}
+      >
+        Disconnect
+      </wui-button>
     `
   }
 
   private dispatchDisconnectEvent() {
     this.dispatchEvent(new CustomEvent('disconnect', { bubbles: true, composed: true }))
+  }
+
+  private dispatchExternalLinkEvent() {
+    this.dispatchEvent(new CustomEvent('externalLink', { bubbles: true, composed: true }))
   }
 
   private dispatchCopyEvent() {

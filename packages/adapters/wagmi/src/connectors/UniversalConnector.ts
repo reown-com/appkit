@@ -123,6 +123,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If session exists and chains are authorized, enable provider for required chain
         const accounts = await this.getAccounts()
+        const deduplicatedAccounts = [...new Set(accounts)]
 
         /**
          * Check if the chain is supported by the wallet. If not default back to the first chain that is provided.
@@ -167,7 +168,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         const defaultChain = universalProviderConfigOverride?.defaultChain
         provider.setDefaultChain(defaultChain ?? `eip155:${currentChainId}`)
 
-        return { accounts, chainId: currentChainId }
+        return { accounts: deduplicatedAccounts, chainId: currentChainId }
       } catch (error) {
         if (
           // eslint-disable-next-line prefer-named-capture-group, require-unicode-regexp

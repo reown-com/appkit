@@ -34,6 +34,7 @@ interface SwitchAccountParams {
   connection: Connection
   address: string
   namespace: ChainNamespace
+  forceReconnect?: boolean
 }
 
 export interface ConnectExternalOptions {
@@ -49,6 +50,7 @@ export interface ConnectExternalOptions {
 export interface ConnectionControllerClient {
   connectWalletConnect?: () => Promise<void>
   disconnect: (chainNamespace?: ChainNamespace) => Promise<void>
+  disconnectAll: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
@@ -319,27 +321,48 @@ export const ConnectionController = {
     state.connections.set(chainNamespace, connections)
   },
 
-  switchAccount({ connection, address, namespace }: SwitchAccountParams) {
+  async switchAccount({
+    connection,
+    address,
+    namespace,
+    forceReconnect = false
+  }: SwitchAccountParams) {
     const connectedConnectorId = ConnectorController.state.activeConnectorIds[namespace]
     const isConnectorConnected = connectedConnectorId === connection.connectorId
 
-    if (isConnectorConnected) {
+    if (isConnectorConnected && !forceReconnect) {
+      let hasSwitchedCaipAddress = false
+
       const currentNetwork = ChainController.state.activeCaipNetwork
 
       if (currentNetwork) {
         const caipAddress = `${namespace}:${currentNetwork.id}:${address}`
         AccountController.setCaipAddress(caipAddress as CaipAddress, namespace)
+        hasSwitchedCaipAddress = true
       } else {
         console.warn(`No current network found for namespace "${namespace}"`)
       }
-    } else {
-      const connector = ConnectorController.getConnector(connection.connectorId)
 
-      if (connector) {
-        this.connectExternal(connector, namespace)
-      } else {
-        console.warn(`No connector found for namespace "${namespace}"`)
+      return {
+        hasSwitchedCaipAddress,
+        hasSwitchedConnector: false
       }
+    }
+
+    let hasSwitchedConnector = false
+
+    const connector = ConnectorController.getConnectorById(connection.connectorId)
+
+    if (connector) {
+      await this.connectExternal(connector, namespace)
+      hasSwitchedConnector = true
+    } else {
+      console.warn(`No connector found for namespace "${namespace}"`)
+    }
+
+    return {
+      hasSwitchedCaipAddress: false,
+      hasSwitchedConnector
     }
   }
 }

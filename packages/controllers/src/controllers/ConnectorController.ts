@@ -285,7 +285,9 @@ export const ConnectorController = {
       c => c.chain === ChainController.state.activeChain
     )
 
-    return connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
+    const find = connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
+
+    return find
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {
@@ -363,6 +365,8 @@ export const ConnectorController = {
   },
 
   setConnectorId(connectorId: string, namespace: ChainNamespace) {
+    console.trace({ connectorId })
+
     if (connectorId) {
       state.activeConnectorIds = {
         ...state.activeConnectorIds,

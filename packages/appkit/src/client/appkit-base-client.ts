@@ -429,6 +429,8 @@ export abstract class AppKitBaseClient {
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
+        // eslint-disable-next-line no-warning-comments
+        // TODO: remove this and use accountChanged event
         this.syncProvider({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
@@ -451,12 +453,11 @@ export abstract class AppKitBaseClient {
         const providerType = ProviderUtil.getProviderId(namespace)
 
         await adapter?.disconnect({ provider, providerType })
+      },
+      disconnectAll: async () => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        StorageUtil.removeConnectedNamespace(namespace)
-        ProviderUtil.resetChain(namespace)
-        this.setUser(undefined, namespace)
-        this.setStatus('disconnected', namespace)
-        this.setConnectedWalletInfo(undefined, namespace)
+        await adapter?.disconnectAll()
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -747,10 +748,24 @@ export abstract class AppKitBaseClient {
       }
     })
 
-    adapter.on('disconnect', this.disconnect.bind(this, chainNamespace))
+    adapter.on('disconnect', () => {
+      this.disconnect(chainNamespace)
+
+      ChainController.resetAccount(chainNamespace)
+      ChainController.resetNetwork(chainNamespace)
+      ConnectorController.removeConnectorId(chainNamespace)
+
+      StorageUtil.removeConnectedNamespace(chainNamespace)
+      ProviderUtil.resetChain(chainNamespace)
+
+      this.setUser(undefined, chainNamespace)
+      this.setStatus('disconnected', chainNamespace)
+      this.setConnectedWalletInfo(undefined, chainNamespace)
+    })
 
     adapter.on('connections', connections => {
       this.setConnections(connections, chainNamespace)
+      StorageUtil.setConnections(connections, chainNamespace)
     })
 
     adapter.on('pendingTransactions', () => {
@@ -764,8 +779,12 @@ export abstract class AppKitBaseClient {
       this.updateNativeBalance(address, activeCaipNetwork.id, activeCaipNetwork.chainNamespace)
     })
 
-    adapter.on('accountChanged', ({ address, chainId }) => {
+    adapter.on('accountChanged', ({ address, chainId, connector }) => {
       const isActiveChain = ChainController.state.activeChain === chainNamespace
+
+      if (connector) {
+        ConnectionController.connectExternal(connector, chainNamespace)
+      }
 
       if (isActiveChain && chainId) {
         this.syncAccount({

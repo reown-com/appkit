@@ -586,12 +586,33 @@ export const StorageUtil = {
   },
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
     try {
-      const newConnections = {
-        ...StorageUtil.getConnections(),
-        [chainNamespace]: connections
+      const existingConnections = StorageUtil.getConnections()
+      const existing = existingConnections[chainNamespace] ?? []
+
+      const mergedMap = new Map<string, Connection>()
+
+      for (const conn of existing) {
+        mergedMap.set(conn.connectorId, { ...conn })
       }
 
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTIONS, JSON.stringify(newConnections))
+      for (const conn of connections) {
+        const existingConn = mergedMap.get(conn.connectorId)
+
+        if (existingConn) {
+          const existingAddrs = new Set(existingConn.accounts.map(a => a.address.toLowerCase()))
+          const newAccounts = conn.accounts.filter(a => !existingAddrs.has(a.address.toLowerCase()))
+          existingConn.accounts.push(...newAccounts)
+        } else {
+          mergedMap.set(conn.connectorId, { ...conn })
+        }
+      }
+
+      const dedupedConnections = {
+        ...existingConnections,
+        [chainNamespace]: Array.from(mergedMap.values())
+      }
+
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTIONS, JSON.stringify(dedupedConnections))
     } catch (error) {
       console.error('Unable to sync connections to storage', error)
     }
@@ -601,14 +622,14 @@ export const StorageUtil = {
       const connectionsStorage = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
 
       if (!connectionsStorage) {
-        return {}
+        return {} as { [key in ChainNamespace]: Connection[] }
       }
 
       return JSON.parse(connectionsStorage) as { [key in ChainNamespace]: Connection[] }
     } catch (error) {
       console.error('Unable to get connections from storage', error)
 
-      return {}
+      return {} as { [key in ChainNamespace]: Connection[] }
     }
   }
 }

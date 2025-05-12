@@ -36,8 +36,13 @@ export function AppKitProvider({
     if (config) {
       const modal = createAppKit({
         ...config,
+
+        defaultAccountTypes: {
+          eip155: 'smartAccount'
+        },
         projectId
       })
+      modal.setPreferredAccountType('smartAccount', 'eip155')
       setAppKit(modal)
       ThemeStore.setModal(modal)
     }

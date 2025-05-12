@@ -19,6 +19,7 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
+  watchConnections,
   watchConnectors,
   watchPendingTransactions
 } from '@wagmi/core'
@@ -35,7 +36,7 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import { type Connection, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
@@ -217,9 +218,10 @@ export class WagmiAdapter extends AdapterBlueprint {
           ) {
             this.setupWatchPendingTransactions()
 
-            this.emit('accountChanged', {
+            this.handleAccountChanged({
               address: accountData.address,
-              chainId: accountData.chainId
+              chainId: accountData.chainId,
+              connector: accountData.connector
             })
           }
 
@@ -230,6 +232,19 @@ export class WagmiAdapter extends AdapterBlueprint {
             })
           }
         }
+      }
+    })
+
+    watchConnections(this.wagmiConfig, {
+      onChange: connections => {
+        this.addConnection(
+          ...connections.map(connection => ({
+            accounts: connection.accounts.map(account => ({
+              address: account
+            })),
+            connectorId: connection.connector.id
+          }))
+        )
       }
     })
   }
@@ -294,6 +309,36 @@ export class WagmiAdapter extends AdapterBlueprint {
     customConnectors.forEach(connector => {
       const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
       this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
+    })
+  }
+
+  private async handleAccountChanged({
+    address,
+    chainId,
+    connector
+  }: {
+    address: string
+    chainId: number | string
+    connector: Connector
+  }) {
+    const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+
+    this.emit('accountChanged', {
+      address,
+      chainId,
+      connector: {
+        id: connector.id,
+        name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
+        imageId: PresetsUtil.ConnectorImageIds[connector.id],
+        type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
+        info:
+          connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+            ? undefined
+            : { rdns: connector.id },
+        provider,
+        chain: this.namespace as ChainNamespace,
+        chains: []
+      }
     })
   }
 
@@ -505,6 +550,30 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     }
 
+    const connection = this.wagmiConfig.state.connections.get(connector.uid)
+
+    if (connection) {
+      await this.wagmiConfig.storage?.setItem('recentConnectorId', connector.id)
+      this.wagmiConfig?.setState(x => ({
+        ...x,
+        connections: new Map(x.connections).set(connector.uid, {
+          accounts: connection.accounts,
+          chainId: connection.chainId,
+          connector: connection.connector
+        }),
+        current: connector.uid,
+        status: 'connected'
+      }))
+
+      return {
+        address: connection.accounts[0],
+        chainId: connection.chainId,
+        provider: provider as Provider,
+        type: type as ConnectorType,
+        id
+      }
+    }
+
     const res = await connect(this.wagmiConfig, {
       connector,
       chainId: chainId ? Number(chainId) : undefined
@@ -517,6 +586,15 @@ export class WagmiAdapter extends AdapterBlueprint {
       type: type as ConnectorType,
       id
     }
+  }
+
+  public override get connections(): Connection[] {
+    return Array.from(this.wagmiConfig.state.connections.values()).map(connection => ({
+      accounts: connection.accounts.map(account => ({
+        address: account
+      })),
+      connectorId: connection.connector.id
+    }))
   }
 
   public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
@@ -594,7 +672,12 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
+    await wagmiDisconnect(this.wagmiConfig)
+  }
+
+  public async disconnectAll() {
     const connections = getConnections(this.wagmiConfig)
+
     await Promise.all(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)

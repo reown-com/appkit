@@ -25,10 +25,6 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public alt = ''
 
-  @property({ type: Number }) public amount = 0
-
-  @property() public currency: Intl.NumberFormatOptions['currency'] = 'USD'
-
   @property() public buttonLabel = ''
 
   @property() public buttonVariant: ButtonVariant = 'accent'
@@ -37,10 +33,6 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
-  @property({ type: Boolean }) public showBalance = true
-
-  @property({ type: Number }) public totalNetworks = 0
-
   @property({ type: Number }) public charsStart = 2
 
   @property({ type: Number }) public charsEnd = 3
@@ -48,7 +40,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex alignItems="center" columnGap="3xs">
+      <wui-flex alignItems="center" columnGap="xs">
         ${this.imageTemplate()} ${this.labelAndDescriptionTemplate()} ${this.buttonActionTemplate()}
       </wui-flex>
     `
@@ -63,44 +55,34 @@ export class WuiInactiveProfileWalletItem extends LitElement {
     return html`
       <wui-flex flexDirection="column" flexGrow="1">
         <wui-text variant="small-500" color="fg-100">
-          ${this.profileName || this.address
-            ? UiHelperUtil.getTruncateString({
-                string: this.profileName || this.address,
-                charsStart: this.profileName ? 18 : this.charsStart,
-                charsEnd: this.profileName ? 0 : this.charsEnd,
-                truncate: this.profileName ? 'end' : 'middle'
-              })
-            : null}
+          ${this.profileName
+            ? this.profileName
+            : UiHelperUtil.getTruncateString({
+                string: this.address,
+                charsStart: this.charsStart,
+                charsEnd: this.charsEnd,
+                truncate: 'middle'
+              })}
         </wui-text>
-        ${this.balanceTemplate()}
       </wui-flex>
     `
   }
 
   public buttonActionTemplate() {
     return html`
-      <wui-button size="xs" variant=${this.buttonVariant} .loading=${this.loading}>
+      <wui-button
+        size="xs"
+        variant=${this.buttonVariant}
+        .loading=${this.loading}
+        @click=${this.handleClick}
+      >
         ${this.buttonLabel}
       </wui-button>
     `
   }
 
-  public balanceTemplate() {
-    const totalNetworksLabel = `${this.totalNetworks} network${this.totalNetworks > 1 ? 's' : ''}`
-
-    if (this.showBalance) {
-      return html`<wui-flex alignItems="center" columnGap="3xs">
-        <wui-text variant="tiny-500" color="fg-200">
-          ${UiHelperUtil.formatCurrency(this.amount, { currency: this.currency })}
-        </wui-text>
-
-        <wui-icon class="circle" color="fg-100" size="inherit" name="circle"></wui-icon>
-
-        <wui-text variant="tiny-500" color="fg-200">${totalNetworksLabel}</wui-text>
-      </wui-flex>`
-    }
-
-    return null
+  private handleClick() {
+    this.dispatchEvent(new CustomEvent('buttonClick'))
   }
 }
 

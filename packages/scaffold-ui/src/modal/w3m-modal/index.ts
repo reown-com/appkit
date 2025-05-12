@@ -269,13 +269,14 @@ export class W3mModalBase extends LitElement {
      * But we don't want to go back because we are already on the connecting external view.
      */
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
+    const isConnectingFromProfileWallets = RouterController.state.view === 'ProfileWallets'
     // Check connection status based on the address state *before* this update cycle potentially finishes
     const isNotConnected = !this.caipAddress
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
     const isModalOpen = ModalController.state.open
     let shouldGoBack = false
-    if (isModalOpen && !isConnectingExternal) {
+    if (isModalOpen && !isConnectingExternal && !isConnectingFromProfileWallets) {
       if (isNotConnected) {
         /*
          * If not connected at all, changing network doesn't necessarily warrant going back from all views.

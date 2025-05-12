@@ -666,7 +666,7 @@ export const ChainController = {
     ConnectorController.removeConnectorId(chainToWrite)
   },
 
-  async disconnect(namespace?: ChainNamespace) {
+  async disconnect(namespace?: ChainNamespace, disconnectAll = false) {
     const chainsToDisconnect = getChainsToDisconnect(namespace)
 
     try {
@@ -677,12 +677,13 @@ export const ChainController = {
           try {
             const { caipAddress } = this.getAccountData(ns) || {}
 
-            if (caipAddress && adapter.connectionControllerClient?.disconnect) {
-              await adapter.connectionControllerClient.disconnect(ns)
+            if (caipAddress) {
+              if (disconnectAll && adapter.connectionControllerClient?.disconnectAll) {
+                await adapter.connectionControllerClient.disconnectAll()
+              } else if (adapter.connectionControllerClient?.disconnect) {
+                await adapter.connectionControllerClient.disconnect(ns)
+              }
             }
-
-            this.resetAccount(ns)
-            this.resetNetwork(ns)
           } catch (error) {
             throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
           }
@@ -700,11 +701,7 @@ export const ChainController = {
       }
 
       StorageUtil.deleteConnectedSocialProvider()
-      if (namespace) {
-        ConnectorController.removeConnectorId(namespace)
-      } else {
-        ConnectorController.resetConnectorIds()
-      }
+
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_SUCCESS',

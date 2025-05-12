@@ -33,7 +33,7 @@ type EventName =
   | 'pendingTransactions'
 type EventData = {
   disconnect: () => void
-  accountChanged: { address: string; chainId?: number | string }
+  accountChanged: { address: string; chainId?: number | string; connector?: ChainAdapterConnector }
   switchNetwork: { address?: string; chainId: number | string }
   connections: Connection[]
   connectors: ChainAdapterConnector[]
@@ -53,6 +53,7 @@ export abstract class AdapterBlueprint<
   public adapterType: string | undefined
   public getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   protected availableConnectors: Connector[] = []
+  protected availableConnections: Connection[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
 
@@ -87,6 +88,14 @@ export abstract class AdapterBlueprint<
    */
   public get connectors(): Connector[] {
     return this.availableConnectors
+  }
+
+  /**
+   * Gets the available connections.
+   * @returns {Connection[]} An array of available connections
+   */
+  public get connections(): Connection[] {
+    return this.availableConnections
   }
 
   /**
@@ -136,6 +145,14 @@ export abstract class AdapterBlueprint<
     })
 
     this.emit('connectors', this.availableConnectors)
+  }
+
+  /**
+   * Adds one or more connections to the available connections list.
+   * @param {...Connection} connections - The connections to add
+   */
+  protected addConnection(...connections: Connection[]) {
+    this.emit('connections', connections)
   }
 
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
@@ -260,6 +277,11 @@ export abstract class AdapterBlueprint<
    * Disconnects the current wallet.
    */
   public abstract disconnect(params?: AdapterBlueprint.DisconnectParams): Promise<void>
+
+  /**
+   * Disconnects all wallets.
+   */
+  public abstract disconnectAll(): Promise<void>
 
   /**
    * Gets the balance for a given address and chain ID.

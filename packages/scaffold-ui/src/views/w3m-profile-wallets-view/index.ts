@@ -1,8 +1,19 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConnectionController, RouterController, SnackController } from '@reown/appkit-core'
-import { MathUtil, UiHelperUtil, customElement } from '@reown/appkit-ui'
+import type { ChainNamespace } from '@reown/appkit-common'
+import {
+  AssetUtil,
+  ChainController,
+  type Connection,
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil,
+  RouterController,
+  SnackController,
+  StorageUtil
+} from '@reown/appkit-controllers'
+import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-active-profile-wallet-item'
 import '@reown/appkit-ui/wui-balance'
 import '@reown/appkit-ui/wui-button'
@@ -13,225 +24,322 @@ import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-text'
+import { HelpersUtil } from '@reown/appkit-utils'
 
-import { MOCK_ACTIVE_CONNECTIONS, MOCK_ACTIVE_WALLETS, MOCK_INACTIVE_WALLETS } from './mocks.js'
+import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'
+
+// -- Types ------------------------------------------ //
+type HandleSwitchWalletParams = {
+  connection: Connection
+  address: string
+  forceReconnect?: boolean
+}
+
+type DisplayConnectionsParams = {
+  connections: Connection[]
+  includeSeparator?: boolean
+  forceReconnectOnSwitch?: boolean
+}
+
+// -- Constants ------------------------------------------ //
+const CHARS_START = 4
+const CHARS_END = 6
 
 const SMART_SESSION_TABS = [
   { icon: 'ethereum-black', label: 'EVM' },
   { icon: 'solana-black', label: 'Solana' },
   { icon: 'bitcoin-black', label: 'Bitcoin' }
-]
-
-const MOCK_AMOUNT = 3043.62
-
-const address = '0xDBbD65026a07cFbFa1aa92744E4D69951686077d'
+] as const
 
 @customElement('w3m-profile-wallets-view')
 export class W3mProfileWalletsView extends LitElement {
   public static override styles = styles
 
-  // -- Members -------------------------------------------- //
+  // -- Members ------------------------------ //
   private unsubscribe: (() => void)[] = []
-
   private resizeObserver?: ResizeObserver
 
-  // -- State & Properties --------------------------------- //
+  // -- State & Properties -------------------------------- //
   @state() private currentTab = 0
+  @state() private connections = ConnectionController.state.connections
+  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
+  @state() private namespace = ChainController.state.activeChain
+  @state() private lastSelectedAddress = ''
+  @state() private lastSelectedConnectorId = ''
+  @state() private isSwitching = false
+  @state() private isDisconnecting = false
 
+  // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+    this.unsubscribe.push(
+      ...[
+        ConnectionController.subscribeKey('connections', newConnections => {
+          this.connections = newConnections
+        }),
+        ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
+          this.activeConnectorIds = newActiveConnectorIds
+        }),
+        ChainController.subscribeKey('activeChain', namespace => {
+          this.namespace = namespace
+        }),
+        ChainController.subscribeKey('activeCaipAddress', activeCaipAddress => {
+          this.caipAddress = activeCaipAddress
+        })
+      ]
+    )
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.resizeObserver?.disconnect()
-    const connectEl = this.shadowRoot?.querySelector('.wallet-list')
-    connectEl?.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
+    this.removeScrollListener()
   }
 
   public override firstUpdated() {
-    const walletListEl = this.shadowRoot?.querySelector('.wallet-list')
-
-    if (walletListEl) {
-      // Use requestAnimationFrame to access scroll properties before the next repaint
-      requestAnimationFrame(this.handleConnectListScroll.bind(this))
-      walletListEl?.addEventListener('scroll', this.handleConnectListScroll.bind(this))
-      this.resizeObserver = new ResizeObserver(() => {
-        this.handleConnectListScroll()
-      })
-      this.resizeObserver.observe(walletListEl)
-      this.handleConnectListScroll()
-    }
+    this.initializeScrollHandling()
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="xxl">
-        ${this.topTemplate()} ${this.bottomTemplate()}
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="l">
+        ${this.tabsTemplate()} ${this.balanceTemplate()} ${this.walletsTemplate()}
+        ${this.addWalletTemplate()}
       </wui-flex>
     `
   }
 
-  // -- Private ------------------------------------------- //
-  private topTemplate() {
+  // -- Private -------------------------------- //
+  private tabsTemplate() {
     return html`
-      <wui-flex flexDirection="column" alignItems="center">
-        <wui-text color="fg-200" variant="paragraph-400">Total Balance</wui-text>
-        <wui-balance pennies="72" dollars="6,938"></wui-balance>
-        <wui-link>Across 10 Wallets</wui-link>
-      </wui-flex>
+      <wui-tabs
+        .onTabChange=${this.onTabChange.bind(this)}
+        .activeTab=${this.currentTab}
+        localTabWidth="109px"
+        .tabs=${SMART_SESSION_TABS}
+      ></wui-tabs>
     `
   }
 
-  private bottomTemplate() {
-    const hideWalletList = false
-
+  private walletsTemplate() {
     return html`
-      <wui-flex flexDirection="column" rowGap="l">
-        <wui-tabs
-          .onTabChange=${this.onTabChange.bind(this)}
-          .activeTab=${this.currentTab}
-          localTabWidth="109px"
-          .tabs=${SMART_SESSION_TABS}
-        ></wui-tabs>
-        ${this.balanceTemplate()}
-        <wui-flex flexDirection="column" rowGap="l">
-          ${hideWalletList ? this.emptyTemplate() : this.walletListTemplate()}
-          ${this.addWalletTemplate()}
-        </wui-flex>
+      <wui-flex flexDirection="column" class="wallet-list" rowGap="s">
+        ${this.activeWalletsTemplate()} ${this.recentWalletsTemplate()}
       </wui-flex>
     `
   }
 
   private balanceTemplate() {
     return html`
-      <wui-flex alignItems="center" columnGap="xxs">
-        <wui-icon name="ethereum-black" size="md"></wui-icon>
-        <wui-text color="fg-200" variant="small-400">Balance</wui-text>
-        <wui-text color="fg-100" variant="small-400" class="balance-amount">
-          ${UiHelperUtil.formatCurrency(MOCK_AMOUNT, { currency: 'USD' })}
-        </wui-text>
-        <wui-link>Disconnect All</wui-link>
-      </wui-flex>
-    `
-  }
-
-  private walletListTemplate() {
-    return html`
-      <wui-flex flexDirection="column" class="wallet-list" rowGap="xs">
-        ${this.activeWalletsTemplate()} ${this.inactiveWalletsTemplate()}
+      <wui-flex alignItems="center" columnGap="3xs">
+        <wui-icon name="ethereum-black" size="lg"></wui-icon>
+        <wui-text color="fg-200" variant="small-400">Wallet</wui-text>
+        <wui-text color="fg-100" variant="small-400" class="balance-amount">7</wui-text>
+        <wui-link color="fg-200" @click=${() => ChainController.disconnect(this.namespace, true)}>
+          Disconnect All
+        </wui-link>
       </wui-flex>
     `
   }
 
   private activeWalletsTemplate() {
+    if (!this.namespace) {
+      return null
+    }
+
+    const connectionsByNamespace = this.connections.get(this.namespace) ?? []
+    const connectorId = this.activeConnectorIds[this.namespace]
+
+    if (!connectorId && connectionsByNamespace.length === 0) {
+      return null
+    }
+
     return html`
       <wui-flex
         flexDirection="column"
         .padding=${['l', 'l', 'xs', 'l'] as const}
         class="active-wallets"
       >
-        ${MOCK_ACTIVE_WALLETS.map(
-          w => html`
-            <wui-active-profile-wallet-item
-              address=${address}
-              alt=${w.alt}
-              amount=${w.amount}
-              currency=${w.currency}
-              tagLabel=${w.tagLabel}
-              tagVariant=${w.tagVariant}
-              imageSrc=${w.imageSrc}
-              totalNetworks=${w.totalNetworks}
-              .loading=${false}
-              @copy=${this.handleCopyAddress.bind(this)}
-              @disconnect=${this.handleDisconnect.bind(this)}
-            ></wui-active-profile-wallet-item>
-          `
-        )}
-
-        <wui-separator></wui-separator>
-
-        ${MOCK_ACTIVE_CONNECTIONS.map(
-          w => html`
-            <wui-inactive-profile-wallet-item
-              address=${address}
-              alt=${w.alt}
-              amount=${w.amount}
-              currency=${w.currency}
-              buttonLabel=${w.buttonLabel}
-              buttonVariant=${w.buttonVariant}
-              imageSrc=${w.imageSrc}
-              totalNetworks=${w.totalNetworks}
-              .loading=${false}
-            ></wui-inactive-profile-wallet-item>
-          `
-        )}
+        ${this.connectedWalletTemplate()} ${this.connectionsTemplate()}
       </wui-flex>
     `
   }
 
-  private inactiveWalletsTemplate() {
+  private connectedWalletTemplate() {
+    if (!this.namespace) {
+      return null
+    }
+
+    const connectorId = this.activeConnectorIds[this.namespace]
+
+    if (!connectorId) {
+      return null
+    }
+
+    const { plainAddress, shouldShowLineSeparator } = this.getConnectedWalletData()
+    const connector = ConnectorController.getConnectorById(connectorId)
+    const connectorImage = AssetUtil.getConnectorImage(connector)
+
+    return html`<wui-flex flexDirection="column">
+      <wui-active-profile-wallet-item
+        address=${plainAddress}
+        alt=${connector?.name}
+        tagLabel="Active"
+        tagVariant="success"
+        imageSrc=${connectorImage}
+        @copy=${this.handleCopyAddress.bind(this)}
+        @disconnect=${this.handleDisconnect.bind(this)}
+        .loading=${this.isDisconnecting}
+        .charsStart=${CHARS_START}
+        .charsEnd=${CHARS_END}
+      ></wui-active-profile-wallet-item>
+      ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
+    </wui-flex>`
+  }
+
+  private getConnectedWalletData() {
+    if (!this.namespace) {
+      throw new Error('Namespace must be defined when getting connected wallet data')
+    }
+
+    const connectionsByNamespace = this.connections.get(this.namespace) ?? []
+    const plainAddress = this.caipAddress
+      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
+      : undefined
+    const connections = ConnectionUtil.excludeAddressFromConnections(
+      connectionsByNamespace,
+      plainAddress
+    )
+    const connectionsWithMultipleAccounts = connections.filter(
+      connection => connection.accounts.length > 0
+    )
+
+    return {
+      plainAddress,
+      shouldShowLineSeparator: connectionsWithMultipleAccounts.length > 0
+    }
+  }
+
+  private connectionsTemplate() {
+    if (!this.namespace) {
+      return null
+    }
+
+    const connectionsByNamespace = this.connections.get(this.namespace) ?? []
+
+    if (connectionsByNamespace.length === 0) {
+      return null
+    }
+
+    const { connections } = this.getConnectionsData()
+
+    return html`${this.displayConnections({
+      connections,
+      includeSeparator: false,
+      forceReconnectOnSwitch: false
+    })}`
+  }
+
+  private getConnectionsData() {
+    if (!this.namespace) {
+      throw new Error('Namespace must be defined when getting connections data')
+    }
+
+    const plainAddress = this.caipAddress
+      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
+      : undefined
+
+    const connectionsByNamespace = this.connections.get(this.namespace) ?? []
+    const connections = ConnectionUtil.excludeAddressFromConnections(
+      connectionsByNamespace,
+      plainAddress
+    )
+
+    const storageConnections = StorageUtil.getConnections()
+    const storageConnectionsByNamespace = storageConnections[this.namespace] ?? []
+    const storageConnectionsWithCurrentActiveConnectors = storageConnectionsByNamespace.filter(
+      connection => ConnectorController.getConnectorById(connection.connectorId)
+    )
+    const dedupedStorageConnections = ConnectionUtil.excludeExistingConnections(
+      connections,
+      storageConnectionsWithCurrentActiveConnectors
+    )
+
+    return { connections, storageConnections: dedupedStorageConnections }
+  }
+
+  private displayConnections({
+    connections,
+    includeSeparator = true,
+    forceReconnectOnSwitch = false
+  }: DisplayConnectionsParams) {
+    return connections
+      .filter(connection => connection.accounts.length > 0)
+      .map((connection, connectionIdx) => {
+        const connector = ConnectorController.getConnectorById(connection.connectorId)
+        const connectorImage = AssetUtil.getConnectorImage(connector)
+
+        const isFirstConnection = connectionIdx === 0
+
+        return connection.accounts.map((account, accountIdx) => {
+          const isFirstAccount = accountIdx === 0
+
+          const isLoading =
+            HelpersUtil.isLowerCaseMatch(this.lastSelectedConnectorId, connection.connectorId) &&
+            HelpersUtil.isLowerCaseMatch(this.lastSelectedAddress, account.address) &&
+            this.isSwitching
+
+          return html`<wui-flex flexDirection="column">
+            ${includeSeparator && (!isFirstConnection || !isFirstAccount)
+              ? html`<wui-separator></wui-separator>`
+              : null}
+
+            <wui-inactive-profile-wallet-item
+              address=${account.address}
+              alt=${connection.connectorId}
+              buttonLabel="Switch"
+              buttonVariant="accent"
+              imageSrc=${connectorImage}
+              .loading=${isLoading}
+              .showBalance=${false}
+              .charsStart=${CHARS_START}
+              .charsEnd=${CHARS_END}
+              @buttonClick=${() =>
+                this.handleSwitchWallet({
+                  connection,
+                  address: account.address,
+                  forceReconnect: forceReconnectOnSwitch
+                })}
+            ></wui-inactive-profile-wallet-item>
+          </wui-flex>`
+        })
+      })
+  }
+
+  private recentWalletsTemplate() {
+    const { storageConnections } = this.getConnectionsData()
+    const filteredStorageConnections = ConnectionUtil.filterOutWcConnections(storageConnections)
+    const allStorageConnectionsAccounts = filteredStorageConnections.flatMap(
+      ({ accounts }) => accounts
+    )
+
+    if (allStorageConnectionsAccounts.length === 0) {
+      return null
+    }
+
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', '0', 'l'] as const} rowGap="xs">
+      <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
         <wui-text color="fg-200" variant="micro-500">RECENTLY CONNECTED</wui-text>
 
         <wui-flex flexDirection="column">
-          ${MOCK_INACTIVE_WALLETS.map(
-            (w, idx) => html`
-              <wui-flex flexDirection="column">
-                <wui-inactive-profile-wallet-item
-                  address=${address}
-                  alt=${w.alt}
-                  amount=${w.amount}
-                  currency=${w.currency}
-                  buttonLabel=${w.buttonLabel}
-                  buttonVariant=${w.buttonVariant}
-                  imageSrc=${w.imageSrc}
-                  totalNetworks=${w.totalNetworks}
-                  .loading=${false}
-                  .showBalance=${false}
-                ></wui-inactive-profile-wallet-item>
-
-                ${idx < MOCK_INACTIVE_WALLETS.length - 1
-                  ? html`<wui-separator></wui-separator>`
-                  : null}
-              </wui-flex>
-            `
-          )}
-        </wui-flex>
-      </wui-flex>
-    `
-  }
-
-  private emptyTemplate() {
-    return html`
-      <wui-flex alignItems="flex-start" class="empty-template">
-        <wui-flex
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          rowGap="s"
-          class="empty-box"
-        >
-          <wui-icon-box
-            size="lg"
-            icon="wallet"
-            background="gray"
-            iconColor="fg-200"
-            backgroundColor="glass-002"
-          ></wui-icon-box>
-
-          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
-            <wui-text color="fg-100" variant="paragraph-500">No wallet connected</wui-text>
-            <wui-text color="fg-200" variant="tiny-500">Add your first Bitcoin wallet.</wui-text>
-          </wui-flex>
-
-          <wui-button variant="neutral" size="md">
-            <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
-            Add Bitcoin Wallet
-          </wui-button>
+          ${this.displayConnections({
+            connections: filteredStorageConnections,
+            includeSeparator: true,
+            forceReconnectOnSwitch: true
+          })}
         </wui-flex>
       </wui-flex>
     `
@@ -252,21 +360,86 @@ export class W3mProfileWalletsView extends LitElement {
     `
   }
 
-  private handleAddWallet() {
-    RouterController.push('Connect')
+  private async handleSwitchWallet({
+    connection,
+    address,
+    forceReconnect
+  }: HandleSwitchWalletParams) {
+    try {
+      this.isSwitching = true
+      this.lastSelectedConnectorId = connection.connectorId
+      this.lastSelectedAddress = address
+
+      const { hasSwitchedCaipAddress, hasSwitchedConnector } =
+        await ConnectionController.switchAccount({
+          connection,
+          address,
+          namespace: this.namespace as ChainNamespace,
+          forceReconnect
+        })
+
+      this.handleSwitchResult(hasSwitchedCaipAddress, hasSwitchedConnector)
+    } catch (err) {
+      SnackController.showError('Failed to connect wallet')
+    } finally {
+      this.isSwitching = false
+    }
+  }
+
+  private handleSwitchResult(hasSwitchedCaipAddress: boolean, hasSwitchedConnector: boolean) {
+    if (hasSwitchedCaipAddress) {
+      SnackController.showSuccess('Account switched')
+    } else if (hasSwitchedConnector) {
+      SnackController.showSuccess('Wallet switched')
+    } else {
+      SnackController.showError('Failed to switch wallet')
+    }
+  }
+
+  private async handleDisconnect() {
+    try {
+      this.isDisconnecting = true
+      await ConnectionController.disconnect()
+      SnackController.showSuccess('Disconnected')
+    } catch (err) {
+      SnackController.showError('Failed to disconnect')
+    } finally {
+      this.isDisconnecting = false
+    }
   }
 
   private handleCopyAddress() {
     SnackController.showSuccess('Copied')
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private async handleDisconnect() {
-    await ConnectionController.disconnect()
+  private handleAddWallet() {
+    RouterController.push('Connect')
   }
 
   private onTabChange(index: number) {
     this.currentTab = index
+  }
+
+  private initializeScrollHandling() {
+    const walletListEl = this.shadowRoot?.querySelector('.wallet-list')
+
+    if (!walletListEl) {
+      return
+    }
+
+    requestAnimationFrame(this.handleConnectListScroll.bind(this))
+    walletListEl.addEventListener('scroll', this.handleConnectListScroll.bind(this))
+    this.resizeObserver = new ResizeObserver(() => this.handleConnectListScroll())
+    this.resizeObserver.observe(walletListEl)
+    this.handleConnectListScroll()
+  }
+
+  private removeScrollListener() {
+    const connectEl = this.shadowRoot?.querySelector('.wallet-list')
+
+    if (connectEl) {
+      connectEl.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
+    }
   }
 
   private handleConnectListScroll() {
@@ -276,16 +449,20 @@ export class W3mProfileWalletsView extends LitElement {
       return
     }
 
-    walletListEl.style.setProperty(
+    this.updateScrollOpacity(walletListEl)
+  }
+
+  private updateScrollOpacity(element: HTMLElement) {
+    element.style.setProperty(
       '--connect-scroll--top-opacity',
-      MathUtil.interpolate([0, 50], [0, 1], walletListEl.scrollTop).toString()
+      MathUtil.interpolate([0, 50], [0, 1], element.scrollTop).toString()
     )
-    walletListEl.style.setProperty(
+    element.style.setProperty(
       '--connect-scroll--bottom-opacity',
       MathUtil.interpolate(
         [0, 50],
         [0, 1],
-        walletListEl.scrollHeight - walletListEl.scrollTop - walletListEl.offsetHeight
+        element.scrollHeight - element.scrollTop - element.offsetHeight
       ).toString()
     )
   }
