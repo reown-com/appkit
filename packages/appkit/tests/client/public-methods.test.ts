@@ -836,7 +836,7 @@ describe('Base Public methods', () => {
       name: 'Test Wallet',
       imageUrl: 'test-wallet-icon'
     } as Connector
-    ConnectorController.state.allConnectors = [mockConnector]
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValueOnce([mockConnector])
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValueOnce(mockConnector.id)
     const mockAccountData = {
       address: '0x123',
