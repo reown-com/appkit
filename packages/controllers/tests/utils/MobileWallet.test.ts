@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
+
 import {
   ChainController,
   type ChainControllerState
@@ -61,12 +63,28 @@ describe('MobileWalletUtil', () => {
   })
 
   it('should redirect to Coinbase Wallet when it is not installed', () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      activeChain: ConstantsUtil.CHAIN.SOLANA
+    } as unknown as ChainControllerState)
     MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.coinbase.name)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
 
     expect(window.location.href).toBe(expectedUrl)
+  })
+
+  it('should redirect to Coinbase Wallet if active namespace is Solana', () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      activeChain: ConstantsUtil.CHAIN.EVM
+    } as unknown as ChainControllerState)
+
+    MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.coinbase.name)
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
+
+    expect(window.location.href).not.toBe(expectedUrl)
   })
 
   it('should not redirect when Coinbase Wallet is installed', () => {
