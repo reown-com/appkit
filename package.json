@@ -58,7 +58,7 @@
     "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
     "prepare": "husky",
     "cli": "node packages/cli/index.js",
-    "codemod:upgrade": "node packages/codemod/src/index.js upgrade",
+    "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
     "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/*",
     "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade wagmi @wagmi/*"
   },
@@ -83,7 +83,7 @@
     "prettier": "3.5.3",
     "process": "0.11.10",
     "turbo": "2.0.6-canary.0",
-    "typescript": "5.7.3",
+    "typescript": "5.8.3",
     "vite": "5.4.12",
     "vite-plugin-node-polyfills": "0.23.0",
     "vitest": "2.1.9"

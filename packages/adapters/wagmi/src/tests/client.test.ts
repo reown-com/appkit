@@ -74,6 +74,20 @@ const mockWagmiConfig = {
       getProvider() {
         return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
       }
+    },
+    {
+      id: 'ID_AUTH',
+      getProvider() {
+        return Promise.resolve({
+          user: {
+            address: '0x123',
+            accounts: [
+              { address: '0x123', type: 'eoa' },
+              { address: '0x456', type: 'smartAccount' }
+            ]
+          }
+        })
+      }
     }
   ],
   _internal: {
@@ -525,7 +539,7 @@ describe('WagmiAdapter', () => {
     })
   })
 
-  describe('WagmiAdapter - connect and disconnect', () => {
+  describe('WagmiAdapter - connect, syncConnection and disconnect', () => {
     it('should connect successfully', async () => {
       const result = await adapter.connect({
         id: 'test-connector',
@@ -535,6 +549,22 @@ describe('WagmiAdapter', () => {
       })
 
       expect(result.address).toBe('0x123')
+      expect(result.chainId).toBe(1)
+    })
+
+    it('should sync connection successfully', async () => {
+      vi.mocked(getConnections).mockReturnValue([
+        { connector: { id: 'test-connector', type: 'injected' }, accounts: ['0x123'], chainId: 1 }
+      ] as any)
+      const result = await adapter.syncConnection({
+        id: 'test-connector',
+        chainId: 1,
+        namespace: 'eip155',
+        rpcUrl: 'https://rpc.walletconnect.org'
+      })
+
+      expect(result.address).toBe('0x123')
+      expect(result.type).toBe('INJECTED')
       expect(result.chainId).toBe(1)
     })
 
@@ -814,7 +844,7 @@ describe('WagmiAdapter', () => {
 
       vi.spyOn(wagmiCore, 'watchPendingTransactions').mockReturnValue(unsubscribe)
 
-      new WagmiAdapter({
+      const adapter = new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId,
         pendingTransactionsFilter: {
@@ -822,6 +852,8 @@ describe('WagmiAdapter', () => {
           pollingInterval: 500
         }
       })
+
+      adapter.construct({})
 
       // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
       LimitterUtil.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS
@@ -999,6 +1031,42 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(disconnectSpy).not.toHaveBeenCalled()
+    })
+
+    it('should return accounts successfully when using auth connector', async () => {
+      vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        connectors: mockWagmiConfig.connectors
+      } as any)
+
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        pendingTransactionsFilter: {
+          enable: true,
+          pollingInterval: 5000
+        }
+      })
+
+      const accounts = await adapter.getAccounts({ id: 'ID_AUTH' })
+
+      expect(accounts).toEqual({
+        accounts: [
+          {
+            namespace: 'eip155',
+            address: '0x123',
+            type: 'eoa',
+            publicKey: undefined,
+            path: undefined
+          },
+          {
+            namespace: 'eip155',
+            address: '0x456',
+            type: 'smartAccount',
+            publicKey: undefined,
+            path: undefined
+          }
+        ]
+      })
     })
   })
 })

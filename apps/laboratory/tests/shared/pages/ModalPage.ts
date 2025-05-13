@@ -488,12 +488,15 @@ export class ModalPage {
   }
 
   async closeModal() {
+    // Wait until stable after animations
+    await this.page.waitForTimeout(200)
     const closeButton = this.page.getByTestId('w3m-header-close')
-    await closeButton.waitFor({ state: 'visible', timeout: 15_000 })
+    // Click the button and wait for modal to fade out
     await closeButton.click()
     await closeButton.waitFor({ state: 'hidden', timeout: 15_000 })
-    // Wait for the modal fade out animation
-    await this.page.waitForTimeout(500)
+
+    // Wait until stable after animations
+    await this.page.waitForTimeout(200)
   }
 
   async updateEmail(mailsacApiKey: string) {
@@ -662,6 +665,8 @@ export class ModalPage {
 
   async openModal() {
     await this.page.getByTestId('account-button').click()
+    const modal = this.page.getByTestId('w3m-modal-card')
+    await expect(modal).toBeVisible()
   }
 
   async openNetworks() {
@@ -670,7 +675,10 @@ export class ModalPage {
   }
 
   async openProfileView() {
-    await this.page.getByTestId('wui-profile-button').click()
+    const profileButton = this.page.getByTestId('wui-profile-button')
+    await expect(profileButton).toBeVisible()
+    await profileButton.click()
+    await profileButton.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
   async getWalletFeaturesButton(feature: WalletFeature) {
