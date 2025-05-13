@@ -30,7 +30,6 @@ import {
 import { Card } from '@chakra-ui/react'
 
 import type {
-  AddressOrNative,
   AppKitPayErrorMessage,
   Exchange,
   PayResult,
@@ -272,7 +271,7 @@ export function AppKitPay() {
 
     const params: PayUrlParams = {
       network: paymentDetails.asset.network as `eip155:${string}`,
-      asset: paymentDetails.asset.asset as AddressOrNative,
+      asset: paymentDetails.asset.asset,
       amount: paymentDetails.amount.toString(),
       recipient: paymentDetails.recipient
     }

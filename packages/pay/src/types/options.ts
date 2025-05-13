@@ -1,9 +1,5 @@
 import type { CaipNetworkId } from '@reown/appkit-common'
 
-type Hex = `0x${string}`
-type Address = Hex
-export type AddressOrNative = Address | 'native'
-
 export type AssetMetadata = {
   name: string
   symbol: string
@@ -12,7 +8,7 @@ export type AssetMetadata = {
 
 export type PaymentAsset = {
   network: CaipNetworkId
-  asset: AddressOrNative
+  asset: string
   metadata: AssetMetadata
 }
 
@@ -40,7 +36,7 @@ export type GetExchangesParams = {
 
 export type PayUrlParams = {
   network: CaipNetworkId
-  asset: AddressOrNative
+  asset: string
   amount: number | string
   recipient: string
 }
