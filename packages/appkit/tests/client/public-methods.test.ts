@@ -383,6 +383,217 @@ describe('Base Public methods', () => {
     expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
   })
 
+  it('should sync the same account only once', async () => {
+    const mockAccountData = {
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    }
+
+    let syncAccountsToAttempt = 10
+    let syncAccountsCount = 0
+    let syncAccountsToExecuted = 0
+
+    const appKit = new AppKit(mockOptions)
+    AccountController.state.address = undefined
+    const originalShouldSkipAccountSyncAccount = appKit['shouldSkipAccountSyncAccount'].bind(appKit)
+
+    // @ts-expect-error - private method
+    vi.spyOn(appKit, 'shouldSkipAccountSyncAccount').mockImplementation(arg => {
+      syncAccountsCount++
+      return originalShouldSkipAccountSyncAccount(arg)
+    })
+
+    const originalSetStatus = appKit['setStatus'].bind(appKit)
+
+    const statusSpy = vi.spyOn(appKit, 'setStatus').mockImplementation((status, caipNetworkId) => {
+      syncAccountsToExecuted++
+      return originalSetStatus(status, caipNetworkId)
+    })
+
+    await Promise.all(
+      Array.from({ length: syncAccountsToAttempt }).map(async () => {
+        await appKit['syncAccount'](mockAccountData)
+      })
+    )
+
+    expect(syncAccountsToExecuted).toBe(1)
+    expect(syncAccountsToAttempt).toBe(10)
+    expect(appKit.getAddress()).toBe('0x123')
+    expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
+    console.log('finished')
+    statusSpy.mockRestore()
+  })
+
+  it('should sync the same account once per syncTimeout', async () => {
+    const mockAccountData = {
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    }
+
+    let syncAccountsToAttempt = 10
+    let syncAccountsCount = 0
+    let syncAccountsToExecuted = 0
+
+    const appKit = new AppKit(mockOptions)
+    AccountController.state.address = undefined
+    const originalShouldSkipAccountSyncAccount = appKit['shouldSkipAccountSyncAccount'].bind(appKit)
+
+    // @ts-expect-error - private method
+    vi.spyOn(appKit, 'shouldSkipAccountSyncAccount').mockImplementation(arg => {
+      console.log('shouldSkipAccountSyncAccount - called', arg)
+      syncAccountsCount++
+      return originalShouldSkipAccountSyncAccount(arg)
+    })
+
+    const originalSetStatus = appKit['setStatus'].bind(appKit)
+
+    const statusSpy = vi.spyOn(appKit, 'setStatus').mockImplementation((status, caipNetworkId) => {
+      syncAccountsToExecuted++
+      return originalSetStatus(status, caipNetworkId)
+    })
+
+    await Promise.all(
+      Array.from({ length: syncAccountsToAttempt }).map(async () => {
+        await appKit['syncAccount'](mockAccountData)
+      })
+    )
+
+    expect(syncAccountsToExecuted).toBe(1)
+    expect(syncAccountsCount).toBe(10)
+    expect(appKit.getAddress()).toBe('0x123')
+    expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
+
+    vi.useFakeTimers()
+
+    vi.advanceTimersByTime(61000)
+
+    await Promise.all(
+      Array.from({ length: syncAccountsToAttempt }).map(async () => {
+        await appKit['syncAccount'](mockAccountData)
+      })
+    )
+
+    vi.useRealTimers()
+
+    expect(syncAccountsToExecuted).toBe(2)
+    expect(syncAccountsCount).toBe(20)
+    expect(appKit.getAddress()).toBe('0x123')
+    expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
+    console.log('finished')
+    statusSpy.mockRestore()
+  })
+
+  it('should sync different accounts on the same chain', async () => {
+    console.log('starting')
+    const mockAccountData = {
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    }
+
+    const mockAccountData2 = {
+      address: '0x456',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    }
+
+    let syncAccountsToAttempt = 10
+    let syncAccountsCount = 0
+    let syncAccountsToExecuted = 0
+
+    const appKit = new AppKit(mockOptions)
+    AccountController.state.address = undefined
+    const originalShouldSkipAccountSyncAccount = appKit['shouldSkipAccountSyncAccount'].bind(appKit)
+
+    // @ts-expect-error - private method
+    vi.spyOn(appKit, 'shouldSkipAccountSyncAccount').mockImplementation(arg => {
+      syncAccountsCount++
+      return originalShouldSkipAccountSyncAccount(arg)
+    })
+
+    const originalSetStatus = appKit['setStatus'].bind(appKit)
+
+    const statusSpy = vi.spyOn(appKit, 'setStatus').mockImplementation((status, caipNetworkId) => {
+      syncAccountsToExecuted++
+      return originalSetStatus(status, caipNetworkId)
+    })
+
+    await Promise.all(
+      Array.from({ length: syncAccountsToAttempt }).map(async () => {
+        await appKit['syncAccount'](mockAccountData)
+      })
+    )
+    expect(syncAccountsToExecuted).toBe(1)
+    expect(syncAccountsCount).toBe(10)
+    expect(appKit.getAddress()).toBe('0x123')
+    expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
+
+    await appKit['syncAccount'](mockAccountData2)
+
+    expect(syncAccountsToExecuted).toBe(2)
+    expect(syncAccountsCount).toBe(11)
+    expect(appKit.getAddress()).toBe('0x456')
+    expect(appKit.getCaipAddress()).toBe('eip155:1:0x456')
+
+    statusSpy.mockRestore()
+  })
+
+  it('should sync same accounts on different chains', async () => {
+    const mockAccountData = {
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: mainnet.chainNamespace
+    }
+
+    const mockAccountData2 = {
+      address: '0x123',
+      chainId: sepolia.id,
+      chainNamespace: sepolia.chainNamespace
+    }
+
+    let syncAccountsToAttempt = 10
+    let syncAccountsCount = 0
+    let syncAccountsToExecuted = 0
+
+    const appKit = new AppKit(mockOptions)
+    AccountController.state.address = undefined
+
+    const originalShouldSkipAccountSyncAccount = appKit['shouldSkipAccountSyncAccount'].bind(appKit)
+
+    // @ts-expect-error - private method
+    vi.spyOn(appKit, 'shouldSkipAccountSyncAccount').mockImplementation(arg => {
+      syncAccountsCount++
+      return originalShouldSkipAccountSyncAccount(arg)
+    })
+
+    const originalSetStatus = appKit['setStatus'].bind(appKit)
+
+    const statusSpy = vi.spyOn(appKit, 'setStatus').mockImplementation((status, caipNetworkId) => {
+      syncAccountsToExecuted++
+      return originalSetStatus(status, caipNetworkId)
+    })
+
+    await Promise.all(
+      Array.from({ length: syncAccountsToAttempt }).map(async () => {
+        await appKit['syncAccount'](mockAccountData)
+      })
+    )
+    expect(syncAccountsToExecuted).toBe(1)
+    expect(syncAccountsCount).toBe(10)
+    expect(appKit.getAddress()).toBe('0x123')
+    expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
+
+    await appKit['syncAccount'](mockAccountData2)
+
+    expect(syncAccountsToExecuted).toBe(2)
+    expect(syncAccountsCount).toBe(11)
+    expect(appKit.getAddress()).toBe('0x123')
+    expect(appKit.getCaipAddress()).toBe('eip155:11155111:0x123')
+    statusSpy.mockRestore()
+  })
+
   it('should get provider', () => {
     vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
     const appKit = new AppKit(mockOptions)
