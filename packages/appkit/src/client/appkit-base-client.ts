@@ -267,6 +267,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
+    OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
@@ -393,7 +394,7 @@ export abstract class AppKitBaseClient {
         })
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
+      connectExternal: async ({ id, info, type, provider, chain, caipNetwork, socialUri }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
@@ -418,6 +419,7 @@ export abstract class AppKitBaseClient {
           info,
           type,
           provider,
+          socialUri,
           chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
@@ -430,7 +432,17 @@ export abstract class AppKitBaseClient {
 
         StorageUtil.addConnectedNamespace(chainToUse)
         this.syncProvider({ ...res, chainNamespace: chainToUse })
-        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
+        /*
+         * SyncAllAccounts already set the accounts in the state
+         * and its more efficient to use the stored accounts rather than fetching them again
+         */
+        const syncedAccounts = AccountController.state.allAccounts
+        const { accounts } =
+          syncedAccounts?.length > 0
+            ? // eslint-disable-next-line line-comment-position
+              // Using new array else the accounts will have the same reference and react will not re-render
+              { accounts: [...syncedAccounts] }
+            : await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
@@ -668,7 +680,6 @@ export abstract class AppKitBaseClient {
 
     return this.chainNamespaces.reduce<Adapters>((adapters, namespace) => {
       const blueprint = blueprints?.find(b => b.namespace === namespace)
-
       if (blueprint) {
         blueprint.construct({
           namespace,
@@ -749,6 +760,10 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('disconnect', this.disconnect.bind(this, chainNamespace))
+
+    adapter.on('connections', connections => {
+      this.setConnections(connections, chainNamespace)
+    })
 
     adapter.on('pendingTransactions', () => {
       const address = AccountController.state.address
@@ -1189,7 +1204,11 @@ export abstract class AppKitBaseClient {
         tokens: this.options.tokens
       })
       this.setBalance(balance.balance, balance.symbol, namespace)
+
+      return balance
     }
+
+    return undefined
   }
 
   // -- Universal Provider ---------------------------------------------------
@@ -1375,9 +1394,9 @@ export abstract class AppKitBaseClient {
         return namespaceCaipNetwork
       }
 
-      return ChainController.getRequestedCaipNetworks(chainNamespace).filter(
-        c => c.chainNamespace === chainNamespace
-      )?.[0]
+      const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
+      return requestedCaipNetworks.filter(c => c.chainNamespace === chainNamespace)?.[0]
     }
 
     return ChainController.state.activeCaipNetwork || this.defaultCaipNetwork
@@ -1484,6 +1503,13 @@ export abstract class AppKitBaseClient {
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
     ConnectorController.setConnectors(allConnectors)
+  }
+
+  public setConnections: (typeof ConnectionController)['setConnections'] = (
+    connections,
+    chainNamespace
+  ) => {
+    ConnectionController.setConnections(connections, chainNamespace)
   }
 
   public fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>

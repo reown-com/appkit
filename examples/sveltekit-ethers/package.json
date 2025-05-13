@@ -14,7 +14,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@walletconnect/logger": "2.1.2",
-    "ethers": "6.13.5"
+    "ethers": "6.14.0"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.3",
@@ -25,7 +25,7 @@
     "globals": "15.0.0",
     "svelte": "5.0.0",
     "svelte-check": "4.0.0",
-    "typescript": "5.7.3",
-    "vite": "6.0.0"
+    "typescript": "5.8.3",
+    "vite": "6.3.5"
   }
 }
