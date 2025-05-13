@@ -427,9 +427,6 @@ describe('ConnectorController', () => {
 
     ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
 
-    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
-
     expect(window.location.href).toBe(ORIGINAL_HREF)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(mockConnector.name)
   })
