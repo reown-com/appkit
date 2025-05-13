@@ -23,7 +23,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public address = ''
 
-  @property() public domainName = ''
+  @property() public profileName = ''
 
   @property() public description = ''
 
@@ -43,9 +43,9 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
-  @property({ type: Number }) public charsStart = 2
+  @property({ type: Number }) public charsStart = 4
 
-  @property({ type: Number }) public charsEnd = 3
+  @property({ type: Number }) public charsEnd = 6
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -109,10 +109,10 @@ export class WuiActiveProfileWalletItem extends LitElement {
         <wui-flex alignItems="center" columnGap="3xs">
           <wui-text variant="small-500" color="fg-100">
             ${UiHelperUtil.getTruncateString({
-              string: this.domainName || this.address,
-              charsStart: this.domainName ? 16 : this.charsStart,
-              charsEnd: this.domainName ? 0 : this.charsEnd,
-              truncate: this.domainName ? 'end' : 'middle'
+              string: this.profileName || this.address,
+              charsStart: this.profileName ? 16 : this.charsStart,
+              charsEnd: this.profileName ? 0 : this.charsEnd,
+              truncate: this.profileName ? 'end' : 'middle'
             })}
           </wui-text>
 
@@ -126,10 +126,10 @@ export class WuiActiveProfileWalletItem extends LitElement {
         <wui-flex alignItems="center" columnGap="3xs">
           <wui-text variant="small-500" color="fg-100">
             ${UiHelperUtil.getTruncateString({
-              string: this.domainName || this.address,
-              charsStart: this.domainName ? 16 : this.charsStart,
-              charsEnd: this.domainName ? 0 : this.charsEnd,
-              truncate: this.domainName ? 'end' : 'middle'
+              string: this.profileName || this.address,
+              charsStart: this.profileName ? 16 : this.charsStart,
+              charsEnd: this.profileName ? 0 : this.charsEnd,
+              truncate: this.profileName ? 'end' : 'middle'
             })}
           </wui-text>
 

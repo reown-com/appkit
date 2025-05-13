@@ -17,7 +17,7 @@ export default {
   title: 'Composites/wui-active-profile-wallet-item',
   args: {
     address,
-    domainName: '',
+    profileName: '',
     description: '',
     alt: 'MetaMask',
     imageSrc: walletImagesOptions[0]?.src,
@@ -34,7 +34,7 @@ export default {
     address: {
       control: { type: 'text' }
     },
-    domainName: {
+    profileName: {
       control: { type: 'text' }
     },
     description: {
@@ -82,7 +82,7 @@ export const Default: Component = {
     <gallery-container width="336">
       <wui-active-profile-wallet-item
         address=${args.address}
-        domainName=${args.domainName}
+        profileName=${args.profileName}
         description=${args.description}
         alt=${args.alt}
         imageSrc=${args.imageSrc}

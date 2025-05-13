@@ -38,7 +38,7 @@ export class W3mAccountView extends LitElement {
     return html`
       ${authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
         ? this.walletFeaturesTemplate()
-        : this.walletFeaturesTemplate()}
+        : this.defaultTemplate()}
     `
   }
 

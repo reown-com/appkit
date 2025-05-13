@@ -223,7 +223,7 @@ export class W3mProfileWalletsView extends LitElement {
         tagLabel="Active"
         tagVariant="success"
         .description=${description}
-        .domainName=${name}
+        .profileName=${name}
         .loading=${this.isDisconnecting}
         .charsStart=${CHARS_START}
         .charsEnd=${CHARS_END}
@@ -393,7 +393,11 @@ export class W3mProfileWalletsView extends LitElement {
 
   private recentWalletsTemplate() {
     const { storageConnections } = this.getConnectionsData()
-    const filteredStorageConnections = ConnectionUtil.filterOutWcConnections(storageConnections)
+    const filteredStorageConnections = ConnectionUtil.filterConnections({
+      connections: storageConnections,
+      filterOutWcConnections: true,
+      filterOutAuthConnections: true
+    })
     const allStorageConnectionsAccounts = filteredStorageConnections.flatMap(
       ({ accounts }) => accounts
     )

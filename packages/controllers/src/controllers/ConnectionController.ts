@@ -318,7 +318,8 @@ export const ConnectionController = {
   },
 
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
-    state.connections.set(chainNamespace, connections)
+    // Doing state.connections.set won't work because valtio doesn't react to proxy state changes
+    state.connections = new Map(state.connections.set(chainNamespace, connections))
   },
 
   async switchAccount({

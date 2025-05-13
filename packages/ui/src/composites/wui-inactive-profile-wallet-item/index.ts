@@ -37,9 +37,9 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
-  @property({ type: Number }) public charsStart = 2
+  @property({ type: Number }) public charsStart = 4
 
-  @property({ type: Number }) public charsEnd = 3
+  @property({ type: Number }) public charsEnd = 6
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -78,14 +78,12 @@ export class WuiInactiveProfileWalletItem extends LitElement {
         alignItems="flex-start"
       >
         <wui-text variant="small-500" color="fg-100">
-          ${this.profileName
-            ? this.profileName
-            : UiHelperUtil.getTruncateString({
-                string: this.address,
-                charsStart: this.charsStart,
-                charsEnd: this.charsEnd,
-                truncate: 'middle'
-              })}
+          ${UiHelperUtil.getTruncateString({
+            string: this.profileName || this.address,
+            charsStart: this.profileName ? 16 : this.charsStart,
+            charsEnd: this.profileName ? 0 : this.charsEnd,
+            truncate: this.profileName ? 'end' : 'middle'
+          })}
         </wui-text>
       </wui-flex>
     `

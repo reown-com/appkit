@@ -66,6 +66,10 @@ export default css`
     box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
   }
 
+  wui-wallet-switch {
+    margin-top: var(--wui-spacing-xs);
+  }
+
   wui-avatar.network-avatar {
     width: 16px;
     height: 16px;

@@ -1,12 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
-  AssetController,
-  AssetUtil,
   ChainController,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
@@ -14,17 +11,20 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  type SocialProvider,
+  StorageUtil
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-balance'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-button'
-import '@reown/appkit-ui/wui-profile-button'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
+import '@reown/appkit-ui/wui-wallet-switch'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-account-activity-widget/index.js'
 import '../w3m-account-nfts-widget/index.js'
@@ -59,8 +59,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
-  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
-
   @state() private namespace = ChainController.state.activeChain
 
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
@@ -69,9 +67,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AssetController.subscribeNetworkImages(() => {
-          this.networkImage = AssetUtil.getNetworkImage(this.network)
-        }),
         AccountController.subscribe(val => {
           if (val.address) {
             this.address = val.address
@@ -83,12 +78,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      ConnectorController.subscribeKey(
-        'activeConnectorIds',
-        val => (this.activeConnectorIds = val)
-      ),
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
+        this.activeConnectorIds = newActiveConnectorIds
+      }),
       ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
       OptionsController.subscribeKey('features', val => (this.features = val))
     )
     this.watchSwapValues()
@@ -109,8 +103,19 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const connectorId = this.activeConnectorIds?.[this.namespace as ChainNamespace]
-    const connector = ConnectorController.getConnectorById(connectorId ?? '')
+    if (!this.namespace) {
+      return null
+    }
+
+    const connectorId = this.activeConnectorIds[this.namespace]
+
+    if (!connectorId) {
+      return null
+    }
+
+    const connector = ConnectorController.getConnectorById(connectorId)
+
+    const { icon, iconSize } = this.getAuthData()
 
     return html`<wui-flex
       flexDirection="column"
@@ -119,18 +124,19 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       gap="m"
       data-testid="w3m-account-wallet-features-widget"
     >
-      <wui-profile-button
-        @click=${this.onProfileButtonClick.bind(this)}
-        address=${ifDefined(this.address)}
-        networkSrc=${ifDefined(this.networkImage)}
-        icon="chevronBottom"
-        avatarSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-        profileName=${ifDefined(this.profileName ?? undefined)}
-        data-testid="w3m-profile-button"
-      ></wui-profile-button>
+      <wui-flex flexDirection="column" justifyContent="center" alignItems="center" gap="xs">
+        <wui-wallet-switch
+          profileName=${this.profileName}
+          address=${this.address}
+          icon=${icon}
+          iconSize=${iconSize}
+          alt=${connector?.name}
+          @click=${this.onGoToProfileWalletsView.bind(this)}
+        ></wui-wallet-switch>
 
-      ${this.tokenBalanceTemplate()} ${this.orderedWalletFeatures()} ${this.tabsTemplate()}
-      ${this.listContentTemplate()}
+        ${this.tokenBalanceTemplate()}
+      </wui-flex>
+      ${this.orderedWalletFeatures()} ${this.tabsTemplate()} ${this.listContentTemplate()}
     </wui-flex>`
   }
 
@@ -302,10 +308,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     AccountController.setCurrentTab(index)
   }
 
-  private onProfileButtonClick() {
-    return RouterController.push('ProfileWallets')
-  }
-
   private onBuyClick() {
     RouterController.push('OnRampProviders')
   }
@@ -335,8 +337,30 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     }
   }
 
+  private getAuthData() {
+    const socialProvider = StorageUtil.getConnectedSocialProvider() as SocialProvider | null
+    const socialUsername = StorageUtil.getConnectedSocialUsername() as string | null
+
+    const authConnector = ConnectorController.getAuthConnector()
+    const email = authConnector?.provider.getEmail() ?? ''
+
+    return {
+      name: ConnectorUtil.getAuthName({
+        email,
+        socialUsername,
+        socialProvider
+      }),
+      icon: socialProvider ?? 'mail',
+      iconSize: socialProvider ? 'xl' : 'md'
+    }
+  }
+
   private onReceiveClick() {
     RouterController.push('WalletReceive')
+  }
+
+  private onGoToProfileWalletsView() {
+    RouterController.push('ProfileWallets')
   }
 
   private onSendClick() {

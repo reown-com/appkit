@@ -432,6 +432,11 @@
       "import": "./dist/esm/exports/wui-active-profile-wallet-item.js",
       "default": "./dist/esm/exports/wui-active-profile-wallet-item.js"
     },
+    "./wui-wallet-switch": {
+      "types": "./dist/types/exports/wui-wallet-switch.d.ts",
+      "import": "./dist/esm/exports/wui-wallet-switch.js",
+      "default": "./dist/esm/exports/wui-wallet-switch.js"
+    },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",
       "import": "./dist/esm/exports/jsx.js",

@@ -1,13 +1,16 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { BaseError } from '@reown/appkit-controllers'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { BaseError, Connection, Connector } from '@reown/appkit-controllers'
 import {
   ChainController,
   ConnectionController,
   EventsController,
-  ModalController
+  ModalController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import { HelpersUtil } from '@reown/appkit-utils'
 
+import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')
@@ -15,10 +18,20 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
   // -- Members ------------------------------------------- //
   private externalViewUnsubscribe: (() => void)[] = []
 
+  private connections = this.connector
+    ? (ConnectionController.state.connections.get(this.connector?.chain) ?? [])
+    : []
+
   public constructor() {
     super()
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
+    }
+
+    if (this.isAlreadyConnected(this.connector)) {
+      this.secondaryBtnLabel = undefined
+      this.label = `Wallet is already linked, switch wallet in ${this.connector.name}`
+      this.secondaryLabel = `To link a new wallet, open ${this.connector.name} and switch to the account you want to link.`
     }
 
     EventsController.sendEvent({
@@ -37,7 +50,8 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         if (val) {
           ModalController.close()
         }
-      })
+      }),
+      ConnectionController.subscribeKey('connections', this.onConnectionsChange.bind(this))
     )
   }
 
@@ -50,6 +64,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     try {
       this.error = false
       if (this.connector) {
+        // No need to connect again if already connected
+        if (this.isAlreadyConnected(this.connector)) {
+          return
+        }
+
         /**
          * Coinbase SDK works with popups and popups requires user interaction to be opened since modern browsers block popups which triggered programmatically.
          * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase connector specifically when users select it.
@@ -73,6 +92,47 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       })
       this.error = true
     }
+  }
+
+  private onConnectionsChange(connections: Map<ChainNamespace, Connection[]>) {
+    if (
+      this.connector?.chain &&
+      connections.get(this.connector.chain) &&
+      this.isAlreadyConnected(this.connector)
+    ) {
+      const newConnections = connections.get(this.connector.chain) ?? []
+
+      if (newConnections.length === 0) {
+        RouterController.replace('Connect')
+      } else {
+        const allCurrentAccountsByConnectorId = ConnectionUtil.getConnectionsByConnectorId(
+          this.connections,
+          this.connector.id
+        ).flatMap(c => c.accounts)
+
+        const allNewAccountsByConnectorId = ConnectionUtil.getConnectionsByConnectorId(
+          newConnections,
+          this.connector.id
+        ).flatMap(c => c.accounts)
+
+        const isEveryAccountSame = allCurrentAccountsByConnectorId.every(a =>
+          allNewAccountsByConnectorId.some(b => HelpersUtil.isLowerCaseMatch(a.address, b.address))
+        )
+
+        if (!isEveryAccountSame) {
+          RouterController.replace('Account')
+          RouterController.push('ProfileWallets')
+        }
+      }
+    }
+  }
+
+  private isAlreadyConnected(connector: Connector) {
+    if (connector) {
+      return this.connections.some(c => HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id))
+    }
+
+    return false
   }
 }
 
