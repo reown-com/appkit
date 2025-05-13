@@ -1,9 +1,18 @@
 import { type CaipNetwork } from '@reown/appkit-common'
-import { eclipse, solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+import {
+  eclipse,
+  eclipseDevnet,
+  eclipseTestnet,
+  solana,
+  solanaDevnet,
+  solanaTestnet
+} from '@reown/appkit/networks'
 
 export const solanaChains = {
   'solana:mainnet': solana,
   'solana:testnet': solanaTestnet,
   'solana:devnet': solanaDevnet,
-  'solana:eclipse-mainnet': eclipse
+  'eclipse:mainnet': eclipse,
+  'eclipse:testnet': eclipseTestnet,
+  'eclipse:devnet': eclipseDevnet
 } as Record<`${string}:${string}`, CaipNetwork>
