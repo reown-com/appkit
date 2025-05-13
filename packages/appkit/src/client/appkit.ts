@@ -227,25 +227,21 @@ export class AppKit extends AppKitBaseClient {
     const options = OptionsController.getSnapshot()
     
     await Promise.all([
-    provider.syncDappData({
-      metadata: options.metadata as Metadata,
-      sdkVersion: options.sdkVersion,
-      projectId: options.projectId,
-      sdkType: options.sdkType
-    }),
-    provider.syncTheme({
-      themeMode: theme.themeMode,
-      themeVariables: theme.themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-      })
+      provider.syncDappData({
+        metadata: options.metadata as Metadata,
+        sdkVersion: options.sdkVersion,
+        projectId: options.projectId,
+        sdkType: options.sdkType
+      }),
+      provider.syncTheme({
+        themeMode: theme.themeMode,
+        themeVariables: theme.themeVariables,
+          w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+        })
     ])
 
-    provider.getSmartAccountEnabledNetworks()
+    await provider.getSmartAccountEnabledNetworks()
 
-    const preferredAccountType = AccountController.state?.preferredAccountTypes?.['eip155']
-    if (preferredAccountType && isAuthSupported) {
-      await provider.setPreferredAccount(preferredAccountType as W3mFrameTypes.AccountType)
-    }
 
     if (chainNamespace && isAuthSupported) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
