@@ -126,10 +126,12 @@ export class AppKit extends AppKitBaseClient {
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
 
+      const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
+      const currentAccountType = AccountController.state.preferredAccountTypes?.[namespace]
       const preferredAccountType =
         (user.preferredAccountType as W3mFrameTypes.AccountType) ||
-        (AccountController.state.preferredAccountTypes?.[namespace] as W3mFrameTypes.AccountType) ||
-        OptionsController.state.defaultAccountTypes[namespace]
+        currentAccountType ||
+        defaultAccountType
 
       /*
        * This covers the case where user switches back from a smart account supported
@@ -153,11 +155,7 @@ export class AppKit extends AppKitBaseClient {
         CoreHelperUtil.createAccount(
           namespace,
           account.address,
-          account.type ||
-            (AccountController.state.preferredAccountTypes?.[
-              namespace
-            ] as W3mFrameTypes.AccountType) ||
-            OptionsController.state.defaultAccountTypes[namespace]
+          account.type || currentAccountType || defaultAccountType
         )
       )
 

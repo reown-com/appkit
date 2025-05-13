@@ -18,6 +18,8 @@ import type {
   WcWallet
 } from './TypeUtil.js'
 
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   // Cache expiry in milliseconds
@@ -576,13 +578,15 @@ export const StorageUtil = {
   getPreferredAccountTypes() {
     try {
       const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES)
-
-      return JSON.parse(result as string) as PreferredAccountTypes
+      if (!result) {
+        return ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+      }
+      return JSON.parse(result) as PreferredAccountTypes
     } catch {
       console.info('Unable to get preferred account types')
     }
 
-    return undefined
+    return ConstantsUtil.DEFAULT_ACCOUNT_TYPES
   },
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
     try {
