@@ -22,7 +22,7 @@ export class W3mLegalFooter extends LitElement {
     if (showOnlyBranding) {
       return html`
         <wui-flex flexDirection="column">
-          <wui-ux-by-reown></wui-ux-by-reown>
+          <wui-ux-by-reown class="branding-only"></wui-ux-by-reown>
         </wui-flex>
       `
     }

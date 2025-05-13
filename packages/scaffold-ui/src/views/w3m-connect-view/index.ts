@@ -338,12 +338,11 @@ export class W3mConnectView extends LitElement {
       ${this.walletGuide === 'explore' && !ChainController.state.noAdapters
         ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
         : null}
-      <wui-flex flexDirection="column" .padding=${['l', '0', '0', '0']} class=${classMap(classes)}>
-        <w3m-wallet-guide
-          tabIdx=${ifDefined(tabIndex)}
-          walletGuide=${this.walletGuide}
-        ></w3m-wallet-guide>
-      </wui-flex>
+      <w3m-wallet-guide
+        class=${classMap(classes)}
+        tabIdx=${ifDefined(tabIndex)}
+        walletGuide=${this.walletGuide}
+      ></w3m-wallet-guide>
     `
   }
 
