@@ -8,7 +8,6 @@ import {
 } from '@reown/appkit-common'
 
 import type { Connection } from '../controllers/ConnectionController.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,
@@ -578,7 +577,7 @@ export const StorageUtil = {
     try {
       const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES)
       if (!result) {
-        return ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+        return {}
       }
 
       return JSON.parse(result) as PreferredAccountTypes
@@ -586,7 +585,7 @@ export const StorageUtil = {
       console.info('Unable to get preferred account types')
     }
 
-    return ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+    return {}
   },
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
     try {
