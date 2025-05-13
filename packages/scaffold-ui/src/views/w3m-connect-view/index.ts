@@ -294,7 +294,7 @@ export class W3mConnectView extends LitElement {
       return null
     }
     // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
-    if ((CoreHelperUtil.isTelegram() || CoreHelperUtil.isSafari()) && CoreHelperUtil.isIos()) {
+    if (CoreHelperUtil.isTelegram() && (CoreHelperUtil.isSafari() || CoreHelperUtil.isIos())) {
       ConnectionController.connectWalletConnect().catch(_e => ({}))
     }
 

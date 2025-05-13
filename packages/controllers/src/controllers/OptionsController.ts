@@ -125,6 +125,11 @@ export interface OptionsControllerStatePublic {
    */
   enableAuthLogger?: boolean
   /**
+   * Enable or disable Universal Links to open the wallets as default option instead of Deep Links.
+   * @default true
+   */
+  experimental_preferUniversalLinks?: boolean
+  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
    * @default true
    */
@@ -208,7 +213,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
     polkadot: 'eoa',
     eip155: 'smartAccount'
   },
-  enableNetworkSwitch: true
+  enableNetworkSwitch: true,
+  experimental_preferUniversalLinks: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -322,6 +328,12 @@ export const OptionsController = {
 
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
     state.enableWallets = enableWallets
+  },
+
+  setPreferUniversalLinks(
+    preferUniversalLinks: OptionsControllerState['experimental_preferUniversalLinks']
+  ) {
+    state.experimental_preferUniversalLinks = preferUniversalLinks
   },
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
