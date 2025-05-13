@@ -170,7 +170,6 @@ export class AppKit extends AppKitBaseClient {
         namespace
       )
 
-      await provider.getSmartAccountEnabledNetworks()
       this.setLoading(false, namespace)
     })
     provider.onSocialConnected(({ userName }) => {
@@ -223,21 +222,30 @@ export class AppKit extends AppKitBaseClient {
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
-
+    
     const theme = ThemeController.getSnapshot()
     const options = OptionsController.getSnapshot()
-
+    
+    await Promise.all([
     provider.syncDappData({
       metadata: options.metadata as Metadata,
       sdkVersion: options.sdkVersion,
       projectId: options.projectId,
       sdkType: options.sdkType
-    })
+    }),
     provider.syncTheme({
       themeMode: theme.themeMode,
       themeVariables: theme.themeVariables,
-      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-    })
+        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+      })
+    ])
+
+    provider.getSmartAccountEnabledNetworks()
+
+    const preferredAccountType = AccountController.state?.preferredAccountTypes?.['eip155']
+    if (preferredAccountType && isAuthSupported) {
+      await provider.setPreferredAccount(preferredAccountType as W3mFrameTypes.AccountType)
+    }
 
     if (chainNamespace && isAuthSupported) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
