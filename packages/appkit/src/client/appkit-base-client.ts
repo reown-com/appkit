@@ -273,7 +273,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
 
     // Get stored account types
-    const storedAccountTypes = StorageUtil.getPreferredAccountTypes()
+    const storedAccountTypes = StorageUtil.getPreferredAccountTypes() || {}
     const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
 
     AccountController.setPreferredAccountTypes(defaultTypes)
