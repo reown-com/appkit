@@ -17,8 +17,9 @@ export class W3mLegalFooter extends LitElement {
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
 
     const legalCheckbox = OptionsController.state.features?.legalCheckbox
+    const showOnlyBranding = (!termsConditionsUrl && !privacyPolicyUrl) || legalCheckbox
 
-    if ((!termsConditionsUrl && !privacyPolicyUrl) || legalCheckbox) {
+    if (showOnlyBranding) {
       return html`
         <wui-flex flexDirection="column">
           <wui-ux-by-reown></wui-ux-by-reown>
