@@ -26,7 +26,7 @@ const config = {
   features: {
     analytics: true
   },
-  customWallets: ConstantsUtil.CustomWallets,
+  customWallets: ConstantsUtil.CustomWallets
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 

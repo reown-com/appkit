@@ -117,7 +117,7 @@ export class AppKit extends AppKitBaseClient {
         this.setLoading(false, namespace)
       }
     })
-    provider.onConnect(async user => {
+    provider.onConnect(user => {
       const namespace = ChainController.state.activeChain as ChainNamespace
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
@@ -222,10 +222,10 @@ export class AppKit extends AppKitBaseClient {
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
-    
+
     const theme = ThemeController.getSnapshot()
     const options = OptionsController.getSnapshot()
-    
+
     await Promise.all([
       provider.syncDappData({
         metadata: options.metadata as Metadata,
@@ -236,12 +236,11 @@ export class AppKit extends AppKitBaseClient {
       provider.syncTheme({
         themeMode: theme.themeMode,
         themeVariables: theme.themeVariables,
-          w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-        })
+        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+      })
     ])
 
     await provider.getSmartAccountEnabledNetworks()
-
 
     if (chainNamespace && isAuthSupported) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {

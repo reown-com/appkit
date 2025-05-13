@@ -580,7 +580,7 @@ export const StorageUtil = {
       if (!result) {
         return ConstantsUtil.DEFAULT_ACCOUNT_TYPES
       }
-      
+
       return JSON.parse(result) as PreferredAccountTypes
     } catch {
       console.info('Unable to get preferred account types')
