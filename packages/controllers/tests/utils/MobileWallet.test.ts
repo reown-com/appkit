@@ -41,7 +41,7 @@ describe('MobileWalletUtil', () => {
   })
 
   it('should redirect to Phantom app when Phantom is not installed', () => {
-    MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.phantom.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const encodedRef = encodeURIComponent('https://example.com')
@@ -57,7 +57,7 @@ describe('MobileWalletUtil', () => {
     })
 
     const originalHref = window.location.href
-    MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.phantom.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name)
 
     expect(window.location.href).toBe(originalHref)
   })
@@ -66,7 +66,7 @@ describe('MobileWalletUtil', () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
       activeChain: ConstantsUtil.CHAIN.SOLANA
     } as unknown as ChainControllerState)
-    MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.coinbase.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
@@ -79,7 +79,7 @@ describe('MobileWalletUtil', () => {
       activeChain: ConstantsUtil.CHAIN.EVM
     } as unknown as ChainControllerState)
 
-    MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.coinbase.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
@@ -94,14 +94,14 @@ describe('MobileWalletUtil', () => {
     })
 
     const originalHref = window.location.href
-    MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.coinbase.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name)
 
     expect(window.location.href).toBe(originalHref)
   })
 
   it('should not redirect for unknown wallet names', () => {
     const originalHref = window.location.href
-    MobileWalletUtil.handleSolanaDeeplinkRedirect('other')
+    MobileWalletUtil.handleMobileDeeplinkRedirect('other')
 
     expect(window.location.href).toBe(originalHref)
   })
