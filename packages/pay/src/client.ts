@@ -1,12 +1,12 @@
 import { PayController, type PayControllerState } from './controllers/PayController.js'
-import type { PayUrlParams, PaymentOptions } from './types/options.js'
+import type { GetExchangesParams, PayUrlParams, PaymentOptions } from './types/options.js'
 
 export async function openPay(options: PaymentOptions) {
   return PayController.handleOpenPay(options)
 }
 
-export function getAvailableExchanges(page?: number) {
-  return PayController.getAvailableExchanges(page)
+export function getAvailableExchanges(params?: GetExchangesParams) {
+  return PayController.getAvailableExchanges(params)
 }
 
 export function getPayUrl(exchangeId: string, params: PayUrlParams) {

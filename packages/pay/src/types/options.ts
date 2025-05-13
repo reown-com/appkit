@@ -31,6 +31,13 @@ export type PaymentOptions = {
   }
 }
 
+export type GetExchangesParams = {
+  page?: number
+  asset?: string
+  amount?: number | string
+  network?: CaipNetworkId
+}
+
 export type PayUrlParams = {
   network: CaipNetworkId
   asset: AddressOrNative
