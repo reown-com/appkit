@@ -440,7 +440,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       chainId: Number(connection?.chainId),
       address: connection?.accounts[0] as string,
       provider,
-      type: connection?.connector.type as ConnectorType,
+      type: connection?.connector.type?.toUpperCase() as ConnectorType,
       id: connection?.connector.id as string
     }
   }
@@ -471,7 +471,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id, provider, type, info, chainId } = params
+    const { id, provider, type, info, chainId, socialUri } = params
     const connector = this.getWagmiConnector(id)
 
     if (!connector) {
@@ -499,7 +499,9 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     const res = await connect(this.wagmiConfig, {
       connector,
-      chainId: chainId ? Number(chainId) : undefined
+      chainId: chainId ? Number(chainId) : undefined,
+      // @ts-expect-error socialUri is needed for auth connector but not in wagmi types
+      socialUri
     })
 
     return {

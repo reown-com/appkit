@@ -314,7 +314,8 @@ export const ApiController = {
     state.wallets = CoreHelperUtil.uniqueBy(
       [...state.wallets, ...ApiController._filterOutExtensions(data)],
       'id'
-    )
+    ).filter(w => w.chains?.some(chain => chains.includes(chain)))
+
     state.count = count > state.count ? count : state.count
     state.page = page
   },

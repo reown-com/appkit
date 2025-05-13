@@ -234,7 +234,8 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
 
     const address = await connector.connect({
-      chainId: params.chainId as string
+      chainId: params.chainId as string,
+      socialUri: params.socialUri
     })
     this.listenProviderEvents(connector)
 

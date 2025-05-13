@@ -405,7 +405,7 @@ export abstract class AppKitBaseClient {
         })
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
+      connectExternal: async ({ id, info, type, provider, chain, caipNetwork, socialUri }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
@@ -430,6 +430,7 @@ export abstract class AppKitBaseClient {
           info,
           type,
           provider,
+          socialUri,
           chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
@@ -442,7 +443,17 @@ export abstract class AppKitBaseClient {
 
         StorageUtil.addConnectedNamespace(chainToUse)
         this.syncProvider({ ...res, chainNamespace: chainToUse })
-        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
+        /*
+         * SyncAllAccounts already set the accounts in the state
+         * and its more efficient to use the stored accounts rather than fetching them again
+         */
+        const syncedAccounts = AccountController.state.allAccounts
+        const { accounts } =
+          syncedAccounts?.length > 0
+            ? // eslint-disable-next-line line-comment-position
+              // Using new array else the accounts will have the same reference and react will not re-render
+              { accounts: [...syncedAccounts] }
+            : await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
@@ -1398,9 +1409,9 @@ export abstract class AppKitBaseClient {
         return namespaceCaipNetwork
       }
 
-      return ChainController.getRequestedCaipNetworks(chainNamespace).filter(
-        c => c.chainNamespace === chainNamespace
-      )?.[0]
+      const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
+      return requestedCaipNetworks.filter(c => c.chainNamespace === chainNamespace)?.[0]
     }
 
     return ChainController.state.activeCaipNetwork || this.defaultCaipNetwork
