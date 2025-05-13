@@ -35,7 +35,7 @@ export class W3mFrameProvider {
   public onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
 
   public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
-
+  private isInitialized = false
   private initPromise: Promise<void> | undefined
   public constructor({
     projectId,
@@ -52,26 +52,39 @@ export class W3mFrameProvider {
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
-      this.w3mFrame.initFrame()
+      this.createFrame()
     }
+  }
+
+  private async createFrame() {
+    this.w3mFrame.initFrame()
+
     this.initPromise = new Promise<void>(resolve => {
-      this.w3mFrame.events.onFrameEvent(async event => {
+      this.w3mFrame.events.onFrameEvent(event => {
         if (event.type === W3mFrameConstants.FRAME_READY) {
-          this.initPromise = undefined
-          await new Promise(_resolve => {
-            setTimeout(_resolve, 500)
-          })
-          resolve()
+          setTimeout(() => {
+            resolve()
+          }, 500)
         }
       })
     })
+    await this.initPromise
+    this.isInitialized = true
+    this.initPromise = undefined
   }
 
   public async init() {
-    this.w3mFrame.initFrame()
+    if (this.isInitialized) {
+      return
+    }
+
     if (this.initPromise) {
       await this.initPromise
+
+      return
     }
+
+    await this.createFrame()
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -89,7 +102,6 @@ export class W3mFrameProvider {
 
   public async reload() {
     try {
-      this.w3mFrame.initFrame()
       await this.appEvent<'Reload'>({
         type: W3mFrameConstants.APP_RELOAD
       } as W3mFrameTypes.AppEvent)
@@ -102,7 +114,7 @@ export class W3mFrameProvider {
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
-      this.w3mFrame.initFrame()
+      await this.init()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
         payload
@@ -180,7 +192,7 @@ export class W3mFrameProvider {
     payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
     try {
-      this.w3mFrame.initFrame()
+      await this.init()
 
       return this.appEvent<'GetSocialRedirectUri'>({
         type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
@@ -295,25 +307,55 @@ export class W3mFrameProvider {
 
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
-    try {
-      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
-      const response = await this.getUser({
-        chainId,
-        preferredAccountType: payload?.preferredAccountType
-      })
-      this.setLoginSuccess(response.email)
-      this.setLastUsedChainId(response.chainId)
-      this.user = response
+    if (payload?.socialUri) {
+      try {
+        await this.init()
+        const response = await this.appEvent<'ConnectSocial'>({
+          type: W3mFrameConstants.APP_CONNECT_SOCIAL,
+          payload: { uri: payload.socialUri, preferredAccountType: payload.preferredAccountType }
+        } as W3mFrameTypes.AppEvent)
 
-      return response
-    } catch (error) {
-      this.w3mLogger?.logger.error({ error }, 'Error connecting')
-      throw error
+        if (response.userName) {
+          this.setSocialLoginSuccess(response.userName)
+        }
+
+        this.setLoginSuccess(response.email)
+        this.setLastUsedChainId(response.chainId)
+
+        this.user = response
+
+        return response
+      } catch (error) {
+        this.w3mLogger?.logger.error({ error }, 'Error connecting social')
+        throw error
+      }
+    } else {
+      try {
+        const chainId = payload?.chainId || this.getLastUsedChainId() || 1
+
+        if (payload?.preferredAccountType) {
+          await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
+        }
+
+        const response = await this.getUser({
+          chainId,
+          preferredAccountType: payload?.preferredAccountType
+        })
+        this.setLoginSuccess(response.email)
+        this.setLastUsedChainId(response.chainId)
+        this.user = response
+
+        return response
+      } catch (error) {
+        this.w3mLogger?.logger.error({ error }, 'Error connecting')
+        throw error
+      }
     }
   }
 
   public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
+      await this.init()
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
@@ -330,7 +372,7 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
-      this.w3mFrame.initFrame()
+      await this.init()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
@@ -349,7 +391,7 @@ export class W3mFrameProvider {
 
   public async getFarcasterUri() {
     try {
-      this.w3mFrame.initFrame()
+      await this.init()
       const response = await this.appEvent<'GetFarcasterUri'>({
         type: W3mFrameConstants.APP_GET_FARCASTER_URI
       } as W3mFrameTypes.AppEvent)
@@ -396,10 +438,17 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     try {
-      const response = await this.appEvent<'SignOut'>({
-        type: W3mFrameConstants.APP_SIGN_OUT
-      } as W3mFrameTypes.AppEvent)
       this.deleteAuthLoginCache()
+      const response = await new Promise<void>(async resolve => {
+        const timeout = setTimeout(() => {
+          resolve()
+        }, 3_000)
+        await this.appEvent<'SignOut'>({
+          type: W3mFrameConstants.APP_SIGN_OUT
+        } as W3mFrameTypes.AppEvent)
+        clearTimeout(timeout)
+        resolve()
+      })
 
       return response
     } catch (error) {

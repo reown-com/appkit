@@ -5,6 +5,7 @@ import {
   AccountController,
   ChainController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController,
   SnackController
@@ -20,7 +21,6 @@ import * as AssetUtil from '../../src/utils/AssetUtil'
 import * as PaymentUtil from '../../src/utils/PaymentUtil'
 
 describe('PayController', () => {
-  // Use type assertion to ensure the mock matches expected type
   const mockPaymentOptions = {
     paymentAsset: {
       network: 'eip155:1',
@@ -41,7 +41,6 @@ describe('PayController', () => {
     payWithExchange: 'coinbase'
   } as PaymentOptions
 
-  // Mocks that match the Exchange type
   const mockExchanges = [
     {
       id: 'coinbase',
@@ -65,6 +64,9 @@ describe('PayController', () => {
     sessionId: '123'
   }
 
+  let eventsControllerSpy: ReturnType<typeof vi.spyOn>
+  const mockPaymentId = 'mock-payment-id'
+
   beforeEach(() => {
     vi.resetAllMocks()
 
@@ -74,6 +76,8 @@ describe('PayController', () => {
     PayController.state.isPaymentInProgress = false
     PayController.state.isLoading = false
     PayController.state.exchanges = []
+    PayController.state.currentPayment = undefined
+    PayController.state.analyticsSet = false
 
     // Mock ChainController state
     Object.defineProperty(ChainController.state, 'activeChain', {
@@ -98,6 +102,9 @@ describe('PayController', () => {
     vi.spyOn(ModalController, 'open').mockResolvedValue(undefined)
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
 
+    // Mock EventsController
+    eventsControllerSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
     // Mock snack controller
     vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -107,7 +114,7 @@ describe('PayController', () => {
 
     // Mock ProviderUtil
     vi.spyOn(ProviderUtil, 'subscribeProviders').mockImplementation(callback => {
-      // Simulate a provider update - use any to bypass complex type requirements
+      // Simulate a provider update - use any to bypass complex annoying type requirements
       callback({} as any)
       return () => {}
     })
@@ -132,6 +139,10 @@ describe('PayController', () => {
 
     // Mock CoreHelperUtil
     vi.spyOn(CoreHelperUtil, 'openHref').mockImplementation(() => {})
+
+    vi.stubGlobal('crypto', {
+      randomUUID: vi.fn(() => mockPaymentId)
+    })
   })
 
   describe('setPaymentConfig', () => {
@@ -155,16 +166,31 @@ describe('PayController', () => {
   })
 
   describe('handleOpenPay', () => {
-    it('should configure payment and open modal', async () => {
+    it('should configure payment, open modal, and send PAY_MODAL_OPEN event', async () => {
       const setPaymentConfigSpy = vi.spyOn(PayController, 'setPaymentConfig')
       const subscribeEventsSpy = vi.spyOn(PayController, 'subscribeEvents')
+      const initializeAnalyticsSpy = vi.spyOn(PayController, 'initializeAnalytics')
 
       await PayController.handleOpenPay(mockPaymentOptions)
 
       expect(setPaymentConfigSpy).toHaveBeenCalledWith(mockPaymentOptions)
       expect(subscribeEventsSpy).toHaveBeenCalled()
+      expect(initializeAnalyticsSpy).toHaveBeenCalled()
       expect(PayController.state.isConfigured).toBe(true)
       expect(ModalController.open).toHaveBeenCalledWith({ view: 'Pay' })
+      expect(eventsControllerSpy).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'PAY_MODAL_OPEN',
+        properties: {
+          exchanges: [], // Initial state
+          configuration: {
+            network: mockPaymentOptions.paymentAsset.network,
+            asset: mockPaymentOptions.paymentAsset.asset,
+            recipient: mockPaymentOptions.recipient,
+            amount: mockPaymentOptions.amount
+          }
+        }
+      })
     })
   })
 
@@ -197,33 +223,74 @@ describe('PayController', () => {
   })
 
   describe('getPayUrl', () => {
-    it('should return pay URL from API', async () => {
-      // No need to setPaymentConfig here, as parameters are passed directly
-      const params = {
-        network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
-        asset: mockPaymentOptions.paymentAsset.asset,
-        amount: mockPaymentOptions.amount,
-        recipient: mockPaymentOptions.recipient
-      }
+    const params = {
+      network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
+      asset: mockPaymentOptions.paymentAsset.asset,
+      amount: mockPaymentOptions.amount,
+      recipient: mockPaymentOptions.recipient
+    }
+
+    it('should return pay URL from API and send PAY_EXCHANGE_SELECTED event', async () => {
       const result = await PayController.getPayUrl('coinbase', params)
 
       expect(ApiUtil.getPayUrl).toHaveBeenCalledWith({
         exchangeId: 'coinbase',
         asset: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        amount: 'a', // hex of 10
+        amount: '10',
         recipient: 'eip155:1:0x1234567890123456789012345678901234567890'
       })
       expect(result).toEqual(mockPayUrlResponse)
+      expect(eventsControllerSpy).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'PAY_EXCHANGE_SELECTED',
+        properties: {
+          exchange: {
+            id: 'coinbase'
+          },
+          configuration: {
+            network: params.network,
+            asset: params.asset,
+            recipient: params.recipient,
+            amount: params.amount
+          },
+          currentPayment: {
+            type: 'exchange',
+            exchangeId: 'coinbase'
+          },
+          headless: false
+        }
+      })
+    })
+
+    it('should send PAY_INITIATED event when headless is true', async () => {
+      await PayController.getPayUrl('coinbase', params, true)
+
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'PAY_EXCHANGE_SELECTED'
+        })
+      )
+      expect(eventsControllerSpy).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'PAY_INITIATED',
+        properties: {
+          paymentId: mockPaymentId,
+          configuration: {
+            network: params.network,
+            asset: params.asset,
+            recipient: params.recipient,
+            amount: params.amount
+          },
+          currentPayment: {
+            type: 'exchange',
+            exchangeId: 'coinbase'
+          }
+        }
+      })
     })
 
     it('should handle API errors', async () => {
       vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(new Error('API error'))
-      const params = {
-        network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
-        asset: mockPaymentOptions.paymentAsset.asset,
-        amount: mockPaymentOptions.amount,
-        recipient: mockPaymentOptions.recipient
-      }
 
       await expect(PayController.getPayUrl('coinbase', params)).rejects.toThrow('API error')
     })
@@ -232,12 +299,6 @@ describe('PayController', () => {
       vi.spyOn(ApiUtil, 'getPayUrl').mockRejectedValueOnce(
         new Error('Asset is not supported by the selected exchange')
       )
-      const params = {
-        network: mockPaymentOptions.paymentAsset.network as CaipNetworkId,
-        asset: mockPaymentOptions.paymentAsset.asset,
-        amount: mockPaymentOptions.amount,
-        recipient: mockPaymentOptions.recipient
-      }
 
       await expect(PayController.getPayUrl('coinbase', params)).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.ASSET_NOT_SUPPORTED)
@@ -256,6 +317,9 @@ describe('PayController', () => {
       PayController.state.amount = mockPaymentOptions.amount
       const expectedFromAddress = '0x1234567890123456789012345678901234567890'
 
+      PayController.initializeAnalytics()
+      PayController.state.currentPayment = { type: 'wallet', status: 'UNKNOWN' }
+
       await PayController.handlePayment()
 
       expect(PaymentUtil.processEvmNativePayment).toHaveBeenCalledWith(
@@ -268,6 +332,53 @@ describe('PayController', () => {
         }
       )
       expect(ModalController.open).toHaveBeenCalledWith({ view: 'PayLoading' })
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'PAY_INITIATED',
+          properties: expect.objectContaining({
+            paymentId: mockPaymentId,
+            configuration: expect.objectContaining({
+              amount: mockPaymentOptions.amount,
+              asset: 'native',
+              network: mockPaymentOptions.paymentAsset.network,
+              recipient: mockPaymentOptions.recipient
+            }),
+            currentPayment: expect.objectContaining({
+              type: 'wallet',
+              exchangeId: undefined,
+              sessionId: undefined,
+              result: undefined
+            })
+          })
+        })
+      )
+
+      PayController.state.currentPayment = { type: 'wallet', status: 'SUCCESS' }
+      PayController.state.isPaymentInProgress = true
+      PayController.state.isPaymentInProgress = false
+
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'PAY_SUCCESS',
+          properties: expect.objectContaining({
+            paymentId: mockPaymentId,
+            configuration: expect.objectContaining({
+              amount: mockPaymentOptions.amount,
+              asset: 'native',
+              network: mockPaymentOptions.paymentAsset.network,
+              recipient: mockPaymentOptions.recipient
+            }),
+            currentPayment: expect.objectContaining({
+              type: 'wallet',
+              exchangeId: undefined,
+              sessionId: undefined,
+              result: undefined
+            })
+          })
+        })
+      )
     })
 
     it('should handle EVM ERC20 token payment', async () => {
@@ -279,6 +390,9 @@ describe('PayController', () => {
       PayController.state.amount = mockPaymentOptions.amount
       const expectedFromAddress = '0x1234567890123456789012345678901234567890'
 
+      PayController.initializeAnalytics()
+      PayController.state.currentPayment = { type: 'wallet', status: 'UNKNOWN' }
+
       await PayController.handlePayment()
 
       expect(PaymentUtil.processEvmErc20Payment).toHaveBeenCalledWith(
@@ -289,17 +403,103 @@ describe('PayController', () => {
           fromAddress: expectedFromAddress as `0x${string}`
         }
       )
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'PAY_INITIATED',
+          properties: expect.objectContaining({
+            paymentId: mockPaymentId,
+            configuration: expect.objectContaining({
+              amount: mockPaymentOptions.amount,
+              asset: mockPaymentOptions.paymentAsset.asset,
+              network: mockPaymentOptions.paymentAsset.network,
+              recipient: mockPaymentOptions.recipient
+            }),
+            currentPayment: expect.objectContaining({
+              type: 'wallet',
+              exchangeId: undefined,
+              sessionId: undefined,
+              result: undefined
+            })
+          })
+        })
+      )
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'PAY_SUCCESS',
+          properties: expect.objectContaining({
+            paymentId: mockPaymentId,
+            configuration: expect.objectContaining({
+              amount: mockPaymentOptions.amount,
+              asset: mockPaymentOptions.paymentAsset.asset,
+              network: mockPaymentOptions.paymentAsset.network,
+              recipient: mockPaymentOptions.recipient
+            }),
+            currentPayment: expect.objectContaining({
+              type: 'wallet',
+              exchangeId: undefined,
+              sessionId: undefined,
+              result: undefined
+            })
+          })
+        })
+      )
     })
 
     it('should handle payment processing errors', async () => {
       vi.spyOn(PaymentUtil, 'processEvmErc20Payment').mockRejectedValueOnce(
         new Error('Payment error')
       )
+      PayController.initializeAnalytics()
+      PayController.state.currentPayment = { type: 'wallet', status: 'UNKNOWN' }
 
       await PayController.handlePayment()
 
       expect(PayController.state.error).toBe(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
       expect(SnackController.showError).toHaveBeenCalled()
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'PAY_INITIATED',
+          properties: expect.objectContaining({
+            paymentId: mockPaymentId,
+            configuration: expect.objectContaining({
+              amount: mockPaymentOptions.amount,
+              asset: mockPaymentOptions.paymentAsset.asset, // This assumes ERC20 context for error
+              network: mockPaymentOptions.paymentAsset.network,
+              recipient: mockPaymentOptions.recipient
+            }),
+            currentPayment: expect.objectContaining({
+              type: 'wallet',
+              exchangeId: undefined,
+              sessionId: undefined,
+              result: undefined
+            })
+          })
+        })
+      )
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'PAY_ERROR',
+          properties: expect.objectContaining({
+            paymentId: mockPaymentId,
+            configuration: expect.objectContaining({
+              amount: mockPaymentOptions.amount,
+              asset: mockPaymentOptions.paymentAsset.asset, // This assumes ERC20 context for error
+              network: mockPaymentOptions.paymentAsset.network,
+              recipient: mockPaymentOptions.recipient
+            }),
+            currentPayment: expect.objectContaining({
+              type: 'wallet',
+              exchangeId: undefined,
+              sessionId: undefined,
+              result: undefined
+            })
+          })
+        })
+      )
     })
 
     it('should throw error for unsupported chain namespace', async () => {
@@ -423,6 +623,13 @@ describe('PayController', () => {
     it('should get pay URL and return object for opening in new tab', async () => {
       PayController.state.openInNewTab = true
       PayController.setPaymentConfig(mockPaymentOptions)
+      PayController.initializeAnalytics()
+      PayController.state.currentPayment = {
+        type: 'exchange',
+        status: 'UNKNOWN',
+        exchangeId: 'coinbase'
+      }
+
       const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl')
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
@@ -447,6 +654,27 @@ describe('PayController', () => {
       })
       expect(ModalController.open).not.toHaveBeenCalled()
       expect(openHrefSpy).not.toHaveBeenCalled()
+      expect(eventsControllerSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'PAY_INITIATED',
+          properties: expect.objectContaining({
+            paymentId: mockPaymentId,
+            configuration: expect.objectContaining({
+              amount: mockPaymentOptions.amount,
+              asset: mockPaymentOptions.paymentAsset.asset,
+              network: mockPaymentOptions.paymentAsset.network,
+              recipient: mockPaymentOptions.recipient
+            }),
+            currentPayment: expect.objectContaining({
+              type: 'exchange',
+              exchangeId: 'coinbase',
+              sessionId: mockPayUrlResponse.sessionId,
+              result: undefined
+            })
+          })
+        })
+      )
     })
 
     it('should get pay URL and return object for opening in same tab', async () => {
@@ -531,9 +759,9 @@ describe('PayController', () => {
         .mockResolvedValue(mockPayUrlResponse)
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
-      await PayController.openPayUrl(exchangeId, params)
+      await PayController.openPayUrl({ exchangeId }, params)
 
-      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params, false)
       expect(openHrefSpy).toHaveBeenCalledWith(mockUrl, '_blank')
       expect(SnackController.showError).not.toHaveBeenCalled()
     })
@@ -544,9 +772,9 @@ describe('PayController', () => {
         .mockResolvedValue(mockPayUrlResponse)
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
-      await PayController.openPayUrl(exchangeId, params, false)
+      await PayController.openPayUrl({ exchangeId, openInNewTab: false }, params)
 
-      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params, false)
       expect(openHrefSpy).toHaveBeenCalledWith(mockUrl, '_self')
       expect(SnackController.showError).not.toHaveBeenCalled()
     })
@@ -555,11 +783,11 @@ describe('PayController', () => {
       const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockResolvedValue(null as any)
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
-      await expect(PayController.openPayUrl(exchangeId, params)).rejects.toThrow(
+      await expect(PayController.openPayUrl({ exchangeId }, params)).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
       )
 
-      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params, false)
       expect(openHrefSpy).not.toHaveBeenCalled()
       expect(PayController.state.error).toBe(AppKitPayErrorMessages.UNABLE_TO_GET_PAY_URL)
     })
@@ -569,11 +797,11 @@ describe('PayController', () => {
       const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockRejectedValue(originalError)
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
-      await expect(PayController.openPayUrl(exchangeId, params)).rejects.toThrow(
+      await expect(PayController.openPayUrl({ exchangeId }, params)).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
       )
 
-      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params, false)
       expect(openHrefSpy).not.toHaveBeenCalled()
       expect(PayController.state.error).toBe(AppKitPayErrorMessages.ASSET_NOT_SUPPORTED)
     })
@@ -583,11 +811,11 @@ describe('PayController', () => {
       const getPayUrlSpy = vi.spyOn(PayController, 'getPayUrl').mockRejectedValue(originalError)
       const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
 
-      await expect(PayController.openPayUrl(exchangeId, params)).rejects.toThrow(
+      await expect(PayController.openPayUrl({ exchangeId }, params)).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
       )
 
-      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params)
+      expect(getPayUrlSpy).toHaveBeenCalledWith(exchangeId, params, false)
       expect(openHrefSpy).not.toHaveBeenCalled()
       expect(PayController.state.error).toBe(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
     })
@@ -638,6 +866,101 @@ describe('PayController', () => {
         new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES)
       )
       expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page: 0 })
+    })
+  })
+
+  describe('PayController.getBuyStatus', () => {
+    const exchangeId = 'coinbase'
+    const sessionId = 'test-session-id'
+
+    beforeEach(() => {
+      PayController.state.paymentAsset = mockPaymentOptions.paymentAsset
+      PayController.state.recipient = mockPaymentOptions.recipient
+      PayController.state.amount = mockPaymentOptions.amount
+      PayController.state.currentPayment = {
+        type: 'exchange',
+        exchangeId,
+        sessionId,
+        status: 'IN_PROGRESS'
+      }
+    })
+
+    it('should send PAY_SUCCESS event if API returns SUCCESS status', async () => {
+      const mockSuccessStatus = { status: 'SUCCESS', txHash: '0x123abc' }
+      vi.spyOn(ApiUtil, 'getBuyStatus').mockResolvedValue(mockSuccessStatus as any)
+
+      const result = await PayController.getBuyStatus(exchangeId, sessionId)
+
+      expect(result).toEqual(mockSuccessStatus)
+      expect(eventsControllerSpy).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'PAY_SUCCESS',
+        properties: {
+          paymentId: mockPaymentId,
+          configuration: {
+            network: mockPaymentOptions.paymentAsset.network,
+            asset: mockPaymentOptions.paymentAsset.asset,
+            recipient: mockPaymentOptions.recipient,
+            amount: mockPaymentOptions.amount
+          },
+          currentPayment: {
+            type: 'exchange',
+            exchangeId,
+            sessionId,
+            result: mockSuccessStatus.txHash
+          }
+        }
+      })
+    })
+
+    it('should send PAY_ERROR event if API returns FAILED status', async () => {
+      const mockFailedStatus = { status: 'FAILED', txHash: null }
+      vi.spyOn(ApiUtil, 'getBuyStatus').mockResolvedValue(mockFailedStatus as any)
+
+      const result = await PayController.getBuyStatus(exchangeId, sessionId)
+
+      expect(result).toEqual(mockFailedStatus)
+      expect(eventsControllerSpy).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'PAY_ERROR',
+        properties: {
+          paymentId: mockPaymentId,
+          configuration: {
+            network: mockPaymentOptions.paymentAsset.network,
+            asset: mockPaymentOptions.paymentAsset.asset,
+            recipient: mockPaymentOptions.recipient,
+            amount: mockPaymentOptions.amount
+          },
+          currentPayment: {
+            type: 'exchange',
+            exchangeId,
+            sessionId,
+            result: mockFailedStatus.txHash
+          }
+        }
+      })
+    })
+
+    it('should not send event if status is neither SUCCESS nor FAILED', async () => {
+      const mockInProgressStatus = { status: 'IN_PROGRESS', txHash: null }
+      vi.spyOn(ApiUtil, 'getBuyStatus').mockResolvedValue(mockInProgressStatus as any)
+
+      await PayController.getBuyStatus(exchangeId, sessionId)
+
+      expect(eventsControllerSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({ event: 'PAY_SUCCESS' })
+      )
+      expect(eventsControllerSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({ event: 'PAY_ERROR' })
+      )
+    })
+
+    it('should throw AppKitPayError if ApiUtil.getBuyStatus fails', async () => {
+      vi.spyOn(ApiUtil, 'getBuyStatus').mockRejectedValueOnce(new Error('API Error'))
+
+      await expect(PayController.getBuyStatus(exchangeId, sessionId)).rejects.toThrow(
+        new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
+      )
     })
   })
 })

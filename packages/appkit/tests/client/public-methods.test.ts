@@ -5,6 +5,7 @@ import type {
   AdapterNetworkState,
   AuthConnector,
   Connector,
+  ConnectorType,
   SIWXConfig,
   SocialProvider
 } from '@reown/appkit'
@@ -35,10 +36,11 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
+import { mockUser, mockUserBalance } from '../mocks/Account.js'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
@@ -826,12 +828,15 @@ describe('Base Public methods', () => {
     const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+    )
     const mockConnector = {
       id: 'test-wallet',
       name: 'Test Wallet',
       imageUrl: 'test-wallet-icon'
     } as Connector
-    ConnectorController.state.connectors = [mockConnector]
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValueOnce([mockConnector])
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValueOnce(mockConnector.id)
     const mockAccountData = {
       address: '0x123',
@@ -854,7 +859,14 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
 
-    expect(setConnectedWalletInfo).toHaveBeenCalledWith({ name: mockConnector.id }, 'eip155')
+    expect(setConnectedWalletInfo).toHaveBeenCalledWith(
+      {
+        name: mockConnector.name,
+        type: UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType,
+        icon: mockConnector.imageUrl
+      },
+      'eip155'
+    )
   })
 
   it('should sync identity only if address changed', async () => {
@@ -1200,5 +1212,18 @@ describe('Base Public methods', () => {
 
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({ siwx } as any)
     expect(appKit.getSIWX()).toEqual(siwx)
+  })
+
+  it('should fetch balance when address, namespace, and chainId are available', async () => {
+    const appKit = new AppKit(mockOptions)
+
+    const updateNativeBalanceSpy = vi
+      .spyOn(appKit, 'updateNativeBalance')
+      .mockResolvedValue(mockUserBalance)
+
+    const result = await appKit.updateNativeBalance(mockUser.address, 1, 'eip155')
+
+    expect(updateNativeBalanceSpy).toHaveBeenCalledWith(mockUser.address, 1, 'eip155')
+    expect(result).toEqual(mockUserBalance)
   })
 })

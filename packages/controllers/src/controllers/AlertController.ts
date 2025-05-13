@@ -1,6 +1,7 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -25,7 +26,7 @@ const state = proxy<AlertControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const AlertController = {
+const controller = {
   state,
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: AlertControllerState[K]) => void) {
@@ -55,3 +56,6 @@ export const AlertController = {
     state.variant = 'info'
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const AlertController = withErrorBoundary(controller)
