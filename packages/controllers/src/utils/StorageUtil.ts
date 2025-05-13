@@ -8,6 +8,7 @@ import {
 } from '@reown/appkit-common'
 
 import type { Connection } from '../controllers/ConnectionController.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,
@@ -17,8 +18,6 @@ import type {
   SocialProvider,
   WcWallet
 } from './TypeUtil.js'
-
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -581,6 +580,7 @@ export const StorageUtil = {
       if (!result) {
         return ConstantsUtil.DEFAULT_ACCOUNT_TYPES
       }
+      
       return JSON.parse(result) as PreferredAccountTypes
     } catch {
       console.info('Unable to get preferred account types')
