@@ -576,13 +576,16 @@ export const StorageUtil = {
   getPreferredAccountTypes() {
     try {
       const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES)
+      if (!result) {
+        return {}
+      }
 
-      return JSON.parse(result as string) as PreferredAccountTypes
+      return JSON.parse(result) as PreferredAccountTypes
     } catch {
       console.info('Unable to get preferred account types')
     }
 
-    return undefined
+    return {}
   },
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
     try {

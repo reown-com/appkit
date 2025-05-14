@@ -5,6 +5,7 @@ import type {
   AdapterNetworkState,
   AuthConnector,
   Connector,
+  ConnectorType,
   SIWXConfig,
   SocialProvider
 } from '@reown/appkit'
@@ -35,7 +36,7 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -827,12 +828,15 @@ describe('Base Public methods', () => {
     const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+    )
     const mockConnector = {
       id: 'test-wallet',
       name: 'Test Wallet',
       imageUrl: 'test-wallet-icon'
     } as Connector
-    ConnectorController.state.connectors = [mockConnector]
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValueOnce([mockConnector])
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValueOnce(mockConnector.id)
     const mockAccountData = {
       address: '0x123',
@@ -855,7 +859,14 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
 
-    expect(setConnectedWalletInfo).toHaveBeenCalledWith({ name: mockConnector.id }, 'eip155')
+    expect(setConnectedWalletInfo).toHaveBeenCalledWith(
+      {
+        name: mockConnector.name,
+        type: UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType,
+        icon: mockConnector.imageUrl
+      },
+      'eip155'
+    )
   })
 
   it('should sync identity only if address changed', async () => {

@@ -17,13 +17,14 @@ export class W3mLegalFooter extends LitElement {
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
 
     const legalCheckbox = OptionsController.state.features?.legalCheckbox
+    const showOnlyBranding = (!termsConditionsUrl && !privacyPolicyUrl) || legalCheckbox
 
-    if (!termsConditionsUrl && !privacyPolicyUrl) {
-      return null
-    }
-
-    if (legalCheckbox) {
-      return null
+    if (showOnlyBranding) {
+      return html`
+        <wui-flex flexDirection="column">
+          <wui-ux-by-reown class="branding-only"></wui-ux-by-reown>
+        </wui-flex>
+      `
     }
 
     return html`

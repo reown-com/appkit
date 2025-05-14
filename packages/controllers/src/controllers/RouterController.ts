@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -120,7 +121,7 @@ const state = proxy<RouterControllerState>({
 type StateKey = keyof RouterControllerState
 
 // -- Controller ---------------------------------------- //
-export const RouterController = {
+const controller = {
   state,
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: RouterControllerState[K]) => void) {
@@ -140,12 +141,12 @@ export const RouterController = {
 
     if (cancel) {
       // When the transaction is cancelled, we go back to the previous view
-      this.goBack()
+      RouterController.goBack()
       action?.onCancel?.()
     } else {
       // When the transaction is successful, we do conditional navigation depending on the action properties
       if (action.goBack) {
-        this.goBack()
+        RouterController.goBack()
       } else if (action.replace) {
         /*
          *  If the history like ["ConnectingSiwe", "ApproveTransaction"], this means SIWE popup is opened after page rendered (not after user interaction)
@@ -158,14 +159,14 @@ export const RouterController = {
 
         if (connectingSiweIndex > 0) {
           // There are views before ConnectingSiwe
-          this.goBackToIndex(connectingSiweIndex - 1)
+          RouterController.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
           ModalController.close(true)
           state.history = []
         }
       } else if (action.view) {
-        this.reset(action.view)
+        RouterController.reset(action.view)
       }
       action?.onSuccess?.()
     }
@@ -198,7 +199,8 @@ export const RouterController = {
 
   goBack() {
     const shouldReload =
-      !ChainController.state.activeCaipAddress && this.state.view === 'ConnectingFarcaster'
+      !ChainController.state.activeCaipAddress &&
+      RouterController.state.view === 'ConnectingFarcaster'
 
     if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
       state.history.pop()
@@ -242,3 +244,6 @@ export const RouterController = {
     }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const RouterController = withErrorBoundary(controller)
