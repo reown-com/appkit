@@ -149,7 +149,7 @@ ${this.value ?? ''}</textarea
     const element = e.target as HTMLInputElement
 
     this.pasting = false
-    this.value = (e.target as HTMLInputElement).value
+    this.value = (e.target as HTMLInputElement)?.value
 
     if (element.value && !this.instructionHidden) {
       this.focusInput()
