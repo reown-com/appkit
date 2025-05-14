@@ -1,5 +1,49 @@
 # @reown/appkit-common
 
+## 1.7.5
+
+### Patch Changes
+
+- [#4300](https://github.com/reown-com/appkit/pull/4300) [`b932466`](https://github.com/reown-com/appkit/commit/b9324661001d8aae205d151a4c7040a4832804ff) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where wallets without a valid mobile_link were listed on mobile devices
+
+- [#4320](https://github.com/reown-com/appkit/pull/4320) [`997b6fc`](https://github.com/reown-com/appkit/commit/997b6fc20f73ba68f8815c659f3cae03de90d3c8) Thanks [@lukaisailovic](https://github.com/lukaisailovic)! - Enable analytics for Pay feature
+
+- [#4324](https://github.com/reown-com/appkit/pull/4324) [`a26ea94`](https://github.com/reown-com/appkit/commit/a26ea9498f21d5419e9c7fa0cc567bc5d04a5173) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Fixes wui-ux-by-reown to make it always displayed
+
+- [#4313](https://github.com/reown-com/appkit/pull/4313) [`45025fc`](https://github.com/reown-com/appkit/commit/45025fc0d88444adad422ef219bea19ff8f98596) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrade all dependencies with minor and patch updates
+
+- [#4300](https://github.com/reown-com/appkit/pull/4300) [`b932466`](https://github.com/reown-com/appkit/commit/b9324661001d8aae205d151a4c7040a4832804ff) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where excludeWalletIds would not be properly set on api requests.
+
+- [#4311](https://github.com/reown-com/appkit/pull/4311) [`a3c2f6c`](https://github.com/reown-com/appkit/commit/a3c2f6c9630ae1166383d850b79626a994b84821) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - This PR fixes an issue where the auth connector would override the previous account state when switching network (switching on auth connector in stead of using the already existing account state (with different provider)
+
+- [#4312](https://github.com/reown-com/appkit/pull/4312) [`320fe23`](https://github.com/reown-com/appkit/commit/320fe2300481da1b5b0aeff74d88fa44b5bff03a) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades WalletConnect dependencies to latest
+
+- [#4107](https://github.com/reown-com/appkit/pull/4107) [`5018edf`](https://github.com/reown-com/appkit/commit/5018edfea07ac55e143215182a07cdd84901306f) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - This change includes social login improvments. We will remove an abudant call that we make to our backend to receive the users data. Also changed the wallet schema according to the new data that we receive.
+
+- [#4315](https://github.com/reown-com/appkit/pull/4315) [`1d6fa26`](https://github.com/reown-com/appkit/commit/1d6fa26731a5a47bea1d242cfdb59a17a4de42d0) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Fixed a bug where wagmi adapter wasn't using the dedicated `.getProvider()` api but a custom `.provider` prop which is unreliable in getting the provider
+
+- [#4337](https://github.com/reown-com/appkit/pull/4337) [`e206f97`](https://github.com/reown-com/appkit/commit/e206f97ac30fafc507ffcfc765b2fca4f617e965) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where walletInfo would be wrongly synced in wagmi on refresh
+
+- [#4341](https://github.com/reown-com/appkit/pull/4341) [`2feefeb`](https://github.com/reown-com/appkit/commit/2feefebeaab3e47baf2f3b3b189ed90d9f6e7ddd) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where defaultAccountTypes would not be respected
+
+- [#4301](https://github.com/reown-com/appkit/pull/4301) [`2fb24ad`](https://github.com/reown-com/appkit/commit/2fb24ad36544ba9ca51d1504d10ea60a5abfd2e1) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where balance would not be properly updated after a send flow transaction'
+
+- [#4340](https://github.com/reown-com/appkit/pull/4340) [`0405ab5`](https://github.com/reown-com/appkit/commit/0405ab5949092be4bcf9fb08190e15cdbb74460e) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes Phantom mobile wallet redirection for EVM/Bitcoin chains
+
+- [#4344](https://github.com/reown-com/appkit/pull/4344) [`d4dc6c8`](https://github.com/reown-com/appkit/commit/d4dc6c89cd6abf8e355fc0f7fb7063df6b32d592) Thanks [@lukaisailovic](https://github.com/lukaisailovic)! - Add asset metadata to exchange fetching so the data can be preemptively filtered based on the supported asset
+
+- [#4246](https://github.com/reown-com/appkit/pull/4246) [`0379974`](https://github.com/reown-com/appkit/commit/0379974137cb0a28f75220bd3c77d0ae35fd43c2) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrade Solana packages to latest
+
+- [#4348](https://github.com/reown-com/appkit/pull/4348) [`72f4658`](https://github.com/reown-com/appkit/commit/72f4658597bb9c15b94836cc3be4fa2078b1e163) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes send flow address input logic where it's not responding the given input as expected
+
+- [#3598](https://github.com/reown-com/appkit/pull/3598) [`e7d3e71`](https://github.com/reown-com/appkit/commit/e7d3e71d72625e057d94b3768438b29a8b6f530e) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Expose fetchBalance method so apps can call this function after a transaction has happened on their side
+
+- [#4342](https://github.com/reown-com/appkit/pull/4342) [`c0a6ae8`](https://github.com/reown-com/appkit/commit/c0a6ae8ec385748f1b6f376ab80be12bd12e6810) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes connected wallet info state where it's using connector id when connector or provider is not found
+
+- [#4303](https://github.com/reown-com/appkit/pull/4303) [`33b3693`](https://github.com/reown-com/appkit/commit/33b36933ab36f03bf060e5d9a1ad8f036ccfdee5) Thanks [@tomiir](https://github.com/tomiir)! - Adds try catch preventing error from bubbling up if fetching supported networks for Blockchain API fails'
+
+- [#4294](https://github.com/reown-com/appkit/pull/4294) [`d23248f`](https://github.com/reown-com/appkit/commit/d23248fd68eaf6641bd3f1251e1e5a6df1e2e9c5) Thanks [@enesozturk](https://github.com/enesozturk)! - Calls Universal Link if the deeplink call is not worked as expected and UL is exist
+
 ## 1.7.4
 
 ### Patch Changes
