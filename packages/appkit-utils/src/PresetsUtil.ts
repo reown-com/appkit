@@ -59,6 +59,8 @@ export const PresetsUtil = {
     5000: 'e86fae9b-b770-4eea-e520-150e12c81100',
     // Hedera Mainnet
     295: '6a97d510-cac8-4e58-c7ce-e8681b044c00',
+    // Hedera Testnet
+    296: '6a97d510-cac8-4e58-c7ce-e8681b044c00',
     // Sepolia
     11_155_111: 'e909ea0a-f92a-4512-c8fc-748044ea6800',
     // Base Sepolia

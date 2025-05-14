@@ -11,6 +11,7 @@ import {
   bitcoinTestnet,
   gnosis,
   hedera,
+  hederaTestnet,
   mainnet,
   mantle,
   optimism,
@@ -79,6 +80,7 @@ const EvmNetworks = [
   sepolia,
   gnosis,
   hedera,
+  hederaTestnet,
   aurora,
   mantle,
   abstract
