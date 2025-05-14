@@ -535,7 +535,6 @@ describe('ApiController', () => {
         ...ApiController._getSdkProperties(),
         page: '1',
         badge_type: undefined,
-        chains: 'eip155:1,eip155:4,eip155:42',
         entries: String(excludeWalletIds.length),
         include: excludeWalletIds.join(','),
         exclude: ''
@@ -927,7 +926,7 @@ describe('ApiController', () => {
     ] as WcWallet[]
 
     const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
-    vi.spyOn(api, 'get').mockResolvedValue({ data: mockWallets, count: mockWallets.length })
+    vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockWallets, count: mockWallets.length })
 
     await ApiController.initializeExcludedWallets({ ids: ['1', '2'] })
 
