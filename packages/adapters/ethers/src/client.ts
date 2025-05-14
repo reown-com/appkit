@@ -12,7 +12,8 @@ import {
   type Provider,
   StorageUtil
 } from '@reown/appkit-controllers'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -203,7 +204,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async syncConnection(
-    params: AdapterBlueprint.SyncConnectionParams
+    params: Pick<AdapterBlueprint.SyncConnectionParams, 'id' | 'chainId'>
   ): Promise<AdapterBlueprint.ConnectResult> {
     const { id, chainId } = params
 
@@ -275,7 +276,112 @@ export class EthersAdapter extends AdapterBlueprint {
     })
   }
 
+  public async disconnectAll() {
+    const connections = await Promise.all(
+      this.connections.map(async connection => {
+        const connector = this.connectors.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.id, connection.connectorId)
+        )
+
+        if (!connector) {
+          throw new Error('Connector not found')
+        }
+
+        await this.disconnect({
+          provider: connector.provider,
+          providerType: connector.type
+        })
+
+        this.removeConnection(connection.connectorId)
+
+        return connection
+      })
+    )
+
+    if (this.connections.length === 0) {
+      this.emit('disconnect')
+    }
+
+    return { connections }
+  }
+
+  public async syncConnections({
+    connectToFirstConnector,
+    getConnectorStorageInfo
+  }: AdapterBlueprint.SyncConnectionsParams) {
+    await Promise.allSettled(
+      this.connectors
+        .filter(c => {
+          const hasConnection = this.connections.find(({ connectorId }) =>
+            HelpersUtil.isLowerCaseMatch(c.id, connectorId)
+          )
+
+          const { isDisconnected } = getConnectorStorageInfo(c.id)
+
+          return !hasConnection && !isDisconnected
+        })
+        .map(async connector => {
+          const { accounts, chainId } = await ConnectorUtil.fetchProviderData(connector)
+
+          if (accounts.length > 0 && chainId) {
+            const caipNetwork = this.getCaipNetworks().find(network => network.id === chainId)
+
+            this.addConnection({
+              connectorId: connector.id,
+              accounts: accounts.map(account => ({ address: account })),
+              caipNetwork
+            })
+          }
+        })
+    )
+
+    if (connectToFirstConnector) {
+      const firstConnection = this.connections.find(c => c.accounts.length > 0)
+
+      if (firstConnection) {
+        const [account] = firstConnection.accounts
+        const connector = this.connectors.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.id, firstConnection.connectorId)
+        )
+
+        this.emit('accountChanged', {
+          address: account?.address as string,
+          chainId: Number(firstConnection.caipNetwork?.id ?? 1),
+          connector
+        })
+      }
+    }
+  }
+
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    universalProvider.on('connect', async () => {
+      const namespaceAccounts = universalProvider?.session?.namespaces?.['eip155']?.accounts || []
+
+      if (namespaceAccounts.length > 0) {
+        const parsedCaipAddresses = namespaceAccounts.map(account => {
+          const caipAddress = ParseUtil.validateCaipAddress(account)
+          const { address, chainId } = ParseUtil.parseCaipAddress(caipAddress)
+
+          return { address, chainId }
+        })
+
+        const caipNetwork = this.getCaipNetworks().find(
+          n => n.id === parsedCaipAddresses[0]?.chainId
+        )
+
+        const allAddresses = new Set(
+          parsedCaipAddresses.map(({ address }) => address.toLowerCase())
+        )
+
+        this.addConnection({
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+          accounts: Array.from(allAddresses).map(address => ({ address })),
+          caipNetwork
+        })
+      }
+    })
+
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
@@ -323,7 +429,34 @@ export class EthersAdapter extends AdapterBlueprint {
     type,
     chainId
   }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
-    const connector = this.connectors.find(c => c.id === id)
+    const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, id))
+
+    if (!connector) {
+      throw new Error('Connector not found')
+    }
+
+    const connection = this.connections.find(c => c.connectorId === id)
+
+    if (connection) {
+      const [account] = connection.accounts
+
+      if (account) {
+        this.emit('accountChanged', {
+          address: account.address,
+          chainId: Number(connection.caipNetwork?.id ?? 1),
+          connector
+        })
+
+        return {
+          address: account.address,
+          chainId: Number(connection.caipNetwork?.id ?? 1),
+          provider: connector.provider,
+          type: connector.type,
+          id
+        }
+      }
+    }
+
     const selectedProvider = connector?.provider as Provider
 
     if (!selectedProvider) {
@@ -344,7 +477,16 @@ export class EthersAdapter extends AdapterBlueprint {
 
       this.emit('accountChanged', {
         address: accounts[0] as Address,
-        chainId: Number(chainId)
+        chainId: Number(chainId),
+        connector
+      })
+
+      const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
+
+      this.addConnection({
+        connectorId: id,
+        accounts: [{ address }],
+        caipNetwork
       })
     } else {
       accounts = await selectedProvider.request({
@@ -355,9 +497,9 @@ export class EthersAdapter extends AdapterBlueprint {
         method: 'eth_chainId'
       })
 
-      if (requestChainId !== chainId) {
-        const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
+      const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
 
+      if (requestChainId !== chainId) {
         if (!caipNetwork) {
           throw new Error('EthersAdapter:connect - could not find the caipNetwork to switch')
         }
@@ -375,7 +517,14 @@ export class EthersAdapter extends AdapterBlueprint {
 
       this.emit('accountChanged', {
         address: accounts[0] as Address,
-        chainId: Number(chainId)
+        chainId: Number(chainId),
+        connector
+      })
+
+      this.addConnection({
+        connectorId: id,
+        accounts: accounts.map(account => ({ address: account })),
+        caipNetwork
       })
 
       this.listenProviderEvents(selectedProvider)
@@ -411,6 +560,16 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (!selectedProvider || !connector) {
       throw new Error('Provider not found')
+    }
+
+    const connection = this.connections.find(c => c.connectorId === params.id)
+
+    if (connection) {
+      return {
+        accounts: connection.accounts.map(({ address }) =>
+          CoreHelperUtil.createAccount('eip155', address, 'eoa')
+        )
+      }
     }
 
     if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
@@ -456,6 +615,32 @@ export class EthersAdapter extends AdapterBlueprint {
         break
       default:
         throw new Error('Unsupported provider type')
+    }
+
+    if (params.id) {
+      this.removeConnection(params.id)
+    }
+
+    if (this.connections.length === 0) {
+      this.emit('disconnect')
+    } else {
+      const lastConnection = this.connections.filter(c => c.accounts.length > 0).pop()
+
+      if (lastConnection) {
+        const [account] = lastConnection.accounts
+
+        const connector = this.connectors.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
+        )
+
+        if (account) {
+          this.emit('accountChanged', {
+            address: account.address,
+            chainId: Number(lastConnection.caipNetwork?.id ?? 1),
+            connector
+          })
+        }
+      }
     }
   }
 

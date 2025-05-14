@@ -156,6 +156,7 @@ export abstract class AppKitBaseClient {
     PublicStateController.set({ initialized: true })
 
     await this.syncExistingConnection()
+    await this.syncAdapterConnections()
     // Check allowed origins only if email or social features are enabled
     if (
       OptionsController.state.features?.email ||
@@ -390,6 +391,10 @@ export abstract class AppKitBaseClient {
             UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT,
             namespace
           )
+          StorageUtil.removeDisconnectedConnectorId(
+            ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+            namespace
+          )
         })
         await this.syncWalletConnectAccount()
       },
@@ -436,6 +441,7 @@ export abstract class AppKitBaseClient {
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
+        StorageUtil.removeDisconnectedConnectorId(id, chainToUse)
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -451,13 +457,26 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider(namespace)
         const providerType = ProviderUtil.getProviderId(namespace)
+        const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
+        const connectorId = ConnectorController.getConnectorId(namespace)
 
-        await adapter?.disconnect({ provider, providerType })
+        await adapter?.disconnect({ id: connectorId, provider, providerType })
+
+        // Used for shim disconnection
+        if (activeConnectorId) {
+          StorageUtil.addDisconnectedConnectorId(activeConnectorId, namespace)
+        }
       },
       disconnectAll: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const namespace = ChainController.state.activeChain as ChainNamespace
+        const adapter = this.getAdapter(namespace)
+        const data = await adapter?.disconnectAll()
 
-        await adapter?.disconnectAll()
+        if (data?.connections) {
+          data.connections.forEach(connection => {
+            StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+          })
+        }
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -783,8 +802,15 @@ export abstract class AppKitBaseClient {
     adapter.on('accountChanged', ({ address, chainId, connector }) => {
       const isActiveChain = ChainController.state.activeChain === chainNamespace
 
-      if (connector) {
-        ConnectionController.connectExternal(connector, chainNamespace)
+      if (connector?.provider) {
+        this.syncProvider({
+          id: connector.id,
+          type: connector.type,
+          provider: connector.provider,
+          chainNamespace
+        })
+        StorageUtil.addConnectedNamespace(chainNamespace)
+        this.syncConnectedWalletInfo(chainNamespace)
       }
 
       if (isActiveChain && chainId) {
@@ -848,6 +874,23 @@ export abstract class AppKitBaseClient {
       console.warn("AppKit couldn't sync existing connection", err)
       this.setStatus('disconnected', namespace)
     }
+  }
+
+  protected async syncAdapterConnections() {
+    await Promise.allSettled(
+      this.chainNamespaces.map(namespace => {
+        const caipAddress = this.getCaipAddress(namespace)
+
+        return this.chainAdapters?.[namespace].syncConnections({
+          connectToFirstConnector: !caipAddress,
+          getConnectorStorageInfo(connectorId) {
+            return {
+              isDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace)
+            }
+          }
+        })
+      })
+    )
   }
 
   protected async syncAdapterConnection(namespace: ChainNamespace) {
@@ -1251,9 +1294,11 @@ export abstract class AppKitBaseClient {
       this.universalProvider.on('connect', ConnectionController.finalizeWcConnection)
 
       this.universalProvider.on('disconnect', () => {
-        console.trace('disconnect')
         this.chainNamespaces.forEach(namespace => {
-          this.resetAccount(namespace)
+          /*
+           * TODOD: Remove this, since it can break the multi-wallet functionality
+           * this.resetAccount(namespace)
+           */
         })
         ConnectionController.resetWcConnection()
       })

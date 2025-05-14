@@ -631,5 +631,84 @@ export const StorageUtil = {
 
       return {} as { [key in ChainNamespace]: Connection[] }
     }
+  },
+  getDisconnectedConnectorIds() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.DISCONNECTED_CONNECTOR_IDS)
+
+      if (!result) {
+        return {} as { [key in ChainNamespace]: string[] }
+      }
+
+      return JSON.parse(result) as { [key in ChainNamespace]: string[] }
+    } catch {
+      console.info('Unable to get disconnected connector ids')
+    }
+
+    return {} as { [key in ChainNamespace]: string[] }
+  },
+  addDisconnectedConnectorId(connectorId: string, chainNamespace: ChainNamespace) {
+    try {
+      const currentDisconnectedConnectorIds = StorageUtil.getDisconnectedConnectorIds()
+
+      const disconnectedConnectorIdsByNamespace =
+        currentDisconnectedConnectorIds[chainNamespace] ?? []
+
+      disconnectedConnectorIdsByNamespace.push(connectorId)
+
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.DISCONNECTED_CONNECTOR_IDS,
+        JSON.stringify({
+          ...currentDisconnectedConnectorIds,
+          [chainNamespace]: Array.from(new Set(disconnectedConnectorIdsByNamespace))
+        })
+      )
+    } catch {
+      console.error(
+        `Unable to set disconnected connector id "${connectorId}" for namespace "${chainNamespace}"`
+      )
+    }
+  },
+  removeDisconnectedConnectorId(connectorId: string, chainNamespace: ChainNamespace) {
+    try {
+      const currentDisconnectedConnectorIds = StorageUtil.getDisconnectedConnectorIds()
+
+      let disconnectedConnectorIdsByNamespace =
+        currentDisconnectedConnectorIds[chainNamespace] ?? []
+
+      disconnectedConnectorIdsByNamespace = disconnectedConnectorIdsByNamespace.filter(
+        id => id.toLowerCase() !== connectorId.toLowerCase()
+      )
+
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.DISCONNECTED_CONNECTOR_IDS,
+        JSON.stringify({
+          ...currentDisconnectedConnectorIds,
+          [chainNamespace]: Array.from(new Set(disconnectedConnectorIdsByNamespace))
+        })
+      )
+    } catch {
+      console.error(
+        `Unable to remove disconnected connector id "${connectorId}" for namespace "${chainNamespace}"`
+      )
+    }
+  },
+  isConnectorDisconnected(connectorId: string, chainNamespace: ChainNamespace) {
+    try {
+      const currentDisconnectedConnectorIds = StorageUtil.getDisconnectedConnectorIds()
+
+      const disconnectedConnectorIdsByNamespace =
+        currentDisconnectedConnectorIds[chainNamespace] ?? []
+
+      return disconnectedConnectorIdsByNamespace.some(
+        id => id.toLowerCase() === connectorId.toLowerCase()
+      )
+    } catch {
+      console.info(
+        `Unable to get disconnected connector id "${connectorId}" for namespace "${chainNamespace}"`
+      )
+    }
+
+    return false
   }
 }

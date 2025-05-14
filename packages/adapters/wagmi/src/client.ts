@@ -238,12 +238,19 @@ export class WagmiAdapter extends AdapterBlueprint {
     watchConnections(this.wagmiConfig, {
       onChange: connections => {
         this.addConnection(
-          ...connections.map(connection => ({
-            accounts: connection.accounts.map(account => ({
-              address: account
-            })),
-            connectorId: connection.connector.id
-          }))
+          ...connections.map(connection => {
+            const caipNetwork = this.getCaipNetworks().find(
+              network => network.id === connection.chainId
+            )
+
+            return {
+              accounts: connection.accounts.map(account => ({
+                address: account
+              })),
+              caipNetwork,
+              connectorId: connection.connector.id
+            }
+          })
         )
       }
     })
@@ -480,6 +487,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     await this.addThirdPartyConnectors(options)
   }
 
+  // Wagmi already handles syncing connections
+  public async syncConnections() {
+    return Promise.resolve()
+  }
+
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
@@ -674,23 +686,32 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
-    console.trace('disconnect')
     await wagmiDisconnect(this.wagmiConfig)
   }
 
   public async disconnectAll() {
-    console.trace('disconnectAll')
-    const connections = getConnections(this.wagmiConfig)
+    const wagmiConnections = getConnections(this.wagmiConfig)
 
-    await Promise.all(
-      connections.map(async connection => {
+    const connections = await Promise.all(
+      wagmiConnections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
 
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
+
+        return connection
       })
     )
+
+    return {
+      connections: connections.map(connection => ({
+        accounts: connection.accounts.map(account => ({
+          address: account
+        })),
+        connectorId: connection.connector.id
+      }))
+    }
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {

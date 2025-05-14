@@ -27,6 +27,7 @@ import { TransactionsController } from './TransactionsController.js'
 // -- Types --------------------------------------------- //
 export type Connection = {
   accounts: { address: string }[]
+  caipNetwork?: CaipNetwork
   connectorId: string
 }
 

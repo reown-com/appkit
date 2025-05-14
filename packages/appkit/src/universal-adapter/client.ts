@@ -47,7 +47,13 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   public async disconnectAll() {
-    return this.disconnect()
+    await this.disconnect()
+
+    return { connections: [] }
+  }
+
+  public override syncConnections() {
+    return Promise.resolve()
   }
 
   public async getAccounts({

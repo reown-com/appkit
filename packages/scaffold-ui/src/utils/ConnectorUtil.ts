@@ -3,6 +3,7 @@ import {
   ApiController,
   ChainController,
   ConnectionController,
+  type Connector,
   ConnectorController,
   type ConnectorTypeOrder,
   type ConnectorWithProviders,
@@ -183,5 +184,28 @@ export const ConnectorUtil = {
 
     return email.length > 30 ? `${email.slice(0, -3)}...` : email
   },
-  
+  async fetchProviderData(connector: Connector) {
+    try {
+      // eslint-disable-next-line no-warning-comments
+      // TODO: Make sure this is enabled if user is on mobile
+      if (connector.name === 'Browser Wallet') {
+        return { accounts: [], chainId: undefined }
+      }
+
+      if (connector.id === ConstantsUtil.CONNECTOR_ID.AUTH) {
+        return { accounts: [], chainId: undefined }
+      }
+
+      const [accounts, chainId] = await Promise.all([
+        connector.provider?.request({ method: 'eth_accounts' }) as Promise<string[]>,
+        connector.provider
+          ?.request({ method: 'eth_chainId' })
+          .then(hexChainId => Number(hexChainId))
+      ])
+
+      return { accounts, chainId }
+    } catch (err) {
+      return { accounts: [], chainId: undefined }
+    }
+  }
 }

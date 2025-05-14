@@ -152,7 +152,27 @@ export abstract class AdapterBlueprint<
    * @param {...Connection} connections - The connections to add
    */
   protected addConnection(...connections: Connection[]) {
-    this.emit('connections', connections)
+    const connectionsAdded = new Set<string>()
+
+    this.availableConnections = [...connections, ...this.availableConnections].filter(
+      connection => {
+        if (connectionsAdded.has(connection.connectorId)) {
+          return false
+        }
+
+        connectionsAdded.add(connection.connectorId)
+
+        return true
+      }
+    )
+
+    this.emit('connections', this.availableConnections)
+  }
+
+  protected removeConnection(connectorId: string) {
+    this.availableConnections = this.availableConnections.filter(c => c.connectorId !== connectorId)
+
+    this.emit('connections', this.availableConnections)
   }
 
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
@@ -281,7 +301,7 @@ export abstract class AdapterBlueprint<
   /**
    * Disconnects all connected wallets.
    */
-  public abstract disconnectAll(): Promise<void>
+  public abstract disconnectAll(): Promise<{ connections: Connection[] }>
 
   /**
    * Gets the balance for a given address and chain ID.
@@ -300,6 +320,15 @@ export abstract class AdapterBlueprint<
   public abstract syncConnectors(
     options?: AppKitOptions,
     appKit?: AppKitBaseClient
+  ): void | Promise<void>
+
+  /**
+   * Synchronizes the connections with the given options and AppKit instance.
+   * @param {AppKitOptions} [options] - Optional AppKit options
+   * @param {AppKit} [appKit] - Optional AppKit instance
+   */
+  public abstract syncConnections(
+    params: AdapterBlueprint.SyncConnectionsParams
   ): void | Promise<void>
 
   /**
@@ -429,6 +458,7 @@ export namespace AdapterBlueprint {
   }
 
   export type DisconnectParams = {
+    id?: string
     provider?: AppKitConnector['provider']
     providerType?: AppKitConnector['type']
   }
@@ -450,6 +480,13 @@ export namespace AdapterBlueprint {
     namespace: ChainNamespace
     chainId?: number | string
     rpcUrl: string
+  }
+
+  export type SyncConnectionsParams = {
+    connectToFirstConnector: boolean
+    getConnectorStorageInfo: (connectorId: string) => {
+      isDisconnected: boolean
+    }
   }
 
   export type SignMessageParams = {
@@ -561,6 +598,7 @@ export namespace AdapterBlueprint {
     provider: AppKitConnector['provider']
     chainId: number | string
     address: string
+    accounts?: []
   }
 
   export type GetAccountsResult = { accounts: AccountType[] }
