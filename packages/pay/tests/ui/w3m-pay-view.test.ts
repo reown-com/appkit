@@ -66,9 +66,6 @@ describe('W3mPayView', () => {
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
     vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
-    // Set a default return value for the globally mocked isPayWithWalletSupported
-    // This ensures other tests that expect the pay-with-wallet section to be visible still pass.
-    // Specific tests can override this behavior.
     vi.mocked(isPayWithWalletSupported).mockReturnValue(true)
   })
 
