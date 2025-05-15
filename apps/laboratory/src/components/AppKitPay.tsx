@@ -29,6 +29,7 @@ import {
 } from '@chakra-ui/react'
 import { Card } from '@chakra-ui/react'
 
+import type { CaipNetworkId } from '@reown/appkit-common'
 import type {
   AppKitPayErrorMessage,
   Exchange,
@@ -46,12 +47,6 @@ import {
 } from '@reown/appkit-pay/react'
 
 import { useChakraToast } from './Toast'
-
-interface Metadata {
-  name: string
-  symbol: string
-  decimals: number
-}
 
 interface AppKitPaymentAssetState {
   recipient: string
@@ -199,11 +194,6 @@ export function AppKitPay() {
 
       return
     }
-    if (!/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient)) {
-      toast({ title: 'Invalid Recipient', description: 'Please enter a valid Ethereum address.' })
-
-      return
-    }
 
     await open({
       recipient: paymentDetails.recipient,
@@ -214,21 +204,28 @@ export function AppKitPay() {
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target
-    if (name.startsWith('metadata.')) {
-      const key = name.split('.')[1] as keyof Metadata
-      const processedValue = key === 'decimals' ? parseInt(value, 10) || 0 : value
-      setPaymentDetails((prev: AppKitPaymentAssetState) => ({
-        ...prev,
-        asset: { ...prev.asset, [key]: processedValue }
-      }))
-    } else {
-      const fieldName = name as keyof Omit<AppKitPaymentAssetState, 'asset'>
-      const processedValue: string | number = value
-      setPaymentDetails((prev: AppKitPaymentAssetState) => ({
-        ...prev,
-        [fieldName]: processedValue
-      }))
-    }
+    setPaymentDetails((prev: AppKitPaymentAssetState) => {
+      const newDetails = { ...prev }
+      if (name === 'recipient') {
+        newDetails.recipient = value
+      } else if (name === 'network') {
+        newDetails.asset = { ...newDetails.asset, network: value as CaipNetworkId }
+      } else if (name === 'asset') {
+        newDetails.asset = { ...newDetails.asset, asset: value }
+      } else if (name === 'metadata.name') {
+        newDetails.asset = {
+          ...newDetails.asset,
+          metadata: { ...newDetails.asset.metadata, name: value }
+        }
+      } else if (name === 'metadata.symbol') {
+        newDetails.asset = {
+          ...newDetails.asset,
+          metadata: { ...newDetails.asset.metadata, symbol: value }
+        }
+      }
+
+      return newDetails
+    })
   }
 
   function handleAmountChange(valueAsString: string, valueAsNumber: number) {
@@ -470,11 +467,7 @@ export function AppKitPay() {
           <Stack spacing="4">
             <Button
               onClick={handleOpenPay}
-              isDisabled={
-                !paymentDetails.recipient ||
-                !/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient) ||
-                isPending
-              }
+              isDisabled={!paymentDetails.recipient || isPending}
               width="full"
             >
               {isPending ? <Spinner /> : 'Open Pay Modal'}
