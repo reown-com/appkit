@@ -117,7 +117,7 @@ export class AppKit extends AppKitBaseClient {
         this.setLoading(false, namespace)
       }
     })
-    provider.onConnect(async user => {
+    provider.onConnect(user => {
       const namespace = ChainController.state.activeChain as ChainNamespace
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
@@ -126,10 +126,12 @@ export class AppKit extends AppKitBaseClient {
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
 
+      const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
+      const currentAccountType = AccountController.state.preferredAccountTypes?.[namespace]
       const preferredAccountType =
         (user.preferredAccountType as W3mFrameTypes.AccountType) ||
-        (AccountController.state.preferredAccountTypes?.[namespace] as W3mFrameTypes.AccountType) ||
-        OptionsController.state.defaultAccountTypes[namespace]
+        currentAccountType ||
+        defaultAccountType
 
       /*
        * This covers the case where user switches back from a smart account supported
@@ -153,11 +155,7 @@ export class AppKit extends AppKitBaseClient {
         CoreHelperUtil.createAccount(
           namespace,
           account.address,
-          account.type ||
-            (AccountController.state.preferredAccountTypes?.[
-              namespace
-            ] as W3mFrameTypes.AccountType) ||
-            OptionsController.state.defaultAccountTypes[namespace]
+          account.type || currentAccountType || defaultAccountType
         )
       )
 
@@ -172,7 +170,6 @@ export class AppKit extends AppKitBaseClient {
         namespace
       )
 
-      await provider.getSmartAccountEnabledNetworks()
       this.setLoading(false, namespace)
     })
     provider.onSocialConnected(({ userName }) => {
@@ -229,17 +226,21 @@ export class AppKit extends AppKitBaseClient {
     const theme = ThemeController.getSnapshot()
     const options = OptionsController.getSnapshot()
 
-    provider.syncDappData({
-      metadata: options.metadata as Metadata,
-      sdkVersion: options.sdkVersion,
-      projectId: options.projectId,
-      sdkType: options.sdkType
-    })
-    provider.syncTheme({
-      themeMode: theme.themeMode,
-      themeVariables: theme.themeVariables,
-      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-    })
+    await Promise.all([
+      provider.syncDappData({
+        metadata: options.metadata as Metadata,
+        sdkVersion: options.sdkVersion,
+        projectId: options.projectId,
+        sdkType: options.sdkType
+      }),
+      provider.syncTheme({
+        themeMode: theme.themeMode,
+        themeVariables: theme.themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+      })
+    ])
+
+    await provider.getSmartAccountEnabledNetworks()
 
     if (chainNamespace && isAuthSupported) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {

@@ -330,9 +330,7 @@ const controller = {
   selectWalletConnector(wallet: WcWallet) {
     const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
 
-    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA) {
-      MobileWalletUtil.handleSolanaDeeplinkRedirect(connector?.name || wallet.name || '')
-    }
+    MobileWalletUtil.handleMobileDeeplinkRedirect(connector?.name || wallet.name || '')
 
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })

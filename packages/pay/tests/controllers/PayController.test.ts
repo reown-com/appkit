@@ -208,7 +208,11 @@ describe('PayController', () => {
     it('should fetch and set exchanges in state', async () => {
       await PayController.fetchExchanges()
 
-      expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page: 0 })
+      expect(ApiUtil.getExchanges).toHaveBeenCalledWith({
+        page: 0,
+        asset: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        amount: '10'
+      })
       expect(PayController.state.exchanges).toEqual(mockExchanges.slice(0, 2))
       expect(PayController.state.isLoading).toBe(false)
     })
@@ -852,7 +856,7 @@ describe('PayController', () => {
 
     it('should call getExchanges with the specified page number and return exchanges', async () => {
       const page = 1
-      const result = await PayController.getAvailableExchanges(page)
+      const result = await PayController.getAvailableExchanges({ page })
 
       expect(ApiUtil.getExchanges).toHaveBeenCalledWith({ page })
       expect(result).toEqual(mockExchangesResponse)

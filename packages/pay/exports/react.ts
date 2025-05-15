@@ -12,7 +12,12 @@ import {
   type AppKitPayErrorMessage
 } from '../src/types/errors.js'
 import type { Exchange } from '../src/types/exchange.js'
-import type { PayUrlParams, PayUrlResponse, PaymentOptions } from '../src/types/options.js'
+import type {
+  GetExchangesParams,
+  PayUrlParams,
+  PayUrlResponse,
+  PaymentOptions
+} from '../src/types/options.js'
 
 const MINIMUM_POLLING_INTERVAL = 3000
 /**
@@ -150,7 +155,7 @@ interface UseAvailableExchangesReturn {
   /** Stores any error encountered during fetching. Null if no error. */
   error: Error | null
   /** Function to manually trigger fetching exchanges. Can optionally take a page number. */
-  fetch: (page?: number) => Promise<void>
+  fetch: (params?: GetExchangesParams) => Promise<void>
 }
 
 /**
@@ -159,22 +164,26 @@ interface UseAvailableExchangesReturn {
  * @param {object} [options] - Optional configuration for the hook.
  * @param {boolean} [options.shouldFetchOnInit=true] - Whether to fetch exchanges when the hook mounts.
  * @param {number} [options.initialPage] - The initial page number to fetch if `shouldFetchOnInit` is true.
+ * @param {string} [options.asset] - The asset to fetch exchanges for.
+ * @param {number | string} [options.amount] - The amount to fetch exchanges for.
+ * @param {CaipNetworkId} [options.network] - The network to fetch exchanges for.
  * @returns {UseAvailableExchangesReturn} An object containing the exchange data, loading state, error state, and a function to trigger fetching.
  */
-export function useAvailableExchanges(options?: {
-  shouldFetchOnInit?: boolean
-  initialPage?: number
-}): UseAvailableExchangesReturn {
-  const { shouldFetchOnInit = true, initialPage } = options ?? {}
+export function useAvailableExchanges(
+  options?: {
+    shouldFetchOnInit?: boolean
+  } & GetExchangesParams
+): UseAvailableExchangesReturn {
+  const { shouldFetchOnInit = true, page: initialPage, asset, amount, network } = options ?? {}
   const [data, setData] = useState<Exchange[] | null>(null)
   const [isLoading, setIsLoading] = useState(shouldFetchOnInit)
   const [error, setError] = useState<Error | null>(null)
 
-  const fetchExchanges = useCallback(async (page?: number) => {
+  const fetchExchanges = useCallback(async (params?: GetExchangesParams) => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await getAvailableExchanges(page)
+      const response = await getAvailableExchanges(params)
       setData(response.exchanges)
     } catch (err) {
       const fetchError =
@@ -188,15 +197,15 @@ export function useAvailableExchanges(options?: {
 
   useEffect(() => {
     if (shouldFetchOnInit) {
-      fetchExchanges(initialPage).catch(() => {
+      fetchExchanges({ page: initialPage, asset, amount, network }).catch(() => {
         // Error is already handled and set in state by fetchExchanges
       })
     }
   }, [shouldFetchOnInit, initialPage])
 
   const fetch = useCallback(
-    async (page?: number) => {
-      await fetchExchanges(page)
+    async (params?: GetExchangesParams) => {
+      await fetchExchanges(params)
     },
     [fetchExchanges]
   )
