@@ -197,6 +197,7 @@ export const ConnectorUtil = {
       }
 
       const [accounts, chainId] = await Promise.all([
+        // TOOD: Remove this if using universal provider, and get accounts directly from the provider
         connector.provider?.request({ method: 'eth_accounts' }) as Promise<string[]>,
         connector.provider
           ?.request({ method: 'eth_chainId' })

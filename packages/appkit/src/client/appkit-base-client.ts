@@ -880,12 +880,20 @@ export abstract class AppKitBaseClient {
     await Promise.allSettled(
       this.chainNamespaces.map(namespace => {
         const caipAddress = this.getCaipAddress(namespace)
+        const caipNetwork = this.getCaipNetwork(namespace)
 
         return this.chainAdapters?.[namespace].syncConnections({
           connectToFirstConnector: !caipAddress,
+          caipNetwork,
           getConnectorStorageInfo(connectorId) {
+            const storageConnectionsByNamespace = StorageUtil.getConnections()
+            const storageConnections = storageConnectionsByNamespace[namespace]
+
             return {
-              isDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace)
+              isDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace),
+              hasConnected: storageConnections.some(c =>
+                HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+              )
             }
           }
         })

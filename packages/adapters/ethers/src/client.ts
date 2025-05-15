@@ -292,15 +292,9 @@ export class EthersAdapter extends AdapterBlueprint {
           providerType: connector.type
         })
 
-        this.deleteConnection(connection.connectorId)
-
         return connection
       })
     )
-
-    if (this.connections.length === 0) {
-      this.emit('disconnect')
-    }
 
     return { connections }
   }
@@ -465,9 +459,11 @@ export class EthersAdapter extends AdapterBlueprint {
 
       accounts = [address]
 
+      // TOOD: handle auth connection
       this.emit('accountChanged', {
         address: accounts[0] as Address,
         chainId: Number(chainId),
+        // eslint-disable-next-line no-warning-comments
         connector
       })
 
@@ -697,7 +693,7 @@ export class EthersAdapter extends AdapterBlueprint {
   private chooseFirstConnectionAndEmit() {
     const firstConnection = this.connections.find(c => {
       const hasAccounts = c.accounts.length > 0
-      const hasConnector = this.connectors.find(connector =>
+      const hasConnector = this.connectors.some(connector =>
         HelpersUtil.isLowerCaseMatch(connector.id, c.connectorId)
       )
 
@@ -747,13 +743,15 @@ export class EthersAdapter extends AdapterBlueprint {
 
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
-        const connection = this.connections.find(c => c.connectorId, connectorId)
+        const connection = this.connections.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+        )
 
         if (!connection) {
           throw new Error('Connection not found')
         }
 
-        const connector = this.connectors.find(c => c.id === connectorId)
+        const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, connectorId))
 
         if (!connector) {
           throw new Error('Connector not found')
