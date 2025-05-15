@@ -1,8 +1,12 @@
+import { state } from 'lit/decorators.js'
+
 import {
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
-  EventsController
+  EventsController,
+  type OpenTarget,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -12,7 +16,18 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
   // -- Private ------------------------------------------- //
   private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
-  private labelTimeout?: ReturnType<typeof setTimeout> = undefined
+
+  // -- State --------------------------------------------- //
+  @state() protected redirectDeeplink: string | undefined = undefined
+
+  @state() protected redirectUniversalLink: string | undefined = undefined
+
+  @state() protected target: OpenTarget | undefined = undefined
+
+  @state() protected preferUniversalLinks =
+    OptionsController.state.experimental_preferUniversalLinks
+
+  @state() protected override isLoading = true
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -21,8 +36,19 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       throw new Error('w3m-connecting-wc-mobile: No wallet provided')
     }
 
-    this.initializeStateAndTimers()
-    document.addEventListener('visibilitychange', this.onBuffering.bind(this))
+    this.secondaryBtnLabel = 'Open'
+    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+    this.secondaryBtnIcon = 'externalLink'
+
+    // Update isLoading state initially and whenever URI changes
+    this.onHandleURI()
+
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('wcUri', () => {
+        this.onHandleURI()
+      })
+    )
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
@@ -32,29 +58,12 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
 
   public override disconnectedCallback() {
     super.disconnectedCallback()
-    document.removeEventListener('visibilitychange', this.onBuffering.bind(this))
     clearTimeout(this.btnLabelTimeout)
-    clearTimeout(this.labelTimeout)
   }
 
   // -- Private ------------------------------------------- //
-
-  private initializeStateAndTimers() {
-    // Reset labels to initial state
-    this.secondaryBtnLabel = undefined
-    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
-
-    // Start timeouts
-    this.btnLabelTimeout = setTimeout(() => {
-      this.secondaryBtnLabel = 'Try again'
-      this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
-    }, ConstantsUtil.FIVE_SEC_MS)
-    this.labelTimeout = setTimeout(() => {
-      this.secondaryLabel = `Hold tight... it's taking longer than expected`
-    }, ConstantsUtil.THREE_SEC_MS)
-  }
-
-  protected override onRender = () => {
+  private onHandleURI() {
+    this.isLoading = !this.uri
     if (!this.ready && this.uri) {
       this.ready = true
       this.onConnect?.()
@@ -65,14 +74,25 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
-        const { mobile_link, name } = this.wallet
-        const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, this.uri)
+        const { mobile_link, link_mode, name } = this.wallet
+        const { redirect, redirectUniversalLink, href } = CoreHelperUtil.formatNativeUrl(
+          mobile_link,
+          this.uri,
+          link_mode
+        )
+
+        this.redirectDeeplink = redirect
+        this.redirectUniversalLink = redirectUniversalLink
+        this.target = CoreHelperUtil.isIframe() ? '_top' : '_self'
+
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
-        const target = CoreHelperUtil.isIframe() ? '_top' : '_self'
-        CoreHelperUtil.openHref(redirect, target)
-        clearTimeout(this.labelTimeout)
-        this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
+
+        if (this.preferUniversalLinks && this.redirectUniversalLink) {
+          CoreHelperUtil.openHref(this.redirectUniversalLink, this.target)
+        } else {
+          CoreHelperUtil.openHref(this.redirectDeeplink, this.target)
+        }
       } catch (e) {
         EventsController.sendEvent({
           type: 'track',
@@ -89,29 +109,10 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     }
   }
 
-  private onBuffering() {
-    const isIos = CoreHelperUtil.isIos()
-    if (document?.visibilityState === 'visible' && !this.error && isIos) {
-      ConnectionController.setBuffering(true)
-      setTimeout(() => {
-        ConnectionController.setBuffering(false)
-      }, 5000)
-    }
-  }
-
   protected override onTryAgain() {
-    if (!this.buffering) {
-      // Clear existing timeouts
-      clearTimeout(this.btnLabelTimeout)
-      clearTimeout(this.labelTimeout)
-
-      // Restart state and timers
-      this.initializeStateAndTimers()
-
-      // Reset error state and attempt connection again
-      ConnectionController.setWcError(false)
-      this.onConnect()
-    }
+    // Reset error state and attempt connection again
+    ConnectionController.setWcError(false)
+    this.onConnect?.()
   }
 }
 

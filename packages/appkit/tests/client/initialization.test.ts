@@ -3,9 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
+  AccountController,
   AlertController,
   ApiController,
   ChainController,
+  ConstantsUtil,
   EventsController,
   OptionsController,
   PublicStateController,
@@ -93,20 +95,58 @@ describe('Base', () => {
       expect(setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
 
-    it('should set partially defaultAccountType', () => {
+    it('should set default account types', () => {
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
+      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
+      vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce({
+        bip122: 'ordinal'
+      })
 
       new AppKit({
         ...mockOptions,
         defaultAccountTypes: {
-          eip155: 'eoa',
-          bip122: 'ordinal'
+          eip155: 'eoa'
         }
       })
 
       expect(setDefaultAccountTypes).toHaveBeenCalledWith({
+        eip155: 'eoa'
+      })
+      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
+        eip155: 'eoa',
+        bip122: 'ordinal',
+        solana: 'eoa',
+        polkadot: 'eoa'
+      })
+    })
+
+    it('should use default account types when no account types are set', () => {
+      vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
+        ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+      )
+      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
+
+      new AppKit(mockOptions)
+
+      expect(setPreferredAccountTypes).toHaveBeenCalledWith(ConstantsUtil.DEFAULT_ACCOUNT_TYPES)
+    })
+
+    it('should use stored account types', () => {
+      vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce({
         eip155: 'eoa',
         bip122: 'ordinal'
+      })
+      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
+      const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
+
+      new AppKit(mockOptions)
+
+      expect(setDefaultAccountTypes).toHaveBeenCalledWith(undefined)
+      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
+        eip155: 'eoa',
+        bip122: 'ordinal',
+        solana: 'eoa',
+        polkadot: 'eoa'
       })
     })
 

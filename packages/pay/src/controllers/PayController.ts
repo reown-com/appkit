@@ -20,7 +20,7 @@ import {
 } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
-import type { PayUrlParams, PaymentOptions } from '../types/options.js'
+import type { GetExchangesParams, PayUrlParams, PaymentOptions } from '../types/options.js'
 import { getBuyStatus, getExchanges, getPayUrl } from '../utils/ApiUtil.js'
 import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
@@ -176,7 +176,9 @@ export const PayController = {
     try {
       state.isLoading = true
       const response = await getExchanges({
-        page: DEFAULT_PAGE
+        page: DEFAULT_PAGE,
+        asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
+        amount: state.amount.toString()
       })
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
@@ -188,10 +190,17 @@ export const PayController = {
     }
   },
 
-  async getAvailableExchanges(page: number = DEFAULT_PAGE) {
+  async getAvailableExchanges(params?: GetExchangesParams) {
     try {
+      const asset =
+        params?.asset && params?.network
+          ? formatCaip19Asset(params.network, params.asset)
+          : undefined
+
       const response = await getExchanges({
-        page
+        page: params?.page ?? DEFAULT_PAGE,
+        asset,
+        amount: params?.amount?.toString()
       })
 
       return response

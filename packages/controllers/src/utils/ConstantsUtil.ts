@@ -219,7 +219,8 @@ export const ConstantsUtil = {
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
   CONNECT_LABELS: {
-    MOBILE: 'Open and continue in a new browser tab'
+    MOBILE: 'Open and continue in the wallet app',
+    WEB: 'Open and continue in the wallet app'
   },
 
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
