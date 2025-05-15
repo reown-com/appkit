@@ -39,10 +39,14 @@ export const GetTransactionByHashResponse = z.object({
 export const AppSwitchNetworkRequest = z.object({ chainId: z.string().or(z.number()) })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
-export const AppConnectSocialRequest = z.object({ uri: z.string() })
+export const AppConnectSocialRequest = z.object({
+  uri: z.string(),
+  preferredAccountType: z.optional(z.string())
+})
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.string().or(z.number())),
-  preferredAccountType: z.optional(z.string())
+  preferredAccountType: z.optional(z.string()),
+  socialUri: z.optional(z.string())
 })
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
@@ -97,7 +101,8 @@ export const FrameConnectSocialResponse = z.object({
       })
     )
     .optional(),
-  userName: z.string().optional().nullable()
+  userName: z.string().optional().nullable(),
+  preferredAccountType: z.optional(z.string())
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])

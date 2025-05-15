@@ -419,6 +419,7 @@ export namespace AdapterBlueprint {
     chain?: ChainNamespace
     chainId?: number | string
     rpcUrl?: string
+    socialUri?: string
   }
 
   export type ReconnectParams = ConnectParams

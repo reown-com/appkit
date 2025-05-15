@@ -1,4 +1,9 @@
-import { type ChainNamespace, type SocialProvider } from '@reown/appkit-common'
+import {
+  type ChainNamespace,
+  type OnRampProvider,
+  type SocialProvider,
+  type SwapProvider
+} from '@reown/appkit-common'
 
 import type { Features, PreferredAccountTypes } from './TypeUtil.js'
 
@@ -219,10 +224,26 @@ export const ConstantsUtil = {
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
   CONNECT_LABELS: {
-    MOBILE: 'Open and continue in a new browser tab'
+    MOBILE: 'Open and continue in the wallet app',
+    WEB: 'Open and continue in the wallet app'
   },
 
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
+  DEFAULT_REMOTE_FEATURES: {
+    swaps: ['1inch'] as SwapProvider[],
+    onramp: ['coinbase', 'meld'] as OnRampProvider[],
+    email: true,
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[],
+    activity: true
+  },
   DEFAULT_FEATURES: {
     receive: true,
     send: true,
@@ -240,7 +261,6 @@ export const ConstantsUtil = {
     allWallets: true,
     legalCheckbox: false,
     smartSessions: false,
-
     collapseWallets: false,
     walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
     connectMethodsOrder: undefined,

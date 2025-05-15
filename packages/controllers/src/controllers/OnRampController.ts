@@ -6,6 +6,7 @@ import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -88,7 +89,7 @@ const defaultState = {
 const state = proxy<OnRampControllerState>(defaultState)
 
 // -- Controller ---------------------------------------- //
-export const OnRampController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: OnRampControllerState) => void) {
@@ -134,11 +135,11 @@ export const OnRampController = {
   },
 
   setPurchaseAmount(amount: number) {
-    this.state.purchaseAmount = amount
+    OnRampController.state.purchaseAmount = amount
   },
 
   setPaymentAmount(amount: number) {
-    this.state.paymentAmount = amount
+    OnRampController.state.paymentAmount = amount
   },
 
   async getAvailableCurrencies() {
@@ -188,3 +189,6 @@ export const OnRampController = {
     state.quotesLoading = false
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const OnRampController = withErrorBoundary(controller)

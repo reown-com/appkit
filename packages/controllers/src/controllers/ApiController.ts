@@ -162,7 +162,7 @@ export const ApiController = {
       path: '/appkit/v1/config',
       params: {
         ...sdkProperties,
-        projectId: '643930683abb02c28b8bdad440337272'
+        projectId: 'd92a356e9dcbe5989dfbed6450f0bc6f'
       }
     })
 
@@ -314,7 +314,8 @@ export const ApiController = {
     state.wallets = CoreHelperUtil.uniqueBy(
       [...state.wallets, ...ApiController._filterOutExtensions(data)],
       'id'
-    )
+    ).filter(w => w.chains?.some(chain => chains.includes(chain)))
+
     state.count = count > state.count ? count : state.count
     state.page = page
   },
