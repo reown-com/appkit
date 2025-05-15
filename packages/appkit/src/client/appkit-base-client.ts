@@ -1504,7 +1504,6 @@ export abstract class AppKitBaseClient {
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
     AccountController.resetAccount(chain)
-    this.lastSyncedAccount = undefined
   }
 
   public setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {
@@ -1528,6 +1527,7 @@ export abstract class AppKitBaseClient {
       StorageUtil.setConnectionStatus('connected')
     } else {
       StorageUtil.setConnectionStatus('disconnected')
+      this.lastSyncedAccount = undefined
     }
   }
 
