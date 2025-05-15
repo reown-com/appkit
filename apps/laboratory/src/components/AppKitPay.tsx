@@ -54,7 +54,7 @@ interface AppKitPaymentAssetState {
   asset: PaymentAsset
 }
 
-type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE'
+type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE' | 'USDC_SOLANA'
 
 const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   NATIVE_BASE: {
@@ -68,6 +68,18 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   USDC_BASE: {
     asset: baseUSDC,
     amount: 12
+  },
+  USDC_SOLANA: {
+    asset: {
+      network: 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' as CaipNetworkId,
+      asset: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      metadata: {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6
+      }
+    },
+    amount: 1
   }
 }
 
@@ -378,6 +390,14 @@ export function AppKitPay() {
                   flex="1"
                 >
                   USDC Base
+                </Button>
+                <Button
+                  onClick={() => handlePresetClick(PRESETS['USDC_SOLANA'])}
+                  isActive={isPresetActive(PRESETS['USDC_SOLANA'])}
+                  variant={isPresetActive(PRESETS['USDC_SOLANA']) ? 'solid' : 'outline'}
+                  flex="1"
+                >
+                  USDC Solana
                 </Button>
               </ButtonGroup>
             </FormControl>
