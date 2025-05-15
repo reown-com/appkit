@@ -13,6 +13,10 @@ const CHAIN_ASSET_INFO_MAP: Partial<
   eip155: {
     native: { assetNamespace: 'slip44', assetReference: '60' },
     defaultTokenNamespace: 'erc20'
+  },
+  solana: {
+    native: { assetNamespace: 'slip44', assetReference: '501' },
+    defaultTokenNamespace: 'token'
   }
 }
 
