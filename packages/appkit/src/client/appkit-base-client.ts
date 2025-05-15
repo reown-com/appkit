@@ -120,6 +120,14 @@ export abstract class AppKitBaseClient {
   public version: SdkVersion | AppKitSdkVersion
   public reportedAlertErrors: Record<string, boolean> = {}
 
+  private lastSyncedAccount?: {
+    address: string
+    chainId: string | number
+    namespace: ChainNamespace
+    timestamp: number
+  }
+  private accountSyncTimeout = 60000
+
   constructor(options: AppKitOptionsWithSdk) {
     this.options = options
     this.version = options.sdkVersion
@@ -199,6 +207,15 @@ export abstract class AppKitBaseClient {
         }
       }
     })
+  }
+
+  private shouldSkipAccountSyncAccount(params: Parameters<typeof this.syncAccount>[0]) {
+    return (
+      this.lastSyncedAccount?.address === params.address &&
+      this.lastSyncedAccount?.chainId?.toString() === params.chainId?.toString() &&
+      this.lastSyncedAccount?.namespace === params.chainNamespace &&
+      this.lastSyncedAccount?.timestamp > Date.now() - this.accountSyncTimeout
+    )
   }
 
   // -- Controllers initialization ---------------------------------------------------
@@ -1008,6 +1025,23 @@ export abstract class AppKitBaseClient {
       chainNamespace: ChainNamespace
     }
   ) {
+    /*
+     * Some adapters can emit multiple events for the same account
+     * so we need to check if the account has already been synced
+     * within the last `accountSyncTimeout` 60s default
+     */
+    if (this.shouldSkipAccountSyncAccount(params)) {
+      return
+    }
+
+    this.lastSyncedAccount = {
+      ...params,
+      address: params.address,
+      chainId: params.chainId,
+      namespace: params.chainNamespace,
+      timestamp: Date.now()
+    }
+
     const isActiveNamespace = params.chainNamespace === ChainController.state.activeChain
     const networkOfChain = ChainController.getCaipNetworkByNamespace(
       params.chainNamespace,
@@ -1470,6 +1504,7 @@ export abstract class AppKitBaseClient {
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
     AccountController.resetAccount(chain)
+    this.lastSyncedAccount = undefined
   }
 
   public setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {
@@ -1493,6 +1528,7 @@ export abstract class AppKitBaseClient {
       StorageUtil.setConnectionStatus('connected')
     } else {
       StorageUtil.setConnectionStatus('disconnected')
+      this.lastSyncedAccount = undefined
     }
   }
 
