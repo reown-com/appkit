@@ -1504,6 +1504,7 @@ export abstract class AppKitBaseClient {
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
     AccountController.resetAccount(chain)
+    this.lastSyncedAccount = undefined
   }
 
   public setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {
