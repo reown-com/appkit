@@ -21,7 +21,6 @@ import {
   mockRequestedCaipNetworks
 } from '../mocks/State'
 
-// Mock isPayWithWalletSupported at the top level
 vi.mock('../../src/utils/AssetUtil.js', () => ({
   isPayWithWalletSupported: vi.fn()
 }))
