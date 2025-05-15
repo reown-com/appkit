@@ -13,10 +13,11 @@ import {
   type Connector as AppKitConnector,
   ChainController,
   type Connection,
+  ConnectorController,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
+import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { AppKitBaseClient } from '../client/appkit-base-client.js'
@@ -52,6 +53,7 @@ export abstract class AdapterBlueprint<
   public projectId?: string
   public adapterType: string | undefined
   public getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
+  public getConnectorId: (namespace: ChainNamespace) => string | undefined
   protected availableConnectors: Connector[] = []
   protected availableConnections: Connection[] = []
   protected connector?: Connector
@@ -66,6 +68,8 @@ export abstract class AdapterBlueprint<
   constructor(params?: AdapterBlueprint.Params) {
     this.getCaipNetworks = (namespace?: ChainNamespace) =>
       ChainController.getCaipNetworks(namespace)
+    this.getConnectorId = (namespace: ChainNamespace) =>
+      ConnectorController.getConnectorId(namespace)
 
     if (params) {
       this.construct(params)
@@ -156,11 +160,11 @@ export abstract class AdapterBlueprint<
 
     this.availableConnections = [...connections, ...this.availableConnections].filter(
       connection => {
-        if (connectionsAdded.has(connection.connectorId)) {
+        if (connectionsAdded.has(connection.connectorId.toLowerCase())) {
           return false
         }
 
-        connectionsAdded.add(connection.connectorId)
+        connectionsAdded.add(connection.connectorId.toLowerCase())
 
         return true
       }
@@ -169,8 +173,10 @@ export abstract class AdapterBlueprint<
     this.emit('connections', this.availableConnections)
   }
 
-  protected removeConnection(connectorId: string) {
-    this.availableConnections = this.availableConnections.filter(c => c.connectorId !== connectorId)
+  protected deleteConnection(connectorId: string) {
+    this.availableConnections = this.availableConnections.filter(
+      c => !HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+    )
 
     this.emit('connections', this.availableConnections)
   }

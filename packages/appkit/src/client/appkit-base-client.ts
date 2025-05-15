@@ -1294,7 +1294,7 @@ export abstract class AppKitBaseClient {
       this.universalProvider.on('connect', ConnectionController.finalizeWcConnection)
 
       this.universalProvider.on('disconnect', () => {
-        this.chainNamespaces.forEach(namespace => {
+        this.chainNamespaces.forEach(() => {
           /*
            * TODOD: Remove this, since it can break the multi-wallet functionality
            * this.resetAccount(namespace)

@@ -224,7 +224,7 @@ export class EthersAdapter extends AdapterBlueprint {
       method: 'eth_chainId'
     })
 
-    this.listenProviderEvents(selectedProvider)
+    this.listenProviderEvents(id, selectedProvider)
 
     if (!accounts[0]) {
       throw new Error('No accounts found')
@@ -292,7 +292,7 @@ export class EthersAdapter extends AdapterBlueprint {
           providerType: connector.type
         })
 
-        this.removeConnection(connection.connectorId)
+        this.deleteConnection(connection.connectorId)
 
         return connection
       })
@@ -312,13 +312,9 @@ export class EthersAdapter extends AdapterBlueprint {
     await Promise.allSettled(
       this.connectors
         .filter(c => {
-          const hasConnection = this.connections.find(({ connectorId }) =>
-            HelpersUtil.isLowerCaseMatch(c.id, connectorId)
-          )
-
           const { isDisconnected } = getConnectorStorageInfo(c.id)
 
-          return !hasConnection && !isDisconnected
+          return !isDisconnected
         })
         .map(async connector => {
           const { accounts, chainId } = await ConnectorUtil.fetchProviderData(connector)
@@ -331,25 +327,19 @@ export class EthersAdapter extends AdapterBlueprint {
               accounts: accounts.map(account => ({ address: account })),
               caipNetwork
             })
+
+            if (connector.provider && connector.id !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+              this.listenProviderEvents(
+                connector.id,
+                connector.provider as Provider | CombinedProvider
+              )
+            }
           }
         })
     )
 
     if (connectToFirstConnector) {
-      const firstConnection = this.connections.find(c => c.accounts.length > 0)
-
-      if (firstConnection) {
-        const [account] = firstConnection.accounts
-        const connector = this.connectors.find(c =>
-          HelpersUtil.isLowerCaseMatch(c.id, firstConnection.connectorId)
-        )
-
-        this.emit('accountChanged', {
-          address: account?.address as string,
-          chainId: Number(firstConnection.caipNetwork?.id ?? 1),
-          connector
-        })
-      }
+      this.chooseFirstConnectionAndEmit()
     }
   }
 
@@ -527,7 +517,7 @@ export class EthersAdapter extends AdapterBlueprint {
         caipNetwork
       })
 
-      this.listenProviderEvents(selectedProvider)
+      this.listenProviderEvents(id, selectedProvider)
     }
 
     return {
@@ -618,13 +608,14 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     if (params.id) {
-      this.removeConnection(params.id)
+      this.removeProviderListeners(params.id)
+      this.deleteConnection(params.id)
     }
 
     if (this.connections.length === 0) {
       this.emit('disconnect')
     } else {
-      const lastConnection = this.connections.filter(c => c.accounts.length > 0).pop()
+      const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
 
       if (lastConnection) {
         const [account] = lastConnection.accounts
@@ -703,22 +694,83 @@ export class EthersAdapter extends AdapterBlueprint {
     return { balance: '0.00', symbol: 'ETH' }
   }
 
-  private providerHandlers: {
-    disconnect: () => void
-    accountsChanged: (accounts: string[]) => void
-    chainChanged: (chainId: string) => void
-  } | null = null
+  private chooseFirstConnectionAndEmit() {
+    const firstConnection = this.connections.find(c => {
+      const hasAccounts = c.accounts.length > 0
+      const hasConnector = this.connectors.find(connector =>
+        HelpersUtil.isLowerCaseMatch(connector.id, c.connectorId)
+      )
 
-  private listenProviderEvents(provider: Provider | CombinedProvider) {
+      return hasAccounts && hasConnector
+    })
+
+    if (firstConnection) {
+      const [account] = firstConnection.accounts
+      const connector = this.connectors.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.id, firstConnection.connectorId)
+      )
+
+      this.emit('accountChanged', {
+        address: account?.address as string,
+        chainId: Number(firstConnection.caipNetwork?.id ?? 1),
+        connector
+      })
+    }
+  }
+
+  private providerHandlers: Record<
+    string,
+    {
+      disconnect: () => void
+      accountsChanged: (accounts: string[]) => void
+      chainChanged: (chainId: string) => void
+      provider: Provider | CombinedProvider
+    } | null
+  > = {}
+
+  private listenProviderEvents(connectorId: string, provider: Provider | CombinedProvider) {
+    // eslint-disable-next-line no-param-reassign
+    connectorId = connectorId.toLowerCase()
+
     const disconnect = () => {
-      this.removeProviderListeners(provider)
-      this.emit('disconnect')
+      this.removeProviderListeners(connectorId)
+      this.deleteConnection(connectorId)
+
+      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
+        this.chooseFirstConnectionAndEmit()
+      }
+
+      if (this.connections.length === 0) {
+        this.emit('disconnect')
+      }
     }
 
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
-        this.emit('accountChanged', {
-          address: accounts[0] as Address
+        const connection = this.connections.find(c => c.connectorId, connectorId)
+
+        if (!connection) {
+          throw new Error('Connection not found')
+        }
+
+        const connector = this.connectors.find(c => c.id === connectorId)
+
+        if (!connector) {
+          throw new Error('Connector not found')
+        }
+
+        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
+          this.emit('accountChanged', {
+            address: accounts[0] as Address,
+            chainId: Number(connection.caipNetwork?.id ?? 1),
+            connector
+          })
+        }
+
+        this.addConnection({
+          connectorId,
+          accounts: accounts.map(account => ({ address: account })),
+          caipNetwork: connection?.caipNetwork
         })
       } else {
         disconnect()
@@ -729,26 +781,49 @@ export class EthersAdapter extends AdapterBlueprint {
       const chainIdNumber =
         typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
 
-      this.emit('switchNetwork', { chainId: chainIdNumber })
+      const connection = this.connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+      )
+
+      const caipNetwork = this.getCaipNetworks().find(n => n.id === chainIdNumber)
+
+      if (connection) {
+        this.addConnection({
+          connectorId,
+          accounts: connection.accounts,
+          caipNetwork
+        })
+      }
+
+      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
+        this.emit('switchNetwork', { chainId: chainIdNumber })
+      }
     }
 
-    provider.on('disconnect', disconnect)
-    provider.on('accountsChanged', accountsChangedHandler)
-    provider.on('chainChanged', chainChangedHandler)
+    if (!this.providerHandlers[connectorId]) {
+      provider.on('disconnect', disconnect)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
 
-    this.providerHandlers = {
-      disconnect,
-      accountsChanged: accountsChangedHandler,
-      chainChanged: chainChangedHandler
+      this.providerHandlers[connectorId] = {
+        provider,
+        disconnect,
+        accountsChanged: accountsChangedHandler,
+        chainChanged: chainChangedHandler
+      }
     }
   }
 
-  private removeProviderListeners(provider: Provider | CombinedProvider) {
-    if (this.providerHandlers) {
-      provider.removeListener('disconnect', this.providerHandlers.disconnect)
-      provider.removeListener('accountsChanged', this.providerHandlers.accountsChanged)
-      provider.removeListener('chainChanged', this.providerHandlers.chainChanged)
-      this.providerHandlers = null
+  private removeProviderListeners(connectorId: string) {
+    if (this.providerHandlers[connectorId]) {
+      const { provider, disconnect, accountsChanged, chainChanged } =
+        this.providerHandlers[connectorId]
+
+      provider.removeListener('disconnect', disconnect)
+      provider.removeListener('accountsChanged', accountsChanged)
+      provider.removeListener('chainChanged', chainChanged)
+
+      this.providerHandlers[connectorId] = null
     }
   }
 
