@@ -71,7 +71,7 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   },
   USDC_SOLANA: {
     asset: {
-      network: 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' as CaipNetworkId,
+      network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipNetworkId,
       asset: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
       metadata: {
         name: 'USD Coin',
