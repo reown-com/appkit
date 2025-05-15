@@ -214,31 +214,42 @@ export function AppKitPay() {
     })
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target
-    setPaymentDetails((prev: AppKitPaymentAssetState) => {
-      const newDetails = { ...prev }
-      if (name === 'recipient') {
-        newDetails.recipient = value
-      } else if (name === 'network') {
-        newDetails.asset = { ...newDetails.asset, network: value as CaipNetworkId }
-      } else if (name === 'asset') {
-        newDetails.asset = { ...newDetails.asset, asset: value }
-      } else if (name === 'metadata.name') {
-        newDetails.asset = {
-          ...newDetails.asset,
-          metadata: { ...newDetails.asset.metadata, name: value }
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target
+      setPaymentDetails((prev: AppKitPaymentAssetState) => {
+        const newDetails = { ...prev }
+        switch (name) {
+          case 'recipient':
+            newDetails.recipient = value
+            break
+          case 'network':
+            newDetails.asset = { ...newDetails.asset, network: value as CaipNetworkId }
+            break
+          case 'asset':
+            newDetails.asset = { ...newDetails.asset, asset: value }
+            break
+          case 'metadata.name':
+            newDetails.asset = {
+              ...newDetails.asset,
+              metadata: { ...newDetails.asset.metadata, name: value }
+            }
+            break
+          case 'metadata.symbol':
+            newDetails.asset = {
+              ...newDetails.asset,
+              metadata: { ...newDetails.asset.metadata, symbol: value }
+            }
+            break
+          default:
+            break
         }
-      } else if (name === 'metadata.symbol') {
-        newDetails.asset = {
-          ...newDetails.asset,
-          metadata: { ...newDetails.asset.metadata, symbol: value }
-        }
-      }
 
-      return newDetails
-    })
-  }
+        return newDetails
+      })
+    },
+    [setPaymentDetails]
+  )
 
   function handleAmountChange(valueAsString: string, valueAsNumber: number) {
     setAmountDisplayValue(valueAsString)
