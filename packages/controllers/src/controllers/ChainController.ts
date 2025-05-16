@@ -422,6 +422,8 @@ const controller = {
 
     if (unsupportedNetwork) {
       RouterController.goBack()
+
+      return
     }
 
     const networkControllerClient = ChainController.getNetworkControllerClient(
