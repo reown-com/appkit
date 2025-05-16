@@ -17,9 +17,6 @@ const config = {
   networks: ConstantsUtil.EvmNetworks,
   defaultNetwork: mainnet,
   projectId,
-  features: {
-    analytics: true
-  },
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',

@@ -33,6 +33,10 @@ if (browser) {
     defaultNetwork: arbitrum,
     projectId,
     themeMode: 'light',
+    features: {
+      email: false,
+      socials: false
+    }
     metadata: {
       name: 'SvelteKit Example',
       description: 'SvelteKit Example using Wagmi adapter',

@@ -21,7 +21,7 @@ const config = {
   projectId: ConstantsUtil.ProjectId,
   features: {
     emailShowWallets: false,
-    analytics: true
+    socials: []
   },
   siweConfig
 }

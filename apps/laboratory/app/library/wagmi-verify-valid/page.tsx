@@ -29,9 +29,6 @@ const config = {
   adapters: [wagmiAdapter],
   networks,
   defaultNetwork: mainnet,
-  features: {
-    analytics: true
-  },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   projectId

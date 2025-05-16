@@ -20,7 +20,8 @@ const config = {
   projectId: ConstantsUtil.ProjectId,
   features: {
     legalCheckbox: true,
-    analytics: true
+    email: false,
+    socials: []
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',

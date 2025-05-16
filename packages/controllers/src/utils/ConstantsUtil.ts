@@ -242,7 +242,8 @@ export const ConstantsUtil = {
       'apple',
       'facebook'
     ] as SocialProvider[],
-    activity: true
+    activity: true,
+    reownBranding: true
   },
   DEFAULT_FEATURES: {
     receive: true,

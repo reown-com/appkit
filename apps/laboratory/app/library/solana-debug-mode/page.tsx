@@ -22,7 +22,7 @@ const config = {
   projectId: '',
   metadata: ConstantsUtil.Metadata,
   features: {
-    analytics: true
+    socials: []
   },
   debug: true
 }

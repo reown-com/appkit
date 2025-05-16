@@ -27,6 +27,9 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: '',
+  features: {
+    socials: []
+  },
   debug: true
 }
 

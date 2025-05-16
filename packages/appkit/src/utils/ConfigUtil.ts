@@ -32,7 +32,8 @@ export const ConfigUtil = {
         socials: false,
         swaps: false,
         onramp: false,
-        activity: false
+        activity: false,
+        reownBranding: false
       }
 
       const getApiConfig = <T extends FeatureID>(id: T) =>
@@ -71,6 +72,11 @@ export const ConfigUtil = {
       const activityApi = getApiConfig('activity')
       if (activityApi) {
         remoteFeaturesConfig.activity = activityApi.isEnabled ?? false
+      }
+
+      const reownBrandingApi = getApiConfig('reownBranding')
+      if (reownBrandingApi) {
+        remoteFeaturesConfig.reownBranding = false
       }
 
       if (localFeatures.email !== undefined) warnings.push('"features.email"')
@@ -123,6 +129,8 @@ export const ConfigUtil = {
         localFeatures.history !== undefined
           ? localFeatures.history
           : DEFAULT_REMOTE_FEATURES.activity
+
+      remoteFeaturesConfig.reownBranding = DEFAULT_REMOTE_FEATURES.reownBranding
     }
 
     return remoteFeaturesConfig

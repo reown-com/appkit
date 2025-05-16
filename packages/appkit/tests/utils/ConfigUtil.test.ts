@@ -12,9 +12,9 @@ import type {
   TypedFeatureConfig
 } from '@reown/appkit-controllers'
 
-import type { AppKitOptionsWithSdk } from '../../src/client/appkit-base-client'
-import { ConfigUtil } from '../../src/utils/ConfigUtil'
-import { mockOptions as initialMockOptions } from '../mocks/Options'
+import type { AppKitOptionsWithSdk } from '../../src/client/appkit-base-client.js'
+import { ConfigUtil } from '../../src/utils/ConfigUtil.js'
+import { mockOptions as initialMockOptions } from '../mocks/Options.js'
 
 const getMockOptions = (): AppKitOptionsWithSdk => JSON.parse(JSON.stringify(initialMockOptions))
 

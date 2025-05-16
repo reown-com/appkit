@@ -24,7 +24,7 @@ const modal = createAppKit({
   projectId: ConstantsUtil.ProjectId,
   features: {
     emailShowWallets: false,
-    analytics: true
+    socials: []
   },
   siweConfig
 })

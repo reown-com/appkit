@@ -20,7 +20,7 @@ const config = {
   defaultNetwork: mainnet,
   projectId: '',
   features: {
-    analytics: true
+    socials: []
   },
   siweConfig,
   debug: true

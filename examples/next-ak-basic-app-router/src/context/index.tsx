@@ -28,9 +28,6 @@ export const modal = createAppKit({
   adapters: [],
   projectId,
   networks,
-  features: {
-    analytics: true
-  },
   metadata: appKitMetadata,
   themeMode: 'light'
 })
