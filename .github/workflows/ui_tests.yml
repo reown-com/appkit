@@ -48,6 +48,10 @@ on:
         required: false
         default: '{"shard":[1], "shardTotal":[1]}'
         type: string
+      build_trigger_type:
+        description: 'The type of event that triggered the build (e.g., push, pull_request, merge_group)'
+        required: true
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -63,6 +67,10 @@ on:
         required: false
       SOLANA_PRIVATE_KEY:
         required: false
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
 
 jobs:
   build_lab_and_extension:
@@ -368,6 +376,13 @@ jobs:
           name: ui-node-modules
           path: node_modules # Specify path to download into
 
+<<<<<<< HEAD
+=======
+      # Restore executable permissions for binaries (keep this after potential copy)
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
+
+>>>>>>> cd1a7b4d7 (feat: upload consolidated playwright report)
       - name: Install dependencies # Install again to link binaries, etc.
         run: pnpm install --frozen-lockfile
 
@@ -401,16 +416,69 @@ jobs:
         run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
 
+      # - name: Summarize Slowest Tests
+      #   if: always() # Attempt to run even if prior steps had issues, as long as the report might exist
+      #   run: |
+      #     node ${{ github.workspace }}/scripts/summarize-slowest-tests.cjs ${{ github.workspace }}/apps/laboratory/merged-test-results.json
+
+      - name: Determine Build Context for S3 Path
+        id: build_context
+        run: |
+          TRIGGER="${{ inputs.build_trigger_type }}"
+          CONTEXT="unknown-trigger"
+          if [ "$TRIGGER" == "merge_group" ]; then
+            CONTEXT="merge-queue"
+          elif [ "$TRIGGER" == "pull_request" ]; then
+            CONTEXT="pull-request"
+          elif [ "$TRIGGER" == "push" ]; then # Could be push to main or other branches
+            if [ "${{ github.ref_name }}" == "main" ]; then
+              CONTEXT="push-main"
+            else
+              CONTEXT="push-branch-${{ github.ref_name }}"
+            fi
+          fi
+          echo "BUILD_CONTEXT=$CONTEXT" >> $GITHUB_ENV
+          echo "Derived context: $CONTEXT"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Upload Merged JSON Report to S3
+        run: |
+          S3_BUCKET="reown.appkit.e2e.reports"
+          S3_PREFIX="appkit/playwright-results"
+          FILE_NAME="merged-test-results.json"
+          S3_KEY="${S3_PREFIX}/${{ env.BUILD_CONTEXT }}/${{ github.run_id }}-${FILE_NAME}"
+
+          echo "Uploading ${{ github.workspace }}/apps/laboratory/merged-test-results.json to s3://${S3_BUCKET}/${S3_KEY}"
+          aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}
+        if: always() # Try to upload even if some prior steps (like summarization) had issues
+
       - name: Upload Merged HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-html-report
           path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
+<<<<<<< HEAD
           retention-days: 7
+=======
+          retention-days: 30 # Keep merged reports longer
+<<<<<<< HEAD
+>>>>>>> cd1a7b4d7 (feat: upload consolidated playwright report)
 
       - name: Upload Merged JSON Report (for custom processing)
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-json-report
           path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
+<<<<<<< HEAD
           retention-days: 7
+=======
+          retention-days: 30
+>>>>>>> cd1a7b4d7 (feat: upload consolidated playwright report)
+=======
+>>>>>>> 458abc685 (feat: upload to s3)
