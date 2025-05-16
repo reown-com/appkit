@@ -344,6 +344,44 @@ jobs:
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
 
+      - name: Verify downloaded blobs (optional debugging)
+        run: ls -R ${{ github.workspace }}/all-blob-reports
+
+      - name: Ensure merged report directory exists
+        run: mkdir -p ${{ github.workspace }}/apps/laboratory/playwright-report/
+
+      - name: Merge Playwright blob reports
+        # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
+        # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards
+        # and to define the output reporters (HTML and JSON).
+        # Output will be in './apps/laboratory/playwright-report/' (relative to working-directory)
+        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
+        working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
+
+      - name: Debug - List contents of merged report directory
+        run: |
+          echo "Listing contents of ${{ github.workspace }}/apps/laboratory/playwright-report/"
+          ls -R ${{ github.workspace }}/apps/laboratory/playwright-report/
+        if: always() # Run this even if the previous step had issues, to see the state
+
+      - name: Rename merged JSON report for clarity
+        run: mv ${{ github.workspace }}/apps/laboratory/playwright-report/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
+        # This step makes the final JSON artifact name more explicit.
+
+      - name: Upload Merged HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-merged-html-report
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
+          retention-days: 30 # Keep merged reports longer
+
+      - name: Upload Merged JSON Report (for custom processing)
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-merged-json-report
+          path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
+          retention-days: 30
+
   merge_reports:
     needs: ui_tests # Ensures this job runs only after all 'test' (sharded) jobs complete
     if: always() # Run this job even if some test shards failed, to get a complete picture
@@ -389,6 +427,9 @@ jobs:
 
       - name: Verify downloaded blobs (optional debugging)
         run: ls -R ${{ github.workspace }}/all-blob-reports
+
+      - name: Ensure merged report directory exists
+        run: mkdir -p ${{ github.workspace }}/apps/laboratory/playwright-report/
 
       - name: Merge Playwright blob reports
         # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
