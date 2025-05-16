@@ -327,7 +327,7 @@ jobs:
         if: failure()
         with:
           name: playwright-report-${{ matrix.shard }}
-          path: ./apps/laboratory/playwright-report/
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/
           retention-days: 7
 
       - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
@@ -383,33 +383,33 @@ jobs:
       - name: Download all shard blob reports
         uses: actions/download-artifact@v4
         with:
-          path: all-blob-reports # Directory to download all artifacts into
+          path: all-blob-reports # Directory to download all artifacts into (becomes ${{ github.workspace }}/all-blob-reports)
           pattern: playwright-blob-artifact-shard-* # Matches all NEW shard blob artifacts
           merge-multiple: true # Merges contents of all matching artifacts into the 'path' directory
 
       - name: Verify downloaded blobs (optional debugging)
-        run: ls -R all-blob-reports
+        run: ls -R ${{ github.workspace }}/all-blob-reports
 
       - name: Merge Playwright blob reports
-        # This command merges blobs from 'all-blob-reports' and creates new reports.
-        # Output will be in './apps/laboratory/playwright-report/'
-        run: pnpm exec playwright merge-reports --reporter html,json ./all-blob-reports
-        working-directory: ./apps/laboratory # Ensure this is where the command can find Playwright and output correctly
+        # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
+        # Output will be in './apps/laboratory/playwright-report/' (relative to working-directory)
+        run: pnpm exec playwright merge-reports --reporter html,json ${{ github.workspace }}/all-blob-reports
+        working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
 
       - name: Rename merged JSON report for clarity
-        run: mv ./apps/laboratory/playwright-report/report.json ./apps/laboratory/merged-test-results.json
+        run: mv ${{ github.workspace }}/apps/laboratory/playwright-report/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
 
       - name: Upload Merged HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-html-report
-          path: ./apps/laboratory/playwright-report/ # Contains the merged HTML report
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
           retention-days: 30 # Keep merged reports longer
 
       - name: Upload Merged JSON Report (for custom processing)
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-json-report
-          path: ./apps/laboratory/merged-test-results.json # The consolidated JSON report
+          path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
           retention-days: 30
