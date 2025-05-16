@@ -392,9 +392,10 @@ jobs:
 
       - name: Merge Playwright blob reports
         # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
-        # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards.
+        # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards
+        # and to define the output reporters (HTML and JSON).
         # Output will be in './apps/laboratory/playwright-report/' (relative to working-directory)
-        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts --reporter html,json ${{ github.workspace }}/all-blob-reports
+        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
         working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
 
       - name: Rename merged JSON report for clarity

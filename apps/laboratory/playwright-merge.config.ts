@@ -5,10 +5,12 @@ import { defineConfig } from '@playwright/test'
  * This helps reconcile different absolute testDir paths from sharded runs.
  */
 export default defineConfig({
-  // Reporters are specified on the CLI for the merge-reports command itself.
-  // We can leave this empty or specify what the final merged report might look like,
-  // but CLI options will typically override.
-  reporter: [],
+  // Define the reporters for the merge operation directly here.
+  // The merge-reports command will create these in its output directory (playwright-report).
+  reporter: [
+    ['json', { outputFile: 'report.json' }], // Ensures report.json is created
+    ['html'] // HTML reporter, will go into the default playwright-report directory
+  ],
 
   // This is the crucial part. It tells merge-reports what the common
   // test directory should be considered for all incoming blob reports.
