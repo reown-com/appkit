@@ -9,9 +9,9 @@ import { getProjects } from './tests/shared/utils/project'
 config({ path: './.env.local' })
 
 // Read environment variable for shard suffix, to make blob report filenames unique
-const shardSuffix = process.env['PLAYWRIGHT_SHARD_SUFFIX'];
-const blobOutputDir = 'playwright-blob-reports';
-const blobFileName = shardSuffix ? `report-${shardSuffix}.zip` : 'report.zip';
+const shardSuffix = process.env['PLAYWRIGHT_SHARD_SUFFIX']
+const blobOutputDir = 'playwright-blob-reports'
+const blobFileName = shardSuffix ? `report-${shardSuffix}.zip` : 'report.zip'
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
