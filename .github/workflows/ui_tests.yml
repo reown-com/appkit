@@ -358,14 +358,8 @@ jobs:
         run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
         working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
 
-      - name: Debug - List contents of merged report directory
-        run: |
-          echo "Listing contents of ${{ github.workspace }}/apps/laboratory/playwright-report/"
-          ls -R ${{ github.workspace }}/apps/laboratory/playwright-report/
-        if: always() # Run this even if the previous step had issues, to see the state
-
       - name: Rename merged JSON report for clarity
-        run: mv ${{ github.workspace }}/apps/laboratory/playwright-report/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
+        run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
 
       - name: Upload Merged HTML Report
@@ -446,7 +440,7 @@ jobs:
         if: always() # Run this even if the previous step had issues, to see the state
 
       - name: Rename merged JSON report for clarity
-        run: mv ${{ github.workspace }}/apps/laboratory/playwright-report/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
+        run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
 
       - name: Upload Merged HTML Report
