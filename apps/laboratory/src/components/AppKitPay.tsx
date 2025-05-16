@@ -29,6 +29,7 @@ import {
 } from '@chakra-ui/react'
 import { Card } from '@chakra-ui/react'
 
+import type { CaipNetworkId } from '@reown/appkit-common'
 import type {
   AppKitPayErrorMessage,
   Exchange,
@@ -47,19 +48,13 @@ import {
 
 import { useChakraToast } from './Toast'
 
-interface Metadata {
-  name: string
-  symbol: string
-  decimals: number
-}
-
 interface AppKitPaymentAssetState {
   recipient: string
   amount: number
   asset: PaymentAsset
 }
 
-type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE'
+type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE' | 'USDC_SOLANA'
 
 const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   NATIVE_BASE: {
@@ -73,6 +68,18 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   USDC_BASE: {
     asset: baseUSDC,
     amount: 12
+  },
+  USDC_SOLANA: {
+    asset: {
+      network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipNetworkId,
+      asset: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      metadata: {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6
+      }
+    },
+    amount: 1
   }
 }
 
@@ -199,11 +206,6 @@ export function AppKitPay() {
 
       return
     }
-    if (!/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient)) {
-      toast({ title: 'Invalid Recipient', description: 'Please enter a valid Ethereum address.' })
-
-      return
-    }
 
     await open({
       recipient: paymentDetails.recipient,
@@ -212,24 +214,42 @@ export function AppKitPay() {
     })
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target
-    if (name.startsWith('metadata.')) {
-      const key = name.split('.')[1] as keyof Metadata
-      const processedValue = key === 'decimals' ? parseInt(value, 10) || 0 : value
-      setPaymentDetails((prev: AppKitPaymentAssetState) => ({
-        ...prev,
-        asset: { ...prev.asset, [key]: processedValue }
-      }))
-    } else {
-      const fieldName = name as keyof Omit<AppKitPaymentAssetState, 'asset'>
-      const processedValue: string | number = value
-      setPaymentDetails((prev: AppKitPaymentAssetState) => ({
-        ...prev,
-        [fieldName]: processedValue
-      }))
-    }
-  }
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target
+      setPaymentDetails((prev: AppKitPaymentAssetState) => {
+        const newDetails = { ...prev }
+        switch (name) {
+          case 'recipient':
+            newDetails.recipient = value
+            break
+          case 'network':
+            newDetails.asset = { ...newDetails.asset, network: value as CaipNetworkId }
+            break
+          case 'asset':
+            newDetails.asset = { ...newDetails.asset, asset: value }
+            break
+          case 'metadata.name':
+            newDetails.asset = {
+              ...newDetails.asset,
+              metadata: { ...newDetails.asset.metadata, name: value }
+            }
+            break
+          case 'metadata.symbol':
+            newDetails.asset = {
+              ...newDetails.asset,
+              metadata: { ...newDetails.asset.metadata, symbol: value }
+            }
+            break
+          default:
+            break
+        }
+
+        return newDetails
+      })
+    },
+    [setPaymentDetails]
+  )
 
   function handleAmountChange(valueAsString: string, valueAsNumber: number) {
     setAmountDisplayValue(valueAsString)
@@ -382,6 +402,14 @@ export function AppKitPay() {
                 >
                   USDC Base
                 </Button>
+                <Button
+                  onClick={() => handlePresetClick(PRESETS['USDC_SOLANA'])}
+                  isActive={isPresetActive(PRESETS['USDC_SOLANA'])}
+                  variant={isPresetActive(PRESETS['USDC_SOLANA']) ? 'solid' : 'outline'}
+                  flex="1"
+                >
+                  USDC Solana
+                </Button>
               </ButtonGroup>
             </FormControl>
 
@@ -470,11 +498,7 @@ export function AppKitPay() {
           <Stack spacing="4">
             <Button
               onClick={handleOpenPay}
-              isDisabled={
-                !paymentDetails.recipient ||
-                !/^0x[a-fA-F0-9]{40}$/u.test(paymentDetails.recipient) ||
-                isPending
-              }
+              isDisabled={!paymentDetails.recipient || isPending}
               width="full"
             >
               {isPending ? <Spinner /> : 'Open Pay Modal'}

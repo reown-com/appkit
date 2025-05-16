@@ -1,6 +1,8 @@
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ParseUtil } from '@reown/appkit-common'
 
+const SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES = ['eip155']
+
 const CHAIN_ASSET_INFO_MAP: Partial<
   Record<
     ChainNamespace,
@@ -13,6 +15,10 @@ const CHAIN_ASSET_INFO_MAP: Partial<
   eip155: {
     native: { assetNamespace: 'slip44', assetReference: '60' },
     defaultTokenNamespace: 'erc20'
+  },
+  solana: {
+    native: { assetNamespace: 'slip44', assetReference: '501' },
+    defaultTokenNamespace: 'token'
   }
 }
 
@@ -35,4 +41,10 @@ export function formatCaip19Asset(caipNetworkId: CaipNetworkId, asset: string): 
   const networkPart = `${chainNamespace}:${chainId}`
 
   return `${networkPart}/${assetNamespace}:${assetReference}`
+}
+
+export function isPayWithWalletSupported(networkId: CaipNetworkId): boolean {
+  const { chainNamespace } = ParseUtil.parseCaipNetworkId(networkId)
+
+  return SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES.includes(chainNamespace)
 }
