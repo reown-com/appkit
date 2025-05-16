@@ -13,12 +13,17 @@ import {
 
 import { PayController } from '../../src/controllers/PayController'
 import { W3mPayView } from '../../src/ui/w3m-pay-view'
+import { isPayWithWalletSupported } from '../../src/utils/AssetUtil.js'
 import {
   mockConnectionState,
   mockExchanges,
   mockPaymentAsset,
   mockRequestedCaipNetworks
 } from '../mocks/State'
+
+vi.mock('../../src/utils/AssetUtil.js', () => ({
+  isPayWithWalletSupported: vi.fn()
+}))
 
 describe('W3mPayView', () => {
   beforeAll(() => {
@@ -59,6 +64,8 @@ describe('W3mPayView', () => {
     vi.spyOn(ConnectionController, 'disconnect').mockImplementation(async () => {})
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
     vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
+
+    vi.mocked(isPayWithWalletSupported).mockReturnValue(true)
   })
 
   test('should render payment header with correct amount and token', async () => {
@@ -253,5 +260,33 @@ describe('W3mPayView', () => {
     await connectedView?.dispatchEvent(new Event('click'))
 
     expect(PayController.handlePayWithWallet).toHaveBeenCalledOnce()
+  })
+
+  test('should render pay with wallet section when network is supported', async () => {
+    vi.mocked(isPayWithWalletSupported).mockReturnValue(true)
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+    await elementUpdated(element)
+
+    const walletPaymentOption = element.shadowRoot?.querySelector(
+      '[data-testid="wallet-payment-option"]'
+    )
+    const separator = element.shadowRoot?.querySelector('wui-separator')
+
+    expect(walletPaymentOption).not.toBeNull()
+    expect(separator).not.toBeNull()
+  })
+
+  test('should not render pay with wallet section when network is not supported', async () => {
+    vi.mocked(isPayWithWalletSupported).mockReturnValue(false)
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+    await elementUpdated(element)
+
+    const walletPaymentOption = element.shadowRoot?.querySelector(
+      '[data-testid="wallet-payment-option"]'
+    )
+    const separator = element.shadowRoot?.querySelector('wui-separator')
+
+    expect(walletPaymentOption).toBeNull()
+    expect(separator).toBeNull()
   })
 })

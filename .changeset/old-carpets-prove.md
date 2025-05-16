@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds try catch preventing error from bubbling up if fetching supported networks for Blockchain API fails'
+Removes chain parameter from the excluded wallets fetch request to not filter wallets by supported networks
