@@ -62,7 +62,8 @@ describe('ConfigUtil', () => {
         socials: ['google'],
         swaps: false,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
-        activity: true
+        activity: true,
+        reownBranding: true
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -81,7 +82,8 @@ describe('ConfigUtil', () => {
         socials: false,
         swaps: ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
-        activity: ConstantsUtil.DEFAULT_REMOTE_FEATURES.activity
+        activity: ConstantsUtil.DEFAULT_REMOTE_FEATURES.activity,
+        reownBranding: true
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -118,7 +120,8 @@ describe('ConfigUtil', () => {
         socials: false,
         swaps: false,
         onramp: false,
-        activity: false
+        activity: false,
+        reownBranding: false
       })
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
@@ -144,7 +147,8 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: false,
         onramp: false,
-        activity: false
+        activity: false,
+        reownBranding: false
       })
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
@@ -179,7 +183,8 @@ describe('ConfigUtil', () => {
         socials: ['discord'],
         swaps: ['1inch'],
         onramp: false,
-        activity: true
+        activity: true,
+        reownBranding: false
       })
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
@@ -206,7 +211,8 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: ['1inch'],
         onramp: false,
-        activity: false
+        activity: false,
+        reownBranding: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -223,7 +229,8 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: false,
         onramp: false,
-        activity: false
+        activity: false,
+        reownBranding: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -243,7 +250,8 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: false,
         onramp: false,
-        activity: false
+        activity: false,
+        reownBranding: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })

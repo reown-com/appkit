@@ -51,6 +51,7 @@ import {
   EnsController,
   EventsController,
   ModalController,
+  OnRampController,
   OptionsController,
   PublicStateController,
   RouterController,
@@ -157,6 +158,9 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
+    if (this.remoteFeatures.onramp) {
+      OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
+    }
     await this.initChainAdapters()
     await this.injectModalUi()
 

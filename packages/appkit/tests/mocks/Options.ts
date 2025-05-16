@@ -28,5 +28,6 @@ export const mockRemoteFeaturesConfig: RemoteFeatures = {
   socials: ['google', 'github'] as SocialProvider[],
   swaps: ['1inch'] as '1inch'[],
   onramp: ['coinbase'] as OnRampProvider[],
-  activity: true
+  activity: true,
+  reownBranding: true
 }

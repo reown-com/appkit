@@ -1,18 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { OnRampProvider } from '@reown/appkit-common'
-
 import { OptionsController } from '../../exports/index.js'
-import { OnRampController } from '../../src/controllers/OnRampController.js'
 import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 import { OptionsUtil } from '../../src/utils/OptionsUtil.js'
 import type { RemoteFeatures, SocialProvider } from '../../src/utils/TypeUtil.js'
-
-vi.mock('../../src/controllers/OnRampController.js', () => ({
-  OnRampController: {
-    setOnrampProviders: vi.fn()
-  }
-}))
 
 vi.mock('../../src/utils/OptionsUtil.js', () => ({
   OptionsUtil: {
@@ -23,7 +14,6 @@ vi.mock('../../src/utils/OptionsUtil.js', () => ({
 // -- Tests --------------------------------------------------------------------
 describe('OptionsController', () => {
   beforeEach(() => {
-    vi.mocked(OnRampController.setOnrampProviders).mockClear()
     vi.mocked(OptionsUtil.filterSocialsByPlatform).mockClear()
     OptionsController.state.remoteFeatures = {}
   })
@@ -86,20 +76,6 @@ describe('OptionsController', () => {
     const initialState = { ...OptionsController.state }
     OptionsController.setRemoteFeatures(undefined)
     expect(OptionsController.state).toEqual(initialState)
-    expect(OnRampController.setOnrampProviders).not.toHaveBeenCalled()
-    expect(OptionsUtil.filterSocialsByPlatform).not.toHaveBeenCalled()
-  })
-
-  it('should set remoteFeatures and call OnRampController.setOnrampProviders if onramp data exists', () => {
-    const onrampProviders = ['coinbase' as OnRampProvider]
-    const remoteFeatures: RemoteFeatures = {
-      onramp: onrampProviders,
-      email: true
-    }
-    OptionsController.setRemoteFeatures(remoteFeatures)
-    expect(OptionsController.state.remoteFeatures?.onramp).toEqual(onrampProviders)
-    expect(OptionsController.state.remoteFeatures?.email).toBe(true)
-    expect(OnRampController.setOnrampProviders).toHaveBeenCalledWith(onrampProviders)
     expect(OptionsUtil.filterSocialsByPlatform).not.toHaveBeenCalled()
   })
 
@@ -117,6 +93,5 @@ describe('OptionsController', () => {
     expect(OptionsController.state.remoteFeatures?.socials).toEqual(filteredSocialProviders)
     expect(OptionsController.state.remoteFeatures?.activity).toBe(true)
     expect(OptionsUtil.filterSocialsByPlatform).toHaveBeenCalledWith(socialProviders)
-    expect(OnRampController.setOnrampProviders).not.toHaveBeenCalled()
   })
 })

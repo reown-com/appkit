@@ -19,7 +19,6 @@ import type {
   Tokens,
   WalletFeature
 } from '../utils/TypeUtil.js'
-import { OnRampController } from './OnRampController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -212,7 +211,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   sdkVersion: 'html-wagmi-undefined',
   defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
   enableNetworkSwitch: true,
-  experimental_preferUniversalLinks: false
+  experimental_preferUniversalLinks: false,
+  remoteFeatures: {}
 })
 
 // -- Controller ---------------------------------------- //
@@ -234,10 +234,6 @@ export const OptionsController = {
 
     const newRemoteFeatures = { ...state.remoteFeatures, ...remoteFeatures }
     state.remoteFeatures = newRemoteFeatures
-
-    if (state.remoteFeatures.onramp) {
-      OnRampController.setOnrampProviders(state.remoteFeatures.onramp)
-    }
 
     if (state.remoteFeatures?.socials) {
       state.remoteFeatures.socials = OptionsUtil.filterSocialsByPlatform(
