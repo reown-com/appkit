@@ -5,13 +5,13 @@ import { ConstantsUtil, type SocialProvider } from '@reown/appkit-controllers'
 import { SortableSocialGrid } from '@/components/sortable-social-grid'
 import { useAppKitContext } from '@/hooks/use-appkit'
 
-const allSocials = ConstantsUtil.DEFAULT_FEATURES.socials
+const allSocials = ConstantsUtil.DEFAULT_SOCIALS
 
 export function SocialButtons() {
-  const { updateFeatures } = useAppKitContext()
+  const { updateRemoteFeatures } = useAppKitContext()
 
   function handleNewOrder(items: UniqueIdentifier[]) {
-    updateFeatures({ socials: items as SocialProvider[] })
+    updateRemoteFeatures({ socials: items as SocialProvider[] })
   }
 
   return (

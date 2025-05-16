@@ -1,4 +1,5 @@
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 
 import { OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -12,6 +13,23 @@ import styles from './styles.js'
 export class W3mLegalFooter extends LitElement {
   public static override styles = [styles]
 
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
+  // -- State & Properties -------------------------------- //
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
@@ -21,9 +39,7 @@ export class W3mLegalFooter extends LitElement {
 
     if (showOnlyBranding) {
       return html`
-        <wui-flex flexDirection="column">
-          <wui-ux-by-reown class="branding-only"></wui-ux-by-reown>
-        </wui-flex>
+        <wui-flex flexDirection="column"> ${this.reownBrandingTemplate(true)} </wui-flex>
       `
     }
 
@@ -35,7 +51,7 @@ export class W3mLegalFooter extends LitElement {
             ${this.termsTemplate()} ${this.andTemplate()} ${this.privacyTemplate()}
           </wui-text>
         </wui-flex>
-        <wui-ux-by-reown></wui-ux-by-reown>
+        ${this.reownBrandingTemplate()}
       </wui-flex>
     `
   }
@@ -63,6 +79,18 @@ export class W3mLegalFooter extends LitElement {
     }
 
     return html`<a href=${privacyPolicyUrl}>Privacy Policy</a>`
+  }
+
+  private reownBrandingTemplate(showOnlyBranding = false) {
+    if (!this.remoteFeatures?.reownBranding) {
+      return null
+    }
+
+    if (showOnlyBranding) {
+      return html`<wui-ux-by-reown class="branding-only"></wui-ux-by-reown>`
+    }
+
+    return html`<wui-ux-by-reown></wui-ux-by-reown>`
   }
 }
 

@@ -11,7 +11,7 @@ export class W3mEmailLoginView extends LitElement {
   // -- Members ------------------------------------------- //
   protected authConnector = ConnectorController.getAuthConnector()
 
-  private isEmailEnabled = OptionsController.state.features?.email
+  private isEmailEnabled = OptionsController.state.remoteFeatures?.email
 
   private isAuthEnabled = this.checkIfAuthEnabled(ConnectorController.state.connectors)
 

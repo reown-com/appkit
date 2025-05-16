@@ -28,9 +28,7 @@ const config = {
   adapters: [wagmiAdapter],
   networks,
   defaultNetwork: mainnet,
-  features: {
-    analytics: true
-  },
+
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 }

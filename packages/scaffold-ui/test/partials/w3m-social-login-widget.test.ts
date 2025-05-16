@@ -32,8 +32,8 @@ describe('W3mSocialLoginWidget', () => {
     const mockWindow = { location: { href: '' } }
     const mockUri = 'https://auth.example.com/login'
 
-    vi.spyOn(OptionsController.state, 'features', 'get').mockReturnValue({
-      ...OptionsController.state.features,
+    vi.spyOn(OptionsController.state, 'remoteFeatures', 'get').mockReturnValue({
+      ...OptionsController.state.remoteFeatures,
       socials: ['google']
     })
     vi.spyOn(AccountController, 'setSocialProvider')
@@ -79,8 +79,8 @@ describe('W3mSocialLoginWidget', () => {
     vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([mockAuthConnector])
 
     vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(true)
-    vi.spyOn(OptionsController.state, 'features', 'get').mockReturnValue({
-      ...OptionsController.state.features,
+    vi.spyOn(OptionsController.state, 'remoteFeatures', 'get').mockReturnValue({
+      ...OptionsController.state.remoteFeatures,
       socials: ['google']
     })
 

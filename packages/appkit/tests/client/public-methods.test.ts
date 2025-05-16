@@ -47,6 +47,7 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
+  mockRemoteFeatures,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -56,6 +57,7 @@ describe('Base Public methods', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    mockRemoteFeatures()
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue(['http://localhost:3000'])
   })
 
@@ -124,6 +126,7 @@ describe('Base Public methods', () => {
     const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
 
     const appKit = new AppKit(mockOptions)
+
     await appKit.open({ view: 'Connect', namespace: 'eip155' })
 
     expect(openSpy).toHaveBeenCalled()
@@ -378,6 +381,7 @@ describe('Base Public methods', () => {
     }
 
     const appKit = new AppKit(mockOptions)
+    await appKit.ready()
     await appKit['syncAccount'](mockAccountData)
 
     expect(appKit.getAddress()).toBe('0x123')
@@ -1204,10 +1208,11 @@ describe('Base Public methods', () => {
     expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
 
-  it.each([undefined, {} as SIWXConfig])('should set and get SIWX correctly', siwx => {
+  it.each([undefined, {} as SIWXConfig])('should set and get SIWX correctly', async siwx => {
     const setSIWXSpy = vi.spyOn(OptionsController, 'setSIWX')
 
     const appKit = new AppKit({ ...mockOptions, siwx })
+    await appKit.ready()
     expect(setSIWXSpy).toHaveBeenCalledWith(siwx)
 
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({ siwx } as any)

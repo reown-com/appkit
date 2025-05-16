@@ -1,6 +1,5 @@
 'use client'
 
-import type { SocialProvider } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet } from '@reown/appkit/networks'
 
@@ -21,18 +20,6 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true,
-    socials: [
-      'google',
-      'x',
-      'discord',
-      'farcaster',
-      'github',
-      'apple',
-      'facebook'
-    ] as SocialProvider[]
-  },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   siweConfig

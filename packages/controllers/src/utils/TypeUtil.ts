@@ -9,7 +9,9 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
+  OnRampProvider,
   SdkFramework,
+  SwapProvider,
   Transaction
 } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
@@ -1152,6 +1154,15 @@ export type ConnectorTypeOrder =
   | 'external'
   | 'recommended'
 
+export type RemoteFeatures = {
+  swaps?: SwapProvider[] | false
+  onramp?: OnRampProvider[] | false
+  email?: boolean
+  socials?: SocialProvider[] | false
+  activity?: boolean
+  reownBranding?: boolean
+}
+
 export type Features = {
   /**
    * @description Enable or disable the swaps feature. Enabled by default.
@@ -1181,7 +1192,6 @@ export type Features = {
   email?: boolean
   /**
    * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
-   * @deprecated - This property will be removed in the next major release. Please use `features.collapseWallets` instead.
    * @type {boolean}
    */
   emailShowWallets?: boolean
@@ -1248,7 +1258,10 @@ export type Features = {
   pay?: boolean
 }
 
-export type FeaturesKeys = keyof Features
+export type FeaturesKeys = Exclude<
+  keyof Features,
+  'swaps' | 'onramp' | 'email' | 'socials' | 'history'
+>
 
 export type WalletGuideType = 'get-started' | 'explore'
 
@@ -1284,3 +1297,22 @@ export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 're
 export type PreferredAccountTypes = {
   [Key in keyof NamespaceTypeMap]?: NamespaceTypeMap[Key]
 }
+
+// -- Feature Configuration Types -------------------------------------------------
+
+export type FeatureID = 'activity' | 'onramp' | 'swap' | 'social_login' | 'reownBranding'
+
+interface BaseFeature<T extends FeatureID, C extends string[] | null> {
+  id: T
+  isEnabled: boolean
+  config: C
+}
+
+export type TypedFeatureConfig =
+  | BaseFeature<'activity', null>
+  | BaseFeature<'onramp', OnRampProvider[]>
+  | BaseFeature<'swap', SwapProvider[]>
+  | BaseFeature<'social_login', (SocialProvider | 'email')[]>
+  | BaseFeature<'reownBranding', null>
+
+export type ApiGetProjectConfigResponse = TypedFeatureConfig[]

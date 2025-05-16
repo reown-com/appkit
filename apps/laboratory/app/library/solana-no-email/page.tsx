@@ -22,10 +22,8 @@ const config = {
   networks,
   defaultNetwork: solana,
   features: {
-    analytics: false,
-    swaps: false,
-    email: false,
     legalCheckbox: true,
+    email: false,
     socials: []
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',

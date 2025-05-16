@@ -1,4 +1,5 @@
-import type { SdkVersion } from '@reown/appkit-controllers'
+import type { OnRampProvider } from '@reown/appkit-common'
+import type { RemoteFeatures, SdkVersion, SocialProvider } from '@reown/appkit-controllers'
 
 import type { AppKitOptions } from '../../src/utils/index.js'
 import { mockEvmAdapter, mockSolanaAdapter } from './Adapter.js'
@@ -20,4 +21,13 @@ export const mockOptions: AppKitOptions & {
   },
   sdkVersion: `html-wagmi-5.1.6`,
   sdkType: 'appkit'
+}
+
+export const mockRemoteFeaturesConfig: RemoteFeatures = {
+  email: true,
+  socials: ['google', 'github'] as SocialProvider[],
+  swaps: ['1inch'] as '1inch'[],
+  onramp: ['coinbase'] as OnRampProvider[],
+  activity: true,
+  reownBranding: true
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { type CaipNetwork } from '@reown/appkit/react'
+import { type CaipNetwork, type SocialProvider } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
@@ -22,8 +22,15 @@ const config = {
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    email: false,
-    socials: []
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[]
   },
   metadata: ConstantsUtil.Metadata,
   debug: true

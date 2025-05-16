@@ -19,9 +19,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
-  features: {
-    analytics: true
-  },
+
   metadata: ConstantsUtil.Metadata
 }
 
