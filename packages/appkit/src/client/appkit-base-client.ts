@@ -467,8 +467,8 @@ export abstract class AppKitBaseClient {
           StorageUtil.addDisconnectedConnectorId(activeConnectorId, namespace)
         }
       },
-      disconnectAll: async () => {
-        const namespace = ChainController.state.activeChain as ChainNamespace
+      disconnectAll: async (chainNamespace?: ChainNamespace) => {
+        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
         const adapter = this.getAdapter(namespace)
         const data = await adapter?.disconnectAll()
 

@@ -679,7 +679,7 @@ export const ChainController = {
 
             if (caipAddress) {
               if (disconnectAll && adapter.connectionControllerClient?.disconnectAll) {
-                await adapter.connectionControllerClient.disconnectAll()
+                await adapter.connectionControllerClient.disconnectAll(ns)
               } else if (adapter.connectionControllerClient?.disconnect) {
                 await adapter.connectionControllerClient.disconnect(ns)
               }

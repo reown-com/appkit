@@ -51,7 +51,7 @@ export interface ConnectExternalOptions {
 export interface ConnectionControllerClient {
   connectWalletConnect?: () => Promise<void>
   disconnect: (chainNamespace?: ChainNamespace) => Promise<void>
-  disconnectAll: () => Promise<void>
+  disconnectAll: (chainNamespace?: ChainNamespace) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>

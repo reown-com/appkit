@@ -11,7 +11,6 @@ import {
   ApiController,
   ChainController,
   ConnectorController,
-  CoreHelperUtil,
   ModalController,
   OptionsController,
   RouterController,
@@ -227,20 +226,15 @@ export class W3mModalBase extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
-
-    // When users decline SIWE signature, we should close the modal
-    const isDisconnectedInSameNamespace = !nextConnected && !isSwitchingNamespace
-
-    // If user is switching to another namespace and connected in that namespace, we should go back
-    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
-
-    if (isDisconnectedInSameNamespace) {
-      ModalController.close()
-    } else if (isSwitchingNamespaceAndConnected) {
-      RouterController.goBack()
-    }
+    // eslint-disable-next-line no-warning-comments
+    // TODO: Handle this logic seperately
+    /*
+     * If (isDisconnectedInSameNamespace) {
+     * ModalController.close()
+     * } else if (isSwitchingNamespaceAndConnected) {
+     * RouterController.goBack()
+     * }
+     */
 
     await SIWXUtil.initializeIfEnabled()
 

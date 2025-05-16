@@ -44,6 +44,10 @@ export default css`
     border-radius: var(--wui-border-radius-xs);
   }
 
+  .add-wallet-placeholder {
+    height: 56px;
+  }
+
   wui-separator {
     margin: var(--wui-spacing-xs) 0 var(--wui-spacing-xs) 0;
   }

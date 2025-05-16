@@ -288,6 +288,7 @@ export class EthersAdapter extends AdapterBlueprint {
         }
 
         await this.disconnect({
+          id: connector.id,
           provider: connector.provider,
           providerType: connector.type
         })
