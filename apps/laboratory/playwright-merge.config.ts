@@ -8,9 +8,7 @@ export default defineConfig({
   // Reporters are defined here. `merge-reports` should create a `playwright-report` directory
   // in its CWD (apps/laboratory) by default, and `outputFile` for json reporter
   // should be relative to that.
-  reporter: [
-    ['json', { outputFile: 'report.json' }] 
-  ],
+  reporter: [['json', { outputFile: 'report.json' }], ['html']],
 
   // This is the crucial part. It tells merge-reports what the common
   // test directory should be considered for all incoming blob reports.
