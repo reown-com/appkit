@@ -4,6 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  AlertController,
   ChainController,
   ConnectorController,
   ConstantsUtil,
@@ -13,10 +14,12 @@ import {
   type WalletGuideType
 } from '@reown/appkit-controllers'
 import { executeSocialLogin } from '@reown/appkit-controllers/utils'
+import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-social'
 import '@reown/appkit-ui/wui-logo-select'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 
@@ -41,6 +44,8 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
+  @state() private isPwaLoading = false
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -50,6 +55,11 @@ export class W3mSocialLoginWidget extends LitElement {
       }),
       OptionsController.subscribeKey('features', val => (this.features = val))
     )
+  }
+
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.handlePwaFrameLoad()
   }
 
   public override disconnectedCallback() {
@@ -100,6 +110,7 @@ export class W3mSocialLoginWidget extends LitElement {
               }}
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
+              ?disabled=${this.isPwaLoading}
             ></wui-logo-select>`
         )}
       </wui-flex>`
@@ -114,6 +125,7 @@ export class W3mSocialLoginWidget extends LitElement {
       align="center"
       name=${`Continue with ${socials[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
+      ?disabled=${this.isPwaLoading}
     ></wui-list-social>`
   }
 
@@ -145,12 +157,15 @@ export class W3mSocialLoginWidget extends LitElement {
               }}
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
+              ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
+              ?disabled=${this.isPwaLoading}
             ></wui-logo-select>`
         )}
         <wui-logo-select
           logo="more"
           tabIdx=${ifDefined(this.tabIdx)}
           @click=${this.onMoreSocialsClick.bind(this)}
+          ?disabled=${this.isPwaLoading}
         ></wui-logo-select>
       </wui-flex>`
     }
@@ -169,6 +184,8 @@ export class W3mSocialLoginWidget extends LitElement {
             }}
             logo=${social}
             tabIdx=${ifDefined(this.tabIdx)}
+            ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
+            ?disabled=${this.isPwaLoading}
           ></wui-logo-select>`
       )}
     </wui-flex>`
@@ -200,6 +217,27 @@ export class W3mSocialLoginWidget extends LitElement {
 
     if (socialProvider) {
       await executeSocialLogin(socialProvider)
+    }
+  }
+
+  private async handlePwaFrameLoad() {
+    if (CoreHelperUtil.isPWA()) {
+      this.isPwaLoading = true
+      try {
+        if (this.authConnector?.provider instanceof W3mFrameProvider) {
+          await this.authConnector.provider.init()
+        }
+      } catch (error) {
+        AlertController.open(
+          {
+            shortMessage: 'Error loading embedded wallet in PWA',
+            longMessage: (error as Error).message
+          },
+          'error'
+        )
+      } finally {
+        this.isPwaLoading = false
+      }
     }
   }
 }

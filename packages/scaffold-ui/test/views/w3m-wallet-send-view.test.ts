@@ -2,7 +2,12 @@ import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
-import { RouterController, SendController, SwapController } from '@reown/appkit-controllers'
+import {
+  ConnectionController,
+  RouterController,
+  SendController,
+  SwapController
+} from '@reown/appkit-controllers'
 
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 
@@ -19,19 +24,30 @@ const mockToken: Balance = {
   iconUrl: 'https://example.com/icon.png'
 }
 
+let originalAnimate: any
+
 describe('W3mWalletSendView', () => {
   beforeEach(() => {
-    vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
-    vi.spyOn(SwapController, 'getInitialGasPrice').mockResolvedValue({
-      gasPrice: BigInt(1000),
-      gasPriceInUSD: 0.1
+    originalAnimate = Element.prototype.animate
+    Element.prototype.animate = vi.fn().mockImplementation(function () {
+      return {}
     })
+
+    vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
     vi.spyOn(SendController, 'fetchTokenBalance').mockResolvedValue([])
+    vi.spyOn(ConnectionController, 'getEnsAddress').mockImplementation((ensName: string) => {
+      if (ensName === 'enes.wcn.id') {
+        return Promise.resolve('0x123456789abcdef123456789abcdef123456789a')
+      }
+
+      throw new Error('Invalid ENS name')
+    })
   })
 
   afterEach(() => {
     vi.clearAllMocks()
     SendController.resetSend()
+    Element.prototype.animate = originalAnimate
   })
 
   it('should render initial state correctly', async () => {
@@ -93,17 +109,73 @@ describe('W3mWalletSendView', () => {
     expect(button?.disabled).to.be.true
   })
 
-  it('should show invalid address message for incorrect address', async () => {
+  it('should show invalid address message for incorrect address and persist when input cleared', async () => {
     const element = await fixture<W3mWalletSendView>(
       html`<w3m-wallet-send-view></w3m-wallet-send-view>`
     )
 
     SendController.setToken(mockToken)
     SendController.setTokenAmount(50)
-    SendController.setGasPrice(BigInt(1))
     SendController.setNetworkBalanceInUsd('100')
 
     SendController.setReceiverAddress('invalid-address')
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button?.textContent?.trim()).to.equal('Invalid Address')
+    expect(button?.disabled).to.be.true
+
+    const addressInput = element.shadowRoot?.querySelector('w3m-input-address') as HTMLElement
+    addressInput.click()
+    const textarea = addressInput.shadowRoot?.querySelector('textarea') as HTMLTextAreaElement
+    textarea.value = ''
+    textarea.dispatchEvent(new InputEvent('input'))
+    await element.updateComplete
+    await element.render()
+
+    expect(button?.textContent?.trim()).to.equal('Invalid Address')
+    expect(button?.disabled).to.be.true
+  })
+
+  it('should enable button when valid ENS address is entered', async () => {
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
+    SendController.setToken(mockToken)
+    SendController.setTokenAmount(50)
+    SendController.setNetworkBalanceInUsd('100')
+
+    const addressInput = element.shadowRoot?.querySelector('w3m-input-address') as HTMLElement
+    addressInput.click()
+    const textarea = addressInput.shadowRoot?.querySelector('textarea') as HTMLTextAreaElement
+    textarea.value = 'enes.wcn.id'
+    textarea.dispatchEvent(new InputEvent('input'))
+    await new Promise(resolve => setTimeout(resolve, 500)) // Wait for debounce
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button?.textContent?.trim()).to.equal('Preview Send')
+    expect(button?.disabled).to.be.false
+  })
+
+  it('should disable button when invalid ENS address is entered', async () => {
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
+    SendController.setToken(mockToken)
+    SendController.setTokenAmount(50)
+    SendController.setNetworkBalanceInUsd('100')
+
+    const addressInput = element.shadowRoot?.querySelector('w3m-input-address') as HTMLElement
+    addressInput.click()
+    const textarea = addressInput.shadowRoot?.querySelector('textarea') as HTMLTextAreaElement
+    textarea.value = 'enestest.wcn.id'
+    textarea.dispatchEvent(new InputEvent('input'))
+    await new Promise(resolve => setTimeout(resolve, 500)) // Wait for debounce
     await element.updateComplete
     await element.render()
 
@@ -150,7 +222,6 @@ describe('W3mWalletSendView', () => {
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
 
     viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
-    viExpect(SwapController.getInitialGasPrice).toHaveBeenCalled()
   })
 
   it('should fetch balances on initialization', async () => {

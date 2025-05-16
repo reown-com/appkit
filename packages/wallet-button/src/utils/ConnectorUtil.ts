@@ -16,7 +16,6 @@ import {
 } from '@reown/appkit-controllers'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
@@ -100,7 +99,7 @@ export const ConnectorUtil = {
     return new Promise((resolve, reject) => {
       async function handleSocialConnection(event: MessageEvent) {
         if (event.data?.resultUri) {
-          if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
+          if (event.origin === CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN) {
             window.removeEventListener('message', handleSocialConnection, false)
             try {
               const authConnector = ConnectorController.getAuthConnector()
@@ -121,7 +120,14 @@ export const ConnectorUtil = {
                     properties: { provider: socialProvider }
                   })
                 }
-                await authConnector.provider.connectSocial(uri)
+                await ConnectionController.connectExternal(
+                  {
+                    id: authConnector.id,
+                    type: authConnector.type,
+                    socialUri: uri
+                  },
+                  authConnector.chain
+                )
 
                 if (socialProvider) {
                   StorageUtil.setConnectedSocialProvider(socialProvider)
@@ -202,7 +208,7 @@ export const ConnectorUtil = {
         } else {
           const authConnector = ConnectorController.getAuthConnector()
           popupWindow = CoreHelperUtil.returnOpenHref(
-            '',
+            `${CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
             'popupWindow',
             'width=600,height=800,scrollbars=yes'
           )

@@ -1,7 +1,7 @@
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -16,6 +16,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
+import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -25,6 +26,17 @@ import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
+export type Connection = {
+  accounts: { address: string }[]
+  connectorId: string
+}
+
+interface SwitchAccountParams {
+  connection: Connection
+  address: string
+  namespace: ChainNamespace
+}
+
 export interface ConnectExternalOptions {
   id: Connector['id']
   type: Connector['type']
@@ -33,6 +45,7 @@ export interface ConnectExternalOptions {
   chain?: ChainNamespace
   chainId?: number | string
   caipNetwork?: CaipNetwork
+  socialUri?: string
 }
 
 export interface ConnectionControllerClient {
@@ -58,9 +71,11 @@ export interface ConnectionControllerClient {
   }) => Promise<`0x${string}`>
   getCapabilities: (params: string) => Promise<unknown>
   walletGetAssets: (params: WalletGetAssetsParams) => Promise<WalletGetAssetsResponse>
+  updateBalance: (chainNamespace: ChainNamespace) => void
 }
 
 export interface ConnectionControllerState {
+  connections: Map<ChainNamespace, Connection[]>
   _client?: ConnectionControllerClient
   wcUri?: string
   wcPairingExpiry?: number
@@ -80,6 +95,7 @@ type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
+  connections: new Map(),
   wcError: false,
   buffering: false,
   status: 'disconnected'
@@ -87,9 +103,11 @@ const state = proxy<ConnectionControllerState>({
 
 // eslint-disable-next-line init-declarations
 let wcConnectionPromise: Promise<void> | undefined
+
 // -- Controller ---------------------------------------- //
-export const ConnectionController = {
+const controller = {
   state,
+
   subscribeKey<K extends StateKey>(
     key: K,
     callback: (value: ConnectionControllerState[K]) => void
@@ -120,21 +138,21 @@ export const ConnectionController = {
 
         return
       }
-      wcConnectionPromise = this._getClient()
+      wcConnectionPromise = ConnectionController._getClient()
         ?.connectWalletConnect?.()
         .catch(() => undefined)
-      this.state.status = 'connecting'
+      ConnectionController.state.status = 'connecting'
       await wcConnectionPromise
       wcConnectionPromise = undefined
       state.wcPairingExpiry = undefined
-      this.state.status = 'connected'
+      ConnectionController.state.status = 'connected'
     } else {
-      await this._getClient()?.connectWalletConnect?.()
+      await ConnectionController._getClient()?.connectWalletConnect?.()
     }
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    await this._getClient()?.connectExternal?.(options)
+    await ConnectionController._getClient()?.connectExternal?.(options)
 
     if (setChain) {
       ChainController.setActiveNamespace(chain)
@@ -142,7 +160,7 @@ export const ConnectionController = {
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
-    await this._getClient()?.reconnectExternal?.(options)
+    await ConnectionController._getClient()?.reconnectExternal?.(options)
     const namespace = options.chain || ChainController.state.activeChain
     if (namespace) {
       ConnectorController.setConnectorId(options.id, namespace)
@@ -160,7 +178,7 @@ export const ConnectionController = {
     StorageUtil.setPreferredAccountTypes(
       AccountController.state.preferredAccountTypes ?? { [namespace]: accountType }
     )
-    await this.reconnectExternal(authConnector)
+    await ConnectionController.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)
     EventsController.sendEvent({
       type: 'track',
@@ -173,51 +191,51 @@ export const ConnectionController = {
   },
 
   async signMessage(message: string) {
-    return this._getClient()?.signMessage(message)
+    return ConnectionController._getClient()?.signMessage(message)
   },
 
   parseUnits(value: string, decimals: number) {
-    return this._getClient()?.parseUnits(value, decimals)
+    return ConnectionController._getClient()?.parseUnits(value, decimals)
   },
 
   formatUnits(value: bigint, decimals: number) {
-    return this._getClient()?.formatUnits(value, decimals)
+    return ConnectionController._getClient()?.formatUnits(value, decimals)
   },
 
   async sendTransaction(args: SendTransactionArgs) {
-    return this._getClient()?.sendTransaction(args)
+    return ConnectionController._getClient()?.sendTransaction(args)
   },
 
   async getCapabilities(params: string) {
-    return this._getClient()?.getCapabilities(params)
+    return ConnectionController._getClient()?.getCapabilities(params)
   },
 
   async grantPermissions(params: object | readonly unknown[]) {
-    return this._getClient()?.grantPermissions(params)
+    return ConnectionController._getClient()?.grantPermissions(params)
   },
 
   async walletGetAssets(params: WalletGetAssetsParams): Promise<WalletGetAssetsResponse> {
-    return this._getClient()?.walletGetAssets(params) ?? {}
+    return ConnectionController._getClient()?.walletGetAssets(params) ?? {}
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {
-    return this._getClient()?.estimateGas(args)
+    return ConnectionController._getClient()?.estimateGas(args)
   },
 
   async writeContract(args: WriteContractArgs) {
-    return this._getClient()?.writeContract(args)
+    return ConnectionController._getClient()?.writeContract(args)
   },
 
   async getEnsAddress(value: string) {
-    return this._getClient()?.getEnsAddress(value)
+    return ConnectionController._getClient()?.getEnsAddress(value)
   },
 
   async getEnsAvatar(value: string) {
-    return this._getClient()?.getEnsAvatar(value)
+    return ConnectionController._getClient()?.getEnsAvatar(value)
   },
 
   checkInstalled(ids?: string[]) {
-    return this._getClient()?.checkInstalled?.(ids) || false
+    return ConnectionController._getClient()?.checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
@@ -233,6 +251,7 @@ export const ConnectionController = {
   resetUri() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
+    wcConnectionPromise = undefined
   },
 
   finalizeWcConnection() {
@@ -294,7 +313,38 @@ export const ConnectionController = {
       ModalController.setLoading(false, namespace)
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {
-      throw new Error('Failed to disconnect')
+      throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
+    }
+  },
+
+  setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
+    state.connections.set(chainNamespace, connections)
+  },
+
+  switchAccount({ connection, address, namespace }: SwitchAccountParams) {
+    const connectedConnectorId = ConnectorController.state.activeConnectorIds[namespace]
+    const isConnectorConnected = connectedConnectorId === connection.connectorId
+
+    if (isConnectorConnected) {
+      const currentNetwork = ChainController.state.activeCaipNetwork
+
+      if (currentNetwork) {
+        const caipAddress = `${namespace}:${currentNetwork.id}:${address}`
+        AccountController.setCaipAddress(caipAddress as CaipAddress, namespace)
+      } else {
+        console.warn(`No current network found for namespace "${namespace}"`)
+      }
+    } else {
+      const connector = ConnectorController.getConnector(connection.connectorId)
+
+      if (connector) {
+        ConnectionController.connectExternal(connector, namespace)
+      } else {
+        console.warn(`No connector found for namespace "${namespace}"`)
+      }
     }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ConnectionController = withErrorBoundary(controller)

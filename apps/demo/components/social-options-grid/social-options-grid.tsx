@@ -9,7 +9,10 @@ export interface Props {
 
 export function SocialOptionsGrid({ children, columns }: Props) {
   return (
-    <ul className={styles.GridContainer} style={{ '--col-count': columns } as React.CSSProperties}>
+    <ul
+      className={styles['GridContainer']}
+      style={{ '--col-count': columns } as React.CSSProperties}
+    >
       {children}
     </ul>
   )

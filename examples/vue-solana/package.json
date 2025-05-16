@@ -11,13 +11,13 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@solana/wallet-adapter-backpack": "0.1.14",
-    "@solana/wallet-adapter-wallets": "0.19.32",
+    "@solana/wallet-adapter-wallets": "0.19.36",
     "vue": "3.4.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.2.1",
-    "typescript": "5.7.3",
-    "vite": "5.4.12",
+    "typescript": "5.8.3",
+    "vite": "5.4.19",
     "vue-tsc": "2.1.8"
   }
 }

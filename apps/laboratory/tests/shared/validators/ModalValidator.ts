@@ -233,9 +233,13 @@ export class ModalValidator {
     await expect(allWallets).toBeVisible()
   }
 
-  async expectNoTryAgainButton() {
+  async expectOpenButton({ disabled }: { disabled: boolean }) {
     const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
-    await expect(secondaryButton).toBeHidden()
+    if (disabled) {
+      await expect(secondaryButton).toHaveAttribute('disabled')
+    } else {
+      await expect(secondaryButton).not.toHaveAttribute('disabled')
+    }
   }
 
   async expectTryAgainButton() {

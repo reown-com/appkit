@@ -14,8 +14,8 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@walletconnect/logger": "2.1.2",
-    "viem": "2.23.13",
-    "wagmi": "2.14.16"
+    "viem": "2.29.0",
+    "wagmi": "2.15.2"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.3",
@@ -26,7 +26,7 @@
     "globals": "13.24.0",
     "svelte": "4.2.8",
     "svelte-check": "3.6.0",
-    "typescript": "5.8.2",
-    "vite": "5.4.12"
+    "typescript": "5.8.3",
+    "vite": "5.4.19"
   }
 }

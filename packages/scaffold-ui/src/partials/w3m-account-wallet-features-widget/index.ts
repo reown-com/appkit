@@ -153,9 +153,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onrampTemplate() {
-    const onramp = this.features?.onramp
+    const isOnrampEnabled = this.features?.onramp
 
-    if (!onramp) {
+    if (!isOnrampEnabled) {
       return null
     }
 
@@ -171,10 +171,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private swapsTemplate() {
-    const swaps = this.features?.swaps
+    const isSwapsEnabled = this.features?.swaps
     const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
 
-    if (!swaps || !isEvm) {
+    if (!isSwapsEnabled || !isEvm) {
       return null
     }
 
@@ -191,9 +191,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private receiveTemplate() {
-    const receive = this.features?.receive
+    const isReceiveEnabled = this.features?.receive
 
-    if (!receive) {
+    if (!isReceiveEnabled) {
       return null
     }
 
@@ -210,10 +210,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private sendTemplate() {
-    const send = this.features?.send
-    const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+    const isSendEnabled = this.features?.send
+    const activeNamespace = ChainController.state.activeChain as ChainNamespace
+    const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace)
 
-    if (!send || !isEvm) {
+    if (!isSendEnabled || !isSendSupported) {
       return null
     }
 

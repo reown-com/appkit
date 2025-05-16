@@ -35,13 +35,15 @@ const mockConnectorState: ConnectorControllerState = {
     eip155: undefined,
     solana: undefined,
     polkadot: undefined,
-    bip122: undefined
+    bip122: undefined,
+    cosmos: undefined
   },
   filterByNamespaceMap: {
     eip155: true,
     solana: true,
     polkadot: true,
-    bip122: true
+    bip122: true,
+    cosmos: true
   }
 }
 

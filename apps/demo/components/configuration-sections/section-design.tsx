@@ -5,7 +5,7 @@ import * as React from 'react'
 import Image from 'next/image'
 import { useSnapshot } from 'valtio'
 
-import { ThemeMode } from '@reown/appkit/react'
+import { type ThemeMode } from '@reown/appkit/react'
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -21,14 +21,14 @@ export function SectionDesign() {
 
   function handleAccentColorChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newColor = e.target.value
-    if (/^#[0-9A-F]{6}$/i.test(newColor)) {
+    if (/^#[0-9A-F]{6}$/u.test(newColor)) {
       ThemeStore.setAccentColor(newColor)
     }
   }
 
   function handleMixColorChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newColor = e.target.value
-    if (/^#[0-9A-F]{6}$/i.test(newColor)) {
+    if (/^#[0-9A-F]{6}$/u.test(newColor)) {
       ThemeStore.setMixColor(newColor)
       ThemeStore.setMixColorStrength(8)
     }

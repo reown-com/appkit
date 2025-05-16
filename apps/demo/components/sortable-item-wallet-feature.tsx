@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import {
+import type {
   Active,
   CollisionDetection,
   DropAnimation,
@@ -11,9 +11,9 @@ import {
   UniqueIdentifier
 } from '@dnd-kit/core'
 import {
-  AnimateLayoutChanges,
-  NewIndexGetter,
-  SortingStrategy,
+  type AnimateLayoutChanges,
+  type NewIndexGetter,
+  type SortingStrategy,
   arrayMove,
   useSortable
 } from '@dnd-kit/sortable'
@@ -21,12 +21,11 @@ import {
 import { WalletFeatureItem } from '@/components/wallet-feature-item'
 import { useAppKitContext } from '@/hooks/use-appkit'
 
-const defaultInitializer = (index: number) => index
+function defaultInitializer(index: number) {
+  return index
+}
 
-export function createRange<T = number>(
-  length: number,
-  initializer: (index: number) => any = defaultInitializer
-): T[] {
+export function createRange(length: number, initializer = defaultInitializer): number[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -36,7 +35,8 @@ export interface Props {
   adjustScale?: boolean
   collisionDetection?: CollisionDetection
   coordinateGetter?: KeyboardCoordinateGetter
-  Container?: any // To-do: Fix me
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Container?: any
   dropAnimation?: DropAnimation | null
   getNewIndex?: NewIndexGetter
   handle?: boolean
@@ -44,6 +44,7 @@ export interface Props {
   items?: UniqueIdentifier[]
   measuring?: MeasuringConfiguration
   modifiers?: Modifiers
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderItem?: any
   removable?: boolean
   reorderItems?: typeof arrayMove
@@ -78,7 +79,9 @@ interface SortableItemProps {
   handle: boolean
   useDragOverlay?: boolean
   onRemove?(id: UniqueIdentifier): void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style(values: any): React.CSSProperties
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderItem?(args: any): React.ReactElement
   wrapperStyle?: Props['wrapperStyle']
   onToggleOption?(name: 'Buy' | 'Receive' | 'Send' | 'Swap'): void

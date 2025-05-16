@@ -10,6 +10,19 @@ import type { WuiTabs } from '@reown/appkit-ui/wui-tabs'
 import type { W3mConnectingWcView } from '../../exports'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
+// vi.mock('@reown/appkit-controllers', async () => {
+//   const originalModule = await vi.importActual<typeof import('@reown/appkit-controllers')>(
+//     '@reown/appkit-controllers'
+//   )
+//   return {
+//     ...originalModule,
+//     TelemetryController: {
+//       ...originalModule.TelemetryController,
+//       withErrorBoundary: vi.fn()
+//     }
+//   }
+// })
+
 // --- Constants ---------------------------------------------------- //
 
 const WALLET = {

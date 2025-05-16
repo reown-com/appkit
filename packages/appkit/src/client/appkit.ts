@@ -5,6 +5,7 @@ import {
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
+  type EmbeddedWalletTimeoutReason,
   getW3mThemeVariables
 } from '@reown/appkit-common'
 import {
@@ -116,7 +117,7 @@ export class AppKit extends AppKitBaseClient {
         this.setLoading(false, namespace)
       }
     })
-    provider.onConnect(async user => {
+    provider.onConnect(user => {
       const namespace = ChainController.state.activeChain as ChainNamespace
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
@@ -125,10 +126,12 @@ export class AppKit extends AppKitBaseClient {
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
 
+      const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
+      const currentAccountType = AccountController.state.preferredAccountTypes?.[namespace]
       const preferredAccountType =
         (user.preferredAccountType as W3mFrameTypes.AccountType) ||
-        (AccountController.state.preferredAccountTypes?.[namespace] as W3mFrameTypes.AccountType) ||
-        OptionsController.state.defaultAccountTypes[namespace]
+        currentAccountType ||
+        defaultAccountType
 
       /*
        * This covers the case where user switches back from a smart account supported
@@ -152,11 +155,7 @@ export class AppKit extends AppKitBaseClient {
         CoreHelperUtil.createAccount(
           namespace,
           account.address,
-          account.type ||
-            (AccountController.state.preferredAccountTypes?.[
-              namespace
-            ] as W3mFrameTypes.AccountType) ||
-            OptionsController.state.defaultAccountTypes[namespace]
+          account.type || currentAccountType || defaultAccountType
         )
       )
 
@@ -171,7 +170,6 @@ export class AppKit extends AppKitBaseClient {
         namespace
       )
 
-      await provider.getSmartAccountEnabledNetworks()
       this.setLoading(false, namespace)
     })
     provider.onSocialConnected(({ userName }) => {
@@ -228,17 +226,21 @@ export class AppKit extends AppKitBaseClient {
     const theme = ThemeController.getSnapshot()
     const options = OptionsController.getSnapshot()
 
-    provider.syncDappData({
-      metadata: options.metadata as Metadata,
-      sdkVersion: options.sdkVersion,
-      projectId: options.projectId,
-      sdkType: options.sdkType
-    })
-    provider.syncTheme({
-      themeMode: theme.themeMode,
-      themeVariables: theme.themeVariables,
-      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-    })
+    await Promise.all([
+      provider.syncDappData({
+        metadata: options.metadata as Metadata,
+        sdkVersion: options.sdkVersion,
+        projectId: options.projectId,
+        sdkType: options.sdkType
+      }),
+      provider.syncTheme({
+        themeMode: theme.themeMode,
+        themeVariables: theme.themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+      })
+    ])
+
+    await provider.getSmartAccountEnabledNetworks()
 
     if (chainNamespace && isAuthSupported) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
@@ -285,8 +287,15 @@ export class AppKit extends AppKitBaseClient {
       if (socialProviderToConnect && authConnector) {
         this.setLoading(true, chainNamespace)
 
-        await authConnector.provider.connectSocial(resultUri)
-        await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        await ConnectionController.connectExternal(
+          {
+            id: authConnector.id,
+            type: authConnector.type,
+            socialUri: resultUri
+          },
+          authConnector.chain
+        )
+
         StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         StorageUtil.removeTelegramSocialProvider()
 
@@ -328,7 +337,7 @@ export class AppKit extends AppKitBaseClient {
 
     const isSocialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
-      : CoreConstantsUtil.DEFAULT_FEATURES.socials
+      : (this.options?.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
 
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
 
@@ -337,8 +346,15 @@ export class AppKit extends AppKitBaseClient {
         projectId: this.options.projectId,
         enableLogger: this.options.enableAuthLogger,
         chainId: this.getCaipNetwork(chainNamespace)?.caipNetworkId,
-        onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
+        abortController: ErrorUtil.EmbeddedWalletAbortController,
+        onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
+          if (reason === 'iframe_load_failed') {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.IFRAME_LOAD_FAILED, 'error')
+          } else if (reason === 'iframe_request_timeout') {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.IFRAME_REQUEST_TIMEOUT, 'error')
+          } else if (reason === 'unverified_domain') {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
+          }
         }
       })
       PublicStateController.subscribeOpen(isOpen => {
@@ -346,12 +362,7 @@ export class AppKit extends AppKitBaseClient {
           this.authProvider?.rejectRpcRequests()
         }
       })
-      if (
-        chainNamespace === ConstantsUtil.CHAIN.EVM &&
-        AccountController.state.preferredAccountTypes?.eip155
-      ) {
-        this.authProvider.setPreferredAccount(AccountController.state.preferredAccountTypes?.eip155)
-      }
+
       this.syncAuthConnector(this.authProvider, chainNamespace)
       this.checkExistingTelegramSocialConnection(chainNamespace)
     }
@@ -402,9 +413,21 @@ export class AppKit extends AppKitBaseClient {
       const isNewNamespaceSupportsAuthConnector =
         ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
 
+      /*
+       * Only connect with the auth connector if:
+       * 1. The current namespace is an auth connector AND
+       *    the new namespace provider type is undefined
+       * OR
+       * 2. The new namespace provider type is auth connector AND
+       *    the new namespace supports auth connector
+       *
+       * Note: There are cases where the current namespace is an auth connector
+       * but the new namespace uses a different connector type (injected, walletconnect, etc).
+       * In those cases, we should not connect with the auth connector.
+       */
       if (
-        // If the current namespace is one of the auth connector supported chains, when switching to other supported namespace, we should use the auth connector
-        (isCurrentNamespaceAuthProvider || isNewNamespaceAuthProvider) &&
+        ((isCurrentNamespaceAuthProvider && newNamespaceProviderType === undefined) ||
+          isNewNamespaceAuthProvider) &&
         isNewNamespaceSupportsAuthConnector
       ) {
         try {
@@ -472,24 +495,6 @@ export class AppKit extends AppKitBaseClient {
 
       this.setProfileName(name, chainNamespace)
       this.setProfileImage(avatar, chainNamespace)
-
-      if (!name) {
-        const adapter = this.getAdapter(chainNamespace)
-        const result = await adapter?.getProfile({
-          address,
-          chainId: Number(chainId)
-        })
-
-        if (result?.profileName) {
-          this.setProfileName(result.profileName, chainNamespace)
-          if (result.profileImage) {
-            this.setProfileImage(result.profileImage, chainNamespace)
-          }
-        } else {
-          await this.syncReownName(address, chainNamespace)
-          this.setProfileImage(null, chainNamespace)
-        }
-      }
     } catch {
       await this.syncReownName(address, chainNamespace)
       if (chainId !== 1) {

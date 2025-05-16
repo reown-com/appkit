@@ -666,11 +666,9 @@ describe('BitcoinAdapter', () => {
   })
 
   it('should not throw for not used methods', async () => {
-    expect(await adapter.getProfile({} as any)).toEqual({})
     expect(await adapter.estimateGas({} as any)).toEqual({})
     expect(await adapter.sendTransaction({} as any)).toEqual({})
     expect(await adapter.writeContract({} as any)).toEqual({})
-    expect(await adapter.getEnsAddress({} as any)).toEqual({})
     expect(adapter.parseUnits({} as any)).toEqual(BigInt(0))
     expect(adapter.formatUnits({} as any)).toEqual('')
     expect(await adapter.grantPermissions({})).toEqual({})

@@ -9,7 +9,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { appKitConfigs, initialConfig } from '@/lib/config'
 import { ThemeStore } from '@/lib/theme-store'
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 
 if (!projectId) {
   throw new Error('Project ID is not defined')
@@ -22,9 +22,8 @@ ThemeStore.initializeThemeVariables(initialConfig?.themeVariables || {})
 
 type AppKitProviderProps = {
   children: ReactNode
-  cookies: string | null
 }
 
-export function AppKitProvider({ children, cookies }: AppKitProviderProps) {
+export function AppKitProvider({ children }: AppKitProviderProps) {
   return <>{children}</>
 }

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
@@ -71,5 +71,72 @@ describe('CoreHelperUtil', () => {
     ['bip122:mock_chain_id:mock_address', true]
   ])('should validate the value $s is valid caip address $b', (caipAddress, expected) => {
     expect(CoreHelperUtil.isCaipAddress(caipAddress)).toEqual(expected)
+  })
+
+  describe('formatNativeUrl', () => {
+    const wcUri = 'wc:1234@1?bridge=https%3A%2F%2Fbridge.walletconnect.org&key=key'
+
+    it('should format Binance Wallet URL with universal link', () => {
+      const appUrl = 'bnc://app.binance.com/cedefi/'
+      const universalLink = 'https://app.binance.com/cedefi/'
+
+      const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, universalLink)
+
+      expect(result).toEqual({
+        redirect: `${appUrl}wc?uri=${encodeURIComponent(wcUri)}`,
+        redirectUniversalLink: `${universalLink}wc?uri=${encodeURIComponent(wcUri)}`,
+        href: appUrl
+      })
+    })
+
+    it('should format Rainbow URL with deeplink only', () => {
+      const appUrl = 'rainbow://'
+
+      const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, null)
+
+      expect(result).toEqual({
+        redirect: `rainbow://wc?uri=${encodeURIComponent(wcUri)}`,
+        href: 'rainbow://'
+      })
+    })
+
+    it('should handle appUrl without trailing slash', () => {
+      const appUrl = 'rainbow:'
+
+      const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, null)
+
+      expect(result).toEqual({
+        redirect: `rainbow://wc?uri=${encodeURIComponent(wcUri)}`,
+        href: 'rainbow://'
+      })
+    })
+
+    it('should double encode URI for Android Telegram', () => {
+      const appUrl = 'rainbow://'
+
+      // Mock Telegram and Android environment
+      vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(true)
+
+      const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, null)
+
+      expect(result).toEqual({
+        redirect: `rainbow://wc?uri=${encodeURIComponent(encodeURIComponent(wcUri))}`,
+        href: 'rainbow://'
+      })
+
+      vi.restoreAllMocks()
+    })
+
+    it('should use formatUniversalUrl for http/https URLs', () => {
+      const appUrl = 'https://app.binance.com/cedefi'
+
+      const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, null)
+
+      expect(result).toEqual({
+        redirect: `${appUrl}/wc?uri=${encodeURIComponent(wcUri)}`,
+        href: `${appUrl}/`
+      })
+    })
   })
 })

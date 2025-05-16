@@ -193,4 +193,16 @@ describe('StorageUtil', () => {
       expect(StorageUtil.getConnectedSocialUsername()).toBe(username)
     })
   })
+
+  describe('getConnections', () => {
+    it('should set and get connections', () => {
+      StorageUtil.setConnections(
+        [{ accounts: [{ address: 'address1' }], connectorId: 'connector1' }],
+        'eip155'
+      )
+      expect(StorageUtil.getConnections()).toEqual({
+        eip155: [{ accounts: [{ address: 'address1' }], connectorId: 'connector1' }]
+      })
+    })
+  })
 })

@@ -33,8 +33,7 @@ import styles from './styles.js'
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
 
-@customElement('w3m-modal')
-export class W3mModal extends LitElement {
+export class W3mModalBase extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
@@ -324,8 +323,15 @@ export class W3mModal extends LitElement {
   }
 }
 
+@customElement('w3m-modal')
+export class W3mModal extends W3mModalBase {}
+
+@customElement('appkit-modal')
+export class AppKitModal extends W3mModalBase {}
+
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-modal': W3mModal
+    'appkit-modal': AppKitModal
   }
 }

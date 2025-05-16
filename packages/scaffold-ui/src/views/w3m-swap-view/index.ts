@@ -82,8 +82,6 @@ export class W3mSwapView extends LitElement {
 
   @state() private inputError = SwapController.state.inputError
 
-  @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
-
   @state() private fetchError = SwapController.state.fetchError
 
   // -- Lifecycle ----------------------------------------- //
@@ -141,7 +139,6 @@ export class W3mSwapView extends LitElement {
           this.toTokenAmount = newState.toTokenAmount
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
-          this.gasPriceInUSD = newState.gasPriceInUSD
           this.fetchError = newState.fetchError
         })
       ]
@@ -254,31 +251,7 @@ export class W3mSwapView extends LitElement {
   }
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
-    const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === ChainController.getActiveNetworkTokenAddress()
-    let value = '0'
-
-    if (!balance) {
-      value = '0'
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    if (!this.gasPriceInUSD) {
-      value = balance
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).div(
-      this.sourceTokenPriceInUSD
-    )
-    const maxValue = isNetworkToken
-      ? NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
-      : NumberUtil.bigNumber(balance)
-
+    const maxValue = NumberUtil.bigNumber(balance || '0')
     this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
   }
 

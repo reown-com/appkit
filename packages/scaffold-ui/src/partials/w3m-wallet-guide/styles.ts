@@ -1,9 +1,6 @@
 import { css } from 'lit'
 
 export default css`
-  :host {
-    padding-bottom: var(--wui-spacing-s);
-  }
   wui-flex {
     width: 100%;
   }

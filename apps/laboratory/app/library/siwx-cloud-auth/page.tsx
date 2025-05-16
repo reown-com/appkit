@@ -7,6 +7,7 @@ import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
+import { CloudAuthTests } from '@/src/components/CloudAuthTests'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { AppKitProvider } from '@/src/context/AppKitContext'
@@ -35,6 +36,7 @@ export default function SIWXCloudAuth() {
     <AppKitProvider config={config}>
       <AppKitButtons />
       <AppKitInfo />
+      <CloudAuthTests />
       <EthersTests />
       <SolanaTests />
     </AppKitProvider>

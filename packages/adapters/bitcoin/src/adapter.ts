@@ -245,13 +245,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   // -- Unused => Refactor ------------------------------------------- //
 
-  override getProfile(
-    _params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult> {
-    // Get profile
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetProfileResult)
-  }
-
   override estimateGas(
     _params: AdapterBlueprint.EstimateGasTransactionArgs
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
@@ -271,13 +264,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.WriteContractResult> {
     // Write contract
     return Promise.resolve({} as unknown as AdapterBlueprint.WriteContractResult)
-  }
-
-  override getEnsAddress(
-    _params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    // Get ENS address
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetEnsAddressResult)
   }
 
   override parseUnits(_params: AdapterBlueprint.ParseUnitsParams): bigint {

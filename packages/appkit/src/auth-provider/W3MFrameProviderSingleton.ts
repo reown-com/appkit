@@ -1,11 +1,12 @@
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId, EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface W3mFrameProviderConfig {
   projectId: string
   chainId?: number | CaipNetworkId
   enableLogger?: boolean
-  onTimeout?: () => void
+  onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
+  abortController: AbortController
 }
 
 export class W3mFrameProviderSingleton {
@@ -18,14 +19,16 @@ export class W3mFrameProviderSingleton {
     projectId,
     chainId,
     enableLogger,
-    onTimeout
+    onTimeout,
+    abortController
   }: W3mFrameProviderConfig): W3mFrameProvider {
     if (!W3mFrameProviderSingleton.instance) {
       W3mFrameProviderSingleton.instance = new W3mFrameProvider({
         projectId,
         chainId,
         enableLogger,
-        onTimeout
+        onTimeout,
+        abortController
       })
     }
 

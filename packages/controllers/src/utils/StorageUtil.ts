@@ -7,6 +7,7 @@ import {
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
 
+import type { Connection } from '../controllers/ConnectionController.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,
@@ -575,12 +576,42 @@ export const StorageUtil = {
   getPreferredAccountTypes() {
     try {
       const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES)
+      if (!result) {
+        return {}
+      }
 
-      return JSON.parse(result as string) as PreferredAccountTypes
+      return JSON.parse(result) as PreferredAccountTypes
     } catch {
       console.info('Unable to get preferred account types')
     }
 
-    return undefined
+    return {}
+  },
+  setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
+    try {
+      const newConnections = {
+        ...StorageUtil.getConnections(),
+        [chainNamespace]: connections
+      }
+
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTIONS, JSON.stringify(newConnections))
+    } catch (error) {
+      console.error('Unable to sync connections to storage', error)
+    }
+  },
+  getConnections() {
+    try {
+      const connectionsStorage = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
+
+      if (!connectionsStorage) {
+        return {}
+      }
+
+      return JSON.parse(connectionsStorage) as { [key in ChainNamespace]: Connection[] }
+    } catch (error) {
+      console.error('Unable to get connections from storage', error)
+
+      return {}
+    }
   }
 }

@@ -153,10 +153,10 @@ emailTest('it should disconnect correctly', async ({ library }) => {
   await validator.expectDisconnected()
 })
 
-emailTest('it should abort request if it takes more than 30 seconds', async () => {
+emailTest('it should abort embedded wallet flow if it takes more than 20 seconds', async () => {
   await page.page.context().setOffline(true)
   await page.loginWithEmail(tempEmail, false)
-  await page.page.waitForTimeout(30_000)
-  await validator.expectSnackbar('Something went wrong')
+  await page.page.waitForTimeout(20_000)
+  await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
   await page.page.context().setOffline(false)
 })

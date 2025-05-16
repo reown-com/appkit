@@ -74,10 +74,10 @@ function ConnectedTestContent() {
   const { sendCalls, isPending: isLoading } = useSendCalls({
     mutation: {
       onSuccess: hash => {
-        setLastCallsBatchId(hash)
+        setLastCallsBatchId(hash.id)
         toast({
           title: 'SendCalls Success',
-          description: hash,
+          description: hash.id,
           type: 'success'
         })
       },

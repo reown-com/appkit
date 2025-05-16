@@ -22,6 +22,7 @@ import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-loading-thumbnail'
 import '@reown/appkit-ui/wui-logo'
 import '@reown/appkit-ui/wui-text'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'
@@ -48,6 +49,14 @@ export class W3mConnectingSocialView extends LitElement {
 
   public constructor() {
     super()
+    const abortController = ErrorUtil.EmbeddedWalletAbortController
+
+    abortController.signal.addEventListener('abort', () => {
+      if (this.socialWindow) {
+        this.socialWindow.close()
+        AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+      }
+    })
     this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
@@ -142,14 +151,18 @@ export class W3mConnectingSocialView extends LitElement {
                 properties: { provider: this.socialProvider }
               })
             }
-            await this.authConnector.provider.connectSocial(uri)
+            await ConnectionController.connectExternal(
+              {
+                id: this.authConnector.id,
+                type: this.authConnector.type,
+                socialUri: uri
+              },
+              this.authConnector.chain
+            )
 
             if (this.socialProvider) {
               StorageUtil.setConnectedSocialProvider(this.socialProvider)
-              await ConnectionController.connectExternal(
-                this.authConnector,
-                this.authConnector.chain
-              )
+
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',

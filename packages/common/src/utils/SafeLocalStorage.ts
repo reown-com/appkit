@@ -21,6 +21,7 @@ export type SafeLocalStorageItems = {
   '@appkit/ens_cache': string
   '@appkit/identity_cache': string
   '@appkit/preferred_account_types': string
+  '@appkit/connections': string
   /*
    * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
    *  This value is a stringified version of { href: stiring; name: string }
@@ -48,7 +49,8 @@ export const SafeLocalStorageKeys = {
   PORTFOLIO_CACHE: '@appkit/portfolio_cache',
   ENS_CACHE: '@appkit/ens_cache',
   IDENTITY_CACHE: '@appkit/identity_cache',
-  PREFERRED_ACCOUNT_TYPES: '@appkit/preferred_account_types'
+  PREFERRED_ACCOUNT_TYPES: '@appkit/preferred_account_types',
+  CONNECTIONS: '@appkit/connections'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
 export type SafeLocalStorageKey = keyof SafeLocalStorageItems | NamespacedConnectorKey

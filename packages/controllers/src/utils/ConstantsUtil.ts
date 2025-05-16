@@ -212,15 +212,18 @@ export const ConstantsUtil = {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
     polkadot: '0x',
-    bip122: '0x'
+    bip122: '0x',
+    cosmos: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
   CONNECT_LABELS: {
-    MOBILE: 'Open and continue in a new browser tab'
+    MOBILE: 'Open and continue in the wallet app',
+    WEB: 'Open and continue in the wallet app'
   },
 
+  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   DEFAULT_FEATURES: {
     swaps: true,
     onramp: true,

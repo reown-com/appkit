@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
+  AlertController,
   ConnectorController,
   ConstantsUtil,
   OptionsController,
@@ -10,9 +10,11 @@ import {
   type SocialProvider
 } from '@reown/appkit-controllers'
 import { executeSocialLogin } from '@reown/appkit-controllers/utils'
+import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-social'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 
@@ -32,6 +34,8 @@ export class W3mSocialLoginList extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private isPwaLoading = false
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -41,6 +45,11 @@ export class W3mSocialLoginList extends LitElement {
       }),
       OptionsController.subscribeKey('features', val => (this.features = val))
     )
+  }
+
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.handlePwaFrameLoad()
   }
 
   public override disconnectedCallback() {
@@ -69,9 +78,10 @@ export class W3mSocialLoginList extends LitElement {
             @click=${() => {
               this.onSocialClick(social)
             }}
+            data-testid=${`social-selector-${social}`}
             name=${social}
             logo=${social}
-            tabIdx=${ifDefined(this.tabIdx)}
+            ?disabled=${this.isPwaLoading}
           ></wui-list-social>`
       )}
     </wui-flex>`
@@ -81,6 +91,27 @@ export class W3mSocialLoginList extends LitElement {
   async onSocialClick(socialProvider?: SocialProvider) {
     if (socialProvider) {
       await executeSocialLogin(socialProvider)
+    }
+  }
+
+  private async handlePwaFrameLoad() {
+    if (CoreHelperUtil.isPWA()) {
+      this.isPwaLoading = true
+      try {
+        if (this.authConnector?.provider instanceof W3mFrameProvider) {
+          await this.authConnector.provider.init()
+        }
+      } catch (error) {
+        AlertController.open(
+          {
+            shortMessage: 'Error loading embedded wallet in PWA',
+            longMessage: (error as Error).message
+          },
+          'error'
+        )
+      } finally {
+        this.isPwaLoading = false
+      }
     }
   }
 }

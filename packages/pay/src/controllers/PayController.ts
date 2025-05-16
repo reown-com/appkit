@@ -6,6 +6,7 @@ import {
   AccountController,
   ChainController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController,
   SnackController
@@ -19,7 +20,7 @@ import {
 } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
-import type { PayUrlParams, PaymentOptions } from '../types/options.js'
+import type { GetExchangesParams, PayUrlParams, PaymentOptions } from '../types/options.js'
 import { getBuyStatus, getExchanges, getPayUrl } from '../utils/ApiUtil.js'
 import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
@@ -30,8 +31,15 @@ import {
 
 const DEFAULT_PAGE = 0
 
+const DEFAULT_PAYMENT_ID = 'unknown'
+
 // -- Types --------------------------------------------- //
 type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
+
+type OpenPayUrlParams = {
+  exchangeId: string
+  openInNewTab?: boolean
+}
 
 export type CurrentPayment = {
   type: PaymentType
@@ -49,6 +57,8 @@ export interface PayControllerState extends PaymentOptions {
   isLoading: boolean
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
+  analyticsSet: boolean
+  paymentId?: string
 }
 
 // Define a type for the parameters passed to getPayUrl
@@ -60,15 +70,15 @@ type PaymentType = 'wallet' | 'exchange'
 const state = proxy<PayControllerState>({
   paymentAsset: {
     network: 'eip155:1',
-    recipient: '0x0',
     asset: '0x0',
-    amount: 0,
     metadata: {
       name: '0x0',
       symbol: '0x0',
       decimals: 0
     }
   },
+  recipient: '0x0',
+  amount: 0,
   isConfigured: false,
   error: null,
   isPaymentInProgress: false,
@@ -77,7 +87,9 @@ const state = proxy<PayControllerState>({
   openInNewTab: true,
   redirectUrl: undefined,
   payWithExchange: undefined,
-  currentPayment: undefined
+  currentPayment: undefined,
+  analyticsSet: false,
+  paymentId: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -97,7 +109,21 @@ export const PayController = {
     this.resetState()
     this.setPaymentConfig(options)
     this.subscribeEvents()
+    this.initializeAnalytics()
     state.isConfigured = true
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'PAY_MODAL_OPEN',
+      properties: {
+        exchanges: state.exchanges,
+        configuration: {
+          network: state.paymentAsset.network,
+          asset: state.paymentAsset.asset,
+          recipient: state.recipient,
+          amount: state.amount
+        }
+      }
+    })
     await ModalController.open({
       view: 'Pay'
     })
@@ -106,11 +132,11 @@ export const PayController = {
   resetState() {
     state.paymentAsset = {
       network: 'eip155:1',
-      recipient: '0x0',
       asset: '0x0',
-      amount: 0,
       metadata: { name: '0x0', symbol: '0x0', decimals: 0 }
     }
+    state.recipient = '0x0'
+    state.amount = 0
     state.isConfigured = false
     state.error = null
     state.isPaymentInProgress = false
@@ -126,6 +152,8 @@ export const PayController = {
 
     try {
       state.paymentAsset = config.paymentAsset
+      state.recipient = config.recipient
+      state.amount = config.amount
       state.openInNewTab = config.openInNewTab ?? true
       state.redirectUrl = config.redirectUrl
       state.payWithExchange = config.payWithExchange
@@ -148,7 +176,9 @@ export const PayController = {
     try {
       state.isLoading = true
       const response = await getExchanges({
-        page: DEFAULT_PAGE
+        page: DEFAULT_PAGE,
+        asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
+        amount: state.amount.toString()
       })
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
@@ -160,10 +190,17 @@ export const PayController = {
     }
   },
 
-  async getAvailableExchanges(page: number = DEFAULT_PAGE) {
+  async getAvailableExchanges(params?: GetExchangesParams) {
     try {
+      const asset =
+        params?.asset && params?.network
+          ? formatCaip19Asset(params.network, params.asset)
+          : undefined
+
       const response = await getExchanges({
-        page
+        page: params?.page ?? DEFAULT_PAGE,
+        asset,
+        amount: params?.amount?.toString()
       })
 
       return response
@@ -172,15 +209,57 @@ export const PayController = {
     }
   },
 
-  async getPayUrl(exchangeId: string, params: PayUrlParams) {
+  async getPayUrl(exchangeId: string, params: PayUrlParams, headless = false) {
     try {
       const numericAmount = Number(params.amount)
+
       const response = await getPayUrl({
         exchangeId,
         asset: formatCaip19Asset(params.network, params.asset),
-        amount: numericAmount.toString(16),
+        amount: numericAmount.toString(),
         recipient: `${params.network}:${params.recipient}`
       })
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'PAY_EXCHANGE_SELECTED',
+        properties: {
+          exchange: {
+            id: exchangeId
+          },
+          configuration: {
+            network: params.network,
+            asset: params.asset,
+            recipient: params.recipient,
+            amount: numericAmount
+          },
+          currentPayment: {
+            type: 'exchange',
+            exchangeId
+          },
+          headless
+        }
+      })
+      if (headless) {
+        this.initiatePayment()
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'PAY_INITIATED',
+          properties: {
+            paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
+            configuration: {
+              network: params.network,
+              asset: params.asset,
+              recipient: params.recipient,
+              amount: numericAmount
+            },
+            currentPayment: {
+              type: 'exchange',
+              exchangeId
+            }
+          }
+        })
+      }
 
       return response
     } catch (error) {
@@ -191,14 +270,15 @@ export const PayController = {
     }
   },
 
-  async openPayUrl(exchangeId: string, params: PayUrlParams, openInNewTab = true) {
+  async openPayUrl(openParams: OpenPayUrlParams, params: PayUrlParams, headless = false) {
     try {
-      const payUrl = await this.getPayUrl(exchangeId, params)
+      const payUrl = await this.getPayUrl(openParams.exchangeId, params, headless)
       if (!payUrl) {
         throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL)
       }
+      const shouldOpenInNewTab = openParams.openInNewTab ?? true
 
-      const target = openInNewTab ? '_blank' : '_self'
+      const target = shouldOpenInNewTab ? '_blank' : '_self'
       CoreHelperUtil.openHref(payUrl.url, target)
 
       return payUrl
@@ -234,7 +314,8 @@ export const PayController = {
   },
   async handlePayment() {
     state.currentPayment = {
-      type: 'wallet'
+      type: 'wallet',
+      status: 'IN_PROGRESS'
     }
     const caipAddress = AccountController.state.caipAddress
     if (!caipAddress) {
@@ -262,7 +343,7 @@ export const PayController = {
     }
 
     try {
-      state.isPaymentInProgress = true
+      this.initiatePayment()
 
       const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
       const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
@@ -284,15 +365,21 @@ export const PayController = {
             state.currentPayment.result = await processEvmNativePayment(
               state.paymentAsset,
               chainNamespace,
-              address as `0x${string}`
+              {
+                recipient: state.recipient as `0x${string}`,
+                amount: state.amount,
+                fromAddress: address as `0x${string}`
+              }
             )
           }
           if (state.paymentAsset.asset.startsWith('0x')) {
-            state.currentPayment.result = await processEvmErc20Payment(
-              state.paymentAsset,
-              address as `0x${string}`
-            )
+            state.currentPayment.result = await processEvmErc20Payment(state.paymentAsset, {
+              recipient: state.recipient as `0x${string}`,
+              amount: state.amount,
+              fromAddress: address as `0x${string}`
+            })
           }
+          state.currentPayment.status = 'SUCCESS'
           break
         default:
           throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
@@ -303,6 +390,7 @@ export const PayController = {
       } else {
         state.error = AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
       }
+      state.currentPayment.status = 'FAILED'
       SnackController.showError(state.error)
     } finally {
       state.isPaymentInProgress = false
@@ -314,13 +402,13 @@ export const PayController = {
   },
 
   validatePayConfig(config: PaymentOptions) {
-    const { paymentAsset } = config
+    const { paymentAsset, recipient, amount } = config
 
     if (!paymentAsset) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
     }
 
-    if (!paymentAsset.recipient) {
+    if (!recipient) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_RECIPIENT)
     }
 
@@ -328,7 +416,7 @@ export const PayController = {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_ASSET)
     }
 
-    if (!paymentAsset.amount) {
+    if (amount === undefined || amount === null || amount <= 0) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_AMOUNT)
     }
   },
@@ -356,9 +444,14 @@ export const PayController = {
         type: 'exchange',
         exchangeId
       }
-      state.isPaymentInProgress = true
-      const { network, asset, amount, recipient } = state.paymentAsset
-      const payUrlParams: PayUrlParams = { network, asset, amount, recipient }
+
+      const { network, asset } = state.paymentAsset
+      const payUrlParams: PayUrlParams = {
+        network,
+        asset,
+        amount: state.amount,
+        recipient: state.recipient
+      }
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
         throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
@@ -367,6 +460,7 @@ export const PayController = {
       state.currentPayment.sessionId = payUrl.sessionId
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
+      this.initiatePayment()
 
       return {
         url: payUrl.url,
@@ -388,6 +482,27 @@ export const PayController = {
   async getBuyStatus(exchangeId: string, sessionId: string) {
     try {
       const status = await getBuyStatus({ sessionId, exchangeId })
+      if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+        EventsController.sendEvent({
+          type: 'track',
+          event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
+          properties: {
+            paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
+            configuration: {
+              network: state.paymentAsset.network,
+              asset: state.paymentAsset.asset,
+              recipient: state.recipient,
+              amount: state.amount
+            },
+            currentPayment: {
+              type: 'exchange',
+              exchangeId: state.currentPayment?.exchangeId,
+              sessionId: state.currentPayment?.sessionId,
+              result: status.txHash
+            }
+          }
+        })
+      }
 
       return status
     } catch (error) {
@@ -409,5 +524,46 @@ export const PayController = {
     } catch (error) {
       throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
     }
+  },
+
+  initiatePayment() {
+    state.isPaymentInProgress = true
+    state.paymentId = crypto.randomUUID()
+  },
+
+  initializeAnalytics() {
+    if (state.analyticsSet) {
+      return
+    }
+    state.analyticsSet = true
+    this.subscribeKey('isPaymentInProgress', _ => {
+      if (state.currentPayment?.status && state.currentPayment.status !== 'UNKNOWN') {
+        const eventType = {
+          IN_PROGRESS: 'PAY_INITIATED',
+          SUCCESS: 'PAY_SUCCESS',
+          FAILED: 'PAY_ERROR'
+        }[state.currentPayment.status]
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: eventType as 'PAY_INITIATED' | 'PAY_SUCCESS' | 'PAY_ERROR',
+          properties: {
+            paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
+            configuration: {
+              network: state.paymentAsset.network,
+              asset: state.paymentAsset.asset,
+              recipient: state.recipient,
+              amount: state.amount
+            },
+            currentPayment: {
+              type: state.currentPayment.type,
+              exchangeId: state.currentPayment.exchangeId,
+              sessionId: state.currentPayment.sessionId,
+              result: state.currentPayment.result
+            }
+          }
+        })
+      }
+    })
   }
 }

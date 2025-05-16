@@ -51,6 +51,8 @@ const MOCK_OTHER_EVM_NETWORK: CaipNetwork = {
 const MOCK_FROM_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678' as `0x${string}`
 const MOCK_RECIPIENT_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12' as `0x${string}`
 const MOCK_TOKEN_ADDRESS = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9' as `0x${string}`
+const MOCK_NATIVE_AMOUNT = 1.5
+const MOCK_ERC20_AMOUNT = 100.5
 
 // --- Tests -------------------------------------------------------------------
 describe('PaymentUtil', () => {
@@ -173,25 +175,28 @@ describe('PaymentUtil', () => {
     const paymentAsset: PaymentAsset = {
       asset: 'native' as const,
       network: MOCK_EVM_NETWORK.caipNetworkId,
-      recipient: MOCK_RECIPIENT_ADDRESS,
-      amount: 1.5,
       metadata: { name: 'Ether', symbol: 'ETH', decimals: 18 }
+    }
+    const nativePaymentParams = {
+      fromAddress: MOCK_FROM_ADDRESS,
+      recipient: MOCK_RECIPIENT_ADDRESS,
+      amount: MOCK_NATIVE_AMOUNT
     }
 
     test('should send native EVM transaction successfully', async () => {
       const mockTxHash = '0xtxhash123'
-      const expectedAmountBigInt = BigInt(1.5 * 10 ** paymentAsset.metadata.decimals)
+      const expectedAmountBigInt = BigInt(MOCK_NATIVE_AMOUNT * 10 ** paymentAsset.metadata.decimals)
       vi.mocked(ConnectionController.parseUnits).mockReturnValue(expectedAmountBigInt)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
       const txHash = await processEvmNativePayment(
         paymentAsset,
         ConstantsUtil.CHAIN.EVM,
-        MOCK_FROM_ADDRESS
+        nativePaymentParams
       )
 
       expect(ConnectionController.parseUnits).toHaveBeenCalledWith(
-        '1.5',
+        MOCK_NATIVE_AMOUNT.toString(),
         paymentAsset.metadata.decimals
       )
       expect(ConnectionController.sendTransaction).toHaveBeenCalledWith({
@@ -207,13 +212,20 @@ describe('PaymentUtil', () => {
     test('should use default decimals (18) if metadata is missing', async () => {
       const paymentAssetNoMeta = { ...paymentAsset, metadata: undefined } as any
       const mockTxHash = '0xtxhash456'
-      const expectedAmountBigInt = BigInt(1.5 * 10 ** 18)
+      const expectedAmountBigInt = BigInt(MOCK_NATIVE_AMOUNT * 10 ** 18)
       vi.mocked(ConnectionController.parseUnits).mockReturnValue(expectedAmountBigInt)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
-      await processEvmNativePayment(paymentAssetNoMeta, ConstantsUtil.CHAIN.EVM, MOCK_FROM_ADDRESS)
+      await processEvmNativePayment(
+        paymentAssetNoMeta,
+        ConstantsUtil.CHAIN.EVM,
+        nativePaymentParams
+      )
 
-      expect(ConnectionController.parseUnits).toHaveBeenCalledWith('1.5', 18)
+      expect(ConnectionController.parseUnits).toHaveBeenCalledWith(
+        MOCK_NATIVE_AMOUNT.toString(),
+        18
+      )
       expect(ConnectionController.sendTransaction).toHaveBeenCalledWith(
         expect.objectContaining({ value: expectedAmountBigInt })
       )
@@ -223,7 +235,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ConnectionController.parseUnits).mockReturnValue(undefined as any)
 
       await expect(
-        processEvmNativePayment(paymentAsset, ConstantsUtil.CHAIN.EVM, MOCK_FROM_ADDRESS)
+        processEvmNativePayment(paymentAsset, ConstantsUtil.CHAIN.EVM, nativePaymentParams)
       ).rejects.toThrow(new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR))
 
       vi.mocked(ConnectionController.parseUnits).mockImplementation(
@@ -233,18 +245,20 @@ describe('PaymentUtil', () => {
 
     test('should throw if chain namespace is not EVM', async () => {
       await expect(
-        processEvmNativePayment(paymentAsset, ConstantsUtil.CHAIN.SOLANA, MOCK_FROM_ADDRESS)
+        processEvmNativePayment(paymentAsset, ConstantsUtil.CHAIN.SOLANA, nativePaymentParams)
       ).rejects.toThrow(new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE))
     })
 
     test('should return undefined if sendTransaction returns undefined', async () => {
-      vi.mocked(ConnectionController.parseUnits).mockReturnValue(BigInt(1.5 * 10 ** 18))
+      vi.mocked(ConnectionController.parseUnits).mockReturnValue(
+        BigInt(MOCK_NATIVE_AMOUNT * 10 ** 18)
+      )
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(undefined)
 
       const txHash = await processEvmNativePayment(
         paymentAsset,
         ConstantsUtil.CHAIN.EVM,
-        MOCK_FROM_ADDRESS
+        nativePaymentParams
       )
 
       expect(txHash).toBeUndefined()
@@ -256,18 +270,26 @@ describe('PaymentUtil', () => {
     const paymentAsset: PaymentAsset = {
       asset: MOCK_TOKEN_ADDRESS,
       network: MOCK_EVM_NETWORK.caipNetworkId,
-      recipient: MOCK_RECIPIENT_ADDRESS,
-      amount: 100.5,
       metadata: { name: 'USDC', symbol: 'USDC', decimals: 6 }
     }
-    const expectedAmountBigInt = BigInt(100.5 * 10 ** 6)
+    const erc20PaymentParams = {
+      fromAddress: MOCK_FROM_ADDRESS,
+      recipient: MOCK_RECIPIENT_ADDRESS,
+      amount: MOCK_ERC20_AMOUNT
+    }
+    const expectedAmountBigInt = BigInt(
+      MOCK_ERC20_AMOUNT * 10 ** (paymentAsset.metadata.decimals || 0)
+    )
 
     test('should write ERC20 transfer contract successfully', async () => {
       vi.mocked(ConnectionController.parseUnits).mockReturnValue(expectedAmountBigInt)
 
-      await processEvmErc20Payment(paymentAsset, MOCK_FROM_ADDRESS)
+      await processEvmErc20Payment(paymentAsset, erc20PaymentParams)
 
-      expect(ConnectionController.parseUnits).toHaveBeenCalledWith('100.5', 6)
+      expect(ConnectionController.parseUnits).toHaveBeenCalledWith(
+        MOCK_ERC20_AMOUNT.toString(),
+        paymentAsset.metadata.decimals
+      )
 
       expect(ConnectionController.writeContract).toHaveBeenCalledWith({
         fromAddress: MOCK_FROM_ADDRESS,
@@ -282,7 +304,7 @@ describe('PaymentUtil', () => {
     test('should throw if parsed amount is not bigint', async () => {
       vi.mocked(ConnectionController.parseUnits).mockReturnValue(undefined as any)
 
-      await expect(processEvmErc20Payment(paymentAsset, MOCK_FROM_ADDRESS)).rejects.toThrow(
+      await expect(processEvmErc20Payment(paymentAsset, erc20PaymentParams)).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
       )
 

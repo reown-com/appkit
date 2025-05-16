@@ -29,6 +29,9 @@ type ThemeVariablesOptions = AppKitOptions['themeVariables']
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
+      'appkit-modal': {
+        class?: string
+      }
       'appkit-button': Pick<
         AppKitButton,
         'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'

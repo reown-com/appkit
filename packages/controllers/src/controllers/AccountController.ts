@@ -13,6 +13,7 @@ import type {
   SocialProvider,
   User
 } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { SnackController } from './SnackController.js'
@@ -53,7 +54,7 @@ const state = proxy<AccountControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const AccountController = {
+const controller = {
   state,
 
   replaceState(newState: AccountControllerState | undefined) {
@@ -263,7 +264,7 @@ export const AccountController = {
           balance => balance.quantity.decimals !== '0'
         )
 
-        this.setTokenBalance(filteredBalances, chain)
+        AccountController.setTokenBalance(filteredBalances, chain)
         state.lastRetry = undefined
         state.balanceLoading = false
 
@@ -285,3 +286,5 @@ export const AccountController = {
     ChainController.resetAccount(chain)
   }
 }
+
+export const AccountController = withErrorBoundary(controller)

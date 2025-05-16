@@ -3,7 +3,12 @@ import { property, state } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
-import { ConnectionController, CoreHelperUtil, SendController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectionController,
+  CoreHelperUtil,
+  SendController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -141,9 +146,10 @@ ${this.value ?? ''}</textarea
   }
 
   private onInputChange(e: InputEvent) {
-    this.pasting = false
-
     const element = e.target as HTMLInputElement
+
+    this.pasting = false
+    this.value = (e.target as HTMLInputElement)?.value
 
     if (element.value && !this.instructionHidden) {
       this.focusInput()
@@ -153,20 +159,43 @@ ${this.value ?? ''}</textarea
   }
 
   private onDebouncedSearch = CoreHelperUtil.debounce(async (value: string) => {
-    const address = await ConnectionController.getEnsAddress(value)
-    SendController.setLoading(false)
+    if (!value.length) {
+      this.setReceiverAddress('')
 
-    if (address) {
-      SendController.setReceiverProfileName(value)
-      SendController.setReceiverAddress(address)
-      const avatar = await ConnectionController.getEnsAvatar(value)
-      SendController.setReceiverProfileImageUrl(avatar || undefined)
-    } else {
-      SendController.setReceiverAddress(value)
-      SendController.setReceiverProfileName(undefined)
-      SendController.setReceiverProfileImageUrl(undefined)
+      return
+    }
+
+    const activeChain = ChainController.state.activeChain
+    const isValidAddress = CoreHelperUtil.isAddress(value, activeChain)
+
+    if (isValidAddress) {
+      this.setReceiverAddress(value)
+
+      return
+    }
+
+    try {
+      const resolvedAddress = await ConnectionController.getEnsAddress(value)
+
+      if (resolvedAddress) {
+        SendController.setReceiverProfileName(value)
+        SendController.setReceiverAddress(resolvedAddress)
+        const avatar = await ConnectionController.getEnsAvatar(value)
+        SendController.setReceiverProfileImageUrl(avatar || undefined)
+      }
+    } catch (error) {
+      this.setReceiverAddress(value)
+    } finally {
+      SendController.setLoading(false)
     }
   })
+
+  private setReceiverAddress(address: string) {
+    SendController.setReceiverAddress(address)
+    SendController.setReceiverProfileName(undefined)
+    SendController.setReceiverProfileImageUrl(undefined)
+    SendController.setLoading(false)
+  }
 }
 
 declare global {

@@ -2,13 +2,13 @@
 
 import { createContext } from 'react'
 
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { type UniqueIdentifier } from '@dnd-kit/core'
 
 import type { AppKitNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { Features, SocialProvider, ThemeMode } from '@reown/appkit-controllers'
 
-import { NetworkOption } from '@/lib/constants'
-import { URLState } from '@/lib/url-state'
+import { type NetworkOption } from '@/lib/networks'
+import { type URLState } from '@/lib/url-state'
 
 interface AppKitContextType {
   config: URLState

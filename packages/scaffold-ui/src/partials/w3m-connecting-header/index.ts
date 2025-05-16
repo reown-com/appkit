@@ -1,8 +1,7 @@
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 
 import type { Platform } from '@reown/appkit-controllers'
-import { ConnectionController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-tabs'
@@ -19,15 +18,6 @@ export class W3mConnectingHeader extends LitElement {
 
   @property() public onSelectPlatfrom?: (platform: Platform) => void = undefined
 
-  @state() private buffering = false
-
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
-    )
-  }
-
   disconnectCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
@@ -38,11 +28,7 @@ export class W3mConnectingHeader extends LitElement {
 
     return html`
       <wui-flex justifyContent="center" .padding=${['0', '0', 'l', '0'] as const}>
-        <wui-tabs
-          ?disabled=${this.buffering}
-          .tabs=${tabs}
-          .onTabChange=${this.onTabChange.bind(this)}
-        ></wui-tabs>
+        <wui-tabs .tabs=${tabs} .onTabChange=${this.onTabChange.bind(this)}></wui-tabs>
       </wui-flex>
     `
   }

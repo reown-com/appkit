@@ -10,6 +10,7 @@ export interface BaseDraggableItemProps {
   disabled?: boolean
   dragging?: boolean
   handle?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleProps?: any
   height?: number
   index?: number

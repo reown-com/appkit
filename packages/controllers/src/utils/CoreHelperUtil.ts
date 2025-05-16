@@ -7,7 +7,7 @@ import { StorageUtil } from './StorageUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
-type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
+export type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -117,18 +117,31 @@ export const CoreHelperUtil = {
     return url.startsWith('http://') || url.startsWith('https://')
   },
 
-  formatNativeUrl(appUrl: string, wcUri: string): LinkingRecord {
+  formatNativeUrl(
+    appUrl: string,
+    wcUri: string,
+    universalLink: string | null = null
+  ): LinkingRecord {
     if (CoreHelperUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri)
     }
+
     let safeAppUrl = appUrl
+    let safeUniversalLink = universalLink
+
     if (!safeAppUrl.includes('://')) {
       safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
       safeAppUrl = `${safeAppUrl}://`
     }
+
     if (!safeAppUrl.endsWith('/')) {
       safeAppUrl = `${safeAppUrl}/`
     }
+
+    if (safeUniversalLink && !safeUniversalLink?.endsWith('/')) {
+      safeUniversalLink = `${safeUniversalLink}/`
+    }
+
     // Android deeplinks in tg context require the uri to be encoded twice
     if (this.isTelegram() && this.isAndroid()) {
       // eslint-disable-next-line no-param-reassign
@@ -138,6 +151,9 @@ export const CoreHelperUtil = {
 
     return {
       redirect: `${safeAppUrl}wc?uri=${encodedWcUrl}`,
+      redirectUniversalLink: safeUniversalLink
+        ? `${safeUniversalLink}wc?uri=${encodedWcUrl}`
+        : undefined,
       href: safeAppUrl
     }
   },
@@ -195,6 +211,17 @@ export const CoreHelperUtil = {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Boolean((window as any).TelegramWebviewProxyProto))
     )
+  },
+
+  isPWA() {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    const isStandaloneDisplayMode = window.matchMedia?.('(display-mode: standalone)')?.matches
+    const isIOSStandalone = (window?.navigator as unknown as { standalone: boolean })?.standalone
+
+    return Boolean(isStandaloneDisplayMode || isIOSStandalone)
   },
 
   async preloadImage(src: string) {

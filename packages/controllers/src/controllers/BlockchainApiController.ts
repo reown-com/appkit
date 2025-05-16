@@ -177,15 +177,19 @@ export const BlockchainApiController = {
   },
 
   async getSupportedNetworks() {
-    const supportedChains = await BlockchainApiController.get<
-      BlockchainApiControllerState['supportedChains']
-    >({
-      path: 'v1/supported-chains'
-    })
+    try {
+      const supportedChains = await BlockchainApiController.get<
+        BlockchainApiControllerState['supportedChains']
+      >({
+        path: 'v1/supported-chains'
+      })
 
-    state.supportedChains = supportedChains
+      state.supportedChains = supportedChains
 
-    return supportedChains
+      return supportedChains
+    } catch {
+      return state.supportedChains
+    }
   },
 
   async fetchIdentity({

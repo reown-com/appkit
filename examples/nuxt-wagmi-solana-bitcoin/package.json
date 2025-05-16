@@ -14,13 +14,13 @@
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
-    "@tanstack/vue-query": "5.59.16",
+    "@tanstack/vue-query": "5.75.5",
     "@vue/devtools-api": "7.7.2",
-    "@wagmi/core": "2.16.7",
-    "@wagmi/vue": "0.1.14",
+    "@wagmi/core": "2.17.1",
+    "@wagmi/vue": "0.1.18",
     "@walletconnect/logger": "2.1.2",
     "nuxt": "3.16.0",
-    "viem": "2.23.13",
+    "viem": "2.29.0",
     "vue": "3.5.13",
     "vue-router": "latest"
   }

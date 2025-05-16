@@ -1,8 +1,6 @@
 /* eslint-disable max-params */
 import { Contract, ethers } from 'ethers'
 
-import { WcHelpersUtil } from '@reown/appkit'
-import { type CaipNetwork, isReownName } from '@reown/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
@@ -110,38 +108,6 @@ export const Ethers5Methods = {
       return await method(...data.args)
     }
     throw new Error('Contract method is undefined')
-  },
-
-  getEnsAddress: async (value: string, caipNetwork: CaipNetwork) => {
-    try {
-      const chainId = Number(caipNetwork.id)
-      let ensName: string | null = null
-      let wcName: boolean | string = false
-
-      if (isReownName(value)) {
-        wcName = (await WcHelpersUtil.resolveReownName(value)) || false
-      }
-
-      if (chainId === 1) {
-        const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-        ensName = await ensProvider.resolveName(value)
-      }
-
-      return ensName || wcName || false
-    } catch {
-      return false
-    }
-  },
-
-  getEnsAvatar: async (value: string, chainId: number) => {
-    if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-      const avatar = await ensProvider.getAvatar(value)
-
-      return avatar || false
-    }
-
-    return false
   },
 
   parseWalletCapabilities: (str: string) => {

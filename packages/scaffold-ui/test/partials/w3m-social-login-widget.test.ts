@@ -12,17 +12,20 @@ import {
   EventsController,
   OptionsController
 } from '@reown/appkit-controllers'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { W3mSocialLoginWidget } from '../../src/partials/w3m-social-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mSocialLoginWidget', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
     vi.clearAllMocks()
   })
 
   afterEach(() => {
     vi.restoreAllMocks()
+    vi.useRealTimers()
   })
 
   it('should handle standard social login flow when clicking Google button', async () => {
@@ -40,7 +43,8 @@ describe('W3mSocialLoginWidget', () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: {
         getSocialRedirectUri: vi.fn().mockResolvedValue({ uri: mockUri })
-      }
+      },
+      type: 'AUTH'
     } as unknown as AuthConnector)
     vi.spyOn(AccountController, 'setSocialWindow')
 
@@ -52,11 +56,49 @@ describe('W3mSocialLoginWidget', () => {
     await googleButton.click()
 
     expect(CoreHelperUtil.returnOpenHref).toHaveBeenCalledWith(
-      '',
+      'https://secure.walletconnect.org/loading',
       'popupWindow',
       'width=600,height=800,scrollbars=yes'
     )
     expect(AccountController.setSocialWindow).toHaveBeenCalledWith(mockWindow, 'eip155')
     expect(mockWindow.location.href).toBe(mockUri)
+  })
+
+  it('should load auth frame in PWA environment and manage loading state', async () => {
+    const initDelay = 500
+    const mockInit = vi.fn(() => new Promise(resolve => setTimeout(resolve, initDelay)))
+
+    const mockProvider = Object.create(W3mFrameProvider.prototype)
+    mockProvider.init = mockInit
+
+    const mockAuthConnector = {
+      provider: mockProvider,
+      type: 'AUTH'
+    } as unknown as AuthConnector
+
+    vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([mockAuthConnector])
+
+    vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(true)
+    vi.spyOn(OptionsController.state, 'features', 'get').mockReturnValue({
+      ...OptionsController.state.features,
+      socials: ['google']
+    })
+
+    const element: W3mSocialLoginWidget = await fixture(
+      html`<w3m-social-login-widget></w3m-social-login-widget>`
+    )
+
+    await element.updateComplete
+
+    expect(mockInit).toHaveBeenCalled()
+
+    const googleButton = HelpersUtil.getByTestId(element, 'social-selector-google')
+    expect(googleButton.hasAttribute('disabled')).toBe(true)
+
+    await vi.advanceTimersByTimeAsync(initDelay)
+
+    await element.updateComplete
+
+    expect(googleButton.hasAttribute('disabled')).toBe(false)
   })
 })

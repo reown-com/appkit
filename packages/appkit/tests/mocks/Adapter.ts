@@ -16,7 +16,6 @@ export const mockUniversalAdapter = {
   syncConnectors: vi.fn(),
   getWalletConnectProvider: vi.fn(),
   getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
-  getProfile: vi.fn(),
   signMessage: vi.fn(),
   sendTransaction: vi.fn(),
   switchNetwork: vi.fn(),
@@ -24,7 +23,6 @@ export const mockUniversalAdapter = {
   writeContract: vi.fn(),
   parseUnits: vi.fn(),
   formatUnits: vi.fn(),
-  getEnsAddress: vi.fn(),
   getCapabilities: vi.fn(),
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
@@ -49,7 +47,6 @@ export const mockBitcoinAdapter = {
     address: '03kh342934h'
   }),
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'BTC' }),
-  getProfile: vi.fn().mockResolvedValue({}),
   getWalletConnectProvider: vi.fn().mockResolvedValue(mockProvider),
   on: vi.fn(),
   off: vi.fn(),
@@ -75,7 +72,6 @@ export const mockEvmAdapter = {
     address: '0x123'
   }),
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'ETH' }),
-  getProfile: vi.fn().mockResolvedValue({}),
   getWalletConnectProvider: vi.fn().mockResolvedValue(mockProvider),
   estimateGas: vi.fn().mockResolvedValue({ gas: 21000n }),
   on: emitter.on.bind(emitter),
@@ -102,7 +98,6 @@ export const mockSolanaAdapter = {
     address: '7y523k4jsh90d'
   }),
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'SOL' }),
-  getProfile: vi.fn().mockResolvedValue({}),
   estimateGas: vi.fn().mockResolvedValue({ gas: 0n }),
   on: solanaEmitter.on.bind(solanaEmitter),
   off: solanaEmitter.off.bind(solanaEmitter),

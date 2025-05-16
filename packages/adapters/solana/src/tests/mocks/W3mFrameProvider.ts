@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 
+import { ErrorUtil } from '@reown/appkit-utils'
 import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
@@ -7,7 +8,10 @@ import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { TestConstants } from '../util/TestConstants.js'
 
 export function mockW3mFrameProvider() {
-  const w3mFrame = W3mFrameProviderSingleton.getInstance({ projectId: 'projectId' })
+  const w3mFrame = W3mFrameProviderSingleton.getInstance({
+    projectId: 'projectId',
+    abortController: ErrorUtil.EmbeddedWalletAbortController
+  })
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.disconnect = vi.fn(() => Promise.resolve(undefined))
