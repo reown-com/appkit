@@ -8,8 +8,7 @@ export default defineConfig({
   // Define the reporters for the merge operation directly here.
   // The merge-reports command will create these in its output directory (playwright-report).
   reporter: [
-    ['json', { outputFile: 'report.json' }], // Ensures report.json is created
-    ['html'] // HTML reporter, will go into the default playwright-report directory
+    ['json', { outputFile: 'report.json' }] // Isolate to only the JSON reporter for now
   ],
 
   // This is the crucial part. It tells merge-reports what the common
