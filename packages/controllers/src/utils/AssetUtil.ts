@@ -11,6 +11,20 @@ export interface AssetUtilState {
   networkImagePromises: Record<string, Promise<void>>
 }
 
+// -- Constants ----------------------------------------- //
+const WALLET_EXPLORER_IDS = {
+  METAMASK: 'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+  TRUST_WALLET: '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0',
+  OKX: '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
+}
+
+const WALLET_NAMES = {
+  METAMASK: 'MetaMask',
+  TRUST_WALLET: 'Trust Wallet',
+  OKX_WALLET: 'OKX Wallet',
+  OKX: 'OKX'
+}
+
 const namespaceImageIds: Record<ChainNamespace, string> = {
   // Ethereum
   eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
@@ -20,7 +34,6 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   polkadot: '',
   // Bitcoin
   bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
-  // Cosmos
   cosmos: ''
 }
 
@@ -39,6 +52,18 @@ export const AssetUtil = {
     await ApiController._fetchWalletImage(imageId)
 
     return this.getWalletImageById(imageId)
+  },
+  
+  async prefetchSpecificWalletImages() {
+    const explorerIds = [
+      WALLET_EXPLORER_IDS.METAMASK,
+      WALLET_EXPLORER_IDS.TRUST_WALLET,
+      WALLET_EXPLORER_IDS.OKX
+    ]
+    
+    await Promise.allSettled(
+      explorerIds.filter(Boolean).map(id => this.fetchWalletImage(id))
+    )
   },
 
   async fetchNetworkImage(imageId?: string) {
@@ -104,6 +129,20 @@ export const AssetUtil = {
   },
 
   getConnectorImage(connector?: Connector) {
+    if (connector?.name) {
+      if (connector.name === WALLET_NAMES.METAMASK) {
+        return AssetController.state.walletImages[WALLET_EXPLORER_IDS.METAMASK] || connector.imageUrl
+      }
+      
+      if (connector.name === WALLET_NAMES.TRUST_WALLET) {
+        return AssetController.state.walletImages[WALLET_EXPLORER_IDS.TRUST_WALLET] || connector.imageUrl
+      }
+      
+      if (connector.name === WALLET_NAMES.OKX_WALLET || connector.name === WALLET_NAMES.OKX) {
+        return AssetController.state.walletImages[WALLET_EXPLORER_IDS.OKX] || connector.imageUrl
+      }
+    }
+    
     if (connector?.imageUrl) {
       return connector.imageUrl
     }
