@@ -81,7 +81,7 @@ export class W3mLegalFooter extends LitElement {
     return html`<a href=${privacyPolicyUrl}>Privacy Policy</a>`
   }
 
-  private reownBrandingTemplate(showOnlyBranding: boolean = false) {
+  private reownBrandingTemplate(showOnlyBranding = false) {
     if (!this.remoteFeatures?.reownBranding) {
       return null
     }

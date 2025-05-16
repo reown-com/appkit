@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { SocialProvider } from '@reown/appkit-common'
 import { AlertController, ApiController, ConstantsUtil } from '@reown/appkit-controllers'
 import type { FeatureID, RemoteFeatures, TypedFeatureConfig } from '@reown/appkit-controllers'
@@ -13,12 +12,20 @@ export const ConfigUtil = {
     let remoteFeaturesConfig: RemoteFeatures = { ...DEFAULT_REMOTE_FEATURES }
 
     let apiProjectConfig: TypedFeatureConfig[] | null = null
-    let apiCallSuccessful = false
+    let isApiCallSuccessful = false
+
+    function getApiConfig<T extends FeatureID>(id: T) {
+      if (!apiProjectConfig) {
+        return undefined
+      }
+
+      return apiProjectConfig.find((f): f is Extract<TypedFeatureConfig, { id: T }> => f.id === id)
+    }
 
     try {
       apiProjectConfig = await ApiController.fetchProjectConfig()
       apiProjectConfig = apiProjectConfig === undefined || null ? null : apiProjectConfig
-      apiCallSuccessful = true
+      isApiCallSuccessful = true
     } catch (e) {
       console.warn(
         '[Reown Config] Failed to fetch remote project configuration. Using local/default values.',
@@ -26,7 +33,7 @@ export const ConfigUtil = {
       )
     }
 
-    if (apiCallSuccessful && apiProjectConfig !== null) {
+    if (isApiCallSuccessful && apiProjectConfig !== null) {
       remoteFeaturesConfig = {
         email: false,
         socials: false,
@@ -35,9 +42,6 @@ export const ConfigUtil = {
         activity: false,
         reownBranding: false
       }
-
-      const getApiConfig = <T extends FeatureID>(id: T) =>
-        apiProjectConfig!.find((f): f is Extract<TypedFeatureConfig, { id: T }> => f.id === id)
 
       const socialLoginApi = getApiConfig('social_login')
       if (socialLoginApi) {
@@ -79,11 +83,21 @@ export const ConfigUtil = {
         remoteFeaturesConfig.reownBranding = false
       }
 
-      if (localFeatures.email !== undefined) warnings.push('"features.email"')
-      if (localFeatures.socials !== undefined) warnings.push('"features.socials"')
-      if (localFeatures.swaps !== undefined) warnings.push('"features.swaps"')
-      if (localFeatures.onramp !== undefined) warnings.push('"features.onramp"')
-      if (localFeatures.history !== undefined) warnings.push('"features.history" (now "activity")')
+      if (localFeatures.email !== undefined) {
+        warnings.push('"features.email"')
+      }
+      if (localFeatures.socials !== undefined) {
+        warnings.push('"features.socials"')
+      }
+      if (localFeatures.swaps !== undefined) {
+        warnings.push('"features.swaps"')
+      }
+      if (localFeatures.onramp !== undefined) {
+        warnings.push('"features.onramp"')
+      }
+      if (localFeatures.history !== undefined) {
+        warnings.push('"features.history" (now "activity")')
+      }
 
       if (warnings.length > 0) {
         const warningMessage = `Your local configuration for ${warnings.join(', ')} was ignored because a remote configuration was successfully fetched. Please manage these features via your project dashboard.`
@@ -96,39 +110,55 @@ export const ConfigUtil = {
         )
       }
     } else {
-      remoteFeaturesConfig.email =
-        localFeatures.email !== undefined ? localFeatures.email : DEFAULT_REMOTE_FEATURES.email
+      if (typeof localFeatures.email === 'boolean') {
+        remoteFeaturesConfig.email = localFeatures.email
+      } else {
+        remoteFeaturesConfig.email = DEFAULT_REMOTE_FEATURES.email
+      }
 
-      if (localFeatures.socials !== undefined) {
+      if (localFeatures.socials) {
         if (typeof localFeatures.socials === 'boolean') {
-          remoteFeaturesConfig.socials = localFeatures.socials
-            ? DEFAULT_REMOTE_FEATURES.socials
-            : false
+          remoteFeaturesConfig.socials = DEFAULT_REMOTE_FEATURES.socials
         } else {
           remoteFeaturesConfig.socials = localFeatures.socials
         }
-      } else {
+      } else if (localFeatures.socials === undefined) {
         remoteFeaturesConfig.socials = DEFAULT_REMOTE_FEATURES.socials
+      } else {
+        remoteFeaturesConfig.socials = false
       }
 
-      remoteFeaturesConfig.swaps =
-        localFeatures.swaps !== undefined
-          ? localFeatures.swaps
-            ? DEFAULT_REMOTE_FEATURES.swaps
-            : false
-          : DEFAULT_REMOTE_FEATURES.swaps
+      if (typeof localFeatures.swaps === 'boolean') {
+        if (localFeatures.swaps) {
+          remoteFeaturesConfig.swaps = DEFAULT_REMOTE_FEATURES.swaps
+        } else {
+          remoteFeaturesConfig.swaps = false
+        }
+      } else if (typeof localFeatures.swaps === 'undefined') {
+        remoteFeaturesConfig.swaps = DEFAULT_REMOTE_FEATURES.swaps
+      } else {
+        remoteFeaturesConfig.swaps = localFeatures.swaps
+      }
 
-      remoteFeaturesConfig.onramp =
-        localFeatures.onramp !== undefined
-          ? localFeatures.onramp
-            ? DEFAULT_REMOTE_FEATURES.onramp
-            : false
-          : DEFAULT_REMOTE_FEATURES.onramp
+      if (typeof localFeatures.onramp === 'boolean') {
+        if (localFeatures.onramp) {
+          remoteFeaturesConfig.onramp = DEFAULT_REMOTE_FEATURES.onramp
+        } else {
+          remoteFeaturesConfig.onramp = false
+        }
+      } else if (typeof localFeatures.onramp === 'undefined') {
+        remoteFeaturesConfig.onramp = DEFAULT_REMOTE_FEATURES.onramp
+      } else {
+        remoteFeaturesConfig.onramp = localFeatures.onramp
+      }
 
-      remoteFeaturesConfig.activity =
-        localFeatures.history !== undefined
-          ? localFeatures.history
-          : DEFAULT_REMOTE_FEATURES.activity
+      if (localFeatures.history) {
+        remoteFeaturesConfig.activity = localFeatures.history
+      } else if (localFeatures.history === undefined) {
+        remoteFeaturesConfig.activity = DEFAULT_REMOTE_FEATURES.activity
+      } else {
+        remoteFeaturesConfig.activity = false
+      }
 
       remoteFeaturesConfig.reownBranding = DEFAULT_REMOTE_FEATURES.reownBranding
     }
