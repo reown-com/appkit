@@ -8,7 +8,7 @@ Onboard millions of users to your app in minutes with social & email embedded wa
 
 #### 🧪 [Laboratory](https://appkit-lab.reown.com)
 
-#### 💻 [AppKit web examples repository](https://github.com/reown-com/appkit-web-examples)
+#### 💻 [AppKit Web Examples](https://github.com/reown-com/appkit-web-examples)
 
 #### 🔗 [Website](https://reown.com/appkit)
 
