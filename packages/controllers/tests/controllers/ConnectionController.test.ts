@@ -222,7 +222,8 @@ describe('ConnectionController', () => {
       eip155: 'eip155-connector',
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     } as Record<ChainNamespace, string | undefined>
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
@@ -254,7 +255,8 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+      cosmos: 'cosmos-connector'
     } as Record<ChainNamespace, string | undefined>
     ChainController.state.chains.set('eip155', {
       accountState: {
@@ -291,7 +293,8 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       solana: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector'
+      bip122: 'bip122-connector',
+      cosmos: 'cosmos-connector'
     } as Record<ChainNamespace, string | undefined>
     ChainController.state.chains.set('eip155', {
       accountState: {
@@ -555,8 +558,9 @@ describe('ConnectionController error handling', () => {
           [chain]: undefined, // This will trigger the connectExternal path
           solana: undefined,
           polkadot: undefined,
-          bip122: undefined
-        }
+          bip122: undefined,
+          cosmos: undefined
+        } as Record<ChainNamespace, string | undefined>
       })
       
       const mockConnector = {
@@ -683,8 +687,9 @@ describe('ConnectionController error handling', () => {
           [chain]: connection.connectorId,
           solana: undefined,
           polkadot: undefined,
-          bip122: undefined
-        }
+          bip122: undefined,
+          cosmos: undefined
+        } as Record<ChainNamespace, string | undefined>
       })
       
       const consoleWarnSpy = vi.spyOn(console, 'warn')
