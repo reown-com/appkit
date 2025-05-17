@@ -307,6 +307,7 @@ jobs:
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
+          PLAYWRIGHT_SHARD_SUFFIX: ${{ matrix.shard }} # Pass shard index for unique blob filenames
         working-directory: ./apps/laboratory/
         run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
@@ -326,7 +327,15 @@ jobs:
         if: failure()
         with:
           name: playwright-report-${{ matrix.shard }}
-          path: ./apps/laboratory/playwright-report/
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/
+          retention-days: 7
+
+      - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
+        uses: actions/upload-artifact@v4
+        if: always() # Ensure it runs even if tests fail to get all blob data
+        with:
+          name: playwright-blob-artifact-shard-${{ matrix.shard }} # New unique artifact name pattern for blobs
+          path: ./apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
           retention-days: 7
 
       - name: Verify Cache Dir Exists Before Post Job
@@ -334,3 +343,74 @@ jobs:
           echo "Checking cache directory just before post-job phase:"
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
+
+  merge_reports:
+    needs: ui_tests # Ensures this job runs only after all 'test' (sharded) jobs complete
+    if: always() # Run this job even if some test shards failed, to get a complete picture
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      # Download actual artifact in GitHub Actions
+      - name: Download node_modules (GitHub Actions)
+        uses: actions/download-artifact@v4
+        with:
+          name: ui-node-modules
+          path: node_modules # Specify path to download into
+
+      - name: Install dependencies # Install again to link binaries, etc.
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
+        working-directory: ./apps/laboratory/
+        run: pnpm playwright:install-deps
+
+      - name: Download all shard blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports # Directory to download all artifacts into (becomes ${{ github.workspace }}/all-blob-reports)
+          pattern: playwright-blob-artifact-shard-* # Matches all NEW shard blob artifacts
+          merge-multiple: true # Merges contents of all matching artifacts into the 'path' directory
+
+      - name: Verify downloaded blobs (optional debugging)
+        run: ls -R ${{ github.workspace }}/all-blob-reports
+
+      - name: Ensure merged report directory exists
+        run: mkdir -p ${{ github.workspace }}/apps/laboratory/playwright-report/
+
+      - name: Merge Playwright blob reports
+        # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
+        # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards
+        # and to define the output reporters (HTML and JSON).
+        # Output will be in './apps/laboratory/playwright-report/' (relative to working-directory)
+        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
+        working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
+
+      - name: Rename merged JSON report for clarity
+        run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
+        # This step makes the final JSON artifact name more explicit.
+
+      - name: Upload Merged HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-merged-html-report
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
+          retention-days: 7
+
+      - name: Upload Merged JSON Report (for custom processing)
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-merged-json-report
+          path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
+          retention-days: 7
