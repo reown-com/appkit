@@ -6,11 +6,11 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ApiController,
+  type BlockchainApiBalanceResponse,
   BlockchainApiController,
+  type BlockchainApiTransactionsResponse,
   ChainController,
   TransactionsController,
-  type BlockchainApiBalanceResponse,
-  type BlockchainApiTransactionsResponse,
   type WcWallet
 } from '../../exports/index.js'
 
@@ -89,7 +89,7 @@ describe('AccountController-ApiController Integration', () => {
     AccountController.resetAccount(mockChain)
     TransactionsController.resetTransactions()
     ApiController.state.wallets = []
-    
+
     ChainController.state.activeCaipNetwork = {
       id: 1,
       name: 'Ethereum',
@@ -97,74 +97,83 @@ describe('AccountController-ApiController Integration', () => {
       chainNamespace: mockChain
     } as unknown as CaipNetwork
     ChainController.state.activeCaipAddress = mockCaipAddress
-    
+
     vi.clearAllMocks()
   })
-  
+
   describe('Wallet Data Retrieval', () => {
     it('should correctly fetch wallet data via ApiController and make it available', async () => {
       const fetchSpy = vi.spyOn(ApiController, 'fetchWalletsByPage').mockResolvedValue(undefined)
-      
+
       ApiController.state.wallets = mockWalletData
-      
+
       await ApiController.fetchWalletsByPage({ page: 1 })
-      
+
       expect(fetchSpy).toHaveBeenCalledTimes(1)
-      
+
       expect(ApiController.state.wallets).toEqual(mockWalletData)
     })
-    
+
     it('should handle wallet data fetch errors appropriately', async () => {
-      const fetchSpy = vi.spyOn(ApiController, 'fetchWalletsByPage').mockRejectedValue(new Error('Failed to fetch wallets'))
-      
+      const fetchSpy = vi
+        .spyOn(ApiController, 'fetchWalletsByPage')
+        .mockRejectedValue(new Error('Failed to fetch wallets'))
+
       try {
         await ApiController.fetchWalletsByPage({ page: 1 })
-      } catch (error) {
-      }
-      
+      } catch (error) {}
+
       expect(fetchSpy).toHaveBeenCalledTimes(1)
-      
+
       expect(ApiController.state.wallets).toEqual([])
     })
   })
-  
+
   describe('Balance Updates', () => {
     it('should update account balance state when new balance data is fetched', async () => {
-      const getBalanceSpy = vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(mockBalanceResponse)
-      
+      const getBalanceSpy = vi
+        .spyOn(BlockchainApiController, 'getBalance')
+        .mockResolvedValue(mockBalanceResponse)
+
       const result = await AccountController.fetchTokenBalance()
-      
+
       expect(getBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
-      
-      expect(result).toEqual(mockBalanceResponse.balances.filter(balance => balance.quantity.decimals !== '0'))
-      
+
+      expect(result).toEqual(
+        mockBalanceResponse.balances.filter(balance => balance.quantity.decimals !== '0')
+      )
+
       const filteredBalances = mockBalanceResponse.balances.filter(
         balance => balance.quantity.decimals !== '0'
       )
       expect(result).toEqual(filteredBalances)
     })
-    
+
     it('should handle balance fetch errors appropriately', async () => {
       const onErrorMock = vi.fn()
-      
-      vi.spyOn(BlockchainApiController, 'getBalance').mockRejectedValue(new Error('Failed to fetch balance'))
-      
+
+      vi.spyOn(BlockchainApiController, 'getBalance').mockRejectedValue(
+        new Error('Failed to fetch balance')
+      )
+
       const result = await AccountController.fetchTokenBalance(onErrorMock)
-      
+
       expect(onErrorMock).toHaveBeenCalled()
-      
+
       expect(result).toEqual([])
-      
+
       expect(AccountController.state.balanceLoading).toBe(false)
     })
   })
-  
+
   describe('Transaction History Synchronization', () => {
     it('should update transaction history state when new transaction data is fetched', async () => {
-      const fetchTransactionsSpy = vi.spyOn(BlockchainApiController, 'fetchTransactions').mockResolvedValue(mockTransactionResponse)
-      
+      const fetchTransactionsSpy = vi
+        .spyOn(BlockchainApiController, 'fetchTransactions')
+        .mockResolvedValue(mockTransactionResponse)
+
       await TransactionsController.fetchTransactions(mockAddress)
-      
+
       expect(fetchTransactionsSpy).toHaveBeenCalledWith({
         account: mockAddress,
         cursor: undefined,
@@ -172,21 +181,30 @@ describe('AccountController-ApiController Integration', () => {
         cache: undefined,
         chainId: mockChainId
       })
-      
-      expect(TransactionsController.state.transactions).toHaveLength(mockTransactionResponse.data.length)
-      
-      if (TransactionsController.state.transactions.length > 0 && mockTransactionResponse.data.length > 0) {
-        expect(TransactionsController.state.transactions[0]?.id).toBe(mockTransactionResponse.data[0]?.id)
+
+      expect(TransactionsController.state.transactions).toHaveLength(
+        mockTransactionResponse.data.length
+      )
+
+      if (
+        TransactionsController.state.transactions.length > 0 &&
+        mockTransactionResponse.data.length > 0
+      ) {
+        expect(TransactionsController.state.transactions[0]?.id).toBe(
+          mockTransactionResponse.data[0]?.id
+        )
       }
-      
+
       expect(Object.keys(TransactionsController.state.transactionsByYear).length).toBeGreaterThan(0)
     })
-    
+
     it('should handle transaction fetch errors appropriately', async () => {
-      vi.spyOn(BlockchainApiController, 'fetchTransactions').mockRejectedValue(new Error('Failed to fetch transactions'))
-      
+      vi.spyOn(BlockchainApiController, 'fetchTransactions').mockRejectedValue(
+        new Error('Failed to fetch transactions')
+      )
+
       await TransactionsController.fetchTransactions(mockAddress)
-      
+
       expect(TransactionsController.state.loading).toBe(false)
       expect(TransactionsController.state.empty).toBe(true)
       expect(TransactionsController.state.next).toBeUndefined()
