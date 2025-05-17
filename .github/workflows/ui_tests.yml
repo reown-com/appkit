@@ -67,9 +67,9 @@ on:
         required: false
       SOLANA_PRIVATE_KEY:
         required: false
-      AWS_ACCESS_KEY_ID:
+      PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID:
         required: true
-      AWS_SECRET_ACCESS_KEY:
+      PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
         required: true
 
 jobs:
@@ -376,13 +376,6 @@ jobs:
           name: ui-node-modules
           path: node_modules # Specify path to download into
 
-<<<<<<< HEAD
-=======
-      # Restore executable permissions for binaries (keep this after potential copy)
-      - name: Fix permissions
-        run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
-
->>>>>>> cd1a7b4d7 (feat: upload consolidated playwright report)
       - name: Install dependencies # Install again to link binaries, etc.
         run: pnpm install --frozen-lockfile
 
@@ -416,11 +409,6 @@ jobs:
         run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
 
-      # - name: Summarize Slowest Tests
-      #   if: always() # Attempt to run even if prior steps had issues, as long as the report might exist
-      #   run: |
-      #     node ${{ github.workspace }}/scripts/summarize-slowest-tests.cjs ${{ github.workspace }}/apps/laboratory/merged-test-results.json
-
       - name: Determine Build Context for S3 Path
         id: build_context
         run: |
@@ -440,11 +428,12 @@ jobs:
           echo "BUILD_CONTEXT=$CONTEXT" >> $GITHUB_ENV
           echo "Derived context: $CONTEXT"
 
+      # TODO: Migrate to OIDC
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
       - name: Upload Merged JSON Report to S3
@@ -463,22 +452,11 @@ jobs:
         with:
           name: playwright-merged-html-report
           path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
-<<<<<<< HEAD
           retention-days: 7
-=======
-          retention-days: 30 # Keep merged reports longer
-<<<<<<< HEAD
->>>>>>> cd1a7b4d7 (feat: upload consolidated playwright report)
 
       - name: Upload Merged JSON Report (for custom processing)
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-json-report
           path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
-<<<<<<< HEAD
           retention-days: 7
-=======
-          retention-days: 30
->>>>>>> cd1a7b4d7 (feat: upload consolidated playwright report)
-=======
->>>>>>> 458abc685 (feat: upload to s3)
