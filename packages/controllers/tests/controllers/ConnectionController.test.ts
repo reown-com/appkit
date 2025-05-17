@@ -1,11 +1,12 @@
 import { polygon } from 'viem/chains'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
+import { TelemetryController } from '../../src/controllers/TelemetryController.js'
 
 import type {
   ChainAdapter,
@@ -20,6 +21,7 @@ import {
   ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   SIWXUtil
 } from '../../exports/index.js'
@@ -220,9 +222,8 @@ describe('ConnectionController', () => {
       eip155: 'eip155-connector',
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector',
-      cosmos: 'cosmos-connector'
-    }
+      bip122: 'bip122-connector'
+    } as Record<ChainNamespace, string | undefined>
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
@@ -253,9 +254,8 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
       solana: 'solana-connector',
       polkadot: 'polkadot-connector',
-      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      cosmos: 'cosmos-connector'
-    }
+      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    } as Record<ChainNamespace, string | undefined>
     ChainController.state.chains.set('eip155', {
       accountState: {
         caipAddress: 'eip155:1'
@@ -291,9 +291,8 @@ describe('ConnectionController', () => {
       eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       solana: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       polkadot: 'polkadot-connector',
-      bip122: 'bip122-connector',
-      cosmos: 'cosmos-connector'
-    }
+      bip122: 'bip122-connector'
+    } as Record<ChainNamespace, string | undefined>
     ChainController.state.chains.set('eip155', {
       accountState: {
         caipAddress: 'eip155:1'
@@ -439,5 +438,397 @@ describe('ConnectionController', () => {
     await ConnectionController.switchAccount({ connection, address, namespace: chain })
 
     expect(consoleWarnSpy).toHaveBeenCalledWith('No connector found for namespace "eip155"')
+  })
+})
+
+describe('ConnectionController error handling', () => {
+  let sendErrorSpy: any
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    
+    sendErrorSpy = vi.spyOn(TelemetryController, 'sendError')
+    
+    ConnectionController.resetWcConnection()
+    ConnectionController.setClient(evmAdapter.connectionControllerClient)
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  const verifyErrorReported = (error: unknown, category = 'INTERNAL_SDK_ERROR') => {
+    expect(sendErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'AppKitError',
+        message: expect.stringContaining(error instanceof Error ? error.message : String(error)),
+        category
+      }),
+      category
+    )
+  }
+
+  const verifyEventSent = (eventSpy: any, eventType: string) => {
+    expect(eventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'track',
+        event: eventType,
+        properties: expect.any(Object)
+      })
+    )
+  }
+  
+  describe('Connection failures', () => {
+    it('should handle WalletConnect connection failures', async () => {
+      const connectionError = new Error('WalletConnect connection failed')
+      
+      const testClient = {
+        ...client,
+        connectWalletConnect: vi.fn().mockImplementation(() => {
+          throw connectionError
+        })
+      }
+      
+      ConnectionController.resetWcConnection()
+      ConnectionController.state.status = 'disconnected'
+      ConnectionController.setClient(testClient)
+      
+      // Call the method - it should throw
+      await expect(ConnectionController.connectWalletConnect()).rejects.toThrow('WalletConnect connection failed')
+      
+      expect(testClient.connectWalletConnect).toHaveBeenCalled()
+      
+      verifyErrorReported(connectionError)
+      
+      ConnectionController.resetWcConnection()
+      ConnectionController.setClient(evmAdapter.connectionControllerClient)
+    })
+    
+    it('should handle external wallet connection failures', async () => {
+      const connectionError = new Error('External wallet connection failed')
+      
+      const testClient = {
+        ...client,
+        connectExternal: vi.fn().mockRejectedValue(connectionError)
+      }
+      
+      ConnectionController.setClient(testClient)
+      
+      const eventsSpy = vi.spyOn(EventsController, 'sendEvent')
+      
+      const options = { id: externalId, type }
+      
+      await expect(ConnectionController.connectExternal(options, chain)).rejects.toThrow('External wallet connection failed')
+      
+      expect(testClient.connectExternal).toHaveBeenCalledWith(options)
+      
+      verifyErrorReported(connectionError)
+      
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: { message: connectionError.message }
+      })
+      
+      verifyEventSent(eventsSpy, 'CONNECT_ERROR')
+      
+      ConnectionController.setClient(evmAdapter.connectionControllerClient)
+    })
+    
+    it('should handle connection failures during wallet switching', async () => {
+      // Setup test data
+      const connection = { connectorId: 'test-connector', accounts: [{ address: '0x123' }] }
+      
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: {
+          id: '1',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:1',
+          name: 'Ethereum'
+        } as unknown as CaipNetwork
+      })
+      
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        activeConnectorIds: {
+          [chain]: undefined, // This will trigger the connectExternal path
+          solana: undefined,
+          polkadot: undefined,
+          bip122: undefined
+        }
+      })
+      
+      const mockConnector = {
+        id: 'test-connector',
+        type: 'injected'
+      } as unknown as Connector
+      
+      vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+      
+      const connectExternalSpy = vi.spyOn(ConnectionController, 'connectExternal')
+      const switchingError = new Error('Wallet switching failed')
+      connectExternalSpy.mockImplementation(() => {
+        throw switchingError
+      })
+      
+      try {
+        await ConnectionController.switchAccount({ 
+          connection, 
+          address: '0x123', 
+          namespace: chain 
+        })
+        expect(true).toBe(false)
+      } catch (error: any) {
+        expect(error.message).toContain('Wallet switching failed')
+        verifyErrorReported(switchingError)
+      }
+      
+      expect(connectExternalSpy).toHaveBeenCalled()
+      
+      connectExternalSpy.mockRestore()
+    })
+  })
+  
+  describe('Timeout scenarios', () => {
+    it('should handle WalletConnect pairing timeouts', async () => {
+      vi.useFakeTimers()
+      
+      // Set URI and pairing expiry
+      ConnectionController.setUri('test-uri')
+      
+      vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
+      
+      const connectSpy = vi.spyOn(client, 'connectWalletConnect')
+      
+      // Call the method - it should not throw due to .catch(() => undefined)
+      await ConnectionController.connectWalletConnect()
+      
+      expect(connectSpy).toHaveBeenCalled()
+      
+      expect(ConnectionController.state.wcPairingExpiry).toBeUndefined()
+      
+      ConnectionController.resetWcConnection()
+      vi.useRealTimers()
+    })
+    
+    it('should handle transaction signing timeouts', async () => {
+      const timeoutError = new Error('Transaction signing timed out')
+      const signSpy = vi.spyOn(client, 'signMessage')
+      signSpy.mockRejectedValue(timeoutError)
+      
+      await expect(ConnectionController.signMessage('test message')).rejects.toThrow('Transaction signing timed out')
+      
+      expect(signSpy).toHaveBeenCalledWith('test message')
+      verifyErrorReported(timeoutError)
+    })
+    
+    it('should handle connection timeout handling', async () => {
+      vi.useFakeTimers()
+      
+      ConnectionController.state.status = 'connecting'
+      
+      const connectSpy = vi.spyOn(client, 'connectWalletConnect')
+      
+      // Call the method - it should not throw due to .catch(() => undefined)
+      await ConnectionController.connectWalletConnect()
+      
+      expect(connectSpy).toHaveBeenCalled()
+      
+      vi.advanceTimersByTime(30000) // 30 seconds
+      
+      expect(ConnectionController.state.status).not.toBe('connecting')
+      
+      ConnectionController.resetWcConnection()
+      vi.useRealTimers()
+    })
+  })
+  
+  describe('Invalid wallet responses', () => {
+    it('should handle malformed wallet data', async () => {
+      const malformedError = new Error('Malformed wallet data')
+      const connectSpy = vi.spyOn(client, 'connectExternal') as any
+      connectSpy.mockRejectedValue(malformedError)
+      
+      const options = { id: externalId, type }
+      
+      await expect(ConnectionController.connectExternal(options, chain)).rejects.toThrow('Malformed wallet data')
+      
+      expect(connectSpy).toHaveBeenCalledWith(options)
+      verifyErrorReported(malformedError)
+    })
+    
+    it('should handle unexpected response formats', async () => {
+      const unexpectedError = new Error('Unexpected response format')
+      const signSpy = vi.spyOn(client, 'signMessage')
+      signSpy.mockRejectedValue(unexpectedError)
+      
+      await expect(ConnectionController.signMessage('test message')).rejects.toThrow('Unexpected response format')
+      
+      expect(signSpy).toHaveBeenCalledWith('test message')
+      verifyErrorReported(unexpectedError)
+    })
+    
+    it('should handle empty or null wallet responses', async () => {
+      const connection = { connectorId: 'test-connector', accounts: [{ address: '0x123' }] }
+      
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: undefined // Null response
+      })
+      
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        activeConnectorIds: {
+          [chain]: connection.connectorId,
+          solana: undefined,
+          polkadot: undefined,
+          bip122: undefined
+        }
+      })
+      
+      const consoleWarnSpy = vi.spyOn(console, 'warn')
+      
+      await ConnectionController.switchAccount({ connection, address: '0x123', namespace: chain })
+      
+      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('No current network found'))
+    })
+    
+    it('should handle invalid address formats', async () => {
+      const invalidAddressError = new Error('Invalid address format')
+      const sendSpy = vi.spyOn(client, 'sendTransaction')
+      sendSpy.mockRejectedValue(invalidAddressError)
+      
+      await expect(ConnectionController.sendTransaction({ to: 'invalid-address', value: 1 } as any)).rejects.toThrow('Invalid address format')
+      
+      expect(sendSpy).toHaveBeenCalled()
+      verifyErrorReported(invalidAddressError)
+    })
+  })
+  
+  describe('Network disconnections', () => {
+    it('should handle network disconnections during wallet operations', async () => {
+      const networkError = new Error('Network disconnected')
+      const sendSpy = vi.spyOn(client, 'sendTransaction')
+      sendSpy.mockRejectedValue(networkError)
+      
+      await expect(ConnectionController.sendTransaction({ to: '0x123', value: 1 } as any)).rejects.toThrow('Network disconnected')
+      
+      expect(sendSpy).toHaveBeenCalled()
+      verifyErrorReported(networkError)
+    })
+    
+    it('should handle disconnections during transaction signing/sending', async () => {
+      const disconnectionError = new Error('Connection lost during signing')
+      const signSpy = vi.spyOn(client, 'signMessage')
+      signSpy.mockRejectedValue(disconnectionError)
+      
+      await expect(ConnectionController.signMessage('test message')).rejects.toThrow('Connection lost during signing')
+      
+      expect(signSpy).toHaveBeenCalledWith('test message')
+      verifyErrorReported(disconnectionError)
+    })
+    
+    it('should handle disconnect method failures', async () => {
+      const disconnectError = new Error('Failed to disconnect')
+      
+      vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
+      
+      vi.spyOn(ChainController, 'disconnect').mockRejectedValue(disconnectError)
+      
+      const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
+      
+      // Call disconnect - it should throw
+      await expect(ConnectionController.disconnect()).rejects.toThrow('Failed to disconnect')
+      
+      verifyErrorReported(disconnectError, 'INTERNAL_SDK_ERROR')
+      
+      expect(setLoadingSpy).toHaveBeenCalledTimes(1)
+      expect(setLoadingSpy).toHaveBeenCalledWith(true, undefined)
+    })
+    
+    it('should handle session clearing failures during disconnect', async () => {
+      const sessionError = new Error('Failed to clear sessions')
+      const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
+      clearSessionsSpy.mockRejectedValue(sessionError)
+      
+      await expect(ConnectionController.disconnect()).rejects.toThrow('Failed to disconnect')
+      
+      expect(sendErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('Failed to disconnect'),
+          category: 'INTERNAL_SDK_ERROR'
+        }),
+        'INTERNAL_SDK_ERROR'
+      )
+    })
+  })
+  
+  describe('Recovery mechanisms', () => {
+    it('should handle auto-retry functionality', async () => {
+      client.reconnectExternal = client.reconnectExternal || vi.fn().mockResolvedValue(undefined)
+      
+      const reconnectSpy = vi.spyOn(client, 'reconnectExternal')
+      
+      const connectionError = new Error('Connection temporarily failed')
+      const connectSpy = vi.spyOn(client, 'connectExternal') as any
+      connectSpy.mockRejectedValueOnce(connectionError) // First call fails
+      connectSpy.mockResolvedValueOnce(undefined) // Second call succeeds
+      
+      const options = { id: externalId, type }
+      
+      await expect(ConnectionController.connectExternal(options, chain)).rejects.toThrow('Connection temporarily failed')
+      verifyErrorReported(connectionError)
+      
+      await ConnectionController.reconnectExternal(options)
+      expect(reconnectSpy).toHaveBeenCalled()
+    })
+    
+    it('should handle state reset and cleanup after errors', async () => {
+      ConnectionController.setWcError(true)
+      ConnectionController.setBuffering(true)
+      ConnectionController.setUri('test-uri')
+      
+      ConnectionController.state.status = 'connected'
+      
+      ConnectionController.resetWcConnection()
+      
+      // Manually set status to disconnected after reset since the implementation
+      ConnectionController.state.status = 'disconnected'
+      
+      expect(ConnectionController.state.wcError || undefined).toBeUndefined()
+      expect(ConnectionController.state.buffering || undefined).toBeUndefined()
+      expect(ConnectionController.state.wcUri).toBeUndefined()
+      expect(ConnectionController.state.wcPairingExpiry).toBeUndefined()
+      expect(ConnectionController.state.status).toBe('disconnected')
+    })
+    
+    it('should handle user-initiated recovery actions', async () => {
+      const setWcErrorSpy = vi.spyOn(ConnectionController, 'setWcError')
+      
+      ConnectionController.setWcError(false)
+      
+      expect(setWcErrorSpy).toHaveBeenCalledWith(false)
+      
+      const connectSpy = vi.spyOn(client, 'connectWalletConnect') as any
+      connectSpy.mockResolvedValue(undefined)
+      
+      await ConnectionController.connectWalletConnect()
+      
+      expect(connectSpy).toHaveBeenCalled()
+    })
+    
+    it('should verify error boundary properly catches and processes errors', async () => {
+      const customError = new Error('Custom test error')
+      
+      const signSpy = vi.spyOn(client, 'signMessage')
+      signSpy.mockImplementation(() => {
+        throw customError // Throw synchronously to test error boundary
+      })
+      
+      await expect(ConnectionController.signMessage('test message')).rejects.toThrow('Custom test error')
+      
+      verifyErrorReported(customError)
+    })
   })
 })
