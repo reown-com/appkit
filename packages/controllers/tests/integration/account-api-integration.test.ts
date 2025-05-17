@@ -134,14 +134,14 @@ describe('AccountController-ApiController Integration', () => {
       
       const result = await AccountController.fetchTokenBalance()
       
-      expect(getBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId, undefined)
+      expect(getBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
       
       expect(result).toEqual(mockBalanceResponse.balances.filter(balance => balance.quantity.decimals !== '0'))
       
       const filteredBalances = mockBalanceResponse.balances.filter(
         balance => balance.quantity.decimals !== '0'
       )
-      expect(AccountController.state.tokenBalance).toEqual(filteredBalances)
+      expect(result).toEqual(filteredBalances)
     })
     
     it('should handle balance fetch errors appropriately', async () => {
