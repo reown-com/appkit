@@ -50,7 +50,8 @@ on:
         type: string
       build_trigger_type:
         description: 'The type of event that triggered the build (e.g., push, pull_request, merge_group)'
-        required: true
+        required: false
+        default: ''
         type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
@@ -411,6 +412,7 @@ jobs:
 
       - name: Determine Build Context for S3 Path
         id: build_context
+        if: inputs.build_trigger_type != ''
         run: |
           TRIGGER="${{ inputs.build_trigger_type }}"
           CONTEXT="unknown-trigger"
@@ -430,6 +432,7 @@ jobs:
 
       # TODO: Migrate to OIDC
       - name: Configure AWS Credentials
+        if: inputs.build_trigger_type != '' # Also skip if not uploading
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID }}
@@ -437,6 +440,7 @@ jobs:
           aws-region: eu-central-1
 
       - name: Upload Merged JSON Report to S3
+        if: inputs.build_trigger_type != '' && always()
         run: |
           S3_BUCKET="reown.appkit.e2e.reports"
           S3_PREFIX="appkit/playwright-results"
@@ -445,7 +449,6 @@ jobs:
 
           echo "Uploading ${{ github.workspace }}/apps/laboratory/merged-test-results.json to s3://${S3_BUCKET}/${S3_KEY}"
           aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}
-        if: always() # Try to upload even if some prior steps (like summarization) had issues
 
       - name: Upload Merged HTML Report
         uses: actions/upload-artifact@v4
