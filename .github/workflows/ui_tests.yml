@@ -368,10 +368,6 @@ jobs:
           name: ui-node-modules
           path: node_modules # Specify path to download into
 
-      # Restore executable permissions for binaries (keep this after potential copy)
-      - name: Fix permissions
-        run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
-
       - name: Install dependencies # Install again to link binaries, etc.
         run: pnpm install --frozen-lockfile
 
@@ -410,11 +406,11 @@ jobs:
         with:
           name: playwright-merged-html-report
           path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
-          retention-days: 30 # Keep merged reports longer
+          retention-days: 7
 
       - name: Upload Merged JSON Report (for custom processing)
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-json-report
           path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
-          retention-days: 30
+          retention-days: 7
