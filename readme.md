@@ -19,18 +19,21 @@ Onboard millions of users to your app in minutes with social & email embedded wa
 </p>
 
 ## Features
+
 Refer to the "Features" section of the [AppKit docs](https://docs.reown.com/appkit/features).
+
 - Swaps
-- On-Ramp	
-- Multichain Modal	
-- Smart Accounts	
-- Telegram Mini Apps	
-- Sponsored Transactions	
-- Networks: EVM Chains, Solana & Bitcoin	
+- On-Ramp
+- Multichain Modal
+- Smart Accounts
+- Telegram Mini Apps
+- Sponsored Transactions
+- Networks: EVM Chains, Solana & Bitcoin
 - AppKit Core: Chain Agnostic
 - Authentication: Email & Social Login, One-Click Auth & Sign with X (SIWX)
 
 ## AppKit Available SDKs
+
 - [React](https://docs.reown.com/appkit/react/core/installation)
 - [Next](https://docs.reown.com/appkit/next/core/installation)
 - [Vue](https://docs.reown.com/appkit/vue/core/installation)
