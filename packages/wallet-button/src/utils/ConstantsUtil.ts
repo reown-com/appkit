@@ -40,6 +40,7 @@ export const ConstantsUtil = {
     backpack: '2bd8c14e035c2d48f184aaa168559e86b0e3433228d3c4075900a221785019b0',
     frontier: '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041',
     xverse: '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
-    leather: '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13'
+    leather: '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13',
+    haha: '719bd888109f5e8dd23419b20e749900ce4d2fc6858cf588395f19c82fd036b3'
   } as const
 }

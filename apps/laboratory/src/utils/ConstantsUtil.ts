@@ -168,7 +168,8 @@ export const ConstantsUtil = {
     'trust',
     'coinbase',
     'rainbow',
-    'phantom'
+    'phantom',
+    'haha'
   ] as Wallet[],
   SolanaWalletButtons: [
     'walletConnect',
