@@ -498,7 +498,7 @@ describe('ChainController', () => {
 describe('Unsupported Networks', () => {
   it('should show UnsupportedChain UI when switching to unsupported network', async () => {
     const showUnsupportedChainUISpy = vi.spyOn(ChainController, 'showUnsupportedChainUI')
-    
+
     // Setup limited network support
     const limitedEvmAdapter = {
       namespace: ConstantsUtil.CHAIN.EVM,
@@ -516,28 +516,28 @@ describe('Unsupported Networks', () => {
         }
       ] as unknown as CaipNetwork[]
     }
-    
+
     ChainController.initialize([limitedEvmAdapter], requestedCaipNetworks, {
       connectionControllerClient,
       networkControllerClient
     })
-    
+
     OptionsController.setEnableNetworkSwitch(true)
     OptionsController.setAllowUnsupportedChain(false)
-    
+
     ConnectionController.setWcBasic(false)
-    
+
     const arbitrumCaipNetwork = requestedCaipNetworks.find(n => n.id === 42161) as CaipNetwork
     ChainController.setActiveCaipNetwork(arbitrumCaipNetwork)
-    
+
     expect(showUnsupportedChainUISpy).toHaveBeenCalled()
-    
+
     showUnsupportedChainUISpy.mockRestore()
   })
 
   it('should not show UnsupportedChain UI when allowUnsupportedChain is true', async () => {
     const showUnsupportedChainUISpy = vi.spyOn(ChainController, 'showUnsupportedChainUI')
-    
+
     // Setup limited network support
     const limitedEvmAdapter = {
       namespace: ConstantsUtil.CHAIN.EVM,
@@ -555,20 +555,20 @@ describe('Unsupported Networks', () => {
         }
       ] as unknown as CaipNetwork[]
     }
-    
+
     ChainController.initialize([limitedEvmAdapter], requestedCaipNetworks, {
       connectionControllerClient,
       networkControllerClient
     })
-    
+
     OptionsController.setEnableNetworkSwitch(true)
     OptionsController.setAllowUnsupportedChain(true)
-    
+
     const arbitrumCaipNetwork = requestedCaipNetworks.find(n => n.id === 42161) as CaipNetwork
     await ChainController.switchActiveNetwork(arbitrumCaipNetwork)
-    
+
     expect(showUnsupportedChainUISpy).not.toHaveBeenCalled()
-    
+
     showUnsupportedChainUISpy.mockRestore()
   })
 })
@@ -579,9 +579,9 @@ describe('Switching During Pending Transactions', () => {
       connectionControllerClient,
       networkControllerClient
     })
-    
+
     const resetSendSpy = vi.spyOn(SendController, 'resetSend')
-    
+
     SendController.setToken({
       name: 'Ethereum',
       symbol: 'ETH',
@@ -594,17 +594,17 @@ describe('Switching During Pending Transactions', () => {
     } as Balance)
     SendController.setTokenAmount(0.1)
     SendController.setReceiverAddress('0x123')
-    
+
     ChainController.setActiveCaipNetwork(mainnetCaipNetwork)
-    
+
     expect(resetSendSpy).toHaveBeenCalled()
-    
+
     resetSendSpy.mockRestore()
   })
-  
+
   it('should reset send state when setting active CAIP network directly', async () => {
     const resetSendSpy = vi.spyOn(SendController, 'resetSend')
-    
+
     SendController.setToken({
       name: 'Ethereum',
       symbol: 'ETH',
@@ -616,17 +616,17 @@ describe('Switching During Pending Transactions', () => {
       }
     } as Balance)
     SendController.setTokenAmount(0.1)
-    
+
     ChainController.setActiveCaipNetwork(mainnetCaipNetwork)
-    
+
     expect(resetSendSpy).toHaveBeenCalled()
-    
+
     resetSendSpy.mockRestore()
   })
-  
+
   it('should reset send state when disconnecting with pending transaction', async () => {
     const resetSendSpy = vi.spyOn(SendController, 'resetSend')
-    
+
     SendController.setToken({
       name: 'Ethereum',
       symbol: 'ETH',
@@ -638,13 +638,13 @@ describe('Switching During Pending Transactions', () => {
       }
     } as Balance)
     SendController.setTokenAmount(0.1)
-    
+
     const disconnectSpy = vi.spyOn(connectionControllerClient, 'disconnect').mockResolvedValue()
-    
+
     await ChainController.disconnect()
-    
+
     expect(resetSendSpy).toHaveBeenCalled()
-    
+
     resetSendSpy.mockRestore()
     disconnectSpy.mockRestore()
   })
@@ -653,88 +653,91 @@ describe('Switching During Pending Transactions', () => {
 describe('Race Conditions', () => {
   it('should handle multiple simultaneous network switch requests', async () => {
     const delayedNetworkClient = {
-      switchCaipNetwork: vi.fn().mockImplementation(() => new Promise(resolve => 
-        setTimeout(resolve, 50)
-      )),
+      switchCaipNetwork: vi
+        .fn()
+        .mockImplementation(() => new Promise(resolve => setTimeout(resolve, 50))),
       getApprovedCaipNetworksData: async () =>
         Promise.resolve({ approvedCaipNetworkIds: [], supportsAllNetworks: false })
     }
-    
+
     const evmAdapterWithDelay = {
       namespace: ConstantsUtil.CHAIN.EVM,
       connectionControllerClient,
       networkControllerClient: delayedNetworkClient,
       caipNetworks: [mainnetCaipNetwork]
     }
-    
+
     ChainController.initialize([evmAdapterWithDelay], requestedCaipNetworks, {
       connectionControllerClient,
       networkControllerClient: delayedNetworkClient
     })
-    
+
     const arbitrumCaipNetwork = requestedCaipNetworks.find(n => n.id === 42161) as CaipNetwork
     const avaxCaipNetwork = requestedCaipNetworks.find(n => n.id === 43114) as CaipNetwork
-    
+
     ChainController.state.activeCaipNetwork = mainnetCaipNetwork
-    
-    const getActiveSpy = vi.spyOn(ChainController, 'getActiveCaipNetwork')
+
+    const getActiveSpy = vi
+      .spyOn(ChainController, 'getActiveCaipNetwork')
       .mockImplementation(() => avaxCaipNetwork)
-    
+
     const promise1 = ChainController.switchActiveNetwork(arbitrumCaipNetwork)
     const promise2 = ChainController.switchActiveNetwork(avaxCaipNetwork)
-    
+
     await Promise.all([promise1, promise2])
-    
+
     expect(delayedNetworkClient.switchCaipNetwork).toHaveBeenCalledTimes(2)
     expect(delayedNetworkClient.switchCaipNetwork).toHaveBeenNthCalledWith(1, arbitrumCaipNetwork)
     expect(delayedNetworkClient.switchCaipNetwork).toHaveBeenNthCalledWith(2, avaxCaipNetwork)
-    
+
     expect(ChainController.getActiveCaipNetwork()).toEqual(avaxCaipNetwork)
-    
+
     getActiveSpy.mockRestore()
   })
-  
+
   it('should handle when first request fails but second succeeds', async () => {
     const conditionalNetworkClient = {
-      switchCaipNetwork: vi.fn()
+      switchCaipNetwork: vi
+        .fn()
         .mockImplementationOnce(() => Promise.reject(new Error('Network switch failed')))
         .mockImplementationOnce(() => Promise.resolve()),
       getApprovedCaipNetworksData: async () =>
         Promise.resolve({ approvedCaipNetworkIds: [], supportsAllNetworks: false })
     }
-    
+
     const evmAdapterWithConditional = {
       namespace: ConstantsUtil.CHAIN.EVM,
       connectionControllerClient,
       networkControllerClient: conditionalNetworkClient,
       caipNetworks: [mainnetCaipNetwork]
     }
-    
+
     ChainController.initialize([evmAdapterWithConditional], requestedCaipNetworks, {
       connectionControllerClient,
       networkControllerClient: conditionalNetworkClient
     })
-    
+
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    
+
     const arbitrumCaipNetwork = requestedCaipNetworks.find(n => n.id === 42161) as CaipNetwork
     const avaxCaipNetwork = requestedCaipNetworks.find(n => n.id === 43114) as CaipNetwork
-    
+
     ChainController.state.activeCaipNetwork = mainnetCaipNetwork
-    
-    const getActiveSpy = vi.spyOn(ChainController, 'getActiveCaipNetwork')
+
+    const getActiveSpy = vi
+      .spyOn(ChainController, 'getActiveCaipNetwork')
       .mockImplementation(() => avaxCaipNetwork)
-    
+
     const promise1 = ChainController.switchActiveNetwork(arbitrumCaipNetwork).catch(() => {})
     await new Promise(resolve => setTimeout(resolve, 10))
     const promise2 = ChainController.switchActiveNetwork(avaxCaipNetwork)
-    
+
     await Promise.all([promise1, promise2])
-    
+
     expect(conditionalNetworkClient.switchCaipNetwork).toHaveBeenCalledTimes(2)
-    
+
     expect(ChainController.getActiveCaipNetwork()).toEqual(avaxCaipNetwork)
-    
+
     consoleSpy.mockRestore()
     getActiveSpy.mockRestore()
   })
