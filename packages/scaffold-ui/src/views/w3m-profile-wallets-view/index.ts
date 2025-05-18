@@ -54,10 +54,16 @@ type DisplayConnectionsParams = {
 const CHARS_START = 4
 const CHARS_END = 6
 
+const ICONS = {
+  eip155: 'ethereum-black',
+  solana: 'solana-black',
+  bip122: 'bitcoin-black'
+} as Record<ChainNamespace, string>
+
 const NAMESPACE_PROFILE_TABS = [
-  { namespace: 'eip155', icon: 'ethereum-black', label: 'EVM' },
-  { namespace: 'solana', icon: 'solana-black', label: 'Solana' },
-  { namespace: 'bitcoin', icon: 'bitcoin-black', label: 'Bitcoin' }
+  { namespace: 'eip155', icon: ICONS['eip155'], label: 'EVM' },
+  { namespace: 'solana', icon: ICONS['solana'], label: 'Solana' },
+  { namespace: 'bip122', icon: ICONS['bip122'], label: 'Bitcoin' }
 ] as const
 
 @customElement('w3m-profile-wallets-view')
@@ -193,7 +199,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     return html`
       <wui-flex alignItems="center" columnGap="3xs">
-        <wui-icon name="ethereum-black" size="lg"></wui-icon>
+        <wui-icon name=${ICONS[this.namespace as ChainNamespace]} size="lg"></wui-icon>
         <wui-text color="fg-200" variant="small-400">
           Wallet${totalConnections > 1 ? 's' : ''}
         </wui-text>

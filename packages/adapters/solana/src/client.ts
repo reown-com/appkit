@@ -405,7 +405,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
           throw new Error('Connector not found')
         }
 
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
+        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), connectorId)) {
           this.emit('accountChanged', {
             address,
             chainId: connection.caipNetwork?.id,
@@ -520,7 +520,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
         if (account) {
           this.emit('accountChanged', {
             address: account.address,
-            chainId: Number(lastConnection.caipNetwork?.id ?? 1),
+            chainId: lastConnection.caipNetwork?.id,
             connector: newConnector
           })
         }

@@ -1,8 +1,10 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { type AppKit, type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type CaipAddress, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, StorageUtil } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
@@ -16,10 +18,9 @@ import type { BitcoinConnector } from './utils/BitcoinConnector.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
-  private eventsToUnbind: (() => void)[] = []
   private api: BitcoinApi.Interface
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
-
+  private universalProvider: UniversalProvider | undefined = undefined
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
       namespace: ConstantsUtil.CHAIN.BITCOIN,
@@ -41,16 +42,51 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    this.connector = connector
-    this.bindEvents(this.connector)
-
-    const address = await connector.connect()
-
     const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
 
     if (!chain) {
       throw new Error('The connector does not support any of the requested chains')
     }
+
+    this.connector = connector
+
+    const connection = this.connections.find(c => c.connectorId === connector.id)
+
+    if (connection) {
+      const [account] = connection.accounts
+
+      if (account) {
+        this.emit('accountChanged', {
+          address: account.address,
+          chainId: Number(connection.caipNetwork?.id ?? 1),
+          connector
+        })
+
+        return {
+          id: connector.id,
+          type: connector.type,
+          address: account.address,
+          chainId: chain.id,
+          provider: connector.provider
+        }
+      }
+    }
+
+    const address = await connector.connect()
+
+    this.listenProviderEvents(this.connector)
+
+    this.emit('accountChanged', {
+      address,
+      chainId: chain.id,
+      connector
+    })
+
+    this.addConnection({
+      connectorId: connector.id,
+      accounts: [{ address }],
+      caipNetwork: chain
+    })
 
     return {
       id: connector.id,
@@ -130,6 +166,81 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
   }
 
+  public async syncConnections({
+    connectToFirstConnector,
+    caipNetwork,
+    getConnectorStorageInfo
+  }: AdapterBlueprint.SyncConnectionsParams) {
+    await Promise.allSettled(
+      this.connectors
+        .filter(c => {
+          const { isDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
+
+          return !isDisconnected && hasConnected
+        })
+        .map(async connector => {
+          if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+            const { accounts } = this.getWalletConnectAddresses()
+
+            if (accounts.length > 0) {
+              this.addConnection({
+                connectorId: connector.id,
+                accounts,
+                caipNetwork
+              })
+            }
+
+            return
+          }
+
+          const address = await connector.connect()
+
+          const chain = connector.chains.find(c => c.id === caipNetwork?.id) || connector.chains[0]
+
+          if (!chain) {
+            throw new Error('The connector does not support any of the requested chains')
+          }
+
+          if (address) {
+            this.listenProviderEvents(connector)
+            this.addConnection({
+              connectorId: connector.id,
+              accounts: [{ address }],
+              caipNetwork
+            })
+          }
+        })
+    )
+
+    if (connectToFirstConnector) {
+      this.chooseFirstConnectionAndEmit()
+    }
+  }
+
+  public async disconnectAll() {
+    const connections = await Promise.all(
+      this.connections.map(async connection => {
+        const connector = this.connectors.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.id, connection.connectorId)
+        )
+
+        if (!connector) {
+          throw new Error('Connector not found')
+        }
+
+        await this.disconnect({
+          id: connector.id,
+          provider: connector.provider,
+          providerType: connector.type
+        })
+
+        return connection
+      })
+    )
+
+    return { connections }
+  }
+
   override async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
@@ -165,7 +276,37 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     } else if (this.connector) {
       await this.connector.disconnect()
     }
-    this.unbindEvents()
+
+    const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))
+
+    if (!connector) {
+      throw new Error('BitcoinAdapter:disconnect - connector is undefined')
+    }
+
+    this.removeProviderListeners(connector.id)
+    this.deleteConnection(connector.id)
+
+    if (this.connections.length === 0) {
+      this.emit('disconnect')
+    } else {
+      const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
+
+      if (lastConnection) {
+        const [account] = lastConnection.accounts
+
+        const newConnector = this.connectors.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
+        )
+
+        if (account) {
+          this.emit('accountChanged', {
+            address: account.address,
+            chainId: lastConnection.caipNetwork?.id,
+            connector: newConnector
+          })
+        }
+      }
+    }
   }
 
   override async getBalance(
@@ -298,45 +439,133 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
     return Promise.resolve({})
   }
+
   // -- Private ------------------------------------------ //
-  private bindEvents(connector: BitcoinConnector) {
-    this.unbindEvents()
+  private providerHandlers: Record<
+    string,
+    {
+      disconnect: () => void
+      accountsChanged: (accounts: string[]) => void
+      chainChanged: (chainId: string) => void
+      connector: BitcoinConnector
+    } | null
+  > = {}
 
-    const accountsChanged = (data: string[]) => {
-      const [newAccount] = data
-      if (newAccount) {
-        this.emit('accountChanged', {
-          address: newAccount
-        })
-      }
-    }
-    connector.on('accountsChanged', accountsChanged)
-    this.eventsToUnbind.push(() => connector.removeListener('accountsChanged', accountsChanged))
-
-    const chainChanged = async (data: string) => {
-      const address = await this.connect({
-        id: connector.id,
-        chainId: data,
-        type: ''
-      })
-      this.emit('switchNetwork', { chainId: data, address: address.address })
-    }
-    connector.on('chainChanged', chainChanged)
-    this.eventsToUnbind.push(() => connector.removeListener('chainChanged', chainChanged))
+  private listenProviderEvents(connector: BitcoinConnector) {
+    this.removeProviderListeners(connector.id)
 
     const disconnect = () => {
-      this.emit('disconnect')
+      this.removeProviderListeners(connector.id)
+      this.deleteConnection(connector.id)
+
+      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), connector.id)) {
+        this.chooseFirstConnectionAndEmit()
+      }
+
+      if (this.connections.length === 0) {
+        this.emit('disconnect')
+      }
     }
-    connector.on('disconnect', disconnect)
-    this.eventsToUnbind.push(() => connector.removeListener('disconnect', disconnect))
+    const accountsChanged = (accounts: string[]) => {
+      if (accounts.length > 0) {
+        const connection = this.connections.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
+        )
+
+        if (!connection) {
+          throw new Error('Connection not found')
+        }
+
+        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), connector.id)) {
+          this.emit('accountChanged', {
+            address: accounts[0] as string,
+            chainId: connection.caipNetwork?.id,
+            connector
+          })
+        }
+
+        this.addConnection({
+          connectorId: connector.id,
+          accounts: accounts.map(account => ({ address: account })),
+          caipNetwork: connection?.caipNetwork
+        })
+      } else {
+        disconnect()
+      }
+    }
+    const chainChanged = async (chainId: string) => {
+      const { address } = await this.connect({
+        id: connector.id,
+        chainId,
+        type: ''
+      })
+
+      const chain = connector.chains.find(c => c.id === chainId) || connector.chains[0]
+
+      this.addConnection({
+        connectorId: connector.id,
+        accounts: [{ address }],
+        caipNetwork: chain
+      })
+
+      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connector.id)) {
+        this.emit('switchNetwork', { chainId, address })
+      }
+    }
+
+    if (!this.providerHandlers[connector.id]) {
+      connector.on('accountsChanged', accountsChanged)
+      connector.on('chainChanged', chainChanged)
+      connector.on('disconnect', disconnect)
+
+      this.providerHandlers[connector.id] = {
+        connector,
+        disconnect,
+        accountsChanged,
+        chainChanged
+      }
+    }
   }
 
-  private unbindEvents() {
-    this.eventsToUnbind.forEach(unsubscribe => unsubscribe())
-    this.eventsToUnbind = []
+  private removeProviderListeners(connectorId: string) {
+    if (this.providerHandlers[connectorId]) {
+      const { connector, disconnect, accountsChanged, chainChanged } =
+        this.providerHandlers[connectorId]
+
+      connector.removeListener('disconnect', disconnect)
+      connector.removeListener('accountsChanged', accountsChanged)
+      connector.removeListener('chainChanged', chainChanged)
+
+      this.providerHandlers[connectorId] = null
+    }
+  }
+
+  private chooseFirstConnectionAndEmit() {
+    const firstConnection = this.connections.find(c => {
+      const hasAccounts = c.accounts.length > 0
+      const hasConnector = this.connectors.some(connector =>
+        HelpersUtil.isLowerCaseMatch(connector.id, c.connectorId)
+      )
+
+      return hasAccounts && hasConnector
+    })
+
+    if (firstConnection) {
+      const [account] = firstConnection.accounts
+      const connector = this.connectors.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.id, firstConnection.connectorId)
+      )
+
+      this.emit('accountChanged', {
+        address: account?.address as string,
+        chainId: firstConnection.caipNetwork?.id,
+        connector
+      })
+    }
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    this.universalProvider = universalProvider
     this.addConnector(
       new BitcoinWalletConnectConnector({
         provider: universalProvider,
@@ -344,6 +573,43 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
       })
     )
+  }
+
+  private getWalletConnectAddresses() {
+    const accounts = this.universalProvider?.session?.namespaces?.['bip122']?.accounts
+      ?.map(account => {
+        const { address, chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
+
+        return { address, chainId }
+      })
+      .filter((address, index, self) => self.indexOf(address) === index) as {
+      address: string
+      chainId: string
+    }[]
+
+    const addedAccounts = new Set()
+
+    const deduplicatedAccounts = accounts.filter(account => {
+      if (addedAccounts.has(account.address)) {
+        return false
+      }
+
+      addedAccounts.add(account.address)
+
+      return true
+    })
+
+    if (deduplicatedAccounts.length > 0) {
+      return {
+        accounts: deduplicatedAccounts.map(account => ({ address: account.address })),
+        chainId: accounts[0]?.chainId
+      }
+    }
+
+    return {
+      accounts: [],
+      chainId: undefined
+    }
   }
 }
 
