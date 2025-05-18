@@ -12,7 +12,7 @@ describe('Bitcoin Adapter Example Test', () => {
 
   describe('connect', () => {
     it('should connect using SatsConnect', async () => {
-      const { adapter, satsConnectProvider } = BitcoinFixtures.satsConnectConnection()
+      const { adapter, satsConnectProvider } = BitcoinFixtures['satsConnectConnection']()
       
       const result = await adapter.connect({
         id: 'satsConnect',
@@ -30,7 +30,7 @@ describe('Bitcoin Adapter Example Test', () => {
     })
     
     it('should connect using WalletConnect', async () => {
-      const { adapter, provider } = BitcoinFixtures.walletConnectConnection()
+      const { adapter, provider } = BitcoinFixtures['walletConnectConnection']()
       
       await adapter.setUniversalProvider(provider)
       await adapter.connectWalletConnect()

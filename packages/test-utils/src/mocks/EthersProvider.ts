@@ -5,7 +5,7 @@ import { TestConstants } from '../constants/TestConstants.js'
 /**
  * Mock Ethers JsonRpcProvider
  */
-export function mockEthersJsonRpcProvider(overrides = {}) {
+export function mockEthersJsonRpcProvider(overrides: Record<string, any> = {}): Record<string, any> {
   return {
     getBalance: vi.fn().mockResolvedValue(BigInt(1000000000000000000)), // 1 ETH in wei
     estimateGas: vi.fn().mockResolvedValue(BigInt(21000)),
@@ -25,7 +25,7 @@ export function mockEthersJsonRpcProvider(overrides = {}) {
 /**
  * Mock Ethers BrowserProvider
  */
-export function mockEthersBrowserProvider(overrides = {}) {
+export function mockEthersBrowserProvider(overrides: Record<string, any> = {}): Record<string, any> {
   return {
     on: vi.fn(),
     removeListener: vi.fn(),
@@ -43,7 +43,7 @@ export function mockEthersBrowserProvider(overrides = {}) {
 /**
  * Mock Auth connector for Ethers testing
  */
-export function mockAuthConnector(overrides = {}) {
+export function mockAuthConnector(overrides: Record<string, any> = {}): Record<string, any> {
   return {
     connect: vi.fn().mockResolvedValue({
       address: TestConstants.accounts.evm[0].address,

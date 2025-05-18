@@ -35,25 +35,25 @@ export namespace TestConstants {
 }
 
 interface TestConstantsType {
-  accounts: {
-    evm: Array<TestConstants.EvmAccount>;
-    solana: Array<TestConstants.SolanaAccount>;
-    bitcoin: Array<TestConstants.BitcoinAccount>;
+  readonly accounts: {
+    readonly evm: ReadonlyArray<TestConstants.EvmAccount>;
+    readonly solana: ReadonlyArray<TestConstants.SolanaAccount>;
+    readonly bitcoin: ReadonlyArray<TestConstants.BitcoinAccount>;
   };
-  networks: {
-    evm: any[];
-    solana: any[];
-    bitcoin: any[];
+  readonly networks: {
+    readonly evm: readonly any[];
+    readonly solana: readonly any[];
+    readonly bitcoin: readonly any[];
   };
-  balances: {
-    evm: TestConstants.Balance;
-    solana: TestConstants.Balance;
-    bitcoin: TestConstants.Balance;
+  readonly balances: {
+    readonly evm: TestConstants.Balance;
+    readonly solana: TestConstants.Balance;
+    readonly bitcoin: TestConstants.Balance;
   };
-  signatures: {
-    evm: string;
-    solana: string;
-    bitcoin: string;
+  readonly signatures: {
+    readonly evm: string;
+    readonly solana: string;
+    readonly bitcoin: string;
   };
 }
 

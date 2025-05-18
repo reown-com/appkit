@@ -6,7 +6,7 @@ import { mockUniversalProvider } from './UniversalProvider.js'
 /**
  * Mock Bitcoin connector interfaces for testing
  */
-export function mockBitcoinConnector(overrides = {}) {
+export function mockBitcoinConnector(overrides: Record<string, any> = {}): Record<string, any> {
   return {
     chain: 'bip122',
     getAccountAddresses: vi.fn().mockResolvedValue([
@@ -47,7 +47,7 @@ export function mockBitcoinConnector(overrides = {}) {
 /**
  * Mock SatsConnect provider for Bitcoin testing
  */
-export function mockSatsConnectProvider(overrides = {}) {
+export function mockSatsConnectProvider(overrides: Record<string, any> = {}): Record<string, any> {
   return {
     provider: {
       connect: vi.fn().mockResolvedValue({

@@ -6,7 +6,7 @@ import { TestConstants } from '../constants/TestConstants.js'
 /**
  * Mock Solana wallet standard provider
  */
-export function mockSolanaWalletStandardProvider(overrides = {}) {
+export function mockSolanaWalletStandardProvider(overrides: Record<string, any> = {}): Record<string, any> {
   return {
     connect: vi.fn().mockResolvedValue({
       publicKey: new PublicKey(TestConstants.accounts.solana[0].address)
@@ -33,7 +33,7 @@ export function mockSolanaWalletStandardProvider(overrides = {}) {
 /**
  * Mock Solana Connection for testing
  */
-export function mockSolanaConnection(overrides = {}) {
+export function mockSolanaConnection(overrides: Record<string, any> = {}): Record<string, any> {
   return {
     getBalance: vi.fn().mockResolvedValue(1000000000n), // 1 SOL in lamports
     getBlockHeight: vi.fn().mockResolvedValue(123456789),

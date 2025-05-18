@@ -8,7 +8,7 @@ import { mockBitcoinSession, mockEvmSession, mockSolanaSession, mockUniversalPro
 /**
  * Common test fixtures for EVM adapters
  */
-export const EvmFixtures = {
+export const EvmFixtures: Record<string, () => Record<string, any>> = {
   /**
    * Setup for testing EVM wallet connection
    */
@@ -71,7 +71,7 @@ export const EvmFixtures = {
 /**
  * Common test fixtures for Bitcoin adapters
  */
-export const BitcoinFixtures = {
+export const BitcoinFixtures: Record<string, () => Record<string, any>> = {
   /**
    * Setup for testing Bitcoin wallet connection
    */
@@ -108,7 +108,7 @@ export const BitcoinFixtures = {
 /**
  * Common test fixtures for Solana adapters
  */
-export const SolanaFixtures = {
+export const SolanaFixtures: Record<string, () => Record<string, any>> = {
   /**
    * Setup for testing Solana wallet connection
    */
