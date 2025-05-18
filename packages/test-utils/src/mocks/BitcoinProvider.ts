@@ -34,11 +34,11 @@ export function mockBitcoinConnector(overrides = {}) {
     on: vi.fn(),
     removeListener: vi.fn(),
     emit: vi.fn(),
-    chains: [],
+    chains: [] as string[],
     id: 'walletConnect',
     name: 'WalletConnect',
     type: 'WALLET_CONNECT',
-    imageId: undefined,
+    imageId: undefined as string | undefined,
     provider: mockUniversalProvider(),
     ...overrides
   }

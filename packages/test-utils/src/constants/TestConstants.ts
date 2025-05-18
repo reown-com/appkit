@@ -6,7 +6,58 @@ import { bitcoin, bitcoinTestnet, mainnet, polygon, solana } from '@reown/appkit
 /**
  * Shared test constants for all adapters
  */
-export const TestConstants = {
+
+// Define types for TestConstants
+export namespace TestConstants {
+  export interface EvmAccount {
+    address: string;
+    type: string;
+  }
+  
+  export interface SolanaAccount {
+    address: string;
+    publicKey: PublicKey;
+    type: string;
+  }
+  
+  export interface BitcoinAccount {
+    address: string;
+    publicKey: string;
+    path: string;
+    purpose: string;
+    type: string;
+  }
+  
+  export interface Balance {
+    balance: string;
+    symbol: string;
+  }
+}
+
+interface TestConstantsType {
+  accounts: {
+    evm: Array<TestConstants.EvmAccount>;
+    solana: Array<TestConstants.SolanaAccount>;
+    bitcoin: Array<TestConstants.BitcoinAccount>;
+  };
+  networks: {
+    evm: any[];
+    solana: any[];
+    bitcoin: any[];
+  };
+  balances: {
+    evm: TestConstants.Balance;
+    solana: TestConstants.Balance;
+    bitcoin: TestConstants.Balance;
+  };
+  signatures: {
+    evm: string;
+    solana: string;
+    bitcoin: string;
+  };
+}
+
+export const TestConstants: TestConstantsType = {
   accounts: {
     evm: [
       {
@@ -66,32 +117,3 @@ export const TestConstants = {
     bitcoin: 'base64signature'
   }
 } as const
-
-/**
- * Type definitions for TestConstants
- */
-export namespace TestConstants {
-  export type EvmAccount = {
-    address: string
-    type: string
-  }
-  
-  export type SolanaAccount = {
-    address: string
-    publicKey: PublicKey
-    type: string
-  }
-  
-  export type BitcoinAccount = {
-    address: string
-    publicKey: string
-    path: string
-    purpose: string
-    type: string
-  }
-  
-  export type Balance = {
-    balance: string
-    symbol: string
-  }
-}
