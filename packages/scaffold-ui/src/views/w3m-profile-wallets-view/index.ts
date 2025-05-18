@@ -358,7 +358,8 @@ export class W3mProfileWalletsView extends LitElement {
       storageConnectionsWithCurrentActiveConnectors
     )
 
-    const hasConnections = connections.length > 0 || dedupedStorageConnections.length > 0
+    const hasConnections =
+      Boolean(this.caipAddress) || connections.length > 0 || dedupedStorageConnections.length > 0
 
     return { hasConnections, connections, storageConnections: dedupedStorageConnections }
   }

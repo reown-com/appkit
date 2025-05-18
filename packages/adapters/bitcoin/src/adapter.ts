@@ -565,6 +565,19 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    universalProvider.on('connect', () => {
+      const { accounts, chainId } = this.getWalletConnectAddresses()
+
+      const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
+
+      if (accounts.length > 0) {
+        this.addConnection({
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+          accounts: accounts.map(account => ({ address: account.address })),
+          caipNetwork
+        })
+      }
+    })
     this.universalProvider = universalProvider
     this.addConnector(
       new BitcoinWalletConnectConnector({
