@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
-
 import { W3mFrameProvider } from '../../src/W3mFrameProvider'
 
+type MockTimeoutReason = 'TIMEOUT' | 'USER_CLOSED' | 'ERROR'
+
 describe('W3mFrameProvider - Authentication Security', () => {
-  const mockTimeout = vi.fn<(reason: EmbeddedWalletTimeoutReason) => void>()
+  const mockTimeout = vi.fn<(reason: MockTimeoutReason) => void>()
   const projectId = 'test-project-id'
   let provider: W3mFrameProvider
   let abortController: AbortController

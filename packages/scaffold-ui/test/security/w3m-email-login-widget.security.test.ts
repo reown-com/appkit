@@ -138,11 +138,13 @@ describe('W3mEmailLoginWidget - Security', () => {
         
         if (mockAuthConnector.provider.connectEmail.mock.calls.length > 0) {
           const lastCall = mockAuthConnector.provider.connectEmail.mock.calls[mockAuthConnector.provider.connectEmail.mock.calls.length - 1]
-          const emailParam = lastCall[0].email
-          
-          expect(emailParam).not.toContain('<script>')
-          expect(emailParam).not.toContain('javascript:')
-          expect(emailParam).not.toContain("' OR 1=1 --")
+          if (lastCall && lastCall[0]) {
+            const emailParam = lastCall[0].email
+            
+            expect(emailParam).not.toContain('<script>')
+            expect(emailParam).not.toContain('javascript:')
+            expect(emailParam).not.toContain("' OR 1=1 --")
+          }
         }
         
         mockAuthConnector.provider.connectEmail.mockClear()

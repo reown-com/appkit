@@ -106,7 +106,10 @@ describe('CloudAuthSIWX - Token Handling Security', () => {
       const maliciousChainIds = [
         'eip155:1;DROP TABLE users',
         'eip155:1 OR 1=1',
-        'eip155:<script>alert(1)</script>',
+        'eip155:<script>alert(1)</script>'
+      ] as unknown as `eip155:${string}`[]
+      
+      const invalidFormatChainIds = [
         'javascript:alert(1)',
         '"eip155:1"'
       ]
@@ -116,6 +119,16 @@ describe('CloudAuthSIWX - Token Handling Security', () => {
           siwx.createMessage({
             accountAddress: '0x1234567890abcdef1234567890abcdef12345678',
             chainId: maliciousChainId
+          })
+        ).rejects.toThrow()
+      }
+      
+      for (const invalidChainId of invalidFormatChainIds) {
+        await expect(
+          siwx.createMessage({
+            accountAddress: '0x1234567890abcdef1234567890abcdef12345678',
+            // @ts-expect-error Testing invalid input intentionally
+            chainId: invalidChainId
           })
         ).rejects.toThrow()
       }

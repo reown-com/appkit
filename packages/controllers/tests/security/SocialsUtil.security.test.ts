@@ -79,9 +79,10 @@ describe('SocialsUtil - Social Login Security', () => {
         ' ',
         'unknown_provider',
         'google javascript:alert(1)'
-      ] as any[]
+      ]
 
       for (const provider of invalidProviders) {
+        // @ts-expect-error Testing invalid input intentionally
         await expect(connectSocial(provider)).rejects.toThrow()
       }
     })
@@ -130,9 +131,10 @@ describe('SocialsUtil - Social Login Security', () => {
         'javascript:alert(1)',
         '',
         ' '
-      ] as any[]
+      ]
 
       for (const provider of malformedProviders) {
+        // @ts-expect-error Testing invalid input intentionally
         await expect(executeSocialLogin(provider)).rejects.toThrow()
       }
     })
