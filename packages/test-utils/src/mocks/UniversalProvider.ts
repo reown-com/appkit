@@ -2,8 +2,6 @@ import type { SessionTypes } from '@walletconnect/types'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { vi } from 'vitest'
 
-import { bitcoin, solana } from '@reown/appkit/networks'
-
 import { TestConstants } from '../constants/TestConstants.js'
 
 /**
@@ -180,5 +178,5 @@ function mockBaseSession(
       capabilities: '{}'
     },
     ...replaces
-  }
+  } as SessionTypes.Struct
 }

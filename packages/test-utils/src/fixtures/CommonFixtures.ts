@@ -1,7 +1,3 @@
-import { vi } from 'vitest'
-
-import { bitcoin, mainnet, solana } from '@reown/appkit/networks'
-
 import { TestConstants } from '../constants/TestConstants.js'
 import { createMockBitcoinAdapter, createMockEvmAdapter, createMockSolanaAdapter } from '../mocks/MockAdapter.js'
 import { mockAuthConnector, mockEthersBrowserProvider, mockEthersJsonRpcProvider } from '../mocks/EthersProvider.js'

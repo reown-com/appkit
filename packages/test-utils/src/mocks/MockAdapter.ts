@@ -2,7 +2,6 @@ import { vi } from 'vitest'
 
 import { Emitter } from '@reown/appkit-common'
 import type { AdapterBlueprint } from '@reown/appkit/adapters'
-import { bitcoin, mainnet, solana } from '@reown/appkit/networks'
 
 import { TestConstants } from '../constants/TestConstants.js'
 
@@ -44,7 +43,7 @@ export function createMockEvmAdapter(overrides = {}) {
     syncConnection: vi.fn().mockResolvedValue({
       id: 'evm-connector',
       type: 'EXTERNAL',
-      chainId: mainnet.caipNetworkId,
+      chainId: 'eip155:1', // Use hardcoded value instead of mainnet.caipNetworkId
       address: TestConstants.accounts.evm[0].address
     }),
     getBalance: vi.fn().mockResolvedValue(TestConstants.balances.evm),
@@ -66,7 +65,7 @@ export function createMockBitcoinAdapter(overrides = {}) {
     syncConnection: vi.fn().mockResolvedValue({
       id: 'bip122-connector',
       type: 'EXTERNAL',
-      chainId: bitcoin.caipNetworkId,
+      chainId: 'bip122:000000000019d6689c085ae165831e93', // Use hardcoded value instead of bitcoin.caipNetworkId
       address: TestConstants.accounts.bitcoin[0].address
     }),
     getBalance: vi.fn().mockResolvedValue(TestConstants.balances.bitcoin),
@@ -85,7 +84,7 @@ export function createMockSolanaAdapter(overrides = {}) {
     syncConnection: vi.fn().mockResolvedValue({
       id: 'solana-connector',
       type: 'EXTERNAL',
-      chainId: solana.caipNetworkId,
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Use hardcoded value instead of solana.caipNetworkId
       address: TestConstants.accounts.solana[0].address
     }),
     getBalance: vi.fn().mockResolvedValue(TestConstants.balances.solana),

@@ -1,14 +1,14 @@
 import { vi } from 'vitest'
 
 import { ChainController, type ConnectionControllerClient, type NetworkControllerClient } from '@reown/appkit-controllers'
-import type { Chain } from '@reown/appkit/networks'
+import type { CaipNetwork } from '@reown/appkit-common'
 
 import { createMockBitcoinAdapter, createMockEvmAdapter, createMockSolanaAdapter } from '../mocks/MockAdapter.js'
 
 /**
  * Initialize ChainController with mock adapters for testing
  */
-export function setupChainController(networks: Chain[], namespace: string) {
+export function setupChainController(networks: CaipNetwork[], namespace: string) {
   let adapter
   
   switch (namespace) {
