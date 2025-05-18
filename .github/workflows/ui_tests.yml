@@ -48,6 +48,11 @@ on:
         required: false
         default: '{"shard":[1], "shardTotal":[1]}'
         type: string
+      build_trigger_type:
+        description: 'The type of event that triggered the build (e.g., push, pull_request, merge_group)'
+        required: false
+        default: ''
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -62,6 +67,10 @@ on:
       EIP155_PRIVATE_KEY:
         required: false
       SOLANA_PRIVATE_KEY:
+        required: false
+      PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID:
+        required: false
+      PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
         required: false
 
 jobs:
@@ -400,6 +409,46 @@ jobs:
       - name: Rename merged JSON report for clarity
         run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
+
+      - name: Determine Build Context for S3 Path
+        id: build_context
+        if: inputs.build_trigger_type != ''
+        run: |
+          TRIGGER="${{ inputs.build_trigger_type }}"
+          CONTEXT="unknown-trigger"
+          if [ "$TRIGGER" == "merge_group" ]; then
+            CONTEXT="merge-queue"
+          elif [ "$TRIGGER" == "pull_request" ]; then
+            CONTEXT="pull-request"
+          elif [ "$TRIGGER" == "push" ]; then # Could be push to main or other branches
+            if [ "${{ github.ref_name }}" == "main" ]; then
+              CONTEXT="push-main"
+            else
+              CONTEXT="push-branch-${{ github.ref_name }}"
+            fi
+          fi
+          echo "BUILD_CONTEXT=$CONTEXT" >> $GITHUB_ENV
+          echo "Derived context: $CONTEXT"
+
+      # TODO: Migrate to OIDC
+      - name: Configure AWS Credentials
+        if: inputs.build_trigger_type != '' # Also skip if not uploading
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Upload Merged JSON Report to S3
+        if: inputs.build_trigger_type != '' && always()
+        run: |
+          S3_BUCKET="reown.appkit.e2e.reports"
+          S3_PREFIX="appkit/playwright-results"
+          FILE_NAME="merged-test-results.json"
+          S3_KEY="${S3_PREFIX}/${{ env.BUILD_CONTEXT }}/${{ github.run_id }}-$(date +%s)-${FILE_NAME}"
+
+          echo "Uploading ${{ github.workspace }}/apps/laboratory/merged-test-results.json to s3://${S3_BUCKET}/${S3_KEY}"
+          aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}
 
       - name: Upload Merged HTML Report
         uses: actions/upload-artifact@v4
