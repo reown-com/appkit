@@ -2,7 +2,6 @@
 interface Options {
   baseUrl: string
   clientId: string | null
-  stagingUrl?: string
 }
 
 export interface RequestArguments {
@@ -11,7 +10,6 @@ export interface RequestArguments {
   params?: Record<string, string | undefined>
   cache?: RequestCache
   signal?: AbortSignal
-  useStagingUrl?: boolean
 }
 
 interface PostArguments extends RequestArguments {
@@ -35,22 +33,14 @@ async function fetchData(...args: Parameters<typeof fetch>) {
 export class FetchUtil {
   public baseUrl: Options['baseUrl']
   public clientId: Options['clientId']
-  public stagingUrl: Options['stagingUrl']
-  public constructor({ baseUrl, clientId, stagingUrl }: Options) {
+
+  public constructor({ baseUrl, clientId }: Options) {
     this.baseUrl = baseUrl
     this.clientId = clientId
-    this.stagingUrl = stagingUrl
   }
 
   public async get<T>({ headers, signal, cache, ...args }: RequestArguments) {
     const url = this.createUrl(args)
-    const response = await fetchData(url, { method: 'GET', headers, signal, cache })
-
-    return response.json() as T
-  }
-
-  public async getStaging<T>({ headers, signal, cache, ...args }: RequestArguments) {
-    const url = this.createUrl({ ...args, useStagingUrl: true })
     const response = await fetchData(url, { method: 'GET', headers, signal, cache })
 
     return response.json() as T
@@ -99,8 +89,8 @@ export class FetchUtil {
     return response.json() as T
   }
 
-  private createUrl({ path, params, useStagingUrl = false }: RequestArguments) {
-    const url = new URL(path, useStagingUrl ? this.stagingUrl : this.baseUrl)
+  private createUrl({ path, params }: RequestArguments) {
+    const url = new URL(path, this.baseUrl)
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value) {

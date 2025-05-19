@@ -36,8 +36,7 @@ const CUSTOM_DEEPLINK_WALLETS = {
 const baseUrl = CoreHelperUtil.getApiUrl()
 export const api = new FetchUtil({
   baseUrl,
-  clientId: null,
-  stagingUrl: CoreHelperUtil.getStagingApiUrl()
+  clientId: null
 })
 const entries = 40
 const recommendedEntries = 4
@@ -157,13 +156,9 @@ export const ApiController = {
   },
 
   async fetchProjectConfig() {
-    const sdkProperties = ApiController._getSdkProperties()
-    const response = await api.getStaging<ApiGetProjectConfigResponse>({
+    const response = await api.get<ApiGetProjectConfigResponse>({
       path: '/appkit/v1/config',
-      params: {
-        ...sdkProperties,
-        projectId: 'd92a356e9dcbe5989dfbed6450f0bc6f'
-      }
+      params: ApiController._getSdkProperties()
     })
 
     return response

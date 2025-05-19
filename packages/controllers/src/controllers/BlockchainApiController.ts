@@ -127,7 +127,7 @@ const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
 // -- State --------------------------------------------- //
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
-  api: new FetchUtil({ baseUrl, clientId: null, stagingUrl: CoreHelperUtil.getStagingApiUrl() }),
+  api: new FetchUtil({ baseUrl, clientId: null }),
   supportedChains: { http: [], ws: [] }
 })
 

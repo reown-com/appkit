@@ -67,17 +67,10 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
-  const [remoteFeatures, setRemoteFeatures] = useState<RemoteFeatures>(() => {
-    const remoteFeaturesObject = appKit?.remoteFeatures || {}
 
-    return {
-      swaps: remoteFeaturesObject.swaps ? [...remoteFeaturesObject.swaps] : undefined,
-      onramp: remoteFeaturesObject.onramp ? [...remoteFeaturesObject.onramp] : undefined,
-      email: remoteFeaturesObject.email,
-      socials: remoteFeaturesObject.socials ? [...remoteFeaturesObject.socials] : undefined,
-      activity: remoteFeaturesObject.activity
-    }
-  })
+  const [remoteFeatures, setRemoteFeatures] = useState<RemoteFeatures>(
+    initialConfig?.remoteFeatures || ConstantsUtil.DEFAULT_REMOTE_FEATURES
+  )
 
   function updateDraggingState(key: UniqueIdentifier, value: boolean) {
     setIsDraggingByKey(prev => ({
@@ -208,6 +201,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   function updateRemoteFeatures(newRemoteFeatures: Partial<RemoteFeatures>) {
     setRemoteFeatures(prev => {
       const newAppKitValue = { ...prev, ...newRemoteFeatures }
+
       appKit?.updateRemoteFeatures(newAppKitValue)
 
       urlStateUtils.updateURLWithState({ remoteFeatures: newAppKitValue })

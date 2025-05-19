@@ -15,8 +15,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 const baseUrl = CoreHelperUtil.getApiUrl()
 export const api = new FetchUtil({
   baseUrl,
-  clientId: null,
-  stagingUrl: CoreHelperUtil.getStagingApiUrl()
+  clientId: null
 })
 
 // -- Types --------------------------------------------- //
