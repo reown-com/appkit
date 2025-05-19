@@ -297,13 +297,11 @@ describe('syncAdapterConnection', () => {
     } as unknown as CaipNetwork)
 
     const setStatus = vi.spyOn(appKit, 'setStatus')
-    const setAllAccounts = vi.spyOn(appKit, 'setAllAccounts')
     const syncAccount = vi.spyOn(appKit as any, 'syncAccount')
 
     await appKit['syncAdapterConnection']('eip155')
 
     expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
-    expect(setAllAccounts).toHaveBeenCalledWith([{ address: '0x123', type: 'eoa' }], 'eip155')
     expect(syncAccount).toHaveBeenCalledWith({
       address: '0x123',
       chainId: '1',

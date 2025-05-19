@@ -4,7 +4,6 @@ import {
   ChainController,
   ConnectionController,
   EventsController,
-  ModalController,
   RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -48,7 +47,8 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.externalViewUnsubscribe.push(
       ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          RouterController.replace('Account')
+          RouterController.push('ProfileWallets')
         }
       }),
       ConnectionController.subscribeKey('connections', this.onConnectionsChange.bind(this))
