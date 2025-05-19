@@ -14,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show head commit message
+        env:
+          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          MESSAGE="DEBUG: Head commit message is: ${{ github.event.head_commit.message }}"
+          MESSAGE="DEBUG: Head commit message is: $HEAD_COMMIT_MESSAGE"
           echo "$MESSAGE"
 
   trigger-devin-docs-analysis:
