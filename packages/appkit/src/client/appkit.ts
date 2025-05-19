@@ -149,29 +149,6 @@ export class AppKit extends AppKitBaseClient {
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
 
-      const userAccounts = user.accounts?.map(account =>
-        CoreHelperUtil.createAccount(
-          namespace,
-          account.address,
-          account.type ||
-            (AccountController.state.preferredAccountTypes?.[
-              namespace
-            ] as W3mFrameTypes.AccountType) ||
-            OptionsController.state.defaultAccountTypes[namespace]
-        )
-      )
-
-      this.setAllAccounts(
-        userAccounts || [
-          CoreHelperUtil.createAccount(
-            namespace,
-            user.address,
-            (user.preferredAccountType as W3mFrameTypes.AccountType) || preferredAccountType
-          )
-        ],
-        namespace
-      )
-
       await provider.getSmartAccountEnabledNetworks()
       this.setLoading(false, namespace)
     })

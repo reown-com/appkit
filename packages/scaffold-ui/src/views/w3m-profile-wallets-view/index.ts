@@ -48,6 +48,7 @@ type DisplayConnectionsParams = {
   connections: Connection[]
   includeSeparator?: boolean
   forceReconnectOnSwitch?: boolean
+  isRecentConnections: boolean
 }
 
 // -- Constants ------------------------------------------ //
@@ -87,6 +88,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
   @state() private isDisconnecting = false
+  @state() private profileName: string | null | undefined = undefined
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -100,7 +102,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     this.namespace = firstNamespace
     this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
-
+    this.profileName = ChainController.getAccountData(this.namespace)?.profileName
     this.unsubscribe.push(
       ...[
         AccountController.subscribeKey('preferredAccountTypes', preferredAccountTypes => {
@@ -118,6 +120,7 @@ export class W3mProfileWalletsView extends LitElement {
     this.unsubscribeChainListener = ChainController.subscribeChainProp(
       'accountState',
       val => {
+        this.profileName = val?.profileName
         if (val?.caipAddress) {
           this.caipAddress = val.caipAddress
         }
@@ -259,7 +262,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     const { plainAddress, shouldShowLineSeparator } = this.getConnectedWalletData()
 
-    const { name, isAuth, icon, iconSize } = this.getAuthData(connectorId)
+    const { isAuth, icon, iconSize } = this.getAuthData(connectorId)
 
     const isSmartAccount =
       this.preferredAccountTypes?.[this.namespace] ===
@@ -276,7 +279,7 @@ export class W3mProfileWalletsView extends LitElement {
         tagLabel="Active"
         tagVariant="success"
         .description=${description}
-        .profileName=${name}
+        .profileName=${this.profileName}
         .loading=${this.isDisconnecting}
         .charsStart=${CHARS_START}
         .charsEnd=${CHARS_END}
@@ -329,7 +332,8 @@ export class W3mProfileWalletsView extends LitElement {
     return html`${this.displayConnections({
       connections,
       includeSeparator: false,
-      forceReconnectOnSwitch: false
+      forceReconnectOnSwitch: false,
+      isRecentConnections: false
     })}`
   }
 
@@ -398,7 +402,8 @@ export class W3mProfileWalletsView extends LitElement {
   private displayConnections({
     connections,
     includeSeparator = true,
-    forceReconnectOnSwitch = false
+    forceReconnectOnSwitch = false,
+    isRecentConnections
   }: DisplayConnectionsParams) {
     return connections
       .filter(connection => connection.accounts.length > 0)
@@ -426,8 +431,8 @@ export class W3mProfileWalletsView extends LitElement {
             <wui-inactive-profile-wallet-item
               address=${account.address}
               alt=${connection.connectorId}
-              buttonLabel="Switch"
-              buttonVariant="accent"
+              buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
+              buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
               imageSrc=${connectorImage}
               .icon=${icon}
               .iconSize=${iconSize}
@@ -470,7 +475,8 @@ export class W3mProfileWalletsView extends LitElement {
           ${this.displayConnections({
             connections: filteredStorageConnections,
             includeSeparator: true,
-            forceReconnectOnSwitch: true
+            forceReconnectOnSwitch: true,
+            isRecentConnections: true
           })}
         </wui-flex>
       </wui-flex>

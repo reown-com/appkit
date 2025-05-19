@@ -6,8 +6,6 @@ import type { Balance } from '@reown/appkit-common'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
-  AccountType,
-  AccountTypeMap,
   ConnectedWalletInfo,
   PreferredAccountTypes,
   SocialProvider,
@@ -24,7 +22,6 @@ export interface AccountControllerState {
   user?: User
   address?: string
   addressLabels: Map<string, string>
-  allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
   balanceLoading?: boolean
@@ -48,8 +45,7 @@ const state = proxy<AccountControllerState>({
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
-  addressLabels: new Map(),
-  allAccounts: []
+  addressLabels: new Map()
 })
 
 // -- Controller ---------------------------------------- //
@@ -166,10 +162,6 @@ export const AccountController = {
   },
   setShouldUpdateToAddress(address: string, chain: ChainNamespace | undefined) {
     ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
-  },
-
-  setAllAccounts<N extends ChainNamespace>(accounts: AccountTypeMap[N][], namespace: N) {
-    ChainController.setAccountProp('allAccounts', accounts, namespace)
   },
 
   addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {

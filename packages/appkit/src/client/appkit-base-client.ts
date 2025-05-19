@@ -437,8 +437,6 @@ export abstract class AppKitBaseClient {
         // eslint-disable-next-line no-warning-comments
         // TODO: remove this and use accountChanged event
         this.syncProvider({ ...res, chainNamespace: chainToUse })
-        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
-        this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
         StorageUtil.removeDisconnectedConnectorId(id, chainToUse)
@@ -828,7 +826,6 @@ export abstract class AppKitBaseClient {
       } else {
         this.syncAccountInfo(address, chainId, chainNamespace)
       }
-      this.syncAllAccounts(chainNamespace)
     })
   }
 
@@ -924,20 +921,6 @@ export abstract class AppKitBaseClient {
       })
 
       if (connection) {
-        const accounts = await adapter?.getAccounts({
-          namespace,
-          id: connector.id
-        })
-
-        if (accounts && accounts.accounts.length > 0) {
-          this.setAllAccounts(accounts.accounts, namespace)
-        } else {
-          this.setAllAccounts(
-            [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')],
-            namespace
-          )
-        }
-
         this.syncProvider({ ...connection, chainNamespace: namespace })
         await this.syncAccount({ ...connection, chainNamespace: namespace })
         this.setStatus('connected', namespace)
@@ -994,7 +977,6 @@ export abstract class AppKitBaseClient {
         )
         StorageUtil.addConnectedNamespace(chainNamespace)
 
-        this.syncWalletConnectAccounts(chainNamespace)
         await this.syncAccount({
           address,
           chainId,
@@ -1011,29 +993,6 @@ export abstract class AppKitBaseClient {
     await Promise.all(syncTasks)
   }
 
-  protected syncWalletConnectAccounts(chainNamespace: ChainNamespace) {
-    const addresses = this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts
-      ?.map(account => {
-        const { address } = ParseUtil.parseCaipAddress(account as CaipAddress)
-
-        return address
-      })
-      .filter((address, index, self) => self.indexOf(address) === index) as string[]
-
-    if (addresses) {
-      this.setAllAccounts<typeof chainNamespace>(
-        addresses.map(address =>
-          CoreHelperUtil.createAccount(
-            chainNamespace,
-            address,
-            chainNamespace === 'bip122' ? 'payment' : 'eoa'
-          )
-        ),
-        chainNamespace
-      )
-    }
-  }
-
   protected syncProvider({
     type,
     provider,
@@ -1045,21 +1004,6 @@ export abstract class AppKitBaseClient {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
     ConnectorController.setConnectorId(id, chainNamespace)
-  }
-
-  protected async syncAllAccounts(namespace: ChainNamespace) {
-    const connectorId = ConnectorController.getConnectorId(namespace)
-
-    if (!connectorId) {
-      return
-    }
-
-    const adapter = this.getAdapter(namespace)
-    const accounts = await adapter?.getAccounts({ namespace, id: connectorId })
-
-    if (accounts && accounts.accounts.length > 0) {
-      this.setAllAccounts(accounts.accounts, namespace)
-    }
   }
 
   protected async syncAccount(
@@ -1539,11 +1483,6 @@ export abstract class AppKitBaseClient {
     ChainController.setChainNetworkData(chainNamespace, { caipNetwork })
   }
 
-  public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
-    AccountController.setAllAccounts<typeof chain>(addresses, chain)
-    OptionsController.setHasMultipleAddresses(addresses?.length > 1)
-  }
-
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
     AccountController.setStatus(status, chain)
 
@@ -1701,13 +1640,21 @@ export abstract class AppKitBaseClient {
     const accountState = ChainController.getAccountData(namespace)
     const activeChain = ChainController.state.activeChain as ChainNamespace
     const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connections = namespace
+      ? (ConnectionController.state.connections.get(namespace) ?? [])
+      : []
+    const allAccounts = connections.flatMap(connection =>
+      connection.accounts.map(({ address }) =>
+        CoreHelperUtil.createAccount(namespace as ChainNamespace, address, 'eoa')
+      )
+    )
 
     if (!accountState) {
       return undefined
     }
 
     return {
-      allAccounts: accountState.allAccounts,
+      allAccounts,
       caipAddress: accountState.caipAddress,
       address: CoreHelperUtil.getPlainAddress(accountState.caipAddress),
       isConnected: Boolean(accountState.caipAddress),

@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
-  type AccountType,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -48,8 +47,6 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() public address = CoreHelperUtil.getPlainAddress(AccountController.state.caipAddress)
 
-  @state() public allAccounts: AccountType[] = AccountController.state.allAccounts
-
   @state() private profileImage = AccountController.state.profileImage
 
   @state() private profileName = AccountController.state.profileName
@@ -79,9 +76,6 @@ export class W3mAccountDefaultWidget extends LitElement {
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         OptionsController.subscribeKey('features', val => (this.features = val)),
-        AccountController.subscribeKey('allAccounts', allAccounts => {
-          this.allAccounts = allAccounts
-        }),
         ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
           this.activeConnectorIds = newActiveConnectorIds
         }),
