@@ -461,11 +461,15 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  protected override async initChainAdapter(namespace: ChainNamespace): Promise<void> {
-    await super.initChainAdapter(namespace)
-    this.createAuthProviderForAdapter(namespace)
+  protected override async initialize(options: AppKitOptionsWithSdk) {
+    await super.initialize(options)
+    this.chainNamespaces?.forEach(namespace => {
+      this.createAuthProviderForAdapter(namespace)
+      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    })
+    await this.injectModalUi()
+    PublicStateController.set({ initialized: true })
   }
-
   public override async syncIdentity({
     address,
     chainId,
@@ -517,6 +521,9 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
+      console.trace('injectModalUi')
+      console.log('this.remoteFeatures', this.remoteFeatures)
+
       const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
 
       // Selectively import views based on feature flags
@@ -531,9 +538,13 @@ export class AppKit extends AppKitBaseClient {
         }
 
         if (this.remoteFeatures?.email) {
+          console.log('import email', this.remoteFeatures?.email)
+
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/email'))
         }
         if (this.remoteFeatures?.socials && this.remoteFeatures?.socials.length > 0) {
+          console.log('import socials', this.remoteFeatures?.socials)
+
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/socials'))
         }
 

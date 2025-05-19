@@ -56,7 +56,9 @@ describe('Universal Adapter', () => {
   })
 
   it('should set universal provider and auth provider for each adapter', async () => {
-    new AppKit(mockOptions)
+    const appKit = new AppKit(mockOptions)
+
+    await appKit.ready()
 
     expect(mockEvmAdapter.setUniversalProvider).toHaveBeenCalled()
     expect(mockEvmAdapter.setAuthProvider).toHaveBeenCalled()

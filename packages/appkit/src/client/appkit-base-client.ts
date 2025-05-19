@@ -156,18 +156,14 @@ export abstract class AppKitBaseClient {
   protected async initialize(options: AppKitOptionsWithSdk) {
     this.initializeProjectSettings(options)
     this.initControllers(options)
+    await this.initChainAdapters()
+    this.sendInitializeEvent(options)
+    await this.syncExistingConnection()
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
       OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
     }
-    await this.initChainAdapters()
-    await this.injectModalUi()
-
-    this.sendInitializeEvent(options)
-    PublicStateController.set({ initialized: true })
-
-    await this.syncExistingConnection()
     // Check allowed origins only if email or social features are enabled
     if (
       OptionsController.state.remoteFeatures?.email ||
