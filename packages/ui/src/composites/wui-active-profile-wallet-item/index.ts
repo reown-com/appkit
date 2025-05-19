@@ -39,6 +39,10 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public iconSize?: SizeType = 'md'
 
+  @property() public iconBadge?: IconType | undefined = undefined
+
+  @property() public iconBadgeSize?: SizeType = 'md'
+
   @property() public buttonVariant: ButtonVariant = 'neutral'
 
   @property({ type: Boolean }) public loading = false
@@ -91,6 +95,15 @@ export class WuiActiveProfileWalletItem extends LitElement {
               name=${this.icon}
               class="custom-icon"
             ></wui-icon>
+
+            ${this.iconBadge
+              ? html`<wui-icon
+                  color="fg-175"
+                  size=${this.iconBadgeSize}
+                  name=${this.iconBadge}
+                  class="icon-badge"
+                ></wui-icon>`
+              : null}
           </wui-flex>
         </wui-flex>
       `

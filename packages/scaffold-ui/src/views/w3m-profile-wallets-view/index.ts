@@ -54,6 +54,11 @@ type DisplayConnectionsParams = {
 const CHARS_START = 4
 const CHARS_END = 6
 
+const ICON_BADGE_SIZE = {
+  size: 'md',
+  icon: 'lightbulb'
+}
+
 const ICONS = {
   eip155: 'ethereum-black',
   solana: 'solana-black',
@@ -261,6 +266,8 @@ export class W3mProfileWalletsView extends LitElement {
         .charsEnd=${CHARS_END}
         .icon=${icon}
         .iconSize=${iconSize}
+        .iconBadge=${isSmartAccount ? ICON_BADGE_SIZE.icon : undefined}
+        .iconBadgeSize=${isSmartAccount ? ICON_BADGE_SIZE.size : undefined}
         imageSrc=${connectorImage}
         @copy=${this.handleCopyAddress.bind(this)}
         @disconnect=${this.handleDisconnect.bind(this)}

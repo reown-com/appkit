@@ -26,7 +26,9 @@ export default {
     tagLabel: 'Active',
     tagVariant: 'success',
     buttonVariant: 'neutral',
-    icon: undefined,
+    icon: 'google',
+    iconBadge: 'lightbulb',
+    iconBadgeSize: 'md',
     loading: false,
     iconSize: 'md'
   },
@@ -70,7 +72,15 @@ export default {
       options: [undefined, ...iconOptions],
       control: { type: 'select' }
     },
+    iconBadge: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
+    },
     iconSize: {
+      options: ['xl', 'md', 'sm', 'xs'],
+      control: { type: 'select' }
+    },
+    iconBadgeSize: {
       options: ['xl', 'md', 'sm', 'xs'],
       control: { type: 'select' }
     }
@@ -89,7 +99,9 @@ export const Default: Component = {
         tagLabel=${args.tagLabel}
         tagVariant=${args.tagVariant}
         icon=${args.icon}
+        iconBadge=${args.iconBadge}
         iconSize=${args.iconSize}
+        iconBadgeSize=${args.iconBadgeSize}
         charsStart=${args.charsStart}
         charsEnd=${args.charsEnd}
         @disconnect=${() => alert('disconnect')}
