@@ -154,7 +154,7 @@ export const ConfigUtil = {
         addWarning(localFeatures.history, 'history', true)
       }
 
-      const reownBrandingApi = getApiConfig('reownBranding')
+      const reownBrandingApi = getApiConfig('reown_branding')
       if (reownBrandingApi) {
         if (reownBrandingApi.isEnabled === null && reownBrandingApi.config === null) {
           remoteFeaturesConfig.reownBranding = DEFAULT_REMOTE_FEATURES.reownBranding

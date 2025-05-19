@@ -1300,7 +1300,7 @@ export type PreferredAccountTypes = {
 
 // -- Feature Configuration Types -------------------------------------------------
 
-export type FeatureID = 'activity' | 'onramp' | 'swap' | 'social_login' | 'reownBranding'
+export type FeatureID = 'activity' | 'onramp' | 'swap' | 'social_login' | 'reown_branding'
 
 interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
@@ -1313,6 +1313,6 @@ export type TypedFeatureConfig =
   | BaseFeature<'onramp', OnRampProvider[]>
   | BaseFeature<'swap', SwapProvider[]>
   | BaseFeature<'social_login', (SocialProvider | 'email')[]>
-  | BaseFeature<'reownBranding', null>
+  | BaseFeature<'reown_branding', null>
 
 export type ApiGetProjectConfigResponse = TypedFeatureConfig[]
