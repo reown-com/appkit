@@ -2,13 +2,8 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
-  type AccountType,
-  ChainController,
-  ConnectionController,
-  ConnectorController,
   CoreHelperUtil,
   ModalController,
   RouterController,
@@ -21,7 +16,6 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-list-account'
 import '@reown/appkit-ui/wui-text'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 
@@ -39,10 +33,7 @@ export class W3mProfileView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private accounts = AccountController.state.allAccounts
-
-  @state() private loading = false
-
+ 
   public constructor() {
     super()
     this.usubscribe.push(
@@ -131,39 +122,7 @@ export class W3mProfileView extends LitElement {
       <wui-flex .padding=${['3xs', 'm', 's', 's'] as const}>
         <wui-text color="fg-200" variant="paragraph-400">Your accounts</wui-text>
       </wui-flex>
-      <wui-flex flexDirection="column" gap="xxs">
-        ${this.accounts.map(account => this.accountTemplate(account))}
-      </wui-flex>
     </wui-flex>`
-  }
-
-  private async onSwitchAccount(account: AccountType) {
-    const namespace = ChainController.state.activeCaipNetwork?.chainNamespace as ChainNamespace
-    this.loading = true
-    const emailConnector = ConnectorController.getAuthConnector()
-    if (emailConnector) {
-      const type = account.type as W3mFrameTypes.AccountType
-      await ConnectionController.setPreferredAccountType(type, namespace)
-    }
-
-    AccountController.setShouldUpdateToAddress(account.address, namespace)
-    this.loading = false
-  }
-
-  private accountTemplate(account: AccountType) {
-    return html`<wui-list-account accountAddress=${account.address} accountType=${account.type}>
-      ${account.address === this.address
-        ? ''
-        : html`<wui-button
-            slot="action"
-            textVariant="small-600"
-            size="md"
-            variant="accent"
-            @click=${() => this.onSwitchAccount(account)}
-            .loading=${this.loading}
-            >Switch</wui-button
-          >`}
-    </wui-list-account>`
   }
 
   private onCopyAddress() {

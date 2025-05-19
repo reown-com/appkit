@@ -1,5 +1,4 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { AccountController, type AccountType, OptionsController } from '@reown/appkit-controllers'
@@ -19,13 +18,9 @@ export class W3mSwitchAddressView extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
 
-  @state() private balances: Record<string, number> = {}
-
   public readonly labels = AccountController.state.addressLabels
 
   public readonly currentAddress: string = AccountController.state.address || ''
-
-  private caipNetwork = ChainController.state.activeCaipNetwork
 
   public override connectedCallback() {
     super.connectedCallback()

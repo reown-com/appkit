@@ -28,7 +28,6 @@ describe('W3mAccountDefaultWidget', () => {
     beforeEach(() => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
         ...AccountController.state,
-        allAccounts: [],
         caipAddress: 'eip155:1:0x123'
       })
     })

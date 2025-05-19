@@ -71,7 +71,6 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
       address: ACCOUNT.address,
-      allAccounts: [ACCOUNT]
     })
 
     const pushSpy = vi.spyOn(RouterController, 'push')
@@ -137,8 +136,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
       address: ACCOUNT.address,
-      allAccounts: [ACCOUNT, ACCOUNT]
-    })
+     })
 
     const pushSpy = vi.spyOn(RouterController, 'push')
 

@@ -60,7 +60,6 @@ describe('W3mProfileView - Render', () => {
       address: TEST_ADDRESS,
       profileName: TEST_PROFILE_NAME,
       profileImage: TEST_PROFILE_IMAGE,
-      allAccounts: TEST_ACCOUNTS,
       addressLabels: new Map()
     })
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(MOCK_CHAIN_STATE)
@@ -87,7 +86,6 @@ describe('W3mProfileView - Render', () => {
       ...AccountController.state,
       address: TEST_ADDRESS,
       profileName: undefined,
-      allAccounts: TEST_ACCOUNTS,
       addressLabels: new Map()
     })
 
@@ -127,7 +125,6 @@ describe('W3mProfileView - Functions', () => {
       ...AccountController.state,
       address: TEST_ADDRESS,
       profileName: TEST_PROFILE_NAME,
-      allAccounts: TEST_ACCOUNTS,
       addressLabels: new Map()
     })
 

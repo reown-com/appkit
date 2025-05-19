@@ -35,7 +35,6 @@ const accountState: AccountControllerState = {
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: [],
   user: undefined
 }
 
@@ -659,7 +658,6 @@ export const ChainController = {
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
-      allAccounts: [],
       user: undefined,
       status: 'disconnected'
     })

@@ -190,7 +190,6 @@ export interface OptionsControllerStateInternal {
   sdkVersion: SdkVersion
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
-  hasMultipleAddresses?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -322,10 +321,6 @@ export const OptionsController = {
 
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
     state.enableWallets = enableWallets
-  },
-
-  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
-    state.hasMultipleAddresses = hasMultipleAddresses
   },
 
   setSIWX(siwx: OptionsControllerState['siwx']) {
