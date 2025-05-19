@@ -42,6 +42,7 @@ export function ProjectIdDrawer({ controls }: Props) {
         duration: 3000,
         isClosable: true
       })
+
       return
     }
     setProjectId(inputValue.trim())
@@ -68,10 +69,9 @@ export function ProjectIdDrawer({ controls }: Props) {
     onClose()
   }
 
-  // Update input if projectId changes externally
-  useState(() => {
+  useEffect(() => {
     setInputValue(currentProjectId || '')
-  })
+  }, [currentProjectId])
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
