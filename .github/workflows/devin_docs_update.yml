@@ -21,7 +21,7 @@ jobs:
   trigger-devin-docs-analysis:
     # This job runs only if the head commit message on the push to main is exactly 'chore: version packages'
     if: |
-      github.event.head_commit.message == 'chore: version packages'
+      contains(github.event.head_commit.message, 'chore: version packages')
     runs-on: ubuntu-latest
     steps:
       - name: Create Devin Session for Docs Analysis
