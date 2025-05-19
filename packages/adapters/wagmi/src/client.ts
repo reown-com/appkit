@@ -124,7 +124,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const { addresses, address } = getAccount(this.wagmiConfig)
 
     return Promise.resolve({
-      accounts: (addresses || [address])?.map(val =>
+      accounts: [...new Set(addresses || [address])]?.map(val =>
         CoreHelperUtil.createAccount('eip155', val || '', 'eoa')
       )
     })
