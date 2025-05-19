@@ -35,6 +35,7 @@ export function ProjectIdProvider({ children }: ProjectIdProviderProps) {
         setProjectIdState(storedProjectId)
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to load projectId from localStorage:', error)
     } finally {
       setIsProjectIdLoading(false)
