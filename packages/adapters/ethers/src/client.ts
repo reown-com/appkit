@@ -453,26 +453,20 @@ export class EthersAdapter extends AdapterBlueprint {
     let requestChainId: string | undefined = undefined
 
     if (type === 'AUTH') {
-      const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
+      const { address, accounts: authAccounts } = await (
+        selectedProvider as unknown as W3mFrameProvider
+      ).connect({
         chainId,
         preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
-      })
-
-      accounts = [address]
-
-      // TOOD: handle auth connection
-      this.emit('accountChanged', {
-        address: accounts[0] as Address,
-        chainId: Number(chainId),
-        // eslint-disable-next-line no-warning-comments
-        connector
       })
 
       const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
 
       this.addConnection({
         connectorId: id,
-        accounts: [{ address }],
+        accounts: authAccounts
+          ? authAccounts.map(account => ({ address: account.address }))
+          : [{ address }],
         caipNetwork
       })
     } else {
