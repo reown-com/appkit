@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test/devin-workflow-trigger
 
 permissions:
   contents: read # Required to read github.event.head_commit.message
