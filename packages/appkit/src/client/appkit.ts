@@ -145,6 +145,13 @@ export class AppKit extends AppKitBaseClient {
       }
       this.setCaipAddress(caipAddress, namespace)
 
+      const { address: smartAccountAddress } =
+        user.accounts?.find(account => account.type === 'smartAccount') ?? {}
+
+      if (smartAccountAddress) {
+        // Only EVM namespaces are supported for smart accounts
+        this.setSmartAccountAddress(smartAccountAddress, ConstantsUtil.CHAIN.EVM)
+      }
       this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)

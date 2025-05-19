@@ -231,7 +231,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === params.id)
-
     if (!connector) {
       throw new Error('Provider not found')
     }
@@ -239,13 +238,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     const rpcUrl =
       params.rpcUrl ||
       this.getCaipNetworks()?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
-
     if (!rpcUrl) {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
     }
 
     const connection = this.connections.find(c => c.connectorId === connector.id)
-
     if (connection) {
       const [account] = connection.accounts
 
@@ -270,7 +267,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       chainId: params.chainId as string
     })
     this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
-
     SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
 
     this.emit('accountChanged', {
@@ -375,6 +371,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   > = {}
 
   private listenProviderEvents(connectorId: string, provider: SolanaProvider) {
+    if (IGNORED_CONNECTIONS_IDS.includes(connectorId)) {
+      return
+    }
+
     // eslint-disable-next-line no-param-reassign
     connectorId = connectorId.toLowerCase()
 
@@ -550,10 +550,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
           return !isDisconnected && hasConnected
         })
         .map(async connector => {
-          if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-            return
-          }
-
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
             const { accounts } = this.getWalletConnectAddresses()
 
@@ -567,30 +563,22 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
             return
           }
-
           const address = await connector.connect({
             chainId: caipNetwork?.id as string
           })
-
-          this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
-
           SolStoreUtil.setConnection(
             new Connection(
               caipNetwork?.rpcUrls?.default?.http?.[0] as string,
               this.connectionSettings
             )
           )
-
           if (address) {
             this.addConnection({
               connectorId: connector.id,
               accounts: [{ address }],
               caipNetwork
             })
-
-            if (connector.provider && !IGNORED_CONNECTIONS_IDS.includes(connector.id)) {
-              this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
-            }
+            this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
           }
         })
     )

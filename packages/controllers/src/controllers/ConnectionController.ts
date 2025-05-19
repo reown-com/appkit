@@ -1,7 +1,14 @@
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipAddress, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
+  ParseUtil,
+  type ParsedCaipAddress
+} from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -36,6 +43,8 @@ interface SwitchAccountParams {
   address: string
   namespace: ChainNamespace
   forceReconnect?: boolean
+  onConnectorChange?: (connector: Connector) => void
+  onAddressChange?: (parsedCaipAddress: ParsedCaipAddress) => void
 }
 
 export interface ConnectExternalOptions {
@@ -323,48 +332,64 @@ export const ConnectionController = {
     state.connections = new Map(state.connections.set(chainNamespace, connections))
   },
 
+  async handleAuthAccountSwitch(address: string, namespace: ChainNamespace) {
+    const smartAccountAddress = AccountController.getSmartAccountAddress(namespace)
+    const isAddressSmartAccount = smartAccountAddress?.toLowerCase() === address.toLowerCase()
+    const accountType =
+      isAddressSmartAccount && ConnectorController.canSwitchToSmartAccount(namespace)
+        ? 'smartAccount'
+        : 'eoa'
+
+    await ConnectionController.setPreferredAccountType(accountType, namespace)
+  },
+
   async switchAccount({
     connection,
     address,
     namespace,
-    forceReconnect = false
+    forceReconnect = false,
+    onConnectorChange,
+    onAddressChange
   }: SwitchAccountParams) {
     const connectedConnectorId = ConnectorController.state.activeConnectorIds[namespace]
-    const isConnectorConnected = connectedConnectorId === connection.connectorId
+
+    if (!connectedConnectorId) {
+      throw new Error(`No connector found for namespace: ${namespace}`)
+    }
+
+    const caipAddress = AccountController.getCaipAddress(namespace)
+
+    if (!caipAddress) {
+      throw new Error(`No CAIP address found for namespace: ${namespace}`)
+    }
+
+    const isConnectorConnected = connection.connectorId === connectedConnectorId
+    const isAuthConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
 
     if (isConnectorConnected && !forceReconnect) {
-      let hasSwitchedCaipAddress = false
+      const parsedCaipAddress = ParseUtil.parseCaipAddress(caipAddress)
+      const newCaipAddress: CaipAddress = `${namespace}:${parsedCaipAddress.chainId}:${address}`
 
-      const currentNetwork = ChainController.state.activeCaipNetwork
-
-      if (currentNetwork) {
-        const caipAddress = `${namespace}:${currentNetwork.id}:${address}`
-        AccountController.setCaipAddress(caipAddress as CaipAddress, namespace)
-        hasSwitchedCaipAddress = true
+      if (isAuthConnector) {
+        await ConnectionController.handleAuthAccountSwitch(address, namespace)
+        onAddressChange?.(parsedCaipAddress)
       } else {
-        console.warn(`No current network found for namespace "${namespace}"`)
+        AccountController.setCaipAddress(newCaipAddress, namespace)
+        onAddressChange?.(parsedCaipAddress)
       }
-
-      return {
-        hasSwitchedCaipAddress,
-        hasSwitchedConnector: false
-      }
-    }
-
-    let hasSwitchedConnector = false
-
-    const connector = ConnectorController.getConnectorById(connection.connectorId)
-
-    if (connector) {
-      await this.connectExternal(connector, namespace)
-      hasSwitchedConnector = true
     } else {
-      console.warn(`No connector found for namespace "${namespace}"`)
-    }
+      const connector = ConnectorController.getConnectorById(connection.connectorId)
 
-    return {
-      hasSwitchedCaipAddress: false,
-      hasSwitchedConnector
+      if (connector) {
+        await this.connectExternal(connector, namespace)
+        onConnectorChange?.(connector)
+
+        if (isAuthConnector) {
+          await ConnectionController.handleAuthAccountSwitch(address, namespace)
+        }
+      } else {
+        console.warn(`No connector found for namespace "${namespace}"`)
+      }
     }
   }
 }

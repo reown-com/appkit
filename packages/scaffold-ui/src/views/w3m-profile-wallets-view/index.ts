@@ -31,7 +31,6 @@ import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-text'
 import { HelpersUtil } from '@reown/appkit-utils'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
@@ -67,6 +66,12 @@ const NAMESPACE_PROFILE_TABS = [
   { namespace: 'bip122', icon: ICONS['bip122'], label: 'Bitcoin' }
 ] as const
 
+const TABS_WIDTH = {
+  1: 320,
+  2: 160,
+  3: 106
+} as const
+
 @customElement('w3m-profile-wallets-view')
 export class W3mProfileWalletsView extends LitElement {
   public static override styles = styles
@@ -78,36 +83,28 @@ export class W3mProfileWalletsView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private currentTab = 0
+  @state() private namespace = ChainController.state.activeChain
   @state() private namespaces = Array.from(ChainController.state.chains.keys())
   @state() private connections = ConnectionController.state.connections
   @state() private caipAddress: CaipAddress | undefined = undefined
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
-  @state() private namespace: ChainNamespace
-  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
+  @state() private smartAccountAddress: string | undefined = undefined
+  @state() private profileName: string | null | undefined = undefined
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
   @state() private isDisconnecting = false
-  @state() private profileName: string | null | undefined = undefined
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
 
-    const firstNamespace = this.namespaces[0]
-
-    if (!firstNamespace) {
-      throw new Error('Namespace must be defined when initializing W3mProfileWalletsView')
-    }
-
-    this.namespace = firstNamespace
-    this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
+    this.currentTab = this.namespace ? this.namespaces.indexOf(this.namespace) : 0
+    this.smartAccountAddress = AccountController.getSmartAccountAddress(this.namespace)
     this.profileName = ChainController.getAccountData(this.namespace)?.profileName
+    this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('preferredAccountTypes', preferredAccountTypes => {
-          this.preferredAccountTypes = preferredAccountTypes
-        }),
         ConnectionController.subscribeKey('connections', newConnections => {
           this.connections = newConnections
         }),
@@ -116,14 +113,12 @@ export class W3mProfileWalletsView extends LitElement {
         })
       ]
     )
-
     this.unsubscribeChainListener = ChainController.subscribeChainProp(
       'accountState',
       val => {
+        this.caipAddress = val?.caipAddress
         this.profileName = val?.profileName
-        if (val?.caipAddress) {
-          this.caipAddress = val.caipAddress
-        }
+        this.smartAccountAddress = val?.smartAccountAddress
       },
       this.namespace
     )
@@ -156,22 +151,7 @@ export class W3mProfileWalletsView extends LitElement {
       this.namespaces.includes(tab.namespace as ChainNamespace)
     )
 
-    let tabWidth = 106
-
-    switch (tabs.length) {
-      case 1:
-        tabWidth = 320
-        break
-      case 2:
-        tabWidth = 160
-        break
-      case 3:
-        tabWidth = 106
-        break
-      default:
-        tabWidth = 106
-        break
-    }
+    const tabWidth = TABS_WIDTH[tabs.length as keyof typeof TABS_WIDTH] ?? TABS_WIDTH[1]
 
     return html`
       <wui-tabs
@@ -222,14 +202,10 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private activeWalletsTemplate() {
-    if (!this.namespace) {
-      return null
-    }
+    const { connections } = this.getConnectionsData()
+    const { plainAddress } = this.getConnectedWalletData()
 
-    const connectionsByNamespace = this.connections.get(this.namespace) ?? []
-    const connectorId = this.activeConnectorIds[this.namespace]
-
-    if (!connectorId && connectionsByNamespace.length === 0) {
+    if (connections.length === 0 || !plainAddress) {
       return null
     }
 
@@ -264,9 +240,9 @@ export class W3mProfileWalletsView extends LitElement {
 
     const { isAuth, icon, iconSize } = this.getAuthData(connectorId)
 
-    const isSmartAccount =
-      this.preferredAccountTypes?.[this.namespace] ===
-      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    const isSmartAccount = this.smartAccountAddress
+      ? HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, plainAddress)
+      : false
 
     if (isAuth) {
       description = isSmartAccount ? 'Smart Account' : 'EOA Account'
@@ -317,16 +293,6 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private connectionsTemplate() {
-    if (!this.namespace) {
-      return null
-    }
-
-    const connectionsByNamespace = this.connections.get(this.namespace) ?? []
-
-    if (connectionsByNamespace.length === 0) {
-      return null
-    }
-
     const { connections } = this.getConnectionsData()
 
     return html`${this.displayConnections({
@@ -359,7 +325,11 @@ export class W3mProfileWalletsView extends LitElement {
     )
     const dedupedStorageConnections = ConnectionUtil.excludeExistingConnections(
       connections,
-      storageConnectionsWithCurrentActiveConnectors
+      ConnectionUtil.filterConnections({
+        connections: storageConnectionsWithCurrentActiveConnectors,
+        filterOutWcConnections: true,
+        filterOutAuthConnections: true
+      })
     )
 
     const hasConnections =
@@ -454,16 +424,8 @@ export class W3mProfileWalletsView extends LitElement {
 
   private recentWalletsTemplate() {
     const { storageConnections } = this.getConnectionsData()
-    const filteredStorageConnections = ConnectionUtil.filterConnections({
-      connections: storageConnections,
-      filterOutWcConnections: true,
-      filterOutAuthConnections: true
-    })
-    const allStorageConnectionsAccounts = filteredStorageConnections.flatMap(
-      ({ accounts }) => accounts
-    )
 
-    if (allStorageConnectionsAccounts.length === 0) {
+    if (storageConnections.length === 0) {
       return null
     }
 
@@ -473,7 +435,7 @@ export class W3mProfileWalletsView extends LitElement {
 
         <wui-flex flexDirection="column">
           ${this.displayConnections({
-            connections: filteredStorageConnections,
+            connections: storageConnections,
             includeSeparator: true,
             forceReconnectOnSwitch: true,
             isRecentConnections: true
@@ -553,29 +515,26 @@ export class W3mProfileWalletsView extends LitElement {
       this.lastSelectedConnectorId = connection.connectorId
       this.lastSelectedAddress = address
 
-      const { hasSwitchedCaipAddress, hasSwitchedConnector } =
-        await ConnectionController.switchAccount({
-          connection,
-          address,
-          namespace: this.namespace as ChainNamespace,
-          forceReconnect
-        })
+      if (!this.namespace) {
+        throw new Error('Namespace must be defined when switching wallet')
+      }
 
-      this.handleSwitchResult(hasSwitchedCaipAddress, hasSwitchedConnector)
+      await ConnectionController.switchAccount({
+        connection,
+        address,
+        namespace: this.namespace as ChainNamespace,
+        forceReconnect,
+        onConnectorChange() {
+          SnackController.showSuccess('Wallet switched')
+        },
+        onAddressChange() {
+          SnackController.showSuccess('Account switched')
+        }
+      })
     } catch (err) {
       SnackController.showError('Failed to connect wallet')
     } finally {
       this.isSwitching = false
-    }
-  }
-
-  private handleSwitchResult(hasSwitchedCaipAddress: boolean, hasSwitchedConnector: boolean) {
-    if (hasSwitchedCaipAddress) {
-      SnackController.showSuccess('Account switched')
-    } else if (hasSwitchedConnector) {
-      SnackController.showSuccess('Wallet switched')
-    } else {
-      SnackController.showError('Failed to switch wallet')
     }
   }
 
@@ -611,12 +570,18 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     this.namespace = nextNamespace
-    this.caipAddress = ChainController.getAccountData(nextNamespace)?.caipAddress
+    this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
+    this.profileName = ChainController.getAccountData(this.namespace)?.profileName
+    this.smartAccountAddress = AccountController.getSmartAccountAddress(this.namespace)
+
+    ChainController.setActiveNamespace(this.namespace)
 
     this.unsubscribeChainListener = ChainController.subscribeChainProp(
       'accountState',
       val => {
         this.caipAddress = val?.caipAddress
+        this.profileName = val?.profileName
+        this.smartAccountAddress = val?.smartAccountAddress
       },
       this.namespace
     )

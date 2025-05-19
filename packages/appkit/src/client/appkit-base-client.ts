@@ -1850,6 +1850,13 @@ export abstract class AppKitBaseClient {
     AccountController.setPreferredAccountType(preferredAccountType, chain)
   }
 
+  public setSmartAccountAddress: (typeof AccountController)['setSmartAccountAddress'] = (
+    smartAccountAddress,
+    chain
+  ) => {
+    AccountController.setSmartAccountAddress(smartAccountAddress, chain)
+  }
+
   public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
     OptionsController.setEIP6963Enabled(enabled)
   }
