@@ -1,0 +1,90 @@
+name: Trigger Devin for Docs Update
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read # Required to read github.event.head_commit.message
+
+jobs:
+  trigger-devin-docs-analysis:
+    # This job runs only if the head commit message on the push to main is exactly 'chore: version packages'
+    if: |
+      github.event.head_commit.message == 'chore: version packages'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Devin Session for Docs Analysis
+        id: devin-docs-analysis
+        env:
+          DEVIN_API_KEY: ${{ secrets.DEVIN_API_KEY }}
+          # APPKIT_REPO is the repository where this workflow is running, assumed to be reown-com/appkit
+          APPKIT_REPO: ${{ github.repository }}
+          # COMMIT_SHA is the SHA of the triggering 'chore: version packages' commit
+          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+          PROMPT_TEXT: |
+            ## Context
+
+            A commit titled "chore: version packages" (SHA: ${{ env.COMMIT_SHA }}) was just pushed to the main branch of the ${{ env.APPKIT_REPO }} repository. This commit is typically the result of a merged Pull Request.
+            Your task is to analyze the impact of this specific commit on the reown-com/reown-docs repository.
+
+            Please examine the changes introduced by commit ${{ env.COMMIT_SHA }} in the ${{ env.APPKIT_REPO }} repository. Focus your examination on the content of any `CHANGELOG.md` files modified in this commit. (Note: if multiple CHANGELOG.md files were part of this commit and are identical, examining one is sufficient, as per repository conventions).
+
+            Determine if any of the changes in the `CHANGELOG.md`(s) from this commit necessitate updates to the documentation in the reown-com/reown-docs repository.
+
+            ## Advice
+            * If documentation updates are required, create a pull request in the reown-com/reown-docs repository. The pull request should:
+                * Include the necessary documentation updates reflecting the changes from the appkit changelog.
+                * Contain a clear description of why the updates are needed, referencing the specific changes from the appkit repository.
+                * Include a link back to the original "chore: version packages" commit in the ${{ env.APPKIT_REPO }} repository (Commit: ${{ env.COMMIT_URL }}).
+            * If no documentation updates are needed, clearly state this conclusion. You do not need to open a pull request in this case. Simply report that no updates are necessary based on your analysis of the changelog.
+            * You will need to operate within the following repositories: ${{ env.APPKIT_REPO }} (for reading the changelog of the commit) and reown-com/reown-docs (for potentially creating a PR with documentation updates).
+        run: |
+          # Convert multiline string to JSON-safe format
+          # Using printf instead of echo to handle special characters and ensure newline is correctly processed by jq
+          ESCAPED_PROMPT=$(printf "%s" "$PROMPT_TEXT" | jq -Rs .)
+
+          echo "Triggering Devin Session for Docs Analysis."
+          echo "AppKit Repo: ${{ env.APPKIT_REPO }}"
+          echo "Commit SHA: ${{ env.COMMIT_SHA }}"
+          echo "Commit URL: ${{ env.COMMIT_URL }}"
+
+          RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer $DEVIN_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\\"prompt\\": $ESCAPED_PROMPT}" \
+            "https://api.devin.ai/v1/sessions")
+
+          # Check for errors in the response
+          # Check if RESPONSE is valid JSON first
+          if ! echo "$RESPONSE" | jq -e . > /dev/null 2>&1; then
+            echo "Error: Devin API response is not valid JSON."
+            echo "Response: $RESPONSE"
+            exit 1
+          fi
+
+          ERROR_MSG=$(echo "$RESPONSE" | jq -r \'.error // "null"\') # Provide default "null" if .error is missing
+          if [ "$ERROR_MSG" != "null" ]; then
+            echo "Error creating Devin session: $ERROR_MSG"
+            echo "Full response: $RESPONSE"
+            exit 1
+          fi
+
+          SESSION_ID=$(echo "$RESPONSE" | jq -r \'.session_id // "null"\')
+          SESSION_URL=$(echo "$RESPONSE" | jq -r \'.url // "null"\')
+
+          if [ "$SESSION_ID" == "null" ] || [ "$SESSION_URL" == "null" ]; then
+            echo "Error: Devin session details (session_id or url) are missing from the response."
+            echo "Full response: $RESPONSE"
+            exit 1
+          fi
+
+          echo "session-id=$SESSION_ID" >> $GITHUB_OUTPUT
+          echo "session-url=$SESSION_URL" >> $GITHUB_OUTPUT
+          echo "Devin session created successfully."
+          echo "Session ID: $SESSION_ID"
+          echo "Session URL: $SESSION_URL"
+          # Avoid logging the full response if it's too verbose or contains sensitive info by default
+          # echo "Full response from Devin API: $RESPONSE"
