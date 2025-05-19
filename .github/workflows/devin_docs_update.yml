@@ -10,6 +10,14 @@ permissions:
   contents: read # Required to read github.event.head_commit.message
 
 jobs:
+  show-head-commit-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show head commit message
+        run: |
+          MESSAGE="DEBUG: Head commit message is: ${{ github.event.head_commit.message }}"
+          echo "$MESSAGE"
+
   trigger-devin-docs-analysis:
     # This job runs only if the head commit message on the push to main is exactly 'chore: version packages'
     if: |
