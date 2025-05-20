@@ -38,11 +38,26 @@ export class InformalMessenger extends SIWXMessenger {
     this.clearChainIdNamespace = clearChainIdNamespace || false
   }
 
+  protected getBlockchainName(chainId: string): string {
+    const [namespace] = chainId.split(':');
+    
+    const blockchainNames: Record<string, string> = {
+      'eip155': 'Ethereum',
+      'solana': 'Solana',
+      'polkadot': 'Polkadot',
+      'bip122': 'Bitcoin',
+      'cosmos': 'Cosmos'
+    };
+    
+    return namespace ? (blockchainNames[namespace] || namespace) : 'blockchain';
+  }
+
   protected override stringify(params: SIWXMessage.Data): string {
     const chainId = this.clearChainIdNamespace ? params.chainId.split(':')[1] : params.chainId
+    const blockchainName = this.getBlockchainName(params.chainId);
 
     return [
-      `${params.domain} wants you to sign in with your **blockchain** account:`,
+      `${params.domain} wants you to sign in with your ${blockchainName} account:`,
       params.accountAddress,
       params.statement ? `\n${params.statement}\n` : '',
       `URI: ${params.uri}`,
