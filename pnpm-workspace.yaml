@@ -16,6 +16,7 @@ packages:
   - 'packages/experimental'
   - 'packages/cli'
   - 'packages/pay'
+  - 'packages/test-utils'
   - 'apps/*'
   - 'examples/*'
   - 'services/*'
