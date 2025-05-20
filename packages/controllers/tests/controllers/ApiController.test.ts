@@ -369,7 +369,7 @@ describe('ApiController', () => {
 
   it('should sort featured wallets according to the order in featuredWalletIds', async () => {
     const featuredWalletIds = ['wallet-B', 'wallet-A']
-    
+
     const data = [
       {
         id: 'wallet-A',
@@ -382,13 +382,13 @@ describe('ApiController', () => {
         image_id: 'image-B'
       }
     ]
-    
+
     OptionsController.setFeaturedWalletIds(featuredWalletIds)
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
-    
+
     await ApiController.fetchFeaturedWallets()
-    
+
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
       params: {
@@ -399,13 +399,13 @@ describe('ApiController', () => {
         exclude: ''
       }
     })
-    
+
     expect(fetchImageSpy).toHaveBeenCalledTimes(2)
-    
+
     expect(ApiController.state.featured).toHaveLength(2)
     expect(ApiController.state.featured[0]?.id).toBe('wallet-B')
     expect(ApiController.state.featured[1]?.id).toBe('wallet-A')
-    
+
     expect(ApiController.state.allFeatured).toHaveLength(2)
     expect(ApiController.state.allFeatured[0]?.id).toBe('wallet-B')
     expect(ApiController.state.allFeatured[1]?.id).toBe('wallet-A')
