@@ -229,7 +229,7 @@ describe('ConnectionController', () => {
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
 
-    await ConnectionController.disconnect(namespace)
+    await ConnectionController.disconnect({ namespace })
 
     expect(setLoadingSpy).toHaveBeenCalledWith(true, namespace)
     expect(clearSessionsSpy).toHaveBeenCalled()
@@ -267,7 +267,7 @@ describe('ConnectionController', () => {
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
 
-    await ConnectionController.disconnect(namespace)
+    await ConnectionController.disconnect({ namespace })
 
     expect(setLoadingSpy).toHaveBeenCalledWith(true, namespace)
     expect(clearSessionsSpy).toHaveBeenCalled()
@@ -311,7 +311,7 @@ describe('ConnectionController', () => {
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
 
-    await ConnectionController.disconnect(namespace)
+    await ConnectionController.disconnect({ namespace })
 
     expect(setLoadingSpy).toHaveBeenCalledWith(true, namespace)
     expect(clearSessionsSpy).toHaveBeenCalled()

@@ -196,7 +196,7 @@ export class W3mProfileWalletsView extends LitElement {
           ? html`<wui-link
               color="fg-200"
               @click=${() =>
-                ChainController.disconnect({ chainNamespace: this.namespace, disconnectAll: true })}
+                ConnectionController.disconnect({ namespace: this.namespace, disconnectAll: true })}
             >
               Disconnect All
             </wui-link>`
@@ -273,7 +273,7 @@ export class W3mProfileWalletsView extends LitElement {
         ?confirmation=${this.isDeleting}
         @toggleConfirmation=${this.handleToggleConfirmation.bind(this)}
         @copy=${this.handleCopyAddress.bind(this)}
-        @disconnect=${this.handleDisconnect.bind(this)}
+        @disconnect=${this.handleDisconnect.bind(this, connectorId)}
       ></wui-active-profile-wallet-item>
       ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
     </wui-flex>`
@@ -426,7 +426,7 @@ export class W3mProfileWalletsView extends LitElement {
               @iconClick=${() =>
                 isRecentConnections
                   ? this.handleDeleteRecentConnection()
-                  : this.handleDisconnectConnection(connection)}
+                  : this.handleDisconnect(connection.connectorId)}
             ></wui-inactive-profile-wallet-item>
           </wui-flex>`
         })
@@ -543,9 +543,9 @@ export class W3mProfileWalletsView extends LitElement {
     }
   }
 
-  private async handleDisconnect() {
+  private async handleDisconnect(id?: string) {
     try {
-      await ConnectionController.disconnect()
+      await ConnectionController.disconnect({ id, namespace: this.namespace })
       SnackController.showSuccess('Disconnected')
     } catch (err) {
       SnackController.showError('Failed to disconnect')
@@ -571,10 +571,6 @@ export class W3mProfileWalletsView extends LitElement {
   private handleDeleteRecentConnection() {
     // eslint-disable-next-line no-alert
     alert('delete')
-  }
-
-  private handleDisconnectConnection(connection: Connection) {
-    ChainController.disconnect({ id: connection.connectorId, chainNamespace: this.namespace })
   }
 
   private onTabChange(index: number) {

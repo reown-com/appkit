@@ -64,6 +64,12 @@ interface HandleActiveConnectionParams {
   address: string
 }
 
+interface DisconnectParams {
+  id?: string
+  namespace?: ChainNamespace
+  disconnectAll?: boolean
+}
+
 export interface ConnectExternalOptions {
   id: Connector['id']
   type: Connector['type']
@@ -332,11 +338,11 @@ export const ConnectionController = {
     state.status = status
   },
 
-  async disconnect(namespace?: ChainNamespace, id?: string) {
+  async disconnect({ id, namespace, disconnectAll }: DisconnectParams = {}) {
     try {
       ModalController.setLoading(true, namespace)
       await SIWXUtil.clearSessions()
-      await ChainController.disconnect({ chainNamespace: namespace, id })
+      await ChainController.disconnect({ id, chainNamespace: namespace, disconnectAll })
       ModalController.setLoading(false, namespace)
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {

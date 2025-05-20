@@ -79,7 +79,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 
 export function useDisconnect() {
   async function disconnect(props?: { namespace?: ChainNamespace }) {
-    await ConnectionController.disconnect(props?.namespace)
+    await ConnectionController.disconnect({ namespace: props?.namespace })
   }
 
   return { disconnect }
