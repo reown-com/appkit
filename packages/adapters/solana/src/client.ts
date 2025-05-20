@@ -231,6 +231,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === params.id)
+
     if (!connector) {
       throw new Error('Provider not found')
     }
@@ -238,11 +239,13 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     const rpcUrl =
       params.rpcUrl ||
       this.getCaipNetworks()?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
+
     if (!rpcUrl) {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
     }
 
     const connection = this.connections.find(c => c.connectorId === connector.id)
+
     if (connection) {
       const [account] = connection.accounts
 
@@ -275,12 +278,19 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       connector
     })
 
+    const isAuth = connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
     const caipNetwork = this.getCaipNetworks()?.find(network => network.id === params.chainId)
 
     this.addConnection({
       connectorId: connector.id,
       accounts: [{ address }],
-      caipNetwork
+      caipNetwork,
+      auth: isAuth
+        ? {
+            name: StorageUtil.getConnectedSocialProvider(),
+            username: StorageUtil.getConnectedSocialUsername()
+          }
+        : undefined
     })
 
     return {

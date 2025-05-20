@@ -2,6 +2,7 @@
 import {
   type CaipNetworkId,
   type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
@@ -597,8 +598,9 @@ export const StorageUtil = {
 
       for (const conn of connections) {
         const existingConn = mergedMap.get(conn.connectorId)
+        const isAuth = conn.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
 
-        if (existingConn) {
+        if (existingConn && !isAuth) {
           const existingAddrs = new Set(existingConn.accounts.map(a => a.address.toLowerCase()))
           const newAccounts = conn.accounts.filter(a => !existingAddrs.has(a.address.toLowerCase()))
           existingConn.accounts.push(...newAccounts)

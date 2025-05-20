@@ -1,8 +1,11 @@
-import { type Connector, ConnectorController } from '@reown/appkit-controllers'
+import {
+  type Connector,
+  ConnectorController,
+  ConnectorControllerUtil
+} from '@reown/appkit-controllers'
 
 import { ApiController } from './controllers/ApiController.js'
 import { WalletButtonController } from './controllers/WalletButtonController.js'
-import { ConnectorUtil } from './utils/ConnectorUtil.js'
 import { ConstantsUtil } from './utils/ConstantsUtil.js'
 import type { SocialProvider, Wallet } from './utils/TypeUtil.js'
 import { WalletUtil } from './utils/WalletUtil.js'
@@ -37,11 +40,11 @@ export class AppKitWalletButton {
     const connectors = ConnectorController.state.connectors
 
     if (wallet === ConstantsUtil.Email) {
-      return ConnectorUtil.connectEmail()
+      return ConnectorControllerUtil.connectEmail()
     }
 
     if (ConstantsUtil.Socials.some(social => social === wallet)) {
-      return ConnectorUtil.connectSocial(wallet as SocialProvider)
+      return ConnectorControllerUtil.connectSocial(wallet as SocialProvider)
     }
 
     const walletButton = WalletUtil.getWalletButton(wallet)
@@ -51,10 +54,10 @@ export class AppKitWalletButton {
       : undefined
 
     if (connector) {
-      return ConnectorUtil.connectExternal(connector)
+      return ConnectorControllerUtil.connectExternal(connector)
     }
 
-    return ConnectorUtil.connectWalletConnect({
+    return ConnectorControllerUtil.connectWalletConnect({
       walletConnect: wallet === 'walletConnect',
       connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
       wallet: walletButton
@@ -62,6 +65,6 @@ export class AppKitWalletButton {
   }
 
   async updateEmail() {
-    return ConnectorUtil.updateEmail()
+    return ConnectorControllerUtil.updateEmail()
   }
 }

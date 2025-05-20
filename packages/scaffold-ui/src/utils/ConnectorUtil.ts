@@ -1,4 +1,4 @@
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
@@ -18,6 +18,7 @@ import { HelpersUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from './WalletUtil.js'
 
+// -- Types ------------------------------------------ //
 interface GetConnectorTypeOrderParameters {
   recommended: WcWallet[]
   featured: WcWallet[]
@@ -111,7 +112,7 @@ export const ConnectorUtil = {
     const isConnectedWithWC = chains.some(chain => {
       const connectorId = ConnectorController.getConnectorId(chain.namespace)
 
-      return connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      return connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     })
 
     return isConnectedWithWC
@@ -192,7 +193,7 @@ export const ConnectorUtil = {
         return { accounts: [], chainId: undefined }
       }
 
-      if (connector.id === ConstantsUtil.CONNECTOR_ID.AUTH) {
+      if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
         return { accounts: [], chainId: undefined }
       }
 

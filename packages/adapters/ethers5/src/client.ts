@@ -467,7 +467,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
         accounts: authAccounts
           ? authAccounts.map(account => ({ address: account.address }))
           : [{ address }],
-        caipNetwork
+        caipNetwork,
+        auth: {
+          name: StorageUtil.getConnectedSocialProvider(),
+          username: StorageUtil.getConnectedSocialUsername()
+        }
       })
     } else {
       accounts = await selectedProvider.request({

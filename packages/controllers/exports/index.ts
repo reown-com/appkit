@@ -25,6 +25,7 @@ export type {
 } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
+export { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 export type {
   ConnectorControllerState,
   ConnectorWithProviders

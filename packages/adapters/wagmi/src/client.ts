@@ -243,12 +243,20 @@ export class WagmiAdapter extends AdapterBlueprint {
               network => network.id === connection.chainId
             )
 
+            const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
             return {
               accounts: connection.accounts.map(account => ({
                 address: account
               })),
               caipNetwork,
-              connectorId: connection.connector.id
+              connectorId: connection.connector.id,
+              auth: isAuth
+                ? {
+                    name: StorageUtil.getConnectedSocialProvider(),
+                    username: StorageUtil.getConnectedSocialUsername()
+                  }
+                : undefined
             }
           })
         )
@@ -611,8 +619,6 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
     const { id } = params
-
-    console.log('reconnect', { id })
 
     const connector = this.getWagmiConnector(id)
 

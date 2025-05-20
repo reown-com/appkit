@@ -11,6 +11,8 @@ import {
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
+import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
+import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -36,15 +38,30 @@ export type Connection = {
   accounts: { address: string }[]
   caipNetwork?: CaipNetwork
   connectorId: string
+  auth?: {
+    name: string | undefined
+    username: string | undefined
+  }
 }
 
 interface SwitchAccountParams {
   connection: Connection
   address: string
   namespace: ChainNamespace
-  forceReconnect?: boolean
   onConnectorChange?: (connector: Connector) => void
   onAddressChange?: (parsedCaipAddress: ParsedCaipAddress) => void
+}
+
+interface HandleConnectParams {
+  connection: Connection
+  namespace: ChainNamespace
+  address: string
+}
+
+interface HandleActiveConnectionParams {
+  connection: Connection
+  namespace: ChainNamespace
+  address: string
 }
 
 export interface ConnectExternalOptions {
@@ -343,53 +360,120 @@ export const ConnectionController = {
     await ConnectionController.setPreferredAccountType(accountType, namespace)
   },
 
+  async handleAlreadyConnectedConnection({ connection, namespace, address }: HandleConnectParams) {
+    if (!connection.caipNetwork) {
+      throw new Error(`No CAIP network found for connection: ${connection.connectorId}`)
+    }
+
+    const isAuthConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+    const newCaipAddress: CaipAddress = `${namespace}:${connection.caipNetwork?.id}:${address}`
+    const parsedCaipAddress = ParseUtil.parseCaipAddress(newCaipAddress)
+
+    if (isAuthConnector) {
+      await ConnectionController.handleAuthAccountSwitch(address, namespace)
+
+      return parsedCaipAddress
+    }
+
+    AccountController.setCaipAddress(newCaipAddress, namespace)
+
+    return parsedCaipAddress
+  },
+
+  async handleActiveConnection({ connection, namespace, address }: HandleActiveConnectionParams) {
+    const connector = ConnectorController.getConnectorById(connection.connectorId)
+    const isAuthConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+    if (!connector) {
+      throw new Error(`No connector found for connection: ${connection.connectorId}`)
+    }
+
+    await this.connectExternal(connector, namespace)
+
+    if (isAuthConnector) {
+      await ConnectionController.handleAuthAccountSwitch(address, namespace)
+    }
+
+    return connector
+  },
+
+  async handleDisconnectedConnection({ connection, namespace, address }: HandleConnectParams) {
+    const connector = ConnectorController.getConnectorById(connection.connectorId)
+    const authName = connection.auth?.name?.toLowerCase()
+
+    const isAuthConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+    const isWCConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+
+    if (!connector) {
+      throw new Error(`No connector found for connection: ${connection.connectorId}`)
+    }
+
+    if (isAuthConnector) {
+      if (authName && ConnectorControllerUtil.isSocialProvider(authName)) {
+        await ConnectorControllerUtil.connectSocial(authName)
+      } else {
+        await ConnectorControllerUtil.connectEmail()
+      }
+    } else if (isWCConnector) {
+      await ConnectorControllerUtil.connectWalletConnect({
+        walletConnect: true,
+        connector,
+        wallet: undefined
+      })
+    } else {
+      await this.connectExternal(connector, namespace)
+    }
+
+    if (isAuthConnector) {
+      await ConnectionController.handleAuthAccountSwitch(address, namespace)
+    }
+
+    return connector
+  },
+
   async switchAccount({
     connection,
     address,
     namespace,
-    forceReconnect = false,
     onConnectorChange,
     onAddressChange
   }: SwitchAccountParams) {
-    const connectedConnectorId = ConnectorController.state.activeConnectorIds[namespace]
+    const status = ConnectionControllerUtil.getConnectionStatus(connection, namespace)
 
-    if (!connectedConnectorId) {
-      throw new Error(`No connector found for namespace: ${namespace}`)
-    }
+    switch (status) {
+      case 'connected': {
+        const parsedCaipAddress = await ConnectionController.handleAlreadyConnectedConnection({
+          connection,
+          namespace,
+          address
+        })
 
-    const caipAddress = AccountController.getCaipAddress(namespace)
-
-    if (!caipAddress) {
-      throw new Error(`No CAIP address found for namespace: ${namespace}`)
-    }
-
-    const isConnectorConnected = connection.connectorId === connectedConnectorId
-    const isAuthConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
-
-    if (isConnectorConnected && !forceReconnect) {
-      const parsedCaipAddress = ParseUtil.parseCaipAddress(caipAddress)
-      const newCaipAddress: CaipAddress = `${namespace}:${parsedCaipAddress.chainId}:${address}`
-
-      if (isAuthConnector) {
-        await ConnectionController.handleAuthAccountSwitch(address, namespace)
         onAddressChange?.(parsedCaipAddress)
-      } else {
-        AccountController.setCaipAddress(newCaipAddress, namespace)
-        onAddressChange?.(parsedCaipAddress)
+        break
       }
-    } else {
-      const connector = ConnectorController.getConnectorById(connection.connectorId)
+      case 'active': {
+        const connector = await ConnectionController.handleActiveConnection({
+          connection,
+          namespace,
+          address
+        })
 
-      if (connector) {
-        await this.connectExternal(connector, namespace)
         onConnectorChange?.(connector)
-
-        if (isAuthConnector) {
-          await ConnectionController.handleAuthAccountSwitch(address, namespace)
-        }
-      } else {
-        console.warn(`No connector found for namespace "${namespace}"`)
+        break
       }
+      case 'disconnected': {
+        const connector = await ConnectionController.handleDisconnectedConnection({
+          connection,
+          namespace,
+          address
+        })
+
+        onConnectorChange?.(connector)
+        break
+      }
+      default:
+        throw new Error(`Invalid connection status: ${status}`)
     }
   }
 }

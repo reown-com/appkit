@@ -40,13 +40,11 @@ import styles from './styles.js'
 type HandleSwitchWalletParams = {
   connection: Connection
   address: string
-  forceReconnect?: boolean
 }
 
 type DisplayConnectionsParams = {
   connections: Connection[]
   includeSeparator?: boolean
-  forceReconnectOnSwitch?: boolean
   isRecentConnections: boolean
 }
 
@@ -243,7 +241,10 @@ export class W3mProfileWalletsView extends LitElement {
 
     const { plainAddress, shouldShowLineSeparator } = this.getConnectedWalletData()
 
-    const { isAuth, icon, iconSize } = this.getAuthData(connectorId)
+    const { isAuth, icon, iconSize } = this.getAuthData({
+      connectorId,
+      accounts: []
+    })
 
     const isSmartAccount = this.smartAccountAddress
       ? HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, plainAddress)
@@ -305,7 +306,6 @@ export class W3mProfileWalletsView extends LitElement {
     return html`${this.displayConnections({
       connections,
       includeSeparator: false,
-      forceReconnectOnSwitch: false,
       isRecentConnections: false
     })}`
   }
@@ -334,8 +334,8 @@ export class W3mProfileWalletsView extends LitElement {
       connections,
       ConnectionUtil.filterConnections({
         connections: storageConnectionsWithCurrentActiveConnectors,
-        filterOutWcConnections: true,
-        filterOutAuthConnections: true
+        filterOutWcConnections: false,
+        filterOutAuthConnections: false
       })
     )
 
@@ -345,14 +345,16 @@ export class W3mProfileWalletsView extends LitElement {
     return { hasConnections, connections, storageConnections: dedupedStorageConnections }
   }
 
-  private getAuthData(connectorId: string) {
+  private getAuthData(connection: Connection) {
     let icon: string | undefined = undefined
     let iconSize: string | undefined = undefined
 
-    const isAuth = connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+    const isAuth = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
 
-    const socialProvider = StorageUtil.getConnectedSocialProvider() as SocialProvider | null
-    const socialUsername = StorageUtil.getConnectedSocialUsername() as string | null
+    const socialProvider = (connection?.auth?.name ??
+      StorageUtil.getConnectedSocialProvider()) as SocialProvider | null
+    const socialUsername = (connection?.auth?.username ??
+      StorageUtil.getConnectedSocialUsername()) as string | null
 
     if (isAuth) {
       icon = socialProvider ?? 'mail'
@@ -379,7 +381,6 @@ export class W3mProfileWalletsView extends LitElement {
   private displayConnections({
     connections,
     includeSeparator = true,
-    forceReconnectOnSwitch = false,
     isRecentConnections
   }: DisplayConnectionsParams) {
     return connections
@@ -390,7 +391,7 @@ export class W3mProfileWalletsView extends LitElement {
 
         const isFirstConnection = connectionIdx === 0
 
-        const { icon, iconSize } = this.getAuthData(connection.connectorId)
+        const { icon, iconSize } = this.getAuthData(connection)
 
         return connection.accounts.map((account, accountIdx) => {
           const isFirstAccount = accountIdx === 0
@@ -420,8 +421,7 @@ export class W3mProfileWalletsView extends LitElement {
               @buttonClick=${() =>
                 this.handleSwitchWallet({
                   connection,
-                  address: account.address,
-                  forceReconnect: forceReconnectOnSwitch
+                  address: account.address
                 })}
             ></wui-inactive-profile-wallet-item>
           </wui-flex>`
@@ -444,7 +444,6 @@ export class W3mProfileWalletsView extends LitElement {
           ${this.displayConnections({
             connections: storageConnections,
             includeSeparator: true,
-            forceReconnectOnSwitch: true,
             isRecentConnections: true
           })}
         </wui-flex>
@@ -512,11 +511,7 @@ export class W3mProfileWalletsView extends LitElement {
     `
   }
 
-  private async handleSwitchWallet({
-    connection,
-    address,
-    forceReconnect
-  }: HandleSwitchWalletParams) {
+  private async handleSwitchWallet({ connection, address }: HandleSwitchWalletParams) {
     try {
       this.isSwitching = true
       this.lastSelectedConnectorId = connection.connectorId
@@ -530,7 +525,6 @@ export class W3mProfileWalletsView extends LitElement {
         connection,
         address,
         namespace: this.namespace as ChainNamespace,
-        forceReconnect,
         onConnectorChange() {
           SnackController.showSuccess('Wallet switched')
         },
