@@ -4,14 +4,13 @@ on:
   push:
     branches:
       - main
-      - test/devin-workflow-trigger
 
 permissions:
   contents: read # Required to read github.event.head_commit.message
 
 jobs:
   trigger-devin-docs-analysis:
-    # This job runs only if the head commit message on the push to main is exactly 'chore: version packages'
+    # This job runs only if the head commit message on the push to main contains 'chore: version packages'
     if: |
       contains(github.event.head_commit.message, 'chore: version packages')
     runs-on: ubuntu-latest
