@@ -19,6 +19,7 @@ jobs:
       - name: Send Slack Notification for Docs Analysis
         env:
           DEVIN_SLACK_WEBHOOK_URL: ${{ secrets.DEVIN_SLACK_WEBHOOK_URL }}
+          DEVIN_SLACK_USER_ID: U08M9DKD4MC
           PROMPT_TEXT: |
             ## Context
 
@@ -50,7 +51,7 @@ jobs:
 
           # PROMPT_TEXT is set in the 'env' block and should be fully expanded by GitHub Actions.
           # Construct the final message text for Slack.
-          MESSAGE_TEXT="@devin ${PROMPT_TEXT}"
+          MESSAGE_TEXT="<@${DEVIN_SLACK_USER_ID}> ${PROMPT_TEXT}"
 
           # Create the JSON payload for Slack.
           # jq 's --arg option handles escaping special characters in MESSAGE_TEXT for valid JSON.
