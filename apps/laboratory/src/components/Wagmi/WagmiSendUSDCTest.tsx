@@ -21,16 +21,17 @@ import { type Chain, type Hex, erc20Abi } from 'viem'
 import { type Config, useAccount } from 'wagmi'
 import { getWalletClient } from 'wagmi/actions'
 
-import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
+import { arbitrum, base, mainnet, optimism, sepolia } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useTransactionToast } from '@/src/components/TransactionToast'
 import { useWalletGetAssets } from '@/src/hooks/useWalletGetAssets'
 import { ErrorUtil } from '@/src/utils/ErrorUtil'
 
-const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum]
+const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum, mainnet]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
 const TOKEN_ADDRESSES = {
+  [mainnet.id]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
   [sepolia.id]: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238' as Hex,
   [optimism.id]: '0x0b2c639c533813f4aa9d7837caf62653d097ff85' as Hex,
   [base.id]: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Hex,
