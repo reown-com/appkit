@@ -83,7 +83,11 @@ export function LayoutHeader() {
         <Button rightIcon={<IoSettingsOutline />} onClick={controlsNW.onOpen}>
           Networks
         </Button>
-        <Button rightIcon={<IoSettingsOutline />} onClick={controlsPID.onOpen}>
+        <Button
+          data-testid="project-id-button"
+          rightIcon={<IoSettingsOutline />}
+          onClick={controlsPID.onOpen}
+        >
           Project ID
         </Button>
         <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>

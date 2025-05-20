@@ -487,6 +487,14 @@ export class ModalPage {
     await this.page.getByTestId('connect-button').click()
   }
 
+  async openAllSocials() {
+    await this.page.getByTestId('social-selector-more').click()
+  }
+
+  async openOnramp() {
+    await this.page.getByTestId('w3m-account-default-onramp-button').click()
+  }
+
   async closeModal() {
     // Wait until stable after animations
     await this.page.waitForTimeout(200)

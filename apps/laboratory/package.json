@@ -15,6 +15,7 @@
     "playwright:test": "HEADLESS=true playwright test",
     "playwright:test:mobile-wallet-features": "playwright test --grep 'mobile-wallet-features.spec.ts'",
     "playwright:test:basic": "playwright test --grep 'basic-tests.spec.ts'",
+    "playwright:test:config": "playwright test --grep 'config.spec.ts'",
     "playwright:test:extension": "HEADLESS=true playwright test --grep 'extension.spec.ts'",
     "playwright:test:siwe-extension": "HEADLESS=true playwright test --grep 'siwe-extension.spec.ts'",
     "playwright:test:siwx-extension": "HEADLESS=true playwright test --grep 'siwx-extension.spec.ts'",

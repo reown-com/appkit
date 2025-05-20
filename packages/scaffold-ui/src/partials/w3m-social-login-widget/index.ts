@@ -166,6 +166,7 @@ export class W3mSocialLoginWidget extends LitElement {
           tabIdx=${ifDefined(this.tabIdx)}
           @click=${this.onMoreSocialsClick.bind(this)}
           ?disabled=${this.isPwaLoading}
+          data-testid="social-selector-more"
         ></wui-logo-select>
       </wui-flex>`
     }

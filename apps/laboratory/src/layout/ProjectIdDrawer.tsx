@@ -78,7 +78,7 @@ export function ProjectIdDrawer({ controls }: Props) {
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Set Custom Project ID (only works on remote pages)</DrawerHeader>
+        <DrawerHeader>Set Custom Project ID</DrawerHeader>
         <DrawerBody>
           <Stack spacing={4}>
             <FormControl>
@@ -86,6 +86,7 @@ export function ProjectIdDrawer({ controls }: Props) {
               <Input
                 placeholder="Enter your Project ID"
                 value={inputValue}
+                data-testid="project-id-input"
                 onChange={handleChange}
               />
             </FormControl>
@@ -98,7 +99,7 @@ export function ProjectIdDrawer({ controls }: Props) {
           <Button variant="ghost" mr={3} onClick={handleClear} isDisabled={!currentProjectId}>
             Clear Project ID
           </Button>
-          <Button colorScheme="blue" onClick={handleSave}>
+          <Button data-testid="project-id-save-button" colorScheme="blue" onClick={handleSave}>
             Save Project ID
           </Button>
         </DrawerFooter>
