@@ -26,10 +26,9 @@ jobs:
       contains(github.event.head_commit.message, 'chore: version packages')
     runs-on: ubuntu-latest
     steps:
-      - name: Create Devin Session for Docs Analysis
-        id: devin-docs-analysis
+      - name: Send Slack Notification for Docs Analysis
         env:
-          DEVIN_API_KEY: ${{ secrets.DEVIN_API_KEY }}
+          DEVIN_SLACK_WEBHOOK_URL: ${{ secrets.DEVIN_SLACK_WEBHOOK_URL }}
           # APPKIT_REPO is the repository where this workflow is running, assumed to be reown-com/appkit
           APPKIT_REPO: ${{ github.repository }}
           # COMMIT_SHA is the SHA of the triggering 'chore: version packages' commit
@@ -53,49 +52,40 @@ jobs:
             * If no documentation updates are needed, clearly state this conclusion. You do not need to open a pull request in this case. Simply report that no updates are necessary based on your analysis of the changelog.
             * You will need to operate within the following repositories: ${{ env.APPKIT_REPO }} (for reading the changelog of the commit) and reown-com/reown-docs (for potentially creating a PR with documentation updates).
         run: |
-          # Convert multiline string to JSON-safe format
-          # Using printf instead of echo to handle special characters and ensure newline is correctly processed by jq
-          ESCAPED_PROMPT=$(printf "%s" "$PROMPT_TEXT" | jq -Rs .)
+          # Construct the message text, prefixing PROMPT_TEXT with "@devin "
+          # Note: PROMPT_TEXT is already expanded with its newlines and other GitHub Actions context variables here.
+          MESSAGE_TEXT="@devin ${PROMPT_TEXT}"
 
-          echo "Triggering Devin Session for Docs Analysis."
+          # Create the JSON payload for Slack.
+          # The 'jq -n --arg key "value"' syntax is used to safely create a JSON object
+          # with a string value, ensuring that any special characters in MESSAGE_TEXT
+          # (like newlines, quotes, backslashes) are correctly escaped by jq to form a valid JSON string.
+          JSON_PAYLOAD=$(jq -n --arg text "$MESSAGE_TEXT" '{text: $text}')
+
+          echo "Sending Slack notification for Docs Analysis."
           echo "AppKit Repo: ${{ env.APPKIT_REPO }}"
           echo "Commit SHA: ${{ env.COMMIT_SHA }}"
           echo "Commit URL: ${{ env.COMMIT_URL }}"
+          # For debugging the payload if needed (uncomment if there are issues):
+          # echo "Slack Payload: $JSON_PAYLOAD"
 
+          # Send the notification to Slack using curl
+          # The -s flag makes curl silent (no progress meter)
+          # The -X POST specifies the HTTP method
+          # The -H adds a Content-Type header
+          # The -d provides the data (our JSON payload)
           RESPONSE=$(curl -s -X POST \
-            -H "Authorization: Bearer $DEVIN_API_KEY" \
             -H "Content-Type: application/json" \
-            -d "{\\"prompt\\": $ESCAPED_PROMPT}" \
-            "https://api.devin.ai/v1/sessions")
+            -d "$JSON_PAYLOAD" \
+            "${{ env.DEVIN_SLACK_WEBHOOK_URL }}")
 
-          # Check for errors in the response
-          # Check if RESPONSE is valid JSON first
-          if ! echo "$RESPONSE" | jq -e . > /dev/null 2>&1; then
-            echo "Error: Devin API response is not valid JSON."
-            echo "Response: $RESPONSE"
+          # Check the response from the Slack API.
+          # A successful Slack webhook POST request typically returns the string "ok".
+          if [ "$RESPONSE" = "ok" ]; then
+            echo "Slack notification sent successfully."
+          else
+            echo "Error sending Slack notification."
+            echo "Response from Slack: $RESPONSE"
+            # Exiting with 1 will mark the GitHub Actions step as failed.
             exit 1
           fi
-
-          ERROR_MSG=$(echo "$RESPONSE" | jq -r \'.error // "null"\') # Provide default "null" if .error is missing
-          if [ "$ERROR_MSG" != "null" ]; then
-            echo "Error creating Devin session: $ERROR_MSG"
-            echo "Full response: $RESPONSE"
-            exit 1
-          fi
-
-          SESSION_ID=$(echo "$RESPONSE" | jq -r \'.session_id // "null"\')
-          SESSION_URL=$(echo "$RESPONSE" | jq -r \'.url // "null"\')
-
-          if [ "$SESSION_ID" == "null" ] || [ "$SESSION_URL" == "null" ]; then
-            echo "Error: Devin session details (session_id or url) are missing from the response."
-            echo "Full response: $RESPONSE"
-            exit 1
-          fi
-
-          echo "session-id=$SESSION_ID" >> $GITHUB_OUTPUT
-          echo "session-url=$SESSION_URL" >> $GITHUB_OUTPUT
-          echo "Devin session created successfully."
-          echo "Session ID: $SESSION_ID"
-          echo "Session URL: $SESSION_URL"
-          # Avoid logging the full response if it's too verbose or contains sensitive info by default
-          # echo "Full response from Devin API: $RESPONSE"
