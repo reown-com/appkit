@@ -303,12 +303,10 @@ export const ApiController = {
   },
 
   async initializeExcludedWallets({ ids }: { ids: string[] }) {
-    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     const params = {
       page: 1,
       entries: ids.length,
-      include: ids,
-      chains
+      include: ids
     }
     const { data } = await ApiController.fetchWallets(params)
 

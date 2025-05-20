@@ -1,5 +1,17 @@
 # @reown/appkit-wallet
 
+## 1.7.6
+
+### Patch Changes
+
+- [#4353](https://github.com/reown-com/appkit/pull/4353) [`3b74f1f`](https://github.com/reown-com/appkit/commit/3b74f1fef5a4498634cc744c37e05dbb7f2e2075) Thanks [@lukaisailovic](https://github.com/lukaisailovic)! - Enaple Solana in AppKit Pay
+
+- [#4347](https://github.com/reown-com/appkit/pull/4347) [`442b1fa`](https://github.com/reown-com/appkit/commit/442b1fa5211af3aaf8c3dfa4f0c2b39ffd740a60) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes chain parameter from the excluded wallets fetch request to not filter wallets by supported networks
+
+- Updated dependencies [[`3b74f1f`](https://github.com/reown-com/appkit/commit/3b74f1fef5a4498634cc744c37e05dbb7f2e2075), [`442b1fa`](https://github.com/reown-com/appkit/commit/442b1fa5211af3aaf8c3dfa4f0c2b39ffd740a60)]:
+  - @reown/appkit-common@1.7.6
+  - @reown/appkit-polyfills@1.7.6
+
 ## 1.7.5
 
 ### Patch Changes
