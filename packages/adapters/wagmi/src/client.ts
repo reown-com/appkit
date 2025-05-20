@@ -692,6 +692,8 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
+    // eslint-disable-next-line no-warning-comments
+    // TODO: check by id here in case
     await wagmiDisconnect(this.wagmiConfig)
   }
 

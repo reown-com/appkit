@@ -450,19 +450,16 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
-      disconnect: async (chainNamespace?: ChainNamespace) => {
+      disconnect: async (id?: string, chainNamespace?: ChainNamespace) => {
         const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
         const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider(namespace)
-        const providerType = ProviderUtil.getProviderId(namespace)
-        const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
-        const connectorId = ConnectorController.getConnectorId(namespace)
+        const connectorId = id ?? ConnectorController.getConnectorId(namespace)
 
-        await adapter?.disconnect({ id: connectorId, provider, providerType })
+        await adapter?.disconnect({ id: connectorId })
 
         // Used for shim disconnection
-        if (activeConnectorId) {
-          StorageUtil.addDisconnectedConnectorId(activeConnectorId, namespace)
+        if (connectorId) {
+          StorageUtil.addDisconnectedConnectorId(connectorId, namespace)
         }
       },
       disconnectAll: async (chainNamespace?: ChainNamespace) => {

@@ -26,11 +26,11 @@ export default {
     tagLabel: 'Active',
     tagVariant: 'success',
     buttonVariant: 'neutral',
-    icon: 'google',
-    iconBadge: 'lightbulb',
+    icon: undefined,
+    iconBadge: undefined,
     iconBadgeSize: 'md',
-    loading: false,
-    iconSize: 'md'
+    iconSize: 'md',
+    confirmation: false
   },
   argTypes: {
     address: {
@@ -65,9 +65,6 @@ export default {
       options: buttonOptions,
       control: { type: 'select' }
     },
-    loading: {
-      control: { type: 'boolean' }
-    },
     icon: {
       options: [undefined, ...iconOptions],
       control: { type: 'select' }
@@ -83,6 +80,9 @@ export default {
     iconBadgeSize: {
       options: ['xl', 'md', 'sm', 'xs'],
       control: { type: 'select' }
+    },
+    confirmation: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -104,6 +104,7 @@ export const Default: Component = {
         iconBadgeSize=${args.iconBadgeSize}
         charsStart=${args.charsStart}
         charsEnd=${args.charsEnd}
+        ?confirmation=${args.confirmation}
         @disconnect=${() => alert('disconnect')}
         @copy=${() => alert('copied')}
       ></wui-active-profile-wallet-item>

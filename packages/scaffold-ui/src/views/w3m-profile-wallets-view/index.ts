@@ -96,7 +96,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
-  @state() private isDisconnecting = false
+  @state() private isDeleting = false
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -195,7 +195,8 @@ export class W3mProfileWalletsView extends LitElement {
         ${hasConnections
           ? html`<wui-link
               color="fg-200"
-              @click=${() => ChainController.disconnect(this.namespace, true)}
+              @click=${() =>
+                ChainController.disconnect({ chainNamespace: this.namespace, disconnectAll: true })}
             >
               Disconnect All
             </wui-link>`
@@ -262,7 +263,6 @@ export class W3mProfileWalletsView extends LitElement {
         tagVariant="success"
         .description=${description}
         .profileName=${this.profileName}
-        .loading=${this.isDisconnecting}
         .charsStart=${CHARS_START}
         .charsEnd=${CHARS_END}
         .icon=${icon}
@@ -270,6 +270,8 @@ export class W3mProfileWalletsView extends LitElement {
         .iconBadge=${isSmartAccount ? ICON_BADGE_SIZE.icon : undefined}
         .iconBadgeSize=${isSmartAccount ? ICON_BADGE_SIZE.size : undefined}
         imageSrc=${connectorImage}
+        ?confirmation=${this.isDeleting}
+        @toggleConfirmation=${this.handleToggleConfirmation.bind(this)}
         @copy=${this.handleCopyAddress.bind(this)}
         @disconnect=${this.handleDisconnect.bind(this)}
       ></wui-active-profile-wallet-item>
@@ -332,11 +334,7 @@ export class W3mProfileWalletsView extends LitElement {
     )
     const dedupedStorageConnections = ConnectionUtil.excludeExistingConnections(
       connections,
-      ConnectionUtil.filterConnections({
-        connections: storageConnectionsWithCurrentActiveConnectors,
-        filterOutWcConnections: false,
-        filterOutAuthConnections: false
-      })
+      storageConnectionsWithCurrentActiveConnectors
     )
 
     const hasConnections =
@@ -411,6 +409,8 @@ export class W3mProfileWalletsView extends LitElement {
               alt=${connection.connectorId}
               buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
               buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
+              rightIcon=${isRecentConnections ? 'bin' : 'off'}
+              rightIconSize="xs"
               imageSrc=${connectorImage}
               .icon=${icon}
               .iconSize=${iconSize}
@@ -423,6 +423,10 @@ export class W3mProfileWalletsView extends LitElement {
                   connection,
                   address: account.address
                 })}
+              @iconClick=${() =>
+                isRecentConnections
+                  ? this.handleDeleteRecentConnection()
+                  : this.handleDisconnectConnection(connection)}
             ></wui-inactive-profile-wallet-item>
           </wui-flex>`
         })
@@ -541,13 +545,12 @@ export class W3mProfileWalletsView extends LitElement {
 
   private async handleDisconnect() {
     try {
-      this.isDisconnecting = true
       await ConnectionController.disconnect()
       SnackController.showSuccess('Disconnected')
     } catch (err) {
       SnackController.showError('Failed to disconnect')
     } finally {
-      this.isDisconnecting = false
+      this.isDeleting = false
     }
   }
 
@@ -558,6 +561,20 @@ export class W3mProfileWalletsView extends LitElement {
   private handleAddWallet() {
     ConnectorController.setFilterByNamespace(this.namespace)
     RouterController.push('Connect')
+  }
+
+  private handleToggleConfirmation() {
+    this.isDeleting = !this.isDeleting
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private handleDeleteRecentConnection() {
+    // eslint-disable-next-line no-alert
+    alert('delete')
+  }
+
+  private handleDisconnectConnection(connection: Connection) {
+    ChainController.disconnect({ id: connection.connectorId, chainNamespace: this.namespace })
   }
 
   private onTabChange(index: number) {

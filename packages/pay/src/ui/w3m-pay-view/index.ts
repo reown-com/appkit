@@ -229,6 +229,8 @@ export class W3mPayView extends LitElement {
   private async onDisconnect(e: Event) {
     e.stopPropagation()
     try {
+      // eslint-disable-next-line no-warning-comments
+      // TODO: disconnect all
       await ConnectionController.disconnect()
       ModalController.close()
     } catch {

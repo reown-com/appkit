@@ -405,29 +405,29 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
           HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
         )
 
-        if (!connection) {
-          throw new Error('Connection not found')
-        }
+        if (connection) {
+          const connector = this.connectors.find(c =>
+            HelpersUtil.isLowerCaseMatch(c.id, connectorId)
+          )
 
-        const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, connectorId))
+          if (!connector) {
+            throw new Error('Connector not found')
+          }
 
-        if (!connector) {
-          throw new Error('Connector not found')
-        }
+          if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), connectorId)) {
+            this.emit('accountChanged', {
+              address,
+              chainId: connection.caipNetwork?.id,
+              connector
+            })
+          }
 
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), connectorId)) {
-          this.emit('accountChanged', {
-            address,
-            chainId: connection.caipNetwork?.id,
-            connector
+          this.addConnection({
+            connectorId,
+            accounts: [{ address }],
+            caipNetwork: connection?.caipNetwork
           })
         }
-
-        this.addConnection({
-          connectorId,
-          accounts: [{ address }],
-          caipNetwork: connection?.caipNetwork
-        })
       }
     }
 
@@ -501,17 +501,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    if (!params.provider || !params.providerType) {
-      throw new Error('Provider or providerType not provided')
-    }
-
     const connector = this.connectors.find(c => c.id === params.id)
 
     if (!connector) {
       throw new Error('Provider not found')
     }
-
-    await params.provider.disconnect()
+    await connector.provider.disconnect()
 
     this.deleteConnection(connector.id)
 
@@ -520,7 +515,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     } else {
       const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
 
-      if (lastConnection) {
+      if (
+        lastConnection &&
+        HelpersUtil.isLowerCaseMatch(connector.id, this.getConnectorId('solana'))
+      ) {
         const [account] = lastConnection.accounts
 
         const newConnector = this.connectors.find(c =>
@@ -646,9 +644,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
         }
 
         await this.disconnect({
-          id: connector.id,
-          provider: connector.provider,
-          providerType: connector.type
+          id: connector.id
         })
 
         return connection

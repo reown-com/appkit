@@ -140,6 +140,8 @@ export class W3mConnectingSiweView extends LitElement {
     this.isCancelling = true
     const caipAddress = ChainController.state.activeCaipAddress
     if (caipAddress) {
+      // eslint-disable-next-line no-warning-comments
+      // TODO: disconnect all
       await ConnectionController.disconnect()
       ModalController.close()
     } else {

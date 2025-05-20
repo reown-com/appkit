@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
-import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
@@ -45,11 +44,11 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public buttonVariant: ButtonVariant = 'neutral'
 
-  @property({ type: Boolean }) public loading = false
-
   @property({ type: Number }) public charsStart = 4
 
   @property({ type: Number }) public charsEnd = 6
+
+  @property({ type: Boolean }) public confirmation = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -65,10 +64,10 @@ export class WuiActiveProfileWalletItem extends LitElement {
     return html`
       <wui-flex alignItems="center" justifyContent="space-between" columnGap="s">
         ${this.imageOrIconTemplate()}
-        <wui-icon color="fg-275" size="md" name="copy" @click=${this.dispatchCopyEvent}></wui-icon>
+        <wui-icon color="fg-275" size="xs" name="copy" @click=${this.dispatchCopyEvent}></wui-icon>
         <wui-icon
           color="fg-275"
-          size="md"
+          size="xs"
           name="externalLink"
           @click=${this.dispatchExternalLinkEvent}
         ></wui-icon>
@@ -168,12 +167,32 @@ export class WuiActiveProfileWalletItem extends LitElement {
   }
 
   public disconnectTemplate() {
+    if (this.confirmation) {
+      return html`
+        <wui-flex alignItems="center" columnGap="1xs" class="confirmation-box">
+          <wui-text variant="tiny-600" color="fg-200"> Disconnect </wui-text>
+
+          <wui-icon
+            color="error-100"
+            size="xs"
+            name="x-mark"
+            @click=${this.dispatchToggleConfirmationEvent.bind(this)}
+          ></wui-icon>
+          <wui-icon
+            color="success-100"
+            size="xs"
+            name="checkmarkBold"
+            @click=${this.dispatchDisconnectEvent}
+          ></wui-icon>
+        </wui-flex>
+      `
+    }
+
     return html`
       <wui-button
         size="xs"
         variant=${this.buttonVariant}
-        .loading=${this.loading}
-        @click=${this.dispatchDisconnectEvent}
+        @click=${this.dispatchToggleConfirmationEvent.bind(this)}
       >
         Disconnect
       </wui-button>
@@ -190,6 +209,10 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   private dispatchCopyEvent() {
     this.dispatchEvent(new CustomEvent('copy', { bubbles: true, composed: true }))
+  }
+
+  private dispatchToggleConfirmationEvent() {
+    this.dispatchEvent(new CustomEvent('toggleConfirmation', { bubbles: true, composed: true }))
   }
 }
 

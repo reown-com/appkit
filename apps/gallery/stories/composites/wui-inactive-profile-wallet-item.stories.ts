@@ -22,6 +22,8 @@ export default {
     imageSrc: walletImagesOptions[0]?.src,
     icon: undefined,
     iconSize: 'md',
+    rightIcon: undefined,
+    rightIconSize: 'md',
     charsStart: 4,
     charsEnd: 6
   },
@@ -61,6 +63,14 @@ export default {
     iconSize: {
       options: ['xl', 'md', 'sm', 'xs'],
       control: { type: 'select' }
+    },
+    rightIcon: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
+    },
+    rightIconSize: {
+      options: ['xl', 'md', 'sm', 'xs'],
+      control: { type: 'select' }
     }
   }
 } as Component
@@ -79,6 +89,8 @@ export const Default: Component = {
         .charsEnd=${args.charsEnd}
         .icon=${args.icon}
         .iconSize=${args.iconSize}
+        .rightIcon=${args.rightIcon}
+        .rightIconSize=${args.rightIconSize}
         ?loading=${args.loading}
       ></wui-inactive-profile-wallet-item>
     </gallery-container>

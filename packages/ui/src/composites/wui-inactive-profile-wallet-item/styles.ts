@@ -14,4 +14,8 @@ export default css`
   .icon-box {
     background-color: var(--wui-color-gray-glass-002);
   }
+
+  .right-icon {
+    cursor: pointer;
+  }
 `

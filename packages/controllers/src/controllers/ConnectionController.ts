@@ -76,7 +76,7 @@ export interface ConnectExternalOptions {
 
 export interface ConnectionControllerClient {
   connectWalletConnect?: () => Promise<void>
-  disconnect: (chainNamespace?: ChainNamespace) => Promise<void>
+  disconnect: (id?: string, chainNamespace?: ChainNamespace) => Promise<void>
   disconnectAll: (chainNamespace?: ChainNamespace) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
@@ -332,11 +332,11 @@ export const ConnectionController = {
     state.status = status
   },
 
-  async disconnect(namespace?: ChainNamespace) {
+  async disconnect(namespace?: ChainNamespace, id?: string) {
     try {
       ModalController.setLoading(true, namespace)
       await SIWXUtil.clearSessions()
-      await ChainController.disconnect(namespace)
+      await ChainController.disconnect({ chainNamespace: namespace, id })
       ModalController.setLoading(false, namespace)
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {

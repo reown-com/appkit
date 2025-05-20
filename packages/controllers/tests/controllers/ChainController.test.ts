@@ -422,7 +422,7 @@ describe('ChainController', () => {
       }
     } as unknown as ChainAdapter)
 
-    await ChainController.disconnect()
+    await ChainController.disconnect({})
 
     expect(connectionController.disconnect).toHaveBeenCalledTimes(2)
 
@@ -473,7 +473,7 @@ describe('ChainController', () => {
       }
     } as unknown as ChainAdapter)
 
-    await ChainController.disconnect()
+    await ChainController.disconnect({})
 
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('EVM disconnect failed'))
     expect(sendEventSpy).toHaveBeenCalledWith({

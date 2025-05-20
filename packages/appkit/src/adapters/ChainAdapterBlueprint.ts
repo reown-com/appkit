@@ -465,8 +465,6 @@ export namespace AdapterBlueprint {
 
   export type DisconnectParams = {
     id?: string
-    provider?: AppKitConnector['provider']
-    providerType?: AppKitConnector['type']
   }
 
   export type ConnectParams = {

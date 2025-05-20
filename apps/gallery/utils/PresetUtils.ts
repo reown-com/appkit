@@ -224,7 +224,8 @@ export const iconOptions: IconType[] = [
   'walletConnect',
   'walletPlaceholder',
   'warningCircle',
-  'lightbulb'
+  'lightbulb',
+  'bin'
 ]
 
 export const visualOptions: VisualType[] = [

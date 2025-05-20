@@ -288,9 +288,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
 
         await this.disconnect({
-          id: connector.id,
-          provider: connector.provider,
-          providerType: connector.type
+          id: connector.id
         })
 
         return connection
@@ -581,30 +579,32 @@ export class Ethers5Adapter extends AdapterBlueprint {
   }
 
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    if (!params.provider || !params.providerType) {
-      throw new Error('Provider or providerType not provided')
+    const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))
+
+    if (!connector) {
+      throw new Error('Connector not found')
     }
 
-    switch (params.providerType) {
+    switch (connector.type) {
       case 'WALLET_CONNECT':
-        if ((params.provider as UniversalProvider).session) {
-          ;(params.provider as UniversalProvider).disconnect()
+        if ((connector.provider as UniversalProvider).session) {
+          ;(connector.provider as UniversalProvider).disconnect()
         }
         break
       case 'AUTH':
-        await params.provider.disconnect()
+        await connector.provider?.disconnect()
         break
       case 'ANNOUNCED':
       case 'EXTERNAL':
-        await this.revokeProviderPermissions(params.provider as Provider)
+        await this.revokeProviderPermissions(connector.provider as Provider)
         break
       default:
         throw new Error('Unsupported provider type')
     }
 
-    if (params.id) {
-      this.removeProviderListeners(params.id)
-      this.deleteConnection(params.id)
+    if (connector.id) {
+      this.removeProviderListeners(connector.id)
+      this.deleteConnection(connector.id)
     }
 
     if (this.connections.length === 0) {
@@ -612,10 +612,13 @@ export class Ethers5Adapter extends AdapterBlueprint {
     } else {
       const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
 
-      if (lastConnection) {
+      if (
+        lastConnection &&
+        HelpersUtil.isLowerCaseMatch(connector.id, this.getConnectorId('eip155'))
+      ) {
         const [account] = lastConnection.accounts
 
-        const connector = this.connectors.find(c =>
+        const newConnector = this.connectors.find(c =>
           HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
         )
 
@@ -623,7 +626,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
           this.emit('accountChanged', {
             address: account.address,
             chainId: Number(lastConnection.caipNetwork?.id ?? 1),
-            connector
+            connector: newConnector
           })
         }
       }

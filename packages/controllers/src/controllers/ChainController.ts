@@ -59,6 +59,12 @@ export interface ChainControllerState {
   isSwitchingNamespace: boolean
 }
 
+interface DisconnectParameters {
+  id?: string
+  chainNamespace?: ChainNamespace
+  disconnectAll?: boolean
+}
+
 type ChainControllerStateKey = keyof ChainControllerState
 
 // -- State --------------------------------------------- //
@@ -664,8 +670,8 @@ export const ChainController = {
     ConnectorController.removeConnectorId(chainToWrite)
   },
 
-  async disconnect(namespace?: ChainNamespace, disconnectAll = false) {
-    const chainsToDisconnect = getChainsToDisconnect(namespace)
+  async disconnect({ id, chainNamespace, disconnectAll = false }: DisconnectParameters) {
+    const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
 
     try {
       // Reset send state when disconnecting
@@ -679,7 +685,7 @@ export const ChainController = {
               if (disconnectAll && adapter.connectionControllerClient?.disconnectAll) {
                 await adapter.connectionControllerClient.disconnectAll(ns)
               } else if (adapter.connectionControllerClient?.disconnect) {
-                await adapter.connectionControllerClient.disconnect(ns)
+                await adapter.connectionControllerClient.disconnect(id, ns)
               }
             }
           } catch (error) {
@@ -702,7 +708,7 @@ export const ChainController = {
         type: 'track',
         event: 'DISCONNECT_SUCCESS',
         properties: {
-          namespace: namespace || 'all'
+          namespace: chainNamespace || 'all'
         }
       })
     } catch (error) {

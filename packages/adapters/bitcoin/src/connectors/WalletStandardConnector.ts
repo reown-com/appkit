@@ -205,6 +205,8 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
       this.walletUnsubscribes.push(
         feature.on('change', data => {
+          // eslint-disable-next-line no-warning-comments
+          // TODO: remove
           if ('accounts' in data && data.accounts) {
             if (data.accounts.length === 0) {
               this.emit('disconnect')

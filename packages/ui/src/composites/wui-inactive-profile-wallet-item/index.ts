@@ -35,6 +35,10 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public iconSize?: SizeType = 'md'
 
+  @property() public rightIcon?: IconType = 'off'
+
+  @property() public rightIconSize?: SizeType = 'md'
+
   @property({ type: Boolean }) public loading = false
 
   @property({ type: Number }) public charsStart = 4
@@ -91,19 +95,33 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   public buttonActionTemplate() {
     return html`
-      <wui-button
-        size="xs"
-        variant=${this.buttonVariant}
-        .loading=${this.loading}
-        @click=${this.handleClick}
-      >
-        ${this.buttonLabel}
-      </wui-button>
+      <wui-flex columnGap="1xs" alignItems="center" justifyContent="center">
+        <wui-button
+          size="xs"
+          variant=${this.buttonVariant}
+          .loading=${this.loading}
+          @click=${this.handleButtonClick}
+        >
+          ${this.buttonLabel}
+        </wui-button>
+
+        <wui-icon
+          color="fg-275"
+          size=${this.rightIconSize}
+          name=${this.rightIcon}
+          class="right-icon"
+          @click=${this.handleIconClick}
+        ></wui-icon>
+      </wui-flex>
     `
   }
 
-  private handleClick() {
+  private handleButtonClick() {
     this.dispatchEvent(new CustomEvent('buttonClick'))
+  }
+
+  private handleIconClick() {
+    this.dispatchEvent(new CustomEvent('iconClick'))
   }
 }
 

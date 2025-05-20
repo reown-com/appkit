@@ -48,8 +48,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('The connector does not support any of the requested chains')
     }
 
-    this.connector = connector
-
     const connection = this.connections.find(c => c.connectorId === connector.id)
 
     if (connection) {
@@ -74,7 +72,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     const address = await connector.connect()
 
-    this.listenProviderEvents(this.connector)
+    this.listenProviderEvents(connector)
 
     this.emit('accountChanged', {
       address,
@@ -229,9 +227,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         }
 
         await this.disconnect({
-          id: connector.id,
-          provider: connector.provider,
-          providerType: connector.type
+          id: connector.id
         })
 
         return connection
@@ -271,17 +267,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   override async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    if (params?.provider) {
-      await params.provider.disconnect()
-    } else if (this.connector) {
-      await this.connector.disconnect()
-    }
-
     const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))
 
-    if (!connector) {
-      throw new Error('BitcoinAdapter:disconnect - connector is undefined')
+    if (!connector?.provider) {
+      throw new Error('BitcoinAdapter:disconnect - connector.provider is undefined')
     }
+
+    await connector.provider.disconnect()
 
     this.removeProviderListeners(connector.id)
     this.deleteConnection(connector.id)
