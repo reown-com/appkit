@@ -29,18 +29,13 @@ jobs:
       - name: Send Slack Notification for Docs Analysis
         env:
           DEVIN_SLACK_WEBHOOK_URL: ${{ secrets.DEVIN_SLACK_WEBHOOK_URL }}
-          # APPKIT_REPO is the repository where this workflow is running, assumed to be reown-com/appkit
-          APPKIT_REPO: ${{ github.repository }}
-          # COMMIT_SHA is the SHA of the triggering 'chore: version packages' commit
-          COMMIT_SHA: ${{ github.sha }}
-          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
           PROMPT_TEXT: |
             ## Context
 
-            A commit titled "chore: version packages" (SHA: ${{ env.COMMIT_SHA }}) was just pushed to the main branch of the ${{ env.APPKIT_REPO }} repository. This commit is typically the result of a merged Pull Request.
+            A commit titled "chore: version packages" (SHA: ${{ github.sha }}) was just pushed to the main branch of the ${{ github.repository }} repository. This commit is typically the result of a merged Pull Request.
             Your task is to analyze the impact of this specific commit on the reown-com/reown-docs repository.
 
-            Please examine the changes introduced by commit ${{ env.COMMIT_SHA }} in the ${{ env.APPKIT_REPO }} repository. Focus your examination on the content of any `CHANGELOG.md` files modified in this commit. (Note: if multiple CHANGELOG.md files were part of this commit and are identical, examining one is sufficient, as per repository conventions).
+            Please examine the changes introduced by commit ${{ github.sha }} in the ${{ github.repository }} repository. Focus your examination on the content of any `CHANGELOG.md` files modified in this commit. (Note: if multiple CHANGELOG.md files were part of this commit and are identical, examining one is sufficient, as per repository conventions).
 
             Determine if any of the changes in the `CHANGELOG.md`(s) from this commit necessitate updates to the documentation in the reown-com/reown-docs repository.
 
@@ -48,44 +43,72 @@ jobs:
             * If documentation updates are required, create a pull request in the reown-com/reown-docs repository. The pull request should:
                 * Include the necessary documentation updates reflecting the changes from the appkit changelog.
                 * Contain a clear description of why the updates are needed, referencing the specific changes from the appkit repository.
-                * Include a link back to the original "chore: version packages" commit in the ${{ env.APPKIT_REPO }} repository (Commit: ${{ env.COMMIT_URL }}).
+                * Include a link back to the original "chore: version packages" commit in the ${{ github.repository }} repository (Commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}).
             * If no documentation updates are needed, clearly state this conclusion. You do not need to open a pull request in this case. Simply report that no updates are necessary based on your analysis of the changelog.
-            * You will need to operate within the following repositories: ${{ env.APPKIT_REPO }} (for reading the changelog of the commit) and reown-com/reown-docs (for potentially creating a PR with documentation updates).
+            * You will need to operate within the following repositories: ${{ github.repository }} (for reading the changelog of the commit) and reown-com/reown-docs (for potentially creating a PR with documentation updates).
         run: |
-          # Construct the message text, prefixing PROMPT_TEXT with "@devin "
-          # Note: PROMPT_TEXT is already expanded with its newlines and other GitHub Actions context variables here.
+          # Exit on error, print commands and their arguments as they are executed.
+          set -e
+          set -x
+
+          # Check if the Slack webhook URL is provided and not empty
+          if [ -z "${DEVIN_SLACK_WEBHOOK_URL}" ]; then
+            echo "Error: DEVIN_SLACK_WEBHOOK_URL is not set or is empty."
+            echo "Please ensure this secret is configured in the repository settings (Secrets and variables > Actions)."
+            exit 1
+          fi
+
+          # PROMPT_TEXT is set in the 'env' block and should be fully expanded by GitHub Actions.
+          # Construct the final message text for Slack.
           MESSAGE_TEXT="@devin ${PROMPT_TEXT}"
 
           # Create the JSON payload for Slack.
-          # The 'jq -n --arg key "value"' syntax is used to safely create a JSON object
-          # with a string value, ensuring that any special characters in MESSAGE_TEXT
-          # (like newlines, quotes, backslashes) are correctly escaped by jq to form a valid JSON string.
+          # jq 's --arg option handles escaping special characters in MESSAGE_TEXT for valid JSON.
+          echo "Attempting to create JSON payload..."
           JSON_PAYLOAD=$(jq -n --arg text "$MESSAGE_TEXT" '{text: $text}')
+          JQ_EXIT_CODE=$?
+
+          if [ $JQ_EXIT_CODE -ne 0 ]; then
+            echo "Error: jq command failed to create JSON payload (Exit Code: $JQ_EXIT_CODE)."
+            # Log a snippet of the message text to aid debugging, avoiding overly long logs.
+            echo "Original Message Text (first 200 characters):"
+            echo "${MESSAGE_TEXT:0:200}..."
+            exit 1
+          fi
+
+          # This line was uncommented by the user, which is helpful for debugging.
+          echo "Slack Payload: $JSON_PAYLOAD"
 
           echo "Sending Slack notification for Docs Analysis."
-          echo "AppKit Repo: ${{ env.APPKIT_REPO }}"
-          echo "Commit SHA: ${{ env.COMMIT_SHA }}"
-          echo "Commit URL: ${{ env.COMMIT_URL }}"
-          # For debugging the payload if needed (uncomment if there are issues):
-          # echo "Slack Payload: $JSON_PAYLOAD"
+          # Echo context information using direct GitHub context expressions for clarity and consistency.
+          echo "AppKit Repo: ${{ github.repository }}"
+          echo "Commit SHA: ${{ github.sha }}"
+          echo "Commit URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
 
-          # Send the notification to Slack using curl
-          # The -s flag makes curl silent (no progress meter)
-          # The -X POST specifies the HTTP method
-          # The -H adds a Content-Type header
-          # The -d provides the data (our JSON payload)
+          # Send the notification to Slack using curl.
+          # -s: silent mode (no progress meter).
+          # -X POST: specifies the HTTP POST method.
+          # -H "Content-Type: application/json": sets the content type header.
+          # -d "$JSON_PAYLOAD": provides the JSON data for the request body.
           RESPONSE=$(curl -s -X POST \
             -H "Content-Type: application/json" \
             -d "$JSON_PAYLOAD" \
-            "${{ env.DEVIN_SLACK_WEBHOOK_URL }}")
+            "${DEVIN_SLACK_WEBHOOK_URL}")
+          CURL_EXIT_CODE=$?
 
-          # Check the response from the Slack API.
+          if [ $CURL_EXIT_CODE -ne 0 ]; then
+            echo "Error: curl command failed to send Slack notification (Exit Code: $CURL_EXIT_CODE)."
+            # RESPONSE might be empty or contain an error message from curl itself (e.g., if URL is malformed or network issue).
+            echo "Curl response (if any): $RESPONSE"
+            exit 1
+          fi
+
+          # Check the content of the response from the Slack API.
           # A successful Slack webhook POST request typically returns the string "ok".
           if [ "$RESPONSE" = "ok" ]; then
             echo "Slack notification sent successfully."
           else
-            echo "Error sending Slack notification."
+            echo "Error sending Slack notification: Slack API did not return 'ok'."
             echo "Response from Slack: $RESPONSE"
-            # Exiting with 1 will mark the GitHub Actions step as failed.
             exit 1
           fi
