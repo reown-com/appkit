@@ -63,6 +63,7 @@ export const WalletUtil = {
 
   markWalletsAsInstalled(wallets: WcWallet[]) {
     const { connectors } = ConnectorController.state
+    const { featuredWalletIds } = OptionsController.state
     const installedConnectors = connectors
       .filter(c => c.type === 'ANNOUNCED')
       .reduce<Record<string, boolean>>((acum, val) => {
@@ -79,9 +80,26 @@ export const WalletUtil = {
       installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
     }))
 
-    const sortedWallets = walletsWithInstalled.sort(
-      (a, b) => Number(b.installed) - Number(a.installed)
-    )
+    const sortedWallets = walletsWithInstalled.sort((a, b) => {
+      const installationComparison = Number(b.installed) - Number(a.installed)
+      if (installationComparison !== 0) {
+        return installationComparison
+      }
+
+      if (featuredWalletIds?.length) {
+        const aIndex = featuredWalletIds.indexOf(a.id)
+        const bIndex = featuredWalletIds.indexOf(b.id)
+
+        if (aIndex !== -1 && bIndex !== -1) {
+          return aIndex - bIndex
+        }
+
+        if (aIndex !== -1) return -1
+        if (bIndex !== -1) return 1
+      }
+
+      return 0
+    })
 
     return sortedWallets
   },
