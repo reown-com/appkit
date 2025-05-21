@@ -275,7 +275,9 @@ describe('WalletUtil', () => {
         { info: { rdns: 'io.wallet3' }, type: 'ANNOUNCED' as const },
         { info: { rdns: 'io.wallet4' }, type: 'ANNOUNCED' as const }
       ]
-      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors as any)
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(
+        mockConnectors as any
+      )
 
       const result = WalletUtil.markWalletsAsInstalled(testWallets)
 
@@ -283,7 +285,7 @@ describe('WalletUtil', () => {
         { ...testWallets[2], installed: true }, // wallet3
         { ...testWallets[0], installed: true }, // wallet1
         { ...testWallets[3], installed: true }, // wallet4
-        { ...testWallets[1], installed: true }  // wallet2 (not in featuredWalletIds)
+        { ...testWallets[1], installed: true } // wallet2 (not in featuredWalletIds)
       ])
     })
 
