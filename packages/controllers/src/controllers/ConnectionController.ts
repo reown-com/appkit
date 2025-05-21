@@ -44,7 +44,7 @@ export type Connection = {
   }
 }
 
-interface SwitchAccountParams {
+interface ConnectParams {
   connection: Connection
   address: string
   namespace: ChainNamespace
@@ -438,13 +438,13 @@ export const ConnectionController = {
     return connector
   },
 
-  async switchAccount({
+  async connect({
     connection,
     address,
     namespace,
     onConnectorChange,
     onAddressChange
-  }: SwitchAccountParams) {
+  }: ConnectParams) {
     const status = ConnectionControllerUtil.getConnectionStatus(connection, namespace)
 
     switch (status) {

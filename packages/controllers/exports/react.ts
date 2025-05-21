@@ -1,13 +1,38 @@
+import { useState } from 'react'
+
 import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
 import { ChainController } from '../src/controllers/ChainController.js'
-import { ConnectionController } from '../src/controllers/ConnectionController.js'
+import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
+import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
 import { StorageUtil } from './utils.js'
+
+// -- Types ------------------------------------------------------------
+interface UseAppKitConnectionProps {
+  namespace?: ChainNamespace
+  onConnect?: () => void
+  onDisconnect?: () => void
+  onDeleteRecentConnection?: () => void
+}
+
+interface UseAppKitConnectionConnectProps {
+  connection: Connection
+  address: string
+}
+
+interface UseAppKitConnectionDisconnectProps {
+  connection: Connection
+}
+
+interface UseAppKitConnectionDeleteRecentConnectionProps {
+  address: string
+  connectorId: string
+}
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetworkCore(): Pick<
@@ -83,4 +108,93 @@ export function useDisconnect() {
   }
 
   return { disconnect }
+}
+
+export function useAppKitConnection({
+  namespace,
+  onConnect,
+  onDisconnect,
+  onDeleteRecentConnection
+}: UseAppKitConnectionProps) {
+  // Used to force a re-render when the storage connection changes
+  const [, setNum] = useState(0)
+
+  // Force re-renders when the connection or connector state changes
+  useSnapshot(ConnectionController.state)
+  useSnapshot(ConnectorController.state)
+
+  const { activeChain } = useSnapshot(ChainController.state)
+
+  const chainNamespace = namespace || activeChain
+
+  if (!chainNamespace) {
+    throw new Error('No namespace found')
+  }
+
+  const {
+    hasConnections,
+    hasActiveConnections,
+    hasStorageConnections,
+    connections,
+    storageConnections
+  } = ConnectionControllerUtil.getConnectionsData(chainNamespace)
+
+  async function connect({ connection, address }: UseAppKitConnectionConnectProps) {
+    if (!chainNamespace) {
+      throw new Error('No namespace found')
+    }
+
+    await ConnectionController.connect({
+      connection,
+      address,
+      namespace: chainNamespace,
+      onConnectorChange: () => {
+        onConnect?.()
+      },
+      onAddressChange: () => {
+        onConnect?.()
+      }
+    })
+  }
+
+  async function disconnect({ connection }: UseAppKitConnectionDisconnectProps) {
+    if (!chainNamespace) {
+      throw new Error('No namespace found')
+    }
+
+    await ConnectionController.disconnect({ id: connection.connectorId, namespace: chainNamespace })
+
+    onDisconnect?.()
+  }
+
+  function deleteRecentConnection({
+    address,
+    connectorId
+  }: UseAppKitConnectionDeleteRecentConnectionProps) {
+    if (!chainNamespace) {
+      throw new Error('No namespace found')
+    }
+
+    StorageUtil.deleteAddressFromConnection({
+      connectorId,
+      address,
+      namespace: chainNamespace
+    })
+
+    onDeleteRecentConnection?.()
+
+    // Force re-render when the storage connection changes
+    setNum(prev => prev + 1)
+  }
+
+  return {
+    hasConnections,
+    hasActiveConnections,
+    hasStorageConnections,
+    connections,
+    storageConnections,
+    connect,
+    disconnect,
+    deleteRecentConnection
+  }
 }

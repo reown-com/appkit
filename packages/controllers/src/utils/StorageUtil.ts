@@ -191,7 +191,7 @@ export const StorageUtil = {
 
       return SafeLocalStorage.getItem(key)
     } catch (e) {
-      console.info('Unable to get connected connector id in namespace ', namespace)
+      console.info('Unable to get connected connector id in namespace', namespace)
     }
 
     return undefined
@@ -658,7 +658,7 @@ export const StorageUtil = {
       )
 
       const connector = connectionMap.get(connectorId)
-      
+
       if (connector) {
         const updatedAccounts = connector.accounts.filter(
           acc => acc.address.toLowerCase() !== address.toLowerCase()
@@ -685,7 +685,7 @@ export const StorageUtil = {
       )
     } catch {
       console.error(
-        `Unable to remove address "${address}" from connector "${connectorId}" in namespace "${chainNamespace}"`
+        `Unable to remove address "${address}" from connector "${connectorId}" in namespace "${namespace}"`
       )
     }
   },

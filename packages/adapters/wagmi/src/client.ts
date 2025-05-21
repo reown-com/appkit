@@ -212,18 +212,13 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
 
         if (accountData.status === 'connected') {
-          if (
-            accountData.address !== prevAccountData?.address ||
-            prevAccountData.status !== 'connected'
-          ) {
-            this.setupWatchPendingTransactions()
+          this.setupWatchPendingTransactions()
 
-            this.handleAccountChanged({
-              address: accountData.address,
-              chainId: accountData.chainId,
-              connector: accountData.connector
-            })
-          }
+          this.handleAccountChanged({
+            address: accountData.address,
+            chainId: accountData.chainId,
+            connector: accountData.connector
+          })
 
           if (accountData.chainId !== prevAccountData?.chainId) {
             this.emit('switchNetwork', {
@@ -714,6 +709,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     const connector = params.id ? this.getWagmiConnector(params.id) : undefined
+
     await wagmiDisconnect(this.wagmiConfig, { connector })
   }
 

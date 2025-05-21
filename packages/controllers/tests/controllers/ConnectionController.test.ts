@@ -374,7 +374,7 @@ describe('ConnectionController', () => {
       activeCaipNetwork: caipNetworks[0]
     })
 
-    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+    await ConnectionController.connect({ connection, address, namespace: chain })
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith('eip155:137:0x123', chain)
   })
@@ -402,7 +402,7 @@ describe('ConnectionController', () => {
       }
     })
 
-    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+    await ConnectionController.connect({ connection, address, namespace: chain })
 
     expect(clientConnectExternalSpy).toHaveBeenCalledWith(mockConnector)
   })
@@ -425,7 +425,7 @@ describe('ConnectionController', () => {
 
     const consoleWarnSpy = vi.spyOn(console, 'warn')
 
-    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+    await ConnectionController.connect({ connection, address, namespace: chain })
 
     expect(consoleWarnSpy).toHaveBeenCalledWith('No current network found for namespace "eip155"')
   })
@@ -438,7 +438,7 @@ describe('ConnectionController', () => {
 
     const consoleWarnSpy = vi.spyOn(console, 'warn')
 
-    await ConnectionController.switchAccount({ connection, address, namespace: chain })
+    await ConnectionController.connect({ connection, address, namespace: chain })
 
     expect(consoleWarnSpy).toHaveBeenCalledWith('No connector found for namespace "eip155"')
   })

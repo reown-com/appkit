@@ -101,7 +101,6 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private currentTab = 0
   @state() private namespace = ChainController.state.activeChain
   @state() private namespaces = Array.from(ChainController.state.chains.keys())
-  @state() private connections = ConnectionController.state.connections
   @state() private caipAddress: CaipAddress | undefined = undefined
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private smartAccountAddress: string | undefined = undefined
@@ -121,8 +120,8 @@ export class W3mProfileWalletsView extends LitElement {
     this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
     this.unsubscribe.push(
       ...[
-        ConnectionController.subscribeKey('connections', newConnections => {
-          this.connections = newConnections
+        ConnectionController.subscribeKey('connections', () => {
+          this.requestUpdate()
         }),
         ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
           this.activeConnectorIds = newActiveConnectorIds
@@ -298,23 +297,18 @@ export class W3mProfileWalletsView extends LitElement {
         ?confirmation=${this.isDeleting}
         @toggleConfirmation=${() => this.handleToggleConfirmation()}
         @copy=${() => this.handleCopyAddress()}
-        @disconnect=${() => this.handleDisconnect({ id: connectorId, namespace })}
+        @disconnect=${() => this.handleDisconnect({ namespace })}
       ></wui-active-profile-wallet-item>
       ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
     </wui-flex>`
   }
 
   private getActiveConnectionsData(namespace: ChainNamespace) {
-    const connectionsByNamespace = this.connections.get(namespace) ?? []
-
     const plainAddress = this.caipAddress
       ? CoreHelperUtil.getPlainAddress(this.caipAddress)
       : undefined
 
-    const connections = ConnectionControllerUtil.excludeAddressFromConnections(
-      connectionsByNamespace,
-      plainAddress
-    )
+    const { connections } = this.getConnectionsData(namespace)
 
     const connectionsWithMultipleAccounts = connections.filter(
       connection => connection.accounts.length > 0
@@ -535,7 +529,7 @@ export class W3mProfileWalletsView extends LitElement {
       this.lastSelectedConnectorId = connection.connectorId
       this.lastSelectedAddress = address
 
-      await ConnectionController.switchAccount({
+      await ConnectionController.connect({
         connection,
         address,
         namespace,

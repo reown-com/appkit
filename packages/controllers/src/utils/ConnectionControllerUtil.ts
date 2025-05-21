@@ -3,7 +3,6 @@ import { type ChainNamespace } from '@reown/appkit-common'
 import { ChainController } from '../controllers/ChainController.js'
 import { type Connection, ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
-import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 
 // -- Utils ------------------------------------------ //
@@ -29,26 +28,17 @@ export const ConnectionControllerUtil = {
 
     return 'disconnected'
   },
-  excludeAddressFromConnections(connections: Connection[], address?: string) {
-    return connections.map(connection => {
-      if (!address) {
-        return connection
-      }
+  excludeConnectorFromConnections(connections: Connection[], connectorId?: string) {
+    if (!connectorId) {
+      return connections
+    }
 
-      const filteredAccounts = connection.accounts.filter(
-        account => account.address.toLowerCase() !== address.toLowerCase()
-      )
-
-      return {
-        ...connection,
-        accounts: filteredAccounts
-      }
-    })
+    return connections.filter(c => c.connectorId.toLowerCase() !== connectorId.toLowerCase())
   },
-  excludeExistingConnections(existingConnections: Connection[], newConnections: Connection[]) {
-    const existingConnectionIds = new Set(existingConnections.map(c => c.connectorId))
+  excludeExistingConnections(connectorIds: string[], newConnections: Connection[]) {
+    const existingConnectorIds = new Set(connectorIds)
 
-    return newConnections.filter(conn => !existingConnectionIds.has(conn.connectorId))
+    return newConnections.filter(c => !existingConnectorIds.has(c.connectorId))
   },
   getConnectionsByConnectorId(connections: Connection[], connectorId: string) {
     return connections.filter(c => c.connectorId.toLowerCase() === connectorId.toLowerCase())
@@ -56,13 +46,13 @@ export const ConnectionControllerUtil = {
   getConnectionsData(namespace: ChainNamespace) {
     const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
 
-    const plainAddress = CoreHelperUtil.getPlainAddress(caipAddress)
-
     const connectionsByNamespace = ConnectionController.state.connections.get(namespace) ?? []
 
-    const connections = ConnectionControllerUtil.excludeAddressFromConnections(
+    const activeConnectorId = ConnectorController.state.activeConnectorIds[namespace]
+
+    const connections = ConnectionControllerUtil.excludeConnectorFromConnections(
       connectionsByNamespace,
-      plainAddress
+      activeConnectorId
     )
 
     const storageConnections = StorageUtil.getConnections()
@@ -71,7 +61,7 @@ export const ConnectionControllerUtil = {
       connection => ConnectorController.getConnectorById(connection.connectorId)
     )
     const dedupedStorageConnections = ConnectionControllerUtil.excludeExistingConnections(
-      connections,
+      [...connections.map(c => c.connectorId), ...(activeConnectorId ? [activeConnectorId] : [])],
       storageConnectionsWithCurrentActiveConnectors
     )
 

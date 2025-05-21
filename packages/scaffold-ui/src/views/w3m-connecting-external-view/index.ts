@@ -3,13 +3,13 @@ import type { BaseError, Connection, Connector } from '@reown/appkit-controllers
 import {
   ChainController,
   ConnectionController,
+  ConnectionControllerUtil,
   EventsController,
   RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import { HelpersUtil } from '@reown/appkit-utils'
 
-import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')
@@ -105,12 +105,13 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       if (newConnections.length === 0) {
         RouterController.replace('Connect')
       } else {
-        const allCurrentAccountsByConnectorId = ConnectionUtil.getConnectionsByConnectorId(
-          this.connections,
-          this.connector.id
-        ).flatMap(c => c.accounts)
+        const allCurrentAccountsByConnectorId =
+          ConnectionControllerUtil.getConnectionsByConnectorId(
+            this.connections,
+            this.connector.id
+          ).flatMap(c => c.accounts)
 
-        const allNewAccountsByConnectorId = ConnectionUtil.getConnectionsByConnectorId(
+        const allNewAccountsByConnectorId = ConnectionControllerUtil.getConnectionsByConnectorId(
           newConnections,
           this.connector.id
         ).flatMap(c => c.accounts)
