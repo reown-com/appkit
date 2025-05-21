@@ -29,6 +29,7 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -421,6 +422,7 @@ const controller = {
     )
 
     if (unsupportedNetwork) {
+      SnackController.showError('Unsupported network')
       RouterController.goBack()
     }
 
