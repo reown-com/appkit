@@ -261,8 +261,17 @@ export class WagmiAdapter extends AdapterBlueprint {
     if (typeof window !== 'undefined' && window.self !== window.top) {
       try {
         const ancestor = window?.location?.ancestorOrigins?.[0]
+
         const safeAppUrl = 'https://app.safe.global'
-        if (ancestor && ancestor.startsWith(safeAppUrl)) {
+        if (ancestor) {
+          const ancestorUrl = new URL(ancestor)
+          const safeUrl = new URL(safeAppUrl)
+
+          // Only import the Safe connector if we are on the Safe App Iframe
+          if (ancestorUrl.hostname !== safeUrl.hostname) {
+            return
+          }
+
           console.log('Importing Safe Connector')
           const { safe } = await import('@wagmi/connectors')
 
