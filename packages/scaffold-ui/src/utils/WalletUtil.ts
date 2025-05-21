@@ -94,8 +94,12 @@ export const WalletUtil = {
           return aIndex - bIndex
         }
 
-        if (aIndex !== -1) return -1
-        if (bIndex !== -1) return 1
+        if (aIndex !== -1) {
+          return -1
+        }
+        if (bIndex !== -1) {
+          return 1
+        }
       }
 
       return 0
