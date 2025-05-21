@@ -13,6 +13,7 @@ import {
   hedera,
   mainnet,
   mantle,
+  monadTestnet,
   optimism,
   polygon,
   sepolia,
@@ -81,7 +82,8 @@ const EvmNetworks = [
   hedera,
   aurora,
   mantle,
-  abstract
+  abstract,
+  monadTestnet
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
