@@ -64,14 +64,14 @@ export const WalletUtil = {
   /**
    * Marks wallets as installed based on available connectors and sorts them
    * according to both installation status and featuredWalletIds order.
-   * 
+   *
    * @param wallets - Array of wallets to process
    * @returns Array of wallets marked as installed and sorted by priority
    */
   markWalletsAsInstalled(wallets: WcWallet[]) {
     const { connectors } = ConnectorController.state
     const { featuredWalletIds } = OptionsController.state
-    
+
     const installedWalletRdnsMap = connectors
       .filter(connector => connector.type === 'ANNOUNCED')
       .reduce<Record<string, boolean>>((rdnsMap, connector) => {
@@ -103,11 +103,14 @@ export const WalletUtil = {
           return walletAFeaturedIndex - walletBFeaturedIndex
         }
 
+        // WalletA is featured, place it first
         if (walletAFeaturedIndex !== -1) {
-          return -1 // walletA is featured, place it first
+          return -1
         }
+        
+        // WalletB is featured, place it first
         if (walletBFeaturedIndex !== -1) {
-          return 1  // walletB is featured, place it first
+          return 1
         }
       }
 
