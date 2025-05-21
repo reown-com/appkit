@@ -1,5 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { NetworkUtil } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
@@ -75,8 +76,10 @@ describe.each([
         version: '1'
       })
 
+      const networkName = NetworkUtil.getNetworkNameByCaipNetworkId(`${namespace}:${id}`)
+
       expect(message.toString())
-        .toBe(`mocked.com wants you to sign in with your **blockchain** account:
+        .toBe(`mocked.com wants you to sign in with your ${networkName} account:
 ${address}
 
 URI: http://mocked.com/

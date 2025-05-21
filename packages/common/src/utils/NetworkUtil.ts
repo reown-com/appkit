@@ -19,8 +19,10 @@ export const NetworkUtil = {
     return this.getNetworksByNamespace(networks, namespace)[0]
   },
 
-  getNetworkNameByCaipNetworkId(caipNetworkId?: CaipNetworkId | string): string | undefined {
-    if (!caipNetworkId) return undefined
+  getNetworkNameByCaipNetworkId(caipNetworkId: CaipNetworkId): string | undefined {
+    if (!caipNetworkId) {
+      return undefined
+    }
 
     const [namespace] = caipNetworkId.split(':')
 
@@ -60,10 +62,6 @@ export const NetworkUtil = {
       cosmos: 'Cosmos'
     }
 
-    if (namespace && namespaceNames[namespace]) {
-      return `${namespaceNames[namespace]}`
-    }
-
-    return undefined
+    return namespace ? namespaceNames[namespace] : undefined
   }
 }
