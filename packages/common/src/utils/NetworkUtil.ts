@@ -29,9 +29,16 @@ export const NetworkUtil = {
       'eip155:10': 'Optimism',
       'eip155:56': 'BNB Chain',
       'eip155:137': 'Polygon',
-      'eip155:42161': 'Arbitrum',
+      'eip155:42161': 'Arbitrum One',
       'eip155:43114': 'Avalanche',
       'eip155:8453': 'Base',
+      'eip155:324': 'zkSync Era',
+      'eip155:84532': 'Base Sepolia',
+      'eip155:1313161554': 'Aurora',
+      'eip155:80085': 'Berachain',
+      'eip155:42220': 'Celo',
+      'eip155:7777777': 'Zora',
+      'eip155:11155111': 'Sepolia',
 
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'Solana',
       'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'Solana Devnet',
@@ -46,15 +53,15 @@ export const NetworkUtil = {
     }
 
     const namespaceNames: Record<string, string> = {
-      eip155: 'Ethereum',
+      eip155: 'EVM',
       solana: 'Solana',
       polkadot: 'Polkadot',
       bip122: 'Bitcoin',
       cosmos: 'Cosmos'
     }
 
-    if(namespace && namespaceNames[namespace]) {
-      return `${namespaceNames[namespace]} chain`
+    if (namespace && namespaceNames[namespace]) {
+      return `${namespaceNames[namespace]}`
     }
 
     return undefined

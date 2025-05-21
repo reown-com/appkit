@@ -39,15 +39,9 @@ export class InformalMessenger extends SIWXMessenger {
     this.clearChainIdNamespace = clearChainIdNamespace || false
   }
 
-  protected getBlockchainName(chainId: string): string {
-    if (!chainId) return 'blockchain'
-
-    return NetworkUtil.getNetworkNameByCaipNetworkId(chainId)
-  }
-
   protected override stringify(params: SIWXMessage.Data): string {
     const chainId = this.clearChainIdNamespace ? params.chainId.split(':')[1] : params.chainId
-    const blockchainName = this.getBlockchainName(params.chainId)
+    const blockchainName = NetworkUtil.getNetworkNameByCaipNetworkId(params.chainId)
 
     return [
       `${params.domain} wants you to sign in with your ${blockchainName} account:`,
