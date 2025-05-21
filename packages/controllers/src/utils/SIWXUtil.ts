@@ -22,6 +22,7 @@ export const SIWXUtil = {
   getSIWX() {
     return OptionsController.state.siwx
   },
+
   async initializeIfEnabled() {
     const siwx = OptionsController.state.siwx
     const caipAddress = ChainController.getActiveCaipAddress()
