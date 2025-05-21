@@ -244,3 +244,11 @@ export const paySdkOptions: SdkOption[] = [
     description: 'AppKit Pay with default configuration'
   }
 ]
+
+export const customSdkOptions: SdkOption[] = [
+  {
+    title: 'Exclude Wallet IDs',
+    link: '/flag/exclude-wallet-ids',
+    description: 'AppKit configuration with excluded wallet IDs enabled for Backpack'
+  }
+]

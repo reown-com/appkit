@@ -1,5 +1,4 @@
 ---
-'@reown/appkit-pay': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
@@ -13,6 +12,7 @@
 '@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
+'@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Enaple Solana in AppKit Pay
+Modified the fetchFeaturedWallets() function in ApiController.ts to create a new sorted array instead of sorting the array in place, ensuring the wallet order is preserved.
