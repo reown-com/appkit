@@ -181,6 +181,14 @@ export abstract class AdapterBlueprint<
     this.emit('connections', this.availableConnections)
   }
 
+  protected clearConnections(emit = false) {
+    this.availableConnections = []
+    
+    if (emit) {
+      this.emit('connections', this.availableConnections)
+    }
+  }
+
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
     AccountController.setStatus(status, chainNamespace)
   }

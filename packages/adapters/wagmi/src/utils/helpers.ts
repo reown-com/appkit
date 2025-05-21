@@ -1,4 +1,4 @@
-import type { Connector } from '@wagmi/core'
+import type { Connection, Connector } from '@wagmi/core'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { type Hex } from 'viem'
 
@@ -51,4 +51,12 @@ export function parseWalletCapabilities(str: string) {
   } catch (error) {
     throw new Error('Error parsing wallet capabilities')
   }
+}
+
+export function mergeConnections(currentConnections: Connection[], newConnections: Connection[]) {
+  return currentConnections.map(connection => {
+    const newConnection = newConnections.find(c => c.connector.id === connection.connector.id)
+
+    return newConnection ? newConnection : connection
+  })
 }
