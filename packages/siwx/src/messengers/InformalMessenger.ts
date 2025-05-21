@@ -1,3 +1,4 @@
+import { NetworkUtil } from '@reown/appkit-common'
 import type { SIWXMessage } from '@reown/appkit-controllers'
 
 import { SIWXMessenger } from '../core/SIWXMessenger.js'
@@ -39,22 +40,14 @@ export class InformalMessenger extends SIWXMessenger {
   }
 
   protected getBlockchainName(chainId: string): string {
-    const [namespace] = chainId.split(':');
-    
-    const blockchainNames: Record<string, string> = {
-      'eip155': 'Ethereum',
-      'solana': 'Solana',
-      'polkadot': 'Polkadot',
-      'bip122': 'Bitcoin',
-      'cosmos': 'Cosmos'
-    };
-    
-    return namespace ? (blockchainNames[namespace] || namespace) : 'blockchain';
+    if (!chainId) return 'blockchain'
+
+    return NetworkUtil.getNetworkNameByCaipNetworkId(chainId)
   }
 
   protected override stringify(params: SIWXMessage.Data): string {
     const chainId = this.clearChainIdNamespace ? params.chainId.split(':')[1] : params.chainId
-    const blockchainName = this.getBlockchainName(params.chainId);
+    const blockchainName = this.getBlockchainName(params.chainId)
 
     return [
       `${params.domain} wants you to sign in with your ${blockchainName} account:`,
