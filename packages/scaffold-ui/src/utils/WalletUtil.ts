@@ -107,7 +107,7 @@ export const WalletUtil = {
         if (walletAFeaturedIndex !== -1) {
           return -1
         }
-        
+
         // WalletB is featured, place it first
         if (walletBFeaturedIndex !== -1) {
           return 1
