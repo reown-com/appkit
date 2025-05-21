@@ -263,7 +263,9 @@ export class WagmiAdapter extends AdapterBlueprint {
         const { safe } = await import('@wagmi/connectors')
 
         if (safe) {
-          thirdPartyConnectors.push(safe())
+          const safeConnector = safe()
+          console.log('safeConnector', safeConnector)
+          thirdPartyConnectors.push(safeConnector)
         }
 
         
