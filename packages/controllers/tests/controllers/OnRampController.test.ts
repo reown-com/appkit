@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import {
+  AccountController,
   ApiController,
   BlockchainApiController,
   OnRampController,
   type OnRampProvider,
+  OptionsController,
   type PaymentCurrency,
   type PurchaseCurrency
 } from '../../exports/index.js'
@@ -12,7 +14,7 @@ import {
   USDC_CURRENCY_DEFAULT,
   USD_CURRENCY_DEFAULT
 } from '../../src/controllers/OnRampController.js'
-import { ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
+import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
 
 const purchaseCurrencies: [PurchaseCurrency, ...PurchaseCurrency[]] = [
   { id: 'test-coin', symbol: 'TEST', name: 'Test Coin', networks: [] },
@@ -145,5 +147,20 @@ describe('OnRampController', () => {
     expect(getOnrampQuote).toHaveBeenCalled()
     expect(OnRampController.state.error).toEqual(error.message)
     expect(OnRampController.state.quotesLoading).toEqual(false)
+  })
+
+  it('should properly configure meld url', () => {
+    AccountController.state.address = '0x123'
+    OptionsController.state.projectId = 'test'
+    OnRampController.resetState()
+    const meldProvider = ONRAMP_PROVIDERS[1] as OnRampProvider
+    OnRampController.setSelectedProvider(meldProvider)
+    const resultUrl = new URL(meldProvider.url)
+    resultUrl.searchParams.append('publicKey', MELD_PUBLIC_KEY)
+    resultUrl.searchParams.append('destinationCurrencyCode', 'USDC')
+    resultUrl.searchParams.append('walletAddress', '0x123')
+    resultUrl.searchParams.append('externalCustomerId', 'test')
+
+    expect(OnRampController.state.selectedProvider?.url).toEqual(resultUrl.toString())
   })
 })
