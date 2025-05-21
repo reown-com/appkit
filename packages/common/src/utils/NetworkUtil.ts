@@ -1,3 +1,4 @@
+import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from './TypeUtil.js'
 
 export const NetworkUtil = {
@@ -19,49 +20,22 @@ export const NetworkUtil = {
     return this.getNetworksByNamespace(networks, namespace)[0]
   },
 
-  getNetworkNameByCaipNetworkId(caipNetworkId: CaipNetworkId): string | undefined {
+  getNetworkNameByCaipNetworkId(
+    caipNetworks: CaipNetwork[],
+    caipNetworkId: CaipNetworkId
+  ): string | undefined {
     if (!caipNetworkId) {
       return undefined
     }
 
-    const [namespace] = caipNetworkId.split(':')
+    const caipNetwork = caipNetworks.find(network => network.caipNetworkId === caipNetworkId)
 
-    const networkNames: Record<string, string> = {
-      'eip155:1': 'Ethereum Mainnet',
-      'eip155:10': 'Optimism',
-      'eip155:56': 'BNB Chain',
-      'eip155:137': 'Polygon',
-      'eip155:42161': 'Arbitrum One',
-      'eip155:43114': 'Avalanche',
-      'eip155:8453': 'Base',
-      'eip155:324': 'zkSync Era',
-      'eip155:84532': 'Base Sepolia',
-      'eip155:1313161554': 'Aurora',
-      'eip155:80085': 'Berachain',
-      'eip155:42220': 'Celo',
-      'eip155:7777777': 'Zora',
-      'eip155:11155111': 'Sepolia',
-
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'Solana',
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'Solana Devnet',
-      'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'Solana Testnet',
-
-      'bip122:000000000019d6689c085ae165831e93': 'Bitcoin',
-      'bip122:000000000933ea01ad0ee984209779ba': 'Bitcoin Testnet'
+    if (caipNetwork) {
+      return caipNetwork.name
     }
 
-    if (networkNames[caipNetworkId]) {
-      return networkNames[caipNetworkId]
-    }
+    const [namespace] = caipNetworkId.split(':') as [ChainNamespace]
 
-    const namespaceNames: Record<string, string> = {
-      eip155: 'EVM',
-      solana: 'Solana',
-      polkadot: 'Polkadot',
-      bip122: 'Bitcoin',
-      cosmos: 'Cosmos'
-    }
-
-    return namespace ? namespaceNames[namespace] : undefined
+    return ConstantsUtil.CHAIN_NAME_MAP?.[namespace] || undefined
   }
 }
