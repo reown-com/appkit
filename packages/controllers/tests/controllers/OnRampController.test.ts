@@ -4,9 +4,9 @@ import {
   AccountController,
   ApiController,
   BlockchainApiController,
-  OptionsController,
   OnRampController,
   type OnRampProvider,
+  OptionsController,
   type PaymentCurrency,
   type PurchaseCurrency
 } from '../../exports/index.js'
