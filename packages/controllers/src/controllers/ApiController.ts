@@ -26,9 +26,9 @@ import { OptionsController } from './OptionsController.js'
  * - Phantom
  * - Coinbase
  */
-const CUSTOM_DEEPLINK_WALLETS = {
-  PHANTOM: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
-  COINBASE: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
+export const CUSTOM_DEEPLINK_WALLETS = {
+  PHANTOM: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+  COINBASE: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'
 }
 
 // -- Helpers ------------------------------------------- //
@@ -138,7 +138,11 @@ export const ApiController = {
   },
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
-    const filteredWallets = CoreHelperUtil.isMobile()
+    console.log('>> Filtering wallets by platform', wallets, {
+      isMobile: CoreHelperUtil.isMobile(),
+      isSolana: ChainController.state.activeChain === 'solana'
+    })
+    const filteredWallets = true
       ? wallets?.filter(
           w =>
             w.mobile_link ||
@@ -147,6 +151,8 @@ export const ApiController = {
               ChainController.state.activeChain === 'solana')
         )
       : wallets
+
+    console.log('>> Filtered wallets', filteredWallets)
 
     return filteredWallets
   },
