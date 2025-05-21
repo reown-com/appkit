@@ -1,4 +1,4 @@
-import { NetworkUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, NetworkUtil } from '@reown/appkit-common'
 import { ChainController, type SIWXMessage } from '@reown/appkit-controllers'
 
 import { SIWXMessenger } from '../core/SIWXMessenger.js'
@@ -39,16 +39,23 @@ export class InformalMessenger extends SIWXMessenger {
     this.clearChainIdNamespace = clearChainIdNamespace || false
   }
 
+  /**
+   * Get the blockchain name for a given chain ID
+   * @param chainId The chain ID to get the blockchain name for
+   * @returns The blockchain name
+   */
+  protected getNetworkName(chainId: CaipNetworkId): string | undefined {
+    const requestedNetworks = ChainController.getAllRequestedCaipNetworks()
+
+    return NetworkUtil.getNetworkNameByCaipNetworkId(requestedNetworks, chainId)
+  }
+
   protected override stringify(params: SIWXMessage.Data): string {
     const chainId = this.clearChainIdNamespace ? params.chainId.split(':')[1] : params.chainId
-    const requestedNetworks = ChainController.getAllRequestedCaipNetworks()
-    const blockchainName = NetworkUtil.getNetworkNameByCaipNetworkId(
-      requestedNetworks,
-      params.chainId
-    )
+    const networkName = this.getNetworkName(params.chainId)
 
     return [
-      `${params.domain} wants you to sign in with your ${blockchainName} account:`,
+      `${params.domain} wants you to sign in with your ${networkName} account:`,
       params.accountAddress,
       params.statement ? `\n${params.statement}\n` : '',
       `URI: ${params.uri}`,
