@@ -3,15 +3,28 @@ import { RouterController } from '../controllers/RouterController.js'
 import { SIWXUtil } from './SIWXUtil.js'
 
 export const ModalUtil = {
-  async safeClose() {
-    const isUnsupportedChain =
+  isUnsupportedChainView(): boolean {
+    return (
       RouterController.state.view === 'UnsupportedChain' ||
       (RouterController.state.view === 'SwitchNetwork' &&
         RouterController.state.history.includes('UnsupportedChain'))
-    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
+    )
+  },
+
+  async safeClose() {
+    if (this.isUnsupportedChainView()) {
       ModalController.shake()
-    } else {
-      ModalController.close()
+
+      return
     }
+
+    const isSIWXCloseDisabled = await SIWXUtil.isSIWXCloseDisabled()
+    if (isSIWXCloseDisabled) {
+      ModalController.shake()
+
+      return
+    }
+
+    ModalController.close()
   }
 }
