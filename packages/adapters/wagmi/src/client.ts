@@ -257,21 +257,22 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     }
 
-
-    if (options.enableSafe !== false) {
+    // Check if the app is running inside an iframe and the referrer is from Safe
+    if (typeof window !== 'undefined' && window.self !== window.top) {
       try {
-        const { safe } = await import('@wagmi/connectors')
+        const referrer = document.referrer
+        const safeAppUrl = 'https://app.safe.global/'
+        if (referrer && referrer.startsWith(safeAppUrl)) {
+          const { safe } = await import('@wagmi/connectors')
 
-        if (safe) {
-          const safeConnector = safe()
-          console.log('safeConnector', safeConnector)
-          thirdPartyConnectors.push(safeConnector)
+          if (safe) {
+            const safeConnector = safe()
+            thirdPartyConnectors.push(safeConnector)
+          }
         }
-
-        
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Failed to import Safe Connector:', error)
+        console.error('Failed to import or initialize Safe Connector:', error)
       }
     }
 

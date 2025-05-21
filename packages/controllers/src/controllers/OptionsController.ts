@@ -105,11 +105,6 @@ export interface OptionsControllerStatePublic {
    */
   enableCoinbase?: boolean
   /**
-   * Enable or disable the Safe Apps SDK.
-   * @default true
-   */
-  enableSafe?: boolean
-  /**
    * Enable or disable the Injected wallet.
    * @default true
    */
