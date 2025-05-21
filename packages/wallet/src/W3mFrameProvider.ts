@@ -312,7 +312,11 @@ export class W3mFrameProvider {
         await this.init()
         const response = await this.appEvent<'ConnectSocial'>({
           type: W3mFrameConstants.APP_CONNECT_SOCIAL,
-          payload: { uri: payload.socialUri, preferredAccountType: payload.preferredAccountType }
+          payload: {
+            uri: payload.socialUri,
+            preferredAccountType: payload.preferredAccountType,
+            chainId: payload.chainId
+          }
         } as W3mFrameTypes.AppEvent)
 
         if (response.userName) {
