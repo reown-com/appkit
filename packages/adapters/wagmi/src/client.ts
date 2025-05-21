@@ -260,9 +260,10 @@ export class WagmiAdapter extends AdapterBlueprint {
     // Check if the app is running inside an iframe and the referrer is from Safe
     if (typeof window !== 'undefined' && window.self !== window.top) {
       try {
-        const referrer = document.referrer
+        const ancestor = window?.parent?.location?.ancestorOrigins?.[0]
         const safeAppUrl = 'https://app.safe.global/'
-        if (referrer && referrer.startsWith(safeAppUrl)) {
+        if (ancestor && ancestor.startsWith(safeAppUrl)) {
+          console.log('Importing Safe Connector')
           const { safe } = await import('@wagmi/connectors')
 
           if (safe) {
