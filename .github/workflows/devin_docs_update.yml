@@ -65,9 +65,6 @@ jobs:
             exit 1
           fi
 
-          # This line was uncommented by the user, which is helpful for debugging.
-          echo "Slack Payload: $JSON_PAYLOAD"
-
           echo "Sending Slack notification for Docs Analysis."
           # Echo context information using direct GitHub context expressions for clarity and consistency.
           echo "AppKit Repo: ${{ github.repository }}"
