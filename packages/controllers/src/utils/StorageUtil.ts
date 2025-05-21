@@ -23,7 +23,7 @@ import type {
 interface DeleteAddressFromConnectionParams {
   address: string
   connectorId: string
-  chainNamespace: ChainNamespace
+  namespace: ChainNamespace
 }
 
 // -- Utility -----------------------------------------------------------------
@@ -644,14 +644,14 @@ export const StorageUtil = {
   deleteAddressFromConnection({
     connectorId,
     address,
-    chainNamespace
+    namespace
   }: DeleteAddressFromConnectionParams) {
     try {
       // eslint-disable-next-line no-param-reassign
       connectorId = connectorId.toLowerCase()
 
       const connections = StorageUtil.getConnections()
-      const namespaceConnections = connections[chainNamespace] ?? []
+      const namespaceConnections = connections[namespace] ?? []
 
       const connectionMap = new Map(
         namespaceConnections.map(conn => [conn.connectorId.toLowerCase(), conn])
@@ -680,7 +680,7 @@ export const StorageUtil = {
         SafeLocalStorageKeys.CONNECTIONS,
         JSON.stringify({
           ...connections,
-          [chainNamespace]: Array.from(connectionMap.values())
+          [namespace]: Array.from(connectionMap.values())
         })
       )
     } catch {
