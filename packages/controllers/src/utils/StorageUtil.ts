@@ -19,6 +19,13 @@ import type {
   WcWallet
 } from './TypeUtil.js'
 
+// -- Types -------------------------------------------------------------------
+interface DeleteAddressFromConnectionParams {
+  address: string
+  connectorId: string
+  chainNamespace: ChainNamespace
+}
+
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   // Cache expiry in milliseconds
@@ -632,6 +639,54 @@ export const StorageUtil = {
       console.error('Unable to get connections from storage', error)
 
       return {} as { [key in ChainNamespace]: Connection[] }
+    }
+  },
+  deleteAddressFromConnection({
+    connectorId,
+    address,
+    chainNamespace
+  }: DeleteAddressFromConnectionParams) {
+    try {
+      // eslint-disable-next-line no-param-reassign
+      connectorId = connectorId.toLowerCase()
+
+      const connections = StorageUtil.getConnections()
+      const namespaceConnections = connections[chainNamespace] ?? []
+
+      const connectionMap = new Map(
+        namespaceConnections.map(conn => [conn.connectorId.toLowerCase(), conn])
+      )
+
+      const connector = connectionMap.get(connectorId)
+      
+      if (connector) {
+        const updatedAccounts = connector.accounts.filter(
+          acc => acc.address.toLowerCase() !== address.toLowerCase()
+        )
+
+        if (updatedAccounts.length === 0) {
+          connectionMap.delete(connectorId)
+        } else {
+          connectionMap.set(connectorId, {
+            ...connector,
+            accounts: connector.accounts.filter(
+              acc => acc.address.toLowerCase() !== address.toLowerCase()
+            )
+          })
+        }
+      }
+
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.CONNECTIONS,
+        JSON.stringify({
+          ...connections,
+          [chainNamespace]: Array.from(connectionMap.values())
+        })
+      )
+    } catch {
+      console.error(
+        `Unable to remove address "${address}" from connector "${connectorId}" in namespace "${chainNamespace}"`
+      )
     }
   },
   getDisconnectedConnectorIds() {

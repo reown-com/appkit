@@ -158,7 +158,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     return html`
       <wui-tabs
-        .onTabChange=${this.onTabChange.bind(this)}
+        .onTabChange=${(idx: number) => this.onTabChange(idx)}
         .activeTab=${this.currentTab}
         localTabWidth=${`${tabWidth}px`}
         .tabs=${tabs}
@@ -271,9 +271,9 @@ export class W3mProfileWalletsView extends LitElement {
         .iconBadgeSize=${isSmartAccount ? ICON_BADGE_SIZE.size : undefined}
         imageSrc=${connectorImage}
         ?confirmation=${this.isDeleting}
-        @toggleConfirmation=${this.handleToggleConfirmation.bind(this)}
-        @copy=${this.handleCopyAddress.bind(this)}
-        @disconnect=${this.handleDisconnect.bind(this, connectorId)}
+        @toggleConfirmation=${() => this.handleToggleConfirmation()}
+        @copy=${() => this.handleCopyAddress()}
+        @disconnect=${() => this.handleDisconnect()}
       ></wui-active-profile-wallet-item>
       ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
     </wui-flex>`
@@ -425,7 +425,7 @@ export class W3mProfileWalletsView extends LitElement {
                 })}
               @iconClick=${() =>
                 isRecentConnections
-                  ? this.handleDeleteRecentConnection()
+                  ? this.handleDeleteRecentConnection(account.address, connection.connectorId)
                   : this.handleDisconnect(connection.connectorId)}
             ></wui-inactive-profile-wallet-item>
           </wui-flex>`
@@ -467,7 +467,7 @@ export class W3mProfileWalletsView extends LitElement {
             icon="plus"
             iconSize="sm"
             ?chevron=${true}
-            @click=${this.handleAddWallet.bind(this)}
+            @click=${() => this.handleAddWallet()}
           >
             <wui-text variant="paragraph-500" color="fg-200">${title}</wui-text>
           </wui-list-item>
@@ -506,7 +506,7 @@ export class W3mProfileWalletsView extends LitElement {
             <wui-text color="fg-200" variant="tiny-500">${description}</wui-text>
           </wui-flex>
 
-          <wui-button variant="neutral" size="md" @click=${this.handleAddWallet.bind(this)}>
+          <wui-button variant="neutral" size="md" @click=${() => this.handleAddWallet()}>
             <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
             ${title}
           </wui-button>
@@ -540,6 +540,7 @@ export class W3mProfileWalletsView extends LitElement {
       SnackController.showError('Failed to connect wallet')
     } finally {
       this.isSwitching = false
+      this.isDeleting = false
     }
   }
 
@@ -567,10 +568,18 @@ export class W3mProfileWalletsView extends LitElement {
     this.isDeleting = !this.isDeleting
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private handleDeleteRecentConnection() {
-    // eslint-disable-next-line no-alert
-    alert('delete')
+  private handleDeleteRecentConnection(address: string, connectorId: string) {
+    if (!this.namespace) {
+      throw new Error('Namespace must be defined when deleting recent connection')
+    }
+
+    StorageUtil.deleteAddressFromConnection({
+      connectorId,
+      address,
+      chainNamespace: this.namespace
+    })
+
+    this.requestUpdate()
   }
 
   private onTabChange(index: number) {
@@ -608,8 +617,8 @@ export class W3mProfileWalletsView extends LitElement {
       return
     }
 
-    requestAnimationFrame(this.handleConnectListScroll.bind(this))
-    walletListEl.addEventListener('scroll', this.handleConnectListScroll.bind(this))
+    requestAnimationFrame(() => this.handleConnectListScroll())
+    walletListEl.addEventListener('scroll', () => this.handleConnectListScroll())
     this.resizeObserver = new ResizeObserver(() => this.handleConnectListScroll())
     this.resizeObserver.observe(walletListEl)
     this.handleConnectListScroll()
@@ -619,7 +628,7 @@ export class W3mProfileWalletsView extends LitElement {
     const connectEl = this.shadowRoot?.querySelector('.wallet-list')
 
     if (connectEl) {
-      connectEl.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
+      connectEl.removeEventListener('scroll', () => this.handleConnectListScroll())
     }
   }
 
