@@ -138,11 +138,8 @@ export const ApiController = {
   },
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
-    console.log('>> Filtering wallets by platform', wallets, {
-      isMobile: CoreHelperUtil.isMobile(),
-      isSolana: ChainController.state.activeChain === 'solana'
-    })
-    const filteredWallets = true
+
+    const filteredWallets = CoreHelperUtil.isMobile()
       ? wallets?.filter(
           w =>
             w.mobile_link ||
@@ -151,8 +148,6 @@ export const ApiController = {
               ChainController.state.activeChain === 'solana')
         )
       : wallets
-
-    console.log('>> Filtered wallets', filteredWallets)
 
     return filteredWallets
   },
