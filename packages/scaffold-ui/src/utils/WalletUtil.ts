@@ -61,44 +61,53 @@ export const WalletUtil = {
     return uniqueWallets
   },
 
+  /**
+   * Marks wallets as installed based on available connectors and sorts them
+   * according to both installation status and featuredWalletIds order.
+   * 
+   * @param wallets - Array of wallets to process
+   * @returns Array of wallets marked as installed and sorted by priority
+   */
   markWalletsAsInstalled(wallets: WcWallet[]) {
     const { connectors } = ConnectorController.state
     const { featuredWalletIds } = OptionsController.state
-    const installedConnectors = connectors
-      .filter(c => c.type === 'ANNOUNCED')
-      .reduce<Record<string, boolean>>((acum, val) => {
-        if (!val.info?.rdns) {
-          return acum
+    
+    const installedWalletRdnsMap = connectors
+      .filter(connector => connector.type === 'ANNOUNCED')
+      .reduce<Record<string, boolean>>((rdnsMap, connector) => {
+        if (!connector.info?.rdns) {
+          return rdnsMap
         }
-        acum[val.info.rdns] = true
+        rdnsMap[connector.info.rdns] = true
 
-        return acum
+        return rdnsMap
       }, {})
 
-    const walletsWithInstalled: AppKitWallet[] = wallets.map(wallet => ({
+    // Mark each wallet as installed if its RDNS exists in the installed connectors
+    const walletsWithInstallationStatus: AppKitWallet[] = wallets.map(wallet => ({
       ...wallet,
-      installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
+      installed: Boolean(wallet.rdns) && Boolean(installedWalletRdnsMap[wallet.rdns ?? ''])
     }))
 
-    const sortedWallets = walletsWithInstalled.sort((a, b) => {
-      const installationComparison = Number(b.installed) - Number(a.installed)
+    const sortedWallets = walletsWithInstallationStatus.sort((walletA, walletB) => {
+      const installationComparison = Number(walletB.installed) - Number(walletA.installed)
       if (installationComparison !== 0) {
         return installationComparison
       }
 
       if (featuredWalletIds?.length) {
-        const aIndex = featuredWalletIds.indexOf(a.id)
-        const bIndex = featuredWalletIds.indexOf(b.id)
+        const walletAFeaturedIndex = featuredWalletIds.indexOf(walletA.id)
+        const walletBFeaturedIndex = featuredWalletIds.indexOf(walletB.id)
 
-        if (aIndex !== -1 && bIndex !== -1) {
-          return aIndex - bIndex
+        if (walletAFeaturedIndex !== -1 && walletBFeaturedIndex !== -1) {
+          return walletAFeaturedIndex - walletBFeaturedIndex
         }
 
-        if (aIndex !== -1) {
-          return -1
+        if (walletAFeaturedIndex !== -1) {
+          return -1 // walletA is featured, place it first
         }
-        if (bIndex !== -1) {
-          return 1
+        if (walletBFeaturedIndex !== -1) {
+          return 1  // walletB is featured, place it first
         }
       }
 
