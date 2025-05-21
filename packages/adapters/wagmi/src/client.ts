@@ -257,6 +257,22 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     }
 
+
+    if (options.enableSafe !== false) {
+      try {
+        const { safe } = await import('@wagmi/connectors')
+
+        if (safe) {
+          thirdPartyConnectors.push(safe())
+        }
+
+        
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to import Safe Connector:', error)
+      }
+    }
+
     thirdPartyConnectors.forEach(connector => {
       const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
       this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
