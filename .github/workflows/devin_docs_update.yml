@@ -37,9 +37,8 @@ jobs:
             * If no documentation updates are needed, clearly state this conclusion. You do not need to open a pull request in this case. Simply report that no updates are necessary based on your analysis of the changelog.
             * You will need to operate within the following repositories: ${{ github.repository }} (for reading the changelog of the commit) and reown-com/reown-docs (for potentially creating a PR with documentation updates).
         run: |
-          # Exit on error, print commands and their arguments as they are executed.
+          # Exit on error
           set -e
-          set -x
 
           # Check if the Slack webhook URL is provided and not empty
           if [ -z "${DEVIN_SLACK_WEBHOOK_URL}" ]; then
