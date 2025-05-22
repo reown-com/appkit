@@ -20,9 +20,11 @@ function isAdjecentDots(cy: number, otherCy: number, cellSize: number) {
 }
 
 function getMatrix(value: string, errorCorrectionLevel: string) {
-  const ecc: ErrorCorrection = errorCorrectionLevel === 'Q' ? 'quartile' : 
-    (errorCorrectionLevel as 'low' | 'medium' | 'quartile' | 'high')
-  
+  const ecc: ErrorCorrection =
+    errorCorrectionLevel === 'Q'
+      ? 'quartile'
+      : (errorCorrectionLevel as 'low' | 'medium' | 'quartile' | 'high')
+
   return encodeQR(value, 'raw', { ecc })
 }
 
