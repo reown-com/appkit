@@ -1,9 +1,22 @@
 import { type ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
-import { ChainController } from '../controllers/ChainController.js'
 import { type Connection, ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { StorageUtil } from './StorageUtil.js'
+
+// -- Types ------------------------------------------ //
+interface ExcludeConnectorAddressFromConnectionsParamters {
+  connections: Connection[]
+  connectorId?: string
+  addresses?: string[]
+}
+
+interface ValidateAccountSwitchParamters {
+  namespace: ChainNamespace
+  connection: Connection
+  address: string
+}
 
 // -- Utils ------------------------------------------ //
 export const ConnectionControllerUtil = {
@@ -28,12 +41,44 @@ export const ConnectionControllerUtil = {
 
     return 'disconnected'
   },
-  excludeConnectorFromConnections(connections: Connection[], connectorId?: string) {
-    if (!connectorId) {
-      return connections
-    }
+  validateAccountSwitch({ namespace, connection, address }: ValidateAccountSwitchParamters) {
+    const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
 
-    return connections.filter(c => c.connectorId.toLowerCase() !== connectorId.toLowerCase())
+    if (isBitcoin) {
+      const { type } =
+        connection.accounts.find(
+          account => account.address.toLowerCase() === address.toLowerCase()
+        ) ?? {}
+
+      if (typeof type === 'string' && type !== 'payment') {
+        throw new Error(`Switching to non-payment accounts is not allowed for ${namespace}`)
+      }
+    }
+  },
+  excludeConnectorAddressFromConnections({
+    connections,
+    connectorId,
+    addresses
+  }: ExcludeConnectorAddressFromConnectionsParamters) {
+    return connections.map(connection => {
+      const isConnectorMatch = connectorId
+        ? connection.connectorId.toLowerCase() === connectorId.toLowerCase()
+        : false
+
+      if (isConnectorMatch && addresses) {
+        const filteredAccounts = connection.accounts.filter(account => {
+          const isAddressIncluded = addresses.some(
+            address => address.toLowerCase() === account.address.toLowerCase()
+          )
+
+          return !isAddressIncluded
+        })
+
+        return { ...connection, accounts: filteredAccounts }
+      }
+
+      return connection
+    })
   },
   excludeExistingConnections(connectorIds: string[], newConnections: Connection[]) {
     const existingConnectorIds = new Set(connectorIds)
@@ -43,17 +88,21 @@ export const ConnectionControllerUtil = {
   getConnectionsByConnectorId(connections: Connection[], connectorId: string) {
     return connections.filter(c => c.connectorId.toLowerCase() === connectorId.toLowerCase())
   },
-  getConnectionsData(namespace: ChainNamespace) {
-    const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
+  filterConnectionsByAccountType(connections: Connection[], accountType: string) {
+    return connections.map(c => {
+      const filteredAccounts = c.accounts.filter(account =>
+        typeof account.type === 'string'
+          ? account.type.toLowerCase() === accountType.toLowerCase()
+          : true
+      )
 
-    const connectionsByNamespace = ConnectionController.state.connections.get(namespace) ?? []
+      return { ...c, accounts: filteredAccounts }
+    })
+  },
+  getConnectionsData(namespace: ChainNamespace) {
+    const connections = ConnectionController.state.connections.get(namespace) ?? []
 
     const activeConnectorId = ConnectorController.state.activeConnectorIds[namespace]
-
-    const connections = ConnectionControllerUtil.excludeConnectorFromConnections(
-      connectionsByNamespace,
-      activeConnectorId
-    )
 
     const storageConnections = StorageUtil.getConnections()
     const storageConnectionsByNamespace = storageConnections[namespace] ?? []
@@ -65,15 +114,7 @@ export const ConnectionControllerUtil = {
       storageConnectionsWithCurrentActiveConnectors
     )
 
-    const hasConnections =
-      Boolean(caipAddress) || connections.length > 0 || dedupedStorageConnections.length > 0
-    const hasActiveConnections = connections.length > 0
-    const hasStorageConnections = dedupedStorageConnections.length > 0
-
     return {
-      hasConnections,
-      hasActiveConnections,
-      hasStorageConnections,
       connections,
       storageConnections: dedupedStorageConnections
     }

@@ -36,8 +36,4 @@ export default css`
     border-radius: 50%;
     padding: var(--wui-spacing-4xs);
   }
-
-  .confirmation-box {
-    min-height: var(--wui-spacing-xxl);
-  }
 `

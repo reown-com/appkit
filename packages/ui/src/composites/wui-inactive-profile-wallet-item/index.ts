@@ -5,6 +5,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
+import '../../composites/wui-icon-link/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ButtonVariant, IconType, SizeType } from '../../utils/TypeUtil.js'
@@ -62,7 +63,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
         <wui-flex alignItems="center" justifyContent="center" class="icon-box">
           <wui-icon
             size=${this.iconSize}
-            color="fg-275"
+            color="fg-200"
             name=${this.icon}
             class="custom-icon"
           ></wui-icon>
@@ -70,7 +71,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
       `
     }
 
-    return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
+    return html`<wui-image objectFit="contain" src=${this.imageSrc} alt=${this.alt}></wui-image>`
   }
 
   public labelAndDescriptionTemplate() {
@@ -95,7 +96,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   public buttonActionTemplate() {
     return html`
-      <wui-flex columnGap="1xs" alignItems="center" justifyContent="center">
+      <wui-flex columnGap="3xs" alignItems="center" justifyContent="center">
         <wui-button
           size="xs"
           variant=${this.buttonVariant}
@@ -105,23 +106,23 @@ export class WuiInactiveProfileWalletItem extends LitElement {
           ${this.buttonLabel}
         </wui-button>
 
-        <wui-icon
-          color="fg-275"
+        <wui-icon-link
+          iconColor="fg-200"
           size=${this.rightIconSize}
-          name=${this.rightIcon}
+          icon=${this.rightIcon}
           class="right-icon"
           @click=${this.handleIconClick}
-        ></wui-icon>
+        ></wui-icon-link>
       </wui-flex>
     `
   }
 
   private handleButtonClick() {
-    this.dispatchEvent(new CustomEvent('buttonClick'))
+    this.dispatchEvent(new CustomEvent('buttonClick', { bubbles: true, composed: true }))
   }
 
   private handleIconClick() {
-    this.dispatchEvent(new CustomEvent('iconClick'))
+    this.dispatchEvent(new CustomEvent('iconClick', { bubbles: true, composed: true }))
   }
 }
 

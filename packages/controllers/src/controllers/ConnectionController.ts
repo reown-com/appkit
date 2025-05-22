@@ -35,7 +35,7 @@ import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
 export type Connection = {
-  accounts: { address: string }[]
+  accounts: { type?: string; address: string }[]
   caipNetwork?: CaipNetwork
   connectorId: string
   auth?: {
@@ -395,7 +395,7 @@ export const ConnectionController = {
       throw new Error(`No connector found for connection: ${connection.connectorId}`)
     }
 
-    await this.connectExternal(connector, namespace)
+    await ConnectionController.connectExternal(connector, namespace)
 
     if (isAuthConnector) {
       await ConnectionController.handleAuthAccountSwitch(address, namespace)
@@ -446,6 +446,9 @@ export const ConnectionController = {
     onAddressChange
   }: ConnectParams) {
     const status = ConnectionControllerUtil.getConnectionStatus(connection, namespace)
+
+    // Validate the account switch
+    ConnectionControllerUtil.validateAccountSwitch({ namespace, connection, address })
 
     switch (status) {
       case 'connected': {

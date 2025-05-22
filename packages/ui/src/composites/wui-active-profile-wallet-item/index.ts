@@ -5,6 +5,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
+import '../../composites/wui-icon-link/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ButtonVariant, IconType, SizeType, TagType } from '../../utils/TypeUtil.js'
@@ -15,6 +16,18 @@ import '../wui-tag/index.js'
 import '../wui-wallet-image/index.js'
 import styles from './styles.js'
 
+// -- Types --------------------------------------------- //
+type ContentItem = {
+  address: string
+  profileName?: string
+  alignItems?: 'center' | 'flex-start' | 'flex-end'
+  label?: string
+  description?: string
+  tagLabel: string
+  tagVariant: TagType
+  enableButton?: boolean
+}
+
 @customElement('wui-active-profile-wallet-item')
 export class WuiActiveProfileWalletItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
@@ -24,13 +37,9 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public profileName = ''
 
-  @property() public description = ''
+  @property({ type: Array }) public content: ContentItem[] = []
 
   @property() public alt = ''
-
-  @property() public tagLabel = ''
-
-  @property() public tagVariant: TagType = 'success'
 
   @property() public imageSrc = ''
 
@@ -48,8 +57,6 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property({ type: Number }) public charsEnd = 6
 
-  @property({ type: Boolean }) public confirmation = false
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -62,25 +69,26 @@ export class WuiActiveProfileWalletItem extends LitElement {
   // -- Private ------------------------------------------- //
   public topTemplate() {
     return html`
-      <wui-flex alignItems="center" justifyContent="space-between" columnGap="s">
+      <wui-flex alignItems="flex-start" justifyContent="space-between">
         ${this.imageOrIconTemplate()}
-        <wui-icon color="fg-275" size="xs" name="copy" @click=${this.dispatchCopyEvent}></wui-icon>
-        <wui-icon
-          color="fg-275"
-          size="xs"
-          name="externalLink"
+        <wui-icon-link
+          iconColor="fg-200"
+          size="sm"
+          icon="copy"
+          @click=${this.dispatchCopyEvent}
+        ></wui-icon-link>
+        <wui-icon-link
+          iconColor="fg-200"
+          size="sm"
+          icon="externalLink"
           @click=${this.dispatchExternalLinkEvent}
-        ></wui-icon>
+        ></wui-icon-link>
       </wui-flex>
     `
   }
 
   public bottomTemplate() {
-    return html`
-      <wui-flex flexDirection="column">
-        ${this.labelAndTagTemplate()} ${this.labelAndDescriptionTemplate()}
-      </wui-flex>
-    `
+    return html` <wui-flex flexDirection="column">${this.contentTemplate()}</wui-flex> `
   }
 
   private imageOrIconTemplate() {
@@ -90,7 +98,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
           <wui-flex alignItems="center" justifyContent="center" class="icon-box">
             <wui-icon
               size=${this.iconSize}
-              color="fg-275"
+              color="fg-200"
               name=${this.icon}
               class="custom-icon"
             ></wui-icon>
@@ -110,89 +118,69 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
     return html`
       <wui-flex flexGrow="1" alignItems="center">
-        <wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>
+        <wui-image objectFit="contain" src=${this.imageSrc} alt=${this.alt}></wui-image>
       </wui-flex>
     `
   }
 
-  private labelAndTagTemplate() {
-    if (this.description) {
-      return html`
-        <wui-flex alignItems="center" columnGap="3xs">
-          <wui-text variant="small-500" color="fg-100">
-            ${UiHelperUtil.getTruncateString({
-              string: this.profileName || this.address,
-              charsStart: this.profileName ? 16 : this.charsStart,
-              charsEnd: this.profileName ? 0 : this.charsEnd,
-              truncate: this.profileName ? 'end' : 'middle'
-            })}
-          </wui-text>
-
-          <wui-tag variant=${this.tagVariant} size="xs">${this.tagLabel}</wui-tag>
-        </wui-flex>
-      `
-    }
-
-    return html`
-      <wui-flex justifyContent="space-between" alignItems="center" columnGap="3xs">
-        <wui-flex alignItems="center" columnGap="3xs">
-          <wui-text variant="small-500" color="fg-100">
-            ${UiHelperUtil.getTruncateString({
-              string: this.profileName || this.address,
-              charsStart: this.profileName ? 16 : this.charsStart,
-              charsEnd: this.profileName ? 0 : this.charsEnd,
-              truncate: this.profileName ? 'end' : 'middle'
-            })}
-          </wui-text>
-
-          <wui-tag variant=${this.tagVariant} size="xs">${this.tagLabel}</wui-tag>
-        </wui-flex>
-
-        ${this.disconnectTemplate()}
-      </wui-flex>
-    `
-  }
-
-  public labelAndDescriptionTemplate() {
-    if (!this.description) {
+  private contentTemplate() {
+    if (this.content.length === 0) {
       return null
     }
 
     return html`
-      <wui-flex alignItems="center" justifyContent="space-between" columnGap="3xs">
-        <wui-text variant="tiny-500" color="fg-200">${this.description}</wui-text>
-        ${this.disconnectTemplate()}
+      <wui-flex flexDirection="column" rowGap="s">
+        ${this.content.map(item => this.labelAndTagTemplate(item))}
+      </wui-flex>
+    `
+  }
+
+  private labelAndTagTemplate({
+    address,
+    profileName,
+    label,
+    description,
+    enableButton,
+    tagVariant,
+    tagLabel,
+    alignItems = 'flex-end'
+  }: ContentItem) {
+    return html`
+      <wui-flex justifyContent="space-between" alignItems=${alignItems} columnGap="3xs">
+        <wui-flex flexDirection="column" rowGap="4xs">
+          ${label ? html`<wui-text variant="micro-600" color="fg-200">${label}</wui-text>` : null}
+
+          <wui-flex alignItems="center" columnGap="3xs">
+            <wui-text variant="small-500" color="fg-100">
+              ${UiHelperUtil.getTruncateString({
+                string: profileName || address,
+                charsStart: profileName ? 16 : this.charsStart,
+                charsEnd: profileName ? 0 : this.charsEnd,
+                truncate: profileName ? 'end' : 'middle'
+              })}
+            </wui-text>
+
+            ${tagVariant && tagLabel
+              ? html`<wui-tag variant=${tagVariant} size="xs">${tagLabel}</wui-tag>`
+              : null}
+          </wui-flex>
+
+          ${description
+            ? html`<wui-text variant="tiny-500" color="fg-200">${description}</wui-text>`
+            : null}
+        </wui-flex>
+
+        ${enableButton ? this.disconnectTemplate() : null}
       </wui-flex>
     `
   }
 
   public disconnectTemplate() {
-    if (this.confirmation) {
-      return html`
-        <wui-flex alignItems="center" columnGap="1xs" class="confirmation-box">
-          <wui-text variant="tiny-600" color="fg-200"> Disconnect </wui-text>
-
-          <wui-icon
-            color="error-100"
-            size="xs"
-            name="x-mark"
-            @click=${this.dispatchToggleConfirmationEvent.bind(this)}
-          ></wui-icon>
-          <wui-icon
-            color="success-100"
-            size="xs"
-            name="checkmarkBold"
-            @click=${this.dispatchDisconnectEvent}
-          ></wui-icon>
-        </wui-flex>
-      `
-    }
-
     return html`
       <wui-button
         size="xs"
         variant=${this.buttonVariant}
-        @click=${this.dispatchToggleConfirmationEvent.bind(this)}
+        @click=${this.dispatchDisconnectEvent.bind(this)}
       >
         Disconnect
       </wui-button>
@@ -209,10 +197,6 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   private dispatchCopyEvent() {
     this.dispatchEvent(new CustomEvent('copy', { bubbles: true, composed: true }))
-  }
-
-  private dispatchToggleConfirmationEvent() {
-    this.dispatchEvent(new CustomEvent('toggleConfirmation', { bubbles: true, composed: true }))
   }
 }
 

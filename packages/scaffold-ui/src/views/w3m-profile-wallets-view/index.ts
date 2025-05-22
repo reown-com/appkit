@@ -4,7 +4,8 @@ import { state } from 'lit/decorators.js'
 import {
   type CaipAddress,
   type ChainNamespace,
-  ConstantsUtil as CommonConstantsUtil
+  ConstantsUtil as CommonConstantsUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -61,6 +62,13 @@ type HandleDeleteRecentConnectionParams = {
   namespace: ChainNamespace
 }
 
+type GetProfileContentParams = {
+  address: string
+  namespace: ChainNamespace
+  connections: Connection[]
+  connectorId: string
+}
+
 // -- Constants ------------------------------------------ //
 const CHARS_START = 4
 const CHARS_END = 6
@@ -104,11 +112,9 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private caipAddress: CaipAddress | undefined = undefined
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private smartAccountAddress: string | undefined = undefined
-  @state() private profileName: string | null | undefined = undefined
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
-  @state() private isDeleting = false
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -116,7 +122,6 @@ export class W3mProfileWalletsView extends LitElement {
 
     this.currentTab = this.namespace ? this.namespaces.indexOf(this.namespace) : 0
     this.smartAccountAddress = AccountController.getSmartAccountAddress(this.namespace)
-    this.profileName = ChainController.getAccountData(this.namespace)?.profileName
     this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
     this.unsubscribe.push(
       ...[
@@ -132,7 +137,6 @@ export class W3mProfileWalletsView extends LitElement {
       'accountState',
       val => {
         this.caipAddress = val?.caipAddress
-        this.profileName = val?.profileName
         this.smartAccountAddress = val?.smartAccountAddress
       },
       this.namespace
@@ -185,9 +189,10 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private connectionsTemplate(namespace: ChainNamespace) {
-    const { hasConnections } = this.getConnectionsData(namespace)
+    const connections = this.getActiveConnections(namespace)
+    const { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
 
-    if (hasConnections) {
+    if (this.caipAddress || connections.length > 0 || storageConnections.length > 0) {
       return html`
         <wui-flex flexDirection="column" class="wallet-list" rowGap="s">
           ${this.activeProfileAndConnectionsTemplate(namespace)}
@@ -204,7 +209,7 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private headerTemplate(namespace: ChainNamespace) {
-    const { hasConnections, connections } = this.getConnectionsData(namespace)
+    const connections = this.getActiveConnections(namespace)
 
     const totalConnections =
       connections.flatMap(({ accounts }) => accounts).length + (this.caipAddress ? 1 : 0)
@@ -221,7 +226,7 @@ export class W3mProfileWalletsView extends LitElement {
         <wui-link
           color="fg-200"
           @click=${() => ConnectionController.disconnect({ namespace, disconnectAll: true })}
-          ?disabled=${!hasConnections}
+          ?disabled=${connections.length === 0 && !this.caipAddress}
         >
           Disconnect All
         </wui-link>
@@ -230,14 +235,13 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private activeProfileAndConnectionsTemplate(namespace: ChainNamespace) {
-    const { connections } = this.getConnectionsData(namespace)
-    const { plainAddress } = this.getActiveConnectionsData(namespace)
+    const connections = this.getActiveConnections(namespace)
 
-    if (connections.length > 0 || plainAddress) {
+    if (connections.length > 0 || this.caipAddress) {
       return html`
         <wui-flex
           flexDirection="column"
-          .padding=${['l', 'l', 'xs', 'l'] as const}
+          .padding=${['l', '0', 'xs', '0'] as const}
           class="active-wallets"
         >
           ${this.activeProfileTemplate(namespace)} ${this.activeConnectionsTemplate(namespace)}
@@ -255,18 +259,22 @@ export class W3mProfileWalletsView extends LitElement {
       return null
     }
 
-    let description: string | undefined = undefined
+    const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
 
     const connector = ConnectorController.getConnectorById(connectorId)
     const connectorImage = AssetUtil.getConnectorImage(connector)
 
-    const { plainAddress, shouldShowLineSeparator } = this.getActiveConnectionsData(namespace)
+    const plainAddress = this.caipAddress
+      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
+      : undefined
+
+    const shouldShowLineSeparator = this.getShouldShowLineSeparator(namespace)
 
     if (!plainAddress) {
       return null
     }
 
-    const { isAuth, icon, iconSize } = this.getAuthData({
+    const { icon, iconSize } = this.getAuthData({
       connectorId,
       accounts: []
     })
@@ -275,18 +283,16 @@ export class W3mProfileWalletsView extends LitElement {
       ? HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, plainAddress)
       : false
 
-    if (isAuth) {
-      description = isSmartAccount ? 'Smart Account' : 'EOA Account'
-    }
-
-    return html`<wui-flex flexDirection="column">
+    return html`<wui-flex flexDirection="column" .padding=${['0', 'l', '0', 'l'] as const}>
       <wui-active-profile-wallet-item
         address=${plainAddress}
         alt=${connector?.name}
-        tagLabel="Active"
-        tagVariant="success"
-        .description=${description}
-        .profileName=${this.profileName}
+        .content=${this.getProfileContent({
+          address: plainAddress,
+          namespace,
+          connections,
+          connectorId
+        })}
         .charsStart=${CHARS_START}
         .charsEnd=${CHARS_END}
         .icon=${icon}
@@ -294,49 +300,39 @@ export class W3mProfileWalletsView extends LitElement {
         .iconBadge=${isSmartAccount ? ICON_BADGE_SIZE.icon : undefined}
         .iconBadgeSize=${isSmartAccount ? ICON_BADGE_SIZE.size : undefined}
         imageSrc=${connectorImage}
-        ?confirmation=${this.isDeleting}
-        @toggleConfirmation=${() => this.handleToggleConfirmation()}
-        @copy=${() => this.handleCopyAddress()}
+        @copy=${() => this.handleCopyAddress(plainAddress)}
+        @externalLink=${() => this.handleExternalLink(namespace, plainAddress)}
         @disconnect=${() => this.handleDisconnect({ namespace })}
       ></wui-active-profile-wallet-item>
       ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
     </wui-flex>`
   }
 
-  private getActiveConnectionsData(namespace: ChainNamespace) {
-    const plainAddress = this.caipAddress
-      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
-      : undefined
-
-    const { connections } = this.getConnectionsData(namespace)
+  private getShouldShowLineSeparator(namespace: ChainNamespace) {
+    const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
 
     const connectionsWithMultipleAccounts = connections.filter(
       connection => connection.accounts.length > 0
     )
 
-    return {
-      plainAddress,
-      shouldShowLineSeparator: connectionsWithMultipleAccounts.length > 0
-    }
+    return connectionsWithMultipleAccounts.length > 0
   }
 
   private activeConnectionsTemplate(namespace: ChainNamespace) {
-    const { hasActiveConnections, connections } = this.getConnectionsData(namespace)
+    const connections = this.getActiveConnections(namespace)
 
-    if (hasActiveConnections) {
-      return html`${this.displayConnections({
-        connections,
-        includeSeparator: false,
-        isRecentConnections: false,
-        namespace
-      })}`
+    if (connections.length > 0) {
+      return html`<wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+        ${this.displayConnections({
+          connections,
+          includeSeparator: false,
+          isRecentConnections: false,
+          namespace
+        })}
+      </wui-flex>`
     }
 
     return null
-  }
-
-  private getConnectionsData(namespace: ChainNamespace) {
-    return ConnectionControllerUtil.getConnectionsData(namespace)
   }
 
   private getAuthData(connection: Connection) {
@@ -383,9 +379,7 @@ export class W3mProfileWalletsView extends LitElement {
       .map((connection, connectionIdx) => {
         const connector = ConnectorController.getConnectorById(connection.connectorId)
         const connectorImage = AssetUtil.getConnectorImage(connector)
-
         const isFirstConnection = connectionIdx === 0
-
         const { icon, iconSize } = this.getAuthData(connection)
 
         return connection.accounts.map((account, accountIdx) => {
@@ -407,7 +401,8 @@ export class W3mProfileWalletsView extends LitElement {
               buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
               buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
               rightIcon=${isRecentConnections ? 'bin' : 'off'}
-              rightIconSize="xs"
+              rightIconSize="sm"
+              class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
               imageSrc=${connectorImage}
               .icon=${icon}
               .iconSize=${iconSize}
@@ -435,14 +430,76 @@ export class W3mProfileWalletsView extends LitElement {
       })
   }
 
-  private recentConnectionsTemplate(namespace: ChainNamespace) {
-    const { hasStorageConnections, storageConnections } = this.getConnectionsData(namespace)
+  private getProfileContent({
+    address,
+    namespace,
+    connections,
+    connectorId
+  }: GetProfileContentParams) {
+    const [connectedConnection] = connections.filter(connection =>
+      HelpersUtil.isLowerCaseMatch(connection.connectorId, connectorId)
+    )
 
-    if (hasStorageConnections) {
+    if (!connectedConnection) {
+      return []
+    }
+
+    const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
+    const hasTypeOnEveryAccount = connectedConnection.accounts.every(
+      account => typeof account.type === 'string'
+    )
+
+    if (isBitcoin && hasTypeOnEveryAccount) {
+      const accounts = connectedConnection.accounts
+
+      const hasMultipleAccounts = accounts.length > 1
+
+      return accounts.map((account, idx) => {
+        const isLastAccount = idx === accounts.length - 1
+        const isConnected = HelpersUtil.isLowerCaseMatch(account.address, address)
+
+        return {
+          address: account.address,
+          tagLabel: isConnected ? 'Active' : undefined,
+          tagVariant: isConnected ? 'success' : undefined,
+          enableButton: isLastAccount,
+          ...(hasMultipleAccounts
+            ? { label: account.type?.toUpperCase(), alignItems: 'flex-end' }
+            : {
+                alignItems: 'center'
+              })
+        }
+      })
+    }
+
+    const { isAuth } = this.getAuthData({
+      connectorId,
+      accounts: []
+    })
+
+    const isSmartAccount = this.smartAccountAddress
+      ? HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, address)
+      : false
+
+    return [
+      {
+        address,
+        tagLabel: 'Active',
+        tagVariant: 'success',
+        enableButton: true,
+        ...(isAuth ? { label: isSmartAccount ? 'Smart Account' : 'EOA Account' } : {})
+      }
+    ]
+  }
+
+  private recentConnectionsTemplate(namespace: ChainNamespace) {
+    const { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
+
+    if (storageConnections.length > 0) {
       return html`
         <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
           <wui-text color="fg-200" variant="micro-500">RECENTLY CONNECTED</wui-text>
-          <wui-flex flexDirection="column">
+          <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
             ${this.displayConnections({
               connections: storageConnections,
               includeSeparator: true,
@@ -458,10 +515,11 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private addConnectionTemplate(namespace: ChainNamespace) {
-    const { hasConnections } = this.getConnectionsData(namespace)
+    const { storageConnections, connections } =
+      ConnectionControllerUtil.getConnectionsData(namespace)
     const { title } = this.getChainSwitchText(namespace)
 
-    if (hasConnections) {
+    if (this.caipAddress || storageConnections.length > 0 || connections.length > 0) {
       return html`
         <wui-list-item
           variant="icon"
@@ -476,51 +534,73 @@ export class W3mProfileWalletsView extends LitElement {
       `
     }
 
-    return html`<wui-flex class="add-wallet-placeholder"></wui-flex>`
+    return null
   }
 
   private emptyTemplate(namespace: ChainNamespace) {
-    const { hasConnections } = this.getConnectionsData(namespace)
+    const { storageConnections, connections } =
+      ConnectionControllerUtil.getConnectionsData(namespace)
 
-    if (hasConnections) {
-      return null
+    if (storageConnections.length === 0 && connections.length === 0 && !this.caipAddress) {
+      const { title, description } = this.getChainSwitchText(namespace)
+
+      return html`
+        <wui-flex alignItems="flex-start" class="empty-template">
+          <wui-flex
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            rowGap="s"
+            class="empty-box"
+          >
+            <wui-icon-box
+              size="lg"
+              icon="wallet"
+              background="gray"
+              iconColor="fg-200"
+              backgroundColor="glass-002"
+            ></wui-icon-box>
+
+            <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
+              <wui-text color="fg-100" variant="paragraph-500">No wallet connected</wui-text>
+              <wui-text color="fg-200" variant="tiny-500">${description}</wui-text>
+            </wui-flex>
+
+            <wui-button
+              variant="neutral"
+              size="md"
+              @click=${() => this.handleAddConnection(namespace)}
+            >
+              <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
+              ${title}
+            </wui-button>
+          </wui-flex>
+        </wui-flex>
+      `
     }
 
-    const { title, description } = this.getChainSwitchText(namespace)
+    return null
+  }
 
-    return html`
-      <wui-flex alignItems="flex-start" class="empty-template">
-        <wui-flex
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          rowGap="s"
-          class="empty-box"
-        >
-          <wui-icon-box
-            size="lg"
-            icon="wallet"
-            background="gray"
-            iconColor="fg-200"
-            backgroundColor="glass-002"
-          ></wui-icon-box>
+  private getActiveConnections(namespace: ChainNamespace) {
+    const connectorId = this.activeConnectorIds[namespace]
 
-          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
-            <wui-text color="fg-100" variant="paragraph-500">No wallet connected</wui-text>
-            <wui-text color="fg-200" variant="tiny-500">${description}</wui-text>
-          </wui-flex>
+    const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
+    if (!connectorId) {
+      return connections
+    }
 
-          <wui-button
-            variant="neutral"
-            size="md"
-            @click=${() => this.handleAddConnection(namespace)}
-          >
-            <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
-            ${title}
-          </wui-button>
-        </wui-flex>
-      </wui-flex>
-    `
+    const { address } = this.caipAddress ? ParseUtil.parseCaipAddress(this.caipAddress) : {}
+
+    const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
+
+    return ConnectionControllerUtil.excludeConnectorAddressFromConnections({
+      connectorId,
+      addresses: [...(address ? [address] : [])],
+      connections: isBitcoin
+        ? ConnectionControllerUtil.filterConnectionsByAccountType(connections, 'payment')
+        : connections
+    })
   }
 
   private async handleSwitchWallet({ connection, address, namespace }: HandleSwitchWalletParams) {
@@ -541,35 +621,41 @@ export class W3mProfileWalletsView extends LitElement {
         }
       })
     } catch (err) {
-      SnackController.showError('Failed to connect wallet')
+      // eslint-disable-next-line no-console
+      console.error(err)
+      SnackController.showError('Failed to switch wallet')
     } finally {
       this.isSwitching = false
-      this.isDeleting = false
     }
   }
 
   private async handleDisconnect({ id, namespace }: HandleDisconnectParams) {
     try {
       await ConnectionController.disconnect({ id, namespace })
-      SnackController.showSuccess('Disconnected')
+      SnackController.showSuccess('Wallet disconnected')
     } catch (err) {
-      SnackController.showError('Failed to disconnect')
-    } finally {
-      this.isDeleting = false
+      SnackController.showError('Failed to disconnect wallet')
     }
   }
 
-  private handleCopyAddress() {
-    SnackController.showSuccess('Copied')
+  private handleCopyAddress(address: string) {
+    CoreHelperUtil.copyToClopboard(address)
+    SnackController.showSuccess('Address copied')
+  }
+
+  private handleExternalLink(namespace: ChainNamespace, address: string) {
+    const addressExplorerUrl = HelpersUtil.getExplorerUrl(namespace)
+
+    if (!addressExplorerUrl) {
+      return
+    }
+
+    CoreHelperUtil.openHref(`${addressExplorerUrl}/address/${address}`, '_blank')
   }
 
   private handleAddConnection(namespace: ChainNamespace) {
     ConnectorController.setFilterByNamespace(namespace)
     RouterController.push('Connect')
-  }
-
-  private handleToggleConfirmation() {
-    this.isDeleting = !this.isDeleting
   }
 
   private handleDeleteRecentConnection({
@@ -582,6 +668,8 @@ export class W3mProfileWalletsView extends LitElement {
       address,
       namespace
     })
+
+    SnackController.showSuccess('Wallet deleted')
 
     this.requestUpdate()
   }
@@ -598,7 +686,6 @@ export class W3mProfileWalletsView extends LitElement {
 
     this.namespace = nextNamespace
     this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
-    this.profileName = ChainController.getAccountData(this.namespace)?.profileName
     this.smartAccountAddress = AccountController.getSmartAccountAddress(this.namespace)
 
     ChainController.setActiveNamespace(this.namespace)
@@ -607,7 +694,6 @@ export class W3mProfileWalletsView extends LitElement {
       'accountState',
       val => {
         this.caipAddress = val?.caipAddress
-        this.profileName = val?.profileName
         this.smartAccountAddress = val?.smartAccountAddress
       },
       this.namespace

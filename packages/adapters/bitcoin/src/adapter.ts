@@ -71,6 +71,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
 
     const address = await connector.connect()
+    const accounts = await this.getAccounts({ id: connector.id })
 
     this.listenProviderEvents(connector)
 
@@ -82,7 +83,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnection({
       connectorId: connector.id,
-      accounts: [{ address }],
+      accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
       caipNetwork: chain
     })
 
@@ -103,15 +104,23 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       ?.getAccountAddresses()
       .catch(() => [])
 
-    const accounts = addresses?.map(a =>
-      CoreHelperUtil.createAccount(
-        ConstantsUtil.CHAIN.BITCOIN,
-        a.address,
-        a.purpose || 'payment',
-        a.publicKey,
-        a.path
+    const accounts = addresses
+      ?.map(a =>
+        CoreHelperUtil.createAccount(
+          ConstantsUtil.CHAIN.BITCOIN,
+          a.address,
+          a.purpose || 'payment',
+          a.publicKey,
+          a.path
+        )
       )
-    )
+      .filter(a => {
+        if (typeof a.type === 'string') {
+          return a.type === 'payment' || a.type === 'ordinal'
+        }
+
+        return true
+      })
 
     return {
       accounts: accounts || []
@@ -192,6 +201,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
           }
 
           const address = await connector.connect()
+          const accounts = await this.getAccounts({ id: connector.id })
 
           const chain = connector.chains.find(c => c.id === caipNetwork?.id) || connector.chains[0]
 
@@ -203,7 +213,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
             this.listenProviderEvents(connector)
             this.addConnection({
               connectorId: connector.id,
-              accounts: [{ address }],
+              accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
               caipNetwork
             })
           }
@@ -491,12 +501,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         chainId,
         type: ''
       })
+      const accounts = await this.getAccounts({ id: connector.id })
 
       const chain = connector.chains.find(c => c.id === chainId) || connector.chains[0]
 
       this.addConnection({
         connectorId: connector.id,
-        accounts: [{ address }],
+        accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
         caipNetwork: chain
       })
 

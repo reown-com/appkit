@@ -117,7 +117,7 @@ export function useAppKitConnection({
   onDeleteRecentConnection
 }: UseAppKitConnectionProps) {
   // Used to force a re-render when the storage connection changes
-  const [, setNum] = useState(0)
+  const [, setBool] = useState(false)
 
   // Force re-renders when the connection or connector state changes
   useSnapshot(ConnectionController.state)
@@ -131,13 +131,8 @@ export function useAppKitConnection({
     throw new Error('No namespace found')
   }
 
-  const {
-    hasConnections,
-    hasActiveConnections,
-    hasStorageConnections,
-    connections,
-    storageConnections
-  } = ConnectionControllerUtil.getConnectionsData(chainNamespace)
+  const { connections, storageConnections } =
+    ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
   async function connect({ connection, address }: UseAppKitConnectionConnectProps) {
     if (!chainNamespace) {
@@ -184,13 +179,10 @@ export function useAppKitConnection({
     onDeleteRecentConnection?.()
 
     // Force re-render when the storage connection changes
-    setNum(prev => prev + 1)
+    setBool(prev => !prev)
   }
 
   return {
-    hasConnections,
-    hasActiveConnections,
-    hasStorageConnections,
     connections,
     storageConnections,
     connect,

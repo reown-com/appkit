@@ -11,49 +11,46 @@ import { address, buttonOptions, iconOptions, walletImagesOptions } from '../../
 
 type Component = Meta<WuiActiveProfileWalletItem>
 
-const tagOptions = ['main', 'shade', 'error', 'success'] as const
-
 export default {
   title: 'Composites/wui-active-profile-wallet-item',
   args: {
-    address,
-    profileName: '',
-    description: '',
     alt: 'MetaMask',
     imageSrc: walletImagesOptions[0]?.src,
     charsStart: 4,
     charsEnd: 6,
-    tagLabel: 'Active',
-    tagVariant: 'success',
     buttonVariant: 'neutral',
     icon: undefined,
     iconBadge: undefined,
     iconBadgeSize: 'md',
     iconSize: 'md',
-    confirmation: false
+    confirmation: false,
+    content: [
+      {
+        address,
+        profileName: 'vitalik.eth',
+        label: 'EOA Account',
+        tagLabel: 'Active',
+        tagVariant: 'success',
+        enableButton: false
+      },
+      {
+        address,
+        profileName: undefined,
+        label: 'Smart Account',
+        tagVariant: 'success',
+        enableButton: true
+      }
+    ]
   },
   argTypes: {
-    address: {
-      control: { type: 'text' }
-    },
-    profileName: {
-      control: { type: 'text' }
-    },
-    description: {
-      control: { type: 'text' }
+    content: {
+      control: { type: 'object' }
     },
     alt: {
       control: { type: 'text' }
     },
     imageSrc: {
       control: { type: 'text' }
-    },
-    tagLabel: {
-      control: { type: 'text' }
-    },
-    tagVariant: {
-      options: tagOptions,
-      control: { type: 'select' }
     },
     charsStart: {
       control: { type: 'number' }
@@ -80,9 +77,6 @@ export default {
     iconBadgeSize: {
       options: ['xl', 'md', 'sm', 'xs'],
       control: { type: 'select' }
-    },
-    confirmation: {
-      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -91,20 +85,15 @@ export const Default: Component = {
   render: args => html`
     <gallery-container width="336">
       <wui-active-profile-wallet-item
-        address=${args.address}
-        profileName=${args.profileName}
-        description=${args.description}
         alt=${args.alt}
         imageSrc=${args.imageSrc}
-        tagLabel=${args.tagLabel}
-        tagVariant=${args.tagVariant}
         icon=${args.icon}
         iconBadge=${args.iconBadge}
         iconSize=${args.iconSize}
         iconBadgeSize=${args.iconBadgeSize}
         charsStart=${args.charsStart}
         charsEnd=${args.charsEnd}
-        ?confirmation=${args.confirmation}
+        .content=${args.content}
         @disconnect=${() => alert('disconnect')}
         @copy=${() => alert('copied')}
       ></wui-active-profile-wallet-item>
