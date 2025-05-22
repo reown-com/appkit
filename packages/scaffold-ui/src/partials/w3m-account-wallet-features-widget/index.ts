@@ -32,7 +32,6 @@ import '../w3m-tooltip-trigger/index.js'
 import '../w3m-tooltip/index.js'
 import styles from './styles.js'
 
-const TABS = 3
 const TABS_PADDING = 48
 const MODAL_MOBILE_VIEW_PX = 430
 
@@ -290,12 +289,21 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return null
     }
 
+    const isMobileAndSmall = CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
+    let localTabWidth = '104px'
+
+    if (isMobileAndSmall) {
+      localTabWidth = `${(window.innerWidth - TABS_PADDING) / tabsByNamespace.length}px`
+    } else if (tabsByNamespace.length === 2) {
+      localTabWidth = '156px'
+    } else {
+      localTabWidth = '104px'
+    }
+
     return html`<wui-tabs
       .onTabChange=${this.onTabChange.bind(this)}
       .activeTab=${this.currentTab}
-      localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-        ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
-        : '104px'}
+      localTabWidth=${localTabWidth}
       .tabs=${tabsByNamespace}
     ></wui-tabs>`
   }

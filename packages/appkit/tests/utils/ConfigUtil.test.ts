@@ -167,7 +167,7 @@ describe('ConfigUtil', () => {
         { id: 'social_login', isEnabled: true, config: ['email', 'discord'] },
         { id: 'swap', isEnabled: true, config: ['1inch'] as SwapProvider[] },
         { id: 'onramp', isEnabled: false, config: [] as OnRampProvider[] },
-        { id: 'activity', isEnabled: true, config: null }
+        { id: 'activity', isEnabled: false, config: [] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
       mockOptions.features = {
@@ -183,7 +183,7 @@ describe('ConfigUtil', () => {
         socials: ['discord'],
         swaps: ['1inch'],
         onramp: false,
-        activity: true,
+        activity: false,
         reownBranding: false
       })
       expect(AlertController.open).toHaveBeenCalledTimes(1)
@@ -238,9 +238,9 @@ describe('ConfigUtil', () => {
     it('should turn feature off/empty if API enables it with empty/null config', async () => {
       const apiResponse: TypedFeatureConfig[] = [
         { id: 'social_login', isEnabled: true, config: [] },
-        { id: 'swap', isEnabled: true, config: null as unknown as SwapProvider[] },
-        { id: 'onramp', isEnabled: true, config: [] as OnRampProvider[] },
-        { id: 'activity', isEnabled: false, config: null }
+        { id: 'swap', isEnabled: false, config: [] as unknown as SwapProvider[] },
+        { id: 'onramp', isEnabled: false, config: false as unknown as OnRampProvider[] },
+        { id: 'activity', isEnabled: false, config: [] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
       mockOptions.features = {}

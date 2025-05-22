@@ -58,7 +58,7 @@ export const ConfigUtil = {
 
       const socialLoginApi = getApiConfig('social_login')
       if (socialLoginApi) {
-        if (socialLoginApi.isEnabled === null && socialLoginApi.config === null) {
+        if (socialLoginApi.config === null) {
           if (typeof localFeatures.email === 'boolean') {
             remoteFeaturesConfig.email = localFeatures.email
           } else {
@@ -92,7 +92,7 @@ export const ConfigUtil = {
 
       const swapsApi = getApiConfig('swap')
       if (swapsApi) {
-        if (swapsApi.isEnabled === null && swapsApi.config === null) {
+        if (swapsApi.config === null) {
           if (typeof localFeatures.swaps === 'boolean') {
             remoteFeaturesConfig.swaps = localFeatures.swaps ? DEFAULT_REMOTE_FEATURES.swaps : false
           } else if (localFeatures.swaps === undefined) {
@@ -113,7 +113,7 @@ export const ConfigUtil = {
 
       const onRampApi = getApiConfig('onramp')
       if (onRampApi) {
-        if (onRampApi.isEnabled === null && onRampApi.config === null) {
+        if (onRampApi.config === null) {
           if (typeof localFeatures.onramp === 'boolean') {
             remoteFeaturesConfig.onramp = localFeatures.onramp
               ? DEFAULT_REMOTE_FEATURES.onramp
@@ -136,7 +136,7 @@ export const ConfigUtil = {
 
       const activityApi = getApiConfig('activity')
       if (activityApi) {
-        if (activityApi.isEnabled === null && activityApi.config === null) {
+        if (activityApi.config === null) {
           if (typeof localFeatures.history === 'boolean') {
             remoteFeaturesConfig.activity = localFeatures.history
               ? DEFAULT_REMOTE_FEATURES.activity
@@ -156,7 +156,7 @@ export const ConfigUtil = {
 
       const reownBrandingApi = getApiConfig('reown_branding')
       if (reownBrandingApi) {
-        if (reownBrandingApi.isEnabled === null && reownBrandingApi.config === null) {
+        if (reownBrandingApi.config === null) {
           remoteFeaturesConfig.reownBranding = DEFAULT_REMOTE_FEATURES.reownBranding
         } else {
           remoteFeaturesConfig.reownBranding = reownBrandingApi.isEnabled ?? false

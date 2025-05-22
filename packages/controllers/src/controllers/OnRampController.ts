@@ -11,6 +11,7 @@ import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
@@ -109,9 +110,11 @@ const controller = {
       url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)
       url.searchParams.append('walletAddress', address)
-      provider.url = url.toString()
+      url.searchParams.append('externalCustomerId', OptionsController.state.projectId)
+      state.selectedProvider = { ...provider, url: url.toString() }
+    } else {
+      state.selectedProvider = provider
     }
-    state.selectedProvider = provider
   },
 
   setOnrampProviders(providers: OnRampProviderName[]) {

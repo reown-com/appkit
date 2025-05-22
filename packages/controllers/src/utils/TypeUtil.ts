@@ -1309,10 +1309,10 @@ interface BaseFeature<T extends FeatureID, C extends string[] | null> {
 }
 
 export type TypedFeatureConfig =
-  | BaseFeature<'activity', null>
+  | BaseFeature<'activity', null | []>
   | BaseFeature<'onramp', OnRampProvider[]>
   | BaseFeature<'swap', SwapProvider[]>
   | BaseFeature<'social_login', (SocialProvider | 'email')[]>
-  | BaseFeature<'reown_branding', null>
+  | BaseFeature<'reown_branding', null | []>
 
 export type ApiGetProjectConfigResponse = TypedFeatureConfig[]
