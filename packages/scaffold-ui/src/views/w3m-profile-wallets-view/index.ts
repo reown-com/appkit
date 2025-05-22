@@ -272,7 +272,7 @@ export class W3mProfileWalletsView extends LitElement {
       return null
     }
 
-    const { icon, iconSize } = this.getAuthData({
+    const { isAuth, icon, iconSize } = this.getAuthData({
       connectorId,
       accounts: []
     })
@@ -300,9 +300,11 @@ export class W3mProfileWalletsView extends LitElement {
         .iconBadge=${isSmartAccount ? ICON_BADGE_SIZE.icon : undefined}
         .iconBadgeSize=${isSmartAccount ? ICON_BADGE_SIZE.size : undefined}
         imageSrc=${connectorImage}
+        ?enableMoreButton=${isAuth}
         @copy=${() => this.handleCopyAddress(plainAddress)}
-        @externalLink=${() => this.handleExternalLink(namespace, plainAddress)}
         @disconnect=${() => this.handleDisconnect({ namespace })}
+        @externalLink=${() => this.handleExternalLink(namespace, plainAddress)}
+        @more=${() => this.handleMore()}
       ></wui-active-profile-wallet-item>
       ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
     </wui-flex>`
@@ -483,7 +485,7 @@ export class W3mProfileWalletsView extends LitElement {
         tagLabel: 'Active',
         tagVariant: 'success',
         enableButton: true,
-        ...(isAuth ? { label: isSmartAccount ? 'Smart Account' : 'EOA Account' } : {})
+        ...(isAuth ? { description: isSmartAccount ? 'Smart Account' : 'EOA Account' } : {})
       }
     ]
   }
@@ -637,6 +639,10 @@ export class W3mProfileWalletsView extends LitElement {
   private handleCopyAddress(address: string) {
     CoreHelperUtil.copyToClopboard(address)
     SnackController.showSuccess('Address copied')
+  }
+
+  private handleMore() {
+    RouterController.push('AccountSettings')
   }
 
   private handleExternalLink(namespace: ChainNamespace, address: string) {

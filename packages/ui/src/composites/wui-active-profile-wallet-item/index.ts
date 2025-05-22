@@ -53,6 +53,8 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public buttonVariant: ButtonVariant = 'neutral'
 
+  @property({ type: Boolean }) public enableMoreButton = false
+
   @property({ type: Number }) public charsStart = 4
 
   @property({ type: Number }) public charsEnd = 6
@@ -83,6 +85,14 @@ export class WuiActiveProfileWalletItem extends LitElement {
           icon="externalLink"
           @click=${this.dispatchExternalLinkEvent}
         ></wui-icon-link>
+        ${this.enableMoreButton
+          ? html`<wui-icon-link
+              iconColor="fg-200"
+              size="sm"
+              icon="threeDots"
+              @click=${this.dispatchMoreButtonEvent}
+            ></wui-icon-link>`
+          : null}
       </wui-flex>
     `
   }
@@ -193,6 +203,10 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   private dispatchExternalLinkEvent() {
     this.dispatchEvent(new CustomEvent('externalLink', { bubbles: true, composed: true }))
+  }
+
+  private dispatchMoreButtonEvent() {
+    this.dispatchEvent(new CustomEvent('more', { bubbles: true, composed: true }))
   }
 
   private dispatchCopyEvent() {

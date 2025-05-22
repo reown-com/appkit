@@ -24,6 +24,7 @@ export default {
     iconBadgeSize: 'md',
     iconSize: 'md',
     confirmation: false,
+    enableMoreButton: true,
     content: [
       {
         address,
@@ -57,6 +58,9 @@ export default {
     },
     charsEnd: {
       control: { type: 'number' }
+    },
+    enableMoreButton: {
+      control: { type: 'boolean' }
     },
     buttonVariant: {
       options: buttonOptions,
@@ -94,6 +98,7 @@ export const Default: Component = {
         charsStart=${args.charsStart}
         charsEnd=${args.charsEnd}
         .content=${args.content}
+        ?enableMoreButton=${args.enableMoreButton}
         @disconnect=${() => alert('disconnect')}
         @copy=${() => alert('copied')}
       ></wui-active-profile-wallet-item>
