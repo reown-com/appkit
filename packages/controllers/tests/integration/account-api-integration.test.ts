@@ -142,11 +142,6 @@ describe('AccountController-ApiController Integration', () => {
       expect(result).toEqual(
         mockBalanceResponse.balances.filter(balance => balance.quantity.decimals !== '0')
       )
-
-      const filteredBalances = mockBalanceResponse.balances.filter(
-        balance => balance.quantity.decimals !== '0'
-      )
-      expect(result).toEqual(filteredBalances)
     })
 
     it('should handle balance fetch errors appropriately', async () => {
