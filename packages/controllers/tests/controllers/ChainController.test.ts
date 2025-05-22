@@ -19,7 +19,6 @@ import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
-import { RouterController } from '../../src/controllers/RouterController.js'
 import { StorageUtil } from '../../src/utils/StorageUtil.js'
 
 // -- Setup --------------------------------------------------------------------
