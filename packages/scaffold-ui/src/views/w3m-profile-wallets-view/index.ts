@@ -268,8 +268,6 @@ export class W3mProfileWalletsView extends LitElement {
       ? CoreHelperUtil.getPlainAddress(this.caipAddress)
       : undefined
 
-    const shouldShowLineSeparator = this.getShouldShowLineSeparator(namespace)
-
     if (!plainAddress) {
       return null
     }
@@ -278,6 +276,8 @@ export class W3mProfileWalletsView extends LitElement {
       connectorId,
       accounts: []
     })
+
+    const shouldShowLineSeparator = this.getShouldShowLineSeparator(namespace)
 
     const isSmartAccount = this.smartAccountAddress
       ? HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, plainAddress)
@@ -309,7 +309,7 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private getShouldShowLineSeparator(namespace: ChainNamespace) {
-    const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
+    const connections = this.getActiveConnections(namespace)
 
     const connectionsWithMultipleAccounts = connections.filter(
       connection => connection.accounts.length > 0
@@ -440,14 +440,10 @@ export class W3mProfileWalletsView extends LitElement {
       HelpersUtil.isLowerCaseMatch(connection.connectorId, connectorId)
     )
 
-    if (!connectedConnection) {
-      return []
-    }
-
     const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
-    const hasTypeOnEveryAccount = connectedConnection.accounts.every(
-      account => typeof account.type === 'string'
-    )
+    const hasTypeOnEveryAccount =
+      connectedConnection &&
+      connectedConnection.accounts.every(account => typeof account.type === 'string')
 
     if (isBitcoin && hasTypeOnEveryAccount) {
       const accounts = connectedConnection.accounts
