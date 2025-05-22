@@ -10,6 +10,7 @@ const MULTICHAIN_LIBRARIES = [
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
 ] as const
+const FLAG_TESTS = ['default-account-types'] as const
 
 const CORE_LIRARIES = ['core'] as const
 
@@ -33,6 +34,10 @@ const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
 
 const CLOUD_AUTH_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   CLOUD_AUTH_LIBRARIES.map(library => ({ device, library }))
+)
+
+const FLAG_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  FLAG_TESTS.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -256,13 +261,16 @@ export function getProjects() {
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
   const cloudAuthProjects = CLOUD_AUTH_PERMUTATIONS.map(createProject)
+  const flagProjects = FLAG_PERMUTATIONS.map(createProject)
+  console.log(flagProjects.map(p => p.name))
 
   const projects = [
     ...libraryDesktopProjects,
     ...libraryMobileProjects,
     ...multichainProjects,
     ...coreProjects,
-    ...cloudAuthProjects
+    ...cloudAuthProjects,
+    ...flagProjects
   ]
 
   return projects
