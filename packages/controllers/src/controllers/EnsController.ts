@@ -157,10 +157,8 @@ const controller = {
       AccountController.setProfileName(name, network.chainNamespace)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
-      console.log('>> Error registering name', e)
       const errorMessage = EnsController.parseEnsApiError(e, `Error registering name ${name}`)
       RouterController.replace('RegisterAccountName')
-      console.log('>> Throwing', errorMessage)
       throw new Error(errorMessage)
     } finally {
       state.loading = false
