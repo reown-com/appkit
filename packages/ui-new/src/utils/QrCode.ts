@@ -1,4 +1,4 @@
-import QRCodeUtil from 'qrcode'
+import encodeQR, { ErrorCorrection } from 'qr'
 
 import type { TemplateResult } from 'lit'
 import { svg } from 'lit'
@@ -18,20 +18,10 @@ function isAdjecentDots(cy: number, otherCy: number, cellSize: number) {
   return diff <= cellSize + CONNECTING_ERROR_MARGIN
 }
 
-function getMatrix(value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel) {
-  const arr = Array.prototype.slice.call(
-    QRCodeUtil.create(value, { errorCorrectionLevel }).modules.data,
-    0
-  )
-  const sqrt = Math.sqrt(arr.length)
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return arr.reduce(
-    (rows, key, index) =>
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      (index % sqrt === 0 ? rows.push([key]) : rows[rows.length - 1].push(key)) && rows,
-    []
-  )
+function getMatrix(value: string, errorCorrectionLevel: ErrorCorrection) {
+  const ecc = errorCorrectionLevel === 'Q' ? 'quartile' : errorCorrectionLevel as ErrorCorrection
+  
+  return encodeQR(value, 'raw', { ecc })
 }
 
 export const QrCodeUtil = {
@@ -78,7 +68,7 @@ export const QrCodeUtil = {
     const circles: [number, number][] = []
 
     // Getting coordinates for each of the QR code dots
-    matrix.forEach((row: QRCodeUtil.QRCode[], i: number) => {
+    matrix.forEach((row: boolean[], i: number) => {
       row.forEach((_, j: number) => {
         if (matrix[i][j]) {
           if (
