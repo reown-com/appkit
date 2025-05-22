@@ -15,6 +15,7 @@ import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
+  type Features,
   type Metadata,
   PublicStateController
 } from '@reown/appkit-controllers'
@@ -544,13 +545,14 @@ export class AppKit extends AppKitBaseClient {
 
         isInitialized = true
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error injecting modal UI:', error)
       }
     }
   }
 
   // This separate method helps with tree-shaking for SSR builds
-  private async loadModalComponents(features: any) {
+  private async loadModalComponents(features: Features) {
     // Early explicit check forces bundlers to exclude this code in SSR builds
     if (!CoreHelperUtil.isClient()) {
       return

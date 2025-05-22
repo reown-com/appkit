@@ -143,6 +143,7 @@ const controller = {
         onCancel?.()
         RouterController.goBack()
         break
+      default:
     }
   },
 
