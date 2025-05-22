@@ -406,5 +406,5 @@ export const OptionsController = {
 
   getSnapshot() {
     return snapshot(state)
-  },
+  }
 }
