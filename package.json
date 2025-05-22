@@ -117,8 +117,5 @@
   },
   "@parcel/resolver-default": {
     "packageExports": true
-  },
-  "dependencies": {
-    "qr": "0.4.2"
   }
 }
