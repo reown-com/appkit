@@ -342,10 +342,6 @@ export class W3mFrameProvider {
           preferredAccountType: payload?.preferredAccountType
         })
 
-        if (payload?.preferredAccountType) {
-          await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
-        }
-
         this.setLoginSuccess(response.email)
         this.setLastUsedChainId(response.chainId)
         this.user = response
