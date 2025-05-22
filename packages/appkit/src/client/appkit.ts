@@ -272,7 +272,7 @@ export class AppKit extends AppKitBaseClient {
       if (!socialProviderToConnect) {
         return
       }
-      if (typeof window === 'undefined' || typeof document === 'undefined') {
+      if (!CoreHelperUtil.isClient()) {
         return
       }
       const url = new URL(window.location.href)
@@ -520,11 +520,7 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async injectModalUi() {
     // Skip entirely in non-browser environments - ensures proper tree-shaking during build
-    if (
-      !CoreHelperUtil.isClient() ||
-      typeof window === 'undefined' ||
-      typeof document === 'undefined'
-    ) {
+    if (!CoreHelperUtil.isClient()) {
       return
     }
 
@@ -536,7 +532,7 @@ export class AppKit extends AppKitBaseClient {
         await this.loadModalComponents(features)
 
         // Always check again in case environment changed during async operations
-        if (typeof document !== 'undefined') {
+        if (CoreHelperUtil.isClient()) {
           const isElementCreated = document.querySelector('w3m-modal')
           if (!isElementCreated) {
             const modal = document.createElement('w3m-modal')
@@ -556,7 +552,7 @@ export class AppKit extends AppKitBaseClient {
   // This separate method helps with tree-shaking for SSR builds
   private async loadModalComponents(features: any) {
     // Early explicit check forces bundlers to exclude this code in SSR builds
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
+    if (!CoreHelperUtil.isClient()) {
       return
     }
 
