@@ -133,15 +133,13 @@ const controller = {
       })
 
       RouterController.pushTransactionStack({
-        view: 'RegisterAccountNameSuccess',
-        goBack: false,
-        replace: true,
         onCancel() {
-          state.loading = false
+          RouterController.replace('RegisterAccountName')
         }
       })
 
       const signature = await ConnectionController.signMessage(message)
+      state.loading = false
       const networkId = network.id
 
       if (!networkId) {
@@ -159,8 +157,10 @@ const controller = {
       AccountController.setProfileName(name, network.chainNamespace)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
+      console.log('>> Error registering name', e)
       const errorMessage = EnsController.parseEnsApiError(e, `Error registering name ${name}`)
       RouterController.replace('RegisterAccountName')
+      console.log('>> Throwing', errorMessage)
       throw new Error(errorMessage)
     } finally {
       state.loading = false

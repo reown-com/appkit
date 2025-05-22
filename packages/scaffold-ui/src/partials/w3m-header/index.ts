@@ -172,7 +172,7 @@ export class W3mHeader extends LitElement {
     if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
       ModalController.shake()
     } else {
-      ModalController.close(true)
+      ModalController.close()
     }
   }
 

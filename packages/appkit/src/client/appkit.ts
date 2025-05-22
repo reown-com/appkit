@@ -82,9 +82,9 @@ export class AppKit extends AppKitBaseClient {
       const isModalOpen = this.isOpen()
       if (isModalOpen) {
         if (this.isTransactionStackEmpty()) {
-          this.close(true)
+          this.close()
         } else {
-          this.popTransactionStack(true)
+          this.popTransactionStack('error')
         }
       }
     })
@@ -96,16 +96,15 @@ export class AppKit extends AppKitBaseClient {
       if (isSafeRequest) {
         return
       }
+
+      if (address && caipNetwork?.id) {
+        this.updateNativeBalance(address, caipNetwork.id, caipNetwork.chainNamespace)
+      }
+
       if (this.isTransactionStackEmpty()) {
-        this.close(true)
-        if (address && caipNetwork?.id) {
-          this.updateNativeBalance(address, caipNetwork.id, caipNetwork.chainNamespace)
-        }
+        this.close()
       } else {
-        this.popTransactionStack()
-        if (address && caipNetwork?.id) {
-          this.updateNativeBalance(address, caipNetwork.id, caipNetwork.chainNamespace)
-        }
+        this.popTransactionStack('success')
       }
     })
     provider.onNotConnected(() => {
@@ -520,63 +519,90 @@ export class AppKit extends AppKitBaseClient {
   }
 
   protected override async injectModalUi() {
-    if (!isInitialized && CoreHelperUtil.isClient()) {
-      const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
-
-      // Selectively import views based on feature flags
-      const featureImportPromises = []
-      if (features) {
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-        const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
-        if (usingEmbeddedWallet) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))
-        }
-
-        if (features.email) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/email'))
-        }
-        if (features.socials) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/socials'))
-        }
-
-        if (features.swaps) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/swaps'))
-        }
-
-        if (features.send) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/send'))
-        }
-
-        if (features.receive) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
-        }
-
-        if (features.onramp) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
-        }
-
-        if (features.history) {
-          featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
-        }
-
-        if (features.pay) {
-          featureImportPromises.push(import('@reown/appkit-pay'))
-        }
-      }
-
-      await Promise.all([
-        ...featureImportPromises,
-        import('@reown/appkit-scaffold-ui'),
-        import('@reown/appkit-scaffold-ui/w3m-modal')
-      ])
-      const isElementCreated = document.querySelector('w3m-modal')
-      if (!isElementCreated) {
-        const modal = document.createElement('w3m-modal')
-        if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
-          document.body.insertAdjacentElement('beforeend', modal)
-        }
-      }
-      isInitialized = true
+    // Skip entirely in non-browser environments - ensures proper tree-shaking during build
+    if (
+      !CoreHelperUtil.isClient() ||
+      typeof window === 'undefined' ||
+      typeof document === 'undefined'
+    ) {
+      return
     }
+
+    if (!isInitialized) {
+      try {
+        const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
+
+        // Use a factory function that will be properly tree-shaken in SSR builds
+        await this.loadModalComponents(features)
+
+        // Always check again in case environment changed during async operations
+        if (typeof document !== 'undefined') {
+          const isElementCreated = document.querySelector('w3m-modal')
+          if (!isElementCreated) {
+            const modal = document.createElement('w3m-modal')
+            if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
+              document.body.insertAdjacentElement('beforeend', modal)
+            }
+          }
+        }
+
+        isInitialized = true
+      } catch (error) {
+        console.error('Error injecting modal UI:', error)
+      }
+    }
+  }
+
+  // This separate method helps with tree-shaking for SSR builds
+  private async loadModalComponents(features: any) {
+    // Early explicit check forces bundlers to exclude this code in SSR builds
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return
+    }
+
+    const featureImportPromises = []
+
+    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+    const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
+    if (usingEmbeddedWallet) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))
+    }
+
+    if (features.email) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/email'))
+    }
+    if (features.socials) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/socials'))
+    }
+
+    if (features.swaps) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/swaps'))
+    }
+
+    if (features.send) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/send'))
+    }
+
+    if (features.receive) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
+    }
+
+    if (features.onramp) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
+    }
+
+    if (features.history) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
+    }
+
+    if (features.pay) {
+      featureImportPromises.push(import('@reown/appkit-pay'))
+    }
+
+    await Promise.all([
+      ...featureImportPromises,
+      import('@reown/appkit-scaffold-ui'),
+      import('@reown/appkit-scaffold-ui/w3m-modal')
+    ])
   }
 }

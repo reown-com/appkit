@@ -93,11 +93,7 @@ export const SIWXUtil = {
       const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
 
       if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-        RouterController.pushTransactionStack({
-          view: null,
-          goBack: false,
-          replace: true
-        })
+        RouterController.pushTransactionStack({})
       }
 
       const signature = await client.signMessage(message)
