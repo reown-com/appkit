@@ -25,6 +25,6 @@ export const ModalUtil = {
       return
     }
 
-    ModalController.close()
+    ModalController.close(true)
   }
 }
