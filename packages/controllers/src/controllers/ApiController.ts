@@ -138,7 +138,6 @@ export const ApiController = {
   },
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
-
     const filteredWallets = CoreHelperUtil.isMobile()
       ? wallets?.filter(
           w =>
