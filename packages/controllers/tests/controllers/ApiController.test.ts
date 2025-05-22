@@ -14,7 +14,7 @@ import {
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
-import { api } from '../../src/controllers/ApiController.js'
+import { CUSTOM_DEEPLINK_WALLETS, api } from '../../src/controllers/ApiController.js'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
@@ -365,6 +365,50 @@ describe('ApiController', () => {
 
     expect(fetchImageSpy).toHaveBeenCalledTimes(2)
     expect(ApiController.state.featured).toEqual(data)
+  })
+
+  it('should sort featured wallets according to the order in featuredWalletIds', async () => {
+    const featuredWalletIds = ['wallet-B', 'wallet-A']
+
+    const data = [
+      {
+        id: 'wallet-A',
+        name: 'Wallet A',
+        image_id: 'image-A'
+      },
+      {
+        id: 'wallet-B',
+        name: 'Wallet B',
+        image_id: 'image-B'
+      }
+    ]
+
+    OptionsController.setFeaturedWalletIds(featuredWalletIds)
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.fetchFeaturedWallets()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      params: {
+        ...ApiController._getSdkProperties(),
+        page: '1',
+        entries: '2',
+        include: 'wallet-B,wallet-A',
+        exclude: ''
+      }
+    })
+
+    expect(fetchImageSpy).toHaveBeenCalledTimes(2)
+
+    expect(ApiController.state.featured).toHaveLength(2)
+    expect(ApiController.state.featured[0]?.id).toBe('wallet-B')
+    expect(ApiController.state.featured[1]?.id).toBe('wallet-A')
+
+    expect(ApiController.state.allFeatured).toHaveLength(2)
+    expect(ApiController.state.allFeatured[0]?.id).toBe('wallet-B')
+    expect(ApiController.state.allFeatured[1]?.id).toBe('wallet-A')
   })
 
   it('should not fetch featured wallets without configured featured wallets', async () => {
@@ -881,10 +925,10 @@ describe('ApiController', () => {
       { id: '2', name: 'Wallet2' },
       { id: '3', name: 'Wallet3', mobile_link: 'link3' },
       {
-        id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+        id: CUSTOM_DEEPLINK_WALLETS.COINBASE,
         name: 'Coinbase Wallet'
       },
-      { id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79', name: 'Phantom' }
+      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM, name: 'Phantom' }
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
@@ -892,8 +936,8 @@ describe('ApiController', () => {
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
       '3',
-      'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-      '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79'
+      CUSTOM_DEEPLINK_WALLETS.COINBASE,
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM
     ])
   })
 
