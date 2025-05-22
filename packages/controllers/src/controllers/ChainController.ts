@@ -27,6 +27,7 @@ import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
+import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
 
 // -- Constants ----------------------------------------- //
@@ -419,16 +420,20 @@ const controller = {
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
 
-    if (unsupportedNetwork) {
-      throw new Error('Unsupported network')
-    }
-
     const networkControllerClient = ChainController.getNetworkControllerClient(
       network.chainNamespace
     )
 
     if (networkControllerClient) {
-      await networkControllerClient.switchCaipNetwork(network)
+      try {
+        await networkControllerClient.switchCaipNetwork(network)
+        if (unsupportedNetwork) {
+          ModalController.close()
+        }
+      } catch (error) {
+        RouterController.goBack()
+      }
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SWITCH_NETWORK',
