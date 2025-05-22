@@ -202,7 +202,7 @@ const controller = {
       !ChainController.state.activeCaipAddress &&
       RouterController.state.view === 'ConnectingFarcaster'
 
-    if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
+    if (state.history.length > 1) {
       state.history.pop()
       const [last] = state.history.slice(-1)
       if (last) {
