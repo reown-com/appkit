@@ -298,9 +298,9 @@ describe('Base Public methods', () => {
     const popTransactionStack = vi.spyOn(RouterController, 'popTransactionStack')
 
     const appKit = new AppKit(mockOptions)
-    appKit.popTransactionStack(true)
+    appKit.popTransactionStack('success')
 
-    expect(popTransactionStack).toHaveBeenCalledWith(true)
+    expect(popTransactionStack).toHaveBeenCalledWith('success')
   })
 
   it('should check if modal is open', async () => {
