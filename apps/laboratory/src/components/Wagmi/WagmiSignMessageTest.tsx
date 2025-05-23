@@ -26,6 +26,7 @@ export function WagmiSignMessageTest() {
         description: 'Address and signature required',
         type: 'error'
       })
+
       return
     }
 
@@ -37,7 +38,7 @@ export function WagmiSignMessageTest() {
         address: address as Address,
         message: 'Hello AppKit!',
         signature,
-        chainId: chainId as number
+        chainId
       })
 
       toast({
