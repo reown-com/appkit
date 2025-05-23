@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-controllers",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
