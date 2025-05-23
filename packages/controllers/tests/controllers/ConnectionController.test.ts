@@ -1,11 +1,7 @@
 import { polygon } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import {
-  type CaipNetwork,
-  type ChainNamespace,
-  ConstantsUtil as CommonConstantsUtil
-} from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 import type {
   ChainAdapter,
