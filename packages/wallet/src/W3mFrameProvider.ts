@@ -337,14 +337,11 @@ export class W3mFrameProvider {
       try {
         const chainId = payload?.chainId || this.getLastUsedChainId() || 1
 
-        if (payload?.preferredAccountType) {
-          await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
-        }
-
         const response = await this.getUser({
           chainId,
           preferredAccountType: payload?.preferredAccountType
         })
+
         this.setLoginSuccess(response.email)
         this.setLastUsedChainId(response.chainId)
         this.user = response

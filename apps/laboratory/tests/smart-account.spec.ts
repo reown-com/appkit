@@ -141,6 +141,50 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
   await validator.expectAcceptedSign()
 })
 
+smartAccountTest(
+  'it should keep the same account type after page refresh (with EOA)',
+  async ({ library }) => {
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+    if (namespace !== 'eip155') {
+      return
+    }
+
+    await page.goToSettings()
+    await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+    await page.closeModal()
+
+    await page.page.reload()
+    await validator.expectAccountButtonReady()
+
+    await page.goToSettings()
+    await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+    await page.closeModal()
+  }
+)
+
+smartAccountTest(
+  'it should keep the same account type after page refresh (with SA)',
+  async ({ library }) => {
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+    if (namespace !== 'eip155') {
+      return
+    }
+
+    await page.goToSettings()
+    await page.togglePreferredAccountType()
+    await validator.expectChangePreferredAccountToShow(EOA)
+
+    await page.page.reload()
+    await validator.expectAccountButtonReady()
+
+    await page.goToSettings()
+    await validator.expectChangePreferredAccountToShow(EOA)
+    await page.closeModal()
+  }
+)
+
 smartAccountTest('it should disconnect correctly', async () => {
   await page.goToSettings()
   await page.disconnect()

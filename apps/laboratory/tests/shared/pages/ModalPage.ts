@@ -65,16 +65,21 @@ export class ModalPage {
   public readonly page: Page
   public readonly library: string
   public readonly flavor: ModalFlavor
+
   constructor(page: Page, library: string, flavor: ModalFlavor) {
     this.page = page
     this.library = library
     this.flavor = flavor
     this.connectButton = this.page.getByTestId('connect-button').first()
+
     if (library === 'multichain-ethers-solana') {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
+    } else if (library === 'default-account-types-sa' || library === 'default-account-types-eoa') {
+      this.url = `${this.baseURL}flag/${library}/`
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
+
     this.page.on('console', async msg => {
       const args = msg.args()
       // eslint-disable-next-line no-plusplus
