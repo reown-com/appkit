@@ -68,7 +68,9 @@ export class W3mConnectingSocialView extends LitElement {
           }
           if (val.address) {
             if (ModalController.state.open || OptionsController.state.enableEmbedded) {
-              ModalController.close()
+              RouterController.replace('Account')
+              RouterController.push('ProfileWallets')
+              SnackController.showSuccess('New Wallet Added')
             }
           }
         })

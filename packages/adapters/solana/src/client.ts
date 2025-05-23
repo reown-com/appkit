@@ -4,12 +4,8 @@ import { Connection, PublicKey } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
-import { type AppKit, type AppKitOptions } from '@reown/appkit'
-import {
-  type CaipAddress,
-  ConstantsUtil as CommonConstantsUtil,
-  ParseUtil
-} from '@reown/appkit-common'
+import { type AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ChainController,
@@ -48,7 +44,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
   public wallets?: BaseWalletAdapter[]
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
-  private universalProvider: UniversalProvider | undefined = undefined
+  private universalProvider: UniversalProvider | undefined
 
   constructor(options: AdapterOptions = {}) {
     super({
@@ -269,7 +265,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     const address = await connector.connect({
       chainId: params.chainId as string
     })
-    this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
+
+    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+      this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
+    }
+
     SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
 
     this.emit('accountChanged', {
@@ -464,18 +464,86 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
     this.universalProvider = universalProvider
+    const wcConnectorId = CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
-    universalProvider.on('connect', () => {
-      const { accounts, chainId } = this.getWalletConnectAddresses()
+    WcHelpersUtil.listenWcProvider({
+      universalProvider,
+      namespace: 'solana',
+      onConnect: accounts => {
+        if (accounts.length > 0) {
+          const chainId = accounts[0]?.chainId as number | string
+          const caipNetwork = this.getCaipNetworks()?.find(network => network.id === chainId)
 
-      const caipNetwork = this.getCaipNetworks().find(n => n.id === chainId)
+          const connector = this.connectors.find(c => c.id === wcConnectorId)
 
-      if (accounts.length > 0) {
-        this.addConnection({
-          connectorId: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-          accounts: accounts.map(account => ({ address: account.address })),
-          caipNetwork
-        })
+          this.emit('accountChanged', {
+            address: accounts[0]?.address as string,
+            chainId,
+            connector
+          })
+
+          this.addConnection({
+            connectorId: wcConnectorId,
+            accounts: accounts.map(account => ({ address: account.address })),
+            caipNetwork
+          })
+        }
+      },
+      onDisconnect: () => {
+        this.removeProviderListeners(wcConnectorId)
+        this.deleteConnection(wcConnectorId)
+
+        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), wcConnectorId)) {
+          this.chooseFirstConnectionAndEmit()
+        }
+
+        if (this.connections.length === 0) {
+          this.emit('disconnect')
+        }
+      },
+      onAccountsChanged: accounts => {
+        if (accounts.length > 0) {
+          const connector = this.connectors.find(c =>
+            HelpersUtil.isLowerCaseMatch(c.id, wcConnectorId)
+          )
+
+          if (!connector) {
+            throw new Error('Connector not found')
+          }
+
+          const chainId = accounts[0]?.chainId as number | string
+
+          if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), wcConnectorId)) {
+            this.emit('accountChanged', {
+              address: accounts[0]?.address as string,
+              chainId,
+              connector
+            })
+          }
+        }
+      },
+      onChainChanged: chainId => {
+        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), wcConnectorId)) {
+          this.emit('switchNetwork', {
+            chainId
+          })
+        }
+
+        const connection = this.connections.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.connectorId, wcConnectorId)
+        )
+
+        if (connection) {
+          const caipNetwork = this.getCaipNetworks()
+            .filter(n => n.chainNamespace === 'solana')
+            .find(n => n.id.toString() === chainId.toString())
+
+          this.addConnection({
+            connectorId: wcConnectorId,
+            accounts: connection.accounts.map(account => ({ address: account.address })),
+            caipNetwork
+          })
+        }
       }
     })
 
@@ -559,34 +627,36 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-            const { accounts } = this.getWalletConnectAddresses()
+            const accounts = WcHelpersUtil.getWalletConnectAccounts(
+              this.universalProvider as UniversalProvider,
+              'solana'
+            )
 
             if (accounts.length > 0) {
               this.addConnection({
                 connectorId: connector.id,
-                accounts,
+                accounts: accounts.map(account => ({ address: account.address })),
                 caipNetwork
               })
             }
-
-            return
-          }
-          const address = await connector.connect({
-            chainId: caipNetwork?.id as string
-          })
-          SolStoreUtil.setConnection(
-            new Connection(
-              caipNetwork?.rpcUrls?.default?.http?.[0] as string,
-              this.connectionSettings
-            )
-          )
-          if (address) {
-            this.addConnection({
-              connectorId: connector.id,
-              accounts: [{ address }],
-              caipNetwork
+          } else {
+            const address = await connector.connect({
+              chainId: caipNetwork?.id as string
             })
-            this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
+            SolStoreUtil.setConnection(
+              new Connection(
+                caipNetwork?.rpcUrls?.default?.http?.[0] as string,
+                this.connectionSettings
+              )
+            )
+            if (address) {
+              this.addConnection({
+                connectorId: connector.id,
+                accounts: [{ address }],
+                caipNetwork
+              })
+              this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
+            }
           }
         })
     )
@@ -652,42 +722,5 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
 
     return { connections }
-  }
-
-  private getWalletConnectAddresses() {
-    const accounts = this.universalProvider?.session?.namespaces?.['solana']?.accounts
-      ?.map(account => {
-        const { address, chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
-
-        return { address, chainId }
-      })
-      .filter((address, index, self) => self.indexOf(address) === index) as {
-      address: string
-      chainId: string
-    }[]
-
-    const addedAccounts = new Set()
-
-    const deduplicatedAccounts = accounts.filter(account => {
-      if (addedAccounts.has(account.address)) {
-        return false
-      }
-
-      addedAccounts.add(account.address)
-
-      return true
-    })
-
-    if (deduplicatedAccounts.length > 0) {
-      return {
-        accounts: deduplicatedAccounts.map(account => ({ address: account.address })),
-        chainId: accounts[0]?.chainId
-      }
-    }
-
-    return {
-      accounts: [],
-      chainId: undefined
-    }
   }
 }

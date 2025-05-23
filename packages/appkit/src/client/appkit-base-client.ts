@@ -9,6 +9,7 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
+  ParsedCaipAddress,
   SdkVersion
 } from '@reown/appkit-common'
 import { ConstantsUtil, NetworkUtil, ParseUtil } from '@reown/appkit-common'
@@ -387,10 +388,7 @@ export abstract class AppKitBaseClient {
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         this.chainNamespaces.forEach(namespace => {
-          ConnectorController.setConnectorId(
-            UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT,
-            namespace
-          )
+          ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT, namespace)
           StorageUtil.removeDisconnectedConnectorId(
             ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
             namespace
@@ -746,7 +744,7 @@ export abstract class AppKitBaseClient {
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
       const caipNetwork = this.getCaipNetworks().find(
-        n => n.id === chainId || n.caipNetworkId === chainId
+        n => n.id.toString() === chainId.toString() || n.caipNetworkId === chainId
       )
       const isSameNamespace = ChainController.state.activeChain === chainNamespace
       const accountAddress = ChainController.getAccountProp('address', chainNamespace)
@@ -1236,50 +1234,47 @@ export abstract class AppKitBaseClient {
 
   protected listenWalletConnect() {
     if (this.universalProvider) {
-      this.universalProvider.on('display_uri', (uri: string) => {
-        ConnectionController.setUri(uri)
-      })
+      this.chainNamespaces.forEach(namespace => {
+        WcHelpersUtil.listenWcProvider({
+          universalProvider: this.universalProvider as UniversalProvider,
+          namespace,
+          onDisplayUri: uri => {
+            ConnectionController.setUri(uri)
+          },
+          onConnect: () => {
+            ConnectionController.finalizeWcConnection()
+          },
+          onDisconnect: () => {
+            if (ChainController.state.noAdapters) {
+              this.resetAccount(namespace)
+            }
+            ConnectionController.resetWcConnection()
+          },
+          onChainChanged: chainId => {
+            const caipNetwork = this.getCaipNetworks()
+              .filter(n => n.chainNamespace === namespace)
+              .find(n => n.id.toString() === chainId.toString() || n.caipNetworkId === chainId)
 
-      this.universalProvider.on('connect', ConnectionController.finalizeWcConnection)
+            if (ChainController.state.noAdapters && !caipNetwork) {
+              this.setUnsupportedNetwork(chainId)
+            }
+          },
+          onAccountsChanged: accounts => {
+            if (ChainController.state.noAdapters) {
+              if (accounts.length > 0) {
+                const account = accounts[0] as ParsedCaipAddress
 
-      this.universalProvider.on('disconnect', () => {
-        this.chainNamespaces.forEach(() => {
-          /*
-           * TODOD: Remove this, since it can break the multi-wallet functionality
-           * this.resetAccount(namespace)
-           */
-        })
-        ConnectionController.resetWcConnection()
-      })
-
-      this.universalProvider.on('chainChanged', (chainId: number | string) => {
-        // eslint-disable-next-line eqeqeq
-        const caipNetwork = this.getCaipNetworks().find(c => c.id == chainId)
-        const currentCaipNetwork = this.getCaipNetwork()
-
-        if (!caipNetwork) {
-          this.setUnsupportedNetwork(chainId)
-
-          return
-        }
-
-        if (currentCaipNetwork?.id !== caipNetwork?.id) {
-          this.setCaipNetwork(caipNetwork)
-        }
-      })
-
-      this.universalProvider.on('session_event', (callbackData: unknown) => {
-        if (WcHelpersUtil.isSessionEventData(callbackData)) {
-          const { name, data } = callbackData.params.event
-
-          if (
-            name === 'accountsChanged' &&
-            Array.isArray(data) &&
-            CoreHelperUtil.isCaipAddress(data[0])
-          ) {
-            this.syncAccount(ParseUtil.parseCaipAddress(data[0]))
+                this.syncAccount({
+                  address: account.address,
+                  chainId: account.chainId,
+                  chainNamespace: account.chainNamespace
+                })
+              } else {
+                this.resetAccount(namespace)
+              }
+            }
           }
-        }
+        })
       })
     }
   }

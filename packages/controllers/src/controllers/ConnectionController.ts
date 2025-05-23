@@ -395,7 +395,15 @@ export const ConnectionController = {
       throw new Error(`No connector found for connection: ${connection.connectorId}`)
     }
 
-    await ConnectionController.connectExternal(connector, namespace)
+    await ConnectionController.connectExternal(
+      {
+        id: connector.id,
+        type: connector.type,
+        provider: connector.provider,
+        chain: namespace
+      },
+      namespace
+    )
 
     if (isAuthConnector) {
       await ConnectionController.handleAuthAccountSwitch(address, namespace)
@@ -428,7 +436,15 @@ export const ConnectionController = {
         wallet: undefined
       })
     } else {
-      await this.connectExternal(connector, namespace)
+      await ConnectionController.connectExternal(
+        {
+          id: connector.id,
+          type: connector.type,
+          provider: connector.provider,
+          chain: namespace
+        },
+        namespace
+      )
     }
 
     if (isAuthConnector) {

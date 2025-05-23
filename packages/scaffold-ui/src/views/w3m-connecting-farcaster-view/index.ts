@@ -8,7 +8,6 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SnackController,
   StorageUtil,
@@ -211,7 +210,9 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = false
-        ModalController.close()
+        RouterController.replace('Account')
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('New Wallet Added')
       } catch (error) {
         if (this.socialProvider) {
           EventsController.sendEvent({

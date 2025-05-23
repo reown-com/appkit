@@ -1,11 +1,12 @@
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { BaseError, Connection, Connector } from '@reown/appkit-controllers'
 import {
-  ChainController,
   ConnectionController,
   ConnectionControllerUtil,
+  ConnectorController,
   EventsController,
-  RouterController
+  RouterController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import { HelpersUtil } from '@reown/appkit-utils'
@@ -29,8 +30,8 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
 
     if (this.isAlreadyConnected(this.connector)) {
       this.secondaryBtnLabel = undefined
-      this.label = `Wallet is already linked, switch wallet in ${this.connector.name}`
-      this.secondaryLabel = `To link a new wallet, open ${this.connector.name} and switch to the account you want to link.`
+      this.label = `This account is already linked, change your account in ${this.connector.name}`
+      this.secondaryLabel = `To link a new account, open ${this.connector.name} and switch to the account you want to link`
     }
 
     EventsController.sendEvent({
@@ -45,10 +46,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.onAutoConnect = this.onConnectProxy.bind(this)
     this.isWalletConnect = false
     this.externalViewUnsubscribe.push(
-      ChainController.subscribeKey('activeCaipAddress', val => {
+      ConnectorController.subscribeKey('activeConnectorIds', val => {
         if (val) {
           RouterController.replace('Account')
           RouterController.push('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
         }
       }),
       ConnectionController.subscribeKey('connections', this.onConnectionsChange.bind(this))

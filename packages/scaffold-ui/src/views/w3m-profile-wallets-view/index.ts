@@ -18,7 +18,6 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
-  type SocialProvider,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
@@ -34,199 +33,185 @@ import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-text'
 import { HelpersUtil } from '@reown/appkit-utils'
 
-import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
+import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'
 
-// -- Types ------------------------------------------ //
-type HandleSwitchWalletParams = {
+// -- Types -------------------------------- //
+interface Account {
+  address: string
+  type?: string
+}
+
+interface WalletActionParams {
   connection: Connection
   address: string
+  isRecentConnection: boolean
   namespace: ChainNamespace
 }
 
-type DisplayConnectionsParams = {
-  connections: Connection[]
-  includeSeparator?: boolean
-  isRecentConnections: boolean
-  namespace: ChainNamespace
-}
-
-type HandleDisconnectParams = {
-  id?: string
-  namespace: ChainNamespace
-}
-
-type HandleDeleteRecentConnectionParams = {
+interface ProfileContentParams {
   address: string
-  connectorId: string
-  namespace: ChainNamespace
-}
-
-type GetProfileContentParams = {
-  address: string
-  namespace: ChainNamespace
   connections: Connection[]
   connectorId: string
+  namespace: ChainNamespace
 }
 
-// -- Constants ------------------------------------------ //
-const CHARS_START = 4
-const CHARS_END = 6
+// -- Constants ----------------------------------------- //
+const UI_CONFIG = {
+  ADDRESS_DISPLAY: { START: 4, END: 6 },
+  BADGE: { SIZE: 'md', ICON: 'lightbulb' },
+  SCROLL_THRESHOLD: 50,
+  OPACITY_RANGE: [0, 1] as number[]
+} as const
 
-const ICON_BADGE_SIZE = {
-  size: 'md',
-  icon: 'lightbulb'
-}
-
-const ICONS = {
+const CHAIN_ICONS = {
   eip155: 'ethereum-black',
   solana: 'solana-black',
   bip122: 'bitcoin-black'
-} as Record<ChainNamespace, string>
+} as const
 
-const NAMESPACE_PROFILE_TABS = [
-  { namespace: 'eip155', icon: ICONS['eip155'], label: 'EVM' },
-  { namespace: 'solana', icon: ICONS['solana'], label: 'Solana' },
-  { namespace: 'bip122', icon: ICONS['bip122'], label: 'Bitcoin' }
+const NAMESPACE_TABS = [
+  { namespace: 'eip155', icon: CHAIN_ICONS.eip155, label: 'EVM' },
+  { namespace: 'solana', icon: CHAIN_ICONS.solana, label: 'Solana' },
+  { namespace: 'bip122', icon: CHAIN_ICONS.bip122, label: 'Bitcoin' }
 ] as const
 
-const TABS_WIDTH = {
-  1: 320,
-  2: 160,
-  3: 106
+const TAB_WIDTHS = { 1: 320, 2: 160, 3: 106 } as const
+
+const CHAIN_LABELS = {
+  eip155: { title: 'Add EVM Wallet', description: 'Add your first EVM wallet' },
+  solana: { title: 'Add Solana Wallet', description: 'Add your first Solana wallet' },
+  bip122: { title: 'Add Bitcoin Wallet', description: 'Add your first Bitcoin wallet' }
 } as const
 
 @customElement('w3m-profile-wallets-view')
 export class W3mProfileWalletsView extends LitElement {
   public static override styles = styles
 
-  // -- Members ------------------------------ //
-  private unsubscribe: (() => void)[] = []
+  // -- Members ------------------------------------------- //
+  private unsubscribers: (() => void)[] = []
   private resizeObserver?: ResizeObserver
-  private unsubscribeChainListener: (() => void) | undefined = undefined
+  private chainListener?: () => void
 
   // -- State & Properties -------------------------------- //
   @state() private currentTab = 0
   @state() private namespace = ChainController.state.activeChain
   @state() private namespaces = Array.from(ChainController.state.chains.keys())
   @state() private caipAddress: CaipAddress | undefined = undefined
+  @state() private profileName: string | null | undefined = undefined
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private smartAccountAddress: string | undefined = undefined
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
 
-  // -- Lifecycle ----------------------------------------- //
-  public constructor() {
+  constructor() {
     super()
 
     this.currentTab = this.namespace ? this.namespaces.indexOf(this.namespace) : 0
     this.smartAccountAddress = AccountController.getSmartAccountAddress(this.namespace)
     this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
-    this.unsubscribe.push(
+    this.profileName = ChainController.getAccountData(this.namespace)?.profileName
+
+    this.unsubscribers.push(
       ...[
-        ConnectionController.subscribeKey('connections', () => {
-          this.requestUpdate()
-        }),
-        ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
-          this.activeConnectorIds = newActiveConnectorIds
+        ConnectionController.subscribeKey('connections', () => this.requestUpdate()),
+        ConnectorController.subscribeKey('activeConnectorIds', ids => {
+          this.activeConnectorIds = ids
         })
       ]
     )
-    this.unsubscribeChainListener = ChainController.subscribeChainProp(
+
+    this.chainListener = ChainController.subscribeChainProp(
       'accountState',
-      val => {
-        this.caipAddress = val?.caipAddress
-        this.smartAccountAddress = val?.smartAccountAddress
+      accountState => {
+        this.caipAddress = accountState?.caipAddress
+        this.profileName = accountState?.profileName
+        this.smartAccountAddress = accountState?.smartAccountAddress
       },
       this.namespace
     )
   }
 
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  override disconnectedCallback() {
+    this.unsubscribers.forEach(unsubscribe => unsubscribe())
     this.resizeObserver?.disconnect()
     this.removeScrollListener()
-    this.unsubscribeChainListener?.()
+    this.chainListener?.()
   }
 
-  public override firstUpdated() {
-    this.initializeScrollHandling()
+  override firstUpdated() {
+    const walletListEl = this.shadowRoot?.querySelector('.wallet-list')
+
+    if (!walletListEl) {
+      return
+    }
+
+    const handleScroll = () => this.updateScrollOpacity(walletListEl as HTMLElement)
+
+    requestAnimationFrame(handleScroll)
+    walletListEl.addEventListener('scroll', handleScroll)
+
+    this.resizeObserver = new ResizeObserver(handleScroll)
+    this.resizeObserver.observe(walletListEl)
+    handleScroll()
   }
 
-  // -- Render -------------------------------------------- //
-  public override render() {
+  override render() {
     const namespace = this.namespace
 
     if (!namespace) {
-      throw new Error('Namespace not found')
+      throw new Error('Namespace is not set')
     }
 
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="l">
-        ${this.tabsTemplate()} ${this.headerTemplate(namespace)}
-        ${this.connectionsTemplate(namespace)} ${this.addConnectionTemplate(namespace)}
+        ${this.renderTabs()} ${this.renderHeader(namespace)} ${this.renderConnections(namespace)}
+        ${this.renderAddConnectionButton(namespace)}
       </wui-flex>
     `
   }
 
-  // -- Private -------------------------------- //
-  private tabsTemplate() {
-    const tabs = NAMESPACE_PROFILE_TABS.filter(tab =>
+  // -- Private Methods ----------------------------------- //
+  private renderTabs() {
+    const availableTabs = NAMESPACE_TABS.filter(tab =>
       this.namespaces.includes(tab.namespace as ChainNamespace)
     )
 
-    const tabWidth = TABS_WIDTH[tabs.length as keyof typeof TABS_WIDTH] ?? TABS_WIDTH[1]
+    const tabCount = availableTabs.length
+    const tabWidth = TAB_WIDTHS[tabCount as keyof typeof TAB_WIDTHS] ?? TAB_WIDTHS[1]
 
     return html`
       <wui-tabs
-        .onTabChange=${(idx: number) => this.onTabChange(idx)}
+        .onTabChange=${(index: number) => this.handleTabChange(index)}
         .activeTab=${this.currentTab}
-        localTabWidth=${`${tabWidth}px`}
-        .tabs=${tabs}
+        localTabWidth="${tabWidth}px"
+        .tabs=${availableTabs}
       ></wui-tabs>
     `
   }
 
-  private connectionsTemplate(namespace: ChainNamespace) {
+  private renderHeader(namespace: ChainNamespace) {
     const connections = this.getActiveConnections(namespace)
-    const { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
-
-    if (this.caipAddress || connections.length > 0 || storageConnections.length > 0) {
-      return html`
-        <wui-flex flexDirection="column" class="wallet-list" rowGap="s">
-          ${this.activeProfileAndConnectionsTemplate(namespace)}
-          ${this.recentConnectionsTemplate(namespace)}
-        </wui-flex>
-      `
-    }
-
-    return html`
-      <wui-flex flexDirection="column" class="wallet-list" rowGap="s">
-        ${this.emptyTemplate(namespace)}
-      </wui-flex>
-    `
-  }
-
-  private headerTemplate(namespace: ChainNamespace) {
-    const connections = this.getActiveConnections(namespace)
-
     const totalConnections =
       connections.flatMap(({ accounts }) => accounts).length + (this.caipAddress ? 1 : 0)
 
     return html`
       <wui-flex alignItems="center" columnGap="3xs">
-        <wui-icon name=${ICONS[namespace]} size="lg"></wui-icon>
-        <wui-text color="fg-200" variant="small-400">
-          Wallet${totalConnections > 1 ? 's' : ''}
-        </wui-text>
+        <wui-icon
+          name=${CHAIN_ICONS[namespace as keyof typeof CHAIN_ICONS] ?? CHAIN_ICONS.eip155}
+          size="lg"
+        ></wui-icon>
+        <wui-text color="fg-200" variant="small-400"
+          >${totalConnections > 1 ? 'Wallets' : 'Wallet'}</wui-text
+        >
         <wui-text color="fg-100" variant="small-400" class="balance-amount">
           ${totalConnections}
         </wui-text>
         <wui-link
           color="fg-200"
-          @click=${() => ConnectionController.disconnect({ namespace, disconnectAll: true })}
-          ?disabled=${connections.length === 0 && !this.caipAddress}
+          @click=${() => this.handleDisconnectAll(namespace)}
+          ?disabled=${!this.hasAnyConnections(namespace)}
         >
           Disconnect All
         </wui-link>
@@ -234,25 +219,38 @@ export class W3mProfileWalletsView extends LitElement {
     `
   }
 
-  private activeProfileAndConnectionsTemplate(namespace: ChainNamespace) {
-    const connections = this.getActiveConnections(namespace)
+  private renderConnections(namespace: ChainNamespace) {
+    const hasConnections = this.hasAnyConnections(namespace)
 
-    if (connections.length > 0 || this.caipAddress) {
-      return html`
-        <wui-flex
-          flexDirection="column"
-          .padding=${['l', '0', 'xs', '0'] as const}
-          class="active-wallets"
-        >
-          ${this.activeProfileTemplate(namespace)} ${this.activeConnectionsTemplate(namespace)}
-        </wui-flex>
-      `
-    }
-
-    return null
+    return html`
+      <wui-flex flexDirection="column" class="wallet-list" rowGap="s">
+        ${hasConnections
+          ? this.renderActiveConnections(namespace)
+          : this.renderEmptyState(namespace)}
+      </wui-flex>
+    `
   }
 
-  private activeProfileTemplate(namespace: ChainNamespace) {
+  private renderActiveConnections(namespace: ChainNamespace) {
+    const connections = this.getActiveConnections(namespace)
+    const connectorId = this.activeConnectorIds[namespace]
+    const plainAddress = this.getPlainAddress()
+
+    return html`
+      ${plainAddress || connectorId || connections.length > 0
+        ? html`<wui-flex
+            flexDirection="column"
+            .padding=${['l', '0', 'xs', '0'] as const}
+            class="active-wallets"
+          >
+            ${this.renderActiveProfile(namespace)} ${this.renderActiveConnectionsList(namespace)}
+          </wui-flex>`
+        : null}
+      ${this.renderRecentConnections(namespace)}
+    `
+  }
+
+  private renderActiveProfile(namespace: ChainNamespace) {
     const connectorId = this.activeConnectorIds[namespace]
 
     if (!connectorId) {
@@ -260,348 +258,230 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
-
     const connector = ConnectorController.getConnectorById(connectorId)
     const connectorImage = AssetUtil.getConnectorImage(connector)
-
-    const plainAddress = this.caipAddress
-      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
-      : undefined
+    const plainAddress = this.getPlainAddress()
 
     if (!plainAddress) {
       return null
     }
 
-    const { isAuth, icon, iconSize } = this.getAuthData({
-      connectorId,
-      accounts: []
-    })
+    const authData = ConnectionUtil.getAuthData({ connectorId, accounts: [] })
+    const shouldShowSeparator =
+      this.getActiveConnections(namespace).flatMap(connection => connection.accounts).length > 0
 
-    const shouldShowLineSeparator = this.getShouldShowLineSeparator(namespace)
-
-    const isSmartAccount = this.smartAccountAddress
-      ? HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, plainAddress)
-      : false
-
-    return html`<wui-flex flexDirection="column" .padding=${['0', 'l', '0', 'l'] as const}>
-      <wui-active-profile-wallet-item
-        address=${plainAddress}
-        alt=${connector?.name}
-        .content=${this.getProfileContent({
-          address: plainAddress,
-          namespace,
-          connections,
-          connectorId
-        })}
-        .charsStart=${CHARS_START}
-        .charsEnd=${CHARS_END}
-        .icon=${icon}
-        .iconSize=${iconSize}
-        .iconBadge=${isSmartAccount ? ICON_BADGE_SIZE.icon : undefined}
-        .iconBadgeSize=${isSmartAccount ? ICON_BADGE_SIZE.size : undefined}
-        imageSrc=${connectorImage}
-        ?enableMoreButton=${isAuth}
-        @copy=${() => this.handleCopyAddress(plainAddress)}
-        @disconnect=${() => this.handleDisconnect({ namespace })}
-        @externalLink=${() => this.handleExternalLink(namespace, plainAddress)}
-        @more=${() => this.handleMore()}
-      ></wui-active-profile-wallet-item>
-      ${shouldShowLineSeparator ? html`<wui-separator></wui-separator>` : null}
-    </wui-flex>`
+    return html`
+      <wui-flex flexDirection="column" .padding=${['0', 'l', '0', 'l'] as const}>
+        <wui-active-profile-wallet-item
+          address=${plainAddress}
+          alt=${connector?.name}
+          .content=${this.getProfileContent({
+            address: plainAddress,
+            connections,
+            connectorId,
+            namespace
+          })}
+          .charsStart=${UI_CONFIG.ADDRESS_DISPLAY.START}
+          .charsEnd=${UI_CONFIG.ADDRESS_DISPLAY.END}
+          .icon=${authData.icon}
+          .iconSize=${authData.iconSize}
+          .iconBadge=${this.isSmartAccount(plainAddress) ? UI_CONFIG.BADGE.ICON : undefined}
+          .iconBadgeSize=${this.isSmartAccount(plainAddress) ? UI_CONFIG.BADGE.SIZE : undefined}
+          imageSrc=${connectorImage}
+          ?enableMoreButton=${authData.isAuth}
+          @copy=${() => this.handleCopyAddress(plainAddress)}
+          @disconnect=${() => this.handleDisconnect(namespace, {})}
+          @externalLink=${() => this.handleExternalLink(namespace, plainAddress)}
+          @more=${() => this.handleMore()}
+        ></wui-active-profile-wallet-item>
+        ${shouldShowSeparator ? html`<wui-separator></wui-separator>` : null}
+      </wui-flex>
+    `
   }
 
-  private getShouldShowLineSeparator(namespace: ChainNamespace) {
+  private renderActiveConnectionsList(namespace: ChainNamespace) {
     const connections = this.getActiveConnections(namespace)
 
-    const connectionsWithMultipleAccounts = connections.filter(
-      connection => connection.accounts.length > 0
-    )
-
-    return connectionsWithMultipleAccounts.length > 0
-  }
-
-  private activeConnectionsTemplate(namespace: ChainNamespace) {
-    const connections = this.getActiveConnections(namespace)
-
-    if (connections.length > 0) {
-      return html`<wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
-        ${this.displayConnections({
-          connections,
-          includeSeparator: false,
-          isRecentConnections: false,
-          namespace
-        })}
-      </wui-flex>`
+    if (connections.length === 0) {
+      return null
     }
 
-    return null
+    return html`
+      <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+        ${this.renderConnectionList(connections, false, namespace)}
+      </wui-flex>
+    `
   }
 
-  private getAuthData(connection: Connection) {
-    let icon: string | undefined = undefined
-    let iconSize: string | undefined = undefined
+  private renderRecentConnections(namespace: ChainNamespace) {
+    let { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
 
-    const isAuth = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
-
-    const socialProvider = (connection?.auth?.name ??
-      StorageUtil.getConnectedSocialProvider()) as SocialProvider | null
-    const socialUsername = (connection?.auth?.username ??
-      StorageUtil.getConnectedSocialUsername()) as string | null
-
-    if (isAuth) {
-      icon = socialProvider ?? 'mail'
-      iconSize = socialProvider ? 'xl' : 'md'
+    if (namespace === CommonConstantsUtil.CHAIN.BITCOIN) {
+      storageConnections = storageConnections.map(connection => ({
+        ...connection,
+        accounts: connection.accounts.filter(account =>
+          typeof account.type === 'string' ? account.type === 'payment' : true
+        )
+      }))
     }
 
-    const authConnector = ConnectorController.getAuthConnector()
-    const email = authConnector?.provider.getEmail() ?? ''
+    const allAccounts = storageConnections.flatMap(connection => connection.accounts)
 
-    return {
-      name: isAuth
-        ? ConnectorUtil.getAuthName({
-            email,
-            socialUsername,
-            socialProvider
-          })
-        : undefined,
-      isAuth,
-      icon,
-      iconSize
+    if (allAccounts.length === 0) {
+      return null
     }
+
+    return html`
+      <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
+        <wui-text color="fg-200" variant="micro-500">RECENTLY CONNECTED</wui-text>
+        <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+          ${this.renderConnectionList(storageConnections, true, namespace)}
+        </wui-flex>
+      </wui-flex>
+    `
   }
 
-  private displayConnections({
-    connections,
-    includeSeparator = true,
-    isRecentConnections,
-    namespace
-  }: DisplayConnectionsParams) {
+  private renderConnectionList(
+    connections: Connection[],
+    isRecentConnections: boolean,
+    namespace: ChainNamespace
+  ) {
     return connections
       .filter(connection => connection.accounts.length > 0)
       .map((connection, connectionIdx) => {
         const connector = ConnectorController.getConnectorById(connection.connectorId)
-        const connectorImage = AssetUtil.getConnectorImage(connector)
-        const isFirstConnection = connectionIdx === 0
-        const { icon, iconSize } = this.getAuthData(connection)
+        const connectorImage = AssetUtil.getConnectorImage(connector) ?? ''
+        const authData = ConnectionUtil.getAuthData(connection)
 
         return connection.accounts.map((account, accountIdx) => {
-          const isFirstAccount = accountIdx === 0
+          const shouldShowSeparator = connectionIdx !== 0 || accountIdx !== 0
+          const isLoading = this.isAccountLoading(connection.connectorId, account.address)
 
-          const isLoading =
-            HelpersUtil.isLowerCaseMatch(this.lastSelectedConnectorId, connection.connectorId) &&
-            HelpersUtil.isLowerCaseMatch(this.lastSelectedAddress, account.address) &&
-            this.isSwitching
-
-          const shouldShowSeparator = includeSeparator && (!isFirstConnection || !isFirstAccount)
-
-          return html`<wui-flex flexDirection="column">
-            ${shouldShowSeparator ? html`<wui-separator></wui-separator>` : null}
-
-            <wui-inactive-profile-wallet-item
-              address=${account.address}
-              alt=${connection.connectorId}
-              buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
-              buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
-              rightIcon=${isRecentConnections ? 'bin' : 'off'}
-              rightIconSize="sm"
-              class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
-              imageSrc=${connectorImage}
-              .icon=${icon}
-              .iconSize=${iconSize}
-              .loading=${isLoading}
-              .showBalance=${false}
-              .charsStart=${CHARS_START}
-              .charsEnd=${CHARS_END}
-              @buttonClick=${() =>
-                this.handleSwitchWallet({
-                  connection,
-                  address: account.address,
-                  namespace
-                })}
-              @iconClick=${() =>
-                isRecentConnections
-                  ? this.handleDeleteRecentConnection({
-                      address: account.address,
-                      connectorId: connection.connectorId,
-                      namespace
-                    })
-                  : this.handleDisconnect({ id: connection.connectorId, namespace })}
-            ></wui-inactive-profile-wallet-item>
-          </wui-flex>`
+          return html`
+            <wui-flex flexDirection="column">
+              ${shouldShowSeparator ? html`<wui-separator></wui-separator>` : null}
+              <wui-inactive-profile-wallet-item
+                address=${account.address}
+                alt=${connection.connectorId}
+                buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
+                buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
+                rightIcon=${isRecentConnections ? 'bin' : 'off'}
+                rightIconSize="sm"
+                class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
+                imageSrc=${connectorImage}
+                .icon=${authData.icon}
+                .iconSize=${authData.iconSize}
+                .loading=${isLoading}
+                .showBalance=${false}
+                .charsStart=${UI_CONFIG.ADDRESS_DISPLAY.START}
+                .charsEnd=${UI_CONFIG.ADDRESS_DISPLAY.END}
+                @buttonClick=${() =>
+                  this.handleSwitchWallet(connection, account.address, namespace)}
+                @iconClick=${() =>
+                  this.handleWalletAction({
+                    connection,
+                    address: account.address,
+                    isRecentConnection: isRecentConnections,
+                    namespace
+                  })}
+              ></wui-inactive-profile-wallet-item>
+            </wui-flex>
+          `
         })
       })
   }
 
-  private getProfileContent({
-    address,
-    namespace,
-    connections,
-    connectorId
-  }: GetProfileContentParams) {
-    const [connectedConnection] = connections.filter(connection =>
-      HelpersUtil.isLowerCaseMatch(connection.connectorId, connectorId)
-    )
-
-    const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
-    const hasTypeOnEveryAccount =
-      connectedConnection &&
-      connectedConnection.accounts.every(account => typeof account.type === 'string')
-
-    if (isBitcoin && hasTypeOnEveryAccount) {
-      const accounts = connectedConnection.accounts
-
-      const hasMultipleAccounts = accounts.length > 1
-
-      return accounts.map((account, idx) => {
-        const isLastAccount = idx === accounts.length - 1
-        const isConnected = HelpersUtil.isLowerCaseMatch(account.address, address)
-
-        return {
-          address: account.address,
-          tagLabel: isConnected ? 'Active' : undefined,
-          tagVariant: isConnected ? 'success' : undefined,
-          enableButton: isLastAccount,
-          ...(hasMultipleAccounts
-            ? { label: account.type?.toUpperCase(), alignItems: 'flex-end' }
-            : {
-                alignItems: 'center'
-              })
-        }
-      })
+  private renderAddConnectionButton(namespace: ChainNamespace) {
+    if (!this.hasAnyConnections(namespace)) {
+      return null
     }
 
-    const { isAuth } = this.getAuthData({
-      connectorId,
-      accounts: []
-    })
+    const { title } = this.getChainLabelInfo(namespace)
 
-    const isSmartAccount = this.smartAccountAddress
-      ? HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, address)
-      : false
-
-    return [
-      {
-        address,
-        tagLabel: 'Active',
-        tagVariant: 'success',
-        enableButton: true,
-        ...(isAuth ? { description: isSmartAccount ? 'Smart Account' : 'EOA Account' } : {})
-      }
-    ]
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="plus"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${() => this.handleAddConnection(namespace)}
+      >
+        <wui-text variant="paragraph-500" color="fg-200">${title}</wui-text>
+      </wui-list-item>
+    `
   }
 
-  private recentConnectionsTemplate(namespace: ChainNamespace) {
-    const { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
+  private renderEmptyState(namespace: ChainNamespace) {
+    const { title, description } = this.getChainLabelInfo(namespace)
 
-    if (storageConnections.length > 0) {
-      return html`
-        <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
-          <wui-text color="fg-200" variant="micro-500">RECENTLY CONNECTED</wui-text>
-          <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
-            ${this.displayConnections({
-              connections: storageConnections,
-              includeSeparator: true,
-              isRecentConnections: true,
-              namespace
-            })}
-          </wui-flex>
-        </wui-flex>
-      `
-    }
-
-    return null
-  }
-
-  private addConnectionTemplate(namespace: ChainNamespace) {
-    const { storageConnections, connections } =
-      ConnectionControllerUtil.getConnectionsData(namespace)
-    const { title } = this.getChainSwitchText(namespace)
-
-    if (this.caipAddress || storageConnections.length > 0 || connections.length > 0) {
-      return html`
-        <wui-list-item
-          variant="icon"
-          iconVariant="overlay"
-          icon="plus"
-          iconSize="sm"
-          ?chevron=${true}
-          @click=${() => this.handleAddConnection(namespace)}
+    return html`
+      <wui-flex alignItems="flex-start" class="empty-template">
+        <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          rowGap="s"
+          class="empty-box"
         >
-          <wui-text variant="paragraph-500" color="fg-200">${title}</wui-text>
-        </wui-list-item>
-      `
-    }
+          <wui-icon-box
+            size="lg"
+            icon="wallet"
+            background="gray"
+            iconColor="fg-200"
+            backgroundColor="glass-002"
+          ></wui-icon-box>
 
-    return null
-  }
-
-  private emptyTemplate(namespace: ChainNamespace) {
-    const { storageConnections, connections } =
-      ConnectionControllerUtil.getConnectionsData(namespace)
-
-    if (storageConnections.length === 0 && connections.length === 0 && !this.caipAddress) {
-      const { title, description } = this.getChainSwitchText(namespace)
-
-      return html`
-        <wui-flex alignItems="flex-start" class="empty-template">
-          <wui-flex
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            rowGap="s"
-            class="empty-box"
-          >
-            <wui-icon-box
-              size="lg"
-              icon="wallet"
-              background="gray"
-              iconColor="fg-200"
-              backgroundColor="glass-002"
-            ></wui-icon-box>
-
-            <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
-              <wui-text color="fg-100" variant="paragraph-500">No wallet connected</wui-text>
-              <wui-text color="fg-200" variant="tiny-500">${description}</wui-text>
-            </wui-flex>
-
-            <wui-button
-              variant="neutral"
-              size="md"
-              @click=${() => this.handleAddConnection(namespace)}
-            >
-              <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
-              ${title}
-            </wui-button>
+          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
+            <wui-text color="fg-100" variant="paragraph-500">No wallet connected</wui-text>
+            <wui-text color="fg-200" variant="tiny-500">${description}</wui-text>
           </wui-flex>
+
+          <wui-button
+            variant="neutral"
+            size="md"
+            @click=${() => this.handleAddConnection(namespace)}
+          >
+            <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
+            ${title}
+          </wui-button>
         </wui-flex>
-      `
-    }
-
-    return null
+      </wui-flex>
+    `
   }
 
-  private getActiveConnections(namespace: ChainNamespace) {
-    const connectorId = this.activeConnectorIds[namespace]
+  private handleTabChange(index: number) {
+    const nextNamespace = this.namespaces[index]
 
-    const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
-    if (!connectorId) {
-      return connections
+    if (nextNamespace) {
+      this.chainListener?.()
+      this.currentTab = this.namespaces.indexOf(nextNamespace)
+      this.namespace = nextNamespace
+
+      this.caipAddress = ChainController.getAccountData(nextNamespace)?.caipAddress
+      this.profileName = ChainController.getAccountData(nextNamespace)?.profileName
+      this.smartAccountAddress = AccountController.getSmartAccountAddress(nextNamespace)
+
+      this.chainListener = ChainController.subscribeChainProp(
+        'accountState',
+        accountState => {
+          this.caipAddress = accountState?.caipAddress
+          this.smartAccountAddress = accountState?.smartAccountAddress
+        },
+        nextNamespace
+      )
     }
-
-    const { address } = this.caipAddress ? ParseUtil.parseCaipAddress(this.caipAddress) : {}
-
-    const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
-
-    return ConnectionControllerUtil.excludeConnectorAddressFromConnections({
-      connectorId,
-      addresses: [...(address ? [address] : [])],
-      connections: isBitcoin
-        ? ConnectionControllerUtil.filterConnectionsByAccountType(connections, 'payment')
-        : connections
-    })
   }
 
-  private async handleSwitchWallet({ connection, address, namespace }: HandleSwitchWalletParams) {
+  private handleDisconnectAll(namespace: ChainNamespace) {
+    ConnectionController.disconnect({ namespace, disconnectAll: true })
+  }
+
+  private async handleSwitchWallet(
+    connection: Connection,
+    address: string,
+    namespace: ChainNamespace
+  ) {
     try {
       this.isSwitching = true
       this.lastSelectedConnectorId = connection.connectorId
@@ -611,27 +491,37 @@ export class W3mProfileWalletsView extends LitElement {
         connection,
         address,
         namespace,
-        onConnectorChange() {
-          SnackController.showSuccess('Wallet switched')
-        },
-        onAddressChange() {
-          SnackController.showSuccess('Account switched')
-        }
+        onConnectorChange: () => SnackController.showSuccess('Wallet switched'),
+        onAddressChange: () => SnackController.showSuccess('Account switched')
       })
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err)
+    } catch (error) {
       SnackController.showError('Failed to switch wallet')
     } finally {
       this.isSwitching = false
     }
   }
 
-  private async handleDisconnect({ id, namespace }: HandleDisconnectParams) {
+  private handleWalletAction(params: WalletActionParams) {
+    const { connection, address, isRecentConnection, namespace } = params
+
+    if (isRecentConnection) {
+      StorageUtil.deleteAddressFromConnection({
+        connectorId: connection.connectorId,
+        address,
+        namespace
+      })
+      SnackController.showSuccess('Wallet deleted')
+      this.requestUpdate()
+    } else {
+      this.handleDisconnect(namespace, { id: connection.connectorId })
+    }
+  }
+
+  private async handleDisconnect(namespace: ChainNamespace, { id }: { id?: string }) {
     try {
       await ConnectionController.disconnect({ id, namespace })
       SnackController.showSuccess('Wallet disconnected')
-    } catch (err) {
+    } catch {
       SnackController.showError('Failed to disconnect wallet')
     }
   }
@@ -646,13 +536,11 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private handleExternalLink(namespace: ChainNamespace, address: string) {
-    const addressExplorerUrl = HelpersUtil.getExplorerUrl(namespace)
+    const explorerUrl = HelpersUtil.getExplorerUrl(namespace)
 
-    if (!addressExplorerUrl) {
-      return
+    if (explorerUrl) {
+      CoreHelperUtil.openHref(`${explorerUrl}/address/${address}`, '_blank')
     }
-
-    CoreHelperUtil.openHref(`${addressExplorerUrl}/address/${address}`, '_blank')
   }
 
   private handleAddConnection(namespace: ChainNamespace) {
@@ -660,60 +548,103 @@ export class W3mProfileWalletsView extends LitElement {
     RouterController.push('Connect')
   }
 
-  private handleDeleteRecentConnection({
-    address,
-    connectorId,
-    namespace
-  }: HandleDeleteRecentConnectionParams) {
-    StorageUtil.deleteAddressFromConnection({
-      connectorId,
-      address,
-      namespace
-    })
-
-    SnackController.showSuccess('Wallet deleted')
-
-    this.requestUpdate()
-  }
-
-  private onTabChange(index: number) {
-    this.unsubscribeChainListener?.()
-    this.currentTab = index
-
-    const nextNamespace = this.namespaces[index]
-
-    if (!nextNamespace) {
-      throw new Error('Namespace must be defined when changing tabs')
-    }
-
-    this.namespace = nextNamespace
-    this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
-    this.smartAccountAddress = AccountController.getSmartAccountAddress(this.namespace)
-
-    ChainController.setActiveNamespace(this.namespace)
-
-    this.unsubscribeChainListener = ChainController.subscribeChainProp(
-      'accountState',
-      val => {
-        this.caipAddress = val?.caipAddress
-        this.smartAccountAddress = val?.smartAccountAddress
-      },
-      this.namespace
+  private getChainLabelInfo(namespace: ChainNamespace) {
+    return (
+      CHAIN_LABELS[namespace as keyof typeof CHAIN_LABELS] ?? {
+        title: 'Add Wallet',
+        description: 'Add your first wallet'
+      }
     )
   }
 
-  private initializeScrollHandling() {
-    const walletListEl = this.shadowRoot?.querySelector('.wallet-list')
-
-    if (!walletListEl) {
-      return
+  private isSmartAccount(address?: string) {
+    if (!this.smartAccountAddress || !address) {
+      return false
     }
 
-    requestAnimationFrame(() => this.handleConnectListScroll())
-    walletListEl.addEventListener('scroll', () => this.handleConnectListScroll())
-    this.resizeObserver = new ResizeObserver(() => this.handleConnectListScroll())
-    this.resizeObserver.observe(walletListEl)
-    this.handleConnectListScroll()
+    return HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, address)
+  }
+
+  private getPlainAddress() {
+    return this.caipAddress ? CoreHelperUtil.getPlainAddress(this.caipAddress) : undefined
+  }
+
+  private getActiveConnections(namespace: ChainNamespace) {
+    const connectorId = this.activeConnectorIds[namespace]
+    const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
+
+    if (!connectorId) {
+      return connections
+    }
+
+    const { address } = this.caipAddress ? ParseUtil.parseCaipAddress(this.caipAddress) : {}
+    const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
+
+    return ConnectionControllerUtil.excludeConnectorAddressFromConnections({
+      connectorId,
+      addresses: address ? [address] : [],
+      connections: isBitcoin
+        ? ConnectionControllerUtil.filterConnectionsByAccountType(connections, 'payment')
+        : connections
+    })
+  }
+
+  private hasAnyConnections(namespace: ChainNamespace) {
+    const connections = this.getActiveConnections(namespace)
+    const { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
+
+    return Boolean(this.caipAddress) || connections.length > 0 || storageConnections.length > 0
+  }
+
+  private isAccountLoading(connectorId: string, address: string) {
+    return (
+      HelpersUtil.isLowerCaseMatch(this.lastSelectedConnectorId, connectorId) &&
+      HelpersUtil.isLowerCaseMatch(this.lastSelectedAddress, address) &&
+      this.isSwitching
+    )
+  }
+
+  private getProfileContent(params: ProfileContentParams) {
+    const { address, connections, connectorId, namespace } = params
+    const [connectedConnection] = connections.filter(connection =>
+      HelpersUtil.isLowerCaseMatch(connection.connectorId, connectorId)
+    )
+
+    if (
+      namespace === CommonConstantsUtil.CHAIN.BITCOIN &&
+      connectedConnection?.accounts.every(account => typeof account.type === 'string')
+    ) {
+      return this.getBitcoinProfileContent(connectedConnection.accounts, address)
+    }
+
+    const authData = ConnectionUtil.getAuthData({ connectorId, accounts: [] })
+
+    return [
+      {
+        address,
+        tagLabel: 'Active',
+        tagVariant: 'success',
+        enableButton: true,
+        profileName: this.profileName,
+        ...(authData.isAuth
+          ? { description: this.isSmartAccount(address) ? 'Smart Account' : 'EOA Account' }
+          : {})
+      }
+    ]
+  }
+
+  private getBitcoinProfileContent(accounts: Account[], address: string) {
+    const hasMultipleAccounts = accounts.length > 1
+
+    return accounts.map((account, idx) => ({
+      address: account.address,
+      tagLabel: HelpersUtil.isLowerCaseMatch(account.address, address) ? 'Active' : undefined,
+      tagVariant: HelpersUtil.isLowerCaseMatch(account.address, address) ? 'success' : undefined,
+      enableButton: idx === accounts.length - 1,
+      ...(hasMultipleAccounts
+        ? { label: account.type?.toUpperCase(), alignItems: 'flex-end' }
+        : { alignItems: 'center' })
+    }))
   }
 
   private removeScrollListener() {
@@ -725,53 +656,30 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private handleConnectListScroll() {
-    const walletListEl = this.shadowRoot?.querySelector('.wallet-list') as HTMLElement | undefined
+    const walletListEl = this.shadowRoot?.querySelector('.wallet-list') as HTMLElement
 
-    if (!walletListEl) {
-      return
+    if (walletListEl) {
+      this.updateScrollOpacity(walletListEl)
     }
-
-    this.updateScrollOpacity(walletListEl)
   }
 
   private updateScrollOpacity(element: HTMLElement) {
     element.style.setProperty(
       '--connect-scroll--top-opacity',
-      MathUtil.interpolate([0, 50], [0, 1], element.scrollTop).toString()
+      MathUtil.interpolate(
+        [0, UI_CONFIG.SCROLL_THRESHOLD],
+        UI_CONFIG.OPACITY_RANGE,
+        element.scrollTop
+      ).toString()
     )
     element.style.setProperty(
       '--connect-scroll--bottom-opacity',
       MathUtil.interpolate(
-        [0, 50],
-        [0, 1],
+        [0, UI_CONFIG.SCROLL_THRESHOLD],
+        UI_CONFIG.OPACITY_RANGE,
         element.scrollHeight - element.scrollTop - element.offsetHeight
       ).toString()
     )
-  }
-
-  private getChainSwitchText(namespace: ChainNamespace) {
-    switch (namespace) {
-      case 'eip155':
-        return {
-          title: 'Add EVM Wallet',
-          description: 'Add your first EVM wallet'
-        }
-      case 'solana':
-        return {
-          title: 'Add Solana Wallet',
-          description: 'Add your first Solana wallet'
-        }
-      case 'bip122':
-        return {
-          title: 'Add Bitcoin Wallet',
-          description: 'Add your first Bitcoin wallet'
-        }
-      default:
-        return {
-          title: 'Add Wallet',
-          description: 'Add your first wallet'
-        }
-    }
   }
 }
 
