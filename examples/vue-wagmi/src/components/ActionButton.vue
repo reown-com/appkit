@@ -56,6 +56,7 @@ export default {
 
     async function handleDisconnect() {
       try {
+        console.log('>> Disconnecting')
         await disconnect()
       } catch (error) {
         console.error('Error during disconnect:', error)
