@@ -5,7 +5,7 @@ import {
   type SwapProvider
 } from '@reown/appkit-common'
 
-import type { Features, PreferredAccountTypes } from './TypeUtil.js'
+import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
 const SECURE_SITE =
   // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -245,6 +245,14 @@ export const ConstantsUtil = {
     activity: true,
     reownBranding: true
   },
+  DEFAULT_REMOTE_FEATURES_DISABLED: {
+    email: false,
+    socials: false,
+    swaps: false,
+    onramp: false,
+    activity: false,
+    reownBranding: false
+  } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,
     send: true,

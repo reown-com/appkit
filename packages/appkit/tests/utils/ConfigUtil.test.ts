@@ -247,7 +247,7 @@ describe('ConfigUtil', () => {
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
       expect(features).toEqual<RemoteFeatures>({
         email: false,
-        socials: [],
+        socials: false,
         swaps: false,
         onramp: false,
         activity: false,

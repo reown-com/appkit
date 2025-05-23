@@ -1302,7 +1302,7 @@ export type PreferredAccountTypes = {
 
 export type FeatureID = 'activity' | 'onramp' | 'swap' | 'social_login' | 'reown_branding'
 
-interface BaseFeature<T extends FeatureID, C extends string[] | null> {
+export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
   isEnabled: boolean
   config: C
@@ -1316,3 +1316,44 @@ export type TypedFeatureConfig =
   | BaseFeature<'reown_branding', null | []>
 
 export type ApiGetProjectConfigResponse = TypedFeatureConfig[]
+
+export type FeatureConfigMap = {
+  email: {
+    apiFeatureName: 'social_login'
+    localFeatureName: 'email'
+    returnType: boolean
+    isLegacy: false
+  }
+  socials: {
+    apiFeatureName: 'social_login'
+    localFeatureName: 'socials'
+    returnType: SocialProvider[] | false
+    isLegacy: false
+  }
+  swaps: {
+    apiFeatureName: 'swap'
+    localFeatureName: 'swaps'
+    returnType: SwapProvider[] | false
+    isLegacy: false
+  }
+  onramp: {
+    apiFeatureName: 'onramp'
+    localFeatureName: 'onramp'
+    returnType: OnRampProvider[] | false
+    isLegacy: false
+  }
+  activity: {
+    apiFeatureName: 'activity'
+    localFeatureName: 'history'
+    returnType: boolean
+    isLegacy: true
+  }
+  reownBranding: {
+    apiFeatureName: 'reown_branding'
+    localFeatureName: 'reownBranding'
+    returnType: boolean
+    isLegacy: false
+  }
+}
+
+export type FeatureKey = keyof FeatureConfigMap
