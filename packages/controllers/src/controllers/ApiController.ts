@@ -375,7 +375,8 @@ export const ApiController = {
       fetchRecommendedWallets &&
         ApiController.initPromise('recommendedWallets', ApiController.fetchRecommendedWallets),
       fetchNetworkImages &&
-        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages)
+        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages),
+      ApiController.initPromise('specificWalletImages', () => AssetUtil.prefetchSpecificWalletImages())
     ].filter(Boolean)
 
     return Promise.allSettled(promises)
