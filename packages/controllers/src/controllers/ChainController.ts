@@ -420,16 +420,20 @@ const controller = {
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
 
-    if (unsupportedNetwork) {
-      RouterController.goBack()
-    }
-
     const networkControllerClient = ChainController.getNetworkControllerClient(
       network.chainNamespace
     )
 
     if (networkControllerClient) {
-      await networkControllerClient.switchCaipNetwork(network)
+      try {
+        await networkControllerClient.switchCaipNetwork(network)
+        if (unsupportedNetwork) {
+          ModalController.close()
+        }
+      } catch (error) {
+        RouterController.goBack()
+      }
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SWITCH_NETWORK',
