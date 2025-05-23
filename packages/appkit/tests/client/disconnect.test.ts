@@ -3,11 +3,9 @@ import type { MockInstance } from 'vitest'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectorController,
   type ConnectorType,
-  ModalController,
   SIWXUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
