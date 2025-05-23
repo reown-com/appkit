@@ -1,4 +1,3 @@
-// app/library/wagmi/manifest.json/route.ts
 import { NextResponse } from 'next/server'
 
 export function GET() {
