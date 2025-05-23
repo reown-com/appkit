@@ -228,8 +228,8 @@ export const ConfigUtil = {
     }
 
     const remoteFeaturesConfig: RemoteFeatures = useApiConfig
-      ? ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
-      : ConstantsUtil.DEFAULT_REMOTE_FEATURES
+      ? ConstantsUtil.DEFAULT_REMOTE_FEATURES
+      : ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
 
     for (const featureKey of featureKeys) {
       const result = this.processFeature(featureKey, localFeatures, apiProjectConfig, useApiConfig)

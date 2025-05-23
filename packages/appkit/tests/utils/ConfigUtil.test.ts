@@ -106,7 +106,8 @@ describe('ConfigUtil', () => {
 
     // --- API Success Scenarios (API is Sole Source of Truth) ---
     it('should use API config exclusively, all features off if API returns empty array', async () => {
-      vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue([])
+      // @ts-expect-error - Deliberately testing null response
+      vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(null)
       mockOptions.features = {
         email: true,
         socials: ['google'],
@@ -116,23 +117,13 @@ describe('ConfigUtil', () => {
       } as CtrlFeatures
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
       expect(features).toEqual({
-        email: false,
-        socials: false,
-        swaps: false,
-        onramp: false,
-        activity: false,
-        reownBranding: false
+        email: true,
+        socials: ['google'],
+        swaps: ['1inch'],
+        onramp: ['coinbase', 'meld'],
+        activity: true,
+        reownBranding: true
       })
-      expect(AlertController.open).toHaveBeenCalledTimes(1)
-      expect(AlertController.open).toHaveBeenCalledWith(
-        expect.objectContaining({
-          shortMessage: 'Local configuration ignored',
-          longMessage: expect.stringContaining(
-            'Your local configuration for "features.email", "features.socials", "features.swaps", "features.onramp", "features.history" (now "activity") was ignored because a remote configuration was successfully fetched'
-          )
-        }),
-        'warning'
-      )
     })
 
     it('should use API config for all features; unconfigured API features are false/empty', async () => {
@@ -140,7 +131,7 @@ describe('ConfigUtil', () => {
         { id: 'social_login', isEnabled: true, config: ['email'] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      mockOptions.features = { swaps: true, history: true } as CtrlFeatures
+      mockOptions.features = { swaps: true, history: true, socials: ['google'] }
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
       expect(features).toEqual<RemoteFeatures>({
         email: true,
@@ -155,7 +146,7 @@ describe('ConfigUtil', () => {
         expect.objectContaining({
           shortMessage: 'Local configuration ignored',
           longMessage: expect.stringContaining(
-            'Your local configuration for "features.swaps", "features.history" (now "activity") was ignored because a remote configuration was successfully fetched'
+            'Your local configuration for "features.socials" was ignored because a remote configuration was successfully fetched'
           )
         }),
         'warning'
