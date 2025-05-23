@@ -3,7 +3,7 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface W3mFrameProviderConfig {
   projectId: string
-  chainId?: number | CaipNetworkId
+  chainId: number | CaipNetworkId | undefined
   enableLogger?: boolean
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
