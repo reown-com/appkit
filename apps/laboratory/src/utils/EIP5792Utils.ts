@@ -1,5 +1,6 @@
 import { UniversalProvider } from '@walletconnect/universal-provider'
-import { type WalletCapabilities, fromHex } from 'viem'
+import { type WalletCapabilities, fromHex, type Hex } from 'viem'
+import { type Eip1193Provider } from 'ethers'
 
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
@@ -33,6 +34,18 @@ export function getFilteredCapabilitySupportedChainInfo(
   const chainInfo = chainIds
     .filter(chainId => {
       const capabilitiesPerChain = capabilities[chainId]
+      if (!capabilitiesPerChain) return false
+
+      if (capability === WALLET_CAPABILITIES.ATOMIC_BATCH) {
+        const metamaskAtomic = (capabilitiesPerChain as any).atomic
+        if (metamaskAtomic && typeof metamaskAtomic === 'object' && metamaskAtomic.status === 'supported') {
+          return true
+        }
+        if (capabilitiesPerChain[WALLET_CAPABILITIES.ATOMIC_BATCH]?.supported === true) {
+          return true
+        }
+        return false
+      }
 
       return capabilitiesPerChain?.[capability]?.supported === true
     })
@@ -75,9 +88,12 @@ export function getProviderCachedCapabilities(
   return convertCapabilitiesToRecord(accountCapabilities)
 }
 
+// Define a type for an initialized UniversalProvider instance
+type InitializedUniversalProvider = Awaited<ReturnType<(typeof UniversalProvider)['init']>>
+
 export async function getCapabilitySupportedChainInfo(
   capability: string,
-  provider: Awaited<ReturnType<(typeof UniversalProvider)['init']>> | W3mFrameProvider,
+  provider: InitializedUniversalProvider | W3mFrameProvider | Eip1193Provider,
   address: string
 ): Promise<
   {
@@ -87,22 +103,33 @@ export async function getCapabilitySupportedChainInfo(
 > {
   if (provider instanceof W3mFrameProvider) {
     const rawCapabilities = await provider.getCapabilities()
-    const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
-      const chain = getChain(fromHex(chainId as `0x${string}`, 'number'))
-
-      return {
-        chainId: fromHex(chainId as `0x${string}`, 'number'),
-        chainName: chain?.name ?? `Unknown Chain (${chainId})`
+    return getFilteredCapabilitySupportedChainInfo(capability, rawCapabilities)
+  }
+  // Check for an initialized UniversalProvider instance (it should have a session object)
+  else if (provider instanceof UniversalProvider && (provider as InitializedUniversalProvider).session) {
+    const perChainCapabilities = getProviderCachedCapabilities(address, provider as InitializedUniversalProvider)
+    if (!perChainCapabilities) {
+      return []
+    }
+    return getFilteredCapabilitySupportedChainInfo(capability, perChainCapabilities)
+  }
+  // Fallback to generic EIP-1193 provider (this should catch injected MetaMask)
+  else if (typeof (provider as Eip1193Provider).request === 'function') {
+    try {
+      const genericCapabilities = await (provider as Eip1193Provider).request({
+        method: 'wallet_getCapabilities',
+        params: [address]
+      }) as Record<Hex, WalletCapabilities>
+      if (genericCapabilities) {
+        return getFilteredCapabilitySupportedChainInfo(capability, genericCapabilities)
       }
-    })
-
-    return mappedCapabilities
+      return []
+    } catch (e) {
+      console.error('[EIP5792Utils] Error fetching capabilities from generic EIP-1193 provider:', e)
+      return []
+    }
   }
-
-  const perChainCapabilities = getProviderCachedCapabilities(address, provider)
-  if (!perChainCapabilities) {
-    return []
-  }
-
-  return getFilteredCapabilitySupportedChainInfo(capability, perChainCapabilities)
+  // If none of the above, it's an unknown provider type or not properly initialized
+  console.warn('[EIP5792Utils] Unknown or unhandled provider type in getCapabilitySupportedChainInfo.', provider);
+  return [];
 }
