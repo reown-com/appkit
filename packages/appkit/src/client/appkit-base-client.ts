@@ -53,6 +53,7 @@ import {
   OptionsController,
   PublicStateController,
   RouterController,
+  SIWXUtil,
   SnackController,
   StorageUtil,
   ThemeController
@@ -461,6 +462,12 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider(namespace)
         const providerType = ProviderUtil.getProviderId(namespace)
+
+        this.setLoading(true, namespace)
+        await SIWXUtil.clearSessions()
+        await ChainController.disconnect(namespace)
+        this.setLoading(false, namespace)
+        ConnectorController.setFilterByNamespace(undefined)
 
         await adapter?.disconnect({ provider, providerType })
 

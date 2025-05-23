@@ -6,7 +6,6 @@ import { type CaipAddress, type CaipNetwork, type ChainNamespace } from '@reown/
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   Connector,
@@ -308,20 +307,8 @@ const controller = {
 
   async disconnect(namespace?: ChainNamespace) {
     try {
-      ModalController.setLoading(true, namespace)
-      const client = ConnectionController._getClient()
-      if (client) {
-        console.log('>> Disconnecting - Disconnecting from client', namespace)
-        await client.disconnect(namespace)
-      }
-      console.log('>> Disconnecting - Clearing sessions', namespace)
-      await SIWXUtil.clearSessions()
-      console.log('>> Disconnecting - Disconnecting from chain', namespace)
-      await ChainController.disconnect(namespace)
-      ModalController.setLoading(false, namespace)
-      ConnectorController.setFilterByNamespace(undefined)
+      await ConnectionController._getClient()?.disconnect(namespace)
     } catch (error) {
-      console.log('>> Disconnecting - Error', error)
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
   },
