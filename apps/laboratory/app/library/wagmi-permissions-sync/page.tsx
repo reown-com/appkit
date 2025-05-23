@@ -29,11 +29,9 @@ const config = {
   defaultNetwork: sepolia,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
     smartSessions: true,
-    email: true,
-    socials: [],
-    emailShowWallets: false
+    emailShowWallets: false,
+    socials: []
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'

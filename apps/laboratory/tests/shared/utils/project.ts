@@ -58,6 +58,7 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'multichain-siwe-extension.spec.ts',
   'basic-tests.spec.ts',
   'canary.spec.ts',
+  'config.spec.ts',
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',

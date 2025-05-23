@@ -14,9 +14,7 @@ const modal = createAppKit({
   networks: [solana, solanaTestnet, solanaDevnet],
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: true
-  },
+
   metadata: {
     name: 'AppKit HTML Example',
     description: 'AppKit HTML Example',
