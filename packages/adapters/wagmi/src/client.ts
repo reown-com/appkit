@@ -257,6 +257,34 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     }
 
+    // Check if the app is running inside an iframe and the referrer is from Safe
+    if (typeof window !== 'undefined' && window.self !== window.top) {
+      try {
+        const ancestor = window?.location?.ancestorOrigins?.[0]
+
+        const safeAppUrl = 'https://app.safe.global'
+        if (ancestor) {
+          const ancestorUrl = new URL(ancestor)
+          const safeUrl = new URL(safeAppUrl)
+
+          // Only import the Safe connector if we are on the Safe App Iframe
+          if (ancestorUrl.hostname !== safeUrl.hostname) {
+            return
+          }
+
+          const { safe } = await import('@wagmi/connectors')
+
+          if (safe) {
+            const safeConnector = safe()
+            thirdPartyConnectors.push(safeConnector)
+          }
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to import or initialize Safe Connector:', error)
+      }
+    }
+
     thirdPartyConnectors.forEach(connector => {
       const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
       this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
