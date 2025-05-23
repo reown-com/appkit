@@ -9,10 +9,9 @@ import {
   ChainController,
   ConnectorController,
   EventsController,
-  ModalController,
+  ModalUtil,
   OptionsController,
-  RouterController,
-  SIWXUtil
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -167,13 +166,7 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
-
-    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
-      ModalController.shake()
-    } else {
-      ModalController.close(true)
-    }
+    await ModalUtil.safeClose()
   }
 
   private rightHeaderTemplate() {

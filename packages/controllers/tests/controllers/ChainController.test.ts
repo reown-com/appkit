@@ -12,13 +12,13 @@ import { SafeLocalStorage } from '@reown/appkit-common'
 import {
   AccountController,
   type ChainAdapter,
+  ModalController,
   type NetworkControllerClient
 } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
-import { RouterController } from '../../src/controllers/RouterController.js'
 import { StorageUtil } from '../../src/utils/StorageUtil.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -297,8 +297,8 @@ describe('ChainController', () => {
   })
 
   it('Expect modal to close after switching from unsupported network to supported network', async () => {
-    // Mock RouterController.goBack
-    const routerGoBackSpy = vi.spyOn(RouterController, 'goBack')
+    // Mock ModalController.close
+    const modalCloseSpy = vi.spyOn(ModalController, 'close')
 
     // Setup adapter with limited network support
     const limitedEvmAdapter = {
@@ -329,9 +329,9 @@ describe('ChainController', () => {
     ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, limitedEvmAdapter)
     await ChainController.switchActiveNetwork(mainnetCaipNetwork)
 
-    expect(routerGoBackSpy).toHaveBeenCalled()
+    expect(modalCloseSpy).toHaveBeenCalled()
 
-    routerGoBackSpy.mockRestore()
+    modalCloseSpy.mockRestore()
   })
 
   it('should initialize with active network from local storage', () => {

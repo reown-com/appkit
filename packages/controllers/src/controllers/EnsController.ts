@@ -133,15 +133,13 @@ const controller = {
       })
 
       RouterController.pushTransactionStack({
-        view: 'RegisterAccountNameSuccess',
-        goBack: false,
-        replace: true,
         onCancel() {
-          state.loading = false
+          RouterController.replace('RegisterAccountName')
         }
       })
 
       const signature = await ConnectionController.signMessage(message)
+      state.loading = false
       const networkId = network.id
 
       if (!networkId) {
