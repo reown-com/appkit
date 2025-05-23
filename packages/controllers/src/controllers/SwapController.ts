@@ -718,8 +718,6 @@ const controller = {
 
     if (isAuthConnector) {
       RouterController.pushTransactionStack({
-        view: null,
-        goBack: true,
         onSuccess() {
           SnackController.showLoading(approveLimitMessage)
         }
@@ -782,9 +780,8 @@ const controller = {
 
     if (isAuthConnector) {
       RouterController.pushTransactionStack({
-        view: 'Account',
-        goBack: false,
         onSuccess() {
+          RouterController.replace('Account')
           SnackController.showLoading(snackbarPendingMessage)
           controller.resetState()
         }

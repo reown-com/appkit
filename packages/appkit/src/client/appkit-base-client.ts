@@ -322,7 +322,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected getDefaultMetaData() {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (CoreHelperUtil.isClient()) {
       return {
         name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
@@ -1567,9 +1567,9 @@ export abstract class AppKitBaseClient {
     return ModalController.open(options)
   }
 
-  public async close(force = false) {
+  public async close() {
     await this.injectModalUi()
-    ModalController.close(force)
+    ModalController.close()
   }
 
   public setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
@@ -1772,8 +1772,8 @@ export abstract class AppKitBaseClient {
     RouterController.push(route)
   }
 
-  public popTransactionStack(cancel?: boolean) {
-    RouterController.popTransactionStack(cancel)
+  public popTransactionStack(status: 'cancel' | 'error' | 'success') {
+    RouterController.popTransactionStack(status)
   }
 
   public isOpen() {
@@ -1782,12 +1782,6 @@ export abstract class AppKitBaseClient {
 
   public isTransactionStackEmpty() {
     return RouterController.state.transactionStack.length === 0
-  }
-
-  public isTransactionShouldReplaceView() {
-    return RouterController.state.transactionStack[
-      RouterController.state.transactionStack.length - 1
-    ]?.replace
   }
 
   public static getInstance() {
