@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -308,11 +309,19 @@ const controller = {
   async disconnect(namespace?: ChainNamespace) {
     try {
       ModalController.setLoading(true, namespace)
+      const client = ConnectionController._getClient()
+      if (client) {
+        console.log('>> Disconnecting - Disconnecting from client', namespace)
+        await client.disconnect(namespace)
+      }
+      console.log('>> Disconnecting - Clearing sessions', namespace)
       await SIWXUtil.clearSessions()
+      console.log('>> Disconnecting - Disconnecting from chain', namespace)
       await ChainController.disconnect(namespace)
       ModalController.setLoading(false, namespace)
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {
+      console.log('>> Disconnecting - Error', error)
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
   },
