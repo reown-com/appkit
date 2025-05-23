@@ -79,11 +79,13 @@ emailTest('it should show make the default account type as EOA', async ({ librar
   page = new ModalWalletPage(browserPage, 'default-account-types-eoa', 'default')
   await page.load()
 
-  email = new Email(mailsacApiKey!)
+  // @ts-expect-error - mailsacApiKey is defined
+  email = new Email(mailsacApiKey)
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey: mailsacApiKey! })
+  // @ts-expect-error - mailsacApiKey is defined
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
   await validator.expectConnected()
 
   await page.goToSettings()

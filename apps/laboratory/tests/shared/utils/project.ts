@@ -262,7 +262,6 @@ export function getProjects() {
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
   const cloudAuthProjects = CLOUD_AUTH_PERMUTATIONS.map(createProject)
   const flagProjects = FLAG_PERMUTATIONS.map(createProject)
-  console.log(flagProjects.map(p => p.name))
 
   const projects = [
     ...libraryDesktopProjects,
