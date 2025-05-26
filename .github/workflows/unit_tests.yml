@@ -51,6 +51,7 @@ jobs:
           echo "Running Vitest shard ${{ inputs.currentShard }}/ ${{ inputs.totalShards }}"
           pnpm vitest run \
             --shard=${{ inputs.currentShard }}/${{ inputs.totalShards }} \
+            --runInBand \
             --coverage.enabled \
             --coverage.reporter=json \
             --coverage.reporter=json-summary \
