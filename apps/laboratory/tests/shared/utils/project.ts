@@ -10,7 +10,7 @@ const MULTICHAIN_LIBRARIES = [
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
 ] as const
-const FLAG_TESTS = ['email-default-account-types'] as const
+const FLAGS = ['default-account-types'] as const
 
 const CORE_LIRARIES = ['core'] as const
 
@@ -37,7 +37,7 @@ const CLOUD_AUTH_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
 )
 
 const FLAG_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
-  FLAG_TESTS.map(library => ({ device, library }))
+  FLAGS.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -182,13 +182,15 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/multichain-no-adapters': {
     testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
   },
-  'Desktop Chrome/email-default-account-types': {
+  'Desktop Chrome/default-account-types': {
+    testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
+  },
+  'Desktop Firefoxi/default-account-types': {
     testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
   },
   'iPhone 12/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
-
   'Galaxy S5/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
