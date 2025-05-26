@@ -299,5 +299,19 @@ describe('ConfigUtil', () => {
       expect(features.activity).toBe(false)
       expect(features.swaps).toEqual(['1inch'])
     })
+
+    it('should use default config when configuration processing throws an error', async () => {
+      const malformedApiResponse = [
+        { id: 'social_login', isEnabled: true, config: 'invalid_config' }
+      ] as unknown as TypedFeatureConfig[]
+
+      vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(malformedApiResponse)
+
+      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+
+      expect(features).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES)
+
+      expect(AlertController.open).not.toHaveBeenCalled()
+    })
   })
 })
