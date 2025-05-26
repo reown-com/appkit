@@ -246,6 +246,8 @@ export const ConfigUtil = {
         '[Reown Config] Failed to process the configuration from Cloud. Using local/default values.',
         e
       )
+
+      return ConstantsUtil.DEFAULT_REMOTE_FEATURES
     }
 
     if (useApiConfig && this.localSettingsOverridden.size > 0) {
