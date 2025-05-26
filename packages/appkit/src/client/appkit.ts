@@ -390,9 +390,10 @@ export class AppKit extends AppKitBaseClient {
 
     const currentNamespace = ChainController.state.activeChain
     const networkNamespace = caipNetwork.chainNamespace
-    const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
+    const namespaceAddress = this.getAddressByChainNamespace(networkNamespace)
+    const isSameNamespace = networkNamespace === currentNamespace
 
-    if (caipNetwork.chainNamespace === ChainController.state.activeChain && namespaceAddress) {
+    if (isSameNamespace && namespaceAddress) {
       const adapter = this.getAdapter(networkNamespace)
       const provider = ProviderUtil.getProvider(networkNamespace)
       const providerType = ProviderUtil.getProviderId(networkNamespace)
@@ -429,14 +430,24 @@ export class AppKit extends AppKitBaseClient {
       ) {
         try {
           ChainController.state.activeChain = caipNetwork.chainNamespace
-          await this.connectionControllerClient?.connectExternal?.({
-            id: ConstantsUtil.CONNECTOR_ID.AUTH,
-            provider: this.authProvider,
-            chain: networkNamespace,
-            chainId: caipNetwork.id,
-            type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-            caipNetwork
-          })
+
+          if (namespaceAddress) {
+            const adapter = this.getAdapter(networkNamespace as ChainNamespace)
+            await adapter?.switchNetwork({
+              caipNetwork,
+              provider: this.authProvider,
+              providerType: newNamespaceProviderType
+            })
+          } else {
+            await this.connectionControllerClient?.connectExternal?.({
+              id: ConstantsUtil.CONNECTOR_ID.AUTH,
+              provider: this.authProvider,
+              chain: networkNamespace,
+              chainId: caipNetwork.id,
+              type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+              caipNetwork
+            })
+          }
           this.setCaipNetwork(caipNetwork)
         } catch (error) {
           const adapter = this.getAdapter(networkNamespace as ChainNamespace)
