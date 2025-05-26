@@ -2,7 +2,6 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { AuthConnector, SocialProvider } from '@reown/appkit'
-import type { Balance } from '@reown/appkit-common'
 import {
   AccountController,
   ApiController,

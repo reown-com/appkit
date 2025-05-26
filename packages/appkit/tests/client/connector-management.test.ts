@@ -17,8 +17,8 @@ import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
-import { mockEvmAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
-import { base, mainnet } from '../mocks/Networks.js'
+import { mockEvmAdapter } from '../mocks/Adapter.js'
+import { mainnet } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {

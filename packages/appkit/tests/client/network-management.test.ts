@@ -4,7 +4,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { AdapterNetworkState, CaipNetwork } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import { ApiController, ChainController, OptionsController } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, polygon } from '../mocks/Networks.js'
