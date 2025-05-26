@@ -185,7 +185,7 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/default-account-types': {
     testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
   },
-  'Desktop Firefoxi/default-account-types': {
+  'Desktop Firefox/default-account-types': {
     testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
   },
   'iPhone 12/core': {
