@@ -481,28 +481,28 @@ export abstract class AppKitBaseClient {
           SendController.resetSend()
           const disconnectResults = await Promise.allSettled(
             chainsToDisconnect.map(async ([ns]) => {
-              const adapter = this.getAdapter(ns)
-              const provider = ProviderUtil.getProvider(ns)
-              const providerType = ProviderUtil.getProviderId(ns)
-
-              this.setLoading(true, ns)
-              await SIWXUtil.clearSessions()
-              ConnectorController.setFilterByNamespace(undefined)
-
-              await adapter?.disconnect({ provider, providerType })
-              this.setLoading(false, ns)
-
-              StorageUtil.removeConnectedNamespace(ns)
-              ProviderUtil.resetChain(ns)
-              this.setUser(undefined, ns)
-              this.setStatus('disconnected', ns)
-              this.setConnectedWalletInfo(undefined, ns)
               try {
+                const adapter = this.getAdapter(ns)
+                const provider = ProviderUtil.getProvider(ns)
+                const providerType = ProviderUtil.getProviderId(ns)
                 const { caipAddress } = ChainController.getAccountData(ns) || {}
 
                 if (caipAddress && adapter?.disconnect) {
                   await adapter.disconnect({ provider, providerType })
                 }
+
+                this.setLoading(true, ns)
+
+                await adapter?.disconnect({ provider, providerType })
+                this.setLoading(false, ns)
+
+                StorageUtil.removeConnectedNamespace(ns)
+                ProviderUtil.resetChain(ns)
+                this.setUser(undefined, ns)
+                this.setStatus('disconnected', ns)
+                this.setConnectedWalletInfo(undefined, ns)
+
+                ConnectorController.removeConnectorId(ns)
 
                 ChainController.resetAccount(ns)
                 ChainController.resetNetwork(ns)
@@ -513,7 +513,8 @@ export abstract class AppKitBaseClient {
           )
 
           ConnectionController.resetWcConnection()
-
+          await SIWXUtil.clearSessions()
+          ConnectorController.setFilterByNamespace(undefined)
           const failures = disconnectResults.filter(
             (result): result is PromiseRejectedResult => result.status === 'rejected'
           )
@@ -523,11 +524,7 @@ export abstract class AppKitBaseClient {
           }
 
           StorageUtil.deleteConnectedSocialProvider()
-          if (chainNamespace) {
-            ConnectorController.removeConnectorId(chainNamespace)
-          } else {
-            ConnectorController.resetConnectorIds()
-          }
+
           EventsController.sendEvent({
             type: 'track',
             event: 'DISCONNECT_SUCCESS',
