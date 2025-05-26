@@ -17,6 +17,7 @@ import {
   EventsController,
   type Features,
   type Metadata,
+  ModalController,
   PublicStateController,
   type RemoteFeatures
 } from '@reown/appkit-controllers'
@@ -147,10 +148,13 @@ export class AppKit extends AppKitBaseClient {
         })
       }
       this.setCaipAddress(caipAddress, namespace)
-
       this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
+
+      if (OptionsController.state.enableEmbedded) {
+        ModalController.close()
+      }
 
       const userAccounts = user.accounts?.map(account =>
         CoreHelperUtil.createAccount(
