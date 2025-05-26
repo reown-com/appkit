@@ -504,9 +504,8 @@ export abstract class AppKitBaseClient {
                 ChainController.resetNetwork(ns)
                 this.setLoading(false, ns)
               } catch (error) {
-                throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
-              } finally {
                 this.setLoading(false, ns)
+                throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
               }
             })
           )

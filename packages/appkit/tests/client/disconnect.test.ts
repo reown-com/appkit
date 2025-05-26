@@ -5,8 +5,10 @@ import type { MockInstance } from 'vitest'
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectionController,
   ConnectorController,
   type ConnectorType,
+  EventsController,
   SIWXUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
@@ -159,10 +161,17 @@ describe('AppKit - disconnect', () => {
       vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
+      // Ensure ChainController.getAccountData returns a caipAddress for the conditional disconnect
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: 'eip155:1:0xyz'
+      } as any)
+      // Ensure the adapter is available
+      ;(appKit as any).chainAdapters['eip155'] = mockEvmAdapter
+      vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue(undefined)
 
       await (appKit as any).connectionControllerClient.disconnect(chainNamespace)
 
-      expect(setLoadingSpy).toHaveBeenCalledTimes(2)
+      expect(setLoadingSpy).toHaveBeenCalledTimes(2) // true at start of try, false in finally
       expect(setLoadingSpy).toHaveBeenNthCalledWith(1, true, chainNamespace)
       expect(setLoadingSpy).toHaveBeenNthCalledWith(2, false, chainNamespace)
     })
@@ -371,5 +380,323 @@ describe('AppKit - disconnect', () => {
       expect(ProviderUtil.resetChain).toHaveBeenCalledWith(secondNamespace)
       expect(setStatusSpy).toHaveBeenCalledWith('disconnected', secondNamespace)
     })
+  })
+})
+
+describe('AppKit - disconnect - functional scenarios', () => {
+  let appKit: AppKit
+  let setStatusSpy: MockInstance
+  let setUserSpy: MockInstance
+  let setConnectedWalletInfoSpy: MockInstance
+  let setLoadingSpy: MockInstance
+  let sendEventSpy: MockInstance
+  let resetAccountSpy: MockInstance
+  let resetNetworkSpy: MockInstance
+  let removeConnectorIdSpy: MockInstance
+  let siwxClearSessionsSpy: MockInstance
+  let ccSetFilterByNamespaceSpy: MockInstance
+  let storageDeleteSocialSpy: MockInstance
+  let ccResetWcConnectionSpy: MockInstance
+  let evmAdapterDisconnectSpy: MockInstance
+  let solanaAdapterDisconnectSpy: MockInstance
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
+
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockProvider)
+
+    const localMockOptions = {
+      ...mockOptions,
+      adapters: [mockEvmAdapter, mockSolanaAdapter]
+    }
+    appKit = new AppKit(localMockOptions)
+
+    setStatusSpy = vi.spyOn(appKit, 'setStatus')
+    setUserSpy = vi.spyOn(appKit, 'setUser')
+    setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
+    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+
+    sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+    resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+    resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
+    removeConnectorIdSpy = vi.spyOn(ConnectorController, 'removeConnectorId')
+    siwxClearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
+    ccSetFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
+    storageDeleteSocialSpy = vi.spyOn(StorageUtil, 'deleteConnectedSocialProvider')
+    ccResetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
+    evmAdapterDisconnectSpy = vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue(undefined)
+    solanaAdapterDisconnectSpy = vi
+      .spyOn(mockSolanaAdapter, 'disconnect')
+      .mockResolvedValue(undefined)
+
+    vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
+    vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
+
+    ChainController.state.chains = new Map([
+      [
+        'eip155',
+        {
+          caipNetwork: {
+            id: '1',
+            name: 'Ethereum',
+            chainNamespace: 'eip155',
+            caipNetworkId: 'eip155:1'
+          },
+          accountState: { caipAddress: 'eip155:1:0x123' }
+        } as any
+      ],
+      [
+        'solana',
+        {
+          caipNetwork: {
+            id: 'mainnet',
+            name: 'Solana',
+            chainNamespace: 'solana',
+            caipNetworkId: 'solana:mainnet'
+          },
+          accountState: { caipAddress: 'solana:mainnet:0xabc' }
+        } as any
+      ]
+    ])
+    vi.spyOn(ConnectorController, 'getConnectorId').mockImplementation(ns => {
+      if (ns === 'eip155' || ns === 'solana') return 'mockConnector' as any
+      return undefined
+    })
+    vi.spyOn(ChainController, 'getAccountData').mockImplementation(ns => {
+      if (ns === 'eip155') return { caipAddress: 'eip155:1:0x123' } as any
+      if (ns === 'solana') return { caipAddress: 'solana:mainnet:0xabc' } as any
+      return undefined
+    })
+    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({ disconnect: vi.fn() } as any) // Generic mock for provider
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+    )
+  })
+
+  it('should properly handle disconnect of all connected chains', async () => {
+    const eip155Namespace = 'eip155' as ChainNamespace
+    const solanaNamespace = 'solana' as ChainNamespace
+
+    await (appKit as any).connectionControllerClient.disconnect()
+
+    // EVM assertions
+    expect(evmAdapterDisconnectSpy).toHaveBeenCalledTimes(2) // Called twice due to structure
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, eip155Namespace)
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, eip155Namespace)
+    expect(StorageUtil.removeConnectedNamespace).toHaveBeenCalledWith(eip155Namespace)
+    expect(ProviderUtil.resetChain).toHaveBeenCalledWith(eip155Namespace)
+    expect(setUserSpy).toHaveBeenCalledWith(undefined, eip155Namespace)
+    expect(setStatusSpy).toHaveBeenCalledWith('disconnected', eip155Namespace)
+    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(undefined, eip155Namespace)
+    expect(removeConnectorIdSpy).toHaveBeenCalledWith(eip155Namespace)
+    expect(resetAccountSpy).toHaveBeenCalledWith(eip155Namespace)
+    expect(resetNetworkSpy).toHaveBeenCalledWith(eip155Namespace)
+
+    // Solana assertions
+    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledTimes(2) // Called twice
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace)
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace)
+    expect(StorageUtil.removeConnectedNamespace).toHaveBeenCalledWith(solanaNamespace)
+    expect(ProviderUtil.resetChain).toHaveBeenCalledWith(solanaNamespace)
+    expect(setUserSpy).toHaveBeenCalledWith(undefined, solanaNamespace)
+    expect(setStatusSpy).toHaveBeenCalledWith('disconnected', solanaNamespace)
+    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(undefined, solanaNamespace)
+    expect(removeConnectorIdSpy).toHaveBeenCalledWith(solanaNamespace)
+    expect(resetAccountSpy).toHaveBeenCalledWith(solanaNamespace)
+    expect(resetNetworkSpy).toHaveBeenCalledWith(solanaNamespace)
+
+    // Global cleanup assertions
+    expect(ccResetWcConnectionSpy).toHaveBeenCalledOnce()
+    expect(siwxClearSessionsSpy).toHaveBeenCalledOnce()
+    expect(ccSetFilterByNamespaceSpy).toHaveBeenCalledWith(undefined)
+    expect(storageDeleteSocialSpy).toHaveBeenCalledOnce()
+
+    // Event assertion
+    expect(sendEventSpy).toHaveBeenCalledWith({
+      type: 'track',
+      event: 'DISCONNECT_SUCCESS',
+      properties: {
+        namespace: 'all'
+      }
+    })
+  })
+
+  // Placeholder for the error handling test from ChainController
+  it.todo('should handle disconnect errors gracefully when a chain operation fails')
+})
+
+describe('AppKit - disconnect - error handling scenarios', () => {
+  let appKit: AppKit
+  let setStatusSpy: MockInstance
+  let setUserSpy: MockInstance
+  let setConnectedWalletInfoSpy: MockInstance
+  let setLoadingSpy: MockInstance
+  let sendEventSpy: MockInstance
+  let resetAccountSpy: MockInstance
+  let resetNetworkSpy: MockInstance
+  let removeConnectorIdSpy: MockInstance
+  let siwxClearSessionsSpy: MockInstance
+  let ccSetFilterByNamespaceSpy: MockInstance
+  let storageDeleteSocialSpy: MockInstance
+  let ccResetWcConnectionSpy: MockInstance
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
+
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockProvider)
+
+    const localMockOptions = {
+      ...mockOptions,
+      adapters: [mockEvmAdapter, mockSolanaAdapter]
+    }
+    appKit = new AppKit(localMockOptions)
+
+    // Setup spies on AppKit instance methods
+    setStatusSpy = vi.spyOn(appKit, 'setStatus')
+    setUserSpy = vi.spyOn(appKit, 'setUser')
+    setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
+    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+
+    // Spies on controllers/utils
+    sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+    resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+    resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
+    removeConnectorIdSpy = vi.spyOn(ConnectorController, 'removeConnectorId')
+    siwxClearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
+    ccSetFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
+    storageDeleteSocialSpy = vi.spyOn(StorageUtil, 'deleteConnectedSocialProvider')
+    ccResetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
+    vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
+    vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
+
+    // Simulate two connected chains for getChainsToDisconnect (utility)
+    ChainController.state.chains = new Map([
+      [
+        'eip155',
+        {
+          caipNetwork: {
+            id: '1',
+            name: 'Ethereum',
+            chainNamespace: 'eip155',
+            caipNetworkId: 'eip155:1'
+          },
+          accountState: { caipAddress: 'eip155:1:0x123' }
+        } as any
+      ],
+      [
+        'solana',
+        {
+          caipNetwork: {
+            id: 'mainnet',
+            name: 'Solana',
+            chainNamespace: 'solana',
+            caipNetworkId: 'solana:mainnet'
+          },
+          accountState: { caipAddress: 'solana:mainnet:0xabc' }
+        } as any
+      ]
+    ])
+    vi.spyOn(ConnectorController, 'getConnectorId').mockImplementation(ns => {
+      if (ns === 'eip155' || ns === 'solana') return 'mockConnector' as any
+      return undefined
+    })
+    // Mock ChainController.getAccountData to control the caipAddress for the first conditional adapter.disconnect
+    vi.spyOn(ChainController, 'getAccountData').mockImplementation(ns => {
+      if (ns === 'eip155') return { caipAddress: 'eip155:1:0x123' } as any
+      if (ns === 'solana') return { caipAddress: 'solana:mainnet:0xabc' } as any
+      return undefined
+    })
+    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({ disconnect: vi.fn() } as any) // Generic mock for provider
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+    )
+  })
+
+  it('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
+    const eip155Namespace = 'eip155' as ChainNamespace
+    const solanaNamespace = 'solana' as ChainNamespace
+    const solanaAdapterError = new Error('Solana adapter failed') // Corrected error message for clarity
+
+    const mockEip155Provider = { disconnect: vi.fn().mockResolvedValue(undefined) }
+    const mockSolanaProvider = { disconnect: vi.fn() }
+
+    vi.spyOn(ProviderUtil, 'getProvider').mockImplementation(ns => {
+      if (ns === eip155Namespace) return mockEip155Provider
+      if (ns === solanaNamespace) return mockSolanaProvider
+      return { disconnect: vi.fn() }
+    })
+    // getProviderId is already mocked in beforeEach to return INJECTED
+
+    const eip155AdapterDisconnectSpy = vi
+      .spyOn(mockEvmAdapter, 'disconnect')
+      .mockResolvedValue(undefined)
+    const solanaAdapterDisconnectSpy = vi.spyOn(mockSolanaAdapter, 'disconnect')
+
+    // Simulate first conditional disconnect succeeding for solana, second (main) one failing
+    solanaAdapterDisconnectSpy.mockResolvedValueOnce(undefined) // For the conditional call
+    solanaAdapterDisconnectSpy.mockRejectedValueOnce(solanaAdapterError) // For the main call
+
+    await expect((appKit as any).connectionControllerClient.disconnect()).rejects.toThrow(
+      `Failed to disconnect chains: Failed to disconnect chain ${solanaNamespace}: ${solanaAdapterError.message}`
+    )
+
+    // --- Assertions for eip155 (successful disconnect) ---
+    expect(eip155AdapterDisconnectSpy).toHaveBeenCalledTimes(2)
+    expect(eip155AdapterDisconnectSpy).toHaveBeenCalledWith({
+      provider: mockEip155Provider,
+      providerType: UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
+    })
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, eip155Namespace)
+    expect(StorageUtil.removeConnectedNamespace).toHaveBeenCalledWith(eip155Namespace)
+    expect(ProviderUtil.resetChain).toHaveBeenCalledWith(eip155Namespace)
+    expect(setUserSpy).toHaveBeenCalledWith(undefined, eip155Namespace)
+    expect(setStatusSpy).toHaveBeenCalledWith('disconnected', eip155Namespace)
+    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(undefined, eip155Namespace)
+    expect(removeConnectorIdSpy).toHaveBeenCalledWith(eip155Namespace)
+    expect(resetAccountSpy).toHaveBeenCalledWith(eip155Namespace)
+    expect(resetNetworkSpy).toHaveBeenCalledWith(eip155Namespace)
+
+    // --- Assertions for solana (failed disconnect where main adapter.disconnect errors) ---
+    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledTimes(2) // Both conditional and main calls attempted
+    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledWith({
+      provider: mockSolanaProvider,
+      providerType: UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
+    })
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace) // setLoading(true) is before the failing adapter.disconnect
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace) // setLoading(false) IS called from the CATCH block for solana
+
+    // Verify overall loading calls:
+    // eip155: true, false (from end of try)
+    // solana: true, false (from catch)
+    // Total 4 calls to setLoading
+    expect(setLoadingSpy).toHaveBeenCalledTimes(4)
+    expect(setLoadingSpy).toHaveBeenNthCalledWith(1, true, eip155Namespace) // EIP155 start
+    // The order of async operations in Promise.allSettled isn't strictly guaranteed for the *second* setLoading(true,...)
+    // So we check for specific calls rather than Nth Celled for all.
+    // Let's find the call for EIP155 end:
+    const eip155SetLoadingFalseCall = setLoadingSpy.mock.calls.find(
+      call => call[0] === false && call[1] === eip155Namespace
+    )
+    expect(eip155SetLoadingFalseCall).toBeDefined()
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace) // Solana start
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace) // Solana end (from catch)
+
+    // --- Assertions for global cleanup (called after loop, before final throw if failures exist) ---
+    expect(ccResetWcConnectionSpy).toHaveBeenCalledOnce()
+    expect(siwxClearSessionsSpy).toHaveBeenCalledOnce()
+    expect(ccSetFilterByNamespaceSpy).toHaveBeenCalledWith(undefined)
+    expect(storageDeleteSocialSpy).not.toHaveBeenCalled()
+    expect(sendEventSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({ event: 'DISCONNECT_SUCCESS' })
+    )
   })
 })
