@@ -133,7 +133,7 @@
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
     "valtio": "1.13.2",
-    "viem": "2.29.0",
+    "viem": "2.30.1",
     "wagmi": "2.15.4",
     "webauthn-p256": "0.0.2",
     "@walletconnect/sign-client": "2.20.2"

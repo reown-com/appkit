@@ -94,7 +94,11 @@
       "@solana/web3.js": "1.98.0",
       "elliptic": ">=6.6.1",
       "axios": ">=1.8.2",
-      "ws": ">=7.5.10"
+      "ws": ">=7.5.10",
+      "viem": "2.30.1",
+      "@noble/hashes": "1.7.2",
+      "@noble/curves": "1.8.2",
+      "@noble/secp256k1": "1.7.1"
     },
     "patchedDependencies": {
       "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
@@ -104,13 +108,21 @@
     "@solana/web3.js": "1.98.0",
     "elliptic": ">=6.6.1",
     "axios": ">=1.8.2",
-    "ws": ">=7.5.10"
+    "ws": ">=7.5.10",
+    "viem": "2.30.1",
+    "@noble/hashes": "1.7.2",
+    "@noble/curves": "1.8.2",
+    "@noble/secp256k1": "1.7.1"
   },
   "resolutions": {
     "@solana/web3.js": "1.98.0",
     "elliptic": ">=6.6.1",
     "axios": ">=1.8.2",
-    "ws": ">=7.5.10"
+    "ws": ">=7.5.10",
+    "viem": "2.30.1",
+    "@noble/hashes": "1.7.2",
+    "@noble/curves": "1.8.2",
+    "@noble/secp256k1": "1.7.1"
   },
   "patchedDependencies": {
     "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
