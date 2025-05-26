@@ -198,11 +198,11 @@ jobs:
     needs: setup_and_build
     strategy:
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5, 6]
     uses: ./.github/workflows/unit_tests.yml
     secrets: inherit
     with:
-      totalShards: 4
+      totalShards: 6
       currentShard: ${{ matrix.shard }}
 
   ui-test:
