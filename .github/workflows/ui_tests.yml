@@ -299,6 +299,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           BASE_URL: ${{ inputs.demo-base-url }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           CI: true
         working-directory: ./apps/demo/
