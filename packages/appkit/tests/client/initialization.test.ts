@@ -28,6 +28,8 @@ import {
 
 describe('Base', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider as any)
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
