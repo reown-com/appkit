@@ -211,6 +211,12 @@ describe('State Management', () => {
     vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
     const universalProvider = {
       ...mockUniversalProvider,
+      session: {
+        peer: {
+          metadata: {
+            name: 'Test Provider'
+          }
+        },
         namespaces: {
           eip155: {
             accounts: []
