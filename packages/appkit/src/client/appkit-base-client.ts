@@ -472,8 +472,6 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async (chainNamespace?: ChainNamespace) => {
-        /////N
-
         const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
 
         try {
