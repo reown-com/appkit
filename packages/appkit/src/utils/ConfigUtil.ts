@@ -231,9 +231,23 @@ export const ConfigUtil = {
       ? ConstantsUtil.DEFAULT_REMOTE_FEATURES
       : ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
 
-    for (const featureKey of featureKeys) {
-      const result = this.processFeature(featureKey, localFeatures, apiProjectConfig, useApiConfig)
-      Object.assign(remoteFeaturesConfig, { [featureKey]: result })
+    try {
+      for (const featureKey of featureKeys) {
+        const result = this.processFeature(
+          featureKey,
+          localFeatures,
+          apiProjectConfig,
+          useApiConfig
+        )
+        Object.assign(remoteFeaturesConfig, { [featureKey]: result })
+      }
+    } catch (e) {
+      console.warn(
+        '[Reown Config] Failed to process the configuration from Cloud. Using default values.',
+        e
+      )
+
+      return ConstantsUtil.DEFAULT_REMOTE_FEATURES
     }
 
     if (useApiConfig && this.localSettingsOverridden.size > 0) {
