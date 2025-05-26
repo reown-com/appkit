@@ -49,7 +49,6 @@ describe('AppKit - disconnect', () => {
 
     // Mock common dependencies
     vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
-    vi.spyOn(ChainController, 'disconnect').mockResolvedValue(undefined)
     vi.spyOn(ConnectorController, 'setFilterByNamespace').mockImplementation(() => {})
     vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
     vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
@@ -363,7 +362,6 @@ describe('AppKit - disconnect', () => {
       // Reset mocks
       vi.clearAllMocks()
       vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
-      vi.spyOn(ChainController, 'disconnect').mockResolvedValue(undefined)
       vi.spyOn(ConnectorController, 'setFilterByNamespace').mockImplementation(() => {})
       vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
       vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
