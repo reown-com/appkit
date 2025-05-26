@@ -243,7 +243,7 @@ export const ConfigUtil = {
       }
     } catch (e) {
       console.warn(
-        '[Reown Config] Failed to process the configuration from Cloud. Using local/default values.',
+        '[Reown Config] Failed to process the configuration from Cloud. Using default values.',
         e
       )
 

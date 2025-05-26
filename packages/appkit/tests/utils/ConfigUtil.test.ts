@@ -300,7 +300,7 @@ describe('ConfigUtil', () => {
       expect(features.swaps).toEqual(['1inch'])
     })
 
-    it('should use local/default config when configuration processing throws an error', async () => {
+    it('should use default config when configuration processing throws an error', async () => {
       const malformedApiResponse = [
         { id: 'social_login', isEnabled: true, config: 'invalid_config' }
       ] as unknown as TypedFeatureConfig[]
