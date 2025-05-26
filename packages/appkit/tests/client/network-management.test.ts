@@ -54,7 +54,8 @@ describe('Network Management', () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       activeCaipNetwork: mainnet,
-      activeChain: 'eip155'
+      activeChain: 'eip155',
+      noAdapters: false
     })
   })
 
