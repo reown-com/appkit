@@ -212,6 +212,8 @@ jobs:
         with:
           node-version: 22.x
           cache: 'pnpm'
+        env:
+          NODE_OPTIONS: '--max-old-space-size=8192'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
