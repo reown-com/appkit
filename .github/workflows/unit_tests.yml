@@ -28,6 +28,21 @@ jobs:
           node-version: 22.x
           cache: 'pnpm'
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/*
+
       - name: install
         run: pnpm install
 
@@ -35,3 +50,7 @@ jobs:
         run: |
           echo "Running Vitest shard ${{ inputs.currentShard }}/ ${{ inputs.totalShards }}"
           pnpm vitest --shard=${{ inputs.currentShard }}/${{ inputs.totalShards }} --coverage.enabled
+
+      - name: Report
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
