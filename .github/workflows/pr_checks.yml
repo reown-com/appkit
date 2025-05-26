@@ -193,50 +193,17 @@ jobs:
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
-  test:
+  unit-tests:
     if: github.event_name != 'push'
     needs: setup_and_build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-
-      - name: setup-node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: 'pnpm'
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-
-      - name: Download node_modules
-        uses: actions/download-artifact@v4
-        with:
-          name: node-modules
-          path: node_modules
-
-      # Restore executable permissions for binaries
-      - name: Fix permissions
-        run: chmod +x node_modules/*/bin/*
-
-      - name: install
-        run: pnpm install
-
-      - name: Test
-        run: pnpm test:ci
-
-      - name: Report
-        if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+    uses: ./.github/workflows/unit_tests.yml
+    secrets: inherit
+    with:
+      totalShards: 4
+      currentShard: ${{ matrix.shard }}
 
   ui-test:
     if: github.event.pull_request.draft == false
