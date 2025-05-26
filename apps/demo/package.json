@@ -38,7 +38,7 @@
     "@reown/appkit-common": "1.7.6",
     "@reown/appkit-controllers": "1.7.6",
     "@reown/appkit-scaffold-ui": "1.7.6",
-    "@reown/appkit-ui": "1.7.6",s
+    "@reown/appkit-ui": "1.7.6",
     "@sentry/core": "8.55.0",
     "@sentry/nextjs": "8.55.0",
     "@solana/wallet-adapter-wallets": "0.19.36",
