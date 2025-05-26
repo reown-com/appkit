@@ -51,6 +51,6 @@ jobs:
           echo "Running Vitest shard ${{ inputs.currentShard }}/ ${{ inputs.totalShards }}"
           pnpm vitest --shard=${{ inputs.currentShard }}/${{ inputs.totalShards }} --coverage.enabled
 
-      - name: Report
-        if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
+      # - name: Report
+      #   if: always()
+      #   uses: davelosert/vitest-coverage-report-action@v2
