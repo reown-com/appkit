@@ -28,7 +28,6 @@ const config = {
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
     email: false,
     legalCheckbox: true,
     socials: []

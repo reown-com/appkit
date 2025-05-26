@@ -52,8 +52,8 @@ describe('W3mAccountDefaultWidget', () => {
       })
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        features: {
-          history: true
+        remoteFeatures: {
+          activity: true
         }
       })
 
@@ -71,8 +71,8 @@ describe('W3mAccountDefaultWidget', () => {
       })
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        features: {
-          history: false
+        remoteFeatures: {
+          activity: false
         }
       })
 
@@ -103,9 +103,11 @@ describe('W3mAccountDefaultWidget', () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
-            onramp: true,
-            swaps: true,
             send: true
+          },
+          remoteFeatures: {
+            onramp: ['coinbase'],
+            swaps: ['1inch']
           }
         })
 
@@ -126,9 +128,11 @@ describe('W3mAccountDefaultWidget', () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
-            onramp: false,
-            swaps: true,
             send: true
+          },
+          remoteFeatures: {
+            onramp: false,
+            swaps: ['1inch']
           }
         })
 
@@ -149,9 +153,11 @@ describe('W3mAccountDefaultWidget', () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
-            onramp: true,
-            swaps: false,
             send: true
+          },
+          remoteFeatures: {
+            onramp: ['coinbase'],
+            swaps: false
           }
         })
 
@@ -172,9 +178,11 @@ describe('W3mAccountDefaultWidget', () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
-            onramp: true,
-            swaps: true,
             send: false
+          },
+          remoteFeatures: {
+            onramp: ['coinbase'],
+            swaps: ['1inch']
           }
         })
 
@@ -204,9 +212,11 @@ describe('W3mAccountDefaultWidget', () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
-            onramp: true,
-            swaps: true,
             send: true
+          },
+          remoteFeatures: {
+            onramp: ['coinbase'],
+            swaps: ['1inch']
           }
         })
 
@@ -227,9 +237,11 @@ describe('W3mAccountDefaultWidget', () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
-            onramp: false,
-            swaps: true,
             send: true
+          },
+          remoteFeatures: {
+            onramp: false,
+            swaps: ['1inch']
           }
         })
 
@@ -250,9 +262,11 @@ describe('W3mAccountDefaultWidget', () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
-            onramp: true,
-            swaps: true,
             send: false
+          },
+          remoteFeatures: {
+            onramp: ['coinbase'],
+            swaps: ['1inch']
           }
         })
 
