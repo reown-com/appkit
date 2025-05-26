@@ -485,14 +485,12 @@ export abstract class AppKitBaseClient {
                 const providerType = ProviderUtil.getProviderId(ns)
                 const { caipAddress } = ChainController.getAccountData(ns) || {}
 
+                this.setLoading(true, ns)
                 if (caipAddress && adapter?.disconnect) {
                   await adapter.disconnect({ provider, providerType })
                 }
 
-                this.setLoading(true, ns)
-
                 await adapter?.disconnect({ provider, providerType })
-                this.setLoading(false, ns)
 
                 StorageUtil.removeConnectedNamespace(ns)
                 ProviderUtil.resetChain(ns)
@@ -504,8 +502,11 @@ export abstract class AppKitBaseClient {
 
                 ChainController.resetAccount(ns)
                 ChainController.resetNetwork(ns)
+                this.setLoading(false, ns)
               } catch (error) {
                 throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
+              } finally {
+                this.setLoading(false, ns)
               }
             })
           )
