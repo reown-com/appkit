@@ -186,12 +186,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: false,
-          socials: false as const
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: false,
+        socials: false
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -205,12 +206,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: true,
-          socials: false as const
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: true,
+        socials: false
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -224,12 +226,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: false,
-          socials: [] as SocialProvider[]
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: false,
+        socials: []
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -243,12 +246,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: true,
-          socials: ['facebook'] as SocialProvider[]
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: true,
+        socials: ['facebook'] as SocialProvider[]
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -264,12 +268,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: false,
-          socials: ['x'] as SocialProvider[]
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: false,
+        socials: ['x']
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -285,12 +290,14 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: true,
-          socials: ['google'] as SocialProvider[]
-        },
+
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: true,
+        socials: ['google'] as SocialProvider[]
       }
 
       adapter.syncConnectors(options, mockAppKit)

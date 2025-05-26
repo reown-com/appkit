@@ -26,6 +26,7 @@ import type {
   NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
+  RemoteFeatures,
   RouterControllerState,
   SIWXConfig,
   SendTransactionArgs,
@@ -50,6 +51,7 @@ import {
   EnsController,
   EventsController,
   ModalController,
+  OnRampController,
   OptionsController,
   PublicStateController,
   RouterController,
@@ -72,6 +74,7 @@ import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
+import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
@@ -118,8 +121,11 @@ export abstract class AppKitBaseClient {
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
+  public remoteFeatures: RemoteFeatures = {}
   public version: SdkVersion | AppKitSdkVersion
   public reportedAlertErrors: Record<string, boolean> = {}
+
+  private readyPromise?: Promise<void>
 
   constructor(options: AppKitOptionsWithSdk) {
     this.options = options
@@ -131,7 +137,7 @@ export abstract class AppKitBaseClient {
     )
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
-    this.initialize(options)
+    this.readyPromise = this.initialize(options)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -149,19 +155,21 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
+    this.initializeProjectSettings(options)
     this.initControllers(options)
     await this.initChainAdapters()
-    await this.injectModalUi()
-
     this.sendInitializeEvent(options)
-    PublicStateController.set({ initialized: true })
-
     await this.syncExistingConnection()
+    this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    OptionsController.setRemoteFeatures(this.remoteFeatures)
+    if (this.remoteFeatures.onramp) {
+      OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
+    }
     // Check allowed origins only if email or social features are enabled
     if (
-      OptionsController.state.features?.email ||
-      (Array.isArray(OptionsController.state.features?.socials) &&
-        OptionsController.state.features?.socials.length > 0)
+      OptionsController.state.remoteFeatures?.email ||
+      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
+        OptionsController.state.remoteFeatures?.socials.length > 0)
     ) {
       await this.checkAllowedOrigins()
     }
@@ -242,6 +250,11 @@ export abstract class AppKitBaseClient {
     ConnectorController.initialize(this.chainNamespaces)
   }
 
+  protected initializeProjectSettings(options: AppKitOptionsWithSdk) {
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setSdkVersion(options.sdkVersion)
+  }
+
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
     OptionsController.setDebug(options.debug !== false)
 
@@ -254,8 +267,7 @@ export abstract class AppKitBaseClient {
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
-    OptionsController.setSdkVersion(options.sdkVersion)
-    OptionsController.setProjectId(options.projectId)
+
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
@@ -1194,6 +1206,10 @@ export abstract class AppKitBaseClient {
     await this.updateNativeBalance(params.address, params.chainId, params.chainNamespace)
   }
 
+  public async ready() {
+    await this.readyPromise
+  }
+
   public async updateNativeBalance(
     address: string,
     chainId: string | number,
@@ -1866,6 +1882,10 @@ export abstract class AppKitBaseClient {
 
   public updateFeatures(newFeatures: Partial<Features>) {
     OptionsController.setFeatures(newFeatures)
+  }
+
+  public updateRemoteFeatures(newRemoteFeatures: Partial<RemoteFeatures>) {
+    OptionsController.setRemoteFeatures(newRemoteFeatures)
   }
 
   public updateOptions(newOptions: Partial<OptionsControllerState>) {

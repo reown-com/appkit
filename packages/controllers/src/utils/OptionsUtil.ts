@@ -1,6 +1,6 @@
 import { ConstantsUtil } from './ConstantsUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
-import type { Features, FeaturesKeys } from './TypeUtil.js'
+import type { Features, FeaturesKeys, RemoteFeatures } from './TypeUtil.js'
 
 export const OptionsUtil = {
   getFeatureValue(key: FeaturesKeys, features?: Features) {
@@ -12,7 +12,7 @@ export const OptionsUtil = {
 
     return optionValue as Features[typeof key]
   },
-  filterSocialsByPlatform<T>(socials: Features['socials']) {
+  filterSocialsByPlatform<T>(socials: RemoteFeatures['socials']) {
     if (!socials || !socials.length) {
       return socials as T
     }

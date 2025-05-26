@@ -32,7 +32,7 @@ export class W3mSocialLoginList extends LitElement {
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
-  @state() private features = OptionsController.state.features
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   @state() private isPwaLoading = false
 
@@ -43,7 +43,7 @@ export class W3mSocialLoginList extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('features', val => (this.features = val))
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )
   }
 
@@ -58,7 +58,7 @@ export class W3mSocialLoginList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let socials = this.features?.socials || []
+    let socials = this.remoteFeatures?.socials || []
     const isAuthConnectorExist = Boolean(this.authConnector)
     const isSocialsEnabled = socials?.length
     const isConnectSocialsView = RouterController.state.view === 'ConnectSocials'
@@ -68,7 +68,7 @@ export class W3mSocialLoginList extends LitElement {
     }
 
     if (isConnectSocialsView && !isSocialsEnabled) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+      socials = ConstantsUtil.DEFAULT_SOCIALS
     }
 
     return html` <wui-flex flexDirection="column" gap="xs">
