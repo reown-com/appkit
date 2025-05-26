@@ -1,3 +1,6 @@
 export * from './solana.js'
 export * from './solanaDevnet.js'
 export * from './solanaTestnet.js'
+export * from './eclipse.js'
+export * from './eclipseDevnet.js'
+export * from './eclipseTestnet.js'
