@@ -1,3 +1,4 @@
+import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
@@ -14,6 +15,7 @@ import { ProviderUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
 import { mockOptions } from '../mocks/Options.js'
+import mockProvider from '../mocks/UniversalProvider.js'
 import {
   mockBlockchainApiController,
   mockStorageUtil,
@@ -32,6 +34,8 @@ describe('AppKit - disconnect', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockProvider)
 
     appKit = new AppKit(mockOptions)
 
