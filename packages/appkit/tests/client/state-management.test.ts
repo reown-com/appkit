@@ -227,7 +227,6 @@ describe('State Management', () => {
     vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(universalProvider)
     vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue('WALLET_CONNECT')
 
-    console.log('>> syncWalletConnectAccount')
     const appKit = new AppKit({
       ...mockOptions,
       adapters: [],
