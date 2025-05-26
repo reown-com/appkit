@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import type { BrowserContext, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 

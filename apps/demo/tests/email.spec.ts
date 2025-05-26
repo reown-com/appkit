@@ -4,7 +4,7 @@ import { DemoPage } from './pages/DemoPage'
 import { Email } from './utils/email'
 import { ModalValidator } from './validators'
 
-// eslint-disable-next-line init-declarations
+/* eslint-disable init-declarations */
 let demoPage: DemoPage
 let email: Email
 let tempEmail: string
