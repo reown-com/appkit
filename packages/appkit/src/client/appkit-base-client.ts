@@ -56,10 +56,12 @@ import {
   PublicStateController,
   RouterController,
   SIWXUtil,
+  SendController,
   SnackController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import { getChainsToDisconnect } from '@reown/appkit-controllers/utils'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -470,24 +472,72 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async (chainNamespace?: ChainNamespace) => {
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-        const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider(namespace)
-        const providerType = ProviderUtil.getProviderId(namespace)
+        /////N
 
-        this.setLoading(true, namespace)
-        await SIWXUtil.clearSessions()
-        await ChainController.disconnect(namespace)
-        ConnectorController.setFilterByNamespace(undefined)
+        const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
 
-        await adapter?.disconnect({ provider, providerType })
-        this.setLoading(false, namespace)
+        try {
+          // Reset send state when disconnecting
+          SendController.resetSend()
+          const disconnectResults = await Promise.allSettled(
+            chainsToDisconnect.map(async ([ns]) => {
+              const adapter = this.getAdapter(ns)
+              const provider = ProviderUtil.getProvider(ns)
+              const providerType = ProviderUtil.getProviderId(ns)
 
-        StorageUtil.removeConnectedNamespace(namespace)
-        ProviderUtil.resetChain(namespace)
-        this.setUser(undefined, namespace)
-        this.setStatus('disconnected', namespace)
-        this.setConnectedWalletInfo(undefined, namespace)
+              this.setLoading(true, ns)
+              await SIWXUtil.clearSessions()
+              ConnectorController.setFilterByNamespace(undefined)
+
+              await adapter?.disconnect({ provider, providerType })
+              this.setLoading(false, ns)
+
+              StorageUtil.removeConnectedNamespace(ns)
+              ProviderUtil.resetChain(ns)
+              this.setUser(undefined, ns)
+              this.setStatus('disconnected', ns)
+              this.setConnectedWalletInfo(undefined, ns)
+              try {
+                const { caipAddress } = ChainController.getAccountData(ns) || {}
+
+                if (caipAddress && adapter?.disconnect) {
+                  await adapter.disconnect({ provider, providerType })
+                }
+
+                ChainController.resetAccount(ns)
+                ChainController.resetNetwork(ns)
+              } catch (error) {
+                throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
+              }
+            })
+          )
+
+          ConnectionController.resetWcConnection()
+
+          const failures = disconnectResults.filter(
+            (result): result is PromiseRejectedResult => result.status === 'rejected'
+          )
+
+          if (failures.length > 0) {
+            throw new Error(failures.map(f => f.reason.message).join(', '))
+          }
+
+          StorageUtil.deleteConnectedSocialProvider()
+          if (chainNamespace) {
+            ConnectorController.removeConnectorId(chainNamespace)
+          } else {
+            ConnectorController.resetConnectorIds()
+          }
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'DISCONNECT_SUCCESS',
+            properties: {
+              namespace: chainNamespace || 'all'
+            }
+          })
+        } catch (error) {
+          throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
+        }
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {

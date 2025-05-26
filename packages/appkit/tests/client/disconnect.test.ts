@@ -81,12 +81,16 @@ describe('AppKit - disconnect', () => {
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
 
+      const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+      const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
+
       await (appKit as any).connectionControllerClient.disconnect(chainNamespace)
 
       // Verify operations are called in correct order
       expect(setLoadingSpy).toHaveBeenCalledWith(true, chainNamespace)
       expect(SIWXUtil.clearSessions).toHaveBeenCalled()
-      expect(ChainController.disconnect).toHaveBeenCalledWith(chainNamespace)
+      expect(resetAccountSpy).toHaveBeenCalledWith(chainNamespace)
+      expect(resetNetworkSpy).toHaveBeenCalledWith(chainNamespace)
       expect(setLoadingSpy).toHaveBeenCalledWith(false, chainNamespace)
       expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(undefined)
       expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
@@ -113,11 +117,17 @@ describe('AppKit - disconnect', () => {
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
 
+      const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+      const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
+
       await (appKit as any).connectionControllerClient.disconnect()
 
+      // Verify that for the active chain, reset functions are called
+      // ProviderUtil calls are likely still relevant to ensure the adapter for the active chain was considered
       expect(ProviderUtil.getProvider).toHaveBeenCalledWith('eip155')
       expect(ProviderUtil.getProviderId).toHaveBeenCalledWith('eip155')
-      expect(ChainController.disconnect).toHaveBeenCalledWith('eip155')
+      expect(resetAccountSpy).toHaveBeenCalledWith('eip155')
+      expect(resetNetworkSpy).toHaveBeenCalledWith('eip155')
     })
 
     it('should complete disconnect process with default namespace', async () => {
@@ -167,7 +177,7 @@ describe('AppKit - disconnect', () => {
         await (appKit as any).connectionControllerClient.disconnect(chainNamespace)
       } catch (e) {
         // Expected to throw
-        expect(e).toBe(error)
+        expect(e).toEqual(new Error('Failed to disconnect chains: Test error'))
       }
 
       expect(setLoadingSpy).toHaveBeenCalledWith(true, chainNamespace)
@@ -220,7 +230,8 @@ describe('AppKit - disconnect', () => {
       ['solana' as ChainNamespace, mockSolanaAdapter]
     ])('should handle disconnect for %s namespace', async (namespace, adapter) => {
       const mockProvider = { disconnect: vi.fn() }
-
+      const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+      const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
       vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
@@ -228,7 +239,8 @@ describe('AppKit - disconnect', () => {
 
       await (appKit as any).connectionControllerClient.disconnect(namespace)
 
-      expect(ChainController.disconnect).toHaveBeenCalledWith(namespace)
+      expect(resetAccountSpy).toHaveBeenCalledWith(namespace)
+      expect(resetNetworkSpy).toHaveBeenCalledWith(namespace)
       expect(StorageUtil.removeConnectedNamespace).toHaveBeenCalledWith(namespace)
       expect(setStatusSpy).toHaveBeenCalledWith('disconnected', namespace)
       expect(adapter.disconnect).toHaveBeenCalledWith({
@@ -252,10 +264,14 @@ describe('AppKit - disconnect', () => {
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
 
+      const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+      const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
+
       await (appKit as any).connectionControllerClient.disconnect(targetNamespace)
 
       // Verify only the target namespace was disconnected
-      expect(ChainController.disconnect).toHaveBeenCalledWith(targetNamespace)
+      expect(resetAccountSpy).toHaveBeenCalledWith(targetNamespace)
+      expect(resetNetworkSpy).toHaveBeenCalledWith(targetNamespace)
       expect(StorageUtil.removeConnectedNamespace).toHaveBeenCalledWith(targetNamespace)
       expect(ProviderUtil.resetChain).toHaveBeenCalledWith(targetNamespace)
       expect(setStatusSpy).toHaveBeenCalledWith('disconnected', targetNamespace)
