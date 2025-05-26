@@ -161,7 +161,7 @@ export const ApiController = {
       params: ApiController._getSdkProperties()
     })
 
-    return response
+    return response.features
   },
 
   async fetchAllowedOrigins() {

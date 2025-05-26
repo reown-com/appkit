@@ -1315,7 +1315,9 @@ export type TypedFeatureConfig =
   | BaseFeature<'social_login', (SocialProvider | 'email')[]>
   | BaseFeature<'reown_branding', null | []>
 
-export type ApiGetProjectConfigResponse = TypedFeatureConfig[]
+export type ApiGetProjectConfigResponse = {
+  features: TypedFeatureConfig[]
+}
 
 export type FeatureConfigMap = {
   email: {
