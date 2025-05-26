@@ -8,9 +8,7 @@ createAppKit({
   networks,
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: true
-  },
+
   metadata: {
     name: 'AppKit Nuxt Wagmi Example',
     description: 'AppKit Nuxt Wagmi Example',

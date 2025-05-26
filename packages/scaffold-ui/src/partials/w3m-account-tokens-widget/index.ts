@@ -6,6 +6,7 @@ import {
   AccountController,
   ChainController,
   EventsController,
+  OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -26,12 +27,17 @@ export class W3mAccountTokensWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private tokenBalance = AccountController.state.tokenBalance
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
           this.tokenBalance = val.tokenBalance
+        }),
+        OptionsController.subscribeKey('remoteFeatures', val => {
+          this.remoteFeatures = val
         })
       ]
     )
@@ -55,17 +61,8 @@ export class W3mAccountTokensWidget extends LitElement {
     }
 
     return html` <wui-flex flexDirection="column" gap="xs"
-      ><wui-list-description
-        @click=${this.onBuyClick.bind(this)}
-        text="Buy Crypto"
-        description="Easy with card or bank account"
-        icon="card"
-        iconColor="success-100"
-        iconBackgroundColor="success-100"
-        tag="popular"
-        data-testid="buy-crypto"
-      ></wui-list-description
-      ><wui-list-description
+      >${this.onRampTemplate()}
+      <wui-list-description
         @click=${this.onReceiveClick.bind(this)}
         text="Receive funds"
         description="Transfer tokens on your wallet"
@@ -75,6 +72,23 @@ export class W3mAccountTokensWidget extends LitElement {
         data-testid="receive-funds"
       ></wui-list-description
     ></wui-flex>`
+  }
+
+  private onRampTemplate() {
+    if (this.remoteFeatures?.onramp) {
+      return html`<wui-list-description
+        @click=${this.onBuyClick.bind(this)}
+        text="Buy Crypto"
+        description="Easy with card or bank account"
+        icon="card"
+        iconColor="success-100"
+        iconBackgroundColor="success-100"
+        tag="popular"
+        data-testid="buy-crypto"
+      ></wui-list-description>`
+    }
+
+    return html``
   }
 
   private tokenItemTemplate() {

@@ -149,6 +149,46 @@ describe('OnRampController', () => {
     expect(OnRampController.state.quotesLoading).toEqual(false)
   })
 
+  it('should set providers if valid names are provided', () => {
+    const validProviderNames = ['coinbase', 'moonpay']
+    const expectedProviders = ONRAMP_PROVIDERS.filter(p => validProviderNames.includes(p.name))
+    OnRampController.setOnrampProviders(validProviderNames as any)
+    expect(OnRampController.state.providers).toEqual(expectedProviders)
+  })
+
+  it('should filter out invalid provider names', () => {
+    const mixedProviderNames = ['coinbase', 'invalidProvider', 'moonpay']
+    const expectedProviders = ONRAMP_PROVIDERS.filter(p => ['coinbase', 'moonpay'].includes(p.name))
+    OnRampController.setOnrampProviders(mixedProviderNames as any)
+    expect(OnRampController.state.providers).toEqual(expectedProviders)
+  })
+
+  it('should set an empty array if no valid provider names are provided', () => {
+    const invalidProviderNames = ['invalid1', 'invalid2']
+    OnRampController.setOnrampProviders(invalidProviderNames as any)
+    expect(OnRampController.state.providers).toEqual([])
+  })
+
+  it('should set an empty array if an empty array is provided', () => {
+    OnRampController.setOnrampProviders([])
+    expect(OnRampController.state.providers).toEqual([])
+  })
+
+  it('should set an empty array if the input is not an array of strings', () => {
+    OnRampController.setOnrampProviders(null as any)
+    expect(OnRampController.state.providers).toEqual([])
+
+    OnRampController.resetState()
+
+    OnRampController.setOnrampProviders({ provider: 'coinbase' } as any)
+    expect(OnRampController.state.providers).toEqual([])
+
+    OnRampController.resetState()
+
+    OnRampController.setOnrampProviders(['coinbase', 123] as any)
+    expect(OnRampController.state.providers).toEqual([])
+  })
+
   it('should properly configure meld url', () => {
     AccountController.state.address = '0x123'
     OptionsController.state.projectId = 'test'

@@ -17,7 +17,8 @@ import {
   EventsController,
   type Features,
   type Metadata,
-  PublicStateController
+  PublicStateController,
+  type RemoteFeatures
 } from '@reown/appkit-controllers'
 import {
   AccountController,
@@ -330,14 +331,10 @@ export class AppKit extends AppKitBaseClient {
       return
     }
 
-    const isEmailEnabled =
-      this.options?.features?.email === undefined
-        ? CoreConstantsUtil.DEFAULT_FEATURES.email
-        : this.options?.features?.email
+    const isEmailEnabled = this.remoteFeatures?.email
 
-    const isSocialsEnabled = this.options?.features?.socials
-      ? this.options?.features?.socials?.length > 0
-      : (this.options?.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
+    const isSocialsEnabled =
+      Array.isArray(this.remoteFeatures?.socials) && this.remoteFeatures.socials.length > 0
 
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
 
@@ -465,11 +462,15 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  protected override async initChainAdapter(namespace: ChainNamespace): Promise<void> {
-    await super.initChainAdapter(namespace)
-    this.createAuthProviderForAdapter(namespace)
+  protected override async initialize(options: AppKitOptionsWithSdk) {
+    await super.initialize(options)
+    this.chainNamespaces?.forEach(namespace => {
+      this.createAuthProviderForAdapter(namespace)
+      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    })
+    await this.injectModalUi()
+    PublicStateController.set({ initialized: true })
   }
-
   public override async syncIdentity({
     address,
     chainId,
@@ -528,9 +529,10 @@ export class AppKit extends AppKitBaseClient {
     if (!isInitialized) {
       try {
         const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
+        const remoteFeatures = this.remoteFeatures
 
         // Use a factory function that will be properly tree-shaken in SSR builds
-        await this.loadModalComponents(features)
+        await this.loadModalComponents(features, remoteFeatures)
 
         // Always check again in case environment changed during async operations
         if (CoreHelperUtil.isClient()) {
@@ -552,7 +554,7 @@ export class AppKit extends AppKitBaseClient {
   }
 
   // This separate method helps with tree-shaking for SSR builds
-  private async loadModalComponents(features: Features) {
+  private async loadModalComponents(features: Features, remoteFeatures: RemoteFeatures) {
     // Early explicit check forces bundlers to exclude this code in SSR builds
     if (!CoreHelperUtil.isClient()) {
       return
@@ -561,19 +563,20 @@ export class AppKit extends AppKitBaseClient {
     const featureImportPromises = []
 
     // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-    const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
+    const usingEmbeddedWallet =
+      remoteFeatures.email || (remoteFeatures.socials && remoteFeatures.socials.length > 0)
     if (usingEmbeddedWallet) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))
     }
 
-    if (features.email) {
+    if (remoteFeatures.email) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/email'))
     }
-    if (features.socials) {
+    if (remoteFeatures.socials) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/socials'))
     }
 
-    if (features.swaps) {
+    if (remoteFeatures.swaps && remoteFeatures.swaps.length > 0) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/swaps'))
     }
 
@@ -585,11 +588,11 @@ export class AppKit extends AppKitBaseClient {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
     }
 
-    if (features.onramp) {
+    if (remoteFeatures.onramp && remoteFeatures.onramp.length > 0) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
     }
 
-    if (features.history) {
+    if (remoteFeatures.activity) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
     }
 

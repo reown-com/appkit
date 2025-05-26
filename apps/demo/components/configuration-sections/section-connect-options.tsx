@@ -52,7 +52,8 @@ const NetworkList = dynamic(
 )
 
 export function SectionConnectOptions() {
-  const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
+  const { config, updateFeatures, updateRemoteFeatures, updateSocials, updateEnableWallets } =
+    useAppKitContext()
   const shouldCollapseWallets = config.features.collapseWallets
   const connectMethodsOrder = config.features.connectMethodsOrder
 
@@ -72,10 +73,10 @@ export function SectionConnectOptions() {
   function handleToggleOption(name: string) {
     switch (name) {
       case 'email':
-        updateFeatures({ email: !config.features.email })
+        updateRemoteFeatures({ email: !config.remoteFeatures.email })
         break
       case 'social':
-        updateSocials(!config.features.socials)
+        updateSocials(!config.remoteFeatures.socials)
         break
       case 'wallet':
         updateEnableWallets(!config.enableWallets)
