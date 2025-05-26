@@ -49,8 +49,21 @@ jobs:
       - name: run vitest shard
         run: |
           echo "Running Vitest shard ${{ inputs.currentShard }}/ ${{ inputs.totalShards }}"
-          pnpm vitest --shard=${{ inputs.currentShard }}/${{ inputs.totalShards }} --coverage.enabled
+          pnpm vitest run \
+            --shard=${{ inputs.currentShard }}/${{ inputs.totalShards }} \
+            --coverage.enabled \
+            --coverage.reporter=json \
+            --coverage.reporter=json-summary \
+            --coverage.reportsDirectory=coverage
 
-      # - name: Report
-      #   if: always()
-      #   uses: davelosert/vitest-coverage-report-action@v2
+      - name: Merge coverage reports
+        if: always()
+        run: |
+          npx vitest-merge --dir ./coverage --out ./coverage/coverage-summary.json
+
+      - name: Report Coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          jsonSummaryPath: coverage/coverage-summary.json
+          jsonFinalPath: coverage/coverage-final.json
