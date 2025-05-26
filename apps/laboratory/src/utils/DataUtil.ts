@@ -183,6 +183,12 @@ export const testingSdkOptions: SdkOption[] = [
     description:
       'All features enabled, with sample wallet links, and randomly using ethers or wagmi',
     randomLinks: ['/library/wagmi-all-internal', '/library/ethers-all-internal']
+  },
+  {
+    title: 'Demo w/ Universal Links',
+    link: '/library/universal-links',
+    description:
+      'All features enabled, and using universal links over deep links for mobile wallets'
   }
 ]
 
@@ -236,5 +242,13 @@ export const paySdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/library/pay-default',
     description: 'AppKit Pay with default configuration'
+  }
+]
+
+export const customSdkOptions: SdkOption[] = [
+  {
+    title: 'Exclude Wallet IDs',
+    link: '/flag/exclude-wallet-ids',
+    description: 'AppKit configuration with excluded wallet IDs enabled for Backpack'
   }
 ]

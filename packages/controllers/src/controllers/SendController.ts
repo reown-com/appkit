@@ -226,10 +226,7 @@ const controller = {
   },
 
   async sendNativeToken(params: TxParams) {
-    RouterController.pushTransactionStack({
-      view: null,
-      goBack: false
-    })
+    RouterController.pushTransactionStack({})
 
     const to = params.receiverAddress as `0x${string}`
     const address = AccountController.state.address as `0x${string}`
@@ -266,8 +263,9 @@ const controller = {
 
   async sendERC20Token(params: ContractWriteParams) {
     RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
+      onSuccess() {
+        RouterController.replace('Account')
+      }
     })
 
     const amount = ConnectionController.parseUnits(
@@ -304,8 +302,9 @@ const controller = {
     }
 
     RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false
+      onSuccess() {
+        RouterController.replace('Account')
+      }
     })
 
     await ConnectionController.sendTransaction({

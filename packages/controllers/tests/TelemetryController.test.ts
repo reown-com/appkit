@@ -6,6 +6,9 @@ import { TelemetryController } from '../src/controllers/TelemetryController.js'
 // Mock dependencies
 vi.mock('../src/utils/CoreHelperUtil', () => ({
   CoreHelperUtil: {
+    getApiUrl: vi.fn(() => 'https://test-api.com'),
+    getBlockchainApiUrl: vi.fn(() => 'https://test-blockchain-api.com'),
+    getStagingApiUrl: vi.fn(() => 'https://test-staging-api.com'),
     getAnalyticsUrl: vi.fn(() => 'https://test-analytics.com'),
     getUUID: vi.fn(() => 'test-uuid')
   }

@@ -5,6 +5,7 @@ import type {
   AdapterNetworkState,
   AuthConnector,
   Connector,
+  ConnectorType,
   SIWXConfig,
   SocialProvider
 } from '@reown/appkit'
@@ -35,7 +36,7 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -46,6 +47,7 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
+  mockRemoteFeatures,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -55,6 +57,7 @@ describe('Base Public methods', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    mockRemoteFeatures()
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue(['http://localhost:3000'])
   })
 
@@ -123,6 +126,7 @@ describe('Base Public methods', () => {
     const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
 
     const appKit = new AppKit(mockOptions)
+
     await appKit.open({ view: 'Connect', namespace: 'eip155' })
 
     expect(openSpy).toHaveBeenCalled()
@@ -297,9 +301,9 @@ describe('Base Public methods', () => {
     const popTransactionStack = vi.spyOn(RouterController, 'popTransactionStack')
 
     const appKit = new AppKit(mockOptions)
-    appKit.popTransactionStack(true)
+    appKit.popTransactionStack('success')
 
-    expect(popTransactionStack).toHaveBeenCalledWith(true)
+    expect(popTransactionStack).toHaveBeenCalledWith('success')
   })
 
   it('should check if modal is open', async () => {
@@ -377,6 +381,7 @@ describe('Base Public methods', () => {
     }
 
     const appKit = new AppKit(mockOptions)
+    await appKit.ready()
     await appKit['syncAccount'](mockAccountData)
 
     expect(appKit.getAddress()).toBe('0x123')
@@ -827,12 +832,15 @@ describe('Base Public methods', () => {
     const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+    )
     const mockConnector = {
       id: 'test-wallet',
       name: 'Test Wallet',
       imageUrl: 'test-wallet-icon'
     } as Connector
-    ConnectorController.state.connectors = [mockConnector]
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValueOnce([mockConnector])
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValueOnce(mockConnector.id)
     const mockAccountData = {
       address: '0x123',
@@ -855,7 +863,14 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
 
-    expect(setConnectedWalletInfo).toHaveBeenCalledWith({ name: mockConnector.id }, 'eip155')
+    expect(setConnectedWalletInfo).toHaveBeenCalledWith(
+      {
+        name: mockConnector.name,
+        type: UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType,
+        icon: mockConnector.imageUrl
+      },
+      'eip155'
+    )
   })
 
   it('should sync identity only if address changed', async () => {
@@ -1193,10 +1208,11 @@ describe('Base Public methods', () => {
     expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
 
-  it.each([undefined, {} as SIWXConfig])('should set and get SIWX correctly', siwx => {
+  it.each([undefined, {} as SIWXConfig])('should set and get SIWX correctly', async siwx => {
     const setSIWXSpy = vi.spyOn(OptionsController, 'setSIWX')
 
     const appKit = new AppKit({ ...mockOptions, siwx })
+    await appKit.ready()
     expect(setSIWXSpy).toHaveBeenCalledWith(siwx)
 
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({ siwx } as any)

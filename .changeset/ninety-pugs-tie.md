@@ -1,6 +1,5 @@
 ---
-'@reown/appkit-controllers': patch
-'@reown/appkit-pay': patch
+'@reown/appkit-wallet': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
@@ -11,15 +10,16 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
+'@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
-'@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Enable analytics for Pay feature
+Add `chainId` to connectSocial app event to solve cases where user is connecting to the wrong network

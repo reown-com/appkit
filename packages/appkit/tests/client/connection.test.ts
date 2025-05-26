@@ -193,16 +193,11 @@ describe('syncConnectedWalletInfo', () => {
     )
   })
 
-  it('should sync connected wallet info for any other provider type', async () => {
+  it('should not sync connected wallet info if connector is not found', async () => {
     vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue('mock-provider-id' as ConnectorType)
     appKit['syncConnectedWalletInfo']('eip155')
 
-    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
-      {
-        name: 'mock-connector-id'
-      },
-      'eip155'
-    )
+    expect(setConnectedWalletInfoSpy).not.toHaveBeenCalled()
   })
 
   describe('should be called on connection methods', () => {

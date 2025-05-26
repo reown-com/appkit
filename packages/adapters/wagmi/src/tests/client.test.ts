@@ -186,12 +186,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: false,
-          socials: false as const
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: false,
+        socials: false
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -205,12 +206,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: true,
-          socials: false as const
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: true,
+        socials: false
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -224,12 +226,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: false,
-          socials: [] as SocialProvider[]
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: false,
+        socials: []
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -243,12 +246,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: true,
-          socials: ['facebook'] as SocialProvider[]
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: true,
+        socials: ['facebook'] as SocialProvider[]
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -264,12 +268,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: false,
-          socials: ['x'] as SocialProvider[]
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: false,
+        socials: ['x']
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -285,12 +290,14 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: true,
-          socials: ['google'] as SocialProvider[]
-        },
+
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.remoteFeatures = {
+        email: true,
+        socials: ['google'] as SocialProvider[]
       }
 
       adapter.syncConnectors(options, mockAppKit)
@@ -539,7 +546,7 @@ describe('WagmiAdapter', () => {
     })
   })
 
-  describe('WagmiAdapter - connect and disconnect', () => {
+  describe('WagmiAdapter - connect, syncConnection and disconnect', () => {
     it('should connect successfully', async () => {
       const result = await adapter.connect({
         id: 'test-connector',
@@ -549,6 +556,22 @@ describe('WagmiAdapter', () => {
       })
 
       expect(result.address).toBe('0x123')
+      expect(result.chainId).toBe(1)
+    })
+
+    it('should sync connection successfully', async () => {
+      vi.mocked(getConnections).mockReturnValue([
+        { connector: { id: 'test-connector', type: 'injected' }, accounts: ['0x123'], chainId: 1 }
+      ] as any)
+      const result = await adapter.syncConnection({
+        id: 'test-connector',
+        chainId: 1,
+        namespace: 'eip155',
+        rpcUrl: 'https://rpc.walletconnect.org'
+      })
+
+      expect(result.address).toBe('0x123')
+      expect(result.type).toBe('INJECTED')
       expect(result.chainId).toBe(1)
     })
 

@@ -81,6 +81,7 @@ export class W3mOnRampProvidersView extends LitElement {
               this.onClickProvider(provider)
             }}
             ?disabled=${!provider.url}
+            data-testid=${`onramp-provider-${provider.name}`}
           ></w3m-onramp-provider-item>
         `
       )

@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds try catch preventing error from bubbling up if fetching supported networks for Blockchain API fails'
+Fixes issue where Solflare instead of Coinbase would be excepted from not having a mobile_link to be displayed in All Wallets

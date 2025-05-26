@@ -2,6 +2,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
@@ -10,6 +11,7 @@ import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
@@ -108,9 +110,23 @@ const controller = {
       url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)
       url.searchParams.append('walletAddress', address)
-      provider.url = url.toString()
+      url.searchParams.append('externalCustomerId', OptionsController.state.projectId)
+      state.selectedProvider = { ...provider, url: url.toString() }
+    } else {
+      state.selectedProvider = provider
     }
-    state.selectedProvider = provider
+  },
+
+  setOnrampProviders(providers: OnRampProviderName[]) {
+    if (Array.isArray(providers) && providers.every(item => typeof item === 'string')) {
+      const validOnramp = providers as string[]
+
+      const newProviders = ONRAMP_PROVIDERS.filter(provider => validOnramp.includes(provider.name))
+
+      state.providers = newProviders as OnRampProvider[]
+    } else {
+      state.providers = []
+    }
   },
 
   setPurchaseCurrency(currency: PurchaseCurrency) {
@@ -165,7 +181,6 @@ const controller = {
   },
 
   resetState() {
-    state.providers = ONRAMP_PROVIDERS as OnRampProvider[]
     state.selectedProvider = null
     state.error = null
     state.purchaseCurrency = USDC_CURRENCY_DEFAULT

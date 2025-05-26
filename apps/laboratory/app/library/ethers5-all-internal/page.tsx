@@ -21,10 +21,6 @@ const modal = createAppKit({
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true,
-    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
-  },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   siweConfig,

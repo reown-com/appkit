@@ -13,6 +13,7 @@ import {
   ConnectorController,
   CoreHelperUtil,
   ModalController,
+  ModalUtil,
   OptionsController,
   RouterController,
   SIWXUtil,
@@ -149,12 +150,7 @@ export class W3mModalBase extends LitElement {
   }
 
   private async handleClose() {
-    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
-    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
-      ModalController.shake()
-    } else {
-      ModalController.close()
-    }
+    await ModalUtil.safeClose()
   }
 
   private initializeTheming() {

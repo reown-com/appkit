@@ -15,18 +15,6 @@ import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 // -- Types --------------------------------------------- //
 type TransactionAction = {
   /**
-   * If true, the router will go back to the previous view after the transaction is complete..
-   */
-  goBack: boolean
-  /**
-   * If set, the router will navigate to the specified view after the transaction is complete.
-   */
-  view: RouterControllerState['view'] | null
-  /**
-   * If true, the router will remove the previous view from the history and navigate to the current view.
-   */
-  replace?: boolean
-  /**
    * Function to be called when the transaction is complete.
    */
   onSuccess?: () => void
@@ -34,6 +22,10 @@ type TransactionAction = {
    * Function to be called when the transaction is cancelled.
    */
   onCancel?: () => void
+  /**
+   * Function to be called when the transaction is failed.
+   */
+  onError?: () => void
 }
 export interface RouterControllerState {
   view:
@@ -132,43 +124,26 @@ const controller = {
     state.transactionStack.push(action)
   },
 
-  popTransactionStack(cancel?: boolean) {
+  popTransactionStack(status: 'success' | 'error' | 'cancel') {
     const action = state.transactionStack.pop()
-
     if (!action) {
       return
     }
+    const { onSuccess, onError, onCancel } = action
 
-    if (cancel) {
-      // When the transaction is cancelled, we go back to the previous view
-      RouterController.goBack()
-      action?.onCancel?.()
-    } else {
-      // When the transaction is successful, we do conditional navigation depending on the action properties
-      if (action.goBack) {
+    switch (status) {
+      case 'success':
+        onSuccess?.()
+        break
+      case 'error':
+        onError?.()
         RouterController.goBack()
-      } else if (action.replace) {
-        /*
-         *  If the history like ["ConnectingSiwe", "ApproveTransaction"], this means SIWE popup is opened after page rendered (not after user interaction)
-         *  we need to conditionally call replace.
-         *  There is a chance that there is only these two views in the history; when user approved, the modal should closed and history should be empty (both connectingsiwe and approveTX should be removed)
-         *  If there is another views before the ConnectingSiwe (if the CS is not the first view), we should back to the first view before CS.
-         */
-        const history = state.history
-        const connectingSiweIndex = history.indexOf('ConnectingSiwe')
-
-        if (connectingSiweIndex > 0) {
-          // There are views before ConnectingSiwe
-          RouterController.goBackToIndex(connectingSiweIndex - 1)
-        } else {
-          // ConnectingSiwe is the first view
-          ModalController.close(true)
-          state.history = []
-        }
-      } else if (action.view) {
-        RouterController.reset(action.view)
-      }
-      action?.onSuccess?.()
+        break
+      case 'cancel':
+        onCancel?.()
+        RouterController.goBack()
+        break
+      default:
     }
   },
 
@@ -202,7 +177,7 @@ const controller = {
       !ChainController.state.activeCaipAddress &&
       RouterController.state.view === 'ConnectingFarcaster'
 
-    if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
+    if (state.history.length > 1) {
       state.history.pop()
       const [last] = state.history.slice(-1)
       if (last) {
@@ -241,6 +216,14 @@ const controller = {
       if (last) {
         state.view = last
       }
+    }
+  },
+
+  goBackOrCloseModal() {
+    if (RouterController.state.history.length > 1) {
+      RouterController.goBack()
+    } else {
+      ModalController.close()
     }
   }
 }

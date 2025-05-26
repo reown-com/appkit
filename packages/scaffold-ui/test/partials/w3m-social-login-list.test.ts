@@ -22,7 +22,7 @@ describe('W3mSocialLoginList', () => {
 
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
 
-    vi.spyOn(OptionsController.state, 'features', 'get').mockReturnValue({
+    vi.spyOn(OptionsController.state, 'remoteFeatures', 'get').mockReturnValue({
       socials: ['google', 'github']
     })
     vi.spyOn(RouterController.state, 'view', 'get').mockReturnValue('ConnectSocials')
@@ -65,8 +65,8 @@ describe('W3mSocialLoginList', () => {
     vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([mockAuthConnector])
 
     vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(true)
-    vi.spyOn(OptionsController.state, 'features', 'get').mockReturnValue({
-      ...OptionsController.state.features,
+    vi.spyOn(OptionsController.state, 'remoteFeatures', 'get').mockReturnValue({
+      ...OptionsController.state.remoteFeatures,
       socials: ['google']
     })
 

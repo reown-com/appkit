@@ -73,7 +73,6 @@ export class WalletPage {
   async handleSessionProposal(opts: SessionParams) {
     await this.page.waitForLoadState()
     const variant = opts.accept ? `approve` : `reject`
-    // `.click` doesn't work here, so we use `.focus` and `Space`
     await this.performRequestAction(variant)
   }
 
@@ -91,8 +90,7 @@ export class WalletPage {
       timeout: 30000
     })
     await expect(btn).toBeEnabled()
-    await btn.focus()
-    await this.page.keyboard.press('Space')
+    await btn.click()
   }
 
   /**
