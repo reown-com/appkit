@@ -13,7 +13,7 @@ import {
   PublicStateController,
   SnackController
 } from '@reown/appkit-controllers'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockUniversalAdapter } from '../mocks/Adapter.js'
@@ -160,7 +160,7 @@ describe('State Management', () => {
     expect(disconnect).toHaveBeenCalled()
   })
 
-  it('should set status to connected on syncWalletConnectAccount if CAIP address exists', () => {
+  it('should set status to connected on syncWalletConnectAccount if CAIP address exists', async () => {
     vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
       Promise.resolve()
     )
@@ -169,14 +169,14 @@ describe('State Management', () => {
     vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
 
-    const appKit = new AppKit({
-      ...mockOptions,
-      adapters: [],
-      networks: [mainnet]
-    })
-    appKit['universalProvider'] = {
+    const universalProvider = {
       ...mockUniversalProvider,
       session: {
+        peer: {
+          metadata: {
+            name: 'Test Provider'
+          }
+        },
         namespaces: {
           eip155: {
             accounts: ['eip155:1:0x123']
@@ -184,15 +184,24 @@ describe('State Management', () => {
         }
       }
     } as unknown as InstanceType<typeof UniversalProvider>
+    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(universalProvider)
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue('WALLET_CONNECT')
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      adapters: [],
+      networks: [mainnet]
+    })
+    appKit['universalProvider'] = universalProvider
 
     const setStatusSpy = vi.spyOn(appKit, 'setStatus')
 
-    appKit['syncWalletConnectAccount']()
+    await appKit['syncWalletConnectAccount']()
 
     expect(setStatusSpy).toHaveBeenCalledWith('connected', 'eip155')
   })
 
-  it('should set status to disconnected on syncWalletConnectAccount if CAIP address does not exist', () => {
+  it('should set status to disconnected on syncWalletConnectAccount if CAIP address does not exist', async () => {
     vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
       Promise.resolve()
     )
@@ -200,15 +209,8 @@ describe('State Management', () => {
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
     vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
-
-    const appKit = new AppKit({
-      ...mockOptions,
-      adapters: [],
-      networks: [mainnet]
-    })
-    appKit['universalProvider'] = {
+    const universalProvider = {
       ...mockUniversalProvider,
-      session: {
         namespaces: {
           eip155: {
             accounts: []
@@ -216,10 +218,20 @@ describe('State Management', () => {
         }
       }
     } as unknown as InstanceType<typeof UniversalProvider>
+    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(universalProvider)
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue('WALLET_CONNECT')
+
+    console.log('>> syncWalletConnectAccount')
+    const appKit = new AppKit({
+      ...mockOptions,
+      adapters: [],
+      networks: [mainnet]
+    })
+    appKit['universalProvider'] = universalProvider
 
     const setStatusSpy = vi.spyOn(appKit, 'setStatus')
 
-    appKit['syncWalletConnectAccount']()
+    await appKit['syncWalletConnectAccount']()
 
     expect(setStatusSpy).toHaveBeenCalledWith('disconnected', 'eip155')
   })
