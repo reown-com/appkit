@@ -478,10 +478,10 @@ export abstract class AppKitBaseClient {
         this.setLoading(true, namespace)
         await SIWXUtil.clearSessions()
         await ChainController.disconnect(namespace)
-        this.setLoading(false, namespace)
         ConnectorController.setFilterByNamespace(undefined)
 
         await adapter?.disconnect({ provider, providerType })
+        this.setLoading(false, namespace)
 
         StorageUtil.removeConnectedNamespace(namespace)
         ProviderUtil.resetChain(namespace)
