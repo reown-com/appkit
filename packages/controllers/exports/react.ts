@@ -112,7 +112,6 @@ export function useDisconnect() {
 
 export function useAppKitConnection({
   namespace,
-  onConnect,
   onDisconnect,
   onDeleteRecentConnection
 }: UseAppKitConnectionProps) {
@@ -139,16 +138,10 @@ export function useAppKitConnection({
       throw new Error('No namespace found')
     }
 
-    await ConnectionController.connect({
+    await ConnectionController.switchConnection({
       connection,
       address,
-      namespace: chainNamespace,
-      onConnectorChange: () => {
-        onConnect?.()
-      },
-      onAddressChange: () => {
-        onConnect?.()
-      }
+      namespace: chainNamespace
     })
   }
 

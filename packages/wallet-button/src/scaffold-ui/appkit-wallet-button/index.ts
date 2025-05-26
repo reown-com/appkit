@@ -9,7 +9,8 @@ import {
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
-  ModalController
+  ModalController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-wallet-button'
@@ -114,8 +115,19 @@ export class AppKitWalletButton extends LitElement {
           this.loading = true
           await ConnectorControllerUtil.connectWalletConnect({
             walletConnect: this.wallet === 'walletConnect',
-            wallet: walletButton,
-            connector: this.connectors.find(c => c.id === 'walletConnect')
+            connector: this.connectors.find(c => c.id === 'walletConnect'),
+            onOpen(isMobile) {
+              if (isMobile) {
+                RouterController.replace('AllWallets')
+              } else {
+                RouterController.replace('ConnectingWalletConnect', {
+                  wallet: walletButton
+                })
+              }
+            },
+            onConnect() {
+              RouterController.replace('Connect')
+            }
           })
             .catch(() => {
               // Ignore. We don't want to handle errors if user closes QR modal
@@ -163,7 +175,16 @@ export class AppKitWalletButton extends LitElement {
       @click=${async () => {
         this.loading = true
         this.error = false
-        await ConnectorControllerUtil.connectSocial(this.wallet as SocialProvider)
+
+        return ConnectorControllerUtil.connectSocial({
+          social: this.wallet as SocialProvider,
+          onOpenFarcaster() {
+            ModalController.open({ view: 'ConnectingFarcaster' })
+          },
+          onConnect() {
+            RouterController.push('Connect')
+          }
+        })
           .catch(() => (this.error = true))
           .finally(() => (this.loading = false))
       }}
@@ -181,7 +202,14 @@ export class AppKitWalletButton extends LitElement {
       @click=${async () => {
         this.loading = true
         this.error = false
-        await ConnectorControllerUtil.connectEmail()
+        await ConnectorControllerUtil.connectEmail({
+          onOpen() {
+            ModalController.open().then(() => RouterController.push('EmailLogin'))
+          },
+          onConnect() {
+            RouterController.push('Connect')
+          }
+        })
           .catch(() => (this.error = true))
           .finally(() => (this.loading = false))
       }}

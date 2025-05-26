@@ -11,7 +11,6 @@ export default css`
   }
 
   .wallet-list {
-    height: 330px;
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -33,8 +32,12 @@ export default css`
     border-radius: var(--wui-border-radius-xs);
   }
 
-  .empty-template {
+  .active-wallets-box {
     height: 330px;
+  }
+
+  .empty-wallet-list-box {
+    height: 400px;
   }
 
   .empty-box {
@@ -54,5 +57,13 @@ export default css`
 
   .recent-connection {
     padding: var(--wui-spacing-xs) 0 var(--wui-spacing-xs) 0;
+  }
+
+  @media (max-width: 430px) {
+    .active-wallets-box,
+    .empty-wallet-list-box {
+      height: auto;
+      max-height: clamp(360px, 470px, 80vh);
+    }
   }
 `

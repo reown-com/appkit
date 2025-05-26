@@ -6,6 +6,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ChainController,
+  ConnectionController,
   ConnectorController,
   ConstantsUtil,
   OptionsController,
@@ -40,6 +41,8 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private connections = ConnectionController.state.connections
+
   @state() private features = OptionsController.state.features
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
@@ -52,6 +55,9 @@ export class W3mSocialLoginWidget extends LitElement {
       ConnectorController.subscribeKey('connectors', val => {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
+      }),
+      ConnectionController.subscribeKey('connections', val => {
+        this.connections = val
       }),
       OptionsController.subscribeKey('features', val => (this.features = val))
     )
@@ -110,7 +116,7 @@ export class W3mSocialLoginWidget extends LitElement {
               }}
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
-              ?disabled=${this.isPwaLoading}
+              ?disabled=${this.isPwaLoading || this.hasConnection()}
             ></wui-logo-select>`
         )}
       </wui-flex>`
@@ -125,7 +131,7 @@ export class W3mSocialLoginWidget extends LitElement {
       align="center"
       name=${`Continue with ${socials[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
-      ?disabled=${this.isPwaLoading}
+      ?disabled=${this.isPwaLoading || this.hasConnection()}
     ></wui-list-social>`
   }
 
@@ -158,14 +164,14 @@ export class W3mSocialLoginWidget extends LitElement {
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
               ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
-              ?disabled=${this.isPwaLoading}
+              ?disabled=${this.isPwaLoading || this.hasConnection()}
             ></wui-logo-select>`
         )}
         <wui-logo-select
           logo="more"
           tabIdx=${ifDefined(this.tabIdx)}
           @click=${this.onMoreSocialsClick.bind(this)}
-          ?disabled=${this.isPwaLoading}
+          ?disabled=${this.isPwaLoading || this.hasConnection()}
         ></wui-logo-select>
       </wui-flex>`
     }
@@ -185,7 +191,7 @@ export class W3mSocialLoginWidget extends LitElement {
             logo=${social}
             tabIdx=${ifDefined(this.tabIdx)}
             ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
-            ?disabled=${this.isPwaLoading}
+            ?disabled=${this.isPwaLoading || this.hasConnection()}
           ></wui-logo-select>`
       )}
     </wui-flex>`
@@ -239,6 +245,13 @@ export class W3mSocialLoginWidget extends LitElement {
         this.isPwaLoading = false
       }
     }
+  }
+
+  private hasConnection() {
+    return this.connections
+      .values()
+      .flatMap(connections => connections)
+      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH)
   }
 }
 

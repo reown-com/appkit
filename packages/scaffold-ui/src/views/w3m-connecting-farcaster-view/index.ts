@@ -210,7 +210,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = false
-        RouterController.replace('Account')
+        RouterController.reset('Account')
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('New Wallet Added')
       } catch (error) {

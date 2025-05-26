@@ -471,6 +471,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
   public async connect({
     id,
+    address: _address,
     type,
     chainId
   }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
@@ -480,7 +481,7 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Connector not found')
     }
 
-    const connection = this.connections.find(c => c.connectorId === id)
+    const connection = this.connections.find(c => HelpersUtil.isLowerCaseMatch(c.connectorId, id))
 
     if (connection) {
       const caipNetwork = connection.caipNetwork
@@ -489,7 +490,12 @@ export class EthersAdapter extends AdapterBlueprint {
         throw new Error('EthersAdapter:connect - could not find the caipNetwork to connect')
       }
 
-      const [account] = connection.accounts
+      const account =
+        (_address &&
+          connection.accounts.find(_account =>
+            HelpersUtil.isLowerCaseMatch(_account.address, _address)
+          )) ||
+        connection?.accounts[0]
 
       if (account) {
         this.emit('accountChanged', {

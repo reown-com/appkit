@@ -123,7 +123,6 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If session exists and chains are authorized, enable provider for required chain
         const accounts = await this.getAccounts()
-        const deduplicatedAccounts = [...new Set(accounts)]
 
         /**
          * Check if the chain is supported by the wallet. If not default back to the first chain that is provided.
@@ -168,7 +167,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         const defaultChain = universalProviderConfigOverride?.defaultChain
         provider.setDefaultChain(defaultChain ?? `eip155:${currentChainId}`)
 
-        return { accounts: deduplicatedAccounts, chainId: currentChainId }
+        return { accounts, chainId: currentChainId }
       } catch (error) {
         if (
           // eslint-disable-next-line prefer-named-capture-group, require-unicode-regexp
@@ -222,9 +221,24 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const accountsList = provider?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
-      const accounts = accountsList?.map(account => account.split(':')[2]) ?? []
+      const accounts = (accountsList?.map(account => account.split(':')[2]) ??
+        []) as `0x${string}`[]
 
-      return accounts as `0x${string}`[]
+      const accountsAdded = new Set<`0x${string}`>()
+
+      const deduplicatedAccounts = accounts.filter(account => {
+        const lowerCasedAccount = account?.toLowerCase() as `0x${string}`
+
+        if (accountsAdded.has(lowerCasedAccount)) {
+          return false
+        }
+
+        accountsAdded.add(lowerCasedAccount)
+
+        return true
+      })
+
+      return deduplicatedAccounts
     },
     async getProvider({ chainId } = {}) {
       if (!provider_) {

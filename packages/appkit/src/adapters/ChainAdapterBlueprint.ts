@@ -183,7 +183,7 @@ export abstract class AdapterBlueprint<
 
   protected clearConnections(emit = false) {
     this.availableConnections = []
-    
+
     if (emit) {
       this.emit('connections', this.availableConnections)
     }
@@ -477,6 +477,7 @@ export namespace AdapterBlueprint {
 
   export type ConnectParams = {
     id: string
+    address?: string
     provider?: unknown
     info?: unknown
     type: string

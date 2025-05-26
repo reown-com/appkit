@@ -3,8 +3,9 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
-  OptionsController
+  OptionsController,
+  RouterController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -35,7 +36,9 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
         if (!OptionsController.state.siwx) {
-          ModalController.close()
+          RouterController.reset('Account')
+          RouterController.push('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
         }
       }
     } catch (error) {

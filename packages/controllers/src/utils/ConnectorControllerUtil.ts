@@ -9,19 +9,37 @@ import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
 import { ModalController } from '../controllers/ModalController.js'
-import { RouterController } from '../controllers/RouterController.js'
+import { RouterController, type RouterControllerState } from '../controllers/RouterController.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
-import type { Connector, SocialProvider, WcWallet } from './TypeUtil.js'
+import type { Connector, SocialProvider } from './TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
 const UPDATE_EMAIL_INTERVAL = 1_000
 
 interface ConnectWalletConnectParameters {
   walletConnect: boolean
-  wallet?: WcWallet
   connector?: Connector
+  closeModalOnConnect?: boolean
+  redirectViewOnModalClose?: RouterControllerState['view']
+  onOpen?: (isMobile?: boolean) => void
+  onConnect?: () => void
+}
+
+interface ConnectSocialParameters {
+  social: SocialProvider
+  closeModalOnConnect?: boolean
+  redirectViewOnModalClose?: RouterControllerState['view']
+  onOpenFarcaster?: () => void
+  onConnect?: () => void
+}
+
+interface ConnectEmailParameters {
+  closeModalOnConnect?: boolean
+  redirectViewOnModalClose?: RouterControllerState['view']
+  onOpen?: () => void
+  onConnect?: () => void
 }
 
 export const ConnectorControllerUtil = {
@@ -33,8 +51,11 @@ export const ConnectorControllerUtil = {
   },
   connectWalletConnect({
     walletConnect,
-    wallet,
-    connector
+    connector,
+    closeModalOnConnect = true,
+    redirectViewOnModalClose = 'Connect',
+    onOpen,
+    onConnect
   }: ConnectWalletConnectParameters): Promise<ParsedCaipAddress> {
     return new Promise(async (resolve, reject) => {
       if (walletConnect) {
@@ -44,26 +65,29 @@ export const ConnectorControllerUtil = {
       await ModalController.open()
 
       if (CoreHelperUtil.isMobile() && walletConnect) {
-        RouterController.replace('AllWallets')
+        onOpen?.(true)
       } else {
-        RouterController.replace('ConnectingWalletConnect', {
-          wallet
+        onOpen?.()
+      }
+
+      if (redirectViewOnModalClose) {
+        const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+          if (!val) {
+            if (RouterController.state.view !== redirectViewOnModalClose) {
+              RouterController.replace(redirectViewOnModalClose)
+            }
+            unsubscribeModalController()
+            reject(new Error('Modal closed'))
+          }
         })
       }
 
-      const unsubscribeModalController = ModalController.subscribeKey('open', val => {
-        if (!val) {
-          if (RouterController.state.view !== 'Connect') {
-            RouterController.replace('Connect')
-          }
-          unsubscribeModalController()
-          reject(new Error('Modal closed'))
-        }
-      })
-
       const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          onConnect?.()
+          if (closeModalOnConnect) {
+            ModalController.close()
+          }
           unsubscribeChainController()
           resolve(ParseUtil.parseCaipAddress(val))
         }
@@ -86,7 +110,12 @@ export const ConnectorControllerUtil = {
       })
     })
   },
-  connectSocial(social: SocialProvider): Promise<ParsedCaipAddress> {
+  connectSocial({
+    social,
+    closeModalOnConnect = true,
+    onOpenFarcaster,
+    onConnect
+  }: ConnectSocialParameters): Promise<ParsedCaipAddress> {
     let socialWindow: Window | null | undefined = AccountController.state.socialWindow
     let socialProvider = AccountController.state.socialProvider
     let connectingSocial = false
@@ -94,7 +123,9 @@ export const ConnectorControllerUtil = {
 
     const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
       if (val) {
-        ModalController.close()
+        if (closeModalOnConnect) {
+          ModalController.close()
+        }
         unsubscribeChainController()
       }
     })
@@ -178,12 +209,11 @@ export const ConnectorControllerUtil = {
         }
 
         if (socialProvider === 'farcaster') {
-          ModalController.open({ view: 'ConnectingFarcaster' })
-
+          onOpenFarcaster?.()
           const unsubscribeModalController = ModalController.subscribeKey('open', val => {
             if (!val && social === 'farcaster') {
               reject(new Error('Popup closed'))
-              RouterController.push('Connect')
+              onConnect?.()
               unsubscribeModalController()
             }
           })
@@ -244,24 +274,33 @@ export const ConnectorControllerUtil = {
       connectSocial()
     })
   },
-  connectEmail(): Promise<ParsedCaipAddress> {
-    return new Promise(async (resolve, reject) => {
-      await ModalController.open()
-      RouterController.push('EmailLogin')
+  connectEmail({
+    closeModalOnConnect = true,
+    redirectViewOnModalClose = 'Connect',
+    onOpen,
+    onConnect
+  }: ConnectEmailParameters): Promise<ParsedCaipAddress> {
+    return new Promise((resolve, reject) => {
+      onOpen?.()
 
-      const unsubscribeModalController = ModalController.subscribeKey('open', val => {
-        if (!val) {
-          if (RouterController.state.view !== 'Connect') {
-            RouterController.push('Connect')
+      if (redirectViewOnModalClose) {
+        const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+          if (!val) {
+            if (RouterController.state.view !== redirectViewOnModalClose) {
+              RouterController.replace(redirectViewOnModalClose)
+            }
+            unsubscribeModalController()
+            reject(new Error('Modal closed'))
           }
-          unsubscribeModalController()
-          reject(new Error('Modal closed'))
-        }
-      })
+        })
+      }
 
       const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          onConnect?.()
+          if (closeModalOnConnect) {
+            ModalController.close()
+          }
           unsubscribeChainController()
           resolve(ParseUtil.parseCaipAddress(val))
         }

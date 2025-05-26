@@ -8,7 +8,9 @@ import {
   ChainController,
   type Connector,
   ConnectorController,
-  ConnectorControllerUtil
+  ConnectorControllerUtil,
+  ModalController,
+  RouterController
 } from '@reown/appkit-controllers'
 
 import { ApiController } from '../src/controllers/ApiController.js'
@@ -98,13 +100,25 @@ export function useAppKitWallet(parameters?: {
         WalletButtonController.setError(undefined)
 
         if (wallet === ConstantsUtil.Email) {
-          await ConnectorControllerUtil.connectEmail().then(handleSuccess)
+          await ConnectorControllerUtil.connectEmail({
+            onOpen() {
+              ModalController.open().then(() => RouterController.push('EmailLogin'))
+            }
+          }).then(handleSuccess)
 
           return
         }
 
         if (ConstantsUtil.Socials.some(social => social === wallet)) {
-          await ConnectorControllerUtil.connectSocial(wallet as SocialProvider).then(handleSuccess)
+          await ConnectorControllerUtil.connectSocial({
+            social: wallet as SocialProvider,
+            onOpenFarcaster() {
+              ModalController.open({ view: 'ConnectingFarcaster' })
+            },
+            onConnect() {
+              RouterController.push('Connect')
+            }
+          }).then(handleSuccess)
 
           return
         }
@@ -124,7 +138,18 @@ export function useAppKitWallet(parameters?: {
         await ConnectorControllerUtil.connectWalletConnect({
           walletConnect: wallet === 'walletConnect',
           connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
-          wallet: walletButton
+          onOpen(isMobile) {
+            if (isMobile) {
+              RouterController.replace('AllWallets')
+            } else {
+              RouterController.replace('ConnectingWalletConnect', {
+                wallet: walletButton
+              })
+            }
+          },
+          onConnect() {
+            RouterController.replace('Connect')
+          }
         }).then(handleSuccess)
       } catch (err) {
         handleError(err)

@@ -12,7 +12,6 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SendController,
   SnackController
@@ -311,7 +310,9 @@ export class W3mAccountSettingsView extends LitElement {
     try {
       this.disconnecting = true
       await ConnectionController.disconnect()
-      ModalController.close()
+      RouterController.reset('Account')
+      RouterController.push('ProfileWallets')
+      SnackController.showSuccess('Wallet deleted')
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

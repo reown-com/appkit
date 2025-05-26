@@ -2,12 +2,10 @@ import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
-  type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
-  ParseUtil,
-  type ParsedCaipAddress
+  ParseUtil
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
@@ -44,18 +42,24 @@ export type Connection = {
   }
 }
 
-interface ConnectParams {
+interface SwitchConnectionParams {
   connection: Connection
   address: string
   namespace: ChainNamespace
-  onConnectorChange?: (connector: Connector) => void
-  onAddressChange?: (parsedCaipAddress: ParsedCaipAddress) => void
+  closeModalOnConnect?: boolean
+  onChange?: (params: {
+    address: string
+    namespace: ChainNamespace
+    isAccountSwitched: boolean
+    isWalletSwitched: boolean
+  }) => void
 }
 
-interface HandleConnectParams {
+interface HandleDisconnectedConnectionParams {
   connection: Connection
   namespace: ChainNamespace
   address: string
+  closeModalOnConnect?: boolean
 }
 
 interface HandleActiveConnectionParams {
@@ -74,6 +78,7 @@ export interface ConnectExternalOptions {
   id: Connector['id']
   type: Connector['type']
   provider?: Connector['provider']
+  address?: string
   info?: Connector['info']
   chain?: ChainNamespace
   chainId?: number | string
@@ -89,7 +94,7 @@ export interface ConnectionControllerClient {
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
-  connectExternal?: (options: ConnectExternalOptions) => Promise<void>
+  connectExternal?: (options: ConnectExternalOptions) => Promise<{ address: string } | undefined>
   reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
@@ -185,11 +190,13 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    await this._getClient()?.connectExternal?.(options)
+    const connectData = await this._getClient()?.connectExternal?.(options)
 
     if (setChain) {
       ChainController.setActiveNamespace(chain)
     }
+
+    return connectData
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
@@ -366,27 +373,6 @@ export const ConnectionController = {
     await ConnectionController.setPreferredAccountType(accountType, namespace)
   },
 
-  async handleAlreadyConnectedConnection({ connection, namespace, address }: HandleConnectParams) {
-    if (!connection.caipNetwork) {
-      throw new Error(`No CAIP network found for connection: ${connection.connectorId}`)
-    }
-
-    const isAuthConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
-
-    const newCaipAddress: CaipAddress = `${namespace}:${connection.caipNetwork?.id}:${address}`
-    const parsedCaipAddress = ParseUtil.parseCaipAddress(newCaipAddress)
-
-    if (isAuthConnector) {
-      await ConnectionController.handleAuthAccountSwitch(address, namespace)
-
-      return parsedCaipAddress
-    }
-
-    AccountController.setCaipAddress(newCaipAddress, namespace)
-
-    return parsedCaipAddress
-  },
-
   async handleActiveConnection({ connection, namespace, address }: HandleActiveConnectionParams) {
     const connector = ConnectorController.getConnectorById(connection.connectorId)
     const isAuthConnector = connection.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
@@ -395,11 +381,12 @@ export const ConnectionController = {
       throw new Error(`No connector found for connection: ${connection.connectorId}`)
     }
 
-    await ConnectionController.connectExternal(
+    const connectData = await ConnectionController.connectExternal(
       {
         id: connector.id,
         type: connector.type,
         provider: connector.provider,
+        address,
         chain: namespace
       },
       namespace
@@ -409,10 +396,15 @@ export const ConnectionController = {
       await ConnectionController.handleAuthAccountSwitch(address, namespace)
     }
 
-    return connector
+    return connectData?.address
   },
 
-  async handleDisconnectedConnection({ connection, namespace, address }: HandleConnectParams) {
+  async handleDisconnectedConnection({
+    connection,
+    namespace,
+    address,
+    closeModalOnConnect
+  }: HandleDisconnectedConnectionParams) {
     const connector = ConnectorController.getConnectorById(connection.connectorId)
     const authName = connection.auth?.name?.toLowerCase()
 
@@ -423,20 +415,60 @@ export const ConnectionController = {
       throw new Error(`No connector found for connection: ${connection.connectorId}`)
     }
 
+    let newAddress: string | undefined = undefined
+
     if (isAuthConnector) {
       if (authName && ConnectorControllerUtil.isSocialProvider(authName)) {
-        await ConnectorControllerUtil.connectSocial(authName)
+        const { address: socialAddress } = await ConnectorControllerUtil.connectSocial({
+          social: authName,
+          closeModalOnConnect,
+          onOpenFarcaster() {
+            RouterController.reset('ProfileWallets')
+            RouterController.push('ConnectingFarcaster')
+          },
+          onConnect() {
+            RouterController.replace('ProfileWallets')
+          }
+        })
+
+        newAddress = socialAddress
       } else {
-        await ConnectorControllerUtil.connectEmail()
+        const { address: emailAddress } = await ConnectorControllerUtil.connectEmail({
+          closeModalOnConnect,
+          onOpen() {
+            RouterController.reset('ProfileWallets')
+            RouterController.push('EmailLogin')
+          },
+          onConnect() {
+            RouterController.replace('ProfileWallets')
+          }
+        })
+
+        newAddress = emailAddress
       }
     } else if (isWCConnector) {
-      await ConnectorControllerUtil.connectWalletConnect({
+      const { address: wcAddress } = await ConnectorControllerUtil.connectWalletConnect({
         walletConnect: true,
         connector,
-        wallet: undefined
+        closeModalOnConnect,
+        onOpen(isMobile) {
+          RouterController.reset('ProfileWallets')
+
+          if (isMobile) {
+            RouterController.push('AllWallets')
+          } else {
+            RouterController.push('ConnectingWalletConnect')
+          }
+        },
+        onConnect() {
+          RouterController.reset('Connect')
+          RouterController.replace('ProfileWallets')
+        }
       })
+
+      newAddress = wcAddress
     } else {
-      await ConnectionController.connectExternal(
+      const connectData = await ConnectionController.connectExternal(
         {
           id: connector.id,
           type: connector.type,
@@ -445,56 +477,79 @@ export const ConnectionController = {
         },
         namespace
       )
+
+      if (connectData) {
+        newAddress = connectData.address
+      }
     }
 
     if (isAuthConnector) {
       await ConnectionController.handleAuthAccountSwitch(address, namespace)
     }
 
-    return connector
+    return newAddress
   },
 
-  async connect({
+  async switchConnection({
     connection,
     address,
     namespace,
-    onConnectorChange,
-    onAddressChange
-  }: ConnectParams) {
-    const status = ConnectionControllerUtil.getConnectionStatus(connection, namespace)
-
+    closeModalOnConnect,
+    onChange
+  }: SwitchConnectionParams) {
     // Validate the account switch
     ConnectionControllerUtil.validateAccountSwitch({ namespace, connection, address })
 
+    let currentAddress: string | undefined = undefined
+
+    const caipAddress = AccountController.getCaipAddress(namespace)
+
+    if (caipAddress) {
+      const { address: currentAddressParsed } = ParseUtil.parseCaipAddress(caipAddress)
+
+      currentAddress = currentAddressParsed
+    }
+
+    const status = ConnectionControllerUtil.getConnectionStatus(connection, namespace)
+
     switch (status) {
-      case 'connected': {
-        const parsedCaipAddress = await ConnectionController.handleAlreadyConnectedConnection({
-          connection,
-          namespace,
-          address
-        })
-
-        onAddressChange?.(parsedCaipAddress)
-        break
-      }
+      case 'connected':
       case 'active': {
-        const connector = await ConnectionController.handleActiveConnection({
+        const newAddress = await ConnectionController.handleActiveConnection({
           connection,
           namespace,
           address
         })
 
-        onConnectorChange?.(connector)
+        if (currentAddress && newAddress) {
+          const isAccountSwitched = newAddress.toLowerCase() !== currentAddress.toLowerCase()
+
+          onChange?.({
+            address: newAddress,
+            namespace,
+            isAccountSwitched,
+            isWalletSwitched: true
+          })
+        }
         break
       }
+
       case 'disconnected': {
-        const connector = await ConnectionController.handleDisconnectedConnection({
+        const newAddress = await ConnectionController.handleDisconnectedConnection({
           connection,
           namespace,
-          address
+          address,
+          closeModalOnConnect
         })
 
-        onConnectorChange?.(connector)
+        if (newAddress) {
+          onChange?.({
+            address: newAddress,
+            namespace,
+            isAccountSwitched: true,
+            isWalletSwitched: true
+          })
+        }
         break
       }
       default:

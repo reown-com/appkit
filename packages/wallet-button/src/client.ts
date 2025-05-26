@@ -1,7 +1,9 @@
 import {
   type Connector,
   ConnectorController,
-  ConnectorControllerUtil
+  ConnectorControllerUtil,
+  ModalController,
+  RouterController
 } from '@reown/appkit-controllers'
 
 import { ApiController } from './controllers/ApiController.js'
@@ -40,11 +42,26 @@ export class AppKitWalletButton {
     const connectors = ConnectorController.state.connectors
 
     if (wallet === ConstantsUtil.Email) {
-      return ConnectorControllerUtil.connectEmail()
+      return ConnectorControllerUtil.connectEmail({
+        onOpen() {
+          ModalController.open().then(() => RouterController.push('EmailLogin'))
+        },
+        onConnect() {
+          RouterController.push('Connect')
+        }
+      })
     }
 
     if (ConstantsUtil.Socials.some(social => social === wallet)) {
-      return ConnectorControllerUtil.connectSocial(wallet as SocialProvider)
+      return ConnectorControllerUtil.connectSocial({
+        social: wallet as SocialProvider,
+        onOpenFarcaster() {
+          ModalController.open({ view: 'ConnectingFarcaster' })
+        },
+        onConnect() {
+          RouterController.push('Connect')
+        }
+      })
     }
 
     const walletButton = WalletUtil.getWalletButton(wallet)
@@ -60,7 +77,18 @@ export class AppKitWalletButton {
     return ConnectorControllerUtil.connectWalletConnect({
       walletConnect: wallet === 'walletConnect',
       connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
-      wallet: walletButton
+      onOpen(isMobile) {
+        if (isMobile) {
+          RouterController.replace('AllWallets')
+        } else {
+          RouterController.replace('ConnectingWalletConnect', {
+            wallet: walletButton
+          })
+        }
+      },
+      onConnect() {
+        RouterController.replace('Connect')
+      }
     })
   }
 

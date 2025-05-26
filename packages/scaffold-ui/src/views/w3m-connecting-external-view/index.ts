@@ -48,7 +48,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.externalViewUnsubscribe.push(
       ConnectorController.subscribeKey('activeConnectorIds', val => {
         if (val) {
-          RouterController.replace('Account')
+          RouterController.reset('Account')
           RouterController.push('ProfileWallets')
           SnackController.showSuccess('New Wallet Added')
         }

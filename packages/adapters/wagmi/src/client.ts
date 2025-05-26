@@ -25,7 +25,7 @@ import {
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { type Hex, formatUnits, parseUnits } from 'viem'
+import { type Address, type Hex, formatUnits, parseUnits } from 'viem'
 
 import { AppKit, type AppKitOptions } from '@reown/appkit'
 import type {
@@ -42,7 +42,7 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   type Provider
 } from '@reown/appkit-controllers'
-import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
@@ -541,7 +541,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id, provider, type, info, chainId } = params
+    const { id, address, provider, type, info, chainId } = params
     const connector = this.getWagmiConnector(id)
 
     if (!connector) {
@@ -553,28 +553,27 @@ export class WagmiAdapter extends AdapterBlueprint {
       connector.setEip6963Wallet?.({ provider, info })
     }
 
-    // If the connector is already connected, return the connection
-    if (connector.uid === this.wagmiConfig?.state?.current) {
-      const connection = this.wagmiConfig.state?.connections?.get(connector.uid)
-      if (connection) {
-        return {
-          address: connection?.accounts[0] as string,
-          chainId: connection?.chainId,
-          provider: provider as Provider,
-          type: type as ConnectorType,
-          id
-        }
-      }
-    }
-
-    const connection = this.wagmiConfig.state.connections.get(connector.uid)
+    const connection = this.wagmiConfig.state?.connections?.get(connector.uid)
 
     if (connection) {
       await this.wagmiConfig.storage?.setItem('recentConnectorId', connector.id)
+
+      const sortedAccounts = [...connection.accounts].sort((a, b) => {
+        if (HelpersUtil.isLowerCaseMatch(a, address)) {
+          return -1
+        }
+
+        if (HelpersUtil.isLowerCaseMatch(b, address)) {
+          return 1
+        }
+
+        return 0
+      }) as [Address, ...Address[]]
+
       this.wagmiConfig?.setState(x => ({
         ...x,
         connections: new Map(x.connections).set(connector.uid, {
-          accounts: connection.accounts,
+          accounts: sortedAccounts,
           chainId: connection.chainId,
           connector: connection.connector
         }),
@@ -583,7 +582,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       }))
 
       return {
-        address: connection.accounts[0],
+        address: sortedAccounts[0],
         chainId: connection.chainId,
         provider: provider as Provider,
         type: type as ConnectorType,

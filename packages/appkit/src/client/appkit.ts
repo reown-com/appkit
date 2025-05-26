@@ -112,6 +112,7 @@ export class AppKit extends AppKitBaseClient {
       const namespace = ChainController.state.activeChain as ChainNamespace
       const connectorId = ConnectorController.getConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+
       if (isConnectedWithAuth) {
         this.setCaipAddress(undefined, namespace)
         this.setLoading(false, namespace)

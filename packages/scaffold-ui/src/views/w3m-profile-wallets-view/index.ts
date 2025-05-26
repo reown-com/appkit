@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
 
 import {
   type CaipAddress,
@@ -35,6 +36,10 @@ import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'
+
+// -- Constants ----------------------------------------- //
+const TABS_PADDING = 40
+const MODAL_MOBILE_VIEW_PX = 430
 
 // -- Types -------------------------------- //
 interface Account {
@@ -185,7 +190,9 @@ export class W3mProfileWalletsView extends LitElement {
       <wui-tabs
         .onTabChange=${(index: number) => this.handleTabChange(index)}
         .activeTab=${this.currentTab}
-        localTabWidth="${tabWidth}px"
+        localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth <= MODAL_MOBILE_VIEW_PX
+          ? `${(window.innerWidth - TABS_PADDING) / tabCount}px`
+          : `${tabWidth}px`}
         .tabs=${availableTabs}
       ></wui-tabs>
     `
@@ -222,8 +229,14 @@ export class W3mProfileWalletsView extends LitElement {
   private renderConnections(namespace: ChainNamespace) {
     const hasConnections = this.hasAnyConnections(namespace)
 
+    const classes = {
+      'wallet-list': true,
+      'active-wallets-box': hasConnections,
+      'empty-wallet-list-box': !hasConnections
+    }
+
     return html`
-      <wui-flex flexDirection="column" class="wallet-list" rowGap="s">
+      <wui-flex flexDirection="column" class=${classMap(classes)} rowGap="s">
         ${hasConnections
           ? this.renderActiveConnections(namespace)
           : this.renderEmptyState(namespace)}
@@ -487,12 +500,23 @@ export class W3mProfileWalletsView extends LitElement {
       this.lastSelectedConnectorId = connection.connectorId
       this.lastSelectedAddress = address
 
-      await ConnectionController.connect({
+      await ConnectionController.switchConnection({
         connection,
         address,
         namespace,
-        onConnectorChange: () => SnackController.showSuccess('Wallet switched'),
-        onAddressChange: () => SnackController.showSuccess('Account switched')
+        closeModalOnConnect: false,
+        onChange({ isAccountSwitched, isWalletSwitched }) {
+          /*
+           * In case anyone is on another screen, we need to replace
+           * The current screen with the profile wallets screen
+           */
+          RouterController.replace('ProfileWallets')
+          if (isWalletSwitched) {
+            SnackController.showSuccess('Wallet switched')
+          } else if (isAccountSwitched) {
+            SnackController.showSuccess('Account switched')
+          }
+        }
       })
     } catch (error) {
       SnackController.showError('Failed to switch wallet')

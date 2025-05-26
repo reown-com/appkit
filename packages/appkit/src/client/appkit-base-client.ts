@@ -384,7 +384,10 @@ export abstract class AppKitBaseClient {
 
         const result = await adapter.connectWalletConnect(chainId)
 
-        this.close()
+        if (ChainController.state.noAdapters) {
+          this.close()
+        }
+
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         this.chainNamespaces.forEach(namespace => {
@@ -396,7 +399,7 @@ export abstract class AppKitBaseClient {
         })
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
+      connectExternal: async ({ id, address, info, type, provider, chain, caipNetwork }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
@@ -418,6 +421,7 @@ export abstract class AppKitBaseClient {
 
         const res = await adapter.connect({
           id,
+          address,
           info,
           type,
           provider,
@@ -428,7 +432,7 @@ export abstract class AppKitBaseClient {
         })
 
         if (!res) {
-          return
+          return undefined
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
@@ -438,6 +442,8 @@ export abstract class AppKitBaseClient {
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
         StorageUtil.removeDisconnectedConnectorId(id, chainToUse)
+
+        return { address: res.address }
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -452,6 +458,10 @@ export abstract class AppKitBaseClient {
         const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
         const adapter = this.getAdapter(namespace)
         const connectorId = id ?? ConnectorController.getConnectorId(namespace)
+
+        if (connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
+          StorageUtil.deleteConnectedSocialProvider()
+        }
 
         await adapter?.disconnect({ id: connectorId })
 
@@ -765,15 +775,18 @@ export abstract class AppKitBaseClient {
 
       ChainController.resetAccount(chainNamespace)
       ChainController.resetNetwork(chainNamespace)
+
       ConnectorController.removeConnectorId(chainNamespace)
 
       StorageUtil.removeConnectedNamespace(chainNamespace)
-      StorageUtil.deleteConnectedSocialProvider()
+
       ProviderUtil.resetChain(chainNamespace)
 
       this.setUser(undefined, chainNamespace)
       this.setStatus('disconnected', chainNamespace)
       this.setConnectedWalletInfo(undefined, chainNamespace)
+
+      ModalController.close()
     })
 
     adapter.on('connections', connections => {

@@ -7,7 +7,6 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
   SnackController
@@ -73,7 +72,9 @@ export class W3mConnectingWcView extends LitElement {
       ) {
         await ConnectionController.connectWalletConnect()
         if (!this.isSiwxEnabled) {
-          ModalController.close()
+          RouterController.reset('Account')
+          RouterController.push('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
         }
       }
     } catch (error) {

@@ -68,7 +68,7 @@ export class W3mConnectingSocialView extends LitElement {
           }
           if (val.address) {
             if (ModalController.state.open || OptionsController.state.enableEmbedded) {
-              RouterController.replace('Account')
+              RouterController.reset('Account')
               RouterController.push('ProfileWallets')
               SnackController.showSuccess('New Wallet Added')
             }

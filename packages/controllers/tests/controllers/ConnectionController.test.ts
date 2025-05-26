@@ -39,7 +39,7 @@ const client: ConnectionControllerClient = {
   disconnect: async () => Promise.resolve(),
   signMessage: async (message: string) => Promise.resolve(message),
   estimateGas: async () => Promise.resolve(BigInt(0)),
-  connectExternal: async _id => Promise.resolve(),
+  connectExternal: async _id => Promise.resolve({ address: '' }),
   checkInstalled: _id => true,
   parseUnits: value => BigInt(value),
   formatUnits: value => value.toString(),
@@ -374,7 +374,7 @@ describe('ConnectionController', () => {
       activeCaipNetwork: caipNetworks[0]
     })
 
-    await ConnectionController.connect({ connection, address, namespace: chain })
+    await ConnectionController.switchConnection({ connection, address, namespace: chain })
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith('eip155:137:0x123', chain)
   })
@@ -402,7 +402,7 @@ describe('ConnectionController', () => {
       }
     })
 
-    await ConnectionController.connect({ connection, address, namespace: chain })
+    await ConnectionController.switchConnection({ connection, address, namespace: chain })
 
     expect(clientConnectExternalSpy).toHaveBeenCalledWith(mockConnector)
   })
@@ -425,7 +425,7 @@ describe('ConnectionController', () => {
 
     const consoleWarnSpy = vi.spyOn(console, 'warn')
 
-    await ConnectionController.connect({ connection, address, namespace: chain })
+    await ConnectionController.switchConnection({ connection, address, namespace: chain })
 
     expect(consoleWarnSpy).toHaveBeenCalledWith('No current network found for namespace "eip155"')
   })
@@ -438,7 +438,7 @@ describe('ConnectionController', () => {
 
     const consoleWarnSpy = vi.spyOn(console, 'warn')
 
-    await ConnectionController.connect({ connection, address, namespace: chain })
+    await ConnectionController.switchConnection({ connection, address, namespace: chain })
 
     expect(consoleWarnSpy).toHaveBeenCalledWith('No connector found for namespace "eip155"')
   })

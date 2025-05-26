@@ -57,7 +57,12 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const connection = this.connections.find(c => c.connectorId === connector.id)
 
     if (connection) {
-      const [account] = connection.accounts
+      const account =
+        (params.address &&
+          connection.accounts.find(_account =>
+            HelpersUtil.isLowerCaseMatch(_account.address, params.address)
+          )) ||
+        connection?.accounts[0]
 
       if (account) {
         this.emit('accountChanged', {
