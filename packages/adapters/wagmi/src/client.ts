@@ -595,7 +595,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     console.log('>> disconnecting wagmi')
     const connections = getConnections(this.wagmiConfig)
     console.log('>> disconnecting wagmi connections', connections)
-    await Promise.all(
+    await Promise.allSettled(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
         console.log('>> disconnecting wagmi connector', connector)
@@ -604,6 +604,8 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
       })
     )
+    console.log('>> disconnecting wagmi done')
+    this.wagmiConfig.state.connections.clear()
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
