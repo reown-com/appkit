@@ -12,7 +12,6 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
