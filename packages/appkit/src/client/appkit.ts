@@ -611,6 +611,10 @@ export class AppKit extends AppKitBaseClient {
       featureImportPromises.push(import('@reown/appkit-pay'))
     }
 
+    if (remoteFeatures.emailCapture) {
+      featureImportPromises.push(import('@reown/appkit-siwx/ui'))
+    }
+
     await Promise.all([
       ...featureImportPromises,
       import('@reown/appkit-scaffold-ui'),

@@ -46,6 +46,7 @@ export interface RouterControllerState {
     | 'ConnectingSocial'
     | 'ConnectSocials'
     | 'ConnectWallets'
+    | 'DataCapture'
     | 'Downloads'
     | 'EmailLogin'
     | 'EmailVerifyOtp'

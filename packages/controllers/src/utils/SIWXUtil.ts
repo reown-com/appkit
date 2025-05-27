@@ -32,6 +32,14 @@ export const SIWXUtil = {
     }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
 
+    if (OptionsController.state.remoteFeatures?.emailCapture) {
+      await ModalController.open({
+        view: 'DataCapture'
+      })
+
+      return
+    }
+
     if (!ChainController.checkIfSupportedNetwork(namespace)) {
       return
     }

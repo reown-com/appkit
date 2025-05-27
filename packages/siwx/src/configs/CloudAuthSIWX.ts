@@ -174,12 +174,20 @@ export class CloudAuthSIWX implements SIWXConfig {
     })
   }
 
-  requestEmailOtp({ email, account }: { email: string; account: string }) {
-    return this.request({
+  async requestEmailOtp({ email, account }: { email: string; account: string }) {
+    const otp = await this.request({
       method: 'POST',
       key: 'otp',
       body: { email, account }
     })
+
+    if (this.messenger.resources) {
+      this.messenger.resources.push(`email:${email}`)
+    } else {
+      this.messenger.resources = [`email:${email}`]
+    }
+
+    return otp
   }
 
   confirmEmailOtp({ code }: { code: string }) {
@@ -229,7 +237,7 @@ export class CloudAuthSIWX implements SIWXConfig {
                 acc['Authorization'] = `Bearer ${this.getStorageToken(this.localAuthStorageKey)}`
                 break
               case 'otp':
-                // Add otp if needed
+                // Add otp
                 break
               default:
                 break
