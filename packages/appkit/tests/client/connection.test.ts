@@ -237,9 +237,6 @@ describe('syncConnectedWalletInfo', () => {
         accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
       })
 
-      //@ts-ignore
-      AccountController.state.allAccounts = undefined
-
       await (appKit as any).connectionControllerClient.connectExternal({
         id: 'test-connector',
         info: { name: 'Test Connector' },
@@ -248,12 +245,6 @@ describe('syncConnectedWalletInfo', () => {
         chain: 'eip155'
       })
 
-      expect(AccountController.state.allAccounts).toHaveLength(1)
-      expect(AccountController.state.allAccounts[0]).toMatchObject({
-        address: '0x123',
-        type: 'eoa',
-        namespace: 'eip155'
-      })
       //@ts-expect-error
       expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(1)
       expect(mockEvmAdapter.getAccounts).toHaveBeenCalledWith({
@@ -275,8 +266,6 @@ describe('syncConnectedWalletInfo', () => {
         accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
       })
 
-      AccountController.state.allAccounts = []
-
       await (appKit as any).connectionControllerClient.connectExternal({
         id: 'test-connector',
         info: { name: 'Test Connector' },
@@ -284,12 +273,7 @@ describe('syncConnectedWalletInfo', () => {
         provider: {} as any,
         chain: 'eip155'
       })
-      expect(AccountController.state.allAccounts).toHaveLength(1)
-      expect(AccountController.state.allAccounts[0]).toMatchObject({
-        address: '0x123',
-        type: 'eoa',
-        namespace: 'eip155'
-      })
+
       //@ts-expect-error
       expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(1)
       expect(mockEvmAdapter.getAccounts).toHaveBeenCalledWith({
@@ -314,8 +298,6 @@ describe('syncConnectedWalletInfo', () => {
         accounts: allAccounts
       })
 
-      AccountController.state.allAccounts = allAccounts
-
       await (appKit as any).connectionControllerClient.connectExternal({
         id: 'test-connector',
         info: { name: 'Test Connector' },
@@ -324,7 +306,6 @@ describe('syncConnectedWalletInfo', () => {
         chain: 'eip155'
       })
 
-      expect(AccountController.state.allAccounts).toHaveLength(allAccounts.length)
       //@ts-expect-error
       expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(0)
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
@@ -386,13 +367,11 @@ describe('syncConnectedWalletInfo', () => {
       } as unknown as CaipNetwork)
 
       const setStatus = vi.spyOn(appKit, 'setStatus')
-      const setAllAccounts = vi.spyOn(appKit, 'setAllAccounts')
       const syncAccount = vi.spyOn(appKit as any, 'syncAccount')
 
       await appKit['syncAdapterConnection']('eip155')
 
       expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
-      expect(setAllAccounts).toHaveBeenCalledWith([{ address: '0x123', type: 'eoa' }], 'eip155')
       expect(syncAccount).toHaveBeenCalledWith({
         address: '0x123',
         chainId: '1',
