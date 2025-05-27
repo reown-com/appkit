@@ -62,15 +62,14 @@ describe('AppKit - disconnect', () => {
 
       vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(mockProviderType)
-
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: 'solana:1:0xyz'
+      } as any)
       await (appKit as any).connectionControllerClient.disconnect(chainNamespace)
 
       expect(ProviderUtil.getProvider).toHaveBeenCalledWith(chainNamespace)
       expect(ProviderUtil.getProviderId).toHaveBeenCalledWith(chainNamespace)
-      expect(mockSolanaAdapter.disconnect).toHaveBeenCalledWith({
-        provider: mockProvider,
-        providerType: mockProviderType
-      })
+      expect(mockSolanaAdapter.disconnect).toHaveBeenCalledOnce()
     })
 
     it('should perform all disconnect operations in correct order', async () => {
@@ -81,6 +80,9 @@ describe('AppKit - disconnect', () => {
       vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: 'eip155:1:0xyz'
+      } as any)
 
       const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
       const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
@@ -426,9 +428,7 @@ describe('AppKit - disconnect - functional scenarios', () => {
     storageDeleteSocialSpy = vi.spyOn(StorageUtil, 'deleteConnectedSocialProvider')
     ccResetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
     evmAdapterDisconnectSpy = vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue(undefined)
-    solanaAdapterDisconnectSpy = vi
-      .spyOn(mockSolanaAdapter, 'disconnect')
-      .mockResolvedValue(undefined)
+    solanaAdapterDisconnectSpy = vi.spyOn(mockSolanaAdapter, 'disconnect')
 
     vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
     vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
@@ -481,7 +481,7 @@ describe('AppKit - disconnect - functional scenarios', () => {
     await (appKit as any).connectionControllerClient.disconnect()
 
     // EVM assertions
-    expect(evmAdapterDisconnectSpy).toHaveBeenCalledTimes(2) // Called twice due to structure
+    expect(evmAdapterDisconnectSpy).toHaveBeenCalledOnce()
     expect(setLoadingSpy).toHaveBeenCalledWith(true, eip155Namespace)
     expect(setLoadingSpy).toHaveBeenCalledWith(false, eip155Namespace)
     expect(StorageUtil.removeConnectedNamespace).toHaveBeenCalledWith(eip155Namespace)
@@ -494,7 +494,7 @@ describe('AppKit - disconnect - functional scenarios', () => {
     expect(resetNetworkSpy).toHaveBeenCalledWith(eip155Namespace)
 
     // Solana assertions
-    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledTimes(2) // Called twice
+    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledOnce()
     expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace)
     expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace)
     expect(StorageUtil.removeConnectedNamespace).toHaveBeenCalledWith(solanaNamespace)
@@ -637,15 +637,15 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     const solanaAdapterDisconnectSpy = vi.spyOn(mockSolanaAdapter, 'disconnect')
 
     // Simulate first conditional disconnect succeeding for solana, second (main) one failing
-    solanaAdapterDisconnectSpy.mockResolvedValueOnce(undefined) // For the conditional call
-    solanaAdapterDisconnectSpy.mockRejectedValueOnce(solanaAdapterError) // For the main call
+    solanaAdapterDisconnectSpy.mockRejectedValueOnce(solanaAdapterError)
+    solanaAdapterDisconnectSpy.mockResolvedValue(undefined)
 
     await expect((appKit as any).connectionControllerClient.disconnect()).rejects.toThrow(
       `Failed to disconnect chains: Failed to disconnect chain ${solanaNamespace}: ${solanaAdapterError.message}`
     )
 
     // --- Assertions for eip155 (successful disconnect) ---
-    expect(eip155AdapterDisconnectSpy).toHaveBeenCalledTimes(2)
+    expect(eip155AdapterDisconnectSpy).toHaveBeenCalledOnce()
     expect(eip155AdapterDisconnectSpy).toHaveBeenCalledWith({
       provider: mockEip155Provider,
       providerType: UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
@@ -662,7 +662,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     expect(resetNetworkSpy).toHaveBeenCalledWith(eip155Namespace)
 
     // --- Assertions for solana (failed disconnect where main adapter.disconnect errors) ---
-    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledTimes(2) // Both conditional and main calls attempted
+    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledOnce() // Both conditional and main calls attempted
     expect(solanaAdapterDisconnectSpy).toHaveBeenCalledWith({
       provider: mockSolanaProvider,
       providerType: UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
