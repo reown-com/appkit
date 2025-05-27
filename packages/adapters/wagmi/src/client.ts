@@ -846,9 +846,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
-        this.reconnect({
-          id: connector.id,
-          type: connector.type
+        reconnect(this.wagmiConfig, {
+          connectors: [connector]
         })
       }
     })

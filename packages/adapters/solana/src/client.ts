@@ -243,7 +243,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     const connection = this.connections.find(c => c.connectorId === connector.id)
 
     if (connection) {
-      const [account] = connection.accounts
+      const account =
+        (params.address &&
+          connection.accounts.find(_account =>
+            HelpersUtil.isLowerCaseMatch(_account.address, params.address)
+          )) ||
+        connection?.accounts[0]
 
       if (account) {
         this.emit('accountChanged', {
@@ -521,29 +526,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
               connector
             })
           }
-        }
-      },
-      onChainChanged: chainId => {
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), wcConnectorId)) {
-          this.emit('switchNetwork', {
-            chainId
-          })
-        }
-
-        const connection = this.connections.find(c =>
-          HelpersUtil.isLowerCaseMatch(c.connectorId, wcConnectorId)
-        )
-
-        if (connection) {
-          const caipNetwork = this.getCaipNetworks()
-            .filter(n => n.chainNamespace === 'solana')
-            .find(n => n.id.toString() === chainId.toString())
-
-          this.addConnection({
-            connectorId: wcConnectorId,
-            accounts: connection.accounts.map(account => ({ address: account.address })),
-            caipNetwork
-          })
         }
       }
     })

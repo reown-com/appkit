@@ -642,29 +642,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
             })
           }
         }
-      },
-      onChainChanged: chainId => {
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), wcConnectorId)) {
-          this.emit('switchNetwork', {
-            chainId
-          })
-        }
-
-        const connection = this.connections.find(c =>
-          HelpersUtil.isLowerCaseMatch(c.connectorId, wcConnectorId)
-        )
-
-        if (connection) {
-          const caipNetwork = this.getCaipNetworks()
-            .filter(n => n.chainNamespace === 'bip122')
-            .find(n => n.id.toString() === chainId.toString())
-
-          this.addConnection({
-            connectorId: wcConnectorId,
-            accounts: connection.accounts.map(account => ({ address: account.address })),
-            caipNetwork
-          })
-        }
       }
     })
 

@@ -52,7 +52,7 @@ export default function MultiChainWagmiSolana() {
         <InitializeBoundary>
           <AppKitButtons />
           <AppKitConnections namespace="eip155" title="EVM Connections" />
-          <AppKitConnections namespace="solana" title="Solana Connections" />
+          <AppKitConnections namespace="bip122" title="Bitcoin Connections" />
           <AppKitInfo />
           <WagmiTests />
           <BitcoinTests />
