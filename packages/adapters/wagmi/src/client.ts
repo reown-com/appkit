@@ -202,6 +202,8 @@ export class WagmiAdapter extends AdapterBlueprint {
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
+        console.log('>> watchAccount accountData', accountData)
+        console.log('>> watchAccount prevAccountData', prevAccountData)
         if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.emit('disconnect')
         }
@@ -411,8 +413,10 @@ export class WagmiAdapter extends AdapterBlueprint {
      * connectors are added later in the process the initial setup
      */
     watchConnectors(this.wagmiConfig, {
-      onChange: connectors =>
+      onChange: connectors => {
+        console.log('>> watchConnectors connectors', connectors)
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
+      }
     })
 
     // Add current wagmi connectors to chain adapter blueprint
@@ -588,11 +592,13 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
+    console.log('>> disconnecting wagmi')
     const connections = getConnections(this.wagmiConfig)
+    console.log('>> disconnecting wagmi connections', connections)
     await Promise.all(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
-
+        console.log('>> disconnecting wagmi connector', connector)
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
