@@ -52,10 +52,16 @@ describe('Network Management', () => {
 
     // Mock ChainController state to provide default values
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
+      chains: new Map(),
+      activeCaipAddress: undefined,
       activeCaipNetwork: mainnet,
       activeChain: 'eip155',
-      noAdapters: false
+      noAdapters: false,
+      universalAdapter: {
+        networkControllerClient: undefined,
+        connectionControllerClient: undefined
+      },
+      isSwitchingNamespace: false
     })
   })
 
