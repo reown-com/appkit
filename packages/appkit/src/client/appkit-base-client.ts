@@ -473,7 +473,6 @@ export abstract class AppKitBaseClient {
       },
       disconnect: async (chainNamespace?: ChainNamespace) => {
         const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
-
         try {
           // Reset send state when disconnecting
           SendController.resetSend()
@@ -489,8 +488,6 @@ export abstract class AppKitBaseClient {
                 if (caipAddress && adapter?.disconnect) {
                   await adapter.disconnect({ provider, providerType })
                 }
-
-                await adapter?.disconnect({ provider, providerType })
 
                 StorageUtil.removeConnectedNamespace(ns)
                 ProviderUtil.resetChain(ns)
