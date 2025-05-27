@@ -55,7 +55,7 @@ test('should get session account', async () => {
 test('should update session account metadata', async () => {
   const metadata = { username: 'satoshi' }
   await modalPage.updateSessionAccountMetadata(metadata)
-  
+
   await modalPage.requestSessionAccount()
   await modalValidator.expectMetadataUpdated(metadata)
 })
