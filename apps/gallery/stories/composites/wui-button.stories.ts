@@ -3,7 +3,7 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 
 import type { IconType } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/src/composites/wui-button'
 import type { WuiButton } from '@reown/appkit-ui/wui-button'
 
 import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
@@ -23,7 +23,7 @@ export default {
   },
   argTypes: {
     size: {
-      options: ['lg', 'md', 'sm', 'xs'],
+      options: ['lg', 'md'],
       control: { type: 'select' }
     },
     variant: {
