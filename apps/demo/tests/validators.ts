@@ -25,7 +25,10 @@ export class ModalValidator {
   }
 
   async expectConnected() {
+    const connectView = this.page.locator('w3m-connect-view').first()
     const profileButton = this.page.locator('wui-profile-button').first()
+
+    await expect(connectView, 'Connect view should be present').not.toBeVisible()
     await expect(profileButton, 'Profile button should be present').toBeVisible({
       timeout: MAX_WAIT
     })

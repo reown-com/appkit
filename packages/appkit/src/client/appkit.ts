@@ -152,10 +152,6 @@ export class AppKit extends AppKitBaseClient {
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
 
-      if (OptionsController.state.enableEmbedded) {
-        ModalController.close()
-      }
-
       const userAccounts = user.accounts?.map(account =>
         CoreHelperUtil.createAccount(
           namespace,
