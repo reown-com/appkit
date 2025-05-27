@@ -202,8 +202,6 @@ export class WagmiAdapter extends AdapterBlueprint {
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
-        console.log('>> watchAccount accountData', accountData)
-        console.log('>> watchAccount prevAccountData', prevAccountData)
         if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.emit('disconnect')
         }
@@ -389,7 +387,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
-
     this.addConnector({
       id: connector.id,
       explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
@@ -414,7 +411,6 @@ export class WagmiAdapter extends AdapterBlueprint {
      */
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => {
-        console.log('>> watchConnectors connectors', connectors)
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
       }
     })
@@ -592,19 +588,15 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
-    console.log('>> disconnecting wagmi')
     const connections = getConnections(this.wagmiConfig)
-    console.log('>> disconnecting wagmi connections', connections)
     await Promise.allSettled(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
-        console.log('>> disconnecting wagmi connector', connector)
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
       })
     )
-    console.log('>> disconnecting wagmi done')
     this.wagmiConfig.state.connections.clear()
   }
 
@@ -720,11 +712,9 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
     universalProvider.on('connect', () => {
-      console.log('>> universalProvider.on connect')
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
-        console.log('>> universalProvider.on connect reconnecting')
         reconnect(this.wagmiConfig, {
           connectors: [connector]
         })
