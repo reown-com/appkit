@@ -56,24 +56,30 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async addSession(session: SIWXSession): Promise<void> {
-    const response = await this.request(
-      'authenticate',
-      {
+    const response = await this.request({
+      method: 'POST',
+      key: 'authenticate',
+      body: {
         data: session.data,
         message: session.message,
         signature: session.signature,
         clientId: this.getClientId(),
         walletInfo: this.getWalletInfo()
       },
-      'nonceJwt'
-    )
+      headers: ['nonce', 'otp']
+    })
     this.setStorageToken(response.token, this.localAuthStorageKey)
     this.emit('sessionChanged', session)
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
     try {
-      const siweSession = await this.request('me', undefined, 'authJwt')
+      const siweSession = await this.request({
+        method: 'GET',
+        key: 'me',
+        query: {},
+        headers: ['auth'] as const
+      })
 
       const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
       const isSameNetwork = siweSession?.caip2Network === chainId
@@ -124,7 +130,15 @@ export class CloudAuthSIWX implements SIWXConfig {
       throw new Error('Not authenticated')
     }
 
-    return this.request('me?includeAppKitAccount=true', undefined, 'authJwt')
+    return this.request({
+      method: 'GET',
+      key: 'me',
+      body: undefined,
+      query: {
+        includeAppKitAccount: true
+      },
+      headers: ['auth']
+    })
   }
 
   async setSessionAccountMetadata(metadata: object | null = null) {
@@ -132,7 +146,12 @@ export class CloudAuthSIWX implements SIWXConfig {
       throw new Error('Not authenticated')
     }
 
-    return this.request('account-metadata', { metadata }, 'authJwt')
+    return this.request({
+      method: 'PUT',
+      key: 'account-metadata',
+      body: { metadata },
+      headers: ['auth']
+    })
   }
 
   on<Event extends keyof CloudAuthSIWX.Events>(
@@ -155,40 +174,71 @@ export class CloudAuthSIWX implements SIWXConfig {
     })
   }
 
-  private async request<Key extends CloudAuthSIWX.RequestKey>(
-    key: Key,
-    params: CloudAuthSIWX.Requests[Key]['body'],
-    tokenType?: 'authJwt' | 'nonceJwt'
-  ): Promise<CloudAuthSIWX.Requests[Key]['response']> {
+  requestEmailOtp({ email, account }: { email: string; account: string }) {
+    return this.request({
+      method: 'POST',
+      key: 'otp',
+      body: { email, account }
+    })
+  }
+
+  confirmEmailOtp({ code }: { code: string }) {
+    return this.request({
+      method: 'PUT',
+      key: 'otp',
+      body: { code },
+      headers: ['otp']
+    })
+  }
+
+  private async request<
+    Method extends CloudAuthSIWX.Methods,
+    Key extends CloudAuthSIWX.RequestKeys<Method>
+  >({
+    method,
+    key,
+    query,
+    body,
+    headers
+  }: CloudAuthSIWX.RequestParams<Key, Method>): Promise<
+    CloudAuthSIWX.RequestResponse<Method, Key>
+  > {
     const { projectId, st, sv } = this.getSDKProperties()
 
-    let headers: Record<string, string> | undefined = undefined
+    const url = new URL(`${ConstantsUtil.W3M_API_URL}/auth/v1/${String(key)}`)
+    url.searchParams.set('projectId', projectId)
+    url.searchParams.set('st', st)
+    url.searchParams.set('sv', sv)
 
-    switch (tokenType) {
-      case 'nonceJwt':
-        headers = {
-          'x-nonce-jwt': `Bearer ${this.getStorageToken(this.localNonceStorageKey)}`
-        }
-        break
-      case 'authJwt':
-        headers = {
-          Authorization: `Bearer ${this.getStorageToken(this.localAuthStorageKey)}`
-        }
-        break
-      default:
-        break
+    if (query) {
+      Object.entries(query).forEach(([queryKey, queryValue]) =>
+        url.searchParams.set(queryKey, String(queryValue))
+      )
     }
 
-    const response = await fetch(
-      new URL(
-        `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`
-      ),
-      {
-        method: RequestMethod[key],
-        body: params ? JSON.stringify(params) : undefined,
-        headers
-      }
-    )
+    const response = await fetch(url, {
+      method,
+      body: body ? JSON.stringify(body) : undefined,
+      headers: Array.isArray(headers)
+        ? headers.reduce((acc, header) => {
+            switch (header) {
+              case 'nonce':
+                acc['x-nonce-jwt'] = `Bearer ${this.getStorageToken(this.localNonceStorageKey)}`
+                break
+              case 'auth':
+                acc['Authorization'] = `Bearer ${this.getStorageToken(this.localAuthStorageKey)}`
+                break
+              case 'otp':
+                // Add otp if needed
+                break
+              default:
+                break
+            }
+
+            return acc
+          }, {})
+        : undefined
+    })
 
     if (response.headers.get('content-type')?.includes('application/json')) {
       return response.json()
@@ -212,7 +262,10 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   private async getNonce(): Promise<string> {
-    const { nonce, token } = await this.request('nonce', undefined)
+    const { nonce, token } = await this.request({
+      method: 'GET',
+      key: 'nonce'
+    })
 
     this.setStorageToken(token, this.localNonceStorageKey)
 
@@ -273,15 +326,6 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 }
 
-const RequestMethod = {
-  nonce: 'GET',
-  me: 'GET',
-  authenticate: 'POST',
-  'account-metadata': 'PUT',
-  'sign-out': 'POST',
-  'me?includeAppKitAccount=true': 'GET'
-} satisfies { [key in CloudAuthSIWX.RequestKey]: CloudAuthSIWX.Requests[key]['method'] }
-
 export namespace CloudAuthSIWX {
   export type ConstructorParams = {
     /**
@@ -301,34 +345,83 @@ export namespace CloudAuthSIWX {
     required?: boolean
   }
 
-  export type Request<Method extends 'GET' | 'POST' | 'PATCH' | 'PUT', Params, Response> = {
-    method: Method
-    body: Params
-    response: Response
+  export type AvailableRequestHeaders = {
+    nonce: {
+      'x-nonce-jwt': string
+    }
+    auth: {
+      Authorization: string
+    }
+    otp: {
+      'x-otp'?: string
+    }
   }
+
+  export type RequestParams<Key extends keyof Requests[Method], Method extends Methods> = {
+    method: Method
+    key: Key
+    // @ts-expect-error - This is matching correctly already
+  } & Pick<Requests[Method][Key], 'query' | 'body' | 'headers'>
+
+  export type RequestResponse<
+    Method extends Methods,
+    Key extends RequestKeys<Method>
+    // @ts-expect-error - This is matching correctly already
+  > = Requests[Method][Key]['response']
+
+  export type Request<
+    Body,
+    Response,
+    Query extends Record<string, unknown> | undefined = undefined,
+    Headers extends (keyof AvailableRequestHeaders)[] | undefined = undefined
+  > = (Response extends undefined
+    ? {
+        response?: never
+      }
+    : {
+        response: Response
+      }) &
+    (Body extends undefined ? { body?: never } : { body: Body }) &
+    (Query extends undefined ? { query?: never } : { query: Query }) &
+    (Headers extends undefined ? { headers?: never } : { headers: Headers })
 
   export type Requests = {
-    nonce: Request<'GET', undefined, { nonce: string; token: string }>
-    me: Request<'GET', undefined, Omit<SessionAccount, 'appKitAccount'>>
-    'me?includeAppKitAccount=true': Request<'GET', undefined, SessionAccount>
-    authenticate: Request<
-      'POST',
-      {
-        data?: SIWXMessage.Data
-        message: string
-        signature: string
-        clientId?: string | null
-        walletInfo?: WalletInfo
-      },
-      {
-        token: string
-      }
-    >
-    'account-metadata': Request<'PUT', { metadata: object | null }, unknown>
-    'sign-out': Request<'POST', undefined, never>
+    GET: {
+      nonce: Request<undefined, { nonce: string; token: string }>
+      me: Request<
+        undefined,
+        Omit<SessionAccount, 'appKitAccount'>,
+        { includeAppKitAccount?: boolean },
+        ['auth']
+      >
+    }
+    POST: {
+      authenticate: Request<
+        {
+          data?: SIWXMessage.Data
+          message: string
+          signature: string
+          clientId?: string | null
+          walletInfo?: WalletInfo
+        },
+        {
+          token: string
+        },
+        undefined,
+        ['nonce', 'otp']
+      >
+      'sign-out': Request<undefined, never, never, ['auth']>
+      otp: Request<{ email: string; account: string }, { uuid: string | null }>
+    }
+    PUT: {
+      'account-metadata': Request<{ metadata: object | null }, unknown, undefined, ['auth']>
+      otp: Request<{ code: string }, null, undefined, ['otp']>
+    }
   }
 
-  export type RequestKey = keyof Requests
+  export type Methods = 'GET' | 'POST' | 'PUT'
+
+  export type RequestKeys<Method extends Methods> = keyof Requests[Method]
 
   export type WalletInfo =
     | {

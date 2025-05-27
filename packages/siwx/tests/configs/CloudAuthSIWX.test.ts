@@ -588,7 +588,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       expect(result).toEqual(mockAccountData)
       expect(fetchSpy).toHaveBeenCalledWith(
         new URL(
-          'https://api.web3modal.org/auth/v1/me?includeAppKitAccount=true?projectId=&st=appkit&sv=html-wagmi-undefined'
+          'https://api.web3modal.org/auth/v1/me?projectId=&st=appkit&sv=html-wagmi-undefined&includeAppKitAccount=true'
         ),
         {
           body: undefined,
