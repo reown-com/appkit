@@ -1,4 +1,4 @@
-import { type BrowserContext, expect, test } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
 
 import { BASE_URL } from './shared/constants'
 import { CloudAuthModalPage } from './shared/pages/CloudAuthModalPage'
@@ -55,10 +55,9 @@ test('should get session account', async () => {
 test('should update session account metadata', async () => {
   const metadata = { username: 'satoshi' }
   await modalPage.updateSessionAccountMetadata(metadata)
-
+  
   await modalPage.requestSessionAccount()
-  const sessionAccount = await modalValidator.expectSessionAccount()
-  expect(sessionAccount.appKitAccount.metadata).toMatchObject(metadata)
+  await modalValidator.expectMetadataUpdated(metadata)
 })
 
 test('should disconnect session account', async () => {

@@ -38,4 +38,17 @@ export class CloudAuthModalValidator extends ModalValidator {
 
     return object
   }
+
+  async expectMetadataUpdated(expectedMetadata: Record<string, unknown>) {
+    await expect(async () => {
+      const text = await this.sessionAccount.innerText().catch(() => '""')
+      const object = JSON.parse(text)
+      
+      expect(object?.appKitAccount?.metadata).toMatchObject(expectedMetadata)
+    }).toPass({
+      timeout: 10_000
+    })
+    
+    return JSON.parse(await this.sessionAccount.innerText())
+  }
 }
