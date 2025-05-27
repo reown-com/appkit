@@ -484,7 +484,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     await this.addThirdPartyConnectors(options)
   }
 
-  // Wagmi already handles syncing connections
+  // Wagmi already handles connections
   public async syncConnections() {
     return Promise.resolve()
   }
@@ -846,12 +846,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
-        /*
-         * TODO: Revisit this since it could be a bug: https://github.com/reown-com/appkit/pull/4232
-         * If we do reconnect instead of connect, wagmi overrides connections state
-         */
-        connect(this.wagmiConfig, {
-          connector
+        this.reconnect({
+          id: connector.id,
+          type: connector.type
         })
       }
     })

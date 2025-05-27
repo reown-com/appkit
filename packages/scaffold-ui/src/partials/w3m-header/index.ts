@@ -65,7 +65,6 @@ function headings() {
     Profile: undefined,
     ProfileWallets: 'Wallets',
     SwitchNetwork: networkName ?? 'Switch Network',
-    SwitchAddress: 'Switch Address',
     Transactions: 'Activity',
     UnsupportedChain: 'Switch Network',
     UpgradeEmailWallet: 'Upgrade your Wallet',

@@ -471,7 +471,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
   public async connect({
     id,
-    address: _address,
+    address,
     type,
     chainId,
     socialUri
@@ -492,9 +492,9 @@ export class EthersAdapter extends AdapterBlueprint {
       }
 
       const account =
-        (_address &&
+        (address &&
           connection.accounts.find(_account =>
-            HelpersUtil.isLowerCaseMatch(_account.address, _address)
+            HelpersUtil.isLowerCaseMatch(_account.address, address)
           )) ||
         connection?.accounts[0]
 

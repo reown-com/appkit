@@ -119,7 +119,6 @@ export interface BlockchainApiControllerState {
   clientId: string | null
   api: FetchUtil
   supportedChains: { http: CaipNetworkId[]; ws: CaipNetworkId[] }
-  smartAccounts: string[]
 }
 
 // -- Helpers ------------------------------------------- //
@@ -129,8 +128,7 @@ const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
   api: new FetchUtil({ baseUrl, clientId: null }),
-  supportedChains: { http: [], ws: [] },
-  smartAccounts: []
+  supportedChains: { http: [], ws: [] }
 })
 
 // -- Controller ---------------------------------------- //

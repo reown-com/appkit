@@ -459,8 +459,6 @@ export abstract class AppKitBaseClient {
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
-        // eslint-disable-next-line no-warning-comments
-        // TODO: remove this and use accountChanged event
         this.syncProvider({ ...res, chainNamespace: chainToUse })
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)

@@ -32,10 +32,14 @@ export class WuiProfileButton extends LitElement {
   public override render() {
     return html`<button data-testid="wui-profile-button">
       <wui-flex gap="xs" alignItems="center">
-        <wui-image src=${this.avatarSrc}></wui-image>
-
+        <wui-avatar
+          .imageSrc=${this.avatarSrc}
+          alt=${this.address}
+          address=${this.address}
+        ></wui-avatar>
+        ${this.networkImageTemplate()}
         <wui-flex gap="xs" alignItems="center">
-          <wui-text variant="small-600" color="fg-100">
+          <wui-text variant="large-600" color="fg-100">
             ${UiHelperUtil.getTruncateString({
               string: this.profileName || this.address,
               charsStart: this.profileName ? 18 : 4,
@@ -47,6 +51,22 @@ export class WuiProfileButton extends LitElement {
         </wui-flex>
       </wui-flex>
     </button>`
+  }
+
+  // -- Private ------------------------------------------- //
+  private networkImageTemplate() {
+    if (this.networkSrc) {
+      return html`<wui-image src=${this.networkSrc}></wui-image>`
+    }
+
+    return html`
+      <wui-icon-box
+        size="xxs"
+        iconColor="fg-200"
+        backgroundColor="bg-100"
+        icon="networkPlaceholder"
+      ></wui-icon-box>
+    `
   }
 }
 

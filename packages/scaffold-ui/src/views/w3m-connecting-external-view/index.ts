@@ -107,22 +107,21 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       if (newConnections.length === 0) {
         RouterController.replace('Connect')
       } else {
-        const allCurrentAccountsByConnectorId =
-          ConnectionControllerUtil.getConnectionsByConnectorId(
-            this.connections,
-            this.connector.id
-          ).flatMap(c => c.accounts)
+        const accounts = ConnectionControllerUtil.getConnectionsByConnectorId(
+          this.connections,
+          this.connector.id
+        ).flatMap(c => c.accounts)
 
-        const allNewAccountsByConnectorId = ConnectionControllerUtil.getConnectionsByConnectorId(
+        const newAccounts = ConnectionControllerUtil.getConnectionsByConnectorId(
           newConnections,
           this.connector.id
         ).flatMap(c => c.accounts)
 
-        const isEveryAccountSame = allCurrentAccountsByConnectorId.every(a =>
-          allNewAccountsByConnectorId.some(b => HelpersUtil.isLowerCaseMatch(a.address, b.address))
+        const isAllAccountsSame = accounts.every(a =>
+          newAccounts.some(b => HelpersUtil.isLowerCaseMatch(a.address, b.address))
         )
 
-        if (!isEveryAccountSame) {
+        if (!isAllAccountsSame) {
           RouterController.replace('Account')
           RouterController.push('ProfileWallets')
         }
@@ -131,11 +130,10 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
   }
 
   private isAlreadyConnected(connector: Connector) {
-    if (connector) {
-      return this.connections.some(c => HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id))
-    }
-
-    return false
+    return (
+      Boolean(connector) &&
+      this.connections.some(c => HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id))
+    )
   }
 }
 

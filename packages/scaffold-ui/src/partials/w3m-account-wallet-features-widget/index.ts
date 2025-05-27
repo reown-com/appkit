@@ -111,11 +111,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     const connectorId = this.activeConnectorIds[this.namespace]
 
-    if (!connectorId) {
-      return null
-    }
-
-    const connector = ConnectorController.getConnectorById(connectorId)
+    const connector = connectorId ? ConnectorController.getConnectorById(connectorId) : undefined
 
     const { icon, iconSize } = this.getAuthData()
 

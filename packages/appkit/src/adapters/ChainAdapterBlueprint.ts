@@ -152,7 +152,7 @@ export abstract class AdapterBlueprint<
   }
 
   /**
-   * Adds one or more connections to the available connections list.
+   * Adds connections to the available connections list
    * @param {...Connection} connections - The connections to add
    */
   protected addConnection(...connections: Connection[]) {
@@ -173,6 +173,10 @@ export abstract class AdapterBlueprint<
     this.emit('connections', this.availableConnections)
   }
 
+  /**
+   * Deletes a connection from the available connections list
+   * @param {string} connectorId - The connector ID of the connection to delete
+   */
   protected deleteConnection(connectorId: string) {
     this.availableConnections = this.availableConnections.filter(
       c => !HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
@@ -181,6 +185,10 @@ export abstract class AdapterBlueprint<
     this.emit('connections', this.availableConnections)
   }
 
+  /**
+   * Clears all connections from the available connections list
+   * @param {boolean} emit - Whether to emit the connections event
+   */
   protected clearConnections(emit = false) {
     this.availableConnections = []
 

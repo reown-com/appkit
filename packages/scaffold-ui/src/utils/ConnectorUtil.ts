@@ -187,9 +187,7 @@ export const ConnectorUtil = {
   },
   async fetchProviderData(connector: Connector) {
     try {
-      // eslint-disable-next-line no-warning-comments
-      // TODO: Make sure this is enabled if user is on mobile
-      if (connector.name === 'Browser Wallet') {
+      if (connector.name === 'Browser Wallet' && !CoreHelperUtil.isMobile()) {
         return { accounts: [], chainId: undefined }
       }
 
@@ -198,7 +196,6 @@ export const ConnectorUtil = {
       }
 
       const [accounts, chainId] = await Promise.all([
-        // TOOD: Remove this if using universal provider, and get accounts directly from the provider
         connector.provider?.request({ method: 'eth_accounts' }) as Promise<string[]>,
         connector.provider
           ?.request({ method: 'eth_chainId' })

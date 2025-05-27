@@ -61,7 +61,6 @@ export interface RouterControllerState {
     | 'RegisterAccountName'
     | 'RegisterAccountNameSuccess'
     | 'SwitchNetwork'
-    | 'SwitchAddress'
     | 'Transactions'
     | 'UnsupportedChain'
     | 'UpdateEmailWallet'

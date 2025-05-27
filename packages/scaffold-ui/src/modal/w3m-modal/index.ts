@@ -222,16 +222,6 @@ export class W3mModalBase extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    // eslint-disable-next-line no-warning-comments
-    // TODO: Handle this logic seperately
-    /*
-     * If (isDisconnectedInSameNamespace) {
-     * ModalController.close()
-     * } else if (isSwitchingNamespaceAndConnected) {
-     * RouterController.goBack()
-     * }
-     */
-
     await SIWXUtil.initializeIfEnabled()
 
     this.caipAddress = caipAddress

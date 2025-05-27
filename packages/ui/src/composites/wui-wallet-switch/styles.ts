@@ -1,8 +1,5 @@
 import { css } from 'lit'
 
-// eslint-disable-next-line no-warning-comments
-// TODO: add spacing variables for 4px spacing
-
 export default css`
   button {
     display: flex;

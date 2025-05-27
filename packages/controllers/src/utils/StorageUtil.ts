@@ -650,9 +650,6 @@ export const StorageUtil = {
     namespace
   }: DeleteAddressFromConnectionParams) {
     try {
-      // eslint-disable-next-line no-param-reassign
-      connectorId = connectorId.toLowerCase()
-
       const connections = StorageUtil.getConnections()
       const namespaceConnections = connections[namespace] ?? []
 

@@ -143,8 +143,6 @@ export const SIWXUtil = {
       const isRequired = siwx?.getRequired?.()
 
       if (isRequired) {
-        // eslint-disable-next-line no-warning-comments
-        // TODO: disconnect all
         await ConnectionController.disconnect()
       } else {
         ModalController.close()

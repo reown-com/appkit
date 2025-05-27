@@ -131,10 +131,10 @@ export class W3mUnsupportedChainView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconecting = true
-      // eslint-disable-next-line no-warning-comments
-      // TODO: check this behaviour and see if we should disconnect all
       await ConnectionController.disconnect()
-      ModalController.close()
+      RouterController.reset('Account')
+      RouterController.push('ProfileWallets')
+      SnackController.showSuccess('Wallet deleted')
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

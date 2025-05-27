@@ -289,9 +289,7 @@ const controller = {
       c => c.chain === ChainController.state.activeChain
     )
 
-    const find = connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
-
-    return find
+    return connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {

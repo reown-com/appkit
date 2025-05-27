@@ -107,11 +107,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     const connectorId = this.activeConnectorIds[this.namespace]
 
-    if (!connectorId) {
-      return null
-    }
-
-    const connector = ConnectorController.getConnectorById(connectorId)
+    const connector = connectorId ? ConnectorController.getConnectorById(connectorId) : undefined
     const connectorImage = AssetUtil.getConnectorImage(connector)
 
     return html`<wui-flex
@@ -125,7 +121,6 @@ export class W3mAccountDefaultWidget extends LitElement {
           address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
           imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
           data-testid="single-account-avatar"
-          @click=${this.handleSwitchAccountsView.bind(this)}
         ></wui-avatar>
         <wui-wallet-switch
           profileName=${this.profileName}
@@ -293,10 +288,6 @@ export class W3mAccountDefaultWidget extends LitElement {
         data-testid="w3m-wallet-upgrade-card"
       ></wui-notice-card>
     `
-  }
-
-  private handleSwitchAccountsView() {
-    RouterController.push('SwitchAddress')
   }
 
   private handleClickPay() {
