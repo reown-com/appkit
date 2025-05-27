@@ -632,6 +632,7 @@ describe('WagmiAdapter', () => {
       } as any)
 
       const disconnectSpy = vi.spyOn(wagmiCore, 'disconnect').mockImplementationOnce(vi.fn())
+      disconnectSpy.mockRejectedValueOnce(new Error('Failed to disconnect'))
 
       const wagmiAdapter = new WagmiAdapter({
         networks: mockNetworks,
