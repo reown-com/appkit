@@ -3,6 +3,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { CaipNetworkId } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -26,6 +27,7 @@ import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
+import { isPayWithWalletSupported } from '../../utils/AssetUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-pay-view')
@@ -74,11 +76,7 @@ export class W3mPayView extends LitElement {
           ${this.renderPaymentHeader()}
 
           <wui-flex flexDirection="column" gap="s">
-            <wui-flex flexDirection="column" gap="s">
-              ${this.isWalletConnected ? this.renderConnectedView() : this.renderDisconnectedView()}
-            </wui-flex>
-            <wui-separator text="or"></wui-separator>
-            ${this.renderExchangeOptions()}
+            ${this.renderPayWithWallet()} ${this.renderExchangeOptions()}
           </wui-flex>
         </wui-flex>
       </wui-flex>
@@ -91,6 +89,17 @@ export class W3mPayView extends LitElement {
     this.networkName = paymentAsset.network
     this.tokenSymbol = paymentAsset.metadata.symbol
     this.amount = PayController.state.amount.toString()
+  }
+
+  private renderPayWithWallet() {
+    if (!isPayWithWalletSupported(this.networkName as CaipNetworkId)) {
+      return html``
+    }
+
+    return html`<wui-flex flexDirection="column" gap="s">
+        ${this.isWalletConnected ? this.renderConnectedView() : this.renderDisconnectedView()}
+      </wui-flex>
+      <wui-separator text="or"></wui-separator>`
   }
 
   private renderPaymentHeader() {

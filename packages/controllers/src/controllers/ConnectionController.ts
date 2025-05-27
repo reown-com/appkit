@@ -23,6 +23,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
+import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -33,6 +34,8 @@ import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
 export type Connection = {
+  name?: string
+  icon?: string
   accounts: { type?: string; address: string }[]
   caipNetwork?: CaipNetwork
   connectorId: string
@@ -83,6 +86,7 @@ export interface ConnectExternalOptions {
   chain?: ChainNamespace
   chainId?: number | string
   caipNetwork?: CaipNetwork
+  socialUri?: string
 }
 
 export interface ConnectionControllerClient {
@@ -145,7 +149,7 @@ const state = proxy<ConnectionControllerState>({
 let wcConnectionPromise: Promise<void> | undefined
 
 // -- Controller ---------------------------------------- //
-export const ConnectionController = {
+const controller = {
   state,
 
   subscribeKey<K extends StateKey>(
@@ -178,21 +182,21 @@ export const ConnectionController = {
 
         return
       }
-      wcConnectionPromise = this._getClient()
+      wcConnectionPromise = ConnectionController._getClient()
         ?.connectWalletConnect?.()
         .catch(() => undefined)
-      this.state.status = 'connecting'
+      ConnectionController.state.status = 'connecting'
       await wcConnectionPromise
       wcConnectionPromise = undefined
       state.wcPairingExpiry = undefined
-      this.state.status = 'connected'
+      ConnectionController.state.status = 'connected'
     } else {
-      await this._getClient()?.connectWalletConnect?.()
+      await ConnectionController._getClient()?.connectWalletConnect?.()
     }
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    const connectData = await this._getClient()?.connectExternal?.(options)
+    const connectData = await ConnectionController._getClient()?.connectExternal?.(options)
 
     if (setChain) {
       ChainController.setActiveNamespace(chain)
@@ -202,7 +206,7 @@ export const ConnectionController = {
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
-    await this._getClient()?.reconnectExternal?.(options)
+    await ConnectionController._getClient()?.reconnectExternal?.(options)
     const namespace = options.chain || ChainController.state.activeChain
     if (namespace) {
       ConnectorController.setConnectorId(options.id, namespace)
@@ -220,7 +224,7 @@ export const ConnectionController = {
     StorageUtil.setPreferredAccountTypes(
       AccountController.state.preferredAccountTypes ?? { [namespace]: accountType }
     )
-    await this.reconnectExternal(authConnector)
+    await ConnectionController.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)
     EventsController.sendEvent({
       type: 'track',
@@ -233,51 +237,51 @@ export const ConnectionController = {
   },
 
   async signMessage(message: string) {
-    return this._getClient()?.signMessage(message)
+    return ConnectionController._getClient()?.signMessage(message)
   },
 
   parseUnits(value: string, decimals: number) {
-    return this._getClient()?.parseUnits(value, decimals)
+    return ConnectionController._getClient()?.parseUnits(value, decimals)
   },
 
   formatUnits(value: bigint, decimals: number) {
-    return this._getClient()?.formatUnits(value, decimals)
+    return ConnectionController._getClient()?.formatUnits(value, decimals)
   },
 
   async sendTransaction(args: SendTransactionArgs) {
-    return this._getClient()?.sendTransaction(args)
+    return ConnectionController._getClient()?.sendTransaction(args)
   },
 
   async getCapabilities(params: string) {
-    return this._getClient()?.getCapabilities(params)
+    return ConnectionController._getClient()?.getCapabilities(params)
   },
 
   async grantPermissions(params: object | readonly unknown[]) {
-    return this._getClient()?.grantPermissions(params)
+    return ConnectionController._getClient()?.grantPermissions(params)
   },
 
   async walletGetAssets(params: WalletGetAssetsParams): Promise<WalletGetAssetsResponse> {
-    return this._getClient()?.walletGetAssets(params) ?? {}
+    return ConnectionController._getClient()?.walletGetAssets(params) ?? {}
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {
-    return this._getClient()?.estimateGas(args)
+    return ConnectionController._getClient()?.estimateGas(args)
   },
 
   async writeContract(args: WriteContractArgs) {
-    return this._getClient()?.writeContract(args)
+    return ConnectionController._getClient()?.writeContract(args)
   },
 
   async getEnsAddress(value: string) {
-    return this._getClient()?.getEnsAddress(value)
+    return ConnectionController._getClient()?.getEnsAddress(value)
   },
 
   async getEnsAvatar(value: string) {
-    return this._getClient()?.getEnsAvatar(value)
+    return ConnectionController._getClient()?.getEnsAvatar(value)
   },
 
   checkInstalled(ids?: string[]) {
-    return this._getClient()?.checkInstalled?.(ids) || false
+    return ConnectionController._getClient()?.checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
@@ -361,7 +365,7 @@ export const ConnectionController = {
       ModalController.setLoading(false, namespace)
       ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {
-      throw new Error('Failed to disconnect')
+      throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
   },
 
@@ -565,3 +569,6 @@ export const ConnectionController = {
     }
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ConnectionController = withErrorBoundary(controller)

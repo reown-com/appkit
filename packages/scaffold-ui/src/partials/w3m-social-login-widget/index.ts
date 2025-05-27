@@ -41,9 +41,9 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
-  @state() private connections = ConnectionController.state.connections
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  @state() private features = OptionsController.state.features
+  @state() private connections = ConnectionController.state.connections
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
@@ -56,10 +56,10 @@ export class W3mSocialLoginWidget extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
       ConnectionController.subscribeKey('connections', val => {
         this.connections = val
-      }),
-      OptionsController.subscribeKey('features', val => (this.features = val))
+      })
     )
   }
 
@@ -89,10 +89,10 @@ export class W3mSocialLoginWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
     const isCreateWalletPage = this.walletGuide === 'explore'
-    let socials = this.features?.socials
+    let socials = this.remoteFeatures?.socials
 
     if (!socials && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+      socials = ConstantsUtil.DEFAULT_SOCIALS
 
       return this.renderTopViewContent(socials)
     }
@@ -136,12 +136,12 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   private bottomViewTemplate() {
-    let socials = this.features?.socials
+    let socials = this.remoteFeatures?.socials
     const isCreateWalletPage = this.walletGuide === 'explore'
-    const isSocialDisabled = !this.authConnector || !socials || !socials?.length
+    const isSocialDisabled = !this.authConnector || !socials || socials.length === 0
 
     if (isSocialDisabled && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+      socials = ConstantsUtil.DEFAULT_SOCIALS
     }
 
     if (!socials) {
@@ -172,6 +172,7 @@ export class W3mSocialLoginWidget extends LitElement {
           tabIdx=${ifDefined(this.tabIdx)}
           @click=${this.onMoreSocialsClick.bind(this)}
           ?disabled=${this.isPwaLoading || this.hasConnection()}
+          data-testid="social-selector-more"
         ></wui-logo-select>
       </wui-flex>`
     }

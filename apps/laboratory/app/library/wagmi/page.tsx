@@ -24,9 +24,7 @@ const config = {
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true
-  }
+  customWallets: ConstantsUtil.CustomWallets
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 

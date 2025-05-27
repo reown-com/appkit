@@ -10,6 +10,7 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
+  ApiGetProjectConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   WcWallet
@@ -26,14 +27,17 @@ import { OptionsController } from './OptionsController.js'
  * - Phantom
  * - Coinbase
  */
-const CUSTOM_DEEPLINK_WALLETS = {
-  PHANTOM: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
-  COINBASE: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
+export const CUSTOM_DEEPLINK_WALLETS = {
+  PHANTOM: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+  COINBASE: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'
 }
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl, clientId: null })
+export const api = new FetchUtil({
+  baseUrl,
+  clientId: null
+})
 const entries = 40
 const recommendedEntries = 4
 const imageCountToFetch = 20
@@ -151,6 +155,15 @@ export const ApiController = {
     return filteredWallets
   },
 
+  async fetchProjectConfig() {
+    const response = await api.get<ApiGetProjectConfigResponse>({
+      path: '/appkit/v1/config',
+      params: ApiController._getSdkProperties()
+    })
+
+    return response.features
+  },
+
   async fetchAllowedOrigins() {
     try {
       const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
@@ -231,11 +244,15 @@ export const ApiController = {
         include: featuredWalletIds
       }
       const { data } = await ApiController.fetchWallets(params)
-      data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id))
-      const images = data.map(d => d.image_id).filter(Boolean)
+
+      const sortedData = [...data].sort(
+        (a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id)
+      )
+
+      const images = sortedData.map(d => d.image_id).filter(Boolean)
       await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
-      state.featured = data
-      state.allFeatured = data
+      state.featured = sortedData
+      state.allFeatured = sortedData
     }
   },
 
@@ -296,18 +313,17 @@ export const ApiController = {
     state.wallets = CoreHelperUtil.uniqueBy(
       [...state.wallets, ...ApiController._filterOutExtensions(data)],
       'id'
-    )
+    ).filter(w => w.chains?.some(chain => chains.includes(chain)))
+
     state.count = count > state.count ? count : state.count
     state.page = page
   },
 
   async initializeExcludedWallets({ ids }: { ids: string[] }) {
-    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     const params = {
       page: 1,
       entries: ids.length,
-      include: ids,
-      chains
+      include: ids
     }
     const { data } = await ApiController.fetchWallets(params)
 

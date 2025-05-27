@@ -14,7 +14,7 @@ import {
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
-import { api } from '../../src/controllers/ApiController.js'
+import { CUSTOM_DEEPLINK_WALLETS, api } from '../../src/controllers/ApiController.js'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
@@ -367,6 +367,50 @@ describe('ApiController', () => {
     expect(ApiController.state.featured).toEqual(data)
   })
 
+  it('should sort featured wallets according to the order in featuredWalletIds', async () => {
+    const featuredWalletIds = ['wallet-B', 'wallet-A']
+
+    const data = [
+      {
+        id: 'wallet-A',
+        name: 'Wallet A',
+        image_id: 'image-A'
+      },
+      {
+        id: 'wallet-B',
+        name: 'Wallet B',
+        image_id: 'image-B'
+      }
+    ]
+
+    OptionsController.setFeaturedWalletIds(featuredWalletIds)
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.fetchFeaturedWallets()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      params: {
+        ...ApiController._getSdkProperties(),
+        page: '1',
+        entries: '2',
+        include: 'wallet-B,wallet-A',
+        exclude: ''
+      }
+    })
+
+    expect(fetchImageSpy).toHaveBeenCalledTimes(2)
+
+    expect(ApiController.state.featured).toHaveLength(2)
+    expect(ApiController.state.featured[0]?.id).toBe('wallet-B')
+    expect(ApiController.state.featured[1]?.id).toBe('wallet-A')
+
+    expect(ApiController.state.allFeatured).toHaveLength(2)
+    expect(ApiController.state.allFeatured[0]?.id).toBe('wallet-B')
+    expect(ApiController.state.allFeatured[1]?.id).toBe('wallet-A')
+  })
+
   it('should not fetch featured wallets without configured featured wallets', async () => {
     OptionsController.setFeaturedWalletIds([])
     const fetchSpy = vi.spyOn(api, 'get')
@@ -464,13 +508,15 @@ describe('ApiController', () => {
         caipNetworkId: '12341',
         id: 12341,
         name: 'MetaMask',
-        image_id: '12341'
+        image_id: '12341',
+        chains: ['eip155:42']
       },
       {
         caipNetworkId: '12342',
         id: 12342,
         name: 'RandomWallet',
-        image_id: '12342'
+        image_id: '12342',
+        chains: ['eip155:1', 'eip155:4']
       }
     ]
     OptionsController.setIncludeWalletIds(includeWalletIds)
@@ -479,9 +525,7 @@ describe('ApiController', () => {
 
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
-
     await ApiController.fetchWalletsByPage({ page: 1 })
-
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
       params: {
@@ -535,7 +579,6 @@ describe('ApiController', () => {
         ...ApiController._getSdkProperties(),
         page: '1',
         badge_type: undefined,
-        chains: 'eip155:1,eip155:4,eip155:42',
         entries: String(excludeWalletIds.length),
         include: excludeWalletIds.join(','),
         exclude: ''
@@ -882,10 +925,10 @@ describe('ApiController', () => {
       { id: '2', name: 'Wallet2' },
       { id: '3', name: 'Wallet3', mobile_link: 'link3' },
       {
-        id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+        id: CUSTOM_DEEPLINK_WALLETS.COINBASE,
         name: 'Coinbase Wallet'
       },
-      { id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79', name: 'Phantom' }
+      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM, name: 'Phantom' }
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
@@ -893,8 +936,8 @@ describe('ApiController', () => {
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
       '3',
-      'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-      '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79'
+      CUSTOM_DEEPLINK_WALLETS.COINBASE,
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM
     ])
   })
 
@@ -918,5 +961,23 @@ describe('ApiController', () => {
 
     await ApiController.fetchWallets({ page: 1, entries: 10 })
     expect(filterSpy).toHaveBeenCalledWith(mockResponse.data)
+  })
+
+  it('should not pass chains parameter when calling fetchWallets in initializeExcludedWallets', async () => {
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', rdns: 'rdns1' },
+      { id: '2', name: 'Wallet2', rdns: 'rdns2' }
+    ] as WcWallet[]
+
+    const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
+    vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockWallets, count: mockWallets.length })
+
+    await ApiController.initializeExcludedWallets({ ids: ['1', '2'] })
+
+    expect(fetchWalletsSpy).toHaveBeenCalledWith({
+      page: 1,
+      entries: 2,
+      include: ['1', '2']
+    })
   })
 })

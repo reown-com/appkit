@@ -13,6 +13,7 @@ import type {
   Metadata,
   PreferredAccountTypes,
   ProjectId,
+  RemoteFeatures,
   SdkVersion,
   SocialProvider,
   Tokens,
@@ -125,6 +126,11 @@ export interface OptionsControllerStatePublic {
    */
   enableAuthLogger?: boolean
   /**
+   * Enable or disable Universal Links to open the wallets as default option instead of Deep Links.
+   * @default true
+   */
+  experimental_preferUniversalLinks?: boolean
+  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
    * @default true
    */
@@ -190,6 +196,7 @@ export interface OptionsControllerStateInternal {
   sdkVersion: SdkVersion
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
+  remoteFeatures?: RemoteFeatures
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -201,13 +208,10 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: {
-    solana: 'eoa',
-    bip122: 'payment',
-    polkadot: 'eoa',
-    eip155: 'smartAccount'
-  },
-  enableNetworkSwitch: true
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
+  enableNetworkSwitch: true,
+  experimental_preferUniversalLinks: false,
+  remoteFeatures: {}
 })
 
 // -- Controller ---------------------------------------- //
@@ -222,6 +226,21 @@ export const OptionsController = {
     Object.assign(state, options)
   },
 
+  setRemoteFeatures(remoteFeatures: OptionsControllerState['remoteFeatures']) {
+    if (!remoteFeatures) {
+      return
+    }
+
+    const newRemoteFeatures = { ...state.remoteFeatures, ...remoteFeatures }
+    state.remoteFeatures = newRemoteFeatures
+
+    if (state.remoteFeatures?.socials) {
+      state.remoteFeatures.socials = OptionsUtil.filterSocialsByPlatform(
+        state.remoteFeatures.socials
+      )
+    }
+  },
+
   setFeatures(features: OptionsControllerState['features'] | undefined) {
     if (!features) {
       return
@@ -233,10 +252,6 @@ export const OptionsController = {
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
-
-    if (state.features.socials) {
-      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
-    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -323,6 +338,12 @@ export const OptionsController = {
     state.enableWallets = enableWallets
   },
 
+  setPreferUniversalLinks(
+    preferUniversalLinks: OptionsControllerState['experimental_preferUniversalLinks']
+  ) {
+    state.experimental_preferUniversalLinks = preferUniversalLinks
+  },
+
   setSIWX(siwx: OptionsControllerState['siwx']) {
     state.siwx = siwx
   },
@@ -342,8 +363,8 @@ export const OptionsController = {
   },
 
   setSocialsOrder(socialsOrder: SocialProvider[]) {
-    state.features = {
-      ...state.features,
+    state.remoteFeatures = {
+      ...state.remoteFeatures,
       socials: socialsOrder
     }
   },

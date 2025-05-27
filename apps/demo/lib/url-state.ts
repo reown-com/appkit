@@ -2,6 +2,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import type {
   ConnectMethod,
   Features,
+  RemoteFeatures,
   ThemeMode,
   ThemeVariables,
   WalletFeature
@@ -11,6 +12,7 @@ import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 
 export type URLState = {
   features: Features
+  remoteFeatures: RemoteFeatures
   themeMode: ThemeMode
   themeVariables?: ThemeVariables
   enableWallets: boolean

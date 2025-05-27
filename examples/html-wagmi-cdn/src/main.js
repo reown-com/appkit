@@ -2,7 +2,7 @@ import {
   WagmiAdapter,
   createAppKit,
   networks
-} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.7.0/dist/appkit.js'
+} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.7.3/dist/appkit.js'
 import { reconnect, watchConnectors } from 'https://esm.sh/@wagmi/core@2.x'
 
 // Get projectId
@@ -22,9 +22,6 @@ const modal = createAppKit({
   networks: appKitNetworks,
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: true
-  },
   metadata: {
     name: 'AppKit HTML Example',
     description: 'AppKit HTML Example',

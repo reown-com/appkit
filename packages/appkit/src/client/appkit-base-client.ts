@@ -27,6 +27,7 @@ import type {
   NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
+  RemoteFeatures,
   RouterControllerState,
   SIWXConfig,
   SendTransactionArgs,
@@ -51,6 +52,7 @@ import {
   EnsController,
   EventsController,
   ModalController,
+  OnRampController,
   OptionsController,
   PublicStateController,
   RouterController,
@@ -72,6 +74,7 @@ import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
+import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
@@ -118,8 +121,11 @@ export abstract class AppKitBaseClient {
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
+  public remoteFeatures: RemoteFeatures = {}
   public version: SdkVersion | AppKitSdkVersion
   public reportedAlertErrors: Record<string, boolean> = {}
+
+  private readyPromise?: Promise<void>
 
   constructor(options: AppKitOptionsWithSdk) {
     this.options = options
@@ -131,7 +137,7 @@ export abstract class AppKitBaseClient {
     )
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
-    this.initialize(options)
+    this.readyPromise = this.initialize(options)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -149,20 +155,22 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
+    this.initializeProjectSettings(options)
     this.initControllers(options)
     await this.initChainAdapters()
-    await this.injectModalUi()
-
     this.sendInitializeEvent(options)
-    PublicStateController.set({ initialized: true })
-
     await this.syncExistingConnection()
     await this.syncAdapterConnections()
+    this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    OptionsController.setRemoteFeatures(this.remoteFeatures)
+    if (this.remoteFeatures.onramp) {
+      OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
+    }
     // Check allowed origins only if email or social features are enabled
     if (
-      OptionsController.state.features?.email ||
-      (Array.isArray(OptionsController.state.features?.socials) &&
-        OptionsController.state.features?.socials.length > 0)
+      OptionsController.state.remoteFeatures?.email ||
+      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
+        OptionsController.state.remoteFeatures?.socials.length > 0)
     ) {
       await this.checkAllowedOrigins()
     }
@@ -243,6 +251,11 @@ export abstract class AppKitBaseClient {
     ConnectorController.initialize(this.chainNamespaces)
   }
 
+  protected initializeProjectSettings(options: AppKitOptionsWithSdk) {
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setSdkVersion(options.sdkVersion)
+  }
+
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
     OptionsController.setDebug(options.debug !== false)
 
@@ -255,8 +268,7 @@ export abstract class AppKitBaseClient {
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
-    OptionsController.setSdkVersion(options.sdkVersion)
-    OptionsController.setProjectId(options.projectId)
+
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
@@ -269,12 +281,13 @@ export abstract class AppKitBaseClient {
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
+    OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
 
     // Get stored account types
-    const storedAccountTypes = StorageUtil.getPreferredAccountTypes()
+    const storedAccountTypes = StorageUtil.getPreferredAccountTypes() || {}
     const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
 
     AccountController.setPreferredAccountTypes(defaultTypes)
@@ -311,7 +324,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected getDefaultMetaData() {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (CoreHelperUtil.isClient()) {
       return {
         name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
@@ -399,7 +412,16 @@ export abstract class AppKitBaseClient {
         })
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, address, info, type, provider, chain, caipNetwork }) => {
+      connectExternal: async ({
+        id,
+        address,
+        info,
+        type,
+        provider,
+        chain,
+        caipNetwork,
+        socialUri
+      }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
@@ -425,6 +447,7 @@ export abstract class AppKitBaseClient {
           info,
           type,
           provider,
+          socialUri,
           chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
@@ -1141,6 +1164,7 @@ export abstract class AppKitBaseClient {
   protected syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = ConnectorController.getConnectorId(chainNamespace)
     const providerType = ProviderUtil.getProviderId(chainNamespace)
+
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
@@ -1176,8 +1200,6 @@ export abstract class AppKitBaseClient {
           { name: 'Coinbase Wallet', icon: this.getConnectorImage(connector) },
           chainNamespace
         )
-      } else {
-        this.setConnectedWalletInfo({ name: connectorId }, chainNamespace)
       }
     }
   }
@@ -1199,6 +1221,10 @@ export abstract class AppKitBaseClient {
     await this.updateNativeBalance(params.address, params.chainId, params.chainNamespace)
   }
 
+  public async ready() {
+    await this.readyPromise
+  }
+
   public async updateNativeBalance(
     address: string,
     chainId: string | number,
@@ -1215,7 +1241,11 @@ export abstract class AppKitBaseClient {
         tokens: this.options.tokens
       })
       this.setBalance(balance.balance, balance.symbol, namespace)
+
+      return balance
     }
+
+    return undefined
   }
 
   // -- Universal Provider ---------------------------------------------------
@@ -1401,9 +1431,9 @@ export abstract class AppKitBaseClient {
         return namespaceCaipNetwork
       }
 
-      return ChainController.getRequestedCaipNetworks(chainNamespace).filter(
-        c => c.chainNamespace === chainNamespace
-      )?.[0]
+      const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
+      return requestedCaipNetworks.filter(c => c.chainNamespace === chainNamespace)?.[0]
     }
 
     return ChainController.state.activeCaipNetwork || this.defaultCaipNetwork
@@ -1554,9 +1584,9 @@ export abstract class AppKitBaseClient {
     return ModalController.open(options)
   }
 
-  public async close(force = false) {
+  public async close() {
     await this.injectModalUi()
-    ModalController.close(force)
+    ModalController.close()
   }
 
   public setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
@@ -1767,8 +1797,8 @@ export abstract class AppKitBaseClient {
     RouterController.push(route)
   }
 
-  public popTransactionStack(cancel?: boolean) {
-    RouterController.popTransactionStack(cancel)
+  public popTransactionStack(status: 'cancel' | 'error' | 'success') {
+    RouterController.popTransactionStack(status)
   }
 
   public isOpen() {
@@ -1777,12 +1807,6 @@ export abstract class AppKitBaseClient {
 
   public isTransactionStackEmpty() {
     return RouterController.state.transactionStack.length === 0
-  }
-
-  public isTransactionShouldReplaceView() {
-    return RouterController.state.transactionStack[
-      RouterController.state.transactionStack.length - 1
-    ]?.replace
   }
 
   public static getInstance() {
@@ -1883,6 +1907,10 @@ export abstract class AppKitBaseClient {
 
   public updateFeatures(newFeatures: Partial<Features>) {
     OptionsController.setFeatures(newFeatures)
+  }
+
+  public updateRemoteFeatures(newRemoteFeatures: Partial<RemoteFeatures>) {
+    OptionsController.setRemoteFeatures(newRemoteFeatures)
   }
 
   public updateOptions(newOptions: Partial<OptionsControllerState>) {

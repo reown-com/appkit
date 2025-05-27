@@ -39,9 +39,7 @@ const modal = createAppKit({
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true
-  },
+
   metadata: ConstantsUtil.Metadata
 })
 

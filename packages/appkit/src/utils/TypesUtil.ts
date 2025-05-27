@@ -1,10 +1,18 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
+import type {
+  AppKitNetwork,
+  OnRampProvider,
+  SocialProvider,
+  SwapProvider,
+  ThemeVariables
+} from '@reown/appkit-common'
 import type {
   ChainAdapter,
+  FeatureID,
   Metadata,
   OptionsControllerState,
+  RemoteFeatures,
   ThemeMode
 } from '@reown/appkit-controllers'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
@@ -96,3 +104,11 @@ export type AppKitOptions = {
    */
   defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
 } & Omit<OptionsControllerState, 'defaultAccountTypes'>
+
+export interface FeatureConfigItem {
+  featureName: keyof RemoteFeatures
+  apiFeatureName: FeatureID
+  localFeatureName: string
+  defaultValue: boolean | SocialProvider[] | SwapProvider[] | OnRampProvider[]
+  isActivityHistory?: boolean
+}

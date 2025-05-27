@@ -5,10 +5,7 @@ import { useSnapshot } from 'valtio'
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
 import { ChainController } from '../src/controllers/ChainController.js'
-import {
-  ConnectionController,
-  type Connection as ConnectionType
-} from '../src/controllers/ConnectionController.js'
+import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
@@ -16,10 +13,7 @@ import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/util
 import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
-export type Connection = ConnectionType & {
-  name?: string
-  icon?: string
-}
+export type { Connection } from '../src/controllers/ConnectionController.js'
 
 interface UseAppKitConnectionProps {
   namespace?: ChainNamespace
@@ -135,7 +129,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   const { connections, storageConnections } =
     ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
-  const formatConnection = useCallback((connection: ConnectionType) => {
+  const formatConnection = useCallback((connection: Connection) => {
     const connector = ConnectorController.getConnectorById(connection.connectorId)
 
     const name = ConnectorController.getConnectorName(connector?.name)
@@ -225,9 +219,7 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
 
   return {
     connection,
-    error: switchConnectionError,
     isPending: isSwitchingConnection,
-    isError: Boolean(switchConnectionError),
     switchConnection,
     deleteConnection
   }

@@ -263,7 +263,8 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
 
     const address = await connector.connect({
-      chainId: params.chainId as string
+      chainId: params.chainId as string,
+      socialUri: params.socialUri
     })
 
     if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {

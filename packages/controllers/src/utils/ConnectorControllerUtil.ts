@@ -47,7 +47,7 @@ export const ConnectorControllerUtil = {
     return ConnectorController.getConnectorId(namespace) === connectorId
   },
   isSocialProvider(socialProvider: string): socialProvider is SocialProvider {
-    return ConstantsUtil.DEFAULT_FEATURES.socials.includes(socialProvider as SocialProvider)
+    return ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials.includes(socialProvider as SocialProvider)
   },
   connectWalletConnect({
     walletConnect,

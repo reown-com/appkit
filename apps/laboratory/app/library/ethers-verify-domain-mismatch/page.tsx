@@ -23,9 +23,7 @@ const config = {
     url: 'https://example.com',
     icons: []
   },
-  features: {
-    analytics: true
-  },
+
   customWallets: ConstantsUtil.CustomWallets
 }
 

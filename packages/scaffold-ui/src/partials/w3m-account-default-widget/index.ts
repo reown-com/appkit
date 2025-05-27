@@ -58,12 +58,15 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   @state() private namespace = ChainController.state.activeChain
 
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
 
   public constructor() {
     super()
+
     this.unsubscribe.push(
       ...[
         AccountController.subscribeKey('caipAddress', val => {
@@ -75,6 +78,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         OptionsController.subscribeKey('features', val => (this.features = val)),
+        OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
         ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
           this.activeConnectorIds = newActiveConnectorIds
         }),
@@ -161,7 +165,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    const isOnrampEnabled = this.features?.onramp
+    const isOnrampEnabled = this.remoteFeatures?.onramp
     const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
       this.namespace
     )
@@ -207,7 +211,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     const isEnabled =
-      this.features?.history &&
+      this.remoteFeatures?.activity &&
       CoreConstantsUtil.ACTIVITY_ENABLED_CHAIN_NAMESPACES.includes(this.namespace)
 
     return isEnabled
@@ -225,7 +229,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private swapsTemplate() {
-    const isSwapsEnabled = this.features?.swaps
+    const isSwapsEnabled = this.remoteFeatures?.swaps
     const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
 
     if (!isSwapsEnabled || !isEvm) {

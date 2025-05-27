@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConnectionController, SendController } from '@reown/appkit-controllers'
+import { ConnectionController, CoreHelperUtil, SendController } from '@reown/appkit-controllers'
 
 import { W3mInputAddress } from '../../src/partials/w3m-input-address'
 
@@ -93,7 +93,8 @@ describe('W3mInputAddress', () => {
   })
 
   it('should handle input changes with non-ENS address', async () => {
-    const mockAddress = '0x123456789'
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    const mockAddress = '0x13aa2Eb0a99Af2F847119dC4Ac632fFe196d0B0f'
 
     vi.spyOn(ConnectionController, 'getEnsAddress').mockResolvedValue(undefined)
     const setReceiverAddressSpy = vi.spyOn(SendController, 'setReceiverAddress')

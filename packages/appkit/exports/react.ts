@@ -4,6 +4,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import { AppKit } from '../src/client/appkit.js'
 import { getAppKit } from '../src/library/react/index.js'
+import { _internalFetchBalance } from '../src/utils/BalanceUtil.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 
@@ -12,7 +13,7 @@ export * from '../src/library/react/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@reown/appkit-controllers'
+export type * from '@reown/appkit-controllers/react'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 export { CoreHelperUtil, AccountController } from '@reown/appkit-controllers'
 
@@ -54,6 +55,16 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
     caipNetworkId,
     chainId,
     switchNetwork
+  }
+}
+
+export function useAppKitBalance() {
+  async function fetchBalance() {
+    return await _internalFetchBalance(modal)
+  }
+
+  return {
+    fetchBalance
   }
 }
 

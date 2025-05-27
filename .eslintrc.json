@@ -106,6 +106,9 @@
         "format": ["camelCase", "UPPER_CASE", "PascalCase"],
         "prefix": ["is", "has", "can", "should", "will", "did"]
       }
-    ]
+    ],
+    // Fixes eslint issue with shadowing enum values
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "warn"
   }
 }

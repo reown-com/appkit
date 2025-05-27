@@ -473,7 +473,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
     id,
     address: _address,
     type,
-    chainId
+    chainId,
+    socialUri
   }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, id))
 
@@ -529,6 +530,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
         selectedProvider as unknown as W3mFrameProvider
       ).connect({
         chainId,
+        socialUri,
         preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
       })
 

@@ -19,9 +19,6 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true
-  },
   customWallets: ConstantsUtil.CustomWallets
 }
 

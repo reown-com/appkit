@@ -1,6 +1,8 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+
 // -- Types --------------------------------------------- //
 export interface AssetControllerState {
   walletImages: Record<string, string>
@@ -24,7 +26,7 @@ const state = proxy<AssetControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const AssetController = {
+const controller = {
   state,
 
   subscribeNetworkImages(callback: (value: AssetControllerState['networkImages']) => void) {
@@ -63,3 +65,6 @@ export const AssetController = {
     state.currencyImages[key] = value
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const AssetController = withErrorBoundary(controller)

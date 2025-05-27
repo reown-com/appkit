@@ -58,10 +58,12 @@ describe('W3mConnectView - Connection Methods', () => {
       ...OptionsController.state,
       enableWallets: true,
       features: {
-        email: true,
-        socials: ['google', 'facebook'],
         connectMethodsOrder: ['email', 'wallet', 'social'],
         collapseWallets: false
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google', 'facebook']
       }
     })
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
@@ -100,10 +102,11 @@ describe('W3mConnectView - Connection Methods', () => {
   it('should render connection methods in the correct order based on if there are installed wallets', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
-      features: {
+      remoteFeatures: {
         email: true,
         socials: ['google', 'facebook']
-      }
+      },
+      features: {}
     })
 
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
@@ -128,10 +131,12 @@ describe('W3mConnectView - Connection Methods', () => {
       ...OptionsController.state,
       enableWallets: true,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['wallet', 'email', 'social'],
         collapseWallets: true
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       }
     })
 
@@ -147,9 +152,11 @@ describe('W3mConnectView - Connection Methods', () => {
       ...OptionsController.state,
       enableWallets: true,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['wallet', 'email', 'social']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       }
     })
 
@@ -163,9 +170,11 @@ describe('W3mConnectView - Connection Methods', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['social', 'email', 'wallet']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       }
     })
 
@@ -179,9 +188,11 @@ describe('W3mConnectView - Connection Methods', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['email', 'wallet', 'social']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       }
     })
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
@@ -194,9 +205,11 @@ describe('W3mConnectView - Connection Methods', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
-        email: false,
-        socials: ['google'],
         connectMethodsOrder: ['wallet', 'email', 'social']
+      },
+      remoteFeatures: {
+        email: false,
+        socials: ['google']
       }
     })
 
@@ -210,9 +223,11 @@ describe('W3mConnectView - Connection Methods', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
-        email: true,
-        socials: [],
         connectMethodsOrder: ['wallet', 'email', 'social']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: []
       }
     })
 
@@ -226,9 +241,11 @@ describe('W3mConnectView - Connection Methods', () => {
       ...OptionsController.state,
       enableWallets: false,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['wallet', 'email', 'social']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       }
     })
 
@@ -242,9 +259,11 @@ describe('W3mConnectView - Connection Methods', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['social', 'email', 'wallet']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       }
     })
 
@@ -274,9 +293,11 @@ describe('W3mConnectView - Explore Mode', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['social', 'email', 'wallet']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       },
       enableWallets: false,
       enableWalletGuide: true
@@ -322,7 +343,7 @@ describe('W3mConnectView - Wallet Guide Mode', () => {
   it('should render wallet guide if enableWalletGuide is true', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
-      features: {
+      remoteFeatures: {
         email: true,
         socials: ['google']
       },
@@ -338,7 +359,8 @@ describe('W3mConnectView - Wallet Guide Mode', () => {
   it('should not render wallet guide if enableWalletGuide is false', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
-      features: {
+
+      remoteFeatures: {
         email: true,
         socials: ['google']
       },
@@ -359,9 +381,11 @@ describe('W3mConnectView - Email and Social Enable States', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
-        email: true,
-        socials: ['google'],
         connectMethodsOrder: ['social', 'email', 'wallet']
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
       }
     })
     vi.mocked(ChainController.state).noAdapters = false
@@ -372,7 +396,7 @@ describe('W3mConnectView - Email and Social Enable States', () => {
     vi.mocked(ChainController.state).noAdapters = true
 
     // Trigger state update
-    element['setEmailAndSocialEnableCheck'](element['features'], true)
+    element['setEmailAndSocialEnableCheck'](true, element['remoteFeatures'])
 
     expect(element['isEmailEnabled']).toBe(false)
     expect(element['isSocialEnabled']).toBe(false)
@@ -382,13 +406,10 @@ describe('W3mConnectView - Email and Social Enable States', () => {
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     // Trigger state update with enabled features
-    element['setEmailAndSocialEnableCheck'](
-      {
-        email: true,
-        socials: ['google']
-      },
-      false
-    )
+    element['setEmailAndSocialEnableCheck'](false, {
+      email: true,
+      socials: ['google']
+    })
 
     expect(element['isEmailEnabled']).toBe(true)
     expect(element['isSocialEnabled']).toBe(true)
@@ -398,13 +419,10 @@ describe('W3mConnectView - Email and Social Enable States', () => {
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     // Trigger state update with email disabled
-    element['setEmailAndSocialEnableCheck'](
-      {
-        email: false,
-        socials: ['google']
-      },
-      false
-    )
+    element['setEmailAndSocialEnableCheck'](false, {
+      email: false,
+      socials: ['google']
+    })
 
     expect(element['isEmailEnabled']).toBe(false)
     expect(element['isSocialEnabled']).toBe(true)
@@ -414,13 +432,10 @@ describe('W3mConnectView - Email and Social Enable States', () => {
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     // Trigger state update with empty socials array
-    element['setEmailAndSocialEnableCheck'](
-      {
-        email: true,
-        socials: []
-      },
-      false
-    )
+    element['setEmailAndSocialEnableCheck'](false, {
+      email: true,
+      socials: []
+    })
 
     expect(element['isEmailEnabled']).toBe(true)
     expect(element['isSocialEnabled']).toBe(false)
@@ -430,7 +445,7 @@ describe('W3mConnectView - Email and Social Enable States', () => {
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     // Trigger state update with undefined features
-    element['setEmailAndSocialEnableCheck'](undefined, false)
+    element['setEmailAndSocialEnableCheck'](false, {})
 
     expect(element['isEmailEnabled']).toBe(undefined)
     expect(element['isSocialEnabled']).toBe(undefined)

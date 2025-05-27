@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -43,7 +44,7 @@ const state = proxy<ModalControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ModalController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: ModalControllerState) => void) {
@@ -96,39 +97,32 @@ export const ModalController = {
     })
   },
 
-  /**
-   * To close the modal on the ApproveTransaction view, call close() with force=true:
-   * ModalController.close(true)
-   * this prevents accidental closing during transaction approval from secure sites
-   * @param force - If true, the modal will close regardless of the current view
-   */
-  close(force = false) {
-    if (force || RouterController.state.view !== 'ApproveTransaction') {
-      const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-      const isConnected = Boolean(ChainController.state.activeCaipAddress)
+  close() {
+    const isEmbeddedEnabled = OptionsController.state.enableEmbedded
+    const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
-      // Only send the event if the modal is open and is about to be closed
-      if (state.open) {
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'MODAL_CLOSE',
-          properties: { connected: isConnected }
-        })
-      }
-
-      state.open = false
-      ModalController.clearLoading()
-
-      if (isEmbeddedEnabled) {
-        if (isConnected) {
-          RouterController.replace('Account')
-        } else {
-          RouterController.push('Connect')
-        }
-      } else {
-        PublicStateController.set({ open: false })
-      }
+    // Only send the event if the modal is open and is about to be closed
+    if (state.open) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'MODAL_CLOSE',
+        properties: { connected: isConnected }
+      })
     }
+
+    state.open = false
+    ModalController.clearLoading()
+
+    if (isEmbeddedEnabled) {
+      if (isConnected) {
+        RouterController.replace('Account')
+      } else {
+        RouterController.push('Connect')
+      }
+    } else {
+      PublicStateController.set({ open: false })
+    }
+
     ConnectionController.resetUri()
   },
 
@@ -155,3 +149,6 @@ export const ModalController = {
     }, 500)
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ModalController = withErrorBoundary(controller)
