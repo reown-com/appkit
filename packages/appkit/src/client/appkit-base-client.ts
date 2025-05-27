@@ -384,6 +384,35 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
+  private async disconnectNamespace(namespace: ChainNamespace) {
+    try {
+      const adapter = this.getAdapter(namespace)
+      const provider = ProviderUtil.getProvider(namespace)
+      const providerType = ProviderUtil.getProviderId(namespace)
+      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+
+      this.setLoading(true, namespace)
+      if (caipAddress && adapter?.disconnect) {
+        await adapter.disconnect({ provider, providerType })
+      }
+
+      StorageUtil.removeConnectedNamespace(namespace)
+      ProviderUtil.resetChain(namespace)
+      this.setUser(undefined, namespace)
+      this.setStatus('disconnected', namespace)
+      this.setConnectedWalletInfo(undefined, namespace)
+
+      ConnectorController.removeConnectorId(namespace)
+
+      ChainController.resetAccount(namespace)
+      ChainController.resetNetwork(namespace)
+      this.setLoading(false, namespace)
+    } catch (error) {
+      this.setLoading(false, namespace)
+      throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+    }
+  }
+
   // -- Client Initialization ---------------------------------------------------
   protected createClients() {
     this.connectionControllerClient = {
@@ -475,38 +504,10 @@ export abstract class AppKitBaseClient {
         const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
         try {
           // Reset send state when disconnecting
-          SendController.resetSend()
           const disconnectResults = await Promise.allSettled(
-            chainsToDisconnect.map(async ([ns]) => {
-              try {
-                const adapter = this.getAdapter(ns)
-                const provider = ProviderUtil.getProvider(ns)
-                const providerType = ProviderUtil.getProviderId(ns)
-                const { caipAddress } = ChainController.getAccountData(ns) || {}
-
-                this.setLoading(true, ns)
-                if (caipAddress && adapter?.disconnect) {
-                  await adapter.disconnect({ provider, providerType })
-                }
-
-                StorageUtil.removeConnectedNamespace(ns)
-                ProviderUtil.resetChain(ns)
-                this.setUser(undefined, ns)
-                this.setStatus('disconnected', ns)
-                this.setConnectedWalletInfo(undefined, ns)
-
-                ConnectorController.removeConnectorId(ns)
-
-                ChainController.resetAccount(ns)
-                ChainController.resetNetwork(ns)
-                this.setLoading(false, ns)
-              } catch (error) {
-                this.setLoading(false, ns)
-                throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
-              }
-            })
+            chainsToDisconnect.map(async ([ns]) => this.disconnectNamespace(ns))
           )
-
+          SendController.resetSend()
           ConnectionController.resetWcConnection()
           await SIWXUtil.clearSessions()
           ConnectorController.setFilterByNamespace(undefined)
