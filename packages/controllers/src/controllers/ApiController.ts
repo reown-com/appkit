@@ -10,6 +10,7 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
+  ApiGetProjectConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   WcWallet
@@ -33,7 +34,10 @@ export const CUSTOM_DEEPLINK_WALLETS = {
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl, clientId: null })
+export const api = new FetchUtil({
+  baseUrl,
+  clientId: null
+})
 const entries = 40
 const recommendedEntries = 4
 const imageCountToFetch = 20
@@ -149,6 +153,15 @@ export const ApiController = {
       : wallets
 
     return filteredWallets
+  },
+
+  async fetchProjectConfig() {
+    const response = await api.get<ApiGetProjectConfigResponse>({
+      path: '/appkit/v1/config',
+      params: ApiController._getSdkProperties()
+    })
+
+    return response.features
   },
 
   async fetchAllowedOrigins() {
