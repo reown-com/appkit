@@ -589,6 +589,8 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async disconnect() {
     const connections = getConnections(this.wagmiConfig)
+
+    // Request disconnection from all connected wallets
     await Promise.allSettled(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
@@ -597,6 +599,8 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
       })
     )
+
+    // Ensure the connections are cleared
     this.wagmiConfig.state.connections.clear()
   }
 
