@@ -17,7 +17,6 @@ import {
   EventsController,
   type Features,
   type Metadata,
-  ModalController,
   PublicStateController,
   type RemoteFeatures
 } from '@reown/appkit-controllers'
