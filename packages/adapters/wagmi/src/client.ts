@@ -718,9 +718,11 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
     universalProvider.on('connect', () => {
+      console.log('>> universalProvider.on connect')
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
+        console.log('>> universalProvider.on connect reconnecting')
         reconnect(this.wagmiConfig, {
           connectors: [connector]
         })
