@@ -15,7 +15,7 @@ interface ExcludeConnectorAddressFromConnectionsParamters {
 interface ValidateAccountSwitchParamters {
   namespace: ChainNamespace
   connection: Connection
-  address: string
+  address?: string
 }
 
 // -- Utils ------------------------------------------ //
@@ -45,6 +45,10 @@ export const ConnectionControllerUtil = {
     const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
 
     if (isBitcoin) {
+      if (!address) {
+        throw new Error('Address parameter is required for switching bip122 connection')
+      }
+
       const { type } =
         connection.accounts.find(
           account => account.address.toLowerCase() === address.toLowerCase()

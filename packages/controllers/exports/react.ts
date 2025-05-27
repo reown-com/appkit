@@ -1,32 +1,41 @@
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
 import { ChainController } from '../src/controllers/ChainController.js'
-import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
+import {
+  ConnectionController,
+  type Connection as ConnectionType
+} from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
-import { StorageUtil } from './utils.js'
+import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
+export type Connection = ConnectionType & {
+  name?: string
+  icon?: string
+}
+
 interface UseAppKitConnectionProps {
   namespace?: ChainNamespace
-  onConnect?: () => void
-  onDisconnect?: () => void
-  onDeleteRecentConnection?: () => void
+  onSuccess?: (params: {
+    address: string
+    namespace: ChainNamespace
+    isAccountSwitched: boolean
+    isWalletSwitched: boolean
+    isWalletDeleted: boolean
+  }) => void
+  onError?: (error: Error) => void
 }
 
-interface UseAppKitConnectionConnectProps {
+interface SwitchConnectionParams {
   connection: Connection
-  address: string
-}
-
-interface UseAppKitConnectionDisconnectProps {
-  connection: Connection
+  address?: string
 }
 
 interface UseAppKitConnectionDeleteRecentConnectionProps {
@@ -103,28 +112,21 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 }
 
 export function useDisconnect() {
-  async function disconnect(props?: { namespace?: ChainNamespace }) {
-    await ConnectionController.disconnect({ namespace: props?.namespace })
+  async function disconnect(props?: { connectorId?: string; namespace?: ChainNamespace }) {
+    await ConnectionController.disconnect({ id: props?.connectorId, namespace: props?.namespace })
   }
 
   return { disconnect }
 }
 
-export function useAppKitConnection({
-  namespace,
-  onDisconnect,
-  onDeleteRecentConnection
-}: UseAppKitConnectionProps) {
-  // Used to force a re-render when the storage connection changes
-  const [, setBool] = useState(false)
-
-  // Force re-renders when the connection or connector state changes
+export function useAppKitConnections(namespace?: ChainNamespace) {
+  // Snapshots to trigger re-renders on state changes
   useSnapshot(ConnectionController.state)
   useSnapshot(ConnectorController.state)
 
   const { activeChain } = useSnapshot(ChainController.state)
 
-  const chainNamespace = namespace || activeChain
+  const chainNamespace = namespace ?? activeChain
 
   if (!chainNamespace) {
     throw new Error('No namespace found')
@@ -133,53 +135,100 @@ export function useAppKitConnection({
   const { connections, storageConnections } =
     ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
-  async function connect({ connection, address }: UseAppKitConnectionConnectProps) {
-    if (!chainNamespace) {
-      throw new Error('No namespace found')
+  const formatConnection = useCallback((connection: ConnectionType) => {
+    const connector = ConnectorController.getConnectorById(connection.connectorId)
+
+    const name = ConnectorController.getConnectorName(connector?.name)
+    const icon = AssetUtil.getConnectorImage(connector)
+
+    return {
+      name,
+      icon,
+      ...connection
     }
-
-    await ConnectionController.switchConnection({
-      connection,
-      address,
-      namespace: chainNamespace
-    })
-  }
-
-  async function disconnect({ connection }: UseAppKitConnectionDisconnectProps) {
-    if (!chainNamespace) {
-      throw new Error('No namespace found')
-    }
-
-    await ConnectionController.disconnect({ id: connection.connectorId, namespace: chainNamespace })
-
-    onDisconnect?.()
-  }
-
-  function deleteRecentConnection({
-    address,
-    connectorId
-  }: UseAppKitConnectionDeleteRecentConnectionProps) {
-    if (!chainNamespace) {
-      throw new Error('No namespace found')
-    }
-
-    StorageUtil.deleteAddressFromConnection({
-      connectorId,
-      address,
-      namespace: chainNamespace
-    })
-
-    onDeleteRecentConnection?.()
-
-    // Force re-render when the storage connection changes
-    setBool(prev => !prev)
-  }
+  }, [])
 
   return {
-    connections,
-    storageConnections,
-    connect,
-    disconnect,
-    deleteRecentConnection
+    connections: connections.map(formatConnection),
+    storageConnections: storageConnections.map(formatConnection)
+  }
+}
+
+export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKitConnectionProps) {
+  const [, forceUpdate] = useState(0)
+
+  const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
+  const { activeConnectorIds } = useSnapshot(ConnectorController.state)
+  const { activeChain } = useSnapshot(ChainController.state)
+
+  const chainNamespace = namespace ?? activeChain
+
+  if (!chainNamespace) {
+    throw new Error('No namespace found')
+  }
+
+  const connection = useMemo(() => {
+    const connectorId = activeConnectorIds[chainNamespace]
+    const connList = connections.get(chainNamespace)
+
+    return connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
+  }, [connections, activeConnectorIds, chainNamespace])
+
+  const switchConnection = useCallback(
+    async ({ connection: _connection, address }: SwitchConnectionParams) => {
+      try {
+        ConnectionController.setIsSwitchingConnection(true)
+
+        await ConnectionController.switchConnection({
+          connection: _connection,
+          address,
+          namespace: chainNamespace,
+          onChange({
+            address: newAddress,
+            namespace: newNamespace,
+            isAccountSwitched,
+            isWalletSwitched
+          }) {
+            onSuccess?.({
+              address: newAddress,
+              namespace: newNamespace,
+              isAccountSwitched,
+              isWalletSwitched,
+              isWalletDeleted: false
+            })
+          }
+        })
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error('Something went wrong')
+        onError?.(error)
+      } finally {
+        ConnectionController.setIsSwitchingConnection(false)
+      }
+    },
+    [chainNamespace, onSuccess, onError]
+  )
+
+  const deleteConnection = useCallback(
+    ({ address, connectorId }: UseAppKitConnectionDeleteRecentConnectionProps) => {
+      StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+      onSuccess?.({
+        address,
+        namespace: chainNamespace,
+        isAccountSwitched: false,
+        isWalletSwitched: false,
+        isWalletDeleted: true
+      })
+      forceUpdate(prev => prev + 1)
+    },
+    [chainNamespace]
+  )
+
+  return {
+    connection,
+    error: switchConnectionError,
+    isPending: isSwitchingConnection,
+    isError: Boolean(switchConnectionError),
+    switchConnection,
+    deleteConnection
   }
 }

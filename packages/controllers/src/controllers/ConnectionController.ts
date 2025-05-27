@@ -44,7 +44,7 @@ export type Connection = {
 
 interface SwitchConnectionParams {
   connection: Connection
-  address: string
+  address?: string
   namespace: ChainNamespace
   closeModalOnConnect?: boolean
   onChange?: (params: {
@@ -58,14 +58,14 @@ interface SwitchConnectionParams {
 interface HandleDisconnectedConnectionParams {
   connection: Connection
   namespace: ChainNamespace
-  address: string
+  address?: string
   closeModalOnConnect?: boolean
 }
 
 interface HandleActiveConnectionParams {
   connection: Connection
   namespace: ChainNamespace
-  address: string
+  address?: string
 }
 
 interface DisconnectParams {
@@ -113,6 +113,7 @@ export interface ConnectionControllerClient {
 }
 
 export interface ConnectionControllerState {
+  isSwitchingConnection: boolean
   connections: Map<ChainNamespace, Connection[]>
   _client?: ConnectionControllerClient
   wcUri?: string
@@ -134,6 +135,7 @@ type StateKey = keyof ConnectionControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
   connections: new Map(),
+  isSwitchingConnection: false,
   wcError: false,
   buffering: false,
   status: 'disconnected'
@@ -345,6 +347,12 @@ export const ConnectionController = {
     state.status = status
   },
 
+  setIsSwitchingConnection(
+    isSwitchingConnection: ConnectionControllerState['isSwitchingConnection']
+  ) {
+    state.isSwitchingConnection = isSwitchingConnection
+  },
+
   async disconnect({ id, namespace, disconnectAll }: DisconnectParams = {}) {
     try {
       ModalController.setLoading(true, namespace)
@@ -392,7 +400,7 @@ export const ConnectionController = {
       namespace
     )
 
-    if (isAuthConnector) {
+    if (isAuthConnector && address) {
       await ConnectionController.handleAuthAccountSwitch(address, namespace)
     }
 
@@ -483,7 +491,7 @@ export const ConnectionController = {
       }
     }
 
-    if (isAuthConnector) {
+    if (isAuthConnector && address) {
       await ConnectionController.handleAuthAccountSwitch(address, namespace)
     }
 
@@ -528,7 +536,7 @@ export const ConnectionController = {
             address: newAddress,
             namespace,
             isAccountSwitched,
-            isWalletSwitched: true
+            isWalletSwitched: status === 'active'
           })
         }
         break

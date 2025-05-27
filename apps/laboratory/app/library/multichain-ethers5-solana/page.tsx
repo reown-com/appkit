@@ -14,6 +14,7 @@ import InitializeBoundary from '@/src/components/InitializeBoundary'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 
 const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks] as [
   AppKitNetwork,
@@ -44,6 +45,8 @@ export default function MultiChainEthers5Solana() {
   return (
     <InitializeBoundary>
       <AppKitButtons />
+      <AppKitConnections namespace="eip155" title="EVM Connections" />
+      <AppKitConnections namespace="solana" title="Solana Connections" />
       <AppKitInfo />
       <Ethers5Tests />
       <SolanaTests />

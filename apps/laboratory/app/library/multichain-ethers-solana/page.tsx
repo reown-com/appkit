@@ -12,6 +12,7 @@ import { EthersTests } from '@/src/components/Ethers/EthersTests'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 
 const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks] as [
   AppKitNetwork,
@@ -39,6 +40,8 @@ export default function MultiChainEthersSolana() {
   return (
     <AppKitProvider config={config}>
       <AppKitButtons />
+      <AppKitConnections namespace="eip155" title="EVM Connections" />
+      <AppKitConnections namespace="solana" title="Solana Connections" />
       <AppKitInfo />
       <EthersTests />
       <SolanaTests />
