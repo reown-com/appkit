@@ -1513,6 +1513,12 @@ export abstract class AppKitBaseClient {
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
+    /**
+     * For the embedded use cases (Demo app), we should call close() when the user is connected to redirect them to Account View.
+     */
+    if (caipAddress && OptionsController.state.enableEmbedded) {
+      this.close()
+    }
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
@@ -1529,9 +1535,6 @@ export abstract class AppKitBaseClient {
 
   public setUser: (typeof AccountController)['setUser'] = (user, chain) => {
     AccountController.setUser(user, chain)
-    if (OptionsController.state.enableEmbedded) {
-      ModalController.close()
-    }
   }
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
