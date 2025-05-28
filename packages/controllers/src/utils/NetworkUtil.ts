@@ -28,6 +28,9 @@ export const NetworkUtil = {
       return
     }
 
+    const isCurrentNamespaceConnected = AccountController.getCaipAddress(
+      ChainController.state.activeChain
+    )
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
     const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
     const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
@@ -52,6 +55,7 @@ export const NetworkUtil = {
       /**
        * If user switching to a different namespace and next namespace is not connected, we need to show switch active chain view for confirmation first.
        */
+      isCurrentNamespaceConnected &&
       isDifferentNamespace &&
       !isNextNamespaceConnected
     ) {
