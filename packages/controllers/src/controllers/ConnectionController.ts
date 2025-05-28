@@ -265,13 +265,36 @@ const controller = {
       StorageUtil.setAppKitRecent(recentWallet)
     }
 
+    this.sendConnectSuccessEventWhenAddressAvailable({
+      method: wcLinking ? 'mobile' : 'qrcode',
+      name: RouterController.state.data?.wallet?.name || 'Unknown'
+    })
+  },
+
+  async sendConnectSuccessEventWhenAddressAvailable(properties: {
+    method: 'email' | 'mobile' | 'qrcode' | 'browser'
+    name: string
+  }) {
+    const maxRetries = 5
+    const retryDelay = 100 // ms
+
+    for (let i = 0; i < maxRetries; i++) {
+      if (AccountController.state.address) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties
+        })
+        return
+      }
+
+      await new Promise(resolve => setTimeout(resolve, retryDelay))
+    }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',
-      properties: {
-        method: wcLinking ? 'mobile' : 'qrcode',
-        name: RouterController.state.data?.wallet?.name || 'Unknown'
-      }
+      properties
     })
   },
 
