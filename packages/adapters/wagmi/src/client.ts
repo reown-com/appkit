@@ -254,7 +254,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     // Check if the app is running inside an iframe and the referrer is from Safe
-    if (typeof window !== 'undefined' && window.self !== window.top) {
+    if (CoreHelperUtil.isClient() && window.self !== window.top) {
       try {
         const ancestor = window?.location?.ancestorOrigins?.[0]
 
