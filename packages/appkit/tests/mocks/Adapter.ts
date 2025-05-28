@@ -102,5 +102,6 @@ export const mockSolanaAdapter = {
   on: solanaEmitter.on.bind(solanaEmitter),
   off: solanaEmitter.off.bind(solanaEmitter),
   emit: solanaEmitter.emit.bind(solanaEmitter),
-  removeAllEventListeners: vi.fn()
+  removeAllEventListeners: vi.fn(),
+  disconnect: vi.fn().mockResolvedValue(undefined)
 } as unknown as AdapterBlueprint

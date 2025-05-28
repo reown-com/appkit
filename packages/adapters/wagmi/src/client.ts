@@ -91,9 +91,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     this.createConfig({ ...configParams, networks })
+    this.checkChainId()
   }
 
   override construct(_options: AdapterBlueprint.Params) {
+    this.checkChainId()
     this.setupWatchers()
   }
 
@@ -128,6 +130,16 @@ export class WagmiAdapter extends AdapterBlueprint {
         CoreHelperUtil.createAccount('eip155', val || '', 'eoa')
       )
     })
+  }
+
+  private checkChainId() {
+    const { chainId } = getAccount(this.wagmiConfig)
+
+    if (chainId) {
+      this.emit('switchNetwork', {
+        chainId
+      })
+    }
   }
 
   private getWagmiConnector(id: string) {
@@ -206,6 +218,12 @@ export class WagmiAdapter extends AdapterBlueprint {
           this.emit('disconnect')
         }
 
+        if (accountData?.chainId && accountData?.chainId !== prevAccountData?.chainId) {
+          this.emit('switchNetwork', {
+            chainId: accountData.chainId
+          })
+        }
+
         if (accountData.status === 'connected') {
           if (
             accountData.address !== prevAccountData?.address ||
@@ -214,13 +232,6 @@ export class WagmiAdapter extends AdapterBlueprint {
             this.setupWatchPendingTransactions()
 
             this.emit('accountChanged', {
-              address: accountData.address,
-              chainId: accountData.chainId
-            })
-          }
-
-          if (accountData.chainId !== prevAccountData?.chainId) {
-            this.emit('switchNetwork', {
               address: accountData.address,
               chainId: accountData.chainId
             })
