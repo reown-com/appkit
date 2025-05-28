@@ -91,9 +91,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     this.createConfig({ ...configParams, networks })
+    this.checkChainId()
   }
 
   override construct(_options: AdapterBlueprint.Params) {
+    this.checkChainId()
     this.setupWatchers()
   }
 
@@ -128,6 +130,16 @@ export class WagmiAdapter extends AdapterBlueprint {
         CoreHelperUtil.createAccount('eip155', val || '', 'eoa')
       )
     })
+  }
+
+  private checkChainId() {
+    const { chainId } = getAccount(this.wagmiConfig)
+
+    if (chainId) {
+      this.emit('switchNetwork', {
+        chainId
+      })
+    }
   }
 
   private getWagmiConnector(id: string) {
@@ -206,6 +218,12 @@ export class WagmiAdapter extends AdapterBlueprint {
           this.emit('disconnect')
         }
 
+        if (accountData?.chainId && accountData?.chainId !== prevAccountData?.chainId) {
+          this.emit('switchNetwork', {
+            chainId: accountData.chainId
+          })
+        }
+
         if (accountData.status === 'connected') {
           if (
             accountData.address !== prevAccountData?.address ||
@@ -214,13 +232,6 @@ export class WagmiAdapter extends AdapterBlueprint {
             this.setupWatchPendingTransactions()
 
             this.emit('accountChanged', {
-              address: accountData.address,
-              chainId: accountData.chainId
-            })
-          }
-
-          if (accountData.chainId !== prevAccountData?.chainId) {
-            this.emit('switchNetwork', {
               address: accountData.address,
               chainId: accountData.chainId
             })
@@ -387,7 +398,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
-
     this.addConnector({
       id: connector.id,
       explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
@@ -411,8 +421,9 @@ export class WagmiAdapter extends AdapterBlueprint {
      * connectors are added later in the process the initial setup
      */
     watchConnectors(this.wagmiConfig, {
-      onChange: connectors =>
+      onChange: connectors => {
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
+      }
     })
 
     // Add current wagmi connectors to chain adapter blueprint
@@ -589,15 +600,19 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async disconnect() {
     const connections = getConnections(this.wagmiConfig)
-    await Promise.all(
+
+    // Request disconnection from all connected wallets
+    await Promise.allSettled(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
-
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
       })
     )
+
+    // Ensure the connections are cleared
+    this.wagmiConfig.state.connections.clear()
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {

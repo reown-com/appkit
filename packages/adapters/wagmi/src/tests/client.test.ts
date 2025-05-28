@@ -51,7 +51,9 @@ vi.mock('@wagmi/core', async () => {
     sendTransaction: vi.fn(),
     writeContract: vi.fn(),
     waitForTransactionReceipt: vi.fn(),
-    getAccount: vi.fn(),
+    getAccount: vi.fn(() => ({
+      chainId: 1
+    })),
     prepareTransactionRequest: vi.fn(),
     reconnect: vi.fn(),
     watchAccount: vi.fn(),
@@ -90,6 +92,9 @@ const mockWagmiConfig = {
       }
     }
   ],
+  state: {
+    connections: new Map()
+  },
   _internal: {
     connectors: {
       setup: vi.fn(),
@@ -132,6 +137,28 @@ describe('WagmiAdapter', () => {
       expect(adapter.projectId).toBe(mockProjectId)
       expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.WAGMI)
       expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.EVM)
+    })
+
+    it('should call checkChainId in constructor when chainId is present', () => {
+      const emitSpy = vi.spyOn(WagmiAdapter.prototype, 'emit' as any)
+
+      new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
+      expect(emitSpy).toHaveBeenCalledWith('switchNetwork', {
+        chainId: 1
+      })
+    })
+
+    it('should call checkChainId in construct when chainId is present', () => {
+      const emitSpy = vi.fn()
+      adapter.on('switchNetwork', emitSpy)
+      adapter.construct({})
+      expect(emitSpy).toHaveBeenCalledWith({
+        chainId: 1
+      })
     })
 
     it('should set wagmi connectors', async () => {
@@ -585,19 +612,63 @@ describe('WagmiAdapter', () => {
       vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
         connectors: mockConnections.map(
           ({ connector }) => connector as unknown as wagmiCore.Connector
-        )
+        ),
+        state: {
+          connections: new Map([
+            ['connector1', { connector: { id: 'connector1' } }],
+            ['connector2', { connector: { id: 'connector2' } }]
+          ])
+        }
       } as any)
+
+      const disconnectSpy = vi.spyOn(wagmiCore, 'disconnect').mockImplementationOnce(vi.fn())
 
       const adapter = new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId
       })
 
-      const disconnectSpy = vi.spyOn(wagmiCore, 'disconnect').mockImplementationOnce(vi.fn())
+      adapter.construct({})
 
       await adapter.disconnect()
 
       expect(disconnectSpy).toHaveBeenCalledTimes(2)
+      expect(adapter.wagmiConfig.state.connections.size).toBe(0)
+    })
+
+    it('should disconnect wagmi context succesfully even if one of the connectors fails to disconnect', async () => {
+      const mockConnections = [
+        { connector: { id: 'connector1' } },
+        { connector: { id: 'connector2' } }
+      ]
+
+      vi.spyOn(wagmiCore, 'getConnections').mockReturnValue(mockConnections as any)
+      vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        connectors: mockConnections.map(
+          ({ connector }) => connector as unknown as wagmiCore.Connector
+        ),
+        state: {
+          connections: new Map([
+            ['connector1', { connector: { id: 'connector1' } }],
+            ['connector2', { connector: { id: 'connector2' } }]
+          ])
+        }
+      } as any)
+
+      const disconnectSpy = vi.spyOn(wagmiCore, 'disconnect').mockImplementationOnce(vi.fn())
+      disconnectSpy.mockRejectedValueOnce(new Error('Failed to disconnect'))
+
+      const wagmiAdapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
+      wagmiAdapter.construct({})
+
+      await wagmiAdapter.disconnect()
+
+      expect(disconnectSpy).toHaveBeenCalledTimes(2)
+      expect(wagmiAdapter.wagmiConfig.state.connections.size).toBe(0)
     })
 
     it('should authenticate and connect with wagmi when using connectWalletConnect', async () => {
@@ -628,7 +699,7 @@ describe('WagmiAdapter', () => {
 
       expect(mockWalletConnectConnector.authenticate).toHaveBeenCalled()
       expect(connectSpy).toHaveBeenCalledWith(
-        expect.anything(),
+        adapter.wagmiConfig,
         expect.objectContaining({
           connector: mockWagmiConnector,
           chainId: 1
@@ -645,7 +716,7 @@ describe('WagmiAdapter', () => {
       })
 
       expect(switchChain).toHaveBeenCalledWith(
-        expect.anything(),
+        adapter.wagmiConfig,
         expect.objectContaining({
           chainId: 1
         })
@@ -903,7 +974,8 @@ describe('WagmiAdapter', () => {
         chainId: 1
       } as unknown as wagmiCore.GetAccountReturnType
 
-      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -933,7 +1005,8 @@ describe('WagmiAdapter', () => {
         chainId: 1
       } as unknown as wagmiCore.GetAccountReturnType
 
-      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -972,7 +1045,8 @@ describe('WagmiAdapter', () => {
         chainId: 1
       } as unknown as wagmiCore.GetAccountReturnType
 
-      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -999,7 +1073,8 @@ describe('WagmiAdapter', () => {
         chainId: 1
       } as unknown as wagmiCore.GetAccountReturnType
 
-      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -1026,7 +1101,8 @@ describe('WagmiAdapter', () => {
         chainId: 1
       } as unknown as wagmiCore.GetAccountReturnType
 
-      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -1038,6 +1114,36 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(disconnectSpy).not.toHaveBeenCalled()
+    })
+
+    it('should emit switchNetwork when chainId changes regardless of connection status', async () => {
+      const currAccount = {
+        status: 'disconnected',
+        address: undefined,
+        chainId: 137
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'disconnected',
+        address: undefined,
+        chainId: undefined
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const switchNetworkSpy = vi.fn()
+
+      adapter.on('switchNetwork', switchNetworkSpy)
+
+      adapter['setupWatchers']()
+
+      expect(switchNetworkSpy).toHaveBeenCalledWith({
+        chainId: currAccount.chainId
+      })
     })
 
     it('should return accounts successfully when using auth connector', async () => {
