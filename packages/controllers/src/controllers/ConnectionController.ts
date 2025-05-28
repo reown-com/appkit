@@ -278,7 +278,7 @@ const controller = {
     const maxRetries = 5
     const retryDelay = 100
 
-    for (let attempt = 0; attempt < maxRetries; attempt += 1) {
+    function checkAddressAndSendEvent(attemptsRemaining: number): Promise<void> {
       if (AccountController.state.address) {
         EventsController.sendEvent({
           type: 'track',
@@ -286,19 +286,27 @@ const controller = {
           properties
         })
 
-        return
+        return Promise.resolve()
       }
 
-      await new Promise(resolve => {
-        setTimeout(resolve, retryDelay)
+      if (attemptsRemaining <= 0) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties
+        })
+
+        return Promise.resolve()
+      }
+
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(checkAddressAndSendEvent(attemptsRemaining - 1))
+        }, retryDelay)
       })
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'CONNECT_SUCCESS',
-      properties
-    })
+    return checkAddressAndSendEvent(maxRetries - 1)
   },
 
   setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {
