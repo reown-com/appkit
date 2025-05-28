@@ -97,6 +97,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connecting-social-view></w3m-connecting-social-view>`
       case 'DataCapture':
         return html`<w3m-data-capture-view></w3m-data-capture-view>`
+      case 'DataCaptureOtpConfirm':
+        return html`<w3m-data-capture-otp-confirm-view></w3m-data-capture-otp-confirm-view>`
       case 'Downloads':
         return html`<w3m-downloads-view></w3m-downloads-view>`
       case 'EmailLogin':

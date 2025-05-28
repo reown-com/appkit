@@ -30,6 +30,8 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   private required: boolean
 
+  private otpUuid: string | null = null
+
   private listeners: CloudAuthSIWX.EventListeners = {
     sessionChanged: []
   }
@@ -68,8 +70,11 @@ export class CloudAuthSIWX implements SIWXConfig {
       },
       headers: ['nonce', 'otp']
     })
+
     this.setStorageToken(response.token, this.localAuthStorageKey)
     this.emit('sessionChanged', session)
+
+    this.otpUuid = null
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
@@ -181,11 +186,16 @@ export class CloudAuthSIWX implements SIWXConfig {
       body: { email, account }
     })
 
+    const emailResource = `email:${email}`
+
     if (this.messenger.resources) {
-      this.messenger.resources.push(`email:${email}`)
+      this.messenger.resources = this.messenger.resources.filter(r => r !== emailResource)
+      this.messenger.resources.push(emailResource)
     } else {
-      this.messenger.resources = [`email:${email}`]
+      this.messenger.resources = [emailResource]
     }
+
+    this.otpUuid = otp.uuid
 
     return otp
   }
@@ -237,7 +247,9 @@ export class CloudAuthSIWX implements SIWXConfig {
                 acc['Authorization'] = `Bearer ${this.getStorageToken(this.localAuthStorageKey)}`
                 break
               case 'otp':
-                // Add otp
+                if (this.otpUuid) {
+                  acc['x-otp'] = this.otpUuid
+                }
                 break
               default:
                 break
@@ -248,11 +260,15 @@ export class CloudAuthSIWX implements SIWXConfig {
         : undefined
     })
 
+    if (!response.ok) {
+      throw new Error(await response.text())
+    }
+
     if (response.headers.get('content-type')?.includes('application/json')) {
       return response.json()
     }
 
-    throw new Error(await response.text())
+    return null as CloudAuthSIWX.RequestResponse<Method, Key>
   }
 
   private getStorageToken(key: keyof SafeLocalStorageItems): string | undefined {

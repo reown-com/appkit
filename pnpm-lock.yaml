@@ -2777,6 +2777,9 @@ importers:
       '@reown/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
+      '@reown/appkit-scaffold-ui':
+        specifier: workspace:*
+        version: link:../scaffold-ui
       '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../ui

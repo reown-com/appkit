@@ -44,6 +44,7 @@
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-scaffold-ui": "workspace:*",
     "bip322-js": "2.0.0",
     "bs58": "6.0.0",
     "tweetnacl": "1.0.3",

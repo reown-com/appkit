@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ChainController, OptionsController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  OptionsController,
+  RouterController,
+  SnackController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import { CloudAuthSIWX } from '../../configs/index.js'
@@ -67,9 +72,13 @@ export class W3mDataCaptureView extends LitElement {
         account: accountData.caipAddress
       })
 
-      console.log('otp success:', otp)
+      if (otp.uuid === null) {
+        RouterController.replace('SIWXSignMessage')
+      } else {
+        RouterController.replace('DataCaptureOtpConfirm', { email: this.email })
+      }
     } catch (error) {
-      console.error('otp error', error)
+      SnackController.showError('Failed to send email OTP')
     } finally {
       this.loading = false
     }
