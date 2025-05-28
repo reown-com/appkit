@@ -415,11 +415,6 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     })
 
-    // Add current wagmi connectors to chain adapter blueprint
-    await Promise.all(
-      this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
-    )
-
     // Add wagmi connectors
     this.addWagmiConnectors(options, appKit)
 
@@ -724,6 +719,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         })
       }
     })
+    console.log('>>> Wagmi.addConnector2', { universalProvider })
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
