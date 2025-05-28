@@ -50,19 +50,21 @@ describe('Network Management', () => {
       allowUnsupportedChain: false
     })
 
-    // Mock ChainController state to provide default values
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+    // Base mock for ChainController.state in beforeEach
+    // This ensures a consistent starting point for all tests.
+    const baseChainControllerStateMock = {
       chains: new Map(),
       activeCaipAddress: undefined,
       activeCaipNetwork: mainnet,
-      activeChain: 'eip155',
+      activeChain: mainnet.chainNamespace,
       noAdapters: false,
       universalAdapter: {
         networkControllerClient: undefined,
         connectionControllerClient: undefined
       },
       isSwitchingNamespace: false
-    })
+    }
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue(baseChainControllerStateMock)
   })
 
   it('should set CAIP network', () => {
@@ -168,13 +170,15 @@ describe('Network Management', () => {
     vi.spyOn(ChainController, 'getCaipNetworkByNamespace').mockReturnValue(mainnet)
     vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(true)
 
+    // Retrieve the current base mock (from beforeEach) and then override for this specific test
+    const currentChainStateForTrueSwitch = ChainController.state
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
+      ...currentChainStateForTrueSwitch, // Spread the state which includes chains as a Map
       activeCaipNetwork: {
         ...mainnet,
         name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME
       },
-      activeChain: 'eip155'
+      activeChain: mainnet.chainNamespace // Corrected for type safety
     })
 
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
@@ -205,11 +209,15 @@ describe('Network Management', () => {
     )
     vi.spyOn(ChainController, 'getCaipNetworkByNamespace').mockReturnValue(mainnet)
     vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(true)
+
+    // Retrieve the current base mock (from beforeEach) and then override for this specific test
+    const currentChainStateForFalseSwitch = ChainController.state
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
+      ...currentChainStateForFalseSwitch, // Spread the state which includes chains as a Map
       activeCaipNetwork: mainnet,
-      activeChain: 'eip155'
+      activeChain: mainnet.chainNamespace // Ensured for type safety and consistency
     })
+
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       allowUnsupportedChain: false,
