@@ -147,7 +147,6 @@ export class AppKit extends AppKitBaseClient {
         })
       }
       this.setCaipAddress(caipAddress, namespace)
-
       this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
