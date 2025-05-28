@@ -113,13 +113,6 @@ describe('SendApiUtil', () => {
         iconUrl: 'https://example.com/icon.png'
       }
 
-      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
-        [mockEthChainIdAsHex]: {
-          assetDiscovery: {
-            supported: true
-          }
-        }
-      })
       vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(mockAssetsResponse)
       vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(true)
       vi.mocked(ERC7811Utils.createBalance).mockReturnValue(mockBalance)
@@ -171,8 +164,8 @@ describe('SendApiUtil', () => {
         }
       ]
 
+      // @ts-expect-error - Mocking with unexpected undefined value
       vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(undefined)
-      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({})
       vi.mocked(BlockchainApiController.getBalance).mockResolvedValue({ balances: mockBalances })
 
       const result = await SendApiUtil.getMyTokensWithBalance()
@@ -297,13 +290,6 @@ describe('SendApiUtil', () => {
     it('should return null when walletGetAssetsResponse is invalid', async () => {
       const invalidResponse = { invalid: 'response' }
 
-      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
-        [mockEthChainIdAsHex]: {
-          assetDiscovery: {
-            supported: true
-          }
-        }
-      })
       vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(invalidResponse)
       vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(false) // Mock the type guard to return false
 
@@ -315,13 +301,6 @@ describe('SendApiUtil', () => {
     it('should return null when asset discovery fails', async () => {
       const errorMessage = 'Network error'
 
-      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
-        [mockEthChainIdAsHex]: {
-          assetDiscovery: {
-            supported: true
-          }
-        }
-      })
       vi.mocked(ConnectionController.walletGetAssets).mockRejectedValue(new Error(errorMessage))
 
       const result = await SendApiUtil.getEIP155Balances(mockEthereumAddress, mockEthereumNetwork)
@@ -348,13 +327,6 @@ describe('SendApiUtil', () => {
         ]
       }
 
-      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
-        [mockEthChainIdAsHex]: {
-          assetDiscovery: {
-            supported: true
-          }
-        }
-      })
       vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(mockAssetsResponse)
       vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(true) // Mock the type guard to return true
       vi.mocked(ERC7811Utils.createBalance).mockReturnValue({
@@ -388,13 +360,6 @@ describe('SendApiUtil', () => {
         '0x2': []
       }
 
-      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
-        [mockEthChainIdAsHex]: {
-          assetDiscovery: {
-            supported: true
-          }
-        }
-      })
       vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(mockAssetsResponse)
       vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(true)
 
