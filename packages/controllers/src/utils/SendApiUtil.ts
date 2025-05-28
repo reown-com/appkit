@@ -20,15 +20,6 @@ export const SendApiUtil = {
       return []
     }
 
-    // Extract EIP-155 specific logic
-    if (caipNetwork.chainNamespace === 'eip155') {
-      const eip155Balances = await this.getEIP155Balances(address, caipNetwork)
-      if (eip155Balances) {
-        return this.filterLowQualityTokens(eip155Balances)
-      }
-    }
-
-    // Fallback to 1Inch API
     const response = await BlockchainApiController.getBalance(
       address,
       caipNetwork.caipNetworkId,
@@ -36,27 +27,6 @@ export const SendApiUtil = {
     )
 
     return this.filterLowQualityTokens(response.balances)
-  },
-
-  async getEIP155Balances(address: string, caipNetwork: CaipNetwork) {
-    try {
-      const chainIdHex = ERC7811Utils.getChainIdHexFromCAIP2ChainId(caipNetwork.caipNetworkId)
-
-      const walletGetAssetsResponse = await ConnectionController.walletGetAssets({
-        account: address as `0x${string}`,
-        chainFilter: [chainIdHex]
-      })
-
-      if (!ERC7811Utils.isWalletGetAssetsResponse(walletGetAssetsResponse)) {
-        return null
-      }
-
-      const assets = walletGetAssetsResponse[chainIdHex] || []
-
-      return assets.map(asset => ERC7811Utils.createBalance(asset, caipNetwork.caipNetworkId))
-    } catch (error) {
-      return null
-    }
   },
 
   /**
