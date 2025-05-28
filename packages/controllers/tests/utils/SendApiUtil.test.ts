@@ -6,7 +6,7 @@ import { AccountController } from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
-import { ERC7811Utils, type WalletGetAssetsResponse } from '../../src/utils/ERC7811Util'
+import { ERC7811Utils } from '../../src/utils/ERC7811Util'
 import { SendApiUtil } from '../../src/utils/SendApiUtil'
 
 vi.mock('../../src/controllers/AccountController')

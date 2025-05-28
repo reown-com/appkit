@@ -1,10 +1,6 @@
-import type { CaipNetwork } from '@reown/appkit-common'
-
 import { AccountController } from '../controllers/AccountController.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
-import { ConnectionController } from '../controllers/ConnectionController.js'
-import { ERC7811Utils } from './ERC7811Util.js'
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import type { BlockchainApiBalanceResponse } from './TypeUtil.js'
 
