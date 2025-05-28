@@ -48,7 +48,7 @@ export const NetworkUtil = {
      * 1. If the ignoreSwitchConfirmation is set to true, we should switch to the network,
      * 2. If user connected with auth connector and the next network is supported by the auth connector,
      * we should switch to the network without confirmation screen.
-     *  */
+     */
     if (ignoreSwitchConfirmation || (isConnectedWithAuth && isSupportedForAuthConnector)) {
       RouterController.push('SwitchNetwork', { ...routerData, network })
     } else if (
