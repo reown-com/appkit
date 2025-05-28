@@ -41,13 +41,19 @@ export const NetworkUtil = {
       c => c === network.chainNamespace
     )
 
-    if (ignoreSwitchConfirmation) {
+    /**
+     * 1. If the ignoreSwitchConfirmation is set to true, we should switch to the network,
+     * 2. If user connected with auth connector and the next network is supported by the auth connector,
+     * we should switch to the network without confirmation screen.
+     *  */
+    if (ignoreSwitchConfirmation || (isConnectedWithAuth && isSupportedForAuthConnector)) {
       RouterController.push('SwitchNetwork', { ...routerData, network })
     } else if (
-      // 1. If user connected with auth connector and the next network is not supported by the auth connector, we need to show switch active chain view.
-      (isConnectedWithAuth && !isSupportedForAuthConnector) ||
-      // 2. If user connected with non-auth connector, we should check if user switching to a different namespace and next namespace is not connected.
-      (isDifferentNamespace && !isNextNamespaceConnected)
+      /**
+       * If user switching to a different namespace and next namespace is not connected, we need to show switch active chain view for confirmation first.
+       */
+      isDifferentNamespace &&
+      !isNextNamespaceConnected
     ) {
       RouterController.push('SwitchActiveChain', {
         switchToChain: network.chainNamespace,
