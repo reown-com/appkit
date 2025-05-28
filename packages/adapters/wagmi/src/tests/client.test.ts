@@ -60,7 +60,9 @@ vi.mock('@wagmi/core', async () => {
     sendTransaction: vi.fn(),
     writeContract: vi.fn(),
     waitForTransactionReceipt: vi.fn(),
-    getAccount: vi.fn(),
+    getAccount: vi.fn(() => ({
+      chainId: 1
+    })),
     prepareTransactionRequest: vi.fn(),
     reconnect: vi.fn(),
     watchAccount: vi.fn(),
@@ -85,7 +87,21 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: mockProjectId,
   customNetworkImageUrls: {}
 })
-
+const mockConnector = {
+  id: 'test-connector',
+  name: 'Test Connector',
+  type: 'injected',
+  info: { rdns: 'test-connector' },
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  getAccounts: vi.fn(),
+  getChainId: vi.fn(),
+  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() }),
+  isAuthorized: vi.fn(),
+  onAccountsChanged: vi.fn(),
+  onChainChanged: vi.fn(),
+  onDisconnect: vi.fn()
+} as unknown as wagmiCore.Connector
 const mockWagmiConfig = {
   connectors: [
     {
@@ -156,9 +172,33 @@ describe('WagmiAdapter', () => {
       expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.EVM)
     })
 
+    it('should emit switchNetwork in constructor when chainId is returned from getAccount', () => {
+      const emitSpy = vi.spyOn(WagmiAdapter.prototype, 'emit' as any)
+
+      new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
+      expect(emitSpy).toHaveBeenCalledWith('switchNetwork', {
+        chainId: 1
+      })
+    })
+
+    it('should emit switchNetwork in construct when chainId is returned from getAccount', () => {
+      const emitSpy = vi.fn()
+      adapter.on('switchNetwork', emitSpy)
+      adapter.construct({})
+      expect(emitSpy).toHaveBeenCalledWith({
+        chainId: 1
+      })
+    })
+
     it('should set wagmi connectors', async () => {
-      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
-      vi.spyOn(wagmiCore, 'watchConnectors')
+      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation((_, { onChange }) => {
+        onChange([mockConnector], [])
+        return vi.fn()
+      })
 
       await adapter.syncConnectors(
         { networks: [mainnet], projectId: 'YOUR_PROJECT_ID' },
@@ -179,8 +219,8 @@ describe('WagmiAdapter', () => {
             connect: expect.any(Function),
             request: expect.any(Function)
           },
-          name: undefined,
-          type: 'EXTERNAL'
+          name: 'Test Connector',
+          type: 'INJECTED'
         }
       ])
     })
@@ -222,7 +262,7 @@ describe('WagmiAdapter', () => {
       expect(authConnectorSpy).not.toHaveBeenCalled()
     })
 
-    it('should not add auth connector when email is true and socials is false', async () => {
+    it('should add auth connector when email is true and socials is false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
@@ -239,7 +279,7 @@ describe('WagmiAdapter', () => {
 
       adapter.syncConnectors(options, mockAppKit)
 
-      expect(authConnectorSpy).not.toHaveBeenCalled()
+      expect(authConnectorSpy).toHaveBeenCalled()
     })
 
     it('should not add auth connector when email is false and socials is an empty array', async () => {
@@ -1109,6 +1149,36 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(disconnectSpy).not.toHaveBeenCalled()
+    })
+
+    it('should emit switchNetwork when chainId changes regardless of connection status', async () => {
+      const currAccount = {
+        status: 'disconnected',
+        address: undefined,
+        chainId: 137
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'disconnected',
+        address: undefined,
+        chainId: undefined
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const switchNetworkSpy = vi.fn()
+
+      adapter.on('switchNetwork', switchNetworkSpy)
+
+      adapter['setupWatchers']()
+
+      expect(switchNetworkSpy).toHaveBeenCalledWith({
+        chainId: currAccount.chainId
+      })
     })
 
     it('should return accounts successfully when using auth connector', async () => {
