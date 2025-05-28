@@ -719,7 +719,6 @@ export class WagmiAdapter extends AdapterBlueprint {
         })
       }
     })
-    console.log('>>> Wagmi.addConnector2', { universalProvider })
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
