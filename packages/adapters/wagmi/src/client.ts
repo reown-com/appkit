@@ -36,11 +36,7 @@ import type {
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
-import {
-  type ConnectorType,
-  ConstantsUtil as CoreConstantsUtil,
-  type Provider
-} from '@reown/appkit-controllers'
+import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -128,7 +124,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const { addresses, address } = getAccount(this.wagmiConfig)
 
     return Promise.resolve({
-      accounts: (addresses || [address])?.map(val =>
+      accounts: [...new Set(addresses || [address])]?.map(val =>
         CoreHelperUtil.createAccount('eip155', val || '', 'eoa')
       )
     })
@@ -274,13 +270,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
-    const isEmailEnabled =
-      options.features?.email === undefined
-        ? CoreConstantsUtil.DEFAULT_FEATURES.email
-        : options.features?.email
-    const socialsEnabled = options.features?.socials
-      ? options.features?.socials?.length > 0
-      : (options.features?.socials ?? CoreConstantsUtil.DEFAULT_FEATURES.socials)
+    const isEmailEnabled = appKit?.remoteFeatures?.email ?? true
+    const socialsEnabled =
+      Array.isArray(appKit?.remoteFeatures?.socials) && appKit?.remoteFeatures?.socials?.length > 0
 
     if (isEmailEnabled || socialsEnabled) {
       customConnectors.push(
@@ -395,7 +387,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
-
     this.addConnector({
       id: connector.id,
       explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
@@ -419,8 +410,9 @@ export class WagmiAdapter extends AdapterBlueprint {
      * connectors are added later in the process the initial setup
      */
     watchConnectors(this.wagmiConfig, {
-      onChange: connectors =>
+      onChange: connectors => {
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
+      }
     })
 
     // Add current wagmi connectors to chain adapter blueprint
@@ -597,15 +589,19 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async disconnect() {
     const connections = getConnections(this.wagmiConfig)
-    await Promise.all(
+
+    // Request disconnection from all connected wallets
+    await Promise.allSettled(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
-
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
       })
     )
+
+    // Ensure the connections are cleared
+    this.wagmiConfig.state.connections.clear()
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {

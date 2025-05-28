@@ -195,6 +195,19 @@ export type EmbeddedWalletTimeoutReason =
   | 'iframe_request_timeout'
   | 'unverified_domain'
 
+export type SocialProvider =
+  | 'google'
+  | 'github'
+  | 'apple'
+  | 'facebook'
+  | 'x'
+  | 'discord'
+  | 'farcaster'
+
+export type SwapProvider = '1inch'
+
+export type OnRampProvider = 'coinbase' | 'meld'
+
 /**
  * Helper type to create a CaipNetwork with proper type inference from the chainNamespace field
  * Usage: const network = { ... } as InferredCaipNetwork<typeof network>
