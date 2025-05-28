@@ -68,7 +68,21 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: mockProjectId,
   customNetworkImageUrls: {}
 })
-
+const mockConnector = {
+  id: 'test-connector',
+  name: 'Test Connector',
+  type: 'injected',
+  info: { rdns: 'test-connector' },
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  getAccounts: vi.fn(),
+  getChainId: vi.fn(),
+  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() }),
+  isAuthorized: vi.fn(),
+  onAccountsChanged: vi.fn(),
+  onChainChanged: vi.fn(),
+  onDisconnect: vi.fn()
+} as unknown as wagmiCore.Connector
 const mockWagmiConfig = {
   connectors: [
     {
@@ -162,8 +176,10 @@ describe('WagmiAdapter', () => {
     })
 
     it('should set wagmi connectors', async () => {
-      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
-      vi.spyOn(wagmiCore, 'watchConnectors')
+      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation((_, { onChange }) => {
+        onChange([mockConnector], [])
+        return vi.fn()
+      })
 
       await adapter.syncConnectors(
         { networks: [mainnet], projectId: 'YOUR_PROJECT_ID' },
@@ -184,8 +200,8 @@ describe('WagmiAdapter', () => {
             connect: expect.any(Function),
             request: expect.any(Function)
           },
-          name: undefined,
-          type: 'EXTERNAL'
+          name: 'Test Connector',
+          type: 'INJECTED'
         }
       ])
     })
@@ -227,7 +243,7 @@ describe('WagmiAdapter', () => {
       expect(authConnectorSpy).not.toHaveBeenCalled()
     })
 
-    it('should not add auth connector when email is true and socials is false', async () => {
+    it('should add auth connector when email is true and socials is false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
@@ -244,7 +260,7 @@ describe('WagmiAdapter', () => {
 
       adapter.syncConnectors(options, mockAppKit)
 
-      expect(authConnectorSpy).not.toHaveBeenCalled()
+      expect(authConnectorSpy).toHaveBeenCalled()
     })
 
     it('should not add auth connector when email is false and socials is an empty array', async () => {
