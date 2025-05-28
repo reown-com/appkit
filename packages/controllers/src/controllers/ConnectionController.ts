@@ -279,7 +279,7 @@ const controller = {
     const retryDelay = 100
 
     function checkAddressAndSendEvent(attemptsRemaining: number): Promise<void> {
-      if (AccountController.state.address) {
+      if (AccountController.state?.address) {
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
