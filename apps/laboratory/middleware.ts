@@ -37,5 +37,26 @@ export function middleware(request: NextRequest) {
   })
   response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
 
+  // Serve manifest.json through every sub-page
+  if (request.nextUrl.pathname.endsWith('/manifest.json')) {
+    const manifestResponse = NextResponse.json(
+      {
+        name: 'AppKit Laboratory',
+        description: 'Laboratory application for AppKit to test and develop features',
+        iconPath: '/logo.png',
+        safeAppVersion: '1.0.0'
+      },
+      {
+        headers: {
+          ...response.headers,
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+
+    return manifestResponse
+  }
+
   return response
 }
