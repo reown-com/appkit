@@ -152,7 +152,7 @@ describe('WagmiAdapter', () => {
     })
 
     it('should set wagmi connectors', async () => {
-      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation((config, { onChange }) => {
+      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation((_, { onChange }) => {
         onChange([mockConnector], [])
         return vi.fn()
       })
