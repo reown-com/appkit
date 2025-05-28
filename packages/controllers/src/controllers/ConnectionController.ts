@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -5,7 +6,6 @@ import { type CaipAddress, type CaipNetwork, type ChainNamespace } from '@reown/
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   Connector,
@@ -307,11 +307,7 @@ const controller = {
 
   async disconnect(namespace?: ChainNamespace) {
     try {
-      ModalController.setLoading(true, namespace)
-      await SIWXUtil.clearSessions()
-      await ChainController.disconnect(namespace)
-      ModalController.setLoading(false, namespace)
-      ConnectorController.setFilterByNamespace(undefined)
+      await ConnectionController._getClient()?.disconnect(namespace)
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }

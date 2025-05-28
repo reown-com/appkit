@@ -55,10 +55,13 @@ import {
   OptionsController,
   PublicStateController,
   RouterController,
+  SIWXUtil,
+  SendController,
   SnackController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import { getChainsToDisconnect } from '@reown/appkit-controllers/utils'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -381,6 +384,35 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
+  private async disconnectNamespace(namespace: ChainNamespace) {
+    try {
+      const adapter = this.getAdapter(namespace)
+      const provider = ProviderUtil.getProvider(namespace)
+      const providerType = ProviderUtil.getProviderId(namespace)
+      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+
+      this.setLoading(true, namespace)
+      if (caipAddress && adapter?.disconnect) {
+        await adapter.disconnect({ provider, providerType })
+      }
+
+      StorageUtil.removeConnectedNamespace(namespace)
+      ProviderUtil.resetChain(namespace)
+      this.setUser(undefined, namespace)
+      this.setStatus('disconnected', namespace)
+      this.setConnectedWalletInfo(undefined, namespace)
+
+      ConnectorController.removeConnectorId(namespace)
+
+      ChainController.resetAccount(namespace)
+      ChainController.resetNetwork(namespace)
+      this.setLoading(false, namespace)
+    } catch (error) {
+      this.setLoading(false, namespace)
+      throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+    }
+  }
+
   // -- Client Initialization ---------------------------------------------------
   protected createClients() {
     this.connectionControllerClient = {
@@ -469,18 +501,36 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async (chainNamespace?: ChainNamespace) => {
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-        const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider(namespace)
-        const providerType = ProviderUtil.getProviderId(namespace)
+        const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
+        try {
+          // Reset send state when disconnecting
+          const disconnectResults = await Promise.allSettled(
+            chainsToDisconnect.map(async ([ns]) => this.disconnectNamespace(ns))
+          )
+          SendController.resetSend()
+          ConnectionController.resetWcConnection()
+          await SIWXUtil.clearSessions()
+          ConnectorController.setFilterByNamespace(undefined)
+          const failures = disconnectResults.filter(
+            (result): result is PromiseRejectedResult => result.status === 'rejected'
+          )
 
-        await adapter?.disconnect({ provider, providerType })
+          if (failures.length > 0) {
+            throw new Error(failures.map(f => f.reason.message).join(', '))
+          }
 
-        StorageUtil.removeConnectedNamespace(namespace)
-        ProviderUtil.resetChain(namespace)
-        this.setUser(undefined, namespace)
-        this.setStatus('disconnected', namespace)
-        this.setConnectedWalletInfo(undefined, namespace)
+          StorageUtil.deleteConnectedSocialProvider()
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'DISCONNECT_SUCCESS',
+            properties: {
+              namespace: chainNamespace || 'all'
+            }
+          })
+        } catch (error) {
+          throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
+        }
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -1598,13 +1648,11 @@ export abstract class AppKitBaseClient {
 
   public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.getCaipNetworks().find(n => n.id === appKitNetwork.id)
-
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
 
       return
     }
-
     await ChainController.switchActiveNetwork(network)
   }
 
