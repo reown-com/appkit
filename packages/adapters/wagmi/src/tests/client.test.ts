@@ -139,7 +139,7 @@ describe('WagmiAdapter', () => {
       expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.EVM)
     })
 
-    it('should call checkChainId in constructor when chainId is present', () => {
+    it('should emit switchNetwork in constructor when chainId is returned from getAccount', () => {
       const emitSpy = vi.spyOn(WagmiAdapter.prototype, 'emit' as any)
 
       new WagmiAdapter({
@@ -152,7 +152,7 @@ describe('WagmiAdapter', () => {
       })
     })
 
-    it('should call checkChainId in construct when chainId is present', () => {
+    it('should emit switchNetwork in construct when chainId is returned from getAccount', () => {
       const emitSpy = vi.fn()
       adapter.on('switchNetwork', emitSpy)
       adapter.construct({})
