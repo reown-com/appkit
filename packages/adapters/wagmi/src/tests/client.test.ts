@@ -51,7 +51,9 @@ vi.mock('@wagmi/core', async () => {
     sendTransaction: vi.fn(),
     writeContract: vi.fn(),
     waitForTransactionReceipt: vi.fn(),
-    getAccount: vi.fn(),
+    getAccount: vi.fn(() => ({
+      chainId: 1
+    })),
     prepareTransactionRequest: vi.fn(),
     reconnect: vi.fn(),
     watchAccount: vi.fn(),
@@ -135,6 +137,28 @@ describe('WagmiAdapter', () => {
       expect(adapter.projectId).toBe(mockProjectId)
       expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.WAGMI)
       expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.EVM)
+    })
+
+    it('should emit switchNetwork in constructor when chainId is returned from getAccount', () => {
+      const emitSpy = vi.spyOn(WagmiAdapter.prototype, 'emit' as any)
+
+      new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
+      expect(emitSpy).toHaveBeenCalledWith('switchNetwork', {
+        chainId: 1
+      })
+    })
+
+    it('should emit switchNetwork in construct when chainId is returned from getAccount', () => {
+      const emitSpy = vi.fn()
+      adapter.on('switchNetwork', emitSpy)
+      adapter.construct({})
+      expect(emitSpy).toHaveBeenCalledWith({
+        chainId: 1
+      })
     })
 
     it('should set wagmi connectors', async () => {
@@ -1090,6 +1114,36 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(disconnectSpy).not.toHaveBeenCalled()
+    })
+
+    it('should emit switchNetwork when chainId changes regardless of connection status', async () => {
+      const currAccount = {
+        status: 'disconnected',
+        address: undefined,
+        chainId: 137
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'disconnected',
+        address: undefined,
+        chainId: undefined
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
+        expect(config).toBe(adapter.wagmiConfig)
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const switchNetworkSpy = vi.fn()
+
+      adapter.on('switchNetwork', switchNetworkSpy)
+
+      adapter['setupWatchers']()
+
+      expect(switchNetworkSpy).toHaveBeenCalledWith({
+        chainId: currAccount.chainId
+      })
     })
 
     it('should return accounts successfully when using auth connector', async () => {
