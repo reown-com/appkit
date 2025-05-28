@@ -134,7 +134,7 @@
     "@walletconnect/universal-provider": "2.20.2",
     "bs58": "6.0.0",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0"
+    "viem": "2.30.1"
   },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",
