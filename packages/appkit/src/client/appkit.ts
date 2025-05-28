@@ -214,10 +214,7 @@ export class AppKit extends AppKitBaseClient {
     const email = provider.getEmail()
     const username = provider.getUsername()
 
-    this.setUser(
-      { ...(AccountController.state?.user || {}), username, email },
-      ChainController.state.activeChain
-    )
+    this.setUser({ ...(AccountController.state?.user || {}), username, email }, chainNamespace)
 
     this.setupAuthConnectorListeners(provider)
 
