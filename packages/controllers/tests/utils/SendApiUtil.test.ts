@@ -171,6 +171,7 @@ describe('SendApiUtil', () => {
         }
       ]
 
+      vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(undefined)
       vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({})
       vi.mocked(BlockchainApiController.getBalance).mockResolvedValue({ balances: mockBalances })
 
