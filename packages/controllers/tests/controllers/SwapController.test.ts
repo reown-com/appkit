@@ -82,17 +82,8 @@ beforeAll(async () => {
 
   await SwapController.initializeState()
 
-  // Set source token (MATIC)
-  const sourceToken = SwapController.state.myTokensWithBalance?.[0]
-  if (sourceToken) {
-    SwapController.setSourceToken(sourceToken)
-  }
-
-  // Set to token (AVAX)
   const toToken = SwapController.state.myTokensWithBalance?.[1]
-  if (toToken) {
-    SwapController.setToToken(toToken)
-  }
+  SwapController.setToToken(toToken)
 })
 
 // -- Tests --------------------------------------------------------------------
@@ -107,33 +98,24 @@ describe('SwapController', () => {
   })
 
   it('should calculate swap values as expected', async () => {
-    // Set source token amount before calling swapTokens
-    SwapController.setSourceTokenAmount('1')
     await SwapController.swapTokens()
 
     expect(SwapController.state.gasPriceInUSD).toEqual(0.00648630001383744)
-    // Price impact is calculated in SwapController based on the quote response
-    expect(SwapController.state.priceImpact).toBeDefined()
+    expect(SwapController.state.priceImpact).toEqual(3.952736601951709)
     expect(SwapController.state.maxSlippage).toEqual(0.0001726)
   })
 
   it('should handle fetchSwapQuote error correctly', async () => {
-    // Reset state but keep the tokens
-    const sourceToken = SwapController.state.sourceToken
-    const toToken = SwapController.state.toToken
     SwapController.resetState()
 
-    // Set up the mock to reject
     const mockFetchQuote = vi.spyOn(BlockchainApiController, 'fetchSwapQuote')
     mockFetchQuote.mockRejectedValueOnce(new Error('Quote error'))
 
-    // Set up the state properly before calling swapTokens
+    const sourceToken = SwapController.state.tokens?.[0]
+    const toToken = SwapController.state.tokens?.[1]
     SwapController.setSourceToken(sourceToken)
     SwapController.setToToken(toToken)
     SwapController.setSourceTokenAmount('1')
-
-    // Wait for the token prices to be set
-    await new Promise(resolve => setTimeout(resolve, 0))
 
     await SwapController.swapTokens()
 
