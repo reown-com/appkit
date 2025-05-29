@@ -63,8 +63,7 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const hasConnection = this.connections
-      .values()
+    const hasConnection = Array.from(this.connections.values())
       .flatMap(connections => connections)
       .some(({ connectorId }) => connectorId === ConstantsUtil.CONNECTOR_ID.AUTH)
 
@@ -160,13 +159,20 @@ export class W3mEmailLoginWidget extends LitElement {
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
+        const connectionsByNamespace =
+          ConnectionController.state.connections.get(
+            ChainController.state.activeChain as ChainNamespace
+          ) ?? []
+        const hasConnections = connectionsByNamespace.length > 0
         await ConnectionController.connectExternal(
           authConnector,
           ChainController.state.activeChain as ChainNamespace
         )
-        RouterController.reset('Account')
-        RouterController.push('ProfileWallets')
-        SnackController.showSuccess('New Wallet Added')
+        if (hasConnections) {
+          RouterController.reset('Account')
+          RouterController.push('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
+        }
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

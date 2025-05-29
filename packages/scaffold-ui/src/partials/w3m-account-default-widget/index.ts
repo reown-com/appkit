@@ -336,10 +336,16 @@ export class W3mAccountDefaultWidget extends LitElement {
   private async onDisconnect() {
     try {
       this.disconnecting = true
+      const connectionsByNamespace = this.namespace
+        ? (ConnectionController.state.connections.get(this.namespace) ?? [])
+        : []
+      const hasConnections = connectionsByNamespace.length > 0
       await ConnectionController.disconnect()
-      RouterController.reset('Account')
-      RouterController.push('ProfileWallets')
-      SnackController.showSuccess('Wallet deleted')
+      if (hasConnections) {
+        RouterController.reset('Account')
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('Wallet deleted')
+      }
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

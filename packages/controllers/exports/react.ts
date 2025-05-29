@@ -4,6 +4,7 @@ import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
+import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
@@ -117,6 +118,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   // Snapshots to trigger re-renders on state changes
   useSnapshot(ConnectionController.state)
   useSnapshot(ConnectorController.state)
+  useSnapshot(AssetController.state)
 
   const { activeChain } = useSnapshot(ChainController.state)
 
@@ -134,10 +136,12 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
 
     const name = ConnectorController.getConnectorName(connector?.name)
     const icon = AssetUtil.getConnectorImage(connector)
+    const networkImage = AssetUtil.getNetworkImage(connection.caipNetwork)
 
     return {
       name,
       icon,
+      networkIcon: networkImage,
       ...connection
     }
   }, [])

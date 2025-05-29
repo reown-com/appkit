@@ -42,14 +42,28 @@ export function ConnectionCard({
     <Box borderWidth="1px" borderRadius="md" p={3}>
       <HStack justify="space-between">
         <Flex alignItems="center" gap={2}>
-          {connection.name && connection.icon && (
-            <Image
-              src={connection.icon}
-              alt={`${connection.name} logo`}
-              boxSize="20px"
-              borderRadius="sm"
-            />
-          )}
+          <Flex alignItems="center" justifyContent="center" position="relative">
+            {connection.name && connection.icon && (
+              <Image
+                src={connection.icon}
+                alt={`${connection.name} logo`}
+                boxSize="20px"
+                borderRadius="md"
+              />
+            )}
+
+            {connection.icon && connection.networkIcon && (
+              <Image
+                src={connection.networkIcon}
+                alt={`${connection.name} network icon`}
+                boxSize="14px"
+                borderRadius="full"
+                position="absolute"
+                top={-1.5}
+                right={-1.5}
+              />
+            )}
+          </Flex>
 
           <Text fontWeight="bold" textTransform="capitalize">
             {connection.auth?.name ?? connection.name}

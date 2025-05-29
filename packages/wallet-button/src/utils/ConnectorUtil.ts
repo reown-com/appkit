@@ -114,6 +114,8 @@ export const ConnectorUtil = {
                 const uri = event.data.resultUri as string
 
                 if (socialProvider) {
+                  StorageUtil.setConnectedSocialProvider(socialProvider)
+
                   EventsController.sendEvent({
                     type: 'track',
                     event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
@@ -130,9 +132,6 @@ export const ConnectorUtil = {
                 )
 
                 if (socialProvider) {
-                  StorageUtil.setConnectedSocialProvider(socialProvider)
-                  await ConnectionController.connectExternal(authConnector, authConnector.chain)
-
                   const caipAddress = ChainController.state.activeCaipAddress
 
                   if (!caipAddress) {

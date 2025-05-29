@@ -5,6 +5,7 @@ import {
   ConnectionControllerUtil,
   ConnectorController,
   EventsController,
+  ModalController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -17,16 +18,23 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 export class W3mConnectingExternalView extends W3mConnectingWidget {
   // -- Members ------------------------------------------- //
   private externalViewUnsubscribe: (() => void)[] = []
-
   private connections = this.connector
     ? (ConnectionController.state.connections.get(this.connector?.chain) ?? [])
     : []
+  private connectionsByNamespace = this.connector
+    ? (ConnectionController.state.connections.get(this.connector?.chain) ?? [])
+    : []
+  private hasMultipleConnections = this.connectionsByNamespace.length > 0
+  private currentActiveConnectorId =
+    ConnectorController.state.activeConnectorIds[this.connector?.chain as ChainNamespace]
 
   public constructor() {
     super()
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
     }
+
+    const namespace = this.connector?.chain as ChainNamespace
 
     if (this.isAlreadyConnected(this.connector)) {
       this.secondaryBtnLabel = undefined
@@ -47,10 +55,16 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.isWalletConnect = false
     this.externalViewUnsubscribe.push(
       ConnectorController.subscribeKey('activeConnectorIds', val => {
-        if (val) {
-          RouterController.reset('Account')
-          RouterController.push('ProfileWallets')
-          SnackController.showSuccess('New Wallet Added')
+        const newActiveConnectorId = val[namespace]
+
+        if (newActiveConnectorId !== this.currentActiveConnectorId) {
+          if (this.hasMultipleConnections) {
+            RouterController.reset('Account')
+            RouterController.push('ProfileWallets')
+            SnackController.showSuccess('New Wallet Added')
+          } else {
+            ModalController.close()
+          }
         }
       }),
       ConnectionController.subscribeKey('connections', this.onConnectionsChange.bind(this))
@@ -117,13 +131,23 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
           this.connector.id
         ).flatMap(c => c.accounts)
 
-        const isAllAccountsSame = accounts.every(a =>
-          newAccounts.some(b => HelpersUtil.isLowerCaseMatch(a.address, b.address))
-        )
+        if (newAccounts.length === 0) {
+          if (this.hasMultipleConnections) {
+            RouterController.replace('Account')
+            RouterController.push('ProfileWallets')
+            SnackController.showSuccess('Wallet deleted')
+          } else {
+            ModalController.close()
+          }
+        } else {
+          const isAllAccountsSame = accounts.every(a =>
+            newAccounts.some(b => HelpersUtil.isLowerCaseMatch(a.address, b.address))
+          )
 
-        if (!isAllAccountsSame) {
-          RouterController.replace('Account')
-          RouterController.push('ProfileWallets')
+          if (!isAllAccountsSame) {
+            RouterController.replace('Account')
+            RouterController.push('ProfileWallets')
+          }
         }
       }
     }

@@ -3,6 +3,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -45,6 +46,13 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() protected message = 'Connect in the provider window'
 
+  private connectionsByNamespace =
+    ConnectionController.state.connections.get(
+      ChainController.state.activeChain as ChainNamespace
+    ) ?? []
+
+  private hasMultipleConnections = this.connectionsByNamespace.length > 0
+
   public authConnector = ConnectorController.getAuthConnector()
 
   public constructor() {
@@ -67,10 +75,12 @@ export class W3mConnectingSocialView extends LitElement {
             this.socialWindow = val.socialWindow
           }
           if (val.address) {
-            if (ModalController.state.open || OptionsController.state.enableEmbedded) {
+            if (this.hasMultipleConnections) {
               RouterController.reset('Account')
               RouterController.push('ProfileWallets')
               SnackController.showSuccess('New Wallet Added')
+            } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
+              ModalController.close()
             }
           }
         })
@@ -147,6 +157,8 @@ export class W3mConnectingSocialView extends LitElement {
             const uri = event.data.resultUri as string
 
             if (this.socialProvider) {
+              StorageUtil.setConnectedSocialProvider(this.socialProvider)
+
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
@@ -163,8 +175,6 @@ export class W3mConnectingSocialView extends LitElement {
             )
 
             if (this.socialProvider) {
-              StorageUtil.setConnectedSocialProvider(this.socialProvider)
-
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',

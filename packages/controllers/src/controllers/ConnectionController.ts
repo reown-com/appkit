@@ -36,6 +36,7 @@ import { TransactionsController } from './TransactionsController.js'
 export type Connection = {
   name?: string
   icon?: string
+  networkIcon?: string
   accounts: { type?: string; address: string }[]
   caipNetwork?: CaipNetwork
   connectorId: string
@@ -434,8 +435,7 @@ const controller = {
           social: authName,
           closeModalOnConnect,
           onOpenFarcaster() {
-            RouterController.reset('ProfileWallets')
-            RouterController.push('ConnectingFarcaster')
+            ModalController.open({ view: 'ConnectingFarcaster' })
           },
           onConnect() {
             RouterController.replace('ProfileWallets')
@@ -447,8 +447,7 @@ const controller = {
         const { address: emailAddress } = await ConnectorControllerUtil.connectEmail({
           closeModalOnConnect,
           onOpen() {
-            RouterController.reset('ProfileWallets')
-            RouterController.push('EmailLogin')
+            ModalController.open({ view: 'EmailLogin' })
           },
           onConnect() {
             RouterController.replace('ProfileWallets')
@@ -463,16 +462,9 @@ const controller = {
         connector,
         closeModalOnConnect,
         onOpen(isMobile) {
-          RouterController.reset('ProfileWallets')
-
-          if (isMobile) {
-            RouterController.push('AllWallets')
-          } else {
-            RouterController.push('ConnectingWalletConnect')
-          }
+          ModalController.open({ view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect' })
         },
         onConnect() {
-          RouterController.reset('Connect')
           RouterController.replace('ProfileWallets')
         }
       })

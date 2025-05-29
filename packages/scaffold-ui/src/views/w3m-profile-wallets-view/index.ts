@@ -109,6 +109,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
+  @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   constructor() {
     super()
@@ -123,7 +124,8 @@ export class W3mProfileWalletsView extends LitElement {
         ConnectionController.subscribeKey('connections', () => this.requestUpdate()),
         ConnectorController.subscribeKey('activeConnectorIds', ids => {
           this.activeConnectorIds = ids
-        })
+        }),
+        ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val))
       ]
     )
 
@@ -186,16 +188,20 @@ export class W3mProfileWalletsView extends LitElement {
     const tabCount = availableTabs.length
     const tabWidth = TAB_WIDTHS[tabCount as keyof typeof TAB_WIDTHS] ?? TAB_WIDTHS[1]
 
-    return html`
-      <wui-tabs
-        .onTabChange=${(index: number) => this.handleTabChange(index)}
-        .activeTab=${this.currentTab}
-        localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth <= MODAL_MOBILE_VIEW_PX
-          ? `${(window.innerWidth - TABS_PADDING) / tabCount}px`
-          : `${tabWidth}px`}
-        .tabs=${availableTabs}
-      ></wui-tabs>
-    `
+    if (tabCount > 1) {
+      return html`
+        <wui-tabs
+          .onTabChange=${(index: number) => this.handleTabChange(index)}
+          .activeTab=${this.currentTab}
+          localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth <= MODAL_MOBILE_VIEW_PX
+            ? `${(window.innerWidth - TABS_PADDING) / tabCount}px`
+            : `${tabWidth}px`}
+          .tabs=${availableTabs}
+        ></wui-tabs>
+      `
+    }
+
+    return null
   }
 
   private renderHeader(namespace: ChainNamespace) {
@@ -304,7 +310,7 @@ export class W3mProfileWalletsView extends LitElement {
           ?enableMoreButton=${authData.isAuth}
           @copy=${() => this.handleCopyAddress(plainAddress)}
           @disconnect=${() => this.handleDisconnect(namespace, {})}
-          @externalLink=${() => this.handleExternalLink(namespace, plainAddress)}
+          @externalLink=${() => this.handleExternalLink(plainAddress)}
           @more=${() => this.handleMore()}
         ></wui-active-profile-wallet-item>
         ${shouldShowSeparator ? html`<wui-separator></wui-separator>` : null}
@@ -382,6 +388,12 @@ export class W3mProfileWalletsView extends LitElement {
                 rightIconSize="sm"
                 class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
                 imageSrc=${connectorImage}
+                .iconBadge=${this.isSmartAccount(account.address)
+                  ? UI_CONFIG.BADGE.ICON
+                  : undefined}
+                .iconBadgeSize=${this.isSmartAccount(account.address)
+                  ? UI_CONFIG.BADGE.SIZE
+                  : undefined}
                 .icon=${authData.icon}
                 .iconSize=${authData.iconSize}
                 .loading=${isLoading}
@@ -559,8 +571,8 @@ export class W3mProfileWalletsView extends LitElement {
     RouterController.push('AccountSettings')
   }
 
-  private handleExternalLink(namespace: ChainNamespace, address: string) {
-    const explorerUrl = HelpersUtil.getExplorerUrl(namespace)
+  private handleExternalLink(address: string) {
+    const explorerUrl = this.caipNetwork?.blockExplorers?.default.url
 
     if (explorerUrl) {
       CoreHelperUtil.openHref(`${explorerUrl}/address/${address}`, '_blank')

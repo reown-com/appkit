@@ -58,8 +58,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
     const connectorImage = connector.imageUrl || this.connectorImages[connector?.imageId ?? '']
 
-    const hasConnection = this.connections
-      .values()
+    const hasConnection = Array.from(this.connections.values())
       .flatMap(connections => connections)
       .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
 

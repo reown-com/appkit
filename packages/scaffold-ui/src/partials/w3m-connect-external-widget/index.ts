@@ -54,8 +54,7 @@ export class W3mConnectExternalWidget extends LitElement {
       return null
     }
 
-    const hasConnection = this.connections
-      .values()
+    const hasConnection = Array.from(this.connections.values())
       .flatMap(connections => connections)
       .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
 

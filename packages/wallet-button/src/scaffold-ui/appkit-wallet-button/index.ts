@@ -117,13 +117,15 @@ export class AppKitWalletButton extends LitElement {
             walletConnect: this.wallet === 'walletConnect',
             connector: this.connectors.find(c => c.id === 'walletConnect'),
             onOpen(isMobile) {
-              if (isMobile) {
-                RouterController.replace('AllWallets')
-              } else {
-                RouterController.replace('ConnectingWalletConnect', {
-                  wallet: walletButton
-                })
-              }
+              ModalController.open().then(() => {
+                if (isMobile) {
+                  RouterController.replace('AllWallets')
+                } else {
+                  RouterController.replace('ConnectingWalletConnect', {
+                    wallet: walletButton
+                  })
+                }
+              })
             },
             onConnect() {
               RouterController.replace('Connect')

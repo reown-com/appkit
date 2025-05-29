@@ -36,6 +36,10 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public iconSize?: SizeType = 'md'
 
+  @property() public iconBadge?: IconType | undefined
+
+  @property() public iconBadgeSize?: SizeType = 'md'
+
   @property() public rightIcon?: IconType = 'off'
 
   @property() public rightIconSize?: SizeType = 'md'
@@ -61,12 +65,23 @@ export class WuiInactiveProfileWalletItem extends LitElement {
     if (this.icon) {
       return html`
         <wui-flex alignItems="center" justifyContent="center" class="icon-box">
-          <wui-icon
-            size=${this.iconSize}
-            color="fg-200"
-            name=${this.icon}
-            class="custom-icon"
-          ></wui-icon>
+          <wui-flex alignItems="center" justifyContent="center" class="icon-box">
+            <wui-icon
+              size=${this.iconSize}
+              color="fg-200"
+              name=${this.icon}
+              class="custom-icon"
+            ></wui-icon>
+            
+            ${this.iconBadge
+              ? html`<wui-icon
+                  color="fg-175"
+                  size=${this.iconBadgeSize}
+                  name=${this.iconBadge}
+                  class="icon-badge"
+                ></wui-icon>`
+              : null}
+          </wui-flex>
         </wui-flex>
       `
     }

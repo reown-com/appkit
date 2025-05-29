@@ -1,8 +1,10 @@
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
+  ModalController,
   OptionsController,
   RouterController,
   SnackController
@@ -21,6 +23,12 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
 
+        const connectionsByNamespace =
+          ConnectionController.state.connections.get(
+            ChainController.state.activeChain as ChainNamespace
+          ) ?? []
+        const hasConnections = connectionsByNamespace.length > 0
+
         if (ChainController.state.activeChain) {
           await ConnectionController.connectExternal(
             this.authConnector,
@@ -36,9 +44,13 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
         if (!OptionsController.state.siwx) {
-          RouterController.reset('Account')
-          RouterController.push('ProfileWallets')
-          SnackController.showSuccess('New Wallet Added')
+          if (hasConnections) {
+            RouterController.reset('Account')
+            RouterController.push('ProfileWallets')
+            SnackController.showSuccess('New Wallet Added')
+          } else {
+            ModalController.close()
+          }
         }
       }
     } catch (error) {

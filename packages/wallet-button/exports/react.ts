@@ -139,13 +139,15 @@ export function useAppKitWallet(parameters?: {
           walletConnect: wallet === 'walletConnect',
           connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
           onOpen(isMobile) {
-            if (isMobile) {
-              RouterController.replace('AllWallets')
-            } else {
-              RouterController.replace('ConnectingWalletConnect', {
-                wallet: walletButton
-              })
-            }
+            ModalController.open().then(() => {
+              if (isMobile) {
+                RouterController.replace('AllWallets')
+              } else {
+                RouterController.replace('ConnectingWalletConnect', {
+                  wallet: walletButton
+                })
+              }
+            })
           },
           onConnect() {
             RouterController.replace('Connect')

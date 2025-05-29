@@ -249,8 +249,7 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   private hasConnection() {
-    return this.connections
-      .values()
+    return Array.from(this.connections.values())
       .flatMap(connections => connections)
       .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH)
   }

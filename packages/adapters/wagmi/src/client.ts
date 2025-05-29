@@ -46,7 +46,7 @@ import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
-import { mergeConnections, parseWalletCapabilities } from './utils/helpers.js'
+import { parseWalletCapabilities } from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean
@@ -616,28 +616,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    const currentConnections = Array.from(this.wagmiConfig.state.connections.values())
-
     await reconnect(this.wagmiConfig, {
       connectors: [connector]
     })
-
-    const newConnections = Array.from(this.wagmiConfig.state.connections.values())
-
-    /*
-     * Wagmi's reconnect() function has a design limitation where it resets the entire connections state,
-     * causing all other wallet connections to be lost. This workaround keeps existing connections
-     * while updating only the reconnected wallet's state.
-     */
-    this.wagmiConfig.setState(x => ({
-      ...x,
-      connections: new Map(
-        mergeConnections(currentConnections, newConnections).map(connection => [
-          connection.connector.uid,
-          connection
-        ])
-      )
-    }))
   }
 
   public async getBalance(

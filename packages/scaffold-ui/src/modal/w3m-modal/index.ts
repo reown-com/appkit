@@ -11,6 +11,7 @@ import {
   ApiController,
   ChainController,
   ConnectorController,
+  CoreHelperUtil,
   ModalController,
   ModalUtil,
   OptionsController,
@@ -222,6 +223,26 @@ export class W3mModalBase extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
+    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
+    const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
+
+    // When users decline SIWE signature, we should close the modal
+    const isDisconnectedInSameNamespace = !nextConnected && !isSwitchingNamespace
+
+    // If user is switching to another namespace and connected in that namespace, we should go back
+    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
+
+    // If user is in profile wallets view, we should not go back or close the modal
+    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
+
+    if (!isInProfileWalletsView) {
+      if (isDisconnectedInSameNamespace) {
+        ModalController.close()
+      } else if (isSwitchingNamespaceAndConnected) {
+        RouterController.goBack()
+      }
+    }
+
     await SIWXUtil.initializeIfEnabled()
 
     this.caipAddress = caipAddress

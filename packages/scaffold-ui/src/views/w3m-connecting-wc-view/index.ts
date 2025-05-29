@@ -1,12 +1,14 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
+  ModalController,
   OptionsController,
   RouterController,
   SnackController
@@ -90,11 +92,20 @@ export class W3mConnectingWcView extends LitElement {
         CoreHelperUtil.isPairingExpired(wcPairingExpiry) ||
         status === 'connecting'
       ) {
+        const connectionsByNamespace =
+          ConnectionController.state.connections.get(
+            ChainController.state.activeChain as ChainNamespace
+          ) ?? []
+        const hasConnections = connectionsByNamespace.length > 0
         await ConnectionController.connectWalletConnect()
         if (!this.isSiwxEnabled) {
-          RouterController.reset('Account')
-          RouterController.push('ProfileWallets')
-          SnackController.showSuccess('New Wallet Added')
+          if (hasConnections) {
+            RouterController.reset('Account')
+            RouterController.push('ProfileWallets')
+            SnackController.showSuccess('New Wallet Added')
+          } else {
+            ModalController.close()
+          }
         }
       }
     } catch (error) {

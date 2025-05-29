@@ -62,13 +62,7 @@ export const ConnectorControllerUtil = {
         ConnectorController.setActiveConnector(connector)
       }
 
-      await ModalController.open()
-
-      if (CoreHelperUtil.isMobile() && walletConnect) {
-        onOpen?.(true)
-      } else {
-        onOpen?.()
-      }
+      onOpen?.(CoreHelperUtil.isMobile() && walletConnect)
 
       if (redirectViewOnModalClose) {
         const unsubscribeModalController = ModalController.subscribeKey('open', val => {
@@ -158,7 +152,14 @@ export const ConnectorControllerUtil = {
 
                 if (socialProvider) {
                   StorageUtil.setConnectedSocialProvider(socialProvider)
-                  await ConnectionController.connectExternal(authConnector, authConnector.chain)
+                  await ConnectionController.connectExternal(
+                    {
+                      id: authConnector.id,
+                      type: authConnector.type,
+                      socialUri: uri
+                    },
+                    authConnector.chain
+                  )
 
                   const caipAddress = ChainController.state.activeCaipAddress
 
@@ -320,8 +321,6 @@ export const ConnectorControllerUtil = {
     }
 
     const initialEmail = authConnector.provider.getEmail() ?? ''
-
-    await ModalController.open()
 
     RouterController.push('UpdateEmailWallet', {
       email: initialEmail,
