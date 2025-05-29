@@ -1,5 +1,6 @@
 import {
   type CaipNetworkId,
+  type ChainNamespace,
   ConstantsUtil,
   SafeLocalStorage,
   type SafeLocalStorageItems,
@@ -73,21 +74,26 @@ export class CloudAuthSIWX implements SIWXConfig {
 
     this.setStorageToken(response.token, this.localAuthStorageKey)
     this.emit('sessionChanged', session)
+    this.setAppKitAccountUser(jwtDecode(response.token))
 
     this.otpUuid = null
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
     try {
-      const siweSession = await this.request({
+      const account = await this.request({
         method: 'GET',
         key: 'me',
         query: {},
         headers: ['auth'] as const
       })
 
-      const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
-      const isSameNetwork = siweSession?.caip2Network === chainId
+      if (!account) {
+        return []
+      }
+
+      const isSameAddress = account.address.toLowerCase() === address.toLowerCase()
+      const isSameNetwork = account.caip2Network === chainId
 
       if (!isSameAddress || !isSameNetwork) {
         return []
@@ -95,14 +101,15 @@ export class CloudAuthSIWX implements SIWXConfig {
 
       const session: SIWXSession = {
         data: {
-          accountAddress: siweSession.address,
-          chainId: siweSession.caip2Network
+          accountAddress: account.address,
+          chainId: account.caip2Network
         } as SIWXMessage.Data,
         message: '',
         signature: ''
       }
 
       this.emit('sessionChanged', session)
+      this.setAppKitAccountUser(account)
 
       return [session]
     } catch {
@@ -280,6 +287,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   private clearStorageTokens(): void {
+    this.otpUuid = null
     SafeLocalStorage.removeItem(this.localAuthStorageKey)
     SafeLocalStorage.removeItem(this.localNonceStorageKey)
     this.emit('sessionChanged', undefined)
@@ -347,6 +355,22 @@ export class CloudAuthSIWX implements SIWXConfig {
     data: CloudAuthSIWX.Events[Event]
   ) {
     this.listeners[event].forEach(listener => listener(data))
+  }
+
+  private setAppKitAccountUser(session: CloudAuthSIWX.SessionAccount) {
+    const { email } = session
+
+    if (email) {
+      Object.values(ConstantsUtil.CHAIN).forEach(chainNamespace => {
+        ChainController.setAccountProp(
+          'user',
+          {
+            email
+          },
+          chainNamespace
+        )
+      })
+    }
   }
 }
 
@@ -473,13 +497,14 @@ export namespace CloudAuthSIWX {
     sub: string
     address: string
     chainId: number | string
-    chainIdNamespace: string
+    chainNamespace: ChainNamespace
     caip2Network: string
     uri: string
     domain: string
     projectUuid: string
     profileUuid: string
     nonce: string
+    email?: string
     appKitAccount?: {
       uuid: string
       caip2_chain: string
@@ -495,4 +520,37 @@ export namespace CloudAuthSIWX {
       updated_at: string
     }
   }
+}
+
+/**
+ * Decodes a JWT token and returns its payload
+ * @param token - The JWT token to decode
+ * @returns The decoded payload or null if invalid
+ */
+function jwtDecode(token: string): Omit<CloudAuthSIWX.SessionAccount, 'appKitAccount'> {
+  // Split the token into parts
+  const parts = token.split('.')
+
+  // Check if the token has the correct format (header.payload.signature)
+  if (parts.length !== 3) {
+    throw new Error('Invalid token')
+  }
+
+  // Decode the payload (second part)
+  const payload = parts[1]
+
+  if (typeof payload !== 'string') {
+    throw new Error('Invalid token')
+  }
+
+  // Convert base64url to base64
+  const base64 = payload.replace(/-/gu, '+').replace(/_/gu, '/')
+
+  // Add padding if needed
+  const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
+
+  // Decode and parse the JSON
+  const decoded = JSON.parse(atob(padded))
+
+  return decoded
 }
