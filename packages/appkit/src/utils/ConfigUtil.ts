@@ -232,20 +232,19 @@ export const ConfigUtil = {
       ? ConstantsUtil.DEFAULT_REMOTE_FEATURES
       : ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
 
+    if (isBasic) {
+      return ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
+    }
+
     try {
       for (const featureKey of featureKeys) {
-        // If in basic mode, force email and social features to false
-        if (isBasic && (featureKey === 'email' || featureKey === 'socials')) {
-          Object.assign(remoteFeaturesConfig, { [featureKey]: false })
-        } else {
-          const result = this.processFeature(
-            featureKey,
-            localFeatures,
-            apiProjectConfig,
-            useApiConfig
-          )
-          Object.assign(remoteFeaturesConfig, { [featureKey]: result })
-        }
+        const result = this.processFeature(
+          featureKey,
+          localFeatures,
+          apiProjectConfig,
+          useApiConfig
+        )
+        Object.assign(remoteFeaturesConfig, { [featureKey]: result })
       }
     } catch (e) {
       console.warn(
