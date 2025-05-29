@@ -3,6 +3,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
@@ -383,6 +384,10 @@ const controller = {
   getConnectorId(namespace: ChainNamespace | undefined) {
     if (!namespace) {
       return undefined
+    }
+
+    if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
+      return ConstantsUtil.CONNECTOR_ID.SAFE
     }
 
     return state.activeConnectorIds[namespace]

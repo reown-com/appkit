@@ -256,10 +256,13 @@ export class WagmiAdapter extends AdapterBlueprint {
       thirdPartyConnectors.push(safeConnector)
     }
 
-    thirdPartyConnectors.forEach(connector => {
-      const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
-      this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
-    })
+    await Promise.all(
+      thirdPartyConnectors.map(async connector => {
+        const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
+        this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
+        await this.addWagmiConnector(cnctr, options)
+      })
+    )
   }
 
   private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
@@ -434,7 +437,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connector = this.getWagmiConnector(id)
     const provider = (await connector?.getProvider()) as Provider
 
-    if (CoreHelperUtil.isSafeApp()) {
+    const isSafeApp = CoreHelperUtil.isSafeApp()
+
+    if (isSafeApp) {
       const safeAppConnector = this.getWagmiConnector('safe')
       if (safeAppConnector) {
         const res = await connect(this.wagmiConfig, {

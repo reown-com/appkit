@@ -764,7 +764,7 @@ export abstract class AppKitBaseClient {
   protected async initChainAdapter(namespace: ChainNamespace) {
     this.onConnectors(namespace)
     this.listenAdapter(namespace)
-    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
   }
 
@@ -908,7 +908,9 @@ export abstract class AppKitBaseClient {
     const adapter = this.getAdapter(namespace)
     const connectorId = ConnectorController.getConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork(namespace)
-    const connector = ConnectorController.getConnectors(namespace).find(c => c.id === connectorId)
+    const connectors = ConnectorController.getConnectors(namespace)
+
+    const connector = connectors.find(c => c.id === connectorId)
 
     try {
       if (!adapter || !connector) {
