@@ -885,9 +885,14 @@ export abstract class AppKitBaseClient {
 
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
+      if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
+        ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.SAFE, namespace)
+      }
+
       const connectorId = ConnectorController.getConnectorId(namespace)
 
       this.setStatus('connecting', namespace)
+
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
           await this.syncWalletConnectAccount()

@@ -431,7 +431,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id } = params
+    const { id, chainId } = params
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
     const connector = this.getWagmiConnector(id)
@@ -439,18 +439,18 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     const isSafeApp = CoreHelperUtil.isSafeApp()
 
-    if (isSafeApp) {
+    if (isSafeApp && id === CommonConstantsUtil.CONNECTOR_ID.SAFE && !connection?.accounts.length) {
       const safeAppConnector = this.getWagmiConnector('safe')
       if (safeAppConnector) {
         const res = await connect(this.wagmiConfig, {
           connector: safeAppConnector,
-          chainId: Number(connection?.chainId)
+          chainId: Number(chainId)
         })
 
         const safeProvider = (await safeAppConnector.getProvider()) as Provider
 
         return {
-          chainId: Number(connection?.chainId),
+          chainId: Number(chainId),
           address: res.accounts[0] as string,
           provider: safeProvider,
           type: connection?.connector.type?.toUpperCase() as ConnectorType,
