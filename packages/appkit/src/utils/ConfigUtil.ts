@@ -210,6 +210,7 @@ export const ConfigUtil = {
   },
 
   async fetchRemoteFeatures(config: AppKitOptionsWithSdk): Promise<RemoteFeatures> {
+    const isBasic = config.basic ?? false
     const localFeatures = config.features || {}
 
     this.localSettingsOverridden.clear()
@@ -233,6 +234,12 @@ export const ConfigUtil = {
 
     try {
       for (const featureKey of featureKeys) {
+        // If in basic mode, force email and social features to false
+        if (isBasic && (featureKey === 'email' || featureKey === 'socials')) {
+          Object.assign(remoteFeaturesConfig, { [featureKey]: false })
+          continue
+        }
+
         const result = this.processFeature(
           featureKey,
           localFeatures,
