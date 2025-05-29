@@ -196,7 +196,7 @@ export class CloudAuthSIWX implements SIWXConfig {
     const emailResource = `email:${email}`
 
     if (this.messenger.resources) {
-      this.messenger.resources = this.messenger.resources.filter(r => r !== emailResource)
+      this.messenger.resources = this.messenger.resources.filter(r => !r.startsWith('email:'))
       this.messenger.resources.push(emailResource)
     } else {
       this.messenger.resources = [emailResource]

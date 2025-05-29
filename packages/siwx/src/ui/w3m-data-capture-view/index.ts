@@ -19,10 +19,16 @@ export class W3mDataCaptureView extends LitElement {
 
   @state() private siwx = OptionsController.state.siwx as CloudAuthSIWX
 
+  @state() private isRequired = false
+
   public override firstUpdated() {
     if (!this.siwx || !(this.siwx instanceof CloudAuthSIWX)) {
       throw new Error('CloudAuthSIWX is not initialized')
     }
+
+    this.isRequired =
+      Array.isArray(OptionsController.state.remoteFeatures?.emailCapture) &&
+      OptionsController.state.remoteFeatures?.emailCapture.includes('required')
   }
 
   public override render() {
@@ -30,21 +36,25 @@ export class W3mDataCaptureView extends LitElement {
       <wui-flex flexDirection="column" .padding=${['3xs', 'm', 'm', 'm'] as const} gap="l">
         ${this.emailInput()}
 
-        <wui-button
-          size="lg"
-          variant="main"
-          fullWidth
-          @click=${this.onSubmit.bind(this)}
-          .loading=${this.loading}
-        >
-          Continue
-        </wui-button>
+        <wui-flex flexDirection="row" fullWidth gap="s">
+          ${!this.isRequired &&
+          html`<wui-button size="lg" variant="secondary" fullWidth @click=${this.onSkip.bind(this)}
+            >Skip</wui-button
+          >`}
+
+          <wui-button
+            size="lg"
+            variant="main"
+            type="submit"
+            fullWidth
+            .loading=${this.loading}
+            @click=${this.onSubmit.bind(this)}
+          >
+            Continue
+          </wui-button>
+        </wui-flex>
       </wui-flex>
     `
-  }
-
-  private onEmailInputChange(event: CustomEvent<string>) {
-    this.email = event.detail
   }
 
   private emailInput() {
@@ -52,9 +62,21 @@ export class W3mDataCaptureView extends LitElement {
       return null
     }
 
+    const keydownHandler = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        this.onSubmit()
+      }
+    }
+
+    const changeHandler = (event: CustomEvent<string>) => {
+      this.email = event.detail
+    }
+
     return html`<wui-email-input
       .value=${this.email}
-      @inputChange=${this.onEmailInputChange.bind(this)}
+      .disabled=${this.loading}
+      @inputChange=${changeHandler}
+      @keydown=${keydownHandler}
     ></wui-email-input>`
   }
 
@@ -82,6 +104,10 @@ export class W3mDataCaptureView extends LitElement {
     } finally {
       this.loading = false
     }
+  }
+
+  private onSkip() {
+    RouterController.replace('SIWXSignMessage')
   }
 }
 
