@@ -653,9 +653,7 @@ export const StorageUtil = {
       const connections = StorageUtil.getConnections()
       const namespaceConnections = connections[namespace] ?? []
 
-      const connectionMap = new Map(
-        namespaceConnections.map(conn => [conn.connectorId.toLowerCase(), conn])
-      )
+      const connectionMap = new Map(namespaceConnections.map(conn => [conn.connectorId, conn]))
 
       const connector = connectionMap.get(connectorId)
 
