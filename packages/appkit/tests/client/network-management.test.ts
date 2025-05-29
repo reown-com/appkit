@@ -26,9 +26,6 @@ describe('Network Management', () => {
     mockRemoteFeatures()
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue(['http://localhost:3000'])
 
-    // Mock ChainController.initialize to prevent initialization errors
-    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
-
     // Mock ChainController methods that access internal state
     vi.spyOn(ChainController, 'getNetworkData').mockReturnValue({
       requestedCaipNetworks: [mainnet],

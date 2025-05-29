@@ -166,7 +166,6 @@ describe('State Management', () => {
     )
     ChainController.state.activeCaipNetwork = mainnet
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
-    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
 
     const universalProvider = {
@@ -207,7 +206,7 @@ describe('State Management', () => {
     )
     ChainController.state.activeCaipNetwork = mainnet
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
-    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
+
     vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
     const universalProvider = {
       ...mockUniversalProvider,
