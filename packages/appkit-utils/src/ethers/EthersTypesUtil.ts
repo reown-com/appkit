@@ -1,4 +1,5 @@
 import type { ProviderInterface } from '@coinbase/wallet-sdk'
+import type { SafeAppProvider } from '@safe-global/safe-apps-provider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -16,6 +17,7 @@ export type Address = `0x${string}`
 export type ProviderType = {
   injected?: Provider
   coinbase?: ProviderInterface
+  safe?: SafeAppProvider
   auth?: {
     email?: boolean
     socials?: SocialProvider[]
