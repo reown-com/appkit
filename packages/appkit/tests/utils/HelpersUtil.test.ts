@@ -459,7 +459,12 @@ describe('WcHelpersUtil', () => {
   })
 
   describe('isOriginAllowed', () => {
-    const defaultOrigins = ['https://default.com', 'https://*.safe.org', 'https://reown.com/appkit']
+    const defaultOrigins = [
+      'https://default.com',
+      'https://*.safe.org',
+      'https://reown.com/appkit',
+      'https://demo.reown.com'
+    ]
     const allowedPatterns = [
       'https://explicit.com',
       'http://localhost:*',
@@ -475,6 +480,12 @@ describe('WcHelpersUtil', () => {
     test('should allow exact match from defaultOrigins with full URL', () => {
       expect(
         WcHelpersUtil.isOriginAllowed('https://reown.com', allowedPatterns, defaultOrigins)
+      ).toBe(true)
+    })
+
+    test('should allow exact match from defaultOrigins with sub domain', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed('https://demo.reown.com', allowedPatterns, defaultOrigins)
       ).toBe(true)
     })
 
