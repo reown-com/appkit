@@ -29,7 +29,9 @@
     "valtio": "1.13.2"
   },
   "optionalDependencies": {
-    "@coinbase/wallet-sdk": "4.3.0"
+    "@coinbase/wallet-sdk": "4.3.0",
+    "@safe-global/safe-apps-provider": "0.18.6",
+    "@safe-global/safe-apps-sdk": "9.1.0"
   },
   "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",

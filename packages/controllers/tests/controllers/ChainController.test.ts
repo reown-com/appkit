@@ -11,6 +11,7 @@ import { SafeLocalStorage } from '@reown/appkit-common'
 
 import {
   AccountController,
+  CoreHelperUtil,
   ModalController,
   type NetworkControllerClient
 } from '../../exports/index.js'
@@ -134,17 +135,17 @@ const solanaAdapter = {
   caipNetworks: [solanaCaipNetwork] as unknown as CaipNetwork[]
 }
 
-beforeEach(() => {
-  vi.resetAllMocks()
-  ChainController.state.noAdapters = false
-  ChainController.initialize([evmAdapter], requestedCaipNetworks, {
-    connectionControllerClient,
-    networkControllerClient
-  })
-})
-
 // -- Tests --------------------------------------------------------------------
 describe('ChainController', () => {
+  beforeEach(() => {
+    vi.resetAllMocks()
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    ChainController.state.noAdapters = false
+    ChainController.initialize([evmAdapter], requestedCaipNetworks, {
+      connectionControllerClient,
+      networkControllerClient
+    })
+  })
   it('should be initialized as expected', () => {
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
     expect(ChainController.getConnectionControllerClient()).toEqual(connectionControllerClient)

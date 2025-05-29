@@ -62,10 +62,24 @@ export class EthersAdapter extends AdapterBlueprint {
       return injectedProvider
     }
 
+    async function getSafeProvider() {
+      const { SafeProvider } = await import('./utils/SafeProvider.js')
+      const { default: SafeAppsSDK } = await import('@safe-global/safe-apps-sdk')
+      const appsSdk = new SafeAppsSDK()
+      const info = await appsSdk.safe.getInfo()
+
+      const provider = new SafeProvider(info, appsSdk)
+      await provider.connect().catch(error => {
+        // eslint-disable-next-line no-console
+        console.info('Failed to auto-connect to Safe:', error)
+      })
+
+      return provider
+    }
+
     async function getCoinbaseProvider() {
       try {
         const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
-
         if (typeof window === 'undefined') {
           return undefined
         }
@@ -99,6 +113,13 @@ export class EthersAdapter extends AdapterBlueprint {
 
       if (coinbaseProvider) {
         providers.coinbase = coinbaseProvider
+      }
+    }
+
+    if (CoreHelperUtil.isSafeApp()) {
+      const safeProvider = await getSafeProvider()
+      if (safeProvider) {
+        providers.safe = safeProvider
       }
     }
 
@@ -208,7 +229,6 @@ export class EthersAdapter extends AdapterBlueprint {
     const { id, chainId } = params
 
     const connector = this.connectors.find(c => c.id === id)
-
     const selectedProvider = connector?.provider as Provider
 
     if (!selectedProvider) {
