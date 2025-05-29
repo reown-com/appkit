@@ -727,7 +727,7 @@ describe('EthersAdapter', () => {
       expect(providers?.coinbase).toBeUndefined()
     })
 
-    it.only('should create Ethers config with safe provider if in iframe and ancestor is app.safe.global', async () => {
+    it('should create Ethers config with safe provider if in iframe and ancestor is app.safe.global', async () => {
       vi.spyOn(CoreHelperUtil, 'isSafeApp').mockReturnValue(true)
       const providers = await adapter['createEthersConfig']({
         networks: [mainnet],
