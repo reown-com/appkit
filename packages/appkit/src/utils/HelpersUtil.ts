@@ -239,7 +239,7 @@ export const WcHelpersUtil = {
         if (regex.test(currentOrigin)) {
           return true
         }
-      } else if (pattern === currentOrigin) {
+      } else if (new URL(pattern).origin === currentOrigin) {
         return true
       }
     }
