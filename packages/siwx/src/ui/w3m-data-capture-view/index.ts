@@ -13,22 +13,24 @@ import { CloudAuthSIWX } from '../../configs/index.js'
 
 @customElement('w3m-data-capture-view')
 export class W3mDataCaptureView extends LitElement {
-  @state() private email?: string
+  @state() private email = RouterController.state.data?.email ?? ''
 
   @state() private loading = false
 
   @state() private siwx = OptionsController.state.siwx as CloudAuthSIWX
 
-  @state() private isRequired = false
+  @state() private isRequired =
+    Array.isArray(OptionsController.state.remoteFeatures?.emailCapture) &&
+    OptionsController.state.remoteFeatures?.emailCapture.includes('required')
 
   public override firstUpdated() {
     if (!this.siwx || !(this.siwx instanceof CloudAuthSIWX)) {
       throw new Error('CloudAuthSIWX is not initialized')
     }
 
-    this.isRequired =
-      Array.isArray(OptionsController.state.remoteFeatures?.emailCapture) &&
-      OptionsController.state.remoteFeatures?.emailCapture.includes('required')
+    if (this.email) {
+      this.onSubmit()
+    }
   }
 
   public override render() {
@@ -37,10 +39,15 @@ export class W3mDataCaptureView extends LitElement {
         ${this.emailInput()}
 
         <wui-flex flexDirection="row" fullWidth gap="s">
-          ${!this.isRequired &&
-          html`<wui-button size="lg" variant="secondary" fullWidth @click=${this.onSkip.bind(this)}
-            >Skip</wui-button
-          >`}
+          ${this.isRequired
+            ? null
+            : html`<wui-button
+                size="lg"
+                variant="secondary"
+                fullWidth
+                @click=${this.onSkip.bind(this)}
+                >Skip</wui-button
+              >`}
 
           <wui-button
             size="lg"
@@ -81,9 +88,9 @@ export class W3mDataCaptureView extends LitElement {
   }
 
   private async onSubmit() {
-    const accountData = ChainController.getAccountData()
+    const account = ChainController.getActiveCaipAddress()
 
-    if (!accountData?.caipAddress || !this.email) {
+    if (!account || !this.email) {
       throw new Error('No account data found')
     }
 
@@ -91,7 +98,7 @@ export class W3mDataCaptureView extends LitElement {
       this.loading = true
       const otp = await this.siwx.requestEmailOtp({
         email: this.email,
-        account: accountData.caipAddress
+        account
       })
 
       if (otp.uuid === null) {

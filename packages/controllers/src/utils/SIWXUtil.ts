@@ -46,13 +46,14 @@ export const SIWXUtil = {
       if (OptionsController.state.remoteFeatures?.emailCapture) {
         const user = ChainController.getAccountProp('user', namespace)
 
-        if (!user?.email) {
-          await ModalController.open({
-            view: 'DataCapture'
-          })
+        await ModalController.open({
+          view: 'DataCapture',
+          data: {
+            email: user?.email ?? undefined
+          }
+        })
 
-          return
-        }
+        return
       }
 
       await ModalController.open({
