@@ -432,7 +432,25 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
     const connector = this.getWagmiConnector(id)
-    const provider = (await connector?.getProvider()) as Provider
+    let provider = (await connector?.getProvider()) as Provider
+
+    if (CoreHelperUtil.isSafeApp()) {
+      const safeAppConnector = this.getWagmiConnector('safe')
+      if (safeAppConnector) {
+        const res = await connect(this.wagmiConfig, {
+          connector: safeAppConnector,
+          chainId: Number(connection?.chainId)
+        })
+
+        return {
+          chainId: Number(connection?.chainId),
+          address: res.accounts[0] as string,
+          provider: res.provider,
+          type: connection?.connector.type?.toUpperCase() as ConnectorType,
+          id: connection?.connector.id as string
+        }
+      }
+    }
 
     return {
       chainId: Number(connection?.chainId),
