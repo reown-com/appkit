@@ -69,7 +69,6 @@ export class EthersAdapter extends AdapterBlueprint {
       const info = await appsSdk.safe.getInfo()
 
       const provider = new SafeProvider(info, appsSdk)
-
       await provider.connect().catch(error => {
         // eslint-disable-next-line no-console
         console.info('Failed to auto-connect to Safe:', error)
@@ -81,7 +80,6 @@ export class EthersAdapter extends AdapterBlueprint {
     async function getCoinbaseProvider() {
       try {
         const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
-
         if (typeof window === 'undefined') {
           return undefined
         }
