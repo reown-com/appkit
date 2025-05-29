@@ -34,15 +34,22 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { WagmiAdapter } from '../client'
 import * as auth from '../connectors/AuthConnector'
 import { LimitterUtil } from '../utils/LimitterUtil'
+import * as helpers from '../utils/helpers'
 import { mockAppKit } from './mocks/AppKit'
 
 // Define spies at the top-level for @wagmi/connectors
 const mockCoinbaseWallet = vi.fn(() => ({
   id: 'coinbaseWallet',
   name: 'Coinbase Wallet',
-  type: 'injected'
+  type: 'injected',
+  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
 }))
-const mockSafe = vi.fn(() => ({ id: 'safe', name: 'Safe', type: 'injected' }))
+const mockSafe = vi.fn(() => ({
+  id: 'safe',
+  name: 'Safe',
+  type: 'injected',
+  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
+}))
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -72,14 +79,6 @@ vi.mock('@wagmi/core', async () => {
 })
 
 // Top-level mock for @wagmi/connectors
-vi.mock('@wagmi/connectors', async () => {
-  const actual = await vi.importActual('@wagmi/connectors')
-  return {
-    ...actual,
-    coinbaseWallet: mockCoinbaseWallet,
-    safe: mockSafe
-  }
-})
 
 const mockProjectId = 'test-project-id'
 const mockNetworks = [mainnet]
@@ -130,7 +129,7 @@ const mockWagmiConfig = {
   },
   _internal: {
     connectors: {
-      setup: vi.fn(),
+      setup: vi.fn(connector => connector),
       setState: vi.fn()
     }
   }
@@ -154,6 +153,17 @@ describe('WagmiAdapter', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mock('@wagmi/connectors', async () => {
+      const actual = await vi.importActual('@wagmi/connectors')
+      return {
+        ...actual,
+        coinbaseWallet: mockCoinbaseWallet,
+        safe: mockSafe
+      }
+    })
+
+    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseWallet() as any)
+
     adapter = new WagmiAdapter({
       networks: mockNetworks,
       projectId: mockProjectId
@@ -210,16 +220,31 @@ describe('WagmiAdapter', () => {
         {
           chain: 'eip155',
           chains: [],
+          explorerId: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+          id: 'coinbaseWallet',
+          imageId: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
+          imageUrl: undefined,
+          info: { rdns: 'coinbaseWallet' },
+          name: 'Coinbase',
+          provider: {
+            connect: expect.any(Function),
+            request: expect.any(Function)
+          },
+          type: 'INJECTED'
+        },
+        {
+          chain: 'eip155',
+          chains: [],
           explorerId: undefined,
           id: 'test-connector',
           imageId: undefined,
           imageUrl: undefined,
           info: { rdns: 'test-connector' },
+          name: 'Test Connector',
           provider: {
             connect: expect.any(Function),
             request: expect.any(Function)
           },
-          name: 'Test Connector',
           type: 'INJECTED'
         }
       ])
@@ -1278,11 +1303,14 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
   })
 
   it('should add Coinbase connector if enableCoinbase is not false', async () => {
+    const getCoinbaseConnectorSpy = vi
+      .spyOn(helpers, 'getCoinbaseConnector')
+      .mockResolvedValue(mockCoinbaseWallet() as any)
     await adapter['addThirdPartyConnectors']({
       projectId: mockProjectId,
       networks: [mainnet]
     })
-    expect(mockCoinbaseWallet).toHaveBeenCalled()
+    expect(getCoinbaseConnectorSpy).toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(1)
   })
 
