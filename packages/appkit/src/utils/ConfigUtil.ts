@@ -237,16 +237,15 @@ export const ConfigUtil = {
         // If in basic mode, force email and social features to false
         if (isBasic && (featureKey === 'email' || featureKey === 'socials')) {
           Object.assign(remoteFeaturesConfig, { [featureKey]: false })
-          continue
+        } else {
+          const result = this.processFeature(
+            featureKey,
+            localFeatures,
+            apiProjectConfig,
+            useApiConfig
+          )
+          Object.assign(remoteFeaturesConfig, { [featureKey]: result })
         }
-
-        const result = this.processFeature(
-          featureKey,
-          localFeatures,
-          apiProjectConfig,
-          useApiConfig
-        )
-        Object.assign(remoteFeaturesConfig, { [featureKey]: result })
       }
     } catch (e) {
       console.warn(
