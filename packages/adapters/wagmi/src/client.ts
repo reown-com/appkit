@@ -45,7 +45,7 @@ import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
-import { parseWalletCapabilities } from './utils/helpers.js'
+import { getCoinbaseConnector, getSafeConnector, parseWalletCapabilities } from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean
@@ -245,51 +245,15 @@ export class WagmiAdapter extends AdapterBlueprint {
     const thirdPartyConnectors: CreateConnectorFn[] = []
 
     if (options.enableCoinbase !== false) {
-      try {
-        const { coinbaseWallet } = await import('@wagmi/connectors')
-
-        if (coinbaseWallet) {
-          thirdPartyConnectors.push(
-            coinbaseWallet({
-              version: '4',
-              appName: options.metadata?.name ?? 'Unknown',
-              appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
-              preference: options.coinbasePreference ?? 'all'
-            })
-          )
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to import Coinbase Wallet SDK:', error)
+      const coinbaseConnector = await getCoinbaseConnector(this.wagmiConfig.connectors)
+      if (coinbaseConnector) {
+        thirdPartyConnectors.push(coinbaseConnector)
       }
     }
 
-    // Check if the app is running inside an iframe and the referrer is from Safe
-    if (CoreHelperUtil.isClient() && window.self !== window.top) {
-      try {
-        const ancestor = window?.location?.ancestorOrigins?.[0]
-
-        const safeAppUrl = 'https://app.safe.global'
-        if (ancestor) {
-          const ancestorUrl = new URL(ancestor)
-          const safeUrl = new URL(safeAppUrl)
-
-          // Only import the Safe connector if we are on the Safe App Iframe
-          if (ancestorUrl.hostname !== safeUrl.hostname) {
-            return
-          }
-
-          const { safe } = await import('@wagmi/connectors')
-
-          if (safe && !this.wagmiConfig.connectors.some(c => c.id === 'safe')) {
-            const safeConnector = safe()
-            thirdPartyConnectors.push(safeConnector)
-          }
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to import or initialize Safe Connector:', error)
-      }
+    const safeConnector = await getSafeConnector(this.wagmiConfig.connectors)
+    if (safeConnector) {
+      thirdPartyConnectors.push(safeConnector)
     }
 
     thirdPartyConnectors.forEach(connector => {
