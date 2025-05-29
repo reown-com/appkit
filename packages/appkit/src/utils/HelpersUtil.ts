@@ -239,8 +239,20 @@ export const WcHelpersUtil = {
         if (regex.test(currentOrigin)) {
           return true
         }
-      } else if (pattern === currentOrigin) {
-        return true
+      } else {
+        /**
+         * There are some cases where pattern is getting just the origin, where using new URL(pattern).origin will throw an error
+         * thus we a try catch to handle this case
+         */
+        try {
+          if (new URL(pattern).origin === currentOrigin) {
+            return true
+          }
+        } catch (e) {
+          if (pattern === currentOrigin) {
+            return true
+          }
+        }
       }
     }
 

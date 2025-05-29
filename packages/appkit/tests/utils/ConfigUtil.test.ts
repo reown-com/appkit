@@ -44,6 +44,7 @@ describe('ConfigUtil', () => {
       mockOptions = getMockOptions()
       vi.mocked(ApiController.fetchProjectConfig).mockReset()
       vi.mocked(AlertController.open).mockReset()
+      mockOptions.basic = false
     })
 
     // --- API Failure Scenarios (Fallback to Local/Defaults) ---
@@ -151,6 +152,26 @@ describe('ConfigUtil', () => {
         }),
         'warning'
       )
+    })
+
+    // --- Basic Mode Tests ---
+    it('should force email and socials to false when basic mode is true, regardless of API response', async () => {
+      mockOptions.basic = true
+      const apiResponse: TypedFeatureConfig[] = [
+        { id: 'social_login', isEnabled: true, config: ['email'] }
+      ]
+      vi.mocked(ApiController.fetchProjectConfig).mockResolvedValueOnce(apiResponse)
+      mockOptions.basic = true
+      mockOptions.features = { swaps: true, history: true, socials: ['google'] }
+      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      expect(features).toEqual<RemoteFeatures>({
+        email: false,
+        socials: false,
+        swaps: false,
+        onramp: false,
+        activity: false,
+        reownBranding: false
+      })
     })
 
     it('should use full API config, ignoring all local settings and warning', async () => {

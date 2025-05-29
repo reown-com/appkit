@@ -16,13 +16,14 @@ import {
 import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   type ConnectionControllerClient,
+  CoreHelperUtil,
   type NetworkControllerClient,
   type PreferredAccountTypes,
   type SocialProvider
@@ -33,7 +34,22 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { WagmiAdapter } from '../client'
 import * as auth from '../connectors/AuthConnector'
 import { LimitterUtil } from '../utils/LimitterUtil'
+import * as helpers from '../utils/helpers'
 import { mockAppKit } from './mocks/AppKit'
+
+// Define spies at the top-level for @wagmi/connectors
+const mockCoinbaseWallet = vi.fn(() => ({
+  id: 'coinbaseWallet',
+  name: 'Coinbase Wallet',
+  type: 'injected',
+  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
+}))
+const mockSafe = vi.fn(() => ({
+  id: 'safe',
+  name: 'Safe',
+  type: 'injected',
+  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
+}))
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -61,6 +77,8 @@ vi.mock('@wagmi/core', async () => {
     watchPendingTransactions: vi.fn().mockReturnValue(vi.fn())
   }
 })
+
+// Top-level mock for @wagmi/connectors
 
 const mockProjectId = 'test-project-id'
 const mockNetworks = [mainnet]
@@ -111,7 +129,7 @@ const mockWagmiConfig = {
   },
   _internal: {
     connectors: {
-      setup: vi.fn(),
+      setup: vi.fn(connector => connector),
       setState: vi.fn()
     }
   }
@@ -135,6 +153,17 @@ describe('WagmiAdapter', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mock('@wagmi/connectors', async () => {
+      const actual = await vi.importActual('@wagmi/connectors')
+      return {
+        ...actual,
+        coinbaseWallet: mockCoinbaseWallet,
+        safe: mockSafe
+      }
+    })
+
+    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseWallet() as any)
+
     adapter = new WagmiAdapter({
       networks: mockNetworks,
       projectId: mockProjectId
@@ -191,16 +220,31 @@ describe('WagmiAdapter', () => {
         {
           chain: 'eip155',
           chains: [],
+          explorerId: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+          id: 'coinbaseWallet',
+          imageId: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
+          imageUrl: undefined,
+          info: { rdns: 'coinbaseWallet' },
+          name: 'Coinbase',
+          provider: {
+            connect: expect.any(Function),
+            request: expect.any(Function)
+          },
+          type: 'INJECTED'
+        },
+        {
+          chain: 'eip155',
+          chains: [],
           explorerId: undefined,
           id: 'test-connector',
           imageId: undefined,
           imageUrl: undefined,
           info: { rdns: 'test-connector' },
+          name: 'Test Connector',
           provider: {
             connect: expect.any(Function),
             request: expect.any(Function)
           },
-          name: 'Test Connector',
           type: 'INJECTED'
         }
       ])
@@ -1197,5 +1241,152 @@ describe('WagmiAdapter', () => {
         ]
       })
     })
+  })
+})
+
+describe('WagmiAdapter - addThirdPartyConnectors', () => {
+  let adapter: WagmiAdapter
+  let originalWindow: Window & typeof globalThis
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    if (typeof window !== 'undefined') {
+      originalWindow = window
+    }
+
+    const mockWindow = {
+      self: undefined,
+      top: undefined,
+      location: {
+        ancestorOrigins: [],
+        hostname: 'localhost'
+      },
+      document: {},
+      URL: vi.fn(url => ({
+        hostname: new URL(url).hostname,
+        href: url
+      }))
+    }
+
+    vi.stubGlobal('window', mockWindow)
+    if (!vi.isMockFunction(CoreHelperUtil.isClient)) {
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+    }
+
+    adapter = new WagmiAdapter({
+      networks: mockNetworks,
+      projectId: mockProjectId
+    })
+    const mockConnectorsArray: wagmiCore.Connector[] = []
+    adapter.wagmiConfig = {
+      ...mockWagmiConfig,
+      connectors: mockConnectorsArray,
+      _internal: {
+        connectors: {
+          setup: vi.fn(connector => connector),
+          setState: vi.fn(fn => {
+            const newConnectors = fn(mockConnectorsArray)
+            mockConnectorsArray.splice(0, mockConnectorsArray.length, ...newConnectors)
+          })
+        }
+      }
+    } as unknown as Config
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    if (originalWindow) {
+      global.window = originalWindow
+    }
+    vi.restoreAllMocks()
+  })
+
+  it('should add Coinbase connector if enableCoinbase is not false', async () => {
+    const getCoinbaseConnectorSpy = vi
+      .spyOn(helpers, 'getCoinbaseConnector')
+      .mockResolvedValue(mockCoinbaseWallet() as any)
+    await adapter['addThirdPartyConnectors']({
+      projectId: mockProjectId,
+      networks: [mainnet]
+    })
+    expect(getCoinbaseConnectorSpy).toHaveBeenCalled()
+    expect(adapter.wagmiConfig.connectors.length).toBe(1)
+  })
+
+  it('should not add Coinbase connector if enableCoinbase is false', async () => {
+    await adapter['addThirdPartyConnectors']({
+      projectId: mockProjectId,
+      networks: [mainnet],
+      enableCoinbase: false
+    })
+    expect(mockCoinbaseWallet).not.toHaveBeenCalled()
+    expect(adapter.wagmiConfig.connectors.length).toBe(0)
+  })
+
+  it('should add Safe connector if in iframe and ancestor is app.safe.global', async () => {
+    const mockSpecificWindow = {
+      self: 'iframe_mock_self',
+      top: 'mock_top',
+      location: {
+        ancestorOrigins: ['https://app.safe.global'],
+        hostname: 'current.app'
+      },
+      document: {},
+      URL: window.URL
+    }
+    vi.stubGlobal('window', mockSpecificWindow)
+    vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+
+    await adapter['addThirdPartyConnectors']({
+      projectId: mockProjectId,
+      networks: [mainnet]
+    })
+    expect(mockSafe).toHaveBeenCalled()
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(true)
+  })
+
+  it('should not add Safe connector if not in iframe', async () => {
+    const mockSpecificWindow = {
+      self: globalThis,
+      top: globalThis,
+      location: {
+        ancestorOrigins: [],
+        hostname: 'current.app'
+      },
+      document: {},
+      URL: window.URL
+    }
+    vi.stubGlobal('window', mockSpecificWindow)
+    vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+
+    await adapter['addThirdPartyConnectors']({
+      projectId: mockProjectId,
+      networks: [mainnet]
+    })
+    expect(mockSafe).not.toHaveBeenCalled()
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(false)
+  })
+
+  it('should not add Safe connector if ancestor is not app.safe.global', async () => {
+    const mockSpecificWindow = {
+      self: 'iframe_mock_self',
+      top: 'mock_top',
+      location: {
+        ancestorOrigins: ['https://some.other.domain'],
+        hostname: 'current.app'
+      },
+      document: {},
+      URL: window.URL
+    }
+    vi.stubGlobal('window', mockSpecificWindow)
+    vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+
+    await adapter['addThirdPartyConnectors']({
+      projectId: mockProjectId,
+      networks: [mainnet]
+    })
+    expect(mockSafe).not.toHaveBeenCalled()
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(false)
   })
 })
