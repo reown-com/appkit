@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Balance } from '@reown/appkit-common'
+import { type Balance, ConstantsUtil } from '@reown/appkit-common'
 
+import { ConnectorController } from '../../exports'
 import { AccountController } from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
 import { ChainController } from '../../src/controllers/ChainController'
@@ -53,11 +54,12 @@ const mockEthChainIdAsHex = '0x1'
 
 describe('SendApiUtil', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
   })
 
   afterEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(ConstantsUtil.CONNECTOR_ID.AUTH)
   })
 
   describe('getMyTokensWithBalance', () => {
@@ -65,6 +67,13 @@ describe('SendApiUtil', () => {
       AccountController.state.address = mockEthereumAddress
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
+      ConnectorController.state.activeConnectorIds = {
+        eip155: ConstantsUtil.CONNECTOR_ID.AUTH,
+        solana: undefined,
+        polkadot: undefined,
+        bip122: undefined,
+        cosmos: undefined
+      }
     })
 
     afterEach(() => {
@@ -154,6 +163,33 @@ describe('SendApiUtil', () => {
       expect(BlockchainApiController.getBalance).toHaveBeenCalledWith(
         mockSolanaAddress,
         mockSolanaNetwork.caipNetworkId,
+        undefined
+      )
+      expect(result).toEqual(mockBalances)
+    })
+
+    it('should use BlockchainApi if connector is not auth', async () => {
+      const mockBalances = [
+        {
+          symbol: 'ETH',
+          quantity: { decimals: '18', numeric: '1.0' },
+          name: 'Ethereum',
+          chainId: mockEthChainIdAsHex,
+          price: 0,
+          iconUrl: ''
+        }
+      ]
+
+      AccountController.state.address = mockEthereumAddress
+      ChainController.state.activeCaipNetwork = mockEthereumNetwork
+      vi.mocked(ConnectorController.getConnectorId).mockReturnValue('INJECTED')
+      vi.mocked(BlockchainApiController.getBalance).mockResolvedValue({ balances: mockBalances })
+
+      const result = await SendApiUtil.getMyTokensWithBalance()
+
+      expect(BlockchainApiController.getBalance).toHaveBeenCalledWith(
+        mockEthereumAddress,
+        mockEthereumNetwork.caipNetworkId,
         undefined
       )
       expect(result).toEqual(mockBalances)
@@ -286,6 +322,13 @@ describe('SendApiUtil', () => {
     beforeEach(() => {
       AccountController.state.address = mockEthereumAddress
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
+      ConnectorController.state.activeConnectorIds = {
+        eip155: ConstantsUtil.CONNECTOR_ID.AUTH,
+        solana: undefined,
+        polkadot: undefined,
+        bip122: undefined,
+        cosmos: undefined
+      }
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
     })
 
