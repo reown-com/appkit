@@ -275,6 +275,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     try {
       const txid = await connector.sendRawTransaction({ rawTransaction })
+
       return { hash: txid }
     } catch (error) {
       throw new Error(`Failed to broadcast raw transaction: ${error}`)
