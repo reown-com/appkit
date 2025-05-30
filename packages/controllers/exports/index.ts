@@ -92,6 +92,7 @@ export { RouterUtil } from '../src/utils/RouterUtil.js'
 export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 export { ModalUtil } from '../src/utils/ModalUtil.js'
+export { NetworkUtil } from '../src/utils/NetworkUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
 
 export { FetchUtil } from '../src/utils/FetchUtil.js'
