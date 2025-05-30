@@ -121,8 +121,8 @@
     "@tanstack/react-query": "5.75.5",
     "@wagmi/connectors": "5.7.12",
     "@wagmi/core": "2.16.7",
-    "@walletconnect/universal-provider": "2.20.2",
-    "@walletconnect/utils": "2.20.2",
+    "@walletconnect/universal-provider": "2.21.0",
+    "@walletconnect/utils": "2.21.0",
     "axios": "1.9.0",
     "bitcoinjs-lib": "7.0.0-rc.0",
     "bs58": "6.0.0",
@@ -140,7 +140,7 @@
     "viem": "2.29.0",
     "wagmi": "2.15.4",
     "webauthn-p256": "0.0.2",
-    "@walletconnect/sign-client": "2.20.2"
+    "@walletconnect/sign-client": "2.21.0"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.758.0",
