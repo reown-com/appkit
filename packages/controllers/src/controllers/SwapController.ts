@@ -5,9 +5,10 @@ import { type ChainNamespace, NumberUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { BalanceUtil } from '../utils/BalanceUtil.js'
+import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SendApiUtil } from '../utils/SendApiUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
@@ -185,7 +186,7 @@ const controller = {
     const caipAddress = ChainController.state.activeCaipAddress
     const namespace = ChainController.state.activeChain as ChainNamespace
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
-    const networkAddress = ChainController.getActiveNetworkTokenAddress()
+    const networkAddress = getActiveNetworkTokenAddress()
     const connectorId = ConnectorController.getConnectorId(namespace)
 
     if (!address) {
@@ -425,8 +426,9 @@ const controller = {
   },
 
   async getMyTokensWithBalance(forceUpdate?: string) {
-    const balances = await SendApiUtil.getMyTokensWithBalance(forceUpdate)
-    const swapBalances = SendApiUtil.mapBalancesToSwapTokens(balances)
+    const balances = await BalanceUtil.getMyTokensWithBalance(forceUpdate)
+    const swapBalances = SwapApiUtil.mapBalancesToSwapTokens(balances)
+
     if (!swapBalances) {
       return
     }

@@ -3,6 +3,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 
 import { ChainController } from '../controllers/ChainController.js'
 import { checkNamespaceConnectorId } from './ConnectorControllerUtil.js'
+import { ConstantsUtil } from './ConstantsUtil.js'
 import type { ChainAdapter } from './TypeUtil.js'
 
 /**
@@ -42,4 +43,16 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
   }
 
   return chains
+}
+
+/**
+ * Get the active network token address
+ * @returns The active network token address
+ */
+export function getActiveNetworkTokenAddress() {
+  const namespace = ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
+  const chainId = ChainController.state.activeCaipNetwork?.id || 1
+  const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
+
+  return `${namespace}:${chainId}:${address}`
 }
