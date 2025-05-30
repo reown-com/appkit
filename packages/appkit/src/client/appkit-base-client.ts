@@ -195,19 +195,27 @@ export abstract class AppKitBaseClient {
       }
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message === 'RATE_LIMITED') {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
-        } else if (error.message === 'SERVER_ERROR') {
-          const originalError = error.cause instanceof Error ? error.cause : error
-          AlertController.open(
-            {
-              shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-              longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
-                originalError.message
-              )
-            },
-            'error'
-          )
+        const errorHandlers: Record<string, () => void> = {
+          'RATE_LIMITED': () => {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
+          },
+          'SERVER_ERROR': () => {
+            const originalError = error.cause instanceof Error ? error.cause : error
+            AlertController.open(
+              {
+                shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
+                longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
+                  originalError.message
+                )
+              },
+              'error'
+            )
+          }
+        }
+        
+        const handler = errorHandlers[error.message]
+        if (handler) {
+          handler()
         } else {
           AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
         }
