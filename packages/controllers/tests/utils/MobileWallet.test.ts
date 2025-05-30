@@ -41,7 +41,7 @@ describe('MobileWalletUtil', () => {
   })
 
   it('should redirect to Phantom app when Phantom is not installed', () => {
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name, ConstantsUtil.CHAIN.SOLANA)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const encodedRef = encodeURIComponent('https://example.com')
@@ -57,7 +57,7 @@ describe('MobileWalletUtil', () => {
     })
 
     const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name, ConstantsUtil.CHAIN.SOLANA)
 
     expect(window.location.href).toBe(originalHref)
   })
@@ -66,7 +66,7 @@ describe('MobileWalletUtil', () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
       activeChain: ConstantsUtil.CHAIN.SOLANA
     } as unknown as ChainControllerState)
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name, ConstantsUtil.CHAIN.SOLANA)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
@@ -75,16 +75,12 @@ describe('MobileWalletUtil', () => {
   })
 
   it('should redirect to Coinbase Wallet if active namespace is Solana', () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
-      activeChain: ConstantsUtil.CHAIN.EVM
-    } as unknown as ChainControllerState)
-
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name, ConstantsUtil.CHAIN.SOLANA)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
 
-    expect(window.location.href).not.toBe(expectedUrl)
+    expect(window.location.href).toBe(expectedUrl)
   })
 
   it('should not redirect when Coinbase Wallet is installed', () => {
@@ -94,14 +90,14 @@ describe('MobileWalletUtil', () => {
     })
 
     const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name, ConstantsUtil.CHAIN.SOLANA)
 
     expect(window.location.href).toBe(originalHref)
   })
 
   it('should not redirect for unknown wallet names', () => {
     const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect('other')
+    MobileWalletUtil.handleMobileDeeplinkRedirect('other', ConstantsUtil.CHAIN.SOLANA)
 
     expect(window.location.href).toBe(originalHref)
   })

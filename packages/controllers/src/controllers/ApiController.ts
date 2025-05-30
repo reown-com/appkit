@@ -6,6 +6,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { CUSTOM_DEEPLINK_WALLETS } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetAllowedOriginsResponse,
@@ -20,17 +21,6 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
-
-/*
- * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
- * Excludes:
- * - Phantom
- * - Coinbase
- */
-export const CUSTOM_DEEPLINK_WALLETS = {
-  PHANTOM: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-  COINBASE: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'
-}
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -143,13 +133,21 @@ export const ApiController = {
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
     const filteredWallets = CoreHelperUtil.isMobile()
-      ? wallets?.filter(
-          w =>
-            w.mobile_link ||
-            w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE ||
-            (w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM &&
-              ChainController.state.activeChain === 'solana')
-        )
+      ? wallets?.filter(w => {
+          if (w.mobile_link) {
+            return true
+          }
+
+          if (w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE) {
+            return true
+          }
+          const isSolana = ChainController.state.activeChain === 'solana'
+
+          return (
+            isSolana &&
+            (w.id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE || w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM)
+          )
+        })
       : wallets
 
     return filteredWallets

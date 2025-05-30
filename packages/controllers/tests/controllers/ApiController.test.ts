@@ -14,7 +14,8 @@ import {
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
-import { CUSTOM_DEEPLINK_WALLETS, api } from '../../src/controllers/ApiController.js'
+import { api } from '../../src/controllers/ApiController.js'
+import { CUSTOM_DEEPLINK_WALLETS } from '../../src/utils/MobileWallet.js'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM

@@ -379,7 +379,10 @@ describe('ConnectorController', () => {
     const expectedUrl = `https://phantom.app/ul/browse/${encodedHref}?ref=${encodedRef}`
 
     expect(window.location.href).toBe(expectedUrl)
-    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(mockConnector.name)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.name,
+      ConstantsUtil.CHAIN.EVM
+    )
   })
 
   it('should call mobile wallet util when selecting wallet is Coinbase only on Solana ', () => {
@@ -405,7 +408,10 @@ describe('ConnectorController', () => {
     const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
 
     expect(window.location.href).toBe(expectedUrl)
-    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(mockConnector.name)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.name,
+      ConstantsUtil.CHAIN.SOLANA
+    )
   })
 
   it('should not call redirect when selected wallet is Coinbase and active chain is not Solana ', () => {
@@ -428,7 +434,10 @@ describe('ConnectorController', () => {
     ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
 
     expect(window.location.href).toBe(ORIGINAL_HREF)
-    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(mockConnector.name)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.name,
+      ConstantsUtil.CHAIN.EVM
+    )
   })
 
   it('should route to ConnectingWalletConnect when selecting wallet if there is not a connector', () => {
