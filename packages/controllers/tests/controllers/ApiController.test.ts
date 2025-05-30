@@ -934,7 +934,7 @@ describe('ApiController', () => {
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
-    expect(filteredWallets).toHaveLength(4)
+    expect(filteredWallets).toHaveLength(5)
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
       '3',

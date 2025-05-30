@@ -110,8 +110,9 @@ describe('MobileWalletUtil', () => {
     MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.solflare.name, ConstantsUtil.CHAIN.SOLANA)
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const expectedUrl = `https://solflare.com/dapp?cb_url=${encodedHref}`
+    const expectedUrl = `https://solflare.com/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
 
+    //
     expect(window.location.href).toBe(expectedUrl)
   })
 })
