@@ -928,7 +928,7 @@ describe('ApiController', () => {
   it('should throw SERVER_ERROR for HTTP 502 status code', async () => {
     const mockError = new Error('Bad Gateway')
     mockError.cause = new Response('Bad Gateway', { status: 502 })
-    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
 
     await expect(ApiController.fetchAllowedOrigins()).rejects.toThrow('SERVER_ERROR')
   })
@@ -948,7 +948,7 @@ describe('ApiController', () => {
 
   it('should return empty array for non-HTTP errors (existing behavior)', async () => {
     const mockError = new Error('Network error')
-    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
 
     const result = await ApiController.fetchAllowedOrigins()
     expect(result).toEqual([])
@@ -957,7 +957,7 @@ describe('ApiController', () => {
   it('should return empty array for HTTP errors without Response cause', async () => {
     const mockError = new Error('Some error')
     mockError.cause = 'not a response object'
-    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
 
     const result = await ApiController.fetchAllowedOrigins()
     expect(result).toEqual([])

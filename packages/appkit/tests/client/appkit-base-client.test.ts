@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ApiController, AlertController } from '@reown/appkit-controllers'
+
+import { AlertController, ApiController } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 vi.mock('@reown/appkit-controllers', async () => {
@@ -22,10 +23,10 @@ class TestAppKitBaseClient {
     } catch (error) {
       if (error instanceof Error) {
         const errorHandlers: Record<string, () => void> = {
-          'RATE_LIMITED': () => {
+          RATE_LIMITED: () => {
             AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
           },
-          'SERVER_ERROR': () => {
+          SERVER_ERROR: () => {
             const originalError = error.cause instanceof Error ? error.cause : error
             AlertController.open(
               {
@@ -38,7 +39,7 @@ class TestAppKitBaseClient {
             )
           }
         }
-        
+
         const handler = errorHandlers[error.message]
         if (handler) {
           handler()
@@ -85,7 +86,8 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     expect(alertSpy).toHaveBeenCalledWith(
       {
         shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('Internal Server Error')
+        longMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('Internal Server Error')
       },
       'error'
     )
@@ -101,7 +103,8 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     expect(alertSpy).toHaveBeenCalledWith(
       {
         shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('SERVER_ERROR')
+        longMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('SERVER_ERROR')
       },
       'error'
     )
@@ -113,10 +116,7 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
 
     await client['checkAllowedOrigins']()
 
-    expect(alertSpy).toHaveBeenCalledWith(
-      ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED,
-      'error'
-    )
+    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
   })
 
   it('should show PROJECT_ID_NOT_CONFIGURED alert for non-Error objects', async () => {
@@ -124,9 +124,6 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
 
     await client['checkAllowedOrigins']()
 
-    expect(alertSpy).toHaveBeenCalledWith(
-      ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED,
-      'error'
-    )
+    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
   })
 })

@@ -196,10 +196,10 @@ export abstract class AppKitBaseClient {
     } catch (error) {
       if (error instanceof Error) {
         const errorHandlers: Record<string, () => void> = {
-          'RATE_LIMITED': () => {
+          RATE_LIMITED: () => {
             AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
           },
-          'SERVER_ERROR': () => {
+          SERVER_ERROR: () => {
             const originalError = error.cause instanceof Error ? error.cause : error
             AlertController.open(
               {
@@ -212,7 +212,7 @@ export abstract class AppKitBaseClient {
             )
           }
         }
-        
+
         const handler = errorHandlers[error.message]
         if (handler) {
           handler()

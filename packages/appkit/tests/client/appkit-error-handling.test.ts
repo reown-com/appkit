@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { AlertController } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
@@ -14,7 +15,7 @@ vi.mock('@reown/appkit-controllers', async () => {
 
 describe('AppKit error handling for api.web3modal.org/origins', () => {
   let alertSpy: any
-  
+
   beforeEach(() => {
     alertSpy = vi.mocked(AlertController.open)
     alertSpy.mockReset()
@@ -23,10 +24,10 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
   async function handleApiError(error: unknown) {
     if (error instanceof Error) {
       const errorHandlers: Record<string, () => void> = {
-        'RATE_LIMITED': () => {
+        RATE_LIMITED: () => {
           AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
         },
-        'SERVER_ERROR': () => {
+        SERVER_ERROR: () => {
           const originalError = (error as any).cause instanceof Error ? (error as any).cause : error
           AlertController.open(
             {
@@ -39,7 +40,7 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
           )
         }
       }
-      
+
       const handler = errorHandlers[error.message]
       if (handler) {
         handler()
@@ -70,7 +71,8 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
     expect(alertSpy).toHaveBeenCalledWith(
       {
         shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('Internal Server Error')
+        longMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('Internal Server Error')
       },
       'error'
     )
@@ -84,7 +86,8 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
     expect(alertSpy).toHaveBeenCalledWith(
       {
         shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('SERVER_ERROR')
+        longMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('SERVER_ERROR')
       },
       'error'
     )
@@ -94,18 +97,12 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
     const unknownError = new Error('UNKNOWN_ERROR')
     await handleApiError(unknownError)
 
-    expect(alertSpy).toHaveBeenCalledWith(
-      ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED,
-      'error'
-    )
+    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
   })
 
   it('should show PROJECT_ID_NOT_CONFIGURED alert for non-Error objects', async () => {
     await handleApiError('string error')
 
-    expect(alertSpy).toHaveBeenCalledWith(
-      ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED,
-      'error'
-    )
+    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
   })
 })
