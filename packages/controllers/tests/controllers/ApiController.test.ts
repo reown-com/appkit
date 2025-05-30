@@ -926,11 +926,11 @@ describe('ApiController', () => {
       { id: '2', name: 'Wallet2' },
       { id: '3', name: 'Wallet3', mobile_link: 'link3' },
       {
-        id: CUSTOM_DEEPLINK_WALLETS.COINBASE,
+        id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
         name: 'Coinbase Wallet'
       },
-      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM, name: 'Phantom' },
-      { id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE, name: 'Solflare' }
+      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, name: 'Phantom' },
+      { id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, name: 'Solflare' }
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
@@ -938,9 +938,9 @@ describe('ApiController', () => {
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
       '3',
-      CUSTOM_DEEPLINK_WALLETS.COINBASE,
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM,
-      CUSTOM_DEEPLINK_WALLETS.SOLFLARE
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id
     ])
   })
 

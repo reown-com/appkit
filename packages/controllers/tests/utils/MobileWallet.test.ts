@@ -6,27 +6,12 @@ import {
   ChainController,
   type ChainControllerState
 } from '../../src/controllers/ChainController.js'
-import { MobileWalletUtil } from '../../src/utils/MobileWallet.js'
+import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 const ORIGINAL_HREF = 'https://example.com/path'
 const mockWindow = {
   location: {
     href: ORIGINAL_HREF
-  }
-}
-
-const WALLETS = {
-  solflare: {
-    name: 'Solflare',
-    id: 'solflare'
-  },
-  phantom: {
-    name: 'Phantom',
-    id: 'phantom'
-  },
-  coinbase: {
-    name: 'Coinbase Wallet',
-    id: 'cbw'
   }
 }
 
@@ -45,11 +30,14 @@ describe('MobileWalletUtil', () => {
   })
 
   it('should redirect to Phantom app when Phantom is not installed', () => {
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name, ConstantsUtil.CHAIN.SOLANA)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const encodedRef = encodeURIComponent('https://example.com')
-    const expectedUrl = `https://phantom.app/ul/browse/${encodedHref}?ref=${encodedRef}`
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
 
     expect(window.location.href).toBe(expectedUrl)
   })
@@ -61,7 +49,10 @@ describe('MobileWalletUtil', () => {
     })
 
     const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.phantom.name, ConstantsUtil.CHAIN.SOLANA)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
 
     expect(window.location.href).toBe(originalHref)
   })
@@ -70,19 +61,25 @@ describe('MobileWalletUtil', () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
       activeChain: ConstantsUtil.CHAIN.SOLANA
     } as unknown as ChainControllerState)
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name, ConstantsUtil.CHAIN.SOLANA)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`
 
     expect(window.location.href).toBe(expectedUrl)
   })
 
   it('should redirect to Coinbase Wallet if active namespace is Solana', () => {
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name, ConstantsUtil.CHAIN.SOLANA)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`
 
     expect(window.location.href).toBe(expectedUrl)
   })
@@ -94,7 +91,10 @@ describe('MobileWalletUtil', () => {
     })
 
     const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.coinbase.name, ConstantsUtil.CHAIN.SOLANA)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
 
     expect(window.location.href).toBe(originalHref)
   })
@@ -107,10 +107,13 @@ describe('MobileWalletUtil', () => {
   })
 
   it('should redirect to Solflare correctly', () => {
-    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.solflare.name, ConstantsUtil.CHAIN.SOLANA)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const expectedUrl = `https://solflare.com/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
 
     //
     expect(window.location.href).toBe(expectedUrl)

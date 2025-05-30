@@ -138,14 +138,15 @@ export const ApiController = {
             return true
           }
 
-          if (w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE) {
+          if (w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id) {
             return true
           }
           const isSolana = ChainController.state.activeChain === 'solana'
 
           return (
             isSolana &&
-            (w.id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE || w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM)
+            (w.id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id ||
+              w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id)
           )
         })
       : wallets
@@ -208,7 +209,7 @@ export const ApiController = {
     const exclude = params.exclude ?? []
     const sdkProperties = ApiController._getSdkProperties()
     if (sdkProperties.sv.startsWith('html-core-')) {
-      exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS))
+      exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS).map(w => w.id))
     }
 
     const wallets = await api.get<ApiGetWalletsResponse>({
