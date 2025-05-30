@@ -427,7 +427,6 @@ const controller = {
   async getMyTokensWithBalance(forceUpdate?: string) {
     const balances = await SendApiUtil.getMyTokensWithBalance(forceUpdate)
     const swapBalances = SendApiUtil.mapBalancesToSwapTokens(balances)
-
     if (!swapBalances) {
       return
     }
