@@ -138,14 +138,14 @@ export class W3mNetworkSwitchView extends LitElement {
     }
   }
 
-  private async onSwitchNetwork() {
+  private onSwitchNetwork() {
     try {
       this.error = false
       if (ChainController.state.activeChain !== this.network?.chainNamespace) {
         ChainController.setIsSwitchingNamespace(true)
       }
       if (this.network) {
-        await ChainController.switchActiveNetwork(this.network)
+        ChainController.switchActiveNetwork(this.network)
       }
     } catch (error) {
       this.error = true
