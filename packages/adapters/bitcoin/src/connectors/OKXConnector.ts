@@ -118,6 +118,16 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     throw new Error(`${this.name} wallet does not support network switching`)
   }
 
+  public async sendRawTransaction(
+    params: BitcoinConnector.SendRawTransactionParams
+  ): Promise<string> {
+    try {
+      return await this.wallet.pushPsbt(params.rawTransaction)
+    } catch (error) {
+      throw new Error(`Failed to broadcast raw transaction: ${error}`)
+    }
+  }
+
   public request<T>(_args: RequestArguments): Promise<T> {
     return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
   }
@@ -184,6 +194,7 @@ export namespace OKXConnector {
     signMessage(signStr: string, type?: 'ecdsa' | 'bip322-simple'): Promise<string>
     signPsbt(psbtHex: string): Promise<string>
     pushPsbt(psbtHex: string): Promise<string>
+    pushRawTransaction?(rawTxHex: string): Promise<string>
     send(params: {
       from: string
       to: string

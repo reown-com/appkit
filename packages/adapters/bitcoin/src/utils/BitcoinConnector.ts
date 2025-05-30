@@ -12,6 +12,7 @@ export interface BitcoinConnector extends ChainAdapterConnector, Provider {
   signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
   sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string>
   signPSBT(params: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse>
+  sendRawTransaction(params: BitcoinConnector.SendRawTransactionParams): Promise<string>
   switchNetwork(caipNetworkId: string): Promise<void>
 }
 
@@ -103,6 +104,13 @@ export namespace BitcoinConnector {
      * The `string` transaction id of the broadcasted transaction or `undefined` if not broadcasted
      */
     txid?: string
+  }
+
+  export type SendRawTransactionParams = {
+    /**
+     * Raw transaction as hex string
+     */
+    rawTransaction: string
   }
 }
 

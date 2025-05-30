@@ -7,7 +7,10 @@ import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 import { OKXConnector } from '../../src/connectors/OKXConnector'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
 
-function mockOKXWallet(): { [K in keyof OKXConnector.Wallet]: Mock<OKXConnector.Wallet[K]> } {
+// Use Partial<Mock> to handle optional properties
+function mockOKXWallet(): {
+  [K in keyof OKXConnector.Wallet]: K extends keyof OKXConnector.Wallet ? Mock : never
+} {
   return {
     connect: vi.fn(() => Promise.resolve({ address: 'mock_address', publicKey: 'publicKey' })),
     disconnect: vi.fn(),
@@ -15,11 +18,12 @@ function mockOKXWallet(): { [K in keyof OKXConnector.Wallet]: Mock<OKXConnector.
     signMessage: vi.fn(() => Promise.resolve('mock_signature')),
     signPsbt: vi.fn(() => Promise.resolve(Buffer.from('mock_psbt').toString('hex'))),
     pushPsbt: vi.fn(() => Promise.resolve('mock_txhash')),
+    pushRawTransaction: vi.fn(() => Promise.resolve('mock_txhash')),
     send: vi.fn(() => Promise.resolve({ txhash: 'mock_txhash' })),
     on: vi.fn(),
     removeAllListeners: vi.fn(),
     getPublicKey: vi.fn(() => Promise.resolve('publicKey'))
-  }
+  } as { [K in keyof OKXConnector.Wallet]: K extends keyof OKXConnector.Wallet ? Mock : never }
 }
 
 describe('OKXConnector', () => {
@@ -172,6 +176,15 @@ describe('OKXConnector', () => {
       })
 
       expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: 'mock_txhash' })
+    })
+  })
+
+  describe('sendRawTransaction', () => {
+    it('should broadcast a raw transaction', async () => {
+      const txid = await connector.sendRawTransaction({ rawTransaction: 'mock_raw_tx' })
+
+      expect(txid).toBe('mock_txhash')
+      expect(wallet.pushPsbt).toHaveBeenCalledWith('mock_raw_tx')
     })
   })
 

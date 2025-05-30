@@ -665,6 +665,49 @@ describe('BitcoinAdapter', () => {
     })
   })
 
+  describe('sendRawTransaction', () => {
+    it('should broadcast raw transaction successfully', async () => {
+      const connector = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+      vi.spyOn(connector, 'sendRawTransaction').mockResolvedValueOnce('mock_txid')
+      adapter.connectors.push(connector)
+
+      const result = await adapter.sendRawTransaction({
+        rawTransaction: 'mock_raw_tx_hex'
+      })
+
+      expect(result).toEqual({ hash: 'mock_txid' })
+    })
+
+    it('should throw if no connector available', async () => {
+      // Create a new adapter instance without connectors
+      const emptyAdapter = new BitcoinAdapter({ api, networks: [bitcoin] })
+
+      await expect(
+        emptyAdapter.sendRawTransaction({ rawTransaction: 'mock_raw_tx_hex' })
+      ).rejects.toThrow('No connector available')
+    })
+
+    it('should propagate errors from connector', async () => {
+      const connector = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+      vi.spyOn(connector, 'sendRawTransaction').mockRejectedValueOnce(
+        new Error('Broadcasting failed')
+      )
+      adapter.connectors.push(connector)
+
+      await expect(
+        adapter.sendRawTransaction({ rawTransaction: 'mock_raw_tx_hex' })
+      ).rejects.toThrow('Failed to broadcast raw transaction: Error: Broadcasting failed')
+    })
+  })
+
   it('should not throw for not used methods', async () => {
     expect(await adapter.estimateGas({} as any)).toEqual({})
     expect(await adapter.sendTransaction({} as any)).toEqual({})
