@@ -53,7 +53,6 @@ describe('AccountController', () => {
       smartAccountDeployed: false,
       currentTab: 0,
       tokenBalance: [],
-      allAccounts: [],
       addressLabels: new Map<string, string>()
     })
   })
@@ -115,7 +114,6 @@ describe('AccountController', () => {
       profileImage: undefined,
       addressExplorerUrl: undefined,
       tokenBalance: [],
-      allAccounts: [],
       addressLabels: new Map<string, string>(),
       connectedWalletInfo: undefined,
       farcasterUrl: undefined,
