@@ -55,10 +55,13 @@ import {
   OptionsController,
   PublicStateController,
   RouterController,
+  SIWXUtil,
+  SendController,
   SnackController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import { getChainsToDisconnect } from '@reown/appkit-controllers/utils'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -381,6 +384,35 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
+  private async disconnectNamespace(namespace: ChainNamespace) {
+    try {
+      const adapter = this.getAdapter(namespace)
+      const provider = ProviderUtil.getProvider(namespace)
+      const providerType = ProviderUtil.getProviderId(namespace)
+      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+
+      this.setLoading(true, namespace)
+      if (caipAddress && adapter?.disconnect) {
+        await adapter.disconnect({ provider, providerType })
+      }
+
+      StorageUtil.removeConnectedNamespace(namespace)
+      ProviderUtil.resetChain(namespace)
+      this.setUser(undefined, namespace)
+      this.setStatus('disconnected', namespace)
+      this.setConnectedWalletInfo(undefined, namespace)
+
+      ConnectorController.removeConnectorId(namespace)
+
+      ChainController.resetAccount(namespace)
+      ChainController.resetNetwork(namespace)
+      this.setLoading(false, namespace)
+    } catch (error) {
+      this.setLoading(false, namespace)
+      throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+    }
+  }
+
   // -- Client Initialization ---------------------------------------------------
   protected createClients() {
     this.connectionControllerClient = {
@@ -469,18 +501,36 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async (chainNamespace?: ChainNamespace) => {
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-        const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider(namespace)
-        const providerType = ProviderUtil.getProviderId(namespace)
+        const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
+        try {
+          // Reset send state when disconnecting
+          const disconnectResults = await Promise.allSettled(
+            chainsToDisconnect.map(async ([ns]) => this.disconnectNamespace(ns))
+          )
+          SendController.resetSend()
+          ConnectionController.resetWcConnection()
+          await SIWXUtil.clearSessions()
+          ConnectorController.setFilterByNamespace(undefined)
+          const failures = disconnectResults.filter(
+            (result): result is PromiseRejectedResult => result.status === 'rejected'
+          )
 
-        await adapter?.disconnect({ provider, providerType })
+          if (failures.length > 0) {
+            throw new Error(failures.map(f => f.reason.message).join(', '))
+          }
 
-        StorageUtil.removeConnectedNamespace(namespace)
-        ProviderUtil.resetChain(namespace)
-        this.setUser(undefined, namespace)
-        this.setStatus('disconnected', namespace)
-        this.setConnectedWalletInfo(undefined, namespace)
+          StorageUtil.deleteConnectedSocialProvider()
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'DISCONNECT_SUCCESS',
+            properties: {
+              namespace: chainNamespace || 'all'
+            }
+          })
+        } catch (error) {
+          throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
+        }
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -714,7 +764,7 @@ export abstract class AppKitBaseClient {
   protected async initChainAdapter(namespace: ChainNamespace) {
     this.onConnectors(namespace)
     this.listenAdapter(namespace)
-    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
   }
 
@@ -835,9 +885,14 @@ export abstract class AppKitBaseClient {
 
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
+      if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
+        ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.SAFE, namespace)
+      }
+
       const connectorId = ConnectorController.getConnectorId(namespace)
 
       this.setStatus('connecting', namespace)
+
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
           await this.syncWalletConnectAccount()
@@ -858,7 +913,9 @@ export abstract class AppKitBaseClient {
     const adapter = this.getAdapter(namespace)
     const connectorId = ConnectorController.getConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork(namespace)
-    const connector = ConnectorController.getConnectors(namespace).find(c => c.id === connectorId)
+    const connectors = ConnectorController.getConnectors(namespace)
+
+    const connector = connectors.find(c => c.id === connectorId)
 
     try {
       if (!adapter || !connector) {
@@ -1463,6 +1520,12 @@ export abstract class AppKitBaseClient {
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
+    /**
+     * For the embedded use cases (Demo app), we should call close() when the user is connected to redirect them to Account View.
+     */
+    if (caipAddress && OptionsController.state.enableEmbedded) {
+      this.close()
+    }
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
@@ -1479,9 +1542,6 @@ export abstract class AppKitBaseClient {
 
   public setUser: (typeof AccountController)['setUser'] = (user, chain) => {
     AccountController.setUser(user, chain)
-    if (OptionsController.state.enableEmbedded) {
-      ModalController.close()
-    }
   }
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
@@ -1595,13 +1655,11 @@ export abstract class AppKitBaseClient {
 
   public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.getCaipNetworks().find(n => n.id === appKitNetwork.id)
-
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
 
       return
     }
-
     await ChainController.switchActiveNetwork(network)
   }
 

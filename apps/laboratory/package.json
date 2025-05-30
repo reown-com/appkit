@@ -99,6 +99,8 @@
     "@chakra-ui/icons": "2.2.6",
     "@chakra-ui/react": "2.10.7",
     "@coinbase/wallet-sdk": "4.3.0",
+    "@safe-global/safe-apps-provider": "0.18.6",
+    "@safe-global/safe-apps-sdk": "9.1.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",

@@ -147,7 +147,6 @@ export class AppKit extends AppKitBaseClient {
         })
       }
       this.setCaipAddress(caipAddress, namespace)
-
       this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
@@ -215,10 +214,7 @@ export class AppKit extends AppKitBaseClient {
     const email = provider.getEmail()
     const username = provider.getUsername()
 
-    this.setUser(
-      { ...(AccountController.state?.user || {}), username, email },
-      ChainController.state.activeChain
-    )
+    this.setUser({ ...(AccountController.state?.user || {}), username, email }, chainNamespace)
 
     this.setupAuthConnectorListeners(provider)
 
@@ -477,7 +473,6 @@ export class AppKit extends AppKitBaseClient {
     await super.initialize(options)
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
-      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     })
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })
