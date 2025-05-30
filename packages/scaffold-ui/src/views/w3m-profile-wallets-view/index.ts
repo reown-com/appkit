@@ -518,11 +518,6 @@ export class W3mProfileWalletsView extends LitElement {
         namespace,
         closeModalOnConnect: false,
         onChange({ isAccountSwitched, isWalletSwitched }) {
-          /*
-           * In case anyone is on another screen, we need to replace
-           * The current screen with the profile wallets screen
-           */
-          RouterController.replace('ProfileWallets')
           if (isWalletSwitched) {
             SnackController.showSuccess('Wallet switched')
           } else if (isAccountSwitched) {
