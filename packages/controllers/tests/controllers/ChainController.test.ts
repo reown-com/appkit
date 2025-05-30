@@ -138,7 +138,7 @@ const solanaAdapter = {
 // -- Tests --------------------------------------------------------------------
 describe('ChainController', () => {
   beforeEach(() => {
-    vi.resetAllMocks()
+    vi.restoreAllMocks()
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     ChainController.state.noAdapters = false
     ChainController.initialize([evmAdapter], requestedCaipNetworks, {
