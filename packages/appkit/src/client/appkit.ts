@@ -473,7 +473,6 @@ export class AppKit extends AppKitBaseClient {
     await super.initialize(options)
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
-      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     })
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })

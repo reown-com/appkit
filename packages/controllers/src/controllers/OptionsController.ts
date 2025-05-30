@@ -96,22 +96,22 @@ export interface OptionsControllerStatePublic {
    */
   enableWallets?: boolean
   /**
-   * Enable or disable the EIP6963 feature in your AppKit.
+   * Enable or disable the EIP6963 feature.
    * @default false
    */
   enableEIP6963?: boolean
   /**
-   * Enable or disable the Coinbase wallet in your AppKit.
+   * Enable or disable the Coinbase wallet.
    * @default true
    */
   enableCoinbase?: boolean
   /**
-   * Enable or disable the Injected wallet in your AppKit.
+   * Enable or disable the Injected wallet.
    * @default true
    */
   enableInjected?: boolean
   /**
-   * Enable or disable the WalletConnect QR code in your AppKit.
+   * Enable or disable the WalletConnect QR code.
    * @default true
    */
   enableWalletConnect?: boolean
@@ -131,7 +131,7 @@ export interface OptionsControllerStatePublic {
    */
   experimental_preferUniversalLinks?: boolean
   /**
-   * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
+   * Enable or disable debug mode. This is useful if you want to see UI alerts when debugging.
    * @default true
    */
   debug?: boolean
@@ -143,7 +143,7 @@ export interface OptionsControllerStatePublic {
   features?: Features
   /**
    * @experimental - This feature is not production ready.
-   * Enable Sign In With X (SIWX) feature in your AppKit.
+   * Enable Sign In With X (SIWX) feature.
    * @default undefined
    */
   siwx?: SIWXConfig
@@ -204,7 +204,7 @@ type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStat
 type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
 
 // -- State --------------------------------------------- //
-const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
+const state = proxy<OptionsControllerState>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',

@@ -45,7 +45,7 @@ import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
-import { parseWalletCapabilities } from './utils/helpers.js'
+import { getCoinbaseConnector, getSafeConnector, parseWalletCapabilities } from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean
@@ -245,29 +245,24 @@ export class WagmiAdapter extends AdapterBlueprint {
     const thirdPartyConnectors: CreateConnectorFn[] = []
 
     if (options.enableCoinbase !== false) {
-      try {
-        const { coinbaseWallet } = await import('@wagmi/connectors')
-
-        if (coinbaseWallet) {
-          thirdPartyConnectors.push(
-            coinbaseWallet({
-              version: '4',
-              appName: options.metadata?.name ?? 'Unknown',
-              appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
-              preference: options.coinbasePreference ?? 'all'
-            })
-          )
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to import Coinbase Wallet SDK:', error)
+      const coinbaseConnector = await getCoinbaseConnector(this.wagmiConfig.connectors)
+      if (coinbaseConnector) {
+        thirdPartyConnectors.push(coinbaseConnector)
       }
     }
 
-    thirdPartyConnectors.forEach(connector => {
-      const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
-      this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
-    })
+    const safeConnector = await getSafeConnector(this.wagmiConfig.connectors)
+    if (safeConnector) {
+      thirdPartyConnectors.push(safeConnector)
+    }
+
+    await Promise.all(
+      thirdPartyConnectors.map(async connector => {
+        const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
+        this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
+        await this.addWagmiConnector(cnctr, options)
+      })
+    )
   }
 
   private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
@@ -436,11 +431,33 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id } = params
+    const { id, chainId } = params
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
     const connector = this.getWagmiConnector(id)
     const provider = (await connector?.getProvider()) as Provider
+
+    const isSafeApp = CoreHelperUtil.isSafeApp()
+
+    if (isSafeApp && id === CommonConstantsUtil.CONNECTOR_ID.SAFE && !connection?.accounts.length) {
+      const safeAppConnector = this.getWagmiConnector('safe')
+      if (safeAppConnector) {
+        const res = await connect(this.wagmiConfig, {
+          connector: safeAppConnector,
+          chainId: Number(chainId)
+        })
+
+        const safeProvider = (await safeAppConnector.getProvider()) as Provider
+
+        return {
+          chainId: Number(chainId),
+          address: res.accounts[0] as string,
+          provider: safeProvider,
+          type: connection?.connector.type?.toUpperCase() as ConnectorType,
+          id: connection?.connector.id as string
+        }
+      }
+    }
 
     return {
       chainId: Number(connection?.chainId),

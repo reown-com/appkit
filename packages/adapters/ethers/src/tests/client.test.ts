@@ -8,6 +8,7 @@ import {
   AccountController,
   ChainController,
   type ConnectionControllerClient,
+  CoreHelperUtil,
   type NetworkControllerClient,
   type Provider
 } from '@reown/appkit-controllers'
@@ -95,6 +96,39 @@ describe('EthersAdapter', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.stubGlobal('window', {
+      location: {
+        ancestorOrigins: ['https://app.safe.global']
+      }
+    })
+    vi.mock('@coinbase/wallet-sdk', async () => {
+      const actual = await import('@coinbase/wallet-sdk')
+      return {
+        ...actual,
+        createCoinbaseWalletSDK: vi.fn(() => ({
+          getProvider: vi.fn(() => {
+            return {
+              request: vi.fn(),
+              connect: vi.fn()
+            }
+          })
+        }))
+      }
+    })
+    vi.mock('@safe-global/safe-apps-sdk', () => ({
+      default: vi.fn(() => ({
+        safe: {
+          getInfo: vi.fn(),
+          getProvider: vi.fn(() => {
+            return {
+              request: vi.fn(),
+              connect: vi.fn()
+            }
+          })
+        }
+      }))
+    }))
+
     adapter = new EthersAdapter()
     ChainController.initialize([adapter], mockCaipNetworks, {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
@@ -657,6 +691,56 @@ describe('EthersAdapter', () => {
 
       expect(disconnect).toHaveBeenCalled()
       expect(mockProvider.removeListener).toHaveBeenCalledWith('disconnect', expect.any(Function))
+    })
+  })
+
+  describe('EthersAdapter - createEthersConfig', () => {
+    it('should create Ethers config with coinbase provider if not disabled', async () => {
+      const ethersAdapter = new EthersAdapter()
+      const providers = await ethersAdapter['createEthersConfig']({
+        networks: [mainnet],
+        projectId: 'test-project-id',
+        metadata: {
+          name: 'test',
+          icons: ['https://test.com/icon.png'],
+          description: 'test',
+          url: 'https://test.com'
+        }
+      })
+
+      expect(providers?.coinbase).toBeDefined()
+    })
+
+    it('should create Ethers config without coinbase provider if disabled', async () => {
+      const providers = await adapter['createEthersConfig']({
+        networks: [mainnet],
+        projectId: 'test-project-id',
+        enableCoinbase: false,
+        metadata: {
+          name: 'test',
+          icons: ['https://test.com/icon.png'],
+          description: 'test',
+          url: 'https://test.com'
+        }
+      })
+
+      expect(providers?.coinbase).toBeUndefined()
+    })
+
+    it('should create Ethers config with safe provider if in iframe and ancestor is app.safe.global', async () => {
+      vi.spyOn(CoreHelperUtil, 'isSafeApp').mockReturnValue(true)
+      const providers = await adapter['createEthersConfig']({
+        networks: [mainnet],
+        projectId: 'test-project-id',
+        metadata: {
+          name: 'test',
+          icons: ['https://test.com/icon.png'],
+          description: 'test',
+          url: 'https://test.com'
+        }
+      })
+
+      expect(providers?.safe).toBeDefined()
     })
   })
 })
