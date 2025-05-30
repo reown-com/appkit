@@ -8,7 +8,6 @@ import {
   BlockchainApiController,
   ChainController,
   type ChainControllerState,
-  ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
@@ -17,7 +16,6 @@ import {
   StorageUtil,
   SwapController
 } from '../../exports/index.js'
-import { BalanceUtil } from '../../src/utils/BalanceUtil.js'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
