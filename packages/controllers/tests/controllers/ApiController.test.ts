@@ -14,7 +14,8 @@ import {
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
-import { CUSTOM_DEEPLINK_WALLETS, api } from '../../src/controllers/ApiController.js'
+import { api } from '../../src/controllers/ApiController.js'
+import { CUSTOM_DEEPLINK_WALLETS } from '../../src/utils/MobileWallet.js'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
@@ -925,19 +926,21 @@ describe('ApiController', () => {
       { id: '2', name: 'Wallet2' },
       { id: '3', name: 'Wallet3', mobile_link: 'link3' },
       {
-        id: CUSTOM_DEEPLINK_WALLETS.COINBASE,
+        id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
         name: 'Coinbase Wallet'
       },
-      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM, name: 'Phantom' }
+      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, name: 'Phantom' },
+      { id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, name: 'Solflare' }
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
-    expect(filteredWallets).toHaveLength(4)
+    expect(filteredWallets).toHaveLength(5)
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
       '3',
-      CUSTOM_DEEPLINK_WALLETS.COINBASE,
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id
     ])
   })
 
