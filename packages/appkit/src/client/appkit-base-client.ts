@@ -178,19 +178,42 @@ export abstract class AppKitBaseClient {
   }
 
   private async checkAllowedOrigins() {
-    const allowedOrigins = await ApiController.fetchAllowedOrigins()
-    if (allowedOrigins && CoreHelperUtil.isClient()) {
-      const currentOrigin = window.location.origin
-      const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
-        currentOrigin,
-        allowedOrigins,
-        WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
-      )
-      if (!isOriginAllowed) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+    try {
+      const allowedOrigins = await ApiController.fetchAllowedOrigins()
+      if (allowedOrigins && CoreHelperUtil.isClient()) {
+        const currentOrigin = window.location.origin
+        const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
+          currentOrigin,
+          allowedOrigins,
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+        if (!isOriginAllowed) {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+        }
+      } else {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
       }
-    } else {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === 'RATE_LIMITED') {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
+        } else if (error.message === 'SERVER_ERROR') {
+          const originalError = error.cause instanceof Error ? error.cause : error
+          AlertController.open(
+            {
+              shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
+              longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
+                originalError.message
+              )
+            },
+            'error'
+          )
+        } else {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+        }
+      } else {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      }
     }
   }
 
