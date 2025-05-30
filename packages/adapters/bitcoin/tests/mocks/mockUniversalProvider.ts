@@ -94,7 +94,6 @@ mockUniversalProvider.mockSession = (
     protocol: '',
     data: undefined
   },
-  requiredNamespaces: {},
   self: {
     metadata: {
       description: '',
