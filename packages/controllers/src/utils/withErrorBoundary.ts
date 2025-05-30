@@ -14,9 +14,46 @@ export class AppKitError extends Error {
     this.category = category
     this.originalError = originalError
 
-    // Maintain proper stack trace
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AppKitError)
+    // Ensure `this instanceof AppKitError` is true, important for custom errors.
+    Object.setPrototypeOf(this, AppKitError.prototype)
+
+    let isStackConstructedFromOriginal = false
+    if (
+      originalError instanceof Error &&
+      typeof originalError.stack === 'string' &&
+      originalError.stack
+    ) {
+      const originalErrorStack = originalError.stack
+      /**
+       * Most error stacks start with "ErrorName: ErrorMessage\n...frames..."
+       * We want to take the "...frames..." part.
+       */
+      const firstNewlineIndex = originalErrorStack.indexOf('\n')
+
+      if (firstNewlineIndex > -1) {
+        const originalFrames = originalErrorStack.substring(firstNewlineIndex + 1)
+        this.stack = `${this.name}: ${this.message}\n${originalFrames}`
+        isStackConstructedFromOriginal = true
+      }
+    }
+
+    if (!isStackConstructedFromOriginal) {
+      /**
+       * If stack was not (or could not be) constructed from originalError,
+       * generate a standard stack trace for this AppKitError instance.
+       * This will point to where `new AppKitError()` was called.
+       */
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, AppKitError)
+      } else if (!this.stack) {
+        /**
+         * Fallback for environments without Error.captureStackTrace.
+         * `super(message)` might have set a stack.
+         * If `this.stack` is still undefined/empty, provide a minimal one.
+         * Node.js and modern browsers typically set `this.stack` from `super(message)`.
+         */
+        this.stack = `${this.name}: ${this.message}`
+      }
     }
   }
 }
