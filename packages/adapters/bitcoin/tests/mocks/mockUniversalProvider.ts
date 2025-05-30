@@ -78,6 +78,7 @@ mockUniversalProvider.mockSession = (
     }
   },
   optionalNamespaces: {},
+  requiredNamespaces: {},
   pairingTopic: '',
   peer: {
     metadata: {

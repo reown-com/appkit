@@ -92,6 +92,7 @@ export function mockUniversalProviderSession(
     },
     acknowledged: true,
     pairingTopic: '06e5b8a04b03f8dec6daafbe6d16cefaff665cc634b52baf906ca05f289eeb46',
+    requiredNamespaces: {},
     optionalNamespaces: {
       solana: {
         chains,
