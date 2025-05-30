@@ -117,23 +117,34 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       ?.getAccountAddresses()
       .catch(() => [])
 
-    const accounts = addresses
-      ?.map(a =>
-        CoreHelperUtil.createAccount(
-          ConstantsUtil.CHAIN.BITCOIN,
-          a.address,
-          a.purpose || 'payment',
-          a.publicKey,
-          a.path
-        )
+    let accounts = addresses?.map(a =>
+      CoreHelperUtil.createAccount(
+        ConstantsUtil.CHAIN.BITCOIN,
+        a.address,
+        a.purpose || 'payment',
+        a.publicKey,
+        a.path
       )
-      .filter(a => {
-        if (typeof a.type === 'string') {
-          return a.type === 'payment' || a.type === 'ordinal'
-        }
+    )
 
-        return true
-      })
+    if (accounts && accounts.length > 1) {
+      accounts = [
+        {
+          namespace: ConstantsUtil.CHAIN.BITCOIN,
+          publicKey: accounts[0]?.publicKey ?? '',
+          path: accounts[0]?.path ?? '',
+          address: accounts[0]?.address ?? '',
+          type: 'payment'
+        },
+        {
+          namespace: ConstantsUtil.CHAIN.BITCOIN,
+          publicKey: accounts[1]?.publicKey ?? '',
+          path: accounts[1]?.path ?? '',
+          address: accounts[1]?.address ?? '',
+          type: 'ordinal'
+        }
+      ]
+    }
 
     return {
       accounts: accounts || []
