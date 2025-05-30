@@ -272,7 +272,8 @@ export class W3mModalBase extends LitElement {
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
     const isConnectingFromProfileWallets = RouterController.state.view === 'ProfileWallets'
     // Check connection status based on the address state *before* this update cycle potentially finishes
-    const isNotConnected = !this.caipAddress
+    const isNotConnected = !ChainController.getAccountData(nextCaipNetwork?.chainNamespace)
+      ?.caipAddress
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
     const isModalOpen = ModalController.state.open

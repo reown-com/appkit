@@ -10,7 +10,6 @@ import {
   NetworkUtil
 } from '@reown/appkit-common'
 
-import { getChainsToDisconnect } from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -58,12 +57,6 @@ export interface ChainControllerState {
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
   isSwitchingNamespace: boolean
-}
-
-interface DisconnectParameters {
-  id?: string
-  chainNamespace?: ChainNamespace
-  disconnectAll?: boolean
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -684,60 +677,6 @@ const controller = {
       status: 'disconnected'
     })
     ConnectorController.removeConnectorId(chainToWrite)
-  },
-
-  async disconnect({ id, chainNamespace, disconnectAll = false }: DisconnectParameters) {
-    const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
-
-    try {
-      // Reset send state when disconnecting
-      SendController.resetSend()
-      const disconnectResults = await Promise.allSettled(
-        chainsToDisconnect.map(async ([ns, adapter]) => {
-          try {
-            const { caipAddress } = ChainController.getAccountData(ns) || {}
-
-            if (caipAddress) {
-              if (disconnectAll && adapter.connectionControllerClient?.disconnectAll) {
-                await adapter.connectionControllerClient.disconnectAll(ns)
-              } else if (adapter.connectionControllerClient?.disconnect) {
-                await adapter.connectionControllerClient.disconnect(id, ns)
-              }
-            }
-          } catch (error) {
-            throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
-          }
-        })
-      )
-
-      ConnectionController.resetWcConnection()
-
-      const failures = disconnectResults.filter(
-        (result): result is PromiseRejectedResult => result.status === 'rejected'
-      )
-
-      if (failures.length > 0) {
-        throw new Error(failures.map(f => f.reason.message).join(', '))
-      }
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_SUCCESS',
-        properties: {
-          namespace: chainNamespace || 'all'
-        }
-      })
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error((error as Error).message || 'Failed to disconnect chains')
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_ERROR',
-        properties: {
-          message: (error as Error).message || 'Failed to disconnect chains'
-        }
-      })
-    }
   },
 
   setIsSwitchingNamespace(isSwitchingNamespace: boolean) {

@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes issue where Solflare instead of Coinbase would be excepted from not having a mobile_link to be displayed in All Wallets
+Removes get_capabilities call when fetching balances for unexpected deep link call

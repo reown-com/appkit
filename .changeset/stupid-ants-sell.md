@@ -1,10 +1,10 @@
 ---
-'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
-'@reown/appkit': patch
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes W3mFrameProvider initialization without current chain id which causes network sync issues betwen AppKit and Secure site
+Fixes remote configs util getting email and social enabled for AppKit Basic

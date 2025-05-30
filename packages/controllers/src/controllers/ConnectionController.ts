@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -12,7 +13,6 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   Connector,
@@ -90,10 +90,19 @@ export interface ConnectExternalOptions {
   socialUri?: string
 }
 
+export interface DisconnectParameters {
+  id?: string
+  chainNamespace?: ChainNamespace
+}
+
+export interface DisconnectAllParameters {
+  chainNamespace?: ChainNamespace
+}
+
 export interface ConnectionControllerClient {
   connectWalletConnect?: () => Promise<void>
-  disconnect: (id?: string, chainNamespace?: ChainNamespace) => Promise<void>
-  disconnectAll: (chainNamespace?: ChainNamespace) => Promise<void>
+  disconnect: (params: DisconnectParameters) => Promise<void>
+  disconnectAll: (params: DisconnectAllParameters) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
@@ -360,11 +369,16 @@ const controller = {
 
   async disconnect({ id, namespace, disconnectAll }: DisconnectParams = {}) {
     try {
-      ModalController.setLoading(true, namespace)
-      await SIWXUtil.clearSessions()
-      await ChainController.disconnect({ id, chainNamespace: namespace, disconnectAll })
-      ModalController.setLoading(false, namespace)
-      ConnectorController.setFilterByNamespace(undefined)
+      if (disconnectAll) {
+        await ConnectionController._getClient()?.disconnectAll({
+          chainNamespace: namespace
+        })
+      } else {
+        await ConnectionController._getClient()?.disconnect({
+          id,
+          chainNamespace: namespace
+        })
+      }
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }

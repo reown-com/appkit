@@ -173,15 +173,21 @@ const controller = {
   },
 
   goBack() {
-    const shouldReload =
-      !ChainController.state.activeCaipAddress &&
-      RouterController.state.view === 'ConnectingFarcaster'
+    const isConnected = ChainController.state.activeCaipAddress
+    const isFarcasterView = RouterController.state.view === 'ConnectingFarcaster'
+
+    const shouldReload = !isConnected && isFarcasterView
 
     if (state.history.length > 1) {
       state.history.pop()
       const [last] = state.history.slice(-1)
       if (last) {
-        state.view = last
+        const isConnectView = last === 'Connect'
+        if (isConnected && isConnectView) {
+          state.view = 'Account'
+        } else {
+          state.view = last
+        }
       }
     } else {
       ModalController.close()

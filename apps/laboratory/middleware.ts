@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
     object-src 'none';
     base-uri 'self';
     form-action 'self';
-    frame-ancestors ${verifyApiNestedIframesTestOuterDomain};
+    frame-ancestors ${verifyApiNestedIframesTestOuterDomain} https://app.safe.global;
     report-uri https://o1095249.ingest.sentry.io/api/4505685639364608/security/?sentry_key=36ff1e79c60877fce6c0273e94a8ed69;
     report-to csp-endpoint
 `
@@ -36,6 +36,27 @@ export function middleware(request: NextRequest) {
     request: { headers: requestHeaders }
   })
   response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+
+  // Serve manifest.json through every sub-page
+  if (request.nextUrl.pathname.endsWith('/manifest.json')) {
+    const manifestResponse = NextResponse.json(
+      {
+        name: 'AppKit Laboratory',
+        description: 'Laboratory application for AppKit to test and develop features',
+        iconPath: '/logo.png',
+        safeAppVersion: '1.0.0'
+      },
+      {
+        headers: {
+          ...response.headers,
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+
+    return manifestResponse
+  }
 
   return response
 }

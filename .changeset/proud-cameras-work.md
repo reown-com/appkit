@@ -1,10 +1,10 @@
 ---
+'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Modified the fetchFeaturedWallets() function in ApiController.ts to create a new sorted array instead of sorting the array in place, ensuring the wallet order is preserved.
+Fixes issue where we are adding wagmi connectors to our controllers double time which causes connection sync issues at some environments like Vue and causes performance issues

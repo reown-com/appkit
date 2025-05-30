@@ -13,7 +13,8 @@ export const CoreHelperUtil = {
   isMobile() {
     if (this.isClient()) {
       return Boolean(
-        window?.matchMedia('(pointer:coarse)')?.matches ||
+        (typeof window?.matchMedia === 'function' &&
+          window?.matchMedia('(pointer:coarse)')?.matches) ||
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
       )
     }
@@ -77,6 +78,25 @@ export const CoreHelperUtil = {
     } catch (e) {
       return false
     }
+  },
+  isSafeApp() {
+    if (CoreHelperUtil.isClient() && window.self !== window.top) {
+      try {
+        const ancestor = window?.location?.ancestorOrigins?.[0]
+
+        const safeAppUrl = 'https://app.safe.global'
+        if (ancestor) {
+          const ancestorUrl = new URL(ancestor)
+          const safeUrl = new URL(safeAppUrl)
+
+          return ancestorUrl.hostname === safeUrl.hostname
+        }
+      } catch {
+        return false
+      }
+    }
+
+    return false
   },
 
   getPairingExpiry() {

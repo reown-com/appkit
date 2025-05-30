@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds externalCustomerId to meld url
+Adds support for Solflare wallet deeplinking in mobile environments
