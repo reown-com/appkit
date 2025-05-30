@@ -183,6 +183,7 @@ export abstract class AppKitBaseClient {
 
       if (!allowedOrigins || !CoreHelperUtil.isClient()) {
         AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+        
         return
       }
 
@@ -199,6 +200,7 @@ export abstract class AppKitBaseClient {
     } catch (error) {
       if (!(error instanceof Error)) {
         AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+        
         return
       }
 
