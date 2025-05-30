@@ -1,9 +1,10 @@
-import type { CaipNetwork } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
 import { AccountController } from '../controllers/AccountController.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
 import { ERC7811Utils } from './ERC7811Util.js'
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import type { BlockchainApiBalanceResponse } from './TypeUtil.js'
@@ -15,13 +16,15 @@ export const SendApiUtil = {
   ): Promise<BlockchainApiBalanceResponse['balances']> {
     const address = AccountController.state.address
     const caipNetwork = ChainController.state.activeCaipNetwork
+    const isAuthConnector =
+      ConnectorController.getConnectorId('eip155') === ConstantsUtil.CONNECTOR_ID.AUTH
 
     if (!address || !caipNetwork) {
       return []
     }
 
     // Extract EIP-155 specific logic
-    if (caipNetwork.chainNamespace === 'eip155') {
+    if (caipNetwork.chainNamespace === 'eip155' && isAuthConnector) {
       const eip155Balances = await this.getEIP155Balances(address, caipNetwork)
       if (eip155Balances) {
         return this.filterLowQualityTokens(eip155Balances)
