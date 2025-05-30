@@ -13,7 +13,6 @@ import {
   type NetworkControllerClient,
   SwapController
 } from '../../exports/index.js'
-import { SendApiUtil } from '../../src/utils/SendApiUtil.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 import {
   allowanceResponse,
@@ -66,10 +65,11 @@ beforeAll(async () => {
     connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
     networkControllerClient: client
   })
+
   ChainController.setActiveCaipNetwork(caipNetwork)
+
   AccountController.setCaipAddress(caipAddress, chain)
 
-  // Mock the responses
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)
   vi.spyOn(BlockchainApiController, 'fetchSwapQuote').mockResolvedValue(swapQuoteResponse)
@@ -78,7 +78,6 @@ beforeAll(async () => {
   vi.spyOn(BlockchainApiController, 'fetchSwapAllowance').mockResolvedValue(allowanceResponse)
   vi.spyOn(SwapApiUtil, 'fetchGasPrice').mockResolvedValue(gasPriceResponse)
   vi.spyOn(ConnectionController, 'parseUnits').mockResolvedValue(parseUnits('1', 18))
-  vi.spyOn(SendApiUtil, 'getMyTokensWithBalance').mockResolvedValue(balanceResponse.balances)
 
   await SwapController.initializeState()
 
