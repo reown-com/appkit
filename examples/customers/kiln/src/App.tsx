@@ -1,7 +1,7 @@
 import ActionButtonList from './components/ActionButton'
+import Button from './components/Button'
 import Footer from './components/Footer'
 import InfoList from './components/InfoList'
-import Button from './components/Button'
 import { useAppKitTheme } from './config'
 
 export default function App() {

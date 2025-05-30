@@ -1,3 +1,9 @@
+import {
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter
+} from '@solana/wallet-adapter-wallets'
+
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana, solanaDevnet } from '@reown/appkit/networks'
 import {
@@ -11,7 +17,6 @@ import {
   useDisconnect,
   useWalletInfo
 } from '@reown/appkit/react'
-import { LedgerWalletAdapter, PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 const env = {
   is_testnet: process.env.NODE_ENV !== 'production',
@@ -22,7 +27,7 @@ export const metadata = {
   name: 'Kiln',
   description: 'kiln ',
   url: 'https://kiln.fi',
-  icons: ['https://dashboard.kiln.fi/favicon.ico'],
+  icons: ['https://dashboard.kiln.fi/favicon.ico']
 }
 
 const network = env.is_testnet ? solanaDevnet : solana
@@ -39,8 +44,8 @@ const modal = createAppKit({
   metadata,
   projectId,
   features: {
-    analytics: true,
-  },
+    analytics: true
+  }
 })
 
 export {
