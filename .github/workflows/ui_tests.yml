@@ -370,6 +370,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
