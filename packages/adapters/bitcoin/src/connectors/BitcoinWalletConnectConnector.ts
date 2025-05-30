@@ -108,6 +108,23 @@ export class BitcoinWalletConnectConnector
     return Promise.resolve()
   }
 
+  public async sendRawTransaction(
+    params: BitcoinConnector.SendRawTransactionParams
+  ): Promise<string> {
+    this.checkIfMethodIsSupported('sendRawTransaction')
+    const account = this.getAccount(true)
+
+    const result = await this.internalRequest({
+      method: 'sendRawTransaction',
+      params: {
+        account,
+        rawTransaction: params.rawTransaction
+      }
+    })
+
+    return result.txid
+  }
+
   public request<T>(args: RequestArguments) {
     // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
     return this.internalRequest(args) as T
@@ -222,11 +239,21 @@ export namespace WalletConnectProvider {
     txid?: string
   }
 
+  export type WCSendRawTransactionParams = {
+    account: string
+    rawTransaction: string
+  }
+
+  export type WCSendRawTransactionResponse = {
+    txid: string
+  }
+
   export type RequestMethods = {
     signMessage: Request<WCSignMessageParams, WCSignMessageResponse>
     sendTransfer: Request<WCSendTransferParams, WCSendTransferResponse>
     getAccountAddresses: Request<undefined, string[]>
     signPsbt: Request<WCSignPSBTParams, WCSignPSBTResponse>
+    sendRawTransaction: Request<WCSendRawTransactionParams, WCSendRawTransactionResponse>
   }
 
   export type RequestMethod = keyof RequestMethods

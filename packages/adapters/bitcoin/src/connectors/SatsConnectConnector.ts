@@ -190,6 +190,25 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     return res.txid
   }
 
+  public async sendRawTransaction(
+    params: BitcoinConnector.SendRawTransactionParams
+  ): Promise<string> {
+    try {
+      const res = await this.internalRequest('signPsbt', {
+        psbt: params.rawTransaction,
+        broadcast: true,
+        signInputs: {}
+      })
+
+      if (res && typeof res === 'object' && 'txid' in res && typeof res.txid === 'string') {
+        return res.txid
+      }
+      throw new Error('Invalid response from transaction broadcast')
+    } catch (error) {
+      throw new Error(`Failed to broadcast raw transaction: ${error}`)
+    }
+  }
+
   protected getWalletProvider() {
     return getProviderById(this.wallet.id) as BitcoinProvider
   }

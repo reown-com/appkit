@@ -43,6 +43,7 @@ export function mockBitcoinConnector(): BitcoinConnector {
       psbt: 'signedPsbt',
       txid: 'txid'
     }),
+    sendRawTransaction: vi.fn().mockResolvedValue('txid'),
     switchNetwork: vi.fn(),
     connect: vi
       .fn()
@@ -74,7 +75,13 @@ mockUniversalProvider.mockSession = (
     bip122: {
       accounts: [`${bitcoin.caipNetworkId}:address`],
       events: [],
-      methods: ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
+      methods: [
+        'sendTransfer',
+        'signMessage',
+        'signPsbt',
+        'getAccountAddresses',
+        'sendRawTransaction'
+      ]
     }
   },
   optionalNamespaces: {},

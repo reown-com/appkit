@@ -259,6 +259,36 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve({} as unknown as AdapterBlueprint.SendTransactionResult)
   }
 
+  /**
+   * Broadcasts a raw Bitcoin transaction to the network
+   * @param params - Raw transaction parameters
+   * @returns Promise resolving to transaction hash
+   */
+  async sendRawTransaction({
+    rawTransaction
+  }: BitcoinConnector.SendRawTransactionParams): Promise<{ hash: string }> {
+    const connector = this.getConnector()
+
+    if (!connector) {
+      throw new Error('No connector available')
+    }
+
+    try {
+      const txid = await connector.sendRawTransaction({ rawTransaction })
+      return { hash: txid }
+    } catch (error) {
+      throw new Error(`Failed to broadcast raw transaction: ${error}`)
+    }
+  }
+
+  /**
+   * Gets the active connector
+   * @returns The active connector or undefined if none is available
+   */
+  private getConnector(): BitcoinConnector | undefined {
+    return this.connector || this.connectors[0]
+  }
+
   override writeContract(
     _params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult> {
