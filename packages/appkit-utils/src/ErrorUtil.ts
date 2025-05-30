@@ -56,6 +56,15 @@ export const ErrorUtil = {
     PROJECT_ID_NOT_CONFIGURED: {
       shortMessage: 'Project ID Not Configured',
       longMessage: 'Project ID Not Configured - update configuration on cloud.reown.com'
+    },
+    SERVER_ERROR_APP_CONFIGURATION: {
+      shortMessage: 'Server Error',
+      longMessage: (errorMessage?: string) =>
+        `Failed to get App Configuration ${errorMessage || ''}`
+    },
+    RATE_LIMITED_APP_CONFIGURATION: {
+      shortMessage: 'Rate Limited',
+      longMessage: 'Rate limited when trying to get the App Configuration'
     }
   }
 }
