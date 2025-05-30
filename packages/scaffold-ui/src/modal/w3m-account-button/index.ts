@@ -144,11 +144,9 @@ class W3mAccountButtonBase extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private async onClick() {
-    await ChainController.switchActiveNamespace(this.namespace)
-
+  private onClick() {
     if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
-      ModalController.open()
+      ModalController.open({ namespace: this.namespace })
     } else {
       ModalController.open({ view: 'UnsupportedChain' })
     }
