@@ -511,9 +511,10 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnectAll: async ({ chainNamespace }) => {
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-        const adapter = this.getAdapter(namespace)
-        const data = await adapter?.disconnectAll()
+        try {
+          const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
+          const adapter = this.getAdapter(namespace)
+          const data = await adapter?.disconnectAll()
 
         if (data?.connections) {
           data.connections.forEach(connection => {
@@ -521,10 +522,21 @@ export abstract class AppKitBaseClient {
           })
         }
 
-        SendController.resetSend()
-        ConnectionController.resetWcConnection()
-        await SIWXUtil.clearSessions()
-        ConnectorController.setFilterByNamespace(undefined)
+          SendController.resetSend()
+          ConnectionController.resetWcConnection()
+          await SIWXUtil.clearSessions()
+          ConnectorController.setFilterByNamespace(undefined)
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'DISCONNECT_SUCCESS',
+            properties: {
+              namespace: chainNamespace || 'all'
+            }
+          })
+        } catch (error) {
+          throw new Error(`Failed to disconnect all: ${(error as Error).message}`)
+        }
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
