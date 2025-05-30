@@ -929,7 +929,8 @@ describe('ApiController', () => {
         id: CUSTOM_DEEPLINK_WALLETS.COINBASE,
         name: 'Coinbase Wallet'
       },
-      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM, name: 'Phantom' }
+      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM, name: 'Phantom' },
+      { id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE, name: 'Solflare' }
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
@@ -938,7 +939,8 @@ describe('ApiController', () => {
       '1',
       '3',
       CUSTOM_DEEPLINK_WALLETS.COINBASE,
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM,
+      CUSTOM_DEEPLINK_WALLETS.SOLFLARE
     ])
   })
 

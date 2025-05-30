@@ -16,6 +16,10 @@ const mockWindow = {
 }
 
 const WALLETS = {
+  solflare: {
+    name: 'Solflare',
+    id: 'solflare'
+  },
   phantom: {
     name: 'Phantom',
     id: 'phantom'
@@ -100,5 +104,14 @@ describe('MobileWalletUtil', () => {
     MobileWalletUtil.handleMobileDeeplinkRedirect('other', ConstantsUtil.CHAIN.SOLANA)
 
     expect(window.location.href).toBe(originalHref)
+  })
+
+  it('should redirect to Solflare correctly', () => {
+    MobileWalletUtil.handleMobileDeeplinkRedirect(WALLETS.solflare.name, ConstantsUtil.CHAIN.SOLANA)
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedUrl = `https://solflare.com/dapp?cb_url=${encodedHref}`
+
+    expect(window.location.href).toBe(expectedUrl)
   })
 })
