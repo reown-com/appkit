@@ -18,6 +18,7 @@ import type {
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerClient,
+  ConnectionControllerState,
   ConnectorType,
   EstimateGasTransactionArgs,
   EventsControllerState,
@@ -1720,6 +1721,10 @@ export abstract class AppKitBaseClient {
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
     return ThemeController.subscribe(callback)
+  }
+
+  public subscribeConnections(callback: (newState: ConnectionControllerState) => void) {
+    return ConnectionController.subscribe(callback)
   }
 
   public getWalletInfo() {

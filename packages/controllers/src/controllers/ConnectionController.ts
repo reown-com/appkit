@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { proxy, ref } from 'valtio/vanilla'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
@@ -161,6 +161,10 @@ let wcConnectionPromise: Promise<void> | undefined
 // -- Controller ---------------------------------------- //
 const controller = {
   state,
+
+  subscribe(callback: (newState: ConnectionControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
 
   subscribeKey<K extends StateKey>(
     key: K,
