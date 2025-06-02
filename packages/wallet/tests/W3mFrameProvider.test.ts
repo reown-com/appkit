@@ -147,7 +147,7 @@ describe('W3mFrameProvider', () => {
     expect(postAppEventSpy).toHaveBeenCalled()
   })
 
-  it('should timeout after 30 seconds of no response on request', async () => {
+  it('should timeout after 2 minutes of no response on request', async () => {
     vi.useFakeTimers()
     const onTimeoutMock = vi.fn<(reason: EmbeddedWalletTimeoutReason) => void>()
     const testAbortController = new AbortController()
@@ -168,7 +168,7 @@ describe('W3mFrameProvider', () => {
 
     await Promise.resolve()
     await Promise.resolve()
-    vi.advanceTimersByTime(31_000)
+    vi.advanceTimersByTime(121_000)
     await Promise.resolve()
     await Promise.resolve()
 
@@ -220,7 +220,7 @@ describe('W3mFrameProvider', () => {
 
     await Promise.resolve()
 
-    vi.advanceTimersByTime(31_000)
+    vi.advanceTimersByTime(121_000)
 
     await Promise.resolve()
 

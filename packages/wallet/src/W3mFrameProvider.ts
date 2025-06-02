@@ -634,12 +634,12 @@ export class W3mFrameProvider {
       .map(replaceEventType)
       .includes(type)
 
-    // If the request is not being resolved after 30 seconds, timeout.
+    // If the request is not being resolved after 2 minutes, timeout.
     if (shouldCheckForTimeout) {
       requestTimeout = setTimeout(() => {
         this.onTimeout?.('iframe_request_timeout')
         this.abortController.abort()
-      }, 30_000)
+      }, 120_000)
     }
 
     return new Promise((resolve, reject) => {
