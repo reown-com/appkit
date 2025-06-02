@@ -130,6 +130,6 @@ describe('useDisconnect', () => {
 
     await disconnect({ namespace: 'solana' })
 
-    expect(disconnectSpy).toHaveBeenCalledWith('solana')
+    expect(disconnectSpy).toHaveBeenCalledWith({ namespace: 'solana' })
   })
 })
