@@ -1,5 +1,7 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
 
+import '@reown/appkit/jsx'
+
 import { useProjectId } from '../hooks/useProjectId'
 import { AppKitHooks } from './AppKitHooks'
 

@@ -10,6 +10,7 @@ import {
   Text
 } from '@chakra-ui/react'
 
+import '@reown/appkit/jsx'
 import { useAppKit, useAppKitAccount, useDisconnect } from '@reown/appkit/react'
 
 export function AppKitButtonsMultiChain() {

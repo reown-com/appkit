@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { Link1Icon, ResetIcon } from '@radix-ui/react-icons'
 import { toast } from 'sonner'
 
+import '@reown/appkit/jsx'
 import { useAppKitState } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
