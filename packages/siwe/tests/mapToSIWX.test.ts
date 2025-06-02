@@ -4,7 +4,6 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
-  ConnectionController,
   OptionsController,
   type SIWXSession
 } from '@reown/appkit-controllers'
