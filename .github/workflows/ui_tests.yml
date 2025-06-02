@@ -343,10 +343,10 @@ jobs:
 
       - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
         uses: actions/upload-artifact@v4
-        if: always() # Ensure it runs even if tests fail to get all blob data
+        if: failure()
         with:
-          name: playwright-blob-artifact-shard-${{ matrix.shard }} # New unique artifact name pattern for blobs
-          path: ./apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
+          name: playwright-blob-artifact-shard-${{ matrix.shard }}
+          path: ./apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip
           retention-days: 7
 
       - name: Verify Cache Dir Exists Before Post Job
@@ -397,10 +397,18 @@ jobs:
       - name: Verify downloaded blobs (optional debugging)
         run: ls -R ${{ github.workspace }}/all-blob-reports
 
+      - name: Count blob reports
+        id: count_blobs
+        run: |
+          # Count *.zip in all-blob-reports (will be zero if no shards failed)
+          COUNT=$(ls ${{ github.workspace }}/all-blob-reports/*.zip 2>/dev/null | wc -l)
+          echo "BLOB_COUNT=$COUNT" >> $GITHUB_ENV
+
       - name: Ensure merged report directory exists
         run: mkdir -p ${{ github.workspace }}/apps/laboratory/playwright-report/
 
       - name: Merge Playwright blob reports
+        if: env.BLOB_COUNT != '0'
         # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
         # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards
         # and to define the output reporters (HTML and JSON).
@@ -408,7 +416,12 @@ jobs:
         run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
         working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
 
+      - name: Skip merge if no shards failed
+        if: env.BLOB_COUNT == '0'
+        run: echo "No failing shards detected; skipping merge step."
+
       - name: Rename merged JSON report for clarity
+        if: env.BLOB_COUNT != '0'
         run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
 
@@ -442,7 +455,7 @@ jobs:
           aws-region: eu-central-1
 
       - name: Upload Merged JSON Report to S3
-        if: inputs.build_trigger_type != '' && always()
+        if: inputs.build_trigger_type != '' && env.BLOB_COUNT != '0'
         run: |
           S3_BUCKET="reown.appkit.e2e.reports"
           S3_PREFIX="appkit/playwright-results"
@@ -453,6 +466,7 @@ jobs:
           aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}
 
       - name: Upload Merged HTML Report
+        if: env.BLOB_COUNT != '0'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-html-report
@@ -460,6 +474,7 @@ jobs:
           retention-days: 7
 
       - name: Upload Merged JSON Report (for custom processing)
+        if: env.BLOB_COUNT != '0'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-json-report
