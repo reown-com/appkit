@@ -12,17 +12,9 @@ import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
 import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
 import type { SocialProvider } from '../src/utils/TypeUtil.js'
 import { WalletUtil } from '../src/utils/WalletUtil.js'
-import type { AppKitWalletButton, Wallet } from './index.js'
+import type { Wallet } from './index.js'
 
 export * from './index.js'
-
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
-    }
-  }
-}
 
 export function useAppKitWallet(parameters?: {
   onSuccess?: (data: ParsedCaipAddress) => void

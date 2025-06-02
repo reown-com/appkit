@@ -18,6 +18,11 @@
       "types": "./dist/types/exports/react.d.ts",
       "import": "./dist/esm/exports/react.js",
       "default": "./dist/esm/exports/react.js"
+    },
+    "./jsx": {
+      "types": "./dist/types/exports/jsx.d.ts",
+      "import": "./dist/esm/exports/jsx.js",
+      "default": "./dist/esm/exports/jsx.js"
     }
   },
   "typesVersions": {
