@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -33,9 +33,16 @@ class W3mButtonBase extends LitElement {
 
   @property() public namespace?: ChainNamespace = undefined
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private caipAddress: CaipAddress | undefined
 
   // -- Lifecycle ----------------------------------------- //
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.caipAddress = this.namespace
+      ? ChainController.state.chains.get(this.namespace)?.accountState?.caipAddress
+      : ChainController.state.activeCaipAddress
+  }
+
   public override firstUpdated() {
     if (this.namespace) {
       this.unsubscribe.push(
