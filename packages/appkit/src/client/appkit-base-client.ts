@@ -516,11 +516,11 @@ export abstract class AppKitBaseClient {
           const adapter = this.getAdapter(namespace)
           const data = await adapter?.disconnectAll()
 
-        if (data?.connections) {
-          data.connections.forEach(connection => {
-            StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
-          })
-        }
+          if (data?.connections) {
+            data.connections.forEach(connection => {
+              StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+            })
+          }
 
           SendController.resetSend()
           ConnectionController.resetWcConnection()
@@ -1714,7 +1714,7 @@ export abstract class AppKitBaseClient {
     const authConnector = ConnectorController.getAuthConnector(namespace)
     const accountState = ChainController.getAccountData(namespace)
     const activeChain = ChainController.state.activeChain as ChainNamespace
-    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace || activeChain)
     const connections = namespace
       ? (ConnectionController.state.connections.get(namespace) ?? [])
       : []
