@@ -22,14 +22,14 @@ export const TransactionUtil = {
   getTransactionImages(transfers: TransactionTransfer[]): TransactionImage[] {
     const [transfer, secondTransfer] = transfers
     const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info))
-    const haveMultipleTransfers = transfers?.length > 1
-    const haveTwoTransfers = transfers?.length === 2
+    const hasMultipleTransfers = transfers?.length > 1
+    const hasTwoTransfers = transfers?.length === 2
 
-    if (haveTwoTransfers && !isAllNFT) {
+    if (hasTwoTransfers && !isAllNFT) {
       return [this.getTransactionImage(transfer), this.getTransactionImage(secondTransfer)]
     }
 
-    if (haveMultipleTransfers) {
+    if (hasMultipleTransfers) {
       return transfers.map(item => this.getTransactionImage(item))
     }
 
@@ -72,7 +72,7 @@ export const TransactionUtil = {
 
     const transfers = transaction?.transfers
     const haveTransfer = transaction?.transfers?.length > 0
-    const haveMultipleTransfers = transaction?.transfers?.length > 1
+    const hasMultipleTransfers = transaction?.transfers?.length > 1
     const isFungible =
       haveTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info))
     const [firstTransfer, secondTransfer] = transfers
@@ -103,7 +103,7 @@ export const TransactionUtil = {
       return [transaction.metadata.status]
     }
 
-    if (haveMultipleTransfers) {
+    if (hasMultipleTransfers) {
       return transfers.map(item => this.getTransferDescription(item))
     }
 

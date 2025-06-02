@@ -56,7 +56,7 @@ export class W3mAllWalletsListItem extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const certified = this.wallet?.badge_type === 'certified'
+    const isCertified = this.wallet?.badge_type === 'certified'
 
     return html`
       <button>
@@ -65,10 +65,10 @@ export class W3mAllWalletsListItem extends LitElement {
           <wui-text
             variant="tiny-500"
             color="inherit"
-            class=${ifDefined(certified ? 'certified' : undefined)}
+            class=${ifDefined(isCertified ? 'certified' : undefined)}
             >${this.wallet?.name}</wui-text
           >
-          ${certified ? html`<wui-icon size="sm" name="walletConnectBrown"></wui-icon>` : null}
+          ${isCertified ? html`<wui-icon size="sm" name="walletConnectBrown"></wui-icon>` : null}
         </wui-flex>
       </button>
     `

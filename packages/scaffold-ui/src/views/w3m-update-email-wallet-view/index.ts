@@ -96,7 +96,8 @@ export class W3mUpdateEmailWalletView extends LitElement {
   }
 
   private buttonsTemplate() {
-    const showSubmit = !this.loading && this.email.length > 3 && this.email !== this.initialEmail
+    const shouldShowSubmit =
+      !this.loading && this.email.length > 3 && this.email !== this.initialEmail
 
     if (!this.redirectView) {
       return html`
@@ -105,7 +106,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
           variant="main"
           fullWidth
           @click=${this.onSubmitEmail.bind(this)}
-          .disabled=${!showSubmit}
+          .disabled=${!shouldShowSubmit}
           .loading=${this.loading}
         >
           Save
@@ -124,7 +125,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
           variant="main"
           fullWidth
           @click=${this.onSubmitEmail.bind(this)}
-          .disabled=${!showSubmit}
+          .disabled=${!shouldShowSubmit}
           .loading=${this.loading}
         >
           Save

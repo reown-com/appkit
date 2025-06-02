@@ -2,6 +2,7 @@
 
 import { useAccount } from 'wagmi'
 
+import '@reown/appkit/jsx'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 const compactHash = (hash: string) => {

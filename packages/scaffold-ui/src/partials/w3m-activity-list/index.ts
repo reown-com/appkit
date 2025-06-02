@@ -167,10 +167,10 @@ export class W3mActivityList extends LitElement {
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
     const { date, descriptions, direction, isAllNFT, images, status, transfers, type } =
       this.getTransactionListItemProps(transaction)
-    const haveMultipleTransfers = transfers?.length > 1
-    const haveTwoTransfers = transfers?.length === 2
+    const hasMultipleTransfers = transfers?.length > 1
+    const hasTwoTransfers = transfers?.length === 2
 
-    if (haveTwoTransfers && !isAllNFT) {
+    if (hasTwoTransfers && !isAllNFT) {
       return html`
         <wui-transaction-list-item
           date=${date}
@@ -184,7 +184,7 @@ export class W3mActivityList extends LitElement {
       `
     }
 
-    if (haveMultipleTransfers) {
+    if (hasMultipleTransfers) {
       return transfers.map((transfer, index) => {
         const description = TransactionUtil.getTransferDescription(transfer)
         const isLastTransfer = isLastTransaction && index === transfers.length - 1

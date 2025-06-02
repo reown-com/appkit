@@ -1,5 +1,6 @@
 'use client'
 
+import '@reown/appkit/jsx'
 import { useAppKitTheme } from '@reown/appkit/react'
 
 import { ActionButtonList } from '@/components/ActionButtonList'
