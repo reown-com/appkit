@@ -1,15 +1,34 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { CaipNetwork } from '@reown/appkit-common'
+
 import {
   ApiController,
   ChainController,
-  ConnectorController,
   CoreHelperUtil,
   EventsController,
   ModalController,
+  NetworkUtil,
   OptionsController,
   RouterController
 } from '../../exports/index.js'
+
+const mockBitcoinNetwork: CaipNetwork = {
+  id: '000000000019d6689c085ae165831e93',
+  caipNetworkId: 'bip122:000000000019d6689c085ae165831e93',
+  chainNamespace: 'bip122',
+  name: 'BIP122',
+  rpcUrls: {
+    default: {
+      http: ['https://rpc.bip122.org']
+    }
+  },
+  nativeCurrency: {
+    name: 'Ether',
+    symbol: 'ETH',
+    decimals: 18
+  }
+}
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
@@ -49,20 +68,30 @@ describe('ModalController', () => {
 
   it('should handle namespace parameter correctly in open()', async () => {
     const namespace = 'bip122'
-    vi.spyOn(ConnectorController, 'setFilterByNamespace')
-    vi.spyOn(ChainController, 'switchActiveNamespace')
+    ChainController.state.activeChain = 'eip155'
+    ChainController.state.chains.set(namespace, {
+      networkState: {
+        supportsAllNetworks: false,
+        caipNetwork: mockBitcoinNetwork
+      }
+    })
     vi.spyOn(ModalController, 'setLoading')
+    vi.spyOn(NetworkUtil, 'onSwitchNetwork')
 
     await ModalController.open({ namespace })
 
-    expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(namespace)
-    expect(ChainController.switchActiveNamespace).toHaveBeenCalledWith(namespace)
+    expect(NetworkUtil.onSwitchNetwork).toHaveBeenCalled()
     expect(ModalController.setLoading).toHaveBeenCalledWith(true, namespace)
   })
 
   it('should not call switchActiveNamespace if namespace parameter is the same', async () => {
     const namespace = 'bip122'
-    ChainController.switchActiveNamespace(namespace)
+    ChainController.state.chains.set(namespace, {
+      networkState: {
+        supportsAllNetworks: false,
+        caipNetwork: mockBitcoinNetwork
+      }
+    })
     vi.spyOn(ChainController, 'switchActiveNetwork')
 
     await ModalController.open({ namespace })
@@ -72,7 +101,9 @@ describe('ModalController', () => {
 
   it('should check account depending on namespace when calling open()', async () => {
     ChainController.state.noAdapters = false
-    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+    ChainController.state.activeChain = 'eip155'
+    vi.spyOn(NetworkUtil, 'onSwitchNetwork')
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       currentTab: 0,
       tokenBalance: [],
       smartAccountDeployed: false,
@@ -80,6 +111,12 @@ describe('ModalController', () => {
       allAccounts: [],
       user: undefined,
       caipAddress: 'eip155:1:0x123'
+    })
+    ChainController.state.chains.set('bip122', {
+      networkState: {
+        supportsAllNetworks: false,
+        caipNetwork: mockBitcoinNetwork
+      }
     })
 
     const resetSpy = vi.spyOn(RouterController, 'reset')
@@ -90,15 +127,15 @@ describe('ModalController', () => {
 
     await ModalController.open({ namespace: 'bip122' })
 
-    expect(resetSpy).toHaveBeenCalledWith('Connect')
+    expect(NetworkUtil.onSwitchNetwork).toHaveBeenCalled()
   })
 
   it('should not open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is false', async () => {
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       manualWCControl: false
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       noAdapters: true
     })
@@ -115,15 +152,15 @@ describe('ModalController', () => {
   })
 
   it('should open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is true', async () => {
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       manualWCControl: true
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       noAdapters: true
     })
-    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: undefined
     } as any)
     vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
@@ -140,11 +177,11 @@ describe('ModalController', () => {
       ...OptionsController.state,
       manualWCControl: false
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       noAdapters: false
     })
-    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: undefined
     } as any)
     vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
@@ -161,11 +198,11 @@ describe('ModalController', () => {
       ...OptionsController.state,
       manualWCControl: true
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       noAdapters: false
     })
-    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: undefined
     } as any)
     vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})

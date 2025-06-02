@@ -13,7 +13,8 @@ export const CoreHelperUtil = {
   isMobile() {
     if (this.isClient()) {
       return Boolean(
-        window?.matchMedia('(pointer:coarse)')?.matches ||
+        (typeof window?.matchMedia === 'function' &&
+          window?.matchMedia('(pointer:coarse)')?.matches) ||
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
       )
     }
