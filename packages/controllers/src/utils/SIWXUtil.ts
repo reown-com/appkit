@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -18,8 +18,6 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
  */
-
-let lastConnectedCaipNetwork: CaipNetwork | undefined = undefined
 
 export const SIWXUtil = {
   getSIWX() {
@@ -108,7 +106,7 @@ export const SIWXUtil = {
         signature: signature as `0x${string}`
       })
 
-      lastConnectedCaipNetwork = network
+      ChainController.setLastConnectedSIWECaipNetwork(network)
 
       ModalController.close()
 
@@ -148,8 +146,9 @@ export const SIWXUtil = {
       const isRequired = siwx?.getRequired?.()
 
       if (isRequired) {
-        if (lastConnectedCaipNetwork) {
-          ChainController.switchActiveNetwork(lastConnectedCaipNetwork)
+        const lastNetwork = ChainController.getLastConnectedSIWECaipNetwork()
+        if (lastNetwork) {
+          ChainController.switchActiveNetwork(lastNetwork)
         } else {
           await ConnectionController.disconnect()
         }

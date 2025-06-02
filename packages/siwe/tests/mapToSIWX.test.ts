@@ -4,6 +4,7 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  ConnectionController,
   OptionsController,
   type SIWXSession
 } from '@reown/appkit-controllers'
@@ -358,6 +359,51 @@ describe('SIWE: mapToSIWX', () => {
 
       // Different address should return empty array even with signOutOnNetworkChange disabled
       await expect(siwx.getSessions('eip155:1', 'different-address')).resolves.toMatchObject([])
+
+      siweConfig.options.signOutOnNetworkChange = true
+    })
+  })
+
+  describe('siwe.options.signOutOnNetworkChange', () => {
+    it('should not sign out on network change if getLastConnectedSIWECaipNetwork is defined', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValue({
+        address: 'mock-address',
+        chainId: 1
+      })
+      const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
+      const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
+
+      OptionsController.setSIWX(siwx)
+      ChainController.setLastConnectedSIWECaipNetwork(networks.mainnet)
+      ChainController.setActiveCaipNetwork(networks.polygon)
+
+      // Wait for the event loop to finish
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(signOutSpy).not.toHaveBeenCalled()
+      expect(onSignOutSpy).not.toHaveBeenCalled()
+    })
+
+    it('should not sign out on network change if disabled', async () => {
+      siweConfig.options.signOutOnNetworkChange = false
+      const siwx = mapToSIWX(siweConfig)
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValue({
+        address: 'mock-address',
+        chainId: 1
+      })
+      const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
+      const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
+
+      OptionsController.setSIWX(siwx)
+
+      ChainController.setActiveCaipNetwork(networks.polygon)
+
+      // Wait for the event loop to finish
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(signOutSpy).not.toHaveBeenCalled()
+      expect(onSignOutSpy).not.toHaveBeenCalled()
 
       siweConfig.options.signOutOnNetworkChange = true
     })
