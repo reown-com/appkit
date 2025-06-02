@@ -1101,6 +1101,65 @@ describe('Base Public methods', () => {
     expect(setStatusSpy).toHaveBeenCalledWith('disconnected', 'eip155')
   })
 
+  it('should get account information with embedded wallet info even if no chain namespace is provided in getAccount', () => {
+    const authConnector = {
+      id: 'ID_AUTH',
+      name: 'ID Auth',
+      imageUrl: 'https://example.com/id-auth.png'
+    } as AuthConnector
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
+    vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
+    ChainController.state.activeChain = 'eip155'
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
+      caipAddress: 'eip155:1:0x123',
+      status: 'connected',
+      user: { email: 'test@example.com' },
+      socialProvider: 'email' as SocialProvider,
+      preferredAccountTypes: {
+        eip155: 'eoa'
+      },
+      smartAccountDeployed: true,
+      currentTab: 0,
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+    })
+    vi.spyOn(CoreHelperUtil, 'getPlainAddress')
+
+    vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
+      const connectorKey = getSafeConnectorIdKey(mainnet.chainNamespace)
+      if (key === connectorKey) {
+        return 'ID_AUTH'
+      }
+      if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+        return mainnet.caipNetworkId
+      }
+      return undefined
+    })
+
+    const connectedConnectorId = StorageUtil.getConnectedConnectorId(
+      ChainController.state.activeChain
+    )
+
+    expect(connectedConnectorId).toBe('ID_AUTH')
+
+    const appKit = new AppKit(mockOptions)
+    const account = appKit.getAccount()
+
+    expect(account).toEqual({
+      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
+      caipAddress: 'eip155:1:0x123',
+      address: '0x123',
+      isConnected: true,
+      status: 'connected',
+      embeddedWalletInfo: {
+        user: { email: 'test@example.com', username: 'test-username' },
+        authProvider: 'email',
+        accountType: 'eoa',
+        isSmartAccountDeployed: true
+      }
+    })
+  })
+
   it('should get account information', () => {
     const authConnector = {
       id: 'ID_AUTH',
