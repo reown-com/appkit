@@ -3,9 +3,11 @@ import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
 import { AccountController } from '../src/controllers/AccountController.js'
+import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
-import { ConnectionController } from '../src/controllers/ConnectionController.js'
+import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
+import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { StorageUtil } from '../src/utils/StorageUtil.js'
 import type {
@@ -14,6 +16,50 @@ import type {
   SocialProvider,
   UseAppKitAccountReturn
 } from '../src/utils/TypeUtil.js'
+import { AssetUtil } from './utils.js'
+
+// -- Types ------------------------------------------------------------
+export type { Connection } from '../src/controllers/ConnectionController.js'
+
+interface UseAppKitConnectionProps {
+  namespace?: ChainNamespace
+  onSuccess?: (params: {
+    address: string
+    namespace: ChainNamespace
+    isAccountSwitched: boolean
+    isWalletSwitched: boolean
+    isWalletDeleted: boolean
+  }) => void
+  onError?: (error: Error) => void
+}
+
+interface SwitchConnectionParams {
+  connection: Connection
+  address?: string
+}
+
+interface UseAppKitConnectionDeleteRecentConnectionProps {
+  address: string
+  connectorId: string
+}
+
+interface FormattedConnection extends Connection {
+  name: string | undefined
+  icon: string | undefined
+  networkIcon: string | undefined
+}
+
+interface UseAppKitConnectionsReturn {
+  connections: FormattedConnection[]
+  storageConnections: FormattedConnection[]
+}
+
+interface UseAppKitConnectionReturn {
+  connection: Connection | undefined
+  isPending: boolean
+  switchConnection: (params: SwitchConnectionParams) => Promise<void>
+  deleteConnection: (params: UseAppKitConnectionDeleteRecentConnectionProps) => void
+}
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitAccount(options?: {
@@ -83,9 +129,233 @@ export function useAppKitAccount(options?: {
 }
 
 export function useDisconnect() {
-  async function disconnect(props?: { namespace?: ChainNamespace }) {
-    await ConnectionController.disconnect(props?.namespace)
+  async function disconnect(props?: { id?: string; namespace?: ChainNamespace }) {
+    await ConnectionController.disconnect({ id: props?.id, namespace: props?.namespace })
   }
 
   return { disconnect }
+}
+
+export function useAppKitConnections(namespace?: ChainNamespace): Ref<UseAppKitConnectionsReturn> {
+  const state = ref({
+    connections: [],
+    storageConnections: []
+  } as UseAppKitConnectionsReturn)
+
+  const unsubscribe: (() => void)[] = []
+
+  function formatConnection(connection: Connection): FormattedConnection {
+    const connector = ConnectorController.getConnectorById(connection.connectorId)
+    const name = ConnectorController.getConnectorName(connector?.name)
+    const icon = AssetUtil.getConnectorImage(connector)
+    const networkImage = AssetUtil.getNetworkImage(connection.caipNetwork)
+
+    return {
+      name,
+      icon,
+      networkIcon: networkImage,
+      ...connection
+    }
+  }
+
+  function updateConnections() {
+    const chainNamespace = namespace ?? ChainController.state.activeChain
+
+    if (!chainNamespace) {
+      state.value = {
+        connections: [],
+        storageConnections: []
+      }
+
+      return
+    }
+
+    try {
+      const { connections, storageConnections } =
+        ConnectionControllerUtil.getConnectionsData(chainNamespace)
+
+      state.value = {
+        connections: connections.map(formatConnection),
+        storageConnections: storageConnections.map(formatConnection)
+      }
+    } catch (error) {
+      console.warn('Failed to get connections data:', error)
+      state.value = {
+        connections: [],
+        storageConnections: []
+      }
+    }
+  }
+
+  unsubscribe.push(
+    ConnectionController.subscribeKey('connections', () => {
+      updateConnections()
+    })
+  )
+  unsubscribe.push(
+    ConnectorController.subscribeKey('connectors', () => {
+      updateConnections()
+    })
+  )
+  unsubscribe.push(
+    AssetController.subscribeKey('connectorImages', () => {
+      updateConnections()
+    })
+  )
+  unsubscribe.push(
+    AssetController.subscribeKey('networkImages', () => {
+      updateConnections()
+    })
+  )
+  unsubscribe.push(
+    ChainController.subscribeKey('activeChain', () => {
+      updateConnections()
+    })
+  )
+
+  onMounted(() => {
+    updateConnections()
+  })
+
+  onUnmounted(() => {
+    unsubscribe.forEach(unsubscribe => unsubscribe())
+  })
+
+  return state
+}
+
+export function useAppKitConnection(
+  props: UseAppKitConnectionProps
+): Ref<UseAppKitConnectionReturn> {
+  const { namespace, onSuccess, onError } = props
+
+  const unsubscribe: (() => void)[] = []
+
+  const state = ref({
+    connection: undefined,
+    isPending: false,
+    switchConnection: () => Promise.resolve(undefined),
+    deleteConnection: () => ({})
+  } as UseAppKitConnectionReturn)
+
+  const forceUpdateCounter = ref(0)
+
+  function updateConnection() {
+    const chainNamespace = namespace ?? ChainController.state.activeChain
+
+    if (!chainNamespace) {
+      state.value.connection = undefined
+      state.value.isPending = false
+
+      return
+    }
+
+    const activeConnectorIds = ConnectorController.state.activeConnectorIds || {}
+    const connections = ConnectionController.state.connections || new Map()
+
+    const connectorId = activeConnectorIds[chainNamespace]
+    const connList = connections.get(chainNamespace)
+    const connection = connList?.find(
+      c => c.connectorId.toLowerCase() === connectorId?.toLowerCase()
+    )
+
+    state.value.connection = connection
+    state.value.isPending = ConnectionController.state.isSwitchingConnection || false
+  }
+
+  async function switchConnection({ connection: _connection, address }: SwitchConnectionParams) {
+    const chainNamespace = namespace ?? ChainController.state.activeChain
+
+    if (!chainNamespace) {
+      console.warn('No namespace found for switchConnection')
+
+      return
+    }
+
+    try {
+      ConnectionController.setIsSwitchingConnection(true)
+
+      await ConnectionController.switchConnection({
+        connection: _connection,
+        address,
+        namespace: chainNamespace,
+        onChange({
+          address: newAddress,
+          namespace: newNamespace,
+          isAccountSwitched,
+          isWalletSwitched
+        }) {
+          onSuccess?.({
+            address: newAddress,
+            namespace: newNamespace,
+            isAccountSwitched,
+            isWalletSwitched,
+            isWalletDeleted: false
+          })
+        }
+      })
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Something went wrong')
+      onError?.(error)
+    } finally {
+      ConnectionController.setIsSwitchingConnection(false)
+    }
+  }
+
+  function deleteConnection({
+    address,
+    connectorId
+  }: UseAppKitConnectionDeleteRecentConnectionProps) {
+    const chainNamespace = namespace ?? ChainController.state.activeChain
+
+    if (!chainNamespace) {
+      console.warn('No namespace found for deleteConnection')
+
+      return
+    }
+
+    StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+    onSuccess?.({
+      address,
+      namespace: chainNamespace,
+      isAccountSwitched: false,
+      isWalletSwitched: false,
+      isWalletDeleted: true
+    })
+    forceUpdateCounter.value += 1
+  }
+
+  state.value.switchConnection = switchConnection
+  state.value.deleteConnection = deleteConnection
+
+  unsubscribe.push(
+    ConnectionController.subscribeKey('connections', () => {
+      updateConnection()
+    })
+  )
+  unsubscribe.push(
+    ConnectionController.subscribeKey('isSwitchingConnection', () => {
+      updateConnection()
+    })
+  )
+  unsubscribe.push(
+    ConnectorController.subscribeKey('activeConnectorIds', () => {
+      updateConnection()
+    })
+  )
+  unsubscribe.push(
+    ChainController.subscribeKey('activeChain', () => {
+      updateConnection()
+    })
+  )
+
+  onMounted(() => {
+    updateConnection()
+  })
+
+  onUnmounted(() => {
+    unsubscribe.forEach(unsubscribe => unsubscribe())
+  })
+
+  return state
 }
