@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -159,12 +159,9 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
     throw new Error('No namespace found')
   }
 
-  const connection = useMemo(() => {
-    const connectorId = activeConnectorIds[chainNamespace]
-    const connList = connections.get(chainNamespace)
-
-    return connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
-  }, [connections, activeConnectorIds, chainNamespace])
+  const connectorId = activeConnectorIds[chainNamespace]
+  const connList = connections.get(chainNamespace)
+  const connection = connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
 
   const switchConnection = useCallback(
     async ({ connection: _connection, address }: SwitchConnectionParams) => {
