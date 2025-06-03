@@ -2,6 +2,8 @@
 import type { ChainNamespace } from './TypeUtil.js'
 
 export const ConstantsUtil = {
+  // This is no real secret, but just a test key for the dangerfile
+  DUMMY_DANGER_TEST_KEY: '202e2d45d9debca6621489289addb5c1ca',
   WC_NAME_SUFFIX: '.reown.id',
   WC_NAME_SUFFIX_LEGACY: '.wcn.id',
   BLOCKCHAIN_API_RPC_URL: 'https://rpc.walletconnect.org',

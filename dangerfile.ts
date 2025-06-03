@@ -420,12 +420,92 @@ checkWorkflows()
 async function checkForKeys() {
   const allFiles = [...updated_files, ...created_files]
 
-  for (const f of allFiles) {
-    const fileContent = await danger.github.utils.fileContents(f)
+  const secretPatterns = [
+    {
+      pattern: /\b(?:sk_|pk_|ak_|api_|key_|tok_)[a-zA-Z0-9]{20,}/gu,
+      description: 'API key with common prefix'
+    },
+    {
+      pattern: /\b(?=[A-Za-z0-9+/]{32,}=*)(?=.*[0-9+/=])[A-Za-z0-9+/]+=*\b/gu,
+      description: 'Base64‑like string (potential secret)'
+    },
+    {
+      pattern: /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/giu,
+      description: 'UUID (potential secret identifier)'
+    },
+    {
+      pattern: /\b[a-zA-Z0-9$^&*()_+\-=[\]{}|;':",./<>?`~]{32,}\b/gu,
+      description: 'High-entropy string with special characters'
+    },
+    {
+      pattern: /\beyJ[a-zA-Z0-9+/]+=*\.[a-zA-Z0-9+/]+=*\.[a-zA-Z0-9+/\-_]+=*/gu,
+      description: 'JWT token'
+    },
+    {
+      pattern: /-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----/giu,
+      description: 'Private key'
+    },
+    {
+      pattern: /\bghp_[a-zA-Z0-9]{36}\b/gu,
+      description: 'GitHub Personal Access Token'
+    }
+  ]
 
-    if (fileContent.toLowerCase().includes('key') || fileContent.toLowerCase().includes('secret')) {
-      warn(`File ${f} contains a KEY or SECRET`)
+  const excludedFiles = ['pnpm-lock.yaml']
+
+  for (const f of allFiles) {
+    if (shouldScanFile(f, excludedFiles)) {
+      await scanFileForSecrets(f, secretPatterns)
     }
   }
 }
+
+function shouldScanFile(filepath: string, excludedFiles: string[]): boolean {
+  const isExcludedFile = excludedFiles.some(excluded => filepath.includes(excluded))
+
+  return !isExcludedFile
+}
+
+async function scanFileForSecrets(
+  filepath: string,
+  secretPatterns: Array<{ pattern: RegExp; description: string }>
+) {
+  try {
+    const fileContent = await danger.github.utils.fileContents(filepath)
+
+    const lines = fileContent.split('\n')
+
+    for (const { pattern, description } of secretPatterns) {
+      const matches = fileContent.match(pattern)
+
+      if (!matches) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      for (const match of matches) {
+        const lineNumber = findLineNumber(lines, match)
+        const truncatedMatch = match.substring(0, 20)
+        const locationInfo = lineNumber ? ` (line ${lineNumber})` : ''
+
+        warn(
+          `🔑 Potential ${description} detected in ${filepath}${locationInfo}: \`${truncatedMatch}...\``
+        )
+      }
+    }
+  } catch {
+    /* Empty */
+  }
+}
+
+function findLineNumber(lines: string[], match: string): number | null {
+  for (const [index, line] of lines.entries()) {
+    if (line?.includes(match)) {
+      return index + 1
+    }
+  }
+
+  return null
+}
+
 checkForKeys()
