@@ -112,8 +112,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   grantPermissions: async () => Promise.resolve(''),
   revokePermissions: async () => Promise.resolve('0x'),
   walletGetAssets: async () => Promise.resolve({}),
-  updateBalance: () => Promise.resolve(),
- }
+  updateBalance: () => Promise.resolve()
+}
 
 const networkControllerClient: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),

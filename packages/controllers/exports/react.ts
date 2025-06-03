@@ -26,9 +26,9 @@ interface UseAppKitConnectionProps {
   onSuccess?: (params: {
     address: string
     namespace: ChainNamespace
-    isAccountSwitched: boolean
-    isWalletSwitched: boolean
-    isWalletDeleted: boolean
+    hasSwitchedAccount: boolean
+    hasSwitchedSwitched: boolean
+    hasDeletedWallet: boolean
   }) => void
   onError?: (error: Error) => void
 }
@@ -180,15 +180,15 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
           onChange({
             address: newAddress,
             namespace: newNamespace,
-            isAccountSwitched,
-            isWalletSwitched
+            hasSwitchedAccount,
+            hasSwitchedSwitched
           }) {
             onSuccess?.({
               address: newAddress,
               namespace: newNamespace,
-              isAccountSwitched,
-              isWalletSwitched,
-              isWalletDeleted: false
+              hasSwitchedAccount,
+              hasSwitchedSwitched,
+              hasDeletedWallet: false
             })
           }
         })
@@ -208,9 +208,9 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
       onSuccess?.({
         address,
         namespace: chainNamespace,
-        isAccountSwitched: false,
-        isWalletSwitched: false,
-        isWalletDeleted: true
+        hasSwitchedAccount: false,
+        hasSwitchedSwitched: false,
+        hasDeletedWallet: true
       })
       forceUpdate(prev => prev + 1)
     },

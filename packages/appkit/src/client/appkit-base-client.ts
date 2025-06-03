@@ -506,7 +506,7 @@ export abstract class AppKitBaseClient {
         }
       },
       /**
-       * Disconnect
+       * Disconnect a connector or all connectors
        * @param {string} [options.id] - Connector ID to disconnect. If no id is passed, disconnects all connectors. If id is provided then disconnect the specific connector.
        * @param {ChainNamespace} [options.chainNamespace] - Chain namespace to disconnect from
        */

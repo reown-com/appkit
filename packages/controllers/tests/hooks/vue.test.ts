@@ -327,8 +327,8 @@ describe('useAppKitConnection', () => {
         onChange?.({
           address: '0x456...',
           namespace: 'eip155',
-          isAccountSwitched: true,
-          isWalletSwitched: false
+          hasSwitchedAccount: true,
+          hasSwitchedSwitched: false
         })
       })
 
@@ -357,9 +357,9 @@ describe('useAppKitConnection', () => {
     expect(mockOnSuccess).toHaveBeenCalledWith({
       address: '0x456...',
       namespace: 'eip155',
-      isAccountSwitched: true,
-      isWalletSwitched: false,
-      isWalletDeleted: false
+      hasSwitchedAccount: true,
+      hasSwitchedSwitched: false,
+      hasDeletedWallet: false
     })
     expect(setIsSwitchingConnectionSpy).toHaveBeenCalledWith(false)
   })
@@ -445,9 +445,9 @@ describe('useAppKitConnection', () => {
     expect(mockOnSuccess).toHaveBeenCalledWith({
       address: '0x123...',
       namespace: 'eip155',
-      isAccountSwitched: false,
-      isWalletSwitched: false,
-      isWalletDeleted: true
+      hasSwitchedAccount: false,
+      hasSwitchedSwitched: false,
+      hasDeletedWallet: true
     })
   })
 

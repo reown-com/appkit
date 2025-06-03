@@ -43,8 +43,8 @@ interface SwitchConnectionParams {
   onChange?: (params: {
     address: string
     namespace: ChainNamespace
-    isAccountSwitched: boolean
-    isWalletSwitched: boolean
+    hasSwitchedAccount: boolean
+    hasSwitchedSwitched: boolean
   }) => void
 }
 
@@ -542,13 +542,13 @@ const controller = {
         })
 
         if (currentAddress && newAddress) {
-          const isAccountSwitched = newAddress.toLowerCase() !== currentAddress.toLowerCase()
+          const hasSwitchedAccount = newAddress.toLowerCase() !== currentAddress.toLowerCase()
 
           onChange?.({
             address: newAddress,
             namespace,
-            isAccountSwitched,
-            isWalletSwitched: status === 'active'
+            hasSwitchedAccount,
+            hasSwitchedSwitched: status === 'active'
           })
         }
         break
@@ -566,8 +566,8 @@ const controller = {
           onChange?.({
             address: newAddress,
             namespace,
-            isAccountSwitched: true,
-            isWalletSwitched: true
+            hasSwitchedAccount: true,
+            hasSwitchedSwitched: true
           })
         }
         break
