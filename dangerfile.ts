@@ -423,7 +423,7 @@ const secretPatterns = [
   },
   {
     pattern: /\b(?=[A-Za-z0-9+/]{32,}=*)(?=.*[0-9+/=])[A-Za-z0-9+/]+=*\b/gu,
-    description: 'Base64‑like string'
+    description: 'High‑entropy string'
   },
   {
     pattern: /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/giu,
@@ -444,10 +444,6 @@ const secretPatterns = [
   {
     pattern: /\bghp_[a-zA-Z0-9]{36}\b/gu,
     description: 'GitHub Personal Access Token'
-  },
-  {
-    pattern: /\b[a-zA-Z0-9$^&*()_+\-=[\]{}|;':",./<>?`~]{32,}\b/gu,
-    description: 'High‑entropy string'
   }
 ]
 
