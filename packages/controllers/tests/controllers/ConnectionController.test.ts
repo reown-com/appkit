@@ -381,7 +381,11 @@ describe('ConnectionController', () => {
           onChange
         })
 
-        expect(handleAuthAccountSwitchSpy).toHaveBeenCalledWith('0x123', chain)
+        expect(handleAuthAccountSwitchSpy).toHaveBeenCalledWith({
+          address: '0x123',
+          connection: { ...mockConnection, connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH },
+          namespace: chain
+        })
       }
     )
 
