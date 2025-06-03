@@ -27,11 +27,12 @@ vi.mock('valtio', () => ({
 
 vi.mock('react', () => ({
   useCallback: vi.fn(fn => fn),
-  useState: vi.fn(() => [0, vi.fn()]),
-  useMemo: vi.fn(fn => fn())
+  useState: vi.fn(() => [0, vi.fn()])
 }))
 
 const { useSnapshot } = vi.mocked(await import('valtio'), true)
+
+const mockedReact = vi.mocked(await import('react'), true)
 
 describe('useAppKitNetwork', () => {
   beforeEach(() => {
@@ -286,6 +287,9 @@ describe('useAppKitConnections', () => {
 
   beforeEach(() => {
     vi.resetAllMocks()
+
+    mockedReact.useState.mockReturnValue([0, vi.fn()])
+    mockedReact.useCallback.mockImplementation(fn => fn)
   })
 
   it('should return formatted connections and storage connections', () => {
@@ -379,6 +383,9 @@ describe('useAppKitConnection', () => {
 
   beforeEach(() => {
     vi.resetAllMocks()
+
+    mockedReact.useState.mockReturnValue([0, vi.fn()])
+    mockedReact.useCallback.mockImplementation(fn => fn)
   })
 
   it('should return current connection and connection state', () => {
