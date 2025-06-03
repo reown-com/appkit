@@ -38,7 +38,7 @@ export function SectionWalletFeatures() {
           onramp:
             Array.isArray(config.remoteFeatures.onramp) && config.remoteFeatures.onramp.length > 0
               ? false
-              : ['coinbase', 'meld']
+              : ['meld', 'coinbase']
         })
         break
       case 'Swap':
