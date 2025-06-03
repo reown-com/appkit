@@ -44,7 +44,7 @@ interface SwitchConnectionParams {
   address?: string
 }
 
-interface UseAppKitConnectionDeleteRecentConnectionProps {
+interface DeleteRecentConnectionProps {
   address: string
   connectorId: string
 }
@@ -64,7 +64,7 @@ interface UseAppKitConnectionReturn {
   connection: Connection | undefined
   isPending: boolean
   switchConnection: (params: SwitchConnectionParams) => Promise<void>
-  deleteConnection: (params: UseAppKitConnectionDeleteRecentConnectionProps) => void
+  deleteConnection: (params: DeleteRecentConnectionProps) => void
 }
 
 // -- Hooks ------------------------------------------------------------
@@ -308,10 +308,7 @@ export function useAppKitConnection(
     }
   }
 
-  function deleteConnection({
-    address,
-    connectorId
-  }: UseAppKitConnectionDeleteRecentConnectionProps) {
+  function deleteConnection({ address, connectorId }: DeleteRecentConnectionProps) {
     const chainNamespace = namespace ?? ChainController.state.activeChain
 
     if (!chainNamespace) {

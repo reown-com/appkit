@@ -39,7 +39,7 @@ interface SwitchConnectionParams {
   address?: string
 }
 
-interface UseAppKitConnectionDeleteRecentConnectionProps {
+interface DeleteRecentConnectionProps {
   address: string
   connectorId: string
 }
@@ -204,7 +204,7 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   )
 
   const deleteConnection = useCallback(
-    ({ address, connectorId }: UseAppKitConnectionDeleteRecentConnectionProps) => {
+    ({ address, connectorId }: DeleteRecentConnectionProps) => {
       StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
       onSuccess?.({
         address,
