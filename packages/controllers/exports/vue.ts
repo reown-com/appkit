@@ -1,11 +1,12 @@
 import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
 
 import { AccountController } from '../src/controllers/AccountController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
-import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
+import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
@@ -19,12 +20,11 @@ import type {
 import { AssetUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
-export type { Connection } from '../src/controllers/ConnectionController.js'
+export type { Connection } from '@reown/appkit-common'
 
 interface DisconnectParams {
   id?: string
   namespace?: ChainNamespace
-  disconnectAll?: boolean
 }
 
 interface UseAppKitConnectionProps {
@@ -57,7 +57,7 @@ interface FormattedConnection extends Connection {
 
 interface UseAppKitConnectionsReturn {
   connections: FormattedConnection[]
-  storageConnections: FormattedConnection[]
+  recentConnections: FormattedConnection[]
 }
 
 interface UseAppKitConnectionReturn {
@@ -145,7 +145,7 @@ export function useDisconnect() {
 export function useAppKitConnections(namespace?: ChainNamespace): Ref<UseAppKitConnectionsReturn> {
   const state = ref({
     connections: [],
-    storageConnections: []
+    recentConnections: []
   } as UseAppKitConnectionsReturn)
 
   const unsubscribe: (() => void)[] = []
@@ -170,25 +170,25 @@ export function useAppKitConnections(namespace?: ChainNamespace): Ref<UseAppKitC
     if (!chainNamespace) {
       state.value = {
         connections: [],
-        storageConnections: []
+        recentConnections: []
       }
 
       return
     }
 
     try {
-      const { connections, storageConnections } =
+      const { connections, recentConnections } =
         ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
       state.value = {
         connections: connections.map(formatConnection),
-        storageConnections: storageConnections.map(formatConnection)
+        recentConnections: recentConnections.map(formatConnection)
       }
     } catch (error) {
       console.warn('Failed to get connections data:', error)
       state.value = {
         connections: [],
-        storageConnections: []
+        recentConnections: []
       }
     }
   }

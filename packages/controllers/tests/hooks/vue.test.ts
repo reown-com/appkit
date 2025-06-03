@@ -179,7 +179,7 @@ describe('useAppKitConnections', () => {
   it('should return formatted connections and storage connections', async () => {
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockConnection],
-      storageConnections: [mockConnection]
+      recentConnections: [mockConnection]
     })
     vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
     vi.spyOn(ConnectorController, 'getConnectorName').mockReturnValue('Test Connector')
@@ -192,7 +192,7 @@ describe('useAppKitConnections', () => {
 
     expect(state.value).toEqual({
       connections: [mockFormattedConnection],
-      storageConnections: [mockFormattedConnection]
+      recentConnections: [mockFormattedConnection]
     })
 
     expect(ConnectionControllerUtil.getConnectionsData).toHaveBeenCalledWith('eip155')
@@ -204,7 +204,7 @@ describe('useAppKitConnections', () => {
   it('should use provided namespace instead of active chain', async () => {
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
-      storageConnections: []
+      recentConnections: []
     })
 
     withSetup(() => useAppKitConnections('solana'))
@@ -220,20 +220,20 @@ describe('useAppKitConnections', () => {
     const [state] = withSetup(() => useAppKitConnections())
 
     expect(state.value.connections).toEqual([])
-    expect(state.value.storageConnections).toEqual([])
+    expect(state.value.recentConnections).toEqual([])
   })
 
   it('should handle empty connections', () => {
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155' as any)
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
-      storageConnections: []
+      recentConnections: []
     })
 
     const [state] = withSetup(() => useAppKitConnections())
 
     expect(state.value.connections).toEqual([])
-    expect(state.value.storageConnections).toEqual([])
+    expect(state.value.recentConnections).toEqual([])
   })
 
   it('should update when controller states change', async () => {
@@ -242,7 +242,7 @@ describe('useAppKitConnections', () => {
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155' as any)
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: mockConnections,
-      storageConnections: []
+      recentConnections: []
     })
 
     const [state] = withSetup(() => useAppKitConnections())
@@ -253,7 +253,7 @@ describe('useAppKitConnections', () => {
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
-      storageConnections: []
+      recentConnections: []
     })
 
     await nextTick()

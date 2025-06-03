@@ -4,7 +4,7 @@ import { SafeLocalStorage, getSafeConnectorIdKey } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
 import { W3mFrameConstants, W3mFrameHelpers, W3mFrameStorage } from '@reown/appkit-wallet'
 
-import type { Connection } from '../../src/controllers/ConnectionController'
+import type { Connection } from '@reown/appkit-common'
 import { StorageUtil } from '../../src/utils/StorageUtil'
 import type { SocialProvider, WcWallet } from '../../src/utils/TypeUtil'
 

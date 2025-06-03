@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
 
 import {
   type AuthConnector,
   ChainController,
-  type Connection,
   ConnectionController,
   ConnectorController,
   type ConnectorControllerState,
@@ -297,7 +297,7 @@ describe('useAppKitConnections', () => {
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockConnection],
-      storageConnections: [mockConnection]
+      recentConnections: [mockConnection]
     })
 
     vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
@@ -310,7 +310,7 @@ describe('useAppKitConnections', () => {
 
     expect(result).toEqual({
       connections: [mockFormattedConnection],
-      storageConnections: [mockFormattedConnection]
+      recentConnections: [mockFormattedConnection]
     })
 
     expect(ConnectionControllerUtil.getConnectionsData).toHaveBeenCalledWith('eip155')
@@ -328,7 +328,7 @@ describe('useAppKitConnections', () => {
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
-      storageConnections: []
+      recentConnections: []
     })
 
     useAppKitConnections('solana')
@@ -355,14 +355,14 @@ describe('useAppKitConnections', () => {
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
-      storageConnections: []
+      recentConnections: []
     })
 
     const result = useAppKitConnections()
 
     expect(result).toEqual({
       connections: [],
-      storageConnections: []
+      recentConnections: []
     })
   })
 })

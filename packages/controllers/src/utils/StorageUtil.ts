@@ -7,8 +7,8 @@ import {
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
 
-import type { Connection } from '../controllers/ConnectionController.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,

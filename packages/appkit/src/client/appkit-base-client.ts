@@ -247,6 +247,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize(options.adapters ?? [])
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
@@ -504,6 +505,11 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
+      /**
+       * Disconnect
+       * @param {string} [options.id] - Connector ID to disconnect. If no id is passed, disconnects all connectors. If id is provided then disconnect the specific connector.
+       * @param {ChainNamespace} [options.chainNamespace] - Chain namespace to disconnect from
+       */
       disconnect: async ({ chainNamespace } = {}) => {
         const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
         try {
@@ -1606,8 +1612,8 @@ export abstract class AppKitBaseClient {
   public getConnections = (namespace: ChainNamespace) =>
     ConnectionControllerUtil.getConnectionsData(namespace).connections
 
-  public getStorageConnections = (namespace: ChainNamespace) =>
-    ConnectionControllerUtil.getConnectionsData(namespace).storageConnections
+  public getRecentConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).recentConnections
 
   public switchConnection: (typeof ConnectionController)['switchConnection'] = params =>
     ConnectionController.switchConnection(params)

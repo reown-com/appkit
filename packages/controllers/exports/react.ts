@@ -2,11 +2,11 @@ import { useCallback, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
 
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
-import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
+import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
@@ -14,12 +14,11 @@ import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/util
 import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
-export type { Connection } from '../src/controllers/ConnectionController.js'
+export type { Connection } from '@reown/appkit-common'
 
 interface DisconnectParams {
   id?: string
   namespace?: ChainNamespace
-  disconnectAll?: boolean
 }
 
 interface UseAppKitConnectionProps {
@@ -128,7 +127,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
     throw new Error('No namespace found')
   }
 
-  const { connections, storageConnections } =
+  const { connections, recentConnections } =
     ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
   const formatConnection = useCallback((connection: Connection) => {
@@ -148,7 +147,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
 
   return {
     connections: connections.map(formatConnection),
-    storageConnections: storageConnections.map(formatConnection)
+    recentConnections: recentConnections.map(formatConnection)
   }
 }
 

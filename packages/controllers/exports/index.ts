@@ -21,8 +21,7 @@ export { ConnectionController } from '../src/controllers/ConnectionController.js
 export { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 export type {
   ConnectionControllerClient,
-  ConnectionControllerState,
-  Connection
+  ConnectionControllerState
 } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
