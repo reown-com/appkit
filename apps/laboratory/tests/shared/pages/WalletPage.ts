@@ -87,7 +87,7 @@ export class WalletPage {
     await this.page.waitForLoadState()
     const btn = this.page.getByTestId(`session-${variant}-button`)
     await expect(btn, `Session ${variant} element should be visible`).toBeVisible({
-      timeout: 120000
+      timeout: 30000
     })
     await expect(btn).toBeEnabled()
     await btn.click()

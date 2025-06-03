@@ -145,11 +145,11 @@ emailTestAfterFarcaster(
 )
 
 emailTestAfterFarcaster(
-  'it should abort embedded wallet flow if it takes more than 20 seconds after abort login with farcaster',
+  'it should abort embedded wallet flow if it takes more than 2 minutes after abort login with farcaster',
   async () => {
     await page.page.context().setOffline(true)
     await page.loginWithEmail(tempEmail, false)
-    await page.page.waitForTimeout(20_000)
+    await page.page.waitForTimeout(120_000)
     await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
     await page.page.context().setOffline(false)
   }
