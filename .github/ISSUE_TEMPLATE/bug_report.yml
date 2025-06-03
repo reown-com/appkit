@@ -21,8 +21,8 @@ body:
     attributes:
       label: Steps to Reproduce
       description: Please enter the steps to reproduce the issue/bug that you are facing. This field is mandatory. If you do not fill this out, your issue will be closed!
-      validations:
-        required: true
+    validations:
+      required: true
   - type: textarea
     attributes:
       label: Summary
