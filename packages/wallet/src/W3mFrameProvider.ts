@@ -15,6 +15,7 @@ interface W3mFrameProviderConfig {
   enableLogger?: boolean
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
+  enableCloudAuthAccount?: boolean
 }
 
 // -- Provider --------------------------------------------------------
@@ -42,14 +43,21 @@ export class W3mFrameProvider {
     chainId,
     enableLogger = true,
     onTimeout,
-    abortController
+    abortController,
+    enableCloudAuthAccount
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
     }
     this.abortController = abortController
 
-    this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
+    this.w3mFrame = new W3mFrame({
+      projectId,
+      isAppClient: true,
+      chainId,
+      enableLogger,
+      enableCloudAuthAccount
+    })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
       this.createFrame()

@@ -44,16 +44,22 @@ export const SIWXUtil = {
       }
 
       if (OptionsController.state.remoteFeatures?.emailCapture) {
+        const connectorId = ConnectorController.getConnectorId(namespace)
         const user = ChainController.getAccountProp('user', namespace)
 
-        await ModalController.open({
-          view: 'DataCapture',
-          data: {
-            email: user?.email ?? undefined
-          }
-        })
+        const shouldSkipDataCapture =
+          connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH && user?.email
 
-        return
+        if (!shouldSkipDataCapture) {
+          await ModalController.open({
+            view: 'DataCapture',
+            data: {
+              email: user?.email ?? undefined
+            }
+          })
+
+          return
+        }
       }
 
       await ModalController.open({
