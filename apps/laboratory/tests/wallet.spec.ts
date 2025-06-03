@@ -322,18 +322,6 @@ sampleWalletTest('it should disconnect and close modal when connecting from wall
   await walletPage.page.waitForTimeout(500)
 })
 
-sampleWalletTest('it should display wallet guide and show explore option', async ({ library }) => {
-  if (library === 'bitcoin') {
-    return
-  }
-
-  await modalPage.openConnectModal()
-  await modalValidator.expectWalletGuide(library, 'get-started')
-  await modalPage.clickWalletGuideGetStarted()
-  await modalValidator.expectWalletGuide(library, 'explore')
-  await modalPage.closeModal()
-})
-
 sampleWalletTest('it should disconnect as expected', async () => {
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()

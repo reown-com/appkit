@@ -115,11 +115,7 @@ export interface OptionsControllerStatePublic {
    * @default true
    */
   enableWalletConnect?: boolean
-  /**
-   * Enable or disable the wallet guide footer in AppKit if you have email or social login configured.
-   * @default true
-   */
-  enableWalletGuide?: boolean
+
   /**
    * Enable or disable logs from email/social login.
    * @default true
@@ -325,10 +321,6 @@ export const OptionsController = {
 
   setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {
     state.enableWalletConnect = enableWalletConnect
-  },
-
-  setEnableWalletGuide(enableWalletGuide: OptionsControllerState['enableWalletGuide']) {
-    state.enableWalletGuide = enableWalletGuide
   },
 
   setEnableAuthLogger(enableAuthLogger: OptionsControllerState['enableAuthLogger']) {
