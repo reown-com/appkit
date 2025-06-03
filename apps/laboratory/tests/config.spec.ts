@@ -62,7 +62,7 @@ configTest('Should fetch correct config of projectId with all features enabled',
   await modalValidator.expectOnrampButton(true)
 
   await modalPage.openOnramp()
-  await modalValidator.expectOnrampProvider(['coinbase', 'meld'])
+  await modalValidator.expectOnrampProvider(['meld', 'coinbase'])
   await modalPage.closeModal()
 })
 
