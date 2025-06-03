@@ -1,7 +1,9 @@
-import { fixture, html } from '@open-wc/testing'
+import { elementUpdated, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
   type ChainControllerState,
   ModalController,
@@ -14,10 +16,6 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mButton', () => {
   beforeEach(() => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeCaipAddress: null
-    } as unknown as ChainControllerState)
-
     vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
       loading: false
     } as ModalControllerState)
@@ -27,7 +25,7 @@ describe('W3mButton', () => {
   })
 
   afterEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('renders connect button when not connected', async () => {
@@ -45,8 +43,12 @@ describe('W3mButton', () => {
     } as unknown as ChainControllerState)
 
     const element: W3mButton = await fixture(html`<appkit-button></appkit-button>`)
+
     const accountButton = HelpersUtil.querySelect(element, 'appkit-account-button')
     const connectButton = HelpersUtil.querySelect(element, 'appkit-connect-button')
+
+    await element.updateComplete
+    await elementUpdated(element)
 
     expect(accountButton).to.exist
     expect(connectButton).to.not.exist
@@ -104,5 +106,54 @@ describe('W3mButton', () => {
     const element: W3mButton = await fixture(html`<appkit-button></appkit-button>`)
     element.disconnectedCallback()
     expect(mockUnsubscribeChain).toHaveBeenCalled()
+  })
+
+  it('should handle initial state with namespace option', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'solana',
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.SOLANA,
+          {
+            accountState: {
+              ...AccountController.state,
+              caipAddress:
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:FyTsuBMnCAHKYaBUJ5rkd79rzdPu5VSpMwYh3hPhEuAn'
+            }
+          }
+        ],
+        [
+          ConstantsUtil.CHAIN.EVM,
+          {
+            accountState: {
+              ...AccountController.state,
+              caipAddress: 'eip155:1:0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831'
+            }
+          }
+        ]
+      ])
+    } as unknown as ChainControllerState)
+
+    let element: W3mButton = await fixture(html`<appkit-button namespace="eip155"></appkit-button>`)
+    let w3mAccountButton = HelpersUtil.querySelect(element, 'appkit-account-button')
+    let wuiAccountButton = w3mAccountButton.shadowRoot?.querySelector('wui-account-button')
+    console.log(wuiAccountButton)
+
+    await element.updateComplete
+
+    expect(wuiAccountButton?.getAttribute('address')).toBe(
+      '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831'
+    )
+
+    element = await fixture(html`<appkit-button namespace="solana"></appkit-button>`)
+    w3mAccountButton = HelpersUtil.querySelect(element, 'appkit-account-button')
+    wuiAccountButton = w3mAccountButton.shadowRoot?.querySelector('wui-account-button')
+
+    await element.updateComplete
+
+    expect(wuiAccountButton?.getAttribute('address')).toBe(
+      'FyTsuBMnCAHKYaBUJ5rkd79rzdPu5VSpMwYh3hPhEuAn'
+    )
   })
 })
