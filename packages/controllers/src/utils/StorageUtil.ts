@@ -600,14 +600,14 @@ export const StorageUtil = {
       const existingConnections = StorageUtil.getConnections()
       const existing = existingConnections[chainNamespace] ?? []
 
-      const mergedMap = new Map<string, Connection>()
+      const connectorConnectionMap = new Map<string, Connection>()
 
       for (const conn of existing) {
-        mergedMap.set(conn.connectorId, { ...conn })
+        connectorConnectionMap.set(conn.connectorId, { ...conn })
       }
 
       for (const conn of connections) {
-        const existingConn = mergedMap.get(conn.connectorId)
+        const existingConn = connectorConnectionMap.get(conn.connectorId)
         const isAuth = conn.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
 
         if (existingConn && !isAuth) {
@@ -615,13 +615,13 @@ export const StorageUtil = {
           const newAccounts = conn.accounts.filter(a => !existingAddrs.has(a.address.toLowerCase()))
           existingConn.accounts.push(...newAccounts)
         } else {
-          mergedMap.set(conn.connectorId, { ...conn })
+          connectorConnectionMap.set(conn.connectorId, { ...conn })
         }
       }
 
       const dedupedConnections = {
         ...existingConnections,
-        [chainNamespace]: Array.from(mergedMap.values())
+        [chainNamespace]: Array.from(connectorConnectionMap.values())
       }
 
       SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTIONS, JSON.stringify(dedupedConnections))
