@@ -442,10 +442,6 @@ export class ModalPage {
     return page
   }
 
-  async clickWalletGuideGetStarted() {
-    await this.page.getByTestId('w3m-wallet-guide-get-started').click()
-  }
-
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
     await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
