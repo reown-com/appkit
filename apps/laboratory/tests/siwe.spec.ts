@@ -49,26 +49,19 @@ siweWalletTest('it should be authenticated', async () => {
 
 siweWalletTest('it should require re-authentication when switching networks', async () => {
   await modalPage.switchNetwork('Polygon')
-  await modalValidator.expectUnauthenticated()
-  await modalValidator.expectOnSignOutEventCalled(true)
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
 })
 
-siweWalletTest('it should disconnect when cancel siwe from AppKit', async () => {
+siweWalletTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
   await modalPage.switchNetwork('Ethereum')
-  await modalValidator.expectUnauthenticated()
   await modalPage.cancelSiwe()
-  await modalValidator.expectDisconnected()
-  await modalValidator.expectUnauthenticated()
-  await walletValidator.expectSessionCard({ visible: false })
+  await modalValidator.expectNetworkButton('Polygon')
+  await modalValidator.expectAuthenticated()
 })
 
 siweWalletTest('it should be authenticated when refresh page', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
-  await modalValidator.expectConnected()
-  // Wait to be authenticated before reloading the page
   await modalValidator.expectAuthenticated()
   await modalPage.page.reload()
   await modalValidator.expectConnected()

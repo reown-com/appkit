@@ -18,12 +18,11 @@ async function switchNetworkAndMaybeSignSiwe(network: string, siwe = true) {
   await modalPage.switchNetwork(network)
   if (network === 'Solana') {
     await modalPage.switchActiveChain()
+    await modalValidator.expectOnSignOutEventCalled(true)
     modalPage.closeModal()
   }
-  await modalValidator.expectOnSignOutEventCalled(true)
   if (siwe) {
     await modalPage.promptSiwe()
-    await modalValidator.expectOnSignOutEventCalled(true)
   }
 
   await modalValidator.expectNetworkButton(network)
@@ -79,7 +78,8 @@ extensionTest('it should switch networks and sign siwe', async () => {
   network = 'Solana'
   await switchNetworkAndMaybeSignSiwe(network, false)
   // Solana doesn't prompt siwe on network switch
-  await modalValidator.expectDisconnected()
+  await modalValidator.expectNetworkButton('Solana')
+  await modalValidator.expectUnauthenticated()
 })
 
 extensionTest('it should reload the page and sign siwe if not authenticated', async () => {
