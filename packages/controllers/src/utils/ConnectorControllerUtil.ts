@@ -57,7 +57,7 @@ export const ConnectorControllerUtil = {
     onOpen,
     onConnect
   }: ConnectWalletConnectParameters): Promise<ParsedCaipAddress> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if (walletConnect) {
         ConnectorController.setActiveConnector(connector)
       }
