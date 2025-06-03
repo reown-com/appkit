@@ -16,7 +16,7 @@ import { StorageUtil } from './StorageUtil.js'
 import type { Connector, SocialProvider } from './TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
-const UPDATE_EMAIL_INTERVAL = 1_000
+const UPDATE_EMAIL_INTERVAL_MS = 1_000
 
 interface ConnectWalletConnectParameters {
   walletConnect: boolean
@@ -179,7 +179,6 @@ export const ConnectorControllerUtil = {
                 }
               }
             } catch (err) {
-              reject(new Error('Failed to connect'))
               if (socialProvider) {
                 EventsController.sendEvent({
                   type: 'track',
@@ -187,6 +186,7 @@ export const ConnectorControllerUtil = {
                   properties: { provider: socialProvider }
                 })
               }
+              reject(new Error('Failed to connect'))
             }
           } else if (socialProvider) {
             EventsController.sendEvent({
@@ -337,7 +337,7 @@ export const ConnectorControllerUtil = {
           unsubscribeModalController()
           resolve({ email: newEmail })
         }
-      }, UPDATE_EMAIL_INTERVAL)
+      }, UPDATE_EMAIL_INTERVAL_MS)
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {

@@ -16,6 +16,12 @@ import { AssetUtil, StorageUtil } from './utils.js'
 // -- Types ------------------------------------------------------------
 export type { Connection } from '../src/controllers/ConnectionController.js'
 
+interface DisconnectParams {
+  id?: string
+  namespace?: ChainNamespace
+  disconnectAll?: boolean
+}
+
 interface UseAppKitConnectionProps {
   namespace?: ChainNamespace
   onSuccess?: (params: {
@@ -101,8 +107,8 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 }
 
 export function useDisconnect() {
-  async function disconnect(props?: { connectorId?: string; namespace?: ChainNamespace }) {
-    await ConnectionController.disconnect({ id: props?.connectorId, namespace: props?.namespace })
+  async function disconnect(props?: DisconnectParams) {
+    await ConnectionController.disconnect(props)
   }
 
   return { disconnect }

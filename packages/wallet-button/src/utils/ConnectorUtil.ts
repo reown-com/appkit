@@ -19,7 +19,7 @@ import { SocialProviderEnum } from '@reown/appkit-utils'
 import type { SocialProvider } from './TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
-const UPDATE_EMAIL_INTERVAL = 1_000
+const UPDATE_EMAIL_INTERVAL_MS = 1_000
 
 interface ConnectWalletConnect {
   walletConnect: boolean
@@ -302,7 +302,7 @@ export const ConnectorUtil = {
           unsubscribeModalController()
           resolve({ email: newEmail })
         }
-      }, UPDATE_EMAIL_INTERVAL)
+      }, UPDATE_EMAIL_INTERVAL_MS)
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
