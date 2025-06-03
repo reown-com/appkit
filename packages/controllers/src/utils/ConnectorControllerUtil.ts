@@ -14,6 +14,7 @@ import { ConstantsUtil } from './ConstantsUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { Connector, SocialProvider } from './TypeUtil.js'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 // -- Constants ------------------------------------------ //
 const UPDATE_EMAIL_INTERVAL_MS = 1_000
@@ -350,5 +351,14 @@ export const ConnectorControllerUtil = {
         }
       })
     })
+  },
+  canSwitchToSmartAccount(namespace: ChainNamespace) {
+    const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+
+    return (
+      isSmartAccountEnabled &&
+      AccountController.state.preferredAccountTypes?.[namespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+    )
   }
 }
