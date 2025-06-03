@@ -381,6 +381,12 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
+    const existingConnector = this.connectors.find(c => c.id === connector.id)
+
+    if (existingConnector) {
+      return
+    }
+
     /*
      * We don't need to set auth connector or walletConnect connector
      * from wagmi since we already set it in chain adapter blueprint
@@ -411,6 +417,15 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async syncConnectors(options: AppKitOptions, appKit: AppKit) {
+    // Add Wagmi's initial connectors (Extensions)
+    this.wagmiConfig.connectors.forEach(connector => this.addWagmiConnector(connector, options))
+
+    // Add custom connectors (WalletConnect and Auth)
+    this.addWagmiConnectors(options, appKit)
+
+    // Add third party connectors (Coinbase, Safe, etc.)
+    await this.addThirdPartyConnectors(options)
+
     /*
      * Watch for new connectors. This is needed because some EIP6963
      * connectors are added later in the process the initial setup
@@ -420,12 +435,6 @@ export class WagmiAdapter extends AdapterBlueprint {
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
       }
     })
-
-    // Add wagmi connectors
-    this.addWagmiConnectors(options, appKit)
-
-    // Add third party connectors
-    await this.addThirdPartyConnectors(options)
   }
 
   public async syncConnection(
