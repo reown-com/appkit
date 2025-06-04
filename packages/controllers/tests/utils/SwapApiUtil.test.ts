@@ -187,7 +187,6 @@ describe('SwapApiUtil', () => {
       BlockchainApiController.getBalance = vi.fn().mockResolvedValue({
         balances: [{ address: '0x456', quantity: { decimals: '18', numeric: '1.5' } }]
       })
-      ChainController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
 
       const result = await SwapApiUtil.getMyTokensWithBalance()
 
@@ -218,37 +217,66 @@ describe('SwapApiUtil', () => {
   })
 
   describe('mapBalancesToSwapTokens', () => {
-    it('should map balances to swap tokens', () => {
-      const balances = [
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should map balances to swap tokens correctly', () => {
+      const mockBalances = [
         {
           address: '0x123',
+          symbol: 'ETH',
           quantity: { decimals: '18', numeric: '1.5' },
-          iconUrl: 'https://example.com/icon.png'
+          iconUrl: 'https://example.com/icon.png',
+          name: 'Ethereum',
+          chainId: '0x1',
+          price: 0
         }
       ]
-      ChainController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
 
-      const result = SwapApiUtil.mapBalancesToSwapTokens(balances as Balance[])
+      const result = SwapApiUtil.mapBalancesToSwapTokens(mockBalances as Balance[])
 
       expect(result).toEqual([
         {
           address: '0x123',
+          symbol: 'ETH',
           quantity: { decimals: '18', numeric: '1.5' },
+          iconUrl: 'https://example.com/icon.png',
+          name: 'Ethereum',
+          chainId: '0x1',
+          price: 0,
           decimals: 18,
           logoUri: 'https://example.com/icon.png',
-          eip2612: false,
-          iconUrl: 'https://example.com/icon.png'
+          eip2612: false
         }
       ])
     })
 
-    it('should use network token address if balance address is undefined', () => {
-      const balances = [{ address: undefined, quantity: { decimals: '18', numeric: '1.5' } }]
-      ChainController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
+    it('should use network token address when balance address is undefined', () => {
+      const mockBalances = [
+        {
+          symbol: 'ETH',
+          quantity: { decimals: '18', numeric: '1.5' },
+          name: 'Ethereum',
+          chainId: '0x1',
+          price: 0,
+          iconUrl: 'https://example.com/icon.png'
+        }
+      ]
 
-      const result = SwapApiUtil.mapBalancesToSwapTokens(balances as Balance[])
+      const result = SwapApiUtil.mapBalancesToSwapTokens(mockBalances as Balance[])
 
-      expect(result[0]?.address).toBe('0x789')
+      expect(result[0]?.address).toBe('eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+    })
+
+    it('should handle empty balances', () => {
+      const result = SwapApiUtil.mapBalancesToSwapTokens([])
+      expect(result).toEqual([])
+    })
+
+    it('should handle undefined balances', () => {
+      const result = SwapApiUtil.mapBalancesToSwapTokens(undefined as unknown as Balance[])
+      expect(result).toEqual([])
     })
   })
 })
