@@ -57,7 +57,7 @@ const signMessage = async () => {
 const connect = async () => {
   if (!props.signClient) return
   const { uri, approval } = await props.signClient.connect({
-    requiredNamespaces: {
+    optionalNamespaces: {
       eip155: {
         methods: [
           'eth_sendTransaction',

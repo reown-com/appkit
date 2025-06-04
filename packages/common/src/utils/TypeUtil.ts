@@ -214,3 +214,17 @@ export type OnRampProvider = 'coinbase' | 'meld'
  */
 export type InferredCaipNetwork<T extends { chainNamespace: string } = { chainNamespace: string }> =
   T extends { chainNamespace: infer N extends string } ? CustomCaipNetwork<N> : CustomCaipNetwork
+
+export type Connection = {
+  name?: string
+  icon?: string
+  recent?: boolean
+  networkIcon?: string
+  accounts: { type?: string; address: string }[]
+  caipNetwork?: CaipNetwork
+  connectorId: string
+  auth?: {
+    name: string | undefined
+    username: string | undefined
+  }
+}
