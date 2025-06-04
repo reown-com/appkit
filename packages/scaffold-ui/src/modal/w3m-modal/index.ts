@@ -252,10 +252,10 @@ export class W3mModalBase extends LitElement {
     // Next network information
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const nextChainNamespace = nextCaipNetwork?.chainNamespace
-    const networkIdChanged = prevCaipNetworkId !== nextNetworkId
-    const namespaceChanged = prevChainNamespace !== nextChainNamespace
+    const hasNetworkIdChanged = prevCaipNetworkId !== nextNetworkId
+    const hasNamespaceChanged = prevChainNamespace !== nextChainNamespace
     // Determine if the network change happened within the same namespace
-    const isNetworkChangedInSameNamespace = networkIdChanged && !namespaceChanged
+    const isNetworkChangedInSameNamespace = hasNetworkIdChanged && !hasNamespaceChanged
     // Use previous network's unsupported status for comparison if namespace hasn't changed
     const wasUnsupportedNetwork =
       prevCaipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
@@ -279,7 +279,7 @@ export class W3mModalBase extends LitElement {
          * Let's keep the previous logic's intent: go back if not connected and network changed.
          * This handles cases like being on the network selection view.
          */
-        if (networkIdChanged) {
+        if (hasNetworkIdChanged) {
           shouldGoBack = true
         }
       } else if (isUnsupportedNetworkScreen) {

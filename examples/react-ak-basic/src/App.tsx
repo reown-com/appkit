@@ -1,3 +1,5 @@
+import '@reown/appkit/jsx'
+
 import ActionButtonList from './components/ActionButton'
 import Footer from './components/Footer'
 import InfoList from './components/InfoList'

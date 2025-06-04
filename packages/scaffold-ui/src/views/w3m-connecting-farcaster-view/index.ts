@@ -268,10 +268,10 @@ export class W3mConnectingFarcasterView extends LitElement {
   }
 
   private copyTemplate() {
-    const inactive = !this.uri || !this.ready
+    const isInactive = !this.uri || !this.ready
 
     return html`<wui-link
-      .disabled=${inactive}
+      .disabled=${isInactive}
       @click=${this.onCopyUri}
       color="fg-200"
       data-testid="copy-wc2-uri"

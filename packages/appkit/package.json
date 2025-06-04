@@ -27,6 +27,11 @@
       "import": "./dist/esm/exports/react.js",
       "default": "./dist/esm/exports/react.js"
     },
+    "./jsx": {
+      "types": "./dist/types/exports/jsx.d.ts",
+      "import": "./dist/esm/exports/jsx.js",
+      "default": "./dist/esm/exports/jsx.js"
+    },
     "./vue": {
       "types": "./dist/types/exports/vue.d.ts",
       "import": "./dist/esm/exports/vue.js",
@@ -91,6 +96,11 @@
       "types": "./dist/types/exports/react-core.d.ts",
       "import": "./dist/esm/exports/react-core.js",
       "default": "./dist/esm/exports/react-core.js"
+    },
+    "./jsx": {
+      "types": "./dist/types/exports/jsx.d.ts",
+      "import": "./dist/esm/exports/jsx.js",
+      "default": "./dist/esm/exports/jsx.js"
     }
   },
   "typesVersions": {

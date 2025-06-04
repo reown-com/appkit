@@ -69,7 +69,6 @@ import type { WuiTooltip } from '../composites/wui-tooltip/index.js'
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
 import type { WuiTransactionListItem } from '../composites/wui-transaction-list-item/index.js'
 import type { WuiTransactionVisual } from '../composites/wui-transaction-visual/index.js'
-import type { WuiUxByReown } from '../composites/wui-ux-by-reown/index.js'
 import type { WuiVisualThumbnail } from '../composites/wui-visual-thumbnail/index.js'
 import type { WuiWalletButton } from '../composites/wui-wallet-button/index.js'
 import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
@@ -79,11 +78,9 @@ import type { WuiSeparator } from '../layout/wui-separator/index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
-
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
-      // -- Components ------------------------------------------- //
       'wui-card': CustomElement<WuiCard>
       'wui-icon': CustomElement<WuiIcon>
       'wui-image': CustomElement<WuiImage>
@@ -93,7 +90,6 @@ declare module 'react' {
       'wui-shimmer': CustomElement<WuiShimmer>
       'wui-text': CustomElement<WuiText>
       'wui-visual': CustomElement<WuiVisual>
-      // -- Composites ------------------------------------------- //
       'wui-account-button': CustomElement<WuiAccountButton>
       'wui-all-wallets-image': CustomElement<WuiAllWalletsImage>
       'wui-avatar': CustomElement<WuiAvatar>
@@ -159,11 +155,9 @@ declare module 'react' {
       'wui-checkbox': CustomElement<WuiCheckBox>
       'wui-switch': CustomElement<WuiSwitch>
       'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
-      // -- Layout ------------------------------------------- //
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>
       'wui-separator': CustomElement<WuiSeparator>
-      'wui-ux-by-reown': CustomElement<WuiUxByReown>
     }
   }
 }

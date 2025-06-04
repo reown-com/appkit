@@ -101,9 +101,9 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private submitButtonTemplate() {
-    const showSubmit = this.isAllowedToSubmit()
+    const shouldShowSubmit = this.isAllowedToSubmit()
 
-    return showSubmit
+    return shouldShowSubmit
       ? html`
           <wui-icon-link
             size="sm"

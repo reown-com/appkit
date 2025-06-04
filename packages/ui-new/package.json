@@ -56,5 +56,17 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./jsx": {
+      "types": "./dist/types/exports/jsx.d.ts",
+      "import": "./dist/esm/exports/jsx.js",
+      "default": "./dist/esm/exports/jsx.js"
+    }
+  }
 }

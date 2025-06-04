@@ -71,9 +71,9 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private submitButtonTemplate() {
-    const showSubmit = !this.loading && this.email.length > 3
+    const shouldShowSubmit = !this.loading && this.email.length > 3
 
-    return showSubmit
+    return shouldShowSubmit
       ? html`
           <wui-icon-link
             size="sm"

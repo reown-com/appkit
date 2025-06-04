@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react'
 
 import type { Wallet } from '@reown/appkit-wallet-button'
+import '@reown/appkit-wallet-button/jsx'
 import { useAppKitUpdateEmail, useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
 
