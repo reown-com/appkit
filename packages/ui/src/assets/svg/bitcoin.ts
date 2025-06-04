@@ -1,6 +1,6 @@
 import { svg } from 'lit'
 
-export const bitcoin = svg`
+export const bitcoinSvg = svg`
 <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_24458_3947)">
 <path d="M12.6542 7.45143C11.8528 10.6657 8.59691 12.6219 5.38191 11.8204C2.16827 11.019 0.211924 7.76324 1.01369 4.54918C1.81476 1.33451 5.07063 -0.621803 8.28463 0.17954C11.4994 0.980884 13.4556 4.23702 12.6541 7.45149L12.6542 7.45143H12.6542Z" fill="var(--wui-color-gray-glass-005)"/>

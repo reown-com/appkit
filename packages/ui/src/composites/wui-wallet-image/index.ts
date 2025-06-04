@@ -15,7 +15,7 @@ export class WuiWalletImage extends LitElement {
   public static override styles = [elementStyles, resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'xl' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'xl' | 'xs' | 'xxs'> = 'md'
 
   @property() public name = ''
 
