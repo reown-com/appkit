@@ -2,7 +2,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { ChainController } from '../controllers/ChainController.js'
-import { checkNamespaceConnectorId } from './ConnectorControllerUtil.js'
+import { ConnectorControllerUtil } from './ConnectorControllerUtil.js'
 import type { ChainAdapter } from './TypeUtil.js'
 
 /**
@@ -18,20 +18,36 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
   if (namespace) {
     chains.push([namespace, ChainController.state.chains.get(namespace) as ChainAdapter])
 
-    if (checkNamespaceConnectorId(namespace, CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)) {
+    if (
+      ConnectorControllerUtil.checkNamespaceConnectorId(
+        namespace,
+        CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
+    ) {
       namespaces.forEach(ns => {
         if (
           ns !== namespace &&
-          checkNamespaceConnectorId(ns, CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+          ConnectorControllerUtil.checkNamespaceConnectorId(
+            ns,
+            CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+          )
         ) {
           chains.push([ns, ChainController.state.chains.get(ns) as ChainAdapter])
         }
       })
-    } else if (checkNamespaceConnectorId(namespace, CommonConstantsUtil.CONNECTOR_ID.AUTH)) {
+    } else if (
+      ConnectorControllerUtil.checkNamespaceConnectorId(
+        namespace,
+        CommonConstantsUtil.CONNECTOR_ID.AUTH
+      )
+    ) {
       namespaces.forEach(ns => {
         if (
           ns !== namespace &&
-          checkNamespaceConnectorId(ns, CommonConstantsUtil.CONNECTOR_ID.AUTH)
+          ConnectorControllerUtil.checkNamespaceConnectorId(
+            ns,
+            CommonConstantsUtil.CONNECTOR_ID.AUTH
+          )
         ) {
           chains.push([ns, ChainController.state.chains.get(ns) as ChainAdapter])
         }
