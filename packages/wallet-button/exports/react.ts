@@ -4,11 +4,17 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSnapshot } from 'valtio'
 
 import type { ParsedCaipAddress } from '@reown/appkit-common'
-import { ChainController, type Connector, ConnectorController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  type Connector,
+  ConnectorController,
+  ConnectorControllerUtil,
+  ModalController,
+  RouterController
+} from '@reown/appkit-controllers'
 
 import { ApiController } from '../src/controllers/ApiController.js'
 import { WalletButtonController } from '../src/controllers/WalletButtonController.js'
-import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
 import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
 import type { SocialProvider } from '../src/utils/TypeUtil.js'
 import { WalletUtil } from '../src/utils/WalletUtil.js'
@@ -94,13 +100,25 @@ export function useAppKitWallet(parameters?: {
         WalletButtonController.setError(undefined)
 
         if (wallet === ConstantsUtil.Email) {
-          await ConnectorUtil.connectEmail().then(handleSuccess)
+          await ConnectorControllerUtil.connectEmail({
+            onOpen() {
+              ModalController.open().then(() => RouterController.push('EmailLogin'))
+            }
+          }).then(handleSuccess)
 
           return
         }
 
         if (ConstantsUtil.Socials.some(social => social === wallet)) {
-          await ConnectorUtil.connectSocial(wallet as SocialProvider).then(handleSuccess)
+          await ConnectorControllerUtil.connectSocial({
+            social: wallet as SocialProvider,
+            onOpenFarcaster() {
+              ModalController.open({ view: 'ConnectingFarcaster' })
+            },
+            onConnect() {
+              RouterController.push('Connect')
+            }
+          }).then(handleSuccess)
 
           return
         }
@@ -112,15 +130,28 @@ export function useAppKitWallet(parameters?: {
           : undefined
 
         if (connector) {
-          await ConnectorUtil.connectExternal(connector).then(handleSuccess)
+          await ConnectorControllerUtil.connectExternal(connector).then(handleSuccess)
 
           return
         }
 
-        await ConnectorUtil.connectWalletConnect({
+        await ConnectorControllerUtil.connectWalletConnect({
           walletConnect: wallet === 'walletConnect',
           connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
-          wallet: walletButton
+          onOpen(isMobile) {
+            ModalController.open().then(() => {
+              if (isMobile) {
+                RouterController.replace('AllWallets')
+              } else {
+                RouterController.replace('ConnectingWalletConnect', {
+                  wallet: walletButton
+                })
+              }
+            })
+          },
+          onConnect() {
+            RouterController.replace('Connect')
+          }
         }).then(handleSuccess)
       } catch (err) {
         handleError(err)
@@ -156,7 +187,7 @@ export function useAppKitUpdateEmail(parameters?: {
     setIsPending(true)
     setError(undefined)
 
-    await ConnectorUtil.updateEmail()
+    await ConnectorControllerUtil.updateEmail()
       .then(emailData => {
         setData(emailData)
         onSuccess?.(emailData)

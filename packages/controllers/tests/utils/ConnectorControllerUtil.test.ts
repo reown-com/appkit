@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { type ChainNamespace } from '@reown/appkit-common'
 
 import { ConnectorController } from '../../src/controllers/ConnectorController.js'
-import { checkNamespaceConnectorId } from '../../src/utils/ConnectorControllerUtil.js'
+import { ConnectorControllerUtil } from '../../src/utils/ConnectorControllerUtil.js'
 
 describe('checkNamespaceConnectorId', () => {
   it('should return true if the namespace is associated with the specified connector id', () => {
@@ -11,7 +11,7 @@ describe('checkNamespaceConnectorId', () => {
     const connectorId = 'eip155-connector'
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(connectorId)
 
-    const result = checkNamespaceConnectorId(namespace, connectorId)
+    const result = ConnectorControllerUtil.checkNamespaceConnectorId(namespace, connectorId)
     expect(result).toBe(true)
   })
 
@@ -20,7 +20,7 @@ describe('checkNamespaceConnectorId', () => {
     const connectorId = 'eip155-connector'
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('different-connector')
 
-    const result = checkNamespaceConnectorId(namespace, connectorId)
+    const result = ConnectorControllerUtil.checkNamespaceConnectorId(namespace, connectorId)
     expect(result).toBe(false)
   })
 })
