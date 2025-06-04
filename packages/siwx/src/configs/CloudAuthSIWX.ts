@@ -11,7 +11,6 @@ import {
   ApiController,
   BlockchainApiController,
   ChainController,
-  OptionsController,
   type SIWXConfig,
   type SIWXMessage,
   type SIWXSession
@@ -56,22 +55,6 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async createMessage(input: SIWXMessage.Input): Promise<SIWXMessage> {
-    if (OptionsController.state.remoteFeatures?.emailCapture) {
-      const email = ChainController.getAccountProp(
-        'user',
-        input.chainId.split(':')[0] as ChainNamespace
-      )?.email
-
-      const emailResource = `email:${email}`
-
-      if (this.messenger.resources) {
-        this.messenger.resources = this.messenger.resources.filter(r => !r.startsWith('email:'))
-        this.messenger.resources.push(emailResource)
-      } else {
-        this.messenger.resources = [emailResource]
-      }
-    }
-
     return this.messenger.createMessage(input)
   }
 
@@ -211,6 +194,8 @@ export class CloudAuthSIWX implements SIWXConfig {
     })
 
     this.otpUuid = otp.uuid
+
+    this.messenger.resources = [`email:${email}`]
 
     return otp
   }

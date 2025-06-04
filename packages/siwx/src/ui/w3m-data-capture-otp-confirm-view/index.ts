@@ -22,7 +22,6 @@ export class W3mDataCaptureOtpConfirmView extends W3mEmailOtpWidget {
 
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     await this.siwx.confirmEmailOtp({ code: otp })
-    ChainController.setAccountProp('user', { email: this.email }, undefined)
     RouterController.replace('SIWXSignMessage')
   }
 
