@@ -204,11 +204,11 @@ export abstract class AppKitBaseClient {
         return
       }
 
-      const errorHandlers: Record<string, () => void> = {
-        RATE_LIMITED: () => {
+      switch (error.message) {
+        case 'RATE_LIMITED':
           AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
-        },
-        SERVER_ERROR: () => {
+          break
+        case 'SERVER_ERROR': {
           const originalError = error.cause instanceof Error ? error.cause : error
           AlertController.open(
             {
@@ -219,14 +219,10 @@ export abstract class AppKitBaseClient {
             },
             'error'
           )
+          break
         }
-      }
-
-      const handler = errorHandlers[error.message]
-      if (handler) {
-        handler()
-      } else {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+        default:
+          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
       }
     }
   }
