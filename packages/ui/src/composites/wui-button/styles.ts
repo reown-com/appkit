@@ -14,6 +14,32 @@ export default css`
   }
 
   /* -- Sizes --------------------------------------------------- */
+  button[data-size='xs'] {
+    padding: var(--wui-spacing-3xs) var(--wui-spacing-s) var(--wui-spacing-3xs) var(--wui-spacing-s);
+    height: 24px;
+  }
+
+  button[data-size='xs'][data-icon-left='true'][data-icon-right='false'] {
+    padding: var(--wui-spacing-3xs) var(--wui-spacing-s) var(--wui-spacing-3xs) var(--wui-spacing-s);
+  }
+
+  button[data-size='xs'][data-icon-right='true'][data-icon-left='false'] {
+    padding: var(--wui-spacing-3xs) var(--wui-spacing-s) var(--wui-spacing-3xs) var(--wui-spacing-s);
+  }
+
+  button[data-size='sm'] {
+    padding: 7.2px var(--wui-spacing-s) 7.2px var(--wui-spacing-s);
+    height: 32px;
+  }
+
+  button[data-size='sm'][data-icon-left='true'][data-icon-right='false'] {
+    padding: 7.2px var(--wui-spacing-s) 7.2px var(--wui-spacing-s);
+  }
+
+  button[data-size='sm'][data-icon-right='true'][data-icon-left='false'] {
+    padding: 7.2px var(--wui-spacing-s) 7.2px var(--wui-spacing-s);
+  }
+
   button[data-size='md'] {
     padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-l);
     height: 36px;

@@ -33,7 +33,7 @@ interface UseAppKitConnectionProps {
     address: string
     namespace: ChainNamespace
     hasSwitchedAccount: boolean
-    hasSwitchedSwitched: boolean
+    hasSwitchedWallet: boolean
     hasDeletedWallet: boolean
   }) => void
   onError?: (error: Error) => void
@@ -289,13 +289,13 @@ export function useAppKitConnection(
           address: newAddress,
           namespace: newNamespace,
           hasSwitchedAccount,
-          hasSwitchedSwitched
+          hasSwitchedWallet
         }) {
           onSuccess?.({
             address: newAddress,
             namespace: newNamespace,
             hasSwitchedAccount,
-            hasSwitchedSwitched,
+            hasSwitchedWallet,
             hasDeletedWallet: false
           })
         }
@@ -322,7 +322,7 @@ export function useAppKitConnection(
       address,
       namespace: chainNamespace,
       hasSwitchedAccount: false,
-      hasSwitchedSwitched: false,
+      hasSwitchedWallet: false,
       hasDeletedWallet: true
     })
     forceUpdateCounter.value += 1
