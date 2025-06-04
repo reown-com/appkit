@@ -10,7 +10,7 @@ import {
   SendController,
   SnackController
 } from '../../exports/index.js'
-import { SendApiUtil } from '../../src/utils/SendApiUtil.js'
+import { BalanceUtil } from '../../src/utils/BalanceUtil.js'
 
 // -- Setup --------------------------------------------------------------------
 const token = {
@@ -78,7 +78,7 @@ describe('SendController', () => {
         activeCaipNetwork: extendedMainnet,
         activeCaipAddress: 'eip155:1:0x123'
       } as unknown as ChainControllerState)
-      vi.spyOn(SendApiUtil, 'getMyTokensWithBalance').mockResolvedValue([])
+      vi.spyOn(BalanceUtil, 'getMyTokensWithBalance').mockResolvedValue([])
       vi.spyOn(CoreHelperUtil, 'isAllowedRetry').mockReturnValue(true)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
     })
@@ -90,7 +90,7 @@ describe('SendController', () => {
       const result = await SendController.fetchTokenBalance()
 
       expect(result).toEqual([])
-      expect(SendApiUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
+      expect(BalanceUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
       expect(SendController.state.loading).toBe(false)
     })
 
@@ -105,7 +105,7 @@ describe('SendController', () => {
       const result = await SendController.fetchTokenBalance()
 
       expect(result).toEqual([])
-      expect(SendApiUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
+      expect(BalanceUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
     })
 
     it('should not fetch balance if namespace is not defined', async () => {
@@ -117,7 +117,7 @@ describe('SendController', () => {
       const result = await SendController.fetchTokenBalance()
 
       expect(result).toEqual([])
-      expect(SendApiUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
+      expect(BalanceUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
     })
 
     it('should not fetch balance if address is not defined', async () => {
@@ -129,12 +129,12 @@ describe('SendController', () => {
       const result = await SendController.fetchTokenBalance()
 
       expect(result).toEqual([])
-      expect(SendApiUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
+      expect(BalanceUtil.getMyTokensWithBalance).not.toHaveBeenCalled()
     })
 
     it('should set the retry if something fails', async () => {
       const mockError = new Error('API Error')
-      vi.spyOn(SendApiUtil, 'getMyTokensWithBalance').mockRejectedValue(mockError)
+      vi.spyOn(BalanceUtil, 'getMyTokensWithBalance').mockRejectedValue(mockError)
       const onError = vi.fn()
 
       const now = Date.now()
@@ -159,7 +159,7 @@ describe('SendController', () => {
         { quantity: { decimals: '6' }, symbol: 'USDC', address: '0x789' }
       ]
 
-      vi.spyOn(SendApiUtil, 'getMyTokensWithBalance').mockResolvedValue(mockBalances as Balance[])
+      vi.spyOn(BalanceUtil, 'getMyTokensWithBalance').mockResolvedValue(mockBalances as Balance[])
 
       const result = await SendController.fetchTokenBalance()
 

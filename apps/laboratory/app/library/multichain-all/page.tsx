@@ -25,7 +25,7 @@ const queryClient = new QueryClient()
 const networks = ConstantsUtil.AllNetworks
 
 const wagmiAdapter = new WagmiAdapter({
-  ssr: false,
+  ssr: true,
   networks,
   projectId: ConstantsUtil.ProjectId
 })

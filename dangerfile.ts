@@ -451,14 +451,27 @@ function shouldIgnoreMatch(match: string, content: string): boolean {
   if (/https?:\/\//iu.test(match)) {
     return true
   }
+
+  // Skip pure alphabetic strings
   if (/^[A-Za-z]{32,}$/u.test(match)) {
+    return true
+  }
+
+  // Skip file paths and extensions
+  if (/\.(?<file_extension>js|ts|json|md|txt|css|scss|html|xml|yml|yaml)$/u.test(match)) {
     return true
   }
 
   const idx = content.indexOf(match)
   if (idx !== -1) {
     const ctx = content.substring(Math.max(0, idx - 40), idx + match.length + 40)
+
     if (/process\.env\s*(?:\.|\[)/u.test(ctx)) {
+      return true
+    }
+
+    // Skip import/require statements
+    if (/(?<imports>import|require|from)\s+['"`]/iu.test(ctx)) {
       return true
     }
   }
