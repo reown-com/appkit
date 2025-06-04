@@ -142,7 +142,7 @@ export namespace W3mFrameTypes {
     chainId: number | CaipNetworkId
   }
 
-  export type RPCRequest =
+  export type RPCRequest = (
     | z.infer<typeof RpcEthAccountsRequest>
     | z.infer<typeof RpcEthBlockNumber>
     | z.infer<typeof RpcEthCall>
@@ -190,6 +190,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletGrantPermissionsRequest>
     | z.infer<typeof WalletRevokePermissionsRequest>
     | z.infer<typeof WalletGetAssetsRequest>
+  ) & { chainId?: string | number }
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 

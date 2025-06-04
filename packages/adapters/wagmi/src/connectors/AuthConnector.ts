@@ -61,7 +61,8 @@ export function authConnector(parameters: AuthParameters) {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
         },
-        abortController: ErrorUtil.EmbeddedWalletAbortController
+        abortController: ErrorUtil.EmbeddedWalletAbortController,
+        getActiveCaipNetwork: () => ChainController.state.activeCaipNetwork
       })
     }
 
@@ -169,7 +170,8 @@ export function authConnector(parameters: AuthParameters) {
             } else if (reason === 'unverified_domain') {
               AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
             }
-          }
+          },
+          getActiveCaipNetwork: () => ChainController.state.activeCaipNetwork
         })
       }
 

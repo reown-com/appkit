@@ -1,4 +1,5 @@
 import type { EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 
 import { W3mFrame } from './W3mFrame.js'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
@@ -15,6 +16,7 @@ interface W3mFrameProviderConfig {
   enableLogger?: boolean
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
+  getActiveCaipNetwork: () => CaipNetwork | undefined
 }
 
 // -- Provider --------------------------------------------------------
@@ -22,6 +24,7 @@ export class W3mFrameProvider {
   public w3mLogger?: W3mFrameLogger
   private w3mFrame: W3mFrame
   private abortController: AbortController
+  private getActiveCaipNetwork: () => CaipNetwork | undefined
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
@@ -42,12 +45,14 @@ export class W3mFrameProvider {
     chainId,
     enableLogger = true,
     onTimeout,
-    abortController
+    abortController,
+    getActiveCaipNetwork
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
     }
     this.abortController = abortController
+    this.getActiveCaipNetwork = getActiveCaipNetwork
 
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
     this.onTimeout = onTimeout
@@ -463,8 +468,12 @@ export class W3mFrameProvider {
       if (W3mFrameRpcConstants.GET_CHAIN_ID === req.method) {
         return this.getLastUsedChainId()
       }
-
-      this.rpcRequestHandler?.(req)
+      const request = req
+      const chainId = this.getActiveCaipNetwork()?.id
+      if (chainId) {
+        request.chainId = chainId
+      }
+      this.rpcRequestHandler?.(request)
       const response = await this.appEvent<'Rpc'>({
         type: W3mFrameConstants.APP_RPC_REQUEST,
         payload: req
