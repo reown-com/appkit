@@ -1,12 +1,12 @@
 ---
-'@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit-utils': patch
 '@reown/appkit-controllers': patch
-'@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
+'@reown/appkit-adapter-ethers': patch
+'@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
+'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
+'@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds automatic safe connector support to ethers and ethers5 clients
+Refactors token balance util to use getAssets call only when using Auth provider

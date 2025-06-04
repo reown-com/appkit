@@ -1,6 +1,6 @@
 import { svg } from 'lit'
 
-export const solana = svg`
+export const solanaSvg = svg`
 <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_24458_3940)">
 <path d="M6.49987 12C9.81351 12 12.4997 9.31371 12.4997 6C12.4997 2.68629 9.81351 0 6.49987 0C3.18623 0 0.5 2.68629 0.5 6C0.5 9.31371 3.18623 12 6.49987 12Z" fill="var(--wui-color-gray-glass-005)"/>

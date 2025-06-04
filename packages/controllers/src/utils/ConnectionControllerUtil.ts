@@ -1,9 +1,9 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
 
-import { type Connection, ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
-import { StorageUtil } from './StorageUtil.js'
 
 // -- Types ------------------------------------------ //
 interface ExcludeConnectorAddressFromConnectionsParamters {
@@ -104,23 +104,23 @@ export const ConnectionControllerUtil = {
     })
   },
   getConnectionsData(namespace: ChainNamespace) {
-    const connections = ConnectionController.state.connections.get(namespace) ?? []
+    const allConnections = ConnectionController.state.connections.get(namespace) ?? []
+    const connections = allConnections.filter(c => !c.recent)
 
     const activeConnectorId = ConnectorController.state.activeConnectorIds[namespace]
 
-    const storageConnections = StorageUtil.getConnections()
-    const storageConnectionsByNamespace = storageConnections[namespace] ?? []
-    const storageConnectionsWithCurrentActiveConnectors = storageConnectionsByNamespace.filter(
-      connection => ConnectorController.getConnectorById(connection.connectorId)
+    const recentConnections = allConnections.filter(c => c.recent)
+    const recentConnectionsWithCurrentActiveConnectors = recentConnections.filter(connection =>
+      ConnectorController.getConnectorById(connection.connectorId)
     )
-    const dedupedStorageConnections = ConnectionControllerUtil.excludeExistingConnections(
+    const dedupedRecentConnections = ConnectionControllerUtil.excludeExistingConnections(
       [...connections.map(c => c.connectorId), ...(activeConnectorId ? [activeConnectorId] : [])],
-      storageConnectionsWithCurrentActiveConnectors
+      recentConnectionsWithCurrentActiveConnectors
     )
 
     return {
       connections,
-      storageConnections: dedupedStorageConnections
+      recentConnections: dedupedRecentConnections
     }
   }
 }

@@ -2,6 +2,7 @@
 import { type ChainNamespace, ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
@@ -16,7 +17,7 @@ import { StorageUtil } from './StorageUtil.js'
 import type { Connector, SocialProvider } from './TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
-const UPDATE_EMAIL_INTERVAL = 1_000
+const UPDATE_EMAIL_INTERVAL_MS = 1_000
 
 interface ConnectWalletConnectParameters {
   walletConnect: boolean
@@ -57,7 +58,7 @@ export const ConnectorControllerUtil = {
     onOpen,
     onConnect
   }: ConnectWalletConnectParameters): Promise<ParsedCaipAddress> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if (walletConnect) {
         ConnectorController.setActiveConnector(connector)
       }
@@ -179,7 +180,6 @@ export const ConnectorControllerUtil = {
                 }
               }
             } catch (err) {
-              reject(new Error('Failed to connect'))
               if (socialProvider) {
                 EventsController.sendEvent({
                   type: 'track',
@@ -187,6 +187,7 @@ export const ConnectorControllerUtil = {
                   properties: { provider: socialProvider }
                 })
               }
+              reject(new Error('Failed to connect'))
             }
           } else if (socialProvider) {
             EventsController.sendEvent({
@@ -337,7 +338,7 @@ export const ConnectorControllerUtil = {
           unsubscribeModalController()
           resolve({ email: newEmail })
         }
-      }, UPDATE_EMAIL_INTERVAL)
+      }, UPDATE_EMAIL_INTERVAL_MS)
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
@@ -350,5 +351,14 @@ export const ConnectorControllerUtil = {
         }
       })
     })
+  },
+  canSwitchToSmartAccount(namespace: ChainNamespace) {
+    const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+
+    return (
+      isSmartAccountEnabled &&
+      AccountController.state.preferredAccountTypes?.[namespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+    )
   }
 }

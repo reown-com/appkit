@@ -1,12 +1,12 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
 
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
-import { type Connection, ConnectionController } from '../src/controllers/ConnectionController.js'
+import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
@@ -14,16 +14,21 @@ import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/util
 import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
-export type { Connection } from '../src/controllers/ConnectionController.js'
+export type { Connection } from '@reown/appkit-common'
+
+interface DisconnectParams {
+  id?: string
+  namespace?: ChainNamespace
+}
 
 interface UseAppKitConnectionProps {
   namespace?: ChainNamespace
   onSuccess?: (params: {
     address: string
     namespace: ChainNamespace
-    isAccountSwitched: boolean
-    isWalletSwitched: boolean
-    isWalletDeleted: boolean
+    hasSwitchedAccount: boolean
+    hasSwitchedWallet: boolean
+    hasDeletedWallet: boolean
   }) => void
   onError?: (error: Error) => void
 }
@@ -33,7 +38,7 @@ interface SwitchConnectionParams {
   address?: string
 }
 
-interface UseAppKitConnectionDeleteRecentConnectionProps {
+interface DeleteRecentConnectionProps {
   address: string
   connectorId: string
 }
@@ -107,8 +112,8 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 }
 
 export function useDisconnect() {
-  async function disconnect(props?: { connectorId?: string; namespace?: ChainNamespace }) {
-    await ConnectionController.disconnect({ id: props?.connectorId, namespace: props?.namespace })
+  async function disconnect(props?: DisconnectParams) {
+    await ConnectionController.disconnect(props)
   }
 
   return { disconnect }
@@ -128,7 +133,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
     throw new Error('No namespace found')
   }
 
-  const { connections, storageConnections } =
+  const { connections, recentConnections } =
     ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
   const formatConnection = useCallback((connection: Connection) => {
@@ -148,7 +153,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
 
   return {
     connections: connections.map(formatConnection),
-    storageConnections: storageConnections.map(formatConnection)
+    recentConnections: recentConnections.map(formatConnection)
   }
 }
 
@@ -165,12 +170,9 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
     throw new Error('No namespace found')
   }
 
-  const connection = useMemo(() => {
-    const connectorId = activeConnectorIds[chainNamespace]
-    const connList = connections.get(chainNamespace)
-
-    return connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
-  }, [connections, activeConnectorIds, chainNamespace])
+  const connectorId = activeConnectorIds[chainNamespace]
+  const connList = connections.get(chainNamespace)
+  const connection = connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
 
   const switchConnection = useCallback(
     async ({ connection: _connection, address }: SwitchConnectionParams) => {
@@ -184,15 +186,15 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
           onChange({
             address: newAddress,
             namespace: newNamespace,
-            isAccountSwitched,
-            isWalletSwitched
+            hasSwitchedAccount,
+            hasSwitchedWallet
           }) {
             onSuccess?.({
               address: newAddress,
               namespace: newNamespace,
-              isAccountSwitched,
-              isWalletSwitched,
-              isWalletDeleted: false
+              hasSwitchedAccount,
+              hasSwitchedWallet,
+              hasDeletedWallet: false
             })
           }
         })
@@ -207,14 +209,14 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   )
 
   const deleteConnection = useCallback(
-    ({ address, connectorId }: UseAppKitConnectionDeleteRecentConnectionProps) => {
+    ({ address, connectorId }: DeleteRecentConnectionProps) => {
       StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
       onSuccess?.({
         address,
         namespace: chainNamespace,
-        isAccountSwitched: false,
-        isWalletSwitched: false,
-        isWalletDeleted: true
+        hasSwitchedAccount: false,
+        hasSwitchedWallet: false,
+        hasDeletedWallet: true
       })
       forceUpdate(prev => prev + 1)
     },

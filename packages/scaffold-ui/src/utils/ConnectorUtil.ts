@@ -203,6 +203,9 @@ export const ConnectorUtil = {
 
       return { accounts, chainId }
     } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn(`Failed to fetch provider data for ${connector.name}`, err)
+
       return { accounts: [], chainId: undefined }
     }
   }

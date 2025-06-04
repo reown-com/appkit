@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
-import { proxy, ref } from 'valtio/vanilla'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
+  type Connection,
   ParseUtil
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
@@ -15,6 +16,7 @@ import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
+  ChainAdapter,
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
@@ -33,19 +35,6 @@ import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
-export type Connection = {
-  name?: string
-  icon?: string
-  networkIcon?: string
-  accounts: { type?: string; address: string }[]
-  caipNetwork?: CaipNetwork
-  connectorId: string
-  auth?: {
-    name: string | undefined
-    username: string | undefined
-  }
-}
-
 interface SwitchConnectionParams {
   connection: Connection
   address?: string
@@ -54,8 +43,8 @@ interface SwitchConnectionParams {
   onChange?: (params: {
     address: string
     namespace: ChainNamespace
-    isAccountSwitched: boolean
-    isWalletSwitched: boolean
+    hasSwitchedAccount: boolean
+    hasSwitchedWallet: boolean
   }) => void
 }
 
@@ -75,7 +64,6 @@ interface HandleActiveConnectionParams {
 interface DisconnectParams {
   id?: string
   namespace?: ChainNamespace
-  disconnectAll?: boolean
 }
 
 export interface ConnectExternalOptions {
@@ -90,19 +78,20 @@ export interface ConnectExternalOptions {
   socialUri?: string
 }
 
+interface HandleAuthAccountSwitchParams {
+  address: string
+  connection: Connection
+  namespace: ChainNamespace
+}
+
 export interface DisconnectParameters {
   id?: string
   chainNamespace?: ChainNamespace
 }
 
-export interface DisconnectAllParameters {
-  chainNamespace?: ChainNamespace
-}
-
 export interface ConnectionControllerClient {
   connectWalletConnect?: () => Promise<void>
-  disconnect: (params: DisconnectParameters) => Promise<void>
-  disconnectAll: (params: DisconnectAllParameters) => Promise<void>
+  disconnect: (params?: DisconnectParameters) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
@@ -162,6 +151,10 @@ let wcConnectionPromise: Promise<void> | undefined
 const controller = {
   state,
 
+  subscribe(callback: (newState: ConnectionControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
+
   subscribeKey<K extends StateKey>(
     key: K,
     callback: (value: ConnectionControllerState[K]) => void
@@ -175,6 +168,22 @@ const controller = {
 
   setClient(client: ConnectionControllerClient) {
     state._client = ref(client)
+  },
+
+  initialize(adapters: ChainAdapter[]) {
+    const storageConnections = StorageUtil.getConnections()
+
+    for (const adapter of adapters) {
+      const namespace = adapter.namespace
+
+      if (namespace) {
+        const existingConnections = state.connections.get(namespace) ?? []
+        const storageConnectionsByNamespace = storageConnections[namespace] ?? []
+        const allConnections = [...existingConnections, ...storageConnectionsByNamespace]
+
+        state.connections.set(namespace, allConnections)
+      }
+    }
   },
 
   async connectWalletConnect() {
@@ -367,18 +376,12 @@ const controller = {
     state.isSwitchingConnection = isSwitchingConnection
   },
 
-  async disconnect({ id, namespace, disconnectAll }: DisconnectParams = {}) {
+  async disconnect({ id, namespace }: DisconnectParams = {}) {
     try {
-      if (disconnectAll) {
-        await ConnectionController._getClient()?.disconnectAll({
-          chainNamespace: namespace
-        })
-      } else {
-        await ConnectionController._getClient()?.disconnect({
-          id,
-          chainNamespace: namespace
-        })
-      }
+      await ConnectionController._getClient()?.disconnect({
+        id,
+        chainNamespace: namespace
+      })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
@@ -388,11 +391,11 @@ const controller = {
     state.connections = new Map(state.connections.set(chainNamespace, connections))
   },
 
-  async handleAuthAccountSwitch(address: string, namespace: ChainNamespace) {
-    const smartAccountAddress = AccountController.getSmartAccountAddress(namespace)
+  async handleAuthAccountSwitch({ address, connection, namespace }: HandleAuthAccountSwitchParams) {
+    const smartAccountAddress = connection.accounts.find(c => c.type === 'smartAccount')?.address
     const isAddressSmartAccount = smartAccountAddress?.toLowerCase() === address.toLowerCase()
     const accountType =
-      isAddressSmartAccount && ConnectorController.canSwitchToSmartAccount(namespace)
+      isAddressSmartAccount && ConnectorControllerUtil.canSwitchToSmartAccount(namespace)
         ? 'smartAccount'
         : 'eoa'
 
@@ -419,7 +422,7 @@ const controller = {
     )
 
     if (isAuthConnector && address) {
-      await ConnectionController.handleAuthAccountSwitch(address, namespace)
+      await ConnectionController.handleAuthAccountSwitch({ address, connection, namespace })
     }
 
     return connectData?.address
@@ -501,7 +504,7 @@ const controller = {
     }
 
     if (isAuthConnector && address) {
-      await ConnectionController.handleAuthAccountSwitch(address, namespace)
+      await ConnectionController.handleAuthAccountSwitch({ address, connection, namespace })
     }
 
     return newAddress
@@ -539,13 +542,13 @@ const controller = {
         })
 
         if (currentAddress && newAddress) {
-          const isAccountSwitched = newAddress.toLowerCase() !== currentAddress.toLowerCase()
+          const hasSwitchedAccount = newAddress.toLowerCase() !== currentAddress.toLowerCase()
 
           onChange?.({
             address: newAddress,
             namespace,
-            isAccountSwitched,
-            isWalletSwitched: status === 'active'
+            hasSwitchedAccount,
+            hasSwitchedWallet: status === 'active'
           })
         }
         break
@@ -563,8 +566,8 @@ const controller = {
           onChange?.({
             address: newAddress,
             namespace,
-            isAccountSwitched: true,
-            isWalletSwitched: true
+            hasSwitchedAccount: true,
+            hasSwitchedWallet: true
           })
         }
         break

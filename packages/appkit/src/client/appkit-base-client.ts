@@ -19,6 +19,7 @@ import type {
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerClient,
+  ConnectionControllerState,
   ConnectorType,
   EstimateGasTransactionArgs,
   EventsControllerState,
@@ -46,6 +47,7 @@ import {
   BlockchainApiController,
   ChainController,
   ConnectionController,
+  ConnectionControllerUtil,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
@@ -179,19 +181,52 @@ export abstract class AppKitBaseClient {
   }
 
   private async checkAllowedOrigins() {
-    const allowedOrigins = await ApiController.fetchAllowedOrigins()
-    if (allowedOrigins && CoreHelperUtil.isClient()) {
+    try {
+      const allowedOrigins = await ApiController.fetchAllowedOrigins()
+
+      if (!allowedOrigins || !CoreHelperUtil.isClient()) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+        return
+      }
+
       const currentOrigin = window.location.origin
       const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
         currentOrigin,
         allowedOrigins,
         WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
       )
+
       if (!isOriginAllowed) {
         AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
       }
-    } else {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+        return
+      }
+
+      switch (error.message) {
+        case 'RATE_LIMITED':
+          AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
+          break
+        case 'SERVER_ERROR': {
+          const originalError = error.cause instanceof Error ? error.cause : error
+          AlertController.open(
+            {
+              shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
+              longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
+                originalError.message
+              )
+            },
+            'error'
+          )
+          break
+        }
+        default:
+          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      }
     }
   }
 
@@ -246,6 +281,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize(options.adapters ?? [])
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
@@ -489,7 +525,6 @@ export abstract class AppKitBaseClient {
 
           await adapter?.disconnect({ id: connectorId })
 
-          // Used for shim disconnection
           if (connectorId) {
             StorageUtil.addDisconnectedConnectorId(connectorId, namespace)
           }
@@ -508,34 +543,6 @@ export abstract class AppKitBaseClient {
           })
         } catch (error) {
           throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
-        }
-      },
-      disconnectAll: async ({ chainNamespace }) => {
-        try {
-          const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-          const adapter = this.getAdapter(namespace)
-          const data = await adapter?.disconnectAll()
-
-          if (data?.connections) {
-            data.connections.forEach(connection => {
-              StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
-            })
-          }
-
-          SendController.resetSend()
-          ConnectionController.resetWcConnection()
-          await SIWXUtil.clearSessions()
-          ConnectorController.setFilterByNamespace(undefined)
-
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'DISCONNECT_SUCCESS',
-            properties: {
-              namespace: chainNamespace || 'all'
-            }
-          })
-        } catch (error) {
-          throw new Error(`Failed to disconnect all: ${(error as Error).message}`)
         }
       },
       checkInstalled: (ids?: string[]) => {
@@ -1598,6 +1605,18 @@ export abstract class AppKitBaseClient {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
+  public getConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).connections
+
+  public getRecentConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).recentConnections
+
+  public switchConnection: (typeof ConnectionController)['switchConnection'] = params =>
+    ConnectionController.switchConnection(params)
+
+  public deleteConnection: (typeof StorageUtil)['deleteAddressFromConnection'] = params =>
+    StorageUtil.deleteAddressFromConnection(params)
+
   public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] = (
     connectedWalletInfo,
     chain
@@ -1704,6 +1723,10 @@ export abstract class AppKitBaseClient {
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
     return ThemeController.subscribe(callback)
+  }
+
+  public subscribeConnections(callback: (newState: ConnectionControllerState) => void) {
+    return ConnectionController.subscribe(callback)
   }
 
   public getWalletInfo() {

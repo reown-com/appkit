@@ -5,6 +5,7 @@ import {
   ConnectorControllerUtil,
   type Connector,
   ConnectorController,
+  ConnectorControllerUtil,
   FetchUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
@@ -85,7 +86,11 @@ describe('AppKitWalletButton', () => {
     const appKitWalletButton = new AppKitWalletButton()
 
     appKitWalletButton.connect('google')
-    expect(ConnectorControllerUtil.connectSocial).toHaveBeenCalledWith('google')
+    expect(ConnectorControllerUtil.connectSocial).toHaveBeenCalledWith({
+      social: 'google',
+      onConnect: expect.any(Function),
+      onOpenFarcaster: expect.any(Function)
+    })
   })
 
   test('it should connect to metamask (external)', () => {
@@ -119,9 +124,8 @@ describe('AppKitWalletButton', () => {
     expect(ConnectorControllerUtil.connectWalletConnect).toHaveBeenCalledWith({
       walletConnect: true,
       connector: WC_CONNECTOR,
-      wallet: {
-        id: 'walletConnect'
-      }
+      onConnect: expect.any(Function),
+      onOpen: expect.any(Function)
     })
   })
 })

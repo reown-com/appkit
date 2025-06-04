@@ -1,6 +1,7 @@
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
 import type { SocialProvider } from '@reown/appkit-controllers'
-import { type Connection, ConnectorController, StorageUtil } from '@reown/appkit-controllers'
+import { ConnectorController, StorageUtil } from '@reown/appkit-controllers'
 
 import { ConnectorUtil } from './ConnectorUtil.js'
 

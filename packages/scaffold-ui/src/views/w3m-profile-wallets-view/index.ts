@@ -8,11 +8,10 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   ParseUtil
 } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
-  type Connection,
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
@@ -69,16 +68,16 @@ const UI_CONFIG = {
   OPACITY_RANGE: [0, 1] as number[]
 } as const
 
-const CHAIN_ICONS = {
-  eip155: 'ethereum-black',
-  solana: 'solana-black',
-  bip122: 'bitcoin-black'
+const NAMESPACE_ICONS = {
+  eip155: 'ethereum',
+  solana: 'solana',
+  bip122: 'bitcoin'
 } as const
 
 const NAMESPACE_TABS = [
-  { namespace: 'eip155', icon: CHAIN_ICONS.eip155, label: 'EVM' },
-  { namespace: 'solana', icon: CHAIN_ICONS.solana, label: 'Solana' },
-  { namespace: 'bip122', icon: CHAIN_ICONS.bip122, label: 'Bitcoin' }
+  { namespace: 'eip155', icon: NAMESPACE_ICONS.eip155, label: 'EVM' },
+  { namespace: 'solana', icon: NAMESPACE_ICONS.solana, label: 'Solana' },
+  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' }
 ] as const
 
 const TAB_WIDTHS = { 1: 320, 2: 160, 3: 106 } as const
@@ -105,7 +104,6 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private caipAddress: CaipAddress | undefined = undefined
   @state() private profileName: string | null | undefined = undefined
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
-  @state() private smartAccountAddress: string | undefined = undefined
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
@@ -115,7 +113,6 @@ export class W3mProfileWalletsView extends LitElement {
     super()
 
     this.currentTab = this.namespace ? this.namespaces.indexOf(this.namespace) : 0
-    this.smartAccountAddress = AccountController.getSmartAccountAddress(this.namespace)
     this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
     this.profileName = ChainController.getAccountData(this.namespace)?.profileName
 
@@ -134,7 +131,6 @@ export class W3mProfileWalletsView extends LitElement {
       accountState => {
         this.caipAddress = accountState?.caipAddress
         this.profileName = accountState?.profileName
-        this.smartAccountAddress = accountState?.smartAccountAddress
       },
       this.namespace
     )
@@ -212,19 +208,26 @@ export class W3mProfileWalletsView extends LitElement {
     return html`
       <wui-flex alignItems="center" columnGap="3xs">
         <wui-icon
-          name=${CHAIN_ICONS[namespace as keyof typeof CHAIN_ICONS] ?? CHAIN_ICONS.eip155}
+          name=${NAMESPACE_ICONS[namespace as keyof typeof NAMESPACE_ICONS] ??
+          NAMESPACE_ICONS.eip155}
           size="lg"
         ></wui-icon>
         <wui-text color="fg-200" variant="small-400"
           >${totalConnections > 1 ? 'Wallets' : 'Wallet'}</wui-text
         >
-        <wui-text color="fg-100" variant="small-400" class="balance-amount">
+        <wui-text
+          color="fg-100"
+          variant="small-400"
+          class="balance-amount"
+          data-testid="balance-amount"
+        >
           ${totalConnections}
         </wui-text>
         <wui-link
           color="fg-200"
           @click=${() => this.handleDisconnectAll(namespace)}
           ?disabled=${!this.hasAnyConnections(namespace)}
+          data-testid="disconnect-all-button"
         >
           Disconnect All
         </wui-link>
@@ -333,10 +336,10 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private renderRecentConnections(namespace: ChainNamespace) {
-    let { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
+    let { recentConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
 
     if (namespace === CommonConstantsUtil.CHAIN.BITCOIN) {
-      storageConnections = storageConnections.map(connection => ({
+      recentConnections = recentConnections.map(connection => ({
         ...connection,
         accounts: connection.accounts.filter(account =>
           typeof account.type === 'string' ? account.type === 'payment' : true
@@ -344,7 +347,7 @@ export class W3mProfileWalletsView extends LitElement {
       }))
     }
 
-    const allAccounts = storageConnections.flatMap(connection => connection.accounts)
+    const allAccounts = recentConnections.flatMap(connection => connection.accounts)
 
     if (allAccounts.length === 0) {
       return null
@@ -352,9 +355,11 @@ export class W3mProfileWalletsView extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
-        <wui-text color="fg-200" variant="micro-500">RECENTLY CONNECTED</wui-text>
+        <wui-text color="fg-200" variant="micro-500" data-testid="recently-connected-text"
+          >RECENTLY CONNECTED</wui-text
+        >
         <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
-          ${this.renderConnectionList(storageConnections, true, namespace)}
+          ${this.renderConnectionList(recentConnections, true, namespace)}
         </wui-flex>
       </wui-flex>
     `
@@ -387,6 +392,7 @@ export class W3mProfileWalletsView extends LitElement {
                 rightIcon=${isRecentConnections ? 'bin' : 'off'}
                 rightIconSize="sm"
                 class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
+                data-testid=${isRecentConnections ? 'recent-connection' : 'active-connection'}
                 imageSrc=${connectorImage}
                 .iconBadge=${this.isSmartAccount(account.address)
                   ? UI_CONFIG.BADGE.ICON
@@ -431,6 +437,7 @@ export class W3mProfileWalletsView extends LitElement {
         iconSize="sm"
         ?chevron=${true}
         @click=${() => this.handleAddConnection(namespace)}
+        data-testid="add-connection-button"
       >
         <wui-text variant="paragraph-500" color="fg-200">${title}</wui-text>
       </wui-list-item>
@@ -441,7 +448,7 @@ export class W3mProfileWalletsView extends LitElement {
     const { title, description } = this.getChainLabelInfo(namespace)
 
     return html`
-      <wui-flex alignItems="flex-start" class="empty-template">
+      <wui-flex alignItems="flex-start" class="empty-template" data-testid="empty-template">
         <wui-flex
           flexDirection="column"
           alignItems="center"
@@ -458,14 +465,19 @@ export class W3mProfileWalletsView extends LitElement {
           ></wui-icon-box>
 
           <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
-            <wui-text color="fg-100" variant="paragraph-500">No wallet connected</wui-text>
-            <wui-text color="fg-200" variant="tiny-500">${description}</wui-text>
+            <wui-text color="fg-100" variant="paragraph-500" data-testid="empty-state-text"
+              >No wallet connected</wui-text
+            >
+            <wui-text color="fg-200" variant="tiny-500" data-testid="empty-state-description"
+              >${description}</wui-text
+            >
           </wui-flex>
 
           <wui-button
             variant="neutral"
             size="md"
             @click=${() => this.handleAddConnection(namespace)}
+            data-testid="empty-state-button"
           >
             <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
             ${title}
@@ -485,13 +497,11 @@ export class W3mProfileWalletsView extends LitElement {
 
       this.caipAddress = ChainController.getAccountData(nextNamespace)?.caipAddress
       this.profileName = ChainController.getAccountData(nextNamespace)?.profileName
-      this.smartAccountAddress = AccountController.getSmartAccountAddress(nextNamespace)
 
       this.chainListener = ChainController.subscribeChainProp(
         'accountState',
         accountState => {
           this.caipAddress = accountState?.caipAddress
-          this.smartAccountAddress = accountState?.smartAccountAddress
         },
         nextNamespace
       )
@@ -499,7 +509,7 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private handleDisconnectAll(namespace: ChainNamespace) {
-    ConnectionController.disconnect({ namespace, disconnectAll: true })
+    ConnectionController.disconnect({ namespace })
   }
 
   private async handleSwitchWallet(
@@ -517,10 +527,10 @@ export class W3mProfileWalletsView extends LitElement {
         address,
         namespace,
         closeModalOnConnect: false,
-        onChange({ isAccountSwitched, isWalletSwitched }) {
-          if (isWalletSwitched) {
+        onChange({ hasSwitchedAccount, hasSwitchedWallet }) {
+          if (hasSwitchedWallet) {
             SnackController.showSuccess('Wallet switched')
-          } else if (isAccountSwitched) {
+          } else if (hasSwitchedAccount) {
             SnackController.showSuccess('Account switched')
           }
         }
@@ -589,11 +599,21 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private isSmartAccount(address?: string) {
-    if (!this.smartAccountAddress || !address) {
+    if (!this.namespace) {
       return false
     }
 
-    return HelpersUtil.isLowerCaseMatch(this.smartAccountAddress, address)
+    const { connections, recentConnections } = ConnectionControllerUtil.getConnectionsData(
+      this.namespace
+    )
+
+    const smartAccountAddresses = [...connections, ...recentConnections]
+      .flatMap(connection => connection.accounts)
+      .filter(account => account.type === 'smart')
+
+    return smartAccountAddresses.some(account =>
+      HelpersUtil.isLowerCaseMatch(account.address, address)
+    )
   }
 
   private getPlainAddress() {
@@ -622,9 +642,9 @@ export class W3mProfileWalletsView extends LitElement {
 
   private hasAnyConnections(namespace: ChainNamespace) {
     const connections = this.getActiveConnections(namespace)
-    const { storageConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
+    const { recentConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
 
-    return Boolean(this.caipAddress) || connections.length > 0 || storageConnections.length > 0
+    return Boolean(this.caipAddress) || connections.length > 0 || recentConnections.length > 0
   }
 
   private isAccountLoading(connectorId: string, address: string) {

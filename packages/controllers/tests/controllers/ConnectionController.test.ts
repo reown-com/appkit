@@ -303,21 +303,26 @@ describe('ConnectionController', () => {
     it.each([
       {
         address: '0x123',
-        isAccountSwitched: true,
-        isWalletSwitched: true,
+        hasSwitchedAccount: true,
+        hasSwitchedWallet: true,
         status: 'active'
       },
-      { address: '0x321', isAccountSwitched: false, isWalletSwitched: true, status: 'active' },
+      { address: '0x321', hasSwitchedAccount: false, hasSwitchedWallet: true, status: 'active' },
       {
         address: '0x123',
-        isAccountSwitched: true,
-        isWalletSwitched: false,
+        hasSwitchedAccount: true,
+        hasSwitchedWallet: false,
         status: 'connected'
       },
-      { address: '0x321', isAccountSwitched: false, isWalletSwitched: false, status: 'connected' }
+      {
+        address: '0x321',
+        hasSwitchedAccount: false,
+        hasSwitchedWallet: false,
+        status: 'connected'
+      }
     ] as const)(
       'should handle active and connected connection when switching to different addresses',
-      async ({ address, isAccountSwitched, isWalletSwitched, status }) => {
+      async ({ address, hasSwitchedAccount, hasSwitchedWallet, status }) => {
         vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue(status)
         vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
         vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue('eip155:137:0x321')
@@ -350,8 +355,8 @@ describe('ConnectionController', () => {
         expect(onChange).toHaveBeenCalledWith({
           address,
           namespace: chain,
-          isAccountSwitched,
-          isWalletSwitched
+          hasSwitchedAccount,
+          hasSwitchedWallet
         })
       }
     )
@@ -378,7 +383,11 @@ describe('ConnectionController', () => {
           onChange
         })
 
-        expect(handleAuthAccountSwitchSpy).toHaveBeenCalledWith('0x123', chain)
+        expect(handleAuthAccountSwitchSpy).toHaveBeenCalledWith({
+          address: '0x123',
+          connection: { ...mockConnection, connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH },
+          namespace: chain
+        })
       }
     )
 
@@ -415,8 +424,8 @@ describe('ConnectionController', () => {
       expect(onChange).toHaveBeenCalledWith({
         address,
         namespace: chain,
-        isAccountSwitched: true,
-        isWalletSwitched: true
+        hasSwitchedAccount: true,
+        hasSwitchedWallet: true
       })
     })
 
@@ -452,8 +461,8 @@ describe('ConnectionController', () => {
         expect(onChange).toHaveBeenCalledWith({
           address,
           namespace: chain,
-          isAccountSwitched: true,
-          isWalletSwitched: true
+          hasSwitchedAccount: true,
+          hasSwitchedWallet: true
         })
       }
     )
@@ -487,8 +496,8 @@ describe('ConnectionController', () => {
       expect(onChange).toHaveBeenCalledWith({
         address,
         namespace: chain,
-        isAccountSwitched: true,
-        isWalletSwitched: true
+        hasSwitchedAccount: true,
+        hasSwitchedWallet: true
       })
     })
 

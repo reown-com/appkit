@@ -72,7 +72,6 @@ export class WuiInactiveProfileWalletItem extends LitElement {
               name=${this.icon}
               class="custom-icon"
             ></wui-icon>
-            
             ${this.iconBadge
               ? html`<wui-icon
                   color="fg-175"
