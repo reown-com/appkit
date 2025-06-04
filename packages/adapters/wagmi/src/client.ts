@@ -260,7 +260,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       thirdPartyConnectors.map(connector => {
         const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
         this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
-        this.addWagmiConnector(cnctr, options)
+
+        return this.addWagmiConnector(cnctr, options)
       })
     )
   }
@@ -292,7 +293,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     customConnectors.forEach(connector => {
       const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
       this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
-      console.log('>>> connectors.setState', cnctr)
     })
   }
 
@@ -394,7 +394,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
-    console.log('>>> addWagmiConnector', connector, provider)
 
     this.addConnector({
       id: connector.id,
