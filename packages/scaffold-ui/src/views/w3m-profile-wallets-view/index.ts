@@ -10,6 +10,7 @@ import {
 } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 import {
+  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -108,6 +109,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
+  @state() private user = AccountController.state.user
 
   constructor() {
     super()
@@ -123,7 +125,8 @@ export class W3mProfileWalletsView extends LitElement {
         ConnectorController.subscribeKey('activeConnectorIds', ids => {
           this.activeConnectorIds = ids
         }),
-        ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val))
+        ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val)),
+        AccountController.subscribeKey('user', val => (this.user = val))
       ]
     )
 
@@ -600,17 +603,13 @@ export class W3mProfileWalletsView extends LitElement {
       return false
     }
 
-    const { connections, recentConnections } = ConnectionControllerUtil.getConnectionsData(
-      this.namespace
-    )
+    const smartAccount = this.user?.accounts?.find(account => account.type === 'smartAccount')
 
-    const smartAccountAddresses = [...connections, ...recentConnections]
-      .flatMap(connection => connection.accounts)
-      .filter(account => account.type === 'smartAccount')
+    if (smartAccount && address) {
+      return HelpersUtil.isLowerCaseMatch(smartAccount.address, address)
+    }
 
-    return smartAccountAddresses.some(account =>
-      HelpersUtil.isLowerCaseMatch(account.address, address)
-    )
+    return false
   }
 
   private getPlainAddress() {

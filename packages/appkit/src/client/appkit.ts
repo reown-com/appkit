@@ -148,13 +148,6 @@ export class AppKit extends AppKitBaseClient {
         })
       }
 
-      const { address: smartAccountAddress } =
-        user.accounts?.find(account => account.type === 'smartAccount') ?? {}
-
-      if (smartAccountAddress && namespace === ConstantsUtil.CHAIN.EVM) {
-        this.setSmartAccountAddress(smartAccountAddress, ConstantsUtil.CHAIN.EVM)
-      }
-
       this.setCaipAddress(caipAddress, namespace)
       this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)

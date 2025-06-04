@@ -80,7 +80,6 @@ export interface ConnectExternalOptions {
 
 interface HandleAuthAccountSwitchParams {
   address: string
-  connection: Connection
   namespace: ChainNamespace
 }
 
@@ -399,13 +398,15 @@ const controller = {
     state.connections = connectionsMap
   },
 
-  async handleAuthAccountSwitch({ address, connection, namespace }: HandleAuthAccountSwitchParams) {
-    const smartAccountAddresses = connection.accounts.filter(c => c.type === 'smartAccount')
-    const isAddressSmartAccount = smartAccountAddresses.some(
-      c => c.address.toLowerCase() === address.toLowerCase()
+  async handleAuthAccountSwitch({ address, namespace }: HandleAuthAccountSwitchParams) {
+    const smartAccount = AccountController.state.user?.accounts?.find(
+      c => c.type === 'smartAccount'
     )
+
     const accountType =
-      isAddressSmartAccount && ConnectorControllerUtil.canSwitchToSmartAccount(namespace)
+      smartAccount &&
+      smartAccount.address === address &&
+      ConnectorControllerUtil.canSwitchToSmartAccount(namespace)
         ? 'smartAccount'
         : 'eoa'
 
@@ -432,7 +433,7 @@ const controller = {
     )
 
     if (isAuthConnector && address) {
-      await ConnectionController.handleAuthAccountSwitch({ address, connection, namespace })
+      await ConnectionController.handleAuthAccountSwitch({ address, namespace })
     }
 
     return connectData?.address
@@ -514,7 +515,7 @@ const controller = {
     }
 
     if (isAuthConnector && address) {
-      await ConnectionController.handleAuthAccountSwitch({ address, connection, namespace })
+      await ConnectionController.handleAuthAccountSwitch({ address, namespace })
     }
 
     return newAddress
