@@ -100,7 +100,13 @@ const ICONS = {
   info: async () => (await import('../../assets/svg/info.js')).infoSvg,
   exclamationTriangle: async () =>
     (await import('../../assets/svg/exclamation-triangle.js')).exclamationTriangleSvg,
-  reown: async () => (await import('../../assets/svg/reown-logo.js')).reownSvg
+  reown: async () => (await import('../../assets/svg/reown-logo.js')).reownSvg,
+  circle: async () => (await import('../../assets/svg/circle.js')).circleSvg,
+  ethereum: async () => (await import('../../assets/svg/ethereum.js')).ethereum,
+  solana: async () => (await import('../../assets/svg/solana.js')).solana,
+  bitcoin: async () => (await import('../../assets/svg/bitcoin.js')).bitcoin,
+  bin: async () => (await import('../../assets/svg/bin.js')).binSvg,
+  'x-mark': async () => (await import('../../assets/svg/x-mark.js')).xMarkSvg
 } as const
 
 async function getSvg(name: IconType) {
