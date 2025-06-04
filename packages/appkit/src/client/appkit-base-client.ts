@@ -513,11 +513,12 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
-      disconnect: async ({ id, chainNamespace }) => {
+      disconnect: async params => {
+        const { id: connectorId, chainNamespace } = params || {}
+
         try {
           const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
           const adapter = this.getAdapter(namespace)
-          const connectorId = id ?? ConnectorController.getConnectorId(namespace)
 
           if (connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
             StorageUtil.deleteConnectedSocialProvider()

@@ -1,5 +1,6 @@
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { BaseError, Connection, Connector } from '@reown/appkit-controllers'
+import type { Connection } from '@reown/appkit-common'
+import type { BaseError, Connector } from '@reown/appkit-controllers'
 import {
   ConnectionController,
   ConnectionControllerUtil,

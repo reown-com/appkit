@@ -35,8 +35,12 @@ import type {
   ChainNamespace,
   CustomRpcUrlMap
 } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
-import { type Connection, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import {
+  ConstantsUtil as CommonConstantsUtil,
+  type Connection,
+  NetworkUtil
+} from '@reown/appkit-common'
+import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'

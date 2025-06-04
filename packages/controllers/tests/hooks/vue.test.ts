@@ -138,8 +138,6 @@ describe('useDisconnect', () => {
     await disconnect({ namespace: 'solana' })
 
     expect(disconnectSpy).toHaveBeenCalledWith({ namespace: 'solana' })
-<<<<<<< HEAD
-=======
   })
 })
 
@@ -525,6 +523,5 @@ describe('useAppKitConnection', () => {
     const [state] = withSetup(() => useAppKitConnection({ namespace: 'eip155' }))
 
     expect(state.value.connection).toStrictEqual(upperCaseConnection)
->>>>>>> main
   })
 })

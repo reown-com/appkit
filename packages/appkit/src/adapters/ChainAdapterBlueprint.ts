@@ -13,6 +13,7 @@ import {
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
+  ConnectorController,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'

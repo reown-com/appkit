@@ -2,7 +2,6 @@ import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
 import type { ParsedCaipAddress } from '@reown/appkit-common'
 import {
-  ConnectorControllerUtil,
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
