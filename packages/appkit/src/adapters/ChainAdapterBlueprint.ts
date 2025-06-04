@@ -316,14 +316,13 @@ export abstract class AdapterBlueprint<
   }
 
   /**
-   * Disconnects the current wallet.
+   * Disconnects the current or all wallets
+   * @param {AdapterBlueprint.DisconnectParams} params - Disconnection parameters
+   * @returns {Promise<AdapterBlueprint.DisconnectResult>} Disconnection result
    */
-  public abstract disconnect(params?: AdapterBlueprint.DisconnectParams): Promise<void>
-
-  /**
-   * Disconnects all connected wallets.
-   */
-  public abstract disconnectAll(): Promise<{ connections: Connection[] }>
+  public abstract disconnect(
+    params?: AdapterBlueprint.DisconnectParams
+  ): Promise<AdapterBlueprint.DisconnectResult>
 
   /**
    * Gets the balance for a given address and chain ID.
@@ -614,6 +613,10 @@ export namespace AdapterBlueprint {
   export type GetBalanceResult = {
     balance: string
     symbol: string
+  }
+
+  export type DisconnectResult = {
+    connections: Connection[]
   }
 
   export type ConnectResult = {

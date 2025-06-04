@@ -211,6 +211,7 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   const deleteConnection = useCallback(
     ({ address, connectorId }: DeleteRecentConnectionProps) => {
       StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+      ConnectionController.syncStorageConnections()
       onSuccess?.({
         address,
         namespace: chainNamespace,

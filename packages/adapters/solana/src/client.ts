@@ -500,7 +500,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
         this.deleteConnection(wcConnectorId)
 
         if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), wcConnectorId)) {
-          this.chooseFirstConnectionAndEmit()
+          this.emitFirstAvailableConnection()
         }
 
         if (this.connections.length === 0) {
@@ -551,40 +551,32 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     return result
   }
 
-  public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    const connector = this.connectors.find(c => c.id === params.id)
+  public async disconnect(params: AdapterBlueprint.DisconnectParams) {
+    if (params.id) {
+      const connector = this.connectors.find(c => c.id === params.id)
 
-    if (!connector) {
-      throw new Error('Provider not found')
-    }
-    await connector.provider.disconnect()
-
-    this.deleteConnection(connector.id)
-
-    if (this.connections.length === 0) {
-      this.emit('disconnect')
-    } else {
-      const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
-
-      if (
-        lastConnection &&
-        HelpersUtil.isLowerCaseMatch(connector.id, this.getConnectorId('solana'))
-      ) {
-        const [account] = lastConnection.accounts
-
-        const newConnector = this.connectors.find(c =>
-          HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
-        )
-
-        if (account) {
-          this.emit('accountChanged', {
-            address: account.address,
-            chainId: lastConnection.caipNetwork?.id,
-            connector: newConnector
-          })
-        }
+      if (!connector) {
+        throw new Error('Provider not found')
       }
+
+      const connection = this.connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, params.id)
+      )
+
+      await connector.provider.disconnect()
+
+      this.deleteConnection(connector.id)
+
+      if (this.connections.length === 0) {
+        this.emit('disconnect')
+      } else {
+        this.emitFirstAvailableConnection()
+      }
+
+      return { connections: connection ? [connection] : [] }
     }
+
+    return this.disconnectAll()
   }
 
   public async syncConnection(
@@ -645,7 +637,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
 
     if (connectToFirstConnector) {
-      this.chooseFirstConnectionAndEmit()
+      this.emitFirstAvailableConnection()
     }
   }
 
@@ -661,7 +653,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     return walletConnectProvider as unknown as UniversalProvider
   }
 
-  private chooseFirstConnectionAndEmit() {
+  private emitFirstAvailableConnection() {
     const firstConnection = this.connections.find(c => {
       const hasAccounts = c.accounts.length > 0
       const hasConnector = this.connectors.some(connector =>
@@ -685,7 +677,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
   }
 
-  public async disconnectAll() {
+  private async disconnectAll() {
     const connections = await Promise.all(
       this.connections.map(async connection => {
         const connector = this.connectors.find(c =>

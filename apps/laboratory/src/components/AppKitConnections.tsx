@@ -25,16 +25,16 @@ export function AppKitConnections({ namespace, title = 'Connections' }: AppKitCo
     address: string
   }>()
 
-  const { connections, storageConnections } = useAppKitConnections(namespace)
+  const { connections, recentConnections } = useAppKitConnections(namespace)
 
   const { connection, isPending, switchConnection, deleteConnection } = useAppKitConnection({
     namespace,
-    onSuccess({ isWalletSwitched, isWalletDeleted }) {
+    onSuccess({ hasSwitchedWallet, hasDeletedWallet }) {
       let description = 'Account switched'
 
-      if (isWalletDeleted) {
+      if (hasDeletedWallet) {
         description = 'Wallet deleted'
-      } else if (isWalletSwitched) {
+      } else if (hasSwitchedWallet) {
         description = 'Wallet switched'
       }
 
@@ -61,8 +61,8 @@ export function AppKitConnections({ namespace, title = 'Connections' }: AppKitCo
     deleteConnection({ address, connectorId })
   }
 
-  function handleDisconnect(_connection: Connection) {
-    disconnect({ connectorId: _connection.connectorId }).then(() => {
+  function handleDisconnect({ connectorId }: Connection) {
+    disconnect({ id: connectorId }).then(() => {
       toast({
         title: 'Disconnected',
         description: 'Wallet disconnected',
@@ -97,7 +97,7 @@ export function AppKitConnections({ namespace, title = 'Connections' }: AppKitCo
           />
           <ConnectionList
             title="Recent Connected Wallets"
-            connections={storageConnections}
+            connections={recentConnections}
             isLoading={isPending}
             namespace={namespace}
             activeConnection={connection}

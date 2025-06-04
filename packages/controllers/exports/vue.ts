@@ -317,6 +317,7 @@ export function useAppKitConnection(
     }
 
     StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+    ConnectionController.syncStorageConnections()
     onSuccess?.({
       address,
       namespace: chainNamespace,

@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 
-import { Emitter } from '@reown/appkit-common'
+import { Emitter, type Connection } from '@reown/appkit-common'
 
 import type { AdapterBlueprint } from '../../src/adapters/ChainAdapterBlueprint.js'
 import { bitcoin, mainnet, solana } from './Networks.js'
@@ -81,7 +81,7 @@ export const mockEvmAdapter = {
   connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   reconnect: vi.fn().mockResolvedValue({ address: '0x123' }),
   connectWalletConnect: vi.fn().mockResolvedValue({ clientId: 'test-client' }),
-  disconnect: vi.fn().mockResolvedValue(undefined)
+  disconnect: vi.fn().mockResolvedValue([{ connections: [] as Connection[] }])
 } as unknown as AdapterBlueprint
 
 export const mockSolanaAdapter = {

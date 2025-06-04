@@ -854,7 +854,6 @@ export abstract class AppKitBaseClient {
 
     adapter.on('connections', connections => {
       this.setConnections(connections, chainNamespace)
-      StorageUtil.setConnections(connections, chainNamespace)
     })
 
     adapter.on('pendingTransactions', () => {
@@ -1591,6 +1590,7 @@ export abstract class AppKitBaseClient {
     connections,
     chainNamespace
   ) => {
+    StorageUtil.setConnections(connections, chainNamespace)
     ConnectionController.setConnections(connections, chainNamespace)
   }
 
@@ -1615,8 +1615,10 @@ export abstract class AppKitBaseClient {
   public switchConnection: (typeof ConnectionController)['switchConnection'] = params =>
     ConnectionController.switchConnection(params)
 
-  public deleteConnection: (typeof StorageUtil)['deleteAddressFromConnection'] = params =>
+  public deleteConnection: (typeof StorageUtil)['deleteAddressFromConnection'] = params => {
     StorageUtil.deleteAddressFromConnection(params)
+    ConnectionController.syncStorageConnections()
+  }
 
   public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] = (
     connectedWalletInfo,

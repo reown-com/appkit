@@ -168,7 +168,9 @@ describe('AppKit - disconnect', () => {
       } as any)
       // Ensure the adapter is available
       ;(appKit as any).chainAdapters['eip155'] = mockEvmAdapter
-      vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue(undefined)
+      vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue({
+        connections: []
+      })
 
       await (appKit as any).connectionControllerClient.disconnect({ chainNamespace })
 
@@ -427,7 +429,9 @@ describe('AppKit - disconnect - functional scenarios', () => {
     ccSetFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
     storageDeleteSocialSpy = vi.spyOn(StorageUtil, 'deleteConnectedSocialProvider')
     ccResetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
-    evmAdapterDisconnectSpy = vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue(undefined)
+    evmAdapterDisconnectSpy = vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue({
+      connections: []
+    })
     solanaAdapterDisconnectSpy = vi.spyOn(mockSolanaAdapter, 'disconnect')
 
     vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
@@ -631,14 +635,16 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     })
     // getProviderId is already mocked in beforeEach to return INJECTED
 
-    const eip155AdapterDisconnectSpy = vi
-      .spyOn(mockEvmAdapter, 'disconnect')
-      .mockResolvedValue(undefined)
+    const eip155AdapterDisconnectSpy = vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue({
+      connections: []
+    })
     const solanaAdapterDisconnectSpy = vi.spyOn(mockSolanaAdapter, 'disconnect')
 
     // Simulate first conditional disconnect succeeding for solana, second (main) one failing
     solanaAdapterDisconnectSpy.mockRejectedValueOnce(solanaAdapterError)
-    solanaAdapterDisconnectSpy.mockResolvedValue(undefined)
+    solanaAdapterDisconnectSpy.mockResolvedValue({
+      connections: []
+    })
 
     await expect((appKit as any).connectionControllerClient.disconnect()).rejects.toThrow(
       `Failed to disconnect chains: Failed to disconnect chain ${solanaNamespace}: ${solanaAdapterError.message}`

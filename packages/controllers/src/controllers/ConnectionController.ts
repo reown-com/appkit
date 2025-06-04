@@ -118,6 +118,7 @@ export interface ConnectionControllerClient {
 export interface ConnectionControllerState {
   isSwitchingConnection: boolean
   connections: Map<ChainNamespace, Connection[]>
+  recentConnections: Map<ChainNamespace, Connection[]>
   _client?: ConnectionControllerClient
   wcUri?: string
   wcPairingExpiry?: number
@@ -138,6 +139,7 @@ type StateKey = keyof ConnectionControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
   connections: new Map(),
+  recentConnections: new Map(),
   isSwitchingConnection: false,
   wcError: false,
   buffering: false,
@@ -171,18 +173,25 @@ const controller = {
   },
 
   initialize(adapters: ChainAdapter[]) {
+    const namespaces = adapters.map(a => a.namespace).filter(Boolean) as ChainNamespace[]
+
+    ConnectionController.syncStorageConnections(namespaces)
+
+    console.log(ConnectionController.state.connections, namespaces)
+  },
+
+  syncStorageConnections(namespaces?: ChainNamespace[]) {
     const storageConnections = StorageUtil.getConnections()
 
-    for (const adapter of adapters) {
-      const namespace = adapter.namespace
+    const namespacesToSync = namespaces ?? Array.from(ChainController.state.chains.keys())
 
-      if (namespace) {
-        const existingConnections = state.connections.get(namespace) ?? []
-        const storageConnectionsByNamespace = storageConnections[namespace] ?? []
-        const allConnections = [...existingConnections, ...storageConnectionsByNamespace]
+    for (const namespace of namespacesToSync) {
+      const storageConnectionsByNamespace = storageConnections[namespace] ?? []
 
-        state.connections.set(namespace, allConnections)
-      }
+      const recentConnectionsMap = new Map(state.recentConnections)
+      recentConnectionsMap.set(namespace, storageConnectionsByNamespace)
+      console.log('recentConnectionsMap', recentConnectionsMap.values())
+      state.recentConnections = recentConnectionsMap
     }
   },
 
@@ -388,7 +397,9 @@ const controller = {
   },
 
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
-    state.connections = new Map(state.connections.set(chainNamespace, connections))
+    const connectionsMap = new Map(state.connections)
+    connectionsMap.set(chainNamespace, connections)
+    state.connections = connectionsMap
   },
 
   async handleAuthAccountSwitch({ address, connection, namespace }: HandleAuthAccountSwitchParams) {

@@ -248,11 +248,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     )
 
     if (connectToFirstConnector) {
-      this.chooseFirstConnectionAndEmit()
+      this.emitFirstAvailableConnection()
     }
   }
 
-  public async disconnectAll() {
+  private async disconnectAll() {
     const connections = await Promise.all(
       this.connections.map(async connection => {
         const connector = this.connectors.find(c =>
@@ -303,39 +303,49 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return walletConnectProvider as unknown as Provider
   }
 
-  override async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))
+  override async disconnect(params: AdapterBlueprint.DisconnectParams) {
+    if (params.id) {
+      const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))
 
-    if (!connector?.provider) {
-      throw new Error('BitcoinAdapter:disconnect - connector.provider is undefined')
-    }
+      if (!connector?.provider) {
+        throw new Error('BitcoinAdapter:disconnect - connector.provider is undefined')
+      }
 
-    await connector.provider.disconnect()
+      await connector.provider.disconnect()
 
-    this.removeProviderListeners(connector.id)
-    this.deleteConnection(connector.id)
+      const connection = this.connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, params.id)
+      )
 
-    if (this.connections.length === 0) {
-      this.emit('disconnect')
-    } else {
-      const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
+      this.removeProviderListeners(connector.id)
+      this.deleteConnection(connector.id)
 
-      if (lastConnection) {
-        const [account] = lastConnection.accounts
+      if (this.connections.length === 0) {
+        this.emit('disconnect')
+      } else {
+        const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
 
-        const newConnector = this.connectors.find(c =>
-          HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
-        )
+        if (lastConnection) {
+          const [account] = lastConnection.accounts
 
-        if (account) {
-          this.emit('accountChanged', {
-            address: account.address,
-            chainId: lastConnection.caipNetwork?.id,
-            connector: newConnector
-          })
+          const newConnector = this.connectors.find(c =>
+            HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
+          )
+
+          if (account) {
+            this.emit('accountChanged', {
+              address: account.address,
+              chainId: lastConnection.caipNetwork?.id,
+              connector: newConnector
+            })
+          }
         }
       }
+
+      return { connections: connection ? [connection] : [] }
     }
+
+    return this.disconnectAll()
   }
 
   override async getBalance(
@@ -488,7 +498,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       this.deleteConnection(connector.id)
 
       if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), connector.id)) {
-        this.chooseFirstConnectionAndEmit()
+        this.emitFirstAvailableConnection()
       }
 
       if (this.connections.length === 0) {
@@ -570,7 +580,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
 
-  private chooseFirstConnectionAndEmit() {
+  private emitFirstAvailableConnection() {
     const firstConnection = this.connections.find(c => {
       const hasAccounts = c.accounts.length > 0
       const hasConnector = this.connectors.some(connector =>
@@ -626,7 +636,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         this.deleteConnection(wcConnectorId)
 
         if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), wcConnectorId)) {
-          this.chooseFirstConnectionAndEmit()
+          this.emitFirstAvailableConnection()
         }
 
         if (this.connections.length === 0) {

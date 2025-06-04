@@ -104,12 +104,11 @@ export const ConnectionControllerUtil = {
     })
   },
   getConnectionsData(namespace: ChainNamespace) {
-    const allConnections = ConnectionController.state.connections.get(namespace) ?? []
-    const connections = allConnections.filter(c => !c.recent)
-
     const activeConnectorId = ConnectorController.state.activeConnectorIds[namespace]
 
-    const recentConnections = allConnections.filter(c => c.recent)
+    const connections = ConnectionController.state.connections.get(namespace) ?? []
+
+    const recentConnections = ConnectionController.state.recentConnections.get(namespace) ?? []
     const recentConnectionsWithCurrentActiveConnectors = recentConnections.filter(connection =>
       ConnectorController.getConnectorById(connection.connectorId)
     )

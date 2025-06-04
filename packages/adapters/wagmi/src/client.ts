@@ -715,18 +715,43 @@ export class WagmiAdapter extends AdapterBlueprint {
     return this.getWagmiConnector('walletConnect')?.['provider'] as UniversalProvider
   }
 
-  public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    const connector = params.id ? this.getWagmiConnector(params.id) : undefined
+  public async disconnect(params: AdapterBlueprint.DisconnectParams) {
+    if (params.id) {
+      const connector = this.getWagmiConnector(params.id)
 
-    await wagmiDisconnect(this.wagmiConfig, { connector })
+      const connections = getConnections(this.wagmiConfig)
+      const connection = connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connector.id, params.id)
+      )
+
+      await wagmiDisconnect(this.wagmiConfig, { connector })
+
+      if (connection) {
+        return {
+          connections: [
+            {
+              accounts: connection.accounts.map(account => ({
+                address: account
+              })),
+              connectorId: connection.connector.id
+            }
+          ]
+        }
+      }
+
+      return { connections: [] }
+    }
+
+    return this.disconnectAll()
   }
 
-  public async disconnectAll() {
+  private async disconnectAll() {
     const wagmiConnections = getConnections(this.wagmiConfig)
 
     const connections = await Promise.all(
       wagmiConnections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
+
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }

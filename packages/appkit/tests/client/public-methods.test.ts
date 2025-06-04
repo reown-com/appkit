@@ -1078,7 +1078,6 @@ describe('Base Public methods', () => {
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     ChainController.state.activeChain = 'eip155'
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
-      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       status: 'connected',
       user: { email: 'test@example.com' },
@@ -1113,7 +1112,6 @@ describe('Base Public methods', () => {
     const account = appKit.getAccount()
 
     expect(account).toEqual({
-      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       address: '0x123',
       isConnected: true,
@@ -1154,7 +1152,6 @@ describe('Base Public methods', () => {
     const account = appKit.getAccount('eip155')
 
     expect(account).toEqual({
-      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       address: '0x123',
       isConnected: true,

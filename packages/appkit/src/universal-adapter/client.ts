@@ -44,10 +44,6 @@ export class UniversalAdapter extends AdapterBlueprint {
     } catch (error) {
       console.warn('UniversalAdapter:disconnect - error', error)
     }
-  }
-
-  public async disconnectAll() {
-    await this.disconnect()
 
     return { connections: [] }
   }

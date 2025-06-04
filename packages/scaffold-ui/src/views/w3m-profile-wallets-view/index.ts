@@ -119,6 +119,7 @@ export class W3mProfileWalletsView extends LitElement {
     this.unsubscribers.push(
       ...[
         ConnectionController.subscribeKey('connections', () => this.requestUpdate()),
+        ConnectionController.subscribeKey('recentConnections', () => this.requestUpdate()),
         ConnectorController.subscribeKey('activeConnectorIds', ids => {
           this.activeConnectorIds = ids
         }),
@@ -225,7 +226,7 @@ export class W3mProfileWalletsView extends LitElement {
         </wui-text>
         <wui-link
           color="fg-200"
-          @click=${() => this.handleDisconnectAll(namespace)}
+          @click=${() => ConnectionController.disconnect({ namespace })}
           ?disabled=${!this.hasAnyConnections(namespace)}
           data-testid="disconnect-all-button"
         >
@@ -312,7 +313,7 @@ export class W3mProfileWalletsView extends LitElement {
           imageSrc=${connectorImage}
           ?enableMoreButton=${authData.isAuth}
           @copy=${() => this.handleCopyAddress(plainAddress)}
-          @disconnect=${() => this.handleDisconnect(namespace, {})}
+          @disconnect=${() => this.handleDisconnect(namespace, { id: connectorId })}
           @externalLink=${() => this.handleExternalLink(plainAddress)}
           @more=${() => this.handleMore()}
         ></wui-active-profile-wallet-item>
@@ -508,10 +509,6 @@ export class W3mProfileWalletsView extends LitElement {
     }
   }
 
-  private handleDisconnectAll(namespace: ChainNamespace) {
-    ConnectionController.disconnect({ namespace })
-  }
-
   private async handleSwitchWallet(
     connection: Connection,
     address: string,
@@ -551,8 +548,8 @@ export class W3mProfileWalletsView extends LitElement {
         address,
         namespace
       })
+      ConnectionController.syncStorageConnections()
       SnackController.showSuccess('Wallet deleted')
-      this.requestUpdate()
     } else {
       this.handleDisconnect(namespace, { id: connection.connectorId })
     }

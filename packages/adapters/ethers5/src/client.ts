@@ -300,7 +300,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     })
   }
 
-  public async disconnectAll() {
+  private async disconnectAll() {
     const connections = await Promise.all(
       this.connections.map(async connection => {
         const connector = this.connectors.find(c =>
@@ -381,7 +381,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     )
 
     if (connectToFirstConnector) {
-      this.chooseFirstConnectionAndEmit()
+      this.emitFirstConnection()
     }
   }
 
@@ -418,7 +418,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
         this.deleteConnection(wcConnectorId)
 
         if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), wcConnectorId)) {
-          this.chooseFirstConnectionAndEmit()
+          this.emitFirstConnection()
         }
 
         if (this.connections.length === 0) {
@@ -700,59 +700,50 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
-  public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))
+  public async disconnect(params: AdapterBlueprint.DisconnectParams) {
+    if (params.id) {
+      const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))
 
-    if (!connector) {
-      throw new Error('Connector not found')
-    }
-
-    switch (connector.type) {
-      case 'WALLET_CONNECT':
-        if ((connector.provider as UniversalProvider).session) {
-          ;(connector.provider as UniversalProvider).disconnect()
-        }
-        break
-      case 'AUTH':
-        await connector.provider?.disconnect()
-        break
-      case 'ANNOUNCED':
-      case 'EXTERNAL':
-        await this.revokeProviderPermissions(connector.provider as Provider)
-        break
-      default:
-        throw new Error('Unsupported provider type')
-    }
-
-    if (connector.id) {
-      this.removeProviderListeners(connector.id)
-      this.deleteConnection(connector.id)
-    }
-
-    if (this.connections.length === 0) {
-      this.emit('disconnect')
-    } else {
-      const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
-
-      if (
-        lastConnection &&
-        HelpersUtil.isLowerCaseMatch(connector.id, this.getConnectorId('eip155'))
-      ) {
-        const [account] = lastConnection.accounts
-
-        const newConnector = this.connectors.find(c =>
-          HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
-        )
-
-        if (account) {
-          this.emit('accountChanged', {
-            address: account.address,
-            chainId: lastConnection.caipNetwork?.id,
-            connector: newConnector
-          })
-        }
+      if (!connector) {
+        throw new Error('Connector not found')
       }
+
+      const connection = this.connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, params.id)
+      )
+
+      switch (connector.type) {
+        case 'WALLET_CONNECT':
+          if ((connector.provider as UniversalProvider).session) {
+            ;(connector.provider as UniversalProvider).disconnect()
+          }
+          break
+        case 'AUTH':
+          await connector.provider?.disconnect()
+          break
+        case 'ANNOUNCED':
+        case 'EXTERNAL':
+          await this.revokeProviderPermissions(connector.provider as Provider)
+          break
+        default:
+          throw new Error('Unsupported provider type')
+      }
+
+      if (connector.id) {
+        this.removeProviderListeners(connector.id)
+        this.deleteConnection(connector.id)
+      }
+
+      if (this.connections.length === 0) {
+        this.emit('disconnect')
+      } else {
+        this.emitFirstConnection()
+      }
+
+      return { connections: connection ? [connection] : [] }
     }
+
+    return this.disconnectAll()
   }
 
   public async getBalance(
@@ -819,7 +810,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     return { balance: '0.00', symbol: 'ETH' }
   }
 
-  private chooseFirstConnectionAndEmit() {
+  private emitFirstConnection() {
     const firstConnection = this.connections.find(c => {
       const hasAccounts = c.accounts.length > 0
       const hasConnector = this.connectors.some(connector =>
@@ -862,7 +853,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       this.deleteConnection(connectorId)
 
       if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
-        this.chooseFirstConnectionAndEmit()
+        this.emitFirstConnection()
       }
 
       if (this.connections.length === 0) {
