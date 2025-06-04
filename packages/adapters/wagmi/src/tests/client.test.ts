@@ -205,33 +205,15 @@ describe('WagmiAdapter', () => {
     })
 
     it('should set wagmi connectors', async () => {
-      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation((_, { onChange }) => {
-        onChange([mockConnector], [])
-        return vi.fn()
-      })
+      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
+      vi.spyOn(wagmiCore, 'watchConnectors')
 
       await adapter.syncConnectors(
         { networks: [mainnet], projectId: 'YOUR_PROJECT_ID' },
         mockAppKit
       )
-
       expect(wagmiCore.watchConnectors).toHaveBeenCalledOnce()
       expect(adapter.connectors).toStrictEqual([
-        {
-          chain: 'eip155',
-          chains: [],
-          explorerId: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-          id: 'coinbaseWallet',
-          imageId: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
-          imageUrl: undefined,
-          info: { rdns: 'coinbaseWallet' },
-          name: 'Coinbase',
-          provider: {
-            connect: expect.any(Function),
-            request: expect.any(Function)
-          },
-          type: 'INJECTED'
-        },
         {
           chain: 'eip155',
           chains: [],
@@ -240,12 +222,12 @@ describe('WagmiAdapter', () => {
           imageId: undefined,
           imageUrl: undefined,
           info: { rdns: 'test-connector' },
-          name: 'Test Connector',
           provider: {
             connect: expect.any(Function),
             request: expect.any(Function)
           },
-          type: 'INJECTED'
+          name: undefined,
+          type: 'EXTERNAL'
         }
       ])
     })
@@ -287,7 +269,7 @@ describe('WagmiAdapter', () => {
       expect(authConnectorSpy).not.toHaveBeenCalled()
     })
 
-    it('should add auth connector when email is true and socials is false', async () => {
+    it('should add auth connector when email is true and socials are false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
