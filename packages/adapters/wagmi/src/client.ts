@@ -257,10 +257,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     await Promise.all(
-      thirdPartyConnectors.map(async connector => {
+      thirdPartyConnectors.map(connector => {
         const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
         this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
-        await this.addWagmiConnector(cnctr, options)
+
+        return this.addWagmiConnector(cnctr, options)
       })
     )
   }
@@ -393,6 +394,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+
     this.addConnector({
       id: connector.id,
       explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
@@ -421,11 +423,16 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     })
 
-    // Add wagmi connectors
+    // Add custom connectors (WalletConnect and Auth)
     this.addWagmiConnectors(options, appKit)
 
-    // Add third party connectors
-    await this.addThirdPartyConnectors(options)
+    // Add Wagmi's initial connectors (Extensions)
+    await Promise.all(
+      this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
+    )
+
+    // Add third party connectors (Coinbase, Safe, etc.)
+    this.addThirdPartyConnectors(options)
   }
 
   public async syncConnection(

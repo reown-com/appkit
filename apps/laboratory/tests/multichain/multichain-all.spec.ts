@@ -65,6 +65,13 @@ test('should sign message for each chain', async ({ browser }) => {
   }
 })
 
+test('should refresh page and expect reconnected', async () => {
+  await modalPage.page.reload()
+  await modalValidator.expectAccountButtonReady('eip155')
+  await modalValidator.expectAccountButtonReady('solana')
+  await modalValidator.expectAccountButtonReady('bip122')
+})
+
 test('should switch network as expected', async () => {
   await modalPage.switchNetwork('Polygon')
   await modalValidator.expectSwitchedNetwork('Polygon')
