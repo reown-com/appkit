@@ -176,8 +176,6 @@ const controller = {
     const namespaces = adapters.map(a => a.namespace).filter(Boolean) as ChainNamespace[]
 
     ConnectionController.syncStorageConnections(namespaces)
-
-    console.log(ConnectionController.state.connections, namespaces)
   },
 
   syncStorageConnections(namespaces?: ChainNamespace[]) {
@@ -190,7 +188,6 @@ const controller = {
 
       const recentConnectionsMap = new Map(state.recentConnections)
       recentConnectionsMap.set(namespace, storageConnectionsByNamespace)
-      console.log('recentConnectionsMap', recentConnectionsMap.values())
       state.recentConnections = recentConnectionsMap
     }
   },
@@ -403,8 +400,10 @@ const controller = {
   },
 
   async handleAuthAccountSwitch({ address, connection, namespace }: HandleAuthAccountSwitchParams) {
-    const smartAccountAddress = connection.accounts.find(c => c.type === 'smartAccount')?.address
-    const isAddressSmartAccount = smartAccountAddress?.toLowerCase() === address.toLowerCase()
+    const smartAccountAddresses = connection.accounts.filter(c => c.type === 'smartAccount')
+    const isAddressSmartAccount = smartAccountAddresses.some(
+      c => c.address.toLowerCase() === address.toLowerCase()
+    )
     const accountType =
       isAddressSmartAccount && ConnectorControllerUtil.canSwitchToSmartAccount(namespace)
         ? 'smartAccount'

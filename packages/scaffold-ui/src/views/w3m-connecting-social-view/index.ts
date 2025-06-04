@@ -40,6 +40,8 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() private socialWindow = AccountController.state.socialWindow
 
+  @state() private address = AccountController.state.address
+
   @state() protected error = false
 
   @state() protected connecting = false
@@ -74,7 +76,9 @@ export class W3mConnectingSocialView extends LitElement {
           if (val.socialWindow) {
             this.socialWindow = val.socialWindow
           }
-          if (val.address) {
+        }),
+        AccountController.subscribeKey('address', val => {
+          if (val && val !== this.address) {
             if (this.hasMultipleConnections) {
               RouterController.reset('Account')
               RouterController.push('ProfileWallets')

@@ -606,7 +606,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     const smartAccountAddresses = [...connections, ...recentConnections]
       .flatMap(connection => connection.accounts)
-      .filter(account => account.type === 'smart')
+      .filter(account => account.type === 'smartAccount')
 
     return smartAccountAddresses.some(account =>
       HelpersUtil.isLowerCaseMatch(account.address, address)
