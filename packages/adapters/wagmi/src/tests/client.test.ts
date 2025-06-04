@@ -86,21 +86,6 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: mockProjectId,
   customNetworkImageUrls: {}
 })
-const mockConnector = {
-  id: 'test-connector',
-  name: 'Test Connector',
-  type: 'injected',
-  info: { rdns: 'test-connector' },
-  connect: vi.fn(),
-  disconnect: vi.fn(),
-  getAccounts: vi.fn(),
-  getChainId: vi.fn(),
-  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() }),
-  isAuthorized: vi.fn(),
-  onAccountsChanged: vi.fn(),
-  onChainChanged: vi.fn(),
-  onDisconnect: vi.fn()
-} as unknown as wagmiCore.Connector
 const mockWagmiConfig = {
   connectors: [
     {
