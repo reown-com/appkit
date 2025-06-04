@@ -133,10 +133,11 @@ export const ConnectorUtil = {
     external,
     overriddenConnectors = OptionsController.state.features?.connectorTypeOrder ?? []
   }: GetConnectorTypeOrderParameters) {
+    const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
     const isWCEnabled = OptionsController.state.enableWalletConnect
 
     const allConnectors = [
-      { type: 'walletConnect', isEnabled: isWCEnabled },
+      { type: 'walletConnect', isEnabled: isWCEnabled && !isConnectedWithWC },
       { type: 'recent', isEnabled: recent.length > 0 },
       { type: 'injected', isEnabled: [...injected, ...announced, ...multiChain].length > 0 },
       { type: 'featured', isEnabled: featured.length > 0 },
@@ -203,6 +204,9 @@ export const ConnectorUtil = {
 
       return { accounts, chainId }
     } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn(`Failed to fetch provider data for ${connector.name}`, err)
+
       return { accounts: [], chainId: undefined }
     }
   }

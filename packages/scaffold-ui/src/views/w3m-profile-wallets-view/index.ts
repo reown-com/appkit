@@ -214,13 +214,19 @@ export class W3mProfileWalletsView extends LitElement {
         <wui-text color="fg-200" variant="small-400"
           >${totalConnections > 1 ? 'Wallets' : 'Wallet'}</wui-text
         >
-        <wui-text color="fg-100" variant="small-400" class="balance-amount">
+        <wui-text
+          color="fg-100"
+          variant="small-400"
+          class="balance-amount"
+          data-testid="balance-amount"
+        >
           ${totalConnections}
         </wui-text>
         <wui-link
           color="fg-200"
           @click=${() => this.handleDisconnectAll(namespace)}
           ?disabled=${!this.hasAnyConnections(namespace)}
+          data-testid="disconnect-all-button"
         >
           Disconnect All
         </wui-link>
@@ -348,7 +354,9 @@ export class W3mProfileWalletsView extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
-        <wui-text color="fg-200" variant="micro-500">RECENTLY CONNECTED</wui-text>
+        <wui-text color="fg-200" variant="micro-500" data-testid="recently-connected-text"
+          >RECENTLY CONNECTED</wui-text
+        >
         <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
           ${this.renderConnectionList(recentConnections, true, namespace)}
         </wui-flex>
@@ -383,6 +391,7 @@ export class W3mProfileWalletsView extends LitElement {
                 rightIcon=${isRecentConnections ? 'bin' : 'off'}
                 rightIconSize="sm"
                 class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
+                data-testid=${isRecentConnections ? 'recent-connection' : 'active-connection'}
                 imageSrc=${connectorImage}
                 .iconBadge=${this.isSmartAccount(account.address)
                   ? UI_CONFIG.BADGE.ICON
@@ -427,6 +436,7 @@ export class W3mProfileWalletsView extends LitElement {
         iconSize="sm"
         ?chevron=${true}
         @click=${() => this.handleAddConnection(namespace)}
+        data-testid="add-connection-button"
       >
         <wui-text variant="paragraph-500" color="fg-200">${title}</wui-text>
       </wui-list-item>
@@ -437,7 +447,7 @@ export class W3mProfileWalletsView extends LitElement {
     const { title, description } = this.getChainLabelInfo(namespace)
 
     return html`
-      <wui-flex alignItems="flex-start" class="empty-template">
+      <wui-flex alignItems="flex-start" class="empty-template" data-testid="empty-template">
         <wui-flex
           flexDirection="column"
           alignItems="center"
@@ -454,14 +464,19 @@ export class W3mProfileWalletsView extends LitElement {
           ></wui-icon-box>
 
           <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
-            <wui-text color="fg-100" variant="paragraph-500">No wallet connected</wui-text>
-            <wui-text color="fg-200" variant="tiny-500">${description}</wui-text>
+            <wui-text color="fg-100" variant="paragraph-500" data-testid="empty-state-text"
+              >No wallet connected</wui-text
+            >
+            <wui-text color="fg-200" variant="tiny-500" data-testid="empty-state-description"
+              >${description}</wui-text
+            >
           </wui-flex>
 
           <wui-button
             variant="neutral"
             size="md"
             @click=${() => this.handleAddConnection(namespace)}
+            data-testid="empty-state-button"
           >
             <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
             ${title}
