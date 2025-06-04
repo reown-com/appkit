@@ -68,16 +68,16 @@ const UI_CONFIG = {
   OPACITY_RANGE: [0, 1] as number[]
 } as const
 
-const CHAIN_ICONS = {
+const NAMESPACE_ICONS = {
   eip155: 'ethereum',
   solana: 'solana',
   bip122: 'bitcoin'
 } as const
 
 const NAMESPACE_TABS = [
-  { namespace: 'eip155', icon: CHAIN_ICONS.eip155, label: 'EVM' },
-  { namespace: 'solana', icon: CHAIN_ICONS.solana, label: 'Solana' },
-  { namespace: 'bip122', icon: CHAIN_ICONS.bip122, label: 'Bitcoin' }
+  { namespace: 'eip155', icon: NAMESPACE_ICONS.eip155, label: 'EVM' },
+  { namespace: 'solana', icon: NAMESPACE_ICONS.solana, label: 'Solana' },
+  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' }
 ] as const
 
 const TAB_WIDTHS = { 1: 320, 2: 160, 3: 106 } as const
@@ -208,7 +208,8 @@ export class W3mProfileWalletsView extends LitElement {
     return html`
       <wui-flex alignItems="center" columnGap="3xs">
         <wui-icon
-          name=${CHAIN_ICONS[namespace as keyof typeof CHAIN_ICONS] ?? CHAIN_ICONS.eip155}
+          name=${NAMESPACE_ICONS[namespace as keyof typeof NAMESPACE_ICONS] ??
+          NAMESPACE_ICONS.eip155}
           size="lg"
         ></wui-icon>
         <wui-text color="fg-200" variant="small-400"

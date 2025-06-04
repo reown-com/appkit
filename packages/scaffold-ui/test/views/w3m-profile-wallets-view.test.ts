@@ -107,7 +107,7 @@ beforeAll(() => {
 
 describe('W3mProfileWalletsView - Basic Rendering', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
 
     // Setup default state
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
@@ -154,7 +154,7 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
   })
 
   afterEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
   })
 
   it('should render basic structure with header and connections', async () => {
@@ -202,7 +202,7 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
 
 describe('W3mProfileWalletsView - Tabs Rendering', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
   })
 
   it('should render tabs when multiple namespaces are available', async () => {
@@ -321,7 +321,7 @@ describe('W3mProfileWalletsView - Tabs Rendering', () => {
 
 describe('W3mProfileWalletsView - Active Profile Rendering', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: ConstantsUtil.CHAIN.EVM,
@@ -423,7 +423,7 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
 
 describe('W3mProfileWalletsView - Connections List', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: ConstantsUtil.CHAIN.EVM,
@@ -532,7 +532,7 @@ describe('W3mProfileWalletsView - Connections List', () => {
 
 describe('W3mProfileWalletsView - Bitcoin Specific Behavior', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: ConstantsUtil.CHAIN.BITCOIN,
@@ -595,7 +595,7 @@ describe('W3mProfileWalletsView - Bitcoin Specific Behavior', () => {
 
 describe('W3mProfileWalletsView - Empty State', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: ConstantsUtil.CHAIN.EVM,
@@ -689,7 +689,7 @@ describe('W3mProfileWalletsView - Empty State', () => {
 
 describe('W3mProfileWalletsView - User Actions', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: ConstantsUtil.CHAIN.EVM,
@@ -832,7 +832,7 @@ describe('W3mProfileWalletsView - User Actions', () => {
 
 describe('W3mProfileWalletsView - Loading States', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: ConstantsUtil.CHAIN.EVM,
@@ -856,7 +856,7 @@ describe('W3mProfileWalletsView - Loading States', () => {
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
   })
 
-  it('should show loading state for switching account', async () => {
+  it('should show loading state when switching account', async () => {
     const mockActiveConnection: Connection = {
       connectorId: 'metamask',
       accounts: [{ address: '0x1234567890123456789012345678901234567890', type: 'eoa' }]
@@ -867,18 +867,38 @@ describe('W3mProfileWalletsView - Loading States', () => {
       recentConnections: []
     })
 
+    let resolveSwitchConnection: () => void
+    const switchConnectionPromise = new Promise<void>(resolve => {
+      resolveSwitchConnection = resolve
+    })
+
+    vi.mocked(ConnectionController.switchConnection).mockReturnValue(switchConnectionPromise)
+
     const element = await fixture<W3mProfileWalletsView>(
       html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
     )
+    await element.updateComplete
 
-    ;(element as any).isSwitching = true
-    ;(element as any).lastSelectedConnectorId = 'metamask'
-    ;(element as any).lastSelectedAddress = '0x1234567890123456789012345678901234567890'
+    const switchButton = element.shadowRoot?.querySelector('[data-testid="active-connection"]')
+    expect(switchButton).not.toBeNull()
+
+    switchButton?.dispatchEvent(new Event('buttonClick'))
 
     await element.updateComplete
 
     const walletItems = element.shadowRoot?.querySelectorAll('[data-testid="active-connection"]')
     const loadingWallet = Array.from(walletItems || []).find(item => (item as any).loading === true)
     expect(loadingWallet).not.toBeNull()
+
+    expect(ConnectionController.switchConnection).toHaveBeenCalledWith({
+      connection: mockActiveConnection,
+      address: '0x1234567890123456789012345678901234567890',
+      namespace: 'eip155',
+      closeModalOnConnect: false,
+      onChange: expect.any(Function)
+    })
+
+    resolveSwitchConnection!()
+    await switchConnectionPromise
   })
 })
