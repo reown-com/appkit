@@ -18,6 +18,7 @@ import type {
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerClient,
+  ConnectionControllerState,
   ConnectorType,
   EstimateGasTransactionArgs,
   EventsControllerState,
@@ -45,6 +46,7 @@ import {
   BlockchainApiController,
   ChainController,
   ConnectionController,
+  ConnectionControllerUtil,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
@@ -245,6 +247,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize(options.adapters ?? [])
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
@@ -471,7 +474,7 @@ export abstract class AppKitBaseClient {
         })
 
         if (!res) {
-          return
+          return undefined
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
@@ -490,6 +493,8 @@ export abstract class AppKitBaseClient {
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
+
+        return undefined
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -500,7 +505,12 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
-      disconnect: async (chainNamespace?: ChainNamespace) => {
+      /**
+       * Disconnect a connector or all connectors
+       * @param {string} [options.id] - Connector ID to disconnect. If no id is passed, disconnects all connectors. If id is provided then disconnect the specific connector.
+       * @param {ChainNamespace} [options.chainNamespace] - Chain namespace to disconnect from
+       */
+      disconnect: async ({ chainNamespace } = {}) => {
         const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
         try {
           // Reset send state when disconnecting
@@ -1599,6 +1609,18 @@ export abstract class AppKitBaseClient {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
+  public getConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).connections
+
+  public getRecentConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).recentConnections
+
+  public switchConnection: (typeof ConnectionController)['switchConnection'] = params =>
+    ConnectionController.switchConnection(params)
+
+  public deleteConnection: (typeof StorageUtil)['deleteAddressFromConnection'] = params =>
+    StorageUtil.deleteAddressFromConnection(params)
+
   public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] = (
     connectedWalletInfo,
     chain
@@ -1637,7 +1659,7 @@ export abstract class AppKitBaseClient {
   }
 
   public async disconnect(chainNamespace?: ChainNamespace) {
-    await ConnectionController.disconnect(chainNamespace)
+    await ConnectionController.disconnect({ namespace: chainNamespace })
   }
 
   public getSIWX<SIWXConfigInterface = SIWXConfig>() {
@@ -1705,6 +1727,10 @@ export abstract class AppKitBaseClient {
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
     return ThemeController.subscribe(callback)
+  }
+
+  public subscribeConnections(callback: (newState: ConnectionControllerState) => void) {
+    return ConnectionController.subscribe(callback)
   }
 
   public getWalletInfo() {
