@@ -47,7 +47,7 @@
     "@solana/web3.js": "1.98.2",
     "@tanstack/react-query": "5.75.5",
     "@wagmi/core": "2.17.1",
-    "autoprefixer": "10.4.20",
+    "autoprefixer": "10.4.21",
     "class-variance-authority": "0.7.1",
     "classnames": "2.5.1",
     "clsx": "2.1.1",
