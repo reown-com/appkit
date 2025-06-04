@@ -2,7 +2,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { ChainController } from '../controllers/ChainController.js'
-import { ConnectorControllerUtil, checkNamespaceConnectorId } from './ConnectorControllerUtil.js'
+import { ConnectorControllerUtil } from './ConnectorControllerUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { ChainAdapter } from './TypeUtil.js'
 
