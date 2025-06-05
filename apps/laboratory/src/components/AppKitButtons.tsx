@@ -1,5 +1,5 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
-import { transact } from '@solana-mobile/mobile-wallet-adapter-protocol'
+import { type MobileWallet, transact } from '@solana-mobile/mobile-wallet-adapter-protocol'
 
 import { useProjectId } from '../hooks/useProjectId'
 import { AppKitHooks } from './AppKitHooks'
@@ -7,9 +7,21 @@ import { AppKitHooks } from './AppKitHooks'
 export function AppKitButtons() {
   const { projectId } = useProjectId()
 
-  function connectMobileSolana() {
+  async function connectMobileSolana() {
     // eslint-disable-next-line no-console
-    transact(wallet => console.log(wallet))
+    await transact(async (wallet: MobileWallet) => {
+      const authResult = await wallet.authorize({
+        chain: 'solana:devnet',
+        identity: {
+          name: 'Example dApp',
+          uri: 'https://yourdapp.com',
+          icon: 'favicon.ico'
+        }
+      })
+
+      // eslint-disable-next-line no-console
+      console.log(authResult)
+    })
   }
 
   return (

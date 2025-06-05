@@ -17,7 +17,6 @@ import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 const networks = ConstantsUtil.SolanaNetworks
-
 const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [
     new HuobiWalletAdapter(),
