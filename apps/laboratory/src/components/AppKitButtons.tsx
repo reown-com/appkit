@@ -11,9 +11,9 @@ export function AppKitButtons() {
     // eslint-disable-next-line no-console
     await transact(async (wallet: MobileWallet) => {
       const authResult = await wallet.authorize({
-        chain: 'solana:devnet',
+        chain: 'solana:mainnet',
         identity: {
-          name: 'Example dApp',
+          name: 'AppKit Lab',
           uri: 'https://yourdapp.com',
           icon: 'favicon.ico'
         }
