@@ -1,6 +1,8 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
 import { type MobileWallet, transact } from '@solana-mobile/mobile-wallet-adapter-protocol'
 
+import { solana } from '@reown/appkit/networks'
+
 import { useProjectId } from '../hooks/useProjectId'
 import { AppKitHooks } from './AppKitHooks'
 
@@ -11,7 +13,7 @@ export function AppKitButtons() {
     // eslint-disable-next-line no-console
     await transact(async (wallet: MobileWallet) => {
       const authResult = await wallet.authorize({
-        chain: 'solana:mainnet',
+        chain: solana.caipNetworkId,
         identity: {
           name: 'AppKit Lab',
           uri: 'https://yourdapp.com',
