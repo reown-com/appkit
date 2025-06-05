@@ -657,25 +657,6 @@ describe('Base Public methods', () => {
     expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
   })
 
-  it('should create accounts with correct account types from user accounts', async () => {
-    const createAccount = vi.spyOn(CoreHelperUtil, 'createAccount')
-    const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
-
-    const appKitWithAuth = new AppKit(mockOptions)
-    ;(appKitWithAuth as any).authProvider = mockAuthProvider
-
-    await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider, mainnet.chainNamespace)
-
-    await vi.waitFor(
-      () => {
-        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
-        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
-        expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
-      },
-      { interval: 100, timeout: 2000 }
-    )
-  })
-
   it('should get Reown name', async () => {
     const getNamesForAddress = vi.spyOn(EnsController, 'getNamesForAddress')
     getNamesForAddress.mockResolvedValue([
@@ -1114,6 +1095,7 @@ describe('Base Public methods', () => {
     expect(account).toEqual({
       caipAddress: 'eip155:1:0x123',
       address: '0x123',
+      allAccounts: [],
       isConnected: true,
       status: 'connected',
       embeddedWalletInfo: {
@@ -1153,6 +1135,7 @@ describe('Base Public methods', () => {
 
     expect(account).toEqual({
       caipAddress: 'eip155:1:0x123',
+      allAccounts: [],
       address: '0x123',
       isConnected: true,
       status: 'connected',

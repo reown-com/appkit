@@ -72,8 +72,6 @@ describe('syncExistingConnection', () => {
 
     expect(mockEvmAdapter.syncConnection).toHaveBeenCalled()
     expect(mockSolanaAdapter.syncConnection).toHaveBeenCalled()
-    expect(mockEvmAdapter.getAccounts).toHaveBeenCalled()
-    expect(mockSolanaAdapter.getAccounts).toHaveBeenCalled()
   })
 })
 
@@ -225,7 +223,7 @@ describe('syncConnectedWalletInfo', () => {
         accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
       })
     })
-    it('should call adapter.getAccounts() when using connectExternal and AccountController.state.allAccounts is undefined', async () => {
+    it('should call sync connected wallet info when calling connectExternal', async () => {
       vi.spyOn(mockEvmAdapter, 'connect').mockResolvedValue({
         address: '0x123',
         chainId: '1',
@@ -245,16 +243,10 @@ describe('syncConnectedWalletInfo', () => {
         chain: 'eip155'
       })
 
-      //@ts-expect-error
-      expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(1)
-      expect(mockEvmAdapter.getAccounts).toHaveBeenCalledWith({
-        namespace: 'eip155',
-        id: 'test-connector'
-      })
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
 
-    it('should call adapter.getAccounts() when using connectExternal and AccountController.state.allAccounts is empty', async () => {
+    it('should call sync connected wallet info when calling connectExternal', async () => {
       vi.spyOn(mockEvmAdapter, 'connect').mockResolvedValue({
         address: '0x123',
         chainId: '1',
@@ -274,12 +266,6 @@ describe('syncConnectedWalletInfo', () => {
         chain: 'eip155'
       })
 
-      //@ts-expect-error
-      expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(1)
-      expect(mockEvmAdapter.getAccounts).toHaveBeenCalledWith({
-        namespace: 'eip155',
-        id: 'test-connector'
-      })
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
 

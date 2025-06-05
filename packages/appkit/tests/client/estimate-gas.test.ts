@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
-import type { EstimateGasTransactionArgs } from '@reown/appkit-controllers'
+import type { AdapterNetworkState, EstimateGasTransactionArgs } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client.js'
@@ -35,6 +35,7 @@ describe('AppKit Gas Estimation', () => {
     mockBlockchainApiController()
     // Mock ChainController.initialize before creating TestAppKit
     vi.spyOn(ChainController, 'initialize').mockImplementation(() => {})
+    vi.spyOn(ChainController, 'getNetworkData').mockResolvedValue({} as AdapterNetworkState)
 
     appKit = new TestAppKit(mockOptions)
   })

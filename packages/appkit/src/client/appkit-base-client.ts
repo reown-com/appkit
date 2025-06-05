@@ -517,14 +517,16 @@ export abstract class AppKitBaseClient {
       disconnect: async params => {
         const { id: connectorId, chainNamespace } = params || {}
 
+        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
+
         try {
-          const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
           const adapter = this.getAdapter(namespace)
 
           if (connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
             StorageUtil.deleteConnectedSocialProvider()
           }
 
+          this.setLoading(true, namespace)
           const disconnectData = await adapter?.disconnect({ id: connectorId })
 
           if (disconnectData) {
@@ -546,7 +548,10 @@ export abstract class AppKitBaseClient {
               namespace: chainNamespace || 'all'
             }
           })
+
+          this.setLoading(false, namespace)
         } catch (error) {
+          this.setLoading(false, namespace)
           throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
         }
       },
@@ -848,7 +853,6 @@ export abstract class AppKitBaseClient {
       ConnectorController.removeConnectorId(chainNamespace)
 
       StorageUtil.removeConnectedNamespace(chainNamespace)
-
       ProviderUtil.resetChain(chainNamespace)
 
       this.setUser(undefined, chainNamespace)
@@ -1346,16 +1350,26 @@ export abstract class AppKitBaseClient {
             ConnectionController.resetWcConnection()
           },
           onChainChanged: chainId => {
-            const caipNetwork = this.getCaipNetworks()
-              .filter(n => n.chainNamespace === namespace)
-              .find(
-                n =>
-                  n.id.toString() === chainId.toString() ||
-                  n.caipNetworkId.toString() === chainId.toString()
-              )
+            if (ChainController.state.noAdapters) {
+              const caipNetwork = this.getCaipNetworks()
+                .filter(n => n.chainNamespace === namespace)
+                .find(
+                  n =>
+                    n.id.toString() === chainId.toString() ||
+                    n.caipNetworkId.toString() === chainId.toString()
+                )
 
-            if (ChainController.state.noAdapters && !caipNetwork) {
-              this.setUnsupportedNetwork(chainId)
+              const currentCaipNetwork = this.getCaipNetwork()
+
+              if (!caipNetwork) {
+                this.setUnsupportedNetwork(chainId)
+
+                return
+              }
+
+              if (currentCaipNetwork?.id !== caipNetwork?.id) {
+                this.setCaipNetwork(caipNetwork)
+              }
             }
           },
           onAccountsChanged: accounts => {
