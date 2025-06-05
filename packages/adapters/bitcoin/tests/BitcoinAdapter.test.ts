@@ -643,7 +643,7 @@ describe('BitcoinAdapter', () => {
   })
 
   describe('disconnectAll', () => {
-    it('should disconnect all connectors and return them as connections', async () => {
+    it('should disconnect all connectors if no connector id provided and return them as connections', async () => {
       const connector1 = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
@@ -670,7 +670,7 @@ describe('BitcoinAdapter', () => {
         caipNetwork: bitcoin
       })
 
-      const result = await adapter.disconnectAll()
+      const result = await adapter.disconnect({ id: undefined })
 
       expect(disconnect1Spy).toHaveBeenCalled()
       expect(disconnect2Spy).toHaveBeenCalled()
@@ -682,7 +682,7 @@ describe('BitcoinAdapter', () => {
     })
 
     it('should handle empty connections', async () => {
-      const result = await adapter.disconnectAll()
+      const result = await adapter.disconnect({ id: undefined })
 
       expect(result.connections).toHaveLength(0)
     })
@@ -694,7 +694,7 @@ describe('BitcoinAdapter', () => {
         caipNetwork: bitcoin
       })
 
-      await expect(adapter.disconnectAll()).rejects.toThrow('Connector not found')
+      await expect(adapter.disconnect({ id: undefined })).rejects.toThrow('Connector not found')
     })
 
     it('should throw error if one of the connector fails to disconnect', async () => {
@@ -714,19 +714,19 @@ describe('BitcoinAdapter', () => {
         caipNetwork: bitcoin
       })
 
-      await expect(adapter.disconnectAll()).rejects.toThrow('Disconnect failed')
+      await expect(adapter.disconnect({ id: undefined })).rejects.toThrow('Disconnect failed')
       expect(disconnectSpy).toHaveBeenCalled()
     })
   })
 
   describe('syncConnections', () => {
     let mockGetConnectorStorageInfo: Mock
-    let mockChooseFirstConnectionAndEmit: any
+    let mockEmitFirstAvailableConnection: any
 
     beforeEach(() => {
       mockGetConnectorStorageInfo = vi.fn()
-      mockChooseFirstConnectionAndEmit = vi
-        .spyOn(adapter as any, 'chooseFirstConnectionAndEmit')
+      mockEmitFirstAvailableConnection = vi
+        .spyOn(adapter as any, 'emitFirstAvailableConnection')
         .mockImplementation(() => {})
     })
 
@@ -848,7 +848,7 @@ describe('BitcoinAdapter', () => {
       expect(wcConnection).toBeDefined()
     })
 
-    it('should call chooseFirstConnectionAndEmit when connectToFirstConnector is true', async () => {
+    it('should call emitFirstAvailableConnection when connectToFirstConnector is true', async () => {
       const connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
@@ -873,10 +873,10 @@ describe('BitcoinAdapter', () => {
         getConnectorStorageInfo: mockGetConnectorStorageInfo
       })
 
-      expect(mockChooseFirstConnectionAndEmit).toHaveBeenCalled()
+      expect(mockEmitFirstAvailableConnection).toHaveBeenCalled()
     })
 
-    it('should not call chooseFirstConnectionAndEmit when connectToFirstConnector is false', async () => {
+    it('should not call emitFirstAvailableConnection when connectToFirstConnector is false', async () => {
       const connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
@@ -901,7 +901,7 @@ describe('BitcoinAdapter', () => {
         getConnectorStorageInfo: mockGetConnectorStorageInfo
       })
 
-      expect(mockChooseFirstConnectionAndEmit).not.toHaveBeenCalled()
+      expect(mockEmitFirstAvailableConnection).not.toHaveBeenCalled()
     })
 
     it('should handle connector connection failures', async () => {
