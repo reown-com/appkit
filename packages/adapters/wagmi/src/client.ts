@@ -640,11 +640,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       chainId: caipNetwork.id as number,
       addEthereumChainParameter: {
         chainName: caipNetwork.name,
-        nativeCurrency: {
-          name: caipNetwork.nativeCurrency.name,
-          symbol: caipNetwork.nativeCurrency.symbol,
-          decimals: caipNetwork.nativeCurrency.decimals
-        },
+        nativeCurrency: caipNetwork.nativeCurrency,
         rpcUrls: [caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
         blockExplorerUrls: [caipNetwork.blockExplorers?.default.url ?? ''],
         iconUrls: [caipNetwork.assets?.imageUrl ?? '']
