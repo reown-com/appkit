@@ -122,6 +122,7 @@ describe('ConnectionController', () => {
 
     expect(ConnectionController.state).toEqual({
       connections: new Map(),
+      recentConnections: new Map(),
       wcError: false,
       buffering: false,
       isSwitchingConnection: false,
@@ -254,6 +255,7 @@ describe('ConnectionController', () => {
     it('should call parseCaipAddress when caipAddress is available', async () => {
       const mockCaipAddress = 'eip155:137:0x789'
       vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(mockCaipAddress)
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
       await ConnectionController.switchConnection({
@@ -267,6 +269,7 @@ describe('ConnectionController', () => {
 
     it('should not call parseCaipAddress when caipAddress is not available', async () => {
       vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
       await ConnectionController.switchConnection({
@@ -363,7 +366,6 @@ describe('ConnectionController', () => {
 
         expect(handleAuthAccountSwitchSpy).toHaveBeenCalledWith({
           address: '0x123',
-          connection: { ...mockConnection, connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH },
           namespace: chain
         })
       }
