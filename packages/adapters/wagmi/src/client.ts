@@ -635,7 +635,17 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
-    await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
+    const { caipNetwork } = params
+    await switchChain(this.wagmiConfig, {
+      chainId: caipNetwork.id as number,
+      addEthereumChainParameter: {
+        chainName: caipNetwork.name,
+        nativeCurrency: caipNetwork.nativeCurrency,
+        rpcUrls: [caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
+        blockExplorerUrls: [caipNetwork.blockExplorers?.default.url ?? ''],
+        iconUrls: [caipNetwork.assets?.imageUrl ?? '']
+      }
+    })
     await super.switchNetwork(params)
   }
 
