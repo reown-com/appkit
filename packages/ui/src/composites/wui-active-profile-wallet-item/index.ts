@@ -26,6 +26,9 @@ type ContentItem = {
   tagLabel: string
   tagVariant: TagType
   enableButton?: boolean
+  buttonType: 'disconnect' | 'switch'
+  buttonLabel: string
+  buttonVariant: ButtonVariant
 }
 
 @customElement('wui-active-profile-wallet-item')
@@ -151,6 +154,9 @@ export class WuiActiveProfileWalletItem extends LitElement {
     label,
     description,
     enableButton,
+    buttonType,
+    buttonLabel,
+    buttonVariant,
     tagVariant,
     tagLabel,
     alignItems = 'flex-end'
@@ -180,25 +186,35 @@ export class WuiActiveProfileWalletItem extends LitElement {
             : null}
         </wui-flex>
 
-        ${enableButton ? this.disconnectTemplate() : null}
+        ${enableButton ? this.buttonTemplate({ buttonType, buttonLabel, buttonVariant }) : null}
       </wui-flex>
     `
   }
 
-  public disconnectTemplate() {
+  public buttonTemplate({
+    buttonType,
+    buttonLabel,
+    buttonVariant
+  }: Pick<ContentItem, 'buttonType' | 'buttonLabel' | 'buttonVariant'>) {
     return html`
       <wui-button
         size="xs"
-        variant=${this.buttonVariant}
-        @click=${this.dispatchDisconnectEvent.bind(this)}
+        variant=${buttonVariant}
+        @click=${buttonType === 'disconnect'
+          ? this.dispatchDisconnectEvent.bind(this)
+          : this.dispatchSwitchEvent.bind(this)}
       >
-        Disconnect
+        ${buttonLabel}
       </wui-button>
     `
   }
 
   private dispatchDisconnectEvent() {
     this.dispatchEvent(new CustomEvent('disconnect', { bubbles: true, composed: true }))
+  }
+
+  private dispatchSwitchEvent() {
+    this.dispatchEvent(new CustomEvent('switch', { bubbles: true, composed: true }))
   }
 
   private dispatchExternalLinkEvent() {

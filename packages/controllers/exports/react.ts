@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -158,8 +158,6 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
 }
 
 export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKitConnectionProps) {
-  const [, forceUpdate] = useState(0)
-
   const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const { activeChain } = useSnapshot(ChainController.state)
@@ -219,7 +217,6 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
         hasSwitchedWallet: false,
         hasDeletedWallet: true
       })
-      forceUpdate(prev => prev + 1)
     },
     [chainNamespace]
   )

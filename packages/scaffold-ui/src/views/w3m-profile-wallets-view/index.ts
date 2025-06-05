@@ -292,9 +292,15 @@ export class W3mProfileWalletsView extends LitElement {
       return null
     }
 
+    const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
     const authData = ConnectionUtil.getAuthData({ connectorId, accounts: [] })
     const shouldShowSeparator =
       this.getActiveConnections(namespace).flatMap(connection => connection.accounts).length > 0
+
+    const connection = connections.find(c => c.connectorId === connectorId)
+    const account = connection?.accounts.filter(
+      a => !HelpersUtil.isLowerCaseMatch(a.address, plainAddress)
+    )
 
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 'l', '0', 'l'] as const}>
@@ -317,6 +323,11 @@ export class W3mProfileWalletsView extends LitElement {
           ?enableMoreButton=${authData.isAuth}
           @copy=${() => this.handleCopyAddress(plainAddress)}
           @disconnect=${() => this.handleDisconnect(namespace, { id: connectorId })}
+          @switch=${() => {
+            if (isBitcoin && connection && account?.[0]) {
+              this.handleSwitchWallet(connection, account[0].address, namespace)
+            }
+          }}
           @externalLink=${() => this.handleExternalLink(plainAddress)}
           @more=${() => this.handleMore()}
         ></wui-active-profile-wallet-item>
@@ -340,16 +351,7 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private renderRecentConnections(namespace: ChainNamespace) {
-    let { recentConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
-
-    if (namespace === CommonConstantsUtil.CHAIN.BITCOIN) {
-      recentConnections = recentConnections.map(connection => ({
-        ...connection,
-        accounts: connection.accounts.filter(account =>
-          typeof account.type === 'string' ? account.type === 'payment' : true
-        )
-      }))
-    }
+    const { recentConnections } = ConnectionControllerUtil.getConnectionsData(namespace)
 
     const allAccounts = recentConnections.flatMap(connection => connection.accounts)
 
@@ -619,20 +621,28 @@ export class W3mProfileWalletsView extends LitElement {
   private getActiveConnections(namespace: ChainNamespace) {
     const connectorId = this.activeConnectorIds[namespace]
     const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
+    const [connectedConnection] = connections.filter(connection =>
+      HelpersUtil.isLowerCaseMatch(connection.connectorId, connectorId)
+    )
 
     if (!connectorId) {
       return connections
     }
 
-    const { address } = this.caipAddress ? ParseUtil.parseCaipAddress(this.caipAddress) : {}
     const isBitcoin = namespace === CommonConstantsUtil.CHAIN.BITCOIN
+
+    const { address } = this.caipAddress ? ParseUtil.parseCaipAddress(this.caipAddress) : {}
+
+    let addresses = [...(address ? [address] : [])]
+
+    if (isBitcoin && connectedConnection) {
+      addresses = connectedConnection.accounts.map(account => account.address) || []
+    }
 
     return ConnectionControllerUtil.excludeConnectorAddressFromConnections({
       connectorId,
-      addresses: address ? [address] : [],
-      connections: isBitcoin
-        ? ConnectionControllerUtil.filterConnectionsByAccountType(connections, 'payment')
-        : connections
+      addresses,
+      connections
     })
   }
 
@@ -673,6 +683,9 @@ export class W3mProfileWalletsView extends LitElement {
         tagVariant: 'success',
         enableButton: true,
         profileName: this.profileName,
+        buttonType: 'disconnect',
+        buttonLabel: 'Disconnect',
+        buttonVariant: 'neutral',
         ...(authData.isAuth
           ? { description: this.isSmartAccount(address) ? 'Smart Account' : 'EOA Account' }
           : {})
@@ -682,16 +695,38 @@ export class W3mProfileWalletsView extends LitElement {
 
   private getBitcoinProfileContent(accounts: Account[], address: string) {
     const hasMultipleAccounts = accounts.length > 1
+    const plainAddress = this.getPlainAddress()
 
-    return accounts.map((account, idx) => ({
-      address: account.address,
-      tagLabel: HelpersUtil.isLowerCaseMatch(account.address, address) ? 'Active' : undefined,
-      tagVariant: HelpersUtil.isLowerCaseMatch(account.address, address) ? 'success' : undefined,
-      enableButton: idx === accounts.length - 1,
-      ...(hasMultipleAccounts
-        ? { label: account.type?.toUpperCase(), alignItems: 'flex-end' }
-        : { alignItems: 'center' })
-    }))
+    return accounts.map(account => {
+      const isConnected = HelpersUtil.isLowerCaseMatch(account.address, plainAddress)
+
+      let label = 'PAYMENT'
+
+      if (account.type === 'ordinal') {
+        label = 'ORDINALS'
+      }
+
+      return {
+        address: account.address,
+        tagLabel: HelpersUtil.isLowerCaseMatch(account.address, address) ? 'Active' : undefined,
+        tagVariant: HelpersUtil.isLowerCaseMatch(account.address, address) ? 'success' : undefined,
+        enableButton: true,
+        ...(hasMultipleAccounts
+          ? {
+              label,
+              alignItems: 'flex-end',
+              buttonType: isConnected ? 'disconnect' : 'switch',
+              buttonLabel: isConnected ? 'Disconnect' : 'Switch',
+              buttonVariant: isConnected ? 'neutral' : 'accent'
+            }
+          : {
+              alignItems: 'center',
+              buttonType: 'disconnect',
+              buttonLabel: 'Disconnect',
+              buttonVariant: 'neutral'
+            })
+      }
+    })
   }
 
   private removeScrollListener() {

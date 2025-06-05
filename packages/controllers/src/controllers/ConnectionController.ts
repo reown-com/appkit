@@ -528,9 +528,6 @@ const controller = {
     closeModalOnConnect,
     onChange
   }: SwitchConnectionParams) {
-    // Validate the account switch
-    ConnectionControllerUtil.validateAccountSwitch({ namespace, connection, address })
-
     let currentAddress: string | undefined = undefined
 
     const caipAddress = AccountController.getCaipAddress(namespace)

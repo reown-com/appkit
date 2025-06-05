@@ -534,6 +534,7 @@ export abstract class AppKitBaseClient {
           ConnectionController.resetWcConnection()
           await SIWXUtil.clearSessions()
           ConnectorController.setFilterByNamespace(undefined)
+          ConnectionController.syncStorageConnections()
 
           EventsController.sendEvent({
             type: 'track',

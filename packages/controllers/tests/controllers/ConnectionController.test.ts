@@ -249,26 +249,6 @@ describe('ConnectionController', () => {
 
     beforeEach(() => {
       vi.clearAllMocks()
-
-      vi.spyOn(ConnectionControllerUtil, 'validateAccountSwitch').mockImplementation(() => {})
-    })
-
-    it('should call validateAccountSwitch before proceeding to switching', async () => {
-      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-
-      const validateSpy = vi.spyOn(ConnectionControllerUtil, 'validateAccountSwitch')
-
-      await ConnectionController.switchConnection({
-        connection: mockConnection,
-        address: '0x123',
-        namespace: chain
-      })
-
-      expect(validateSpy).toHaveBeenCalledWith({
-        namespace: chain,
-        connection: mockConnection,
-        address: '0x123'
-      })
     })
 
     it('should call parseCaipAddress when caipAddress is available', async () => {
