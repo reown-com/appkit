@@ -306,18 +306,40 @@ describe('Ethers5Adapter', () => {
 
   describe('Ethers5Adapter -disconnect', () => {
     it('should disconnect WalletConnect provider', async () => {
-      await adapter.disconnect({
-        provider: mockWalletConnectProvider,
-        providerType: 'WALLET_CONNECT'
+      const ethers5Adapter = new Ethers5Adapter()
+
+      Object.defineProperty(ethers5Adapter, 'connectors', {
+        value: [
+          {
+            id: 'walletConnect',
+            provider: mockWalletConnectProvider,
+            type: 'WALLET_CONNECT'
+          }
+        ]
+      })
+
+      await ethers5Adapter.disconnect({
+        id: 'walletConnect'
       })
 
       expect(mockWalletConnectProvider.disconnect).toHaveBeenCalled()
     })
 
     it('should disconnect Auth provider', async () => {
-      await adapter.disconnect({
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
+      const ethers5Adapter = new Ethers5Adapter()
+
+      Object.defineProperty(ethers5Adapter, 'connectors', {
+        value: [
+          {
+            id: 'ID_AUTH',
+            provider: mockAuthProvider,
+            type: 'AUTH'
+          }
+        ]
+      })
+
+      await ethers5Adapter.disconnect({
+        id: 'ID_AUTH'
       })
 
       expect(mockAuthProvider.disconnect).toHaveBeenCalled()

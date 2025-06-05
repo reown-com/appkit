@@ -747,7 +747,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   private async disconnectAll() {
     const wagmiConnections = getConnections(this.wagmiConfig)
 
-    const connections = await Promise.all(
+    const connections = await Promise.allSettled(
       wagmiConnections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
 
@@ -763,12 +763,14 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.wagmiConfig.state.connections.clear()
 
     return {
-      connections: connections.map(connection => ({
-        accounts: connection.accounts.map(account => ({
-          address: account
-        })),
-        connectorId: connection.connector.id
-      }))
+      connections: connections
+        .filter(connection => connection.status === 'fulfilled')
+        .map(({ value: connection }) => ({
+          accounts: connection.accounts.map(account => ({
+            address: account
+          })),
+          connectorId: connection.connector.id
+        }))
     }
   }
 

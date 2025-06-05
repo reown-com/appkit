@@ -63,11 +63,14 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       throw new Error('Failed to connect to the wallet')
     }
 
+    this.emit('connect', this.publicKey)
+
     return this.publicKey.toBase58()
   }
 
   public async disconnect() {
     await this.provider.disconnect()
+    this.emit('disconnect', undefined)
   }
 
   public async signMessage(message: Uint8Array) {
