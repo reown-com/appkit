@@ -41,7 +41,6 @@ describe('W3mAccountDefaultWidget', () => {
       profileImage: mockProfileImage,
       balance: '100',
       balanceSymbol: 'ETH',
-      allAccounts: [{ address: mockAddress, type: 'eoa' }],
       addressExplorerUrl: 'https://etherscan.io',
       addressLabels: new Map(),
       preferredAccountType: 'eoa'
@@ -109,14 +108,6 @@ describe('W3mAccountDefaultWidget', () => {
     })
 
     it('renders wallet switch button', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        allAccounts: [
-          { address: '0x123', type: 'eoa' },
-          { address: '0x456', type: 'eoa' }
-        ]
-      } as AccountControllerState)
-
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
