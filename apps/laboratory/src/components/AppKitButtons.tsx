@@ -12,6 +12,9 @@ export function AppKitButtons() {
   async function connectMobileSolana() {
     // eslint-disable-next-line no-console
     await transact(async (wallet: MobileWallet) => {
+      const features = await wallet.getCapabilities()
+      // eslint-disable-next-line no-console
+      console.log('>> Solana mobile wallet features', features)
       const authResult = await wallet.authorize({
         chain: solana.caipNetworkId,
         identity: {
@@ -22,7 +25,7 @@ export function AppKitButtons() {
       })
 
       // eslint-disable-next-line no-console
-      console.log(authResult)
+      console.log('>> Solana mobile wallet auth result', authResult)
     })
   }
 
