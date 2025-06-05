@@ -8,6 +8,7 @@ export function AppKitButtons() {
   const { projectId } = useProjectId()
 
   function connectMobileSolana() {
+    // eslint-disable-next-line no-console
     transact(wallet => console.log(wallet))
   }
 

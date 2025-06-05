@@ -26,7 +26,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
       appIdentity: {
         name: 'My app',
         uri: 'https://myapp.io',
-        icon: 'relative/path/to/icon.png' // resolves to https://myapp.io/relative/path/to/icon.png
+        icon: 'relative/path/to/icon.png'
       },
       authorizationResultCache: createDefaultAuthorizationResultCache(),
       chain: 'devnet',
