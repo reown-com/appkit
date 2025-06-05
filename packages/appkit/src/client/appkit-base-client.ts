@@ -1007,6 +1007,7 @@ export abstract class AppKitBaseClient {
       const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
         this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts || []
+      const namespaces = Object.keys(this.universalProvider?.session?.namespaces || {})
 
       // We try and find the address for this network in the session object.
       const activeChainId = ChainController.state.activeCaipNetwork?.id
@@ -1053,7 +1054,7 @@ export abstract class AppKitBaseClient {
           chainId,
           chainNamespace
         })
-      } else {
+      } else if (namespaces.includes(chainNamespace)) {
         this.setStatus('disconnected', chainNamespace)
       }
 
