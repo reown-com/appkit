@@ -9,8 +9,10 @@ import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
+type WalletId = 'unisat' | 'bitget' | 'binancew3w'
+
 export class UnisatConnector extends ProviderEventEmitter implements BitcoinConnector {
-  public id: 'unisat' | 'bitget'
+  public id: WalletId
   public name
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
@@ -155,9 +157,25 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
       return undefined
     }
 
-    const wallet =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      params.id === 'unisat' ? (window as any)?.unisat : (window as any)?.bitkeep.unisat
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, init-declarations
+    let wallet: any
+
+    switch (params.id) {
+      case 'unisat':
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        wallet = (window as any)?.unisat
+        break
+      case 'bitget':
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        wallet = (window as any)?.bitget?.unisat
+        break
+      case 'binancew3w':
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        wallet = (window as any)?.binancew3w?.bitcoin
+        break
+      default:
+        throw new Error(`Unsupported wallet id: ${params.id}`)
+    }
 
     if (wallet) {
       return new UnisatConnector({ wallet, imageUrl: '', ...params })
@@ -177,7 +195,7 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
       case bitcoinTestnet.caipNetworkId:
         return 'BITCOIN_TESTNET'
       default:
-        throw new Error('LeatherConnector: unsupported network')
+        throw new Error('UnisatConnector: unsupported network')
     }
   }
 }
@@ -187,7 +205,7 @@ export namespace UnisatConnector {
   export type Network = 'livenet' | 'testnet'
 
   export type ConstructorParams = {
-    id: 'unisat' | 'bitget'
+    id: WalletId
     name: string
     wallet: Wallet
     requestedChains: CaipNetwork[]

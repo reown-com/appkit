@@ -139,6 +139,16 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     if (bitgetConnector) {
       this.addConnector(bitgetConnector)
     }
+
+    const binanceWeb3Wallet = UnisatConnector.getWallet({
+      id: 'binancew3w',
+      name: 'Binance Web3 Wallet',
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (binanceWeb3Wallet) {
+      this.addConnector(binanceWeb3Wallet)
+    }
   }
 
   override syncConnection(
