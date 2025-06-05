@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import {
@@ -190,7 +190,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletGrantPermissionsRequest>
     | z.infer<typeof WalletRevokePermissionsRequest>
     | z.infer<typeof WalletGetAssetsRequest>
-  ) & { chainId?: string | number }
+  ) & { chainNamespace?: ChainNamespace; chainId?: string | number }
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 

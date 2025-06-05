@@ -1,4 +1,9 @@
-import type { CaipNetwork, CaipNetworkId, EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
+import type {
+  CaipNetwork,
+  CaipNetworkId,
+  ChainNamespace,
+  EmbeddedWalletTimeoutReason
+} from '@reown/appkit-common'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface W3mFrameProviderConfig {
@@ -7,7 +12,7 @@ interface W3mFrameProviderConfig {
   enableLogger?: boolean
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
-  getActiveCaipNetwork: () => CaipNetwork | undefined
+  getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
 }
 
 export class W3mFrameProviderSingleton {

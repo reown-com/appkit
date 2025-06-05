@@ -3,6 +3,7 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
 import {
+  type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type EmbeddedWalletTimeoutReason
 } from '@reown/appkit-common'
@@ -62,7 +63,13 @@ export function authConnector(parameters: AuthParameters) {
           }
         },
         abortController: ErrorUtil.EmbeddedWalletAbortController,
-        getActiveCaipNetwork: () => ChainController.state.activeCaipNetwork
+        getActiveCaipNetwork: (namespace?: ChainNamespace) => {
+          if (namespace) {
+            return ChainController.getActiveCaipNetwork(namespace)
+          }
+
+          return ChainController.state.activeCaipNetwork
+        }
       })
     }
 
@@ -171,7 +178,13 @@ export function authConnector(parameters: AuthParameters) {
               AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
             }
           },
-          getActiveCaipNetwork: () => ChainController.state.activeCaipNetwork
+          getActiveCaipNetwork: (namespace?: ChainNamespace) => {
+            if (namespace) {
+              return ChainController.getActiveCaipNetwork(namespace)
+            }
+
+            return ChainController.state.activeCaipNetwork
+          }
         })
       }
 

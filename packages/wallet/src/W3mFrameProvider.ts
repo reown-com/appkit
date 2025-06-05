@@ -1,4 +1,4 @@
-import type { EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
+import type { ChainNamespace, EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
 import type { CaipNetwork } from '@reown/appkit-common'
 
 import { W3mFrame } from './W3mFrame.js'
@@ -16,7 +16,7 @@ interface W3mFrameProviderConfig {
   enableLogger?: boolean
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
-  getActiveCaipNetwork: () => CaipNetwork | undefined
+  getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
 }
 
 // -- Provider --------------------------------------------------------
@@ -24,7 +24,7 @@ export class W3mFrameProvider {
   public w3mLogger?: W3mFrameLogger
   private w3mFrame: W3mFrame
   private abortController: AbortController
-  private getActiveCaipNetwork: () => CaipNetwork | undefined
+  private getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
@@ -464,26 +464,37 @@ export class W3mFrameProvider {
   }
 
   public async request(req: W3mFrameTypes.RPCRequest): Promise<W3mFrameTypes.RPCResponse> {
+    const request = req
     try {
       if (W3mFrameRpcConstants.GET_CHAIN_ID === req.method) {
         return this.getLastUsedChainId()
       }
-      const request = req
-      const chainId = this.getActiveCaipNetwork()?.id
-      if (chainId) {
-        request.chainId = chainId
+      let chainId: string | number | undefined = 1
+
+      /*
+       * If chainNamespace is provided in the request, use that namespace to get the chainId, otherwise fallback to 'eip155' namespace since Ethers and Wagmi RPC requests are limited to be modified to include the chainNamespace, so requests from Ethers and Wagmi will never include a chainNamespace
+       */
+      if (req.chainNamespace) {
+        request.chainNamespace = req.chainNamespace
+        chainId = this.getActiveCaipNetwork(req.chainNamespace)?.id
+      } else {
+        request.chainNamespace = 'eip155'
+        chainId = this.getActiveCaipNetwork('eip155')?.id
       }
-      this.rpcRequestHandler?.(request)
+
+      request.chainId = chainId
+
+      this.rpcRequestHandler?.(req)
       const response = await this.appEvent<'Rpc'>({
         type: W3mFrameConstants.APP_RPC_REQUEST,
-        payload: req
+        payload: request
       } as W3mFrameTypes.AppEvent)
 
-      this.rpcSuccessHandler?.(response, req)
+      this.rpcSuccessHandler?.(response, request)
 
       return response
     } catch (error) {
-      this.rpcErrorHandler?.(error as Error, req)
+      this.rpcErrorHandler?.(error as Error, request)
       this.w3mLogger?.logger.error({ error }, 'Error requesting')
       throw error
     }
