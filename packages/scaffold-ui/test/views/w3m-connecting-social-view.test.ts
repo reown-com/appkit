@@ -29,7 +29,9 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
       }
     } as unknown as AuthConnector
 
-    vi.spyOn(ConnectionController, 'connectExternal').mockImplementation(() => Promise.resolve())
+    vi.spyOn(ConnectionController, 'connectExternal').mockImplementation(() =>
+      Promise.resolve(undefined)
+    )
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(mockAuthConnector)
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
