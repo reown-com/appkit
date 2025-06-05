@@ -9,6 +9,7 @@ import {
   AssetUtil,
   ChainController,
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
@@ -130,12 +131,12 @@ export class W3mUnsupportedChainView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconecting = true
-      const connectionsByNamespace =
-        ConnectionController.state.connections.get(
-          ChainController.state.activeChain as ChainNamespace
-        ) ?? []
+
+      const namespace = ChainController.state.activeChain as ChainNamespace
+      const connectionsByNamespace = ConnectionController.state.connections.get(namespace) ?? []
       const hasConnections = connectionsByNamespace.length > 0
-      await ConnectionController.disconnect()
+      const connectorId = ConnectorController.state.activeConnectorIds[namespace]
+      await ConnectionController.disconnect({ id: connectorId })
       if (hasConnections) {
         RouterController.reset('Account')
         RouterController.push('ProfileWallets')

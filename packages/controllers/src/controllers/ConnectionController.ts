@@ -405,7 +405,7 @@ const controller = {
 
     const accountType =
       smartAccount &&
-      smartAccount.address === address &&
+      smartAccount.address.toLowerCase() === address.toLowerCase() &&
       ConnectorControllerUtil.canSwitchToSmartAccount(namespace)
         ? 'smartAccount'
         : 'eoa'

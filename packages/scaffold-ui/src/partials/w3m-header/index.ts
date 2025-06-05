@@ -62,7 +62,6 @@ function headings() {
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
     Pay: 'How you pay',
-    Profile: undefined,
     ProfileWallets: 'Wallets',
     SwitchNetwork: networkName ?? 'Switch Network',
     Transactions: 'Activity',

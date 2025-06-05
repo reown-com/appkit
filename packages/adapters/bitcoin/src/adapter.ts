@@ -205,9 +205,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     await Promise.allSettled(
       this.connectors
         .filter(c => {
-          const { isDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
+          const { hasDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
 
-          return !isDisconnected && hasConnected
+          return !hasDisconnected && hasConnected
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {

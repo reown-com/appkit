@@ -391,9 +391,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       return
     }
 
-    // eslint-disable-next-line no-param-reassign
-    connectorId = connectorId.toLowerCase()
-
     const disconnect = () => {
       this.removeProviderListeners(connectorId)
       this.deleteConnection(connectorId)
@@ -596,9 +593,9 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     await Promise.allSettled(
       this.connectors
         .filter(c => {
-          const { isDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
+          const { hasDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
 
-          return !isDisconnected && hasConnected
+          return !hasDisconnected && hasConnected
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {

@@ -40,13 +40,13 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() private socialWindow = AccountController.state.socialWindow
 
-  @state() private address = AccountController.state.address
-
   @state() protected error = false
 
   @state() protected connecting = false
 
   @state() protected message = 'Connect in the provider window'
+
+  private address = AccountController.state.address
 
   private connectionsByNamespace =
     ConnectionController.state.connections.get(

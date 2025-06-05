@@ -21,7 +21,6 @@ export interface AccountControllerState {
   currentTab: number
   caipAddress?: CaipAddress
   user?: User
-  smartAccountAddress?: string
   address?: string
   addressLabels: Map<string, string>
   balance?: string
@@ -104,10 +103,6 @@ const controller = {
     return ChainController.getAccountProp('caipAddress', chain)
   },
 
-  getSmartAccountAddress(chain: ChainNamespace | undefined) {
-    return ChainController.getAccountProp('smartAccountAddress', chain)
-  },
-
   setCaipAddress(
     caipAddress: AccountControllerState['caipAddress'],
     chain: ChainNamespace | undefined
@@ -187,10 +182,6 @@ const controller = {
     chain: ChainNamespace
   ) {
     ChainController.setAccountProp('connectedWalletInfo', connectedWalletInfo, chain, false)
-  },
-
-  setSmartAccountAddress(address: string, chain: ChainNamespace) {
-    ChainController.setAccountProp('smartAccountAddress', address, chain)
   },
 
   setPreferredAccountType(

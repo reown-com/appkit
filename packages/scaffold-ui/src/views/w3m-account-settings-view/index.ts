@@ -312,7 +312,8 @@ export class W3mAccountSettingsView extends LitElement {
       const namespace = this.network?.chainNamespace as ChainNamespace
       const connectionsByNamespace = ConnectionController.state.connections.get(namespace) ?? []
       const hasConnections = connectionsByNamespace.length > 0
-      await ConnectionController.disconnect()
+      const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
+      await ConnectionController.disconnect({ id: connectorId })
       if (hasConnections) {
         RouterController.reset('Account')
         RouterController.push('ProfileWallets')

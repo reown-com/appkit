@@ -340,7 +340,9 @@ export class W3mAccountDefaultWidget extends LitElement {
         ? (ConnectionController.state.connections.get(this.namespace) ?? [])
         : []
       const hasConnections = connectionsByNamespace.length > 0
-      await ConnectionController.disconnect()
+      const connectorId =
+        this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
+      await ConnectionController.disconnect({ id: connectorId })
       if (hasConnections) {
         RouterController.reset('Account')
         RouterController.push('ProfileWallets')

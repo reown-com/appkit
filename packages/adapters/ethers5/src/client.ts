@@ -329,9 +329,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
     await Promise.allSettled(
       this.connectors
         .filter(c => {
-          const { isDisconnected } = getConnectorStorageInfo(c.id)
+          const { hasDisconnected } = getConnectorStorageInfo(c.id)
 
-          return !isDisconnected
+          return !hasDisconnected
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
@@ -845,9 +845,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
   > = {}
 
   private listenProviderEvents(connectorId: string, provider: Provider | CombinedProvider) {
-    // eslint-disable-next-line no-param-reassign
-    connectorId = connectorId.toLowerCase()
-
     const disconnect = () => {
       this.removeProviderListeners(connectorId)
       this.deleteConnection(connectorId)

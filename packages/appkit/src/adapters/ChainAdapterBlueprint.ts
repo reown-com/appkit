@@ -507,7 +507,7 @@ export namespace AdapterBlueprint {
     connectToFirstConnector: boolean
     caipNetwork?: CaipNetwork
     getConnectorStorageInfo: (connectorId: string) => {
-      isDisconnected: boolean
+      hasDisconnected: boolean
       hasConnected: boolean
     }
   }

@@ -30,12 +30,14 @@ export function AppKitConnections({ namespace, title = 'Connections' }: AppKitCo
   const { connection, isPending, switchConnection, deleteConnection } = useAppKitConnection({
     namespace,
     onSuccess({ hasSwitchedWallet, hasDeletedWallet }) {
-      let description = 'Account switched'
+      let description = ''
 
       if (hasDeletedWallet) {
         description = 'Wallet deleted'
       } else if (hasSwitchedWallet) {
         description = 'Wallet switched'
+      } else {
+        description = 'Account switched'
       }
 
       toast({

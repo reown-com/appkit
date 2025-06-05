@@ -25,6 +25,7 @@ import type {
   EventsControllerState,
   Features,
   ModalControllerState,
+  NamespaceTypeMap,
   NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
@@ -524,10 +525,12 @@ export abstract class AppKitBaseClient {
             StorageUtil.deleteConnectedSocialProvider()
           }
 
-          await adapter?.disconnect({ id: connectorId })
+          const disconnectData = await adapter?.disconnect({ id: connectorId })
 
-          if (connectorId) {
-            StorageUtil.addDisconnectedConnectorId(connectorId, namespace)
+          if (disconnectData) {
+            disconnectData.connections.forEach(connection => {
+              StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+            })
           }
 
           SendController.resetSend()
@@ -820,7 +823,9 @@ export abstract class AppKitBaseClient {
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
       const caipNetwork = this.getCaipNetworks().find(
-        n => n.id.toString() === chainId.toString() || n.caipNetworkId === chainId
+        n =>
+          n.id.toString() === chainId.toString() ||
+          n.caipNetworkId.toString() === chainId.toString()
       )
       const isSameNamespace = ChainController.state.activeChain === chainNamespace
       const accountAddress = ChainController.getAccountProp('address', chainNamespace)
@@ -963,7 +968,7 @@ export abstract class AppKitBaseClient {
             const storageConnections = storageConnectionsByNamespace[namespace]
 
             return {
-              isDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace),
+              hasDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace),
               hasConnected: storageConnections.some(c =>
                 HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
               )
@@ -1343,7 +1348,11 @@ export abstract class AppKitBaseClient {
           onChainChanged: chainId => {
             const caipNetwork = this.getCaipNetworks()
               .filter(n => n.chainNamespace === namespace)
-              .find(n => n.id.toString() === chainId.toString() || n.caipNetworkId === chainId)
+              .find(
+                n =>
+                  n.id.toString() === chainId.toString() ||
+                  n.caipNetworkId.toString() === chainId.toString()
+              )
 
             if (ChainController.state.noAdapters && !caipNetwork) {
               this.setUnsupportedNetwork(chainId)
@@ -1746,8 +1755,12 @@ export abstract class AppKitBaseClient {
       ? (ConnectionController.state.connections.get(namespace) ?? [])
       : []
     const allAccounts = connections.flatMap(connection =>
-      connection.accounts.map(({ address }) =>
-        CoreHelperUtil.createAccount(namespace as ChainNamespace, address, 'eoa')
+      connection.accounts.map(({ address, type }) =>
+        CoreHelperUtil.createAccount(
+          namespace as ChainNamespace,
+          address,
+          (type || 'eoa') as NamespaceTypeMap[ChainNamespace]
+        )
       )
     )
 
@@ -1944,13 +1957,6 @@ export abstract class AppKitBaseClient {
     chain
   ) => {
     AccountController.setPreferredAccountType(preferredAccountType, chain)
-  }
-
-  public setSmartAccountAddress: (typeof AccountController)['setSmartAccountAddress'] = (
-    smartAccountAddress,
-    chain
-  ) => {
-    AccountController.setSmartAccountAddress(smartAccountAddress, chain)
   }
 
   public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {

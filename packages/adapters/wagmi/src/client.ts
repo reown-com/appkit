@@ -244,7 +244,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     watchConnections(this.wagmiConfig, {
       onChange: connections => {
         this.clearConnections()
-
         this.addConnection(
           ...connections.map(connection => {
             const caipNetwork = this.getCaipNetworks().find(
