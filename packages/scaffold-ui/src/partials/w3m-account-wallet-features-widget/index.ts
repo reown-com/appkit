@@ -130,6 +130,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           iconSize=${iconSize}
           alt=${connector?.name}
           @click=${this.onGoToProfileWalletsView.bind(this)}
+          data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
 
         ${this.tokenBalanceTemplate()}

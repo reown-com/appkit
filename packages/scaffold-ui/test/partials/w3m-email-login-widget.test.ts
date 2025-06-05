@@ -42,9 +42,10 @@ describe('W3mEmailLoginWidget', () => {
     )
     vi.spyOn(EventsController, 'sendEvent').mockImplementation(vi.fn())
     vi.spyOn(RouterController, 'push').mockImplementation(vi.fn())
-    vi.spyOn(RouterController, 'replace').mockImplementation(vi.fn())
+    vi.spyOn(RouterController, 'reset').mockImplementation(vi.fn())
     vi.spyOn(ConnectionController, 'connectExternal').mockImplementation(vi.fn())
     vi.spyOn(SnackController, 'showError').mockImplementation(vi.fn())
+    vi.spyOn(SnackController, 'showSuccess').mockImplementation(vi.fn())
   })
 
   afterEach(() => {
@@ -164,7 +165,9 @@ describe('W3mEmailLoginWidget', () => {
 
       await vi.advanceTimersByTime(1000)
       expect(ConnectionController.connectExternal).toHaveBeenCalled()
-      expect(RouterController.replace).toHaveBeenCalledWith('Account')
+      expect(RouterController.reset).toHaveBeenCalledWith('Account')
+      expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
+      expect(SnackController.showSuccess).toHaveBeenCalledWith('New Wallet Added')
       vi.useRealTimers()
     })
 

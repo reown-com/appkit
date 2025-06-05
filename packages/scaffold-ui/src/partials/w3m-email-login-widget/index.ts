@@ -159,20 +159,13 @@ export class W3mEmailLoginWidget extends LitElement {
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
-        const connectionsByNamespace =
-          ConnectionController.state.connections.get(
-            ChainController.state.activeChain as ChainNamespace
-          ) ?? []
-        const hasConnections = connectionsByNamespace.length > 0
         await ConnectionController.connectExternal(
           authConnector,
           ChainController.state.activeChain as ChainNamespace
         )
-        if (hasConnections) {
-          RouterController.reset('Account')
-          RouterController.push('ProfileWallets')
-          SnackController.showSuccess('New Wallet Added')
-        }
+        RouterController.reset('Account')
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('New Wallet Added')
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

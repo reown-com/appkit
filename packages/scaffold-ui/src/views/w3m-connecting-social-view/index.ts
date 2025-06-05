@@ -3,7 +3,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -48,10 +47,9 @@ export class W3mConnectingSocialView extends LitElement {
 
   private address = AccountController.state.address
 
-  private connectionsByNamespace =
-    ConnectionController.state.connections.get(
-      ChainController.state.activeChain as ChainNamespace
-    ) ?? []
+  private connectionsByNamespace = ChainController.state.activeChain
+    ? (ConnectionController.state.connections.get(ChainController.state.activeChain) ?? [])
+    : []
 
   private hasMultipleConnections = this.connectionsByNamespace.length > 0
 
