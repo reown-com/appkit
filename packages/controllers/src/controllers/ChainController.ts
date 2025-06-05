@@ -370,15 +370,18 @@ const controller = {
     })
     StorageUtil.setActiveCaipNetworkId(caipNetwork.caipNetworkId)
 
-    const isSupported = ChainController.checkIfSupportedNetwork(caipNetwork.chainNamespace)
+    // If no address is set, user is not connected, so return true
+    if (state.activeCaipAddress) {
+      const isSupported = ChainController.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
-    if (
-      !isSupported &&
-      OptionsController.state.enableNetworkSwitch &&
-      !OptionsController.state.allowUnsupportedChain &&
-      !ConnectionController.state.wcBasic
-    ) {
-      ChainController.showUnsupportedChainUI()
+      if (
+        !isSupported &&
+        OptionsController.state.enableNetworkSwitch &&
+        !OptionsController.state.allowUnsupportedChain &&
+        !ConnectionController.state.wcBasic
+      ) {
+        ChainController.showUnsupportedChainUI()
+      }
     }
   },
 
