@@ -130,16 +130,6 @@ export function authConnector(parameters: AuthParameters) {
     async connect(
       options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
     ) {
-      const activeChain = ChainController.state.activeChain
-      const isActiveChainEvm = activeChain === CommonConstantsUtil.CHAIN.EVM
-      const isAnyAuthConnected = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.some(
-        chain => ConnectorController.getConnectorId(chain) === CommonConstantsUtil.CONNECTOR_ID.AUTH
-      )
-
-      if (isAnyAuthConnected && !isActiveChainEvm) {
-        throw new Error('Auth connector is already connected')
-      }
-
       if (connectSocialPromise) {
         return connectSocialPromise
       }
@@ -200,6 +190,16 @@ export function authConnector(parameters: AuthParameters) {
     },
 
     async isAuthorized() {
+      const activeChain = ChainController.state.activeChain
+      const isActiveChainEvm = activeChain === CommonConstantsUtil.CHAIN.EVM
+      const isAnyAuthConnected = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.some(
+        chain => ConnectorController.getConnectorId(chain) === CommonConstantsUtil.CONNECTOR_ID.AUTH
+      )
+
+      if (isAnyAuthConnected && !isActiveChainEvm) {
+        return false
+      }
+
       const provider = await this.getProvider()
 
       return Promise.resolve(provider.getLoginEmailUsed())
