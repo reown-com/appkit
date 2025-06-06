@@ -429,6 +429,11 @@ export abstract class AppKitBaseClient {
         const activeChain = ChainController.state.activeChain
         const adapter = this.getAdapter(activeChain)
         const chainId = this.getCaipNetwork(activeChain)?.id
+        const connections = activeChain
+          ? (ConnectionController.state.connections.get(activeChain) ?? [])
+          : []
+
+        const hasConnections = connections.length > 0
 
         if (!adapter) {
           throw new Error('Adapter not found')
@@ -436,7 +441,7 @@ export abstract class AppKitBaseClient {
 
         const result = await adapter.connectWalletConnect(chainId)
 
-        if (ChainController.state.noAdapters) {
+        if (!hasConnections) {
           this.close()
         }
 
