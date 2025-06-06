@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
-import { type CaipNetwork } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
@@ -9,10 +9,8 @@ import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
-type WalletId = 'unisat' | 'bitget' | 'binancew3w'
-
 export class UnisatConnector extends ProviderEventEmitter implements BitcoinConnector {
-  public id: WalletId
+  public id: UnisatConnector.Id
   public name
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
@@ -42,7 +40,13 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   }
 
   public get chains() {
-    return this.requestedChains.filter(chain => chain.caipNetworkId === bitcoin.caipNetworkId)
+    if (this.id === 'unisat') {
+      return this.requestedChains.filter(chain => chain.caipNetworkId === bitcoin.caipNetworkId)
+    }
+
+    return this.requestedChains.filter(
+      chain => chain.chainNamespace === ConstantsUtil.CHAIN.BITCOIN
+    )
   }
 
   public async connect(): Promise<string> {
@@ -167,7 +171,7 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
         break
       case 'bitget':
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        wallet = (window as any)?.bitget?.unisat
+        wallet = (window as any)?.bitkeep?.unisat
         break
       case 'binancew3w':
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -203,9 +207,10 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
 export namespace UnisatConnector {
   export type Chain = 'BITCOIN_MAINNET' | 'BITCOIN_TESTNET' | 'FRACTAL_BITCOIN_MAINNET'
   export type Network = 'livenet' | 'testnet'
+  export type Id = 'unisat' | 'bitget' | 'binancew3w'
 
   export type ConstructorParams = {
-    id: WalletId
+    id: Id
     name: string
     wallet: Wallet
     requestedChains: CaipNetwork[]
