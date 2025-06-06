@@ -832,6 +832,7 @@ export abstract class AppKitBaseClient {
     }
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
+      const currentCaipNetwork = this.getCaipNetwork()
       const caipNetwork = this.getCaipNetworks().find(
         n =>
           n.id.toString() === chainId.toString() ||
@@ -841,6 +842,10 @@ export abstract class AppKitBaseClient {
       const accountAddress = ChainController.getAccountProp('address', chainNamespace)
 
       if (caipNetwork) {
+        if (currentCaipNetwork?.id.toString() !== caipNetwork.id.toString()) {
+          this.setCaipNetwork(caipNetwork)
+        }
+
         const account = isSameNamespace && address ? address : accountAddress
 
         if (account) {
@@ -1355,7 +1360,10 @@ export abstract class AppKitBaseClient {
             ConnectionController.resetWcConnection()
           },
           onChainChanged: chainId => {
-            if (ChainController.state.noAdapters) {
+            if (
+              ChainController.state.noAdapters &&
+              ChainController.state.activeChain === namespace
+            ) {
               const caipNetwork = this.getCaipNetworks()
                 .filter(n => n.chainNamespace === namespace)
                 .find(
@@ -1372,7 +1380,7 @@ export abstract class AppKitBaseClient {
                 return
               }
 
-              if (currentCaipNetwork?.id !== caipNetwork?.id) {
+              if (currentCaipNetwork?.id.toString() !== caipNetwork?.id.toString()) {
                 this.setCaipNetwork(caipNetwork)
               }
             }

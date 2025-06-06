@@ -115,8 +115,8 @@ smartAccountSiweTest(
 )
 
 smartAccountSiweTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await validator.expectDisconnected()
 })
