@@ -105,7 +105,8 @@ extensionTest(
     const solanaAddress = (await modalPage.page.getByTestId('w3m-address').textContent()) as string
 
     await modalPage.switchNetwork('Ethereum', true)
-    await modalPage.switchActiveChain()
+    await modalPage.closeModal()
+    await modalPage.disconnect()
 
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
     if (!mailsacApiKey) {
@@ -117,7 +118,7 @@ extensionTest(
       emailAddress: await email.getEmailAddressToUse(),
       context: modalPage.page.context(),
       mailsacApiKey,
-      clickConnectButton: false
+      clickConnectButton: true
     })
     await modalValidator.expectConnected()
     await modalPage.switchNetwork('Solana', true)
@@ -125,6 +126,13 @@ extensionTest(
     await modalValidator.expectConnected()
     await modalValidator.expectAddress(solanaAddress)
     await modalPage.disconnect()
+
+    // Disconnect from Ethereum
+    await modalPage.switchNetworkWithNetworkButton('Ethereum')
+    await modalPage.closeModal()
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickProfileWalletsMoreButton()
+    await modalPage.clickProfileWalletsDisconnectButton()
   }
 )
 

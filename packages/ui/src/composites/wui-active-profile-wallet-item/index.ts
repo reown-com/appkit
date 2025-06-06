@@ -94,6 +94,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
               size="sm"
               icon="threeDots"
               @click=${this.dispatchMoreButtonEvent}
+              data-testid="wui-active-profile-wallet-item-more-button"
             ></wui-icon-link>`
           : null}
       </wui-flex>
@@ -203,6 +204,9 @@ export class WuiActiveProfileWalletItem extends LitElement {
         @click=${buttonType === 'disconnect'
           ? this.dispatchDisconnectEvent.bind(this)
           : this.dispatchSwitchEvent.bind(this)}
+        data-testid=${buttonType === 'disconnect'
+          ? 'wui-active-profile-wallet-item-disconnect-button'
+          : 'wui-active-profile-wallet-item-switch-button'}
       >
         ${buttonLabel}
       </wui-button>

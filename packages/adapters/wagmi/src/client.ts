@@ -230,13 +230,19 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
 
         if (accountData.status === 'connected') {
-          this.setupWatchPendingTransactions()
+          const hasAccountChanged = accountData.address !== prevAccountData?.address
+          const hasConnectorChanged = accountData.connector.id !== prevAccountData.connector?.id
+          const hasConnectionStatusChanged = prevAccountData.status !== 'connected'
 
-          this.handleAccountChanged({
-            address: accountData.address,
-            chainId: accountData.chainId,
-            connector: accountData.connector
-          })
+          if (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged) {
+            this.setupWatchPendingTransactions()
+
+            this.handleAccountChanged({
+              address: accountData.address,
+              chainId: accountData.chainId,
+              connector: accountData.connector
+            })
+          }
         }
       }
     })

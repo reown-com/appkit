@@ -425,13 +425,18 @@ export class ModalPage {
     await this.clickSignatureRequestButton('Approve')
   }
 
-  async clickWalletUpgradeCard(context: BrowserContext, library?: string) {
-    await this.page.getByTestId('account-button').click()
+  async clickProfileWalletsMoreButton() {
+    await this.page.getByTestId('wui-active-profile-wallet-item-more-button').click()
+  }
 
-    await this.page.getByTestId('w3m-profile-button').click()
-    if (library !== 'solana') {
-      await this.page.getByTestId('account-settings-button').click()
-    }
+  async clickProfileWalletsDisconnectButton() {
+    await this.page.getByTestId('wui-active-profile-wallet-item-disconnect-button').click()
+  }
+
+  async clickWalletUpgradeCard(context: BrowserContext) {
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('wui-wallet-switch').click()
+    await this.clickProfileWalletsMoreButton()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -481,11 +486,20 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
+  async clickWalletSwitchButton() {
+    await this.page.getByTestId('wui-wallet-switch').click()
+  }
+
   async openAccount(namespace?: string) {
     expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
     this.page.waitForTimeout(300)
     await this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`).click()
+  }
+
+  async openProfileWalletsView() {
+    await this.openAccount()
+    await this.clickWalletSwitchButton()
   }
 
   async openConnectModal() {

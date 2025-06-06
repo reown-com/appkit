@@ -80,11 +80,14 @@ extensionTest('it should switch networks and sign siwe', async () => {
   await switchNetworkAndMaybeSignSiwe(network, false)
   // Solana doesn't prompt siwe on network switch
   await modalValidator.expectDisconnected()
+
+  // Switch to Arbitrum as the connected last network
+  network = 'Arbitrum One'
+  await modalPage.switchNetworkWithNetworkButton(network)
+  await modalValidator.expectConnected()
 })
 
 extensionTest('it should reload the page and sign siwe if not authenticated', async () => {
-  await modalPage.connectToExtensionMultichain('eip155', false, true)
-  await modalValidator.expectConnected()
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalPage.promptSiwe()
