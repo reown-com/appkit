@@ -53,9 +53,7 @@ describe('HelpersUtil', () => {
   })
 
   describe('getActiveNamespaceConnectedToAuth', () => {
-    beforeEach(() => {})
-
-    afterEach(() => {
+    beforeEach(() => {
       vi.restoreAllMocks()
     })
 
