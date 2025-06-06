@@ -1003,6 +1003,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async syncWalletConnectAccount() {
+    const sessionNamespaces = Object.keys(this.universalProvider?.session?.namespaces || {})
     const syncTasks = this.chainNamespaces.map(async chainNamespace => {
       const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
@@ -1053,7 +1054,7 @@ export abstract class AppKitBaseClient {
           chainId,
           chainNamespace
         })
-      } else {
+      } else if (sessionNamespaces.includes(chainNamespace)) {
         this.setStatus('disconnected', chainNamespace)
       }
 
