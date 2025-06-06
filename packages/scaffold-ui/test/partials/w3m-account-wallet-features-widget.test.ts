@@ -34,8 +34,8 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
+  beforeEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('it should not return any components if address is not provided in AccountController', () => {
