@@ -328,17 +328,18 @@ export class AppKit extends AppKitBaseClient {
     }
 
     const isEmailEnabled = this.remoteFeatures?.email
-
     const isSocialsEnabled =
       Array.isArray(this.remoteFeatures?.socials) && this.remoteFeatures.socials.length > 0
-
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
+
+    const activeNamespaceConnectedToAuth = HelpersUtil.getActiveNamespaceConnectedToAuth()
+    const namespaceToConnect = activeNamespaceConnectedToAuth || chainNamespace
 
     if (!this.authProvider && this.options?.projectId && isAuthEnabled) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         enableLogger: this.options.enableAuthLogger,
-        chainId: this.getCaipNetwork(chainNamespace)?.caipNetworkId,
+        chainId: this.getCaipNetwork(namespaceToConnect)?.caipNetworkId,
         abortController: ErrorUtil.EmbeddedWalletAbortController,
         onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
           if (reason === 'iframe_load_failed') {
