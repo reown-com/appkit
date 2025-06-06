@@ -42,7 +42,7 @@ import { ProviderUtil } from '@reown/appkit-utils'
 import { AppKit } from '../../src/client/appkit.js'
 import { mockUser, mockUserBalance } from '../mocks/Account.js'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
-import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
+import { base, bitcoin, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
@@ -1099,6 +1099,38 @@ describe('Base Public methods', () => {
     appKit['syncWalletConnectAccount']()
 
     expect(setStatusSpy).toHaveBeenCalledWith('disconnected', 'eip155')
+  })
+
+  it('should not set status to disconnected on syncWalletConnectAccount if namespace is not supported', () => {
+    vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
+      Promise.resolve()
+    )
+    ChainController.state.activeCaipNetwork = bitcoin
+    vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([bitcoin])
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
+    vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      adapters: [],
+      networks: [mainnet]
+    })
+    appKit['universalProvider'] = {
+      ...mockUniversalProvider,
+      session: {
+        namespaces: {
+          eip155: {
+            accounts: []
+          }
+        }
+      }
+    } as unknown as InstanceType<typeof UniversalProvider>
+
+    const setStatusSpy = vi.spyOn(appKit, 'setStatus')
+
+    appKit['syncWalletConnectAccount']()
+
+    expect(setStatusSpy).not.toHaveBeenCalledWith('disconnected', 'eip155')
   })
 
   it('should get account information with embedded wallet info even if no chain namespace is provided in getAccount', () => {
