@@ -427,6 +427,17 @@ export class ModalValidator {
     })
   }
 
+  async expectAccountButtonAddress(address: string) {
+    const accountButton = this.page.getByTestId('account-button')
+    await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
+    await expect(accountButton).toHaveAttribute('address', address)
+  }
+
+  async expectNoUnsupportedUIOnAccountButton() {
+    const accountButton = this.page.getByTestId('wui-account-button-unsupported-chain')
+    await expect(accountButton).not.toBeVisible({ timeout: MAX_WAIT })
+  }
+
   async expectConnectButtonLoading() {
     const connectButton = this.page.getByTestId('connect-button')
     await expect(connectButton).toContainText('Connecting...')

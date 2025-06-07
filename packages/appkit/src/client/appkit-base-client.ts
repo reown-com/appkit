@@ -832,7 +832,6 @@ export abstract class AppKitBaseClient {
     }
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
-      const currentCaipNetwork = this.getCaipNetwork()
       const caipNetwork = this.getCaipNetworks().find(
         n =>
           n.id.toString() === chainId.toString() ||
@@ -842,10 +841,6 @@ export abstract class AppKitBaseClient {
       const accountAddress = ChainController.getAccountProp('address', chainNamespace)
 
       if (caipNetwork) {
-        if (currentCaipNetwork?.id.toString() !== caipNetwork.id.toString()) {
-          this.setCaipNetwork(caipNetwork)
-        }
-
         const account = isSameNamespace && address ? address : accountAddress
 
         if (account) {

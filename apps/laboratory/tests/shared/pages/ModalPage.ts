@@ -339,11 +339,13 @@ export class ModalPage {
     })
   }
 
-  async disconnect() {
-    const accountBtn = this.page.getByTestId('account-button')
-    await expect(accountBtn, 'Account button should be visible').toBeVisible()
-    await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
-    await accountBtn.click()
+  async disconnect(clickAccountButton = true) {
+    if (clickAccountButton) {
+      const accountBtn = this.page.getByTestId('account-button')
+      await expect(accountBtn, 'Account button should be visible').toBeVisible()
+      await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
+      await accountBtn.click()
+    }
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
