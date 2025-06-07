@@ -59,6 +59,7 @@ export function useAppKitNetworkCore(): Pick<
 
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
+  const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const chainNamespace = options?.namespace || state.activeChain
 
   if (!chainNamespace) {
@@ -74,7 +75,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 
   const chainAccountState = state.chains.get(chainNamespace)?.accountState
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
-  const activeConnectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
+  const activeConnectorId = activeConnectorIds[chainNamespace]
   const connections = ConnectionController.state.connections.get(chainNamespace) ?? []
   const allAccounts = connections.flatMap(connection =>
     connection.accounts.map(({ address }) =>
