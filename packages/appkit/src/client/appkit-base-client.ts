@@ -422,6 +422,25 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
+  private async disconnectNamespace(namespace: ChainNamespace, id?: string) {
+    try {
+      this.setLoading(true, namespace)
+      const adapter = this.getAdapter(namespace)
+      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+
+      if (caipAddress && adapter?.disconnect) {
+        return adapter.disconnect({ id })
+      }
+
+      this.setLoading(false, namespace)
+
+      return { connections: [] }
+    } catch (error) {
+      this.setLoading(false, namespace)
+      throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
+    }
+  }
+
   // -- Client Initialization ---------------------------------------------------
   protected createClients() {
     this.connectionControllerClient = {
@@ -522,23 +541,50 @@ export abstract class AppKitBaseClient {
       disconnect: async params => {
         const { id: connectorId, chainNamespace } = params || {}
 
+        const namespaces = Array.from(ChainController.state.chains.keys())
         const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
 
-        try {
-          const adapter = this.getAdapter(namespace)
+        const currentConnectorId = ConnectorController.getConnectorId(namespace)
 
-          if (connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
+        const isAuth =
+          connectorId === ConstantsUtil.CONNECTOR_ID.AUTH ||
+          currentConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+        const isWalletConnect =
+          connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT ||
+          currentConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+
+        try {
+          let namespacesToDisconnect = [namespace]
+
+          if (isAuth) {
             StorageUtil.deleteConnectedSocialProvider()
           }
 
-          this.setLoading(true, namespace)
-          const disconnectData = await adapter?.disconnect({ id: connectorId })
-
-          if (disconnectData) {
-            disconnectData.connections.forEach(connection => {
-              StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
-            })
+          /*
+           * If the connector is WalletConnect or Auth, disconnect all namespaces
+           * since they share a single connector instance across all adapters
+           */
+          if (isWalletConnect || isAuth) {
+            namespacesToDisconnect = namespaces
           }
+
+          const disconnectPromises = namespacesToDisconnect.map(async ns => {
+            let connectorIdToUse = connectorId
+
+            if ((isWalletConnect || isAuth) && !connectorId) {
+              connectorIdToUse = currentConnectorId
+            }
+
+            const disconnectData = await this.disconnectNamespace(ns, connectorIdToUse)
+
+            if (disconnectData) {
+              disconnectData.connections.forEach(connection => {
+                StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+              })
+            }
+          })
+
+          await Promise.all(disconnectPromises)
 
           SendController.resetSend()
           ConnectionController.resetWcConnection()
@@ -553,10 +599,7 @@ export abstract class AppKitBaseClient {
               namespace: chainNamespace || 'all'
             }
           })
-
-          this.setLoading(false, namespace)
         } catch (error) {
-          this.setLoading(false, namespace)
           throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
         }
       },

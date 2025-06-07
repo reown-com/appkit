@@ -116,6 +116,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
           variant=${this.buttonVariant}
           .loading=${this.loading}
           @click=${this.handleButtonClick}
+          data-testid="wui-inactive-profile-wallet-item-button"
         >
           ${this.buttonLabel}
         </wui-button>

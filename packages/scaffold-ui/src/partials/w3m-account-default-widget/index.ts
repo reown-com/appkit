@@ -128,6 +128,7 @@ export class W3mAccountDefaultWidget extends LitElement {
           imageSrc=${connectorImage}
           alt=${connector?.name}
           @click=${this.onGoToProfileWalletsView.bind(this)}
+          data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-200">

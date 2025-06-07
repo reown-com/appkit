@@ -732,9 +732,12 @@ export class ModalPage {
   }
 
   async switchAccount() {
-    const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
-    await expect(switchAccountButton1).toBeVisible()
-    await switchAccountButton1.click()
+    const firstActiveConnection = this.page.getByTestId('active-connection')
+    const firstActiveConnectionButton = firstActiveConnection
+      .first()
+      .getByTestId('wui-inactive-profile-wallet-item-button')
+    await expect(firstActiveConnectionButton).toBeVisible()
+    await firstActiveConnectionButton.click()
   }
 
   async getAddress(): Promise<`0x${string}`> {

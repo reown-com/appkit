@@ -81,9 +81,9 @@ test('it should switch between multiple accounts', async () => {
   await modalPage.page.waitForTimeout(500)
   await modalPage.closeModal()
   const originalAddress = await modalPage.getAddress()
-  await modalPage.openAccount()
-  await modalPage.openProfileView()
+  await modalPage.openProfileWalletsView()
   await modalPage.switchAccount()
+  await modalPage.closeModal()
   await modalValidator.expectAccountSwitched(originalAddress)
 })
 
