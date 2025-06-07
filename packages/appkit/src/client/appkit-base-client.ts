@@ -1424,7 +1424,10 @@ export abstract class AppKitBaseClient {
             }
           },
           onAccountsChanged: accounts => {
-            if (ChainController.state.noAdapters) {
+            if (
+              ChainController.state.noAdapters &&
+              ChainController.state.activeChain === namespace
+            ) {
               if (accounts.length > 0) {
                 const account = accounts[0] as ParsedCaipAddress
 

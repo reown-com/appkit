@@ -56,14 +56,16 @@ emailTest('it should make the default account type as smart account', async ({ l
     return
   }
 
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
 
   await page.page.reload()
   await validator.expectAccountButtonReady()
 
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.disconnect()
   await validator.expectDisconnected()
@@ -88,14 +90,16 @@ emailTest('it should show make the default account type as EOA', async ({ librar
   await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
   await validator.expectConnected()
 
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
 
   await page.page.reload()
   await validator.expectAccountButtonReady()
 
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.disconnect()
   await validator.expectDisconnected()
