@@ -438,6 +438,10 @@ export class AppKit extends AppKitBaseClient {
           })
         }
       } else if (newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+        const adapter = this.getAdapter(networkNamespace)
+        const provider = ProviderUtil.getProvider(networkNamespace)
+        const providerType = ProviderUtil.getProviderId(networkNamespace)
+        await adapter?.switchNetwork({ caipNetwork, provider, providerType })
         this.setCaipNetwork(caipNetwork)
         this.syncWalletConnectAccount()
       } else {
