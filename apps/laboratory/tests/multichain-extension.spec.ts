@@ -132,7 +132,7 @@ extensionTest(
     await modalPage.closeModal()
     await modalPage.openProfileWalletsView()
     await modalPage.clickProfileWalletsMoreButton()
-    await modalPage.clickProfileWalletsDisconnectButton()
+    await modalPage.disconnect()
   }
 )
 
