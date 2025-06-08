@@ -425,16 +425,21 @@ export abstract class AppKitBaseClient {
   private async disconnectNamespace(namespace: ChainNamespace, id?: string) {
     try {
       this.setLoading(true, namespace)
+
+      let disconnectResult: AdapterBlueprint.DisconnectResult = {
+        connections: []
+      }
+
       const adapter = this.getAdapter(namespace)
       const { caipAddress } = ChainController.getAccountData(namespace) || {}
 
       if (caipAddress && adapter?.disconnect) {
-        return adapter.disconnect({ id })
+        disconnectResult = await adapter.disconnect({ id })
       }
 
       this.setLoading(false, namespace)
 
-      return { connections: [] }
+      return disconnectResult
     } catch (error) {
       this.setLoading(false, namespace)
       throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
@@ -556,10 +561,6 @@ export abstract class AppKitBaseClient {
         try {
           let namespacesToDisconnect = [namespace]
 
-          if (isAuth) {
-            StorageUtil.deleteConnectedSocialProvider()
-          }
-
           /*
            * If the connector is WalletConnect or Auth, disconnect all namespaces
            * since they share a single connector instance across all adapters
@@ -584,13 +585,25 @@ export abstract class AppKitBaseClient {
             }
           })
 
-          await Promise.all(disconnectPromises)
+          const disconnectResults = await Promise.allSettled(disconnectPromises)
 
           SendController.resetSend()
           ConnectionController.resetWcConnection()
           await SIWXUtil.clearSessions()
           ConnectorController.setFilterByNamespace(undefined)
           ConnectionController.syncStorageConnections()
+
+          const failures = disconnectResults.filter(
+            (result): result is PromiseRejectedResult => result.status === 'rejected'
+          )
+
+          if (failures.length > 0) {
+            throw new Error(failures.map(f => f.reason.message).join(', '))
+          }
+
+          if (isAuth) {
+            StorageUtil.deleteConnectedSocialProvider()
+          }
 
           EventsController.sendEvent({
             type: 'track',

@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
 import {
@@ -80,8 +84,9 @@ describe('useAppKitAccount', () => {
   })
 
   it('should return the correct account state when disconnected', () => {
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: 'test-connector' },
       chains: new Map([
         [
           'eip155',
@@ -113,8 +118,9 @@ describe('useAppKitAccount', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
 
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: 'test-connector' },
       chains: new Map([
         [
           'eip155',
@@ -154,8 +160,9 @@ describe('useAppKitAccount', () => {
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
 
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH },
       chains: new Map([
         [
           'eip155',
@@ -208,8 +215,9 @@ describe('useAppKitAccount', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
 
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: 'test-connector' },
       chains: new Map([
         [
           'eip155',
