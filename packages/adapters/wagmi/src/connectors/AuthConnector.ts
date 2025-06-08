@@ -4,10 +4,16 @@ import type { Address } from 'viem'
 
 import {
   ConstantsUtil as CommonConstantsUtil,
+  ConstantsUtil,
   type EmbeddedWalletTimeoutReason
 } from '@reown/appkit-common'
 import { NetworkUtil } from '@reown/appkit-common'
-import { AccountController, AlertController, ChainController } from '@reown/appkit-controllers'
+import {
+  AccountController,
+  AlertController,
+  ChainController,
+  ConnectorController
+} from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
@@ -184,6 +190,16 @@ export function authConnector(parameters: AuthParameters) {
     },
 
     async isAuthorized() {
+      const activeChain = ChainController.state.activeChain
+      const isActiveChainEvm = activeChain === CommonConstantsUtil.CHAIN.EVM
+      const isAnyAuthConnected = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.some(
+        chain => ConnectorController.getConnectorId(chain) === CommonConstantsUtil.CONNECTOR_ID.AUTH
+      )
+
+      if (isAnyAuthConnected && !isActiveChainEvm) {
+        return false
+      }
+
       const provider = await this.getProvider()
 
       return Promise.resolve(provider.getLoginEmailUsed())
