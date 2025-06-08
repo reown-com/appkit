@@ -1407,13 +1407,11 @@ export abstract class AppKitBaseClient {
               activeNamespace === namespace &&
               (ChainController.state.noAdapters || isCurrentConnectorWalletConnect)
             ) {
-              const caipNetwork = this.getCaipNetworks()
-                .filter(n => n.chainNamespace === namespace)
-                .find(
-                  n =>
-                    n.id.toString() === chainId.toString() ||
-                    n.caipNetworkId.toString() === chainId.toString()
-                )
+              const caipNetwork = this.getCaipNetworks().find(
+                n =>
+                  n.id.toString() === chainId.toString() ||
+                  n.caipNetworkId.toString() === chainId.toString()
+              )
 
               const currentCaipNetwork = this.getCaipNetwork()
 
