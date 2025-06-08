@@ -1398,9 +1398,14 @@ export abstract class AppKitBaseClient {
             ConnectionController.resetWcConnection()
           },
           onChainChanged: chainId => {
+            const activeNamespace = ChainController.state.activeChain as ChainNamespace
+            const isCurrentConnectorWalletConnect =
+              ConnectorController.state.activeConnectorIds[activeNamespace] ===
+              ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+
             if (
-              ChainController.state.noAdapters &&
-              ChainController.state.activeChain === namespace
+              activeNamespace === namespace &&
+              (ChainController.state.noAdapters || isCurrentConnectorWalletConnect)
             ) {
               const caipNetwork = this.getCaipNetworks()
                 .filter(n => n.chainNamespace === namespace)
@@ -1424,9 +1429,14 @@ export abstract class AppKitBaseClient {
             }
           },
           onAccountsChanged: accounts => {
+            const activeNamespace = ChainController.state.activeChain as ChainNamespace
+            const isCurrentConnectorWalletConnect =
+              ConnectorController.state.activeConnectorIds[activeNamespace] ===
+              ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+
             if (
-              ChainController.state.noAdapters &&
-              ChainController.state.activeChain === namespace
+              activeNamespace === namespace &&
+              (ChainController.state.noAdapters || isCurrentConnectorWalletConnect)
             ) {
               if (accounts.length > 0) {
                 const account = accounts[0] as ParsedCaipAddress
@@ -1436,8 +1446,6 @@ export abstract class AppKitBaseClient {
                   chainId: account.chainId,
                   chainNamespace: account.chainNamespace
                 })
-              } else {
-                this.resetAccount(namespace)
               }
             }
           }
