@@ -218,6 +218,29 @@ sampleWalletTest('it should reject sign', async ({ library }) => {
   await modalValidator.expectRejectedSign()
 })
 
+sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
+  if (library === 'solana' || library === 'bitcoin') {
+    return
+  }
+
+  const originalAddress = await modalPage.getAddress()
+  await modalPage.openProfileWalletsView()
+  await modalPage.switchAccount()
+  await modalPage.closeModal()
+  await modalValidator.expectAccountSwitched(originalAddress)
+})
+
+sampleWalletTest('it should show multiple accounts', async ({ library }) => {
+  if (library === 'solana' || library === 'bitcoin') {
+    return
+  }
+
+  await modalPage.openProfileWalletsView()
+  await modalPage.switchAccount()
+  await modalValidator.expectMultipleAccounts()
+  await modalPage.closeModal()
+})
+
 sampleWalletTest('it should disconnect and connect to a single account', async ({ library }) => {
   if (library === 'solana' || library === 'bitcoin') {
     return

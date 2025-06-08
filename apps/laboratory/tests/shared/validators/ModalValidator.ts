@@ -294,14 +294,12 @@ export class ModalValidator {
 
   async expectMultipleAccounts() {
     await this.page.waitForTimeout(500)
-    await expect(this.page.getByText('Switch Address')).toBeVisible({
+    await expect(this.page.getByTestId('wui-active-profile-wallet-item')).toBeVisible({
       timeout: MAX_WAIT
     })
-
-    expect(this.page.getByTestId('switch-address-item').first()).toBeVisible()
-    const accounts = await this.page.getByTestId('switch-address-item').all()
-
-    expect(accounts.length).toBeGreaterThan(1)
+    await expect(this.page.getByTestId('active-connection').first()).toBeVisible({
+      timeout: MAX_WAIT
+    })
   }
 
   async expectNetworkNotSupportedVisible() {

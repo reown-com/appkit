@@ -330,6 +330,7 @@ export class W3mProfileWalletsView extends LitElement {
           }}
           @externalLink=${() => this.handleExternalLink(plainAddress)}
           @more=${() => this.handleMore()}
+          data-testid="wui-active-profile-wallet-item"
         ></wui-active-profile-wallet-item>
         ${shouldShowSeparator ? html`<wui-separator></wui-separator>` : null}
       </wui-flex>
