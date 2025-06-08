@@ -41,9 +41,16 @@ export class UniversalAdapter extends AdapterBlueprint {
     try {
       const connector = this.getWalletConnectConnector()
       await connector.disconnect()
+      this.emit('disconnect')
     } catch (error) {
       console.warn('UniversalAdapter:disconnect - error', error)
     }
+
+    return { connections: [] }
+  }
+
+  public override syncConnections() {
+    return Promise.resolve()
   }
 
   public async getAccounts({

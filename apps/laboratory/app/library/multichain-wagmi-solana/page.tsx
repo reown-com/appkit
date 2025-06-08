@@ -9,6 +9,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
@@ -47,6 +48,8 @@ export default function MultiChainWagmiSolana() {
         <AppKitProvider config={config}>
           <AppKitButtons />
           <AppKitInfo />
+          <AppKitConnections namespace="eip155" title="EVM Connections" />
+          <AppKitConnections namespace="solana" title="Solana Connections" />
           <WagmiTests />
           <SolanaTests />
         </AppKitProvider>

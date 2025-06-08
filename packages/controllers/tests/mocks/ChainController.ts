@@ -12,7 +12,6 @@ export function mockChainControllerState() {
           tokenBalance: [],
           smartAccountDeployed: false,
           addressLabels: new Map(),
-          allAccounts: [],
           user: undefined
         },
         connectionControllerClient: {

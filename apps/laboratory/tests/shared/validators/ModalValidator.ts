@@ -180,8 +180,8 @@ export class ModalValidator {
   }
 
   async expectNetworkButton(network: string) {
-    const alertBarText = this.page.getByTestId('w3m-network-button')
-    await expect(alertBarText).toHaveText(network)
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await expect(networkButton).toHaveText(network)
   }
 
   async expectSwitchChainWithNetworkButton(chainName: string) {
@@ -294,14 +294,12 @@ export class ModalValidator {
 
   async expectMultipleAccounts() {
     await this.page.waitForTimeout(500)
-    await expect(this.page.getByText('Switch Address')).toBeVisible({
+    await expect(this.page.getByTestId('wui-active-profile-wallet-item')).toBeVisible({
       timeout: MAX_WAIT
     })
-
-    expect(this.page.getByTestId('switch-address-item').first()).toBeVisible()
-    const accounts = await this.page.getByTestId('switch-address-item').all()
-
-    expect(accounts.length).toBeGreaterThan(1)
+    await expect(this.page.getByTestId('active-connection').first()).toBeVisible({
+      timeout: MAX_WAIT
+    })
   }
 
   async expectNetworkNotSupportedVisible() {
@@ -425,6 +423,17 @@ export class ModalValidator {
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: 1000
     })
+  }
+
+  async expectAccountButtonAddress(address: string) {
+    const accountButton = this.page.getByTestId('account-button')
+    await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
+    await expect(accountButton).toHaveAttribute('address', address)
+  }
+
+  async expectNoUnsupportedUIOnAccountButton() {
+    const accountButton = this.page.getByTestId('wui-account-button-unsupported-chain')
+    await expect(accountButton).not.toBeVisible({ timeout: MAX_WAIT })
   }
 
   async expectConnectButtonLoading() {

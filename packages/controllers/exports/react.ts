@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -59,6 +59,7 @@ export function useAppKitNetworkCore(): Pick<
 
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
+  const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const chainNamespace = options?.namespace || state.activeChain
 
   if (!chainNamespace) {
@@ -74,10 +75,16 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 
   const chainAccountState = state.chains.get(chainNamespace)?.accountState
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
-  const activeConnectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
+  const activeConnectorId = activeConnectorIds[chainNamespace]
+  const connections = ConnectionController.state.connections.get(chainNamespace) ?? []
+  const allAccounts = connections.flatMap(connection =>
+    connection.accounts.map(({ address }) =>
+      CoreHelperUtil.createAccount(chainNamespace, address, 'eoa')
+    )
+  )
 
   return {
-    allAccounts: chainAccountState?.allAccounts || [],
+    allAccounts,
     caipAddress: chainAccountState?.caipAddress,
     address: CoreHelperUtil.getPlainAddress(chainAccountState?.caipAddress),
     isConnected: Boolean(chainAccountState?.caipAddress),
@@ -152,8 +159,6 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
 }
 
 export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKitConnectionProps) {
-  const [, forceUpdate] = useState(0)
-
   const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const { activeChain } = useSnapshot(ChainController.state)
@@ -205,6 +210,7 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   const deleteConnection = useCallback(
     ({ address, connectorId }: DeleteRecentConnectionProps) => {
       StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+      ConnectionController.syncStorageConnections()
       onSuccess?.({
         address,
         namespace: chainNamespace,
@@ -212,7 +218,6 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
         hasSwitchedWallet: false,
         hasDeletedWallet: true
       })
-      forceUpdate(prev => prev + 1)
     },
     [chainNamespace]
   )

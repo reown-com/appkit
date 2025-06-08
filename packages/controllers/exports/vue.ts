@@ -94,7 +94,6 @@ export function useAppKitAccount(options?: {
       ? _chains.get(_chainNamespace)?.accountState
       : AccountController.state
 
-    state.value.allAccounts = accountState?.allAccounts || []
     state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
     state.value.caipAddress = accountState?.caipAddress
     state.value.status = accountState?.status
@@ -318,6 +317,7 @@ export function useAppKitConnection(
     }
 
     StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+    ConnectionController.syncStorageConnections()
     onSuccess?.({
       address,
       namespace: chainNamespace,

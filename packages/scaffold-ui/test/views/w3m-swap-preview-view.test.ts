@@ -125,8 +125,7 @@ const mockAccountState: AccountControllerState = {
   balanceSymbol: 'ETH',
   address: '0x123',
   currentTab: 0,
-  addressLabels: new Map(),
-  allAccounts: []
+  addressLabels: new Map()
 }
 
 describe('W3mSwapPreviewView', () => {

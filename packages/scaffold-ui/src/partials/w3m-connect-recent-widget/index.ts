@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-controllers'
 import {
@@ -30,11 +31,14 @@ export class W3mConnectRecentWidget extends LitElement {
 
   @state() private loading = false
 
+  @state() private connections = ConnectionController.state.connections
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ConnectionController.subscribeKey('connections', val => (this.connections = val))
     )
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       this.loading = !ConnectionController.state.wcUri
@@ -59,6 +63,10 @@ export class W3mConnectRecentWidget extends LitElement {
       return null
     }
 
+    const hasConnection = Array.from(this.connections.values())
+      .flatMap(connections => connections)
+      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${filteredRecentWallets.map(
@@ -71,6 +79,7 @@ export class W3mConnectRecentWidget extends LitElement {
               tagVariant="shade"
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
+              ?disabled=${hasConnection}
             >
             </wui-list-wallet>
           `

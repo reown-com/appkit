@@ -2,8 +2,10 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   EventsController,
@@ -23,6 +25,8 @@ export class W3mAllWalletsWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private connections = ConnectionController.state.connections
+
   @state() private count = ApiController.state.count
 
   @state() private filteredCount = ApiController.state.filteredWallets.length
@@ -33,6 +37,7 @@ export class W3mAllWalletsWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ConnectionController.subscribeKey('connections', val => (this.connections = val)),
       ApiController.subscribeKey('count', val => (this.count = val)),
       ApiController.subscribeKey('filteredWallets', val => (this.filteredCount = val.length)),
       ApiController.subscribeKey(
@@ -71,6 +76,10 @@ export class W3mAllWalletsWidget extends LitElement {
       tagLabel = `${count}+`
     }
 
+    const hasConnection = Array.from(this.connections.values())
+      .flatMap(connections => connections)
+      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+
     return html`
       <wui-list-wallet
         name="All Wallets"
@@ -83,6 +92,7 @@ export class W3mAllWalletsWidget extends LitElement {
         tabIdx=${ifDefined(this.tabIdx)}
         .loading=${this.isFetchingRecommendedWallets}
         loadingSpinnerColor=${this.isFetchingRecommendedWallets ? 'fg-300' : 'accent-100'}
+        ?disabled=${hasConnection}
       ></wui-list-wallet>
     `
   }

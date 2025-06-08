@@ -38,6 +38,17 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
+  @state() private connections = ConnectionController.state.connections
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('connections', val => {
+        this.connections = val
+      })
+    )
+  }
+
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
@@ -52,6 +63,10 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const hasConnection = Array.from(this.connections.values())
+      .flatMap(connections => connections)
+      .some(({ connectorId }) => connectorId === ConstantsUtil.CONNECTOR_ID.AUTH)
+
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
@@ -59,6 +74,7 @@ export class W3mEmailLoginWidget extends LitElement {
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
           tabIdx=${ifDefined(this.tabIdx)}
+          ?disabled=${hasConnection}
         >
         </wui-email-input>
 
@@ -147,7 +163,9 @@ export class W3mEmailLoginWidget extends LitElement {
           authConnector,
           ChainController.state.activeChain as ChainNamespace
         )
-        RouterController.replace('Account')
+        RouterController.reset('Account')
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('New Wallet Added')
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

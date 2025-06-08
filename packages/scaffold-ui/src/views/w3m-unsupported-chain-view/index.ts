@@ -2,17 +2,17 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
   AssetUtil,
   ChainController,
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -131,8 +131,17 @@ export class W3mUnsupportedChainView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconecting = true
-      await ConnectionController.disconnect()
-      ModalController.close()
+
+      const namespace = ChainController.state.activeChain as ChainNamespace
+      const connectionsByNamespace = ConnectionController.state.connections.get(namespace) ?? []
+      const hasConnections = connectionsByNamespace.length > 0
+      const connectorId = ConnectorController.state.activeConnectorIds[namespace]
+      await ConnectionController.disconnect({ id: connectorId })
+      if (hasConnections) {
+        RouterController.reset('Account')
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('Wallet deleted')
+      }
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

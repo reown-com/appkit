@@ -45,6 +45,14 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() protected message = 'Connect in the provider window'
 
+  private address = AccountController.state.address
+
+  private connectionsByNamespace = ChainController.state.activeChain
+    ? (ConnectionController.state.connections.get(ChainController.state.activeChain) ?? [])
+    : []
+
+  private hasMultipleConnections = this.connectionsByNamespace.length > 0
+
   public authConnector = ConnectorController.getAuthConnector()
 
   public constructor() {
@@ -66,8 +74,14 @@ export class W3mConnectingSocialView extends LitElement {
           if (val.socialWindow) {
             this.socialWindow = val.socialWindow
           }
-          if (val.address) {
-            if (ModalController.state.open || OptionsController.state.enableEmbedded) {
+        }),
+        AccountController.subscribeKey('address', val => {
+          if (val && val !== this.address) {
+            if (this.hasMultipleConnections) {
+              RouterController.reset('Account')
+              RouterController.push('ProfileWallets')
+              SnackController.showSuccess('New Wallet Added')
+            } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
               ModalController.close()
             }
           }
@@ -145,6 +159,8 @@ export class W3mConnectingSocialView extends LitElement {
             const uri = event.data.resultUri as string
 
             if (this.socialProvider) {
+              StorageUtil.setConnectedSocialProvider(this.socialProvider)
+
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
@@ -161,8 +177,6 @@ export class W3mConnectingSocialView extends LitElement {
             )
 
             if (this.socialProvider) {
-              StorageUtil.setConnectedSocialProvider(this.socialProvider)
-
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',

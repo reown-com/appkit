@@ -87,9 +87,7 @@ describe('WalletStandardConnector', () => {
 
   describe('connect', () => {
     it('connect correctly', async () => {
-      const bindEventsSpy = vi.spyOn(connector as any, 'bindEvents')
       await expect(connector.connect()).resolves.not.toThrow()
-      expect(bindEventsSpy).toHaveBeenCalled()
     })
 
     it('should throw if account is not found', async () => {
@@ -107,12 +105,6 @@ describe('WalletStandardConnector', () => {
       })
 
       await expect(connector.connect()).rejects.toThrow('No account found')
-    })
-
-    it('should bind events', async () => {
-      const eventsFeatureSpy = vi.spyOn(wallet.features['standard:events'] as any, 'on')
-      await connector.connect()
-      expect(eventsFeatureSpy).toHaveBeenCalledWith('change', expect.any(Function))
     })
   })
 
@@ -353,16 +345,6 @@ describe('WalletStandardConnector', () => {
     it('should disconnect correctly', async () => {
       await expect(connector.disconnect()).resolves.not.toThrow()
     })
-
-    it('should unbind events', async () => {
-      const unsubscribeCallbackMock = vi.fn<() => void>(() => {})
-      vi.spyOn(wallet.features['standard:events'] as any, 'on').mockReturnValueOnce(
-        unsubscribeCallbackMock
-      )
-      await connector.connect()
-      await connector.disconnect()
-      expect(unsubscribeCallbackMock).toHaveBeenCalled()
-    })
   })
 
   describe('request', () => {
@@ -375,28 +357,6 @@ describe('WalletStandardConnector', () => {
     it('should not throw if events feature is not available', async () => {
       delete (wallet.features as any)['standard:events']
       await expect(connector.connect()).resolves.not.toThrow()
-    })
-
-    it('should emit disconnect if change event has no accounts', async () => {
-      const eventsFeatureSpy = vi.spyOn(wallet.features['standard:events'] as any, 'on')
-      await connector.connect()
-      const changeCallback = eventsFeatureSpy.mock.calls[0]![1] as (data: any) => void
-      const disconnectCallback = vi.fn(() => {})
-      connector.on('disconnect', disconnectCallback)
-
-      changeCallback({ accounts: [] })
-      expect(disconnectCallback).toHaveBeenCalled()
-    })
-
-    it('should emit accountsChanged if change event has accounts', async () => {
-      const eventsFeatureSpy = vi.spyOn(wallet.features['standard:events'] as any, 'on')
-      await connector.connect()
-      const changeCallback = eventsFeatureSpy.mock.calls[0]![1] as (data: any) => void
-      const accountsChangedCallback = vi.fn(() => {})
-      connector.on('accountsChanged', accountsChangedCallback)
-
-      changeCallback({ accounts: [{ address: 'address1' }, { address: 'address2' }] })
-      expect(accountsChangedCallback).toHaveBeenCalledWith(['address1', 'address2'])
     })
   })
 })

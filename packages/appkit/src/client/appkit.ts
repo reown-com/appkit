@@ -113,6 +113,7 @@ export class AppKit extends AppKitBaseClient {
       const namespace = ChainController.state.activeChain as ChainNamespace
       const connectorId = ConnectorController.getConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+
       if (isConnectedWithAuth) {
         this.setCaipAddress(undefined, namespace)
         this.setLoading(false, namespace)
@@ -146,29 +147,11 @@ export class AppKit extends AppKitBaseClient {
           chainNamespace: namespace
         })
       }
+
       this.setCaipAddress(caipAddress, namespace)
       this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
-
-      const userAccounts = user.accounts?.map(account =>
-        CoreHelperUtil.createAccount(
-          namespace,
-          account.address,
-          account.type || currentAccountType || defaultAccountType
-        )
-      )
-
-      this.setAllAccounts(
-        userAccounts || [
-          CoreHelperUtil.createAccount(
-            namespace,
-            user.address,
-            (user.preferredAccountType as W3mFrameTypes.AccountType) || preferredAccountType
-          )
-        ],
-        namespace
-      )
 
       this.setLoading(false, namespace)
     })
@@ -284,16 +267,17 @@ export class AppKit extends AppKitBaseClient {
       if (socialProviderToConnect && authConnector) {
         this.setLoading(true, chainNamespace)
 
+        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         await ConnectionController.connectExternal(
           {
             id: authConnector.id,
             type: authConnector.type,
-            socialUri: resultUri
+            socialUri: resultUri,
+            chain: authConnector.chain
           },
           authConnector.chain
         )
 
-        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         StorageUtil.removeTelegramSocialProvider()
 
         EventsController.sendEvent({
@@ -459,6 +443,17 @@ export class AppKit extends AppKitBaseClient {
           })
         }
       } else if (newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+        /*
+         * Switch network for adapters, as each manages
+         * its own connections state and requires network updates
+         */
+        if (!ChainController.state.noAdapters) {
+          const adapter = this.getAdapter(networkNamespace)
+          const provider = ProviderUtil.getProvider(networkNamespace)
+          const providerType = ProviderUtil.getProviderId(networkNamespace)
+
+          await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+        }
         this.setCaipNetwork(caipNetwork)
         this.syncWalletConnectAccount()
       } else {

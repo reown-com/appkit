@@ -174,9 +174,20 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - disconnect', () => {
     it('should disconnect provider', async () => {
+      const adapter = new SolanaAdapter()
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockProvider,
+            type: 'EXTERNAL'
+          }
+        ]
+      })
+
       await adapter.disconnect({
-        provider: mockProvider as unknown as CoreProvider,
-        providerType: 'EXTERNAL'
+        id: 'test'
       })
 
       expect(mockProvider.disconnect).toHaveBeenCalled()

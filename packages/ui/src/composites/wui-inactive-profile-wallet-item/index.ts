@@ -72,7 +72,6 @@ export class WuiInactiveProfileWalletItem extends LitElement {
               name=${this.icon}
               class="custom-icon"
             ></wui-icon>
-
             ${this.iconBadge
               ? html`<wui-icon
                   color="fg-175"
@@ -117,6 +116,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
           variant=${this.buttonVariant}
           .loading=${this.loading}
           @click=${this.handleButtonClick}
+          data-testid="wui-inactive-profile-wallet-item-button"
         >
           ${this.buttonLabel}
         </wui-button>

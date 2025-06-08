@@ -339,11 +339,13 @@ export class ModalPage {
     })
   }
 
-  async disconnect() {
-    const accountBtn = this.page.getByTestId('account-button')
-    await expect(accountBtn, 'Account button should be visible').toBeVisible()
-    await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
-    await accountBtn.click()
+  async disconnect(clickAccountButton = true) {
+    if (clickAccountButton) {
+      const accountBtn = this.page.getByTestId('account-button')
+      await expect(accountBtn, 'Account button should be visible').toBeVisible()
+      await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
+      await accountBtn.click()
+    }
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
@@ -425,13 +427,18 @@ export class ModalPage {
     await this.clickSignatureRequestButton('Approve')
   }
 
-  async clickWalletUpgradeCard(context: BrowserContext, library?: string) {
-    await this.page.getByTestId('account-button').click()
+  async clickProfileWalletsMoreButton() {
+    await this.page.getByTestId('wui-active-profile-wallet-item-more-button').click()
+  }
 
-    await this.page.getByTestId('w3m-profile-button').click()
-    if (library !== 'solana') {
-      await this.page.getByTestId('account-settings-button').click()
-    }
+  async clickProfileWalletsDisconnectButton() {
+    await this.page.getByTestId('wui-active-profile-wallet-item-disconnect-button').click()
+  }
+
+  async clickWalletUpgradeCard(context: BrowserContext) {
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('wui-wallet-switch').click()
+    await this.clickProfileWalletsMoreButton()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -481,11 +488,20 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
+  async clickWalletSwitchButton() {
+    await this.page.getByTestId('wui-wallet-switch').click()
+  }
+
   async openAccount(namespace?: string) {
     expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
     this.page.waitForTimeout(300)
     await this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`).click()
+  }
+
+  async openProfileWalletsView() {
+    await this.openAccount()
+    await this.clickWalletSwitchButton()
   }
 
   async openConnectModal() {
@@ -716,9 +732,12 @@ export class ModalPage {
   }
 
   async switchAccount() {
-    const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
-    await expect(switchAccountButton1).toBeVisible()
-    await switchAccountButton1.click()
+    const firstActiveConnection = this.page.getByTestId('active-connection')
+    const firstActiveConnectionButton = firstActiveConnection
+      .first()
+      .getByTestId('wui-inactive-profile-wallet-item-button')
+    await expect(firstActiveConnectionButton).toBeVisible()
+    await firstActiveConnectionButton.click()
   }
 
   async getAddress(): Promise<`0x${string}`> {

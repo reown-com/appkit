@@ -221,9 +221,24 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const accountsList = provider?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
-      const accounts = accountsList?.map(account => account.split(':')[2]) ?? []
+      const accounts = (accountsList?.map(account => account.split(':')[2]) ??
+        []) as `0x${string}`[]
 
-      return accounts as `0x${string}`[]
+      const accountsAdded = new Set<`0x${string}`>()
+
+      const deduplicatedAccounts = accounts.filter(account => {
+        const lowerCasedAccount = account?.toLowerCase() as `0x${string}`
+
+        if (accountsAdded.has(lowerCasedAccount)) {
+          return false
+        }
+
+        accountsAdded.add(lowerCasedAccount)
+
+        return true
+      })
+
+      return deduplicatedAccounts
     },
     async getProvider({ chainId } = {}) {
       if (!provider_) {

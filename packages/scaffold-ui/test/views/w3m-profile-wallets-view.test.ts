@@ -11,6 +11,7 @@ import {
   ConstantsUtil
 } from '@reown/appkit-common'
 import {
+  AccountController,
   type AccountControllerState,
   ChainController,
   type ChainControllerState,
@@ -394,7 +395,7 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
     const mockConnections: Connection[] = [
       {
         connectorId: 'metamask',
-        accounts: [{ address: '0x1234567890123456789012345678901234567890', type: 'smart' }]
+        accounts: [{ address: '0x1234567890123456789012345678901234567890' }]
       }
     ]
 
@@ -402,7 +403,17 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
       connections: mockConnections,
       recentConnections: []
     })
-
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      user: {
+        accounts: [
+          {
+            type: 'smartAccount',
+            address: '0x1234567890123456789012345678901234567890'
+          }
+        ]
+      }
+    })
     vi.mocked(ConnectorController.state.activeConnectorIds).eip155 = 'metamask'
     vi.mocked(ChainController.getAccountData).mockReturnValue({
       caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
@@ -556,26 +567,6 @@ describe('W3mProfileWalletsView - Bitcoin Specific Behavior', () => {
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockBitcoinAddress as CaipAddress
     } as unknown as AccountControllerState)
-  })
-
-  it('should filter recent connections to only payment accounts for Bitcoin', async () => {
-    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
-      connections: [],
-      recentConnections: [mockBitcoinConnection]
-    })
-
-    const element: W3mProfileWalletsView = await fixture(
-      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
-    )
-
-    const recentConnections = element.shadowRoot?.querySelectorAll(
-      '[data-testid="recent-connection"]'
-    )
-
-    expect(recentConnections?.length).toBe(1)
-    expect(recentConnections?.[0]?.getAttribute('address')).toBe(
-      'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
-    )
   })
 
   it('should render Bitcoin profile content with account types', async () => {

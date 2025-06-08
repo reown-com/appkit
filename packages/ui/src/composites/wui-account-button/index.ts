@@ -75,6 +75,7 @@ export class WuiAccountButton extends LitElement {
           iconColor="error-100"
           backgroundColor="error-100"
           icon="warningCircle"
+          data-testid="wui-account-button-unsupported-chain"
         ></wui-icon-box>
         <wui-text variant="paragraph-600" color="inherit"> Switch Network</wui-text>`
     }

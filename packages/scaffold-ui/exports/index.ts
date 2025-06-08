@@ -17,8 +17,6 @@ export * from '../src/modal/w3m-router/index.js'
 // Account
 export * from '../src/views/w3m-account-settings-view/index.js'
 export * from '../src/views/w3m-account-view/index.js'
-export * from '../src/views/w3m-profile-view/index.js'
-export * from '../src/views/w3m-switch-address-view/index.js'
 export * from '../src/views/w3m-profile-wallets-view/index.js'
 
 // Connection

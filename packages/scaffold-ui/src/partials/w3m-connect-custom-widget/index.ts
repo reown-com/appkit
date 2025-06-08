@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-controllers'
 import {
   AssetUtil,
@@ -25,12 +26,16 @@ export class W3mConnectCustomWidget extends LitElement {
   @property() public tabIdx?: number = undefined
 
   @state() private connectors = ConnectorController.state.connectors
+
+  @state() private connections = ConnectionController.state.connections
+
   @state() private loading = false
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ConnectionController.subscribeKey('connections', val => (this.connections = val))
     )
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       this.loading = !ConnectionController.state.wcUri
@@ -56,6 +61,10 @@ export class W3mConnectCustomWidget extends LitElement {
 
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
+    const hasConnection = Array.from(this.connections.values())
+      .flatMap(connections => connections)
+      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+
     return html`<wui-flex flexDirection="column" gap="xs">
       ${wallets.map(
         wallet => html`
@@ -66,6 +75,7 @@ export class W3mConnectCustomWidget extends LitElement {
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
             ?loading=${this.loading}
+            ?disabled=${hasConnection}
           >
           </wui-list-wallet>
         `

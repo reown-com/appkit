@@ -631,8 +631,20 @@ describe('WagmiAdapter', () => {
 
     it('should disconnect successfully', async () => {
       const mockConnections = [
-        { connector: { id: 'connector1' } },
-        { connector: { id: 'connector2' } }
+        {
+          accounts: ['0x123'],
+          connector: {
+            id: 'connector1',
+            getProvider: vi.fn().mockImplementation(() => Promise.resolve({}))
+          }
+        },
+        {
+          accounts: ['0x123'],
+          connector: {
+            id: 'connector2',
+            getProvider: vi.fn().mockImplementation(() => Promise.resolve({}))
+          }
+        }
       ]
 
       vi.spyOn(wagmiCore, 'getConnections').mockReturnValue(mockConnections as any)
@@ -657,7 +669,7 @@ describe('WagmiAdapter', () => {
 
       adapter.construct({})
 
-      await adapter.disconnect()
+      await adapter.disconnect({})
 
       expect(disconnectSpy).toHaveBeenCalledTimes(2)
       expect(adapter.wagmiConfig.state.connections.size).toBe(0)
@@ -665,8 +677,18 @@ describe('WagmiAdapter', () => {
 
     it('should disconnect wagmi context succesfully even if one of the connectors fails to disconnect', async () => {
       const mockConnections = [
-        { connector: { id: 'connector1' } },
-        { connector: { id: 'connector2' } }
+        {
+          accounts: ['0x123'],
+          connector: {
+            id: 'connector1'
+          }
+        },
+        {
+          accounts: ['0x123'],
+          connector: {
+            id: 'connector2'
+          }
+        }
       ]
 
       vi.spyOn(wagmiCore, 'getConnections').mockReturnValue(mockConnections as any)
@@ -692,7 +714,7 @@ describe('WagmiAdapter', () => {
 
       wagmiAdapter.construct({})
 
-      await wagmiAdapter.disconnect()
+      await wagmiAdapter.disconnect({})
 
       expect(disconnectSpy).toHaveBeenCalledTimes(2)
       expect(wagmiAdapter.wagmiConfig.state.connections.size).toBe(0)
@@ -954,7 +976,14 @@ describe('WagmiAdapter', () => {
       const unsubscribe = vi.fn()
 
       vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
-        onChange({ address: '0x123', status: 'connected' } as any, {} as any)
+        onChange(
+          {
+            address: '0x123',
+            status: 'connected',
+            connector: { getProvider: vi.fn().mockImplementation(() => Promise.resolve({})) }
+          } as any,
+          {} as any
+        )
         return vi.fn()
       })
 
@@ -1003,13 +1032,19 @@ describe('WagmiAdapter', () => {
       const currAccount = {
         status: 'connected',
         address: '0x123',
-        chainId: 1
+        chainId: 1,
+        connector: {
+          getProvider: vi.fn().mockImplementation(() => Promise.resolve({}))
+        }
       } as unknown as wagmiCore.GetAccountReturnType
 
       const prevAccount = {
         status: 'connecting',
         address: '0x123',
-        chainId: 1
+        chainId: 1,
+        connector: {
+          getProvider: vi.fn().mockImplementation(() => Promise.resolve({}))
+        }
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
@@ -1024,23 +1059,33 @@ describe('WagmiAdapter', () => {
 
       adapter['setupWatchers']()
 
-      expect(accountChangedSpy).toHaveBeenCalledWith({
-        address: currAccount.address,
-        chainId: currAccount.chainId
+      await vi.waitFor(() => {
+        expect(accountChangedSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            address: currAccount.address,
+            chainId: currAccount.chainId
+          })
+        )
       })
     })
 
-    it('should emit accountChanged current address and previous address are not the same', async () => {
+    it('should emit accountChanged when status is connected', async () => {
       const currAccount = {
         status: 'connected',
         address: '0x123',
-        chainId: 1
+        chainId: 1,
+        connector: {
+          getProvider: vi.fn().mockImplementation(() => Promise.resolve({}))
+        }
       } as unknown as wagmiCore.GetAccountReturnType
 
       const prevAccount = {
         status: 'connected',
         address: '0x321',
-        chainId: 1
+        chainId: 1,
+        connector: {
+          getProvider: vi.fn().mockImplementation(() => Promise.resolve({}))
+        }
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
@@ -1064,9 +1109,13 @@ describe('WagmiAdapter', () => {
 
       adapter['setupWatchers']()
 
-      expect(accountChangedSpy).toHaveBeenCalledWith({
-        address: currAccount.address,
-        chainId: currAccount.chainId
+      await vi.waitFor(() => {
+        expect(accountChangedSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            address: currAccount.address,
+            chainId: currAccount.chainId
+          })
+        )
       })
     })
 

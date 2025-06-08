@@ -63,6 +63,10 @@ export type ConnectedWalletInfo = {
 export type User = {
   email?: string | null | undefined
   username?: string | null | undefined
+  accounts?: {
+    type: 'eoa' | 'smartAccount'
+    address: string
+  }[]
 }
 
 export interface LinkingRecord {

@@ -5,6 +5,7 @@ import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { AppKitProvider } from '@/src/context/AppKitContext'
@@ -27,6 +28,7 @@ export default function MultiChainSolanaAdapterOnly() {
   return (
     <AppKitProvider config={config}>
       <AppKitButtons />
+      <AppKitConnections namespace="solana" />
       <AppKitInfo />
       <SolanaTests />
     </AppKitProvider>

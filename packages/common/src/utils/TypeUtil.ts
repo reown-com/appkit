@@ -218,7 +218,6 @@ export type InferredCaipNetwork<T extends { chainNamespace: string } = { chainNa
 export type Connection = {
   name?: string
   icon?: string
-  recent?: boolean
   networkIcon?: string
   accounts: { type?: string; address: string }[]
   caipNetwork?: CaipNetwork

@@ -63,8 +63,8 @@ smartAccountSiweTest('it should sign with siwe + smart account', async ({ librar
   await validator.expectAcceptedSign()
 })
 
-smartAccountSiweTest('it should upgrade wallet', async ({ library }) => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
+smartAccountSiweTest('it should upgrade wallet', async () => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -115,8 +115,8 @@ smartAccountSiweTest(
 )
 
 smartAccountSiweTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await validator.expectDisconnected()
 })
