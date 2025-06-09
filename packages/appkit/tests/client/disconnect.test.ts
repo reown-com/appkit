@@ -505,7 +505,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     )
   })
 
-  it.only('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
+  it('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
     const eip155Namespace = 'eip155' as ChainNamespace
     const solanaNamespace = 'solana' as ChainNamespace
     const solanaAdapterError = new Error('Solana adapter failed') // Corrected error message for clarity
