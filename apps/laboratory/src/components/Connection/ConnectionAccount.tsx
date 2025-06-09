@@ -80,7 +80,7 @@ export function ConnectionAccount({
   } else if (isCurrentActiveConnection) {
     button = (
       <Flex alignItems="center" gap={2}>
-        <Button size="sm" colorScheme="blue"  onClick={handleConnect} isLoading={isSwitching}>
+        <Button size="sm" colorScheme="blue" onClick={handleConnect} isLoading={isSwitching}>
           Switch
         </Button>
         <Button size="sm" colorScheme="red" onClick={handleDisconnect}>
