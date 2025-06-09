@@ -37,8 +37,8 @@ const config = {
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   networks,
   defaultNetwork: mainnet,
-
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function MultiChainWagmiSolana() {

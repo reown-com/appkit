@@ -40,8 +40,8 @@ const config = {
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   networks,
   defaultNetwork: mainnet,
-
   metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets,
   siweConfig
 }
 
