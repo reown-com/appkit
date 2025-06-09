@@ -19,8 +19,8 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
-
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function MultiChainSolanaAdapterOnly() {
