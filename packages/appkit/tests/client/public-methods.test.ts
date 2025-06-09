@@ -44,7 +44,7 @@ import { mockUser, mockUserBalance } from '../mocks/Account.js'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, bitcoin, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
-import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
+import { mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
   mockRemoteFeatures,
