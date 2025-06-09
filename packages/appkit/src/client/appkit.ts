@@ -267,17 +267,16 @@ export class AppKit extends AppKitBaseClient {
       if (socialProviderToConnect && authConnector) {
         this.setLoading(true, chainNamespace)
 
-        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         await ConnectionController.connectExternal(
           {
             id: authConnector.id,
             type: authConnector.type,
-            socialUri: resultUri,
-            chain: authConnector.chain
+            socialUri: resultUri
           },
           authConnector.chain
         )
 
+        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         StorageUtil.removeTelegramSocialProvider()
 
         EventsController.sendEvent({
