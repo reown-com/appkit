@@ -132,6 +132,7 @@ export function useAppKit() {
   }
 
   return reactive({
+    isOpen: modal.isOpen,
     open,
     close
   })

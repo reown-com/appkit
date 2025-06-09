@@ -122,7 +122,7 @@ export function useAppKit() {
     await modal?.close()
   }
 
-  return { open, close }
+  return { isOpen: modal.isOpen, open, close }
 }
 
 export function useWalletInfo() {
