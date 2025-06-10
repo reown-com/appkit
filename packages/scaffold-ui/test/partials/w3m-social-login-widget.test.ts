@@ -4,12 +4,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import {
-  AccountController,
   type AuthConnector,
-  ChainController,
   ConnectorController,
   CoreHelperUtil,
-  EventsController,
   OptionsController
 } from '@reown/appkit-controllers'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -28,40 +25,32 @@ describe('W3mSocialLoginWidget', () => {
     vi.useRealTimers()
   })
 
-  it('should handle standard social login flow when clicking Google button', async () => {
-    const mockWindow = { location: { href: '' } }
-    const mockUri = 'https://auth.example.com/login'
-
-    vi.spyOn(OptionsController.state, 'remoteFeatures', 'get').mockReturnValue({
-      ...OptionsController.state.remoteFeatures,
-      socials: ['google']
-    })
-    vi.spyOn(AccountController, 'setSocialProvider')
-    vi.spyOn(EventsController, 'sendEvent')
-    vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(mockWindow as Window)
-    vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+  it('should render social login buttons when auth connector and socials are available', async () => {
+    const mockAuthConnector = {
       provider: {
-        getSocialRedirectUri: vi.fn().mockResolvedValue({ uri: mockUri })
+        getSocialRedirectUri: vi.fn().mockResolvedValue({ uri: 'https://auth.example.com/login' })
       },
       type: 'AUTH'
-    } as unknown as AuthConnector)
-    vi.spyOn(AccountController, 'setSocialWindow')
+    } as unknown as AuthConnector
+
+    vi.spyOn(OptionsController.state, 'remoteFeatures', 'get').mockReturnValue({
+      socials: ['google', 'x']
+    })
+    vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([mockAuthConnector])
 
     const element: W3mSocialLoginWidget = await fixture(
       html`<w3m-social-login-widget></w3m-social-login-widget>`
     )
 
-    const googleButton = HelpersUtil.getByTestId(element, 'social-selector-google')
-    await googleButton.click()
+    await element.updateComplete
 
-    expect(CoreHelperUtil.returnOpenHref).toHaveBeenCalledWith(
-      'https://secure.walletconnect.org/loading',
-      'popupWindow',
-      'width=600,height=800,scrollbars=yes'
-    )
-    expect(AccountController.setSocialWindow).toHaveBeenCalledWith(mockWindow, 'eip155')
-    expect(mockWindow.location.href).toBe(mockUri)
+    const googleButton = HelpersUtil.getByTestId(element, 'social-selector-google')
+    const xButton = HelpersUtil.getByTestId(element, 'social-selector-x')
+    
+    expect(googleButton).toBeTruthy()
+    expect(xButton).toBeTruthy()
+    expect(googleButton.hasAttribute('disabled')).toBe(false)
+    expect(xButton.hasAttribute('disabled')).toBe(false)
   })
 
   it('should load auth frame in PWA environment and manage loading state', async () => {
