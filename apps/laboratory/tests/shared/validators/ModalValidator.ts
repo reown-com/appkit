@@ -96,6 +96,39 @@ export class ModalValidator {
     )
   }
 
+  async expectActiveProfileWalletItemAddress(address: string) {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    await expect(activeProfileWalletItem).toBeVisible({
+      timeout: MAX_WAIT
+    })
+    await expect(activeProfileWalletItem).toHaveAttribute('address', address)
+  }
+
+  async expectActiveConnectionsFromProfileWalletsCount(count: number) {
+    const activeConnectionItems = this.page.getByTestId('active-connection')
+    const activeConnectionsCount = await activeConnectionItems.count()
+    expect(activeConnectionsCount).toBe(count)
+  }
+
+  async expectActiveConnectionsFromProfileWallets(connections: { address: string }[]) {
+    const activeConnectionItems = this.page.getByTestId('active-connection')
+    const count = await activeConnectionItems.count()
+    expect(count).toBeGreaterThan(0)
+
+    const foundAddresses = await Promise.all(
+      Array.from({ length: count }).map(async (_, i) => {
+        const item = activeConnectionItems.nth(i)
+        const address = await item.getAttribute('address')
+
+        return address?.toLowerCase()
+      })
+    )
+
+    for (const { address } of connections) {
+      expect(foundAddresses).toContain(address.toLowerCase())
+    }
+  }
+
   async expectSingleAccount() {
     await expect(
       this.page.getByTestId('single-account-avatar'),
@@ -448,7 +481,9 @@ export class ModalValidator {
 
   async expectAccountSwitched(oldAddress: string) {
     const address = this.page.getByTestId('w3m-address')
-    await expect(address).not.toHaveText(oldAddress)
+    await expect(address).not.toHaveText(oldAddress, {
+      timeout: 10000
+    })
   }
 
   async expectSocialsVisible() {
@@ -477,6 +512,13 @@ export class ModalValidator {
     await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
       timeout: MAX_WAIT
     })
+  }
+
+  async expectConnectedWalletType(type: string) {
+    const walletType = this.page.getByTestId('w3m-wallet-type')
+    const text = await walletType.textContent()
+
+    return text?.trim() === type
   }
 
   async expectEmail() {

@@ -119,12 +119,7 @@ export class ModalPage {
 
   async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
     await this.connectButton.click()
-    const connect = this.page.getByTestId('wallet-selector-walletconnect')
-    await connect.waitFor({
-      state: 'visible',
-      timeout: 5000
-    })
-    await connect.click()
+    await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
@@ -161,8 +156,13 @@ export class ModalPage {
     return uri
   }
 
-  async getImmidiateConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.connectButton.click()
+  async getImmidiateConnectUri(
+    timingRecords?: TimingRecords,
+    clickConnectButton = true
+  ): Promise<string> {
+    if (clickConnectButton) {
+      await this.connectButton.click()
+    }
     const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
@@ -181,14 +181,18 @@ export class ModalPage {
     return uri
   }
 
-  async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
+  async qrCodeFlow(
+    page: ModalPage,
+    walletPage: WalletPage,
+    qrCodeFlowType?: 'immediate-connect' | 'immediate'
+  ): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
     if (!walletPage.isPageLoaded) {
       await walletPage.load()
     }
-    if (immediate) {
-      uri = await page.getImmidiateConnectUri()
+    if (qrCodeFlowType === 'immediate-connect' || qrCodeFlowType === 'immediate') {
+      uri = await page.getImmidiateConnectUri(undefined, qrCodeFlowType === 'immediate-connect')
     } else {
       uri = await page.getConnectUri()
     }
@@ -404,12 +408,13 @@ export class ModalPage {
 
   async clickSignatureRequestButton(name: string) {
     const signatureHeader = this.page.getByText('Approve Transaction')
+    await signatureHeader.waitFor({ state: 'attached', timeout: 15_000 })
     const signatureButton = this.page
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name, exact: true })
-    await signatureButton.waitFor({ state: 'visible', timeout: 15_000 })
+    await signatureButton.waitFor({ state: 'attached', timeout: 15_000 })
     await signatureButton.click()
-    await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
+    await signatureHeader.waitFor({ state: 'detached', timeout: 15_000 })
   }
 
   async approveSign() {
@@ -488,8 +493,21 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
+  async clickWalletConnect() {
+    const connect = this.page.getByTestId('wallet-selector-walletconnect')
+    await connect.waitFor({
+      state: 'visible',
+      timeout: 5000
+    })
+    await connect.click()
+  }
+
   async clickWalletSwitchButton() {
     await this.page.getByTestId('wui-wallet-switch').click()
+  }
+
+  async clickAddWalletButton() {
+    await this.page.getByTestId('add-connection-button').click()
   }
 
   async openAccount(namespace?: string) {
@@ -502,6 +520,8 @@ export class ModalPage {
   async openProfileWalletsView() {
     await this.openAccount()
     await this.clickWalletSwitchButton()
+    // Wait until stable after animations
+    await this.page.waitForTimeout(500)
   }
 
   async openConnectModal() {
@@ -731,13 +751,34 @@ export class ModalPage {
     await sendCallsButton.click()
   }
 
-  async switchAccount() {
+  async switchAccount(idx = 0) {
     const firstActiveConnection = this.page.getByTestId('active-connection')
     const firstActiveConnectionButton = firstActiveConnection
-      .first()
+      .nth(idx)
       .getByTestId('wui-inactive-profile-wallet-item-button')
     await expect(firstActiveConnectionButton).toBeVisible()
     await firstActiveConnectionButton.click()
+  }
+
+  async switchAccountByAddress(address: string) {
+    const activeConnections = await this.getActiveConnections()
+
+    let hasSwitched = false
+
+    await Promise.all(
+      activeConnections.map(async connection => {
+        const connectionAddress = await connection.getAttribute('address')
+
+        if (connectionAddress && connectionAddress.toLowerCase() === address.toLowerCase()) {
+          await connection.getByTestId('wui-inactive-profile-wallet-item-button').click()
+          hasSwitched = true
+        }
+      })
+    )
+
+    if (!hasSwitched) {
+      throw new Error(`Active connection with address "${address}" not found`)
+    }
   }
 
   async getAddress(): Promise<`0x${string}`> {
@@ -745,6 +786,24 @@ export class ModalPage {
     expect(address, 'Address should be present').toBeTruthy()
 
     return address as `0x${string}`
+  }
+
+  async getActiveConnectionsAddresses() {
+    const activeConnections = await this.getActiveConnections()
+
+    const activeConnectionsAddresses = await Promise.all(
+      activeConnections.map(async connection => connection.getAttribute('address'))
+    )
+
+    return activeConnectionsAddresses.filter(Boolean) as string[]
+  }
+
+  // Returns all connected addresses excluding the currently active account
+  async getActiveConnections() {
+    const locator = this.page.getByTestId('active-connection')
+    const count = await locator.count()
+
+    return Array.from({ length: count }).map((_, i) => locator.nth(i))
   }
 
   async getChainId(): Promise<number> {

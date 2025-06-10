@@ -76,7 +76,8 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'wallet.spec.ts',
   'wallet-button.spec',
   'verify.spec.ts',
-  'email-after-farcaster.spec.ts'
+  'email-after-farcaster.spec.ts',
+  'multi-wallet.spec.ts'
 ]
 
 const CORE_TESTS = ['sign-client.spec.ts', 'universal-provider.spec.ts', 'core.spec.ts']
@@ -91,7 +92,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'wallet.spec.ts',
-  'wallet-button.spec'
+  'wallet-button.spec',
+  'multi-wallet.spec.ts'
 ]
 
 const CLOUD_AUTH_TESTS = ['cloud-auth.spec.ts']
