@@ -408,13 +408,13 @@ export class ModalPage {
 
   async clickSignatureRequestButton(name: string) {
     const signatureHeader = this.page.getByText('Approve Transaction')
-    await signatureHeader.waitFor({ state: 'attached', timeout: 15_000 })
+    await signatureHeader.waitFor({ state: 'visible', timeout: 15_000 })
     const signatureButton = this.page
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name, exact: true })
-    await signatureButton.waitFor({ state: 'attached', timeout: 15_000 })
+    await signatureButton.waitFor({ state: 'visible', timeout: 15_000 })
     await signatureButton.click()
-    await signatureHeader.waitFor({ state: 'detached', timeout: 15_000 })
+    await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
   async approveSign() {

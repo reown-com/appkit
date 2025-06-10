@@ -580,6 +580,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
       const caipNetwork = this.getCaipNetworks().find(n => n.id.toString() === chainId?.toString())
 
+      accounts = [address]
+
       this.addConnection({
         connectorId: id,
         accounts: authAccounts
@@ -590,6 +592,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
           name: StorageUtil.getConnectedSocialProvider(),
           username: StorageUtil.getConnectedSocialUsername()
         }
+      })
+
+      this.emit('accountChanged', {
+        address: accounts[0] as Address,
+        chainId: Number(chainId)
       })
     } else {
       accounts = await selectedProvider.request({

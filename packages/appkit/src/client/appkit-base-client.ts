@@ -580,6 +580,10 @@ export abstract class AppKitBaseClient {
 
             if (disconnectData) {
               disconnectData.connections.forEach(connection => {
+                if (connection.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
+                  StorageUtil.deleteConnectedSocialProvider()
+                }
+
                 StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
               })
             }
@@ -599,10 +603,6 @@ export abstract class AppKitBaseClient {
 
           if (failures.length > 0) {
             throw new Error(failures.map(f => f.reason.message).join(', '))
-          }
-
-          if (isAuth) {
-            StorageUtil.deleteConnectedSocialProvider()
           }
 
           EventsController.sendEvent({
@@ -948,10 +948,10 @@ export abstract class AppKitBaseClient {
           provider: connector.provider,
           chainNamespace
         })
-        StorageUtil.addConnectedNamespace(chainNamespace)
         this.syncConnectedWalletInfo(chainNamespace)
       }
 
+      
       if (isActiveChain && chainId) {
         this.syncAccount({
           address,
@@ -967,6 +967,8 @@ export abstract class AppKitBaseClient {
       } else {
         this.syncAccountInfo(address, chainId, chainNamespace)
       }
+
+      StorageUtil.addConnectedNamespace(chainNamespace)
     })
   }
 
