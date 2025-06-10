@@ -20,7 +20,7 @@ import type { SIWXMessenger } from '../core/SIWXMessenger.js'
 import { InformalMessenger } from '../index.js'
 
 /**
- * This is the configuration for using SIWX with Cloud Auth service.
+ * This is the configuration for using SIWX with Reown Authentication service.
  * It allows you to authenticate and capture user sessions through the Cloud Dashboard.
  */
 export class ReownAuthentication implements SIWXConfig {
