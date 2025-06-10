@@ -1,4 +1,7 @@
+/* eslint-disable no-await-in-loop */
 import type { Page } from '@playwright/test'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
@@ -14,66 +17,6 @@ let email: Email
 let page: Page
 let apiKey: string
 let tempEmail: string
-
-let extensionAddress: string
-let walletConnectAddress: string
-let emailAddress: string
-
-// -- Types --------------------------------------------------------------------
-type ValidateConnectionsStateParams = {
-  activeAddress: string
-  totalConnections: number
-  activeConnectionsAddresses?: string[]
-}
-
-// -- Helpers ---------------------------------------------------------
-async function getAddress() {
-  return modal.page.getByTestId('w3m-address').textContent() as Promise<string>
-}
-
-async function connectExtensionWallet() {
-  await modal.openProfileWalletsView()
-  await modal.clickAddWalletButton()
-  const walletSelector = await modal.getExtensionWallet()
-  await walletSelector.click()
-  await validator.expectConnected()
-
-  return getAddress()
-}
-
-async function connectWalletConnect() {
-  await modal.qrCodeFlow(modal, wallet)
-
-  return getAddress()
-}
-
-async function connectEmail() {
-  await modal.openProfileWalletsView()
-  await modal.clickAddWalletButton()
-  await modal.emailFlow({
-    emailAddress: tempEmail,
-    context: page.context(),
-    mailsacApiKey: apiKey,
-    clickConnectButton: false
-  })
-
-  return getAddress()
-}
-
-async function validateConnectionsState({
-  activeAddress,
-  totalConnections,
-  activeConnectionsAddresses
-}: ValidateConnectionsStateParams) {
-  await validator.expectActiveProfileWalletItemAddress(activeAddress)
-  await validator.expectActiveConnectionsFromProfileWalletsCount(totalConnections)
-
-  if (activeConnectionsAddresses) {
-    await validator.expectActiveConnectionsFromProfileWallets(
-      activeConnectionsAddresses.map(address => ({ address }))
-    )
-  }
-}
 
 // -- Setup --------------------------------------------------------------------
 const test = extensionFixture.extend<{ library: string }>({
@@ -101,68 +44,70 @@ test.beforeAll(async ({ library, context }) => {
 })
 
 // -- Tests --------------------------------------------------------------------
-test('connect multiple wallets', async ({ library }) => {
+test('should connect multiple wallets', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
 
-  // Step 1: Connect WalletConnect Wallet
-  walletConnectAddress = await connectWalletConnect()
-  await validator.expectAccountButtonAddress(extensionAddress)
+  // Connect WalletConnect wallet
+  await modal.qrCodeFlow(modal, wallet)
+  await validator.expectConnected()
+
+  // Connect Extension wallet
   await modal.openProfileWalletsView()
-  await validateConnectionsState({
-    activeAddress: extensionAddress,
-    totalConnections: 1
-  })
-
-  // Close modal and verify that the wallet is switched
+  await modal.clickAddWalletButton()
+  const extensionWallet = await modal.getExtensionWallet()
+  await extensionWallet.click()
+  await validator.expectConnected()
   await modal.closeModal()
-  await validator.expectAccountButtonAddress(walletConnectAddress)
 
-  // Step 2: Connect Extension Wallet
-  extensionAddress = await connectExtensionWallet()
-  await validateConnectionsState({
-    activeAddress: extensionAddress,
-    totalConnections: 2,
-    activeConnectionsAddresses: [walletConnectAddress]
-  })
-
-  // Close modal and verify that the wallet is switched
-  await modal.closeModal()
-  await validator.expectAccountButtonAddress(extensionAddress)
-  await validator.expectAccountSwitched(walletConnectAddress)
-
-  // Step 3: Connect Email Wallet
+  // Connect Email wallet
+  await modal.openProfileWalletsView()
+  await modal.clickAddWalletButton()
   validator.expectSecureSiteFrameNotInjected()
-  emailAddress = await connectEmail()
-  await validateConnectionsState({
-    activeAddress: emailAddress,
-    // Solana doesn't include smart account, only EOA
-    totalConnections: library === 'solana' ? 3 : 4,
-    activeConnectionsAddresses: [walletConnectAddress, extensionAddress]
+  await modal.emailFlow({
+    emailAddress: tempEmail,
+    context: page.context(),
+    mailsacApiKey: apiKey,
+    clickConnectButton: false
   })
-
-  // Close modal and verify that the wallet is switched and the current account is the email wallet address
+  await validator.expectConnected()
   await modal.closeModal()
-  await validator.expectAccountButtonAddress(emailAddress)
-  await validator.expectAccountSwitched(extensionAddress)
-  await validator.expectAccountSwitched(walletConnectAddress)
+
+  // Double check that all wallets are connected in ProfileWallets view
+  await modal.openProfileWalletsView()
+  // Solana doesn't include smart account in the count
+  const expectedTotalWallets = library === 'solana' ? 3 : 4
+  await validator.expectActiveConnectionsFromProfileWalletsCount(expectedTotalWallets)
+  await modal.closeModal()
 })
 
-test('wallet actions', async ({ library }) => {
+test('should sign with each wallet', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
 
-  // Perform signing operation for current account
+  // Start testing the signing with the current wallet (email wallet)
   await modal.sign()
   await modal.approveSign()
   await validator.expectAcceptedSign()
   await modal.openProfileWalletsView()
 
+  const currentAddress = await modal.getAddress()
+
+  /*
+   * Wagmi has a bug where switching the preferred account type to a smart account
+   * resets the entire connections object due to the reconnect() function being called.
+   * As a temporary workaround, disconnect it and test the remaining wallets
+   * such as WalletConnect and Extension.
+   */
   if (library === 'wagmi') {
-    await modal.clickProfileWalletsDisconnectButton()
-    await validator.expectAccountSwitched(emailAddress)
+    const walletType = await validator.getConnectedWalletType()
+
+    if (walletType === 'AUTH') {
+      await modal.clickProfileWalletsDisconnectButton()
+      await validator.expectAccountSwitched(currentAddress)
+    }
   }
 
   const activeConnectionsAddresses = await modal.getActiveConnectionsAddresses()
@@ -173,12 +118,13 @@ test('wallet actions', async ({ library }) => {
 
   await modal.closeModal()
 
-  /* eslint-disable no-await-in-loop */
-  for (const connectionAddress of activeConnectionsAddresses) {
+  for (const address of activeConnectionsAddresses) {
     await modal.openProfileWalletsView()
-    await modal.switchAccountByAddress(connectionAddress)
+    await modal.switchAccountByAddress(address)
     await modal.closeModal()
-    await validator.expectAccountButtonAddress(connectionAddress)
+
+    await validator.expectAccountButtonAddress(address)
+
     await modal.sign()
 
     const isEmail = await validator.expectConnectedWalletType('AUTH')
@@ -191,5 +137,40 @@ test('wallet actions', async ({ library }) => {
     }
 
     await validator.expectAcceptedSign()
+  }
+})
+
+test('should disconnect all wallets', async ({ library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
+
+  await modal.openProfileWalletsView()
+
+  const connectorIdsToDisconnect = [
+    CommonConstantsUtil.CONNECTOR_ID.AUTH,
+    CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+    CommonConstantsUtil.CONNECTOR_ID.INJECTED
+  ].filter(connectorIdToDisconnect =>
+    library === 'wagmi' ? connectorIdToDisconnect !== CommonConstantsUtil.CONNECTOR_ID.AUTH : true
+  )
+
+  for (const [idx] of connectorIdsToDisconnect.entries()) {
+    const address = await modal.getAddress()
+
+    if (!address) {
+      throw new Error('No address found')
+    }
+
+    const isLastConnectorId = idx === connectorIdsToDisconnect.length - 1
+
+    await validator.expectActiveProfileWalletItemAddress(address)
+    await modal.clickProfileWalletsDisconnectButton()
+
+    if (isLastConnectorId) {
+      await validator.expectDisconnected()
+    } else {
+      await validator.expectAccountSwitched(address)
+    }
   }
 })

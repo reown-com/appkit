@@ -515,10 +515,16 @@ export class ModalValidator {
   }
 
   async expectConnectedWalletType(type: string) {
+    const walletType = await this.getConnectedWalletType()
+
+    return walletType?.trim() === type
+  }
+
+  async getConnectedWalletType() {
     const walletType = this.page.getByTestId('w3m-wallet-type')
     const text = await walletType.textContent()
 
-    return text?.trim() === type
+    return text?.trim()
   }
 
   async expectEmail() {
