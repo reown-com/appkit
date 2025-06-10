@@ -21,6 +21,7 @@ const config = {
   networks,
   projectId: '',
   metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets,
   features: {
     socials: []
   },

@@ -328,7 +328,7 @@ describe('useAppKitConnection', () => {
           address: '0x456...',
           namespace: 'eip155',
           hasSwitchedAccount: true,
-          hasSwitchedSwitched: false
+          hasSwitchedWallet: false
         })
       })
 
@@ -358,7 +358,7 @@ describe('useAppKitConnection', () => {
       address: '0x456...',
       namespace: 'eip155',
       hasSwitchedAccount: true,
-      hasSwitchedSwitched: false,
+      hasSwitchedWallet: false,
       hasDeletedWallet: false
     })
     expect(setIsSwitchingConnectionSpy).toHaveBeenCalledWith(false)
@@ -446,7 +446,7 @@ describe('useAppKitConnection', () => {
       address: '0x123...',
       namespace: 'eip155',
       hasSwitchedAccount: false,
-      hasSwitchedSwitched: false,
+      hasSwitchedWallet: false,
       hasDeletedWallet: true
     })
   })

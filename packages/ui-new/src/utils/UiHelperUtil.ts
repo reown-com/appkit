@@ -122,7 +122,11 @@ export const UiHelperUtil = {
   getColorTheme(theme: ThemeType | undefined) {
     if (theme) {
       return theme
-    } else if (typeof window !== 'undefined' && window.matchMedia) {
+    } else if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      typeof window.matchMedia === 'function'
+    ) {
       if (window.matchMedia('(prefers-color-scheme: dark)')?.matches) {
         return 'dark'
       }

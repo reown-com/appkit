@@ -1,6 +1,7 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
@@ -172,6 +173,20 @@ export const ApiController = {
 
       return allowedOrigins
     } catch (error) {
+      if (error instanceof Error && error.cause instanceof Response) {
+        const status = error.cause.status
+
+        if (status === ConstantsUtil.HTTP_STATUS_CODES.TOO_MANY_REQUESTS) {
+          throw new Error('RATE_LIMITED', { cause: error })
+        }
+
+        if (status >= ConstantsUtil.HTTP_STATUS_CODES.SERVER_ERROR && status < 600) {
+          throw new Error('SERVER_ERROR', { cause: error })
+        }
+
+        return []
+      }
+
       return []
     }
   },

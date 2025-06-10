@@ -20,7 +20,8 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
-  defaultNetwork: solana
+  defaultNetwork: solana,
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function SolanaWalletButton() {
