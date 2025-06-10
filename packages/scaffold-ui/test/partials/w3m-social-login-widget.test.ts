@@ -46,7 +46,7 @@ describe('W3mSocialLoginWidget', () => {
 
     const googleButton = HelpersUtil.getByTestId(element, 'social-selector-google')
     const xButton = HelpersUtil.getByTestId(element, 'social-selector-x')
-    
+
     expect(googleButton).toBeTruthy()
     expect(xButton).toBeTruthy()
     expect(googleButton.hasAttribute('disabled')).toBe(false)
