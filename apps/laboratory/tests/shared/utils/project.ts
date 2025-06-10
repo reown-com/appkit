@@ -111,7 +111,7 @@ const SINGLE_ADAPTER_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_MOBILE_TESTS, fal
 
 const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
-const CLOUD_AUTH_TESTS_REGEX = createRegex(REOWN_AUTHENTICATION_TESTS)
+const REOWN_AUTHENTICATION_TESTS_REGEX = createRegex(REOWN_AUTHENTICATION_TESTS)
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/core': {
@@ -225,10 +225,10 @@ const customProjectProperties: CustomProjectProperties = {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
   },
   'Desktop Chrome/reown-authentication': {
-    testMatch: CLOUD_AUTH_TESTS_REGEX
+    testMatch: REOWN_AUTHENTICATION_TESTS_REGEX
   },
   'Desktop Firefox/reown-authentication': {
-    testMatch: CLOUD_AUTH_TESTS_REGEX
+    testMatch: REOWN_AUTHENTICATION_TESTS_REGEX
   }
 }
 
