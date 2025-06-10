@@ -13,8 +13,9 @@ export const CoreHelperUtil = {
   isMobile() {
     if (this.isClient()) {
       return Boolean(
-        (typeof window?.matchMedia === 'function' &&
-          window?.matchMedia('(pointer:coarse)')?.matches) ||
+        (window?.matchMedia &&
+          typeof window.matchMedia === 'function' &&
+          window.matchMedia('(pointer:coarse)')?.matches) ||
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
       )
     }
@@ -238,7 +239,10 @@ export const CoreHelperUtil = {
       return false
     }
 
-    const isStandaloneDisplayMode = window.matchMedia?.('(display-mode: standalone)')?.matches
+    const isStandaloneDisplayMode =
+      window?.matchMedia && typeof window.matchMedia === 'function'
+        ? window.matchMedia('(display-mode: standalone)')?.matches
+        : false
     const isIOSStandalone = (window?.navigator as unknown as { standalone: boolean })?.standalone
 
     return Boolean(isStandaloneDisplayMode || isIOSStandalone)

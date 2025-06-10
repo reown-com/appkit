@@ -422,6 +422,21 @@
       "import": "./dist/esm/exports/wui-ux-by-reown.js",
       "default": "./dist/esm/exports/wui-ux-by-reown.js"
     },
+    "./wui-inactive-profile-wallet-item": {
+      "types": "./dist/types/exports/wui-inactive-profile-wallet-item.d.ts",
+      "import": "./dist/esm/exports/wui-inactive-profile-wallet-item.js",
+      "default": "./dist/esm/exports/wui-inactive-profile-wallet-item.js"
+    },
+    "./wui-active-profile-wallet-item": {
+      "types": "./dist/types/exports/wui-active-profile-wallet-item.d.ts",
+      "import": "./dist/esm/exports/wui-active-profile-wallet-item.js",
+      "default": "./dist/esm/exports/wui-active-profile-wallet-item.js"
+    },
+    "./wui-wallet-switch": {
+      "types": "./dist/types/exports/wui-wallet-switch.d.ts",
+      "import": "./dist/esm/exports/wui-wallet-switch.js",
+      "default": "./dist/esm/exports/wui-wallet-switch.js"
+    },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",
       "import": "./dist/esm/exports/jsx.js",

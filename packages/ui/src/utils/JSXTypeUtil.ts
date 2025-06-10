@@ -8,6 +8,7 @@ import type { WuiShimmer } from '../components/wui-shimmer/index.js'
 import type { WuiText } from '../components/wui-text/index.js'
 import type { WuiVisual } from '../components/wui-visual/index.js'
 import type { WuiAccountButton } from '../composites/wui-account-button/index.js'
+import type { WuiActiveProfileWalletItem } from '../composites/wui-active-profile-wallet-item/index.js'
 import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
 import type { WuiAllWalletsImage } from '../composites/wui-all-wallets-image/index.js'
 import type { WuiAvatar } from '../composites/wui-avatar/index.js'
@@ -30,6 +31,7 @@ import type { WuiEnsInput } from '../composites/wui-ens-input/index.js'
 import type { WuiIconBox } from '../composites/wui-icon-box/index.js'
 import type { WuiIconButton } from '../composites/wui-icon-button/index.js'
 import type { WuiIconLink } from '../composites/wui-icon-link/index.js'
+import type { WuiInactiveProfileWalletItem } from '../composites/wui-inactive-profile-wallet-item/index.js'
 import type { WuiInputAmount } from '../composites/wui-input-amount/index.js'
 import type { WuiInputElement } from '../composites/wui-input-element/index.js'
 import type { WuiInputNumeric } from '../composites/wui-input-numeric/index.js'
@@ -73,6 +75,7 @@ import type { WuiUxByReown } from '../composites/wui-ux-by-reown/index.js'
 import type { WuiVisualThumbnail } from '../composites/wui-visual-thumbnail/index.js'
 import type { WuiWalletButton } from '../composites/wui-wallet-button/index.js'
 import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
+import type { WuiWalletSwitch } from '../composites/wui-wallet-switch/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
 import type { WuiSeparator } from '../layout/wui-separator/index.js'
@@ -159,6 +162,9 @@ declare module 'react' {
       'wui-checkbox': CustomElement<WuiCheckBox>
       'wui-switch': CustomElement<WuiSwitch>
       'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
+      'wui-active-profile-wallet-item': CustomElement<WuiActiveProfileWalletItem>
+      'wui-inactive-profile-wallet-item': CustomElement<WuiInactiveProfileWalletItem>
+      'wui-wallet-switch': CustomElement<WuiWalletSwitch>
       // -- Layout ------------------------------------------- //
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>
