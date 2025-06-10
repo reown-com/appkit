@@ -1,5 +1,11 @@
 # @reown/appkit-experimental
 
+## 1.7.5
+
+### Patch Changes
+
+- [#4494](https://github.com/reown-com/appkit/pull/4494) [`352f41b`](https://github.com/reown-com/appkit/commit/352f41bfc53c257362efbe6067ac03dc8dd92ec4) Thanks [@zoruka](https://github.com/zoruka)! - Cloud Auth SIWX skip get sessions if token is not set
+
 ## 1.7.4
 
 ### Patch Changes
