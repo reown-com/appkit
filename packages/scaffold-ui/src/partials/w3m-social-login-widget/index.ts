@@ -70,7 +70,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs" data-testid="w3m-social-login-widget">
+      <wui-flex gap="xs" data-testid="w3m-social-login-widget">
         ${socials.slice(0, 2).map(
           social =>
             html`<wui-logo-select
