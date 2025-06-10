@@ -45,4 +45,13 @@ export default css`
   :host([data-size='lg']) > wui-text {
     transform: translateY(2%);
   }
+
+  :host([data-size='xs']) {
+    height: var(--wui-spacing-2l);
+    padding: 0 var(--wui-spacing-3xs) !important;
+  }
+
+  :host([data-size='xs']) > wui-text {
+    transform: translateY(2%);
+  }
 `

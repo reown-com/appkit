@@ -113,6 +113,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-profile-view></w3m-profile-view>`
       case 'SwitchAddress':
         return html`<w3m-switch-address-view></w3m-switch-address-view>`
+      case 'ProfileWallets':
+        return html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
       case 'Transactions':
         return html`<w3m-transactions-view></w3m-transactions-view>`
       case 'OnRampProviders':

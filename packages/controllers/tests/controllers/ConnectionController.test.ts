@@ -302,25 +302,25 @@ describe('ConnectionController', () => {
       {
         address: '0x123',
         hasSwitchedAccount: true,
-        hasSwitchedSwitched: true,
+        hasSwitchedWallet: true,
         status: 'active'
       },
-      { address: '0x321', hasSwitchedAccount: false, hasSwitchedSwitched: true, status: 'active' },
+      { address: '0x321', hasSwitchedAccount: false, hasSwitchedWallet: true, status: 'active' },
       {
         address: '0x123',
         hasSwitchedAccount: true,
-        hasSwitchedSwitched: false,
+        hasSwitchedWallet: false,
         status: 'connected'
       },
       {
         address: '0x321',
         hasSwitchedAccount: false,
-        hasSwitchedSwitched: false,
+        hasSwitchedWallet: false,
         status: 'connected'
       }
     ] as const)(
       'should handle active and connected connection when switching to different addresses',
-      async ({ address, hasSwitchedAccount, hasSwitchedSwitched, status }) => {
+      async ({ address, hasSwitchedAccount, hasSwitchedWallet, status }) => {
         vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue(status)
         vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
         vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue('eip155:137:0x321')
@@ -354,7 +354,7 @@ describe('ConnectionController', () => {
           address,
           namespace: chain,
           hasSwitchedAccount,
-          hasSwitchedSwitched
+          hasSwitchedWallet
         })
       }
     )
@@ -423,7 +423,7 @@ describe('ConnectionController', () => {
         address,
         namespace: chain,
         hasSwitchedAccount: true,
-        hasSwitchedSwitched: true
+        hasSwitchedWallet: true
       })
     })
 
@@ -460,7 +460,7 @@ describe('ConnectionController', () => {
           address,
           namespace: chain,
           hasSwitchedAccount: true,
-          hasSwitchedSwitched: true
+          hasSwitchedWallet: true
         })
       }
     )
@@ -495,7 +495,7 @@ describe('ConnectionController', () => {
         address,
         namespace: chain,
         hasSwitchedAccount: true,
-        hasSwitchedSwitched: true
+        hasSwitchedWallet: true
       })
     })
 

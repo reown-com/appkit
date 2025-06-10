@@ -44,7 +44,7 @@ interface SwitchConnectionParams {
     address: string
     namespace: ChainNamespace
     hasSwitchedAccount: boolean
-    hasSwitchedSwitched: boolean
+    hasSwitchedWallet: boolean
   }) => void
 }
 
@@ -548,7 +548,7 @@ const controller = {
             address: newAddress,
             namespace,
             hasSwitchedAccount,
-            hasSwitchedSwitched: status === 'active'
+            hasSwitchedWallet: status === 'active'
           })
         }
         break
@@ -567,7 +567,7 @@ const controller = {
             address: newAddress,
             namespace,
             hasSwitchedAccount: true,
-            hasSwitchedSwitched: true
+            hasSwitchedWallet: true
           })
         }
         break

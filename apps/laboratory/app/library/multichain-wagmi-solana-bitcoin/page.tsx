@@ -41,7 +41,8 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function Page() {

@@ -745,7 +745,18 @@ describe('WagmiAdapter', () => {
       expect(switchChain).toHaveBeenCalledWith(
         adapter.wagmiConfig,
         expect.objectContaining({
-          chainId: 1
+          chainId: 1,
+          addEthereumChainParameter: {
+            chainName: mockCaipNetworks[0].name,
+            nativeCurrency: {
+              name: mockCaipNetworks[0].nativeCurrency.name,
+              symbol: mockCaipNetworks[0].nativeCurrency.symbol,
+              decimals: mockCaipNetworks[0].nativeCurrency.decimals
+            },
+            rpcUrls: [mockCaipNetworks[0].rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
+            blockExplorerUrls: [mockCaipNetworks[0].blockExplorers?.default.url ?? ''],
+            iconUrls: [mockCaipNetworks[0].assets?.imageUrl ?? '']
+          }
         })
       )
     })
