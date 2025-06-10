@@ -12,6 +12,11 @@ import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
+const METAMASK_WALLET_ID = 'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96'
+const RAINBOW_WALLET_ID = '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369'
+const OKX_WALLET_ID_1 = '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
+const OKX_WALLET_ID_2 = '5d9f1395b3a8e848684848dc4147cbd05c8d54bb737eac78fe103901fe6b01a1'
+
 const queryClient = new QueryClient()
 
 const wagmiAdapter = new WagmiAdapter({
@@ -28,12 +33,7 @@ const config = {
     analytics: true
   },
   customWallets: ConstantsUtil.CustomWallets,
-  featuredWalletIds: [
-    '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
-    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // Metamask
-    '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709', // OKX 1
-    '5d9f1395b3a8e848684848dc4147cbd05c8d54bb737eac78fe103901fe6b01a1' // OKX 2
-  ]
+  featuredWalletIds: [RAINBOW_WALLET_ID, METAMASK_WALLET_ID, OKX_WALLET_ID_1, OKX_WALLET_ID_2]
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 
