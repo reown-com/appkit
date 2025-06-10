@@ -59,13 +59,32 @@ export function getPublicUrl() {
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'
 
-// eslint-disable-next-line init-declarations
-let storedCustomWallet
-if (typeof window !== 'undefined') {
-  storedCustomWallet = getLocalStorageItem(CUSTOM_WALLET)
+interface CustomWallet {
+  id: string
+  name: string
+  image_url?: string
+  mobile_link?: string
+  desktop_link?: string
+  webapp_link?: string
 }
 
-const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
+// Get custom wallets from localStorage
+function getCustomWallets(): CustomWallet[] {
+  try {
+    const storedCustomWallet = getLocalStorageItem(CUSTOM_WALLET)
+    return storedCustomWallet ? JSON.parse(storedCustomWallet) : []
+  } catch (error) {
+    console.error('Error getting custom wallets:', error)
+    return []
+  }
+}
+
+// Filter out custom wallets from recent wallets
+function filterRecentWallets(recentWallets: string[]) {
+  const customWallets = getCustomWallets()
+  const customWalletIds = new Set(customWallets.map(wallet => wallet.id))
+  return recentWallets.filter(walletId => !customWalletIds.has(walletId))
+}
 
 const EvmNetworks = [
   mainnet,
@@ -118,44 +137,7 @@ export const ConstantsUtil = {
     icons: [`${getPublicUrl()}/metadata-icon.png`],
     verifyUrl: ''
   },
-  CustomWallets: [
-    ...customWallet,
-    {
-      id: 'react-wallet-v2',
-      name: 'React Sample Wallet',
-      homepage: WALLET_URL,
-      webapp_link: WALLET_URL,
-      image_url: '/sample-wallets/react.svg'
-    },
-    {
-      id: 'kotlin-web3wallet',
-      name: 'Kotlin Sample Wallet',
-      homepage: 'https://walletconnect.com',
-      mobile_link: 'kotlin-web3wallet://',
-      image_url: '/sample-wallets/kotlin.svg'
-    },
-    {
-      id: 'swift-web3wallet',
-      name: 'Swift Sample Wallet',
-      homepage: 'https://walletconnect.com',
-      mobile_link: 'walletapp://',
-      image_url: '/sample-wallets/swift.svg'
-    },
-    {
-      id: 'flutter-web3wallet',
-      name: 'Flutter Sample Wallet',
-      homepage: 'https://walletconnect.com',
-      mobile_link: 'wcflutterwallet://',
-      image_url: '/sample-wallets/flutter.svg'
-    },
-    {
-      id: 'rn-web3wallet',
-      name: 'React Native Sample Wallet',
-      homepage: 'https://walletconnect.com',
-      mobile_link: 'rn-web3wallet://',
-      image_url: '/sample-wallets/react-native.svg'
-    }
-  ],
+  CustomWallets: getCustomWallets(),
   ProjectId: projectId,
   EvmNetworks,
   SolanaNetworks,
