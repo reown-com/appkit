@@ -12,11 +12,11 @@ import {
   RouterController,
   type WcWallet
 } from '@reown/appkit-controllers'
+import { ConnectorControllerUtil } from '@reown/appkit-controllers'
 
 import { ApiController } from '../../controllers/ApiController.js'
 import '../../scaffold-ui/appkit-wallet-button/index.js'
 import type { AppKitWalletButton } from '../../scaffold-ui/appkit-wallet-button/index.js'
-import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import { HelpersUtil } from '../utils/HelperUtil.js'
 
@@ -58,7 +58,7 @@ describe('AppKitWalletButton', () => {
     expect(walletButtonSocial.getAttribute('disabled')).toBeNull()
     expect(walletButtonSocial.getAttribute('loading')).toBeNull()
 
-    vi.spyOn(ConnectorUtil, 'connectSocial').mockRejectedValueOnce('Connection rejected')
+    vi.spyOn(ConnectorControllerUtil, 'connectSocial').mockRejectedValueOnce('Connection rejected')
 
     const walletButtonExternalClick = vi.fn()
 
@@ -75,7 +75,7 @@ describe('AppKitWalletButton', () => {
     expect(walletButtonSocial.getAttribute('loading')).toBeNull()
     expect(walletButtonSocial.getAttribute('disabled')).toBeNull()
 
-    vi.spyOn(ConnectorUtil, 'connectSocial').mockImplementationOnce(async () => {
+    vi.spyOn(ConnectorControllerUtil, 'connectSocial').mockImplementationOnce(async () => {
       const chainNamespace = 'eip155'
       const chainId = 1
       const address = 'eip155:1:0x123'
@@ -223,7 +223,9 @@ describe('AppKitWalletButton', () => {
     // @ts-expect-error
     expect(walletButtonExternal.imageSrc).toBe('data:image/png;base64,mocked...')
 
-    vi.spyOn(ConnectorUtil, 'connectExternal').mockRejectedValueOnce('Connection rejected')
+    vi.spyOn(ConnectorControllerUtil, 'connectExternal').mockRejectedValueOnce(
+      'Connection rejected'
+    )
 
     const walletButtonExternalClick = vi.fn()
 
@@ -240,7 +242,7 @@ describe('AppKitWalletButton', () => {
     expect(walletButtonExternal.getAttribute('loading')).toBeNull()
     expect(walletButtonExternal.getAttribute('disabled')).toBeNull()
 
-    vi.spyOn(ConnectorUtil, 'connectExternal').mockImplementationOnce(async () => {
+    vi.spyOn(ConnectorControllerUtil, 'connectExternal').mockImplementationOnce(async () => {
       const chainNamespace = 'eip155'
       const chainId = 1
       const address = 'eip155:1:0x123'

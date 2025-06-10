@@ -78,6 +78,7 @@ mockUniversalProvider.mockSession = (
     }
   },
   optionalNamespaces: {},
+  requiredNamespaces: {},
   pairingTopic: '',
   peer: {
     metadata: {
@@ -94,7 +95,6 @@ mockUniversalProvider.mockSession = (
     protocol: '',
     data: undefined
   },
-  requiredNamespaces: {},
   self: {
     metadata: {
       description: '',

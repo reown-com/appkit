@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds support for Solflare wallet deeplinking in mobile environments
+Refactors token balance util to use getAssets call only when using Auth provider

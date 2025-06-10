@@ -17,8 +17,14 @@ export class WuiImage extends LitElement {
 
   @property() public size?: SizeType = undefined
 
+  @property() public objectFit: 'cover' | 'contain' = 'cover'
+
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.objectFit) {
+      this.dataset['objectFit'] = this.objectFit
+    }
+
     this.style.cssText = `
       --local-width: ${this.size ? `var(--wui-icon-size-${this.size});` : '100%'};
       --local-height: ${this.size ? `var(--wui-icon-size-${this.size});` : '100%'};

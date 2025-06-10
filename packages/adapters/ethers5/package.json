@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers5",
-  "version": "1.7.7",
+  "version": "1.7.8",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -25,7 +25,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.20.2",
+    "@walletconnect/universal-provider": "2.21.0",
     "valtio": "1.13.2"
   },
   "optionalDependencies": {
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
-    "@walletconnect/types": "2.20.2",
+    "@walletconnect/types": "2.21.0",
     "vitest": "2.1.9"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",

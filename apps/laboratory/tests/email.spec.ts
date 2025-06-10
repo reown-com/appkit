@@ -132,16 +132,6 @@ emailTest('it should show loading on page refresh', async () => {
   await validator.expectAccountButtonReady()
 })
 
-emailTest('it should show snackbar error if failed to fetch token balance', async () => {
-  // Clear cache and set offline to simulate token balance fetch failure
-  await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
-  await page.page.context().setOffline(true)
-  await page.openAccount()
-  await validator.expectSnackbar('Token Balance Unavailable')
-  await page.closeModal()
-  await page.page.context().setOffline(false)
-})
-
 emailTest('it should disconnect correctly', async ({ library }) => {
   if (library === 'solana') {
     await page.openAccount()

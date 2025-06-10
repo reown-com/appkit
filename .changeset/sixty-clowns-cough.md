@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes remote configs util getting email and social enabled for AppKit Basic
+Fixes issue on multichain where we are disconnecting namespaces if they are not in the WC connection's available namespaces

@@ -198,6 +198,7 @@ export class AppKit extends AppKitBaseClient {
 
   private async syncAuthConnector(provider: W3mFrameProvider, chainNamespace: ChainNamespace) {
     const isAuthSupported = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(chainNamespace)
+    const shouldSync = chainNamespace === ChainController.state.activeChain
 
     if (!isAuthSupported) {
       return
@@ -215,7 +216,6 @@ export class AppKit extends AppKitBaseClient {
     const username = provider.getUsername()
 
     this.setUser({ ...(AccountController.state?.user || {}), username, email }, chainNamespace)
-
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
@@ -239,7 +239,7 @@ export class AppKit extends AppKitBaseClient {
 
     await provider.getSmartAccountEnabledNetworks()
 
-    if (chainNamespace && isAuthSupported) {
+    if (chainNamespace && isAuthSupported && shouldSync) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
         await this.connectionControllerClient?.connectExternal({
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
@@ -328,17 +328,18 @@ export class AppKit extends AppKitBaseClient {
     }
 
     const isEmailEnabled = this.remoteFeatures?.email
-
     const isSocialsEnabled =
       Array.isArray(this.remoteFeatures?.socials) && this.remoteFeatures.socials.length > 0
-
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
+
+    const activeNamespaceConnectedToAuth = HelpersUtil.getActiveNamespaceConnectedToAuth()
+    const namespaceToConnect = activeNamespaceConnectedToAuth || chainNamespace
 
     if (!this.authProvider && this.options?.projectId && isAuthEnabled) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         enableLogger: this.options.enableAuthLogger,
-        chainId: this.getCaipNetwork(chainNamespace)?.caipNetworkId,
+        chainId: this.getCaipNetwork(namespaceToConnect)?.caipNetworkId,
         abortController: ErrorUtil.EmbeddedWalletAbortController,
         onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
           if (reason === 'iframe_load_failed') {
@@ -355,7 +356,11 @@ export class AppKit extends AppKitBaseClient {
           this.authProvider?.rejectRpcRequests()
         }
       })
+    }
 
+    const shouldSync = chainNamespace === ChainController.state.activeChain
+
+    if (this.authProvider && shouldSync) {
       this.syncAuthConnector(this.authProvider, chainNamespace)
       this.checkExistingTelegramSocialConnection(chainNamespace)
     }

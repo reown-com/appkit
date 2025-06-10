@@ -22,13 +22,32 @@ export class WuiIconLink extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const borderRadius = this.size === 'lg' ? '--wui-border-radius-xs' : '--wui-border-radius-xxs'
-    const padding = this.size === 'lg' ? '--wui-spacing-1xs' : '--wui-spacing-2xs'
+    this.dataset['size'] = this.size
+
+    let borderRadius = ''
+    let padding = ''
+
+    switch (this.size) {
+      case 'lg':
+        borderRadius = '--wui-border-radius-xs'
+        padding = '--wui-spacing-1xs'
+        break
+
+      case 'sm':
+        borderRadius = '--wui-border-radius-3xs'
+        padding = '--wui-spacing-xxs'
+        break
+
+      default:
+        borderRadius = '--wui-border-radius-xxs'
+        padding = '--wui-spacing-2xs'
+        break
+    }
 
     this.style.cssText = `
     --local-border-radius: var(${borderRadius});
     --local-padding: var(${padding});
-`
+    `
 
     return html`
       <button ?disabled=${this.disabled}>
