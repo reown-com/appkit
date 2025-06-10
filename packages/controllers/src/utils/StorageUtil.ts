@@ -135,14 +135,26 @@ export const StorageUtil = {
   setAppKitRecent(wallet: WcWallet) {
     try {
       const recentWallets = StorageUtil.getRecentWallets()
-      const exists = recentWallets.find(w => w.id === wallet.id)
-      if (!exists) {
-        recentWallets.unshift(wallet)
-        if (recentWallets.length > 2) {
-          recentWallets.pop()
-        }
-        SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(recentWallets))
+      
+      // Check if this is a custom wallet
+      const customWallets = SafeLocalStorage.getItem(SafeLocalStorageKeys.CUSTOM_WALLETS)
+      const customWalletIds = customWallets ? new Set(JSON.parse(customWallets).map((w: WcWallet) => w.id)) : new Set()
+      
+      // Don't add custom wallets to recent list
+      if (customWalletIds.has(wallet.id)) {
+        return
       }
+      
+      // Remove any existing instance of this wallet
+      const filteredWallets = recentWallets.filter(w => w.id !== wallet.id)
+      
+      // Add to beginning of list
+      filteredWallets.unshift(wallet)
+      
+      // Keep only the most recent 2 wallets
+      const trimmedWallets = filteredWallets.slice(0, 2)
+      
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(trimmedWallets))
     } catch {
       console.info('Unable to set AppKit recent')
     }
@@ -151,8 +163,17 @@ export const StorageUtil = {
   getRecentWallets(): WcWallet[] {
     try {
       const recent = SafeLocalStorage.getItem(SafeLocalStorageKeys.RECENT_WALLETS)
+      if (!recent) return []
 
-      return recent ? JSON.parse(recent) : []
+      const recentWallets = JSON.parse(recent)
+      
+      // Filter out any invalid entries
+      return recentWallets.filter((wallet: WcWallet) => 
+        wallet && 
+        typeof wallet === 'object' && 
+        wallet.id && 
+        wallet.name
+      )
     } catch {
       console.info('Unable to get AppKit recent')
     }
