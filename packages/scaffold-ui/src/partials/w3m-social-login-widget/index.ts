@@ -61,7 +61,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let socials = this.remoteFeatures?.socials || []
+    const socials = this.remoteFeatures?.socials || []
     const isAuthConnectorExist = Boolean(this.authConnector)
     const isSocialsEnabled = socials?.length
 
