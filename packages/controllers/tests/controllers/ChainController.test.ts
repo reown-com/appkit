@@ -17,6 +17,7 @@ import {
 } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
+import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUtil.js'
 
 // -- Setup --------------------------------------------------------------------
 const chainNamespace = 'eip155' as ChainNamespace
@@ -237,17 +238,17 @@ describe('ChainController', () => {
     let mock = vi
       .spyOn(ChainController.state, 'activeCaipNetwork', 'get')
       .mockReturnValue(undefined)
-    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+    expect(getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
     mock.mockReturnValue(mainnetCaipNetwork)
-    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+    expect(getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
     mock.mockReturnValue(solanaCaipNetwork)
-    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+    expect(getActiveNetworkTokenAddress()).toEqual(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111111'
     )
 

@@ -170,7 +170,7 @@ describe('AppKit - disconnect', () => {
       ;(appKit as any).chainAdapters['eip155'] = mockEvmAdapter
       vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue(undefined)
 
-      await (appKit as any).connectionControllerClient.disconnect(chainNamespace)
+      await (appKit as any).connectionControllerClient.disconnect({ chainNamespace })
 
       expect(setLoadingSpy).toHaveBeenCalledTimes(2) // true at start of try, false in finally
       expect(setLoadingSpy).toHaveBeenNthCalledWith(1, true, chainNamespace)
