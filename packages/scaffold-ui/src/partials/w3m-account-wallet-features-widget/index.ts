@@ -82,7 +82,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.network = val
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      }),
       OptionsController.subscribeKey('features', val => (this.features = val)),
       OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )

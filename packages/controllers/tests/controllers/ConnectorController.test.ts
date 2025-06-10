@@ -14,7 +14,7 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../exports/index.js'
-import { MobileWalletUtil } from '../../src/utils/MobileWallet.js'
+import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 // -- Setup --------------------------------------------------------------------
 const ORIGINAL_HREF = 'https://example.com/path'
@@ -360,7 +360,7 @@ describe('ConnectorController', () => {
 
   it('should call mobile wallet util when selecting wallet is Phantom ', () => {
     const mockConnector = {
-      id: 'phantom',
+      id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
       name: 'Phantom',
       type: 'INJECTED' as const,
       chain: ConstantsUtil.CHAIN.SOLANA
@@ -376,15 +376,18 @@ describe('ConnectorController', () => {
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const encodedRef = encodeURIComponent('https://example.com')
-    const expectedUrl = `https://phantom.app/ul/browse/${encodedHref}?ref=${encodedRef}`
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
 
     expect(window.location.href).toBe(expectedUrl)
-    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(mockConnector.name)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.id,
+      ConstantsUtil.CHAIN.EVM
+    )
   })
 
   it('should call mobile wallet util when selecting wallet is Coinbase only on Solana ', () => {
     const mockConnector = {
-      id: 'coinbase',
+      id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
       name: 'Coinbase Wallet',
       type: 'INJECTED' as const,
       chain: ConstantsUtil.CHAIN.EVM
@@ -402,15 +405,18 @@ describe('ConnectorController', () => {
     ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
 
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`
 
     expect(window.location.href).toBe(expectedUrl)
-    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(mockConnector.name)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
   })
 
   it('should not call redirect when selected wallet is Coinbase and active chain is not Solana ', () => {
     const mockConnector = {
-      id: 'coinbase',
+      id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
       name: 'Coinbase Wallet',
       type: 'INJECTED' as const,
       chain: ConstantsUtil.CHAIN.EVM
@@ -428,7 +434,10 @@ describe('ConnectorController', () => {
     ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
 
     expect(window.location.href).toBe(ORIGINAL_HREF)
-    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(mockConnector.name)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.id,
+      ConstantsUtil.CHAIN.EVM
+    )
   })
 
   it('should route to ConnectingWalletConnect when selecting wallet if there is not a connector', () => {

@@ -1,0 +1,57 @@
+name: Vitest Shards
+
+on:
+  workflow_call:
+    inputs:
+      totalShards:
+        required: true
+        type: number
+      currentShard:
+        required: true
+        type: number
+
+jobs:
+  vitest:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/*
+
+      - name: install
+        run: pnpm install
+
+      - name: run vitest shard
+        run: |
+          echo "Running Vitest shard ${{ inputs.currentShard }}/ ${{ inputs.totalShards }}"
+          pnpm vitest run \
+            --shard=${{ inputs.currentShard }}/${{ inputs.totalShards }} \
+            --coverage.enabled \
+            --coverage.reporter=json \
+            --coverage.reporter=json-summary \
+            --coverage.reportsDirectory=coverage

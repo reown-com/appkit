@@ -18,6 +18,7 @@ import type {
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerClient,
+  ConnectionControllerState,
   ConnectorType,
   EstimateGasTransactionArgs,
   EventsControllerState,
@@ -45,6 +46,7 @@ import {
   BlockchainApiController,
   ChainController,
   ConnectionController,
+  ConnectionControllerUtil,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
@@ -55,10 +57,13 @@ import {
   OptionsController,
   PublicStateController,
   RouterController,
+  SIWXUtil,
+  SendController,
   SnackController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import { getChainsToDisconnect } from '@reown/appkit-controllers/utils'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -175,19 +180,52 @@ export abstract class AppKitBaseClient {
   }
 
   private async checkAllowedOrigins() {
-    const allowedOrigins = await ApiController.fetchAllowedOrigins()
-    if (allowedOrigins && CoreHelperUtil.isClient()) {
+    try {
+      const allowedOrigins = await ApiController.fetchAllowedOrigins()
+
+      if (!allowedOrigins || !CoreHelperUtil.isClient()) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+        return
+      }
+
       const currentOrigin = window.location.origin
       const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
         currentOrigin,
         allowedOrigins,
         WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
       )
+
       if (!isOriginAllowed) {
         AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
       }
-    } else {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+        return
+      }
+
+      switch (error.message) {
+        case 'RATE_LIMITED':
+          AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
+          break
+        case 'SERVER_ERROR': {
+          const originalError = error.cause instanceof Error ? error.cause : error
+          AlertController.open(
+            {
+              shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
+              longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
+                originalError.message
+              )
+            },
+            'error'
+          )
+          break
+        }
+        default:
+          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      }
     }
   }
 
@@ -242,6 +280,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize(options.adapters ?? [])
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
@@ -381,6 +420,35 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
+  private async disconnectNamespace(namespace: ChainNamespace) {
+    try {
+      const adapter = this.getAdapter(namespace)
+      const provider = ProviderUtil.getProvider(namespace)
+      const providerType = ProviderUtil.getProviderId(namespace)
+      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+
+      this.setLoading(true, namespace)
+      if (caipAddress && adapter?.disconnect) {
+        await adapter.disconnect({ provider, providerType })
+      }
+
+      StorageUtil.removeConnectedNamespace(namespace)
+      ProviderUtil.resetChain(namespace)
+      this.setUser(undefined, namespace)
+      this.setStatus('disconnected', namespace)
+      this.setConnectedWalletInfo(undefined, namespace)
+
+      ConnectorController.removeConnectorId(namespace)
+
+      ChainController.resetAccount(namespace)
+      ChainController.resetNetwork(namespace)
+      this.setLoading(false, namespace)
+    } catch (error) {
+      this.setLoading(false, namespace)
+      throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+    }
+  }
+
   // -- Client Initialization ---------------------------------------------------
   protected createClients() {
     this.connectionControllerClient = {
@@ -439,7 +507,7 @@ export abstract class AppKitBaseClient {
         })
 
         if (!res) {
-          return
+          return undefined
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
@@ -458,6 +526,8 @@ export abstract class AppKitBaseClient {
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
+
+        return undefined
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -468,19 +538,42 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
-      disconnect: async (chainNamespace?: ChainNamespace) => {
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-        const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider(namespace)
-        const providerType = ProviderUtil.getProviderId(namespace)
+      /**
+       * Disconnect a connector or all connectors
+       * @param {string} [options.id] - Connector ID to disconnect. If no id is passed, disconnects all connectors. If id is provided then disconnect the specific connector.
+       * @param {ChainNamespace} [options.chainNamespace] - Chain namespace to disconnect from
+       */
+      disconnect: async ({ chainNamespace } = {}) => {
+        const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
+        try {
+          // Reset send state when disconnecting
+          const disconnectResults = await Promise.allSettled(
+            chainsToDisconnect.map(async ([ns]) => this.disconnectNamespace(ns))
+          )
+          SendController.resetSend()
+          ConnectionController.resetWcConnection()
+          await SIWXUtil.clearSessions()
+          ConnectorController.setFilterByNamespace(undefined)
+          const failures = disconnectResults.filter(
+            (result): result is PromiseRejectedResult => result.status === 'rejected'
+          )
 
-        await adapter?.disconnect({ provider, providerType })
+          if (failures.length > 0) {
+            throw new Error(failures.map(f => f.reason.message).join(', '))
+          }
 
-        StorageUtil.removeConnectedNamespace(namespace)
-        ProviderUtil.resetChain(namespace)
-        this.setUser(undefined, namespace)
-        this.setStatus('disconnected', namespace)
-        this.setConnectedWalletInfo(undefined, namespace)
+          StorageUtil.deleteConnectedSocialProvider()
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'DISCONNECT_SUCCESS',
+            properties: {
+              namespace: chainNamespace || 'all'
+            }
+          })
+        } catch (error) {
+          throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
+        }
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -714,7 +807,7 @@ export abstract class AppKitBaseClient {
   protected async initChainAdapter(namespace: ChainNamespace) {
     this.onConnectors(namespace)
     this.listenAdapter(namespace)
-    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
   }
 
@@ -835,9 +928,14 @@ export abstract class AppKitBaseClient {
 
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
+      if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
+        ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.SAFE, namespace)
+      }
+
       const connectorId = ConnectorController.getConnectorId(namespace)
 
       this.setStatus('connecting', namespace)
+
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
           await this.syncWalletConnectAccount()
@@ -858,7 +956,9 @@ export abstract class AppKitBaseClient {
     const adapter = this.getAdapter(namespace)
     const connectorId = ConnectorController.getConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork(namespace)
-    const connector = ConnectorController.getConnectors(namespace).find(c => c.id === connectorId)
+    const connectors = ConnectorController.getConnectors(namespace)
+
+    const connector = connectors.find(c => c.id === connectorId)
 
     try {
       if (!adapter || !connector) {
@@ -903,6 +1003,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async syncWalletConnectAccount() {
+    const sessionNamespaces = Object.keys(this.universalProvider?.session?.namespaces || {})
     const syncTasks = this.chainNamespaces.map(async chainNamespace => {
       const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
@@ -953,7 +1054,7 @@ export abstract class AppKitBaseClient {
           chainId,
           chainNamespace
         })
-      } else {
+      } else if (sessionNamespaces.includes(chainNamespace)) {
         this.setStatus('disconnected', chainNamespace)
       }
 
@@ -1542,6 +1643,18 @@ export abstract class AppKitBaseClient {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
+  public getConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).connections
+
+  public getRecentConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).recentConnections
+
+  public switchConnection: (typeof ConnectionController)['switchConnection'] = params =>
+    ConnectionController.switchConnection(params)
+
+  public deleteConnection: (typeof StorageUtil)['deleteAddressFromConnection'] = params =>
+    StorageUtil.deleteAddressFromConnection(params)
+
   public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] = (
     connectedWalletInfo,
     chain
@@ -1580,7 +1693,7 @@ export abstract class AppKitBaseClient {
   }
 
   public async disconnect(chainNamespace?: ChainNamespace) {
-    await ConnectionController.disconnect(chainNamespace)
+    await ConnectionController.disconnect({ namespace: chainNamespace })
   }
 
   public getSIWX<SIWXConfigInterface = SIWXConfig>() {
@@ -1598,13 +1711,11 @@ export abstract class AppKitBaseClient {
 
   public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.getCaipNetworks().find(n => n.id === appKitNetwork.id)
-
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
 
       return
     }
-
     await ChainController.switchActiveNetwork(network)
   }
 
@@ -1652,6 +1763,10 @@ export abstract class AppKitBaseClient {
     return ThemeController.subscribe(callback)
   }
 
+  public subscribeConnections(callback: (newState: ConnectionControllerState) => void) {
+    return ConnectionController.subscribe(callback)
+  }
+
   public getWalletInfo() {
     return AccountController.state.connectedWalletInfo
   }
@@ -1660,7 +1775,7 @@ export abstract class AppKitBaseClient {
     const authConnector = ConnectorController.getAuthConnector(namespace)
     const accountState = ChainController.getAccountData(namespace)
     const activeChain = ChainController.state.activeChain as ChainNamespace
-    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace || activeChain)
 
     if (!accountState) {
       return undefined

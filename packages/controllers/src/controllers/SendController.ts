@@ -10,9 +10,11 @@ import {
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { BalanceUtil } from '../utils/BalanceUtil.js'
+import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SendApiUtil } from '../utils/SendApiUtil.js'
+import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
@@ -184,7 +186,7 @@ const controller = {
 
     try {
       if (address && chainId && chain) {
-        const balances = await SendApiUtil.getMyTokensWithBalance()
+        const balances = await BalanceUtil.getMyTokensWithBalance()
         state.tokenBalances = balances
         state.lastRetry = undefined
 
@@ -207,13 +209,14 @@ const controller = {
       return
     }
 
-    const networkTokenBalances = SendApiUtil.mapBalancesToSwapTokens(state.tokenBalances)
+    const networkTokenBalances = SwapApiUtil.mapBalancesToSwapTokens(state.tokenBalances)
+
     if (!networkTokenBalances) {
       return
     }
 
     const networkToken = networkTokenBalances.find(
-      token => token.address === ChainController.getActiveNetworkTokenAddress()
+      token => token.address === getActiveNetworkTokenAddress()
     )
 
     if (!networkToken) {
