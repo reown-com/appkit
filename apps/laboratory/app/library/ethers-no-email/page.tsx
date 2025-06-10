@@ -19,9 +19,8 @@ const config = {
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    email: false,
     legalCheckbox: true,
+    email: false,
     socials: []
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',

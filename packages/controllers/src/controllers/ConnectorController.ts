@@ -329,8 +329,8 @@ const controller = {
 
   selectWalletConnector(wallet: WcWallet) {
     const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-
-    MobileWalletUtil.handleMobileDeeplinkRedirect(connector?.name || wallet.name || '')
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    MobileWalletUtil.handleMobileDeeplinkRedirect(connector?.explorerId || wallet.id, namespace)
 
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })

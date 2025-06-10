@@ -58,6 +58,7 @@ describe('WalletUtil', () => {
     // Reset all mocks before each test
     vi.restoreAllMocks()
     OptionsController.state.enableEIP6963 = true
+    OptionsController.state.featuredWalletIds = []
   })
 
   describe('filterOutDuplicatesByRDNS', () => {
@@ -225,6 +226,21 @@ describe('WalletUtil', () => {
       ])
     })
 
+    it('should sort installed wallets according to featuredWalletIds order', () => {
+      OptionsController.state.featuredWalletIds = ['3', '1', '2']
+
+      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector]
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
+
+      const result = WalletUtil.markWalletsAsInstalled(mockWallets)
+
+      expect(result).toEqual([
+        { ...mockMetamaskWallet, installed: true },
+        { ...mockRainbowWallet, installed: true },
+        { ...mockTrustWallet, installed: false }
+      ])
+    })
+
     it('should handle wallets without RDNS', () => {
       const walletsWithoutRDNS: WcWallet[] = [
         { id: '1', name: 'Wallet 1' },
@@ -240,6 +256,51 @@ describe('WalletUtil', () => {
       expect(result).toEqual([
         { id: '2', name: 'Wallet 2', rdns: 'io.rainbow', installed: true },
         { id: '1', name: 'Wallet 1', installed: false }
+      ])
+    })
+
+    it('should sort multiple installed wallets by featuredWalletIds order', () => {
+      const testWallets: WcWallet[] = [
+        { id: 'wallet1', name: 'Wallet 1', rdns: 'io.wallet1' },
+        { id: 'wallet2', name: 'Wallet 2', rdns: 'io.wallet2' },
+        { id: 'wallet3', name: 'Wallet 3', rdns: 'io.wallet3' },
+        { id: 'wallet4', name: 'Wallet 4', rdns: 'io.wallet4' }
+      ]
+
+      OptionsController.state.featuredWalletIds = ['wallet3', 'wallet1', 'wallet4']
+
+      const mockConnectors = [
+        { info: { rdns: 'io.wallet1' }, type: 'ANNOUNCED' as const },
+        { info: { rdns: 'io.wallet2' }, type: 'ANNOUNCED' as const },
+        { info: { rdns: 'io.wallet3' }, type: 'ANNOUNCED' as const },
+        { info: { rdns: 'io.wallet4' }, type: 'ANNOUNCED' as const }
+      ]
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(
+        mockConnectors as any
+      )
+
+      const result = WalletUtil.markWalletsAsInstalled(testWallets)
+
+      expect(result).toEqual([
+        { ...testWallets[2], installed: true }, // wallet3
+        { ...testWallets[0], installed: true }, // wallet1
+        { ...testWallets[3], installed: true }, // wallet4
+        { ...testWallets[1], installed: true } // wallet2 (not in featuredWalletIds)
+      ])
+    })
+
+    it('should handle empty featuredWalletIds array', () => {
+      OptionsController.state.featuredWalletIds = []
+
+      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector]
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
+
+      const result = WalletUtil.markWalletsAsInstalled(mockWallets)
+
+      expect(result).toEqual([
+        { ...mockMetamaskWallet, installed: true },
+        { ...mockRainbowWallet, installed: true },
+        { ...mockTrustWallet, installed: false }
       ])
     })
   })

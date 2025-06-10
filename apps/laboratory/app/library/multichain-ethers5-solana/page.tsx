@@ -31,9 +31,7 @@ const modal = createAppKit({
   projectId: ConstantsUtil.ProjectId,
   networks,
   defaultNetwork: mainnet,
-  features: {
-    analytics: true
-  },
+  customWallets: ConstantsUtil.CustomWallets,
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })

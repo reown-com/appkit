@@ -1,10 +1,9 @@
 ---
-'@reown/appkit-pay': patch
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
-'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
@@ -13,6 +12,7 @@
 '@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
+'@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Enaple Solana in AppKit Pay
+Changes `wallet_addEthereumChain` behavior in wagmi to use the chain's original rpc url instead of blockchain API url

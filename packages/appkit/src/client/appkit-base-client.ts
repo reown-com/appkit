@@ -18,6 +18,7 @@ import type {
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerClient,
+  ConnectionControllerState,
   ConnectorType,
   EstimateGasTransactionArgs,
   EventsControllerState,
@@ -26,6 +27,7 @@ import type {
   NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
+  RemoteFeatures,
   RouterControllerState,
   SIWXConfig,
   SendTransactionArgs,
@@ -44,19 +46,24 @@ import {
   BlockchainApiController,
   ChainController,
   ConnectionController,
+  ConnectionControllerUtil,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
   EventsController,
   ModalController,
+  OnRampController,
   OptionsController,
   PublicStateController,
   RouterController,
+  SIWXUtil,
+  SendController,
   SnackController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import { getChainsToDisconnect } from '@reown/appkit-controllers/utils'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -71,6 +78,7 @@ import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
+import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
@@ -117,8 +125,11 @@ export abstract class AppKitBaseClient {
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
+  public remoteFeatures: RemoteFeatures = {}
   public version: SdkVersion | AppKitSdkVersion
   public reportedAlertErrors: Record<string, boolean> = {}
+
+  private readyPromise?: Promise<void>
 
   constructor(options: AppKitOptionsWithSdk) {
     this.options = options
@@ -130,7 +141,7 @@ export abstract class AppKitBaseClient {
     )
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
-    this.initialize(options)
+    this.readyPromise = this.initialize(options)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -148,38 +159,73 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
+    this.initializeProjectSettings(options)
     this.initControllers(options)
     await this.initChainAdapters()
-    await this.injectModalUi()
-
     this.sendInitializeEvent(options)
-    PublicStateController.set({ initialized: true })
-
     await this.syncExistingConnection()
+    this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    OptionsController.setRemoteFeatures(this.remoteFeatures)
+    if (this.remoteFeatures.onramp) {
+      OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
+    }
     // Check allowed origins only if email or social features are enabled
     if (
-      OptionsController.state.features?.email ||
-      (Array.isArray(OptionsController.state.features?.socials) &&
-        OptionsController.state.features?.socials.length > 0)
+      OptionsController.state.remoteFeatures?.email ||
+      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
+        OptionsController.state.remoteFeatures?.socials.length > 0)
     ) {
       await this.checkAllowedOrigins()
     }
   }
 
   private async checkAllowedOrigins() {
-    const allowedOrigins = await ApiController.fetchAllowedOrigins()
-    if (allowedOrigins && CoreHelperUtil.isClient()) {
+    try {
+      const allowedOrigins = await ApiController.fetchAllowedOrigins()
+
+      if (!allowedOrigins || !CoreHelperUtil.isClient()) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+        return
+      }
+
       const currentOrigin = window.location.origin
       const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
         currentOrigin,
         allowedOrigins,
         WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
       )
+
       if (!isOriginAllowed) {
         AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
       }
-    } else {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+        return
+      }
+
+      switch (error.message) {
+        case 'RATE_LIMITED':
+          AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
+          break
+        case 'SERVER_ERROR': {
+          const originalError = error.cause instanceof Error ? error.cause : error
+          AlertController.open(
+            {
+              shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
+              longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
+                originalError.message
+              )
+            },
+            'error'
+          )
+          break
+        }
+        default:
+          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      }
     }
   }
 
@@ -234,11 +280,17 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize(options.adapters ?? [])
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
   protected initializeConnectorController() {
     ConnectorController.initialize(this.chainNamespaces)
+  }
+
+  protected initializeProjectSettings(options: AppKitOptionsWithSdk) {
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setSdkVersion(options.sdkVersion)
   }
 
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
@@ -253,8 +305,7 @@ export abstract class AppKitBaseClient {
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
-    OptionsController.setSdkVersion(options.sdkVersion)
-    OptionsController.setProjectId(options.projectId)
+
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
@@ -310,7 +361,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected getDefaultMetaData() {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (CoreHelperUtil.isClient()) {
       return {
         name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
@@ -367,6 +418,35 @@ export abstract class AppKitBaseClient {
       : undefined
 
     return extendedNetwork
+  }
+
+  private async disconnectNamespace(namespace: ChainNamespace) {
+    try {
+      const adapter = this.getAdapter(namespace)
+      const provider = ProviderUtil.getProvider(namespace)
+      const providerType = ProviderUtil.getProviderId(namespace)
+      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+
+      this.setLoading(true, namespace)
+      if (caipAddress && adapter?.disconnect) {
+        await adapter.disconnect({ provider, providerType })
+      }
+
+      StorageUtil.removeConnectedNamespace(namespace)
+      ProviderUtil.resetChain(namespace)
+      this.setUser(undefined, namespace)
+      this.setStatus('disconnected', namespace)
+      this.setConnectedWalletInfo(undefined, namespace)
+
+      ConnectorController.removeConnectorId(namespace)
+
+      ChainController.resetAccount(namespace)
+      ChainController.resetNetwork(namespace)
+      this.setLoading(false, namespace)
+    } catch (error) {
+      this.setLoading(false, namespace)
+      throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+    }
   }
 
   // -- Client Initialization ---------------------------------------------------
@@ -427,7 +507,7 @@ export abstract class AppKitBaseClient {
         })
 
         if (!res) {
-          return
+          return undefined
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
@@ -446,6 +526,8 @@ export abstract class AppKitBaseClient {
         this.setAllAccounts(accounts, chainToUse)
         this.setStatus('connected', chainToUse)
         this.syncConnectedWalletInfo(chainToUse)
+
+        return undefined
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -456,19 +538,42 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
-      disconnect: async (chainNamespace?: ChainNamespace) => {
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-        const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider(namespace)
-        const providerType = ProviderUtil.getProviderId(namespace)
+      /**
+       * Disconnect a connector or all connectors
+       * @param {string} [options.id] - Connector ID to disconnect. If no id is passed, disconnects all connectors. If id is provided then disconnect the specific connector.
+       * @param {ChainNamespace} [options.chainNamespace] - Chain namespace to disconnect from
+       */
+      disconnect: async ({ chainNamespace } = {}) => {
+        const chainsToDisconnect = getChainsToDisconnect(chainNamespace)
+        try {
+          // Reset send state when disconnecting
+          const disconnectResults = await Promise.allSettled(
+            chainsToDisconnect.map(async ([ns]) => this.disconnectNamespace(ns))
+          )
+          SendController.resetSend()
+          ConnectionController.resetWcConnection()
+          await SIWXUtil.clearSessions()
+          ConnectorController.setFilterByNamespace(undefined)
+          const failures = disconnectResults.filter(
+            (result): result is PromiseRejectedResult => result.status === 'rejected'
+          )
 
-        await adapter?.disconnect({ provider, providerType })
+          if (failures.length > 0) {
+            throw new Error(failures.map(f => f.reason.message).join(', '))
+          }
 
-        StorageUtil.removeConnectedNamespace(namespace)
-        ProviderUtil.resetChain(namespace)
-        this.setUser(undefined, namespace)
-        this.setStatus('disconnected', namespace)
-        this.setConnectedWalletInfo(undefined, namespace)
+          StorageUtil.deleteConnectedSocialProvider()
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'DISCONNECT_SUCCESS',
+            properties: {
+              namespace: chainNamespace || 'all'
+            }
+          })
+        } catch (error) {
+          throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
+        }
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -702,7 +807,7 @@ export abstract class AppKitBaseClient {
   protected async initChainAdapter(namespace: ChainNamespace) {
     this.onConnectors(namespace)
     this.listenAdapter(namespace)
-    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
   }
 
@@ -823,9 +928,14 @@ export abstract class AppKitBaseClient {
 
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
+      if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
+        ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.SAFE, namespace)
+      }
+
       const connectorId = ConnectorController.getConnectorId(namespace)
 
       this.setStatus('connecting', namespace)
+
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
           await this.syncWalletConnectAccount()
@@ -846,7 +956,9 @@ export abstract class AppKitBaseClient {
     const adapter = this.getAdapter(namespace)
     const connectorId = ConnectorController.getConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork(namespace)
-    const connector = ConnectorController.getConnectors(namespace).find(c => c.id === connectorId)
+    const connectors = ConnectorController.getConnectors(namespace)
+
+    const connector = connectors.find(c => c.id === connectorId)
 
     try {
       if (!adapter || !connector) {
@@ -891,6 +1003,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async syncWalletConnectAccount() {
+    const sessionNamespaces = Object.keys(this.universalProvider?.session?.namespaces || {})
     const syncTasks = this.chainNamespaces.map(async chainNamespace => {
       const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
@@ -941,7 +1054,7 @@ export abstract class AppKitBaseClient {
           chainId,
           chainNamespace
         })
-      } else {
+      } else if (sessionNamespaces.includes(chainNamespace)) {
         this.setStatus('disconnected', chainNamespace)
       }
 
@@ -1185,6 +1298,10 @@ export abstract class AppKitBaseClient {
     }
 
     await this.updateNativeBalance(params.address, params.chainId, params.chainNamespace)
+  }
+
+  public async ready() {
+    await this.readyPromise
   }
 
   public async updateNativeBalance(
@@ -1447,6 +1564,12 @@ export abstract class AppKitBaseClient {
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
+    /**
+     * For the embedded use cases (Demo app), we should call close() when the user is connected to redirect them to Account View.
+     */
+    if (caipAddress && OptionsController.state.enableEmbedded) {
+      this.close()
+    }
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
@@ -1463,9 +1586,6 @@ export abstract class AppKitBaseClient {
 
   public setUser: (typeof AccountController)['setUser'] = (user, chain) => {
     AccountController.setUser(user, chain)
-    if (OptionsController.state.enableEmbedded) {
-      ModalController.close()
-    }
   }
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
@@ -1523,6 +1643,18 @@ export abstract class AppKitBaseClient {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
+  public getConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).connections
+
+  public getRecentConnections = (namespace: ChainNamespace) =>
+    ConnectionControllerUtil.getConnectionsData(namespace).recentConnections
+
+  public switchConnection: (typeof ConnectionController)['switchConnection'] = params =>
+    ConnectionController.switchConnection(params)
+
+  public deleteConnection: (typeof StorageUtil)['deleteAddressFromConnection'] = params =>
+    StorageUtil.deleteAddressFromConnection(params)
+
   public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] = (
     connectedWalletInfo,
     chain
@@ -1551,9 +1683,9 @@ export abstract class AppKitBaseClient {
     return ModalController.open(options)
   }
 
-  public async close(force = false) {
+  public async close() {
     await this.injectModalUi()
-    ModalController.close(force)
+    ModalController.close()
   }
 
   public setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
@@ -1561,7 +1693,7 @@ export abstract class AppKitBaseClient {
   }
 
   public async disconnect(chainNamespace?: ChainNamespace) {
-    await ConnectionController.disconnect(chainNamespace)
+    await ConnectionController.disconnect({ namespace: chainNamespace })
   }
 
   public getSIWX<SIWXConfigInterface = SIWXConfig>() {
@@ -1579,13 +1711,11 @@ export abstract class AppKitBaseClient {
 
   public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.getCaipNetworks().find(n => n.id === appKitNetwork.id)
-
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
 
       return
     }
-
     await ChainController.switchActiveNetwork(network)
   }
 
@@ -1633,6 +1763,10 @@ export abstract class AppKitBaseClient {
     return ThemeController.subscribe(callback)
   }
 
+  public subscribeConnections(callback: (newState: ConnectionControllerState) => void) {
+    return ConnectionController.subscribe(callback)
+  }
+
   public getWalletInfo() {
     return AccountController.state.connectedWalletInfo
   }
@@ -1641,7 +1775,7 @@ export abstract class AppKitBaseClient {
     const authConnector = ConnectorController.getAuthConnector(namespace)
     const accountState = ChainController.getAccountData(namespace)
     const activeChain = ChainController.state.activeChain as ChainNamespace
-    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace || activeChain)
 
     if (!accountState) {
       return undefined
@@ -1756,8 +1890,8 @@ export abstract class AppKitBaseClient {
     RouterController.push(route)
   }
 
-  public popTransactionStack(cancel?: boolean) {
-    RouterController.popTransactionStack(cancel)
+  public popTransactionStack(status: 'cancel' | 'error' | 'success') {
+    RouterController.popTransactionStack(status)
   }
 
   public isOpen() {
@@ -1766,12 +1900,6 @@ export abstract class AppKitBaseClient {
 
   public isTransactionStackEmpty() {
     return RouterController.state.transactionStack.length === 0
-  }
-
-  public isTransactionShouldReplaceView() {
-    return RouterController.state.transactionStack[
-      RouterController.state.transactionStack.length - 1
-    ]?.replace
   }
 
   public static getInstance() {
@@ -1865,6 +1993,10 @@ export abstract class AppKitBaseClient {
 
   public updateFeatures(newFeatures: Partial<Features>) {
     OptionsController.setFeatures(newFeatures)
+  }
+
+  public updateRemoteFeatures(newRemoteFeatures: Partial<RemoteFeatures>) {
+    OptionsController.setRemoteFeatures(newRemoteFeatures)
   }
 
   public updateOptions(newOptions: Partial<OptionsControllerState>) {

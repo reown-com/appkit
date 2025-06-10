@@ -97,11 +97,6 @@ extensionTest('it should disconnect and close modal', async () => {
   await modalValidator.expectDisconnected()
 })
 
-extensionTest('it should be disconnected after page refresh', async () => {
-  await modalPage.page.reload()
-  await modalValidator.expectDisconnected()
-})
-
 extensionTest(
   'it should connect with extension on Solana, switch to different chain with auth connector, switch back to Solana and persist extension state',
   async () => {
@@ -126,7 +121,14 @@ extensionTest(
     })
     await modalValidator.expectConnected()
     await modalPage.switchNetwork('Solana', true)
+    await modalPage.closeModal()
     await modalValidator.expectConnected()
     await modalValidator.expectAddress(solanaAddress)
+    await modalPage.disconnect()
   }
 )
+
+extensionTest('it should be disconnected after page refresh', async () => {
+  await modalPage.page.reload()
+  await modalValidator.expectDisconnected()
+})

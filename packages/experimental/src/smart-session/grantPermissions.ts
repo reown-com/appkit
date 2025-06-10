@@ -80,8 +80,9 @@ export async function grantPermissions(
   updateRequestSigner(request, addPermissionResponse.key)
 
   RouterController.pushTransactionStack({
-    view: 'SmartSessionCreated',
-    goBack: false
+    onSuccess() {
+      RouterController.replace('SmartSessionCreated')
+    }
   })
 
   const rawResponse = await connectionControllerClient?.grantPermissions([request])

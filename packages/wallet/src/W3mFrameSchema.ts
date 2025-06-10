@@ -41,7 +41,8 @@ export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({
   uri: z.string(),
-  preferredAccountType: z.optional(z.string())
+  preferredAccountType: z.optional(z.string()),
+  chainId: z.optional(z.string().or(z.number()))
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.string().or(z.number())),

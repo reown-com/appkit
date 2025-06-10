@@ -13,6 +13,7 @@ import type {
   Metadata,
   PreferredAccountTypes,
   ProjectId,
+  RemoteFeatures,
   SdkVersion,
   SocialProvider,
   Tokens,
@@ -95,22 +96,22 @@ export interface OptionsControllerStatePublic {
    */
   enableWallets?: boolean
   /**
-   * Enable or disable the EIP6963 feature in your AppKit.
+   * Enable or disable the EIP6963 feature.
    * @default false
    */
   enableEIP6963?: boolean
   /**
-   * Enable or disable the Coinbase wallet in your AppKit.
+   * Enable or disable the Coinbase wallet.
    * @default true
    */
   enableCoinbase?: boolean
   /**
-   * Enable or disable the Injected wallet in your AppKit.
+   * Enable or disable the Injected wallet.
    * @default true
    */
   enableInjected?: boolean
   /**
-   * Enable or disable the WalletConnect QR code in your AppKit.
+   * Enable or disable the WalletConnect QR code.
    * @default true
    */
   enableWalletConnect?: boolean
@@ -130,7 +131,7 @@ export interface OptionsControllerStatePublic {
    */
   experimental_preferUniversalLinks?: boolean
   /**
-   * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
+   * Enable or disable debug mode. This is useful if you want to see UI alerts when debugging.
    * @default true
    */
   debug?: boolean
@@ -142,7 +143,7 @@ export interface OptionsControllerStatePublic {
   features?: Features
   /**
    * @experimental - This feature is not production ready.
-   * Enable Sign In With X (SIWX) feature in your AppKit.
+   * Enable Sign In With X (SIWX) feature.
    * @default undefined
    */
   siwx?: SIWXConfig
@@ -196,20 +197,22 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  remoteFeatures?: RemoteFeatures
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
 type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
 
 // -- State --------------------------------------------- //
-const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
+const state = proxy<OptionsControllerState>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
   defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
   enableNetworkSwitch: true,
-  experimental_preferUniversalLinks: false
+  experimental_preferUniversalLinks: false,
+  remoteFeatures: {}
 })
 
 // -- Controller ---------------------------------------- //
@@ -224,6 +227,21 @@ export const OptionsController = {
     Object.assign(state, options)
   },
 
+  setRemoteFeatures(remoteFeatures: OptionsControllerState['remoteFeatures']) {
+    if (!remoteFeatures) {
+      return
+    }
+
+    const newRemoteFeatures = { ...state.remoteFeatures, ...remoteFeatures }
+    state.remoteFeatures = newRemoteFeatures
+
+    if (state.remoteFeatures?.socials) {
+      state.remoteFeatures.socials = OptionsUtil.filterSocialsByPlatform(
+        state.remoteFeatures.socials
+      )
+    }
+  },
+
   setFeatures(features: OptionsControllerState['features'] | undefined) {
     if (!features) {
       return
@@ -235,10 +253,6 @@ export const OptionsController = {
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
-
-    if (state.features.socials) {
-      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
-    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -354,8 +368,8 @@ export const OptionsController = {
   },
 
   setSocialsOrder(socialsOrder: SocialProvider[]) {
-    state.features = {
-      ...state.features,
+    state.remoteFeatures = {
+      ...state.remoteFeatures,
       socials: socialsOrder
     }
   },

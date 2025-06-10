@@ -1,21 +1,25 @@
-import { createContext, useEffect } from 'react'
+'use client'
 
+import { createContext, useEffect, useMemo } from 'react'
+
+import { useColorMode } from '@chakra-ui/react'
 import { useSnapshot } from 'valtio/react'
 
 import type { AppKit, CreateAppKit } from '@reown/appkit'
 import { createAppKit } from '@reown/appkit/react'
 
 import InitializeBoundary from '../components/InitializeBoundary'
+import { useProjectId } from '../hooks/useProjectId'
 import { AppKitStore, setAppKit } from '../utils/AppKitStore'
 import { ThemeStore } from '../utils/StoreUtil'
 
-type AppKitContextType = {
-  projectId: string
+interface AppKitContextType {
+  projectId: string | undefined
   appKit: AppKit | undefined
 }
 
 export const AppKitContext = createContext<AppKitContextType>({
-  projectId: '',
+  projectId: undefined,
   appKit: undefined
 })
 
@@ -26,26 +30,55 @@ export function AppKitProvider({
   children: React.ReactNode
   config: Omit<CreateAppKit, 'projectId'> & { projectId?: string }
 }) {
-  const { appKit } = useSnapshot(AppKitStore)
-  const projectId = config.projectId || process.env['NEXT_PUBLIC_PROJECT_ID']
-  if (!projectId) {
-    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-  }
+  const { appKit: currentAppKitSnapshot } = useSnapshot(AppKitStore)
+  const { colorMode } = useColorMode()
+  const { projectId: injectedProjectId, isProjectIdLoading } = useProjectId()
+
+  const resolvedProjectId = useMemo(() => {
+    if (injectedProjectId) {
+      return injectedProjectId
+    }
+    if (config.projectId) {
+      return config.projectId
+    }
+
+    return process.env['NEXT_PUBLIC_PROJECT_ID']
+  }, [injectedProjectId, config.projectId])
 
   useEffect(() => {
-    if (config) {
-      const modal = createAppKit({
+    if (!isProjectIdLoading && resolvedProjectId && config) {
+      const newAppKitInstance = createAppKit({
         ...config,
-        projectId
+        projectId: resolvedProjectId
       })
-      setAppKit(modal)
-      ThemeStore.setModal(modal)
+      setAppKit(newAppKitInstance)
+      ThemeStore.setModal(newAppKitInstance)
+      newAppKitInstance.setThemeMode(colorMode)
     }
-  }, [])
+  }, [config, resolvedProjectId, isProjectIdLoading, colorMode])
 
   return (
-    <AppKitContext.Provider value={{ projectId, appKit: appKit as AppKit | undefined }}>
-      {appKit && <InitializeBoundary>{children}</InitializeBoundary>}
+    <AppKitContext.Provider
+      value={{
+        projectId: resolvedProjectId,
+        appKit: currentAppKitSnapshot as AppKit | undefined
+      }}
+    >
+      {(() => {
+        if (isProjectIdLoading && !resolvedProjectId) {
+          return null
+        }
+
+        if (currentAppKitSnapshot && resolvedProjectId) {
+          return (
+            <>
+              <InitializeBoundary>{children}</InitializeBoundary>
+            </>
+          )
+        }
+
+        return null
+      })()}
     </AppKitContext.Provider>
   )
 }

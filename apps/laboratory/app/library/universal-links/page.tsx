@@ -23,9 +23,7 @@ const config = {
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true
-  },
+
   customWallets: ConstantsUtil.CustomWallets,
   experimental_preferUniversalLinks: true
 }

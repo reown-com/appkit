@@ -14,7 +14,7 @@ const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
 export function SectionWalletFeatures() {
   const { caipAddress } = useAppKitAccount()
-  const { config, updateFeatures } = useAppKitContext()
+  const { config, updateFeatures, updateRemoteFeatures } = useAppKitContext()
   const walletFeaturesOrder = config.features.walletFeaturesOrder || defaultWalletFeaturesOrder
 
   function handleNewOrder(items: UniqueIdentifier[]) {
@@ -34,10 +34,20 @@ export function SectionWalletFeatures() {
   function handleToggleOption(name: WalletFeatureName) {
     switch (name) {
       case 'Buy':
-        updateFeatures({ onramp: !config.features.onramp })
+        updateRemoteFeatures({
+          onramp:
+            Array.isArray(config.remoteFeatures.onramp) && config.remoteFeatures.onramp.length > 0
+              ? false
+              : ['meld', 'coinbase']
+        })
         break
       case 'Swap':
-        updateFeatures({ swaps: !config.features.swaps })
+        updateRemoteFeatures({
+          swaps:
+            Array.isArray(config.remoteFeatures.swaps) && config.remoteFeatures.swaps.length > 0
+              ? false
+              : ['1inch']
+        })
         break
       default:
         break

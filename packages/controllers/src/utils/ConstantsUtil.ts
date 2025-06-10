@@ -1,6 +1,11 @@
-import { type ChainNamespace } from '@reown/appkit-common'
+import {
+  type ChainNamespace,
+  type OnRampProvider,
+  type SocialProvider,
+  type SwapProvider
+} from '@reown/appkit-common'
 
-import type { Features, PreferredAccountTypes, SocialProvider } from './TypeUtil.js'
+import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
 const SECURE_SITE =
   // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -10,18 +15,18 @@ const SECURE_SITE =
 
 export const ONRAMP_PROVIDERS = [
   {
-    label: 'Coinbase',
-    name: 'coinbase',
-    feeRange: '1-2%',
-    url: '',
-    supportedChains: ['eip155']
-  },
-  {
     label: 'Meld.io',
     name: 'meld',
     feeRange: '1-2%',
     url: 'https://meldcrypto.com',
     supportedChains: ['eip155', 'solana']
+  },
+  {
+    label: 'Coinbase',
+    name: 'coinbase',
+    feeRange: '1-2%',
+    url: '',
+    supportedChains: ['eip155']
   }
 ]
 
@@ -224,13 +229,10 @@ export const ConstantsUtil = {
   },
 
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
-  DEFAULT_FEATURES: {
-    swaps: true,
-    onramp: true,
-    receive: true,
-    send: true,
+  DEFAULT_REMOTE_FEATURES: {
+    swaps: ['1inch'] as SwapProvider[],
+    onramp: ['meld', 'coinbase'] as OnRampProvider[],
     email: true,
-    emailShowWallets: true,
     socials: [
       'google',
       'x',
@@ -240,6 +242,21 @@ export const ConstantsUtil = {
       'apple',
       'facebook'
     ] as SocialProvider[],
+    activity: true,
+    reownBranding: true
+  },
+  DEFAULT_REMOTE_FEATURES_DISABLED: {
+    email: false,
+    socials: false,
+    swaps: false,
+    onramp: false,
+    activity: false,
+    reownBranding: false
+  } as const satisfies RemoteFeatures,
+  DEFAULT_FEATURES: {
+    receive: true,
+    send: true,
+    emailShowWallets: true,
     connectorTypeOrder: [
       'walletConnect',
       'recent',
@@ -249,7 +266,6 @@ export const ConstantsUtil = {
       'external',
       'recommended'
     ],
-    history: true,
     analytics: true,
     allWallets: true,
     legalCheckbox: false,
@@ -259,6 +275,16 @@ export const ConstantsUtil = {
     connectMethodsOrder: undefined,
     pay: false
   } satisfies Features,
+
+  DEFAULT_SOCIALS: [
+    'google',
+    'x',
+    'farcaster',
+    'discord',
+    'apple',
+    'github',
+    'facebook'
+  ] as SocialProvider[],
 
   DEFAULT_ACCOUNT_TYPES: {
     bip122: 'payment',

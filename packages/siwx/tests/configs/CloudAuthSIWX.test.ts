@@ -1,5 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { type CaipNetwork, NetworkUtil } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
@@ -46,6 +47,22 @@ describe.each([
   })
 
   describe('createMessage', () => {
+    beforeEach(() => {
+      vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue([
+        {
+          id: 1,
+          name: 'Ethereum Mainnet',
+          chainNamespace: 'eip155',
+          caipNetworkId: `${namespace}:${id}`
+        } as unknown as CaipNetwork,
+        {
+          id: 2,
+          name: 'Solana',
+          chainNamespace: 'solana',
+          caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+        } as unknown as CaipNetwork
+      ])
+    })
     it('creates a message', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch')
       const setItemSpy = vi.spyOn(localStorage, 'setItem')
@@ -75,8 +92,13 @@ describe.each([
         version: '1'
       })
 
+      const networkName = NetworkUtil.getNetworkNameByCaipNetworkId(
+        ChainController.getAllRequestedCaipNetworks(),
+        `${namespace}:${id}`
+      )
+
       expect(message.toString())
-        .toBe(`mocked.com wants you to sign in with your **blockchain** account:
+        .toBe(`mocked.com wants you to sign in with your ${networkName} account:
 ${address}
 
 URI: http://mocked.com/

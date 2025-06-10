@@ -13,6 +13,7 @@ import {
   ConnectorController,
   CoreHelperUtil,
   ModalController,
+  ModalUtil,
   OptionsController,
   RouterController,
   SIWXUtil,
@@ -149,12 +150,7 @@ export class W3mModalBase extends LitElement {
   }
 
   private async handleClose() {
-    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
-    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
-      ModalController.shake()
-    } else {
-      ModalController.close()
-    }
+    await ModalUtil.safeClose()
   }
 
   private initializeTheming() {
@@ -270,7 +266,8 @@ export class W3mModalBase extends LitElement {
      */
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
     // Check connection status based on the address state *before* this update cycle potentially finishes
-    const isNotConnected = !this.caipAddress
+    const isNotConnected = !ChainController.getAccountData(nextCaipNetwork?.chainNamespace)
+      ?.caipAddress
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
     const isModalOpen = ModalController.state.open

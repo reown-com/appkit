@@ -10,6 +10,7 @@ const MULTICHAIN_LIBRARIES = [
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
 ] as const
+const FLAGS = ['default-account-types'] as const
 
 const CORE_LIRARIES = ['core'] as const
 
@@ -35,6 +36,10 @@ const CLOUD_AUTH_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   CLOUD_AUTH_LIBRARIES.map(library => ({ device, library }))
 )
 
+const FLAG_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  FLAGS.map(library => ({ device, library }))
+)
+
 interface UseOptions {
   launchOptions: {
     executablePath: string
@@ -58,6 +63,7 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'multichain-siwe-extension.spec.ts',
   'basic-tests.spec.ts',
   'canary.spec.ts',
+  'config.spec.ts',
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
@@ -176,11 +182,15 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/multichain-no-adapters': {
     testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
   },
-
+  'Desktop Chrome/default-account-types': {
+    testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
+  },
+  'Desktop Firefox/default-account-types': {
+    testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
+  },
   'iPhone 12/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
-
   'Galaxy S5/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
@@ -214,7 +224,6 @@ const customProjectProperties: CustomProjectProperties = {
   'Galaxy S5/solana': {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
   },
-
   'Desktop Chrome/cloud-auth': {
     testMatch: CLOUD_AUTH_TESTS_REGEX
   },
@@ -256,13 +265,15 @@ export function getProjects() {
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
   const cloudAuthProjects = CLOUD_AUTH_PERMUTATIONS.map(createProject)
+  const flagProjects = FLAG_PERMUTATIONS.map(createProject)
 
   const projects = [
     ...libraryDesktopProjects,
     ...libraryMobileProjects,
     ...multichainProjects,
     ...coreProjects,
-    ...cloudAuthProjects
+    ...cloudAuthProjects,
+    ...flagProjects
   ]
 
   return projects

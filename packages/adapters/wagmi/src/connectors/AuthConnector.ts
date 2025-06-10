@@ -4,10 +4,16 @@ import type { Address } from 'viem'
 
 import {
   ConstantsUtil as CommonConstantsUtil,
+  ConstantsUtil,
   type EmbeddedWalletTimeoutReason
 } from '@reown/appkit-common'
 import { NetworkUtil } from '@reown/appkit-common'
-import { AccountController, AlertController } from '@reown/appkit-controllers'
+import {
+  AccountController,
+  AlertController,
+  ChainController,
+  ConnectorController
+} from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
@@ -50,6 +56,7 @@ export function authConnector(parameters: AuthParameters) {
     if (!socialProvider) {
       socialProvider = W3mFrameProviderSingleton.getInstance({
         projectId: parameters.options.projectId,
+        chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId,
         enableLogger: parameters.options.enableAuthLogger,
         onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
           if (reason === 'iframe_load_failed') {
@@ -157,6 +164,7 @@ export function authConnector(parameters: AuthParameters) {
       if (!this.provider) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
+          chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId,
           enableLogger: parameters.options.enableAuthLogger,
           abortController: ErrorUtil.EmbeddedWalletAbortController,
           onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
@@ -182,6 +190,16 @@ export function authConnector(parameters: AuthParameters) {
     },
 
     async isAuthorized() {
+      const activeChain = ChainController.state.activeChain
+      const isActiveChainEvm = activeChain === CommonConstantsUtil.CHAIN.EVM
+      const isAnyAuthConnected = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.some(
+        chain => ConnectorController.getConnectorId(chain) === CommonConstantsUtil.CONNECTOR_ID.AUTH
+      )
+
+      if (isAnyAuthConnected && !isActiveChainEvm) {
+        return false
+      }
+
       const provider = await this.getProvider()
 
       return Promise.resolve(provider.getLoginEmailUsed())

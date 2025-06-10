@@ -89,4 +89,35 @@ describe('W3mLegalFooter', () => {
       OptionsController.state = originalState
     }
   })
+
+  it('does not render branding when remoteFeatures.reownBranding is false', async () => {
+    const originalState = { ...OptionsController.state }
+    const originalRemoteFeatures = { ...OptionsController.state.remoteFeatures }
+    try {
+      OptionsController.state = {
+        ...OptionsController.state,
+        termsConditionsUrl: 'https://example.com/terms',
+        privacyPolicyUrl: 'https://example.com/privacy',
+        features: {
+          ...OptionsController.state.features,
+          legalCheckbox: false
+        },
+        remoteFeatures: {
+          ...OptionsController.state.remoteFeatures,
+          reownBranding: false
+        }
+      }
+
+      await element.updateComplete
+      const flexElement = element.shadowRoot?.querySelector('wui-flex')
+      expect(flexElement).toBeDefined()
+      const brandingElement = flexElement?.querySelector('wui-ux-by-reown')
+      expect(brandingElement).toBeNull()
+    } finally {
+      OptionsController.state = {
+        ...originalState,
+        remoteFeatures: originalRemoteFeatures
+      }
+    }
+  })
 })

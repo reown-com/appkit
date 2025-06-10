@@ -21,9 +21,7 @@ const modal = createAppKit({
   networks,
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: true
-  },
+
   metadata: {
     name: 'AppKit HTML Wallet Button Example',
     description: 'AppKit HTML Wallet Button Example',

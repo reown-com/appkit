@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-common",
-  "version": "1.7.5",
+  "version": "1.7.8",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/index.js",

@@ -24,6 +24,7 @@ import { DOCS_URL, GALLERY_URL, REPO_URL } from '@/src/utils/ConstantsUtil'
 import { CustomWallet } from './CustomWallet'
 import { NetworksDrawer } from './NetworksDrawer'
 import { OptionsDrawer } from './OptionsDrawer'
+import { ProjectIdDrawer } from './ProjectIdDrawer'
 
 function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
   type WindowWithLogs = typeof Window & {
@@ -47,6 +48,7 @@ export function LayoutHeader() {
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
   const controlsNW = useDisclosure({ id: 'networks' })
+  const controlsPID = useDisclosure({ id: 'projectId' })
   const toast = useChakraToast()
   const { colorMode } = useColorMode()
   const [origin, setOrigin] = useState('')
@@ -81,6 +83,13 @@ export function LayoutHeader() {
         <Button rightIcon={<IoSettingsOutline />} onClick={controlsNW.onOpen}>
           Networks
         </Button>
+        <Button
+          data-testid="project-id-button"
+          rightIcon={<IoSettingsOutline />}
+          onClick={controlsPID.onOpen}
+        >
+          Project ID
+        </Button>
         <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>
           Options
         </Button>
@@ -91,9 +100,9 @@ export function LayoutHeader() {
       <Text fontSize="2xs">{origin + pathname}</Text>
 
       <OptionsDrawer controls={controls} />
-      <OptionsDrawer controls={controls} />
       <NetworksDrawer controls={controlsNW} />
       <CustomWallet controls={controlsCW} />
+      <ProjectIdDrawer controls={controlsPID} />
     </>
   )
 }

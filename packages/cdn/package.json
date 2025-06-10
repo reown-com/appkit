@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.7.5",
+  "version": "1.7.8",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
@@ -35,11 +35,11 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@wagmi/connectors": "5.8.1",
-    "@wagmi/core": "2.17.1",
+    "@wagmi/connectors": "5.8.5",
+    "@wagmi/core": "2.17.3",
     "viem": "2.29.0",
     "vite": "5.4.19",
-    "wagmi": "2.15.2"
+    "wagmi": "2.15.6"
   },
   "keywords": [
     "appkit",
