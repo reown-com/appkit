@@ -1,7 +1,5 @@
 ---
 '@reown/appkit': major
-'@reown/appkit-controllers': major
-'@reown/appkit-scaffold-ui': major
 ---
 
 Remove wallet guide component and related functionality (APKT-2883)
