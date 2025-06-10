@@ -38,7 +38,7 @@
     "sats-connect": "3.5.0"
   },
   "devDependencies": {
-    "@leather.io/rpc": "2.1.21",
+    "@leather.io/rpc": "2.18.0",
     "@vitest/coverage-v8": "2.1.9",
     "@wallet-standard/features": "1.0.3",
     "@walletconnect/types": "2.21.0",

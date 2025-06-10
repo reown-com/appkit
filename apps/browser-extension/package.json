@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/preset-env": "7.24.7",
-    "@babel/preset-react": "7.24.7",
+    "@babel/preset-react": "7.27.1",
     "@reown/appkit-ui-new": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@solana/wallet-standard": "1.1.4",
