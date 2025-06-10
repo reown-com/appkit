@@ -5,12 +5,14 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  ChainController,
   ConnectionController,
   type Connector,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
   OptionsStateController,
+  type RemoteFeatures,
   RouterController
 } from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
@@ -42,13 +44,20 @@ export class W3mConnectView extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   @state() private enableWallets = OptionsController.state.enableWallets
+
+  @state() private noAdapters = ChainController.state.noAdapters
 
   @state() private checked = OptionsStateController.state.isLegalCheckboxChecked
 
-  @state() private isEmailEnabled = false
+  @state() private isEmailEnabled = this.remoteFeatures?.email && !ChainController.state.noAdapters
 
-  @state() private isSocialEnabled = false
+  @state() private isSocialEnabled =
+    this.remoteFeatures?.socials &&
+    this.remoteFeatures.socials.length > 0 &&
+    !ChainController.state.noAdapters
 
   @state() private isAuthEnabled = this.checkIfAuthEnabled(this.connectors)
 
@@ -59,15 +68,19 @@ export class W3mConnectView extends LitElement {
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => {
         this.connectors = val
-
         this.isAuthEnabled = this.checkIfAuthEnabled(this.connectors)
       }),
       OptionsController.subscribeKey('features', val => {
         this.features = val
       }),
-
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
+        this.setEmailAndSocialEnableCheck(this.noAdapters, this.remoteFeatures)
+      }),
       OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val)),
-
+      ChainController.subscribeKey('noAdapters', val =>
+        this.setEmailAndSocialEnableCheck(val, this.remoteFeatures)
+      ),
       OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => (this.checked = val))
     )
   }
@@ -135,6 +148,13 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private setEmailAndSocialEnableCheck(noAdapters: boolean, remoteFeatures?: RemoteFeatures) {
+    this.isEmailEnabled = remoteFeatures?.email && !noAdapters
+    this.isSocialEnabled =
+      remoteFeatures?.socials && remoteFeatures.socials.length > 0 && !noAdapters
+    this.remoteFeatures = remoteFeatures
+    this.noAdapters = noAdapters
+  }
 
   private checkIfAuthEnabled(connectors: Connector[]) {
     const namespacesWithAuthConnector = connectors
