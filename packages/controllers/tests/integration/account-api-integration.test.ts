@@ -10,6 +10,8 @@ import {
   BlockchainApiController,
   type BlockchainApiTransactionsResponse,
   ChainController,
+  ConnectorController,
+  StorageUtil,
   TransactionsController,
   type WcWallet
 } from '../../exports/index.js'
@@ -86,6 +88,43 @@ const mockWalletData: WcWallet[] = [
 
 describe('AccountController-ApiController Integration', () => {
   beforeEach(() => {
+    // Initialize ChainController first - this is required for account state to work properly
+    ChainController.initialize(
+      [
+        {
+          namespace: mockChain,
+          caipNetworks: [
+            {
+              id: 1,
+              name: 'Ethereum',
+              caipNetworkId: mockChainId,
+              chainNamespace: mockChain,
+              nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+              rpcUrls: { default: { http: ['https://rpc.infura.com/v1/'] } },
+              blockExplorers: { default: { name: 'Etherscan', url: 'https://etherscan.io' } }
+            }
+          ],
+          connectionControllerClient: vi.fn() as any,
+          networkControllerClient: vi.fn() as any
+        }
+      ],
+      [
+        {
+          id: 1,
+          name: 'Ethereum',
+          caipNetworkId: mockChainId,
+          chainNamespace: mockChain,
+          nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+          rpcUrls: { default: { http: ['https://rpc.infura.com/v1/'] } },
+          blockExplorers: { default: { name: 'Etherscan', url: 'https://etherscan.io' } }
+        }
+      ],
+      {
+        connectionControllerClient: vi.fn() as any,
+        networkControllerClient: vi.fn() as any
+      }
+    )
+
     AccountController.resetAccount(mockChain)
     TransactionsController.resetTransactions()
     ApiController.state.wallets = []
@@ -98,7 +137,15 @@ describe('AccountController-ApiController Integration', () => {
     } as unknown as CaipNetwork
     ChainController.state.activeCaipAddress = mockCaipAddress
 
+    // Set the account address properly after reset - this will now work correctly
+    AccountController.setCaipAddress(mockCaipAddress, mockChain)
+
+    // Clear mocks first, then set up our test mocks
     vi.clearAllMocks()
+
+    // Mock the necessary dependencies for balance tests
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('injected')
+    vi.spyOn(StorageUtil, 'getBalanceCacheForCaipAddress').mockReturnValue(undefined)
   })
 
   describe('Wallet Data Retrieval', () => {
@@ -135,9 +182,13 @@ describe('AccountController-ApiController Integration', () => {
         .spyOn(BlockchainApiController, 'getBalance')
         .mockResolvedValue(mockBalanceResponse)
 
+      // Additional mocking to ensure we bypass all early returns
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('injected') // Not Auth connector
+      vi.spyOn(StorageUtil, 'getBalanceCacheForCaipAddress').mockReturnValue(undefined) // No cache
+
       const result = await AccountController.fetchTokenBalance()
 
-      expect(getBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
+      expect(getBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId, undefined)
 
       expect(result).toEqual(
         mockBalanceResponse.balances.filter(balance => balance.quantity.decimals !== '0')
@@ -146,6 +197,10 @@ describe('AccountController-ApiController Integration', () => {
 
     it('should handle balance fetch errors appropriately', async () => {
       const onErrorMock = vi.fn()
+
+      // Additional mocking
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('injected') // Not Auth connector
+      vi.spyOn(StorageUtil, 'getBalanceCacheForCaipAddress').mockReturnValue(undefined) // No cache
 
       vi.spyOn(BlockchainApiController, 'getBalance').mockRejectedValue(
         new Error('Failed to fetch balance')
