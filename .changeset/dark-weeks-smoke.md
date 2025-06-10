@@ -22,4 +22,4 @@
 '@reown/appkit-ui': patch
 ---
 
-Fixes issue where wagmi had a different chain state than AppKit
+Updates Onramp provider sort

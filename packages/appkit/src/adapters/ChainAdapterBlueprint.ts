@@ -4,7 +4,8 @@ import {
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
-  ConstantsUtil as CommonConstantsUtil
+  ConstantsUtil as CommonConstantsUtil,
+  type Connection
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -12,7 +13,6 @@ import {
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
-  type Connection,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'

@@ -1,10 +1,10 @@
 ---
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
-'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fix an issue where getAccount doesn't return the embeddedWalletInfo
+Fixes issue on WalletConnect connector is not reconnecting on page load
