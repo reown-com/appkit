@@ -62,18 +62,8 @@ export class W3mSocialLoginWidget extends LitElement {
         gap="xs"
         data-testid="w3m-social-login-widget"
       >
-        ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
     `
-  }
-
-  // -- Private ------------------------------------------- //
-  private topViewTemplate() {
-    return null
-  }
-
-  private bottomViewTemplate() {
-    return null
   }
 
   // -- Private Methods ----------------------------------- //
