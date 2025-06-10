@@ -82,15 +82,11 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       throw new Error('Wallet not connected')
     }
 
-    console.log(this.publicKey, 'publicKey', message)
-
     const result = await this.provider.request({
       method: 'solana_signMessage',
       params: { message: base58.encode(message), pubkey: this.publicKey.toBase58() },
       chainNamespace: this.chain
     })
-
-    console.log(result, 'result')
 
     return base58.decode(result.signature)
   }
