@@ -33,7 +33,7 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
   await page.page.context().setOffline(false)
   await page.load()
 
-  const mailsacApiKey = process.env.MAILSAC_API_KEY
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
@@ -132,11 +132,12 @@ emailTestAfterFarcaster(
 )
 
 emailTestAfterFarcaster(
-  'it should abort embedded wallet flow if it takes more than 20 seconds after abort login with farcaster',
+  'it should abort embedded wallet flow if it takes more than 2 minutes after abort login with farcaster',
   async () => {
+    await page.page.clock.install()
     await page.page.context().setOffline(true)
     await page.loginWithEmail(tempEmail, false)
-    await page.page.waitForTimeout(20_000)
+    await page.page.clock.runFor(120_000)
     await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
     await page.page.context().setOffline(false)
   }
