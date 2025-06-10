@@ -8,7 +8,7 @@ import { Toaster } from 'sonner'
 import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace } from '@reown/appkit-common'
-import { type ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
+import { type ConnectMethod, ConstantsUtil, type RemoteFeatures } from '@reown/appkit-controllers'
 import {
   type Features,
   type ThemeMode,
@@ -45,6 +45,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   const [features, setFeatures] = useState<Features>(
     initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES
   )
+
   const { theme, setTheme } = useTheme()
   const [termsConditionsUrl, setTermsConditionsUrl] = useState(
     initialConfig?.termsConditionsUrl || ''
@@ -66,6 +67,10 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
+
+  const [remoteFeatures, setRemoteFeatures] = useState<RemoteFeatures>(
+    initialConfig?.remoteFeatures || ConstantsUtil.DEFAULT_REMOTE_FEATURES
+  )
 
   function updateDraggingState(key: UniqueIdentifier, value: boolean) {
     setIsDraggingByKey(prev => ({
@@ -193,6 +198,18 @@ export function ContextProvider({ children }: AppKitProviderProps) {
     })
   }
 
+  function updateRemoteFeatures(newRemoteFeatures: Partial<RemoteFeatures>) {
+    setRemoteFeatures(prev => {
+      const newAppKitValue = { ...prev, ...newRemoteFeatures }
+
+      appKit?.updateRemoteFeatures(newAppKitValue)
+
+      urlStateUtils.updateURLWithState({ remoteFeatures: newAppKitValue })
+
+      return newAppKitValue
+    })
+  }
+
   function updateEnableWallets(enabled: boolean) {
     setShouldEnableWallets(() => {
       appKit?.updateOptions({ enableWallets: enabled })
@@ -225,10 +242,10 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   }
 
   function updateSocials(enabled: boolean) {
-    if (enabled && !Array.isArray(features.socials)) {
-      updateFeatures({ socials: ConstantsUtil.DEFAULT_FEATURES.socials })
+    if (enabled && !Array.isArray(appKit?.remoteFeatures.socials)) {
+      updateRemoteFeatures({ socials: ConstantsUtil.DEFAULT_SOCIALS })
     } else if (!enabled) {
-      updateFeatures({ socials: false })
+      updateRemoteFeatures({ socials: false })
     }
   }
 
@@ -263,13 +280,14 @@ export function ContextProvider({ children }: AppKitProviderProps) {
     appKit?.setThemeMode(theme as ThemeMode)
   }, [])
 
-  const isSocialsEnabled = Array.isArray(features.socials)
+  const isSocialsEnabled = Array.isArray(appKit?.remoteFeatures.socials)
 
   return (
     <AppKitContext.Provider
       value={{
         config: {
           features,
+          remoteFeatures,
           enableWallets: shouldEnableWallets,
           themeMode: theme as ThemeMode,
           themeVariables: {
@@ -292,6 +310,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
         enableWallets: shouldEnableWallets,
         isDraggingByKey,
         updateFeatures,
+        updateRemoteFeatures,
         updateThemeMode,
         updateSocials,
         updateUrls,

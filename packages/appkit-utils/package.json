@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.7.5",
+  "version": "1.7.8",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -50,12 +50,13 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.20.2",
+    "@walletconnect/universal-provider": "2.21.2",
     "valtio": "1.13.2",
     "viem": ">=2.29.0"
   },
   "devDependencies": {
     "@coinbase/wallet-sdk": "4.3.0",
+    "@safe-global/safe-apps-provider": "0.18.6",
     "@solana/wallet-adapter-base": "0.9.24",
     "@solana/web3.js": "1.98.0",
     "@vitest/coverage-v8": "2.1.9",

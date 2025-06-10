@@ -13,3 +13,4 @@ export const DEFAULT_CHAIN_NAME = process.env['DEFAULT_CHAIN_NAME'] || 'Ethereum
 
 export const EXTENSION_RDNS = 'reown.com'
 export const EXTENSION_NAME = 'Reown'
+export const ALL_SOCIALS = ['google', 'farcaster', 'github', 'discord', 'apple', 'facebook']

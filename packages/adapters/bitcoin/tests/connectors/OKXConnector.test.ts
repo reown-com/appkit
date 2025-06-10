@@ -57,6 +57,13 @@ describe('OKXConnector', () => {
       expect(wallet.connect).toHaveBeenCalled()
     })
 
+    it('should emit accountsChanged event on connect', async () => {
+      const listener = vi.fn()
+      connector.on('accountsChanged', listener)
+      await connector.connect()
+      expect(listener).toHaveBeenCalledWith(['mock_address'])
+    })
+
     it('should bind events', async () => {
       await connector.connect()
 

@@ -64,7 +64,7 @@ export default function ActionButtonList({
         <button
           onClick={async () => {
             const { uri, approval } = await signClient.connect({
-              requiredNamespaces: {
+              optionalNamespaces: {
                 eip155: {
                   methods: [
                     'eth_sendTransaction',

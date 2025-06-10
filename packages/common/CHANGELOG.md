@@ -1,5 +1,67 @@
 # @reown/appkit-common
 
+## 1.7.8
+
+### Patch Changes
+
+- [#4394](https://github.com/reown-com/appkit/pull/4394) [`2171cb4`](https://github.com/reown-com/appkit/commit/2171cb4d2f36cc0203a6f42d7c7c7d9773f7656c) Thanks [@tomiir](https://github.com/tomiir)! - Makes CaipNetwork generic so that arbitrary namespaces can be used to create networks
+
+- [#4433](https://github.com/reown-com/appkit/pull/4433) [`c8292f8`](https://github.com/reown-com/appkit/commit/c8292f89b6e607eb1ddaa8047ed32aa175bff70c) Thanks [@tomiir](https://github.com/tomiir)! - Adds automatic safe connector support to ethers and ethers5 clients
+
+- [#4417](https://github.com/reown-com/appkit/pull/4417) [`c71afc1`](https://github.com/reown-com/appkit/commit/c71afc13362badd2d0c5eb9fa7453f2e1faffee4) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes issue where wagmi had a different chain state than AppKit
+
+- [#4438](https://github.com/reown-com/appkit/pull/4438) [`d1fb3c8`](https://github.com/reown-com/appkit/commit/d1fb3c8c1a9c1cf7818806a725403838aec4a7c6) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where getAccount doesn't return the embeddedWalletInfo
+
+- [#4380](https://github.com/reown-com/appkit/pull/4380) [`30dbd46`](https://github.com/reown-com/appkit/commit/30dbd46897e69ccdd71e8722ff711aa0c1f28055) Thanks [@tomiir](https://github.com/tomiir)! - Adds Safe Apps SDK support by default on wagmi
+
+- [#4410](https://github.com/reown-com/appkit/pull/4410) [`76c2ed6`](https://github.com/reown-com/appkit/commit/76c2ed68239f30b801de2d5ff05ced9b1442226a) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors network switching logics on modal open where we shouldn't properly make AppKit switch network
+
+- [#4413](https://github.com/reown-com/appkit/pull/4413) [`62fe412`](https://github.com/reown-com/appkit/commit/62fe412a6c618fca24826ab77b927bc6fdefde1a) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue where we are adding wagmi connectors to our controllers double time which causes connection sync issues at some environments like Vue and causes performance issues
+
+- [#4395](https://github.com/reown-com/appkit/pull/4395) [`38d44e7`](https://github.com/reown-com/appkit/commit/38d44e79cc753adf01becd64a39aa20cbe1504fa) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where some extension wallets would not be properly disconnected when requested via a hook.
+
+- [#4432](https://github.com/reown-com/appkit/pull/4432) [`aa23b67`](https://github.com/reown-com/appkit/commit/aa23b671df3a0f30fb3ff11ff7deab2408144049) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes remote configs util getting email and social enabled for AppKit Basic
+
+- [#4436](https://github.com/reown-com/appkit/pull/4436) [`2aa4ba2`](https://github.com/reown-com/appkit/commit/2aa4ba26cfc2c44f606f83ca24119887bc71c816) Thanks [@tomiir](https://github.com/tomiir)! - Adds support for Solflare wallet deeplinking in mobile environments
+
+## 1.7.7
+
+### Patch Changes
+
+- [#4396](https://github.com/reown-com/appkit/pull/4396) [`e215835`](https://github.com/reown-com/appkit/commit/e215835e83375f06a1bcbb4d863fb67d70981dda) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes W3mFrameProvider initialization without current chain id which causes network sync issues betwen AppKit and Secure site
+
+- [#4386](https://github.com/reown-com/appkit/pull/4386) [`a64d13c`](https://github.com/reown-com/appkit/commit/a64d13c737003d83fc9bc0b2ee1ebfab6f0469be) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where Solflare instead of Coinbase would be excepted from not having a mobile_link to be displayed in All Wallets
+
+- [#4384](https://github.com/reown-com/appkit/pull/4384) [`bf2570d`](https://github.com/reown-com/appkit/commit/bf2570daa33a79b3994d53529780086017cce218) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add `chainId` to connectSocial app event to solve cases where user is connecting to the wrong network
+
+- [#4361](https://github.com/reown-com/appkit/pull/4361) [`5b26c53`](https://github.com/reown-com/appkit/commit/5b26c53f186d5ddf8d45fb8bf709fe3aa0adc8c2) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue where auth provider's switch network is not getting called when switching to different namespace if that namespace is already connected before
+
+- [#4408](https://github.com/reown-com/appkit/pull/4408) [`50bcf53`](https://github.com/reown-com/appkit/commit/50bcf53725a14baaf3445ddb7a5340564c821be4) Thanks [@tomiir](https://github.com/tomiir)! - fix: issue where wagmi would not clear connections properly in vue mobile contexts
+
+- [#4404](https://github.com/reown-com/appkit/pull/4404) [`08f4981`](https://github.com/reown-com/appkit/commit/08f49817d6d74dec10f3cb1d0f21a74e85a5f026) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes an issue that can be seen on embedded mode where we are redirecting user to connect page instead of account page after connection
+
+- [#4374](https://github.com/reown-com/appkit/pull/4374) [`d0d0c05`](https://github.com/reown-com/appkit/commit/d0d0c053c0178da81be7e55ab8d11125f8ca3f9a) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Updates SIWX message text to handle network name from CAIP network id
+
+- [#4389](https://github.com/reown-com/appkit/pull/4389) [`974db88`](https://github.com/reown-com/appkit/commit/974db88133df3f98a38eaeeaab8eecd512c32ef9) Thanks [@lukaisailovic](https://github.com/lukaisailovic)! - Fix modal closing on unsupported chain selection
+
+- [#4392](https://github.com/reown-com/appkit/pull/4392) [`5f2065b`](https://github.com/reown-com/appkit/commit/5f2065b1a9b655fdf48d71ae7087753231d62f37) Thanks [@tomiir](https://github.com/tomiir)! - Simplifies routing logic to replace multiple parameters with callbacks for error success and cancel
+
+- [#4318](https://github.com/reown-com/appkit/pull/4318) [`43e5a9d`](https://github.com/reown-com/appkit/commit/43e5a9d4f9e38f2b7da2c5bfe6166f62d18cc51c) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add remote features configuration handling
+
+- [#4392](https://github.com/reown-com/appkit/pull/4392) [`5f2065b`](https://github.com/reown-com/appkit/commit/5f2065b1a9b655fdf48d71ae7087753231d62f37) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where ENS registration due to signature expiration error would result in modal closing without error message.
+
+- [#4381](https://github.com/reown-com/appkit/pull/4381) [`6c12c21`](https://github.com/reown-com/appkit/commit/6c12c217eed139e2468d8d13f99dbc6af0f80947) Thanks [@tomiir](https://github.com/tomiir)! - Modified the fetchFeaturedWallets() function in ApiController.ts to create a new sorted array instead of sorting the array in place, ensuring the wallet order is preserved.
+
+- [#4385](https://github.com/reown-com/appkit/pull/4385) [`e33b28f`](https://github.com/reown-com/appkit/commit/e33b28fc64401471f6a2fe908ea365409122af18) Thanks [@tomiir](https://github.com/tomiir)! - Adds externalCustomerId to meld url
+
+## 1.7.6
+
+### Patch Changes
+
+- [#4353](https://github.com/reown-com/appkit/pull/4353) [`3b74f1f`](https://github.com/reown-com/appkit/commit/3b74f1fef5a4498634cc744c37e05dbb7f2e2075) Thanks [@lukaisailovic](https://github.com/lukaisailovic)! - Enaple Solana in AppKit Pay
+
+- [#4347](https://github.com/reown-com/appkit/pull/4347) [`442b1fa`](https://github.com/reown-com/appkit/commit/442b1fa5211af3aaf8c3dfa4f0c2b39ffd740a60) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes chain parameter from the excluded wallets fetch request to not filter wallets by supported networks
+
 ## 1.7.5
 
 ### Patch Changes

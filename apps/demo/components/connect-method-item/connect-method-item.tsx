@@ -42,8 +42,9 @@ export const ConnectMethodItem = React.memo(
       ref
     ) => {
       const { config } = useAppKitContext()
-      const isEmailEnabled = config.features.email
-      const isSocialsEnabled = Array.isArray(config.features.socials)
+
+      const isEmailEnabled = config.remoteFeatures.email
+      const isSocialsEnabled = Array.isArray(config.remoteFeatures.socials)
       const isWalletsEnabled = config.enableWallets
       const themeMode = config.themeMode
 

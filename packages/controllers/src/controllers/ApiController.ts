@@ -1,15 +1,18 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { CUSTOM_DEEPLINK_WALLETS } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
+  ApiGetProjectConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   WcWallet
@@ -20,20 +23,12 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 
-/*
- * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
- * Excludes:
- * - Phantom
- * - Coinbase
- */
-const CUSTOM_DEEPLINK_WALLETS = {
-  PHANTOM: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
-  COINBASE: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
-}
-
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl, clientId: null })
+export const api = new FetchUtil({
+  baseUrl,
+  clientId: null
+})
 const entries = 40
 const recommendedEntries = 4
 const imageCountToFetch = 20
@@ -139,16 +134,34 @@ export const ApiController = {
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
     const filteredWallets = CoreHelperUtil.isMobile()
-      ? wallets?.filter(
-          w =>
-            w.mobile_link ||
-            w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE ||
-            (w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM &&
-              ChainController.state.activeChain === 'solana')
-        )
+      ? wallets?.filter(w => {
+          if (w.mobile_link) {
+            return true
+          }
+
+          if (w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id) {
+            return true
+          }
+          const isSolana = ChainController.state.activeChain === 'solana'
+
+          return (
+            isSolana &&
+            (w.id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id ||
+              w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id)
+          )
+        })
       : wallets
 
     return filteredWallets
+  },
+
+  async fetchProjectConfig() {
+    const response = await api.get<ApiGetProjectConfigResponse>({
+      path: '/appkit/v1/config',
+      params: ApiController._getSdkProperties()
+    })
+
+    return response.features
   },
 
   async fetchAllowedOrigins() {
@@ -160,6 +173,20 @@ export const ApiController = {
 
       return allowedOrigins
     } catch (error) {
+      if (error instanceof Error && error.cause instanceof Response) {
+        const status = error.cause.status
+
+        if (status === ConstantsUtil.HTTP_STATUS_CODES.TOO_MANY_REQUESTS) {
+          throw new Error('RATE_LIMITED', { cause: error })
+        }
+
+        if (status >= ConstantsUtil.HTTP_STATUS_CODES.SERVER_ERROR && status < 600) {
+          throw new Error('SERVER_ERROR', { cause: error })
+        }
+
+        return []
+      }
+
       return []
     }
   },
@@ -197,7 +224,7 @@ export const ApiController = {
     const exclude = params.exclude ?? []
     const sdkProperties = ApiController._getSdkProperties()
     if (sdkProperties.sv.startsWith('html-core-')) {
-      exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS))
+      exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS).map(w => w.id))
     }
 
     const wallets = await api.get<ApiGetWalletsResponse>({
@@ -231,11 +258,15 @@ export const ApiController = {
         include: featuredWalletIds
       }
       const { data } = await ApiController.fetchWallets(params)
-      data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id))
-      const images = data.map(d => d.image_id).filter(Boolean)
+
+      const sortedData = [...data].sort(
+        (a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id)
+      )
+
+      const images = sortedData.map(d => d.image_id).filter(Boolean)
       await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
-      state.featured = data
-      state.allFeatured = data
+      state.featured = sortedData
+      state.allFeatured = sortedData
     }
   },
 

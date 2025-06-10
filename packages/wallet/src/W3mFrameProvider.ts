@@ -312,7 +312,11 @@ export class W3mFrameProvider {
         await this.init()
         const response = await this.appEvent<'ConnectSocial'>({
           type: W3mFrameConstants.APP_CONNECT_SOCIAL,
-          payload: { uri: payload.socialUri, preferredAccountType: payload.preferredAccountType }
+          payload: {
+            uri: payload.socialUri,
+            preferredAccountType: payload.preferredAccountType,
+            chainId: payload.chainId
+          }
         } as W3mFrameTypes.AppEvent)
 
         if (response.userName) {
@@ -333,14 +337,11 @@ export class W3mFrameProvider {
       try {
         const chainId = payload?.chainId || this.getLastUsedChainId() || 1
 
-        if (payload?.preferredAccountType) {
-          await this.setPreferredAccount(payload.preferredAccountType as W3mFrameTypes.AccountType)
-        }
-
         const response = await this.getUser({
           chainId,
           preferredAccountType: payload?.preferredAccountType
         })
+
         this.setLoginSuccess(response.email)
         this.setLastUsedChainId(response.chainId)
         this.user = response
@@ -633,12 +634,12 @@ export class W3mFrameProvider {
       .map(replaceEventType)
       .includes(type)
 
-    // If the request is not being resolved after 30 seconds, timeout.
+    // If the request is not being resolved after 2 minutes, timeout.
     if (shouldCheckForTimeout) {
       requestTimeout = setTimeout(() => {
         this.onTimeout?.('iframe_request_timeout')
         this.abortController.abort()
-      }, 30_000)
+      }, 120_000)
     }
 
     return new Promise((resolve, reject) => {

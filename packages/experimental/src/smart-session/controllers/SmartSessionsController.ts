@@ -121,8 +121,9 @@ export const SmartSessionsController = {
     updateRequestSigner(request, addPermissionResponse.key)
 
     RouterController.pushTransactionStack({
-      view: 'SmartSessionCreated',
-      goBack: false
+      onSuccess() {
+        RouterController.replace('SmartSessionCreated')
+      }
     })
 
     const rawResponse = await connectionControllerClient?.grantPermissions([request])
@@ -214,8 +215,9 @@ export const SmartSessionsController = {
       const cosignerService = new CosignerService(projectId)
 
       RouterController.pushTransactionStack({
-        view: 'SmartSessionList',
-        goBack: false
+        onSuccess() {
+          RouterController.replace('SmartSessionList')
+        }
       })
 
       const signature = await connectionControllerClient?.revokePermissions({

@@ -47,6 +47,8 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     this.bindEvents()
 
+    this.emit('accountsChanged', [result.address])
+
     return result.address
   }
 

@@ -18,13 +18,14 @@ export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
 export { ConnectionController } from '../src/controllers/ConnectionController.js'
+export { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 export type {
   ConnectionControllerClient,
-  ConnectionControllerState,
-  Connection
+  ConnectionControllerState
 } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
+export { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 export type {
   ConnectorControllerState,
   ConnectorWithProviders
@@ -91,6 +92,8 @@ export { StorageUtil } from '../src/utils/StorageUtil.js'
 export { RouterUtil } from '../src/utils/RouterUtil.js'
 export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
+export { ModalUtil } from '../src/utils/ModalUtil.js'
+export { NetworkUtil } from '../src/utils/NetworkUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
 
 export { FetchUtil } from '../src/utils/FetchUtil.js'
