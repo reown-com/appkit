@@ -127,8 +127,8 @@ test('should sign with each wallet', async ({ library }) => {
 
     await modal.sign()
 
-    const isEmail = await validator.expectConnectedWalletType('AUTH')
-    const isWalletConnect = await validator.expectConnectedWalletType('WALLET_CONNECT')
+    const isEmail = (await validator.getConnectedWalletType()) === 'AUTH'
+    const isWalletConnect = (await validator.getConnectedWalletType()) === 'WALLET_CONNECT'
 
     if (isEmail) {
       await modal.approveSign()

@@ -77,7 +77,8 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'wallet-button.spec',
   'verify.spec.ts',
   'email-after-farcaster.spec.ts',
-  'multi-wallet.spec.ts'
+  'multi-wallet.spec.ts',
+  'multi-wallet-siwx.spec.ts'
 ]
 
 const CORE_TESTS = ['sign-client.spec.ts', 'universal-provider.spec.ts', 'core.spec.ts']

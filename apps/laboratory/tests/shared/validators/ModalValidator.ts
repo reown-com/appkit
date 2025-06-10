@@ -105,9 +105,7 @@ export class ModalValidator {
   }
 
   async expectActiveConnectionsFromProfileWalletsCount(count: number) {
-    const activeConnectionItems = this.page.getByTestId('active-connection')
-    const activeConnectionsCount = await activeConnectionItems.count()
-    expect(activeConnectionsCount).toBe(count)
+    await expect(this.page.getByTestId('active-connection')).toHaveCount(count, { timeout: 10000 })
   }
 
   async expectActiveConnectionsFromProfileWallets(connections: { address: string }[]) {
@@ -515,9 +513,9 @@ export class ModalValidator {
   }
 
   async expectConnectedWalletType(type: string) {
-    const walletType = await this.getConnectedWalletType()
-
-    return walletType?.trim() === type
+    return expect(this.page.getByTestId('w3m-wallet-type')).toHaveText(type, {
+      timeout: MAX_WAIT
+    })
   }
 
   async getConnectedWalletType() {

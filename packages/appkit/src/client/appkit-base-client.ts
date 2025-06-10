@@ -1290,7 +1290,16 @@ export abstract class AppKitBaseClient {
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
     ) {
       if (connectorId) {
-        const connector = this.getConnectors().find(c => c.id === connectorId)
+        const connector = this.getConnectors().find(c => {
+          const isConnectorId = c.id === connectorId
+          const isRdns = c.info?.rdns === connectorId
+
+          const hasMultiChainConnector = c.connectors?.some(
+            _c => _c.id === connectorId || _c.info?.rdns === connectorId
+          )
+
+          return isConnectorId || isRdns || Boolean(hasMultiChainConnector)
+        })
         if (connector) {
           const { info, name, imageUrl } = connector
           const icon = imageUrl || this.getConnectorImage(connector)

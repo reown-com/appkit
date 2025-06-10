@@ -596,7 +596,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
       this.emit('accountChanged', {
         address: accounts[0] as Address,
-        chainId: Number(chainId)
+        chainId: Number(chainId),
+        connector
       })
     } else {
       accounts = await selectedProvider.request({
