@@ -35,7 +35,7 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -759,6 +759,17 @@ export class WagmiAdapter extends AdapterBlueprint {
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
+        /**
+         * When Sign-In with X (SIWX) is enabled and a wallet supports One-Click Authentication:
+         * 1. We should not reconnect because the SIWX Util authenticate method is still pending
+         * 2. Reconnecting would trigger an 'accountChanged' event in Wagmi
+         * 3. This event would then trigger the SIWX Sign Message view
+         * Therefore, we check if the active chain is 'eip155' and prevent reconnection in that case.
+         */
+        if (ChainController.state.activeChain === 'eip155') {
+          return
+        }
+
         reconnect(this.wagmiConfig, {
           connectors: [connector]
         })
