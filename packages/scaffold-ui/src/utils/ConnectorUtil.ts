@@ -1,14 +1,16 @@
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
   ConnectionController,
+  type Connector,
   ConnectorController,
   type ConnectorTypeOrder,
   type ConnectorWithProviders,
   CoreHelperUtil,
   type CustomWallet,
   OptionsController,
+  type SocialProvider,
   StorageUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
@@ -16,6 +18,7 @@ import { HelpersUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from './WalletUtil.js'
 
+// -- Types ------------------------------------------ //
 interface GetConnectorTypeOrderParameters {
   recommended: WcWallet[]
   featured: WcWallet[]
@@ -109,7 +112,7 @@ export const ConnectorUtil = {
     const isConnectedWithWC = chains.some(chain => {
       const connectorId = ConnectorController.getConnectorId(chain.namespace)
 
-      return connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      return connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     })
 
     return isConnectedWithWC
@@ -162,5 +165,49 @@ export const ConnectorUtil = {
     return Array.from(
       new Set([...prioritizedConnectors, ...remainingConnectors].map(({ type }) => type))
     )
+  },
+  getAuthName({
+    email,
+    socialUsername,
+    socialProvider
+  }: {
+    email: string
+    socialUsername?: string | null
+    socialProvider?: SocialProvider | null
+  }) {
+    if (socialUsername) {
+      if (socialProvider && socialProvider === 'discord' && socialUsername.endsWith('0')) {
+        return socialUsername.slice(0, -1)
+      }
+
+      return socialUsername
+    }
+
+    return email.length > 30 ? `${email.slice(0, -3)}...` : email
+  },
+  async fetchProviderData(connector: Connector) {
+    try {
+      if (connector.name === 'Browser Wallet' && !CoreHelperUtil.isMobile()) {
+        return { accounts: [], chainId: undefined }
+      }
+
+      if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+        return { accounts: [], chainId: undefined }
+      }
+
+      const [accounts, chainId] = await Promise.all([
+        connector.provider?.request({ method: 'eth_accounts' }) as Promise<string[]>,
+        connector.provider
+          ?.request({ method: 'eth_chainId' })
+          .then(hexChainId => Number(hexChainId))
+      ])
+
+      return { accounts, chainId }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn(`Failed to fetch provider data for ${connector.name}`, err)
+
+      return { accounts: [], chainId: undefined }
+    }
   }
 }

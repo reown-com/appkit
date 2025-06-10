@@ -3,6 +3,7 @@ import { proxy, ref } from 'valtio/vanilla'
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import type { Balance } from '@reown/appkit-common'
 
+import { BalanceUtil } from '../utils/BalanceUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
@@ -14,7 +15,6 @@ import type {
   User
 } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { SnackController } from './SnackController.js'
 
@@ -243,6 +243,7 @@ const controller = {
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+
     if (
       state.lastRetry &&
       !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
@@ -254,21 +255,13 @@ const controller = {
 
     try {
       if (address && chainId && chain) {
-        const response = await BlockchainApiController.getBalance(address, chainId)
+        const balance = await BalanceUtil.getMyTokensWithBalance()
 
-        /*
-         * The 1Inch API includes many low-quality tokens in the balance response,
-         * which appear inconsistently. This filter prevents them from being displayed.
-         */
-        const filteredBalances = response.balances.filter(
-          balance => balance.quantity.decimals !== '0'
-        )
-
-        AccountController.setTokenBalance(filteredBalances, chain)
+        AccountController.setTokenBalance(balance, chain)
         state.lastRetry = undefined
         state.balanceLoading = false
 
-        return filteredBalances
+        return balance
       }
     } catch (error) {
       state.lastRetry = Date.now()

@@ -355,7 +355,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
     let requestChainId: string | undefined = undefined
 
-    if (type === 'AUTH') {
+    if (type === ConstantsUtil.CONNECTOR_TYPE_AUTH) {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId,
         socialUri,

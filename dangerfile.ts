@@ -416,16 +416,109 @@ function checkWorkflows() {
 }
 checkWorkflows()
 
-// - Check for keys in the codebase
-async function checkForKeys() {
-  const allFiles = [...updated_files, ...created_files]
+const secretPatterns = [
+  {
+    pattern: /\b(?:sk_|pk_|ak_|api_|key_|tok_)[a-zA-Z0-9]{20,}\b/gu,
+    description: 'API key with common prefix'
+  },
+  {
+    pattern: /\b(?=[A-Za-z0-9+/]{32,}=*)(?=.*[0-9+/=])[A-Za-z0-9+/]+=*\b/gu,
+    description: 'High‑entropy string'
+  },
+  {
+    pattern: /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/giu,
+    description: 'UUID'
+  },
+  {
+    pattern: /\beyJ[a-zA-Z0-9+/]+=*\.[a-zA-Z0-9+/]+=*\.[a-zA-Z0-9+/\-_]+=*/gu,
+    description: 'JWT token'
+  },
+  {
+    pattern: /-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----/giu,
+    description: 'Private key'
+  },
+  {
+    pattern: /\bAKIA[0-9A-Z]{16}\b/gu,
+    description: 'AWS access key'
+  },
+  {
+    pattern: /\bghp_[a-zA-Z0-9]{36}\b/gu,
+    description: 'GitHub Personal Access Token'
+  }
+]
 
-  for (const f of allFiles) {
-    const fileContent = await danger.github.utils.fileContents(f)
+function shouldIgnoreMatch(match: string, content: string): boolean {
+  if (/https?:\/\//iu.test(match)) {
+    return true
+  }
 
-    if (fileContent.toLowerCase().includes('key') || fileContent.toLowerCase().includes('secret')) {
-      warn(`File ${f} contains a KEY or SECRET`)
+  // Skip pure alphabetic strings
+  if (/^[A-Za-z]{32,}$/u.test(match)) {
+    return true
+  }
+
+  // Skip file paths and extensions
+  if (/\.(?<file_extension>js|ts|json|md|txt|css|scss|html|xml|yml|yaml)$/u.test(match)) {
+    return true
+  }
+
+  const idx = content.indexOf(match)
+  if (idx !== -1) {
+    const ctx = content.substring(Math.max(0, idx - 40), idx + match.length + 40)
+
+    if (/process\.env\s*(?:\.|\[)/u.test(ctx)) {
+      return true
+    }
+
+    // Skip import/require statements
+    if (/(?<imports>import|require|from)\s+['"`]/iu.test(ctx)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function findLineNumber(lines: string[], snippet: string): number | null {
+  for (const [i, line] of lines.entries()) {
+    if (line.includes(snippet)) {
+      return i + 1
+    }
+  }
+
+  return null
+}
+
+async function scanFileForSecrets(filepath: string) {
+  const fileContent = await danger.github.utils.fileContents(filepath)
+  if (!fileContent) {
+    return
+  }
+
+  const lines = fileContent.split('\n')
+  for (const { pattern, description } of secretPatterns) {
+    const matches = fileContent.match(pattern) ?? []
+    for (const match of matches) {
+      if (shouldIgnoreMatch(match, fileContent)) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const lineNumber = findLineNumber(lines, match) ?? 'unknown'
+      const preview = `${match.slice(0, 20)}...`
+
+      warn(
+        `🔑 Potential ${description} detected in ${filepath} (line ${lineNumber}): \`${preview}\``
+      )
     }
   }
 }
+
+async function checkForKeys() {
+  const candidateFiles = [...updated_files, ...created_files].filter(
+    f => !f.endsWith('pnpm-lock.yaml')
+  )
+  await Promise.all(candidateFiles.map(scanFileForSecrets))
+}
+
 checkForKeys()

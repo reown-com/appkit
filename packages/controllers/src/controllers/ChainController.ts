@@ -621,14 +621,6 @@ const controller = {
     return Boolean(smartAccountEnabledNetworks?.includes(Number(networkId)))
   },
 
-  getActiveNetworkTokenAddress() {
-    const namespace = state.activeCaipNetwork?.chainNamespace || 'eip155'
-    const chainId = state.activeCaipNetwork?.id || 1
-    const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
-
-    return `${namespace}:${chainId}:${address}`
-  },
-
   showUnsupportedChainUI() {
     ModalController.open({ view: 'UnsupportedChain' })
   },
