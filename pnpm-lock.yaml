@@ -2097,8 +2097,8 @@ importers:
         version: 3.5.0(typescript@5.8.3)
     devDependencies:
       '@leather.io/rpc':
-        specifier: 2.18.0
-        version: 2.18.0
+        specifier: 2.1.21
+        version: 2.1.21
       '@vitest/coverage-v8':
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.40.0))
@@ -5481,17 +5481,11 @@ packages:
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
-  '@leather.io/constants@0.23.0':
-    resolution: {integrity: sha512-W9jqaYHCGgtyTA5lfn0repaRZjrAuW1Gp7/+zxDaTyRDgZjazfqx/hDYYAFVecWI3xCPOqWZoouUruylv6I6Iw==}
+  '@leather.io/models@0.23.0':
+    resolution: {integrity: sha512-BeZHZTxzoB5+w8/6aHdTWdGFNy36kC+0UfNR08/Pcvje4b+T33+Gri1lURGYe7E0RqpGXUEd3I0QAlzF4UHG1w==}
 
-  '@leather.io/models@0.37.0':
-    resolution: {integrity: sha512-rj0KwaXvOfbjsjLfmcaxECRaaVVcij4lA9QfED4vAhyOHMhj0LQqP4d+X3CXagVGEkPydRdodrFuwCH9n+Dtmg==}
-
-  '@leather.io/rpc@2.18.0':
-    resolution: {integrity: sha512-gNpG1Kj1efTRmccC9cDZgV+DmtfAWZOL1adaiuAkzw9Wn2Yp+E47uDtb4fO0AppxD/2omhUW0LWuHKAoWwaoDg==}
-
-  '@leather.io/utils@0.38.0':
-    resolution: {integrity: sha512-mRhYddKtcUXiNYVJ9fXo8BaxvJaV4a//EFAgOrxydiNUClyIHGJ1ASNSy1DEIoHs3nVKmNfBfn69ofFIl2YMyw==}
+  '@leather.io/rpc@2.1.21':
+    resolution: {integrity: sha512-2x5w+1G+aLkHT8FWVRp2ozHVLpcPQJdvGftAAh6yE/grjTzVOA/rcWxHXeU87tyJq8hVeg15WTJHrJWOTJai1Q==}
 
   '@ledgerhq/devices@8.4.5':
     resolution: {integrity: sha512-wzfX7JRfTPXJl+4BUXxwUFUGghtqQA6V1I6xNxGfXKHjd51rjijL+9xcfZ1oj66dNNm9wiCBBZhMXXusYDUjWg==}
@@ -5820,9 +5814,6 @@ packages:
     resolution: {integrity: sha512-k11yZxZg+t+gWvBbIswW0yoJlu8cHOC7dhunwOzoWH/mXGBiYyR4YY6hAEK/3EUs4UpB8la1RfdRpeGsFHkWsA==}
     engines: {node: ^14.21.3 || >=16}
 
-  '@noble/hashes@1.1.5':
-    resolution: {integrity: sha512-LTMZiiLc+V4v1Yi16TD6aX2gmtKszNye0pQgbaLqkvhIqP7nVsSaJsWloGQjJfJ8offaoP5GtX3yY5swbcJxxQ==}
-
   '@noble/hashes@1.3.2':
     resolution: {integrity: sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==}
     engines: {node: '>= 16'}
@@ -5846,9 +5837,6 @@ packages:
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
-
-  '@noble/secp256k1@1.7.1':
-    resolution: {integrity: sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==}
 
   '@noble/secp256k1@1.7.2':
     resolution: {integrity: sha512-/qzwYl5eFLH8OWIecQWM31qld2g1NfjgylK+TNhqtaUKP37Nm+Y+z30Fjhw0Ct8p9yCQEm2N3W/AckdIb3SMcQ==}
@@ -7746,9 +7734,6 @@ packages:
   '@scure/bip39@1.6.0':
     resolution: {integrity: sha512-+lF0BbLiJNwVlev4eKelw1WWLaiKXw7sSl8T6FvBlWkdX+94aGJ4o8XjUdlyhTCjd8c+B3KT3JfS8P0bLRNU6A==}
 
-  '@scure/btc-signer@1.6.0':
-    resolution: {integrity: sha512-qd6ciJE4Onk1xdQEdjPvRbLRrH7EddPZagMuZOFv77R/76EWixENd6nuoxqHNEPGRbS09rgAhhPgT7j0oQdi1A==}
-
   '@sentry-internal/browser-utils@8.55.0':
     resolution: {integrity: sha512-ROgqtQfpH/82AQIpESPqPQe0UyWywKJsmVIqi3c5Fh+zkds5LUxnssTj3yNd1x+kxaPDVB023jAP+3ibNgeNDw==}
     engines: {node: '>=14.18'}
@@ -8647,17 +8632,8 @@ packages:
   '@speed-highlight/core@1.2.7':
     resolution: {integrity: sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g==}
 
-  '@stacks/common@7.0.2':
-    resolution: {integrity: sha512-+RSecHdkxOtswmE4tDDoZlYEuULpnTQVeDIG5eZ32opK8cFxf4EugAcK9CsIsHx/Se1yTEaQ21WGATmJGK84lQ==}
-
-  '@stacks/network@7.0.2':
-    resolution: {integrity: sha512-XzHnoWqku/jRrTgMXhmh3c+I0O9vDH24KlhzGDZtBu+8CGGyHNPAZzGwvoUShonMXrXjEnfO9IYQwV5aJhfv6g==}
-
-  '@stacks/stacks-blockchain-api-types@7.14.1':
-    resolution: {integrity: sha512-65hvhXxC+EUqHJAQsqlBCqXB+zwfxZICSKYJugdg6BCp9I9qniyfz5XyQeC4RMVo0tgEoRdS/b5ZCFo5kLWmxA==}
-
-  '@stacks/transactions@7.0.5':
-    resolution: {integrity: sha512-mHsv7lUbZ5w4MKJ3NAirtdClIXLNKMqWIqT2rLjbIHzlYBqvZaELJSYD+km6E7Cm9G3yUYszorhruQmSTgilbg==}
+  '@stacks/stacks-blockchain-api-types@7.8.2':
+    resolution: {integrity: sha512-wcDSdgIZx/ttQfUTPtGJOIyEkTOjmCsC79TaIyxTIiihSgrGppqTuzkwHD/DyuQkcJtUZvDTxMsAXkBKShE1kw==}
 
   '@storybook/addon-actions@7.6.7':
     resolution: {integrity: sha512-+6EZvhIeKEqG/RNsU3R5DxOrd60BL5GEvmzE2w60s2eKaNNxtyilDjiO1g4z2s2zDNyr7JL/Ft03pJ0Jgo0lew==}
@@ -11128,10 +11104,6 @@ packages:
       magicast:
         optional: true
 
-  c32check@2.0.0:
-    resolution: {integrity: sha512-rpwfAcS/CMqo0oCqDf3r9eeLgScRE3l/xHDCXhM3UyrfvIn7PrLq63uHh7yYbv8NzaZn5MVsVhIRpQ+5GZ5HyA==}
-    engines: {node: '>=8'}
-
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
@@ -12073,9 +12045,6 @@ packages:
   domhandler@5.0.3:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
-
-  dompurify@3.2.4:
-    resolution: {integrity: sha512-ysFSFEDVduQpyhzAob/kkuJjf5zWkZD8/A9ywSp1byueyuCfHamrCBa14/Oc2iiB0e51B+NpxSl5gmzn+Ms/mg==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -14368,9 +14337,6 @@ packages:
   lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
 
-  lodash.clonedeep@4.5.0:
-    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
-
   lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
 
@@ -14597,9 +14563,6 @@ packages:
 
   micro-ftch@0.3.1:
     resolution: {integrity: sha512-/0LLxhzP0tfiR5hcQebtudP56gUurs2CLkGarnCiB/OqEyUFQ6U3paQi/tgLv0hBJYt2rnr9MNpxz4fiiugstg==}
-
-  micro-packed@0.7.3:
-    resolution: {integrity: sha512-2Milxs+WNC00TRlem41oRswvw31146GiSaoCT7s3Xi2gMUglW5QBeqlQaZeHr5tJx9nm3i57LNXPqxOOaWtTYg==}
 
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
@@ -18731,8 +18694,8 @@ packages:
   zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
 
-  zod@3.24.2:
-    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
   zod@3.25.32:
     resolution: {integrity: sha512-OSm2xTIRfW8CV5/QKgngwmQW/8aPfGdaQFlrGoErlgg/Epm7cjb6K6VEyExfe65a3VybUOnu381edLb0dfJl0g==}
@@ -21680,33 +21643,16 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
-  '@leather.io/constants@0.23.0':
+  '@leather.io/models@0.23.0':
     dependencies:
-      '@leather.io/models': 0.37.0
-
-  '@leather.io/models@0.37.0':
-    dependencies:
-      '@stacks/stacks-blockchain-api-types': 7.14.1
+      '@stacks/stacks-blockchain-api-types': 7.8.2
       bignumber.js: 9.1.2
-      zod: 3.24.2
+      zod: 3.23.8
 
-  '@leather.io/rpc@2.18.0':
+  '@leather.io/rpc@2.1.21':
     dependencies:
-      '@leather.io/models': 0.37.0
-      '@leather.io/utils': 0.38.0
-      '@scure/btc-signer': 1.6.0
-      '@stacks/network': 7.0.2
-      '@stacks/transactions': 7.0.5
-      zod: 3.24.2
-    transitivePeerDependencies:
-      - encoding
-
-  '@leather.io/utils@0.38.0':
-    dependencies:
-      '@leather.io/constants': 0.23.0
-      '@leather.io/models': 0.37.0
-      bignumber.js: 9.1.2
-      dompurify: 3.2.4
+      '@leather.io/models': 0.23.0
+      zod: 3.23.8
 
   '@ledgerhq/devices@8.4.5':
     dependencies:
@@ -22167,8 +22113,6 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.8.0
 
-  '@noble/hashes@1.1.5': {}
-
   '@noble/hashes@1.3.2': {}
 
   '@noble/hashes@1.4.0': {}
@@ -22180,8 +22124,6 @@ snapshots:
   '@noble/hashes@1.7.2': {}
 
   '@noble/hashes@1.8.0': {}
-
-  '@noble/secp256k1@1.7.1': {}
 
   '@noble/secp256k1@1.7.2': {}
 
@@ -26216,13 +26158,6 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.5
 
-  '@scure/btc-signer@1.6.0':
-    dependencies:
-      '@noble/curves': 1.8.2
-      '@noble/hashes': 1.7.2
-      '@scure/base': 1.2.5
-      micro-packed: 0.7.3
-
   '@sentry-internal/browser-utils@8.55.0':
     dependencies:
       '@sentry/core': 8.55.0
@@ -27723,27 +27658,7 @@ snapshots:
 
   '@speed-highlight/core@1.2.7': {}
 
-  '@stacks/common@7.0.2': {}
-
-  '@stacks/network@7.0.2':
-    dependencies:
-      '@stacks/common': 7.0.2
-      cross-fetch: 3.2.0
-    transitivePeerDependencies:
-      - encoding
-
-  '@stacks/stacks-blockchain-api-types@7.14.1': {}
-
-  '@stacks/transactions@7.0.5':
-    dependencies:
-      '@noble/hashes': 1.1.5
-      '@noble/secp256k1': 1.7.1
-      '@stacks/common': 7.0.2
-      '@stacks/network': 7.0.2
-      c32check: 2.0.0
-      lodash.clonedeep: 4.5.0
-    transitivePeerDependencies:
-      - encoding
+  '@stacks/stacks-blockchain-api-types@7.8.2': {}
 
   '@storybook/addon-actions@7.6.7':
     dependencies:
@@ -33505,11 +33420,6 @@ snapshots:
     optionalDependencies:
       magicast: 0.3.5
 
-  c32check@2.0.0:
-    dependencies:
-      '@noble/hashes': 1.8.0
-      base-x: 4.0.1
-
   cac@6.7.14: {}
 
   cache-content-type@1.0.1:
@@ -34491,10 +34401,6 @@ snapshots:
   domhandler@5.0.3:
     dependencies:
       domelementtype: 2.3.0
-
-  dompurify@3.2.4:
-    optionalDependencies:
-      '@types/trusted-types': 2.0.7
 
   domutils@2.8.0:
     dependencies:
@@ -37360,8 +37266,6 @@ snapshots:
 
   lodash-es@4.17.21: {}
 
-  lodash.clonedeep@4.5.0: {}
-
   lodash.debounce@4.0.8: {}
 
   lodash.defaults@4.2.0: {}
@@ -37562,10 +37466,6 @@ snapshots:
   micro-api-client@3.3.0: {}
 
   micro-ftch@0.3.1: {}
-
-  micro-packed@0.7.3:
-    dependencies:
-      '@scure/base': 1.2.5
 
   micromatch@4.0.8:
     dependencies:
@@ -42992,7 +42892,7 @@ snapshots:
 
   zod@3.22.4: {}
 
-  zod@3.24.2: {}
+  zod@3.23.8: {}
 
   zod@3.25.32: {}
 
