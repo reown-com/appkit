@@ -8,7 +8,7 @@ import {
 } from '@reown/appkit-controllers'
 import { ConstantsUtil } from '@reown/appkit-utils'
 
-import { CloudAuthSIWX } from '../../src/configs/CloudAuthSIWX'
+import { CloudAuthSIWX, ReownAuthentication } from '../../src/configs/CloudAuthSIWX'
 import { mockSession } from '../mocks/mockSession'
 
 vi.useFakeTimers({
@@ -692,4 +692,9 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       )
     })
   })
+})
+
+it('should have same instance for CloudAuthSIWX and ReownAuthentication', () => {
+  expect(CloudAuthSIWX).toBe(ReownAuthentication)
+  expect(new ReownAuthentication()).toBeInstanceOf(CloudAuthSIWX)
 })
