@@ -86,6 +86,27 @@ export class LeatherConnector extends SatsConnectConnector {
     }
   }
 
+  public override async sendRawTransaction(
+    params: BitcoinConnector.SendRawTransactionParams
+  ): Promise<string> {
+    try {
+      const network = this.getNetwork()
+
+      // @ts-expect-error - expected LeatherWallet params don't match sats-connect
+      const res = await this.internalRequest('pushTransaction', {
+        hex: params.rawTransaction,
+        network
+      })
+
+      if (res && typeof res === 'object' && 'txid' in res && typeof res.txid === 'string') {
+        return res.txid
+      }
+      throw new Error('Invalid response from transaction broadcast')
+    } catch (error) {
+      throw new Error(`LeatherConnector: Failed to broadcast raw transaction: ${error}`)
+    }
+  }
+
   private getNetwork(): LeatherConnector.Network {
     const activeCaipNetwork = this.getActiveNetwork()
 
