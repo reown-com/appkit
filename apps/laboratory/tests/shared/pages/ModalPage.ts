@@ -517,15 +517,22 @@ export class ModalPage {
     await this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
-  async openProfileWalletsView() {
-    await this.openAccount()
+  async openProfileWalletsView(
+    namespace?: string,
+    clickButtonType: 'account' | 'connect' = 'account'
+  ) {
+    if (clickButtonType === 'account') {
+      await this.openAccount(namespace)
+    } else {
+      await this.openConnectModal(namespace)
+    }
     await this.clickWalletSwitchButton()
     // Wait until stable after animations
     await this.page.waitForTimeout(500)
   }
 
-  async openConnectModal() {
-    await this.page.getByTestId('connect-button').click()
+  async openConnectModal(namespace?: string) {
+    await this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
   async openAllSocials() {
@@ -624,6 +631,12 @@ export class ModalPage {
     const tabWebApp = this.page.getByTestId('tab-webapp')
     await expect(tabWebApp).toBeVisible()
     await tabWebApp.click()
+  }
+
+  async clickProfileWalletsViewTab(name: string) {
+    const tab = this.page.getByTestId(`tab-${name}`)
+    await expect(tab).toBeVisible()
+    await tab.click()
   }
 
   async getExtensionWallet() {
@@ -781,8 +794,10 @@ export class ModalPage {
     }
   }
 
-  async getAddress(): Promise<`0x${string}`> {
-    const address = await this.page.getByTestId('w3m-address').textContent()
+  async getAddress(namespace?: string): Promise<`0x${string}`> {
+    const address = await this.page
+      .getByTestId(`w3m-address${namespace ? `-${namespace}` : ''}`)
+      .textContent()
     expect(address, 'Address should be present').toBeTruthy()
 
     return address as `0x${string}`

@@ -1715,16 +1715,55 @@ export abstract class AppKitBaseClient {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
-  public getConnections = (namespace: ChainNamespace) =>
-    ConnectionControllerUtil.getConnectionsData(namespace).connections
+  public getConnections = (namespace: ChainNamespace) => {
+    if (!this.remoteFeatures.multiWallet) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.DEFAULT,
+        'info'
+      )
 
-  public getRecentConnections = (namespace: ChainNamespace) =>
-    ConnectionControllerUtil.getConnectionsData(namespace).recentConnections
+      return []
+    }
 
-  public switchConnection: (typeof ConnectionController)['switchConnection'] = params =>
-    ConnectionController.switchConnection(params)
+    return ConnectionControllerUtil.getConnectionsData(namespace).connections
+  }
+
+  public getRecentConnections = (namespace: ChainNamespace) => {
+    if (!this.remoteFeatures.multiWallet) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.DEFAULT,
+        'info'
+      )
+
+      return []
+    }
+
+    return ConnectionControllerUtil.getConnectionsData(namespace).recentConnections
+  }
+
+  public switchConnection: (typeof ConnectionController)['switchConnection'] = async params => {
+    if (!this.remoteFeatures.multiWallet) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.DEFAULT,
+        'info'
+      )
+
+      return
+    }
+
+    await ConnectionController.switchConnection(params)
+  }
 
   public deleteConnection: (typeof StorageUtil)['deleteAddressFromConnection'] = params => {
+    if (!this.remoteFeatures.multiWallet) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.DEFAULT,
+        'info'
+      )
+
+      return
+    }
+
     StorageUtil.deleteAddressFromConnection(params)
     ConnectionController.syncStorageConnections()
   }
@@ -1838,6 +1877,15 @@ export abstract class AppKitBaseClient {
   }
 
   public subscribeConnections(callback: (newState: ConnectionControllerState) => void) {
+    if (!this.remoteFeatures.multiWallet) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.DEFAULT,
+        'info'
+      )
+
+      return () => undefined
+    }
+
     return ConnectionController.subscribe(callback)
   }
 
@@ -1948,8 +1996,16 @@ export abstract class AppKitBaseClient {
     return PublicStateController.state
   }
 
+  public getRemoteFeatures() {
+    return OptionsController.state.remoteFeatures
+  }
+
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
     return PublicStateController.subscribe(callback)
+  }
+
+  public subscribeRemoteFeatures(callback: (newState: RemoteFeatures | undefined) => void) {
+    return OptionsController.subscribeKey('remoteFeatures', callback)
   }
 
   public showErrorMessage(message: string) {

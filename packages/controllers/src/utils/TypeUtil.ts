@@ -1165,6 +1165,7 @@ export type RemoteFeatures = {
   socials?: SocialProvider[] | false
   activity?: boolean
   reownBranding?: boolean
+  multiWallet?: boolean
 }
 
 export type Features = {
@@ -1304,7 +1305,13 @@ export type PreferredAccountTypes = {
 
 // -- Feature Configuration Types -------------------------------------------------
 
-export type FeatureID = 'activity' | 'onramp' | 'swap' | 'social_login' | 'reown_branding'
+export type FeatureID =
+  | 'multi_wallet'
+  | 'activity'
+  | 'onramp'
+  | 'swap'
+  | 'social_login'
+  | 'reown_branding'
 
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
@@ -1318,6 +1325,7 @@ export type TypedFeatureConfig =
   | BaseFeature<'swap', SwapProvider[]>
   | BaseFeature<'social_login', (SocialProvider | 'email')[]>
   | BaseFeature<'reown_branding', null | []>
+  | BaseFeature<'multi_wallet', null | []>
 
 export type ApiGetProjectConfigResponse = {
   features: TypedFeatureConfig[]
@@ -1357,6 +1365,12 @@ export type FeatureConfigMap = {
   reownBranding: {
     apiFeatureName: 'reown_branding'
     localFeatureName: 'reownBranding'
+    returnType: boolean
+    isLegacy: false
+  }
+  multiWallet: {
+    apiFeatureName: 'multi_wallet'
+    localFeatureName: 'multiWallet'
     returnType: boolean
     isLegacy: false
   }

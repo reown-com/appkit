@@ -8,6 +8,7 @@ import {
   type Connection,
   useAppKitConnection,
   useAppKitConnections,
+  useAppKitState,
   useDisconnect
 } from '@reown/appkit/react'
 
@@ -19,7 +20,24 @@ interface AppKitConnectionsProps {
   title?: string
 }
 
+interface AppKitConnectionsCardProps {
+  namespace: ChainNamespace
+  title?: string
+}
+
 export function AppKitConnections({ namespace, title = 'Connections' }: AppKitConnectionsProps) {
+  const { multiWallet } = useAppKitState()
+
+  const isMultiWalletEnabled = Boolean(multiWallet)
+
+  if (!isMultiWalletEnabled) {
+    return null
+  }
+
+  return <AppKitConnectionsCard namespace={namespace} title={title} />
+}
+
+function AppKitConnectionsCard({ namespace, title }: AppKitConnectionsCardProps) {
   const [lastSelectedConnection, setLastSelectedConnection] = useState<{
     connectorId: string
     address: string

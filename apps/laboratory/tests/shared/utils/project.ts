@@ -6,6 +6,7 @@ const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
+  'multi-wallet-multichain',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
@@ -160,6 +161,12 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/multichain-all': {
     testMatch: /^.*\/multichain-all\.spec\.ts$/u
+  },
+  'Desktop Firefox/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
+  },
+  'Desktop Chrome/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u

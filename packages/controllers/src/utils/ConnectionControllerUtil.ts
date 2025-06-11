@@ -3,6 +3,7 @@ import type { Connection } from '@reown/appkit-common'
 
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
 
 // -- Types ------------------------------------------ //
 interface ExcludeConnectorAddressFromConnectionsParamters {
@@ -68,10 +69,11 @@ export const ConnectionControllerUtil = {
     return connections.filter(c => c.connectorId.toLowerCase() === connectorId.toLowerCase())
   },
   getConnectionsData(namespace: ChainNamespace) {
+    const isMultiWalletEnabled = Boolean(OptionsController.state.remoteFeatures?.multiWallet)
+    
     const activeConnectorId = ConnectorController.state.activeConnectorIds[namespace]
 
     const connections = ConnectionController.state.connections.get(namespace) ?? []
-
     const recentConnections = ConnectionController.state.recentConnections.get(namespace) ?? []
     const recentConnectionsWithCurrentActiveConnectors = recentConnections.filter(connection =>
       ConnectorController.getConnectorById(connection.connectorId)
@@ -80,6 +82,15 @@ export const ConnectionControllerUtil = {
       [...connections.map(c => c.connectorId), ...(activeConnectorId ? [activeConnectorId] : [])],
       recentConnectionsWithCurrentActiveConnectors
     )
+
+    if (!isMultiWalletEnabled) {
+      return {
+        connections: connections.filter(
+          c => c.connectorId.toLowerCase() === activeConnectorId?.toLowerCase()
+        ),
+        recentConnections: []
+      }
+    }
 
     return {
       connections,

@@ -96,6 +96,13 @@ export class ModalValidator {
     )
   }
 
+  async getActiveProfileWalletItemAddress() {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    const address = await activeProfileWalletItem.getAttribute('address')
+
+    return address as string
+  }
+
   async expectActiveProfileWalletItemAddress(address: string) {
     const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
     await expect(activeProfileWalletItem).toBeVisible({
@@ -484,6 +491,13 @@ export class ModalValidator {
     })
   }
 
+  async expectActiveProfileWalletItemAddressSwitched(address: string) {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    await expect(activeProfileWalletItem).not.toHaveAttribute('address', address, {
+      timeout: 10000
+    })
+  }
+
   async expectSocialsVisible() {
     const socials = this.page.getByTestId('w3m-social-login-widget')
     await expect(socials).toBeVisible()
@@ -552,6 +566,12 @@ export class ModalValidator {
     if (network) {
       await this.expectNetworkButton(network)
     }
+  }
+
+  async waitUntilSuccessToastHidden() {
+    await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeHidden({
+      timeout: 5000
+    })
   }
 
   async expectUxBrandingReown(visible: boolean) {

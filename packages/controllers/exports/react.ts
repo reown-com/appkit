@@ -4,10 +4,12 @@ import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
 
+import { AlertController } from '../src/controllers/AlertController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
+import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
@@ -127,11 +129,26 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   useSnapshot(AssetController.state)
 
   const { activeChain } = useSnapshot(ChainController.state)
+  const { remoteFeatures } = useSnapshot(OptionsController.state)
 
   const chainNamespace = namespace ?? activeChain
 
+  const isMultiWalletEnabled = Boolean(remoteFeatures?.multiWallet)
+
   if (!chainNamespace) {
     throw new Error('No namespace found')
+  }
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
+      'info'
+    )
+
+    return {
+      connections: [],
+      recentConnections: []
+    }
   }
 
   const { connections, recentConnections } =
@@ -162,11 +179,28 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const { activeChain } = useSnapshot(ChainController.state)
+  const { remoteFeatures } = useSnapshot(OptionsController.state)
 
   const chainNamespace = namespace ?? activeChain
 
   if (!chainNamespace) {
     throw new Error('No namespace found')
+  }
+
+  const isMultiWalletEnabled = Boolean(remoteFeatures?.multiWallet)
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTION_HOOK,
+      'info'
+    )
+
+    return {
+      connection: undefined,
+      isPending: false,
+      switchConnection: () => Promise.resolve(undefined),
+      deleteConnection: () => ({})
+    }
   }
 
   const connectorId = activeConnectorIds[chainNamespace]

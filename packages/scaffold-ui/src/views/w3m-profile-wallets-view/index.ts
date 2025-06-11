@@ -17,6 +17,7 @@ import {
   ConnectionControllerUtil,
   ConnectorController,
   CoreHelperUtil,
+  OptionsController,
   RouterController,
   SnackController,
   StorageUtil
@@ -110,6 +111,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private isSwitching = false
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
   @state() private user = AccountController.state.user
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   constructor() {
     super()
@@ -126,7 +128,8 @@ export class W3mProfileWalletsView extends LitElement {
           this.activeConnectorIds = ids
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val)),
-        AccountController.subscribeKey('user', val => (this.user = val))
+        AccountController.subscribeKey('user', val => (this.user = val)),
+        OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
       ]
     )
 
@@ -430,6 +433,10 @@ export class W3mProfileWalletsView extends LitElement {
   }
 
   private renderAddConnectionButton(namespace: ChainNamespace) {
+    if (!this.isMultiWalletEnabled() && this.caipAddress) {
+      return null
+    }
+
     if (!this.hasAnyConnections(namespace)) {
       return null
     }
@@ -622,6 +629,7 @@ export class W3mProfileWalletsView extends LitElement {
   private getActiveConnections(namespace: ChainNamespace) {
     const connectorId = this.activeConnectorIds[namespace]
     const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
+
     const [connectedConnection] = connections.filter(connection =>
       HelpersUtil.isLowerCaseMatch(connection.connectorId, connectorId)
     )
@@ -744,6 +752,10 @@ export class W3mProfileWalletsView extends LitElement {
     if (walletListEl) {
       this.updateScrollOpacity(walletListEl)
     }
+  }
+
+  private isMultiWalletEnabled() {
+    return Boolean(this.remoteFeatures?.multiWallet)
   }
 
   private updateScrollOpacity(element: HTMLElement) {
