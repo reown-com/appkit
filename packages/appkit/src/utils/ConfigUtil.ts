@@ -159,6 +159,7 @@ const featureConfig = {
     localFeatureName: 'emailCapture',
     returnType: false as EmailCaptureOptions[] | boolean,
     isLegacy: false,
+    isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig): EmailCaptureOptions[] | boolean => {
       if (apiConfig.config?.length) {
         return apiConfig.config as EmailCaptureOptions[]
