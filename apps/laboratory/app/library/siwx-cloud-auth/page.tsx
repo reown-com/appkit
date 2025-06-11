@@ -25,8 +25,7 @@ const config = {
 
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  siwx: new CloudAuthSIWX(),
-  projectId: '643eba37f2e4f26f431e8b798a0acf65'
+  siwx: new CloudAuthSIWX()
 }
 
 export default function SIWXCloudAuth() {
