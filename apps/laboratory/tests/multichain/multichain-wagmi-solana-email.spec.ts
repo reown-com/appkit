@@ -54,6 +54,14 @@ test('it should switch networks (including different namespaces) and sign', asyn
     await validator.expectSwitchedNetwork(chainName)
     await page.closeModal()
 
+    // -- Refresh and verify connection persists ----------------------------------
+    await page.page.reload()
+    await validator.expectConnected()
+    await page.openModal()
+    await page.openNetworks()
+    await validator.expectSwitchedNetwork(chainName)
+    await page.closeModal()
+
     // -- Sign ------------------------------------------------------------------
     await page.sign(getNamespaceByNetworkName(chainName))
     // For Solana, the chain name on the wallet page is Solana Mainnet

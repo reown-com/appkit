@@ -113,9 +113,8 @@ export const TelemetryController = {
           }
         }
       })
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Error sending telemetry event:', err)
+    } catch {
+      // Do nothing
     }
   },
 

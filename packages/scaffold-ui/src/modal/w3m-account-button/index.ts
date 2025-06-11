@@ -2,9 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
+  type AccountControllerState,
+  type AdapterNetworkState,
   AssetController,
   AssetUtil,
   ChainController,
@@ -31,19 +33,19 @@ class W3mAccountButtonBase extends LitElement {
 
   @property() public namespace?: ChainNamespace = undefined
 
-  @state() private caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
+  @state() private caipAddress: CaipAddress | undefined
 
-  @state() private balanceVal = ChainController.getAccountData(this.namespace)?.balance
+  @state() private balanceVal: string | undefined
 
-  @state() private balanceSymbol = ChainController.getAccountData(this.namespace)?.balanceSymbol
+  @state() private balanceSymbol: string | undefined
 
-  @state() private profileName = ChainController.getAccountData(this.namespace)?.profileName
+  @state() private profileName: string | null | undefined
 
-  @state() private profileImage = ChainController.getAccountData(this.namespace)?.profileImage
+  @state() private profileImage: string | null | undefined
 
-  @state() private network = ChainController.getNetworkData(this.namespace)?.caipNetwork
+  @state() private network: CaipNetwork | undefined
 
-  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
+  @state() private networkImage: string | undefined
 
   // eslint-disable-next-line no-nested-ternary
   @state() private isSupported = OptionsController.state.allowUnsupportedChain
@@ -53,6 +55,12 @@ class W3mAccountButtonBase extends LitElement {
       : true
 
   // -- Lifecycle ----------------------------------------- //
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.setAccountData(ChainController.getAccountData(this.namespace))
+    this.setNetworkData(ChainController.getNetworkData(this.namespace))
+  }
+
   public override firstUpdated() {
     const namespace = this.namespace
 
@@ -61,20 +69,15 @@ class W3mAccountButtonBase extends LitElement {
         ChainController.subscribeChainProp(
           'accountState',
           val => {
-            this.caipAddress = val?.caipAddress
-            this.balanceVal = val?.balance
-            this.balanceSymbol = val?.balanceSymbol
-            this.profileName = val?.profileName
-            this.profileImage = val?.profileImage
+            this.setAccountData(val)
           },
           namespace
         ),
         ChainController.subscribeChainProp(
           'networkState',
           val => {
-            this.network = val?.caipNetwork
+            this.setNetworkData(val)
             this.isSupported = ChainController.checkIfSupportedNetwork(namespace, val?.caipNetwork)
-            this.networkImage = AssetUtil.getNetworkImage(val?.caipNetwork)
           },
           namespace
         )
@@ -144,11 +147,9 @@ class W3mAccountButtonBase extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private async onClick() {
-    await ChainController.switchActiveNamespace(this.namespace)
-
+  private onClick() {
     if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
-      ModalController.open()
+      ModalController.open({ namespace: this.namespace })
     } else {
       ModalController.open({ view: 'UnsupportedChain' })
     }
@@ -158,6 +159,27 @@ class W3mAccountButtonBase extends LitElement {
     if (network?.assets?.imageId) {
       this.networkImage = await AssetUtil.fetchNetworkImage(network?.assets?.imageId)
     }
+  }
+
+  private setAccountData(accountState: AccountControllerState | undefined) {
+    if (!accountState) {
+      return
+    }
+
+    this.caipAddress = accountState.caipAddress
+    this.balanceVal = accountState.balance
+    this.balanceSymbol = accountState.balanceSymbol
+    this.profileName = accountState.profileName
+    this.profileImage = accountState.profileImage
+  }
+
+  private setNetworkData(networkState: AdapterNetworkState | undefined) {
+    if (!networkState) {
+      return
+    }
+
+    this.network = networkState.caipNetwork
+    this.networkImage = AssetUtil.getNetworkImage(networkState.caipNetwork)
   }
 }
 

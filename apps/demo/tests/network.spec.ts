@@ -1,5 +1,7 @@
 import { test } from '@playwright/test'
 
+import { ConstantsUtil } from '@reown/appkit-common'
+
 import { NETWORK_OPTIONS } from '@/lib/networks'
 
 import { DemoPage } from './pages/DemoPage'
@@ -9,8 +11,12 @@ let demoPage: DemoPage
 
 test.describe.configure({ mode: 'serial' })
 
-const evmNetworks = NETWORK_OPTIONS.filter(n => n.namespace === 'eip155').map(n => n.network)
-const solanaNetworks = NETWORK_OPTIONS.filter(n => n.namespace === 'solana').map(n => n.network)
+const evmNetworks = NETWORK_OPTIONS.filter(n => n.namespace === ConstantsUtil.CHAIN.EVM).map(
+  n => n.network
+)
+const solanaNetworks = NETWORK_OPTIONS.filter(n => n.namespace === ConstantsUtil.CHAIN.SOLANA).map(
+  n => n.network
+)
 
 test.beforeAll(async ({ browser }) => {
   const context = await browser.newContext()
@@ -26,7 +32,7 @@ test.afterAll(async () => {
 })
 
 // Test case 1: Disable chain with chain option
-test('Disable chain with chain option', async () => {
+test('it should disable chain with chain option as expected', async () => {
   // Open networks page on AppKit
   await demoPage.openNetworks()
 
@@ -46,7 +52,7 @@ test('Disable chain with chain option', async () => {
 })
 
 // Test case 2: Disable chain with network option
-test('Disable chain with network option', async () => {
+test('it should disable chain with network option as expected', async () => {
   // Open networks page on AppKit
   await demoPage.openNetworks()
 
@@ -76,7 +82,7 @@ test('Disable chain with network option', async () => {
 })
 
 // Test case 3: Refresh page keeps state
-test('Refresh page keeps state', async () => {
+test('it should refresh page keeps state as expected', async () => {
   // Refresh the page
   await demoPage.page.reload()
 

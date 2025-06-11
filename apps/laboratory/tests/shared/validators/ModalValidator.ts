@@ -184,11 +184,6 @@ export class ModalValidator {
     await expect(alertBarText).toHaveText(network)
   }
 
-  async expectSwitchChainView(chainName: string) {
-    const title = this.page.getByTestId(`w3m-switch-active-chain-to-${chainName}`)
-    await expect(title).toBeVisible()
-  }
-
   async expectSwitchChainWithNetworkButton(chainName: string) {
     const switchNetworkViewLocator = this.page.locator('wui-network-button')
     await expect(switchNetworkViewLocator).toHaveText(chainName)

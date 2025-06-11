@@ -10,16 +10,23 @@ export type BaseNetwork<
 
 export type CaipNetwork<
   formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
-  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined,
+  N extends string = InternalChainNamespace
 > = Omit<BaseChain<formatters, custom>, 'id'> & {
   id: number | string
-  chainNamespace: ChainNamespace
-  caipNetworkId: CaipNetworkId
+  chainNamespace: ChainNamespace<N>
+  caipNetworkId: CaipNetworkId<N>
   assets?: {
     imageId: string | undefined
     imageUrl: string | undefined
   }
 }
+
+export type CustomCaipNetwork<T extends string = InternalChainNamespace> = CaipNetwork<
+  ChainFormatters,
+  Record<string, unknown>,
+  T
+>
 
 export type CustomRpcUrlMap = Record<CaipNetworkId, CustomRpcUrl[]>
 
@@ -30,13 +37,16 @@ export type CustomRpcUrl = {
 
 export type AppKitNetwork = BaseNetwork | CaipNetwork
 
-export type CaipNetworkId = `${ChainNamespace}:${ChainId}`
+export type CaipNetworkId<N extends string = InternalChainNamespace> =
+  `${ChainNamespace<N>}:${ChainId}`
 
 export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
 
 export type ChainId = string | number
 
-export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122' | 'cosmos'
+export type InternalChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122' | 'cosmos'
+
+export type ChainNamespace<T extends string = InternalChainNamespace> = T | InternalChainNamespace
 
 export type AdapterType =
   | 'solana'
@@ -197,3 +207,24 @@ export type SocialProvider =
 export type SwapProvider = '1inch'
 
 export type OnRampProvider = 'coinbase' | 'meld'
+
+/**
+ * Helper type to create a CaipNetwork with proper type inference from the chainNamespace field
+ * Usage: const network = { ... } as InferredCaipNetwork<typeof network>
+ */
+export type InferredCaipNetwork<T extends { chainNamespace: string } = { chainNamespace: string }> =
+  T extends { chainNamespace: infer N extends string } ? CustomCaipNetwork<N> : CustomCaipNetwork
+
+export type Connection = {
+  name?: string
+  icon?: string
+  recent?: boolean
+  networkIcon?: string
+  accounts: { type?: string; address: string }[]
+  caipNetwork?: CaipNetwork
+  connectorId: string
+  auth?: {
+    name: string | undefined
+    username: string | undefined
+  }
+}

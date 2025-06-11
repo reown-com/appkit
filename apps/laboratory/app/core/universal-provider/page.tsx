@@ -27,7 +27,6 @@ import { OPTIONAL_NAMESPACES, PROJECT_ID, networks } from '../constants'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 
 type SignMessageResponse = {
   signature: string

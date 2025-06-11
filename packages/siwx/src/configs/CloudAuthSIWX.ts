@@ -81,6 +81,10 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
     try {
+      if (!this.getStorageToken(this.localAuthStorageKey)) {
+        return []
+      }
+
       const account = await this.request({
         method: 'GET',
         key: 'me',
