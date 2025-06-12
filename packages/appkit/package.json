@@ -91,6 +91,11 @@
       "types": "./dist/types/exports/react-core.d.ts",
       "import": "./dist/esm/exports/react-core.js",
       "default": "./dist/esm/exports/react-core.js"
+    },
+    "./wallet-standard": {
+      "types": "./dist/types/exports/wallet-standard.d.ts",
+      "import": "./dist/esm/exports/wallet-standard.js",
+      "default": "./dist/esm/exports/wallet-standard.js"
     }
   },
   "typesVersions": {
@@ -134,7 +139,13 @@
     "@walletconnect/universal-provider": "2.21.2",
     "bs58": "6.0.0",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0"
+    "viem": ">=2.29.0",
+    "@wallet-standard/base": "1.1.0",
+    "@wallet-standard/features": "1.0.3",
+    "@wallet-standard/wallet": "1.1.0",
+    "@solana/wallet-standard-features": "1.3.0",
+    "@solana/web3.js": "1.98.0",
+    "@solana/wallet-adapter-base": "0.9.24"
   },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",

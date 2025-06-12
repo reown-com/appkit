@@ -61,14 +61,7 @@
     "@solana/web3.js": "1.98.0",
     "@vitest/coverage-v8": "2.1.9",
     "vitest": "3.1.3",
-    "@solana/wallet-standard-features": "1.3.0",
-    "@wallet-standard/base": "1.1.0",
-    "@wallet-standard/features": "1.0.3",
     "@walletconnect/types": "2.21.2"
-  },
-  "optionalDependencies": {
-    "bs58": "6.0.0",
-    "@wallet-standard/wallet": "1.1.0"
   },
   "peerDependencies": {
     "valtio": "1.13.2"

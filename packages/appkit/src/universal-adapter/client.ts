@@ -7,21 +7,23 @@ import {
   AccountController,
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@reown/appkit-controllers'
-import { WalletConnectStandardWallet } from '@reown/appkit-utils/solana'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
-    console.log('>> #setUniversalProvider', universalProvider)
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
+    if (OptionsController.state.registerWalletStandard?.solana) {
+      const { SolanaWalletConnectStandardWallet } = await import(
+        '../utils/wallet-standard/SolanaWalletConnectStandardWallet.js'
+      )
 
-    const standardWallet = new WalletConnectStandardWallet(universalProvider)
-
-    console.log('>> #standardWallet', standardWallet)
+      SolanaWalletConnectStandardWallet.register(universalProvider)
+    }
 
     this.addConnector(
       new WalletConnectConnector({

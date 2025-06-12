@@ -320,6 +320,8 @@ export abstract class AppKitBaseClient {
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
     OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
+    OptionsController.state.registerWalletStandard = options.registerWalletStandard
+
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
 
@@ -904,7 +906,6 @@ export abstract class AppKitBaseClient {
   }
 
   protected async createUniversalProviderForAdapter(chainNamespace: ChainNamespace) {
-    console.log('>>> createUniversalProviderForAdapter', chainNamespace)
     await this.getUniversalProvider()
 
     if (this.universalProvider) {

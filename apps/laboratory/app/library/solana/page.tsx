@@ -20,7 +20,10 @@ const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
   metadata: ConstantsUtil.Metadata,
-  customWallets: ConstantsUtil.CustomWallets
+  customWallets: ConstantsUtil.CustomWallets,
+  registerWalletStandard: {
+    solana: true
+  }
 }
 
 export default function MultiChainSolanaAdapterOnly() {

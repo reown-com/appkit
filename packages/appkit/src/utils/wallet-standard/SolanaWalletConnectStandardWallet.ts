@@ -26,17 +26,11 @@ import { registerWallet } from '@wallet-standard/wallet'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
-import {
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
-  ParseUtil
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
 import { RouterController } from '@reown/appkit-controllers'
+import { type AnyTransaction, SolConstantsUtil } from '@reown/appkit-utils/solana'
 
-import { WcHelpersUtil } from '../../WalletConnectUtils.js'
-import { SolConstantsUtil } from '../SolanaConstantsUtil.js'
-import type { AnyTransaction } from '../SolanaTypesUtil.js'
+import { WcHelpersUtil } from '../HelpersUtil.js'
 import { type SolanaChain, WalletConnectAccount } from './WalletConnectAccount.js'
 import { SOLANA_CHAINS } from './constants.js'
 import { isSolanaChain } from './utils.js'
@@ -55,7 +49,7 @@ function caipNetworkToStandardChain(caipNetworkId: CaipNetworkId) {
   return map[caipNetworkId]
 }
 
-export class WalletConnectStandardWallet implements Wallet {
+export class SolanaWalletConnectStandardWallet implements Wallet {
   readonly #listeners: {
     [E in StandardEventsNames]?: StandardEventsListeners[E][]
   } = {}
@@ -67,7 +61,7 @@ export class WalletConnectStandardWallet implements Wallet {
   #account: WalletConnectAccount | null = null
 
   static register(provider: UniversalProvider) {
-    const instance = new WalletConnectStandardWallet(provider)
+    const instance = new SolanaWalletConnectStandardWallet(provider)
     registerWallet(instance)
   }
 
@@ -126,8 +120,6 @@ export class WalletConnectStandardWallet implements Wallet {
 
   get accounts() {
     const solanaNamespace = this.#provider.session?.namespaces?.['solana']
-    console.log('>> #accounts', solanaNamespace?.accounts)
-
     const standardChains = solanaNamespace?.chains?.map(chain =>
       caipNetworkToStandardChain(chain as CaipNetworkId)
     )
@@ -195,10 +187,9 @@ export class WalletConnectStandardWallet implements Wallet {
   #connected = () => {
     const account = this.accounts[0]
     const publicKey = account?.publicKey
-    console.log('>> #connected', account, publicKey)
+
     if (publicKey) {
       this.#account = new WalletConnectAccount(account)
-      console.log('>> #connected', this.accounts)
       this.#emit('change', { accounts: this.accounts })
     }
   }
@@ -219,7 +210,6 @@ export class WalletConnectStandardWallet implements Wallet {
   }
 
   #connect: StandardConnectMethod = async () => {
-    console.log('>> #connect', this.#account)
     if (!this.#account) {
       RouterController.push('ConnectingWalletConnect')
 
