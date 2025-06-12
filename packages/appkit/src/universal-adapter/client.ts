@@ -1,4 +1,3 @@
-import { registerWallet } from '@wallet-standard/wallet'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 import { toHex } from 'viem'
@@ -10,7 +9,6 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
 } from '@reown/appkit-controllers'
-import { WalletConnectStandardWallet } from '@reown/appkit-utils/solana'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
@@ -18,13 +16,6 @@ import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
-    const isSolana = this.namespace === ConstantsUtil.CHAIN.SOLANA
-
-    if (isSolana) {
-      const wallet = new WalletConnectStandardWallet(universalProvider)
-      console.log('>> Registering WalletConnectStandardWallet', wallet)
-      registerWallet(wallet)
-    }
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,

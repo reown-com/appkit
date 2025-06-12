@@ -26,7 +26,7 @@ import { registerWallet } from '@wallet-standard/wallet'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
 import { RouterController } from '@reown/appkit-controllers'
 
 import { WcHelpersUtil } from '../../WalletConnectUtils.js'
@@ -101,10 +101,14 @@ export class WalletConnectStandardWallet implements Wallet {
   }
 
   get accounts() {
+    console.log('>> #accounts', this.#provider.session?.namespaces?.['solana']?.accounts)
+
     return (
       this.#provider.session?.namespaces?.['solana']?.accounts.map(account => ({
         address: account,
-        publicKey: new PublicKey(bs58.decode(account)).toBytes(),
+        publicKey: new PublicKey(
+          bs58.decode(ParseUtil.parseCaipAddress(account as CaipAddress).address)
+        ).toBytes(),
         chains: this.#provider.session?.namespaces['solana']?.chains as CaipNetworkId[],
         features: [
           'solana:signAndSendTransaction',
@@ -159,9 +163,10 @@ export class WalletConnectStandardWallet implements Wallet {
   #connected = () => {
     const account = this.accounts[0]
     const publicKey = account?.publicKey
-
+    console.log('>> #connected', account, publicKey)
     if (publicKey) {
       this.#account = new WalletConnectAccount(account)
+      console.log('>> #connected', this.accounts)
       this.#emit('change', { accounts: this.accounts })
     }
   }
@@ -182,6 +187,7 @@ export class WalletConnectStandardWallet implements Wallet {
   }
 
   #connect: StandardConnectMethod = async () => {
+    console.log('>> #connect', this.#account)
     if (!this.#account) {
       RouterController.push('ConnectingWalletConnect')
 
