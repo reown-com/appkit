@@ -154,7 +154,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
       async syncIdentity() {}
     })()
 
-    vi.spyOn(baseClient, 'remoteFeatures', 'get').mockReturnValue({ multiWallet: true })
+    baseClient.remoteFeatures = { multiWallet: true }
     closeSpy = vi.spyOn(baseClient, 'close').mockImplementation(async () => {})
     setClientIdSpy = vi.spyOn(baseClient, 'setClientId').mockImplementation(() => {})
     syncWalletConnectAccountSpy = vi
@@ -224,7 +224,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
         ['eip155', [{ connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }]]
       ])
     })
-    vi.spyOn(baseClient, 'remoteFeatures', 'get').mockReturnValue({ multiWallet: false })
+    baseClient.remoteFeatures = { multiWallet: false }
 
     const connectionControllerClient = (baseClient as any).connectionControllerClient
     await connectionControllerClient.connectWalletConnect()
@@ -242,7 +242,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
       ...ConnectionController.state,
       connections: new Map([['eip155', []]])
     })
-    vi.spyOn(baseClient, 'remoteFeatures', 'get').mockReturnValue({ multiWallet: true })
+    baseClient.remoteFeatures = { multiWallet: true }
 
     const connectionControllerClient = (baseClient as any).connectionControllerClient
     await connectionControllerClient.connectWalletConnect()
