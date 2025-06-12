@@ -160,13 +160,8 @@ const featureConfig = {
     returnType: false as EmailCaptureOptions[] | boolean,
     isLegacy: false,
     isAvailableOnBasic: false,
-    processApi: (apiConfig: TypedFeatureConfig): EmailCaptureOptions[] | boolean => {
-      if (apiConfig.config?.length) {
-        return apiConfig.config as EmailCaptureOptions[]
-      }
-
-      return apiConfig.isEnabled
-    },
+    processApi: (apiConfig: TypedFeatureConfig): EmailCaptureOptions[] | false =>
+      apiConfig.isEnabled && ((apiConfig.config ?? []) as EmailCaptureOptions[]),
     processFallback: (_localValue: unknown): EmailCaptureOptions[] | boolean => false
   }
 }
