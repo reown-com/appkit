@@ -16,8 +16,6 @@ import {
   SnackController
 } from '@reown/appkit-controllers'
 
-import { W3mConnectingExternalView } from '../../src/views/w3m-connecting-external-view/index'
-
 // --- Constants ---------------------------------------------------- //
 const TEST_CHAIN: ChainNamespace = 'eip155'
 const TEST_CONNECTOR_ID = 'test-connector'
@@ -64,8 +62,6 @@ beforeAll(() => {
 })
 
 describe('W3mConnectingExternalView', () => {
-  let element: W3mConnectingExternalView
-
   describe('onConnectionsChange', () => {
     let connectionChangeHandler: (connections: Map<ChainNamespace, Connection[]>) => void
 
@@ -109,7 +105,7 @@ describe('W3mConnectingExternalView', () => {
         }
       )
 
-      element = await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
+      await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
     })
 
     it('should navigate to Connect view when all connections are removed', () => {
@@ -148,7 +144,7 @@ describe('W3mConnectingExternalView', () => {
         connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION_1, MOCK_CONNECTION_ALTERNATIVE]]])
       })
 
-      element = await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
+      await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
 
       vi.spyOn(ConnectionControllerUtil, 'getConnectionsByConnectorId')
         .mockReturnValueOnce([MOCK_CONNECTION_1])
