@@ -31,7 +31,6 @@ export function watchStandard(
   ]
 
   standardAdapters = wrapWalletsWithAdapters(get(), requestedChains, getActiveChain)
-  console.log('>> standardAdapters', standardAdapters)
 
   callback(...standardAdapters)
 
