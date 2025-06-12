@@ -329,9 +329,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
     await Promise.allSettled(
       this.connectors
         .filter(c => {
-          const { hasDisconnected } = getConnectorStorageInfo(c.id)
+          const { hasDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
 
-          return !hasDisconnected
+          return !hasDisconnected && hasConnected
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
@@ -381,7 +381,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     )
 
     if (connectToFirstConnector) {
-      this.emitFirstConnection()
+      this.emitFirstAvailableConnection()
     }
   }
 
@@ -418,7 +418,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
         this.deleteConnection(wcConnectorId)
 
         if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), wcConnectorId)) {
-          this.emitFirstConnection()
+          this.emitFirstAvailableConnection()
         }
 
         if (this.connections.length === 0) {
@@ -745,7 +745,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       if (this.connections.length === 0) {
         this.emit('disconnect')
       } else {
-        this.emitFirstConnection()
+        this.emitFirstAvailableConnection()
       }
 
       return { connections: connection ? [connection] : [] }
@@ -818,7 +818,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     return { balance: '0.00', symbol: 'ETH' }
   }
 
-  private emitFirstConnection() {
+  private emitFirstAvailableConnection() {
     const firstConnection = this.connections.find(c => {
       const hasAccounts = c.accounts.length > 0
       const hasConnector = this.connectors.some(connector =>
@@ -858,7 +858,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       this.deleteConnection(connectorId)
 
       if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
-        this.emitFirstConnection()
+        this.emitFirstAvailableConnection()
       }
 
       if (this.connections.length === 0) {

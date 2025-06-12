@@ -408,7 +408,6 @@ export class ModalPage {
 
   async clickSignatureRequestButton(name: string) {
     const signatureHeader = this.page.getByText('Approve Transaction')
-    await signatureHeader.waitFor({ state: 'visible', timeout: 15_000 })
     const signatureButton = this.page
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name, exact: true })
@@ -633,7 +632,7 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
-  async clickProfileWalletsViewTab(name: string) {
+  async clickTab(name: string) {
     const tab = this.page.getByTestId(`tab-${name}`)
     await expect(tab).toBeVisible()
     await tab.click()
@@ -659,6 +658,20 @@ export class ModalPage {
     }
 
     return walletSelector
+  }
+
+  async getActiveProfileWalletItemAddress() {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    const address = await activeProfileWalletItem.getAttribute('address')
+
+    return address as string
+  }
+
+  async getConnectedWalletType() {
+    const walletType = this.page.getByTestId('w3m-wallet-type')
+    const text = await walletType.textContent()
+
+    return text?.trim()
   }
 
   async clickWalletButton(id: string) {

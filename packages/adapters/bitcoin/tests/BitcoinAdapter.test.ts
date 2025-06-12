@@ -492,6 +492,81 @@ describe('BitcoinAdapter', () => {
 
       expect(connector.disconnect).toHaveBeenCalled()
     })
+
+     it('should disconnect all connectors if no connector id provided and return them as connections', async () => {
+      const connector1 = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+      const connector2 = new SatsConnectConnector({
+        provider: mockSatsConnectProvider({ id: 'provider2', name: 'Provider2' }).provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+
+      const disconnect1Spy = vi.spyOn(connector1, 'disconnect').mockResolvedValue(undefined)
+      const disconnect2Spy = vi.spyOn(connector2, 'disconnect').mockResolvedValue(undefined)
+
+      adapter.connectors.push(connector1, connector2)
+      ;(adapter as any).addConnection({
+        connectorId: connector1.id,
+        accounts: [{ address: 'address1' }],
+        caipNetwork: bitcoin
+      })
+      ;(adapter as any).addConnection({
+        connectorId: connector2.id,
+        accounts: [{ address: 'address2' }],
+        caipNetwork: bitcoin
+      })
+
+      const result = await adapter.disconnect({ id: undefined })
+
+      expect(disconnect1Spy).toHaveBeenCalled()
+      expect(disconnect2Spy).toHaveBeenCalled()
+      expect(result.connections).toHaveLength(2)
+
+      const connectorIds = result.connections.map(c => c.connectorId)
+      expect(connectorIds).toContain(connector1.id)
+      expect(connectorIds).toContain(connector2.id)
+    })
+
+    it('should handle empty connections', async () => {
+      const result = await adapter.disconnect({ id: undefined })
+
+      expect(result.connections).toHaveLength(0)
+    })
+
+    it('should throw error if one of the connector is not found from connections', async () => {
+      ;(adapter as any).addConnection({
+        connectorId: 'non-existent-connector',
+        accounts: [{ address: 'address1' }],
+        caipNetwork: bitcoin
+      })
+
+      await expect(adapter.disconnect({ id: undefined })).rejects.toThrow('Connector not found')
+    })
+
+    it('should throw error if one of the connector fails to disconnect', async () => {
+      const connector = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+
+      const disconnectSpy = vi
+        .spyOn(connector, 'disconnect')
+        .mockRejectedValue(new Error('Disconnect failed'))
+      adapter.connectors.push(connector)
+      ;(adapter as any).addConnection({
+        connectorId: connector.id,
+        accounts: [{ address: 'address1' }],
+        caipNetwork: bitcoin
+      })
+
+      await expect(adapter.disconnect({ id: undefined })).rejects.toThrow('Disconnect failed')
+      expect(disconnectSpy).toHaveBeenCalled()
+    })
   })
 
   describe('connector events', () => {
@@ -639,83 +714,6 @@ describe('BitcoinAdapter', () => {
           providerType: provider.type
         })
       ).rejects.toThrow('Network switching failed')
-    })
-  })
-
-  describe('disconnectAll', () => {
-    it('should disconnect all connectors if no connector id provided and return them as connections', async () => {
-      const connector1 = new SatsConnectConnector({
-        provider: mockSatsConnectProvider().provider,
-        requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
-      })
-      const connector2 = new SatsConnectConnector({
-        provider: mockSatsConnectProvider({ id: 'provider2', name: 'Provider2' }).provider,
-        requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
-      })
-
-      const disconnect1Spy = vi.spyOn(connector1, 'disconnect').mockResolvedValue(undefined)
-      const disconnect2Spy = vi.spyOn(connector2, 'disconnect').mockResolvedValue(undefined)
-
-      adapter.connectors.push(connector1, connector2)
-      ;(adapter as any).addConnection({
-        connectorId: connector1.id,
-        accounts: [{ address: 'address1' }],
-        caipNetwork: bitcoin
-      })
-      ;(adapter as any).addConnection({
-        connectorId: connector2.id,
-        accounts: [{ address: 'address2' }],
-        caipNetwork: bitcoin
-      })
-
-      const result = await adapter.disconnect({ id: undefined })
-
-      expect(disconnect1Spy).toHaveBeenCalled()
-      expect(disconnect2Spy).toHaveBeenCalled()
-      expect(result.connections).toHaveLength(2)
-
-      const connectorIds = result.connections.map(c => c.connectorId)
-      expect(connectorIds).toContain(connector1.id)
-      expect(connectorIds).toContain(connector2.id)
-    })
-
-    it('should handle empty connections', async () => {
-      const result = await adapter.disconnect({ id: undefined })
-
-      expect(result.connections).toHaveLength(0)
-    })
-
-    it('should throw error if one of the connector is not found from connections', async () => {
-      ;(adapter as any).addConnection({
-        connectorId: 'non-existent-connector',
-        accounts: [{ address: 'address1' }],
-        caipNetwork: bitcoin
-      })
-
-      await expect(adapter.disconnect({ id: undefined })).rejects.toThrow('Connector not found')
-    })
-
-    it('should throw error if one of the connector fails to disconnect', async () => {
-      const connector = new SatsConnectConnector({
-        provider: mockSatsConnectProvider().provider,
-        requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
-      })
-
-      const disconnectSpy = vi
-        .spyOn(connector, 'disconnect')
-        .mockRejectedValue(new Error('Disconnect failed'))
-      adapter.connectors.push(connector)
-      ;(adapter as any).addConnection({
-        connectorId: connector.id,
-        accounts: [{ address: 'address1' }],
-        caipNetwork: bitcoin
-      })
-
-      await expect(adapter.disconnect({ id: undefined })).rejects.toThrow('Disconnect failed')
-      expect(disconnectSpy).toHaveBeenCalled()
     })
   })
 

@@ -456,7 +456,7 @@ export abstract class AppKitBaseClient {
         const connections = activeChain
           ? (ConnectionController.state.connections.get(activeChain) ?? [])
           : []
-
+        const isMultiWallet = this.remoteFeatures.multiWallet
         const hasConnections = connections.length > 0
 
         if (!adapter) {
@@ -465,7 +465,7 @@ export abstract class AppKitBaseClient {
 
         const result = await adapter.connectWalletConnect(chainId)
 
-        if (!hasConnections) {
+        if (!hasConnections || !isMultiWallet) {
           this.close()
         }
 
@@ -951,7 +951,6 @@ export abstract class AppKitBaseClient {
         this.syncConnectedWalletInfo(chainNamespace)
       }
 
-      
       if (isActiveChain && chainId) {
         this.syncAccount({
           address,

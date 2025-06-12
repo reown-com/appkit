@@ -60,13 +60,13 @@ test('should connect multiple wallets across all namespaces', async () => {
   await validator.expectNetworkButton('Ethereum')
   await validator.expectConnectedWalletType('WALLET_CONNECT')
   await modal.openProfileWalletsView()
-  await modal.clickProfileWalletsViewTab('solana')
-  walletConnectSolanaAddress = await validator.getActiveProfileWalletItemAddress()
+  await modal.clickTab('solana')
+  walletConnectSolanaAddress = await modal.getActiveProfileWalletItemAddress()
   await modal.closeModal()
 
   // Connect Email Wallet (EVM)
   await modal.openProfileWalletsView()
-  await modal.clickProfileWalletsViewTab('evm')
+  await modal.clickTab('evm')
   await modal.clickAddWalletButton()
   validator.expectSecureSiteFrameNotInjected()
   await modal.emailFlow({
@@ -82,7 +82,7 @@ test('should connect multiple wallets across all namespaces', async () => {
 
   // Connect Extension Wallet (Solana)
   await modal.openProfileWalletsView()
-  await modal.clickProfileWalletsViewTab('solana')
+  await modal.clickTab('solana')
   await modal.clickAddWalletButton()
   const solanaExtensionWallet = await modal.getExtensionWallet()
   await solanaExtensionWallet.click()
@@ -95,10 +95,10 @@ test('should connect multiple wallets across all namespaces', async () => {
 test('should switch between different wallets across all namespaces', async () => {
   // Validate that we have expected number of connections for each namespace
   await modal.openProfileWalletsView()
-  await modal.clickProfileWalletsViewTab('evm')
+  await modal.clickTab('evm')
   await validator.expectActiveConnectionsFromProfileWalletsCount(3)
 
-  await modal.clickProfileWalletsViewTab('solana')
+  await modal.clickTab('solana')
   await validator.expectActiveConnectionsFromProfileWalletsCount(2)
 
   await modal.closeModal()
@@ -111,7 +111,7 @@ test('should switch between different wallets across all namespaces', async () =
 
   // Switch to WalletConnect & sign message on Ethereum
   await modal.openProfileWalletsView()
-  await modal.clickProfileWalletsViewTab('evm')
+  await modal.clickTab('evm')
   await modal.switchAccountByAddress(walletConnectEvmAddress)
   await validator.expectActiveProfileWalletItemAddress(walletConnectEvmAddress)
   await modal.closeModal()
@@ -127,7 +127,7 @@ test('should switch between different wallets across all namespaces', async () =
 
   // Switch to WalletConnect & sign message on Solana
   await modal.openProfileWalletsView()
-  await modal.clickProfileWalletsViewTab('solana')
+  await modal.clickTab('solana')
   await modal.switchAccountByAddress(walletConnectSolanaAddress)
   await validator.expectActiveProfileWalletItemAddress(walletConnectSolanaAddress)
   await modal.closeModal()

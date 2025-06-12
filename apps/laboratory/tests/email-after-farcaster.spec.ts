@@ -103,8 +103,7 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should show names feature only for EVM networks after abort login with farcaster',
   async ({ library }) => {
-    await page.openAccount()
-    await page.clickWalletSwitchButton()
+    await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
     await validator.expectNamesFeatureVisible(library !== 'solana')
     await page.closeModal()
@@ -127,8 +126,7 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should disconnect correctly after abort login with farcaster',
   async () => {
-    await page.openAccount()
-    await page.clickWalletSwitchButton()
+    await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
     await page.disconnect()
     await validator.expectDisconnected()

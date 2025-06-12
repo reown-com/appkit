@@ -326,9 +326,9 @@ export class EthersAdapter extends AdapterBlueprint {
     await Promise.allSettled(
       this.connectors
         .filter(c => {
-          const { hasDisconnected } = getConnectorStorageInfo(c.id)
+          const { hasDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
 
-          return !hasDisconnected
+          return !hasDisconnected && hasConnected
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {

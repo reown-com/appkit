@@ -24,11 +24,10 @@ const networks = ['Polygon', 'Base', 'Ethereum', 'Solana']
 
 // -- Helpers ------------------------------------------------------------------
 async function approveSign() {
-  const isEmail = (await validator.getConnectedWalletType()) === 'AUTH'
-  const isWalletConnect = (await validator.getConnectedWalletType()) === 'WALLET_CONNECT'
+  const isEmail = (await modal.getConnectedWalletType()) === 'AUTH'
+  const isWalletConnect = (await modal.getConnectedWalletType()) === 'WALLET_CONNECT'
 
   if (isEmail) {
-    await modal.page.waitForTimeout(5000)
     await modal.approveSign()
   } else if (isWalletConnect) {
     await wallet.handleRequest({ accept: true })
@@ -139,7 +138,7 @@ test('should require SIWX signature when switching networks with multiple wallet
     await modal.openProfileWalletsView()
     await modal.switchAccountByAddress(address)
 
-    const isWalletConnect = (await validator.getConnectedWalletType()) === 'WALLET_CONNECT'
+    const isWalletConnect = (await modal.getConnectedWalletType()) === 'WALLET_CONNECT'
 
     /*
      * If the user signs in with 1-click auth and then switches to a another

@@ -301,6 +301,30 @@ describe('syncConnectedWalletInfo', () => {
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
 
+    it('should call removeDisconnectedConnectorId when using connectExternal', async () => {
+      const removeDisconnectedConnectorIdSpy = vi.spyOn(
+        StorageUtil,
+        'removeDisconnectedConnectorId'
+      )
+      vi.spyOn(mockEvmAdapter, 'connect').mockResolvedValue({
+        address: '0x123',
+        chainId: '1',
+        provider: {} as any,
+        id: 'test-connector',
+        type: 'INJECTED'
+      })
+
+      await (appKit as any).connectionControllerClient.connectExternal({
+        id: 'test-connector',
+        info: { name: 'Test Connector' },
+        type: 'INJECTED',
+        provider: {} as any,
+        chain: 'eip155'
+      })
+
+      expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledWith('test-connector', 'eip155')
+    })
+
     it('should call syncConnectedWalletInfo when using reconnectExternal', async () => {
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue({
         ...mockEvmAdapter,

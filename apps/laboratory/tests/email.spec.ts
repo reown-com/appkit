@@ -107,8 +107,7 @@ emailTest('should throw an error if modal is closed while signing', async () => 
 })
 
 emailTest('it should show names feature only for EVM networks', async ({ library }) => {
-  await page.openAccount()
-  await page.clickWalletSwitchButton()
+  await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
   /*
    * There are cases that AppKit tries to close while the modal is animating to the next view

@@ -756,6 +756,82 @@ describe('WagmiAdapter', () => {
       )
       expect(result.clientId).toBe('mock-client-id')
     })
+
+    it('should disconnect specific connector when id is provided', async () => {
+      const mockConnection = {
+        accounts: ['0x123'],
+        connector: {
+          id: 'specific-connector',
+          getProvider: vi.fn().mockImplementation(() => Promise.resolve({}))
+        }
+      }
+
+      vi.spyOn(wagmiCore, 'getConnections').mockReturnValue([mockConnection] as any)
+      const disconnectSpy = vi.spyOn(wagmiCore, 'disconnect').mockImplementationOnce(vi.fn())
+
+      await adapter.disconnect({ id: 'specific-connector' })
+
+      expect(disconnectSpy).toHaveBeenCalledWith(adapter.wagmiConfig, expect.any(Object))
+    })
+
+    it('should handle empty connections gracefully', async () => {
+      vi.spyOn(wagmiCore, 'getConnections').mockReturnValue([])
+      const disconnectSpy = vi.spyOn(wagmiCore, 'disconnect').mockImplementationOnce(vi.fn())
+
+      const result = await adapter.disconnect({})
+
+      expect(disconnectSpy).not.toHaveBeenCalled()
+      expect(result.connections).toEqual([])
+    })
+
+    it('should sync connections using wagmi watchConnections', async () => {
+      const mockConnections = [
+        {
+          accounts: ['0x123'],
+          connector: { id: 'test-connector', type: 'injected' },
+          chainId: 1
+        }
+      ]
+
+      vi.spyOn(wagmiCore, 'watchConnections').mockImplementation((_config, { onChange }) => {
+        onChange(mockConnections as any, [])
+        return vi.fn()
+      })
+
+      const emitSpy = vi.spyOn(adapter, 'emit' as any)
+
+      adapter['setupWatchers']()
+
+      expect(wagmiCore.watchConnections).toHaveBeenCalledWith(
+        adapter.wagmiConfig,
+        expect.objectContaining({
+          onChange: expect.any(Function)
+        })
+      )
+
+      expect(emitSpy).toHaveBeenCalledWith('connections', expect.any(Array))
+    })
+
+    it('should handle connection changes and emit connections when connections are removed', async () => {
+      const prevConnections = [
+        {
+          accounts: ['0x123'],
+          connector: { id: 'test-connector', type: 'injected' },
+          chainId: 1
+        }
+      ]
+
+      vi.spyOn(wagmiCore, 'watchConnections').mockImplementation((_config, { onChange }) => {
+        onChange([], prevConnections as any)
+        return vi.fn()
+      })
+
+      const emitSpy = vi.spyOn(adapter, 'emit' as any)
+
+      adapter['setupWatchers']()
+
+      expect(emitSpy).toHaveBeenCalledWith('connections', [])
+    })
   })
 
   describe('WagmiAdapter - switchNetwork', () => {

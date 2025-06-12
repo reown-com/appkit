@@ -96,13 +96,6 @@ export class ModalValidator {
     )
   }
 
-  async getActiveProfileWalletItemAddress() {
-    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
-    const address = await activeProfileWalletItem.getAttribute('address')
-
-    return address as string
-  }
-
   async expectActiveProfileWalletItemAddress(address: string) {
     const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
     await expect(activeProfileWalletItem).toBeVisible({
@@ -330,7 +323,7 @@ export class ModalValidator {
     await expect(coinbaseConnector).toBeVisible({ timeout: 10_000 })
   }
 
-  async expectMultipleAccounts() {
+  async expectActiveConnection() {
     await this.page.waitForTimeout(500)
     await expect(this.page.getByTestId('wui-active-profile-wallet-item')).toBeVisible({
       timeout: MAX_WAIT
@@ -530,13 +523,6 @@ export class ModalValidator {
     return expect(this.page.getByTestId('w3m-wallet-type')).toHaveText(type, {
       timeout: MAX_WAIT
     })
-  }
-
-  async getConnectedWalletType() {
-    const walletType = this.page.getByTestId('w3m-wallet-type')
-    const text = await walletType.textContent()
-
-    return text?.trim()
   }
 
   async expectEmail() {

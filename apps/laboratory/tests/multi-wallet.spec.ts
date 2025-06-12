@@ -102,7 +102,7 @@ test('should sign with each wallet', async ({ library }) => {
    * such as WalletConnect and Extension.
    */
   if (library === 'wagmi') {
-    const walletType = await validator.getConnectedWalletType()
+    const walletType = await modal.getConnectedWalletType()
 
     if (walletType === 'AUTH') {
       await modal.clickProfileWalletsDisconnectButton()
@@ -127,8 +127,8 @@ test('should sign with each wallet', async ({ library }) => {
 
     await modal.sign()
 
-    const isEmail = (await validator.getConnectedWalletType()) === 'AUTH'
-    const isWalletConnect = (await validator.getConnectedWalletType()) === 'WALLET_CONNECT'
+    const isEmail = (await modal.getConnectedWalletType()) === 'AUTH'
+    const isWalletConnect = (await modal.getConnectedWalletType()) === 'WALLET_CONNECT'
 
     if (isEmail) {
       await modal.approveSign()

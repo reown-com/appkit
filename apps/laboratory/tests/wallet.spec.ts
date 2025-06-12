@@ -237,7 +237,7 @@ sampleWalletTest('it should show multiple accounts', async ({ library }) => {
 
   await modalPage.openProfileWalletsView()
   await modalPage.switchAccount()
-  await modalValidator.expectMultipleAccounts()
+  await modalValidator.expectActiveConnection()
   await modalPage.closeModal()
 })
 
