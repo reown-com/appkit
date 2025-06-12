@@ -64,8 +64,9 @@ beforeAll(() => {
 })
 
 describe('W3mConnectingExternalView', () => {
+  let element: W3mConnectingExternalView
+
   describe('onConnectionsChange', () => {
-    let element: W3mConnectingExternalView
     let connectionChangeHandler: (connections: Map<ChainNamespace, Connection[]>) => void
 
     beforeEach(async () => {
