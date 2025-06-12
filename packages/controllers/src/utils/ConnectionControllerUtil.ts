@@ -70,7 +70,7 @@ export const ConnectionControllerUtil = {
   },
   getConnectionsData(namespace: ChainNamespace) {
     const isMultiWalletEnabled = Boolean(OptionsController.state.remoteFeatures?.multiWallet)
-    
+
     const activeConnectorId = ConnectorController.state.activeConnectorIds[namespace]
 
     const connections = ConnectionController.state.connections.get(namespace) ?? []

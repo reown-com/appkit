@@ -170,7 +170,7 @@ export class W3mEmailLoginWidget extends LitElement {
           authConnector,
           ChainController.state.activeChain as ChainNamespace
         )
-         
+
         if (isMultiWalletEnabled) {
           RouterController.reset('Account')
           RouterController.push('ProfileWallets')

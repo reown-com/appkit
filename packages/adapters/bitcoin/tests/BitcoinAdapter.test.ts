@@ -493,7 +493,7 @@ describe('BitcoinAdapter', () => {
       expect(connector.disconnect).toHaveBeenCalled()
     })
 
-     it('should disconnect all connectors if no connector id provided and return them as connections', async () => {
+    it('should disconnect all connectors if no connector id provided and return them as connections', async () => {
       const connector1 = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
