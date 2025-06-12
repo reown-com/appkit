@@ -67,7 +67,8 @@
     "@walletconnect/types": "2.21.2"
   },
   "optionalDependencies": {
-    "bs58": "6.0.0"
+    "bs58": "6.0.0",
+    "@wallet-standard/wallet": "1.1.0"
   },
   "peerDependencies": {
     "valtio": "1.13.2"

@@ -31,6 +31,7 @@ export function watchStandard(
   ]
 
   standardAdapters = wrapWalletsWithAdapters(get(), requestedChains, getActiveChain)
+  console.log('>> standardAdapters', standardAdapters)
 
   callback(...standardAdapters)
 
@@ -42,12 +43,18 @@ function wrapWalletsWithAdapters(
   requestedChains: CaipNetwork[],
   getActiveChain: () => CaipNetwork | undefined
 ): WalletStandardProvider[] {
-  return wallets.filter(isWalletAdapterCompatibleStandardWallet).map(
-    wallet =>
-      new WalletStandardProvider({
-        wallet,
-        requestedChains,
-        getActiveChain
-      })
-  )
+  console.log('>> wallets', wallets)
+
+  return wallets
+    .filter(
+      wallet => wallet.name !== 'WalletConnect' && isWalletAdapterCompatibleStandardWallet(wallet)
+    )
+    .map(
+      wallet =>
+        new WalletStandardProvider({
+          wallet,
+          requestedChains,
+          getActiveChain
+        })
+    )
 }

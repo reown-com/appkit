@@ -49,6 +49,8 @@ export class W3mConnectorList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('>> W3mConnectorList render', this.connectors)
+
     return html`
       <wui-flex flexDirection="column" gap="xs"> ${this.connectorListTemplate()} </wui-flex>
     `
@@ -69,6 +71,8 @@ export class W3mConnectorList extends LitElement {
       featured,
       external
     })
+
+    console.log('>> connectorTypeOrder', connectorTypeOrder)
 
     return connectorTypeOrder.map(type => {
       switch (type) {

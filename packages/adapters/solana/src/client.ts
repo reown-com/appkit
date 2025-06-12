@@ -14,7 +14,7 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
-import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil, WalletConnectStandardWallet } from '@reown/appkit-utils/solana'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -365,6 +365,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    console.log('>> SolanaAdapter setUniversalProvider', universalProvider)
+
+    const wallet = new WalletConnectStandardWallet(universalProvider)
+
+    console.log('>> SolanaAdapter setUniversalProvider wallet', wallet)
+
     this.addConnector(
       new SolanaWalletConnectProvider({
         provider: universalProvider,

@@ -22,10 +22,12 @@ import type {
   StandardEventsNames,
   StandardEventsOnMethod
 } from '@wallet-standard/features'
+import { registerWallet } from '@wallet-standard/wallet'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
 import type { CaipNetworkId } from '@reown/appkit-common'
+import { RouterController } from '@reown/appkit-controllers'
 
 import { WcHelpersUtil } from '../../WalletConnectUtils.js'
 import { SolConstantsUtil } from '../SolanaConstantsUtil.js'
@@ -116,6 +118,7 @@ export class WalletConnectStandardWallet implements Wallet {
   constructor(provider: UniversalProvider) {
     this.#provider = provider
     this.setProvider(provider)
+    registerWallet(this)
   }
 
   setProvider(provider: UniversalProvider) {
@@ -180,6 +183,8 @@ export class WalletConnectStandardWallet implements Wallet {
 
   #connect: StandardConnectMethod = async () => {
     if (!this.#account) {
+      RouterController.push('ConnectingWalletConnect')
+
       await this.#provider.connect({
         namespaces: WcHelpersUtil.createNamespaces([SolConstantsUtil.DEFAULT_CHAIN])
       })
