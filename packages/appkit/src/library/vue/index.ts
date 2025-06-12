@@ -137,16 +137,16 @@ export function useAppKit() {
   })
 }
 
-export function useWalletInfo() {
+export function useWalletInfo(namespace?: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKit" composable')
   }
 
-  const walletInfo = ref(modal.getWalletInfo())
+  const walletInfo = ref(modal.getWalletInfo(namespace))
 
   const unsubscribe = modal.subscribeWalletInfo(newValue => {
     walletInfo.value = newValue
-  })
+  }, namespace)
 
   onUnmounted(() => {
     unsubscribe?.()

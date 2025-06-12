@@ -22,4 +22,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Changes `wallet_addEthereumChain` behavior in wagmi to use the chain's original rpc url instead of blockchain API url
+Fix an issue where SIWX sign message view was opening in One-Click-Auth flows

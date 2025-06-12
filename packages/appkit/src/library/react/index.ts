@@ -125,15 +125,18 @@ export function useAppKit() {
   return { open, close }
 }
 
-export function useWalletInfo() {
+export function useWalletInfo(namespace?: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useWalletInfo" hook')
   }
-
   const walletInfo = useSyncExternalStore(
-    modal.subscribeWalletInfo,
-    modal.getWalletInfo,
-    modal.getWalletInfo
+    callback => {
+      const unsubscribe = modal?.subscribeWalletInfo(callback, namespace)
+
+      return () => unsubscribe?.()
+    },
+    () => modal?.getWalletInfo(namespace),
+    () => modal?.getWalletInfo(namespace)
   )
 
   return { walletInfo }

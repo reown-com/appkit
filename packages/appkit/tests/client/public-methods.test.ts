@@ -205,6 +205,17 @@ describe('Base Public methods', () => {
     expect(appKit.getWalletInfo()).toEqual({ name: 'Test Wallet' })
   })
 
+  it('should get wallet info with namespace', () => {
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectedWalletInfo({ name: 'Test Wallet' }, 'eip155')
+
+    expect(appKit.getWalletInfo('eip155')).toEqual({ name: 'Test Wallet' })
+    expect(appKit.getWalletInfo('solana')).toEqual(undefined)
+
+    appKit.setConnectedWalletInfo({ name: 'Test Wallet' }, 'solana')
+    expect(appKit.getWalletInfo('solana')).toEqual({ name: 'Test Wallet' })
+  })
+
   it('should subscribe to wallet info changes', () => {
     const subscribe = vi.spyOn(AccountController, 'subscribeKey')
     const callback = vi.fn()
