@@ -43,12 +43,8 @@ function wrapWalletsWithAdapters(
   requestedChains: CaipNetwork[],
   getActiveChain: () => CaipNetwork | undefined
 ): WalletStandardProvider[] {
-  console.log('>> wallets', wallets)
-
   return wallets
-    .filter(
-      wallet => wallet.name !== 'WalletConnect' && isWalletAdapterCompatibleStandardWallet(wallet)
-    )
+    .filter(wallet => isWalletAdapterCompatibleStandardWallet(wallet))
     .map(
       wallet =>
         new WalletStandardProvider({

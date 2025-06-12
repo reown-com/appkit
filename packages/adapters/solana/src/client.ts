@@ -1,6 +1,7 @@
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
 import { Connection, PublicKey } from '@solana/web3.js'
+import { registerWallet } from '@wallet-standard/wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
@@ -14,7 +15,7 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
-import { SolConstantsUtil, WalletConnectStandardWallet } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -26,6 +27,7 @@ import {
 } from './providers/CoinbaseWalletProvider.js'
 import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProvider.js'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import { WalletConnectStandardWrapper } from './utils/WalletStandardWrapper.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { watchStandard } from './utils/watchStandard.js'
 
@@ -365,19 +367,17 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
-    console.log('>> SolanaAdapter setUniversalProvider', universalProvider)
+    const solanaProvider = new SolanaWalletConnectProvider({
+      provider: universalProvider,
+      chains: this.getCaipNetworks(),
+      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+    })
 
-    const wallet = new WalletConnectStandardWallet(universalProvider)
+    const walletStandardProvider = new WalletConnectStandardWrapper(solanaProvider)
+    console.log('>> walletStandardProvider', walletStandardProvider)
+    registerWallet(walletStandardProvider)
 
-    console.log('>> SolanaAdapter setUniversalProvider wallet', wallet)
-
-    this.addConnector(
-      new SolanaWalletConnectProvider({
-        provider: universalProvider,
-        chains: this.getCaipNetworks(),
-        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
-      })
-    )
+    this.addConnector(solanaProvider)
   }
 
   public override async connectWalletConnect(chainId?: string | number) {

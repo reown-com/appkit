@@ -72,8 +72,6 @@ export class W3mConnectorList extends LitElement {
       external
     })
 
-    console.log('>> connectorTypeOrder', connectorTypeOrder)
-
     return connectorTypeOrder.map(type => {
       switch (type) {
         /*

@@ -133,23 +133,8 @@ export const ConnectorUtil = {
     external,
     overriddenConnectors = OptionsController.state.features?.connectorTypeOrder ?? []
   }: GetConnectorTypeOrderParameters) {
-    console.log('>> getConnectorTypeOrder', {
-      recommended,
-      featured,
-      custom,
-      recent,
-      announced,
-      injected,
-      multiChain,
-      external,
-      overriddenConnectors
-    })
-
     const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
     const isWCEnabled = OptionsController.state.enableWalletConnect
-
-    console.log('>> isConnectedWithWC', isConnectedWithWC)
-    console.log('>> isWCEnabled', isWCEnabled)
 
     const allConnectors = [
       { type: 'walletConnect', isEnabled: isWCEnabled && !isConnectedWithWC },
@@ -176,9 +161,6 @@ export const ConnectorUtil = {
 
       return !hasPrioritizedConnector
     })
-
-    console.log('>> prioritizedConnectors', prioritizedConnectors)
-    console.log('>> remainingConnectors', remainingConnectors)
 
     return Array.from(
       new Set([...prioritizedConnectors, ...remainingConnectors].map(({ type }) => type))
