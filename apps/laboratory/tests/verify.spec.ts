@@ -15,7 +15,6 @@ import { routeInterceptUrl } from './shared/utils/verify'
 import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletValidator } from './shared/validators/WalletValidator'
 
-
 testMWagmiVerifyValid(
   'wagmi: connection and signature requests from non-scam verified domain should show as domain match',
   getCanaryTagAndAnnotation('HappyPath.verify'),
