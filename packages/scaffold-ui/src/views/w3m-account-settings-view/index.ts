@@ -12,6 +12,7 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
+  OptionsController,
   RouterController,
   SendController,
   SnackController
@@ -53,6 +54,8 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private text = ''
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -73,6 +76,9 @@ export class W3mAccountSettingsView extends LitElement {
           if (val?.id) {
             this.network = val
           }
+        }),
+        OptionsController.subscribeKey('remoteFeatures', val => {
+          this.remoteFeatures = val
         })
       ]
     )
@@ -313,8 +319,9 @@ export class W3mAccountSettingsView extends LitElement {
       const connectionsByNamespace = ConnectionController.state.connections.get(namespace) ?? []
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
-      await ConnectionController.disconnect({ id: connectorId })
-      if (hasConnections) {
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(isMultiWalletEnabled ? { id: connectorId } : {})
+      if (hasConnections && isMultiWalletEnabled) {
         RouterController.reset('Account')
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('Wallet deleted')

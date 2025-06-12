@@ -43,8 +43,11 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           event: 'CONNECT_SUCCESS',
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
+
+        const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
+
         if (!OptionsController.state.siwx) {
-          if (hasConnections) {
+          if (hasConnections && isMultiWalletEnabled) {
             RouterController.reset('Account')
             RouterController.push('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')

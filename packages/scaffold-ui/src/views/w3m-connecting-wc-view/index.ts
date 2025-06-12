@@ -96,10 +96,11 @@ export class W3mConnectingWcView extends LitElement {
           ConnectionController.state.connections.get(
             ChainController.state.activeChain as ChainNamespace
           ) ?? []
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0
         await ConnectionController.connectWalletConnect()
         if (!this.isSiwxEnabled) {
-          if (hasConnections) {
+          if (hasConnections && isMultiWalletEnabled) {
             RouterController.reset('Account')
             RouterController.push('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')

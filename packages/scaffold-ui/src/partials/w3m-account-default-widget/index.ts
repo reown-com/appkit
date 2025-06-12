@@ -343,8 +343,9 @@ export class W3mAccountDefaultWidget extends LitElement {
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId =
         this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
-      await ConnectionController.disconnect({ id: connectorId })
-      if (hasConnections) {
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(isMultiWalletEnabled ? { id: connectorId } : {})
+      if (hasConnections && isMultiWalletEnabled) {
         RouterController.reset('Account')
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('Wallet deleted')

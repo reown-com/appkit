@@ -7,6 +7,7 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -26,6 +27,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     ? (ConnectionController.state.connections.get(this.connector?.chain) ?? [])
     : []
   private hasMultipleConnections = this.connectionsByNamespace.length > 0
+  private remoteFeatures = OptionsController.state.remoteFeatures
   private currentActiveConnectorId =
     ConnectorController.state.activeConnectorIds[this.connector?.chain as ChainNamespace]
 
@@ -57,9 +59,10 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.externalViewUnsubscribe.push(
       ConnectorController.subscribeKey('activeConnectorIds', val => {
         const newActiveConnectorId = val[namespace]
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
 
         if (newActiveConnectorId !== this.currentActiveConnectorId) {
-          if (this.hasMultipleConnections) {
+          if (this.hasMultipleConnections && isMultiWalletEnabled) {
             RouterController.reset('Account')
             RouterController.push('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
@@ -118,6 +121,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       this.isAlreadyConnected(this.connector)
     ) {
       const newConnections = connections.get(this.connector.chain) ?? []
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
 
       if (newConnections.length === 0) {
         RouterController.replace('Connect')
@@ -133,7 +137,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         ).flatMap(c => c.accounts)
 
         if (newAccounts.length === 0) {
-          if (this.hasMultipleConnections) {
+          if (this.hasMultipleConnections && isMultiWalletEnabled) {
             RouterController.replace('Account')
             RouterController.push('ProfileWallets')
             SnackController.showSuccess('Wallet deleted')
@@ -145,7 +149,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
             newAccounts.some(b => HelpersUtil.isLowerCaseMatch(a.address, b.address))
           )
 
-          if (!isAllAccountsSame) {
+          if (!isAllAccountsSame && isMultiWalletEnabled) {
             RouterController.replace('Account')
             RouterController.push('ProfileWallets')
           }

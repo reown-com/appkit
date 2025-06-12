@@ -9,7 +9,8 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -40,11 +41,16 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private connections = ConnectionController.state.connections
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectionController.subscribeKey('connections', val => {
         this.connections = val
+      }),
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
       })
     )
   }
@@ -159,13 +165,16 @@ export class W3mEmailLoginWidget extends LitElement {
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         await ConnectionController.connectExternal(
           authConnector,
           ChainController.state.activeChain as ChainNamespace
         )
         RouterController.reset('Account')
-        RouterController.push('ProfileWallets')
-        SnackController.showSuccess('New Wallet Added')
+        if (isMultiWalletEnabled) {
+          RouterController.push('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
+        }
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

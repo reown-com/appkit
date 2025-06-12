@@ -13,6 +13,7 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -38,9 +39,16 @@ export class W3mUnsupportedChainView extends LitElement {
   // -- State & Properties --------------------------------- //
   @state() private disconecting = false
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   public constructor() {
     super()
-    this.unsubscribe.push(AssetController.subscribeNetworkImages(() => this.requestUpdate()))
+    this.unsubscribe.push(
+      AssetController.subscribeNetworkImages(() => this.requestUpdate()),
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
+      })
+    )
   }
 
   public override disconnectedCallback() {
@@ -136,8 +144,9 @@ export class W3mUnsupportedChainView extends LitElement {
       const connectionsByNamespace = ConnectionController.state.connections.get(namespace) ?? []
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId = ConnectorController.state.activeConnectorIds[namespace]
-      await ConnectionController.disconnect({ id: connectorId })
-      if (hasConnections) {
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(isMultiWalletEnabled ? { id: connectorId } : {})
+      if (hasConnections && isMultiWalletEnabled) {
         RouterController.reset('Account')
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('Wallet deleted')
