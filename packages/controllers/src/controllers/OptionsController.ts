@@ -189,6 +189,11 @@ export interface OptionsControllerStatePublic {
    * @default true
    */
   enableNetworkSwitch?: boolean
+  /**
+   * Enable or disable registering WalletConnect as a Wallet Standard wallet.
+   * @default { solana: false }
+   */
+  registerWalletStandard?: Record<'solana', boolean>
 }
 
 export interface OptionsControllerStateInternal {

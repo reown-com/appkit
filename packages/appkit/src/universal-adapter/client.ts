@@ -9,6 +9,7 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
 } from '@reown/appkit-controllers'
+import { WalletConnectStandardWallet } from '@reown/appkit-utils/solana'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
@@ -16,6 +17,12 @@ import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    console.log('>> #setUniversalProvider', universalProvider)
+
+    const standardWallet = new WalletConnectStandardWallet(universalProvider)
+
+    console.log('>> #standardWallet', standardWallet)
+
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,

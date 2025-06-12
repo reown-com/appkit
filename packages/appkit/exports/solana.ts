@@ -26,12 +26,7 @@ import { registerWallet } from '@wallet-standard/wallet'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
-import {
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
-  ParseUtil
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
 import { RouterController } from '@reown/appkit-controllers'
 
 import { WcHelpersUtil } from '../../WalletConnectUtils.js'
@@ -40,20 +35,6 @@ import type { AnyTransaction } from '../SolanaTypesUtil.js'
 import { type SolanaChain, WalletConnectAccount } from './WalletConnectAccount.js'
 import { SOLANA_CHAINS } from './constants.js'
 import { isSolanaChain } from './utils.js'
-
-function caipNetworkToStandardChain(caipNetworkId: CaipNetworkId) {
-  const map: Record<CaipNetworkId, `solana:${string}`> = {
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'solana:mainnet',
-    'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ': 'solana:mainnet',
-
-    'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'solana:testnet',
-
-    'solana:8E9rvCKLFQia2Y35HXjjpWzj8weVo44K': 'solana:devnet',
-    'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'solana:devnet'
-  }
-
-  return map[caipNetworkId]
-}
 
 export class WalletConnectStandardWallet implements Wallet {
   readonly #listeners: {
@@ -125,29 +106,21 @@ export class WalletConnectStandardWallet implements Wallet {
   }
 
   get accounts() {
-    const solanaNamespace = this.#provider.session?.namespaces?.['solana']
-    console.log('>> #accounts', solanaNamespace?.accounts)
-
-    const standardChains = solanaNamespace?.chains?.map(chain =>
-      caipNetworkToStandardChain(chain as CaipNetworkId)
-    )
+    console.log('>> #accounts', this.#provider.session?.namespaces?.['solana']?.accounts)
 
     return (
-      solanaNamespace?.accounts.map(account => {
-        const { address } = ParseUtil.parseCaipAddress(account as CaipAddress)
-        const publicKey = new PublicKey(bs58.decode(address))
-
-        return {
-          address,
-          publicKey: publicKey.toBytes(),
-          chains: standardChains as CaipNetworkId[],
-          features: [
-            'solana:signAndSendTransaction',
-            'solana:signTransaction',
-            'solana:signMessage'
-          ] as const
-        }
-      }) || []
+      this.#provider.session?.namespaces?.['solana']?.accounts.map(account => ({
+        address: account,
+        publicKey: new PublicKey(
+          bs58.decode(ParseUtil.parseCaipAddress(account as CaipAddress).address)
+        ).toBytes(),
+        chains: this.#provider.session?.namespaces['solana']?.chains as CaipNetworkId[],
+        features: [
+          'solana:signAndSendTransaction',
+          'solana:signTransaction',
+          'solana:signMessage'
+        ] as const
+      })) || []
     )
   }
 

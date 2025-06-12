@@ -38,8 +38,6 @@ export function SolanaTests() {
 
     const wc = wallets.find(w => w.name === 'WalletConnect') as any
     console.log('>>> wc', wc)
-
-    wc?.features?.['standard:connect']?.connect()
   }
 
   return (
