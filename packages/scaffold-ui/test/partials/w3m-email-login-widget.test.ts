@@ -11,6 +11,7 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -152,8 +153,11 @@ describe('W3mEmailLoginWidget', () => {
 
     it('handles CONNECT action', async () => {
       vi.useFakeTimers()
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        remoteFeatures: { multiWallet: true }
+      })
       mockAuthConnector.provider.connectEmail.mockResolvedValue({ action: 'CONNECT' })
-
       const element: W3mEmailLoginWidget = await fixture(
         html`<w3m-email-login-widget></w3m-email-login-widget>`
       )

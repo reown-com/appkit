@@ -20,6 +20,7 @@ import {
   ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
+  OptionsController,
   RouterController,
   SnackController,
   StorageUtil
@@ -129,6 +130,11 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
         ]
       ])
     } as unknown as ChainControllerState)
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
 
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
@@ -891,5 +897,26 @@ describe('W3mProfileWalletsView - Loading States', () => {
 
     resolveSwitchConnection!()
     await switchConnectionPromise
+  })
+
+  it('should not show add wallet button when multiWallet is disabled and caipAddress is set', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: false }
+    })
+
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      caipAddress: mockEthereumAddress as CaipAddress
+    } as unknown as AccountControllerState)
+
+    const element: W3mProfileWalletsView = await fixture(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+
+    const addConnectionButton = element.shadowRoot?.querySelector(
+      '[data-testid="add-connection-button"]'
+    )
+
+    expect(addConnectionButton).toBeNull()
   })
 })

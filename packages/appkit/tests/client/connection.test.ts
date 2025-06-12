@@ -154,7 +154,9 @@ describe('syncConnectedWalletInfo', () => {
       getUsername: () => 'mock-username',
       getEmail: () => 'mock-email',
       getLoginEmailUsed: () => true,
-      onRpcRequest: vi.fn()
+      onRpcRequest: vi.fn(),
+      onRpcSuccess: vi.fn(),
+      onRpcError: vi.fn()
     } as any
 
     appKit['syncConnectedWalletInfo']('eip155')
@@ -178,7 +180,9 @@ describe('syncConnectedWalletInfo', () => {
       getUsername: () => 'mock-username',
       getEmail: () => null,
       getLoginEmailUsed: () => true,
-      onRpcRequest: vi.fn()
+      onRpcRequest: vi.fn(),
+      onRpcSuccess: vi.fn(),
+      onRpcError: vi.fn()
     } as any
 
     vi.spyOn(StorageUtil, 'getConnectedSocialProvider').mockReturnValueOnce('mock-social')

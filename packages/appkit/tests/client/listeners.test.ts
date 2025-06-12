@@ -112,8 +112,8 @@ describe('Listeners', () => {
       allowUnsupportedChain: false
     })
 
-    ChainController.state.activeChain = mainnet.chainNamespace
-    ChainController.state.activeCaipNetwork = unsupportedNetwork
+    vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(mainnet.chainNamespace)
+    vi.spyOn(ChainController.state, 'activeCaipNetwork', 'get').mockReturnValue(unsupportedNetwork)
 
     await appKit['syncAccount']({
       address: '0x123',
@@ -217,12 +217,10 @@ it('should handle accountChanged event with connector that has no provider', asy
   await appKit.ready()
 
   const syncProviderSpy = vi.spyOn(appKit as any, 'syncProvider')
-  const syncConnectedWalletInfoSpy = vi.spyOn(appKit as any, 'syncConnectedWalletInfo')
 
   emitter.emit('accountChanged', mockAccount)
 
   expect(syncProviderSpy).not.toHaveBeenCalled()
-  expect(syncConnectedWalletInfoSpy).not.toHaveBeenCalled()
 })
 
 it('should add connected namespace when accountChanged event is emitted', async () => {
@@ -242,10 +240,7 @@ it('should add connected namespace when accountChanged event is emitted', async 
 })
 
 it('should call syncAccount when accountChanged event is emitted', async () => {
-  vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-    ...ChainController.state,
-    activeChain: mainnet.chainNamespace
-  })
+  vi.spyOn(ChainController.state, 'activeCaipNetwork', 'get').mockReturnValue(mainnet)
 
   const mockAccount = {
     address: '0x123',
@@ -267,11 +262,8 @@ it('should call syncAccount when accountChanged event is emitted', async () => {
 })
 
 it('should call syncAccount with activeCaipNetwork id when isActiveChain is true but no chainId provided', async () => {
-  vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-    ...ChainController.state,
-    activeChain: mainnet.chainNamespace,
-    activeCaipNetwork: mainnet
-  })
+  vi.spyOn(ChainController.state, 'activeCaipNetwork', 'get').mockReturnValue(mainnet)
+  vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(mainnet.chainNamespace)
 
   const mockAccount = {
     address: '0x123',
@@ -293,10 +285,7 @@ it('should call syncAccount with activeCaipNetwork id when isActiveChain is true
 })
 
 it('should call syncAccountInfo when isActiveChain is false and neither activeCaipNetwork nor chainId are provided', async () => {
-  vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-    ...ChainController.state,
-    activeChain: solana.chainNamespace
-  })
+  vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(solana.chainNamespace)
 
   const mockAccount = {
     address: '0x123',

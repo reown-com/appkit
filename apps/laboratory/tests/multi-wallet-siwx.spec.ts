@@ -65,6 +65,17 @@ test.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+test('should enable multi-wallet feature with a whitelisted project id', async ({ library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
+
+  await page.getByTestId('project-id-button').click()
+  await page.getByTestId('project-id-input').fill('1b0841d0acfe3e32dcb0d53dbf505bdd')
+  await page.getByTestId('project-id-save-button').click()
+  await page.reload()
+})
+
 test('should connect multiple wallets with SIWX', async ({ library }) => {
   if (library === 'bitcoin') {
     return

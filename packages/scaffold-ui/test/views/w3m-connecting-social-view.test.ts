@@ -106,7 +106,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
     expect(RouterController.push).not.toHaveBeenCalled()
   })
 
-  it('redirects to the profile wallets page if connections exist and address is set', async () => {
+  it('redirects to the profile wallets page if connections exist, address is set and multiWallet is enabled', async () => {
     const mockSocialWindow = {
       close: vi.fn(),
       closed: false
@@ -121,6 +121,10 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
         ] as Connection[]
       ]
     ])
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
 
     let subscriptionCallback: ((val: any) => void) | undefined
 
