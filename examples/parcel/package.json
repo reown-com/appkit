@@ -10,12 +10,12 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.0",
-    "@walletconnect/utils": "2.21.0",
+    "@walletconnect/universal-provider": "2.21.2",
+    "@walletconnect/utils": "2.21.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "viem": "2.23.13",
-    "wagmi": "2.14.16"
+    "wagmi": "2.15.6"
   },
   "devDependencies": {
     "@types/react": "19.1.3",
