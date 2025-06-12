@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable consistent-return */
 import { useCallback, useEffect, useState } from 'react'
 
@@ -22,11 +23,12 @@ import type { AppKitWalletButton, Wallet } from './index.js'
 
 export * from './index.js'
 
+interface AppKitElements {
+  'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
+}
 declare module 'react' {
   namespace JSX {
-    interface IntrinsicElements {
-      'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
-    }
+    interface IntrinsicElements extends AppKitElements {}
   }
 }
 

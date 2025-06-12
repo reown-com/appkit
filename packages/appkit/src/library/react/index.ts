@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 import { useEffect, useState, useSyncExternalStore } from 'react'
 
 import { useSnapshot } from 'valtio'
@@ -26,24 +27,26 @@ type ThemeModeOptions = AppKitOptions['themeMode']
 
 type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
+interface AppKitElements {
+  'appkit-modal': {
+    class?: string
+  }
+  'appkit-button': Pick<
+    AppKitButton,
+    'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
+  >
+  'appkit-connect-button': Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
+  'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
+  'appkit-network-button': Pick<AppKitNetworkButton, 'disabled'>
+  'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+  'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
+  'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+  'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
+}
+
 declare module 'react' {
   namespace JSX {
-    interface IntrinsicElements {
-      'appkit-modal': {
-        class?: string
-      }
-      'appkit-button': Pick<
-        AppKitButton,
-        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
-      >
-      'appkit-connect-button': Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
-      'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
-      'appkit-network-button': Pick<AppKitNetworkButton, 'disabled'>
-      'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-      'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
-      'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
-      'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
-    }
+    interface IntrinsicElements extends AppKitElements {}
   }
 }
 
