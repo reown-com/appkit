@@ -2287,9 +2287,6 @@ importers:
       '@wallet-standard/features':
         specifier: 1.1.0
         version: 1.1.0
-      '@wallet-standard/wallet':
-        specifier: 1.1.0
-        version: 1.1.0
       '@walletconnect/types':
         specifier: 2.21.2
         version: 2.21.2(db0@0.3.2)(ioredis@5.6.1)
