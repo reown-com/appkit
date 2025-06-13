@@ -44,12 +44,27 @@ interface AppKitElements {
   'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
 }
 
-declare module 'react' {
+/* ------------------------------------------------------------------ */
+/* Declare global namespace for React 18     */
+/* ------------------------------------------------------------------ */
+declare global {
   namespace JSX {
     interface IntrinsicElements extends AppKitElements {}
   }
 }
+/* ------------------------------------------------------------------ */
+/* Helper alias with the built‑ins that React already supplied     */
+/* ------------------------------------------------------------------ */
+type __BuiltinIntrinsics = JSX.IntrinsicElements
 
+/* ------------------------------------------------------------------ */
+/* Declare react namespace for React 19 and extend with JSX built-ins (div, button, etc.) and extend with AppKitElements */
+/* ------------------------------------------------------------------ */
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements extends __BuiltinIntrinsics, AppKitElements {}
+  }
+}
 let modal: AppKit | undefined = undefined
 
 export function getAppKit(appKit: AppKit) {
