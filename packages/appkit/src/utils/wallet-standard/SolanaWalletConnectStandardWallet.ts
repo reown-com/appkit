@@ -237,7 +237,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
     if (inputs.length === 1) {
       const { transaction, account, chain, options } = inputs[0] || {}
       const { minContextSlot, preflightCommitment, skipPreflight, maxRetries } = options || {}
-      if (account !== this.#account) {
+      if (account?.address !== this.#account?.address) {
         throw new Error('invalid account')
       }
       if (!isSolanaChain(chain || ':')) {
@@ -282,7 +282,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
 
     if (inputs.length === 1) {
       const { transaction, account, chain } = inputs[0] || {}
-      if (account !== this.#account) {
+      if (account?.address !== this.#account.address) {
         throw new Error('invalid account')
       }
       if (chain && !isSolanaChain(chain)) {
@@ -345,7 +345,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
     } else if (inputs.length > 1) {
       let chain: SolanaChain | undefined = undefined
       for (const input of inputs) {
-        if (input.account !== this.#account) {
+        if (input.account?.address !== this.#account.address) {
           throw new Error('invalid account')
         }
         if (input.chain) {
@@ -414,7 +414,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
 
     if (inputs.length === 1) {
       const { message, account } = inputs[0] || {}
-      if (account !== this.#account) {
+      if (account?.address !== this.#account.address) {
         throw new Error('invalid account')
       }
 
