@@ -29,7 +29,7 @@ export default function App() {
         <img src="/appkit-logo.png" alt="Reown" width="150" />
       </div>
 
-      <h1 className="page-title">React AppKit Cloud Auth Example</h1>
+      <h1 className="page-title">React AppKit Reown Authentication Example</h1>
 
       <div className="appkit-buttons-container">
         <appkit-button />
