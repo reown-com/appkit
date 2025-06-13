@@ -38,6 +38,9 @@
       ],
       "solana": [
         "./dist/types/exports/solana.d.ts"
+      ],
+      "wallet-standard": [
+        "./dist/types/exports/wallet-standard.d.ts"
       ]
     }
   },
@@ -57,10 +60,10 @@
     "@walletconnect/logger": "2.1.2",
     "@walletconnect/universal-provider": "2.21.2",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0",
-    "bs58": "6.0.0"
+    "viem": ">=2.29.0"
   },
   "devDependencies": {
+    "bs58": "6.0.0",
     "@wallet-standard/wallet": "1.1.0",
     "@solana/web3.js": "1.98.0",
     "@wallet-standard/features": "1.0.3",
@@ -68,7 +71,7 @@
     "@solana/wallet-standard-features": "1.3.0",
     "@coinbase/wallet-sdk": "4.3.0",
     "@safe-global/safe-apps-provider": "0.18.6",
-    "@solana/wallet-adapter-base": "0.9.24",
+    "@solana/wallet-adapter-base": "0.9.26",
     "@vitest/coverage-v8": "2.1.9",
     "vitest": "3.1.3",
     "@walletconnect/types": "2.21.2"
