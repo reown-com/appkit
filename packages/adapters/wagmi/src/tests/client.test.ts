@@ -1222,6 +1222,82 @@ describe('WagmiAdapter', () => {
   })
 })
 
+describe('WagmiAdapter - setUniversalProvider', () => {
+  let adapter: WagmiAdapter
+  let mockUniversalProvider: UniversalProvider
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    mockUniversalProvider = {
+      on: vi.fn(),
+      emit: vi.fn(),
+      removeListener: vi.fn()
+    } as unknown as UniversalProvider
+
+    adapter = new WagmiAdapter({
+      networks: mockNetworks,
+      projectId: mockProjectId
+    })
+
+    vi.mocked(getConnections).mockReturnValue([
+      {
+        connector: {
+          id: 'walletConnect1'
+        }
+      }
+    ] as any)
+
+    vi.spyOn(adapter as any, 'getWagmiConnector').mockReturnValue({
+      id: 'walletConnect'
+    })
+  })
+
+  it('should not trigger reconnect when activeChain is eip155', () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
+
+    const reconnectSpy = vi.spyOn(wagmiCore, 'reconnect')
+
+    adapter.setUniversalProvider(mockUniversalProvider)
+
+    const connectHandler = vi
+      .mocked(mockUniversalProvider.on)
+      .mock.calls.find(call => call[0] === 'connect')?.[1]
+
+    expect(connectHandler).toBeDefined()
+
+    connectHandler?.()
+
+    expect(reconnectSpy).not.toHaveBeenCalled()
+  })
+
+  it('should trigger reconnect when activeChain is not eip155', () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'cosmos'
+    })
+
+    const reconnectSpy = vi.spyOn(wagmiCore, 'reconnect')
+
+    adapter.setUniversalProvider(mockUniversalProvider)
+
+    const connectHandler = vi
+      .mocked(mockUniversalProvider.on)
+      .mock.calls.find(call => call[0] === 'connect')?.[1]
+
+    expect(connectHandler).toBeDefined()
+
+    connectHandler?.()
+
+    expect(reconnectSpy).toHaveBeenCalledWith(adapter.wagmiConfig, {
+      connectors: [{ id: 'walletConnect' }]
+    })
+  })
+})
+
 describe('WagmiAdapter - addThirdPartyConnectors', () => {
   let adapter: WagmiAdapter
   let originalWindow: Window & typeof globalThis
