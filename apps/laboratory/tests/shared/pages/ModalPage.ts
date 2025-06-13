@@ -412,6 +412,7 @@ export class ModalPage {
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name, exact: true })
     await signatureButton.waitFor({ state: 'visible', timeout: 15_000 })
+    await signatureButton.scrollIntoViewIfNeeded()
     await signatureButton.click()
     await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
   }
