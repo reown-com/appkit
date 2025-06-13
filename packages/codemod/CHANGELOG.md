@@ -1,5 +1,11 @@
 # @reown/appkit-experimental
 
+## 1.7.6
+
+### Patch Changes
+
+- [#4498](https://github.com/reown-com/appkit/pull/4498) [`0dfe08b`](https://github.com/reown-com/appkit/commit/0dfe08b3d4b9addb675445d22adb350fb5d18fc3) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where Global JSX namespace gets polluted, instead extend it
+
 ## 1.7.5
 
 ### Patch Changes
