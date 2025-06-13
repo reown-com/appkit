@@ -1,4 +1,3 @@
-import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import type {
   SolanaSignAndSendTransactionFeature,
   SolanaSignAndSendTransactionMethod,
@@ -33,7 +32,7 @@ import { type AnyTransaction, SolConstantsUtil } from '@reown/appkit-utils/solan
 import { WcHelpersUtil } from '../HelpersUtil.js'
 import { type SolanaChain, WalletConnectAccount } from './WalletConnectAccount.js'
 import { SOLANA_CHAINS } from './constants.js'
-import { isSolanaChain } from './utils.js'
+import { isSolanaChain, isVersionedTransaction } from './utils.js'
 
 function caipNetworkToStandardChain(caipNetworkId: CaipNetworkId) {
   const map: Record<CaipNetworkId, `solana:${string}`> = {

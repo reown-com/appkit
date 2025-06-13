@@ -1,4 +1,4 @@
-import { Transaction, VersionedTransaction } from '@solana/web3.js'
+import type { Transaction, VersionedTransaction } from '@solana/web3.js'
 import type { IdentifierString } from '@wallet-standard/base'
 
 import type { SolanaChain } from './WalletConnectAccount.js'
