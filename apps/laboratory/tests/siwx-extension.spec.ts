@@ -58,3 +58,10 @@ extensionTest('it should disconnected', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
 })
+
+extensionTest('it should be disconnected when there is no previous session', async () => {
+  await modalPage.page.reload()
+  await modalPage.connectToExtensionMultichain('solana')
+  await modalPage.promptSiwe({ cancel: true })
+  await modalValidator.expectDisconnected()
+})

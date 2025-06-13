@@ -118,7 +118,7 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
 emailSiweTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
   const targetChain = 'Polygon'
   await page.switchNetwork(targetChain)
-  await page.promptSiwe(true)
+  await page.promptSiwe({ cancel: true })
   await validator.expectNetworkButton('Ethereum')
   await validator.expectAuthenticated()
   await page.page.waitForTimeout(1000)

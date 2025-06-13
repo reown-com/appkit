@@ -446,22 +446,16 @@ export class ModalPage {
     await this.page.getByTestId('w3m-wallet-guide-get-started').click()
   }
 
-  async promptSiwe(cancel = false) {
-    if (cancel) {
-      const siweCancel = this.page.getByTestId('w3m-connecting-siwe-cancel')
-      await expect(siweCancel, 'Siwe prompt cancel button should be visible').toBeVisible({
-        timeout: 10_000
-      })
-      await expect(siweCancel, 'Siwe prompt cancel button should be enabled').toBeEnabled()
-      await siweCancel.click()
-    } else {
-      const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
-      await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
-        timeout: 10_000
-      })
-      await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled()
-      await siweSign.click()
-    }
+  async promptSiwe({ cancel = false }: { cancel?: boolean } = {}) {
+    const testId = cancel ? 'w3m-connecting-siwe-cancel' : 'w3m-connecting-siwe-sign'
+    const buttonType = cancel ? 'cancel' : 'sign'
+    const siweButton = this.page.getByTestId(testId)
+
+    await expect(siweButton, `Siwe prompt ${buttonType} button should be visible`).toBeVisible({
+      timeout: 10_000
+    })
+    await expect(siweButton, `Siwe prompt ${buttonType} button should be enabled`).toBeEnabled()
+    await siweButton.click()
   }
 
   async cancelSiwe() {
