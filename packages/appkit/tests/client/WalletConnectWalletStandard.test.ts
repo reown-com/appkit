@@ -317,7 +317,7 @@ describe('SolanaWalletConnectStandardWallet', () => {
     })
   })
 
-  describe.only('events', () => {
+  describe('events', () => {
     let connectHandler: (() => void) | undefined
     let disconnectHandler: (() => void) | undefined
 
