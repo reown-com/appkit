@@ -1263,8 +1263,6 @@ export type FeaturesKeys = Exclude<
   'swaps' | 'onramp' | 'email' | 'socials' | 'history'
 >
 
-export type WalletGuideType = 'get-started' | 'explore'
-
 export type UseAppKitAccountReturn = {
   allAccounts: AccountType[]
   caipAddress: CaipAddress | undefined

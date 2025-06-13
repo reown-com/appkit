@@ -371,8 +371,6 @@ export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-accent-glass-010'
 
 export type TruncateType = 'start' | 'middle' | 'end'
 
-export type WalletGuideType = 'get-started' | 'explore'
-
 export type TruncateOptions = {
   string: string
   charsStart: number
