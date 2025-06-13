@@ -101,6 +101,7 @@
     "@coinbase/wallet-sdk": "4.3.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-bitcoin": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
