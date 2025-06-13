@@ -1,4 +1,4 @@
-import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
+import { PublicKey, Transaction } from '@solana/web3.js'
 import type { WalletAccount } from '@wallet-standard/base'
 import type { SessionTypes } from '@walletconnect/types'
 import type UniversalProvider from '@walletconnect/universal-provider'

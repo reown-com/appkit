@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Card,
   CardBody,
   CardHeader,
@@ -10,7 +9,6 @@ import {
   Text,
   Tooltip
 } from '@chakra-ui/react'
-import { getWallets } from '@wallet-standard/app'
 
 import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
@@ -23,21 +21,12 @@ import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 
-const { get } = getWallets()
 export function SolanaTests() {
   const { address } = useAppKitAccount({ namespace: 'solana' })
   const { caipNetwork } = useAppKitNetwork()
 
   if (!address) {
-    return <Button onClick={onGetWallets}>Get Wallets</Button>
-  }
-
-  function onGetWallets() {
-    const wallets = get()
-    console.log('>>> wallet standard wallets', wallets)
-
-    const wc = wallets.find(w => w.name === 'WalletConnect') as any
-    console.log('>>> wc', wc)
+    return null
   }
 
   return (
@@ -47,7 +36,6 @@ export function SolanaTests() {
       </CardHeader>
 
       <CardBody>
-        <Button onClick={onGetWallets}>Get Wallets</Button>
         <Stack divider={<StackDivider />} spacing="4">
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
