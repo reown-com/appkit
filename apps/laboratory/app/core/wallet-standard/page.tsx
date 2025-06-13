@@ -17,9 +17,9 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import base58 from 'bs58'
 import { toHex } from 'viem'
 
+import { SolanaWalletConnectStandardWallet } from '@reown/appkit-utils/wallet-standard'
 import { AppKit, createAppKit } from '@reown/appkit/core'
 import { bitcoin, solana } from '@reown/appkit/networks'
-import { SolanaWalletConnectStandardWallet } from '@reown/appkit-utils/wallet-standard'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
