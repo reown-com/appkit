@@ -336,7 +336,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.eventsToUnbind = []
   }
 
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
     this.addConnector(
       new BitcoinWalletConnectConnector({
         provider: universalProvider,
@@ -344,6 +344,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
       })
     )
+
+    return Promise.resolve()
   }
 }
 

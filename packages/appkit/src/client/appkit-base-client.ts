@@ -807,8 +807,8 @@ export abstract class AppKitBaseClient {
   protected async initChainAdapter(namespace: ChainNamespace) {
     this.onConnectors(namespace)
     this.listenAdapter(namespace)
-    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
+    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
   }
 
   protected async initChainAdapters() {
@@ -907,7 +907,7 @@ export abstract class AppKitBaseClient {
     await this.getUniversalProvider()
 
     if (this.universalProvider) {
-      this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
+      await this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
     }
   }
 

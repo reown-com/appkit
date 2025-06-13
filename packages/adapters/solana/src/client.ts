@@ -14,8 +14,8 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
-import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 
@@ -32,11 +32,17 @@ import { watchStandard } from './utils/watchStandard.js'
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
   wallets?: BaseWalletAdapter[]
+  /**
+   * Enable or disable registering WalletConnect as a Wallet Standard wallet.
+   * @default false
+   */
+  registerWalletStandard?: boolean
 }
 
 export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
   public wallets?: BaseWalletAdapter[]
+  private registerWalletStandard?: boolean
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(options: AdapterOptions = {}) {
@@ -46,6 +52,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     })
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
+    this.registerWalletStandard = options.registerWalletStandard
   }
 
   public override construct(params: AdapterBlueprint.Params): void {
@@ -364,14 +371,23 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
   }
 
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
-    this.addConnector(
-      new SolanaWalletConnectProvider({
-        provider: universalProvider,
-        chains: this.getCaipNetworks(),
-        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
-      })
-    )
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
+    const solanaProvider = new SolanaWalletConnectProvider({
+      provider: universalProvider,
+      chains: this.getCaipNetworks(),
+      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+    })
+
+    if (this.registerWalletStandard) {
+      const { SolanaWalletConnectStandardWallet } = await import(
+        '@reown/appkit-utils/wallet-standard'
+      )
+      SolanaWalletConnectStandardWallet.register(universalProvider)
+    }
+
+    this.addConnector(solanaProvider)
+
+    return Promise.resolve()
   }
 
   public override async connectWalletConnect(chainId?: string | number) {

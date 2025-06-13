@@ -33,6 +33,11 @@ export function AppKitButtons() {
             </Heading>
             <appkit-network-button />
           </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Solana Wallet Standard Button
+            </Heading>
+          </Box>
           <AppKitHooks />
         </Stack>
       </CardBody>

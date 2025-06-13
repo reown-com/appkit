@@ -754,7 +754,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     return provider.request({ method: 'wallet_getAssets', params: [params] })
   }
 
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
     universalProvider.on('connect', () => {
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
@@ -791,5 +791,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         namespace: 'eip155'
       })
     )
+
+    return Promise.resolve()
   }
 }

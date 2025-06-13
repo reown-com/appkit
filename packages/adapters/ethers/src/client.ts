@@ -295,7 +295,7 @@ export class EthersAdapter extends AdapterBlueprint {
     })
   }
 
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
@@ -303,6 +303,8 @@ export class EthersAdapter extends AdapterBlueprint {
         namespace: 'eip155'
       })
     )
+
+    return Promise.resolve()
   }
 
   private eip6963EventHandler(event: CustomEventInit<EIP6963ProviderDetail>) {
