@@ -1349,8 +1349,9 @@ export abstract class AppKitBaseClient {
     }
 
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
-    this.universalProvider =
-      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+    console.log('creating universal adapter')
+    this.universalProvider = await UniversalProvider.init(universalProviderOptions)
+    console.log('universal adapter created', this.universalProvider)
     this.listenWalletConnect()
   }
 
