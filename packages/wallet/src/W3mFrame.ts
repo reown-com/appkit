@@ -16,6 +16,7 @@ interface W3mFrameConfig {
   isAppClient?: boolean
   chainId?: W3mFrameTypes.Network['chainId']
   enableLogger?: boolean
+  enableCloudAuthAccount?: boolean
 }
 
 // -- Sdk --------------------------------------------------------------------
@@ -41,7 +42,8 @@ export class W3mFrame {
     projectId,
     isAppClient = false,
     chainId = 'eip155:1',
-    enableLogger = true
+    enableLogger = true,
+    enableCloudAuthAccount = false
   }: W3mFrameConfig) {
     this.projectId = projectId
     this.frameLoadPromise = new Promise((resolve, reject) => {
@@ -56,7 +58,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=${SECURE_SITE_SDK_VERSION}&enableLogger=${enableLogger}`
+        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=${SECURE_SITE_SDK_VERSION}&enableLogger=${enableLogger}&enableCloudAuthAccount=${enableCloudAuthAccount}`
         iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'

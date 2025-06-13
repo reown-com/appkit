@@ -1,4 +1,5 @@
 import type { CaipNetworkId, EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
+import { OptionsController } from '@reown/appkit-controllers'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface W3mFrameProviderConfig {
@@ -28,7 +29,8 @@ export class W3mFrameProviderSingleton {
         chainId,
         enableLogger,
         onTimeout,
-        abortController
+        abortController,
+        enableCloudAuthAccount: Boolean(OptionsController.state.remoteFeatures?.emailCapture)
       })
     }
 

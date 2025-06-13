@@ -172,9 +172,9 @@ export class AppKit extends AppKitBaseClient {
 
       this.setLoading(false, namespace)
     })
-    provider.onSocialConnected(({ userName }) => {
+    provider.onSocialConnected(({ userName, email }) => {
       this.setUser(
-        { ...(AccountController.state.user || {}), username: userName },
+        { ...(AccountController.state.user || {}), username: userName, email },
         ChainController.state.activeChain
       )
     })
@@ -609,6 +609,10 @@ export class AppKit extends AppKitBaseClient {
 
     if (features.pay) {
       featureImportPromises.push(import('@reown/appkit-pay'))
+    }
+
+    if (remoteFeatures.emailCapture) {
+      featureImportPromises.push(import('@reown/appkit-siwx/ui'))
     }
 
     await Promise.all([
