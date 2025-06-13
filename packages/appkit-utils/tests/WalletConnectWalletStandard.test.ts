@@ -5,12 +5,11 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { SolConstantsUtil } from '@reown/appkit-utils/solana'
-import { SolanaWalletConnectStandardWallet } from '@reown/appkit-utils/wallet-standard'
+import { createNamespaces } from '../src/WCNamespaceUtil.js'
+import { SolConstantsUtil } from '../src/solana/SolanaConstantsUtil.js'
+import { SolanaWalletConnectStandardWallet } from '../src/wallet-standard/SolanaWalletConnectStandardWallet.js'
 
-import { WcHelpersUtil } from '../../src/utils/HelpersUtil'
-
-const SOLANA_CHAINS = ['solana:mainnet', 'solana:devnet', 'solana:testnet']
+const SOLANA_CHAINS = ['solana:mainnet', 'solana:devnet', 'solana:testnet', 'solana:localnet']
 
 // Mock dependencies
 vi.mock('@walletconnect/universal-provider')
@@ -100,7 +99,7 @@ describe('SolanaWalletConnectStandardWallet', () => {
       const connectResult = await wallet.features['standard:connect'].connect()
       expect(connectResult.accounts).toBeDefined()
       expect(mockProvider.connect).toHaveBeenCalledWith({
-        namespaces: WcHelpersUtil.createNamespaces([SolConstantsUtil.DEFAULT_CHAIN])
+        namespaces: createNamespaces([SolConstantsUtil.DEFAULT_CHAIN])
       })
     })
   })
