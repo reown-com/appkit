@@ -14,7 +14,7 @@
     "react-dom": "19.1.0",
     "viem": "2.29.0",
     "vite": "5.4.19",
-    "wagmi": "2.15.2"
+    "wagmi": "2.15.6"
   },
   "devDependencies": {
     "@types/react": "19.1.3",

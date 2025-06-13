@@ -432,6 +432,7 @@ export const BlockchainApiController = {
     }
     const caipAddress = `${chainId}:${address}`
     const cachedBalance = StorageUtil.getBalanceCacheForCaipAddress(caipAddress)
+
     if (cachedBalance) {
       return cachedBalance
     }

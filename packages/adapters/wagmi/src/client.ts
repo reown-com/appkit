@@ -35,7 +35,7 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -257,10 +257,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     await Promise.all(
-      thirdPartyConnectors.map(async connector => {
+      thirdPartyConnectors.map(connector => {
         const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
         this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
-        await this.addWagmiConnector(cnctr, options)
+
+        return this.addWagmiConnector(cnctr, options)
       })
     )
   }
@@ -393,6 +394,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+
     this.addConnector({
       id: connector.id,
       explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
@@ -421,11 +423,16 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     })
 
-    // Add wagmi connectors
+    // Add custom connectors (WalletConnect and Auth)
     this.addWagmiConnectors(options, appKit)
 
-    // Add third party connectors
-    await this.addThirdPartyConnectors(options)
+    // Add Wagmi's initial connectors (Extensions)
+    await Promise.all(
+      this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
+    )
+
+    // Add third party connectors (Coinbase, Safe, etc.)
+    this.addThirdPartyConnectors(options)
   }
 
   public async syncConnection(
@@ -628,7 +635,17 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
-    await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
+    const { caipNetwork } = params
+    await switchChain(this.wagmiConfig, {
+      chainId: caipNetwork.id as number,
+      addEthereumChainParameter: {
+        chainName: caipNetwork.name,
+        nativeCurrency: caipNetwork.nativeCurrency,
+        rpcUrls: [caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
+        blockExplorerUrls: [caipNetwork.blockExplorers?.default.url ?? ''],
+        iconUrls: [caipNetwork.assets?.imageUrl ?? '']
+      }
+    })
     await super.switchNetwork(params)
   }
 
@@ -742,6 +759,26 @@ export class WagmiAdapter extends AdapterBlueprint {
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
+        /**
+         * Handles reconnection logic for Wagmi in multi-chain environments.
+         *
+         * Context:
+         * - When connected to other namespaces, Wagmi requires a reconnect to properly bind to EVM chains.
+         *
+         * Issue with SIWX + One-Click Authentication:
+         * - If Sign-In with X (SIWX) is enabled and the wallet supports One-Click Authentication, reconnection causes issues:
+         *   1. The SIWX `authenticate()` method may still be pending.
+         *   2. A reconnect triggers an `accountChanged` event in Wagmi.
+         *   3. This event re-triggers the SIWX Sign Message UI unnecessarily.
+         *
+         * Resolution:
+         * - To prevent this, we check if the current active chain is `'eip155'`.
+         * - If it is, we skip reconnection to avoid interrupting in the SIWX flow.
+         */
+        if (ChainController.state.activeChain === 'eip155') {
+          return
+        }
+
         reconnect(this.wagmiConfig, {
           connectors: [connector]
         })

@@ -119,10 +119,10 @@
     "@solana/wallet-adapter-wallets": "0.19.36",
     "@solana/web3.js": "1.98.2",
     "@tanstack/react-query": "5.75.5",
-    "@wagmi/connectors": "5.7.12",
-    "@wagmi/core": "2.16.7",
-    "@walletconnect/universal-provider": "2.21.0",
-    "@walletconnect/utils": "2.21.0",
+    "@wagmi/connectors": "5.8.5",
+    "@wagmi/core": "2.17.3",
+    "@walletconnect/universal-provider": "2.21.2",
+    "@walletconnect/utils": "2.21.2",
     "axios": "1.9.0",
     "bitcoinjs-lib": "7.0.0-rc.0",
     "bs58": "6.0.0",
@@ -138,9 +138,9 @@
     "rpc-websockets": "7.11.0",
     "valtio": "1.13.2",
     "viem": "2.29.0",
-    "wagmi": "2.15.4",
+    "wagmi": "2.15.6",
     "webauthn-p256": "0.0.2",
-    "@walletconnect/sign-client": "2.21.0"
+    "@walletconnect/sign-client": "2.21.2"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.758.0",

@@ -46,8 +46,8 @@
     "@solana/wallet-adapter-wallets": "0.19.36",
     "@solana/web3.js": "1.98.2",
     "@tanstack/react-query": "5.75.5",
-    "@wagmi/core": "2.17.1",
-    "autoprefixer": "10.4.20",
+    "@wagmi/core": "2.17.3",
+    "autoprefixer": "10.4.21",
     "class-variance-authority": "0.7.1",
     "classnames": "2.5.1",
     "clsx": "2.1.1",
@@ -60,7 +60,7 @@
     "tailwind-merge": "2.6.0",
     "tailwindcss-animate": "1.0.7",
     "viem": "2.29.0",
-    "wagmi": "2.15.2",
+    "wagmi": "2.15.6",
     "valtio": "1.13.2"
   },
   "devDependencies": {
