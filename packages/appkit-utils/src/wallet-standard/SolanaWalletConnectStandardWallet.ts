@@ -27,9 +27,10 @@ import bs58 from 'bs58'
 
 import { type CaipAddress, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
 import { RouterController } from '@reown/appkit-controllers'
-import { type AnyTransaction, SolConstantsUtil } from '@reown/appkit-utils/solana'
 
-import { WcHelpersUtil } from '../HelpersUtil.js'
+import { createNamespaces } from '../WCNamespaceUtil.js'
+import { SolConstantsUtil } from '../solana/SolanaConstantsUtil.js'
+import type { AnyTransaction } from '../solana/SolanaTypesUtil.js'
 import { type SolanaChain, WalletConnectAccount } from './WalletConnectAccount.js'
 import { SOLANA_CHAINS } from './constants.js'
 import { isSolanaChain, isVersionedTransaction } from './utils.js'
@@ -213,7 +214,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
       RouterController.push('ConnectingWalletConnect')
 
       await this.#provider.connect({
-        namespaces: WcHelpersUtil.createNamespaces([SolConstantsUtil.DEFAULT_CHAIN])
+        namespaces: createNamespaces([SolConstantsUtil.DEFAULT_CHAIN])
       })
     }
 

@@ -320,8 +320,6 @@ export abstract class AppKitBaseClient {
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
     OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
-    OptionsController.state.registerWalletStandard = options.registerWalletStandard
-
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
 

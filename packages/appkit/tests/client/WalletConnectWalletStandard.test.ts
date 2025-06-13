@@ -6,10 +6,11 @@ import bs58 from 'bs58'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import { SolanaWalletConnectStandardWallet } from '@reown/appkit-utils/wallet-standard'
 
 import { WcHelpersUtil } from '../../src/utils/HelpersUtil'
-import { SolanaWalletConnectStandardWallet } from '../../src/utils/wallet-standard/SolanaWalletConnectStandardWallet'
-import { SOLANA_CHAINS } from '../../src/utils/wallet-standard/constants'
+
+const SOLANA_CHAINS = ['solana:mainnet', 'solana:devnet', 'solana:testnet']
 
 // Mock dependencies
 vi.mock('@walletconnect/universal-provider')

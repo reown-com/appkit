@@ -13,6 +13,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 const networks = ConstantsUtil.SolanaNetworks
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
+  registerWalletStandard: true,
   wallets: [new HuobiWalletAdapter()]
 })
 
@@ -20,10 +21,7 @@ const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
   metadata: ConstantsUtil.Metadata,
-  customWallets: ConstantsUtil.CustomWallets,
-  registerWalletStandard: {
-    solana: true
-  }
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function MultiChainSolanaAdapterOnly() {

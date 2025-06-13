@@ -5,5 +5,5 @@
     "declarationDir": "./dist/types"
   },
   "extends": "../../tsconfig.json",
-  "include": ["exports", "src", "package.json", "tests", "../appkit/src/utils/WalletStandard"]
+  "include": ["exports", "src", "package.json", "tests"]
 }

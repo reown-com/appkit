@@ -11,7 +11,6 @@ import {
   ChainController,
   CoreHelperUtil,
   type Provider as CoreProvider,
-  OptionsController,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
@@ -33,11 +32,17 @@ import { watchStandard } from './utils/watchStandard.js'
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
   wallets?: BaseWalletAdapter[]
+  /**
+   * Enable or disable registering WalletConnect as a Wallet Standard wallet.
+   * @default false
+   */
+  registerWalletStandard?: boolean
 }
 
 export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
   public wallets?: BaseWalletAdapter[]
+  private registerWalletStandard?: boolean
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(options: AdapterOptions = {}) {
@@ -47,6 +52,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     })
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
+    this.registerWalletStandard = options.registerWalletStandard
   }
 
   public override construct(params: AdapterBlueprint.Params): void {
@@ -372,8 +378,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
 
-    if (OptionsController.state.registerWalletStandard?.solana) {
-      const { SolanaWalletConnectStandardWallet } = await import('@reown/appkit/wallet-standard')
+    if (this.registerWalletStandard) {
+      const { SolanaWalletConnectStandardWallet } = await import(
+        '@reown/appkit-utils/wallet-standard'
+      )
       SolanaWalletConnectStandardWallet.register(universalProvider)
     }
 
