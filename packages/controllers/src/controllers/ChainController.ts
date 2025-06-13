@@ -555,7 +555,11 @@ const controller = {
     return approvedCaipNetworkIds
   },
 
-  getActiveCaipNetwork() {
+  getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
+    if (chainNamespace) {
+      return state.chains.get(chainNamespace)?.networkState?.caipNetwork || undefined
+    }
+
     return state.activeCaipNetwork
   },
 
