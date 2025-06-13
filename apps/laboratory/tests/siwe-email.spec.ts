@@ -94,7 +94,6 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.switchNetwork(targetChain)
-  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
   await validator.expectAuthenticated()
@@ -106,7 +105,6 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
 
   targetChain = 'Ethereum'
   await page.switchNetwork(targetChain)
-  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
   await validator.expectAuthenticated()
@@ -115,6 +113,15 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await page.sign(namespace)
   await page.approveSign()
   await validator.expectAcceptedSign()
+})
+
+emailSiweTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
+  const targetChain = 'Polygon'
+  await page.switchNetwork(targetChain)
+  await page.promptSiwe({ cancel: true })
+  await validator.expectNetworkButton('Ethereum')
+  await validator.expectAuthenticated()
+  await page.page.waitForTimeout(1000)
 })
 
 emailSiweTest('it should disconnect correctly', async () => {

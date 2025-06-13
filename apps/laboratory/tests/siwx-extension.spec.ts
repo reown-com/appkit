@@ -41,22 +41,27 @@ extensionTest('it should require request signature when switching networks', asy
   await modalValidator.expectConnected()
 })
 
-extensionTest('it should disconnect when cancel siwe from AppKit', async () => {
+extensionTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
   await modalPage.switchNetwork('Solana Testnet')
   await modalPage.cancelSiwe()
-  await modalValidator.expectDisconnected()
+  await modalValidator.expectNetworkButton('Solana Devnet')
+  await modalValidator.expectConnected()
 })
 
 extensionTest('it should be connected after connecting and refreshing the page', async () => {
-  await modalPage.connectToExtensionMultichain('solana')
-  await modalPage.promptSiwe()
   await modalValidator.expectConnected()
-  // Reload the page
   await modalPage.page.reload()
   await modalValidator.expectConnected()
 })
 
 extensionTest('it should disconnected', async () => {
   await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+})
+
+extensionTest('it should be disconnected when there is no previous session', async () => {
+  await modalPage.page.reload()
+  await modalPage.connectToExtensionMultichain('solana')
+  await modalPage.promptSiwe({ cancel: true })
   await modalValidator.expectDisconnected()
 })
