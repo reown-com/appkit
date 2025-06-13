@@ -35,7 +35,7 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -759,6 +759,26 @@ export class WagmiAdapter extends AdapterBlueprint {
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
+        /**
+         * Handles reconnection logic for Wagmi in multi-chain environments.
+         *
+         * Context:
+         * - When connected to other namespaces, Wagmi requires a reconnect to properly bind to EVM chains.
+         *
+         * Issue with SIWX + One-Click Authentication:
+         * - If Sign-In with X (SIWX) is enabled and the wallet supports One-Click Authentication, reconnection causes issues:
+         *   1. The SIWX `authenticate()` method may still be pending.
+         *   2. A reconnect triggers an `accountChanged` event in Wagmi.
+         *   3. This event re-triggers the SIWX Sign Message UI unnecessarily.
+         *
+         * Resolution:
+         * - To prevent this, we check if the current active chain is `'eip155'`.
+         * - If it is, we skip reconnection to avoid interrupting in the SIWX flow.
+         */
+        if (ChainController.state.activeChain === 'eip155') {
+          return
+        }
+
         reconnect(this.wagmiConfig, {
           connectors: [connector]
         })

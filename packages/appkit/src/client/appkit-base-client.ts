@@ -1769,7 +1769,11 @@ export abstract class AppKitBaseClient {
     return ConnectionController.subscribe(callback)
   }
 
-  public getWalletInfo() {
+  public getWalletInfo(namespace?: ChainNamespace) {
+    if (namespace) {
+      return ChainController.getAccountProp('connectedWalletInfo', namespace)
+    }
+
     return AccountController.state.connectedWalletInfo
   }
 
@@ -1848,7 +1852,14 @@ export abstract class AppKitBaseClient {
     })
   }
 
-  public subscribeWalletInfo(callback: (newState?: ConnectedWalletInfo) => void) {
+  public subscribeWalletInfo(
+    callback: (newState?: ConnectedWalletInfo) => void,
+    namespace?: ChainNamespace
+  ) {
+    if (namespace) {
+      return AccountController.subscribeKey('connectedWalletInfo', callback, namespace)
+    }
+
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
