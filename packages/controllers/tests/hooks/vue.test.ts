@@ -10,6 +10,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
+  OptionsController,
   StorageUtil
 } from '../../exports/index.js'
 import { AssetUtil } from '../../exports/utils.js'
@@ -176,6 +177,15 @@ describe('useAppKitConnections', () => {
     vi.restoreAllMocks()
   })
 
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
+  })
+
   it('should return formatted connections and storage connections', async () => {
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockConnection],
@@ -258,6 +268,18 @@ describe('useAppKitConnections', () => {
 
     await nextTick()
   })
+
+  it('should return empty state when multiWallet is disabled', () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: false }
+    })
+
+    const [state] = withSetup(() => useAppKitConnections())
+
+    expect(state.value.connections).toEqual([])
+    expect(state.value.recentConnections).toEqual([])
+  })
 })
 
 describe('useAppKitConnection', () => {
@@ -294,6 +316,10 @@ describe('useAppKitConnection', () => {
     vi.spyOn(ConnectorController.state, 'activeConnectorIds', 'get').mockReturnValue({
       ...ConnectorController.state.activeConnectorIds,
       eip155: 'test-connector'
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
     })
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
   })
@@ -523,5 +549,17 @@ describe('useAppKitConnection', () => {
     const [state] = withSetup(() => useAppKitConnection({ namespace: 'eip155' }))
 
     expect(state.value.connection).toStrictEqual(upperCaseConnection)
+  })
+
+  it('should return empty state when multiWallet is disabled', () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: false }
+    })
+
+    const [state] = withSetup(() => useAppKitConnection({ namespace: 'eip155' }))
+
+    expect(state.value.connection).toBeUndefined()
+    expect(state.value.isPending).toBe(false)
   })
 })

@@ -133,7 +133,8 @@ export const PresetsUtil = {
     [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: 'INJECTED',
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
     [CommonConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
-    [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH'
+    [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH',
+    [ConstantsUtil.CONNECTOR_TYPE_AUTH]: 'AUTH'
   } as Record<string, ConnectorType>,
 
   WalletConnectRpcChainIds: [

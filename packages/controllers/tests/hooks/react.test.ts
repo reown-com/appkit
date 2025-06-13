@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
 import {
@@ -80,8 +84,9 @@ describe('useAppKitAccount', () => {
   })
 
   it('should return the correct account state when disconnected', () => {
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: 'test-connector' },
       chains: new Map([
         [
           'eip155',
@@ -113,8 +118,9 @@ describe('useAppKitAccount', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
 
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: 'test-connector' },
       chains: new Map([
         [
           'eip155',
@@ -154,8 +160,9 @@ describe('useAppKitAccount', () => {
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
 
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH },
       chains: new Map([
         [
           'eip155',
@@ -208,8 +215,9 @@ describe('useAppKitAccount', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
 
-    useSnapshot.mockReturnValueOnce({
+    useSnapshot.mockReturnValue({
       activeChain: 'eip155',
+      activeConnectorIds: { eip155: 'test-connector' },
       chains: new Map([
         [
           'eip155',
@@ -298,6 +306,7 @@ describe('useAppKitConnections', () => {
       .mockReturnValueOnce({})
       .mockReturnValueOnce({})
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockConnection],
@@ -329,6 +338,7 @@ describe('useAppKitConnections', () => {
       .mockReturnValueOnce({})
       .mockReturnValueOnce({})
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
@@ -346,6 +356,7 @@ describe('useAppKitConnections', () => {
       .mockReturnValueOnce({})
       .mockReturnValueOnce({})
       .mockReturnValueOnce({ activeChain: undefined })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     expect(() => useAppKitConnections()).toThrow('No namespace found')
   })
@@ -356,11 +367,28 @@ describe('useAppKitConnections', () => {
       .mockReturnValueOnce({})
       .mockReturnValueOnce({})
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
       recentConnections: []
     })
+
+    const result = useAppKitConnections()
+
+    expect(result).toEqual({
+      connections: [],
+      recentConnections: []
+    })
+  })
+
+  it('should return empty state when multiWallet is disabled', () => {
+    useSnapshot
+      .mockReturnValueOnce({})
+      .mockReturnValueOnce({})
+      .mockReturnValueOnce({})
+      .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: false } })
 
     const result = useAppKitConnections()
 
@@ -400,6 +428,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { eip155: 'test-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const result = useAppKitConnection({
       onSuccess: mockOnSuccess,
@@ -424,6 +453,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { eip155: 'test-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const setIsSwitchingConnectionSpy = vi.spyOn(ConnectionController, 'setIsSwitchingConnection')
     const switchConnectionSpy = vi
@@ -477,6 +507,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { eip155: 'test-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const setIsSwitchingConnectionSpy = vi.spyOn(ConnectionController, 'setIsSwitchingConnection')
     const switchConnectionSpy = vi
@@ -511,6 +542,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { eip155: 'test-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const setIsSwitchingConnectionSpy = vi.spyOn(ConnectionController, 'setIsSwitchingConnection')
     const switchConnectionSpy = vi
@@ -545,6 +577,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { eip155: 'test-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const deleteAddressFromConnectionSpy = vi.spyOn(StorageUtil, 'deleteAddressFromConnection')
 
@@ -586,6 +619,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { solana: 'solana-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const result = useAppKitConnection({
       namespace: 'solana',
@@ -606,6 +640,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: {}
       })
       .mockReturnValueOnce({ activeChain: undefined })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     expect(() =>
       useAppKitConnection({
@@ -627,6 +662,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { eip155: 'different-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const result = useAppKitConnection({
       onSuccess: mockOnSuccess,
@@ -650,6 +686,7 @@ describe('useAppKitConnection', () => {
         activeConnectorIds: { eip155: 'test-connector' }
       })
       .mockReturnValueOnce({ activeChain: 'eip155' })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: true } })
 
     const result = useAppKitConnection({
       onSuccess: mockOnSuccess,
@@ -657,5 +694,25 @@ describe('useAppKitConnection', () => {
     })
 
     expect(result.connection).toEqual({ ...mockConnection, connectorId: 'TEST-CONNECTOR' })
+  })
+
+  it('should return empty state when multiWallet is disabled', () => {
+    useSnapshot
+      .mockReturnValueOnce({
+        connections: new Map(),
+        isSwitchingConnection: false
+      })
+      .mockReturnValueOnce({
+        activeConnectorIds: {}
+      })
+      .mockReturnValueOnce({
+        activeChain: 'eip155'
+      })
+      .mockReturnValueOnce({ remoteFeatures: { multiWallet: false } })
+
+    const result = useAppKitConnection({ namespace: 'eip155' })
+
+    expect(result.connection).toBeUndefined()
+    expect(result.isPending).toBe(false)
   })
 })

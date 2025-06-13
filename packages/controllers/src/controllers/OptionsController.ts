@@ -196,7 +196,6 @@ export interface OptionsControllerStateInternal {
   sdkVersion: SdkVersion
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
-  hasMultipleAddresses?: boolean
   remoteFeatures?: RemoteFeatures
 }
 
@@ -343,10 +342,6 @@ export const OptionsController = {
     preferUniversalLinks: OptionsControllerState['experimental_preferUniversalLinks']
   ) {
     state.experimental_preferUniversalLinks = preferUniversalLinks
-  },
-
-  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
-    state.hasMultipleAddresses = hasMultipleAddresses
   },
 
   setSIWX(siwx: OptionsControllerState['siwx']) {

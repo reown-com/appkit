@@ -161,7 +161,9 @@ export function useAppKitState() {
   }
 
   const initial = modal.getState()
+  const initialRemoteFeatures = modal.getRemoteFeatures()
   const open = ref(initial.open)
+  const remoteFeatures = ref(initialRemoteFeatures)
   const selectedNetworkId = ref(initial.selectedNetworkId)
 
   const unsubscribe = modal?.subscribeState(next => {
@@ -173,7 +175,7 @@ export function useAppKitState() {
     unsubscribe?.()
   })
 
-  return reactive({ open, selectedNetworkId })
+  return reactive({ open, remoteFeatures, selectedNetworkId })
 }
 
 export function useAppKitEvents(): AppKitEvent {

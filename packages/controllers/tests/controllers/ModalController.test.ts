@@ -108,7 +108,6 @@ describe('ModalController', () => {
       tokenBalance: [],
       smartAccountDeployed: false,
       addressLabels: new Map(),
-      allAccounts: [],
       user: undefined,
       caipAddress: 'eip155:1:0x123'
     })

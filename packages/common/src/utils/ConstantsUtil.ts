@@ -73,5 +73,24 @@ export const ConstantsUtil = {
   SECURE_SITE_SDK_ORIGIN:
     (typeof process !== 'undefined' && typeof process.env !== 'undefined'
       ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
-      : undefined) || 'https://secure.walletconnect.org'
+      : undefined) || 'https://secure.walletconnect.org',
+  REMOTE_FEATURES_ALERTS: {
+    MULTI_WALLET_NOT_ENABLED: {
+      DEFAULT: {
+        shortMessage: 'Multi-Wallet Not Enabled',
+        longMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com.'
+      },
+      CONNECTIONS_HOOK: {
+        shortMessage: 'Multi-Wallet Not Enabled',
+        longMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnections hook.'
+      },
+      CONNECTION_HOOK: {
+        shortMessage: 'Multi-Wallet Not Enabled',
+        longMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnection hook.'
+      }
+    }
+  }
 } as const

@@ -79,8 +79,7 @@ const mockAccountControllerState: Partial<AccountControllerState> = {
     eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
   },
   currentTab: 0,
-  addressLabels: new Map(),
-  allAccounts: []
+  addressLabels: new Map()
 }
 
 const mockChainControllerState: Partial<ChainControllerState> = {

@@ -43,12 +43,13 @@ describe('WalletConnect Events', () => {
       expect(setUnsupportedNetworkSpy).toHaveBeenCalledWith('unknown_chain_id')
     })
 
-    it('should call setCaipNetwork', () => {
-      new AppKit({
+    it('should call setCaipNetwork', async () => {
+      const appkit = new AppKit({
         ...mockOptions,
         adapters: [],
         universalProvider: mockUniversalProvider as any
       })
+      await appkit.ready()
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
       const chainChangedCallback = mockUniversalProvider.on.mock.calls.find(

@@ -55,6 +55,13 @@ function AccountCard({ account }: { account: UseAppKitAccountReturn | undefined 
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
+              Address
+            </Heading>
+            <Text data-testid={`w3m-address-${namespace}`}>{account.address}</Text>
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
               Status
             </Heading>
             <Text data-testid="w3m-address">{account.status}</Text>

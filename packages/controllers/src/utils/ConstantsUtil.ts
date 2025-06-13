@@ -243,7 +243,8 @@ export const ConstantsUtil = {
       'facebook'
     ] as SocialProvider[],
     activity: true,
-    reownBranding: true
+    reownBranding: true,
+    multiWallet: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,

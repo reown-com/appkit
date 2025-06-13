@@ -19,12 +19,13 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
+  watchConnections,
   watchConnectors,
   watchPendingTransactions
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { type Hex, formatUnits, parseUnits } from 'viem'
+import { type Address, type Hex, formatUnits, parseUnits } from 'viem'
 
 import { AppKit, type AppKitOptions } from '@reown/appkit'
 import type {
@@ -32,12 +33,13 @@ import type {
   BaseNetwork,
   CaipNetwork,
   ChainNamespace,
+  Connection,
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 import { ChainController, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
-import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
@@ -225,18 +227,49 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
 
         if (accountData.status === 'connected') {
-          if (
-            accountData.address !== prevAccountData?.address ||
-            prevAccountData.status !== 'connected'
-          ) {
+          const hasAccountChanged = accountData.address !== prevAccountData?.address
+          const hasConnectorChanged = accountData.connector.id !== prevAccountData.connector?.id
+          const hasConnectionStatusChanged = prevAccountData.status !== 'connected'
+
+          if (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged) {
             this.setupWatchPendingTransactions()
 
-            this.emit('accountChanged', {
+            this.handleAccountChanged({
               address: accountData.address,
-              chainId: accountData.chainId
+              chainId: accountData.chainId,
+              connector: accountData.connector
             })
           }
         }
+      }
+    })
+
+    watchConnections(this.wagmiConfig, {
+      onChange: connections => {
+        this.clearConnections()
+        this.addConnection(
+          ...connections.map(connection => {
+            const caipNetwork = this.getCaipNetworks().find(
+              network => network.id === connection.chainId
+            )
+
+            const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+            return {
+              accounts: connection.accounts.map(account => ({
+                address: account
+              })),
+              caipNetwork,
+              connectorId: connection.connector.id,
+              auth: isAuth
+                ? {
+                    name: StorageUtil.getConnectedSocialProvider(),
+                    username: StorageUtil.getConnectedSocialUsername()
+                  }
+                : undefined
+            }
+          })
+        )
       }
     })
   }
@@ -293,6 +326,36 @@ export class WagmiAdapter extends AdapterBlueprint {
     customConnectors.forEach(connector => {
       const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
       this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
+    })
+  }
+
+  private async handleAccountChanged({
+    address,
+    chainId,
+    connector
+  }: {
+    address: string
+    chainId: number | string
+    connector: Connector
+  }) {
+    const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+
+    this.emit('accountChanged', {
+      address,
+      chainId,
+      connector: {
+        id: connector.id,
+        name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
+        imageId: PresetsUtil.ConnectorImageIds[connector.id],
+        type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
+        info:
+          connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+            ? undefined
+            : { rdns: connector.id },
+        provider,
+        chain: this.namespace as ChainNamespace,
+        chains: []
+      }
     })
   }
 
@@ -435,6 +498,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.addThirdPartyConnectors(options)
   }
 
+  // Wagmi already handles connections
+  public async syncConnections() {
+    return Promise.resolve()
+  }
+
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
@@ -501,7 +569,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id, provider, type, info, chainId, socialUri } = params
+    const { id, address, provider, type, info, chainId, socialUri } = params
     const connector = this.getWagmiConnector(id)
 
     if (!connector) {
@@ -513,17 +581,40 @@ export class WagmiAdapter extends AdapterBlueprint {
       connector.setEip6963Wallet?.({ provider, info })
     }
 
-    // If the connector is already connected, return the connection
-    if (connector.uid === this.wagmiConfig?.state?.current) {
-      const connection = this.wagmiConfig.state?.connections?.get(connector.uid)
-      if (connection) {
-        return {
-          address: connection?.accounts[0] as string,
-          chainId: connection?.chainId,
-          provider: provider as Provider,
-          type: type as ConnectorType,
-          id
+    const connection = this.wagmiConfig.state?.connections?.get(connector.uid)
+
+    if (connection) {
+      await this.wagmiConfig.storage?.setItem('recentConnectorId', connector.id)
+
+      const sortedAccounts = [...connection.accounts].sort((a, b) => {
+        if (HelpersUtil.isLowerCaseMatch(a, address)) {
+          return -1
         }
+
+        if (HelpersUtil.isLowerCaseMatch(b, address)) {
+          return 1
+        }
+
+        return 0
+      }) as [Address, ...Address[]]
+
+      this.wagmiConfig?.setState(x => ({
+        ...x,
+        connections: new Map(x.connections).set(connector.uid, {
+          accounts: sortedAccounts,
+          chainId: connection.chainId,
+          connector: connection.connector
+        }),
+        current: connector.uid,
+        status: 'connected'
+      }))
+
+      return {
+        address: sortedAccounts[0],
+        chainId: connection.chainId,
+        provider: provider as Provider,
+        type: type as ConnectorType,
+        id
       }
     }
 
@@ -541,6 +632,15 @@ export class WagmiAdapter extends AdapterBlueprint {
       type: type as ConnectorType,
       id
     }
+  }
+
+  public override get connections(): Connection[] {
+    return Array.from(this.wagmiConfig.state.connections.values()).map(connection => ({
+      accounts: connection.accounts.map(account => ({
+        address: account
+      })),
+      connectorId: connection.connector.id
+    }))
   }
 
   public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
@@ -617,21 +717,64 @@ export class WagmiAdapter extends AdapterBlueprint {
     return this.getWagmiConnector('walletConnect')?.['provider'] as UniversalProvider
   }
 
-  public async disconnect() {
-    const connections = getConnections(this.wagmiConfig)
+  public async disconnect(params: AdapterBlueprint.DisconnectParams) {
+    if (params.id) {
+      const connector = this.getWagmiConnector(params.id)
 
-    // Request disconnection from all connected wallets
-    await Promise.allSettled(
-      connections.map(async connection => {
+      const connections = getConnections(this.wagmiConfig)
+      const connection = connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connector.id, params.id)
+      )
+
+      await wagmiDisconnect(this.wagmiConfig, { connector })
+
+      if (connection) {
+        return {
+          connections: [
+            {
+              accounts: connection.accounts.map(account => ({
+                address: account
+              })),
+              connectorId: connection.connector.id
+            }
+          ]
+        }
+      }
+
+      return { connections: [] }
+    }
+
+    return this.disconnectAll()
+  }
+
+  private async disconnectAll() {
+    const wagmiConnections = getConnections(this.wagmiConfig)
+
+    const connections = await Promise.allSettled(
+      wagmiConnections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
+
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
+
+        return connection
       })
     )
 
     // Ensure the connections are cleared
     this.wagmiConfig.state.connections.clear()
+
+    return {
+      connections: connections
+        .filter(connection => connection.status === 'fulfilled')
+        .map(({ value: connection }) => ({
+          accounts: connection.accounts.map(account => ({
+            address: account
+          })),
+          connectorId: connection.connector.id
+        }))
+    }
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {

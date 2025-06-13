@@ -61,6 +61,8 @@ export class W3mConnectingWidget extends LitElement {
 
   @state() private showRetry = false
 
+  @state() protected label?: string | undefined = undefined
+
   @state() protected secondaryBtnLabel? = 'Try again'
 
   @state() protected secondaryLabel = 'Accept connection request in the wallet'
@@ -115,10 +117,16 @@ export class W3mConnectingWidget extends LitElement {
       ? 'Connection can be declined if a previous request is still active'
       : this.secondaryLabel
 
-    let label = `Continue in ${this.name}`
+    let label = ''
 
-    if (this.error) {
-      label = 'Connection declined'
+    if (this.label) {
+      label = this.label
+    } else {
+      label = `Continue in ${this.name}`
+
+      if (this.error) {
+        label = 'Connection declined'
+      }
     }
 
     return html`
@@ -147,7 +155,11 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+          <wui-text
+            align="center"
+            variant="paragraph-500"
+            color=${this.error ? 'error-100' : 'fg-100'}
+          >
             ${label}
           </wui-text>
           <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>

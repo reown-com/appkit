@@ -232,10 +232,15 @@ export class W3mModalBase extends LitElement {
     // If user is switching to another namespace and connected in that namespace, we should go back
     const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
 
-    if (isDisconnectedInSameNamespace) {
-      ModalController.close()
-    } else if (isSwitchingNamespaceAndConnected) {
-      RouterController.goBack()
+    // If user is in profile wallets view, we should not go back or close the modal
+    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
+
+    if (!isInProfileWalletsView) {
+      if (isDisconnectedInSameNamespace) {
+        ModalController.close()
+      } else if (isSwitchingNamespaceAndConnected) {
+        RouterController.goBack()
+      }
     }
 
     await SIWXUtil.initializeIfEnabled()
@@ -265,6 +270,7 @@ export class W3mModalBase extends LitElement {
      * But we don't want to go back because we are already on the connecting external view.
      */
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
+    const isConnectingFromProfileWallets = RouterController.state.view === 'ProfileWallets'
     // Check connection status based on the address state *before* this update cycle potentially finishes
     const isNotConnected = !ChainController.getAccountData(nextCaipNetwork?.chainNamespace)
       ?.caipAddress
@@ -272,7 +278,7 @@ export class W3mModalBase extends LitElement {
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
     const isModalOpen = ModalController.state.open
     let shouldGoBack = false
-    if (isModalOpen && !isConnectingExternal) {
+    if (isModalOpen && !isConnectingExternal && !isConnectingFromProfileWallets) {
       if (isNotConnected) {
         /*
          * If not connected at all, changing network doesn't necessarily warrant going back from all views.

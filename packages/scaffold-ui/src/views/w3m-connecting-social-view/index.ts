@@ -45,6 +45,16 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() protected message = 'Connect in the provider window'
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  private address = AccountController.state.address
+
+  private connectionsByNamespace = ChainController.state.activeChain
+    ? (ConnectionController.state.connections.get(ChainController.state.activeChain) ?? [])
+    : []
+
+  private hasMultipleConnections = this.connectionsByNamespace.length > 0
+
   public authConnector = ConnectorController.getAuthConnector()
 
   public constructor() {
@@ -66,8 +76,19 @@ export class W3mConnectingSocialView extends LitElement {
           if (val.socialWindow) {
             this.socialWindow = val.socialWindow
           }
-          if (val.address) {
-            if (ModalController.state.open || OptionsController.state.enableEmbedded) {
+        }),
+        OptionsController.subscribeKey('remoteFeatures', val => {
+          this.remoteFeatures = val
+        }),
+        AccountController.subscribeKey('address', val => {
+          const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+
+          if (val && val !== this.address) {
+            if (this.hasMultipleConnections && isMultiWalletEnabled) {
+              RouterController.reset('Account')
+              RouterController.push('ProfileWallets')
+              SnackController.showSuccess('New Wallet Added')
+            } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
               ModalController.close()
             }
           }

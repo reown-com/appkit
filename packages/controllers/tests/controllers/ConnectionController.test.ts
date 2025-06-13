@@ -122,6 +122,7 @@ describe('ConnectionController', () => {
 
     expect(ConnectionController.state).toEqual({
       connections: new Map(),
+      recentConnections: new Map(),
       wcError: false,
       buffering: false,
       isSwitchingConnection: false,
@@ -249,31 +250,12 @@ describe('ConnectionController', () => {
 
     beforeEach(() => {
       vi.clearAllMocks()
-
-      vi.spyOn(ConnectionControllerUtil, 'validateAccountSwitch').mockImplementation(() => {})
-    })
-
-    it('should call validateAccountSwitch before proceeding to switching', async () => {
-      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-
-      const validateSpy = vi.spyOn(ConnectionControllerUtil, 'validateAccountSwitch')
-
-      await ConnectionController.switchConnection({
-        connection: mockConnection,
-        address: '0x123',
-        namespace: chain
-      })
-
-      expect(validateSpy).toHaveBeenCalledWith({
-        namespace: chain,
-        connection: mockConnection,
-        address: '0x123'
-      })
     })
 
     it('should call parseCaipAddress when caipAddress is available', async () => {
       const mockCaipAddress = 'eip155:137:0x789'
       vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(mockCaipAddress)
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
       await ConnectionController.switchConnection({
@@ -287,6 +269,7 @@ describe('ConnectionController', () => {
 
     it('should not call parseCaipAddress when caipAddress is not available', async () => {
       vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
       await ConnectionController.switchConnection({
@@ -383,7 +366,6 @@ describe('ConnectionController', () => {
 
         expect(handleAuthAccountSwitchSpy).toHaveBeenCalledWith({
           address: '0x123',
-          connection: { ...mockConnection, connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH },
           namespace: chain
         })
       }
