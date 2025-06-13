@@ -203,43 +203,96 @@ export class ModalPage {
     emailAddress,
     context,
     mailsacApiKey,
-    clickConnectButton = true
+    clickConnectButton = true,
+    timingRecords
   }: {
     emailAddress: string
     context: BrowserContext
     mailsacApiKey: string
     clickConnectButton?: boolean
+    timingRecords?: TimingRecords
   }): Promise<void> {
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
 
     await email.deleteAllMessages(emailAddress)
-    await this.loginWithEmail(emailAddress, undefined, clickConnectButton)
 
+    const loginWithEmail = new Date()
+    await this.loginWithEmail(emailAddress, undefined, clickConnectButton)
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'loginWithEmail',
+        timeMs: new Date().getTime() - loginWithEmail.getTime()
+      })
+    }
+
+    const getLatestMessageId1 = new Date()
     const firstMessageId = await email.getLatestMessageId(emailAddress)
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'getLatestMessageId1',
+        timeMs: new Date().getTime() - getLatestMessageId1.getTime()
+      })
+    }
     if (!firstMessageId) {
       throw new Error('No messageId found')
     }
 
+    const getEmailBody1 = new Date()
     const firstEmailBody = await email.getEmailBody(emailAddress, firstMessageId)
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'getEmailBody1',
+        timeMs: new Date().getTime() - getEmailBody1.getTime()
+      })
+    }
+
     let otp = ''
     if (email.isApproveEmail(firstEmailBody)) {
       const url = email.getApproveUrlFromBody(firstEmailBody)
 
+      const deleteAllMessages = new Date()
       await email.deleteAllMessages(emailAddress)
+      if (timingRecords) {
+        timingRecords.push({
+          item: 'deleteAllMessages',
+          timeMs: new Date().getTime() - deleteAllMessages.getTime()
+        })
+      }
 
+      const loadDeviceRegistrationPage = new Date()
       const drp = new DeviceRegistrationPage(await context.newPage(), url)
       drp.load()
       await drp.approveDevice()
       await drp.close()
+      if (timingRecords) {
+        timingRecords.push({
+          item: 'loadDeviceRegistrationPage',
+          timeMs: new Date().getTime() - loadDeviceRegistrationPage.getTime()
+        })
+      }
 
+      const getLatestMessageId2 = new Date()
       const secondMessageId = await email.getLatestMessageId(emailAddress)
       if (!secondMessageId) {
         throw new Error('No messageId found')
       }
+      if (timingRecords) {
+        timingRecords.push({
+          item: 'getLatestMessageId2',
+          timeMs: new Date().getTime() - getLatestMessageId2.getTime()
+        })
+      }
 
+      const getEmailBody2 = new Date()
       const secondEmailBody = await email.getEmailBody(emailAddress, secondMessageId)
+      if (timingRecords) {
+        timingRecords.push({
+          item: 'getEmailBody2',
+          timeMs: new Date().getTime() - getEmailBody2.getTime()
+        })
+      }
       if (email.isApproveEmail(secondEmailBody)) {
         throw new Error('Unexpected approve email after already approved')
       }
@@ -248,7 +301,14 @@ export class ModalPage {
       otp = email.getOtpCodeFromBody(firstEmailBody)
     }
 
+    const enterOTP = new Date()
     await this.enterOTP(otp)
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'enterOTP',
+        timeMs: new Date().getTime() - enterOTP.getTime()
+      })
+    }
   }
 
   async loginWithEmail(email: string, validate = true, clickConnectButton = true) {
