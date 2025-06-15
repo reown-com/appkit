@@ -96,6 +96,13 @@ export class ModalValidator {
     )
   }
 
+  async expectActiveProfileWalletItemToExist() {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    await expect(activeProfileWalletItem).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectActiveProfileWalletItemAddress(address: string) {
     const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
     await expect(activeProfileWalletItem).toBeVisible({

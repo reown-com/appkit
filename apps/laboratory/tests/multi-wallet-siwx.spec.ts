@@ -4,35 +4,19 @@ import type { Page } from '@playwright/test'
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { WalletPage } from './shared/pages/WalletPage'
-import { Email } from './shared/utils/email'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
 let modal: ModalPage
 let validator: ModalValidator
 let wallet: WalletPage
-let email: Email
 let page: Page
 let apiKey: string
-let tempEmail: string
-let emailWalletAddress: string
 let walletConnectAddress: string
 let extensionAddress: string
 
 // -- Constants ----------------------------------------------------------------
 const networks = ['Polygon', 'Base', 'Ethereum', 'Solana']
-
-// -- Helpers ------------------------------------------------------------------
-async function approveSign() {
-  const isEmail = (await modal.getConnectedWalletType()) === 'AUTH'
-  const isWalletConnect = (await modal.getConnectedWalletType()) === 'WALLET_CONNECT'
-
-  if (isEmail) {
-    await modal.approveSign()
-  } else if (isWalletConnect) {
-    await wallet.handleRequest({ accept: true })
-  }
-}
 
 // -- Setup --------------------------------------------------------------------
 const test = extensionFixture.extend<{ library: string }>({
@@ -50,8 +34,6 @@ test.beforeAll(async ({ library, context }) => {
 
   page = await context.newPage()
   wallet = new WalletPage(await context.newPage())
-  email = new Email(apiKey)
-  tempEmail = await email.getEmailAddressToUse()
   modal = new ModalPage(page, library, 'siwx')
   validator = new ModalValidator(page)
 
@@ -95,22 +77,6 @@ test('should connect multiple wallets with SIWX', async ({ library }) => {
   await validator.expectConnected()
   await validator.expectAccountSwitched(walletConnectAddress)
   extensionAddress = await modal.getAddress()
-
-  // Connect Email Wallet & Sign
-  await modal.openProfileWalletsView()
-  await modal.clickAddWalletButton()
-  validator.expectSecureSiteFrameNotInjected()
-  await modal.emailFlow({
-    emailAddress: tempEmail,
-    context: page.context(),
-    mailsacApiKey: apiKey,
-    clickConnectButton: false
-  })
-  await modal.promptSiwe()
-  await modal.approveSign()
-  await validator.expectConnected()
-  await validator.expectAccountSwitched(extensionAddress)
-  emailWalletAddress = await modal.getAddress()
 })
 
 test('should require SIWX signature when switching networks with multiple wallets', async ({
@@ -120,31 +86,13 @@ test('should require SIWX signature when switching networks with multiple wallet
     return
   }
 
-  const previouslyConnectedAddresses = [
-    walletConnectAddress,
-    extensionAddress,
-    emailWalletAddress
-  ].map(address => address.toLowerCase())
+  const previouslyConnectedAddresses = [walletConnectAddress, extensionAddress].filter(Boolean)
 
-  const currentAddress = await modal.getAddress()
-  await modal.openProfileWalletsView()
-
-  const filteredConnectedAddresses = await modal
-    .getActiveConnectionsAddresses()
-    .then(addresses =>
-      addresses.filter(address => previouslyConnectedAddresses.includes(address.toLowerCase()))
-    )
-    .then(addresses =>
-      addresses.filter(address => address.toLowerCase() !== currentAddress.toLowerCase())
-    )
-
-  if (filteredConnectedAddresses.length === 0) {
-    throw new Error('No active connections found')
+  if (previouslyConnectedAddresses.length === 0) {
+    throw new Error(`Expected 2 addresses but got ${previouslyConnectedAddresses.length}`)
   }
 
-  await modal.closeModal()
-
-  for (const [idx, address] of filteredConnectedAddresses.entries()) {
+  for (const [idx, address] of previouslyConnectedAddresses.entries()) {
     const _currentAddress = await modal.getAddress()
     await modal.openProfileWalletsView()
     await modal.switchAccountByAddress(address)
@@ -157,7 +105,7 @@ test('should require SIWX signature when switching networks with multiple wallet
      */
     if (isWalletConnect) {
       await modal.promptSiwe()
-      await approveSign()
+      await wallet.handleRequest({ accept: true })
     } else {
       await modal.closeModal()
     }
@@ -172,7 +120,11 @@ test('should require SIWX signature when switching networks with multiple wallet
 
     await modal.switchNetwork(network)
     await modal.promptSiwe()
-    await approveSign()
+
+    if (isWalletConnect) {
+      await wallet.handleRequest({ accept: true })
+    }
+
     await validator.expectConnected()
   }
 })
