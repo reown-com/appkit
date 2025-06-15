@@ -58,6 +58,7 @@ export interface ChainControllerState {
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
   isSwitchingNamespace: boolean
+  lastConnectedSIWECaipNetwork?: CaipNetwork
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -757,6 +758,14 @@ const controller = {
     }
 
     return ChainController.getAllRequestedCaipNetworks()
+  },
+
+  setLastConnectedSIWECaipNetwork(network: CaipNetwork | undefined) {
+    state.lastConnectedSIWECaipNetwork = network
+  },
+
+  getLastConnectedSIWECaipNetwork(): CaipNetwork | undefined {
+    return state.lastConnectedSIWECaipNetwork
   }
 }
 
