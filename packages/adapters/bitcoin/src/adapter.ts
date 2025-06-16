@@ -11,6 +11,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
@@ -20,7 +21,6 @@ import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
-import type { BitcoinConnector } from './utils/BitcoinConnector.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {

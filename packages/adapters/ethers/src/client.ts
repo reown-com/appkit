@@ -17,7 +17,7 @@ import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
 import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { AdapterBlueprint, ChainAdapterConnection } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import { EthersMethods } from './utils/EthersMethods.js'
@@ -31,10 +31,14 @@ export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider?: UniversalProvider
+  private chainAdapterConnection: ChainAdapterConnection
 
   constructor() {
     super({
       adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS,
+      namespace: CommonConstantsUtil.CHAIN.EVM
+    })
+    this.chainAdapterConnection = new ChainAdapterConnection({
       namespace: CommonConstantsUtil.CHAIN.EVM
     })
   }

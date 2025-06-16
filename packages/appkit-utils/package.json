@@ -24,6 +24,11 @@
       "types": "./dist/types/exports/solana.d.ts",
       "import": "./dist/esm/exports/solana.js",
       "default": "./dist/esm/exports/solana.js"
+    },
+    "./bitcoin": {
+      "types": "./dist/types/exports/bitcoin.d.ts",
+      "import": "./dist/esm/exports/bitcoin.js",
+      "default": "./dist/esm/exports/bitcoin.js"
     }
   },
   "typesVersions": {
