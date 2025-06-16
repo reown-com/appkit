@@ -52,7 +52,7 @@ export class Email {
   async getEmailBody(email: string, messageId: string): Promise<string> {
     const result = await this.mailsac.messages.getBodyPlainText(email, messageId)
 
-    return result.data
+    return String(result.data)
   }
 
   isApproveEmail(body: string): boolean {
