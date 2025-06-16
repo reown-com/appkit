@@ -1371,6 +1371,7 @@ export abstract class AppKitBaseClient {
 
       this.universalProvider.on('chainChanged', (chainId: number | string) => {
         const isMultiChain = this.chainNamespaces.length > 1
+        const hasAdapters = (this.options.adapters ?? []).length > 0
 
         // eslint-disable-next-line eqeqeq
         const caipNetwork = this.getCaipNetworks().find(c => c.id == chainId)
@@ -1382,7 +1383,7 @@ export abstract class AppKitBaseClient {
           return
         }
 
-        if (currentCaipNetwork?.id !== caipNetwork?.id && !isMultiChain) {
+        if (currentCaipNetwork?.id !== caipNetwork?.id && (!isMultiChain || !hasAdapters)) {
           this.setCaipNetwork(caipNetwork)
         }
       })
