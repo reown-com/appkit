@@ -250,6 +250,18 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   public async switchNetwork(_caipNetworkId: string): Promise<void> {
     throw new Error(`${this.name} wallet does not support network switching`)
   }
+
+  public async sendRawTransaction(
+    _params: BitcoinConnector.SendRawTransactionParams
+  ): Promise<string> {
+    return Promise.reject(
+      new MethodNotSupportedError(
+        this.id,
+        'sendRawTransaction',
+        'This wallet does not support broadcasting raw transactions. Please broadcast it manually or use a different wallet.'
+      )
+    )
+  }
 }
 
 export namespace WalletStandardConnector {
