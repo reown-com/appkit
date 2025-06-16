@@ -2,6 +2,7 @@
 import type { OnRampProvider, SocialProvider, SwapProvider } from '@reown/appkit-common'
 import { AlertController, ApiController, ConstantsUtil } from '@reown/appkit-controllers'
 import type {
+  EmailCaptureOptions,
   FeatureConfigMap,
   FeatureID,
   RemoteFeatures,
@@ -19,7 +20,8 @@ const FEATURE_KEYS: FeatureKey[] = [
   'swaps',
   'onramp',
   'activity',
-  'reownBranding'
+  'reownBranding',
+  'emailCapture'
 ]
 
 const featureConfig = {
@@ -151,6 +153,16 @@ const featureConfig = {
 
       return Boolean(localValue)
     }
+  },
+  emailCapture: {
+    apiFeatureName: 'email_capture' as const,
+    localFeatureName: 'emailCapture',
+    returnType: false as EmailCaptureOptions[] | boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig): EmailCaptureOptions[] | false =>
+      apiConfig.isEnabled && ((apiConfig.config ?? []) as EmailCaptureOptions[]),
+    processFallback: (_localValue: unknown): EmailCaptureOptions[] | boolean => false
   }
 }
 
