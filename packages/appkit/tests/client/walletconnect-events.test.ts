@@ -1,6 +1,7 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, ConnectionController } from '@reown/appkit-controllers'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { ChainController, ConnectionController, StorageUtil } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'
@@ -47,7 +48,14 @@ describe('WalletConnect Events', () => {
       expect(setUnsupportedNetworkSpy).toHaveBeenCalledWith('unknown_chain_id')
     })
 
-    it('should not call setCaipNetwork if multi-chain', async () => {
+    it('should not call setCaipNetwork if any of the namespaces is connected', async () => {
+      vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockImplementation(namespace => {
+        if (namespace === 'solana') {
+          return 'WALLET_CONNECT'
+        }
+
+        return undefined
+      })
       const appkit = new AppKit({
         ...mockOptions,
         adapters: [],
@@ -71,7 +79,11 @@ describe('WalletConnect Events', () => {
       expect(setActiveCaipNetwork).not.toHaveBeenCalledWith(mainnet)
     })
 
-    it('should call setCaipNetwork if single-chain', async () => {
+    it('should call setCaipNetwork any of the namespaces is not connected', async () => {
+      vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockImplementation(() => {
+        return undefined
+      })
+
       const appkit = new AppKit({
         ...mockOptions,
         networks: [mainnet, sepolia],
