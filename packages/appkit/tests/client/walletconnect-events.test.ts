@@ -1,6 +1,5 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import { ChainController, ConnectionController, StorageUtil } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
