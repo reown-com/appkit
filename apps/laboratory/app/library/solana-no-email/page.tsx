@@ -21,6 +21,7 @@ const config = {
   adapters: [solanaWeb3JsAdapter],
   networks,
   defaultNetwork: solana,
+  customWallets: ConstantsUtil.CustomWallets,
   features: {
     legalCheckbox: true,
     email: false,

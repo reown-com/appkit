@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, NetworkUtil } from '@reown/appkit-common'
 import {
@@ -285,7 +285,11 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
   describe('getSessions', () => {
     beforeEach(() => {
-      vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_token')
+      vi.spyOn(localStorage, 'getItem').mockReturnValue('mock_token')
+    })
+
+    afterEach(() => {
+      vi.spyOn(localStorage, 'getItem').mockRestore()
     })
 
     it('gets sessions', async () => {
@@ -375,6 +379,14 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
       fetchSpy.mockRejectedValueOnce(new Error())
       await expect(siwx.getSessions(`${namespace}:${id}`, address)).resolves.toEqual([])
+    })
+
+    it('should not request session if no auth token is set', async () => {
+      vi.spyOn(localStorage, 'getItem').mockReturnValueOnce(null)
+      const fetchSpy = vi.spyOn(global, 'fetch')
+
+      await expect(siwx.getSessions(`${namespace}:${id}`, address)).resolves.toEqual([])
+      expect(fetchSpy).not.toHaveBeenCalled()
     })
   })
 

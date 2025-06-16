@@ -193,7 +193,7 @@ describe('OnRampController', () => {
     AccountController.state.address = '0x123'
     OptionsController.state.projectId = 'test'
     OnRampController.resetState()
-    const meldProvider = ONRAMP_PROVIDERS[1] as OnRampProvider
+    const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
     OnRampController.setSelectedProvider(meldProvider)
     const resultUrl = new URL(meldProvider.url)
     resultUrl.searchParams.append('publicKey', MELD_PUBLIC_KEY)

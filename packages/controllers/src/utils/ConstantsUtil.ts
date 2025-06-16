@@ -15,18 +15,18 @@ const SECURE_SITE =
 
 export const ONRAMP_PROVIDERS = [
   {
-    label: 'Coinbase',
-    name: 'coinbase',
-    feeRange: '1-2%',
-    url: '',
-    supportedChains: ['eip155']
-  },
-  {
     label: 'Meld.io',
     name: 'meld',
     feeRange: '1-2%',
     url: 'https://meldcrypto.com',
     supportedChains: ['eip155', 'solana']
+  },
+  {
+    label: 'Coinbase',
+    name: 'coinbase',
+    feeRange: '1-2%',
+    url: '',
+    supportedChains: ['eip155']
   }
 ]
 
@@ -231,7 +231,7 @@ export const ConstantsUtil = {
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   DEFAULT_REMOTE_FEATURES: {
     swaps: ['1inch'] as SwapProvider[],
-    onramp: ['coinbase', 'meld'] as OnRampProvider[],
+    onramp: ['meld', 'coinbase'] as OnRampProvider[],
     email: true,
     socials: [
       'google',

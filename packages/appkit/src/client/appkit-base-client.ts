@@ -1004,6 +1004,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async syncWalletConnectAccount() {
+    const sessionNamespaces = Object.keys(this.universalProvider?.session?.namespaces || {})
     const syncTasks = this.chainNamespaces.map(async chainNamespace => {
       const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
@@ -1054,7 +1055,7 @@ export abstract class AppKitBaseClient {
           chainId,
           chainNamespace
         })
-      } else {
+      } else if (sessionNamespaces.includes(chainNamespace)) {
         this.setStatus('disconnected', chainNamespace)
       }
 
@@ -1767,7 +1768,11 @@ export abstract class AppKitBaseClient {
     return ConnectionController.subscribe(callback)
   }
 
-  public getWalletInfo() {
+  public getWalletInfo(namespace?: ChainNamespace) {
+    if (namespace) {
+      return ChainController.getAccountProp('connectedWalletInfo', namespace)
+    }
+
     return AccountController.state.connectedWalletInfo
   }
 
@@ -1846,7 +1851,14 @@ export abstract class AppKitBaseClient {
     })
   }
 
-  public subscribeWalletInfo(callback: (newState?: ConnectedWalletInfo) => void) {
+  public subscribeWalletInfo(
+    callback: (newState?: ConnectedWalletInfo) => void,
+    namespace?: ChainNamespace
+  ) {
+    if (namespace) {
+      return AccountController.subscribeKey('connectedWalletInfo', callback, namespace)
+    }
+
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
