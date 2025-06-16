@@ -1,5 +1,33 @@
 # @reown/appkit-wallet
 
+## 1.7.9
+
+### Patch Changes
+
+- [#4479](https://github.com/reown-com/appkit/pull/4479) [`c6eb67f`](https://github.com/reown-com/appkit/commit/c6eb67fe9f43fe889452f4f13030239bc23e1540) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes an issue on auth provider where it doesn't respect the last connected network and default to first available network of EVM adapter on page load
+
+- [#4472](https://github.com/reown-com/appkit/pull/4472) [`8bff121`](https://github.com/reown-com/appkit/commit/8bff12156788762e56d5aaa3cefd19f3c06db937) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - increase wallet button coverage
+
+- [#4466](https://github.com/reown-com/appkit/pull/4466) [`024a99d`](https://github.com/reown-com/appkit/commit/024a99dc650d950156378e77ec423d711a8f0004) Thanks [@tomiir](https://github.com/tomiir)! - Changes `wallet_addEthereumChain` behavior in wagmi to use the chain's original rpc url instead of blockchain API url
+
+- [#4452](https://github.com/reown-com/appkit/pull/4452) [`dd3a7dd`](https://github.com/reown-com/appkit/commit/dd3a7ddb87eaf295f453c13ccba753897cccfbce) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix OKX Wallet Bitcoin issue where it was not able to connect properly in Bitcoin environments
+
+- [#4455](https://github.com/reown-com/appkit/pull/4455) [`c2c1d78`](https://github.com/reown-com/appkit/commit/c2c1d78894283cf4d58fcdfc66c0f69a07fc9e91) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Updates Onramp provider sort
+
+- [#4464](https://github.com/reown-com/appkit/pull/4464) [`a8fa4fb`](https://github.com/reown-com/appkit/commit/a8fa4fbdfb54cc185f656276929ea9635b07a4c0) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on WalletConnect connector is not reconnecting on page load
+
+- [#4453](https://github.com/reown-com/appkit/pull/4453) [`87959b5`](https://github.com/reown-com/appkit/commit/87959b5990c15703854fe33f8123b73e5d61fe59) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on AppKit buttons with namespace where the correct account state is not being shown to the user on page load
+
+- [#4478](https://github.com/reown-com/appkit/pull/4478) [`5201905`](https://github.com/reown-com/appkit/commit/52019051165de70aa5ce300f5ca51c189408f4f7) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on multichain where we are disconnecting namespaces if they are not in the WC connection's available namespaces
+
+- [#4441](https://github.com/reown-com/appkit/pull/4441) [`00b2975`](https://github.com/reown-com/appkit/commit/00b2975fb57e67ab54c97b4154a90cc4715723b2) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors token balance util to use getAssets call only when using Auth provider
+
+- [#4494](https://github.com/reown-com/appkit/pull/4494) [`352f41b`](https://github.com/reown-com/appkit/commit/352f41bfc53c257362efbe6067ac03dc8dd92ec4) Thanks [@zoruka](https://github.com/zoruka)! - Cloud Auth SIWX skip get sessions if token is not set
+
+- Updated dependencies [[`8a42584`](https://github.com/reown-com/appkit/commit/8a425847216ef8660312c88f3f009e6f2ceb53ea), [`c6eb67f`](https://github.com/reown-com/appkit/commit/c6eb67fe9f43fe889452f4f13030239bc23e1540), [`8bff121`](https://github.com/reown-com/appkit/commit/8bff12156788762e56d5aaa3cefd19f3c06db937), [`024a99d`](https://github.com/reown-com/appkit/commit/024a99dc650d950156378e77ec423d711a8f0004), [`dd3a7dd`](https://github.com/reown-com/appkit/commit/dd3a7ddb87eaf295f453c13ccba753897cccfbce), [`c2c1d78`](https://github.com/reown-com/appkit/commit/c2c1d78894283cf4d58fcdfc66c0f69a07fc9e91), [`a8fa4fb`](https://github.com/reown-com/appkit/commit/a8fa4fbdfb54cc185f656276929ea9635b07a4c0), [`87959b5`](https://github.com/reown-com/appkit/commit/87959b5990c15703854fe33f8123b73e5d61fe59), [`5201905`](https://github.com/reown-com/appkit/commit/52019051165de70aa5ce300f5ca51c189408f4f7), [`00b2975`](https://github.com/reown-com/appkit/commit/00b2975fb57e67ab54c97b4154a90cc4715723b2), [`352f41b`](https://github.com/reown-com/appkit/commit/352f41bfc53c257362efbe6067ac03dc8dd92ec4)]:
+  - @reown/appkit-common@1.7.9
+  - @reown/appkit-polyfills@1.7.9
+
 ## 1.7.8
 
 ### Patch Changes
