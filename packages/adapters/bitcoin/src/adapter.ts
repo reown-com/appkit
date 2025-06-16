@@ -60,28 +60,25 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
 
     const connection = this.connection.getConnection({
+      address: params.address,
       connectorId: connector.id,
       connections: this.connections,
       connectors: this.connectors
     })
 
-    if (connection) {
-      const [account] = connection.accounts
+    if (connection?.account) {
+      this.emit('accountChanged', {
+        address: connection.account.address,
+        chainId: connection.caipNetwork?.id,
+        connector
+      })
 
-      if (account) {
-        this.emit('accountChanged', {
-          address: account.address,
-          chainId: connection.caipNetwork?.id,
-          connector
-        })
-
-        return {
-          id: connector.id,
-          type: connector.type,
-          address: account.address,
-          chainId: chain.id,
-          provider: connector.provider
-        }
+      return {
+        id: connector.id,
+        type: connector.type,
+        address: connection.account.address,
+        chainId: chain.id,
+        provider: connector.provider
       }
     }
 

@@ -244,28 +244,25 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
 
     const connection = this.connection.getConnection({
+      address: params.address,
       connectorId: connector.id,
       connections: this.connections,
       connectors: this.connectors
     })
 
-    if (connection) {
-      const [account] = connection.accounts
+    if (connection?.account) {
+      this.emit('accountChanged', {
+        address: connection.account.address,
+        chainId: connection.caipNetwork?.id,
+        connector
+      })
 
-      if (account) {
-        this.emit('accountChanged', {
-          address: account.address,
-          chainId: connection.caipNetwork?.id,
-          connector
-        })
-
-        return {
-          id: connector.id,
-          address: account.address,
-          chainId: params.chainId as string,
-          provider: connector as CoreProvider,
-          type: connector.type
-        }
+      return {
+        id: connector.id,
+        address: connection.account.address,
+        chainId: params.chainId as string,
+        provider: connector as CoreProvider,
+        type: connector.type
       }
     }
 

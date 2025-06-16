@@ -735,10 +735,11 @@ describe('BitcoinAdapter', () => {
         getActiveNetwork: () => bitcoin
       })
 
+      const getAccountAddressesSpy = vi
+        .spyOn(connector, 'getAccountAddresses')
+        .mockResolvedValue([{ address: 'mock_address', purpose: AddressPurpose.Payment }])
+
       const connectSpy = vi.spyOn(connector, 'connect').mockResolvedValue('mock_address')
-      const getAccountsSpy = vi.spyOn(adapter, 'getAccounts').mockResolvedValue({
-        accounts: [{ address: 'mock_address', type: 'payment', namespace: 'bip122' }]
-      })
       const listenProviderEventsSpy = vi
         .spyOn(adapter as any, 'listenProviderEvents')
         .mockImplementation(() => {})
@@ -757,8 +758,8 @@ describe('BitcoinAdapter', () => {
       })
 
       expect(connectSpy).toHaveBeenCalled()
-      expect(getAccountsSpy).toHaveBeenCalledWith({ id: connector.id })
-      expect(listenProviderEventsSpy).toHaveBeenCalledWith(connector)
+      expect(getAccountAddressesSpy).toHaveBeenCalledWith()
+      expect(listenProviderEventsSpy).toHaveBeenCalledWith(connector.id, connector.provider)
       expect(adapter.connections).toHaveLength(1)
       expect(adapter.connections[0]?.connectorId).toBe(connector.id)
     })
@@ -854,9 +855,9 @@ describe('BitcoinAdapter', () => {
       })
 
       vi.spyOn(connector, 'connect').mockResolvedValue('mock_address')
-      vi.spyOn(adapter, 'getAccounts').mockResolvedValue({
-        accounts: [{ address: 'mock_address', type: 'payment', namespace: 'bip122' }]
-      })
+      vi.spyOn(connector, 'getAccountAddresses').mockResolvedValue([
+        { address: 'mock_address', purpose: AddressPurpose.Payment }
+      ])
 
       adapter.connectors.push(connector)
 
@@ -882,9 +883,9 @@ describe('BitcoinAdapter', () => {
       })
 
       vi.spyOn(connector, 'connect').mockResolvedValue('mock_address')
-      vi.spyOn(adapter, 'getAccounts').mockResolvedValue({
-        accounts: [{ address: 'mock_address', type: 'payment', namespace: 'bip122' }]
-      })
+      vi.spyOn(connector, 'getAccountAddresses').mockResolvedValue([
+        { address: 'mock_address', purpose: AddressPurpose.Payment }
+      ])
 
       adapter.connectors.push(connector)
 
@@ -916,9 +917,9 @@ describe('BitcoinAdapter', () => {
 
       vi.spyOn(connector1, 'connect').mockRejectedValue(new Error('Connection failed'))
       vi.spyOn(connector2, 'connect').mockResolvedValue('mock_address_2')
-      vi.spyOn(adapter, 'getAccounts').mockResolvedValue({
-        accounts: [{ address: 'mock_address_2', type: 'payment', namespace: 'bip122' }]
-      })
+      vi.spyOn(connector2, 'getAccountAddresses').mockResolvedValue([
+        { address: 'mock_address_2', purpose: AddressPurpose.Payment }
+      ])
 
       adapter.connectors.push(connector1, connector2)
 
@@ -933,7 +934,7 @@ describe('BitcoinAdapter', () => {
           caipNetwork: bitcoin,
           getConnectorStorageInfo: mockGetConnectorStorageInfo
         })
-      ).resolves.not.toThrow()
+      ).rejects.toThrow('Connection failed')
 
       expect(adapter.connections).toHaveLength(1)
       expect(adapter.connections[0]?.connectorId).toBe(connector2.id)
@@ -948,9 +949,9 @@ describe('BitcoinAdapter', () => {
 
       vi.spyOn(connector, 'connect').mockResolvedValue('mock_address')
       vi.spyOn(connector, 'chains', 'get').mockReturnValue([])
-      vi.spyOn(adapter, 'getAccounts').mockResolvedValue({
-        accounts: [{ address: 'mock_address', type: 'payment', namespace: 'bip122' }]
-      })
+      vi.spyOn(connector, 'getAccountAddresses').mockResolvedValue([
+        { address: 'mock_address', purpose: AddressPurpose.Payment }
+      ])
 
       adapter.connectors.push(connector)
 
@@ -965,7 +966,7 @@ describe('BitcoinAdapter', () => {
           caipNetwork: bitcoin,
           getConnectorStorageInfo: mockGetConnectorStorageInfo
         })
-      ).resolves.not.toThrow('The connector does not support any of the requested chains')
+      ).rejects.toThrow('The connector does not support any of the requested chains')
 
       expect(adapter.connections).toHaveLength(0)
     })
@@ -978,6 +979,9 @@ describe('BitcoinAdapter', () => {
       })
 
       vi.spyOn(connector, 'connect').mockResolvedValue('')
+      vi.spyOn(connector, 'getAccountAddresses').mockResolvedValue([
+        { address: 'mock_address', purpose: AddressPurpose.Payment }
+      ])
       adapter.connectors.push(connector)
 
       mockGetConnectorStorageInfo.mockReturnValue({
