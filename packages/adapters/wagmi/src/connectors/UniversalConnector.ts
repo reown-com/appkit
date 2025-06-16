@@ -270,7 +270,6 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           return false
         }
 
-
         // If the chains are stale on the session, then the connector is unauthorized.
         const isChainsStale = await this.isChainsStale()
 
