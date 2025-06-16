@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { ChainController, ConnectionController } from '@reown/appkit-controllers'
 
@@ -19,6 +19,10 @@ describe('WalletConnect Events', () => {
     mockStorageUtil()
     mockBlockchainApiController()
     mockRemoteFeatures()
+  })
+
+  afterEach(() => {
+    vi.resetAllMocks()
   })
 
   describe('chainChanged', () => {
@@ -43,12 +47,13 @@ describe('WalletConnect Events', () => {
       expect(setUnsupportedNetworkSpy).toHaveBeenCalledWith('unknown_chain_id')
     })
 
-    it('should call setCaipNetwork', () => {
-      new AppKit({
+    it('should not call setCaipNetwork if multi-chain', async () => {
+      const appkit = new AppKit({
         ...mockOptions,
         adapters: [],
         universalProvider: mockUniversalProvider as any
       })
+      await appkit.ready()
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
       const chainChangedCallback = mockUniversalProvider.on.mock.calls.find(
@@ -60,21 +65,43 @@ describe('WalletConnect Events', () => {
       }
 
       chainChangedCallback(sepolia.id)
-      expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
+      expect(setActiveCaipNetwork).not.toHaveBeenCalledWith(sepolia)
 
       chainChangedCallback(mainnet.id.toString())
-      expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
+      expect(setActiveCaipNetwork).not.toHaveBeenCalledWith(mainnet)
+    })
+
+    it('should call setCaipNetwork if single-chain', async () => {
+      const appkit = new AppKit({
+        ...mockOptions,
+        networks: [mainnet, sepolia],
+        adapters: [],
+        universalProvider: mockUniversalProvider as any
+      })
+      await appkit.ready()
+      const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+      const chainChangedCallback = mockUniversalProvider.on.mock.calls.find(
+        ([event]) => event === 'chainChanged'
+      )?.[1]
+
+      if (!chainChangedCallback) {
+        throw new Error('chainChanged callback not found')
+      }
+
+      chainChangedCallback(sepolia.id.toString())
+      expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
     })
   })
 
   describe('display_uri', () => {
-    it('should call openUri', () => {
-      new AppKit({
+    it('should call openUri', async () => {
+      const appkit = new AppKit({
         ...mockOptions,
         adapters: [],
         universalProvider: mockUniversalProvider as any
       })
-
+      await appkit.ready()
       const setUriSpy = vi.spyOn(ConnectionController, 'setUri')
       const displayUriCallback = mockUniversalProvider.on.mock.calls.find(
         ([event]) => event === 'display_uri'
