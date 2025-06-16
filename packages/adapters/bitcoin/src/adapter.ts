@@ -13,6 +13,7 @@ import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { Connection } from '@reown/appkit/connections'
 import { bitcoin } from '@reown/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'
@@ -27,6 +28,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private api: BitcoinApi.Interface
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider: UniversalProvider | undefined = undefined
+  private connection: Connection
+
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
       namespace: ConstantsUtil.CHAIN.BITCOIN,
@@ -38,6 +41,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       ...BitcoinApi,
       ...api
     }
+
+    this.connection = new Connection({ namespace: ConstantsUtil.CHAIN.BITCOIN })
   }
 
   override async connect(
@@ -54,15 +59,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('The connector does not support any of the requested chains')
     }
 
-    const connection = this.connections.find(c => c.connectorId === connector.id)
+    const connection = this.connection.getConnection({
+      connectorId: connector.id,
+      connections: this.connections,
+      connectors: this.connectors
+    })
 
     if (connection) {
-      const account =
-        (params.address &&
-          connection.accounts.find(_account =>
-            HelpersUtil.isLowerCaseMatch(_account.address, params.address)
-          )) ||
-        connection?.accounts[0]
+      const [account] = connection.accounts
 
       if (account) {
         this.emit('accountChanged', {
@@ -85,7 +89,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const accounts = await this.getAccounts({ id: connector.id })
 
     if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-      this.listenProviderEvents(connector)
+      this.listenProviderEvents(connector.id)
     }
 
     this.emit('accountChanged', {
@@ -202,50 +206,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     caipNetwork,
     getConnectorStorageInfo
   }: AdapterBlueprint.SyncConnectionsParams) {
-    await Promise.allSettled(
-      this.connectors
-        .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
-
-          return !hasDisconnected && hasConnected
-        })
-        .map(async connector => {
-          if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-            const accounts = WcHelpersUtil.getWalletConnectAccounts(
-              this.universalProvider as UniversalProvider,
-              'bip122'
-            )
-
-            if (accounts.length > 0) {
-              this.addConnection({
-                connectorId: connector.id,
-                accounts: accounts.map(account => ({ address: account.address })),
-                caipNetwork
-              })
-            }
-
-            return
-          }
-
-          const address = await connector.connect()
-          const accounts = await this.getAccounts({ id: connector.id })
-
-          const chain = connector.chains.find(c => c.id === caipNetwork?.id) || connector.chains[0]
-
-          if (!chain) {
-            throw new Error('The connector does not support any of the requested chains')
-          }
-
-          if (address) {
-            this.listenProviderEvents(connector)
-            this.addConnection({
-              connectorId: connector.id,
-              accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
-              caipNetwork
-            })
-          }
-        })
-    )
+    await this.connection.syncConnections({
+      connectors: this.connectors,
+      caipNetwork,
+      caipNetworks: this.getCaipNetworks(),
+      universalProvider: this.universalProvider as UniversalProvider,
+      onConnection: this.addConnection.bind(this),
+      onListenProvider: this.listenProviderEvents.bind(this),
+      getConnectionStatusInfo: getConnectorStorageInfo
+    })
 
     if (connectToFirstConnector) {
       this.emitFirstAvailableConnection()
@@ -311,11 +280,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         throw new Error('BitcoinAdapter:disconnect - connector.provider is undefined')
       }
 
-      await connector.provider.disconnect()
+      const connection = this.connection.getConnection({
+        connectorId: params.id,
+        connections: this.connections,
+        connectors: this.connectors
+      })
 
-      const connection = this.connections.find(c =>
-        HelpersUtil.isLowerCaseMatch(c.connectorId, params.id)
-      )
+      await connector.provider.disconnect()
 
       this.removeProviderListeners(connector.id)
       this.deleteConnection(connector.id)
@@ -323,23 +294,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       if (this.connections.length === 0) {
         this.emit('disconnect')
       } else {
-        const [lastConnection] = this.connections.filter(c => c.accounts.length > 0)
-
-        if (lastConnection) {
-          const [account] = lastConnection.accounts
-
-          const newConnector = this.connectors.find(c =>
-            HelpersUtil.isLowerCaseMatch(c.id, lastConnection.connectorId)
-          )
-
-          if (account) {
-            this.emit('accountChanged', {
-              address: account.address,
-              chainId: lastConnection.caipNetwork?.id,
-              connector: newConnector
-            })
-          }
-        }
+        this.emitFirstAvailableConnection()
       }
 
       return { connections: connection ? [connection] : [] }
@@ -490,7 +445,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     } | null
   > = {}
 
-  private listenProviderEvents(connector: BitcoinConnector) {
+  private listenProviderEvents(connectorId: string) {
+    const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, connectorId))
+
+    if (!connector) {
+      throw new Error('Connector not found')
+    }
+
     this.removeProviderListeners(connector.id)
 
     const disconnect = () => {
@@ -507,9 +468,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
     const accountsChanged = (accounts: string[]) => {
       if (accounts.length > 0) {
-        const connection = this.connections.find(c =>
-          HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
-        )
+        const connection = this.connection.getConnection({
+          connectorId: connector.id,
+          connections: this.connections,
+          connectors: this.connectors
+        })
 
         if (!connection) {
           throw new Error('Connection not found')
@@ -581,25 +544,18 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   private emitFirstAvailableConnection() {
-    const firstConnection = this.connections.find(c => {
-      const hasAccounts = c.accounts.length > 0
-      const hasConnector = this.connectors.some(connector =>
-        HelpersUtil.isLowerCaseMatch(connector.id, c.connectorId)
-      )
-
-      return hasAccounts && hasConnector
+    const connection = this.connection.getConnection({
+      connections: this.connections,
+      connectors: this.connectors
     })
 
-    if (firstConnection) {
-      const [account] = firstConnection.accounts
-      const connector = this.connectors.find(c =>
-        HelpersUtil.isLowerCaseMatch(c.id, firstConnection.connectorId)
-      )
+    if (connection) {
+      const [account] = connection.accounts
 
       this.emit('accountChanged', {
         address: account?.address as string,
-        chainId: firstConnection.caipNetwork?.id,
-        connector
+        chainId: connection.caipNetwork?.id,
+        connector: connection.connector
       })
     }
   }

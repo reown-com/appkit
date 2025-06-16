@@ -1,6 +1,6 @@
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey, Connection as SolanaConnection } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
@@ -19,6 +19,7 @@ import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { Connection } from '@reown/appkit/connections'
 
 import { AuthProvider } from './providers/AuthProvider.js'
 import {
@@ -45,6 +46,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public wallets?: BaseWalletAdapter[]
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider: UniversalProvider | undefined
+  private connection: Connection
 
   constructor(options: AdapterOptions = {}) {
     super({
@@ -53,6 +55,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     })
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
+    this.connection = new Connection({ namespace: CommonConstantsUtil.CHAIN.SOLANA })
   }
 
   public override construct(params: AdapterBlueprint.Params): void {
@@ -62,7 +65,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       params.networks?.find(n => n.caipNetworkId === connectedCaipNetwork) || params.networks?.[0]
     const rpcUrl = caipNetwork?.rpcUrls.default.http[0] as string
     if (rpcUrl) {
-      SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+      SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))
     }
   }
 
@@ -240,15 +243,14 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
     }
 
-    const connection = this.connections.find(c => c.connectorId === connector.id)
+    const connection = this.connection.getConnection({
+      connectorId: connector.id,
+      connections: this.connections,
+      connectors: this.connectors
+    })
 
     if (connection) {
-      const account =
-        (params.address &&
-          connection.accounts.find(_account =>
-            HelpersUtil.isLowerCaseMatch(_account.address, params.address)
-          )) ||
-        connection?.accounts[0]
+      const [account] = connection.accounts
 
       if (account) {
         this.emit('accountChanged', {
@@ -276,7 +278,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
     }
 
-    SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+    SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))
 
     this.emit('accountChanged', {
       address,
@@ -318,7 +320,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       return Promise.resolve({ balance: '0.00', symbol: 'SOL' })
     }
 
-    const connection = new Connection(
+    const connection = new SolanaConnection(
       caipNetwork?.rpcUrls?.default?.http?.[0] as string,
       this.connectionSettings
     )
@@ -372,7 +374,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     if (caipNetwork?.rpcUrls?.default?.http?.[0]) {
       SolStoreUtil.setConnection(
-        new Connection(caipNetwork.rpcUrls.default.http[0], this.connectionSettings)
+        new SolanaConnection(caipNetwork.rpcUrls.default.http[0], this.connectionSettings)
       )
     }
   }
@@ -541,7 +543,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const rpcUrl = this.getCaipNetworks()?.find(n => n.id === chainId)?.rpcUrls.default
       .http[0] as string
-    const connection = new Connection(rpcUrl, this.connectionSettings)
+    const connection = new SolanaConnection(rpcUrl, this.connectionSettings)
 
     SolStoreUtil.setConnection(connection)
 
@@ -590,48 +592,15 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     caipNetwork,
     getConnectorStorageInfo
   }: AdapterBlueprint.SyncConnectionsParams) {
-    await Promise.allSettled(
-      this.connectors
-        .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectorStorageInfo(c.id)
-
-          return !hasDisconnected && hasConnected
-        })
-        .map(async connector => {
-          if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-            const accounts = WcHelpersUtil.getWalletConnectAccounts(
-              this.universalProvider as UniversalProvider,
-              'solana'
-            )
-
-            if (accounts.length > 0) {
-              this.addConnection({
-                connectorId: connector.id,
-                accounts: accounts.map(account => ({ address: account.address })),
-                caipNetwork
-              })
-            }
-          } else {
-            const address = await connector.connect({
-              chainId: caipNetwork?.id as string
-            })
-            SolStoreUtil.setConnection(
-              new Connection(
-                caipNetwork?.rpcUrls?.default?.http?.[0] as string,
-                this.connectionSettings
-              )
-            )
-            if (address) {
-              this.addConnection({
-                connectorId: connector.id,
-                accounts: [{ address }],
-                caipNetwork
-              })
-              this.listenProviderEvents(connector.id, connector.provider as SolanaProvider)
-            }
-          }
-        })
-    )
+    await this.connection.syncConnections({
+      connectors: this.connectors,
+      caipNetwork,
+      caipNetworks: this.getCaipNetworks(),
+      universalProvider: this.universalProvider as UniversalProvider,
+      onConnection: this.addConnection.bind(this),
+      onListenProvider: this.listenProviderEvents.bind(this),
+      getConnectionStatusInfo: getConnectorStorageInfo
+    })
 
     if (connectToFirstConnector) {
       this.emitFirstAvailableConnection()
@@ -651,25 +620,18 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   private emitFirstAvailableConnection() {
-    const firstConnection = this.connections.find(c => {
-      const hasAccounts = c.accounts.length > 0
-      const hasConnector = this.connectors.some(connector =>
-        HelpersUtil.isLowerCaseMatch(connector.id, c.connectorId)
-      )
-
-      return hasAccounts && hasConnector
+    const connection = this.connection.getConnection({
+      connections: this.connections,
+      connectors: this.connectors
     })
 
-    if (firstConnection) {
-      const [account] = firstConnection.accounts
-      const connector = this.connectors.find(c =>
-        HelpersUtil.isLowerCaseMatch(c.id, firstConnection.connectorId)
-      )
+    if (connection) {
+      const [account] = connection.accounts
 
       this.emit('accountChanged', {
         address: account?.address as string,
-        chainId: firstConnection.caipNetwork?.id,
-        connector
+        chainId: connection.caipNetwork?.id,
+        connector: connection.connector
       })
     }
   }

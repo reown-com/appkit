@@ -1,21 +1,27 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import type { CaipNetwork, ChainNamespace, Connection } from '@reown/appkit-common'
+import type {
+  CaipNetwork,
+  ChainNamespace,
+  Connection as ConnectionType
+} from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { type CombinedProvider, CoreHelperUtil, type Provider } from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 
+import type { ChainAdapterConnector } from '../adapters/ChainAdapterConnector.js'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
-import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 
-interface BaseSyncParams<Connector = unknown, P = unknown> {
+// -- Types ------------------------------------------------------------------
+interface BaseSyncConnectionsParams<Connector = unknown, P = unknown> {
   connectors: Connector[]
   caipNetwork?: CaipNetwork
   caipNetworks: CaipNetwork[]
   universalProvider: UniversalProvider
-  onConnection: (connection: Connection) => void
+  onConnection: (connection: ConnectionType) => void
   onListenProvider: (connectorId: string, provider: P) => void
   getConnectionStatusInfo: (connectorId: string) => {
     hasDisconnected: boolean
@@ -23,11 +29,22 @@ interface BaseSyncParams<Connector = unknown, P = unknown> {
   }
 }
 
-type SyncEvmConnections = BaseSyncParams<ChainAdapterConnector, Provider | CombinedProvider>
-type SyncBitcoinConnections = BaseSyncParams<BitcoinConnector, BitcoinConnector>
-type SyncSolanaConnections = BaseSyncParams<SolanaProvider, SolanaProvider>
+type SyncEvmConnections = BaseSyncConnectionsParams<
+  ChainAdapterConnector,
+  Provider | CombinedProvider
+>
+type SyncBitcoinConnections = BaseSyncConnectionsParams<BitcoinConnector, BitcoinConnector>
+type SyncSolanaConnections = BaseSyncConnectionsParams<SolanaProvider, SolanaProvider>
 
-export class ChainAdapterConnection {
+interface GetConnectionParams<C extends ChainAdapterConnector = ChainAdapterConnector> {
+  connectorId?: string
+  address?: string
+  connectors: C[]
+  connections: ConnectionType[]
+}
+
+// -- Class ------------------------------------------------------------------
+export class Connection {
   public namespace: ChainNamespace
 
   constructor(params: { namespace: ChainNamespace }) {
@@ -72,10 +89,13 @@ export class ChainAdapterConnection {
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-            const accounts = WcHelpersUtil.getWalletConnectAccounts(universalProvider, 'eip155')
+            const accounts = WcHelpersUtil.getWalletConnectAccounts(
+              universalProvider,
+              this.namespace
+            )
             const caipNetwork = caipNetworks.find(
               n =>
-                n.chainNamespace === 'eip155' &&
+                n.chainNamespace === this.namespace &&
                 n.id.toString() === accounts[0]?.chainId?.toString()
             )
 
@@ -91,7 +111,7 @@ export class ChainAdapterConnection {
 
             if (accounts.length > 0 && chainId) {
               const caipNetwork = caipNetworks.find(
-                n => n.chainNamespace === 'eip155' && n.id.toString() === chainId.toString()
+                n => n.chainNamespace === this.namespace && n.id.toString() === chainId.toString()
               )
 
               onConnection({
@@ -130,7 +150,10 @@ export class ChainAdapterConnection {
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-            const accounts = WcHelpersUtil.getWalletConnectAccounts(universalProvider, 'solana')
+            const accounts = WcHelpersUtil.getWalletConnectAccounts(
+              universalProvider,
+              this.namespace
+            )
 
             if (accounts.length > 0) {
               onConnection({
@@ -175,7 +198,10 @@ export class ChainAdapterConnection {
         })
         .map(async connector => {
           if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-            const accounts = WcHelpersUtil.getWalletConnectAccounts(universalProvider, 'bip122')
+            const accounts = WcHelpersUtil.getWalletConnectAccounts(
+              universalProvider,
+              this.namespace
+            )
 
             if (accounts.length > 0) {
               onConnection({
@@ -236,5 +262,60 @@ export class ChainAdapterConnection {
           }
         })
     )
+  }
+
+  /**
+   * Gets a connection based on provided parameters.
+   * If connectorId is provided, returns connection for that specific connector.
+   * Otherwise, returns the first available valid connection.
+   *
+   * @param params - Connection parameters
+   * @param params.address - Optional address to filter by
+   * @param params.connectorId - Optional connector ID to filter by
+   * @param params.connections - List of available connections
+   * @param params.connectors - List of available connectors
+   * @returns Connection or null if none found
+   */
+  getConnection({ address, connectorId, connections, connectors }: GetConnectionParams) {
+    if (connectorId) {
+      const connection = connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+      )
+
+      if (!connection) {
+        return null
+      }
+
+      const connector = connectors.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.id, connection.connectorId)
+      )
+
+      const account = address
+        ? connection.accounts.find(a => HelpersUtil.isLowerCaseMatch(a.address, address))
+        : connection.accounts[0]
+
+      return { ...connection, account, connector }
+    }
+
+    const validConnection = connections.find(
+      c =>
+        c.accounts.length > 0 &&
+        connectors.some(conn => HelpersUtil.isLowerCaseMatch(conn.id, c.connectorId))
+    )
+
+    if (validConnection) {
+      const [account] = validConnection.accounts
+      const connector = connectors.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.id, validConnection.connectorId)
+      )
+
+      return {
+        ...validConnection,
+        account,
+        connector
+      }
+    }
+
+    return null
   }
 }
