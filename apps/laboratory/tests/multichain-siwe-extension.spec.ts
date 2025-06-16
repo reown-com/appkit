@@ -80,6 +80,9 @@ extensionTest('it should switch networks and sign siwe', async () => {
   // Solana doesn't prompt siwe on network switch
   await modalValidator.expectNetworkButton('Solana')
   await modalValidator.expectUnauthenticated()
+
+  network = 'Ethereum'
+  await modalPage.switchNetworkWithNetworkButton(network)
 })
 
 extensionTest('it should reload the page and sign siwe if not authenticated', async () => {
