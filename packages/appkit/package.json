@@ -131,7 +131,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@reown/appkit-pay": "workspace:*",
     "@walletconnect/types": "2.21.2",
-    "@walletconnect/universal-provider": "2.21.2-canary-r-1",
+    "@walletconnect/universal-provider": "2.21.2-canary-r-3",
     "bs58": "6.0.0",
     "valtio": "1.13.2",
     "viem": ">=2.29.0"
@@ -143,7 +143,7 @@
     "@vitest/coverage-v8": "2.1.9",
     "@vue/runtime-core": "3.4.3",
     "@walletconnect/types": "2.21.0",
-    "@walletconnect/universal-provider": "2.21.2-canary-r-1",
+    "@walletconnect/universal-provider": "2.21.2-canary-r-3",
     "@vue/test-utils": "2.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",

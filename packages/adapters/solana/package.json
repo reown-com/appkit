@@ -59,7 +59,7 @@
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@wallet-standard/features": "1.1.0",
-    "@walletconnect/universal-provider": "2.21.2-canary-r-1",
+    "@walletconnect/universal-provider": "2.21.2-canary-r-3",
     "valtio": "1.13.2"
   },
   "optionalDependencies": {
