@@ -711,7 +711,7 @@ describe('EthersAdapter', () => {
           connectToFirstConnector: false,
           getConnectorStorageInfo: mockGetConnectorStorageInfo
         })
-      ).resolves.not.toThrow()
+      ).rejects.toThrow('Connection failed')
 
       expect(adapter.connections).toHaveLength(1)
       expect(adapter.connections[0]?.connectorId).toBe(connector2.id)

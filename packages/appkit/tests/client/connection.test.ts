@@ -158,7 +158,10 @@ describe('syncConnectedWalletInfo', () => {
       onRpcSuccess: vi.fn(),
       onRpcError: vi.fn(),
       onNotConnected: vi.fn(),
-      onConnect: vi.fn()
+      onConnect: vi.fn(),
+      onSocialConnected: vi.fn(),
+      onGetSmartAccountEnabledNetworks: vi.fn(),
+      onSetPreferredAccount: vi.fn()
     } as any
 
     appKit['syncConnectedWalletInfo']('eip155')
@@ -186,7 +189,10 @@ describe('syncConnectedWalletInfo', () => {
       onRpcSuccess: vi.fn(),
       onRpcError: vi.fn(),
       onNotConnected: vi.fn(),
-      onConnect: vi.fn()
+      onConnect: vi.fn(),
+      onSocialConnected: vi.fn(),
+      onGetSmartAccountEnabledNetworks: vi.fn(),
+      onSetPreferredAccount: vi.fn()
     } as any
 
     vi.spyOn(StorageUtil, 'getConnectedSocialProvider').mockReturnValueOnce('mock-social')

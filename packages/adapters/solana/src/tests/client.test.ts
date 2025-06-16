@@ -501,7 +501,7 @@ describe('SolanaAdapter', () => {
           caipNetwork: mockCaipNetworks[0],
           getConnectorStorageInfo: mockGetConnectorStorageInfo
         })
-      ).resolves.not.toThrow()
+      ).rejects.toThrow('Connection failed')
 
       expect(adapter.connections).toHaveLength(1)
       expect(adapter.connections[0]?.connectorId).toBe(mockConnector2.id)
