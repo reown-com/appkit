@@ -16,6 +16,7 @@ export function WagmiSignMessageTest() {
 
   const { signMessageAsync, isPending } = useSignMessage()
   const { data: walletClient } = useWalletClient()
+  // eslint-disable-next-line no-console
   console.log({ walletClient })
   const [currCaipAddress, setCurrCaipAddress] = React.useState<string | undefined>()
   const [signature, setSignature] = React.useState<string | undefined>()
