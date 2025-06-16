@@ -1370,10 +1370,6 @@ export abstract class AppKitBaseClient {
       })
 
       this.universalProvider.on('chainChanged', (chainId: number | string) => {
-        const isAnyConnectorConnected = Object.keys(this.chainAdapters || {}).some(ns =>
-          StorageUtil.getConnectedConnectorId(ns as ChainNamespace)
-        )
-
         // eslint-disable-next-line eqeqeq
         const caipNetwork = this.getCaipNetworks().find(c => c.id == chainId)
         const currentCaipNetwork = this.getCaipNetwork()
@@ -1384,7 +1380,7 @@ export abstract class AppKitBaseClient {
           return
         }
 
-        if (currentCaipNetwork?.id !== caipNetwork?.id && !isAnyConnectorConnected) {
+        if (currentCaipNetwork?.id !== caipNetwork?.id) {
           this.setCaipNetwork(caipNetwork)
         }
       })
