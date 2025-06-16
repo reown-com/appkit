@@ -22,7 +22,7 @@ describe('WalletConnect Events', () => {
   })
 
   afterEach(() => {
-    vi.resetAllMocks()
+    vi.restoreAllMocks()
   })
 
   describe('chainChanged', () => {
