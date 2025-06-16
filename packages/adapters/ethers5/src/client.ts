@@ -352,7 +352,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     WcHelpersUtil.listenWcProvider({
       universalProvider,
-      namespace: 'eip155',
+      namespace: CommonConstantsUtil.CHAIN.EVM,
       onConnect: accounts => {
         if (accounts.length > 0) {
           const chainId = accounts[0]?.chainId as number | string
@@ -378,7 +378,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
         this.removeProviderListeners(wcConnectorId)
         this.deleteConnection(wcConnectorId)
 
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), wcConnectorId)) {
+        if (
+          HelpersUtil.isLowerCaseMatch(
+            this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
+            wcConnectorId
+          )
+        ) {
           this.emitFirstAvailableConnection()
         }
 
@@ -398,7 +403,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
           const chainId = accounts[0]?.chainId as number | string
 
-          if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), wcConnectorId)) {
+          if (
+            HelpersUtil.isLowerCaseMatch(
+              this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
+              wcConnectorId
+            )
+          ) {
             this.emit('accountChanged', {
               address: accounts[0]?.address as Address,
               chainId,
@@ -408,7 +418,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
       },
       onChainChanged: chainId => {
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), wcConnectorId)) {
+        if (
+          HelpersUtil.isLowerCaseMatch(
+            this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
+            wcConnectorId
+          )
+        ) {
           this.emit('switchNetwork', {
             chainId
           })
@@ -422,7 +437,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
         if (connection) {
           const caipNetwork = this.getCaipNetworks()
-            .filter(n => n.chainNamespace === 'eip155')
+            .filter(n => n.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
             .find(n => n.id.toString() === chainId.toString())
 
           this.addConnection({
@@ -438,7 +453,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       new WalletConnectConnector({
         provider: universalProvider,
         caipNetworks: this.getCaipNetworks(),
-        namespace: 'eip155'
+        namespace: CommonConstantsUtil.CHAIN.EVM
       })
     )
   }
@@ -632,7 +647,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     if (connection) {
       return {
         accounts: connection.accounts.map(({ address }) =>
-          CoreHelperUtil.createAccount('eip155', address, 'eoa')
+          CoreHelperUtil.createAccount(CommonConstantsUtil.CHAIN.EVM, address, 'eoa')
         )
       }
     }
@@ -646,7 +661,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
-          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+          CoreHelperUtil.createAccount(CommonConstantsUtil.CHAIN.EVM, account.address, account.type)
         )
       })
     }
@@ -656,7 +671,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
     })
 
     return {
-      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
+      accounts: accounts.map(account =>
+        CoreHelperUtil.createAccount(CommonConstantsUtil.CHAIN.EVM, account, 'eoa')
+      )
     }
   }
 
@@ -817,7 +834,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
       this.removeProviderListeners(connectorId)
       this.deleteConnection(connectorId)
 
-      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
+      if (
+        HelpersUtil.isLowerCaseMatch(
+          this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
+          connectorId
+        )
+      ) {
         this.emitFirstAvailableConnection()
       }
 
@@ -842,7 +864,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
           throw new Error('Connector not found')
         }
 
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
+        if (
+          HelpersUtil.isLowerCaseMatch(
+            this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
+            connectorId
+          )
+        ) {
           this.emit('accountChanged', {
             address: accounts[0] as Address,
             chainId: connection.caipNetwork?.id,
@@ -882,7 +909,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
         })
       }
 
-      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('eip155'), connectorId)) {
+      if (
+        HelpersUtil.isLowerCaseMatch(
+          this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
+          connectorId
+        )
+      ) {
         this.emit('switchNetwork', { chainId: chainIdNumber })
       }
     }

@@ -9,7 +9,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { type CombinedProvider, CoreHelperUtil, type Provider } from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { HelpersUtil } from '@reown/appkit-utils'
-import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
+import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 
 import type { ChainAdapterConnector } from '../adapters/ChainAdapterConnector.js'
@@ -231,16 +231,16 @@ export class Connection {
             accounts = [
               {
                 namespace: CommonConstantsUtil.CHAIN.BITCOIN,
-                publicKey: accounts[0]?.publicKey ?? '',
-                path: accounts[0]?.path ?? '',
-                address: accounts[0]?.address ?? '',
+                publicKey: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.publicKey ?? '',
+                path: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.path ?? '',
+                address: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.address ?? '',
                 type: 'payment'
               },
               {
                 namespace: CommonConstantsUtil.CHAIN.BITCOIN,
-                publicKey: accounts[1]?.publicKey ?? '',
-                path: accounts[1]?.path ?? '',
-                address: accounts[1]?.address ?? '',
+                publicKey: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.publicKey ?? '',
+                path: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.path ?? '',
+                address: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.address ?? '',
                 type: 'ordinal'
               }
             ]

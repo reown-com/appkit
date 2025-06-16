@@ -11,7 +11,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
-import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
+import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { Connection } from '@reown/appkit/connections'
 import { bitcoin } from '@reown/appkit/networks'
@@ -135,16 +135,16 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts = [
         {
           namespace: ConstantsUtil.CHAIN.BITCOIN,
-          publicKey: accounts[0]?.publicKey ?? '',
-          path: accounts[0]?.path ?? '',
-          address: accounts[0]?.address ?? '',
+          publicKey: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.publicKey ?? '',
+          path: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.path ?? '',
+          address: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.address ?? '',
           type: 'payment'
         },
         {
           namespace: ConstantsUtil.CHAIN.BITCOIN,
-          publicKey: accounts[1]?.publicKey ?? '',
-          path: accounts[1]?.path ?? '',
-          address: accounts[1]?.address ?? '',
+          publicKey: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.publicKey ?? '',
+          path: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.path ?? '',
+          address: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.address ?? '',
           type: 'ordinal'
         }
       ]
@@ -458,7 +458,12 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       this.removeProviderListeners(connector.id)
       this.deleteConnection(connector.id)
 
-      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), connector.id)) {
+      if (
+        HelpersUtil.isLowerCaseMatch(
+          this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+          connector.id
+        )
+      ) {
         this.emitFirstAvailableConnection()
       }
 
@@ -478,7 +483,12 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
           throw new Error('Connection not found')
         }
 
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), connector.id)) {
+        if (
+          HelpersUtil.isLowerCaseMatch(
+            this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+            connector.id
+          )
+        ) {
           this.emit('accountChanged', {
             address: accounts[0] as string,
             chainId: connection.caipNetwork?.id,
@@ -511,7 +521,12 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         caipNetwork: chain
       })
 
-      if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), connector.id)) {
+      if (
+        HelpersUtil.isLowerCaseMatch(
+          this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+          connector.id
+        )
+      ) {
         this.emit('switchNetwork', { chainId, address })
       }
     }
@@ -566,7 +581,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     WcHelpersUtil.listenWcProvider({
       universalProvider,
-      namespace: 'bip122',
+      namespace: CommonConstantsUtil.CHAIN.BITCOIN,
       onConnect: accounts => {
         if (accounts.length > 0) {
           const chainId = accounts[0]?.chainId as number | string
@@ -591,7 +606,12 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         this.removeProviderListeners(wcConnectorId)
         this.deleteConnection(wcConnectorId)
 
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), wcConnectorId)) {
+        if (
+          HelpersUtil.isLowerCaseMatch(
+            this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+            wcConnectorId
+          )
+        ) {
           this.emitFirstAvailableConnection()
         }
 
@@ -611,7 +631,12 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
           const chainId = accounts[0]?.chainId as number | string
 
-          if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('bip122'), wcConnectorId)) {
+          if (
+            HelpersUtil.isLowerCaseMatch(
+              this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+              wcConnectorId
+            )
+          ) {
             this.emit('accountChanged', {
               address: accounts[0]?.address as string,
               chainId,

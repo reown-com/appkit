@@ -419,7 +419,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
             throw new Error('Connector not found')
           }
 
-          if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), connectorId)) {
+          if (
+            HelpersUtil.isLowerCaseMatch(
+              this.getConnectorId(CommonConstantsUtil.CHAIN.SOLANA),
+              connectorId
+            )
+          ) {
             this.emit('accountChanged', {
               address,
               chainId: connection.caipNetwork?.id,
@@ -473,7 +478,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     WcHelpersUtil.listenWcProvider({
       universalProvider,
-      namespace: 'solana',
+      namespace: CommonConstantsUtil.CHAIN.SOLANA,
       onConnect: accounts => {
         if (accounts.length > 0) {
           const chainId = accounts[0]?.chainId as number | string
@@ -498,7 +503,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
         this.removeProviderListeners(wcConnectorId)
         this.deleteConnection(wcConnectorId)
 
-        if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), wcConnectorId)) {
+        if (
+          HelpersUtil.isLowerCaseMatch(
+            this.getConnectorId(CommonConstantsUtil.CHAIN.SOLANA),
+            wcConnectorId
+          )
+        ) {
           this.emitFirstAvailableConnection()
         }
 
@@ -518,7 +528,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
           const chainId = accounts[0]?.chainId as number | string
 
-          if (HelpersUtil.isLowerCaseMatch(this.getConnectorId('solana'), wcConnectorId)) {
+          if (
+            HelpersUtil.isLowerCaseMatch(
+              this.getConnectorId(CommonConstantsUtil.CHAIN.SOLANA),
+              wcConnectorId
+            )
+          ) {
             this.emit('accountChanged', {
               address: accounts[0]?.address as string,
               chainId,
