@@ -1,7 +1,7 @@
 import { type BrowserContext, expect } from '@playwright/test'
 
 import { SECURE_WEBSITE_URL } from './shared/constants'
-import { timingFixture } from './shared/fixtures/timing-fixture'
+import { type TimingRecords, timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metrics'
@@ -20,7 +20,8 @@ const emailSiweTest = timingFixture.extend<{ library: string }>({
 
 emailSiweTest.describe.configure({ mode: 'serial' })
 
-emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
+const beforeAllTimingRecords: TimingRecords = []
+emailSiweTest.beforeAll(async ({ browser, library }) => {
   emailSiweTest.setTimeout(300000)
 
   const start = new Date()
@@ -36,17 +37,52 @@ emailSiweTest.beforeAll(async ({ browser, library, timingRecords }) => {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
+
+  const getEmailAddressToUse = new Date()
   const tempEmail = await email.getEmailAddressToUse()
+  beforeAllTimingRecords.push({
+    item: 'getEmailAddressToUse',
+    timeMs: new Date().getTime() - getEmailAddressToUse.getTime()
+  })
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-  await page.promptSiwe()
-  await page.approveSign()
 
+  const emailFlow = new Date()
+  await page.emailFlow({
+    emailAddress: tempEmail,
+    context,
+    mailsacApiKey,
+    timingRecords: beforeAllTimingRecords
+  })
+  beforeAllTimingRecords.push({
+    item: 'emailFlow',
+    timeMs: new Date().getTime() - emailFlow.getTime()
+  })
+
+  const promptSiwe = new Date()
+  await page.promptSiwe()
+  beforeAllTimingRecords.push({
+    item: 'promptSiwe',
+    timeMs: new Date().getTime() - promptSiwe.getTime()
+  })
+
+  const approveSign = new Date()
+  await page.approveSign()
+  beforeAllTimingRecords.push({
+    item: 'approveSign',
+    timeMs: new Date().getTime() - approveSign.getTime()
+  })
+
+  const startExpectConnected = new Date()
   await validator.expectConnected()
   await validator.expectAuthenticated()
-  timingRecords.push({
+  beforeAllTimingRecords.push({
+    item: 'expectConnected',
+    timeMs: new Date().getTime() - startExpectConnected.getTime()
+  })
+
+  beforeAllTimingRecords.push({
     item: 'beforeAll',
     timeMs: new Date().getTime() - start.getTime()
   })
@@ -67,11 +103,12 @@ emailSiweTest.afterEach(async ({ browserName, timingRecords }, testInfo) => {
 emailSiweTest(
   'it should sign',
   getCanaryTagAndAnnotation('HappyPath.email-sign'),
-  async ({ library }) => {
+  async ({ library, timingRecords }) => {
     const namespace = library === 'solana' ? 'solana' : 'eip155'
     await page.sign(namespace)
     await page.approveSign()
     await validator.expectAcceptedSign()
+    timingRecords.push(...beforeAllTimingRecords)
   }
 )
 
@@ -94,7 +131,6 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.switchNetwork(targetChain)
-  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
   await validator.expectAuthenticated()
@@ -106,7 +142,6 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
 
   targetChain = 'Ethereum'
   await page.switchNetwork(targetChain)
-  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
   await validator.expectAuthenticated()
@@ -115,6 +150,15 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await page.sign(namespace)
   await page.approveSign()
   await validator.expectAcceptedSign()
+})
+
+emailSiweTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
+  const targetChain = 'Polygon'
+  await page.switchNetwork(targetChain)
+  await page.promptSiwe({ cancel: true })
+  await validator.expectNetworkButton('Ethereum')
+  await validator.expectAuthenticated()
+  await page.page.waitForTimeout(1000)
 })
 
 emailSiweTest('it should disconnect correctly', async () => {
