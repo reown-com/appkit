@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Box, Button } from '@chakra-ui/react'
 import { type Address } from 'viem'
-import { useSignMessage } from 'wagmi'
+import { useSignMessage, useWalletClient } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
@@ -15,7 +15,8 @@ export function WagmiSignMessageTest() {
   const { caipAddress, address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   const { signMessageAsync, isPending } = useSignMessage()
-
+  const { data: walletClient } = useWalletClient()
+  console.log({ walletClient })
   const [currCaipAddress, setCurrCaipAddress] = React.useState<string | undefined>()
   const [signature, setSignature] = React.useState<string | undefined>()
 
