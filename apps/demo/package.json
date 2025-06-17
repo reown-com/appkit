@@ -72,7 +72,6 @@
     "@mailsac/api": "1.0.8",
     "@reown/appkit-testing": "workspace:*",
     "@playwright/test": "1.48.2",
-    "@reown/appkit-testing": "workspace:*",
     "eslint": "8.56.0",
     "eslint-config-next": "14.1.0",
     "dotenv": "16.4.7",
