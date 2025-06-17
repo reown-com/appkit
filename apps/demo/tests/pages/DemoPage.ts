@@ -1,30 +1,55 @@
 /* eslint-disable no-await-in-loop */
-import type { BrowserContext, Page } from '@playwright/test'
+import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { ChainNamespace } from '@reown/appkit-common'
+import {
+  BASE_URL,
+  DEFAULT_SESSION_PARAMS,
+  WalletPage,
+  WalletValidator
+} from '@reown/appkit-testing'
 
-import { BASE_URL } from '../constants'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistirationPage'
+
+export type TimingRecords = { item: string; timeMs: number }[]
 
 export class DemoPage {
   public readonly page: Page
   private readonly url = BASE_URL
+  private readonly connectButton: Locator
 
   constructor(page: Page) {
     this.page = page
+    this.connectButton = this.page.getByTestId('connect-button').first()
   }
 
   async load() {
     await this.page.goto(this.url)
   }
 
-  async openNetworks() {
+  async openNetworksWithHook() {
     const hiddenButton = this.page.getByTestId('open-networks')
     // @ts-expect-error - click is not defined on the element
     await hiddenButton.evaluate(node => node.click())
     await expect(this.page.getByText('Choose Network')).toBeVisible()
+  }
+
+  async openNetworks() {
+    await this.page.getByTestId('w3m-account-select-network').click()
+    await expect(this.page.getByText('Choose Network')).toBeVisible()
+  }
+
+  async switchNetwork(network: string) {
+    await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    // The state is chain too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
+    await this.page.waitForTimeout(300)
+  }
+
+  async goBack() {
+    await this.page.getByTestId('header-back').click()
+    await this.page.waitForTimeout(300)
   }
 
   async disableChainOption(namespace: ChainNamespace) {
@@ -66,6 +91,76 @@ export class DemoPage {
       ? expect(networkSwitch).toBeVisible()
       : expect(networkSwitch).not.toBeVisible()
     await visibilityCheck
+  }
+
+  assertDefined<T>(value: T | undefined | null): T {
+    expect(value).toBeDefined()
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return value!
+  }
+
+  async getImmidiateConnectUri(timingRecords?: TimingRecords): Promise<string> {
+    await this.connectButton.click()
+    const qrLoadInitiatedTime = new Date()
+
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
+    const connect = this.page.getByTestId('wallet-selector-walletconnect')
+    await connect.waitFor({
+      state: 'visible',
+      timeout: 5000
+    })
+    await connect.click()
+    const qrLoadInitiatedTime = new Date()
+
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async qrCodeFlow(page: DemoPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
+    // eslint-disable-next-line init-declarations
+    let uri: string
+    if (!walletPage.isPageLoaded) {
+      await walletPage.load()
+    }
+    if (immediate) {
+      uri = await page.getImmidiateConnectUri()
+    } else {
+      uri = await page.getConnectUri()
+    }
+    await walletPage.connectWithUri(uri)
+
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    const walletValidator = new WalletValidator(walletPage.page)
+    await walletValidator.expectConnected()
   }
 
   async emailFlow({
