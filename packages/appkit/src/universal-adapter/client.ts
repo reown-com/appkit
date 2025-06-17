@@ -179,6 +179,10 @@ export class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
+  public override emitFirstAvailableConnection(): void {
+    return undefined
+  }
+
   public parseUnits(): AdapterBlueprint.ParseUnitsResult {
     return 0n
   }

@@ -5,7 +5,8 @@ import {
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
-  type Connection
+  type Connection,
+  type ParsedCaipAddress
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -17,10 +18,13 @@ import {
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
+import { type CombinedProvider, type Provider } from '@reown/appkit-controllers'
 import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { EthersHelpersUtil } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { AppKitBaseClient } from '../client/appkit-base-client.js'
+import { ConnectionManager } from '../connections/ConnectionManager.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import type { AppKitOptions } from '../utils/index.js'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
@@ -42,6 +46,11 @@ type EventData = {
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
+const IGNORED_CONNECTOR_IDS_FOR_LISTENER: string[] = [
+  CommonConstantsUtil.CONNECTOR_ID.AUTH,
+  CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+]
+
 /**
  * Abstract class representing a chain adapter blueprint.
  * @template Connector - The type of connector extending ChainAdapterConnector
@@ -58,7 +67,16 @@ export abstract class AdapterBlueprint<
   protected availableConnections: Connection[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
-
+  protected providerHandlers: Record<
+    string,
+    {
+      disconnect: () => void
+      accountsChanged: (accounts: string[]) => void
+      chainChanged: (chainId: string) => void
+      provider: Provider | CombinedProvider
+    } | null
+  > = {}
+  protected connectionManager?: ConnectionManager
   private eventListeners = new Map<EventName, Set<EventCallback<EventName>>>()
 
   /**
@@ -84,6 +102,12 @@ export abstract class AdapterBlueprint<
     this.projectId = params.projectId
     this.namespace = params.namespace
     this.adapterType = params.adapterType
+
+    if (this.namespace) {
+      this.connectionManager = new ConnectionManager({
+        namespace: this.namespace
+      })
+    }
   }
 
   /**
@@ -454,6 +478,224 @@ export abstract class AdapterBlueprint<
     }
 
     return connector
+  }
+
+  /**
+   * Handles connect event for a specific connector.
+   * @param {string[]} accounts - The accounts that changed
+   * @param {string} connectorId - The ID of the connector
+   */
+  protected onConnect(accounts: (ParsedCaipAddress | string)[], connectorId: string) {
+    if (accounts.length > 0) {
+      const account = accounts[0]
+      const address = typeof account === 'string' ? account : account?.address
+      const chainId = typeof account === 'string' ? undefined : account?.chainId
+
+      const caipNetwork = this.getCaipNetworks()
+        .filter(n => n.chainNamespace === this.namespace)
+        .find(n => n.id.toString() === chainId?.toString())
+
+      const connector = this.connectors.find(c => c.id === connectorId)
+
+      if (address) {
+        this.emit('accountChanged', {
+          address,
+          chainId,
+          connector
+        })
+
+        this.addConnection({
+          connectorId,
+          accounts: accounts.map(_account => {
+            if (typeof _account === 'string') {
+              return { address: _account }
+            }
+
+            return { address: _account.address }
+          }),
+          caipNetwork
+        })
+      }
+    }
+  }
+
+  /**
+   * Handles accounts changed event for a specific connector.
+   * @param {string[]} accounts - The accounts that changed
+   * @param {string} connectorId - The ID of the connector
+   */
+  protected onAccountsChanged(
+    accounts: (ParsedCaipAddress | string)[],
+    connectorId: string,
+    disconnectIfNoAccounts = true
+  ) {
+    if (accounts.length > 0) {
+      const account = accounts[0]
+      const address = typeof account === 'string' ? account : account?.address
+
+      const connection = this.connectionManager?.getConnection({
+        connectorId,
+        connections: this.connections,
+        connectors: this.connectors
+      })
+
+      if (!connection) {
+        throw new Error('Connection not found')
+      }
+
+      if (!connection.connector) {
+        throw new Error('Connector not found')
+      }
+
+      if (
+        address &&
+        HelpersUtil.isLowerCaseMatch(
+          this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
+          connectorId
+        )
+      ) {
+        this.emit('accountChanged', {
+          address,
+          chainId: connection.caipNetwork?.id,
+          connector: connection.connector
+        })
+      }
+
+      this.addConnection({
+        connectorId,
+        accounts: accounts.map(_account => {
+          if (typeof _account === 'string') {
+            return { address: _account }
+          }
+
+          return { address: _account.address }
+        }),
+        caipNetwork: connection?.caipNetwork
+      })
+    } else if (disconnectIfNoAccounts) {
+      this.onDisconnect(connectorId)
+    }
+  }
+
+  /**
+   * Handles disconnect event for a specific connector.
+   * @param {string} connectorId - The ID of the connector
+   */
+  protected onDisconnect(connectorId: string) {
+    this.removeProviderListeners(connectorId)
+    this.deleteConnection(connectorId)
+
+    if (
+      HelpersUtil.isLowerCaseMatch(this.getConnectorId(CommonConstantsUtil.CHAIN.EVM), connectorId)
+    ) {
+      this.emitFirstAvailableConnection()
+    }
+
+    if (this.connections.length === 0) {
+      this.emit('disconnect')
+    }
+  }
+
+  /**
+   * Handles chain changed event for a specific connector.
+   * @param {string} chainId - The ID of the chain that changed
+   * @param {string} connectorId - The ID of the connector
+   */
+  protected onChainChanged(chainId: string | number, connectorId: string) {
+    const formattedChainId =
+      typeof chainId === 'string' && chainId.startsWith('0x')
+        ? EthersHelpersUtil.hexStringToNumber(chainId)
+        : chainId.toString()
+
+    const connection = this.connectionManager?.getConnection({
+      connectorId,
+      connections: this.connections,
+      connectors: this.connectors
+    })
+
+    const caipNetwork = this.getCaipNetworks()
+      .filter(n => n.chainNamespace === this.namespace)
+      .find(n => n.id.toString() === formattedChainId)
+
+    if (connection) {
+      this.addConnection({
+        connectorId,
+        accounts: connection.accounts,
+        caipNetwork
+      })
+    }
+
+    if (
+      HelpersUtil.isLowerCaseMatch(this.getConnectorId(CommonConstantsUtil.CHAIN.EVM), connectorId)
+    ) {
+      this.emit('switchNetwork', { chainId: formattedChainId })
+    }
+  }
+
+  /**
+   * Listens to provider events for a specific connector.
+   * @param {string} connectorId - The ID of the connector
+   * @param {Provider | CombinedProvider} provider - The provider to listen to
+   */
+  protected listenProviderEvents(connectorId: string, provider: Provider | CombinedProvider) {
+    if (IGNORED_CONNECTOR_IDS_FOR_LISTENER.includes(connectorId)) {
+      return
+    }
+
+    const accountsChangedHandler = (accounts: string[]) =>
+      this.onAccountsChanged(accounts, connectorId)
+    const chainChangedHandler = (chainId: string) => this.onChainChanged(chainId, connectorId)
+    const disconnectHandler = () => this.onDisconnect(connectorId)
+
+    if (!this.providerHandlers[connectorId]) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
+
+      this.providerHandlers[connectorId] = {
+        provider,
+        disconnect: disconnectHandler,
+        accountsChanged: accountsChangedHandler,
+        chainChanged: chainChangedHandler
+      }
+    }
+  }
+
+  /**
+   * Removes provider listeners for a specific connector.
+   * @param {string} connectorId - The ID of the connector
+   */
+  protected removeProviderListeners(connectorId: string) {
+    if (this.providerHandlers[connectorId]) {
+      const { provider, disconnect, accountsChanged, chainChanged } =
+        this.providerHandlers[connectorId]
+
+      provider.removeListener('disconnect', disconnect)
+      provider.removeListener('accountsChanged', accountsChanged)
+      provider.removeListener('chainChanged', chainChanged)
+
+      this.providerHandlers[connectorId] = null
+    }
+  }
+
+  /**
+   * Emits the first available connection.
+   */
+  protected emitFirstAvailableConnection() {
+    const connection = this.connectionManager?.getConnection({
+      connections: this.connections,
+      connectors: this.connectors
+    })
+
+    if (connection) {
+      const [account] = connection.accounts
+
+      this.emit('accountChanged', {
+        address: account?.address as string,
+        chainId: connection.caipNetwork?.id,
+        connector: connection.connector
+      })
+    }
   }
 }
 
