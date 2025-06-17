@@ -272,6 +272,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If the chains are stale on the session, then the connector is unauthorized.
         const isChainsStale = await this.isChainsStale()
+
         if (isChainsStale && provider.session) {
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           await provider.disconnect().catch(() => {})

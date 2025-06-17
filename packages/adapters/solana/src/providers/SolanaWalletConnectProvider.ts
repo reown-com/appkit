@@ -12,6 +12,7 @@ import base58 from 'bs58'
 
 import { type RequestArguments, WcHelpersUtil } from '@reown/appkit'
 import { type CaipAddress, type CaipNetwork, ParseUtil } from '@reown/appkit-common'
+import { AssetController } from '@reown/appkit-controllers'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type {
   AnyTransaction,
@@ -38,6 +39,7 @@ export class SolanaWalletConnectProvider
   public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter)
   public readonly on = this.eventEmitter.on.bind(this.eventEmitter)
   public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)
+  readonly #version = '1.0.0' as const
 
   constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
     super({ caipNetworks: chains, namespace: 'solana', provider })
@@ -63,6 +65,14 @@ export class SolanaWalletConnectProvider
         return this.caipNetworks.find(chain => chain.caipNetworkId === chainId)
       })
       .filter(Boolean) as CaipNetwork[]
+  }
+
+  public get icon() {
+    return AssetController.state.connectorImages[this.id]
+  }
+
+  public get version() {
+    return this.#version
   }
 
   public get publicKey() {

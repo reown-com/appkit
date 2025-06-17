@@ -87,7 +87,7 @@ describe('BitcoinAdapter', () => {
     })
 
     it('should set BitcoinWalletConnectConnector', async () => {
-      adapter.setUniversalProvider(mockUniversalProvider())
+      await adapter.setUniversalProvider(mockUniversalProvider())
       expect(adapter.connectors[0]).toBeInstanceOf(BitcoinWalletConnectConnector)
       expect(adapter.connectors[0]?.chains).toEqual([])
     })
