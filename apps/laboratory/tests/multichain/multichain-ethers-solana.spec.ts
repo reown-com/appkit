@@ -1,8 +1,8 @@
 import { type BrowserContext, test } from '@playwright/test'
 
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { DEFAULT_CHAIN_NAME } from '@reown/appkit-testing'
 
-import { DEFAULT_CHAIN_NAME } from '../shared/constants'
 import { ModalPage } from '../shared/pages/ModalPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
 

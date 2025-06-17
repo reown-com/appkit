@@ -16,13 +16,6 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/types/exports/index.d.ts",
-      "import": "./dist/esm/exports/index.js",
-      "default": "./dist/esm/exports/index.js"
-    }
-  },
   "dependencies": {
     "@reown/appkit": "workspace:*"
   },
