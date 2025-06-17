@@ -1,8 +1,7 @@
 import { AddressPurpose as SatsConnectAddressPurpose } from 'sats-connect'
 
 import type { Provider } from '@reown/appkit-controllers'
-
-import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/adapters/ChainAdapterConnector.js'
+import type { ChainAdapterConnector } from '@reown/appkit/adapters'
 
 /**
  * This is the interface for a Bitcoin connector.
