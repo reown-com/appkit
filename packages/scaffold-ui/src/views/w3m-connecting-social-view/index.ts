@@ -49,9 +49,9 @@ export class W3mConnectingSocialView extends LitElement {
 
   private address = AccountController.state.address
 
-  private connectionsByNamespace = ChainController.state.activeChain
-    ? (ConnectionController.state.connections.get(ChainController.state.activeChain) ?? [])
-    : []
+  private connectionsByNamespace = ConnectionController.getConnections(
+    ChainController.state.activeChain
+  )
 
   private hasMultipleConnections = this.connectionsByNamespace.length > 0
 
@@ -85,8 +85,7 @@ export class W3mConnectingSocialView extends LitElement {
 
           if (val && val !== this.address) {
             if (this.hasMultipleConnections && isMultiWalletEnabled) {
-              RouterController.reset('Account')
-              RouterController.push('ProfileWallets')
+              RouterController.replace('ProfileWallets')
               SnackController.showSuccess('New Wallet Added')
             } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
               ModalController.close()

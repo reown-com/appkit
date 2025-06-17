@@ -27,15 +27,12 @@ export class W3mConnectCustomWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
-  @state() private connections = ConnectionController.state.connections
-
   @state() private loading = false
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      ConnectionController.subscribeKey('connections', val => (this.connections = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       this.loading = !ConnectionController.state.wcUri
@@ -61,9 +58,9 @@ export class W3mConnectCustomWidget extends LitElement {
 
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
-    const hasConnection = Array.from(this.connections.values())
-      .flatMap(connections => connections)
-      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    const hasConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
 
     return html`<wui-flex flexDirection="column" gap="xs">
       ${wallets.map(

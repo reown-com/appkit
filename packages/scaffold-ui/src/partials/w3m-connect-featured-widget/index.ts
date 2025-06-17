@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
@@ -16,8 +16,6 @@ export class W3mConnectFeaturedWidget extends LitElement {
 
   @property() public wallets: WcWallet[] = []
 
-  @state() private connections = ConnectionController.state.connections
-
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.wallets.length) {
@@ -26,9 +24,9 @@ export class W3mConnectFeaturedWidget extends LitElement {
       return null
     }
 
-    const hasConnection = Array.from(this.connections.values())
-      .flatMap(connections => connections)
-      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    const hasConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
 
     return html`
       <wui-flex flexDirection="column" gap="xs">

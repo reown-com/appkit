@@ -20,12 +20,7 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 export class W3mConnectingExternalView extends W3mConnectingWidget {
   // -- Members ------------------------------------------- //
   private externalViewUnsubscribe: (() => void)[] = []
-  private connections = this.connector
-    ? (ConnectionController.state.connections.get(this.connector?.chain) ?? [])
-    : []
-  private connectionsByNamespace = this.connector
-    ? (ConnectionController.state.connections.get(this.connector?.chain) ?? [])
-    : []
+  private connectionsByNamespace = ConnectionController.getConnections(this.connector?.chain)
   private hasMultipleConnections = this.connectionsByNamespace.length > 0
   private remoteFeatures = OptionsController.state.remoteFeatures
   private currentActiveConnectorId =
@@ -63,8 +58,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
 
         if (newActiveConnectorId !== this.currentActiveConnectorId) {
           if (this.hasMultipleConnections && isMultiWalletEnabled) {
-            RouterController.reset('Account')
-            RouterController.push('ProfileWallets')
+            RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
           } else {
             ModalController.close()
@@ -127,7 +121,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         RouterController.replace('Connect')
       } else {
         const accounts = ConnectionControllerUtil.getConnectionsByConnectorId(
-          this.connections,
+          this.connectionsByNamespace,
           this.connector.id
         ).flatMap(c => c.accounts)
 
@@ -138,8 +132,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
 
         if (newAccounts.length === 0) {
           if (this.hasMultipleConnections && isMultiWalletEnabled) {
-            RouterController.replace('Account')
-            RouterController.push('ProfileWallets')
+            RouterController.replace('ProfileWallets')
             SnackController.showSuccess('Wallet deleted')
           } else {
             ModalController.close()
@@ -150,8 +143,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
           )
 
           if (!isAllAccountsSame && isMultiWalletEnabled) {
-            RouterController.replace('Account')
-            RouterController.push('ProfileWallets')
+            RouterController.replace('ProfileWallets')
           }
         }
       }
@@ -161,7 +153,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
   private isAlreadyConnected(connector: Connector) {
     return (
       Boolean(connector) &&
-      this.connections.some(c => HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id))
+      this.connectionsByNamespace.some(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
+      )
     )
   }
 }

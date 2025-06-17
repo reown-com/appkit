@@ -44,7 +44,7 @@ interface GetConnectionParams<C extends ChainAdapterConnector = ChainAdapterConn
 }
 
 // -- Class ------------------------------------------------------------------
-export class Connection {
+export class ConnectionManager {
   public namespace: ChainNamespace
 
   constructor(params: { namespace: ChainNamespace }) {

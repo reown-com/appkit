@@ -191,6 +191,18 @@ const controller = {
     }
   },
 
+  getConnections(namespace?: ChainNamespace) {
+    return namespace ? (state.connections.get(namespace) ?? []) : []
+  },
+
+  hasAnyConnection(connectorId: string) {
+    const connections = ConnectionController.state.connections
+
+    return Array.from(connections.values())
+      .flatMap(_connections => _connections)
+      .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
+  },
+
   async connectWalletConnect() {
     if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
       if (wcConnectionPromise) {

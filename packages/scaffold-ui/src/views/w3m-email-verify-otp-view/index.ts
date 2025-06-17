@@ -23,10 +23,9 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
 
-        const connectionsByNamespace =
-          ConnectionController.state.connections.get(
-            ChainController.state.activeChain as ChainNamespace
-          ) ?? []
+        const connectionsByNamespace = ConnectionController.getConnections(
+          ChainController.state.activeChain as ChainNamespace
+        )
         const hasConnections = connectionsByNamespace.length > 0
 
         if (ChainController.state.activeChain) {
@@ -48,8 +47,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
 
         if (!OptionsController.state.siwx) {
           if (hasConnections && isMultiWalletEnabled) {
-            RouterController.reset('Account')
-            RouterController.push('ProfileWallets')
+            RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
           } else {
             ModalController.close()

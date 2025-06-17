@@ -43,8 +43,6 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  @state() private connections = ConnectionController.state.connections
-
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
   @state() private isPwaLoading = false
@@ -56,10 +54,7 @@ export class W3mSocialLoginWidget extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
-      ConnectionController.subscribeKey('connections', val => {
-        this.connections = val
-      })
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )
   }
 
@@ -249,9 +244,7 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   private hasConnection() {
-    return Array.from(this.connections.values())
-      .flatMap(connections => connections)
-      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH)
+    return ConnectionController.hasAnyConnection(CommonConstantsUtil.CONNECTOR_ID.AUTH)
   }
 }
 

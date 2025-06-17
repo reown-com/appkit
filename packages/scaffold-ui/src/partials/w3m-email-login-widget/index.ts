@@ -39,16 +39,11 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
-  @state() private connections = ConnectionController.state.connections
-
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectionController.subscribeKey('connections', val => {
-        this.connections = val
-      }),
       OptionsController.subscribeKey('remoteFeatures', val => {
         this.remoteFeatures = val
       })
@@ -69,9 +64,7 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const hasConnection = Array.from(this.connections.values())
-      .flatMap(connections => connections)
-      .some(({ connectorId }) => connectorId === ConstantsUtil.CONNECTOR_ID.AUTH)
+    const hasConnection = ConnectionController.hasAnyConnection(ConstantsUtil.CONNECTOR_ID.AUTH)
 
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
@@ -172,8 +165,7 @@ export class W3mEmailLoginWidget extends LitElement {
         )
 
         if (isMultiWalletEnabled) {
-          RouterController.reset('Account')
-          RouterController.push('ProfileWallets')
+          RouterController.replace('ProfileWallets')
           SnackController.showSuccess('New Wallet Added')
         } else {
           RouterController.replace('Account')

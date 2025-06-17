@@ -1,1 +1,1 @@
-export * from './Connection.js'
+export * from './ConnectionManager.js'

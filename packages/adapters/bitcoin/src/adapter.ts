@@ -13,7 +13,7 @@ import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { Connection } from '@reown/appkit/connections'
+import { ConnectionManager } from '@reown/appkit/connections'
 import { bitcoin } from '@reown/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'
@@ -28,7 +28,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private api: BitcoinApi.Interface
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider: UniversalProvider | undefined = undefined
-  private connection: Connection
+  private connectionManager: ConnectionManager
 
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
@@ -42,7 +42,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       ...api
     }
 
-    this.connection = new Connection({ namespace: ConstantsUtil.CHAIN.BITCOIN })
+    this.connectionManager = new ConnectionManager({ namespace: ConstantsUtil.CHAIN.BITCOIN })
   }
 
   override async connect(
@@ -59,7 +59,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('The connector does not support any of the requested chains')
     }
 
-    const connection = this.connection.getConnection({
+    const connection = this.connectionManager.getConnection({
       address: params.address,
       connectorId: connector.id,
       connections: this.connections,
@@ -203,7 +203,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     caipNetwork,
     getConnectorStorageInfo
   }: AdapterBlueprint.SyncConnectionsParams) {
-    await this.connection.syncConnections({
+    await this.connectionManager.syncConnections({
       connectors: this.connectors,
       caipNetwork,
       caipNetworks: this.getCaipNetworks(),
@@ -277,7 +277,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         throw new Error('BitcoinAdapter:disconnect - connector.provider is undefined')
       }
 
-      const connection = this.connection.getConnection({
+      const connection = this.connectionManager.getConnection({
         connectorId: params.id,
         connections: this.connections,
         connectors: this.connectors
@@ -470,7 +470,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
     const accountsChanged = (accounts: string[]) => {
       if (accounts.length > 0) {
-        const connection = this.connection.getConnection({
+        const connection = this.connectionManager.getConnection({
           connectorId: connector.id,
           connections: this.connections,
           connectors: this.connectors
@@ -556,7 +556,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   private emitFirstAvailableConnection() {
-    const connection = this.connection.getConnection({
+    const connection = this.connectionManager.getConnection({
       connections: this.connections,
       connectors: this.connectors
     })

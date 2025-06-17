@@ -17,7 +17,7 @@ import { ProviderUtil } from '@reown/appkit-utils'
 import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { Connection } from '@reown/appkit/connections'
+import { ConnectionManager } from '@reown/appkit/connections'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import { EthersMethods } from './utils/EthersMethods.js'
@@ -31,14 +31,14 @@ export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider?: UniversalProvider
-  private connection: Connection
+  private connectionManager: ConnectionManager
 
   constructor() {
     super({
       adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS,
       namespace: CommonConstantsUtil.CHAIN.EVM
     })
-    this.connection = new Connection({
+    this.connectionManager = new ConnectionManager({
       namespace: CommonConstantsUtil.CHAIN.EVM
     })
   }
@@ -327,7 +327,7 @@ export class EthersAdapter extends AdapterBlueprint {
     connectToFirstConnector,
     getConnectorStorageInfo
   }: AdapterBlueprint.SyncConnectionsParams) {
-    await this.connection.syncConnections({
+    await this.connectionManager.syncConnections({
       connectors: this.connectors,
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
@@ -426,7 +426,7 @@ export class EthersAdapter extends AdapterBlueprint {
           })
         }
 
-        const connection = this.connection.getConnection({
+        const connection = this.connectionManager.getConnection({
           connectorId: wcConnectorId,
           connections: this.connections,
           connectors: this.connectors
@@ -501,7 +501,7 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Connector not found')
     }
 
-    const connection = this.connection.getConnection({
+    const connection = this.connectionManager.getConnection({
       address,
       connectorId: id,
       connections: this.connections,
@@ -559,7 +559,7 @@ export class EthersAdapter extends AdapterBlueprint {
         connectorId: id,
         accounts: authAccounts
           ? authAccounts.map(account => ({ address: account.address }))
-          : [{ address: _address }],
+          : accounts.map(account => ({ address: account })),
         caipNetwork,
         auth: {
           name: StorageUtil.getConnectedSocialProvider(),
@@ -648,7 +648,7 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Provider not found')
     }
 
-    const connection = this.connection.getConnection({
+    const connection = this.connectionManager.getConnection({
       connectorId: params.id,
       connections: this.connections,
       connectors: this.connectors
@@ -695,7 +695,7 @@ export class EthersAdapter extends AdapterBlueprint {
         throw new Error('Connector not found')
       }
 
-      const connection = this.connection.getConnection({
+      const connection = this.connectionManager.getConnection({
         connectorId: params.id,
         connections: this.connections,
         connectors: this.connectors
@@ -797,7 +797,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   private emitFirstAvailableConnection() {
-    const connection = this.connection.getConnection({
+    const connection = this.connectionManager.getConnection({
       connections: this.connections,
       connectors: this.connectors
     })
@@ -842,7 +842,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
-        const connection = this.connection.getConnection({
+        const connection = this.connectionManager.getConnection({
           connectorId,
           connections: this.connections,
           connectors: this.connectors
@@ -883,7 +883,7 @@ export class EthersAdapter extends AdapterBlueprint {
       const chainIdNumber =
         typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
 
-      const connection = this.connection.getConnection({
+      const connection = this.connectionManager.getConnection({
         connectorId,
         connections: this.connections,
         connectors: this.connectors

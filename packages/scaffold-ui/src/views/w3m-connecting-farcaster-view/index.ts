@@ -208,8 +208,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = true
-        const connectionsByNamespace =
-          ConnectionController.state.connections.get(this.authConnector.chain) ?? []
+        const connectionsByNamespace = ConnectionController.getConnections(this.authConnector.chain)
         const hasConnections = connectionsByNamespace.length > 0
         await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
@@ -222,8 +221,7 @@ export class W3mConnectingFarcasterView extends LitElement {
         }
         this.loading = false
         if (hasConnections && isMultiWalletEnabled) {
-          RouterController.reset('Account')
-          RouterController.push('ProfileWallets')
+          RouterController.replace('ProfileWallets')
           SnackController.showSuccess('New Wallet Added')
         } else {
           ModalController.close()

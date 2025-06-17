@@ -19,7 +19,7 @@ import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { Connection } from '@reown/appkit/connections'
+import { ConnectionManager } from '@reown/appkit/connections'
 
 import { AuthProvider } from './providers/AuthProvider.js'
 import {
@@ -46,7 +46,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public wallets?: BaseWalletAdapter[]
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider: UniversalProvider | undefined
-  private connection: Connection
+  private connectionManager: ConnectionManager
 
   constructor(options: AdapterOptions = {}) {
     super({
@@ -55,7 +55,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     })
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
-    this.connection = new Connection({ namespace: CommonConstantsUtil.CHAIN.SOLANA })
+    this.connectionManager = new ConnectionManager({ namespace: CommonConstantsUtil.CHAIN.SOLANA })
   }
 
   public override construct(params: AdapterBlueprint.Params): void {
@@ -243,7 +243,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
     }
 
-    const connection = this.connection.getConnection({
+    const connection = this.connectionManager.getConnection({
       address: params.address,
       connectorId: connector.id,
       connections: this.connections,
@@ -604,7 +604,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     caipNetwork,
     getConnectorStorageInfo
   }: AdapterBlueprint.SyncConnectionsParams) {
-    await this.connection.syncConnections({
+    await this.connectionManager.syncConnections({
       connectors: this.connectors,
       caipNetwork,
       caipNetworks: this.getCaipNetworks(),
@@ -632,7 +632,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   private emitFirstAvailableConnection() {
-    const connection = this.connection.getConnection({
+    const connection = this.connectionManager.getConnection({
       connections: this.connections,
       connectors: this.connectors
     })

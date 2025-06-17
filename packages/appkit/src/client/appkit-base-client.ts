@@ -453,9 +453,7 @@ export abstract class AppKitBaseClient {
         const activeChain = ChainController.state.activeChain
         const adapter = this.getAdapter(activeChain)
         const chainId = this.getCaipNetwork(activeChain)?.id
-        const connections = activeChain
-          ? (ConnectionController.state.connections.get(activeChain) ?? [])
-          : []
+        const connections = ConnectionController.getConnections(activeChain)
         const isMultiWallet = this.remoteFeatures.multiWallet
         const isSIWXEnabled = Boolean(OptionsController.state.siwx)
         const hasConnections = connections.length > 0
@@ -1903,9 +1901,7 @@ export abstract class AppKitBaseClient {
     const accountState = ChainController.getAccountData(namespace)
     const activeChain = ChainController.state.activeChain as ChainNamespace
     const activeConnectorId = StorageUtil.getConnectedConnectorId(namespace || activeChain)
-    const connections = namespace
-      ? (ConnectionController.state.connections.get(namespace) ?? [])
-      : []
+    const connections = ConnectionController.getConnections(namespace)
     const allAccounts = connections.flatMap(connection =>
       connection.accounts.map(({ address, type }) =>
         CoreHelperUtil.createAccount(

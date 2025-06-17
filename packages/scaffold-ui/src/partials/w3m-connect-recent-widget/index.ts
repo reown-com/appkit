@@ -31,14 +31,11 @@ export class W3mConnectRecentWidget extends LitElement {
 
   @state() private loading = false
 
-  @state() private connections = ConnectionController.state.connections
-
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      ConnectionController.subscribeKey('connections', val => (this.connections = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       this.loading = !ConnectionController.state.wcUri
@@ -63,9 +60,9 @@ export class W3mConnectRecentWidget extends LitElement {
       return null
     }
 
-    const hasConnection = Array.from(this.connections.values())
-      .flatMap(connections => connections)
-      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    const hasConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
 
     return html`
       <wui-flex flexDirection="column" gap="xs">

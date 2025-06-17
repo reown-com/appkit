@@ -78,7 +78,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
   const chainAccountState = state.chains.get(chainNamespace)?.accountState
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
   const activeConnectorId = activeConnectorIds[chainNamespace]
-  const connections = ConnectionController.state.connections.get(chainNamespace) ?? []
+  const connections = ConnectionController.getConnections(chainNamespace)
   const allAccounts = connections.flatMap(connection =>
     connection.accounts.map(({ address }) =>
       CoreHelperUtil.createAccount(chainNamespace, address, 'eoa')

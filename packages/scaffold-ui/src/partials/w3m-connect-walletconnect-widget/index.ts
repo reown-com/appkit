@@ -26,14 +26,11 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   @state() private connectorImages = AssetController.state.connectorImages
 
-  @state() private connections = ConnectionController.state.connections
-
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      AssetController.subscribeKey('connectorImages', val => (this.connectorImages = val)),
-      ConnectionController.subscribeKey('connections', val => (this.connections = val))
+      AssetController.subscribeKey('connectorImages', val => (this.connectorImages = val))
     )
   }
 
@@ -58,9 +55,9 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
     const connectorImage = connector.imageUrl || this.connectorImages[connector?.imageId ?? '']
 
-    const hasConnection = Array.from(this.connections.values())
-      .flatMap(connections => connections)
-      .some(({ connectorId }) => connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    const hasConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
 
     return html`
       <wui-list-wallet

@@ -16,7 +16,7 @@ interface ExcludeConnectorAddressFromConnectionsParamters {
 export const ConnectionControllerUtil = {
   getConnectionStatus(connection: Connection, namespace: ChainNamespace) {
     const connectedConnectorId = ConnectorController.state.activeConnectorIds[namespace]
-    const connections = ConnectionController.state.connections.get(namespace) ?? []
+    const connections = ConnectionController.getConnections(namespace)
 
     const isConnectorConnected =
       Boolean(connectedConnectorId) && connection.connectorId === connectedConnectorId
@@ -73,7 +73,7 @@ export const ConnectionControllerUtil = {
 
     const activeConnectorId = ConnectorController.state.activeConnectorIds[namespace]
 
-    const connections = ConnectionController.state.connections.get(namespace) ?? []
+    const connections = ConnectionController.getConnections(namespace)
     const recentConnections = ConnectionController.state.recentConnections.get(namespace) ?? []
     const recentConnectionsWithCurrentActiveConnectors = recentConnections.filter(connection =>
       ConnectorController.getConnectorById(connection.connectorId)
