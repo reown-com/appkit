@@ -15,10 +15,7 @@
     },
     "preserveOutput": "always",
     "reporter": [
-      [
-        "list",
-        null
-      ],
+      ["list", null],
       [
         "html",
         {
@@ -75,9 +72,7 @@
         "name": "iPhone 12/wagmi",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -89,9 +84,7 @@
         "name": "Galaxy S5/wagmi",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -103,9 +96,7 @@
         "name": "Desktop Firefox/multichain-no-adapters",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -117,9 +108,7 @@
         "name": "Desktop Firefox/multichain-all",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-all\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-all\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -131,9 +120,7 @@
         "name": "Desktop Firefox/multichain-ethers-solana",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -145,9 +132,7 @@
         "name": "Desktop Firefox/multichain-ethers5-solana",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -159,9 +144,7 @@
         "name": "Desktop Firefox/multichain-wagmi-solana",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -173,9 +156,7 @@
         "name": "Desktop Chrome/multichain-no-adapters",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -187,9 +168,7 @@
         "name": "Desktop Chrome/multichain-all",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-all\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-all\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -201,9 +180,7 @@
         "name": "Desktop Chrome/multichain-ethers-solana",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -215,9 +192,7 @@
         "name": "Desktop Chrome/multichain-ethers5-solana",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -229,9 +204,7 @@
         "name": "Desktop Chrome/multichain-wagmi-solana",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -271,9 +244,7 @@
         "name": "Desktop Firefox/cloud-auth",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:cloud-auth.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:cloud-auth.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -285,9 +256,7 @@
         "name": "Desktop Chrome/cloud-auth",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:cloud-auth.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:cloud-auth.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -299,9 +268,7 @@
         "name": "Desktop Firefox/default-account-types",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/email-default-account-types\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/email-default-account-types\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -313,9 +280,7 @@
         "name": "Desktop Chrome/default-account-types",
         "testDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/email-default-account-types\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/email-default-account-types\\.spec\\.ts$/u"],
         "timeout": 90000
       }
     ],
