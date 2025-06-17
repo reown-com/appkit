@@ -7,7 +7,6 @@
 '@reown/appkit-utils': patch
 '@reown/appkit-controllers': patch
 '@reown/appkit': patch
-'@reown/appkit-siwe': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
@@ -17,10 +16,11 @@
 '@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch
+'@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the universal provider would hang forever if JWT verification failed during initialization
+Adds registerWalletStandard flag to allow automatic registration of WalletConnect relay connector as a Wallet Standard wallet
