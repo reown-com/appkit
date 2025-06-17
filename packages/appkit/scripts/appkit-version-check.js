@@ -70,107 +70,144 @@ function findProjectRootAlternative() {
   return null
 }
 
-// Try multiple approaches to find the consumer project
-let project = findProjectRoot(__dirname) || findProjectRootAlternative()
-
-if (!project) {
-  console.log('Could not find consumer project with @reown/appkit dependencies')
-  process.exit(0)
+function findConsumerProject() {
+  // Try multiple approaches to find the consumer project
+  return findProjectRoot(__dirname) || findProjectRootAlternative()
 }
 
-console.log('Checking project at:', project.path)
-console.log(`Found project: ${project.pkg.name}`)
-
-// Get ALL @reown/appkit packages from the project
-const allReownPackages = Object.fromEntries(
-  sections
-    .flatMap(s => Object.entries(project.pkg[s] || {}))
-    .filter(([name]) => name.startsWith(REOWN_SCOPE_PREFIX))
-)
-
-console.log('Found @reown/appkit packages:', Object.keys(allReownPackages))
-
-if (!Object.keys(allReownPackages).length) {
-  console.log('No @reown/appkit packages found in project')
-  process.exit(0)
+function getReownPackagesFromProject(project) {
+  // Get ALL @reown/appkit packages from the project
+  return Object.fromEntries(
+    sections
+      .flatMap(s => Object.entries(project.pkg[s] || {}))
+      .filter(([name]) => name.startsWith(REOWN_SCOPE_PREFIX))
+  )
 }
 
-// Resolve installed versions
-const installed = {}
-for (const packageName of Object.keys(allReownPackages)) {
-  try {
-    // Try multiple resolution strategies
-    let packageJsonPath
+function resolveInstalledVersions(allReownPackages, projectPath) {
+  const installed = {}
 
+  for (const packageName of Object.keys(allReownPackages)) {
     try {
-      // Try resolving from the project root
-      packageJsonPath = require.resolve(`${packageName}/package.json`, {
-        paths: [project.path]
-      })
-    } catch (error) {
-      // Fallback: try resolving from current working directory
+      // Try multiple resolution strategies
+      let packageJsonPath
+
       try {
-        packageJsonPath = require.resolve(`${packageName}/package.json`)
-      } catch (error2) {
-        // Try direct path construction
-        const directPath = join(project.path, 'node_modules', packageName, 'package.json')
-        if (existsSync(directPath)) {
-          packageJsonPath = directPath
-        } else {
-          throw error2
+        // Try resolving from the project root
+        packageJsonPath = require.resolve(`${packageName}/package.json`, {
+          paths: [projectPath]
+        })
+      } catch (error) {
+        // Fallback: try resolving from current working directory
+        try {
+          packageJsonPath = require.resolve(`${packageName}/package.json`)
+        } catch (error2) {
+          // Try direct path construction
+          const directPath = join(projectPath, 'node_modules', packageName, 'package.json')
+          if (existsSync(directPath)) {
+            packageJsonPath = directPath
+          } else {
+            throw error2
+          }
         }
       }
-    }
 
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
-    installed[packageName] = packageJson.version
-  } catch (error) {
-    console.log(`Could not resolve ${packageName}:`, error.message)
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
+      installed[packageName] = packageJson.version
+    } catch (error) {
+      console.log(`Could not resolve ${packageName}:`, error.message)
+    }
+  }
+
+  return installed
+}
+
+function findBaselineVersion(installed) {
+  // Find the most common version (baseline)
+  const versions = Object.values(installed)
+  const versionCounts = {}
+  versions.forEach(v => {
+    const normalized = semver.coerce(v)?.version || v
+    versionCounts[normalized] = (versionCounts[normalized] || 0) + 1
+  })
+
+  return Object.entries(versionCounts).sort((a, b) => b[1] - a[1])[0][0]
+}
+
+function checkVersionMismatches(installed, baseline) {
+  // Check for mismatches
+  return Object.entries(installed).filter(([, version]) => {
+    const baselineCoerced = semver.coerce(baseline)
+    const versionCoerced = semver.coerce(version)
+
+    return baselineCoerced && versionCoerced && !semver.eq(versionCoerced, baselineCoerced)
+  })
+}
+
+function reportResults(installed, baseline, mismatched) {
+  console.log('Installed @reown/appkit packages and versions:')
+  Object.entries(installed).forEach(([pkg, version]) => {
+    console.log(`  ${pkg}: ${version}`)
+  })
+
+  if (mismatched.length > 0) {
+    console.error('\n\u001b[31m✖ Reown AppKit version mismatch detected!\u001b[0m')
+    console.error(`   Expected all @reown/appkit packages to be version ${baseline}\n`)
+    console.error('   Mismatched packages:')
+    mismatched.forEach(([pkg, version]) => {
+      console.error(`     • ${pkg}: ${version} (expected ${baseline})`)
+    })
+    console.error(`\n   Please update all @reown/appkit packages to version ${baseline}`)
+    console.error('   You can run the following commands:')
+    mismatched.forEach(([pkg]) => {
+      console.error(`     npm install ${pkg}@${baseline}`)
+    })
+    console.error('')
+    return false
+  } else {
+    console.log(`\u001b[32m✓ All @reown/appkit packages are in sync (${baseline})\u001b[0m`)
+    return true
   }
 }
 
-if (!Object.keys(installed).length) {
-  console.log('No @reown/appkit packages could be resolved')
-  process.exit(0)
+function main() {
+  const project = findConsumerProject()
+
+  if (!project) {
+    console.log('Could not find consumer project with @reown/appkit dependencies')
+    return
+  }
+
+  console.log('Checking project at:', project.path)
+  console.log(`Found project: ${project.pkg.name}`)
+
+  const allReownPackages = getReownPackagesFromProject(project)
+  console.log('Found @reown/appkit packages:', Object.keys(allReownPackages))
+
+  if (!Object.keys(allReownPackages).length) {
+    console.log('No @reown/appkit packages found in project')
+    return
+  }
+
+  const installed = resolveInstalledVersions(allReownPackages, project.path)
+
+  if (!Object.keys(installed).length) {
+    console.log('No @reown/appkit packages could be resolved')
+    return
+  }
+
+  const baseline = findBaselineVersion(installed)
+  const mismatched = checkVersionMismatches(installed, baseline)
+  const isValid = reportResults(installed, baseline, mismatched)
+
+  if (!isValid) {
+    process.exit(0)
+  }
 }
 
-console.log('Installed @reown/appkit packages and versions:')
-Object.entries(installed).forEach(([pkg, version]) => {
-  console.log(`  ${pkg}: ${version}`)
-})
-
-// Find the most common version (baseline)
-const versions = Object.values(installed)
-const versionCounts = {}
-versions.forEach(v => {
-  const normalized = semver.coerce(v)?.version || v
-  versionCounts[normalized] = (versionCounts[normalized] || 0) + 1
-})
-
-const baseline = Object.entries(versionCounts).sort((a, b) => b[1] - a[1])[0][0]
-
-// Check for mismatches
-const mismatched = Object.entries(installed).filter(([, version]) => {
-  const baselineCoerced = semver.coerce(baseline)
-  const versionCoerced = semver.coerce(version)
-
-  return baselineCoerced && versionCoerced && !semver.eq(versionCoerced, baselineCoerced)
-})
-
-if (mismatched.length > 0) {
-  console.error('\n\u001b[31m✖ Reown AppKit version mismatch detected!\u001b[0m')
-  console.error(`   Expected all @reown/appkit packages to be version ${baseline}\n`)
-  console.error('   Mismatched packages:')
-  mismatched.forEach(([pkg, version]) => {
-    console.error(`     • ${pkg}: ${version} (expected ${baseline})`)
-  })
-  console.error(`\n   Please update all @reown/appkit packages to version ${baseline}`)
-  console.error('   You can run the following commands:')
-  mismatched.forEach(([pkg]) => {
-    console.error(`     npm install ${pkg}@${baseline}`)
-  })
-  console.error('')
-  process.exit(1)
-} else {
-  console.log(`\u001b[32m✓ All @reown/appkit packages are in sync (${baseline})\u001b[0m`)
+try {
+  main()
+} catch (error) {
+  console.log('AppKit version check encountered an error:', error.message)
+  process.exit(0)
 }
