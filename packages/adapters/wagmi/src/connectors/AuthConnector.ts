@@ -69,13 +69,8 @@ export function authConnector(parameters: AuthParameters) {
           }
         },
         abortController: ErrorUtil.EmbeddedWalletAbortController,
-        getActiveCaipNetwork: (namespace?: ChainNamespace) => {
-          if (namespace) {
-            return ChainController.getActiveCaipNetwork(namespace)
-          }
-
-          return ChainController.state.activeCaipNetwork
-        }
+        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
+          ChainController.getActiveCaipNetwork(namespace)
       })
     }
 
@@ -184,13 +179,8 @@ export function authConnector(parameters: AuthParameters) {
               AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
             }
           },
-          getActiveCaipNetwork: (namespace?: ChainNamespace) => {
-            if (namespace) {
-              return ChainController.getActiveCaipNetwork(namespace)
-            }
-
-            return ChainController.state.activeCaipNetwork
-          }
+          getActiveCaipNetwork: (namespace?: ChainNamespace) =>
+            ChainController.getActiveCaipNetwork(namespace)
         })
       }
 
