@@ -1,6 +1,8 @@
 import test, { type Page, expect } from '@playwright/test'
 
-import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
+
 import { timingFixture } from './shared/fixtures/timing-fixture'
 import { testMEthersVerifyDomainMismatch } from './shared/fixtures/w3m-ethers-verify-domain-mismatch-fixture'
 import { testMEthersVerifyEvil } from './shared/fixtures/w3m-ethers-verify-evil-fixture'
@@ -9,11 +11,9 @@ import { testMWagmiVerifyDomainMismatch } from './shared/fixtures/w3m-wagmi-veri
 import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fixture'
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { routeInterceptUrl } from './shared/utils/verify'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletValidator } from './shared/validators/WalletValidator'
 
 testMWagmiVerifyValid(
   'wagmi: connection and signature requests from non-scam verified domain should show as domain match',

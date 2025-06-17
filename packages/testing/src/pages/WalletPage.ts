@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import { type Locator, type Page, expect } from '@playwright/test'
 
-import { WALLET_URL } from '../constants'
-import type { SessionParams } from '../types'
+import { WALLET_URL } from '../constants/index.js'
+import type { SessionParams } from '../types/index.js'
 
 export class WalletPage {
   private readonly baseURL = WALLET_URL

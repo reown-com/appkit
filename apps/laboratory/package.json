@@ -8,6 +8,7 @@
     "start": "next start",
     "build": "next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "typecheck": "tsc --noEmit",
     "playwright:start": "pnpm start",
     "playwright:install": "playwright install --with-deps",
     "playwright:install-deps": "pnpm playwright install-deps",
@@ -146,6 +147,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.758.0",
+    "@reown/appkit-testing": "workspace:*",
     "@mailsac/api": "1.0.8",
     "@playwright/test": "1.48.2",
     "@types/node": "22.13.4",

@@ -4,18 +4,22 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import {
+  BASE_URL,
+  DEFAULT_SESSION_PARAMS,
+  EXTENSION_NAME,
+  EXTENSION_RDNS
+} from '@reown/appkit-testing'
 
 import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
 
-import { BASE_URL, DEFAULT_SESSION_PARAMS, EXTENSION_NAME, EXTENSION_RDNS } from '../constants'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { routeInterceptUrl } from '../utils/verify'
 import type { ModalValidator } from '../validators/ModalValidator'
-import { WalletValidator } from '../validators/WalletValidator'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
-import { WalletPage } from './WalletPage'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -529,7 +533,7 @@ export class ModalPage {
     }
 
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-    // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
+    // The state is chain too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
     await this.page.waitForTimeout(300)
   }
 
