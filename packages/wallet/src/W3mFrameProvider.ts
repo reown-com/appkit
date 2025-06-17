@@ -469,18 +469,13 @@ export class W3mFrameProvider {
       if (W3mFrameRpcConstants.GET_CHAIN_ID === req.method) {
         return this.getLastUsedChainId()
       }
-      let chainId: string | number | undefined = 1
 
       /*
        * If chainNamespace is provided in the request, use that namespace to get the chainId, otherwise fallback to 'eip155' namespace since Ethers and Wagmi RPC requests are limited to be modified to include the chainNamespace, so requests from Ethers and Wagmi will never include a chainNamespace
        */
-      if (req.chainNamespace) {
-        request.chainNamespace = req.chainNamespace
-        chainId = this.getActiveCaipNetwork(req.chainNamespace)?.id
-      } else {
-        request.chainNamespace = 'eip155'
-        chainId = this.getActiveCaipNetwork('eip155')?.id
-      }
+      const namespace = req.chainNamespace || 'eip155'
+      const chainId = this.getActiveCaipNetwork(namespace)?.id
+      request.chainNamespace = namespace
 
       request.chainId = chainId
 
