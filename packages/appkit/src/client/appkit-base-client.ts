@@ -457,6 +457,7 @@ export abstract class AppKitBaseClient {
           ? (ConnectionController.state.connections.get(activeChain) ?? [])
           : []
         const isMultiWallet = this.remoteFeatures.multiWallet
+        const isSIWXEnabled = Boolean(OptionsController.state.siwx)
         const hasConnections = connections.length > 0
 
         if (!adapter) {
@@ -464,8 +465,9 @@ export abstract class AppKitBaseClient {
         }
 
         const result = await adapter.connectWalletConnect(chainId)
+        const shouldClose = !isSIWXEnabled && (!hasConnections || !isMultiWallet)
 
-        if (!hasConnections || !isMultiWallet) {
+        if (shouldClose) {
           this.close()
         }
 
