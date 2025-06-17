@@ -1,8 +1,9 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { DEFAULT_SESSION_PARAMS } from './shared/constants'
+import { WalletPage } from '@reown/appkit-testing'
+import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
+
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { Email } from './shared/utils/email'
 import { ModalValidator } from './shared/validators/ModalValidator'
 

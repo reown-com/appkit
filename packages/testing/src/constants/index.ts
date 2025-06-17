@@ -1,4 +1,4 @@
-import type { SessionParams } from '../types'
+import type { SessionParams } from '../types/index.js'
 
 // Allow localhost
 export const BASE_URL = process.env['BASE_URL'] || 'http://localhost:3000/'

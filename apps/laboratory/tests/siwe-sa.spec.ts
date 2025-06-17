@@ -1,6 +1,7 @@
 import { type BrowserContext, expect, test } from '@playwright/test'
 
-import { SECURE_WEBSITE_URL } from './shared/constants'
+import { SECURE_WEBSITE_URL } from '@reown/appkit-testing'
+
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'

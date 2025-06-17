@@ -1,10 +1,9 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { BASE_URL } from './shared/constants'
+import { BASE_URL, WalletPage, WalletValidator } from '@reown/appkit-testing'
+
 import { expect } from './shared/fixtures/w3m-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
-import { WalletValidator } from './shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
