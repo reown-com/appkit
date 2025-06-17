@@ -73,6 +73,10 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
     try {
+      if (!this.getStorageToken(this.localAuthStorageKey)) {
+        return []
+      }
+
       const siweSession = await this.request('me', undefined, 'authJwt')
 
       const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
