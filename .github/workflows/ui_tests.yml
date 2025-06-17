@@ -111,9 +111,9 @@ jobs:
             ${{ github.workspace }}/apps/laboratory/out/cache
             ${{ github.workspace }}/apps/demo/out/cache
           # NOTE: apps/browser-extension likely does NOT use .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
+          key: ${{ runner.os }}-nextjs-v2-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-nextjs-v2-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: build packages and lab
         run: pnpm build:laboratory
