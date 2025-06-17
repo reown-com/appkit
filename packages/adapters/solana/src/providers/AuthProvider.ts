@@ -39,7 +39,8 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   }
 
   get publicKey(): PublicKey | undefined {
-    const address = ChainController.state.chains.get('solana')?.accountState?.address
+    const address = ChainController.state.chains.get(ConstantsUtil.CHAIN.SOLANA)?.accountState
+      ?.address
 
     return address ? new PublicKey(address) : undefined
   }
