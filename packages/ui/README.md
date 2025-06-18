@@ -7,7 +7,7 @@ Onboard millions of users to your app in minutes with social & email embedded wa
 � [Demo](https://demo.reown.com) ・🧪 [Laboratory](https://appkit-lab.reown.com) ・�📚 [Documentation](https://docs.reown.com/appkit/overview) ・💻 [AppKit Web Examples](https://github.com/reown-com/appkit-web-examples) ・🔗 [Website](https://reown.com/appkit) ・🛟 [Contact us on Discord](https://discord.gg/reown)
 
 <p align="center">
-  <img src="./.github/assets/header.png" alt="" border="0">
+  <img src="https://github.com/reown-com/appkit/blob/HEAD/.github/assets/header.png" alt="" border="0">
 </p>
 
 ## Features

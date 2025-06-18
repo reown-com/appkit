@@ -6,7 +6,8 @@
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "exports": {
     ".": {
