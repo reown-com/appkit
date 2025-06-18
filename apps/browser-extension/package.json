@@ -6,7 +6,9 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack --watch --mode=production",
-    "start": "webpack serve --mode=development --open"
+    "start": "webpack serve --mode=development --open",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [],
   "author": "",

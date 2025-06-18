@@ -67,6 +67,8 @@ export function Home() {
       case 'bip122':
         window.open(`https://btcscan.org/address/${account}`, '_blank')
         break
+      default:
+        break
     }
   }
 

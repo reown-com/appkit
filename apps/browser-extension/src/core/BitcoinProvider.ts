@@ -9,6 +9,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 bitcoin.initEccLib(ecc)
 
+// eslint-disable-next-line new-cap
 const bip32 = BIP32Factory(ecc)
 const privateKey = AccountUtil.privateKeyBitcoin
 const mnemonic = privateKey ? privateKey : bip39.generateMnemonic()
@@ -24,6 +25,7 @@ function magicHash(message: Uint8Array) {
   const prefix1 = bitcoin.script.number.encode(MAGIC_BYTES.length)
   const prefix2 = bitcoin.script.number.encode(message.length)
   const messageBuffer = Buffer.from(message)
+
   return bitcoin.crypto.hash256(Buffer.concat([prefix1, MAGIC_BYTES, prefix2, messageBuffer]))
 }
 
@@ -36,9 +38,7 @@ export class BitcoinProvider {
     'bip122:000000000933ea01ad0ee984209779ba' as `${string}:${string}`
   ]
   isConnected = false
-
-  // Event system
-  private listeners: { [event: string]: ((...args: any[]) => void)[] } = {}
+  private listeners: Record<string, ((...args: unknown[]) => void)[]> = {}
 
   private get activeNetwork(): `${string}:${string}` {
     return (localStorage.getItem('@reown-ext/active-network') ||
@@ -60,7 +60,7 @@ export class BitcoinProvider {
         address: bitcoin.payments.p2tr({
           pubkey: child.publicKey.slice(1),
           network
-        }).address!,
+        }).address as string,
         publicKey: child.publicKey,
         chains: [this.activeNetwork],
         features: [
@@ -98,16 +98,16 @@ export class BitcoinProvider {
     }
   }
 
-  on(event: string, handler: (...args: any[]) => void) {
-    if (!this.listeners[event]) this.listeners[event] = []
-    this.listeners[event].push(handler)
-    // Return unsubscribe function
-    return () => {
-      this.listeners[event] = this.listeners[event].filter(h => h !== handler)
+  on(event: string, handler: (...args: unknown[]) => void) {
+    if (!this.listeners[event]) {
+      this.listeners[event] = []
     }
+    this.listeners[event].push(handler)
+
+    return () => (this.listeners[event] = this.listeners[event].filter(h => h !== handler))
   }
 
-  emit(event: string, ...args: any[]) {
+  emit(event: string, ...args: unknown[]) {
     ;(this.listeners[event] || []).forEach(handler => handler(...args))
   }
 
@@ -118,6 +118,7 @@ export class BitcoinProvider {
   async connect() {
     this.isConnected = true
     this.emit('change', { accounts: this.accounts })
+
     return Promise.resolve({ accounts: this.accounts })
   }
 
@@ -125,6 +126,7 @@ export class BitcoinProvider {
     this.isConnected = false
     this.emit('change', { accounts: [] })
     this.emit('disconnect')
+
     return Promise.resolve()
   }
 
@@ -139,13 +141,12 @@ export class BitcoinProvider {
 
     const messageHash = magicHash(message)
     const signature = child.sign(messageHash)
-    // Convert the signature to base64 directly without recovery byte
     const signatureBase64 = signature.toString('base64')
 
-    return [{ signedMessage: message, signature: signatureBase64 }]
+    return Promise.resolve([{ signedMessage: message, signature: signatureBase64 }])
   }
 
-  async switchNetwork(network: `${string}:${string}`) {
+  switchNetwork(network: `${string}:${string}`) {
     if (
       network !== 'bip122:000000000019d6689c085ae165831e93' &&
       network !== 'bip122:000000000933ea01ad0ee984209779ba'

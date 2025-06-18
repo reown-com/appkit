@@ -254,8 +254,8 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
     if (switchFeature && typeof switchFeature.switchNetwork === 'function') {
       await switchFeature.switchNetwork(caipNetworkId)
-      // Optionally, emit a change event if your wallet doesn't do it
       this.emit('change', { accounts: this.wallet.accounts })
+
       return
     }
 
