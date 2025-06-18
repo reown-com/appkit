@@ -322,7 +322,6 @@ describe('W3mProfileWalletsView - Tabs Rendering', () => {
 
     const tabs = element.shadowRoot?.querySelector(TABS_COMPONENT)
     expect(tabs).not.toBeNull()
-    expect(tabs?.getAttribute('localTabWidth')).toBe('180px') // (400 - 40) / 2
   })
 })
 

@@ -341,8 +341,8 @@ describe('SolanaAdapter', () => {
         hasConnected: true
       })
 
-      const listenProviderEventsSpy = vi
-        .spyOn(adapter as any, 'listenProviderEvents')
+      const listenSolanaProviderEventsSpy = vi
+        .spyOn(adapter as any, 'listenSolanaProviderEvents')
         .mockImplementation(() => {})
 
       await adapter.syncConnections({
@@ -354,7 +354,10 @@ describe('SolanaAdapter', () => {
       expect(mockConnector.connect).toHaveBeenCalledWith({
         chainId: mockCaipNetworks[0].id
       })
-      expect(listenProviderEventsSpy).toHaveBeenCalledWith(mockConnector.id, mockConnector.provider)
+      expect(listenSolanaProviderEventsSpy).toHaveBeenCalledWith(
+        mockConnector.id,
+        mockConnector.provider
+      )
       expect(adapter.connections).toHaveLength(1)
       expect(adapter.connections[0]?.connectorId).toBe(mockConnector.id)
     })
@@ -388,7 +391,7 @@ describe('SolanaAdapter', () => {
 
     it('should handle WalletConnect connector specially', async () => {
       const mockWcProvider = mockWalletConnectConnector
-      adapter.setUniversalProvider(mockWcProvider.provider)
+      await adapter.setUniversalProvider(mockWcProvider.provider)
 
       const wcConnector = adapter.connectors.find(c => c.id === 'walletConnect')
       expect(wcConnector).toBeDefined()

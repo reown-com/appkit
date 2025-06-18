@@ -182,12 +182,9 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
       activeChain: 'eip155',
       chains: new Map([['eip155', {}]])
     })
-    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-      ...ConnectionController.state,
-      connections: new Map([
-        ['eip155', [{ connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }]]
-      ])
-    })
+    vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([
+      { connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }
+    ])
 
     const connectionControllerClient = (baseClient as any).connectionControllerClient
     await connectionControllerClient.connectWalletConnect()
@@ -201,10 +198,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
       activeChain: 'eip155',
       chains: new Map([['eip155', {}]])
     })
-    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-      ...ConnectionController.state,
-      connections: new Map([['eip155', []]])
-    })
+    vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
 
     const connectionControllerClient = (baseClient as any).connectionControllerClient
     await connectionControllerClient.connectWalletConnect()

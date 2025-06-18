@@ -104,13 +104,18 @@ describe('W3mConnectingExternalView', () => {
           return () => {}
         }
       )
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION_1])
       await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
     })
 
     it('should navigate to Connect view when all connections are removed', () => {
-      const emptyConnections = new Map([[TEST_CHAIN, []]])
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
+      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+        ...ConnectionController.state,
+        connections: new Map([[TEST_CHAIN, []]])
+      })
 
+      const emptyConnections = new Map([[TEST_CHAIN, []]])
       connectionChangeHandler(emptyConnections)
 
       expect(RouterController.replace).toHaveBeenCalledWith('Connect')
@@ -119,16 +124,22 @@ describe('W3mConnectingExternalView', () => {
     })
 
     it('should navigate to ProfileWallets when multi-wallet is enabled and our connector accounts changed', () => {
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([
+        MOCK_CONNECTION_1,
+        MOCK_CONNECTION_ALTERNATIVE
+      ])
+      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+        ...ConnectionController.state,
+        connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION_1, MOCK_CONNECTION_ALTERNATIVE]]])
+      })
       vi.spyOn(ConnectionControllerUtil, 'getConnectionsByConnectorId')
         .mockReturnValueOnce([MOCK_CONNECTION_1])
         .mockReturnValueOnce([])
 
       const newConnections = new Map([[TEST_CHAIN, [MOCK_CONNECTION_ALTERNATIVE]]])
-
       connectionChangeHandler(newConnections)
 
-      expect(RouterController.replace).toHaveBeenCalledWith('Account')
-      expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
+      expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
       expect(SnackController.showSuccess).toHaveBeenCalledWith('Wallet deleted')
       expect(ModalController.close).not.toHaveBeenCalled()
     })
@@ -138,20 +149,20 @@ describe('W3mConnectingExternalView', () => {
         ...OptionsController.state,
         remoteFeatures: { multiWallet: false }
       })
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([
+        MOCK_CONNECTION_1,
+        MOCK_CONNECTION_ALTERNATIVE
+      ])
       vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
         ...ConnectionController.state,
         connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION_1, MOCK_CONNECTION_ALTERNATIVE]]])
       })
-
-      await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
-
       vi.spyOn(ConnectionControllerUtil, 'getConnectionsByConnectorId')
         .mockReturnValueOnce([MOCK_CONNECTION_1])
         .mockReturnValueOnce([])
 
+      await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
       const newConnections = new Map([[TEST_CHAIN, [MOCK_CONNECTION_ALTERNATIVE]]])
-
       connectionChangeHandler(newConnections)
 
       expect(ModalController.close).toHaveBeenCalled()
@@ -159,27 +170,39 @@ describe('W3mConnectingExternalView', () => {
       expect(RouterController.push).not.toHaveBeenCalled()
     })
 
-    it('should navigate to ProfileWallets when different accounts are detected and multi-wallet enabled', () => {
-      vi.spyOn(ConnectionControllerUtil, 'getConnectionsByConnectorId')
-        .mockReturnValueOnce([MOCK_CONNECTION_1])
-        .mockReturnValueOnce([MOCK_CONNECTION_2])
+    it('should navigate to ProfileWallets when different accounts are detected and multi-wallet enabled', async () => {
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION_1])
+      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+        ...ConnectionController.state,
+        connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION_1]]])
+      })
+
+      await fixture(html`<w3m-connecting-external-view></w3m-connecting-external-view>`)
+
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION_2])
+      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+        ...ConnectionController.state,
+        connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION_2]]])
+      })
 
       const newConnections = new Map([[TEST_CHAIN, [MOCK_CONNECTION_2]]])
-
       connectionChangeHandler(newConnections)
 
-      expect(RouterController.replace).toHaveBeenCalledWith('Account')
-      expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
+      expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
       expect(ModalController.close).not.toHaveBeenCalled()
     })
 
     it('should not navigate when accounts are the same and multi-wallet enabled', () => {
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION_1])
+      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+        ...ConnectionController.state,
+        connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION_1]]])
+      })
       vi.spyOn(ConnectionControllerUtil, 'getConnectionsByConnectorId').mockReturnValue([
         MOCK_CONNECTION_1
       ])
 
       const newConnections = new Map([[TEST_CHAIN, [MOCK_CONNECTION_1]]])
-
       connectionChangeHandler(newConnections)
 
       expect(RouterController.replace).not.toHaveBeenCalled()

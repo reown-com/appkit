@@ -61,6 +61,7 @@ describe('W3mUnsupportedChainView', () => {
 
       vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
       vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+      vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
 
       vi.spyOn(SnackController, 'showSuccess').mockImplementation(() => {})
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
@@ -74,27 +75,18 @@ describe('W3mUnsupportedChainView', () => {
     })
 
     it('should navigate to ProfileWallets and show success message when has connections and multiWallet is enabled', async () => {
-      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-        ...ConnectionController.state,
-        connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION]]])
-      })
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION])
       vi.spyOn(ConnectionController, 'disconnect').mockResolvedValue(undefined)
 
       await element['onDisconnect']()
 
       expect(ConnectionController.disconnect).toHaveBeenCalledWith({ id: TEST_CONNECTOR_ID })
-      expect(RouterController.reset).toHaveBeenCalledWith('Account')
       expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
       expect(SnackController.showSuccess).toHaveBeenCalledWith('Wallet deleted')
     })
 
     it('should only disconnect when has no connections and multiWallet is enabled', async () => {
-      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-        ...ConnectionController.state,
-        connections: new Map([[TEST_CHAIN, []]])
-      })
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
       vi.spyOn(ConnectionController, 'disconnect').mockResolvedValue(undefined)
 
       await element['onDisconnect']()

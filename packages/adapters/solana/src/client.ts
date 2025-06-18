@@ -410,6 +410,8 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
+    this.universalProvider = universalProvider
+    
     const wcConnectorId = CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
     WcHelpersUtil.listenWcProvider({

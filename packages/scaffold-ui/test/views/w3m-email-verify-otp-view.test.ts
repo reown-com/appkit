@@ -66,6 +66,7 @@ describe('W3mEmailVerifyOtpView', () => {
       })
       vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
       vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+      vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
       vi.spyOn(ModalController, 'close').mockImplementation(() => {})
       vi.spyOn(SnackController, 'showSuccess').mockImplementation(() => {})
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
@@ -78,27 +79,18 @@ describe('W3mEmailVerifyOtpView', () => {
     })
 
     it('should navigate to ProfileWallets and show success message when has connections and multiWallet is enabled', async () => {
-      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-        ...ConnectionController.state,
-        connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION]]])
-      })
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION])
       vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
 
       await element.onOtpSubmit('123456')
 
-      expect(RouterController.reset).toHaveBeenCalledWith('Account')
-      expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
+      expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
       expect(SnackController.showSuccess).toHaveBeenCalledWith('New Wallet Added')
       expect(ModalController.close).not.toHaveBeenCalled()
     })
 
     it('should close modal when has no connections and multiWallet is enabled', async () => {
-      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-        ...ConnectionController.state,
-        connections: new Map([[TEST_CHAIN, []]])
-      })
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
       vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
 
       await element.onOtpSubmit('123456')

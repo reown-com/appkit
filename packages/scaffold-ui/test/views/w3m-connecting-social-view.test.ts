@@ -75,6 +75,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
     vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+    vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
       ...OptionsController.state,
       enableEmbedded: true
@@ -159,8 +160,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
     }
 
     expect(ModalController.close).not.toHaveBeenCalled()
-    expect(RouterController.reset).toHaveBeenCalledWith('Account')
-    expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
+    expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
   })
 
   it('should not close modal when address is set but enableEmbedded is false', async () => {

@@ -610,16 +610,16 @@ export class EthersAdapter extends AdapterBlueprint {
       })
 
       switch (connector.type) {
-        case 'WALLET_CONNECT':
+        case ConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT:
           if ((connector.provider as UniversalProvider).session) {
             ;(connector.provider as UniversalProvider).disconnect()
           }
           break
-        case 'AUTH':
+        case ConstantsUtil.CONNECTOR_TYPE_AUTH:
           await connector.provider?.disconnect()
           break
-        case 'ANNOUNCED':
-        case 'EXTERNAL':
+        case ConstantsUtil.CONNECTOR_TYPE_ANNOUNCED:
+        case ConstantsUtil.CONNECTOR_TYPE_EXTERNAL:
           await this.revokeProviderPermissions(connector.provider as Provider)
           break
         default:

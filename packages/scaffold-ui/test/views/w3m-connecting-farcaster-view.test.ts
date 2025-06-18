@@ -60,6 +60,7 @@ describe('W3mConnectingFarcasterView', () => {
 
       vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
       vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+      vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
       vi.spyOn(RouterController, 'goBack').mockImplementation(() => {})
 
       vi.spyOn(ModalController, 'close').mockImplementation(() => {})
@@ -84,27 +85,18 @@ describe('W3mConnectingFarcasterView', () => {
     })
 
     it('should navigate to ProfileWallets and show success message when hasConnections is true and multiWallet is true', async () => {
-      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-        ...ConnectionController.state,
-        connections: new Map([[TEST_CHAIN, [MOCK_CONNECTION]]])
-      })
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION])
       vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
 
       await element['connectFarcaster']()
 
-      expect(RouterController.reset).toHaveBeenCalledWith('Account')
-      expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
+      expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
       expect(SnackController.showSuccess).toHaveBeenCalledWith('New Wallet Added')
       expect(ModalController.close).not.toHaveBeenCalled()
     })
 
     it('should close modal when hasConnections is false or multiWallet is false', async () => {
-      vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-        ...ConnectionController.state,
-        connections: new Map([[TEST_CHAIN, []]])
-      })
-
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
       vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
 
       await element['connectFarcaster']()

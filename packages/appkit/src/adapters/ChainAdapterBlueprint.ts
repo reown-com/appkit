@@ -91,13 +91,13 @@ export abstract class AdapterBlueprint<
       ConnectorController.getConnectorId(namespace)
 
     if (params) {
-      if (params.namespace) {
-        this.connectionManager = new ConnectionManager({
-          namespace: params.namespace
-        })
-      }
-
       this.construct(params)
+    }
+
+    if (params?.namespace) {
+      this.connectionManager = new ConnectionManager({
+        namespace: params.namespace
+      })
     }
   }
 
