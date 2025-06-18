@@ -24,7 +24,7 @@ test.beforeAll(async ({ browser }) => {
 
   await appPage.load()
   await appPage.qrCodeFlow(appPage, walletPage)
-  await validator.expectConnected(true)
+  await validator.expectConnected()
 })
 
 test.afterAll(async () => {

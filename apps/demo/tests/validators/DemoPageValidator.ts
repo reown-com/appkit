@@ -35,8 +35,8 @@ export class DemoPageValidator {
 
   async expectToBeConnected(namespace: ChainNamespace) {
     if (namespace === 'eip155') {
-      const profileButton = this.page.getByTestId('wui-profile-button')
-      await expect(profileButton, 'Profile button should be present').toBeVisible()
+      const walletSwitch = this.page.getByTestId('wui-wallet-switch')
+      await expect(walletSwitch, 'Wallet switch button should be present').toBeVisible()
     } else if (namespace === 'solana') {
       const solanaText = this.page.locator('wui-text').getByText('SOL')
       await expect(solanaText, 'SOL text should be present').toBeVisible()
@@ -48,14 +48,12 @@ export class DemoPageValidator {
     }
   }
 
-  async expectConnected(profileButtonV2 = false) {
+  async expectConnected() {
     const connectView = this.page.locator('w3m-connect-view').first()
-    const profileButton = this.page
-      .locator(profileButtonV2 ? 'wui-profile-button-v2' : 'wui-profile-button')
-      .first()
+    const walletSwitch = this.page.locator('wui-wallet-switch').first()
 
     await expect(connectView, 'Connect view should be present').not.toBeVisible()
-    await expect(profileButton, 'Profile button should be present').toBeVisible({
+    await expect(walletSwitch, 'Wallet switch button should be present').toBeVisible({
       timeout: MAX_WAIT
     })
     await this.page.waitForTimeout(500)

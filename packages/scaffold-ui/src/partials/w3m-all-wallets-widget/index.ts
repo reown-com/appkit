@@ -2,8 +2,10 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   EventsController,
@@ -71,6 +73,10 @@ export class W3mAllWalletsWidget extends LitElement {
       tagLabel = `${count}+`
     }
 
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+
     return html`
       <wui-list-wallet
         name="All Wallets"
@@ -83,6 +89,7 @@ export class W3mAllWalletsWidget extends LitElement {
         tabIdx=${ifDefined(this.tabIdx)}
         .loading=${this.isFetchingRecommendedWallets}
         loadingSpinnerColor=${this.isFetchingRecommendedWallets ? 'fg-300' : 'accent-100'}
+        ?disabled=${hasWcConnection}
       ></wui-list-wallet>
     `
   }

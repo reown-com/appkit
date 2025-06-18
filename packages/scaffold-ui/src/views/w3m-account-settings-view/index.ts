@@ -12,7 +12,7 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
+  OptionsController,
   RouterController,
   SendController,
   SnackController
@@ -54,6 +54,8 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private text = ''
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -74,6 +76,9 @@ export class W3mAccountSettingsView extends LitElement {
           if (val?.id) {
             this.network = val
           }
+        }),
+        OptionsController.subscribeKey('remoteFeatures', val => {
+          this.remoteFeatures = val
         })
       ]
     )
@@ -310,8 +315,16 @@ export class W3mAccountSettingsView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconnecting = true
-      await ConnectionController.disconnect()
-      ModalController.close()
+      const namespace = this.network?.chainNamespace as ChainNamespace
+      const connectionsByNamespace = ConnectionController.getConnections(namespace)
+      const hasConnections = connectionsByNamespace.length > 0
+      const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(isMultiWalletEnabled ? { id: connectorId } : {})
+      if (hasConnections && isMultiWalletEnabled) {
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('Wallet deleted')
+      }
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

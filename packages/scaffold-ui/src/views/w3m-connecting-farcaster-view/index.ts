@@ -9,6 +9,7 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SnackController,
   StorageUtil,
@@ -46,6 +47,8 @@ export class W3mConnectingFarcasterView extends LitElement {
 
   @state() protected loading = false
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   public authConnector = ConnectorController.getAuthConnector()
 
   public constructor() {
@@ -62,6 +65,9 @@ export class W3mConnectingFarcasterView extends LitElement {
           if (val) {
             this.socialProvider = val
           }
+        }),
+        OptionsController.subscribeKey('remoteFeatures', val => {
+          this.remoteFeatures = val
         })
       ]
     )
@@ -202,7 +208,10 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = true
+        const connectionsByNamespace = ConnectionController.getConnections(this.authConnector.chain)
+        const hasConnections = connectionsByNamespace.length > 0
         await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         if (this.socialProvider) {
           EventsController.sendEvent({
             type: 'track',
@@ -211,7 +220,12 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = false
-        ModalController.close()
+        if (hasConnections && isMultiWalletEnabled) {
+          RouterController.replace('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
+        } else {
+          ModalController.close()
+        }
       } catch (error) {
         if (this.socialProvider) {
           EventsController.sendEvent({
