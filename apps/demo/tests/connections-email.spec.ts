@@ -2,13 +2,13 @@ import { test } from '@playwright/test'
 
 import { DemoPage } from './pages/DemoPage'
 import { Email } from './utils/email'
-import { ModalValidator } from './validators'
+import { DemoPageValidator } from './validators/DemoPageValidator'
 
 /* eslint-disable init-declarations */
 let demoPage: DemoPage
+let validator: DemoPageValidator
 let email: Email
 let tempEmail: string
-let validator: ModalValidator
 
 test.describe.configure({ mode: 'serial' })
 
@@ -17,7 +17,7 @@ test.beforeAll(async ({ browser }) => {
   const browserPage = await context.newPage()
 
   demoPage = new DemoPage(browserPage)
-  validator = new ModalValidator(browserPage)
+  validator = new DemoPageValidator(browserPage)
 
   await demoPage.load()
 })
@@ -52,4 +52,18 @@ test('should connect with email as expected', async ({ context }) => {
 test('should stay connected after page refresh', async () => {
   await demoPage.page.reload()
   await validator.expectConnected()
+})
+
+test('should switch network as expected', async () => {
+  await demoPage.openNetworks()
+  await demoPage.switchNetwork('Solana')
+  await validator.expectSwitchedNetworkOnNetworksView('Solana')
+  await demoPage.goBack()
+  await validator.expectSwitchedNetworkOnHeaderButton('Solana')
+
+  await demoPage.openNetworks()
+  await demoPage.switchNetwork('Ethereum')
+  await validator.expectSwitchedNetworkOnNetworksView('Ethereum')
+  await demoPage.goBack()
+  await validator.expectSwitchedNetworkOnHeaderButton('Ethereum')
 })
