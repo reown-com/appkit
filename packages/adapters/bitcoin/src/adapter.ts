@@ -81,10 +81,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const address = await connector.connect()
     const accounts = await this.getAccounts({ id: connector.id })
 
-    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-      this.listenProviderEvents(connector.id, connector as Provider)
-    }
-
     this.emit('accountChanged', {
       address,
       chainId: chain.id,
@@ -96,6 +92,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
       caipNetwork: chain
     })
+
+    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+      this.listenProviderEvents(connector.id, connector as Provider)
+    }
 
     return {
       id: connector.id,

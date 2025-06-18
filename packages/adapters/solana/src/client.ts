@@ -275,10 +275,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       socialUri: params.socialUri
     })
 
-    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
-      this.listenSolanaProviderEvents(connector.id, connector.provider as SolanaProvider)
-    }
-
     SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))
 
     this.emit('accountChanged', {
@@ -301,6 +297,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
           }
         : undefined
     })
+
+    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+      this.listenSolanaProviderEvents(connector.id, connector.provider as SolanaProvider)
+    }
 
     return {
       id: connector.id,

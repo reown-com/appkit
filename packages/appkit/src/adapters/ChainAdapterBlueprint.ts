@@ -535,14 +535,6 @@ export abstract class AdapterBlueprint<
         connectors: this.connectors
       })
 
-      if (!connection) {
-        throw new Error('Connection not found')
-      }
-
-      if (!connection.connector) {
-        throw new Error('Connector not found')
-      }
-
       if (
         address &&
         HelpersUtil.isLowerCaseMatch(
@@ -552,8 +544,8 @@ export abstract class AdapterBlueprint<
       ) {
         this.emit('accountChanged', {
           address,
-          chainId: connection.caipNetwork?.id,
-          connector: connection.connector
+          chainId: connection?.caipNetwork?.id,
+          connector: connection?.connector
         })
       }
 
