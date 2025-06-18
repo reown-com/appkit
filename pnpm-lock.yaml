@@ -411,6 +411,9 @@ importers:
       '@playwright/test':
         specifier: 1.48.2
         version: 1.48.2
+      '@reown/appkit-testing':
+        specifier: workspace:*
+        version: link:../../packages/testing
       '@types/node':
         specifier: 22.13.4
         version: 22.13.4
