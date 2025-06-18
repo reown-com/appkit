@@ -470,13 +470,6 @@ export abstract class AppKitBaseClient {
 
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
-        this.chainNamespaces.forEach(namespace => {
-          ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT, namespace)
-          StorageUtil.removeDisconnectedConnectorId(
-            ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-            namespace
-          )
-        })
         await this.syncWalletConnectAccount()
       },
       connectExternal: async ({
@@ -1444,7 +1437,10 @@ export abstract class AppKitBaseClient {
                 return
               }
 
-              if (currentCaipNetwork?.id.toString() !== caipNetwork?.id.toString()) {
+              if (
+                currentCaipNetwork?.id.toString() !== caipNetwork?.id.toString() &&
+                currentCaipNetwork?.chainNamespace === caipNetwork?.chainNamespace
+              ) {
                 this.setCaipNetwork(caipNetwork)
               }
             }

@@ -38,6 +38,14 @@ function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.
   }
 }
 
+const mockGetActiveNetworks = vi.fn(() => {
+  const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(
+    ConstantsUtil.CHAIN.BITCOIN
+  )
+
+  return requestedCaipNetworks?.[0]
+})
+
 describe('BitcoinAdapter', () => {
   let adapter: BitcoinAdapter
   let api: ReturnType<typeof mockBitcoinApi>
@@ -50,6 +58,7 @@ describe('BitcoinAdapter', () => {
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient
     })
     ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
+    vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([bitcoin])
   })
 
   describe('constructor', () => {
@@ -99,7 +108,7 @@ describe('BitcoinAdapter', () => {
       const connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
       vi.spyOn(connector, 'connect').mockResolvedValueOnce('mock_address')
 
@@ -129,7 +138,7 @@ describe('BitcoinAdapter', () => {
       const connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
       vi.spyOn(connector, 'connect').mockResolvedValueOnce('mock_address')
       vi.spyOn(connector, 'chains', 'get').mockReturnValue([])
@@ -149,7 +158,7 @@ describe('BitcoinAdapter', () => {
       connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
 
       adapter.connectors.push(connector)
@@ -190,7 +199,7 @@ describe('BitcoinAdapter', () => {
       const connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
       vi.spyOn(connector, 'getAccountAddresses').mockResolvedValueOnce([])
 
@@ -266,8 +275,8 @@ describe('BitcoinAdapter', () => {
 
     it('should pass correct getActiveNetwork to SatsConnectConnector', () => {
       const mocks = mockSatsConnectProvider({ id: LeatherConnector.ProviderId, name: 'Leather' })
-      const getCaipNetwork = vi.fn(() => bitcoin)
-      adapter.syncConnectors(undefined, { getCaipNetwork } as any)
+      const getRequestedCaipNetworksSpy = vi.spyOn(ChainController, 'getRequestedCaipNetworks')
+      adapter.syncConnectors(undefined, { getCaipNetwork: mockGetActiveNetworks } as any)
 
       vi.spyOn(mocks.wallet, 'request').mockResolvedValueOnce(
         mockSatsConnectProvider.mockRequestResolve({ hex: 'mock_hex', txid: 'mock_txid' })
@@ -279,7 +288,8 @@ describe('BitcoinAdapter', () => {
 
       connector.signPSBT({ psbt: 'mock_psbt', signInputs: [] })
 
-      expect(getCaipNetwork).toHaveBeenCalled()
+      expect(mockGetActiveNetworks).toHaveBeenCalled()
+      expect(getRequestedCaipNetworksSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.BITCOIN)
     })
   })
 
@@ -418,7 +428,7 @@ describe('BitcoinAdapter', () => {
       connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
     })
 
@@ -462,7 +472,7 @@ describe('BitcoinAdapter', () => {
       const connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
       vi.spyOn(connector, 'disconnect')
 
@@ -478,7 +488,7 @@ describe('BitcoinAdapter', () => {
       const connector = new SatsConnectConnector({
         provider: mocks.provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
       vi.spyOn(connector, 'disconnect')
       vi.spyOn(connector, 'getAccountAddresses').mockResolvedValueOnce([
@@ -642,7 +652,7 @@ describe('BitcoinAdapter', () => {
       const provider = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
 
       const switchNetworkSpy = vi.spyOn(provider, 'switchNetwork').mockResolvedValue(undefined)
@@ -666,7 +676,7 @@ describe('BitcoinAdapter', () => {
       const xverseConnector = new SatsConnectConnector({
         provider: xverseMocks.provider,
         requestedChains: [bitcoin, bitcoinTestnet],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
 
       const switchNetworkSpy = vi
@@ -701,7 +711,7 @@ describe('BitcoinAdapter', () => {
       const provider = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin],
-        getActiveNetwork: () => bitcoin
+        getActiveNetwork: mockGetActiveNetworks
       })
 
       const error = new Error('Network switching failed')

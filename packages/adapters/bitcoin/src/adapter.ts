@@ -150,7 +150,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   override syncConnectors(_options?: AppKitOptions, appKit?: AppKit) {
     function getActiveNetwork() {
-      return appKit?.getCaipNetwork()
+      return appKit?.getCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
     }
 
     WalletStandardConnector.watchWallets({

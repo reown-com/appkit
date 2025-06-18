@@ -19,7 +19,7 @@ const mockAddress = 'HPAccp9wmUAP4kxATmf1CjARHfPzB1HXKWoEaNiZqvUQ'
 const mockPublicKey = bs58.decode(mockAddress)
 
 // Create a mock transaction bytes array
-const mockTransactionBytes = Buffer.from([
+const mockTransactionBytes = Uint8Array.from([
   0x01, // version
   0x00, // header
   0x00,
