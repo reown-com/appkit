@@ -139,7 +139,7 @@ export abstract class AdapterBlueprint<
    * Sets the universal provider for WalletConnect.
    * @param {UniversalProvider} universalProvider - The universal provider instance
    */
-  public abstract setUniversalProvider(universalProvider: UniversalProvider): void
+  public abstract setUniversalProvider(universalProvider: UniversalProvider): Promise<void>
 
   /**
    * Sets the auth provider.

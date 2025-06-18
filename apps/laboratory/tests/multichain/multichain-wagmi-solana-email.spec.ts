@@ -1,6 +1,7 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { DEFAULT_CHAIN_NAME } from '../shared/constants'
+import { DEFAULT_CHAIN_NAME } from '@reown/appkit-testing'
+
 import { ModalWalletPage } from '../shared/pages/ModalWalletPage'
 import { Email } from '../shared/utils/email'
 import { getNamespaceByNetworkName } from '../shared/utils/namespace'

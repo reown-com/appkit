@@ -1,8 +1,8 @@
 import { type BrowserContext, type Page, test } from '@playwright/test'
 
-import { ALL_SOCIALS } from './shared/constants'
+import { ALL_SOCIALS, WalletPage } from '@reown/appkit-testing'
+
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */

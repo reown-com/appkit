@@ -15,7 +15,7 @@ import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
@@ -23,6 +23,8 @@ export class UniversalAdapter extends AdapterBlueprint {
         namespace: this.namespace as ChainNamespace
       })
     )
+
+    return Promise.resolve()
   }
 
   public async connect(

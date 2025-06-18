@@ -338,7 +338,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider): void {
     this.universalProvider = universalProvider
 
     const wcConnectorId = CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
@@ -359,6 +359,8 @@ export class EthersAdapter extends AdapterBlueprint {
         namespace: CommonConstantsUtil.CHAIN.EVM
       })
     )
+
+    return Promise.resolve()
   }
 
   private eip6963EventHandler(event: CustomEventInit<EIP6963ProviderDetail>) {

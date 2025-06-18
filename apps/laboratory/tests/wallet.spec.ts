@@ -2,19 +2,16 @@ import { type BrowserContext, test } from '@playwright/test'
 
 import type { CaipNetworkId } from '@reown/appkit'
 import {
-  bitcoin,
-  bitcoinTestnet,
-  mainnet,
-  polygon,
-  solana,
-  solanaTestnet
-} from '@reown/appkit/networks'
+  DEFAULT_CHAIN_NAME,
+  WalletPage,
+  WalletValidator,
+  getBalanceSymbolByLibrary,
+  getLastNetworkNameByLibrary,
+  getNetworksByLibrary
+} from '@reown/appkit-testing'
 
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletValidator } from './shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -23,39 +20,6 @@ let walletPage: WalletPage
 let walletValidator: WalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
-
-function getBalanceSymbolByLibrary(library: string) {
-  switch (library) {
-    case 'bitcoin':
-      return 'BTC'
-    case 'solana':
-      return 'SOL'
-    default:
-      return 'ETH'
-  }
-}
-
-function getNetworksByLibrary(library: string) {
-  switch (library) {
-    case 'bitcoin':
-      return [bitcoin, bitcoinTestnet]
-    case 'solana':
-      return [solana, solanaTestnet]
-    default:
-      return [mainnet, polygon]
-  }
-}
-
-function getLastNetworkNameByLibrary(library: string) {
-  switch (library) {
-    case 'bitcoin':
-      return bitcoinTestnet.name
-    case 'solana':
-      return solanaTestnet.name
-    default:
-      return polygon.name
-  }
-}
 
 // -- Setup --------------------------------------------------------------------
 const sampleWalletTest = test.extend<{ library: string }>({
