@@ -488,9 +488,7 @@ export abstract class AdapterBlueprint<
    */
   protected onConnect(accounts: (ParsedCaipAddress | string)[], connectorId: string) {
     if (accounts.length > 0) {
-      const account = accounts[0]
-      const address = CoreHelperUtil.isString(account) ? account : account?.address
-      const chainId = CoreHelperUtil.isString(account) ? undefined : account?.chainId
+      const { address, chainId } = CoreHelperUtil.getAccount(accounts[0])
 
       const caipNetwork = this.getCaipNetworks()
         .filter(n => n.chainNamespace === this.namespace)
@@ -508,11 +506,9 @@ export abstract class AdapterBlueprint<
         this.addConnection({
           connectorId,
           accounts: accounts.map(_account => {
-            if (CoreHelperUtil.isString(_account)) {
-              return { address: _account }
-            }
+            const { address } = CoreHelperUtil.getAccount(_account)
 
-            return { address: _account.address }
+            return { address: address as string }
           }),
           caipNetwork
         })
@@ -531,8 +527,7 @@ export abstract class AdapterBlueprint<
     disconnectIfNoAccounts = true
   ) {
     if (accounts.length > 0) {
-      const account = accounts[0]
-      const address = CoreHelperUtil.isString(account) ? account : account?.address
+      const { address } = CoreHelperUtil.getAccount(accounts[0])
 
       const connection = this.connectionManager?.getConnection({
         connectorId,
@@ -565,11 +560,9 @@ export abstract class AdapterBlueprint<
       this.addConnection({
         connectorId,
         accounts: accounts.map(_account => {
-          if (CoreHelperUtil.isString(_account)) {
-            return { address: _account }
-          }
+          const { address } = CoreHelperUtil.getAccount(_account)
 
-          return { address: _account.address }
+          return { address: address as string }
         }),
         caipNetwork: connection?.caipNetwork
       })
@@ -604,7 +597,7 @@ export abstract class AdapterBlueprint<
    */
   protected onChainChanged(chainId: string | number, connectorId: string) {
     const formattedChainId =
-      CoreHelperUtil.isString(chainId) && chainId.startsWith('0x')
+      typeof chainId === 'string' && chainId.startsWith('0x')
         ? EthersHelpersUtil.hexStringToNumber(chainId)
         : chainId.toString()
 

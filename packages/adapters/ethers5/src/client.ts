@@ -341,7 +341,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
-  public override async setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider) {
     this.universalProvider = universalProvider
 
     const wcConnectorId = CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
