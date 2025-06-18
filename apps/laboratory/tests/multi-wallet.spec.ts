@@ -2,10 +2,10 @@
 import type { Page } from '@playwright/test'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { WalletPage } from '@reown/appkit-testing'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 // -- Constants --------------------------------------------------------------------
