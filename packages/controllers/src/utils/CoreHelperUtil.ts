@@ -459,6 +459,9 @@ export const CoreHelperUtil = {
       (namespace as string) in CommonConstants.CHAIN_NAME_MAP
     )
   },
+  isString(value: unknown): value is string {
+    return typeof value === 'string'
+  },
   isMac() {
     const ua = window?.navigator.userAgent.toLowerCase()
 

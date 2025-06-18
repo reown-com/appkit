@@ -15,6 +15,7 @@ import {
   type Connector as AppKitConnector,
   ChainController,
   ConnectorController,
+  CoreHelperUtil,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-controllers'
@@ -90,6 +91,12 @@ export abstract class AdapterBlueprint<
       ConnectorController.getConnectorId(namespace)
 
     if (params) {
+      if (params.namespace) {
+        this.connectionManager = new ConnectionManager({
+          namespace: params.namespace
+        })
+      }
+
       this.construct(params)
     }
   }
@@ -102,12 +109,6 @@ export abstract class AdapterBlueprint<
     this.projectId = params.projectId
     this.namespace = params.namespace
     this.adapterType = params.adapterType
-
-    if (this.namespace) {
-      this.connectionManager = new ConnectionManager({
-        namespace: this.namespace
-      })
-    }
   }
 
   /**
@@ -488,8 +489,8 @@ export abstract class AdapterBlueprint<
   protected onConnect(accounts: (ParsedCaipAddress | string)[], connectorId: string) {
     if (accounts.length > 0) {
       const account = accounts[0]
-      const address = typeof account === 'string' ? account : account?.address
-      const chainId = typeof account === 'string' ? undefined : account?.chainId
+      const address = CoreHelperUtil.isString(account) ? account : account?.address
+      const chainId = CoreHelperUtil.isString(account) ? undefined : account?.chainId
 
       const caipNetwork = this.getCaipNetworks()
         .filter(n => n.chainNamespace === this.namespace)
@@ -507,7 +508,7 @@ export abstract class AdapterBlueprint<
         this.addConnection({
           connectorId,
           accounts: accounts.map(_account => {
-            if (typeof _account === 'string') {
+            if (CoreHelperUtil.isString(_account)) {
               return { address: _account }
             }
 
@@ -531,7 +532,7 @@ export abstract class AdapterBlueprint<
   ) {
     if (accounts.length > 0) {
       const account = accounts[0]
-      const address = typeof account === 'string' ? account : account?.address
+      const address = CoreHelperUtil.isString(account) ? account : account?.address
 
       const connection = this.connectionManager?.getConnection({
         connectorId,
@@ -564,7 +565,7 @@ export abstract class AdapterBlueprint<
       this.addConnection({
         connectorId,
         accounts: accounts.map(_account => {
-          if (typeof _account === 'string') {
+          if (CoreHelperUtil.isString(_account)) {
             return { address: _account }
           }
 
@@ -603,7 +604,7 @@ export abstract class AdapterBlueprint<
    */
   protected onChainChanged(chainId: string | number, connectorId: string) {
     const formattedChainId =
-      typeof chainId === 'string' && chainId.startsWith('0x')
+      CoreHelperUtil.isString(chainId) && chainId.startsWith('0x')
         ? EthersHelpersUtil.hexStringToNumber(chainId)
         : chainId.toString()
 
