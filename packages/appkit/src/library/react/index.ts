@@ -166,23 +166,29 @@ export function useAppKitState() {
   }
 
   const [state, setState] = useState({ ...modal.getState(), initialized: false })
+  const [remoteFeatures, setRemoteFeatures] = useState(modal.getRemoteFeatures())
 
   useEffect(() => {
     if (modal) {
       setState({ ...modal.getState() })
+      setRemoteFeatures(modal.getRemoteFeatures())
       const unsubscribe = modal?.subscribeState(newState => {
         setState({ ...newState })
+      })
+      const unsubscribeRemoteFeatures = modal?.subscribeRemoteFeatures(newState => {
+        setRemoteFeatures(newState)
       })
 
       return () => {
         unsubscribe?.()
+        unsubscribeRemoteFeatures?.()
       }
     }
 
     return () => null
   }, [])
 
-  return state
+  return { ...state, ...(remoteFeatures ?? {}) }
 }
 
 export function useAppKitEvents() {

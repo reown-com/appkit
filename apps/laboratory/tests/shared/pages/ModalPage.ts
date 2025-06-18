@@ -123,12 +123,7 @@ export class ModalPage {
 
   async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
     await this.connectButton.click()
-    const connect = this.page.getByTestId('wallet-selector-walletconnect')
-    await connect.waitFor({
-      state: 'visible',
-      timeout: 5000
-    })
-    await connect.click()
+    await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
@@ -165,8 +160,13 @@ export class ModalPage {
     return uri
   }
 
-  async getImmidiateConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.connectButton.click()
+  async getImmidiateConnectUri(
+    timingRecords?: TimingRecords,
+    clickConnectButton = true
+  ): Promise<string> {
+    if (clickConnectButton) {
+      await this.connectButton.click()
+    }
     const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
@@ -185,14 +185,18 @@ export class ModalPage {
     return uri
   }
 
-  async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
+  async qrCodeFlow(
+    page: ModalPage,
+    walletPage: WalletPage,
+    qrCodeFlowType?: 'immediate-connect' | 'immediate'
+  ): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
     if (!walletPage.isPageLoaded) {
       await walletPage.load()
     }
-    if (immediate) {
-      uri = await page.getImmidiateConnectUri()
+    if (qrCodeFlowType === 'immediate-connect' || qrCodeFlowType === 'immediate') {
+      uri = await page.getImmidiateConnectUri(undefined, qrCodeFlowType === 'immediate-connect')
     } else {
       uri = await page.getConnectUri()
     }
@@ -403,11 +407,13 @@ export class ModalPage {
     })
   }
 
-  async disconnect() {
-    const accountBtn = this.page.getByTestId('account-button')
-    await expect(accountBtn, 'Account button should be visible').toBeVisible()
-    await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
-    await accountBtn.click()
+  async disconnect(clickAccountButton = true) {
+    if (clickAccountButton) {
+      const accountBtn = this.page.getByTestId('account-button')
+      await expect(accountBtn, 'Account button should be visible').toBeVisible()
+      await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
+      await accountBtn.click()
+    }
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
@@ -470,6 +476,7 @@ export class ModalPage {
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name, exact: true })
     await signatureButton.waitFor({ state: 'visible', timeout: 15_000 })
+    await signatureButton.scrollIntoViewIfNeeded()
     await signatureButton.click()
     await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
   }
@@ -489,13 +496,18 @@ export class ModalPage {
     await this.clickSignatureRequestButton('Approve')
   }
 
-  async clickWalletUpgradeCard(context: BrowserContext, library?: string) {
-    await this.page.getByTestId('account-button').click()
+  async clickProfileWalletsMoreButton() {
+    await this.page.getByTestId('wui-active-profile-wallet-item-more-button').click()
+  }
 
-    await this.page.getByTestId('w3m-profile-button').click()
-    if (library !== 'solana') {
-      await this.page.getByTestId('account-settings-button').click()
-    }
+  async clickProfileWalletsDisconnectButton() {
+    await this.page.getByTestId('wui-active-profile-wallet-item-disconnect-button').click()
+  }
+
+  async clickWalletUpgradeCard(context: BrowserContext) {
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('wui-wallet-switch').click()
+    await this.clickProfileWalletsMoreButton()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -548,6 +560,23 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
+  async clickWalletConnect() {
+    const connect = this.page.getByTestId('wallet-selector-walletconnect')
+    await connect.waitFor({
+      state: 'visible',
+      timeout: 5000
+    })
+    await connect.click()
+  }
+
+  async clickWalletSwitchButton() {
+    await this.page.getByTestId('wui-wallet-switch').click()
+  }
+
+  async clickAddWalletButton() {
+    await this.page.getByTestId('add-connection-button').click()
+  }
+
   async openAccount(namespace?: string) {
     expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
@@ -555,8 +584,22 @@ export class ModalPage {
     await this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
-  async openConnectModal() {
-    await this.page.getByTestId('connect-button').click()
+  async openProfileWalletsView(
+    namespace?: string,
+    clickButtonType: 'account' | 'connect' = 'account'
+  ) {
+    if (clickButtonType === 'account') {
+      await this.openAccount(namespace)
+    } else {
+      await this.openConnectModal(namespace)
+    }
+    await this.clickWalletSwitchButton()
+    // Wait until stable after animations
+    await this.page.waitForTimeout(500)
+  }
+
+  async openConnectModal(namespace?: string) {
+    await this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
   async openAllSocials() {
@@ -657,6 +700,12 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
+  async clickTab(name: string) {
+    const tab = this.page.getByTestId(`tab-${name}`)
+    await expect(tab).toBeVisible()
+    await tab.click()
+  }
+
   async getExtensionWallet() {
     // eslint-disable-next-line init-declarations
     let walletSelector: Locator
@@ -677,6 +726,20 @@ export class ModalPage {
     }
 
     return walletSelector
+  }
+
+  async getActiveProfileWalletItemAddress() {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    const address = await activeProfileWalletItem.getAttribute('address')
+
+    return address as string
+  }
+
+  async getConnectedWalletType() {
+    const walletType = this.page.getByTestId('w3m-wallet-type')
+    const text = await walletType.textContent()
+
+    return text?.trim()
   }
 
   async clickWalletButton(id: string) {
@@ -782,17 +845,61 @@ export class ModalPage {
     await sendCallsButton.click()
   }
 
-  async switchAccount() {
-    const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
-    await expect(switchAccountButton1).toBeVisible()
-    await switchAccountButton1.click()
+  async switchAccount(idx = 0) {
+    const firstActiveConnection = this.page.getByTestId('active-connection')
+    const firstActiveConnectionButton = firstActiveConnection
+      .nth(idx)
+      .getByTestId('wui-inactive-profile-wallet-item-button')
+    await expect(firstActiveConnectionButton).toBeVisible()
+    await firstActiveConnectionButton.click()
   }
 
-  async getAddress(): Promise<`0x${string}`> {
-    const address = await this.page.getByTestId('w3m-address').textContent()
+  async switchAccountByAddress(address: string) {
+    const activeConnections = await this.getActiveConnections()
+
+    let hasSwitched = false
+
+    await Promise.all(
+      activeConnections.map(async connection => {
+        const connectionAddress = await connection.getAttribute('address')
+
+        if (connectionAddress && connectionAddress.toLowerCase() === address.toLowerCase()) {
+          await connection.getByTestId('wui-inactive-profile-wallet-item-button').click()
+          hasSwitched = true
+        }
+      })
+    )
+
+    if (!hasSwitched) {
+      throw new Error(`Active connection with address "${address}" not found`)
+    }
+  }
+
+  async getAddress(namespace?: string): Promise<`0x${string}`> {
+    const address = await this.page
+      .getByTestId(`w3m-address${namespace ? `-${namespace}` : ''}`)
+      .textContent()
     expect(address, 'Address should be present').toBeTruthy()
 
     return address as `0x${string}`
+  }
+
+  async getActiveConnectionsAddresses() {
+    const activeConnections = await this.getActiveConnections()
+
+    const activeConnectionsAddresses = await Promise.all(
+      activeConnections.map(async connection => connection.getAttribute('address'))
+    )
+
+    return activeConnectionsAddresses.filter(Boolean) as string[]
+  }
+
+  // Returns all connected addresses excluding the currently active account
+  async getActiveConnections() {
+    const locator = this.page.getByTestId('active-connection')
+    const count = await locator.count()
+
+    return Array.from({ length: count }).map((_, i) => locator.nth(i))
   }
 
   async getChainId(): Promise<number> {

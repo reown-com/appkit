@@ -78,6 +78,11 @@
       "import": "./dist/esm/exports/connectors.js",
       "default": "./dist/esm/exports/connectors.js"
     },
+    "./connections": {
+      "types": "./dist/types/exports/connections.d.ts",
+      "import": "./dist/esm/exports/connections.js",
+      "default": "./dist/esm/exports/connections.js"
+    },
     "./core": {
       "types": "./dist/types/exports/core.d.ts",
       "import": "./dist/esm/exports/core.js",

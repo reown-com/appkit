@@ -9,7 +9,8 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -38,6 +39,17 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
+      })
+    )
+  }
+
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
@@ -52,6 +64,8 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const hasConnection = ConnectionController.hasAnyConnection(ConstantsUtil.CONNECTOR_ID.AUTH)
+
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
@@ -59,6 +73,7 @@ export class W3mEmailLoginWidget extends LitElement {
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
           tabIdx=${ifDefined(this.tabIdx)}
+          ?disabled=${hasConnection}
         >
         </wui-email-input>
 
@@ -143,11 +158,18 @@ export class W3mEmailLoginWidget extends LitElement {
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         await ConnectionController.connectExternal(
           authConnector,
           ChainController.state.activeChain as ChainNamespace
         )
-        RouterController.replace('Account')
+
+        if (isMultiWalletEnabled) {
+          RouterController.replace('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
+        } else {
+          RouterController.replace('Account')
+        }
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

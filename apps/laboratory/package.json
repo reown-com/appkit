@@ -52,6 +52,9 @@
     "playwright:test:default-account-types": "playwright test --grep email-default-account-types.spec.ts",
     "playwright:test:core-sign-client": "playwright test --grep sign-client.spec.ts",
     "playwright:test:cloud-auth": "playwright test --grep cloud-auth.spec.ts",
+    "playwright:test:multi-wallet": "HEADLESS=true playwright test --grep multi-wallet.spec.ts",
+    "playwright:test:multi-wallet-siwx": "HEADLESS=true playwright test --grep multi-wallet-siwx.spec.ts",
+    "playwright:test:multi-wallet-multichain": "HEADLESS=true playwright test --grep multi-wallet-multichain.spec.ts",
     "playwright:debug:core-sign-client": "pnpm playwright:test:core-sign-client --debug",
     "playwright:test:core": "playwright test --grep core.spec.ts",
     "playwright:debug:core": "pnpm playwright:test:core --debug",
@@ -93,7 +96,10 @@
     "playwright:debug:multichain-ethers5-auth-siwe": "pnpm playwright:test:multichain-ethers5-auth-siwe --debug",
     "playwright:debug:multichain-ethers5-siwe": "pnpm playwright:test:multichain-ethers5-siwe --debug",
     "playwright:debug:default-account-types": "pnpm playwright:test:default-account-types --debug",
-    "playwright:debug:cloud-auth": "pnpm playwright:test:cloud-auth --debug"
+    "playwright:debug:cloud-auth": "pnpm playwright:test:cloud-auth --debug",
+    "playwright:debug:multi-wallet": "playwright test --grep 'multi-wallet.spec.ts' --debug",
+    "playwright:debug:multi-wallet-siwx": "playwright test --grep 'multi-wallet-siwx.spec.ts' --debug",
+    "playwright:debug:multi-wallet-multichain": "playwright test --grep 'multi-wallet-multichain.spec.ts' --debug"
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "1.2.0",
