@@ -100,21 +100,20 @@ test('should require SIWX signature when switching networks with multiple wallet
     await modal.openProfileWalletsView()
     await modal.switchAccountByAddress(address)
 
-    
     await modal.closeModal()
     await validator.expectAccountSwitched(_currentAddress)
-    
+
     const network = networks[idx]
-    
+
     if (!network) {
       throw new Error('Network not found')
     }
-    
+
     await modal.switchNetwork(network)
     await modal.promptSiwe()
-    
+
     const isWalletConnect = (await modal.getConnectedWalletType()) === 'WALLET_CONNECT'
-    
+
     if (isWalletConnect) {
       await wallet.handleRequest({ accept: true })
     }
