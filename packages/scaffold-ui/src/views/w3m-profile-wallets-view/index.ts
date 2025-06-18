@@ -39,8 +39,8 @@ import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
-const TABS_PADDING = 40
-const MODAL_MOBILE_VIEW_PX = 430
+const TABS_PADDING = 16
+const TABS_INNER_PADDING = 4
 
 // -- Types -------------------------------- //
 interface Account {
@@ -82,8 +82,6 @@ const NAMESPACE_TABS = [
   { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' }
 ] as const
 
-const TAB_WIDTHS = { 1: 320, 2: 160, 3: 106 } as const
-
 const CHAIN_LABELS = {
   eip155: { title: 'Add EVM Wallet', description: 'Add your first EVM wallet' },
   solana: { title: 'Add Solana Wallet', description: 'Add your first Solana wallet' },
@@ -98,6 +96,7 @@ export class W3mProfileWalletsView extends LitElement {
   private unsubscribers: (() => void)[] = []
   private resizeObserver?: ResizeObserver
   private chainListener?: () => void
+  private tabsResizeObserver?: ResizeObserver
 
   // -- State & Properties -------------------------------- //
   @state() private currentTab = 0
@@ -112,6 +111,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
   @state() private user = AccountController.state.user
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
+  @state() private tabWidth = ''
 
   constructor() {
     super()
@@ -146,12 +146,14 @@ export class W3mProfileWalletsView extends LitElement {
   override disconnectedCallback() {
     this.unsubscribers.forEach(unsubscribe => unsubscribe())
     this.resizeObserver?.disconnect()
+    this.tabsResizeObserver?.disconnect()
     this.removeScrollListener()
     this.chainListener?.()
   }
 
   override firstUpdated() {
     const walletListEl = this.shadowRoot?.querySelector('.wallet-list')
+    const tabsEl = this.shadowRoot?.querySelector('wui-tabs')
 
     if (!walletListEl) {
       return
@@ -165,6 +167,30 @@ export class W3mProfileWalletsView extends LitElement {
     this.resizeObserver = new ResizeObserver(handleScroll)
     this.resizeObserver.observe(walletListEl)
     handleScroll()
+
+    if (tabsEl) {
+      const handleTabsResize = () => {
+        const availableTabs = NAMESPACE_TABS.filter(tab =>
+          this.namespaces.includes(tab.namespace as ChainNamespace)
+        )
+
+        const tabCount = availableTabs.length
+
+        if (tabCount > 1) {
+          const containerWidth = this.offsetWidth
+          const totalInnerTabsPadding = TABS_INNER_PADDING * 2
+          const totalTabsPadding = TABS_PADDING * 2
+          const availableWidth = containerWidth - totalTabsPadding - totalInnerTabsPadding
+          const tabWidth = availableWidth / tabCount
+          this.tabWidth = `${tabWidth}px`
+          this.requestUpdate()
+        }
+      }
+
+      this.tabsResizeObserver = new ResizeObserver(handleTabsResize)
+      this.tabsResizeObserver.observe(this)
+      handleTabsResize()
+    }
   }
 
   override render() {
@@ -189,16 +215,12 @@ export class W3mProfileWalletsView extends LitElement {
     )
 
     const tabCount = availableTabs.length
-    const tabWidth = TAB_WIDTHS[tabCount as keyof typeof TAB_WIDTHS] ?? TAB_WIDTHS[1]
-
     if (tabCount > 1) {
       return html`
         <wui-tabs
           .onTabChange=${(index: number) => this.handleTabChange(index)}
           .activeTab=${this.currentTab}
-          localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth <= MODAL_MOBILE_VIEW_PX
-            ? `${(window.innerWidth - TABS_PADDING) / tabCount}px`
-            : `${tabWidth}px`}
+          localTabWidth=${this.tabWidth}
           .tabs=${availableTabs}
         ></wui-tabs>
       `
