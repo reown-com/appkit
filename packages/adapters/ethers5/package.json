@@ -42,7 +42,7 @@
     "@walletconnect/types": "2.21.3",
     "vitest": "2.1.9"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
