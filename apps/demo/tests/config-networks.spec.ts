@@ -34,7 +34,7 @@ test.afterAll(async () => {
 // Test case 1: Disable chain with chain option
 test('it should disable chain with chain option as expected', async () => {
   // Open networks page on AppKit
-  await demoPage.openNetworks()
+  await demoPage.openNetworksWithHook()
 
   // Make sure the chain options are enabled
   await demoPage.verifyChainOptionEnabled('eip155', true)
@@ -54,7 +54,7 @@ test('it should disable chain with chain option as expected', async () => {
 // Test case 2: Disable chain with network option
 test('it should disable chain with network option as expected', async () => {
   // Open networks page on AppKit
-  await demoPage.openNetworks()
+  await demoPage.openNetworksWithHook()
 
   // Make sure the network options are enabled
   await demoPage.verifyNetworkOptionEnabled('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', true)
@@ -87,7 +87,7 @@ test('it should refresh page keeps state as expected', async () => {
   await demoPage.page.reload()
 
   // Open networks again after refresh
-  await demoPage.openNetworks()
+  await demoPage.openNetworksWithHook()
 
   // Verify state remains the same after refresh
   await demoPage.verifyChainOptionEnabled('eip155', false)

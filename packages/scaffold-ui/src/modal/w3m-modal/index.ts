@@ -224,18 +224,21 @@ export class W3mModalBase extends LitElement {
 
   private async onNewAddress(caipAddress?: CaipAddress) {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
+    const isPrevDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const isNextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
 
     // When users decline SIWE signature, we should close the modal
-    const isDisconnectedInSameNamespace = !nextConnected && !isSwitchingNamespace
+    const isDisconnectedInSameNamespace = !isNextConnected && !isSwitchingNamespace
 
     // If user is switching to another namespace and connected in that namespace, we should go back
-    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
+    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && isNextConnected
 
-    if (isDisconnectedInSameNamespace) {
+    if (isDisconnectedInSameNamespace && !this.enableEmbedded) {
       ModalController.close()
-    } else if (isSwitchingNamespaceAndConnected) {
+    } else if (isSwitchingNamespaceAndConnected && !this.enableEmbedded) {
       RouterController.goBack()
+    } else if (this.enableEmbedded && isPrevDisconnected && isNextConnected) {
+      ModalController.close()
     }
 
     await SIWXUtil.initializeIfEnabled()
@@ -271,7 +274,13 @@ export class W3mModalBase extends LitElement {
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
     const isModalOpen = ModalController.state.open
+
     let shouldGoBack = false
+
+    if (this.enableEmbedded && RouterController.state.view === 'SwitchNetwork') {
+      shouldGoBack = true
+    }
+
     if (isModalOpen && !isConnectingExternal) {
       if (isNotConnected) {
         /*
