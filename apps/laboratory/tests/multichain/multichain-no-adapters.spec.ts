@@ -27,7 +27,7 @@ test.beforeAll(async ({ browser }) => {
   walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
-  await modalPage.qrCodeFlow(modalPage, walletPage, true)
+  await modalPage.qrCodeFlow(modalPage, walletPage, 'immediate-connect')
   await modalValidator.expectConnected()
 })
 
@@ -71,7 +71,7 @@ test('it should disconnect and close modal when connecting from wallet', async (
 })
 
 test('it should disconnect as expected', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage, true)
+  await modalPage.qrCodeFlow(modalPage, walletPage, 'immediate-connect')
   await modalValidator.expectConnected()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()

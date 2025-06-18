@@ -6,6 +6,7 @@ const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
+  'multi-wallet-multichain',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
@@ -76,7 +77,9 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'wallet.spec.ts',
   'wallet-button.spec',
   'verify.spec.ts',
-  'email-after-farcaster.spec.ts'
+  'email-after-farcaster.spec.ts',
+  'multi-wallet.spec.ts',
+  'multi-wallet-siwx.spec.ts'
 ]
 
 const CORE_TESTS = ['sign-client.spec.ts', 'universal-provider.spec.ts', 'core.spec.ts']
@@ -91,7 +94,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'wallet.spec.ts',
-  'wallet-button.spec'
+  'wallet-button.spec',
+  'multi-wallet.spec.ts'
 ]
 
 const CLOUD_AUTH_TESTS = ['cloud-auth.spec.ts']
@@ -157,6 +161,12 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/multichain-all': {
     testMatch: /^.*\/multichain-all\.spec\.ts$/u
+  },
+  'Desktop Firefox/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
+  },
+  'Desktop Chrome/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u

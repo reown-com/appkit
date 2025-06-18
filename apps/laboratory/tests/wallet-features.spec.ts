@@ -89,7 +89,8 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
 })
 
 walletFeaturesTest('it should find account name as expected', async () => {
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.openChooseNameIntro()
   await page.openChooseName()
   await page.typeName('test-ens-check')
@@ -101,7 +102,8 @@ walletFeaturesTest('it should find account name as expected', async () => {
 })
 
 walletFeaturesTest('it should open web app wallet', async () => {
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await page.openConnectModal()
   await validator.expectAllWallets()
