@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/node": "22.13.9"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
