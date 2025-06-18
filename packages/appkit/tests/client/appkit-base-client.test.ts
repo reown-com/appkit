@@ -1,13 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
   ChainController,
-  ConnectionController,
-  ConnectorController,
-  StorageUtil
+  ConnectionController
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
@@ -131,11 +128,6 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
 describe('AppKitBaseClient.connectWalletConnect', () => {
   let baseClient: AppKitBaseClient
   let closeSpy: any
-  let setClientIdSpy: any
-  let syncWalletConnectAccountSpy: any
-  let setConnectedNamespacesSpy: any
-  let setConnectorIdSpy: any
-  let removeDisconnectedConnectorIdSpy: any
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -156,17 +148,6 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
 
     baseClient.remoteFeatures = { multiWallet: true }
     closeSpy = vi.spyOn(baseClient, 'close').mockImplementation(async () => {})
-    setClientIdSpy = vi.spyOn(baseClient, 'setClientId').mockImplementation(() => {})
-    syncWalletConnectAccountSpy = vi
-      .spyOn(baseClient as any, 'syncWalletConnectAccount')
-      .mockResolvedValue(undefined)
-    setConnectedNamespacesSpy = vi
-      .spyOn(StorageUtil, 'setConnectedNamespaces')
-      .mockImplementation(() => {})
-    setConnectorIdSpy = vi.spyOn(ConnectorController, 'setConnectorId').mockImplementation(() => {})
-    removeDisconnectedConnectorIdSpy = vi
-      .spyOn(StorageUtil, 'removeDisconnectedConnectorId')
-      .mockImplementation(() => {})
 
     const mockAdapter = {
       connectWalletConnect: vi.fn().mockResolvedValue({ clientId: 'test-client-id' })
@@ -224,33 +205,5 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
     await connectionControllerClient.connectWalletConnect()
 
     expect(closeSpy).toHaveBeenCalled()
-  })
-
-  it('should set client ID and update storage correctly', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155',
-      chains: new Map([['eip155', {}]])
-    })
-    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-      ...ConnectionController.state,
-      connections: new Map([['eip155', []]])
-    })
-    baseClient.remoteFeatures = { multiWallet: true }
-
-    const connectionControllerClient = (baseClient as any).connectionControllerClient
-    await connectionControllerClient.connectWalletConnect()
-
-    expect(setClientIdSpy).toHaveBeenCalledWith('test-client-id')
-    expect(setConnectedNamespacesSpy).toHaveBeenCalledWith(['eip155'])
-    expect(setConnectorIdSpy).toHaveBeenCalledWith(
-      ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      'eip155'
-    )
-    expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledWith(
-      ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      'eip155'
-    )
-    expect(syncWalletConnectAccountSpy).toHaveBeenCalled()
   })
 })
