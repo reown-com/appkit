@@ -180,8 +180,8 @@ export class ModalValidator {
   }
 
   async expectNetworkButton(network: string) {
-    const alertBarText = this.page.getByTestId('w3m-network-button')
-    await expect(alertBarText).toHaveText(network)
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await expect(networkButton).toHaveText(network)
   }
 
   async expectSwitchChainWithNetworkButton(chainName: string) {

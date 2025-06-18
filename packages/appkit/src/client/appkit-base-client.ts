@@ -479,11 +479,24 @@ export abstract class AppKitBaseClient {
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
 
+        let shouldUpdateNetwork = true
+        if (type === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
+          const authNamespaces = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
+          const hasConnectedAuthNamespace = authNamespaces.some(
+            namespace =>
+              ConnectorController.getConnectorId(namespace) === ConstantsUtil.CONNECTOR_ID.AUTH
+          )
+
+          if (hasConnectedAuthNamespace && chain !== activeChain) {
+            shouldUpdateNetwork = false
+          }
+        }
+
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.getCaipNetworks().find(
             network => network.chainNamespace === chain
           )
-          if (toConnectNetwork) {
+          if (toConnectNetwork && shouldUpdateNetwork) {
             this.setCaipNetwork(toConnectNetwork)
           }
         }
@@ -882,15 +895,13 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('accountChanged', ({ address, chainId }) => {
-      const isActiveChain = ChainController.state.activeChain === chainNamespace
-
-      if (isActiveChain && chainId) {
+      if (chainId) {
         this.syncAccount({
           address,
           chainId,
           chainNamespace
         })
-      } else if (isActiveChain && ChainController.state.activeCaipNetwork?.id) {
+      } else if (ChainController.state.activeCaipNetwork?.id) {
         this.syncAccount({
           address,
           chainId: ChainController.state.activeCaipNetwork?.id,
