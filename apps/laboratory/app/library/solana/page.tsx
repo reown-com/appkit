@@ -13,6 +13,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 const networks = ConstantsUtil.SolanaNetworks
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
+  registerWalletStandard: true,
   wallets: [new HuobiWalletAdapter()]
 })
 

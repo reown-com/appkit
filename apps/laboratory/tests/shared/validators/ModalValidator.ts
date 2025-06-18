@@ -2,10 +2,10 @@ import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 
 import type { CaipNetworkId } from '@reown/appkit'
+import { getMaximumWaitConnections } from '@reown/appkit-testing'
 
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { verifySignature } from '../../../src/utils/SignatureUtil'
-import { getMaximumWaitConnections } from '../utils/timeouts'
 
 const MAX_WAIT = getMaximumWaitConnections()
 
