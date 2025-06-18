@@ -247,7 +247,18 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     return on('register', (...wallets) => callback(...wrapWallets(wallets)))
   }
 
-  public async switchNetwork(_caipNetworkId: string): Promise<void> {
+  public async switchNetwork(caipNetworkId: string): Promise<void> {
+    const switchFeature = this.wallet.features['bitcoin:switchNetwork'] as
+      | { switchNetwork: (caipNetworkId: string) => Promise<void> }
+      | undefined
+
+    if (switchFeature && typeof switchFeature.switchNetwork === 'function') {
+      await switchFeature.switchNetwork(caipNetworkId)
+      // Optionally, emit a change event if your wallet doesn't do it
+      this.emit('change', { accounts: this.wallet.accounts })
+      return
+    }
+
     throw new Error(`${this.name} wallet does not support network switching`)
   }
 }
