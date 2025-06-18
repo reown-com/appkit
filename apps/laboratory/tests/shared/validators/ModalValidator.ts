@@ -96,6 +96,44 @@ export class ModalValidator {
     )
   }
 
+  async expectActiveProfileWalletItemToExist() {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    await expect(activeProfileWalletItem).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
+  async expectActiveProfileWalletItemAddress(address: string) {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    await expect(activeProfileWalletItem).toBeVisible({
+      timeout: MAX_WAIT
+    })
+    await expect(activeProfileWalletItem).toHaveAttribute('address', address)
+  }
+
+  async expectActiveConnectionsFromProfileWalletsCount(count: number) {
+    await expect(this.page.getByTestId('active-connection')).toHaveCount(count, { timeout: 10000 })
+  }
+
+  async expectActiveConnectionsFromProfileWallets(connections: { address: string }[]) {
+    const activeConnectionItems = this.page.getByTestId('active-connection')
+    const count = await activeConnectionItems.count()
+    expect(count).toBeGreaterThan(0)
+
+    const foundAddresses = await Promise.all(
+      Array.from({ length: count }).map(async (_, i) => {
+        const item = activeConnectionItems.nth(i)
+        const address = await item.getAttribute('address')
+
+        return address?.toLowerCase()
+      })
+    )
+
+    for (const { address } of connections) {
+      expect(foundAddresses).toContain(address.toLowerCase())
+    }
+  }
+
   async expectSingleAccount() {
     await expect(
       this.page.getByTestId('single-account-avatar'),
@@ -180,8 +218,8 @@ export class ModalValidator {
   }
 
   async expectNetworkButton(network: string) {
-    const alertBarText = this.page.getByTestId('w3m-network-button')
-    await expect(alertBarText).toHaveText(network)
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await expect(networkButton).toHaveText(network)
   }
 
   async expectSwitchChainWithNetworkButton(chainName: string) {
@@ -292,16 +330,14 @@ export class ModalValidator {
     await expect(coinbaseConnector).toBeVisible({ timeout: 10_000 })
   }
 
-  async expectMultipleAccounts() {
+  async expectActiveConnection() {
     await this.page.waitForTimeout(500)
-    await expect(this.page.getByText('Switch Address')).toBeVisible({
+    await expect(this.page.getByTestId('wui-active-profile-wallet-item')).toBeVisible({
       timeout: MAX_WAIT
     })
-
-    expect(this.page.getByTestId('switch-address-item').first()).toBeVisible()
-    const accounts = await this.page.getByTestId('switch-address-item').all()
-
-    expect(accounts.length).toBeGreaterThan(1)
+    await expect(this.page.getByTestId('active-connection').first()).toBeVisible({
+      timeout: MAX_WAIT
+    })
   }
 
   async expectNetworkNotSupportedVisible() {
@@ -427,6 +463,17 @@ export class ModalValidator {
     })
   }
 
+  async expectAccountButtonAddress(address: string) {
+    const accountButton = this.page.getByTestId('account-button')
+    await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
+    await expect(accountButton).toHaveAttribute('address', address)
+  }
+
+  async expectNoUnsupportedUIOnAccountButton() {
+    const accountButton = this.page.getByTestId('wui-account-button-unsupported-chain')
+    await expect(accountButton).not.toBeVisible({ timeout: MAX_WAIT })
+  }
+
   async expectConnectButtonLoading() {
     const connectButton = this.page.getByTestId('connect-button')
     await expect(connectButton).toContainText('Connecting...')
@@ -439,7 +486,16 @@ export class ModalValidator {
 
   async expectAccountSwitched(oldAddress: string) {
     const address = this.page.getByTestId('w3m-address')
-    await expect(address).not.toHaveText(oldAddress)
+    await expect(address).not.toHaveText(oldAddress, {
+      timeout: 10000
+    })
+  }
+
+  async expectActiveProfileWalletItemAddressSwitched(address: string) {
+    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
+    await expect(activeProfileWalletItem).not.toHaveAttribute('address', address, {
+      timeout: 10000
+    })
   }
 
   async expectSocialsVisible() {
@@ -466,6 +522,12 @@ export class ModalValidator {
 
   async expectSnackbar(message: string) {
     await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
+      timeout: MAX_WAIT
+    })
+  }
+
+  async expectConnectedWalletType(type: string) {
+    return expect(this.page.getByTestId('w3m-wallet-type')).toHaveText(type, {
       timeout: MAX_WAIT
     })
   }
@@ -497,6 +559,12 @@ export class ModalValidator {
     if (network) {
       await this.expectNetworkButton(network)
     }
+  }
+
+  async waitUntilSuccessToastHidden() {
+    await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeHidden({
+      timeout: 5000
+    })
   }
 
   async expectUxBrandingReown(visible: boolean) {
