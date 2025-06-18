@@ -5,6 +5,7 @@ import {
   AccountController,
   ChainController,
   ConnectionController,
+  CoreHelperUtil,
   ModalController,
   OptionsController,
   RouterController,
@@ -309,5 +310,68 @@ describe('SIWE mapped to SIWX', () => {
         chainId: 1
       })
     })
+  })
+
+  it('should cancelSignMessage and fallback to last network when there are fallback sessions', async () => {
+    const mockLastNetwork = {
+      ...networks.mainnet,
+      caipNetworkId: 'eip155:1' as const,
+      chainNamespace: 'eip155' as const
+    }
+
+    const getRequiredSpy = vi.fn().mockReturnValue(true)
+    const getSessionsSpy = vi.fn().mockResolvedValue([
+      {
+        data: { accountAddress: 'mock-address', chainId: 'eip155:1' as const },
+        message: 'mock-message',
+        signature: 'mock-signature'
+      }
+    ])
+
+    vi.spyOn(OptionsController.state, 'siwx', 'get').mockReturnValue({
+      ...OptionsController.state.siwx!,
+      getRequired: getRequiredSpy,
+      getSessions: getSessionsSpy
+    })
+
+    vi.spyOn(ChainController, 'getLastConnectedSIWECaipNetwork').mockReturnValue(mockLastNetwork)
+    vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue('mock-address')
+    const switchActiveNetworkSpy = vi.spyOn(ChainController, 'switchActiveNetwork')
+    const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
+    const modalCloseSpy = vi.spyOn(ModalController, 'close')
+
+    await SIWXUtil.cancelSignMessage()
+
+    expect(getSessionsSpy).toHaveBeenCalledWith('eip155:1', 'mock-address')
+    expect(switchActiveNetworkSpy).toHaveBeenCalledWith(mockLastNetwork)
+    expect(disconnectSpy).not.toHaveBeenCalled()
+    expect(modalCloseSpy).toHaveBeenCalled()
+  })
+
+  it('should cancelSignMessage and disconnect when there are no fallback sessions', async () => {
+    const mockLastNetwork = {
+      ...networks.mainnet,
+      caipNetworkId: 'eip155:1' as const,
+      chainNamespace: 'eip155' as const
+    }
+
+    const getRequiredSpy = vi.fn().mockReturnValue(true)
+    const getSessionsSpy = vi.fn().mockResolvedValue([])
+
+    vi.spyOn(OptionsController.state, 'siwx', 'get').mockReturnValue({
+      ...OptionsController.state.siwx!,
+      getRequired: getRequiredSpy,
+      getSessions: getSessionsSpy
+    })
+
+    vi.spyOn(ChainController, 'getLastConnectedSIWECaipNetwork').mockReturnValue(mockLastNetwork)
+    vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue('mock-address')
+    const switchActiveNetworkSpy = vi.spyOn(ChainController, 'switchActiveNetwork')
+    const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
+
+    await SIWXUtil.cancelSignMessage()
+
+    expect(disconnectSpy).toHaveBeenCalled()
+    expect(switchActiveNetworkSpy).not.toHaveBeenCalled()
   })
 })
