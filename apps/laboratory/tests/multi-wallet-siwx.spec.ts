@@ -64,10 +64,8 @@ test('should connect multiple wallets with SIWX', async ({ library }) => {
     return
   }
 
-  // Connect WalletConnect Wallet & Sign
+  // Connect WalletConnect Wallet
   await modal.qrCodeFlow(modal, wallet)
-  await modal.promptSiwe()
-  await wallet.handleRequest({ accept: true })
   await validator.expectConnected()
   walletConnectAddress = await modal.getAddress()
 
@@ -99,7 +97,16 @@ test('should require SIWX signature when switching networks with multiple wallet
     const _currentAddress = await modal.getAddress()
     await modal.openProfileWalletsView()
     await modal.switchAccountByAddress(address)
-    await modal.closeModal()
+
+    const isWalletConnect = (await modal.getConnectedWalletType()) === 'WALLET_CONNECT'
+
+    if (isWalletConnect) {
+      await modal.promptSiwe()
+      await wallet.handleRequest({ accept: true })
+    } else {
+      await modal.closeModal()
+    }
+
     await validator.expectAccountSwitched(_currentAddress)
 
     const network = networks[idx]
@@ -110,8 +117,6 @@ test('should require SIWX signature when switching networks with multiple wallet
 
     await modal.switchNetwork(network)
     await modal.promptSiwe()
-
-    const isWalletConnect = (await modal.getConnectedWalletType()) === 'WALLET_CONNECT'
 
     if (isWalletConnect) {
       await wallet.handleRequest({ accept: true })

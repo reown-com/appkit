@@ -455,7 +455,6 @@ export abstract class AppKitBaseClient {
         const chainId = this.getCaipNetwork(activeChain)?.id
         const connections = ConnectionController.getConnections(activeChain)
         const isMultiWallet = this.remoteFeatures.multiWallet
-        const isSIWXEnabled = Boolean(OptionsController.state.siwx)
         const hasConnections = connections.length > 0
 
         if (!adapter) {
@@ -463,7 +462,7 @@ export abstract class AppKitBaseClient {
         }
 
         const result = await adapter.connectWalletConnect(chainId)
-        const shouldClose = !isSIWXEnabled && (!hasConnections || !isMultiWallet)
+        const shouldClose = !hasConnections || !isMultiWallet
 
         if (shouldClose) {
           this.close()
@@ -975,7 +974,7 @@ export abstract class AppKitBaseClient {
     await this.getUniversalProvider()
 
     if (this.universalProvider) {
-      this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
+      await this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
     }
   }
 

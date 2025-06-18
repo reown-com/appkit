@@ -35,8 +35,8 @@ export class DemoPageValidator {
 
   async expectToBeConnected(namespace: ChainNamespace) {
     if (namespace === 'eip155') {
-      const profileButton = this.page.getByTestId('wui-profile-button')
-      await expect(profileButton, 'Profile button should be present').toBeVisible()
+      const walletSwitch = this.page.getByTestId('wui-wallet-switch')
+      await expect(walletSwitch, 'Wallet switch button should be present').toBeVisible()
     } else if (namespace === 'solana') {
       const solanaText = this.page.locator('wui-text').getByText('SOL')
       await expect(solanaText, 'SOL text should be present').toBeVisible()
