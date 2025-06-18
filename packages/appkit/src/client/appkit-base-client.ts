@@ -1024,7 +1024,7 @@ export abstract class AppKitBaseClient {
           caipNetwork,
           getConnectorStorageInfo(connectorId) {
             const storageConnectionsByNamespace = StorageUtil.getConnections()
-            const storageConnections = storageConnectionsByNamespace[namespace]
+            const storageConnections = storageConnectionsByNamespace[namespace] ?? []
 
             return {
               hasDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace),
