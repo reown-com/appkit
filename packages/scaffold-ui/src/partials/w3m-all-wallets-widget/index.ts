@@ -73,7 +73,7 @@ export class W3mAllWalletsWidget extends LitElement {
       tagLabel = `${count}+`
     }
 
-    const hasConnection = ConnectionController.hasAnyConnection(
+    const hasWcConnection = ConnectionController.hasAnyConnection(
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
 
@@ -89,7 +89,7 @@ export class W3mAllWalletsWidget extends LitElement {
         tabIdx=${ifDefined(this.tabIdx)}
         .loading=${this.isFetchingRecommendedWallets}
         loadingSpinnerColor=${this.isFetchingRecommendedWallets ? 'fg-300' : 'accent-100'}
-        ?disabled=${hasConnection}
+        ?disabled=${hasWcConnection}
       ></wui-list-wallet>
     `
   }

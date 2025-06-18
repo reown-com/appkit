@@ -51,7 +51,7 @@ export class W3mConnectExternalWidget extends LitElement {
       return null
     }
 
-    const hasConnection = ConnectionController.hasAnyConnection(
+    const hasWcConnection = ConnectionController.hasAnyConnection(
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
 
@@ -66,7 +66,7 @@ export class W3mConnectExternalWidget extends LitElement {
               data-testid=${`wallet-selector-external-${connector.id}`}
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
-              ?disabled=${hasConnection}
+              ?disabled=${hasWcConnection}
             >
             </wui-list-wallet>
           `

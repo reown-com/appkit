@@ -58,7 +58,7 @@ export class W3mConnectCustomWidget extends LitElement {
 
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
-    const hasConnection = ConnectionController.hasAnyConnection(
+    const hasWcConnection = ConnectionController.hasAnyConnection(
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
 
@@ -72,7 +72,7 @@ export class W3mConnectCustomWidget extends LitElement {
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
             ?loading=${this.loading}
-            ?disabled=${hasConnection}
+            ?disabled=${hasWcConnection}
           >
           </wui-list-wallet>
         `

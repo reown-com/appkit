@@ -55,7 +55,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
     const connectorImage = connector.imageUrl || this.connectorImages[connector?.imageId ?? '']
 
-    const hasConnection = ConnectionController.hasAnyConnection(
+    const hasWcConnection = ConnectionController.hasAnyConnection(
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
 
@@ -68,7 +68,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
         tagVariant="main"
         tabIdx=${ifDefined(this.tabIdx)}
         data-testid="wallet-selector-walletconnect"
-        ?disabled=${hasConnection}
+        ?disabled=${hasWcConnection}
       >
       </wui-list-wallet>
     `
