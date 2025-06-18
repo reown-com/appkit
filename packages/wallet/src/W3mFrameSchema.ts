@@ -570,6 +570,12 @@ export const W3mFrameSchema = {
       EventSchema.extend({
         type: zType('APP_RELOAD')
       })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_RPC_ABORT')
+      })
     ),
 
   // -- Frame Events ---------------------------------------------------------

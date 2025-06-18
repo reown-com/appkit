@@ -583,6 +583,10 @@ export class W3mFrameProvider {
         if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
           abortController.abort()
         }
+
+        this.appEvent<'RpcAbort'>({
+          type: W3mFrameConstants.APP_RPC_ABORT
+        })
       })
       this.openRpcRequests = []
     } catch (e) {
