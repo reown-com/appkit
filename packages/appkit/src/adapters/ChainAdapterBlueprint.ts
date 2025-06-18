@@ -590,7 +590,7 @@ export abstract class AdapterBlueprint<
   protected onChainChanged(chainId: string | number, connectorId: string) {
     const formattedChainId =
       typeof chainId === 'string' && chainId.startsWith('0x')
-        ? EthersHelpersUtil.hexStringToNumber(chainId)
+        ? EthersHelpersUtil.hexStringToNumber(chainId).toString()
         : chainId.toString()
 
     const connection = this.connectionManager?.getConnection({

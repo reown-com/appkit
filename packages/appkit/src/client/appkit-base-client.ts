@@ -471,6 +471,7 @@ export abstract class AppKitBaseClient {
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         await this.syncWalletConnectAccount()
+        await SIWXUtil.initializeIfEnabled()
       },
       connectExternal: async ({
         id,
