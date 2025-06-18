@@ -14,7 +14,8 @@
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+    "test": "vitest run --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
+    "postinstall": "node scripts/appkit-version-check.js"
   },
   "exports": {
     ".": {
@@ -133,6 +134,7 @@
     "@walletconnect/types": "2.21.3",
     "@walletconnect/universal-provider": "2.21.3",
     "bs58": "6.0.0",
+    "semver": "7.7.2",
     "valtio": "1.13.2",
     "viem": ">=2.29.0"
   },
