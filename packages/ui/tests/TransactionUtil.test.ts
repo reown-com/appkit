@@ -1,8 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import type { Transaction } from '@reown/appkit-common'
 
-import { UiHelperUtil } from '../exports/index.js'
 import { TransactionUtil } from '../src/utils/TransactionUtil.js'
 
 // Mocks for TransactionTransfer and Transaction
