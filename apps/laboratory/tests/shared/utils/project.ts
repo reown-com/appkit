@@ -6,6 +6,7 @@ const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
+  'multichain-all-email',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
@@ -167,9 +168,6 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/multichain-ethers5-solana': {
     testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
   },
-  'Desktop Firefox/multichain-no-adapters': {
-    testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
-  },
   'Desktop Chrome/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
   },
@@ -182,11 +180,20 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/multichain-no-adapters': {
     testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
   },
+  'Desktop Firefox/multichain-no-adapters': {
+    testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
+  },
   'Desktop Chrome/default-account-types': {
     testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
   },
   'Desktop Firefox/default-account-types': {
     testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-all-email': {
+    testMatch: /^.*\/multichain-all-email\.spec\.ts$/u
+  },
+  'Desktop Firefox/multichain-all-email': {
+    testMatch: /^.*\/multichain-all-email\.spec\.ts$/u
   },
   'iPhone 12/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
