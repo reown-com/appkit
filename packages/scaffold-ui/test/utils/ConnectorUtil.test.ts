@@ -154,31 +154,6 @@ describe('ConnectorUtil', () => {
       expect(result).toEqual(['injected'])
       expect(result).not.toContain('walletConnect')
     })
-
-    it('should handle already connected walletConnect properly', () => {
-      vi.spyOn(ConnectorUtil, 'getIsConnectedWithWC').mockReturnValue(true)
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        enableWalletConnect: true,
-        features: {
-          connectorTypeOrder: ['walletConnect', 'injected']
-        }
-      })
-
-      const result = ConnectorUtil.getConnectorTypeOrder({
-        recommended: [],
-        featured: [],
-        custom: [],
-        recent: [],
-        announced: [],
-        injected: [INJECTED],
-        multiChain: [INJECTED],
-        external: []
-      })
-
-      expect(result).toEqual(['injected'])
-      expect(result).not.toContain('walletConnect')
-    })
   })
 
   describe('showConnector', () => {
