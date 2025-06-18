@@ -150,7 +150,7 @@
     "vitest": "3.1.3",
     "vue": "3.x"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
