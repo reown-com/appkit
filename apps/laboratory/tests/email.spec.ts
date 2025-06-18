@@ -132,6 +132,16 @@ emailTest('it should show loading on page refresh', async () => {
   await validator.expectAccountButtonReady()
 })
 
+emailTest('it should still be able to request transactions after aborting request', async () => {
+  await page.sign()
+  await page.closeModal()
+  await validator.expectRejectedSign()
+
+  await page.sendCalls()
+  await validator.expectFrameTextToContain('AppKit Lab requests multiple transactions')
+  await page.closeModal()
+})
+
 emailTest('it should disconnect correctly', async ({ library }) => {
   if (library === 'solana') {
     await page.openAccount()
