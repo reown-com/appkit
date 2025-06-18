@@ -466,12 +466,6 @@ export abstract class AppKitBaseClient {
         this.close()
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
-        this.chainNamespaces.forEach(namespace => {
-          ConnectorController.setConnectorId(
-            UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT,
-            namespace
-          )
-        })
         await this.syncWalletConnectAccount()
       },
       connectExternal: async ({ id, info, type, provider, chain, caipNetwork, socialUri }) => {
@@ -1380,7 +1374,10 @@ export abstract class AppKitBaseClient {
           return
         }
 
-        if (currentCaipNetwork?.id !== caipNetwork?.id) {
+        if (
+          currentCaipNetwork?.id !== caipNetwork?.id &&
+          currentCaipNetwork?.chainNamespace === caipNetwork?.chainNamespace
+        ) {
           this.setCaipNetwork(caipNetwork)
         }
       })
@@ -1564,12 +1561,6 @@ export abstract class AppKitBaseClient {
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
-    /**
-     * For the embedded use cases (Demo app), we should call close() when the user is connected to redirect them to Account View.
-     */
-    if (caipAddress && OptionsController.state.enableEmbedded) {
-      this.close()
-    }
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
