@@ -350,7 +350,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-html-report-failed-shard-${{ matrix.shard }}
-          path: ./apps/laboratory/playwright-report/
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/
           retention-days: 7
 
       - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
