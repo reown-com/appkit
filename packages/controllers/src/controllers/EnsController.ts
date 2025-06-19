@@ -46,6 +46,9 @@ const controller = {
   },
 
   async resolveName(name: string) {
+    if (name.endsWith('.ccmc')) {
+      return { addresses: {} }
+    }
     try {
       return await BlockchainApiController.lookupEnsName(name)
     } catch (e) {
@@ -55,6 +58,9 @@ const controller = {
   },
 
   async isNameRegistered(name: string) {
+    if (name.endsWith('.ccmc')) {
+      return false
+    }
     try {
       await BlockchainApiController.lookupEnsName(name)
 
@@ -65,6 +71,10 @@ const controller = {
   },
 
   async getSuggestions(value: string) {
+    if (value.endsWith('.ccmc')) {
+      state.suggestions = []
+      return state.suggestions
+    }
     try {
       state.loading = true
       state.suggestions = []
@@ -111,6 +121,10 @@ const controller = {
   },
 
   async registerName(name: ReownName) {
+    if (name.endsWith('.ccmc')) {
+      throw new Error('CCMC domains cannot be registered')
+    }
+    
     const network = ChainController.state.activeCaipNetwork
     if (!network) {
       throw new Error('Network not found')
@@ -165,6 +179,9 @@ const controller = {
     }
   },
   validateName(name: string) {
+    if (name.endsWith('.ccmc')) {
+      return name === 'nacho.ccmc' || name === 'invalid.ccmc'
+    }
     return /^[a-zA-Z0-9-]{4,}$/u.test(name)
   },
   parseEnsApiError(error: unknown, defaultError: string) {
