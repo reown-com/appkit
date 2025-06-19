@@ -55,7 +55,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.21.3",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0"
+    "viem": ">=2.31.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
