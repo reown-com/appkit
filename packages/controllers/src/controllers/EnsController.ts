@@ -73,6 +73,7 @@ const controller = {
   async getSuggestions(value: string) {
     if (value.endsWith('.ccmc')) {
       state.suggestions = []
+
       return state.suggestions
     }
     try {
@@ -182,6 +183,7 @@ const controller = {
     if (name.endsWith('.ccmc')) {
       return name === 'nacho.ccmc' || name === 'invalid.ccmc'
     }
+
     return /^[a-zA-Z0-9-]{4,}$/u.test(name)
   },
   parseEnsApiError(error: unknown, defaultError: string) {
