@@ -35,7 +35,6 @@ const accountState: AccountControllerState = {
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: [],
   user: undefined
 }
 
@@ -555,7 +554,11 @@ const controller = {
     return approvedCaipNetworkIds
   },
 
-  getActiveCaipNetwork() {
+  getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
+    if (chainNamespace) {
+      return state.chains.get(chainNamespace)?.networkState?.caipNetwork
+    }
+
     return state.activeCaipNetwork
   },
 
@@ -667,7 +670,6 @@ const controller = {
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
-      allAccounts: [],
       user: undefined,
       status: 'disconnected'
     })

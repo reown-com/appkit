@@ -80,7 +80,6 @@ export interface ConnectExternalOptions {
 
 interface HandleAuthAccountSwitchParams {
   address: string
-  connection: Connection
   namespace: ChainNamespace
 }
 
@@ -118,6 +117,7 @@ export interface ConnectionControllerClient {
 export interface ConnectionControllerState {
   isSwitchingConnection: boolean
   connections: Map<ChainNamespace, Connection[]>
+  recentConnections: Map<ChainNamespace, Connection[]>
   _client?: ConnectionControllerClient
   wcUri?: string
   wcPairingExpiry?: number
@@ -138,6 +138,7 @@ type StateKey = keyof ConnectionControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
   connections: new Map(),
+  recentConnections: new Map(),
   isSwitchingConnection: false,
   wcError: false,
   buffering: false,
@@ -171,19 +172,35 @@ const controller = {
   },
 
   initialize(adapters: ChainAdapter[]) {
+    const namespaces = adapters.map(a => a.namespace).filter(Boolean) as ChainNamespace[]
+
+    ConnectionController.syncStorageConnections(namespaces)
+  },
+
+  syncStorageConnections(namespaces?: ChainNamespace[]) {
     const storageConnections = StorageUtil.getConnections()
 
-    for (const adapter of adapters) {
-      const namespace = adapter.namespace
+    const namespacesToSync = namespaces ?? Array.from(ChainController.state.chains.keys())
 
-      if (namespace) {
-        const existingConnections = state.connections.get(namespace) ?? []
-        const storageConnectionsByNamespace = storageConnections[namespace] ?? []
-        const allConnections = [...existingConnections, ...storageConnectionsByNamespace]
+    for (const namespace of namespacesToSync) {
+      const storageConnectionsByNamespace = storageConnections[namespace] ?? []
 
-        state.connections.set(namespace, allConnections)
-      }
+      const recentConnectionsMap = new Map(state.recentConnections)
+      recentConnectionsMap.set(namespace, storageConnectionsByNamespace)
+      state.recentConnections = recentConnectionsMap
     }
+  },
+
+  getConnections(namespace?: ChainNamespace) {
+    return namespace ? (state.connections.get(namespace) ?? []) : []
+  },
+
+  hasAnyConnection(connectorId: string) {
+    const connections = ConnectionController.state.connections
+
+    return Array.from(connections.values())
+      .flatMap(_connections => _connections)
+      .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
   async connectWalletConnect() {
@@ -388,14 +405,20 @@ const controller = {
   },
 
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
-    state.connections = new Map(state.connections.set(chainNamespace, connections))
+    const connectionsMap = new Map(state.connections)
+    connectionsMap.set(chainNamespace, connections)
+    state.connections = connectionsMap
   },
 
-  async handleAuthAccountSwitch({ address, connection, namespace }: HandleAuthAccountSwitchParams) {
-    const smartAccountAddress = connection.accounts.find(c => c.type === 'smartAccount')?.address
-    const isAddressSmartAccount = smartAccountAddress?.toLowerCase() === address.toLowerCase()
+  async handleAuthAccountSwitch({ address, namespace }: HandleAuthAccountSwitchParams) {
+    const smartAccount = AccountController.state.user?.accounts?.find(
+      c => c.type === 'smartAccount'
+    )
+
     const accountType =
-      isAddressSmartAccount && ConnectorControllerUtil.canSwitchToSmartAccount(namespace)
+      smartAccount &&
+      smartAccount.address.toLowerCase() === address.toLowerCase() &&
+      ConnectorControllerUtil.canSwitchToSmartAccount(namespace)
         ? 'smartAccount'
         : 'eoa'
 
@@ -422,7 +445,7 @@ const controller = {
     )
 
     if (isAuthConnector && address) {
-      await ConnectionController.handleAuthAccountSwitch({ address, connection, namespace })
+      await ConnectionController.handleAuthAccountSwitch({ address, namespace })
     }
 
     return connectData?.address
@@ -504,7 +527,7 @@ const controller = {
     }
 
     if (isAuthConnector && address) {
-      await ConnectionController.handleAuthAccountSwitch({ address, connection, namespace })
+      await ConnectionController.handleAuthAccountSwitch({ address, namespace })
     }
 
     return newAddress
@@ -517,9 +540,6 @@ const controller = {
     closeModalOnConnect,
     onChange
   }: SwitchConnectionParams) {
-    // Validate the account switch
-    ConnectionControllerUtil.validateAccountSwitch({ namespace, connection, address })
-
     let currentAddress: string | undefined = undefined
 
     const caipAddress = AccountController.getCaipAddress(namespace)

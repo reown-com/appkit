@@ -1,5 +1,22 @@
 # @reown/appkit-siwx
 
+## 1.7.10
+
+### Patch Changes
+
+- [#4510](https://github.com/reown-com/appkit/pull/4510) [`7227468`](https://github.com/reown-com/appkit/commit/7227468e72acff12fcfb281c83941bec4ec06b03) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the universal provider would hang forever if JWT verification failed during initialization
+
+- [#4491](https://github.com/reown-com/appkit/pull/4491) [`0646651`](https://github.com/reown-com/appkit/commit/064665169d48c4c3456edf48f67ff25b3d07f678) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where SIWX sign message view was opening in One-Click-Auth flows
+
+- [#4498](https://github.com/reown-com/appkit/pull/4498) [`0dfe08b`](https://github.com/reown-com/appkit/commit/0dfe08b3d4b9addb675445d22adb350fb5d18fc3) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where Global JSX namespace gets polluted, instead extend it
+
+- [#4442](https://github.com/reown-com/appkit/pull/4442) [`255b3ac`](https://github.com/reown-com/appkit/commit/255b3ac1bbd649b05af310146f84ad3fd7b6898b) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add logic to fallback to previous SIWE session if request is canceled for current network
+
+- Updated dependencies [[`7227468`](https://github.com/reown-com/appkit/commit/7227468e72acff12fcfb281c83941bec4ec06b03), [`0646651`](https://github.com/reown-com/appkit/commit/064665169d48c4c3456edf48f67ff25b3d07f678), [`0dfe08b`](https://github.com/reown-com/appkit/commit/0dfe08b3d4b9addb675445d22adb350fb5d18fc3), [`255b3ac`](https://github.com/reown-com/appkit/commit/255b3ac1bbd649b05af310146f84ad3fd7b6898b)]:
+  - @reown/appkit-utils@1.7.10
+  - @reown/appkit-controllers@1.7.10
+  - @reown/appkit-common@1.7.10
+
 ## 1.7.9
 
 ### Patch Changes

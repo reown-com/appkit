@@ -1,10 +1,10 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { DEFAULT_CHAIN_NAME } from '../shared/constants'
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { DEFAULT_CHAIN_NAME } from '@reown/appkit-testing'
+
 import { ModalPage } from '../shared/pages/ModalPage'
-import { WalletPage } from '../shared/pages/WalletPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
-import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -83,9 +83,9 @@ test('it should switch between multiple accounts', async () => {
   await modalValidator.expectSwitchedNetwork(chainName)
   await modalPage.closeModal()
   const originalAddress = await modalPage.getAddress()
-  await modalPage.openAccount()
-  await modalPage.openProfileView()
+  await modalPage.openProfileWalletsView()
   await modalPage.switchAccount()
+  await modalPage.closeModal()
   await modalValidator.expectAccountSwitched(originalAddress)
 })
 

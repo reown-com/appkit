@@ -100,16 +100,10 @@ export class W3mActivityList extends LitElement {
 
   // -- Private ------------------------------------------- //
   private updateTransactionView() {
-    const currentNetwork = ChainController.state.activeCaipNetwork?.caipNetworkId
-    const lastNetworkInView = TransactionsController.state.lastNetworkInView
-
-    if (lastNetworkInView !== currentNetwork) {
-      TransactionsController.resetTransactions()
-      if (this.caipAddress) {
-        TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
-      }
+    TransactionsController.resetTransactions()
+    if (this.caipAddress) {
+      TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
     }
-    TransactionsController.setLastNetworkInView(currentNetwork)
   }
 
   private templateTransactionsByYear() {

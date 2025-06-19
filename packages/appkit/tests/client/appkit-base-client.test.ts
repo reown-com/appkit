@@ -1,17 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AlertController, ApiController } from '@reown/appkit-controllers'
+import {
+  AlertController,
+  ApiController,
+  ChainController,
+  ConnectionController
+} from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
-vi.mock('@reown/appkit-controllers', async () => {
-  const actual = await vi.importActual('@reown/appkit-controllers')
-  return {
-    ...actual,
-    AlertController: {
-      open: vi.fn()
-    }
-  }
-})
+import { AppKitBaseClient } from '../../src/client/appkit-base-client'
+import { mainnet } from '../mocks/Networks'
 
 class TestAppKitBaseClient {
   async checkAllowedOrigins() {
@@ -59,8 +57,7 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
 
   beforeEach(() => {
     client = new TestAppKitBaseClient()
-    alertSpy = vi.mocked(AlertController.open)
-    alertSpy.mockReset()
+    alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
   })
 
   it('should show RATE_LIMITED_APP_CONFIGURATION alert for RATE_LIMITED error', async () => {
@@ -125,5 +122,88 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     await client['checkAllowedOrigins']()
 
     expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+  })
+})
+
+describe('AppKitBaseClient.connectWalletConnect', () => {
+  let baseClient: AppKitBaseClient
+  let closeSpy: any
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
+
+    baseClient.remoteFeatures = { multiWallet: true }
+    closeSpy = vi.spyOn(baseClient, 'close').mockImplementation(async () => {})
+
+    const mockAdapter = {
+      connectWalletConnect: vi.fn().mockResolvedValue({ clientId: 'test-client-id' })
+    }
+
+    vi.spyOn(baseClient as any, 'getAdapter').mockReturnValue(mockAdapter as any)
+    vi.spyOn(baseClient, 'getCaipNetwork').mockReturnValue({ id: 1 } as any)
+  })
+
+  it('should not call close when hasConnections is true and multiWallet is enabled', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      chains: new Map([['eip155', {}]])
+    })
+    vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([
+      { connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }
+    ])
+
+    const connectionControllerClient = (baseClient as any).connectionControllerClient
+    await connectionControllerClient.connectWalletConnect()
+
+    expect(closeSpy).not.toHaveBeenCalled()
+  })
+
+  it('should call close when hasConnections is false', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      chains: new Map([['eip155', {}]])
+    })
+    vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
+
+    const connectionControllerClient = (baseClient as any).connectionControllerClient
+    await connectionControllerClient.connectWalletConnect()
+
+    expect(closeSpy).toHaveBeenCalled()
+  })
+
+  it('should call close when multiWallet is disabled even with existing connections', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      chains: new Map([['eip155', {}]])
+    })
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      connections: new Map([
+        ['eip155', [{ connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }]]
+      ])
+    })
+    baseClient.remoteFeatures = { multiWallet: false }
+
+    const connectionControllerClient = (baseClient as any).connectionControllerClient
+    await connectionControllerClient.connectWalletConnect()
+
+    expect(closeSpy).toHaveBeenCalled()
   })
 })

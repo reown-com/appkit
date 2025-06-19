@@ -15,7 +15,7 @@ import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
@@ -23,6 +23,8 @@ export class UniversalAdapter extends AdapterBlueprint {
         namespace: this.namespace as ChainNamespace
       })
     )
+
+    return Promise.resolve()
   }
 
   public async connect(
@@ -41,9 +43,16 @@ export class UniversalAdapter extends AdapterBlueprint {
     try {
       const connector = this.getWalletConnectConnector()
       await connector.disconnect()
+      this.emit('disconnect')
     } catch (error) {
       console.warn('UniversalAdapter:disconnect - error', error)
     }
+
+    return { connections: [] }
+  }
+
+  public override syncConnections() {
+    return Promise.resolve()
   }
 
   public async getAccounts({
@@ -170,6 +179,10 @@ export class UniversalAdapter extends AdapterBlueprint {
     return Promise.resolve({
       hash: ''
     })
+  }
+
+  public override emitFirstAvailableConnection(): void {
+    return undefined
   }
 
   public parseUnits(): AdapterBlueprint.ParseUnitsResult {

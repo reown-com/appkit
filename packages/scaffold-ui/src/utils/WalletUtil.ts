@@ -32,7 +32,25 @@ export const WalletUtil = {
       const index = allRDNSs.indexOf('io.metamask.mobile')
       allRDNSs[index] = 'io.metamask'
     }
-    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
+
+    const filtered = wallets.filter(wallet => {
+      // Check RDNS match first
+      if (wallet?.rdns && allRDNSs.includes(String(wallet.rdns))) {
+        return false
+      }
+
+      // Some wallets don't have RDNS, so we need to check if the name matches a connector name
+      if (!wallet?.rdns) {
+        const hasMatchingConnectorName = connectors.some(
+          connector => connector.name === wallet.name
+        )
+        if (hasMatchingConnectorName) {
+          return false
+        }
+      }
+
+      return true
+    })
 
     return filtered
   },

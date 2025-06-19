@@ -54,7 +54,7 @@ extensionTest('it should be connected after connecting and refreshing the page',
   await modalValidator.expectConnected()
 })
 
-extensionTest('it should disconnected', async () => {
+extensionTest('it should disconnect', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
 })
