@@ -233,12 +233,17 @@ export class W3mModalBase extends LitElement {
     // If user is switching to another namespace and connected in that namespace, we should go back
     const isSwitchingNamespaceAndConnected = isSwitchingNamespace && isNextConnected
 
-    if (isDisconnectedInSameNamespace && !this.enableEmbedded) {
-      ModalController.close()
-    } else if (isSwitchingNamespaceAndConnected && !this.enableEmbedded) {
-      RouterController.goBack()
-    } else if (this.enableEmbedded && isPrevDisconnected && isNextConnected) {
-      ModalController.close()
+    // If user is in profile wallets view, we should not go back or close the modal
+    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
+
+    if (!isInProfileWalletsView) {
+      if (isDisconnectedInSameNamespace && !this.enableEmbedded) {
+        ModalController.close()
+      } else if (isSwitchingNamespaceAndConnected && !this.enableEmbedded) {
+        RouterController.goBack()
+      } else if (this.enableEmbedded && isPrevDisconnected && isNextConnected) {
+        ModalController.close()
+      }
     }
 
     await SIWXUtil.initializeIfEnabled()
@@ -268,6 +273,7 @@ export class W3mModalBase extends LitElement {
      * But we don't want to go back because we are already on the connecting external view.
      */
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
+    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
     // Check connection status based on the address state *before* this update cycle potentially finishes
     const isNotConnected = !ChainController.getAccountData(nextCaipNetwork?.chainNamespace)
       ?.caipAddress
@@ -281,7 +287,7 @@ export class W3mModalBase extends LitElement {
       shouldGoBack = true
     }
 
-    if (isModalOpen && !isConnectingExternal) {
+    if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {
       if (isNotConnected) {
         /*
          * If not connected at all, changing network doesn't necessarily warrant going back from all views.

@@ -62,8 +62,8 @@ emailTest('it should sign', async () => {
   await validator.expectAcceptedSign()
 })
 
-emailTest('it should upgrade wallet', async ({ library }) => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
+emailTest('it should upgrade wallet', async () => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -107,12 +107,8 @@ emailTest('should throw an error if modal is closed while signing', async () => 
 })
 
 emailTest('it should show names feature only for EVM networks', async ({ library }) => {
-  if (library === 'solana') {
-    await page.openAccount()
-    await page.openProfileView()
-  } else {
-    await page.goToSettings()
-  }
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   /*
    * There are cases that AppKit tries to close while the modal is animating to the next view
    * So we need to wait for 300ms to ensure the names feature is visible
@@ -132,13 +128,9 @@ emailTest('it should show loading on page refresh', async () => {
   await validator.expectAccountButtonReady()
 })
 
-emailTest('it should disconnect correctly', async ({ library }) => {
-  if (library === 'solana') {
-    await page.openAccount()
-    await page.openProfileView()
-  } else {
-    await page.goToSettings()
-  }
+emailTest('it should disconnect correctly', async () => {
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await validator.expectDisconnected()
 })

@@ -7,7 +7,8 @@
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "exports": {
     ".": {
@@ -29,6 +30,11 @@
       "types": "./dist/types/exports/wallet-standard.d.ts",
       "import": "./dist/esm/exports/wallet-standard.js",
       "default": "./dist/esm/exports/wallet-standard.js"
+    },
+    "./bitcoin": {
+      "types": "./dist/types/exports/bitcoin.d.ts",
+      "import": "./dist/esm/exports/bitcoin.js",
+      "default": "./dist/esm/exports/bitcoin.js"
     }
   },
   "typesVersions": {

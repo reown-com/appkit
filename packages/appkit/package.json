@@ -6,7 +6,8 @@
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -77,6 +78,11 @@
       "types": "./dist/types/exports/connectors.d.ts",
       "import": "./dist/esm/exports/connectors.js",
       "default": "./dist/esm/exports/connectors.js"
+    },
+    "./connections": {
+      "types": "./dist/types/exports/connections.d.ts",
+      "import": "./dist/esm/exports/connections.js",
+      "default": "./dist/esm/exports/connections.js"
     },
     "./core": {
       "types": "./dist/types/exports/core.d.ts",

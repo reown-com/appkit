@@ -2,9 +2,9 @@ import UniversalProvider from '@walletconnect/universal-provider'
 
 import { type RequestArguments, WcHelpersUtil } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
-import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 

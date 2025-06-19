@@ -183,27 +183,25 @@ sampleWalletTest('it should reject sign', async ({ library }) => {
 })
 
 sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
-  // Multi address not available in Solana wallet
   if (library === 'solana' || library === 'bitcoin') {
     return
   }
 
   const originalAddress = await modalPage.getAddress()
-  await modalPage.openAccount()
-  await modalPage.openProfileView()
+  await modalPage.openProfileWalletsView()
   await modalPage.switchAccount()
+  await modalPage.closeModal()
   await modalValidator.expectAccountSwitched(originalAddress)
 })
 
 sampleWalletTest('it should show multiple accounts', async ({ library }) => {
-  // Multi address not available in Solana wallet
   if (library === 'solana' || library === 'bitcoin') {
     return
   }
 
-  await modalPage.openAccount()
-  await modalPage.openProfileView()
-  await modalValidator.expectMultipleAccounts()
+  await modalPage.openProfileWalletsView()
+  await modalPage.switchAccount()
+  await modalValidator.expectActiveConnection()
   await modalPage.closeModal()
 })
 

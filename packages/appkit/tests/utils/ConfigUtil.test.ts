@@ -64,7 +64,8 @@ describe('ConfigUtil', () => {
         swaps: false,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
         activity: true,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -84,7 +85,8 @@ describe('ConfigUtil', () => {
         swaps: ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
         activity: ConstantsUtil.DEFAULT_REMOTE_FEATURES.activity,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -123,7 +125,8 @@ describe('ConfigUtil', () => {
         swaps: ['1inch'],
         onramp: ['meld', 'coinbase'],
         activity: true,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false
       })
     })
 
@@ -139,6 +142,7 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: false,
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })
@@ -170,6 +174,7 @@ describe('ConfigUtil', () => {
         swaps: false,
         onramp: false,
         activity: false,
+        multiWallet: false,
         reownBranding: false
       })
     })
@@ -195,6 +200,7 @@ describe('ConfigUtil', () => {
         socials: ['discord'],
         swaps: ['1inch'],
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })
@@ -223,6 +229,7 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: ['1inch'],
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })
@@ -240,6 +247,7 @@ describe('ConfigUtil', () => {
         email: true,
         socials: [],
         swaps: false,
+        multiWallet: false,
         onramp: false,
         activity: false,
         reownBranding: false
@@ -262,6 +270,7 @@ describe('ConfigUtil', () => {
         socials: false,
         swaps: false,
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })
