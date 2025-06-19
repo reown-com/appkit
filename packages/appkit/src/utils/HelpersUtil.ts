@@ -13,6 +13,7 @@ import {
 import {
   CoreHelperUtil,
   EnsController,
+  ChainController,
   type OptionsControllerState
 } from '@reown/appkit-controllers'
 
@@ -211,6 +212,22 @@ export const WcHelpersUtil = {
   },
 
   resolveReownName: async (name: string) => {
+    if (name.endsWith('.ccmc')) {
+      if (name === 'nacho.ccmc') {
+        const activeChain = ChainController.state.activeCaipNetwork
+        if (activeChain?.chainNamespace === 'solana') {
+          return '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU'
+        }
+
+        return '0x1234567890123456789012345678901234567890'
+      }
+      if (name === 'invalid.ccmc') {
+        return false
+      }
+
+      return false
+    }
+
     const wcNameAddress = await EnsController.resolveName(name)
     const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
 

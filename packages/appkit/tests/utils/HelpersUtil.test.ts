@@ -1,7 +1,8 @@
 import type { SessionTypes } from '@walletconnect/types'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { ChainController, EnsController } from '@reown/appkit-controllers'
 
 import { WcHelpersUtil } from '../../src/utils/HelpersUtil'
 
@@ -286,6 +287,49 @@ describe('WcHelpersUtil', () => {
         chains: [],
         rpcMap: {}
       })
+    })
+  })
+
+  describe('resolveReownName', () => {
+    test('resolves nacho.ccmc to hardcoded EVM address by default', async () => {
+      const result = await WcHelpersUtil.resolveReownName('nacho.ccmc')
+      expect(result).toBe('0x1234567890123456789012345678901234567890')
+    })
+
+    test('resolves nacho.ccmc to Solana address when on Solana chain', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipNetwork: {
+          chainNamespace: 'solana',
+          id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+        }
+      } as any)
+
+      const result = await WcHelpersUtil.resolveReownName('nacho.ccmc')
+      expect(result).toBe('2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU')
+
+      vi.restoreAllMocks()
+    })
+
+    test('returns false for invalid.ccmc regardless of chain', async () => {
+      const result = await WcHelpersUtil.resolveReownName('invalid.ccmc')
+      expect(result).toBe(false)
+    })
+
+    test('returns false for unknown .ccmc domains', async () => {
+      const result = await WcHelpersUtil.resolveReownName('unknown.ccmc')
+      expect(result).toBe(false)
+    })
+
+    test('falls back to ENS resolution for non-ccmc domains', async () => {
+      vi.spyOn(EnsController, 'resolveName').mockResolvedValue({
+        addresses: { '60': { address: '0xtest123' } }
+      } as any)
+      
+      const result = await WcHelpersUtil.resolveReownName('test.eth')
+      expect(result).toBe('0xtest123')
+
+      vi.restoreAllMocks()
     })
   })
 
