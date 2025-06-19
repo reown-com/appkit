@@ -6,6 +6,9 @@ on:
         description: 'Branch to release from'
         required: true
         default: 'main'
+      canaryName:
+        description: 'The name for the canary release tag'
+        required: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -50,7 +53,7 @@ jobs:
         run: |
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
           pnpm install
-          pnpm changeset:pre ${{ github.sha }}
+          pnpm changeset:pre ${{ github.event.inputs.canaryName }}
           pnpm changeset:version
           pnpm changeset:pre:exit
           pnpm publish:canary
