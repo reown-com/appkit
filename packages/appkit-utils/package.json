@@ -7,7 +7,8 @@
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "exports": {
     ".": {
@@ -29,6 +30,11 @@
       "types": "./dist/types/exports/wallet-standard.d.ts",
       "import": "./dist/esm/exports/wallet-standard.js",
       "default": "./dist/esm/exports/wallet-standard.js"
+    },
+    "./bitcoin": {
+      "types": "./dist/types/exports/bitcoin.d.ts",
+      "import": "./dist/esm/exports/bitcoin.js",
+      "default": "./dist/esm/exports/bitcoin.js"
     }
   },
   "typesVersions": {
@@ -57,11 +63,11 @@
     "@walletconnect/logger": "2.1.2",
     "@walletconnect/universal-provider": "2.21.3",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0"
+    "viem": ">=2.29.0",
+    "@wallet-standard/wallet": "1.1.0"
   },
   "devDependencies": {
     "bs58": "6.0.0",
-    "@wallet-standard/wallet": "1.1.0",
     "@solana/web3.js": "1.98.0",
     "@wallet-standard/features": "1.1.0",
     "@wallet-standard/base": "1.1.0",
@@ -76,7 +82,7 @@
   "peerDependencies": {
     "valtio": "1.13.2"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {

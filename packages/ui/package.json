@@ -6,13 +6,14 @@
   "types": "./dist/types/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build",
     "watch": "tsc --watch",
-    "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
+    "test": "vitest run --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
@@ -461,7 +462,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {

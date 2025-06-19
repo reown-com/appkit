@@ -12,6 +12,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChain'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
@@ -52,6 +53,9 @@ export default function Page() {
         <AppKitProvider config={config}>
           <AppKitButtonsMultiChain />
           <AppKitInfoMultiChain />
+          <AppKitConnections namespace="eip155" title="EVM Connections" />
+          <AppKitConnections namespace="solana" title="Solana Connections" />
+          <AppKitConnections namespace="bip122" title="Bitcoin Connections" />
           <AppKitInfo />
           <WagmiTests />
           <SolanaTests />
