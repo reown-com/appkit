@@ -164,8 +164,10 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    await this.syncExistingConnection()
-    await this.syncAdapterConnections()
+    if (options.reconnectOnInit) {
+      await this.syncExistingConnection()
+      await this.syncAdapterConnections()
+    }
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
