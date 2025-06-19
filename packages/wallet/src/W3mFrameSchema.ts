@@ -538,6 +538,14 @@ export const W3mFrameSchema = {
           .or(WalletGetCapabilitiesRequest)
           .or(WalletGrantPermissionsRequest)
           .or(WalletRevokePermissionsRequest)
+          .and(
+            z.object({
+              chainId: z.string().or(z.number()),
+              chainNamespace: z
+                .enum(['eip155', 'solana', 'polkadot', 'bip122', 'cosmos'])
+                .optional()
+            })
+          )
       })
     )
 

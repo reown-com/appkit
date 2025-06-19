@@ -10,5 +10,5 @@ The chain agnostic tool to enable authentication for AppKit applications.
 > This package is still in development and should not be used in production.
 
 <p align="center">
-  <img src="./.github/assets/header.png" alt="" border="0">
+  <img src="https://github.com/reown-com/appkit/blob/HEAD/.github/assets/header.png" alt="" border="0">
 </p>
