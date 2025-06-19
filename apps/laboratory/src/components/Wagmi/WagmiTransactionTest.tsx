@@ -59,19 +59,19 @@ function AvailableTestContent() {
   const onSendTransaction = useCallback(async () => {
     const { data: gas, error: prepareError } = await estimateGas()
 
-    if (prepareError) {
-      toast({
-        title: 'Error',
-        description: prepareError?.message || 'Failed to sign transaction',
-        type: 'error'
-      })
-    } else {
-      setLoading(true)
-      sendTransaction({
-        ...TEST_TX,
-        gas
-      })
-    }
+    // if (prepareError) {
+    //   toast({
+    //     title: 'Error',
+    //     description: prepareError?.message || 'Failed to sign transaction',
+    //     type: 'error'
+    //   })
+    // } else {
+    setLoading(true)
+    sendTransaction({
+      ...TEST_TX,
+      gas
+    })
+    // }
   }, [sendTransaction, estimateGas])
 
   return (
