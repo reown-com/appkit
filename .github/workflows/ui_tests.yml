@@ -334,11 +334,23 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
 
-      - uses: actions/upload-artifact@v4
+      - name: Generate HTML Report for Failed Shard
         if: failure()
+        id: generate-html-report
+        run: |
+          echo "Generating HTML report for failed shard ${{ matrix.shard }}..."
+          # merge-reports will create a `playwright-report` dir with the HTML report
+          # we pass the single blob zip for the failed shard
+          # we also need to install dependencies for playwright cli to be available
+          pnpm exec playwright merge-reports --reporter html ./playwright-blob-reports/report-${{ matrix.shard }}.zip
+        working-directory: ./apps/laboratory/
+
+      - name: Upload Individual HTML Report for Failed Shard
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.shard }}
-          path: ${{ github.workspace }}/apps/laboratory/playwright-report/
+          name: playwright-html-report-failed-shard-${{ matrix.shard }}
+          path: ./apps/laboratory/playwright-report/
           retention-days: 7
 
       - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
