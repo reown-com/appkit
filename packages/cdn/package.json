@@ -6,7 +6,8 @@
   "type": "module",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",

@@ -148,7 +148,15 @@ export const SIWXUtil = {
       if (isRequired) {
         const lastNetwork = ChainController.getLastConnectedSIWECaipNetwork()
         if (lastNetwork) {
-          ChainController.switchActiveNetwork(lastNetwork)
+          const sessions = await siwx?.getSessions(
+            lastNetwork?.caipNetworkId,
+            CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+          )
+          if (sessions && sessions.length > 0) {
+            await ChainController.switchActiveNetwork(lastNetwork)
+          } else {
+            await ConnectionController.disconnect()
+          }
         } else {
           await ConnectionController.disconnect()
         }
@@ -156,7 +164,7 @@ export const SIWXUtil = {
         ModalController.close()
       }
 
-      RouterController.reset('Connect')
+      ModalController.close()
 
       EventsController.sendEvent({
         event: 'CLICK_CANCEL_SIWX',
