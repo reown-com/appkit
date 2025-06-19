@@ -3,6 +3,8 @@ import type { WalletAccount } from '@wallet-standard/base'
 import BIP32Factory from 'bip32'
 import * as bip39 from 'bip39'
 import * as bitcoin from 'bitcoinjs-lib'
+import bitcoinMessage from 'bitcoinjs-message'
+import { ECPairFactory } from 'ecpair'
 
 import { AccountUtil } from '../utils/AccountUtil'
 import { ConstantsUtil } from '../utils/ConstantsUtil'
@@ -11,23 +13,11 @@ bitcoin.initEccLib(ecc)
 
 // eslint-disable-next-line new-cap
 const bip32 = BIP32Factory(ecc)
+const ECPair = ECPairFactory(ecc)
 const privateKey = AccountUtil.privateKeyBitcoin
 const mnemonic = privateKey ? privateKey : bip39.generateMnemonic()
 const seed = bip39.mnemonicToSeedSync(mnemonic)
 const root = bip32.fromSeed(seed)
-const path = `m/84'/0'/0'/1/0`
-const child = root.derivePath(path)
-
-// Bitcoin message signing magic bytes
-const MAGIC_BYTES = Buffer.from('Bitcoin Signed Message:\n')
-
-function magicHash(message: Uint8Array) {
-  const prefix1 = bitcoin.script.number.encode(MAGIC_BYTES.length)
-  const prefix2 = bitcoin.script.number.encode(message.length)
-  const messageBuffer = Buffer.from(message)
-
-  return bitcoin.crypto.hash256(Buffer.concat([prefix1, MAGIC_BYTES, prefix2, messageBuffer]))
-}
 
 export class BitcoinProvider {
   name = 'Reown'
@@ -49,16 +39,28 @@ export class BitcoinProvider {
     localStorage.setItem('@reown-ext/active-network', network)
   }
 
+  private getDerivationPath(): string {
+    const isMainnet = this.activeNetwork === 'bip122:000000000019d6689c085ae165831e93'
+    return `m/84'/${isMainnet ? '0' : '1'}'/0'/0/0`
+  }
+
+  private getDerivedKey() {
+    const path = this.getDerivationPath()
+    return root.derivePath(path)
+  }
+
   get accounts(): WalletAccount[] {
     const network =
       this.activeNetwork === 'bip122:000000000019d6689c085ae165831e93'
         ? bitcoin.networks.bitcoin
         : bitcoin.networks.testnet
 
+    const child = this.getDerivedKey()
+
     return [
       {
-        address: bitcoin.payments.p2tr({
-          pubkey: child.publicKey.slice(1),
+        address: bitcoin.payments.p2wpkh({
+          pubkey: child.publicKey,
           network
         }).address as string,
         publicKey: child.publicKey,
@@ -139,11 +141,24 @@ export class BitcoinProvider {
       throw new Error('Invalid account')
     }
 
-    const messageHash = magicHash(message)
-    const signature = child.sign(messageHash)
-    const signatureBase64 = signature.toString('base64')
+    const child = this.getDerivedKey()
+    const keyPair = ECPair.fromPrivateKey(child.privateKey!)
+    const privateKey = keyPair.privateKey!
 
-    return Promise.resolve([{ signedMessage: message, signature: signatureBase64 }])
+    // Convert Uint8Array to string for message signing
+    const messageString = new TextDecoder().decode(message)
+    console.log('>>> signMessage, messageString:', `'${messageString}'`)
+
+    // Use bitcoin-message signing for P2WPKH addresses
+    // @ts-expect-error - will fix privatekey type
+    const signature = bitcoinMessage.sign(messageString, privateKey, keyPair.compressed, {
+      segwitType: 'p2wpkh'
+    })
+
+    console.log('>>> signMessage, signature length:', signature.length)
+
+    // Return signature as Buffer for proper base64 conversion
+    return [{ signature: signature }]
   }
 
   switchNetwork(network: `${string}:${string}`) {

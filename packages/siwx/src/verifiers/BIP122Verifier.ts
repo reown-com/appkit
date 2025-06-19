@@ -12,6 +12,7 @@ export class BIP122Verifier extends SIWXVerifier {
   public readonly chainNamespace = ConstantsUtil.CHAIN.BITCOIN
 
   public async verify(session: SIWXSession): Promise<boolean> {
+    console.log('>>> BIP122Verifier, verify:', session)
     try {
       return Promise.resolve(
         Verifier.verifySignature(session.data.accountAddress, session.message, session.signature)
