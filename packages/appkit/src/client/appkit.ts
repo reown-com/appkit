@@ -332,7 +332,9 @@ export class AppKit extends AppKitBaseClient {
           } else if (reason === 'unverified_domain') {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
-        }
+        },
+        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
+          ChainController.getActiveCaipNetwork(namespace)
       })
       PublicStateController.subscribeOpen(isOpen => {
         if (!isOpen && this.isTransactionStackEmpty()) {
