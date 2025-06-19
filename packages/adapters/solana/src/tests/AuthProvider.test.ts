@@ -26,7 +26,6 @@ describe('AuthProvider specific tests', () => {
       accountState: {
         address: TestConstants.accounts[0].address,
         currentTab: 0,
-        allAccounts: [],
         addressLabels: new Map()
       }
     })

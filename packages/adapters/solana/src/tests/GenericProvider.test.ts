@@ -66,7 +66,6 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
       accountState: {
         address: TestConstants.accounts[0].address,
         currentTab: 0,
-        allAccounts: [],
         addressLabels: new Map()
       }
     })
