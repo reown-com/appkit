@@ -22,6 +22,7 @@ import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
+import { AsignaConnector } from './connectors/AsignaConnector.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private api: BitcoinApi.Interface
@@ -181,6 +182,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
     if (okxConnector) {
       this.addConnector(okxConnector)
+    }
+
+    const asignaConnector = AsignaConnector.getWallet({
+      requestedChains: this.networks,
+    })
+
+    if (asignaConnector) {
+      this.addConnector(asignaConnector);
     }
   }
 
