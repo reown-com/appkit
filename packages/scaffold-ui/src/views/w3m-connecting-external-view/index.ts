@@ -56,6 +56,10 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         const newActiveConnectorId = val[namespace]
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
 
+        console.log('>> onActiveConnectorIdsChange', {
+          oldId: this.currentActiveConnectorId,
+          newId: newActiveConnectorId
+        })
         if (newActiveConnectorId !== this.currentActiveConnectorId) {
           if (this.hasMultipleConnections && isMultiWalletEnabled) {
             RouterController.replace('ProfileWallets')
@@ -76,8 +80,14 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
   // -- Private ------------------------------------------- //
   private async onConnectProxy() {
     try {
+      console.log('>> onConnectProxy')
       this.error = false
       if (this.connector) {
+        console.log(
+          '>> onConnectProxy - this.connector',
+          this.connector,
+          this.isAlreadyConnected(this.connector)
+        )
         // No need to connect again if already connected
         if (this.isAlreadyConnected(this.connector)) {
           return
@@ -89,8 +99,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
          * And if there is an error, this condition will be skipped and the connection will be triggered as usual because we have `Try again` button in this view which is a user interaction as well.
          */
         if (this.connector.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK || !this.error) {
+          console.log('>> onConnectProxy - connectExternal')
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
-
+          console.log('>> onConnectProxy - connectExternal - done')
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
@@ -109,6 +120,8 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
   }
 
   private onConnectionsChange(connections: Map<ChainNamespace, Connection[]>) {
+    console.log('>> onConnectionsChange', connections)
+    console.log('>> onConnectionsChange - this.connector', this.connector)
     if (
       this.connector?.chain &&
       connections.get(this.connector.chain) &&

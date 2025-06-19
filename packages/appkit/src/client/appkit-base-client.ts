@@ -257,7 +257,7 @@ export abstract class AppKitBaseClient {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
-    this.initializeConnectorController()
+    this.initializeConnectorController(options)
   }
 
   protected initializeThemeController(options: AppKitOptions) {
@@ -284,12 +284,12 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
-    ConnectionController.initialize(options.adapters ?? [])
+    ConnectionController.initialize(options.adapters ?? [], options.reconnectOnInit !== false)
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
-  protected initializeConnectorController() {
-    ConnectorController.initialize(this.chainNamespaces)
+  protected initializeConnectorController(options: AppKitOptions) {
+    ConnectorController.initialize(this.chainNamespaces, options.reconnectOnInit !== false)
   }
 
   protected initializeProjectSettings(options: AppKitOptionsWithSdk) {
@@ -1395,6 +1395,10 @@ export abstract class AppKitBaseClient {
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+    // Clear the session if we don't want to reconnect on init
+    if (this.options.reconnectOnInit === false && this.universalProvider.session) {
+      await this.universalProvider.disconnect()
+    }
     this.listenWalletConnect()
   }
 

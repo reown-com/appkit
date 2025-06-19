@@ -199,7 +199,6 @@ export class AppKit extends AppKitBaseClient {
     const username = provider.getUsername()
 
     this.setUser({ ...(AccountController.state?.user || {}), username, email }, chainNamespace)
-    this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
 
@@ -303,7 +302,7 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private createAuthProvider(chainNamespace: ChainNamespace) {
+  private createAuthProvider(chainNamespace: ChainNamespace, reconnectOnInit: boolean) {
     const isSupported = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(chainNamespace)
 
     if (!isSupported) {
@@ -341,9 +340,9 @@ export class AppKit extends AppKitBaseClient {
           this.authProvider?.rejectRpcRequests()
         }
       })
+      this.setupAuthConnectorListeners(this.authProvider)
     }
-
-    const shouldSync = chainNamespace === ChainController.state.activeChain
+    const shouldSync = chainNamespace === ChainController.state.activeChain && reconnectOnInit
 
     if (this.authProvider && shouldSync) {
       this.syncAuthConnector(this.authProvider, chainNamespace)
@@ -351,9 +350,9 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
+  private createAuthProviderForAdapter(chainNamespace: ChainNamespace, reconnectOnInit: boolean) {
     // Override as we need to set authProvider for each adapter
-    this.createAuthProvider(chainNamespace)
+    this.createAuthProvider(chainNamespace, reconnectOnInit)
 
     if (this.authProvider) {
       this.chainAdapters?.[chainNamespace]?.setAuthProvider?.(this.authProvider)
@@ -473,7 +472,7 @@ export class AppKit extends AppKitBaseClient {
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
     this.chainNamespaces?.forEach(namespace => {
-      this.createAuthProviderForAdapter(namespace)
+      this.createAuthProviderForAdapter(namespace, options.reconnectOnInit !== false)
     })
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })
