@@ -556,7 +556,7 @@ const controller = {
 
   getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
     if (chainNamespace) {
-      return state.chains.get(chainNamespace)?.networkState?.caipNetwork || undefined
+      return state.chains.get(chainNamespace)?.networkState?.caipNetwork
     }
 
     return state.activeCaipNetwork
