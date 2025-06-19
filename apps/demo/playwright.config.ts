@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test'
 import { config } from 'dotenv'
 
-import { BASE_URL } from './tests/constants'
+import { BASE_URL } from '@reown/appkit-testing'
 
 config({ path: './.env.local' })
 

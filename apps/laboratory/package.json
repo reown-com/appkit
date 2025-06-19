@@ -8,6 +8,7 @@
     "start": "next start",
     "build": "next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "typecheck": "tsc --noEmit",
     "playwright:start": "pnpm start",
     "playwright:install": "playwright install --with-deps",
     "playwright:install-deps": "pnpm playwright install-deps",
@@ -51,6 +52,9 @@
     "playwright:test:default-account-types": "playwright test --grep email-default-account-types.spec.ts",
     "playwright:test:core-sign-client": "playwright test --grep sign-client.spec.ts",
     "playwright:test:cloud-auth": "playwright test --grep cloud-auth.spec.ts",
+    "playwright:test:multi-wallet": "HEADLESS=true playwright test --grep multi-wallet.spec.ts",
+    "playwright:test:multi-wallet-siwx": "HEADLESS=true playwright test --grep multi-wallet-siwx.spec.ts",
+    "playwright:test:multi-wallet-multichain": "HEADLESS=true playwright test --grep multi-wallet-multichain.spec.ts",
     "playwright:debug:core-sign-client": "pnpm playwright:test:core-sign-client --debug",
     "playwright:test:core": "playwright test --grep core.spec.ts",
     "playwright:debug:core": "pnpm playwright:test:core --debug",
@@ -92,7 +96,10 @@
     "playwright:debug:multichain-ethers5-auth-siwe": "pnpm playwright:test:multichain-ethers5-auth-siwe --debug",
     "playwright:debug:multichain-ethers5-siwe": "pnpm playwright:test:multichain-ethers5-siwe --debug",
     "playwright:debug:default-account-types": "pnpm playwright:test:default-account-types --debug",
-    "playwright:debug:cloud-auth": "pnpm playwright:test:cloud-auth --debug"
+    "playwright:debug:cloud-auth": "pnpm playwright:test:cloud-auth --debug",
+    "playwright:debug:multi-wallet": "playwright test --grep 'multi-wallet.spec.ts' --debug",
+    "playwright:debug:multi-wallet-siwx": "playwright test --grep 'multi-wallet-siwx.spec.ts' --debug",
+    "playwright:debug:multi-wallet-multichain": "playwright test --grep 'multi-wallet-multichain.spec.ts' --debug"
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "1.2.0",
@@ -146,6 +153,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.758.0",
+    "@reown/appkit-testing": "workspace:*",
     "@mailsac/api": "1.0.8",
     "@playwright/test": "1.48.2",
     "@types/node": "22.13.4",

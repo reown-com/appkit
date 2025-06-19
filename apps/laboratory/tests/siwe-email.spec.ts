@@ -1,6 +1,7 @@
 import { type BrowserContext, expect } from '@playwright/test'
 
-import { SECURE_WEBSITE_URL } from './shared/constants'
+import { SECURE_WEBSITE_URL } from '@reown/appkit-testing'
+
 import { type TimingRecords, timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
@@ -112,8 +113,8 @@ emailSiweTest(
   }
 )
 
-emailSiweTest('it should upgrade wallet', async ({ library }) => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
+emailSiweTest('it should upgrade wallet', async () => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -162,7 +163,8 @@ emailSiweTest('it should fallback to the last session when cancel siwe from AppK
 })
 
 emailSiweTest('it should disconnect correctly', async () => {
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await validator.expectDisconnected()
 })

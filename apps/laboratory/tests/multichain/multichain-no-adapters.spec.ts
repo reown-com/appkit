@@ -1,10 +1,10 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { DEFAULT_CHAIN_NAME } from '../shared/constants'
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { DEFAULT_CHAIN_NAME } from '@reown/appkit-testing'
+
 import { ModalPage } from '../shared/pages/ModalPage'
-import { WalletPage } from '../shared/pages/WalletPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
-import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -27,7 +27,7 @@ test.beforeAll(async ({ browser }) => {
   walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
-  await modalPage.qrCodeFlow(modalPage, walletPage, true)
+  await modalPage.qrCodeFlow(modalPage, walletPage, 'immediate-connect')
   await modalValidator.expectConnected()
 })
 
@@ -71,7 +71,7 @@ test('it should disconnect and close modal when connecting from wallet', async (
 })
 
 test('it should disconnect as expected', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage, true)
+  await modalPage.qrCodeFlow(modalPage, walletPage, 'immediate-connect')
   await modalValidator.expectConnected()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
