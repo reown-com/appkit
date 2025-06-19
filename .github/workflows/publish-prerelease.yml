@@ -53,11 +53,7 @@ jobs:
         run: |
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
           pnpm install
-<<<<<<< HEAD
           pnpm changeset:pre ${{ github.event.inputs.canaryName }}
-=======
-          pnpm changeset:pre ${{ github.sha }}
->>>>>>> 96d8b3f6bc30380e350f4e2c62cd6b3504ca753b
           pnpm changeset:version
           pnpm changeset:pre:exit
           pnpm publish:canary
