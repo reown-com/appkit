@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { Keypair } from '@solana/web3.js'
 import Big from 'big.js'
@@ -44,7 +44,7 @@ export function Home() {
       case 'solana':
         return publicKey.toString()
       case 'bip122':
-        return bitcoinProvider.getAddress()
+        return bitcoinProvider.accounts[0].address
       default:
         return ''
     }
@@ -66,6 +66,8 @@ export function Home() {
         break
       case 'bip122':
         window.open(`https://btcscan.org/address/${account}`, '_blank')
+        break
+      default:
         break
     }
   }

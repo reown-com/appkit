@@ -112,6 +112,7 @@ export class SolanaProvider {
 
     return [{ signature }]
   }
+
   sendTransaction(message: string, encoding = 'utf8') {
     return Promise.resolve()
   }
