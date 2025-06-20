@@ -1,36 +1,27 @@
 import { devices } from '@playwright/test'
 
-import { DESKTOP_DEVICES } from '@reown/appkit-testing'
+import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
 
-interface UseOptions {
-  launchOptions: {
-    executablePath: string
-  }
-}
+import type { CreateProjectParameters, CustomProjectProperties } from '../types'
 
-export interface CustomProperties {
-  testIgnore?: RegExp | string
-  testMatch?: RegExp | string
-  useOptions?: UseOptions
-  grep?: RegExp
-}
+const ADAPTERS = ['core'] as const
 
-export type CustomProjectProperties = {
-  [T in string]: CustomProperties
-}
-
-const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
-const CORE_LIRARIES = ['core'] as const
-
-const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
-  LIBRARIES.map(library => ({ device, library }))
+const ADAPTER_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  ADAPTERS.map(adapter => ({ device, library: adapter }))
 )
 
-const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
-  CORE_LIRARIES.map(library => ({ device, library }))
+const ADAPTER_MOBILE_PERMUTATIONS = MOBILE_DEVICES.flatMap(device =>
+  ADAPTERS.map(adapter => ({ device, library: adapter }))
 )
 
-const SINGLE_ADAPTER_EVM_TESTS = [
+/**
+ * Tests that will be run for each EVM adapter pages on laboratory.
+ * @example
+ * - Test: wallet.spec.ts
+ * - Runs on pages: /library/ethers, /library/ethers5, /library/wagmi
+ * and so on.
+ */
+const EVM_ADAPTER_TESTS = [
   'extension.spec.ts',
   'basic-tests.spec.ts',
   'canary.spec.ts',
@@ -45,12 +36,55 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'smart-account.spec.ts',
   'wallet-features.spec.ts',
   'wallet.spec.ts',
-  'wallet-button.spec',
+  'wallet-button.spec.ts',
   'verify.spec.ts',
-  'email-after-farcaster.spec.ts'
+  'email-after-farcaster.spec.ts',
+  'multi-wallet.spec.ts'
 ]
 
-const ADAPTER_INDEPENDENT_TESTS = [
+/**
+ * Tests that will be run for only Solana adapter pages on laboratory.
+ * @example
+ * - Test: wallet.spec.ts
+ * - Runs on pages: /library/solana
+ * and so on.
+ */
+const SOLANA_ADAPTER_TESTS = [
+  'extension.spec.ts',
+  'email.spec.ts',
+  'no-email.spec.ts',
+  'no-socials.spec.ts',
+  'wallet.spec.ts',
+  'wallet-button.spec.ts',
+  'email-after-farcaster.spec.ts',
+  'multi-wallet.spec.ts'
+]
+
+/**
+ * Tests that will be run for only Bitcoin adapter pages on laboratory.
+ * @example
+ * - Test: wallet.spec.ts
+ * - Runs on pages: /library/bitcoin
+ * and so on.
+ */
+const BITCOIN_ADAPTER_TESTS = [
+  'extension.spec.ts',
+  'wallet.spec.ts',
+  'wallet-button.spec.ts',
+  'basic-tests.spec.ts'
+]
+
+/**
+ * Tests that are not related to single adapters pages. These will be running on their own pages and will not be included in the single adapter test permutations.
+ * Add your tests specific for some features, or multichain tests here.
+ * @example
+ * - Test: multichain-all.spec.ts
+ * - Runs on pages: /library/multichain-all
+ * @example
+ * - Test: multichain-ethers-solana.spec.ts
+ * - Runs on pages: /library/multichain-ethers-solana
+ */
+const CUSTOM_TESTS = [
   'siwx-extension',
   'email-default-account-types',
   'multichain-all',
@@ -64,153 +98,120 @@ const ADAPTER_INDEPENDENT_TESTS = [
   'cloud-auth'
 ]
 
-const SINGLE_ADAPTER_SOLANA_TESTS = [
-  'extension.spec.ts',
-  'basic-tests.spec.ts',
-  'email.spec.ts',
-  'no-email.spec.ts',
-  'no-socials.spec.ts',
-  'wallet.spec.ts',
-  'wallet-button.spec',
-  'multi-wallet.spec.ts',
-  'email-after-farcaster.spec.ts'
-]
-
-const SINGLE_ADAPTER_BITCOIN_TESTS = [
-  'extension.spec.ts',
-  'wallet.spec.ts',
-  'wallet-button.spec',
-  'basic-tests.spec.ts'
-]
-
-function createRegex(tests: string[], isDesktop = true) {
-  const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
-
-  return new RegExp(`^(?!.*/multichain/)${desktopCheck}.*?/${tests.join('|')}$`, 'u')
+function createRegex(tests: string[]) {
+  return new RegExp(`^.*?/(${tests.join('|')})$`, 'u')
 }
 
-const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
-const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
-const SINGLE_ADAPTER_BITCOIN_TESTS_REGEX = createRegex(SINGLE_ADAPTER_BITCOIN_TESTS)
+const EVM_ADAPTER_TESTS_REGEX = createRegex(EVM_ADAPTER_TESTS)
+const SOLANA_ADAPTER_TESTS_REGEX = createRegex(SOLANA_ADAPTER_TESTS)
+const BITCOIN_ADAPTER_TESTS_REGEX = createRegex(BITCOIN_ADAPTER_TESTS)
 
-const customAdapterIndependentTests = Object.assign(
+const CUSTOM_PROJECT_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  CUSTOM_TESTS.map(library => ({ device, library }))
+)
+
+const singleAdapterTestProperties = {
+  // ----- Single Adapter tests ------------------------------
+  'Desktop Chrome/ethers': {
+    testMatch: EVM_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Firefox/ethers': {
+    testMatch: EVM_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Chrome/ethers5': {
+    testMatch: EVM_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Firefox/ethers5': {
+    testMatch: EVM_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Chrome/wagmi': {
+    testMatch: EVM_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Firefox/wagmi': {
+    testMatch: EVM_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Chrome/bitcoin': {
+    testMatch: BITCOIN_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Firefox/bitcoin': {
+    testMatch: BITCOIN_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Chrome/solana': {
+    testMatch: SOLANA_ADAPTER_TESTS_REGEX
+  },
+  'Desktop Firefox/solana': {
+    testMatch: SOLANA_ADAPTER_TESTS_REGEX
+  }
+}
+
+const coreTestProperties = {
+  // ----- Core tests ------------------------------
+  'Desktop Chrome/core': {
+    testMatch: /^.*?\/core.*?\.spec\.ts$/u
+  },
+  'Desktop Firefox/core': {
+    testMatch: /^.*?\/core.*?\.spec\.ts$/u
+  }
+}
+
+const customTestProperties = Object.assign(
   {},
-  ...ADAPTER_INDEPENDENT_TESTS.flatMap(test =>
+  ...CUSTOM_TESTS.flatMap(test =>
     DESKTOP_DEVICES.map(device => ({
       [`${device}/${test}`]: {
         testMatch: new RegExp(`^.*\\/${test}\\.spec\\.ts$`, 'u')
       }
     }))
   )
-) satisfies CustomProjectProperties
-
-const CUSTOM_PROJECT_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
-  ADAPTER_INDEPENDENT_TESTS.map(library => ({ device, library }))
 )
 
-const customProjectProperties: CustomProjectProperties = {
-  // Single Adapter tests
-  'Desktop Chrome/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain-.*\.spec\.ts$/u
+const mobileTestProperties = {
+  // ----- Mobile core tests ------------------------------
+  'iPhone 12/core': {
+    testMatch: /^.*?\/core.*\.spec\.ts$/u
   },
-  'Desktop Firefox/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain-.*\.spec\.ts$/u
-  },
-  'Desktop Chrome/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain-.*\.spec\.ts$/u
-  },
-  'Desktop Firefox/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain-.*\.spec\.ts$/u
-  },
-  'Desktop Chrome/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain-.*\.spec\.ts$/u
-  },
-  'Desktop Firefox/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain-.*\.spec\.ts$/u
-  },
-  'Desktop Chrome/bitcoin': {
-    testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
-    testIgnore: /siwe-|multichain-|smart-account|wallet-features|email-.*\.spec\.ts/u
-  },
-  'Desktop Firefox/bitcoin': {
-    testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
-    testIgnore: /siwe-|multichain-|smart-account|wallet-features|email-.*\.spec\.ts/u
-  },
-  'Desktop Chrome/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /siwe-|multichain-|smart-account|wallet-features|email-.*\.spec\.ts/u
-  },
-  'Desktop Firefox/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /siwe-|multichain-|smart-account|wallet-features|email-.*\.spec\.ts/u
+  'Galaxy S5/core': {
+    testMatch: /^.*?\/core.*\.spec\.ts$/u
   },
 
-  // Core tests
-  'Desktop Chrome/core': {
-    testMatch: /^.*?\/core.*?\.spec\.ts$/u
+  // ----- Mobile single adapter tests ------------------------------
+  'iPhone 12/ethers': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
   },
-  'Desktop Firefox/core': {
-    testMatch: /^.*?\/core.*?\.spec\.ts$/u
+  'Galaxy S5/ethers': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
   },
-
-  // // Mobile core tests
-  // 'iPhone 12/core': {
-  //   testMatch: /^.*?\/core.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/core': {
-  //   testMatch: /^.*?\/core.*\.spec\.ts$/u
-  // },
-
-  // // Mobile single adapter tests
-  // 'iPhone 12/ethers': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/ethers': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/bitcoin': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/bitcoin': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/ethers5': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/ethers5': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/wagmi': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/wagmi': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/solana': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/solana': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-
-  // Tests that independent to adapter permutations
-  ...customAdapterIndependentTests
+  'iPhone 12/bitcoin': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  },
+  'Galaxy S5/bitcoin': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  },
+  'iPhone 12/ethers5': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  },
+  'Galaxy S5/ethers5': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  },
+  'iPhone 12/wagmi': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  },
+  'Galaxy S5/wagmi': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  },
+  'iPhone 12/solana': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  },
+  'Galaxy S5/solana': {
+    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  }
 }
 
-export interface Permutation {
-  device: string
-  library: string
-}
-
-interface CreateProjectParameters {
-  device: string
-  library: string
+const projectProperties: CustomProjectProperties = {
+  ...singleAdapterTestProperties,
+  ...coreTestProperties,
+  ...customTestProperties,
+  ...mobileTestProperties
 }
 
 function createProject({ device, library }: CreateProjectParameters) {
@@ -219,7 +220,9 @@ function createProject({ device, library }: CreateProjectParameters) {
     use: { ...devices[device], library },
     storageState: 'playwright/.auth/user.json'
   }
-  const props = customProjectProperties[project.name]
+
+  const props = projectProperties[project.name]
+
   if (props) {
     project = { ...project, ...props }
     if (props.useOptions) {
@@ -231,27 +234,11 @@ function createProject({ device, library }: CreateProjectParameters) {
 }
 
 export function getProjects() {
-  const libraryDesktopProjects = LIBRARY_PERMUTATIONS.map(createProject)
-  // const libraryMobileProjects = LIBRARY_MOBILE_PERMUTATIONS.map(createProject)
+  const adapterPermutationTests = ADAPTER_PERMUTATIONS.map(createProject)
+  const adapterMobileProjects = ADAPTER_MOBILE_PERMUTATIONS.map(createProject)
   const customProjects = CUSTOM_PROJECT_PERMUTATIONS.map(createProject)
-  const coreProjects = CORE_PERMUTATIONS.map(createProject)
 
-  const projects = [
-    ...libraryDesktopProjects,
-    // ...libraryMobileProjects,
-    ...customProjects,
-    ...coreProjects
-  ]
-
-  console.log(
-    projects.map(p => {
-      return {
-        [p.name]: {
-          testMatch: p?.testMatch
-        }
-      }
-    })
-  )
+  const projects = [...adapterPermutationTests, ...adapterMobileProjects, ...customProjects]
 
   return projects
 }

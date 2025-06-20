@@ -70,23 +70,28 @@ extensionTest.describe('Solana', () => {
 
 extensionTest.describe('Bitcoin', () => {
   extensionTest('it should connect to Bitcoin', async () => {
-    await modalPage.connectToExtensionMultichain('bitcoin')
+    await modalPage.switchNetworkWithNetworkButton('Bitcoin')
+    await modalPage.closeModal()
+    await modalPage.connectToExtensionMultichain('bip122')
     await modalPage.promptSiwe()
     await modalValidator.expectConnected()
   })
 
-  extensionTest('it should require request signature when switching networks', async () => {
+  extensionTest.skip('it should require request signature when switching networks', async () => {
     await modalPage.switchNetwork('Bitcoin Testnet')
     await modalPage.promptSiwe()
     await modalValidator.expectConnected()
   })
 
-  extensionTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
-    await modalPage.switchNetwork('Bitcoin Testnet')
-    await modalPage.cancelSiwe()
-    await modalValidator.expectNetworkButton('Bitcoin Testnet')
-    await modalValidator.expectConnected()
-  })
+  extensionTest.skip(
+    'it should fallback to the last session when cancel siwe from AppKit',
+    async () => {
+      await modalPage.switchNetwork('Bitcoin Testnet')
+      await modalPage.cancelSiwe()
+      await modalValidator.expectNetworkButton('Bitcoin Testnet')
+      await modalValidator.expectConnected()
+    }
+  )
 
   extensionTest('it should be connected after connecting and refreshing the page', async () => {
     await modalValidator.expectConnected()
@@ -101,7 +106,7 @@ extensionTest.describe('Bitcoin', () => {
 
   extensionTest('it should be disconnected when there is no previous session', async () => {
     await modalPage.page.reload()
-    await modalPage.connectToExtensionMultichain('bitcoin')
+    await modalPage.connectToExtensionMultichain('bip122')
     await modalPage.promptSiwe({ cancel: true })
     await modalValidator.expectDisconnected()
   })

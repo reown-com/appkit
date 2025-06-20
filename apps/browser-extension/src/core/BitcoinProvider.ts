@@ -13,6 +13,7 @@ bitcoin.initEccLib(ecc)
 
 // eslint-disable-next-line new-cap
 const bip32 = BIP32Factory(ecc)
+// eslint-disable-next-line new-cap
 const ECPair = ECPairFactory(ecc)
 const privateKey = AccountUtil.privateKeyBitcoin
 const mnemonic = privateKey ? privateKey : bip39.generateMnemonic()
@@ -41,11 +42,13 @@ export class BitcoinProvider {
 
   private getDerivationPath(): string {
     const isMainnet = this.activeNetwork === 'bip122:000000000019d6689c085ae165831e93'
+
     return `m/84'/${isMainnet ? '0' : '1'}'/0'/0/0`
   }
 
   private getDerivedKey() {
     const path = this.getDerivationPath()
+
     return root.derivePath(path)
   }
 
@@ -142,23 +145,20 @@ export class BitcoinProvider {
     }
 
     const child = this.getDerivedKey()
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keyPair = ECPair.fromPrivateKey(child.privateKey!)
-    const privateKey = keyPair.privateKey!
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const pKey = keyPair.privateKey!
 
-    // Convert Uint8Array to string for message signing
     const messageString = new TextDecoder().decode(message)
-    console.log('>>> signMessage, messageString:', `'${messageString}'`)
 
-    // Use bitcoin-message signing for P2WPKH addresses
     // @ts-expect-error - will fix privatekey type
-    const signature = bitcoinMessage.sign(messageString, privateKey, keyPair.compressed, {
+    const signature = bitcoinMessage.sign(messageString, pKey, keyPair.compressed, {
       segwitType: 'p2wpkh'
     })
 
-    console.log('>>> signMessage, signature length:', signature.length)
-
     // Return signature as Buffer for proper base64 conversion
-    return [{ signature: signature }]
+    return Promise.resolve([{ signature }])
   }
 
   switchNetwork(network: `${string}:${string}`) {
