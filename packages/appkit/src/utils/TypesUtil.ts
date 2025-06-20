@@ -103,11 +103,6 @@ export type AppKitOptions = {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
-  /**
-   * Enable or disable automatic reconnection on initialization.
-   * @default true
-   */
-  reconnectOnInit?: boolean
 } & Omit<OptionsControllerState, 'defaultAccountTypes'>
 
 export interface FeatureConfigItem {

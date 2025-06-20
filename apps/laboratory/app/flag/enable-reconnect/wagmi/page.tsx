@@ -3,7 +3,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
+import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { DefaultSIWX } from '@reown/appkit-siwx'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitConnections } from '@/src/components/AppKitConnections'
@@ -19,13 +22,16 @@ const wagmiAdapter = new WagmiAdapter({
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId
 })
+const solanaAdapter = new SolanaAdapter()
+const bitcoinAdapter = new BitcoinAdapter()
 
 const config = {
-  adapters: [wagmiAdapter],
-  networks: ConstantsUtil.EvmNetworks,
+  adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
+  networks: ConstantsUtil.AllNetworks,
   projectId: ConstantsUtil.ProjectId,
   customWallets: ConstantsUtil.CustomWallets,
-  reconnectOnInit: false
+  enableReconnect: false,
+  siwx: new DefaultSIWX()
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 

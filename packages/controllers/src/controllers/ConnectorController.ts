@@ -68,10 +68,10 @@ const controller = {
     return subKey(state, key, callback)
   },
 
-  initialize(namespaces: ChainNamespace[], reconnectOnInit: boolean) {
+  initialize(namespaces: ChainNamespace[], enableReconnect: boolean) {
     namespaces.forEach(namespace => {
       const connectorId = StorageUtil.getConnectedConnectorId(namespace)
-      if (connectorId && reconnectOnInit) {
+      if (connectorId && enableReconnect) {
         ConnectorController.setConnectorId(connectorId, namespace)
       }
     })
@@ -375,7 +375,6 @@ const controller = {
   },
 
   setConnectorId(connectorId: string, namespace: ChainNamespace) {
-    console.trace('>> setConnectorId', connectorId, namespace)
     if (connectorId) {
       state.activeConnectorIds = {
         ...state.activeConnectorIds,

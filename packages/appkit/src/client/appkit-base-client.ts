@@ -164,9 +164,13 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    if (options.reconnectOnInit !== false) {
+    if (options.enableReconnect !== false) {
       await this.syncExistingConnection()
       await this.syncAdapterConnections()
+    } else {
+      await Promise.allSettled(
+        this.chainNamespaces.map(namespace => ConnectionController.disconnect({ namespace }))
+      )
     }
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
@@ -284,12 +288,12 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
-    ConnectionController.initialize(options.adapters ?? [], options.reconnectOnInit !== false)
+    ConnectionController.initialize(options.adapters ?? [], options.enableReconnect !== false)
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
   protected initializeConnectorController(options: AppKitOptions) {
-    ConnectorController.initialize(this.chainNamespaces, options.reconnectOnInit !== false)
+    ConnectorController.initialize(this.chainNamespaces, options.enableReconnect !== false)
   }
 
   protected initializeProjectSettings(options: AppKitOptionsWithSdk) {
@@ -869,7 +873,10 @@ export abstract class AppKitBaseClient {
     }
 
     const connectionStatus = StorageUtil.getConnectionStatus()
-    if (connectionStatus === 'connected') {
+
+    if (!this.options?.enableReconnect) {
+      this.setStatus('disconnected', chainNamespace)
+    } else if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
     } else if (connectionStatus === 'disconnected') {
       /*
@@ -1396,7 +1403,7 @@ export abstract class AppKitBaseClient {
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
     // Clear the session if we don't want to reconnect on init
-    if (this.options.reconnectOnInit === false && this.universalProvider.session) {
+    if (this.options.enableReconnect === false && this.universalProvider.session) {
       await this.universalProvider.disconnect()
     }
     this.listenWalletConnect()
@@ -1672,6 +1679,9 @@ export abstract class AppKitBaseClient {
   }
 
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
+    if (status === 'connecting') {
+      console.trace('>>> setStatus, status:', status, chain)
+    }
     AccountController.setStatus(status, chain)
 
     // If at least one namespace is connected, set the connection status

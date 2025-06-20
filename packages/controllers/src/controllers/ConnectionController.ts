@@ -171,10 +171,10 @@ const controller = {
     state._client = ref(client)
   },
 
-  initialize(adapters: ChainAdapter[], reconnectOnInit: boolean) {
+  initialize(adapters: ChainAdapter[], enableReconnect: boolean) {
     const namespaces = adapters.map(a => a.namespace).filter(Boolean) as ChainNamespace[]
 
-    if (reconnectOnInit) {
+    if (enableReconnect) {
       ConnectionController.syncStorageConnections(namespaces)
     }
   },

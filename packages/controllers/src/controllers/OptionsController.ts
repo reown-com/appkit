@@ -111,6 +111,11 @@ export interface OptionsControllerStatePublic {
    */
   enableInjected?: boolean
   /**
+   * Enable or disable automatic reconnection on initialization.
+   * @default true
+   */
+  enableReconnect?: boolean
+  /**
    * Enable or disable the WalletConnect QR code.
    * @default true
    */

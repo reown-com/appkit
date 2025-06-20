@@ -302,7 +302,7 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private createAuthProvider(chainNamespace: ChainNamespace, reconnectOnInit: boolean) {
+  private createAuthProvider(chainNamespace: ChainNamespace, enableReconnect: boolean | undefined) {
     const isSupported = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(chainNamespace)
 
     if (!isSupported) {
@@ -342,7 +342,7 @@ export class AppKit extends AppKitBaseClient {
       })
       this.setupAuthConnectorListeners(this.authProvider)
     }
-    const shouldSync = chainNamespace === ChainController.state.activeChain && reconnectOnInit
+    const shouldSync = chainNamespace === ChainController.state.activeChain && enableReconnect
 
     if (this.authProvider && shouldSync) {
       this.syncAuthConnector(this.authProvider, chainNamespace)
@@ -350,9 +350,12 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private createAuthProviderForAdapter(chainNamespace: ChainNamespace, reconnectOnInit: boolean) {
+  private createAuthProviderForAdapter(
+    chainNamespace: ChainNamespace,
+    enableReconnect: boolean | undefined
+  ) {
     // Override as we need to set authProvider for each adapter
-    this.createAuthProvider(chainNamespace, reconnectOnInit)
+    this.createAuthProvider(chainNamespace, enableReconnect)
 
     if (this.authProvider) {
       this.chainAdapters?.[chainNamespace]?.setAuthProvider?.(this.authProvider)
@@ -472,7 +475,7 @@ export class AppKit extends AppKitBaseClient {
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
     this.chainNamespaces?.forEach(namespace => {
-      this.createAuthProviderForAdapter(namespace, options.reconnectOnInit !== false)
+      this.createAuthProviderForAdapter(namespace, options.enableReconnect)
     })
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })
