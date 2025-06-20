@@ -3,6 +3,7 @@
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import { DefaultSIWX } from '@reown/appkit-siwx'
 import { mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
@@ -22,7 +23,8 @@ const config = {
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   customWallets: ConstantsUtil.CustomWallets,
-  enableReconnect: false
+  enableReconnect: false,
+  siwx: new DefaultSIWX()
 }
 
 export default function Ethers() {
