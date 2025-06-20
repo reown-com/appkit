@@ -37,6 +37,28 @@ test.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+test.describe('Email', () => {
+  test('it should connect with Email and got disconnected after page refresh', async () => {
+    const mailsacApiKey = process.env['MAILSAC_API_KEY']
+    if (!mailsacApiKey) {
+      throw new Error('MAILSAC_API_KEY is not set')
+    }
+    const email = new Email(mailsacApiKey)
+    const tempEmail = await email.getEmailAddressToUse()
+
+    // Connect with email
+    modalValidator.expectSecureSiteFrameNotInjected()
+    await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+    await modalPage.promptSiwe()
+    await modalPage.approveSign()
+    await modalValidator.expectConnected()
+
+    // Reload and check connection
+    await modalPage.page.reload()
+    await modalValidator.expectDisconnected()
+    await modalValidator.expectStatus('disconnected')
+  })
+})
 
 test.describe('WC', () => {
   test('it should connect with WC and got disconnected after page refresh', async () => {
@@ -55,9 +77,9 @@ test.describe('WC', () => {
 
 test.describe('Extension', () => {
   test('it should connect with Reown Extension and got disconnected after page refresh', async ({
-    browser
+    browserName
   }) => {
-    const isFirefox = browser.browserType().name() === 'firefox'
+    const isFirefox = browserName === 'firefox'
 
     if (isFirefox) {
       return
@@ -65,29 +87,6 @@ test.describe('Extension', () => {
     // Connect with Reown Extension
     await modalPage.connectToExtensionMultichain('solana')
     await modalPage.promptSiwe()
-    await modalValidator.expectConnected()
-
-    // Reload and check connection
-    await modalPage.page.reload()
-    await modalValidator.expectDisconnected()
-    await modalValidator.expectStatus('disconnected')
-  })
-})
-
-test.describe('Email', () => {
-  test('it should connect with Email and got disconnected after page refresh', async () => {
-    const mailsacApiKey = process.env['MAILSAC_API_KEY']
-    if (!mailsacApiKey) {
-      throw new Error('MAILSAC_API_KEY is not set')
-    }
-    const email = new Email(mailsacApiKey)
-    const tempEmail = await email.getEmailAddressToUse()
-
-    // Connect with email
-    modalValidator.expectSecureSiteFrameNotInjected()
-    await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-    await modalPage.promptSiwe()
-    await modalPage.approveSign()
     await modalValidator.expectConnected()
 
     // Reload and check connection
