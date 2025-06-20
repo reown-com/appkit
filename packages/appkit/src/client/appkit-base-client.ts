@@ -1000,6 +1000,7 @@ export abstract class AppKitBaseClient {
         this.chainNamespaces.map(namespace => ConnectionController.disconnect({ namespace }))
       )
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error disconnecting existing connections:', error)
     }
   }
