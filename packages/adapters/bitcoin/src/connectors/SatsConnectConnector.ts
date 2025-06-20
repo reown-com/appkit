@@ -128,7 +128,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     })) as BitcoinConnector.AccountAddress[]
   }
 
-  private static hasSatsConnectProviders() {
+  private static hasProviders() {
     if (!CoreHelperUtil.isClient()) {
       return false
     }
@@ -152,7 +152,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
      * We'll retry every 200ms, up to a maximum of 3 attempts.
      */
     await HelpersUtil.withRetry({
-      conditionFn: () => SatsConnectConnector.hasSatsConnectProviders(),
+      conditionFn: () => SatsConnectConnector.hasProviders(),
       intervalMs: 200,
       maxRetries: 3
     })
