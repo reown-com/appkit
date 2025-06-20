@@ -26,7 +26,7 @@ test.beforeAll(async ({ context: browserContext, library }) => {
   const browserPage = await context.newPage()
 
   modalPage = new ModalPage(browserPage, library, 'flag-enable-reconnect')
-  walletPage = new WalletPage(await browserContext.newPage())
+  walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
@@ -43,6 +43,7 @@ test.describe('WC', () => {
     // Connect with WC
     await modalPage.qrCodeFlow(modalPage, walletPage)
     await modalPage.promptSiwe()
+    await walletPage.handleRequest({ accept: true })
     await modalValidator.expectConnected()
 
     // Reload and check connection
