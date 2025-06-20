@@ -84,33 +84,37 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
-      @font-face {
-        font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('woff');
-        font-weight: 500;
-        font-style: normal;
-      }
+      ${themeVariables?.['--w3m-font-family']
+        ? css``
+        : css`
+            @font-face {
+              font-family: 'KHTeka';
+              src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('woff');
+              font-weight: 500;
+              font-style: normal;
+            }
 
-      @font-face {
-        font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('woff');
-        font-weight: 300;
-        font-style: normal;
-      }
+            @font-face {
+              font-family: 'KHTeka';
+              src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('woff');
+              font-weight: 300;
+              font-style: normal;
+            }
 
-      @font-face {
-        font-family: 'KHTekaMono';
-        src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('woff');
-        font-weight: 400;
-        font-style: normal;
-      }
+            @font-face {
+              font-family: 'KHTekaMono';
+              src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('woff');
+              font-weight: 400;
+              font-style: normal;
+            }
 
-      @font-face {
-        font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('woff');
-        font-weight: 400;
-        font-style: normal;
-      }
+            @font-face {
+              font-family: 'KHTeka';
+              src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('woff');
+              font-weight: 400;
+              font-style: normal;
+            }
+          `}
 
       @keyframes w3m-shake {
         0% {
