@@ -50,6 +50,7 @@ test.describe('Email', () => {
     modalValidator.expectSecureSiteFrameNotInjected()
     await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
     await modalPage.promptSiwe()
+    await modalPage.page.waitForTimeout(500)
     await modalPage.approveSign()
     await modalValidator.expectConnected()
 
