@@ -7,15 +7,15 @@ import type { CreateProjectParameters, CustomProjectProperties } from '../types'
 export const DESKTOP_DEVICES = ['Desktop Chrome']
 export const MOBILE_DEVICES = ['iPhone 12']
 
-const ADAPTERS = ['core', 'ethers', 'ethers5', 'wagmi', 'bitcoin', 'solana'] as const
-
-const ADAPTER_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
-  ADAPTERS.map(adapter => ({ device, library: adapter }))
-)
-
-const ADAPTER_MOBILE_PERMUTATIONS = MOBILE_DEVICES.flatMap(device =>
-  ADAPTERS.map(adapter => ({ device, library: adapter }))
-)
+const CORE_PAGES = ['core']
+const SINGLE_CHAIN_PAGES = ['ethers', 'ethers5', 'wagmi', 'bitcoin', 'solana'] as const
+const MULTICHAIN_PAGES = [
+  'multichain-all',
+  'multichain-ethers-solana',
+  'multichain-ethers5-solana',
+  'multichain-wagmi-solana',
+  'multichain-no-adapters'
+] as const
 
 /**
  * Tests that will be run for each EVM adapter pages on laboratory.
@@ -42,7 +42,10 @@ const EVM_ADAPTER_TESTS = [
   'wallet-button.spec.ts',
   'verify.spec.ts',
   'email-after-farcaster.spec.ts',
-  'multi-wallet.spec.ts'
+  'multi-wallet.spec.ts',
+  'multi-wallet-siwx.spec.ts',
+  'multichain-extension.spec.ts',
+  'multichain-siwe-extension.spec.ts'
 ]
 
 /**
@@ -54,6 +57,7 @@ const EVM_ADAPTER_TESTS = [
  */
 const SOLANA_ADAPTER_TESTS = [
   'extension.spec.ts',
+  'basic-tests.spec.ts',
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
@@ -74,7 +78,8 @@ const BITCOIN_ADAPTER_TESTS = [
   'extension.spec.ts',
   'wallet.spec.ts',
   'wallet-button.spec.ts',
-  'basic-tests.spec.ts'
+  'basic-tests.spec.ts',
+  'multi-wallet.spec.ts'
 ]
 
 /**
@@ -88,26 +93,11 @@ const BITCOIN_ADAPTER_TESTS = [
  * - Runs on pages: /library/multichain-ethers-solana
  */
 const CUSTOM_TESTS = [
-  'siwx-extension',
-  'email-default-account-types',
-  'multichain-all',
-  'multichain-ethers-solana',
-  'multichain-ethers5-solana',
-  'multichain-wagmi-solana',
-  'multichain-no-adapters',
-  'multichain-extension.spec.ts',
-  'multichain-siwe-extension.spec.ts',
-  'multi-wallet-multichain',
-  'cloud-auth'
+  'siwx-extension.spec.ts',
+  'email-default-account-types.spec.ts',
+  'multi-wallet-multichain.spec.ts',
+  'cloud-auth.spec.ts'
 ]
-
-/**
- * Tests that are only running on mobile devices.
- * @example
- * - Test: mobile-wallet-features.spec.ts
- * - Runs on pages: /library/mobile-wallet-features
- */
-const MOBILE_TESTS = ['mobile-wallet-features.spec.ts', 'core.spec.ts']
 
 function createRegex(tests: string[]) {
   return new RegExp(`^.*?/(${tests.join('|')})$`, 'u')
@@ -121,8 +111,8 @@ const CUSTOM_PROJECT_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   CUSTOM_TESTS.map(library => ({ device, library }))
 )
 
-const singleAdapterTestProperties = {
-  // ----- Single Adapter tests ------------------------------
+const singleChainTestProperties = {
+  // ----- Single Chain tests ------------------------------
   'Desktop Chrome/ethers': {
     testMatch: EVM_ADAPTER_TESTS_REGEX
   },
@@ -170,60 +160,43 @@ const customTestProperties = Object.assign(
   ...CUSTOM_TESTS.flatMap(test =>
     DESKTOP_DEVICES.map(device => ({
       [`${device}/${test}`]: {
-        testMatch: new RegExp(`^.*\\/${test}\\.spec\\.ts$`, 'u')
+        testMatch: new RegExp(`^.*?\\/${test}$`, 'u')
       }
     }))
   )
 )
 
-const mobileTestProperties = {
-  // ----- Mobile core tests ------------------------------
-  // 'iPhone 12/core': {
-  //   testMatch: /^.*?\/core.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/core': {
-  //   testMatch: /^.*?\/core.*\.spec\.ts$/u
-  // },
-  // ----- Mobile single adapter tests ------------------------------
-  // 'iPhone 12/ethers': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/ethers': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/bitcoin': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/bitcoin': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/ethers5': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/ethers5': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/wagmi': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/wagmi': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'iPhone 12/solana': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // },
-  // 'Galaxy S5/solana': {
-  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  // }
-}
+const mobileTestProperties = Object.assign(
+  {},
+  ...SINGLE_CHAIN_PAGES.flatMap(test =>
+    MOBILE_DEVICES.map(device => ({
+      [`${device}/${test}`]: {
+        testMatch: /^.*?\/mobile-wallet-features\.spec\.ts$/u
+      }
+    }))
+  )
+)
+
+const multichainTestProperties = Object.assign(
+  {},
+  ...MULTICHAIN_PAGES.flatMap(page =>
+    DESKTOP_DEVICES.map(device => ({
+      [`${device}/${page}`]: {
+        testMatch: new RegExp(`^.*?\\/${page}.*?\\.spec\\.ts$`, 'u')
+      }
+    }))
+  )
+)
 
 const projectProperties: CustomProjectProperties = {
-  ...singleAdapterTestProperties,
   ...coreTestProperties,
+  ...singleChainTestProperties,
+  ...multichainTestProperties,
   ...customTestProperties,
   ...mobileTestProperties
 }
 
+// --- Projects ----------------------------------------------------------------
 function createProject({ device, library }: CreateProjectParameters) {
   let project = {
     name: `${device}/${library}`,
@@ -232,7 +205,6 @@ function createProject({ device, library }: CreateProjectParameters) {
   }
 
   const props = projectProperties[project.name]
-
   if (props) {
     project = { ...project, ...props }
     if (props.useOptions) {
@@ -243,12 +215,36 @@ function createProject({ device, library }: CreateProjectParameters) {
   return project
 }
 
+const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  CORE_PAGES.map(page => ({ device, library: page }))
+)
+
+const SINGLE_CHAIN_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  SINGLE_CHAIN_PAGES.map(adapter => ({ device, library: adapter }))
+)
+
+const SINGLE_CHAIN_MOBILE_PERMUTATIONS = MOBILE_DEVICES.flatMap(device =>
+  SINGLE_CHAIN_PAGES.map(adapter => ({ device, library: adapter }))
+)
+
+const MULTICHAIN_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  MULTICHAIN_PAGES.map(page => ({ device, library: page }))
+)
+
 export function getProjects() {
-  const adapterPermutationTests = ADAPTER_PERMUTATIONS.map(createProject)
-  // const adapterMobileProjects = ADAPTER_MOBILE_PERMUTATIONS.map(createProject)
+  const corePermutations = CORE_PERMUTATIONS.map(createProject)
+  const singleChainPermutations = SINGLE_CHAIN_PERMUTATIONS.map(createProject)
+  const singleChainMobilePermutations = SINGLE_CHAIN_MOBILE_PERMUTATIONS.map(createProject)
+  const multichainPermutations = MULTICHAIN_PERMUTATIONS.map(createProject)
   const customProjects = CUSTOM_PROJECT_PERMUTATIONS.map(createProject)
 
-  const projects = [...adapterPermutationTests, ...customProjects]
+  const projects = [
+    ...corePermutations,
+    ...singleChainPermutations,
+    ...singleChainMobilePermutations,
+    ...customProjects,
+    ...multichainPermutations
+  ]
 
   return projects
 }
