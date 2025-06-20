@@ -164,13 +164,13 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    if (options.enableReconnect !== false) {
-      await this.syncExistingConnection()
-      await this.syncAdapterConnections()
-    } else {
+    if (options.enableReconnect === false) {
       await Promise.allSettled(
         this.chainNamespaces.map(namespace => ConnectionController.disconnect({ namespace }))
       )
+    } else {
+      await this.syncExistingConnection()
+      await this.syncAdapterConnections()
     }
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
