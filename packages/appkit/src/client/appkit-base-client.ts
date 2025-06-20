@@ -165,9 +165,7 @@ export abstract class AppKitBaseClient {
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
     if (options.enableReconnect === false) {
-      await Promise.allSettled(
-        this.chainNamespaces.map(namespace => ConnectionController.disconnect({ namespace }))
-      )
+      await this.unSyncExistingConnection()
     } else {
       await this.syncExistingConnection()
       await this.syncAdapterConnections()
@@ -994,6 +992,16 @@ export abstract class AppKitBaseClient {
     await Promise.allSettled(
       this.chainNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
     )
+  }
+
+  protected async unSyncExistingConnection() {
+    try {
+      await Promise.allSettled(
+        this.chainNamespaces.map(namespace => ConnectionController.disconnect({ namespace }))
+      )
+    } catch (error) {
+      console.error('Error disconnecting existing connections:', error)
+    }
   }
 
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
