@@ -111,7 +111,6 @@ export class W3mConnectingWcView extends LitElement {
       }
     } catch (error) {
       /*
-
        * In some cases when a wallet is connecting to AppKit and is not connecting to the right network and there are only a few networks enabled; Wagmi is unable to switch to the chain because this wallet is not enabled in wagmi. In this case AppKit will still connect and will switch to the wallets chain. In some cases this will open the unsupportedChainUI if the network is not supported.
        *
        * But there are also cases when enableNetworkSwitch is turned off. In this case wagmi will still connect, fail to switch chain, but AppKit keeps in the wrong chain. We need to simulate a showUnsupportedChain to show the user the correct error on the screen, so they can manually switch to the correct network.
