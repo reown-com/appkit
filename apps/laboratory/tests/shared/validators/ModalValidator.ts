@@ -415,6 +415,15 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
+  async expectFrameTextToContain(text: string) {
+    await expect(
+      this.page.frameLocator('#w3m-iframe').getByText(text),
+      'AppKit iframe should be visible'
+    ).toBeVisible({
+      timeout: 10000
+    })
+  }
+
   async expectAccountNameApproveTransaction(name: string) {
     await this.expectSignatureRequestFrameByText('requests a signature')
     const iframe = this.page.frameLocator('#w3m-iframe')
