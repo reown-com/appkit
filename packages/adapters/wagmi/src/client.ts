@@ -307,7 +307,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     if (options.enableEIP6963 !== false) {
-      console.log('push injected connector')
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
