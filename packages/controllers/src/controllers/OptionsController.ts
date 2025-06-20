@@ -397,6 +397,10 @@ export const OptionsController = {
     state.enableNetworkSwitch = enableNetworkSwitch
   },
 
+  setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {
+    state.enableReconnect = enableReconnect
+  },
+
   setDefaultAccountTypes(
     defaultAccountType: Partial<OptionsControllerState['defaultAccountTypes']> = {}
   ) {

@@ -31,6 +31,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
+import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
@@ -171,10 +172,10 @@ const controller = {
     state._client = ref(client)
   },
 
-  initialize(adapters: ChainAdapter[], enableReconnect: boolean) {
+  initialize(adapters: ChainAdapter[]) {
     const namespaces = adapters.map(a => a.namespace).filter(Boolean) as ChainNamespace[]
 
-    if (enableReconnect) {
+    if (OptionsController.state.enableReconnect) {
       ConnectionController.syncStorageConnections(namespaces)
     }
   },

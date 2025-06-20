@@ -259,7 +259,7 @@ export abstract class AppKitBaseClient {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
-    this.initializeConnectorController(options)
+    this.initializeConnectorController()
   }
 
   protected initializeThemeController(options: AppKitOptions) {
@@ -286,12 +286,12 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
-    ConnectionController.initialize(options.adapters ?? [], options.enableReconnect !== false)
+    ConnectionController.initialize(options.adapters ?? [])
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
-  protected initializeConnectorController(options: AppKitOptions) {
-    ConnectorController.initialize(this.chainNamespaces, options.enableReconnect !== false)
+  protected initializeConnectorController() {
+    ConnectorController.initialize(this.chainNamespaces)
   }
 
   protected initializeProjectSettings(options: AppKitOptionsWithSdk) {
@@ -308,6 +308,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
+    OptionsController.setEnableReconnect(options.enableReconnect !== false)
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)

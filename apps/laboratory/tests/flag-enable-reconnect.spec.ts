@@ -22,7 +22,8 @@ const test = extensionFixture.extend<{ library: string }>({
 test.describe.configure({ mode: 'serial' })
 
 test.beforeAll(async ({ context: browserContext, library }) => {
-  const browserPage = await browserContext.newPage()
+  context = browserContext
+  const browserPage = await context.newPage()
 
   modalPage = new ModalPage(browserPage, library, 'flag-enable-reconnect')
   walletPage = new WalletPage(await browserContext.newPage())
@@ -73,7 +74,7 @@ test.describe('Extension', () => {
 })
 
 test.describe('Email', () => {
-  test('it should connect with Email and got disconnected after page refresh', async () => {
+  test('it should connect with Email and got disconnected after page refresh', async ({}) => {
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
     if (!mailsacApiKey) {
       throw new Error('MAILSAC_API_KEY is not set')
