@@ -592,13 +592,19 @@ export class W3mFrameProvider {
   }
 
   // -- Private Methods -------------------------------------------------
-  public rejectRpcRequests() {
+  public async rejectRpcRequests() {
     try {
-      this.openRpcRequests.forEach(({ abortController, method }) => {
-        if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
-          abortController.abort()
-        }
-      })
+      await Promise.all(
+        this.openRpcRequests.map(async ({ abortController, method }) => {
+          if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
+            abortController.abort()
+          }
+
+          await this.appEvent<'RpcAbort'>({
+            type: W3mFrameConstants.APP_RPC_ABORT
+          })
+        })
+      )
       this.openRpcRequests = []
     } catch (e) {
       this.w3mLogger?.logger.error({ error: e }, 'Error aborting RPC request')

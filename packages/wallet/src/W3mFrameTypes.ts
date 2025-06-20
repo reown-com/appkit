@@ -108,6 +108,7 @@ export namespace W3mFrameTypes {
     AppRpcRequest: RPCRequest
     AppGetFarcasterUriRequest: undefined
     AppConnectFarcasterRequest: undefined
+    AppRpcAbortRequest: undefined
   }
 
   export interface Responses {
@@ -135,6 +136,7 @@ export namespace W3mFrameTypes {
     FrameRpcResponse: RPCResponse
     FrameReadyResponse: z.infer<typeof FrameReadyResponse>
     FrameReloadResponse: undefined
+    FrameRpcAbortResponse: undefined
   }
 
   export interface Network {
@@ -222,6 +224,7 @@ export namespace W3mFrameTypes {
     | 'SignOut'
     | 'Rpc'
     | 'Reload'
+    | 'RpcAbort'
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type WalletCapabilities = Record<string, any>
