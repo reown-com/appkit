@@ -7,6 +7,7 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
@@ -28,6 +29,7 @@ const config = {
   adapters: [etherAdapter, solanaWeb3JsAdapter],
   networks,
   defaultNetwork: mainnet,
+  customWallets: ConstantsUtil.CustomWallets,
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'
 }
@@ -36,6 +38,8 @@ export default function MultiChainEthersSolana() {
   return (
     <AppKitProvider config={config}>
       <AppKitButtons />
+      <AppKitConnections namespace="eip155" title="EVM Connections" />
+      <AppKitConnections namespace="solana" title="Solana Connections" />
       <AppKitInfo />
       <EthersTests />
       <SolanaTests />

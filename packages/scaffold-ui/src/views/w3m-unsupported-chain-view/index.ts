@@ -2,17 +2,18 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
   AssetUtil,
   ChainController,
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -38,9 +39,16 @@ export class W3mUnsupportedChainView extends LitElement {
   // -- State & Properties --------------------------------- //
   @state() private disconecting = false
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   public constructor() {
     super()
-    this.unsubscribe.push(AssetController.subscribeNetworkImages(() => this.requestUpdate()))
+    this.unsubscribe.push(
+      AssetController.subscribeNetworkImages(() => this.requestUpdate()),
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
+      })
+    )
   }
 
   public override disconnectedCallback() {
@@ -131,8 +139,17 @@ export class W3mUnsupportedChainView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconecting = true
-      await ConnectionController.disconnect()
-      ModalController.close()
+
+      const namespace = ChainController.state.activeChain as ChainNamespace
+      const connectionsByNamespace = ConnectionController.getConnections(namespace)
+      const hasConnections = connectionsByNamespace.length > 0
+      const connectorId = ConnectorController.state.activeConnectorIds[namespace]
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(isMultiWalletEnabled ? { id: connectorId } : {})
+      if (hasConnections && isMultiWalletEnabled) {
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('Wallet deleted')
+      }
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

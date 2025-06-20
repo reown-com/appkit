@@ -1,15 +1,17 @@
 import { devices } from '@playwright/test'
 
-import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
+import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
 
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
+  'multi-wallet-multichain',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
 ] as const
+const FLAGS = ['default-account-types'] as const
 
 const CORE_LIRARIES = ['core'] as const
 
@@ -33,6 +35,10 @@ const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
 
 const CLOUD_AUTH_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   CLOUD_AUTH_LIBRARIES.map(library => ({ device, library }))
+)
+
+const FLAG_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  FLAGS.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -71,7 +77,9 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'wallet.spec.ts',
   'wallet-button.spec',
   'verify.spec.ts',
-  'email-after-farcaster.spec.ts'
+  'email-after-farcaster.spec.ts',
+  'multi-wallet.spec.ts',
+  'multi-wallet-siwx.spec.ts'
 ]
 
 const CORE_TESTS = ['sign-client.spec.ts', 'universal-provider.spec.ts', 'core.spec.ts']
@@ -86,7 +94,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'wallet.spec.ts',
-  'wallet-button.spec'
+  'wallet-button.spec',
+  'multi-wallet.spec.ts'
 ]
 
 const CLOUD_AUTH_TESTS = ['cloud-auth.spec.ts']
@@ -153,6 +162,12 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/multichain-all': {
     testMatch: /^.*\/multichain-all\.spec\.ts$/u
   },
+  'Desktop Firefox/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
+  },
+  'Desktop Chrome/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
+  },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
   },
@@ -177,11 +192,15 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/multichain-no-adapters': {
     testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
   },
-
+  'Desktop Chrome/default-account-types': {
+    testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
+  },
+  'Desktop Firefox/default-account-types': {
+    testMatch: /^.*\/email-default-account-types\.spec\.ts$/u
+  },
   'iPhone 12/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
-
   'Galaxy S5/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
@@ -215,7 +234,6 @@ const customProjectProperties: CustomProjectProperties = {
   'Galaxy S5/solana': {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
   },
-
   'Desktop Chrome/cloud-auth': {
     testMatch: CLOUD_AUTH_TESTS_REGEX
   },
@@ -257,13 +275,15 @@ export function getProjects() {
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
   const cloudAuthProjects = CLOUD_AUTH_PERMUTATIONS.map(createProject)
+  const flagProjects = FLAG_PERMUTATIONS.map(createProject)
 
   const projects = [
     ...libraryDesktopProjects,
     ...libraryMobileProjects,
     ...multichainProjects,
     ...coreProjects,
-    ...cloudAuthProjects
+    ...cloudAuthProjects,
+    ...flagProjects
   ]
 
   return projects

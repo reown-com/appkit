@@ -11,6 +11,7 @@ import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import InitializeBoundary from '@/src/components/InitializeBoundary'
@@ -50,6 +51,8 @@ export default function MultiChainWagmiSolana() {
       <QueryClientProvider client={queryClient}>
         <InitializeBoundary>
           <AppKitButtons />
+          <AppKitConnections namespace="eip155" title="EVM Connections" />
+          <AppKitConnections namespace="bip122" title="Bitcoin Connections" />
           <AppKitInfo />
           <WagmiTests />
           <BitcoinTests />

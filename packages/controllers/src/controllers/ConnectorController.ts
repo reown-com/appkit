@@ -2,11 +2,13 @@ import { proxy, ref, snapshot, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
@@ -327,10 +329,20 @@ const controller = {
     return ConnectorController.mergeMultiChainConnectors(namespaceConnectors)
   },
 
+  canSwitchToSmartAccount(namespace: ChainNamespace) {
+    const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+
+    return (
+      isSmartAccountEnabled &&
+      AccountController.state.preferredAccountTypes?.[namespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+    )
+  },
+
   selectWalletConnector(wallet: WcWallet) {
     const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-
-    MobileWalletUtil.handleMobileDeeplinkRedirect(connector?.name || wallet.name || '')
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    MobileWalletUtil.handleMobileDeeplinkRedirect(connector?.explorerId || wallet.id, namespace)
 
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })

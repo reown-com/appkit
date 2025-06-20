@@ -1,5 +1,6 @@
+import { WalletValidator } from '@reown/appkit-testing'
+
 import type { ModalValidator } from '../validators/ModalValidator'
-import { WalletValidator } from '../validators/WalletValidator'
 
 export async function expectConnection(
   modalValidator: ModalValidator,

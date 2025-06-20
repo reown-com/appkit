@@ -18,6 +18,7 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
  */
+
 export const SIWXUtil = {
   getSIWX() {
     return OptionsController.state.siwx
@@ -105,6 +106,8 @@ export const SIWXUtil = {
         signature: signature as `0x${string}`
       })
 
+      ChainController.setLastConnectedSIWECaipNetwork(network)
+
       ModalController.close()
 
       EventsController.sendEvent({
@@ -143,12 +146,25 @@ export const SIWXUtil = {
       const isRequired = siwx?.getRequired?.()
 
       if (isRequired) {
-        await ConnectionController.disconnect()
+        const lastNetwork = ChainController.getLastConnectedSIWECaipNetwork()
+        if (lastNetwork) {
+          const sessions = await siwx?.getSessions(
+            lastNetwork?.caipNetworkId,
+            CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+          )
+          if (sessions && sessions.length > 0) {
+            await ChainController.switchActiveNetwork(lastNetwork)
+          } else {
+            await ConnectionController.disconnect()
+          }
+        } else {
+          await ConnectionController.disconnect()
+        }
       } else {
         ModalController.close()
       }
 
-      RouterController.reset('Connect')
+      ModalController.close()
 
       EventsController.sendEvent({
         event: 'CLICK_CANCEL_SIWX',
@@ -159,6 +175,24 @@ export const SIWXUtil = {
       // eslint-disable-next-line no-console
       console.error('SIWXUtil:cancelSignMessage', error)
     }
+  },
+  async getAllSessions() {
+    const siwx = this.getSIWX()
+    const allRequestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const sessions = [] as SIWXSession[]
+    await Promise.all(
+      allRequestedCaipNetworks.map(async caipNetwork => {
+        const session = await siwx?.getSessions(
+          caipNetwork.caipNetworkId,
+          CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+        )
+        if (session) {
+          sessions.push(...session)
+        }
+      })
+    )
+
+    return sessions
   },
   async getSessions() {
     const siwx = OptionsController.state.siwx

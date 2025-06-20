@@ -139,6 +139,7 @@ jobs:
         run: pnpm build:demo
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           BASE_URL: ${{ inputs.demo-base-url }}
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
 
@@ -298,6 +299,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           BASE_URL: ${{ inputs.demo-base-url }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           CI: true
         working-directory: ./apps/demo/
@@ -445,7 +447,10 @@ jobs:
           S3_BUCKET="reown.appkit.e2e.reports"
           S3_PREFIX="appkit/playwright-results"
           FILE_NAME="merged-test-results.json"
-          S3_KEY="${S3_PREFIX}/${{ env.BUILD_CONTEXT }}/${{ github.run_id }}-$(date +%s)-${FILE_NAME}"
+          year=$(date +%Y)
+          month=$(date +%m)
+          day=$(date +%d)
+          S3_KEY="${S3_PREFIX}/year=${year}/month=${month}/day=${day}/${{ env.BUILD_CONTEXT }}/${{ github.run_id }}-$(date +%s)-${FILE_NAME}"
 
           echo "Uploading ${{ github.workspace }}/apps/laboratory/merged-test-results.json to s3://${S3_BUCKET}/${S3_KEY}"
           aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}

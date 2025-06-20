@@ -1,8 +1,8 @@
 import { type BrowserContext, type Page, test } from '@playwright/test'
 
-import { ALL_SOCIALS } from './shared/constants'
+import { ALL_SOCIALS, WalletPage } from '@reown/appkit-testing'
+
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
@@ -62,7 +62,7 @@ configTest('Should fetch correct config of projectId with all features enabled',
   await modalValidator.expectOnrampButton(true)
 
   await modalPage.openOnramp()
-  await modalValidator.expectOnrampProvider(['coinbase', 'meld'])
+  await modalValidator.expectOnrampProvider(['meld', 'coinbase'])
   await modalPage.closeModal()
 })
 

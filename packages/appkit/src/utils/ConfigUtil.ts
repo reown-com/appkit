@@ -13,13 +13,14 @@ import type { AppKitOptionsWithSdk } from '../client/appkit-base-client.js'
 
 type FeatureKey = keyof FeatureConfigMap
 
-const featureKeys: FeatureKey[] = [
+const FEATURE_KEYS: FeatureKey[] = [
   'email',
   'socials',
   'swaps',
   'onramp',
   'activity',
-  'reownBranding'
+  'reownBranding',
+  'multiWallet'
 ]
 
 const featureConfig = {
@@ -28,6 +29,7 @@ const featureConfig = {
     localFeatureName: 'email',
     returnType: false as boolean,
     isLegacy: false,
+    isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig): boolean => {
       if (!apiConfig?.config) {
         return false
@@ -49,6 +51,7 @@ const featureConfig = {
     localFeatureName: 'socials',
     returnType: false as SocialProvider[] | false,
     isLegacy: false,
+    isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig): SocialProvider[] | false => {
       if (!apiConfig?.config) {
         return false
@@ -75,6 +78,7 @@ const featureConfig = {
     localFeatureName: 'swaps',
     returnType: false as SwapProvider[] | false,
     isLegacy: false,
+    isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig): SwapProvider[] | false => {
       if (!apiConfig?.config) {
         return false
@@ -99,6 +103,7 @@ const featureConfig = {
     localFeatureName: 'onramp',
     returnType: false as OnRampProvider[] | false,
     isLegacy: false,
+    isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig): OnRampProvider[] | false => {
       if (!apiConfig?.config) {
         return false
@@ -123,6 +128,7 @@ const featureConfig = {
     localFeatureName: 'history',
     returnType: false as boolean,
     isLegacy: true,
+    isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig): boolean => Boolean(apiConfig.isEnabled),
     processFallback: (localValue: unknown): boolean => {
       if (localValue === undefined) {
@@ -137,6 +143,7 @@ const featureConfig = {
     localFeatureName: 'reownBranding',
     returnType: false as boolean,
     isLegacy: false,
+    isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig): boolean => Boolean(apiConfig.isEnabled),
     processFallback: (localValue: unknown): boolean => {
       if (localValue === undefined) {
@@ -145,6 +152,15 @@ const featureConfig = {
 
       return Boolean(localValue)
     }
+  },
+  multiWallet: {
+    apiFeatureName: 'multi_wallet' as const,
+    localFeatureName: 'multiWallet',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.multiWallet
   }
 }
 
@@ -169,10 +185,15 @@ export const ConfigUtil = {
     featureKey: K,
     localFeatures: Record<string, unknown>,
     apiProjectConfig: TypedFeatureConfig[] | null,
-    useApi: boolean
+    useApi: boolean,
+    isBasic: boolean
   ): FeatureConfigMap[K]['returnType'] {
     const config = featureConfig[featureKey]
     const localValue = localFeatures[config.localFeatureName]
+
+    if (isBasic && !config.isAvailableOnBasic) {
+      return false as FeatureConfigMap[K]['returnType']
+    }
 
     if (useApi) {
       const apiConfig = this.getApiConfig(config.apiFeatureName, apiProjectConfig)
@@ -210,6 +231,7 @@ export const ConfigUtil = {
   },
 
   async fetchRemoteFeatures(config: AppKitOptionsWithSdk): Promise<RemoteFeatures> {
+    const isBasic = config.basic ?? false
     const localFeatures = config.features || {}
 
     this.localSettingsOverridden.clear()
@@ -227,17 +249,19 @@ export const ConfigUtil = {
       )
     }
 
-    const remoteFeaturesConfig: RemoteFeatures = useApiConfig
-      ? ConstantsUtil.DEFAULT_REMOTE_FEATURES
-      : ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
+    const remoteFeaturesConfig: RemoteFeatures =
+      useApiConfig && !isBasic
+        ? ConstantsUtil.DEFAULT_REMOTE_FEATURES
+        : ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
 
     try {
-      for (const featureKey of featureKeys) {
+      for (const featureKey of FEATURE_KEYS) {
         const result = this.processFeature(
           featureKey,
           localFeatures,
           apiProjectConfig,
-          useApiConfig
+          useApiConfig,
+          isBasic
         )
         Object.assign(remoteFeaturesConfig, { [featureKey]: result })
       }

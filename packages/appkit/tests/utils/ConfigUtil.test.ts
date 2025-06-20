@@ -44,6 +44,7 @@ describe('ConfigUtil', () => {
       mockOptions = getMockOptions()
       vi.mocked(ApiController.fetchProjectConfig).mockReset()
       vi.mocked(AlertController.open).mockReset()
+      mockOptions.basic = false
     })
 
     // --- API Failure Scenarios (Fallback to Local/Defaults) ---
@@ -63,7 +64,8 @@ describe('ConfigUtil', () => {
         swaps: false,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
         activity: true,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -83,7 +85,8 @@ describe('ConfigUtil', () => {
         swaps: ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
         activity: ConstantsUtil.DEFAULT_REMOTE_FEATURES.activity,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -120,9 +123,10 @@ describe('ConfigUtil', () => {
         email: true,
         socials: ['google'],
         swaps: ['1inch'],
-        onramp: ['coinbase', 'meld'],
+        onramp: ['meld', 'coinbase'],
         activity: true,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false
       })
     })
 
@@ -138,6 +142,7 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: false,
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })
@@ -151,6 +156,27 @@ describe('ConfigUtil', () => {
         }),
         'warning'
       )
+    })
+
+    // --- Basic Mode Tests ---
+    it('should force email and socials to false when basic mode is true, regardless of API response', async () => {
+      mockOptions.basic = true
+      const apiResponse: TypedFeatureConfig[] = [
+        { id: 'social_login', isEnabled: true, config: ['email'] }
+      ]
+      vi.mocked(ApiController.fetchProjectConfig).mockResolvedValueOnce(apiResponse)
+      mockOptions.basic = true
+      mockOptions.features = { swaps: true, history: true, socials: ['google'] }
+      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      expect(features).toEqual<RemoteFeatures>({
+        email: false,
+        socials: false,
+        swaps: false,
+        onramp: false,
+        activity: false,
+        multiWallet: false,
+        reownBranding: false
+      })
     })
 
     it('should use full API config, ignoring all local settings and warning', async () => {
@@ -174,6 +200,7 @@ describe('ConfigUtil', () => {
         socials: ['discord'],
         swaps: ['1inch'],
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })
@@ -202,6 +229,7 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: ['1inch'],
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })
@@ -219,6 +247,7 @@ describe('ConfigUtil', () => {
         email: true,
         socials: [],
         swaps: false,
+        multiWallet: false,
         onramp: false,
         activity: false,
         reownBranding: false
@@ -241,6 +270,7 @@ describe('ConfigUtil', () => {
         socials: false,
         swaps: false,
         onramp: false,
+        multiWallet: false,
         activity: false,
         reownBranding: false
       })

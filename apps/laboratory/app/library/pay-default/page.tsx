@@ -1,6 +1,6 @@
 'use client'
 
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
@@ -26,7 +26,7 @@ const wagmiAdapter = new WagmiAdapter({
   projectId: ConstantsUtil.ProjectId
 })
 const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter()]
 })
 
 const bitcoinAdapter = new BitcoinAdapter()

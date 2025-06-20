@@ -67,7 +67,6 @@ beforeAll(async () => {
   })
 
   ChainController.setActiveCaipNetwork(caipNetwork)
-
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)

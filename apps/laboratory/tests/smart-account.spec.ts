@@ -54,10 +54,8 @@ smartAccountTest.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 smartAccountTest('it should use a smart account', async () => {
   await validator.expectConnected()
-  await page.openAccount()
-  await validator.expectActivateSmartAccountPromoVisible(false)
-  await page.openProfileView()
-  await page.openSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
 })
@@ -87,8 +85,8 @@ smartAccountTest(
     await page.closeModal()
     await validator.expectAccountButtonReady()
 
-    await page.openAccount()
-    await page.openProfileView()
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
     await validator.expectTogglePreferredTypeVisible(false)
     await page.closeModal()
     await validator.expectAccountButtonReady()
@@ -108,7 +106,8 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(EOA)
@@ -129,7 +128,8 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
 smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
   const namespace = library === 'solana' ? 'solana' : 'eip155'
 
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
@@ -141,8 +141,57 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
   await validator.expectAcceptedSign()
 })
 
+smartAccountTest(
+  'it should keep the same account type after page refresh (with EOA)',
+  async ({ library }) => {
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+    if (namespace !== 'eip155') {
+      return
+    }
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+    await page.closeModal()
+
+    await page.page.reload()
+    await validator.expectAccountButtonReady()
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+    await page.closeModal()
+  }
+)
+
+smartAccountTest(
+  'it should keep the same account type after page refresh (with SA)',
+  async ({ library }) => {
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+    if (namespace !== 'eip155') {
+      return
+    }
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await page.togglePreferredAccountType()
+    await validator.expectChangePreferredAccountToShow(EOA)
+
+    await page.page.reload()
+    await validator.expectAccountButtonReady()
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await validator.expectChangePreferredAccountToShow(EOA)
+    await page.closeModal()
+  }
+)
+
 smartAccountTest('it should disconnect correctly', async () => {
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await validator.expectDisconnected()
 })

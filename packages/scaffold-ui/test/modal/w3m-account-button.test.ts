@@ -1,10 +1,11 @@
-import { expect, fixture, html, waitUntil } from '@open-wc/testing'
-import { afterEach, describe, it, vi } from 'vitest'
+import { elementUpdated, fixture, html, waitUntil } from '@open-wc/testing'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  CoreHelperUtil,
   ModalController,
   OptionsController,
   RouterController
@@ -29,7 +30,7 @@ const mockCaipNetwork: CaipNetwork = {
 const mockCaipAddress = 'eip155:1:0x0000000000000000000000000000000000000000'
 describe('W3mAccountButton', () => {
   afterEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should set isUnsupportedChain to false when allowUnsupportedChain is true', async () => {
@@ -116,7 +117,10 @@ describe('W3mAccountButton', () => {
 
     it('should open modal in UnsupportedChain view when chain is not supported and allowUnsupportedChain is false', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
-      vi.spyOn(OptionsController.state, 'allowUnsupportedChain', 'get').mockReturnValue(false)
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        allowUnsupportedChain: false
+      })
       vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
         ...AccountController.state,
         caipAddress: mockCaipAddress
@@ -165,6 +169,64 @@ describe('W3mAccountButton', () => {
       ) as WuiAccountButton
 
       expect(accountButton.loading).to.equal(false)
+    })
+
+    it('should open modal with namespace when provided', async () => {
+      const namespace: ChainNamespace = 'eip155'
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(namespace)
+      vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(true)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: mockCaipAddress
+      })
+
+      vi.spyOn(ModalController, 'open')
+
+      const button = await fixture(
+        html`<w3m-account-button namespace=${namespace}></w3m-account-button>`
+      )
+
+      await button.shadowRoot?.querySelector('wui-account-button')?.click()
+
+      expect(ModalController.open).toHaveBeenCalled()
+      expect(ModalController.open).toHaveBeenCalledWith({ namespace })
+    })
+
+    it('should handle initial state with namespace option', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'eip155',
+        chains: new Map([
+          [
+            ConstantsUtil.CHAIN.SOLANA,
+            {
+              accountState: {
+                ...AccountController.state,
+                caipAddress: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:FyTsuBMn',
+                balance: '2.00',
+                balanceSymbol: 'SOL',
+                profileName: 'test',
+                profileImage: 'https://example.com/image.png'
+              }
+            }
+          ]
+        ])
+      })
+
+      const element = (await fixture(
+        html`<w3m-account-button namespace="solana"></w3m-account-button>`
+      )) as W3mAccountButton
+      const wuiAccountButton = HelpersUtil.getByTestId(element, 'account-button-solana')
+
+      await elementUpdated(element)
+      await element.updateComplete
+
+      expect(wuiAccountButton?.getAttribute('address')).toEqual('FyTsuBMn')
+      expect(wuiAccountButton?.getAttribute('balance')).toEqual(
+        CoreHelperUtil.formatBalance('2.00', 'SOL')
+      )
+      expect(wuiAccountButton?.getAttribute('profileName')).toEqual('test')
+      expect(wuiAccountButton?.getAttribute('avatarSrc')).toEqual('https://example.com/image.png')
     })
   })
 })

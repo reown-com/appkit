@@ -8,6 +8,7 @@ import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { Ethers5Tests } from '@/src/components/Ethers/Ethers5Tests'
 import InitializeBoundary from '@/src/components/InitializeBoundary'
@@ -31,6 +32,7 @@ const modal = createAppKit({
   projectId: ConstantsUtil.ProjectId,
   networks,
   defaultNetwork: mainnet,
+  customWallets: ConstantsUtil.CustomWallets,
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })
@@ -41,6 +43,8 @@ export default function MultiChainEthers5Solana() {
   return (
     <InitializeBoundary>
       <AppKitButtons />
+      <AppKitConnections namespace="eip155" title="EVM Connections" />
+      <AppKitConnections namespace="solana" title="Solana Connections" />
       <AppKitInfo />
       <Ethers5Tests />
       <SolanaTests />
