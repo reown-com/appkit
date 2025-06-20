@@ -13,6 +13,8 @@ import {
   StackDivider,
   Text
 } from '@chakra-ui/react'
+import { getWallets } from '@wallet-standard/app'
+import { type Wallets } from '@wallet-standard/app'
 import UniversalProvider from '@walletconnect/universal-provider'
 import base58 from 'bs58'
 import { toHex } from 'viem'
@@ -41,13 +43,14 @@ export default function UniversalProviderPage() {
   const [network, setNetwork] = useState<string | undefined>(undefined)
   const [balance, setBalance] = useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
+  const [wallets, setWallets] = useState<Readonly<ReturnType<typeof getWallets>['get']>>()
 
   useEffect(() => {
     async function initialize() {
       try {
         // Initialize Universal Provider
         const universalProvider = await UniversalProvider.init({ projectId: PROJECT_ID })
-        SolanaWalletConnectStandardWallet.register(universalProvider)
+
         setProvider(universalProvider)
 
         // Initialize AppKit with Universal Provider
@@ -58,7 +61,6 @@ export default function UniversalProviderPage() {
           manualWCControl: true
         })
         setAppKit(akInstance)
-
         // Event listeners
         universalProvider.on('chainChanged', (chainId: string) => {
           setNetwork(chainId)
@@ -68,9 +70,14 @@ export default function UniversalProviderPage() {
           setAccount(undefined)
           setNetwork(undefined)
           setBalance(undefined)
+          akInstance.disconnect()
         })
 
         universalProvider.on('accountsChanged', (accounts: string[]) => {
+          if (accounts.length === 0) {
+            akInstance.disconnect()
+          }
+
           setAccount(accounts[0])
         })
 
@@ -108,13 +115,15 @@ export default function UniversalProviderPage() {
 
     try {
       setIsLoading(true)
-      await appKit.open()
       appKit.subscribeEvents(({ data }: any) => {
         if (data.event === 'MODAL_CLOSE') {
           setIsLoading(false)
         }
       })
-      await provider.connect({ optionalNamespaces: OPTIONAL_NAMESPACES })
+      const wallet = wallets?.get().find(wallet => wallet.name === 'WalletConnect')
+      if (wallet) {
+        await wallet.features['standard:connect']()
+      }
     } catch (error) {
       console.error('Connection error:', error)
       toast({
@@ -297,6 +306,18 @@ export default function UniversalProviderPage() {
       })
     }
   }
+
+  useEffect(() => {
+    if (provider) {
+      SolanaWalletConnectStandardWallet.register(provider)
+    }
+
+    const { get } = getWallets()
+    const wallets = get()
+
+    console.log('>> wallets', wallets)
+    setWallets(wallets)
+  }, [provider])
 
   return (
     <Card data-testid="universal-provider-example" marginTop={10} marginBottom={10}>
