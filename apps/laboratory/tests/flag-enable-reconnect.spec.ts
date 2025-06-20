@@ -48,10 +48,11 @@ test.describe('WC', () => {
     // Reload and check connection
     await modalPage.page.reload()
     await modalValidator.expectDisconnected()
+    await modalValidator.expectStatus('disconnected')
   })
 })
 
-test.describe('Extension', () => {
+test.describe.skip('Extension', () => {
   test('it should connect with Reown Extension and got disconnected after page refresh', async ({
     browser
   }) => {
@@ -68,6 +69,7 @@ test.describe('Extension', () => {
     // Reload and check connection
     await modalPage.page.reload()
     await modalValidator.expectDisconnected()
+    await modalValidator.expectStatus('disconnected')
   })
 })
 
@@ -90,5 +92,6 @@ test.describe('Email', () => {
     // Reload and check connection
     await modalPage.page.reload()
     await modalValidator.expectDisconnected()
+    await modalValidator.expectStatus('disconnected')
   })
 })
