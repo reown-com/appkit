@@ -17,7 +17,7 @@ import {
 import type { CaipNetwork } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
 import type { RequestArguments } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
+import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 
 import { mapSatsConnectAddressPurpose } from '../utils/BitcoinConnector.js'
@@ -128,13 +128,34 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     })) as BitcoinConnector.AccountAddress[]
   }
 
-  public static getWallets({
+  private static hasProviders() {
+    if (!CoreHelperUtil.isClient()) {
+      return false
+    }
+
+    const providers = getProviders()
+
+    return providers.length > 0
+  }
+
+  public static async getWallets({
     requestedChains,
     getActiveNetwork
   }: SatsConnectConnector.GetWalletsParams) {
     if (!CoreHelperUtil.isClient()) {
       return []
     }
+
+    /*
+     * Use a retry strategy because some Bitcoin wallets (e.g. Leather)
+     * may delay exposing their provider after page load.
+     * We'll retry every 200ms, up to a maximum of 3 attempts.
+     */
+    await HelpersUtil.withRetry({
+      conditionFn: () => SatsConnectConnector.hasProviders(),
+      intervalMs: 200,
+      maxRetries: 3
+    })
 
     const providers = getProviders()
 
