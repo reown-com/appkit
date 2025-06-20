@@ -26,7 +26,7 @@ export const TransactionUtil = {
     const haveTwoTransfers = transfers?.length === 2
 
     if (haveTwoTransfers && !isAllNFT) {
-      return [this.getTransactionImage(transfer), this.getTransactionImage(secondTransfer)]
+      return [this.getTransactionImage(secondTransfer), this.getTransactionImage(transfer)]
     }
 
     if (haveMultipleTransfers) {
@@ -104,7 +104,7 @@ export const TransactionUtil = {
     }
 
     if (haveMultipleTransfers) {
-      return transfers.map(item => this.getTransferDescription(item))
+      return transfers.map(item => this.getTransferDescription(item)).reverse()
     }
 
     let prefix = ''

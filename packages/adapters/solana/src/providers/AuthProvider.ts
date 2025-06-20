@@ -4,7 +4,11 @@ import base58 from 'bs58'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { AccountController, type RequestArguments } from '@reown/appkit-controllers'
+import {
+  AccountController,
+  ChainController,
+  type RequestArguments
+} from '@reown/appkit-controllers'
 import type {
   AnyTransaction,
   Connection,
@@ -35,7 +39,8 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   }
 
   get publicKey(): PublicKey | undefined {
-    const address = this.provider.user?.address
+    const address = ChainController.state.chains.get(ConstantsUtil.CHAIN.SOLANA)?.accountState
+      ?.address
 
     return address ? new PublicKey(address) : undefined
   }
@@ -80,7 +85,8 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
     const result = await this.provider.request({
       method: 'solana_signMessage',
-      params: { message: base58.encode(message), pubkey: this.publicKey.toBase58() }
+      params: { message: base58.encode(message), pubkey: this.publicKey.toBase58() },
+      chainNamespace: this.chain
     })
 
     return base58.decode(result.signature)
@@ -89,7 +95,8 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   public async signTransaction<T extends AnyTransaction>(transaction: T) {
     const result = await this.provider.request({
       method: 'solana_signTransaction',
-      params: { transaction: this.serializeTransaction(transaction) }
+      params: { transaction: this.serializeTransaction(transaction) },
+      chainNamespace: this.chain
     })
 
     const decodedTransaction = base58.decode(result.transaction)
@@ -112,7 +119,8 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       params: {
         transaction: serializedTransaction,
         options
-      }
+      },
+      chainNamespace: this.chain
     })
 
     return result.signature
@@ -134,7 +142,8 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       method: 'solana_signAllTransactions',
       params: {
         transactions: transactions.map(transaction => this.serializeTransaction(transaction))
-      }
+      },
+      chainNamespace: this.chain
     })
 
     return (result.transactions as string[]).map((encodedTransaction, index) => {
@@ -155,8 +164,12 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   }
 
   public async request<T>(args: RequestArguments): Promise<T> {
-    // @ts-expect-error - There is a miss match in `args` from CoreProvider and W3mFrameProvider
-    return this.provider.request({ method: args.method, params: args.params })
+    return this.provider.request({
+      // @ts-expect-error - There is a miss match in `args` from CoreProvider and W3mFrameProvider
+      method: args.method,
+      params: args.params,
+      chainNamespace: this.chain
+    })
   }
 
   public async getAccounts() {
