@@ -177,7 +177,7 @@ export class W3mProfileWalletsView extends LitElement {
         const tabCount = availableTabs.length
 
         if (tabCount > 1) {
-          const containerWidth = this.offsetWidth
+          const containerWidth = this.getBoundingClientRect()?.width
           const totalInnerTabsPadding = TABS_INNER_PADDING * 2
           const totalTabsPadding = TABS_PADDING * 2
           const availableWidth = containerWidth - totalTabsPadding - totalInnerTabsPadding
