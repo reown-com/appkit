@@ -21,12 +21,11 @@ const test = extensionFixture.extend<{ library: string }>({
 
 test.describe.configure({ mode: 'serial' })
 
-test.beforeAll(async ({ browser, library }) => {
-  context = await browser.newContext()
-  const browserPage = await context.newPage()
+test.beforeAll(async ({ context: browserContext, library }) => {
+  const browserPage = await browserContext.newPage()
 
   modalPage = new ModalPage(browserPage, library, 'flag-enable-reconnect')
-  walletPage = new WalletPage(await context.newPage())
+  walletPage = new WalletPage(await browserContext.newPage())
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
