@@ -10,7 +10,6 @@ import {
   StackDivider,
   Text
 } from '@chakra-ui/react'
-import { useAccount } from 'wagmi'
 
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@reown/appkit/react'

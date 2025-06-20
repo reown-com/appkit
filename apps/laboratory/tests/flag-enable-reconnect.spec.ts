@@ -1,6 +1,6 @@
 import { type BrowserContext } from '@playwright/test'
 
-import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { WalletPage } from '@reown/appkit-testing'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
@@ -11,7 +11,6 @@ import { ModalValidator } from './shared/validators/ModalValidator'
 let modalPage: ModalPage
 let modalValidator: ModalValidator
 let walletPage: WalletPage
-let walletValidator: WalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
@@ -29,7 +28,6 @@ test.beforeAll(async ({ browser, library }) => {
   modalPage = new ModalPage(browserPage, library, 'flag-enable-reconnect')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
-  walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
 })
@@ -53,7 +51,7 @@ test.describe('WC', () => {
   })
 })
 
-test.describe('Extension', async () => {
+test.describe('Extension', () => {
   test('it should connect with Reown Extension and got disconnected after page refresh', async ({
     browser
   }) => {
@@ -73,7 +71,7 @@ test.describe('Extension', async () => {
   })
 })
 
-test.describe('Email', async () => {
+test.describe('Email', () => {
   test('it should connect with Email and got disconnected after page refresh', async () => {
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
     if (!mailsacApiKey) {

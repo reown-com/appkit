@@ -164,7 +164,7 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    if (options.enableReconnect !== false) {
+    if (options.enableReconnect) {
       await this.syncExistingConnection()
       await this.syncAdapterConnections()
     } else {
@@ -1679,9 +1679,6 @@ export abstract class AppKitBaseClient {
   }
 
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
-    if (status === 'connecting') {
-      console.trace('>>> setStatus, status:', status, chain)
-    }
     AccountController.setStatus(status, chain)
 
     // If at least one namespace is connected, set the connection status
