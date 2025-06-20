@@ -91,6 +91,7 @@ export class W3mModalBase extends LitElement {
     }
 
     if (this.open) {
+      console.log('>> open', this.open)
       this.onOpen()
     }
 
@@ -116,6 +117,8 @@ export class W3mModalBase extends LitElement {
       return html`${this.contentTemplate()}
         <w3m-tooltip></w3m-tooltip> `
     }
+
+    console.log('>> render', this.open)
 
     return this.open
       ? html`
@@ -168,6 +171,7 @@ export class W3mModalBase extends LitElement {
   }
 
   private onOpen() {
+    console.log('>> onOpen')
     this.open = true
     this.classList.add('open')
     this.onScrollLock()

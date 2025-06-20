@@ -75,6 +75,7 @@ export class AppKit extends AppKitBaseClient {
   }
 
   protected override async injectModalUi() {
+    console.log('>> injectModalUi', isInitialized)
     if (!isInitialized && CoreHelperUtil.isClient()) {
       await import('@reown/appkit-scaffold-ui/basic')
       await import('@reown/appkit-scaffold-ui/w3m-modal')

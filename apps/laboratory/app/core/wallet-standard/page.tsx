@@ -14,19 +14,18 @@ import {
   Text
 } from '@chakra-ui/react'
 import { getWallets } from '@wallet-standard/app'
-import { type Wallets } from '@wallet-standard/app'
 import UniversalProvider from '@walletconnect/universal-provider'
 import base58 from 'bs58'
 import { toHex } from 'viem'
 
 import { SolanaWalletConnectStandardWallet } from '@reown/appkit-utils/wallet-standard'
-import { AppKit, createAppKit } from '@reown/appkit/core'
+import { AppKit, type CaipNetworkId, createAppKit } from '@reown/appkit/core'
 import { bitcoin, solana } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
-import { OPTIONAL_NAMESPACES, PROJECT_ID, networks } from '../constants'
+import { PROJECT_ID, networks } from '../constants'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
@@ -43,11 +42,11 @@ export default function UniversalProviderPage() {
   const [network, setNetwork] = useState<string | undefined>(undefined)
   const [balance, setBalance] = useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
-  const [wallets, setWallets] = useState<Readonly<ReturnType<typeof getWallets>['get']>>()
 
   useEffect(() => {
     async function initialize() {
       try {
+        console.log('>> initialize')
         // Initialize Universal Provider
         const universalProvider = await UniversalProvider.init({ projectId: PROJECT_ID })
 
@@ -100,6 +99,15 @@ export default function UniversalProviderPage() {
           )
           setNetwork(universalProvider.session?.namespaces?.['eip155']?.chains?.[0])
         }
+
+        const { get } = getWallets()
+        const wallets = get()
+        console.log('>> wallets', wallets)
+        if (!wallets.find(wallet => wallet.name === 'WalletConnect')) {
+          console.log('>> register')
+          SolanaWalletConnectStandardWallet.register(universalProvider)
+        }
+        setIsLoading(false)
       } catch (error) {
         console.error('Initialization error:', error)
       }
@@ -120,9 +128,29 @@ export default function UniversalProviderPage() {
           setIsLoading(false)
         }
       })
-      const wallet = wallets?.get().find(wallet => wallet.name === 'WalletConnect')
+      const { get } = getWallets()
+      const wallet = get().find(wallet => wallet.name === 'WalletConnect')
+      console.log('>> wallet', wallet, get())
       if (wallet) {
-        await wallet.features['standard:connect']()
+        console.log('>> wc wallet', wallet)
+        const connectFeature = wallet.features?.['standard:connect'] as {
+          connect: () => Promise<{
+            accounts: {
+              address: string
+              publicKey: Uint8Array<ArrayBuffer>
+              chains: CaipNetworkId[]
+              features: readonly [
+                'solana:signAndSendTransaction',
+                'solana:signTransaction',
+                'solana:signMessage'
+              ]
+            }[]
+          }>
+        }
+        const connect = connectFeature?.connect
+        console.log('>> connect', connect)
+        const { accounts } = await connect()
+        console.log('>> accounts', accounts)
       }
     } catch (error) {
       console.error('Connection error:', error)
@@ -306,18 +334,6 @@ export default function UniversalProviderPage() {
       })
     }
   }
-
-  useEffect(() => {
-    if (provider) {
-      SolanaWalletConnectStandardWallet.register(provider)
-    }
-
-    const { get } = getWallets()
-    const wallets = get()
-
-    console.log('>> wallets', wallets)
-    setWallets(wallets)
-  }, [provider])
 
   return (
     <Card data-testid="universal-provider-example" marginTop={10} marginBottom={10}>

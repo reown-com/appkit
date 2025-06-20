@@ -57,6 +57,7 @@ const controller = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
+    console.log('>> open', options)
     const namespace = options?.namespace
     const currentNamespace = ChainController.state.activeChain
     const isSwitchingNamespace = namespace && namespace !== currentNamespace
@@ -83,6 +84,7 @@ const controller = {
     } else {
       const hasNoAdapters = ChainController.state.noAdapters
 
+      console.log('>> ', hasNoAdapters, caipAddress, OptionsController.state.manualWCControl)
       if (OptionsController.state.manualWCControl || (hasNoAdapters && !caipAddress)) {
         if (CoreHelperUtil.isMobile()) {
           RouterController.reset('AllWallets')
@@ -90,6 +92,7 @@ const controller = {
           RouterController.reset('ConnectingWalletConnectBasic')
         }
       } else if (options?.view) {
+        console.log('>> should open view', options)
         RouterController.reset(options.view, options.data)
       } else if (caipAddress) {
         RouterController.reset('Account')
@@ -100,6 +103,7 @@ const controller = {
 
     state.open = true
     PublicStateController.set({ open: true })
+    console.log('>> open', state.open)
     EventsController.sendEvent({
       type: 'track',
       event: 'MODAL_OPEN',
