@@ -52,7 +52,7 @@ test.describe('WC', () => {
   })
 })
 
-test.describe.skip('Extension', () => {
+test.describe('Extension', () => {
   test('it should connect with Reown Extension and got disconnected after page refresh', async ({
     browser
   }) => {
