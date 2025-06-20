@@ -872,7 +872,7 @@ export abstract class AppKitBaseClient {
 
     const connectionStatus = StorageUtil.getConnectionStatus()
 
-    if (this.options.enableReconnect !== false) {
+    if (this.options.enableReconnect === false) {
       this.setStatus('disconnected', chainNamespace)
     } else if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
