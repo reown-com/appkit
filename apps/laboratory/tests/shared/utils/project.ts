@@ -1,10 +1,13 @@
 import { devices } from '@playwright/test'
 
-import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
-
 import type { CreateProjectParameters, CustomProjectProperties } from '../types'
 
-const ADAPTERS = ['core'] as const
+// import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
+
+export const DESKTOP_DEVICES = ['Desktop Chrome']
+export const MOBILE_DEVICES = ['iPhone 12']
+
+const ADAPTERS = ['core', 'ethers', 'ethers5', 'wagmi', 'bitcoin', 'solana'] as const
 
 const ADAPTER_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   ADAPTERS.map(adapter => ({ device, library: adapter }))
@@ -98,6 +101,14 @@ const CUSTOM_TESTS = [
   'cloud-auth'
 ]
 
+/**
+ * Tests that are only running on mobile devices.
+ * @example
+ * - Test: mobile-wallet-features.spec.ts
+ * - Runs on pages: /library/mobile-wallet-features
+ */
+const MOBILE_TESTS = ['mobile-wallet-features.spec.ts', 'core.spec.ts']
+
 function createRegex(tests: string[]) {
   return new RegExp(`^.*?/(${tests.join('|')})$`, 'u')
 }
@@ -167,44 +178,43 @@ const customTestProperties = Object.assign(
 
 const mobileTestProperties = {
   // ----- Mobile core tests ------------------------------
-  'iPhone 12/core': {
-    testMatch: /^.*?\/core.*\.spec\.ts$/u
-  },
-  'Galaxy S5/core': {
-    testMatch: /^.*?\/core.*\.spec\.ts$/u
-  },
-
+  // 'iPhone 12/core': {
+  //   testMatch: /^.*?\/core.*\.spec\.ts$/u
+  // },
+  // 'Galaxy S5/core': {
+  //   testMatch: /^.*?\/core.*\.spec\.ts$/u
+  // },
   // ----- Mobile single adapter tests ------------------------------
-  'iPhone 12/ethers': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'Galaxy S5/ethers': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'iPhone 12/bitcoin': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'Galaxy S5/bitcoin': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'iPhone 12/ethers5': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'Galaxy S5/ethers5': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'iPhone 12/wagmi': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'Galaxy S5/wagmi': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'iPhone 12/solana': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  },
-  'Galaxy S5/solana': {
-    testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
-  }
+  // 'iPhone 12/ethers': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'Galaxy S5/ethers': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'iPhone 12/bitcoin': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'Galaxy S5/bitcoin': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'iPhone 12/ethers5': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'Galaxy S5/ethers5': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'iPhone 12/wagmi': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'Galaxy S5/wagmi': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'iPhone 12/solana': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // },
+  // 'Galaxy S5/solana': {
+  //   testMatch: /^.*?\/mobile-.*\.spec\.ts$/u
+  // }
 }
 
 const projectProperties: CustomProjectProperties = {
@@ -235,10 +245,10 @@ function createProject({ device, library }: CreateProjectParameters) {
 
 export function getProjects() {
   const adapterPermutationTests = ADAPTER_PERMUTATIONS.map(createProject)
-  const adapterMobileProjects = ADAPTER_MOBILE_PERMUTATIONS.map(createProject)
+  // const adapterMobileProjects = ADAPTER_MOBILE_PERMUTATIONS.map(createProject)
   const customProjects = CUSTOM_PROJECT_PERMUTATIONS.map(createProject)
 
-  const projects = [...adapterPermutationTests, ...adapterMobileProjects, ...customProjects]
+  const projects = [...adapterPermutationTests, ...customProjects]
 
   return projects
 }
