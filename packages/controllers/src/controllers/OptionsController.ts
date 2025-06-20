@@ -111,6 +111,11 @@ export interface OptionsControllerStatePublic {
    */
   enableInjected?: boolean
   /**
+   * Enable or disable automatic reconnection on initialization.
+   * @default true
+   */
+  enableReconnect?: boolean
+  /**
    * Enable or disable the WalletConnect QR code.
    * @default true
    */
@@ -390,6 +395,10 @@ export const OptionsController = {
 
   setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
     state.enableNetworkSwitch = enableNetworkSwitch
+  },
+
+  setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {
+    state.enableReconnect = enableReconnect
   },
 
   setDefaultAccountTypes(
