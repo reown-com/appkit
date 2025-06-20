@@ -74,7 +74,7 @@ test.describe('Extension', () => {
 })
 
 test.describe('Email', () => {
-  test('it should connect with Email and got disconnected after page refresh', async ({}) => {
+  test('it should connect with Email and got disconnected after page refresh', async () => {
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
     if (!mailsacApiKey) {
       throw new Error('MAILSAC_API_KEY is not set')
