@@ -399,7 +399,8 @@ export const WalletGetCallsReceiptRequest = z.object({
 })
 
 export const WalletGetCapabilitiesRequest = z.object({
-  method: z.literal('wallet_getCapabilities')
+  method: z.literal('wallet_getCapabilities'),
+  params: z.array(z.string().or(z.number()).optional()).optional()
 })
 export const WalletGrantPermissionsRequest = z.object({
   method: z.literal('wallet_grantPermissions'),
