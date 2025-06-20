@@ -164,7 +164,7 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    if (options.enableReconnect) {
+    if (options.enableReconnect !== false) {
       await this.syncExistingConnection()
       await this.syncAdapterConnections()
     } else {
@@ -874,7 +874,7 @@ export abstract class AppKitBaseClient {
 
     const connectionStatus = StorageUtil.getConnectionStatus()
 
-    if (!this.options?.enableReconnect) {
+    if (this.options.enableReconnect !== false) {
       this.setStatus('disconnected', chainNamespace)
     } else if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
