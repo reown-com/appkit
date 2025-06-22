@@ -49,9 +49,6 @@ test.describe('Email', () => {
     // Connect with email
     modalValidator.expectSecureSiteFrameNotInjected()
     await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-    await modalPage.promptSiwe()
-    await modalPage.page.waitForTimeout(500)
-    await modalPage.approveSign()
     await modalValidator.expectConnected()
 
     // Reload and check connection
@@ -65,8 +62,6 @@ test.describe('WC', () => {
   test('it should connect with WC and got disconnected after page refresh', async () => {
     // Connect with WC
     await modalPage.qrCodeFlow(modalPage, walletPage)
-    await modalPage.promptSiwe()
-    await walletPage.handleRequest({ accept: true })
     await modalValidator.expectConnected()
 
     // Reload and check connection
@@ -87,8 +82,6 @@ test.describe('Extension', () => {
     }
     // Connect with Reown Extension
     await modalPage.connectToExtensionMultichain('solana')
-    await modalPage.promptSiwe()
-    await modalValidator.expectConnected()
 
     // Reload and check connection
     await modalPage.page.reload()

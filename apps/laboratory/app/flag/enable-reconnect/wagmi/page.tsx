@@ -6,7 +6,6 @@ import { WagmiProvider } from 'wagmi'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { DefaultSIWX } from '@reown/appkit-siwx'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitConnections } from '@/src/components/AppKitConnections'
@@ -30,8 +29,7 @@ const config = {
   networks: ConstantsUtil.AllNetworks,
   projectId: ConstantsUtil.ProjectId,
   customWallets: ConstantsUtil.CustomWallets,
-  enableReconnect: false,
-  siwx: new DefaultSIWX()
+  enableReconnect: false
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 
