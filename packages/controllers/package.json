@@ -7,7 +7,8 @@
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -54,7 +55,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.21.3",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0"
+    "viem": ">=2.31.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
@@ -65,7 +66,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
