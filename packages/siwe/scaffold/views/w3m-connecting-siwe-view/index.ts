@@ -118,7 +118,9 @@ export class W3mConnectingSiweView extends LitElement {
         preferredAccountType?.[activeChainNamespace] ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
 
-      SnackController.showError('Signature declined')
+      const message = error instanceof Error ? error.message : 'Signature declined'
+
+      SnackController.showError(message)
       SIWEController.setStatus('error')
 
       return EventsController.sendEvent({
