@@ -65,7 +65,7 @@ describe('SIWXUtil', () => {
 
       await SIWXUtil.requestSignMessage()
 
-      expect(showErrorSpy).toHaveBeenCalledWith('Signature declined')
+      expect(showErrorSpy).toHaveBeenCalledWith('Test error')
       expect(sendEventSpy).toHaveBeenCalledWith({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
