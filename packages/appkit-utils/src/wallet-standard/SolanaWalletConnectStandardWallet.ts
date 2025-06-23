@@ -26,7 +26,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
 import { type CaipAddress, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
-import { RouterController } from '@reown/appkit-controllers'
+import { ModalController, RouterController } from '@reown/appkit-controllers'
 
 import { createNamespaces } from '../WCNamespaceUtil.js'
 import { SolConstantsUtil } from '../solana/SolanaConstantsUtil.js'
@@ -211,7 +211,11 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
 
   #connect: StandardConnectMethod = async () => {
     if (!this.#account) {
-      RouterController.push('ConnectingWalletConnect')
+      if (ModalController.state.open) {
+        RouterController.push('ConnectingWalletConnectBasic')
+      } else {
+        ModalController.open({ view: 'ConnectingWalletConnectBasic' })
+      }
 
       await this.#provider.connect({
         namespaces: createNamespaces([SolConstantsUtil.DEFAULT_CHAIN])
@@ -225,6 +229,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
 
   #disconnect: StandardDisconnectMethod = async () => {
     await this.#provider.disconnect()
+    this.#disconnected()
   }
 
   #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
@@ -425,7 +430,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
       const signature = await this.#provider.request<{ signature: string }>({
         method: 'solana_signMessage',
         params: {
-          message,
+          message: bs58.encode(message),
           pubkey: this.#account.address
         }
       })

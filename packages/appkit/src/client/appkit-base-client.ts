@@ -179,6 +179,7 @@ export abstract class AppKitBaseClient {
     ) {
       await this.checkAllowedOrigins()
     }
+    await this.injectModalUi()
   }
 
   private async checkAllowedOrigins() {

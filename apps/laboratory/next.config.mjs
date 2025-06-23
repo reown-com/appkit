@@ -12,7 +12,7 @@ const cspReportToHeader = {
 }
 
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   trailingSlash: true,
   distDir: 'out',
   cleanDistDir: true,
