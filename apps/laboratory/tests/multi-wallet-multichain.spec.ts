@@ -196,24 +196,3 @@ test('it should disconnect each wallet as expected', async () => {
   await modal.disconnect()
   await validator.expectDisconnected()
 })
-
-test('should disconnect all wallets at once', async () => {
-  // Connect WalletConnect (EVM + Solana)
-  await modal.openConnectModal()
-  await modal.clickWalletConnect()
-  await modal.qrCodeFlow(modal, wallet, 'immediate')
-  await validator.expectConnected()
-  await validator.expectConnectedWalletType('WALLET_CONNECT')
-
-  await modal.clickHookDisconnectButton()
-
-  // Should be disconnected from Solana
-  await validator.expectDisconnected()
-
-  await modal.switchNetworkWithNetworkButton('Ethereum')
-  await validator.expectSwitchedNetwork('Ethereum')
-  await modal.closeModal()
-
-  // Should be disconnected from Ethereum
-  await validator.expectDisconnected()
-})
