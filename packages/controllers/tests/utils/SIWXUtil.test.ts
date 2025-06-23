@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { SIWXUtil } from '../../exports/index.js'
+import { type SIWXConfig, SIWXUtil } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
@@ -32,11 +32,10 @@ describe('SIWXUtil', () => {
         createMessage: vi.fn().mockRejectedValue(new Error('Test error'))
       }
 
-      Object.defineProperty(OptionsController.state, 'siwx', {
-        value: mockSIWX,
-        writable: true
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        siwx: mockSIWX as unknown as SIWXConfig
       })
-
       vi.spyOn(ChainController, 'getActiveCaipAddress').mockReturnValue(
         'eip155:1:0x1234567890123456789012345678901234567890'
       )
