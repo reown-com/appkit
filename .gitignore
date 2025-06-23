@@ -20,4 +20,3 @@ tsconfig.tsbuildinfo
 .coverage
 .cursor
 .envrc*
-test-results.json
