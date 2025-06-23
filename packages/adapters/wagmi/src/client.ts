@@ -306,7 +306,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(walletConnect(options, appKit))
     }
 
-    if (options.enableInjected !== false) {
+    if (options.enableEIP6963 !== false) {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
@@ -449,6 +449,14 @@ export class WagmiAdapter extends AdapterBlueprint {
      * We don't need to set auth connector or walletConnect connector
      * from wagmi since we already set it in chain adapter blueprint
      */
+
+    if (
+      connector.type === CommonConstantsUtil.CONNECTOR_ID.INJECTED &&
+      options.enableEIP6963 === false
+    ) {
+      return
+    }
+
     if (
       connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH ||
       connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
