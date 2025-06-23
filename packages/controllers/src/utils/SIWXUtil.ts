@@ -124,11 +124,7 @@ export const SIWXUtil = {
         })
       }
 
-      if (properties.isSmartAccount) {
-        SnackController.showError('This application might not support Smart Accounts')
-      } else {
-        SnackController.showError('Signature declined')
-      }
+      SnackController.showError('Signature declined')
 
       EventsController.sendEvent({
         type: 'track',
@@ -325,12 +321,17 @@ export const SIWXUtil = {
   },
   getSIWXEventProperties() {
     const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+    const preferredAccountType = ChainController.getAccountProp(
+      'preferredAccountTypes',
+      activeChainNamespace
+    )
+    const isSmartAccount =
+      preferredAccountType?.[activeChainNamespace] ===
+      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
 
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
-      isSmartAccount:
-        AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      isSmartAccount
     }
   },
   async clearSessions() {

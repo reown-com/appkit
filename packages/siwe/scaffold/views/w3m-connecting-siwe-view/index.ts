@@ -110,15 +110,15 @@ export class W3mConnectingSiweView extends LitElement {
 
       return session
     } catch (error) {
-      const preferredAccountType =
-        AccountController.state.preferredAccountTypes?.[activeChainNamespace]
+      const preferredAccountType = ChainController.getAccountProp(
+        'preferredAccountTypes',
+        activeChainNamespace
+      )
       const isSmartAccount =
-        preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      if (isSmartAccount) {
-        SnackController.showError('This application might not support Smart Accounts')
-      } else {
-        SnackController.showError('Signature declined')
-      }
+        preferredAccountType?.[activeChainNamespace] ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+
+      SnackController.showError('Signature declined')
       SIWEController.setStatus('error')
 
       return EventsController.sendEvent({
