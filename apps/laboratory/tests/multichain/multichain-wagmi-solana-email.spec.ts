@@ -56,6 +56,7 @@ test('it should switch networks (including different namespaces) and sign', asyn
     await page.closeModal()
 
     // -- Refresh and verify connection persists ----------------------------------
+    await page.page.waitForTimeout(500)
     await page.page.reload()
     await validator.expectConnected()
     await page.openModal()
