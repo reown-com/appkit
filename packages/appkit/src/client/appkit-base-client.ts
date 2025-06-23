@@ -595,9 +595,7 @@ export abstract class AppKitBaseClient {
               })
             }
 
-            if (initialDisconnect) {
-              await this.onDisconnectNamespace({ chainNamespace: ns, closeModal: false })
-            }
+            this.onDisconnectNamespace({ chainNamespace: ns, closeModal: false })
           })
 
           const disconnectResults = await Promise.allSettled(disconnectPromises)
@@ -1035,7 +1033,7 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  protected async onDisconnectNamespace(options: {
+  protected onDisconnectNamespace(options: {
     chainNamespace: ChainNamespace
     closeModal?: boolean
   }) {

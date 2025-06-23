@@ -53,13 +53,11 @@ export function ConfigurationList({ title, sdkOptions }: Props) {
                   ) : (
                     <Box display="flex" gap={2} flexWrap="wrap">
                       {option.links ? (
-                        option.links.map(link => {
-                          return (
-                            <Link href={link.url}>
-                              <Button>{link.title}</Button>
-                            </Link>
-                          )
-                        })
+                        option.links.map(link => (
+                          <Link href={link.url}>
+                            <Button>{link.title}</Button>
+                          </Link>
+                        ))
                       ) : (
                         <Link href={option.link}>
                           <Button rightIcon={<IoArrowForward />}>Go</Button>
