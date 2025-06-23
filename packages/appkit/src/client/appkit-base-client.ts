@@ -1115,7 +1115,7 @@ export abstract class AppKitBaseClient {
         this.setStatus('disconnected', namespace)
       }
     } catch (e) {
-      this.setStatus('disconnected', namespace)
+      this.onDisconnectNamespace({ chainNamespace: namespace, closeModal: false })
     }
   }
 
