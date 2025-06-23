@@ -580,7 +580,9 @@ export abstract class AppKitBaseClient {
 
             if (initialDisconnect && isAuth) {
               StorageUtil.deleteConnectedSocialProvider()
-              StorageUtil.addDisconnectedConnectorId(connectorIdToUse || '', namespace)
+              namespacesToDisconnect.forEach(ns => {
+                StorageUtil.addDisconnectedConnectorId(connectorIdToUse || '', ns)
+              })
             }
 
             const disconnectData = await this.disconnectNamespace(ns, connectorIdToUse)
