@@ -164,8 +164,12 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    await this.syncExistingConnection()
-    await this.syncAdapterConnections()
+    if (OptionsController.state.enableReconnect) {
+      await this.syncExistingConnection()
+      await this.syncAdapterConnections()
+    } else {
+      await this.unSyncExistingConnection()
+    }
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
@@ -304,6 +308,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
+    OptionsController.setEnableReconnect(options.enableReconnect !== false)
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
@@ -433,7 +438,11 @@ export abstract class AppKitBaseClient {
       const adapter = this.getAdapter(namespace)
       const { caipAddress } = ChainController.getAccountData(namespace) || {}
 
-      if (caipAddress && adapter?.disconnect) {
+      /**
+       * When the page loaded, the controller doesn't have address yet.
+       * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
+       */
+      if ((caipAddress || !OptionsController.state.enableReconnect) && adapter?.disconnect) {
         disconnectResult = await adapter.disconnect({ id })
       }
 
@@ -537,7 +546,7 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async params => {
-        const { id: connectorId, chainNamespace } = params || {}
+        const { id: connectorId, chainNamespace, initialDisconnect } = params || {}
 
         const namespaces = Array.from(ChainController.state.chains.keys())
         const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
@@ -569,6 +578,11 @@ export abstract class AppKitBaseClient {
               connectorIdToUse = currentConnectorId
             }
 
+            if (initialDisconnect && isAuth) {
+              StorageUtil.deleteConnectedSocialProvider()
+              StorageUtil.addDisconnectedConnectorId(connectorIdToUse || '', namespace)
+            }
+
             const disconnectData = await this.disconnectNamespace(ns, connectorIdToUse)
 
             if (disconnectData) {
@@ -579,6 +593,10 @@ export abstract class AppKitBaseClient {
 
                 StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
               })
+            }
+
+            if (initialDisconnect) {
+              await this.onDisconnectNamespace({ chainNamespace: ns, closeModal: false })
             }
           })
 
@@ -867,7 +885,10 @@ export abstract class AppKitBaseClient {
     }
 
     const connectionStatus = StorageUtil.getConnectionStatus()
-    if (connectionStatus === 'connected') {
+
+    if (OptionsController.state.enableReconnect === false) {
+      this.setStatus('disconnected', chainNamespace)
+    } else if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
     } else if (connectionStatus === 'disconnected') {
       /*
@@ -901,19 +922,7 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('disconnect', () => {
-      ChainController.resetAccount(chainNamespace)
-      ChainController.resetNetwork(chainNamespace)
-
-      ConnectorController.removeConnectorId(chainNamespace)
-
-      StorageUtil.removeConnectedNamespace(chainNamespace)
-      ProviderUtil.resetChain(chainNamespace)
-
-      this.setUser(undefined, chainNamespace)
-      this.setStatus('disconnected', chainNamespace)
-      this.setConnectedWalletInfo(undefined, chainNamespace)
-
-      ModalController.close()
+      this.onDisconnectNamespace({ chainNamespace })
     })
 
     adapter.on('connections', connections => {
@@ -987,6 +996,19 @@ export abstract class AppKitBaseClient {
     )
   }
 
+  protected async unSyncExistingConnection() {
+    try {
+      await Promise.allSettled(
+        this.chainNamespaces.map(namespace =>
+          ConnectionController.disconnect({ namespace, initialDisconnect: true })
+        )
+      )
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error disconnecting existing connections:', error)
+    }
+  }
+
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
       if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
@@ -1010,6 +1032,29 @@ export abstract class AppKitBaseClient {
     } catch (err) {
       console.warn("AppKit couldn't sync existing connection", err)
       this.setStatus('disconnected', namespace)
+    }
+  }
+
+  protected async onDisconnectNamespace(options: {
+    chainNamespace: ChainNamespace
+    closeModal?: boolean
+  }) {
+    const { chainNamespace, closeModal } = options || {}
+
+    ChainController.resetAccount(chainNamespace)
+    ChainController.resetNetwork(chainNamespace)
+
+    ConnectorController.removeConnectorId(chainNamespace)
+
+    StorageUtil.removeConnectedNamespace(chainNamespace)
+    ProviderUtil.resetChain(chainNamespace)
+
+    this.setUser(undefined, chainNamespace)
+    this.setStatus('disconnected', chainNamespace)
+    this.setConnectedWalletInfo(undefined, chainNamespace)
+
+    if (closeModal !== false) {
+      ModalController.close()
     }
   }
 
@@ -1393,6 +1438,10 @@ export abstract class AppKitBaseClient {
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+    // Clear the session if we don't want to reconnect on init
+    if (OptionsController.state.enableReconnect === false && this.universalProvider.session) {
+      await this.universalProvider.disconnect()
+    }
     this.listenWalletConnect()
   }
 

@@ -308,9 +308,6 @@ const controller = {
     replaceState = true
   ) {
     ChainController.setChainAccountData(chain, { [prop]: value }, replaceState)
-    if (prop === 'status' && value === 'disconnected' && chain) {
-      ConnectorController.removeConnectorId(chain)
-    }
   },
 
   setActiveNamespace(chain: ChainNamespace | undefined) {

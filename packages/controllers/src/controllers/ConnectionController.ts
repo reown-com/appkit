@@ -64,6 +64,7 @@ interface HandleActiveConnectionParams {
 interface DisconnectParams {
   id?: string
   namespace?: ChainNamespace
+  initialDisconnect?: boolean
 }
 
 export interface ConnectExternalOptions {
@@ -86,6 +87,7 @@ interface HandleAuthAccountSwitchParams {
 export interface DisconnectParameters {
   id?: string
   chainNamespace?: ChainNamespace
+  initialDisconnect?: boolean
 }
 
 export interface ConnectionControllerClient {
@@ -393,11 +395,12 @@ const controller = {
     state.isSwitchingConnection = isSwitchingConnection
   },
 
-  async disconnect({ id, namespace }: DisconnectParams = {}) {
+  async disconnect({ id, namespace, initialDisconnect }: DisconnectParams = {}) {
     try {
       await ConnectionController._getClient()?.disconnect({
         id,
-        chainNamespace: namespace
+        chainNamespace: namespace,
+        initialDisconnect
       })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)

@@ -179,6 +179,29 @@ export class AppKit extends AppKitBaseClient {
     })
   }
 
+  private async syncAuthConnectorTheme(provider: W3mFrameProvider | undefined) {
+    if (!provider) {
+      return
+    }
+
+    const theme = ThemeController.getSnapshot()
+    const options = OptionsController.getSnapshot()
+
+    await Promise.all([
+      provider.syncDappData({
+        metadata: options.metadata as Metadata,
+        sdkVersion: options.sdkVersion,
+        projectId: options.projectId,
+        sdkType: options.sdkType
+      }),
+      provider.syncTheme({
+        themeMode: theme.themeMode,
+        themeVariables: theme.themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+      })
+    ])
+  }
+
   private async syncAuthConnector(provider: W3mFrameProvider, chainNamespace: ChainNamespace) {
     const isAuthSupported = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(chainNamespace)
     const shouldSync = chainNamespace === ChainController.state.activeChain
@@ -203,22 +226,7 @@ export class AppKit extends AppKitBaseClient {
 
     const { isConnected } = await provider.isConnected()
 
-    const theme = ThemeController.getSnapshot()
-    const options = OptionsController.getSnapshot()
-
-    await Promise.all([
-      provider.syncDappData({
-        metadata: options.metadata as Metadata,
-        sdkVersion: options.sdkVersion,
-        projectId: options.projectId,
-        sdkType: options.sdkType
-      }),
-      provider.syncTheme({
-        themeMode: theme.themeMode,
-        themeVariables: theme.themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-      })
-    ])
+    await this.syncAuthConnectorTheme(provider)
 
     await provider.getSmartAccountEnabledNetworks()
 
@@ -342,10 +350,13 @@ export class AppKit extends AppKitBaseClient {
         }
       })
     }
+    const shouldSyncAccount =
+      chainNamespace === ChainController.state.activeChain &&
+      OptionsController.state.enableReconnect
 
-    const shouldSync = chainNamespace === ChainController.state.activeChain
-
-    if (this.authProvider && shouldSync) {
+    if (OptionsController.state.enableReconnect === false) {
+      this.syncAuthConnectorTheme(this.authProvider)
+    } else if (this.authProvider && shouldSyncAccount) {
       this.syncAuthConnector(this.authProvider, chainNamespace)
       this.checkExistingTelegramSocialConnection(chainNamespace)
     }
