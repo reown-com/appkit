@@ -540,9 +540,9 @@ export abstract class AppKitBaseClient {
         const { id: connectorId, chainNamespace } = params || {}
 
         const namespaces = Array.from(ChainController.state.chains.keys())
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-
-        const currentConnectorId = ConnectorController.getConnectorId(namespace)
+        const currentConnectorId = ConnectorController.getConnectorId(
+          chainNamespace || (ChainController.state.activeChain as ChainNamespace)
+        )
 
         const isAuth =
           connectorId === ConstantsUtil.CONNECTOR_ID.AUTH ||
@@ -552,7 +552,7 @@ export abstract class AppKitBaseClient {
           currentConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
         try {
-          let namespacesToDisconnect = [namespace]
+          let namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
 
           /*
            * If the connector is WalletConnect or Auth, disconnect all namespaces
@@ -577,7 +577,7 @@ export abstract class AppKitBaseClient {
                   StorageUtil.deleteConnectedSocialProvider()
                 }
 
-                StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+                StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
               })
             }
           })
