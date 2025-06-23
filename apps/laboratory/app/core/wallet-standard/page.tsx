@@ -15,24 +15,14 @@ import {
 } from '@chakra-ui/react'
 import { getWallets } from '@wallet-standard/app'
 import UniversalProvider from '@walletconnect/universal-provider'
-import base58 from 'bs58'
-import { toHex } from 'viem'
 
 import { SolanaWalletConnectStandardWallet } from '@reown/appkit-utils/wallet-standard'
 import { AppKit, type CaipNetworkId, createAppKit } from '@reown/appkit/core'
-import { bitcoin, solana } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 import { PROJECT_ID, networks } from '../constants'
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-console */
-
-type SignMessageResponse = {
-  signature: string
-}
 
 export default function UniversalProviderPage() {
   const toast = useChakraToast()
@@ -46,7 +36,6 @@ export default function UniversalProviderPage() {
   useEffect(() => {
     async function initialize() {
       try {
-        console.log('>> initialize')
         // Initialize Universal Provider
         const universalProvider = await UniversalProvider.init({ projectId: PROJECT_ID })
 
@@ -80,41 +69,52 @@ export default function UniversalProviderPage() {
           setAccount(accounts[0])
         })
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         universalProvider.on('connect', async (session: any) => {
           await akInstance.close()
-          setAccount(session?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2])
-          const chain = session?.session?.namespaces?.eip155?.chains?.[0]
+          setAccount(session?.session?.namespaces?.['solana']?.accounts?.[0]?.split(':')[2])
+          const chain = session?.session?.namespaces?.['solana']?.chains?.[0]
 
           if (isNaN(Number(chain))) {
             setNetwork(chain)
           } else {
-            setNetwork(`eip155:${chain}`)
+            setNetwork(`solana:${chain}`)
           }
         })
 
         // Check if already connected
         if (universalProvider.session) {
           setAccount(
-            universalProvider.session?.namespaces?.['eip155']?.accounts?.[0]?.split(':')[2]
+            universalProvider.session?.namespaces?.['solana']?.accounts?.[0]?.split(':')[2]
           )
-          setNetwork(universalProvider.session?.namespaces?.['eip155']?.chains?.[0])
+          setNetwork(universalProvider.session?.namespaces?.['solana']?.chains?.[0])
         }
 
         const { get } = getWallets()
         const wallets = get()
-        console.log('>> wallets', wallets)
         if (!wallets.find(wallet => wallet.name === 'WalletConnect')) {
-          console.log('>> register')
           SolanaWalletConnectStandardWallet.register(universalProvider)
         }
         setIsLoading(false)
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Initialization error:', error)
       }
     }
 
+    if (provider || isLoading) {
+      return
+    }
+    setIsLoading(true)
     initialize()
-  }, [])
+  }, [provider, isLoading])
+
+  useEffect(() => {
+    if (provider?.session) {
+      setAccount(provider.session?.namespaces?.['solana']?.accounts?.[0]?.split(':')[2])
+      setNetwork(provider.session?.namespaces?.['solana']?.chains?.[0])
+    }
+  }, [provider?.session])
 
   async function handleConnect() {
     if (!provider || !appKit) {
@@ -123,16 +123,14 @@ export default function UniversalProviderPage() {
 
     try {
       setIsLoading(true)
-      appKit.subscribeEvents(({ data }: any) => {
+      appKit.subscribeEvents(({ data }) => {
         if (data.event === 'MODAL_CLOSE') {
           setIsLoading(false)
         }
       })
       const { get } = getWallets()
       const wallet = get().find(wallet => wallet.name === 'WalletConnect')
-      console.log('>> wallet', wallet, get())
       if (wallet) {
-        console.log('>> wc wallet', wallet)
         const connectFeature = wallet.features?.['standard:connect'] as {
           connect: () => Promise<{
             accounts: {
@@ -148,11 +146,10 @@ export default function UniversalProviderPage() {
           }>
         }
         const connect = connectFeature?.connect
-        console.log('>> connect', connect)
-        const { accounts } = await connect()
-        console.log('>> accounts', accounts)
+        await connect()
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Connection error:', error)
       toast({
         title: 'Connection Error',
@@ -180,6 +177,7 @@ export default function UniversalProviderPage() {
         type: 'success'
       })
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Disconnect error:', error)
       toast({
         title: ConstantsUtil.DisconnectingFailedToastTitle,
@@ -189,37 +187,6 @@ export default function UniversalProviderPage() {
     }
   }
 
-  function getPayload() {
-    if (!account || !network) {
-      return null
-    }
-
-    const map = {
-      solana: {
-        method: 'solana_signMessage',
-        params: {
-          message: base58.encode(new TextEncoder().encode('Hello Appkit!')),
-          pubkey: account
-        }
-      },
-      eip155: {
-        method: 'personal_sign',
-        params: ['Hello AppKit!', account]
-      },
-      bip122: {
-        method: 'signMessage',
-        params: {
-          message: 'Hello AppKit!',
-          account
-        }
-      }
-    }
-
-    const [namespace] = network.split(':')
-
-    return map[namespace as keyof typeof map]
-  }
-
   async function handleSignMessage() {
     if (!provider || !account) {
       toast({
@@ -227,109 +194,53 @@ export default function UniversalProviderPage() {
         description: 'User is disconnected',
         type: 'error'
       })
-
-      return
     }
 
     try {
-      const payload = getPayload()
-
-      if (!payload) {
+      const wallet = getWallets()
+        .get()
+        .find(w => w.name === 'WalletConnect')
+      if (!wallet) {
         toast({
           title: 'Error',
-          description: 'Chain not supported by laboratory',
+          description: 'Wallet not found',
           type: 'error'
         })
 
         return
       }
 
-      if (!network) {
-        toast({
-          title: 'Error',
-          description: 'Network not supported by laboratory',
-          type: 'error'
-        })
-
-        return
+      const signMessageFeature = wallet.features?.['solana:signMessage'] as {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        signMessage: (val: { message: Uint8Array; account: any }) => Promise<{ signature: string }>
       }
 
-      const { signature } = await provider.request<SignMessageResponse>(payload, network)
+      const signMessage = signMessageFeature?.signMessage
+      if (!signMessage) {
+        toast({
+          title: 'Error',
+          description: 'Sign message feature not found',
+          type: 'error'
+        })
+      }
 
+      const account = wallet.accounts[0]
+
+      const signature = await signMessage({
+        message: new TextEncoder().encode('Hello Appkit!'),
+        account
+      })
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: signature || 'Message signed successfully',
+        description: signature.signature || 'Message signed successfully',
         type: 'success'
       })
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Signing error:', error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: error instanceof Error ? error.message : 'Failed to sign message',
-        type: 'error'
-      })
-    }
-  }
-
-  async function handleSwitchNetwork(newNetwork: string) {
-    if (!provider?.session) {
-      return
-    }
-
-    const [namespace] = newNetwork.split(':')
-
-    const isChainAllowed =
-      provider?.session?.namespaces?.[
-        namespace as keyof typeof provider.session.namespaces
-      ]?.chains?.includes(newNetwork)
-    const isSameNetwork = network === newNetwork
-
-    if (isSameNetwork) {
-      return
-    }
-
-    const isEip155 = newNetwork.startsWith('eip155')
-
-    try {
-      if (isEip155) {
-        const hasSupportForSwitchNetwork = provider?.session?.namespaces?.[
-          'eip155'
-        ]?.methods?.includes('wallet_switchEthereumChain')
-
-        if (hasSupportForSwitchNetwork && !isChainAllowed) {
-          const [, chainId] = newNetwork.split(':')
-          if (!chainId) {
-            throw new Error('Invalid network')
-          }
-          await provider.request(
-            {
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: toHex(chainId) }]
-            },
-            newNetwork
-          )
-        }
-      } else if (!isChainAllowed) {
-        toast({
-          title: 'Error',
-          description: 'Chain not supported by wallet',
-          type: 'error'
-        })
-
-        return
-      }
-
-      setAccount(
-        provider.session?.namespaces?.[
-          namespace as keyof typeof provider.session.namespaces
-        ]?.accounts?.[0]?.split(':')[2]
-      )
-      setNetwork(newNetwork)
-    } catch (error) {
-      console.error('Network switch error:', error)
-      toast({
-        title: 'Network Switch Error',
-        description: error instanceof Error ? error.message : 'Failed to switch network',
         type: 'error'
       })
     }
@@ -365,26 +276,6 @@ export default function UniversalProviderPage() {
 
           {account && (
             <>
-              <Box mb={4}>
-                <Heading size="xs" textTransform="uppercase" pb="2">
-                  Network
-                </Heading>
-                <Stack direction="row" spacing={4}>
-                  <Button onClick={() => handleSwitchNetwork('eip155:1')} size="sm">
-                    Ethereum
-                  </Button>
-                  <Button onClick={() => handleSwitchNetwork('eip155:137')} size="sm">
-                    Polygon
-                  </Button>
-                  <Button onClick={() => handleSwitchNetwork(solana.caipNetworkId)} size="sm">
-                    Solana
-                  </Button>
-                  <Button onClick={() => handleSwitchNetwork(bitcoin.caipNetworkId)} size="sm">
-                    Bitcoin
-                  </Button>
-                </Stack>
-              </Box>
-
               <Box mb={4}>
                 <Heading size="xs" textTransform="uppercase" pb="2">
                   Actions

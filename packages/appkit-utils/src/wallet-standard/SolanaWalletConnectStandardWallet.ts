@@ -210,21 +210,16 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
   }
 
   #connect: StandardConnectMethod = async () => {
-    console.log('>> connect', this.#account, ModalController.state.open)
     if (!this.#account) {
       if (ModalController.state.open) {
         RouterController.push('ConnectingWalletConnectBasic')
       } else {
-        console.log('>> open')
         ModalController.open({ view: 'ConnectingWalletConnectBasic' })
       }
 
-      console.log('>> Sending request to provider')
       await this.#provider.connect({
         namespaces: createNamespaces([SolConstantsUtil.DEFAULT_CHAIN])
       })
-
-      console.log('>> Connected')
     }
 
     this.#connected()
@@ -434,7 +429,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
       const signature = await this.#provider.request<{ signature: string }>({
         method: 'solana_signMessage',
         params: {
-          message,
+          message: bs58.encode(message),
           pubkey: this.#account.address
         }
       })
