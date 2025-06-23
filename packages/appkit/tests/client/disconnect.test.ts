@@ -533,8 +533,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
 
     // Call eip155 disconnect
     await (appKit as any).connectionControllerClient.disconnect({
-      chainNamespace: eip155Namespace,
-      initialDisconnect: true
+      chainNamespace: eip155Namespace
     })
 
     // Call solana disconnect
