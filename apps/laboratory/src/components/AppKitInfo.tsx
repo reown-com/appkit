@@ -22,6 +22,7 @@ export function AppKitInfo() {
   const { caipAddress, address, embeddedWalletInfo } = useAppKitAccount()
   const { walletInfo } = useWalletInfo()
   const { chainId } = useAppKitNetwork()
+  const appKitAccount = useAppKitAccount()
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
   const erc3770Address = React.useMemo(() => {
@@ -96,6 +97,15 @@ export function AppKitInfo() {
                 Wallet Type
               </Heading>
               <Text data-testid="w3m-wallet-type">{walletInfo.type}</Text>
+            </Box>
+          )}
+
+          {appKitAccount?.status && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Status
+              </Heading>
+              <Text data-testid="apkt-account-status">{appKitAccount.status}</Text>
             </Box>
           )}
 
