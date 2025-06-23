@@ -595,7 +595,9 @@ export abstract class AppKitBaseClient {
               })
             }
 
-            this.onDisconnectNamespace({ chainNamespace: ns, closeModal: false })
+            if (initialDisconnect) {
+              this.onDisconnectNamespace({ chainNamespace: ns, closeModal: false })
+            }
           })
 
           const disconnectResults = await Promise.allSettled(disconnectPromises)
