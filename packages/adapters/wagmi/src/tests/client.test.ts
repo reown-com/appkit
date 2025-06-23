@@ -391,7 +391,9 @@ describe('WagmiAdapter', () => {
         }
       } as unknown as wagmiCore.Connector
 
-      await (adapter as any).addWagmiConnector(mockConnector)
+      await (adapter as any).addWagmiConnector(mockConnector, {
+        enableEIP6963: true
+      })
 
       expect(adapter.connectors).toStrictEqual([
         {
