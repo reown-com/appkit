@@ -71,7 +71,7 @@ const controller = {
   initialize(namespaces: ChainNamespace[]) {
     namespaces.forEach(namespace => {
       const connectorId = StorageUtil.getConnectedConnectorId(namespace)
-      if (connectorId && OptionsController.state.enableReconnect) {
+      if (connectorId) {
         ConnectorController.setConnectorId(connectorId, namespace)
       }
     })
