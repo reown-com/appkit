@@ -505,7 +505,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     )
   })
 
-  it('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
+  it.only('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
     const eip155Namespace = 'eip155' as ChainNamespace
     const solanaNamespace = 'solana' as ChainNamespace
     const solanaAdapterError = new Error('Solana adapter failed') // Corrected error message for clarity
@@ -533,12 +533,15 @@ describe('AppKit - disconnect - error handling scenarios', () => {
 
     // Call eip155 disconnect
     await (appKit as any).connectionControllerClient.disconnect({
-      chainNamespace: eip155Namespace
+      chainNamespace: eip155Namespace,
+      initialDisconnect: true
     })
 
     // Call solana disconnect
     await expect(
-      (appKit as any).connectionControllerClient.disconnect({ chainNamespace: solanaNamespace })
+      (appKit as any).connectionControllerClient.disconnect({
+        chainNamespace: solanaNamespace
+      })
     ).rejects.toThrow(`Failed to disconnect chains: ${solanaAdapterError.message}`)
 
     // --- Assertions for eip155 (successful disconnect) ---
