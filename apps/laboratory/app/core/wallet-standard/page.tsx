@@ -167,7 +167,15 @@ export default function UniversalProviderPage() {
     }
 
     try {
-      await provider.disconnect()
+      const wallet = getWallets()
+        .get()
+        .find(w => w.name === 'WalletConnect')
+      if (wallet) {
+        const disconnectFeature = wallet.features?.['standard:disconnect'] as {
+          disconnect: () => Promise<void>
+        }
+        await disconnectFeature?.disconnect()
+      }
       setAccount(undefined)
       setNetwork(undefined)
       setBalance(undefined)

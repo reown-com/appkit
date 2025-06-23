@@ -229,6 +229,7 @@ export class SolanaWalletConnectStandardWallet implements Wallet {
 
   #disconnect: StandardDisconnectMethod = async () => {
     await this.#provider.disconnect()
+    this.#disconnected()
   }
 
   #signAndSendTransaction: SolanaSignAndSendTransactionMethod = async (...inputs) => {
