@@ -42,6 +42,7 @@ export type ModalFlavor =
   | 'core-universal-provider'
   | 'core'
   | 'all'
+  | 'flag-enable-reconnect'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
@@ -80,6 +81,8 @@ export class ModalPage {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
     } else if (library === 'default-account-types-sa' || library === 'default-account-types-eoa') {
       this.url = `${this.baseURL}flag/${library}/`
+    } else if (flavor === 'flag-enable-reconnect') {
+      this.url = `${this.baseURL}flag/enable-reconnect/${library}`
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }

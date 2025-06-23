@@ -238,45 +238,45 @@ describe('BitcoinAdapter', () => {
   })
 
   describe('syncConnectors', () => {
-    it('should get wallets from all the available connectors', () => {
+    it('should get wallets from all the available connectors', async () => {
       const walletStandardConnectorSpy = vi.spyOn(WalletStandardConnector, 'watchWallets')
       const satsConnectConnectorSpy = vi.spyOn(SatsConnectConnector, 'getWallets')
       const okxConnectorSpy = vi.spyOn(OKXConnector, 'getWallet')
 
-      adapter.syncConnectors(undefined, undefined)
+      await adapter.syncConnectors(undefined, undefined)
 
       expect(walletStandardConnectorSpy).toHaveBeenCalled()
       expect(satsConnectConnectorSpy).toHaveBeenCalled()
       expect(okxConnectorSpy).toHaveBeenCalled()
     })
 
-    it('should add connectors from SatsConnectConnector', () => {
+    it('should add connectors from SatsConnectConnector', async () => {
       mockSatsConnectProvider()
-      adapter.syncConnectors(undefined, undefined)
+      await adapter.syncConnectors(undefined, undefined)
 
       expect(adapter.connectors).toHaveLength(1)
       expect(adapter.connectors[0]).toBeInstanceOf(SatsConnectConnector)
     })
 
-    it('should map LeatherConnector', () => {
+    it('should map LeatherConnector', async () => {
       mockSatsConnectProvider({ id: LeatherConnector.ProviderId, name: 'Leather' })
-      adapter.syncConnectors(undefined, undefined)
+      await adapter.syncConnectors(undefined, undefined)
 
       expect(adapter.connectors[1]).toBeInstanceOf(LeatherConnector)
     })
 
-    it('should add OKXConnector', () => {
+    it('should add OKXConnector', async () => {
       ;(window as any).okxwallet = { bitcoin: { connect: vi.fn() } }
 
-      adapter.syncConnectors(undefined, undefined)
+      await adapter.syncConnectors(undefined, undefined)
 
       expect(adapter.connectors[0]).toBeInstanceOf(OKXConnector)
     })
 
-    it('should pass correct getActiveNetwork to SatsConnectConnector', () => {
+    it('should pass correct getActiveNetwork to SatsConnectConnector', async () => {
       const mocks = mockSatsConnectProvider({ id: LeatherConnector.ProviderId, name: 'Leather' })
       const getRequestedCaipNetworksSpy = vi.spyOn(ChainController, 'getRequestedCaipNetworks')
-      adapter.syncConnectors(undefined, { getCaipNetwork: mockGetActiveNetworks } as any)
+      await adapter.syncConnectors(undefined, { getCaipNetwork: mockGetActiveNetworks } as any)
 
       vi.spyOn(mocks.wallet, 'request').mockResolvedValueOnce(
         mockSatsConnectProvider.mockRequestResolve({ hex: 'mock_hex', txid: 'mock_txid' })
@@ -592,7 +592,7 @@ describe('BitcoinAdapter', () => {
       const getCaipNetwork = vi.fn(() => bitcoin)
 
       mocks = mockSatsConnectProvider()
-      adapter.syncConnectors(undefined, { getCaipNetwork } as any)
+      await adapter.syncConnectors(undefined, { getCaipNetwork } as any)
 
       vi.spyOn(mocks.wallet, 'request').mockResolvedValue(
         mockSatsConnectProvider.mockRequestResolve({

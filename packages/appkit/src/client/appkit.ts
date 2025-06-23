@@ -199,7 +199,6 @@ export class AppKit extends AppKitBaseClient {
     const username = provider.getUsername()
 
     this.setUser({ ...(AccountController.state?.user || {}), username, email }, chainNamespace)
-    this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
 
@@ -341,9 +340,11 @@ export class AppKit extends AppKitBaseClient {
           this.authProvider?.rejectRpcRequests()
         }
       })
+      this.setupAuthConnectorListeners(this.authProvider)
     }
-
-    const shouldSync = chainNamespace === ChainController.state.activeChain
+    const shouldSync =
+      chainNamespace === ChainController.state.activeChain &&
+      OptionsController.state.enableReconnect
 
     if (this.authProvider && shouldSync) {
       this.syncAuthConnector(this.authProvider, chainNamespace)
