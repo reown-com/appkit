@@ -650,8 +650,7 @@ const controller = {
   resetNetwork(namespace: ChainNamespace) {
     ChainController.setAdapterNetworkState(namespace, {
       approvedCaipNetworkIds: undefined,
-      supportsAllNetworks: true,
-      smartAccountEnabledNetworks: []
+      supportsAllNetworks: true
     })
   },
 
