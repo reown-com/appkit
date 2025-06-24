@@ -12,6 +12,7 @@ import {
 } from '@reown/appkit-controllers'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
@@ -28,6 +29,24 @@ const MOCKED_CONNECTORS = [
     id: 'evm-connector'
   } as unknown as Connector
 ]
+
+const mockFrameProvider = {
+  getUsername: () => 'mock-username',
+  getEmail: () => 'mock-email',
+  getLoginEmailUsed: () => true,
+  onRpcRequest: vi.fn(),
+  onRpcSuccess: vi.fn(),
+  onRpcError: vi.fn(),
+  onNotConnected: vi.fn(),
+  onConnect: vi.fn(),
+  onSocialConnected: vi.fn(),
+  onGetSmartAccountEnabledNetworks: vi.fn(),
+  onSetPreferredAccount: vi.fn(),
+  isConnected: () => true,
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn(),
+  getSmartAccountEnabledNetworks: vi.fn()
+} as unknown as W3mFrameProvider
 
 describe('syncExistingConnection', () => {
   beforeEach(() => {
@@ -150,23 +169,7 @@ describe('syncConnectedWalletInfo', () => {
       UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType
     )
 
-    appKit['authProvider'] = {
-      getUsername: () => 'mock-username',
-      getEmail: () => 'mock-email',
-      getLoginEmailUsed: () => true,
-      onRpcRequest: vi.fn(),
-      onRpcSuccess: vi.fn(),
-      onRpcError: vi.fn(),
-      onNotConnected: vi.fn(),
-      onConnect: vi.fn(),
-      onSocialConnected: vi.fn(),
-      onGetSmartAccountEnabledNetworks: vi.fn(),
-      onSetPreferredAccount: vi.fn(),
-      isConnected: () => true,
-      syncDappData: vi.fn(),
-      syncTheme: vi.fn(),
-      getSmartAccountEnabledNetworks: vi.fn()
-    } as any
+    appKit['authProvider'] = mockFrameProvider
 
     appKit['syncConnectedWalletInfo']('eip155')
 
@@ -186,22 +189,9 @@ describe('syncConnectedWalletInfo', () => {
     )
 
     appKit['authProvider'] = {
-      getUsername: () => 'mock-username',
-      getEmail: () => null,
-      getLoginEmailUsed: () => true,
-      onRpcRequest: vi.fn(),
-      onRpcSuccess: vi.fn(),
-      onRpcError: vi.fn(),
-      onNotConnected: vi.fn(),
-      onConnect: vi.fn(),
-      onSocialConnected: vi.fn(),
-      onGetSmartAccountEnabledNetworks: vi.fn(),
-      onSetPreferredAccount: vi.fn(),
-      isConnected: () => true,
-      syncDappData: vi.fn(),
-      syncTheme: vi.fn(),
-      getSmartAccountEnabledNetworks: vi.fn()
-    } as any
+      ...mockFrameProvider,
+      getEmail: () => null
+    } as unknown as W3mFrameProvider
 
     vi.spyOn(StorageUtil, 'getConnectedSocialProvider').mockReturnValueOnce('mock-social')
 
@@ -452,6 +442,29 @@ describe('syncConnectedWalletInfo', () => {
           chain: 'eip155'
         })
       ).rejects.toThrow('Connection declined')
+    })
+  })
+
+  describe('setupAuthConnectorListeners', () => {
+    it('should call onSocialConnected with the user', () => {
+      const userMock = {
+        email: 'test@test.com',
+        username: 'test',
+        smartAccountDeployed: true,
+        accounts: ['0x123']
+      }
+
+      const cbSpy = vi.fn()
+
+      vi.spyOn(mockFrameProvider, 'onSocialConnected').mockImplementation(() => {
+        cbSpy(userMock)
+      })
+
+      const appKit = new AppKit(mockOptions)
+
+      appKit['setupAuthConnectorListeners'](mockFrameProvider)
+
+      expect(cbSpy).toHaveBeenCalledWith(userMock)
     })
   })
 })
