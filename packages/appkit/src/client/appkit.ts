@@ -214,7 +214,7 @@ export class AppKit extends AppKitBaseClient {
     if (chainNamespace && isAuthSupported && shouldSync) {
       const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
       ChainController.setSmartAccountEnabledNetworks(
-        enabledNetworks.smartAccountEnabledNetworks || [],
+        enabledNetworks?.smartAccountEnabledNetworks || [],
         chainNamespace
       )
       if (isConnected && this.connectionControllerClient?.connectExternal) {
