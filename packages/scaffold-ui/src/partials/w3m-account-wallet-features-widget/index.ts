@@ -13,7 +13,8 @@ import {
   OptionsController,
   RouterController,
   type SocialProvider,
-  StorageUtil
+  StorageUtil,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-balance'
@@ -346,7 +347,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         properties: {
           network: this.network?.caipNetworkId || '',
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            getPreferredAccountType(activeChainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -389,7 +390,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       properties: {
         network: this.network?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

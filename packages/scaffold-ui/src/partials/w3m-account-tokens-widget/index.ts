@@ -7,7 +7,8 @@ import {
   ChainController,
   EventsController,
   OptionsController,
-  RouterController
+  RouterController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -116,7 +117,7 @@ export class W3mAccountTokensWidget extends LitElement {
       event: 'SELECT_BUY_CRYPTO',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

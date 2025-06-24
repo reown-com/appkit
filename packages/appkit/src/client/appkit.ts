@@ -18,7 +18,8 @@ import {
   type Features,
   type Metadata,
   PublicStateController,
-  type RemoteFeatures
+  type RemoteFeatures,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
   AccountController,
@@ -62,6 +63,43 @@ export class AppKit extends AppKitBaseClient {
   private authProvider?: W3mFrameProvider
 
   // -- Private ------------------------------------------------------------------
+
+  private onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+    const namespace = ChainController.state.activeChain as ChainNamespace
+
+    // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
+    const caipAddress =
+      namespace === ConstantsUtil.CHAIN.EVM
+        ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
+        : (`${user.chainId}:${user.address}` as CaipAddress)
+
+    const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
+    const currentAccountType = getPreferredAccountType(namespace)
+    const preferredAccountType =
+      (user.preferredAccountType as W3mFrameTypes.AccountType) ||
+      currentAccountType ||
+      defaultAccountType
+
+    /*
+     * This covers the case where user switches back from a smart account supported
+     *  network to a non-smart account supported network resulting in a different address
+     */
+
+    if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
+      this.syncIdentity({
+        address: user.address,
+        chainId: user.chainId,
+        chainNamespace: namespace
+      })
+    }
+
+    this.setCaipAddress(caipAddress, namespace)
+    this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
+    this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
+    this.setPreferredAccountType(preferredAccountType, namespace)
+
+    this.setLoading(false, namespace)
+  }
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
@@ -119,54 +157,8 @@ export class AppKit extends AppKitBaseClient {
         this.setLoading(false, namespace)
       }
     })
-    provider.onConnect(user => {
-      const namespace = ChainController.state.activeChain as ChainNamespace
-
-      // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
-      const caipAddress =
-        namespace === ConstantsUtil.CHAIN.EVM
-          ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
-          : (`${user.chainId}:${user.address}` as CaipAddress)
-
-      const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
-      const currentAccountType = AccountController.state.preferredAccountTypes?.[namespace]
-      const preferredAccountType =
-        (user.preferredAccountType as W3mFrameTypes.AccountType) ||
-        currentAccountType ||
-        defaultAccountType
-
-      /*
-       * This covers the case where user switches back from a smart account supported
-       *  network to a non-smart account supported network resulting in a different address
-       */
-
-      if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
-        this.syncIdentity({
-          address: user.address,
-          chainId: user.chainId,
-          chainNamespace: namespace
-        })
-      }
-
-      this.setCaipAddress(caipAddress, namespace)
-      this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
-      this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
-      this.setPreferredAccountType(preferredAccountType, namespace)
-
-      this.setLoading(false, namespace)
-    })
-    provider.onSocialConnected(({ userName }) => {
-      this.setUser(
-        { ...(AccountController.state.user || {}), username: userName },
-        ChainController.state.activeChain
-      )
-    })
-    provider.onGetSmartAccountEnabledNetworks(networks => {
-      this.setSmartAccountEnabledNetworks(
-        networks,
-        ChainController.state.activeChain as ChainNamespace
-      )
-    })
+    provider.onConnect(this.onAuthProviderConnected.bind(this))
+    provider.onSocialConnected(this.onAuthProviderConnected.bind(this))
     provider.onSetPreferredAccount(({ address, type }) => {
       if (!address) {
         return
@@ -228,9 +220,12 @@ export class AppKit extends AppKitBaseClient {
 
     await this.syncAuthConnectorTheme(provider)
 
-    await provider.getSmartAccountEnabledNetworks()
-
     if (chainNamespace && isAuthSupported && shouldSync) {
+      const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
+      ChainController.setSmartAccountEnabledNetworks(
+        enabledNetworks?.smartAccountEnabledNetworks || [],
+        chainNamespace
+      )
       if (isConnected && this.connectionControllerClient?.connectExternal) {
         await this.connectionControllerClient?.connectExternal({
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
