@@ -127,6 +127,25 @@ describe('AppKit - disconnect', () => {
         id: undefined
       })
     })
+
+    it('should disconnect from all chains when no namespace is provided', async () => {
+      const mockProvider = { disconnect: vi.fn() }
+
+      vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
+      vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+        UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+      )
+      vi.spyOn(ChainController, 'getAccountData').mockImplementation(ns => {
+        if (ns === 'eip155') return { caipAddress: 'eip155:1:0xyz' } as any
+        if (ns === 'solana') return { caipAddress: 'solana:1:0xyz' } as any
+        return undefined
+      })
+
+      await (appKit as any).connectionControllerClient.disconnect()
+
+      expect(mockEvmAdapter.disconnect).toHaveBeenCalled()
+      expect(mockSolanaAdapter.disconnect).toHaveBeenCalled()
+    })
   })
 
   describe('loading state management', () => {

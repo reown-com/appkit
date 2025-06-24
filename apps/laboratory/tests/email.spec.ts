@@ -128,6 +128,24 @@ emailTest('it should show loading on page refresh', async () => {
   await validator.expectAccountButtonReady()
 })
 
+emailTest(
+  'it should still be able to request transactions after aborting request',
+  async ({ library }) => {
+    // Only run on evm
+    if (['bitcoin', 'solana'].includes(library)) {
+      test.skip()
+    }
+
+    await page.sign()
+    await page.closeModal()
+    await validator.expectRejectedSign()
+
+    await page.sendCalls()
+    await validator.expectFrameTextToContain('AppKit Lab requests multiple transactions')
+    await page.closeModal()
+  }
+)
+
 emailTest('it should disconnect correctly', async () => {
   await page.goToProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
