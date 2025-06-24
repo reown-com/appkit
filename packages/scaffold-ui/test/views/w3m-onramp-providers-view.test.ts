@@ -46,6 +46,17 @@ describe('W3mOnRampProvidersView', () => {
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              address: '0x123',
+              preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            }
+          }
+        ]
+      ]),
       activeChain: 'eip155',
       activeCaipNetwork: {
         id: 'eip155:1',
@@ -63,10 +74,7 @@ describe('W3mOnRampProvidersView', () => {
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      address: '0x123',
-      preferredAccountTypes: {
-        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      }
+      address: '0x123'
     })
 
     vi.spyOn(BlockchainApiController, 'generateOnRampURL').mockResolvedValue(

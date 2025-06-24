@@ -288,7 +288,7 @@ describe('ChainController', () => {
     expect(AccountController.state.addressExplorerUrl).toEqual(undefined)
     expect(AccountController.state.tokenBalance).toEqual([])
     expect(AccountController.state.connectedWalletInfo).toEqual(undefined)
-    expect(AccountController.state.preferredAccountTypes).toEqual(undefined)
+    expect(AccountController.state.preferredAccountType).toEqual(undefined)
     expect(AccountController.state.status).toEqual('disconnected')
     expect(AccountController.state.socialProvider).toEqual(undefined)
     expect(AccountController.state.socialWindow).toEqual(undefined)

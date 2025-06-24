@@ -75,9 +75,7 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
 const mockAccountControllerState: Partial<AccountControllerState> = {
   address: mockAddress,
   profileName: mockProfileName,
-  preferredAccountTypes: {
-    eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
-  },
+  preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
   currentTab: 0,
   addressLabels: new Map()
 }
@@ -239,12 +237,19 @@ describe('W3mWalletReceiveView', () => {
   })
 
   it('should display single network for smart accounts', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...mockAccountControllerState,
-      preferredAccountTypes: {
-        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      }
-    } as AccountControllerState)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...mockChainControllerState,
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            }
+          }
+        ]
+      ])
+    })
     vi.spyOn(ChainController, 'checkIfSmartAccountEnabled').mockReturnValue(true)
 
     const element = await fixture<W3mWalletReceiveView>(

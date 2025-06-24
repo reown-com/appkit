@@ -10,10 +10,10 @@ import {
 } from '@reown/appkit-common'
 import { NetworkUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AlertController,
   ChainController,
-  ConnectorController
+  ConnectorController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -82,6 +82,7 @@ export function authConnector(parameters: AuthParameters) {
       chainId?: number
       isReconnecting?: boolean
       socialUri?: string
+      preferredAccountType?: 'eoa' | 'smartAccount'
     } = {}
   ) {
     const provider = getProviderInstance()
@@ -98,7 +99,7 @@ export function authConnector(parameters: AuthParameters) {
       }
     }
 
-    const preferredAccountType = AccountController.state.preferredAccountTypes?.eip155
+    const preferredAccountType = getPreferredAccountType('eip155')
 
     const {
       address,
@@ -131,7 +132,11 @@ export function authConnector(parameters: AuthParameters) {
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
     async connect(
-      options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
+      options: {
+        chainId?: number
+        isReconnecting?: boolean
+        socialUri?: string
+      } = {}
     ) {
       if (connectSocialPromise) {
         return connectSocialPromise
@@ -218,7 +223,7 @@ export function authConnector(parameters: AuthParameters) {
         }
         const provider = await this.getProvider()
 
-        const preferredAccountType = AccountController.state.preferredAccountTypes?.eip155
+        const preferredAccountType = getPreferredAccountType('eip155')
 
         // We connect instead, since changing the chain may cause the address to change as well
         const response = await provider.connect({

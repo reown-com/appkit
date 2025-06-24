@@ -1,11 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import {
-  AccountController,
-  ChainController,
-  type PreferredAccountTypes
-} from '@reown/appkit-controllers'
+import { AccountController, ChainController } from '@reown/appkit-controllers'
 
 import { AuthProvider } from '../providers/AuthProvider'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
@@ -59,9 +55,7 @@ describe('AuthProvider specific tests', () => {
   it('should respect preferred account type on connect', async () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      preferredAccountTypes: {
-        solana: 'eoa'
-      } as PreferredAccountTypes
+      preferredAccountType: 'eoa'
     })
 
     await authProvider.connect()

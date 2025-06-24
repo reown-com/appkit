@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   AlertController,
   ApiController,
   ChainController,
@@ -108,7 +107,7 @@ describe('Base', () => {
 
     it('should set default account types', async () => {
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
+      const setChainAccountData = vi.spyOn(ChainController, 'setChainAccountData')
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce({
         bip122: 'ordinal'
       })
@@ -125,11 +124,8 @@ describe('Base', () => {
       expect(setDefaultAccountTypes).toHaveBeenCalledWith({
         eip155: 'eoa'
       })
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa',
-        bip122: 'ordinal',
-        solana: 'eoa',
-        polkadot: 'eoa'
+      expect(setChainAccountData).toHaveBeenCalledWith('eip155', {
+        preferredAccountType: 'eoa'
       })
     })
 
@@ -137,11 +133,13 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
         ConstantsUtil.DEFAULT_ACCOUNT_TYPES
       )
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
+      const setChainAccountData = vi.spyOn(ChainController, 'setChainAccountData')
 
       new AppKit(mockOptions)
 
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith(ConstantsUtil.DEFAULT_ACCOUNT_TYPES)
+      expect(setChainAccountData).toHaveBeenCalledWith('eip155', {
+        preferredAccountType: 'eoa'
+      })
     })
 
     it('should use stored account types', () => {
@@ -149,17 +147,14 @@ describe('Base', () => {
         eip155: 'eoa',
         bip122: 'ordinal'
       })
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
+      const setChainAccountData = vi.spyOn(ChainController, 'setChainAccountData')
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
 
       new AppKit(mockOptions)
 
       expect(setDefaultAccountTypes).toHaveBeenCalledWith(undefined)
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa',
-        bip122: 'ordinal',
-        solana: 'eoa',
-        polkadot: 'eoa'
+      expect(setChainAccountData).toHaveBeenCalledWith('eip155', {
+        preferredAccountType: 'eoa'
       })
     })
 

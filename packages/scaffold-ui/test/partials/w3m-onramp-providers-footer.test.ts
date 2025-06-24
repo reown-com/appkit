@@ -80,19 +80,22 @@ describe('W3mOnRampProvidersFooter', () => {
     const routerControllerSpy = vi.spyOn(RouterController, 'push')
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            }
+          }
+        ]
+      ]),
       activeChain: 'eip155',
       activeCaipNetwork: {
         chainNamespace: 'eip155',
         chainId: '1'
       } as unknown as CaipNetwork
     } as ChainControllerState)
-
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      preferredAccountTypes: {
-        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      }
-    })
 
     const element: W3mOnRampProvidersFooter = await fixture(
       html`<w3m-onramp-providers-footer></w3m-onramp-providers-footer>`
@@ -120,19 +123,22 @@ describe('W3mOnRampProvidersFooter', () => {
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+            }
+          }
+        ]
+      ]),
       activeChain: 'eip155',
       activeCaipNetwork: {
         chainNamespace: 'eip155',
         chainId: '1'
       } as unknown as CaipNetwork
     } as ChainControllerState)
-
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      preferredAccountTypes: {
-        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
-      }
-    })
 
     const element: W3mOnRampProvidersFooter = await fixture(
       html`<w3m-onramp-providers-footer></w3m-onramp-providers-footer>`

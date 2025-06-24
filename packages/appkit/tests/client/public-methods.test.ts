@@ -1106,9 +1106,6 @@ describe('Base Public methods', () => {
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountTypes: {
-        eip155: 'eoa'
-      },
       smartAccountDeployed: true,
       currentTab: 0,
       addressLabels: new Map([['eip155:1:0x123', 'test-label']])
@@ -1164,9 +1161,6 @@ describe('Base Public methods', () => {
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountTypes: {
-        eip155: 'eoa'
-      },
       smartAccountDeployed: true,
       currentTab: 0,
       addressLabels: new Map([['eip155:1:0x123', 'test-label']])
