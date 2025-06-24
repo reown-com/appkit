@@ -117,7 +117,7 @@ export interface OptionsControllerStatePublic {
   enableWalletConnect?: boolean
   /**
    * Enable or disable the wallet guide footer in AppKit if you have email or social login configured.
-   * @default true
+   * @default false
    */
   enableWalletGuide?: boolean
   /**
