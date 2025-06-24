@@ -44,7 +44,7 @@ function headings() {
     AllWallets: 'All Wallets',
     ApproveTransaction: 'Approve Transaction',
     BuyInProgress: 'Buy',
-    ConnectingExternal: name ?? 'Connect Wallet',
+    ConnectingExternal: name ?? 'Log in with Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingWalletConnectBasic: 'WalletConnect',
     ConnectingSiwe: 'Sign In',
@@ -83,7 +83,7 @@ function headings() {
     WalletSendSelectToken: 'Select Token',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a wallet?',
-    ConnectWallets: 'Connect wallet',
+    ConnectWallets: 'Log in with wallet',
     ConnectSocials: 'All socials',
     ConnectingSocial: AccountController.state.socialProvider
       ? AccountController.state.socialProvider

@@ -116,7 +116,7 @@ export class W3mOnrampWidget extends LitElement {
           size="lg"
           borderRadius="xs"
         >
-          Connect wallet
+          Log in with wallet
         </wui-button>`
   }
 
