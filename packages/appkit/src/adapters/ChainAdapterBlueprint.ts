@@ -147,6 +147,33 @@ export abstract class AdapterBlueprint<
    * @param {W3mFrameProvider} authProvider - The auth provider instance
    */
   public setAuthProvider(authProvider: W3mFrameProvider): void {
+    authProvider.onConnect(({ accounts, chainId }) => {
+      const caipNetwork = this.getCaipNetworks()
+        .filter(n => n.chainNamespace === this.namespace)
+        .find(n => n.id.toString() === chainId?.toString())
+
+      if (accounts && caipNetwork) {
+        this.addConnection({
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+          accounts,
+          caipNetwork
+        })
+      }
+    })
+    authProvider.onSocialConnected(({ accounts, chainId }) => {
+      const caipNetwork = this.getCaipNetworks()
+        .filter(n => n.chainNamespace === this.namespace)
+        .find(n => n.id.toString() === chainId?.toString())
+
+      if (accounts && caipNetwork) {
+        this.addConnection({
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+          accounts,
+          caipNetwork
+        })
+      }
+    })
+
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
