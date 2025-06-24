@@ -153,6 +153,22 @@ emailTest('it should disconnect correctly', async () => {
   await validator.expectDisconnected()
 })
 
+emailTest('it should be able to switch after disconnecting', async () => {
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
+  }
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+  await validator.expectConnected()
+
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow('EOA')
+  await page.disconnect()
+  await validator.expectDisconnected()
+})
+
 emailTest('it should abort embedded wallet flow if it takes more than 2 minutes', async () => {
   await page.page.clock.install()
   await page.page.context().setOffline(true)

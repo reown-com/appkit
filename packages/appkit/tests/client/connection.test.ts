@@ -40,7 +40,6 @@ const mockFrameProvider = {
   onNotConnected: vi.fn(),
   onConnect: vi.fn(),
   onSocialConnected: vi.fn(),
-  onGetSmartAccountEnabledNetworks: vi.fn(),
   onSetPreferredAccount: vi.fn(),
   isConnected: () => true,
   syncDappData: vi.fn(),

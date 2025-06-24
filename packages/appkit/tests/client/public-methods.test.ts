@@ -646,19 +646,6 @@ describe('Base Public methods', () => {
     )
   })
 
-  it('should set smart account enabled networks', () => {
-    const networks = [1, 137]
-    const setSmartAccountEnabledNetworks = vi.spyOn(
-      ChainController,
-      'setSmartAccountEnabledNetworks'
-    )
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setSmartAccountEnabledNetworks(networks, mainnet.chainNamespace)
-
-    expect(setSmartAccountEnabledNetworks).toHaveBeenCalledWith(networks, mainnet.chainNamespace)
-  })
-
   it('should set preferred account type', () => {
     const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
 
