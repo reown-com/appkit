@@ -40,34 +40,38 @@ export class BitcoinProvider {
     localStorage.setItem('@reown-ext/active-network', network)
   }
 
-  private getDerivationPath(): string {
-    const isMainnet = this.activeNetwork === 'bip122:000000000019d6689c085ae165831e93'
-
-    return `m/84'/${isMainnet ? '0' : '1'}'/0'/0/0`
-  }
-
-  private getDerivedKey() {
-    const path = this.getDerivationPath()
-
-    return root.derivePath(path)
-  }
-
   get accounts(): WalletAccount[] {
-    const network =
-      this.activeNetwork === 'bip122:000000000019d6689c085ae165831e93'
-        ? bitcoin.networks.bitcoin
-        : bitcoin.networks.testnet
-
-    const child = this.getDerivedKey()
+    const child = root.derivePath("m/84'/0'/0/0")
+    const testnetChild = root.derivePath("m/84'/1'/0/0")
 
     return [
       {
         address: bitcoin.payments.p2wpkh({
           pubkey: child.publicKey,
-          network
+          network: bitcoin.networks.bitcoin
         }).address as string,
         publicKey: child.publicKey,
-        chains: [this.activeNetwork],
+        chains: [
+          'bip122:000000000933ea01ad0ee984209779ba',
+          'bip122:000000000019d6689c085ae165831e93'
+        ],
+        features: [
+          'bitcoin:connect',
+          'standard:events',
+          'standard:disconnect',
+          'bitcoin:signMessage'
+        ]
+      },
+      {
+        address: bitcoin.payments.p2wpkh({
+          pubkey: testnetChild.publicKey,
+          network: bitcoin.networks.testnet
+        }).address as string,
+        publicKey: testnetChild.publicKey,
+        chains: [
+          'bip122:000000000933ea01ad0ee984209779ba',
+          'bip122:000000000019d6689c085ae165831e93'
+        ],
         features: [
           'bitcoin:connect',
           'standard:events',
@@ -144,8 +148,8 @@ export class BitcoinProvider {
       throw new Error('Invalid account')
     }
 
-    const child = this.getDerivedKey()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const child = root.derivePath("m/84'/0'/0/0")
+
     const keyPair = ECPair.fromPrivateKey(child.privateKey!)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pKey = keyPair.privateKey!
