@@ -1,8 +1,8 @@
 import { type BrowserContext, expect, test } from '@playwright/test'
 
-import { BASE_URL } from './shared/constants'
+import { BASE_URL, WalletPage } from '@reown/appkit-testing'
+
 import { ReownAuthenticationModalPage } from './shared/pages/ReownAuthenticationModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { ReownAuthenticationModalValidator } from './shared/validators/ReownAuthenticationModalValidator'
 
 /* eslint-disable init-declarations */

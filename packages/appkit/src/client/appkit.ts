@@ -113,6 +113,7 @@ export class AppKit extends AppKitBaseClient {
       const namespace = ChainController.state.activeChain as ChainNamespace
       const connectorId = ConnectorController.getConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+
       if (isConnectedWithAuth) {
         this.setCaipAddress(undefined, namespace)
         this.setLoading(false, namespace)
@@ -146,35 +147,17 @@ export class AppKit extends AppKitBaseClient {
           chainNamespace: namespace
         })
       }
+
       this.setCaipAddress(caipAddress, namespace)
       this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
       this.setPreferredAccountType(preferredAccountType, namespace)
 
-      const userAccounts = user.accounts?.map(account =>
-        CoreHelperUtil.createAccount(
-          namespace,
-          account.address,
-          account.type || currentAccountType || defaultAccountType
-        )
-      )
-
-      this.setAllAccounts(
-        userAccounts || [
-          CoreHelperUtil.createAccount(
-            namespace,
-            user.address,
-            (user.preferredAccountType as W3mFrameTypes.AccountType) || preferredAccountType
-          )
-        ],
-        namespace
-      )
-
       this.setLoading(false, namespace)
     })
-    provider.onSocialConnected(({ userName }) => {
+    provider.onSocialConnected(user => {
       this.setUser(
-        { ...(AccountController.state.user || {}), username: userName },
+        { ...(AccountController.state.user || {}), ...user },
         ChainController.state.activeChain
       )
     })
@@ -349,7 +332,9 @@ export class AppKit extends AppKitBaseClient {
           } else if (reason === 'unverified_domain') {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
-        }
+        },
+        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
+          ChainController.getActiveCaipNetwork(namespace)
       })
       PublicStateController.subscribeOpen(isOpen => {
         if (!isOpen && this.isTransactionStackEmpty()) {
@@ -459,6 +444,17 @@ export class AppKit extends AppKitBaseClient {
           })
         }
       } else if (newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+        /*
+         * Switch network for adapters, as each manages
+         * its own connections state and requires network updates
+         */
+        if (!ChainController.state.noAdapters) {
+          const adapter = this.getAdapter(networkNamespace)
+          const provider = ProviderUtil.getProvider(networkNamespace)
+          const providerType = ProviderUtil.getProviderId(networkNamespace)
+
+          await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+        }
         this.setCaipNetwork(caipNetwork)
         this.syncWalletConnectAccount()
       } else {
