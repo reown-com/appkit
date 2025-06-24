@@ -27,7 +27,7 @@ export default {
 export const Default: Component = {
   render: args => html`
     <wui-connect-button size=${args.size} ?loading=${args.loading}>
-      ${args.loading ? 'Connecting...' : 'Connect Wallet'}
+      ${args.loading ? 'Connecting...' : 'Log in with Wallet'}
     </wui-connect-button>
   `
 }

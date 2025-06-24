@@ -36,7 +36,7 @@ function headings() {
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
 
   return {
-    Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    Connect: `Log in with ${isEmail ? 'Email' : ''} Wallet`,
     Create: 'Create Wallet',
     ChooseAccountName: undefined,
     Account: undefined,

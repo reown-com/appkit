@@ -64,7 +64,7 @@ test('should connect multiple wallets with SIWX', async ({ library }) => {
     return
   }
 
-  // Connect WalletConnect Wallet
+  // Log in with WalletConnect Wallet
   await modal.qrCodeFlow(modal, wallet)
   await modal.promptSiwe()
   await wallet.handleRequest({ accept: true })

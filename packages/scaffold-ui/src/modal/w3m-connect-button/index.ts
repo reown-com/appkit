@@ -15,7 +15,7 @@ class W3mConnectButtonBase extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public size?: WuiConnectButton['size'] = 'md'
 
-  @property() public label? = 'Connect Wallet'
+  @property() public label? = 'Log in with Wallet'
 
   @property() public loadingLabel? = 'Connecting...'
 

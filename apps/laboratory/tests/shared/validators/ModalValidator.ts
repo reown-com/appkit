@@ -89,7 +89,7 @@ export class ModalValidator {
     })
 
     await expect(connectButton, 'Connect button should contain text Connect').toHaveText(
-      'Connect Wallet',
+      'Log in with Wallet',
       {
         timeout: MAX_WAIT
       }
@@ -144,7 +144,7 @@ export class ModalValidator {
   }
 
   async expectConnectScreen() {
-    await expect(this.page.getByText('Connect Wallet')).toBeVisible({
+    await expect(this.page.getByText('Log in with Wallet')).toBeVisible({
       timeout: MAX_WAIT
     })
   }

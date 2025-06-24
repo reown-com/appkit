@@ -324,7 +324,7 @@ export class ModalPage {
       // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
       await this.page
         .getByTestId('connect-button')
-        .getByRole('button', { name: 'Connect Wallet' })
+        .getByRole('button', { name: 'Log in with Wallet' })
         .click()
     }
     await this.page.getByTestId('wui-email-input').locator('input').focus()
@@ -343,7 +343,7 @@ export class ModalPage {
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
     await this.page
       .getByTestId('connect-button')
-      .getByRole('button', { name: 'Connect Wallet' })
+      .getByRole('button', { name: 'Log in with Wallet' })
       .click()
 
     switch (socialOption) {
@@ -924,7 +924,7 @@ export class ModalPage {
   async abortLoginWithFarcaster() {
     await this.page
       .getByTestId('connect-button')
-      .getByRole('button', { name: 'Connect Wallet' })
+      .getByRole('button', { name: 'Log in with Wallet' })
       .click()
     await this.page.getByTestId('social-selector-farcaster').click()
     await this.page.locator('wui-qr-code').waitFor({ state: 'visible' })

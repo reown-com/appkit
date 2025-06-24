@@ -62,7 +62,7 @@ test('should connect multiple wallets', async ({ library }) => {
     return
   }
 
-  // Connect WalletConnect wallet
+  // Log in with WalletConnect wallet
   await modal.qrCodeFlow(modal, wallet)
   await validator.expectConnected()
 

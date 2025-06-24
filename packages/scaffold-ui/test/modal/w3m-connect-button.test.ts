@@ -26,7 +26,7 @@ describe('W3mConnectButton', () => {
       const button = HelpersUtil.getByTestId(element, 'connect-button')
 
       expect(button).toBeTruthy()
-      expect(button?.textContent?.trim()).toBe('Connect Wallet')
+      expect(button?.textContent?.trim()).toBe('Log in with Wallet')
       expect(button?.getAttribute('size')).toBe('md')
     })
 
@@ -126,7 +126,7 @@ describe('W3mConnectButton', () => {
       const button = HelpersUtil.getByTestId(element, 'connect-button')
 
       expect(button).toBeTruthy()
-      expect(button?.textContent?.trim()).toBe('Connect Wallet')
+      expect(button?.textContent?.trim()).toBe('Log in with Wallet')
     })
   })
 })

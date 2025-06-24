@@ -59,7 +59,7 @@ test('should enable multi-wallet feature with a whitelisted project id', async (
 })
 
 test('should connect multiple wallets across all namespaces', async () => {
-  // Connect WalletConnect (EVM + Solana)
+  // Log in with WalletConnect (EVM + Solana)
   await modal.openConnectModal()
   await modal.clickWalletConnect()
   await modal.qrCodeFlow(modal, wallet, 'immediate')
