@@ -557,7 +557,9 @@ describe('AppKit - disconnect - error handling scenarios', () => {
 
     // Call solana disconnect
     await expect(
-      (appKit as any).connectionControllerClient.disconnect({ chainNamespace: solanaNamespace })
+      (appKit as any).connectionControllerClient.disconnect({
+        chainNamespace: solanaNamespace
+      })
     ).rejects.toThrow(`Failed to disconnect chains: ${solanaAdapterError.message}`)
 
     // --- Assertions for eip155 (successful disconnect) ---

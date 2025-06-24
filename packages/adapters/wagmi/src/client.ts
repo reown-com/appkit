@@ -37,7 +37,12 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
-import { ChainController, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  CoreHelperUtil,
+  OptionsController,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -735,6 +740,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       )
 
       await wagmiDisconnect(this.wagmiConfig, { connector })
+      if (OptionsController.state.enableReconnect === false) {
+        this.deleteConnection(params.id)
+      }
 
       if (connection) {
         return {
