@@ -77,21 +77,18 @@ extensionTest.describe('Bitcoin', () => {
     await modalValidator.expectConnected()
   })
 
-  extensionTest.skip('it should require request signature when switching networks', async () => {
+  extensionTest('it should require request signature when switching networks', async () => {
     await modalPage.switchNetwork('Bitcoin Testnet')
     await modalPage.promptSiwe()
     await modalValidator.expectConnected()
   })
 
-  extensionTest.skip(
-    'it should fallback to the last session when cancel siwe from AppKit',
-    async () => {
-      await modalPage.switchNetwork('Bitcoin Testnet')
-      await modalPage.cancelSiwe()
-      await modalValidator.expectNetworkButton('Bitcoin Testnet')
-      await modalValidator.expectConnected()
-    }
-  )
+  extensionTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
+    await modalPage.switchNetwork('Bitcoin Testnet')
+    await modalPage.cancelSiwe()
+    await modalValidator.expectNetworkButton('Bitcoin Testnet')
+    await modalValidator.expectConnected()
+  })
 
   extensionTest('it should be connected after connecting and refreshing the page', async () => {
     await modalValidator.expectConnected()
