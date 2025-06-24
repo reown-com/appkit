@@ -190,8 +190,7 @@ describe('syncConnectedWalletInfo', () => {
 
     appKit['authProvider'] = {
       ...mockFrameProvider,
-      getEmail: () => null,
-      getUsername: () => 'mock-username'
+      getEmail: () => null
     } as unknown as W3mFrameProvider
 
     vi.spyOn(StorageUtil, 'getConnectedSocialProvider').mockReturnValueOnce('mock-social')
@@ -449,11 +448,10 @@ describe('syncConnectedWalletInfo', () => {
   describe('setupAuthConnectorListeners', () => {
     it('should call onSocialConnected with the user', () => {
       const userMock = {
-        address: '0x123',
-        chainId: '1',
-        provider: {} as any,
-        id: 'test-connector',
-        type: 'INJECTED'
+        email: 'test@test.com',
+        username: 'test',
+        smartAccountDeployed: true,
+        accounts: ['0x123']
       }
 
       const cbSpy = vi.fn()
