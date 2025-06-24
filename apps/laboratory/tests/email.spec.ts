@@ -164,7 +164,7 @@ emailTest('it should be able to switch after disconnecting', async () => {
   await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
   await page.togglePreferredAccountType()
-  await validator.expectChangePreferredAccountToShow('EOA')
+  await validator.expectChangePreferredAccountToShow('smart account')
   await page.disconnect()
   await validator.expectDisconnected()
 })
