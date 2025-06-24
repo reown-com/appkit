@@ -2100,11 +2100,6 @@ export abstract class AppKitBaseClient {
     AccountController.setSmartAccountDeployed(isDeployed, chain)
   }
 
-  public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
-    (smartAccountEnabledNetworks, chain) => {
-      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
-    }
-
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
     preferredAccountType,
     chain
