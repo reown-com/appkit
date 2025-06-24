@@ -82,7 +82,6 @@ export function authConnector(parameters: AuthParameters) {
       chainId?: number
       isReconnecting?: boolean
       socialUri?: string
-      preferredAccountType?: 'eoa' | 'smartAccount'
     } = {}
   ) {
     const provider = getProviderInstance()
@@ -132,11 +131,7 @@ export function authConnector(parameters: AuthParameters) {
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
     async connect(
-      options: {
-        chainId?: number
-        isReconnecting?: boolean
-        socialUri?: string
-      } = {}
+      options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
     ) {
       if (connectSocialPromise) {
         return connectSocialPromise

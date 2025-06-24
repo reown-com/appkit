@@ -5,7 +5,6 @@ import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   type ChainControllerState,
   EventsController,

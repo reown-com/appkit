@@ -239,13 +239,13 @@ describe('W3mWalletReceiveView', () => {
   it('should display single network for smart accounts', async () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...mockChainControllerState,
+      // @ts-expect-error - mockChainControllerState.chains is not typed correctly
       chains: new Map([
         [
           'eip155',
           {
-            accountState: {
-              preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-            }
+            ...mockChainControllerState.chains?.get('eip155'),
+            accountState: { preferredAccountType: 'smartAccount' }
           }
         ]
       ])

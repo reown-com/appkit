@@ -5,7 +5,9 @@ import { html } from 'lit'
 
 import {
   AccountController,
+  type AccountControllerState,
   BlockchainApiController,
+  type ChainAdapter,
   ChainController,
   CoreHelperUtil,
   EventsController,
@@ -53,8 +55,8 @@ describe('W3mOnRampProvidersView', () => {
             accountState: {
               address: '0x123',
               preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-            }
-          }
+            } as AccountControllerState
+          } as ChainAdapter
         ]
       ]),
       activeChain: 'eip155',
