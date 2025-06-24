@@ -11,6 +11,7 @@ import {
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
+import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -76,6 +77,7 @@ export interface ConnectExternalOptions {
   chainId?: number | string
   caipNetwork?: CaipNetwork
   socialUri?: string
+  preferredAccountType?: 'eoa' | 'smartAccount'
 }
 
 interface HandleAuthAccountSwitchParams {
@@ -258,7 +260,15 @@ const controller = {
     AccountController.setPreferredAccountType(accountType, namespace)
     await authConnector.provider.setPreferredAccount(accountType)
     StorageUtil.setPreferredAccountTypes(
-      AccountController.state.preferredAccountTypes ?? { [namespace]: accountType }
+      Object.entries(ChainController.state.chains).reduce((acc, [key, _]) => {
+        const namespace = key as ChainNamespace
+        const accountType = getPreferredAccountType(namespace)
+        if (accountType !== undefined) {
+          ;(acc as Record<ChainNamespace, string>)[namespace] = accountType
+        }
+
+        return acc
+      }, {})
     )
     await ConnectionController.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)

@@ -18,7 +18,8 @@ import {
   type Features,
   type Metadata,
   PublicStateController,
-  type RemoteFeatures
+  type RemoteFeatures,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
   AccountController,
@@ -73,7 +74,7 @@ export class AppKit extends AppKitBaseClient {
         : (`${user.chainId}:${user.address}` as CaipAddress)
 
     const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
-    const currentAccountType = AccountController.state.preferredAccountTypes?.[namespace]
+    const currentAccountType = getPreferredAccountType(namespace)
     const preferredAccountType =
       (user.preferredAccountType as W3mFrameTypes.AccountType) ||
       currentAccountType ||

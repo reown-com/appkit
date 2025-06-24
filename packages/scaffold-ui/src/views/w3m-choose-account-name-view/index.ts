@@ -3,11 +3,11 @@ import { state } from 'lit/decorators.js'
 
 import { type ChainNamespace, NavigationUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
-  RouterController
+  RouterController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -104,7 +104,7 @@ export class W3mChooseAccountNameView extends LitElement {
       event: 'OPEN_ENS_FLOW',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

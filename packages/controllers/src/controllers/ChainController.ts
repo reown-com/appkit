@@ -16,7 +16,8 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   AdapterNetworkState,
   ChainAdapter,
-  NetworkControllerClient
+  NetworkControllerClient,
+  PreferredAccountTypes
 } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
@@ -35,7 +36,8 @@ const accountState: AccountControllerState = {
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  user: undefined
+  user: undefined,
+  preferredAccountType: undefined
 }
 
 const networkState: AdapterNetworkState = {
@@ -159,13 +161,20 @@ const controller = {
       const namespaceNetworks = caipNetworks?.filter(
         network => network.chainNamespace === namespace
       )
+
+      const storedAccountTypes = StorageUtil.getPreferredAccountTypes() || {}
+      const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
+
       ChainController.state.chains.set(namespace as ChainNamespace, {
         namespace,
         networkState: proxy({
           ...networkState,
           caipNetwork: namespaceNetworks?.[0]
         }),
-        accountState: proxy(accountState),
+        accountState: proxy({
+          ...accountState,
+          preferredAccountType: defaultTypes[namespace] as PreferredAccountTypes[ChainNamespace]
+        }),
         caipNetworks: namespaceNetworks ?? [],
         ...clients
       })
@@ -652,6 +661,8 @@ const controller = {
       throw new Error('Chain is required to set account prop')
     }
 
+    const currentAccountType = ChainController.getAccountProp('preferredAccountType', chainToWrite)
+
     state.activeCaipAddress = undefined
     ChainController.setChainAccountData(chainToWrite, {
       smartAccountDeployed: false,
@@ -665,7 +676,7 @@ const controller = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountTypes: undefined,
+      preferredAccountType: currentAccountType,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
