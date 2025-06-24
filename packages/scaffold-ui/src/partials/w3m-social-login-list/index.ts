@@ -68,7 +68,7 @@ export class W3mSocialLoginList extends LitElement {
     }
 
     if (isConnectSocialsView && !isSocialsEnabled) {
-      socials = ConstantsUtil.DEFAULT_SOCIALS
+      socials = ConstantsUtil.DEFAULT_SOCIALS as SocialProvider[]
     }
 
     return html` <wui-flex flexDirection="column" gap="xs">

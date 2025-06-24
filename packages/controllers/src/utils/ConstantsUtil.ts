@@ -1,9 +1,4 @@
-import {
-  type ChainNamespace,
-  type OnRampProvider,
-  type SocialProvider,
-  type SwapProvider
-} from '@reown/appkit-common'
+import { type ChainNamespace } from '@reown/appkit-common'
 
 import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
@@ -20,13 +15,6 @@ export const ONRAMP_PROVIDERS = [
     feeRange: '1-2%',
     url: 'https://meldcrypto.com',
     supportedChains: ['eip155', 'solana']
-  },
-  {
-    label: 'Coinbase',
-    name: 'coinbase',
-    feeRange: '1-2%',
-    url: '',
-    supportedChains: ['eip155']
   }
 ]
 
@@ -61,36 +49,6 @@ export const ConstantsUtil = {
     'ASIA/BEIJING',
     'ASIA/HARBIN'
   ],
-
-  /**
-   * Network name to Coinbase Pay SDK chain name map object
-   * @see supported chain names on Coinbase for Pay SDK: https://github.com/coinbase/cbpay-js/blob/d4bda2c05c4d5917c8db6a05476b603546046394/src/types/onramp.ts
-   */
-  WC_COINBASE_PAY_SDK_CHAINS: [
-    'ethereum',
-    'arbitrum',
-    'polygon',
-    'berachain',
-    'avalanche-c-chain',
-    'optimism',
-    'celo',
-    'base'
-  ],
-
-  WC_COINBASE_PAY_SDK_FALLBACK_CHAIN: 'ethereum',
-
-  WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP: {
-    Ethereum: 'ethereum',
-    'Arbitrum One': 'arbitrum',
-    Polygon: 'polygon',
-    Berachain: 'berachain',
-    Avalanche: 'avalanche-c-chain',
-    'OP Mainnet': 'optimism',
-    Celo: 'celo',
-    Base: 'base'
-  },
-
-  WC_COINBASE_ONRAMP_APP_ID: 'bf18c88d-495a-463b-b249-0b9d3656cf5e',
 
   SWAP_SUGGESTED_TOKENS: [
     'ETH',
@@ -217,9 +175,8 @@ export const ConstantsUtil = {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
     polkadot: '0x',
-    bip122: '0x',
-    cosmos: '0x'
-  } as const satisfies Record<ChainNamespace, string>,
+    bip122: '0x'
+  } as const,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
@@ -230,18 +187,10 @@ export const ConstantsUtil = {
 
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   DEFAULT_REMOTE_FEATURES: {
-    swaps: ['1inch'] as SwapProvider[],
-    onramp: ['meld', 'coinbase'] as OnRampProvider[],
+    swaps: ['1inch'],
+    onramp: ['meld'],
     email: true,
-    socials: [
-      'google',
-      'x',
-      'discord',
-      'farcaster',
-      'github',
-      'apple',
-      'facebook'
-    ] as SocialProvider[],
+    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
     activity: true,
     reownBranding: true,
     multiWallet: false
@@ -277,15 +226,7 @@ export const ConstantsUtil = {
     pay: false
   } satisfies Features,
 
-  DEFAULT_SOCIALS: [
-    'google',
-    'x',
-    'farcaster',
-    'discord',
-    'apple',
-    'github',
-    'facebook'
-  ] as SocialProvider[],
+  DEFAULT_SOCIALS: ['google', 'x', 'farcaster', 'discord', 'apple', 'github', 'facebook'],
 
   DEFAULT_ACCOUNT_TYPES: {
     bip122: 'payment',

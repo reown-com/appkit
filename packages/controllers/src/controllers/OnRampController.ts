@@ -2,7 +2,6 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
@@ -14,7 +13,7 @@ import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
-export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
+export type OnRampProviderOption = 'moonpay' | 'stripe' | 'paypal' | 'meld'
 
 export type OnRampProvider = {
   label: string
@@ -117,7 +116,7 @@ const controller = {
     }
   },
 
-  setOnrampProviders(providers: OnRampProviderName[]) {
+  setOnrampProviders(providers: string[]) {
     if (Array.isArray(providers) && providers.every(item => typeof item === 'string')) {
       const validOnramp = providers as string[]
 

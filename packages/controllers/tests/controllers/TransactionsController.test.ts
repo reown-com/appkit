@@ -46,23 +46,21 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(response)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress, 'meld')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
+      onramp: 'meld',
       cursor: undefined,
       cache: 'no-cache'
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactions).toEqual([
+      ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS,
+      ONRAMP_TRANSACTIONS_RESPONSES_FEB.FAILED
+    ])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
-      2024: {
-        0: [ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS],
-        1: [ONRAMP_TRANSACTIONS_RESPONSES_FEB.FAILED]
-      }
-    })
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should update onramp transaction from pending to success', async () => {
@@ -81,11 +79,11 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress, 'meld')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
+      onramp: 'meld',
       cursor: undefined,
       cache: 'no-cache'
     })
@@ -106,23 +104,19 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress, 'meld')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
+      onramp: 'meld',
       cursor: undefined,
       cache: 'no-cache'
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactions).toEqual([SUCCESS])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
-      2024: {
-        1: [SUCCESS]
-      }
-    })
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should update onramp transaction from pending to failed', async () => {
@@ -141,11 +135,11 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress, 'meld')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
+      onramp: 'meld',
       cursor: undefined,
       cache: 'no-cache'
     })
@@ -166,23 +160,19 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress, 'meld')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
+      onramp: 'meld',
       cursor: undefined,
       cache: 'no-cache'
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactions).toEqual([FAILED])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
-      2024: {
-        1: [FAILED]
-      }
-    })
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should push new onramp transactions while updating old ones', async () => {
@@ -201,22 +191,18 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress, 'meld')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
+      onramp: 'meld',
       cursor: undefined,
       cache: 'no-cache'
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactions).toEqual([IN_PROGRESS])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
-      2024: {
-        0: [IN_PROGRESS]
-      }
-    })
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
 
     // Update the transaction
     const successResponse = {
@@ -226,24 +212,19 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress, 'meld')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
+      onramp: 'meld',
       cursor: undefined,
       cache: 'no-cache'
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactions).toEqual([SUCCESS, ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
-      2024: {
-        0: [SUCCESS],
-        1: [ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS]
-      }
-    })
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should clear cursor correctly', async () => {
@@ -288,11 +269,11 @@ describe('TransactionsController', () => {
       }
     } as any)
 
-    await TransactionsController.fetchTransactions('0x123', 'coinbase')
+    await TransactionsController.fetchTransactions('0x123', 'meld')
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
       cursor: 'cursor',
-      onramp: 'coinbase',
+      onramp: 'meld',
       cache: 'no-cache',
       chainId: 'eip155:1'
     })

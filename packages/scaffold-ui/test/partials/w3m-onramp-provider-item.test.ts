@@ -68,8 +68,8 @@ describe('W3mOnRampProviderItem', () => {
   it('should render with custom properties', async () => {
     const element: W3mOnRampProviderItem = await fixture(
       html`<w3m-onramp-provider-item
-        name="coinbase"
-        label="Coinbase"
+        name="meld"
+        label="Meld.io"
         feeRange="1-2%"
       ></w3m-onramp-provider-item>`
     )
@@ -78,10 +78,10 @@ describe('W3mOnRampProviderItem', () => {
     await elementUpdated(element)
 
     const visual = element.shadowRoot?.querySelector('wui-visual')
-    expect(visual?.getAttribute('name')).toBe('coinbase')
+    expect(visual?.getAttribute('name')).toBe('meld')
 
     const labelText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-500"]')
-    expect(labelText?.textContent?.trim()).toBe('Coinbase')
+    expect(labelText?.textContent?.trim()).toBe('Meld.io')
 
     const feeText = element.shadowRoot?.querySelector('wui-text[variant="tiny-500"]')
     expect(feeText?.textContent?.trim()).toContain('1-2%')

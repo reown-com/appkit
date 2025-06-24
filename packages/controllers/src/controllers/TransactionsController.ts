@@ -49,7 +49,7 @@ const controller = {
     state.lastNetworkInView = lastNetworkInView
   },
 
-  async fetchTransactions(accountAddress?: string, onramp?: 'coinbase') {
+  async fetchTransactions(accountAddress?: string, onramp?: 'meld') {
     if (!accountAddress) {
       throw new Error("Transactions can't be fetched without an accountAddress")
     }
@@ -61,8 +61,8 @@ const controller = {
         account: accountAddress,
         cursor: state.next,
         onramp,
-        // Coinbase transaction history state updates require the latest data
-        cache: onramp === 'coinbase' ? 'no-cache' : undefined,
+        // Meld transaction history state updates require the latest data
+        cache: onramp === 'meld' ? 'no-cache' : undefined,
         chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
       })
 
@@ -73,11 +73,8 @@ const controller = {
 
       state.loading = false
 
-      if (onramp === 'coinbase') {
-        state.coinbaseTransactions = TransactionsController.groupTransactionsByYearAndMonth(
-          state.coinbaseTransactions,
-          response.data
-        )
+      if (onramp === 'meld') {
+        state.transactions = [...state.transactions, ...response.data]
       } else {
         state.transactions = filteredTransactions
         state.transactionsByYear = TransactionsController.groupTransactionsByYearAndMonth(

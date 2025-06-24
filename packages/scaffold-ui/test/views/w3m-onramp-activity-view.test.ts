@@ -61,16 +61,9 @@ describe('W3mOnRampActivityView', () => {
       tokenImages: { ETH: 'https://example.com/eth-alt.png' }
     })
 
-    const currentYear = new Date().getFullYear()
-    const currentMonth = new Date().getMonth()
-
     vi.spyOn(TransactionsController, 'state', 'get').mockReturnValue({
       ...TransactionsController.state,
-      coinbaseTransactions: {
-        [currentYear]: {
-          [currentMonth]: [mockTransaction]
-        }
-      }
+      transactions: [mockTransaction]
     })
   })
 
@@ -122,16 +115,9 @@ describe('W3mOnRampActivityView', () => {
       metadata: { ...mockTransaction.metadata, status: 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS' }
     }
 
-    const currentYear = new Date().getFullYear()
-    const currentMonth = new Date().getMonth()
-
     vi.spyOn(TransactionsController, 'state', 'get').mockReturnValue({
       ...TransactionsController.state,
-      coinbaseTransactions: {
-        [currentYear]: {
-          [currentMonth]: [inProgressTx]
-        }
-      }
+      transactions: [inProgressTx]
     })
 
     const fetchTransactionsSpy = vi
@@ -162,16 +148,9 @@ describe('W3mOnRampActivityView', () => {
       ]
     }
 
-    const currentYear = new Date().getFullYear()
-    const currentMonth = new Date().getMonth()
-
     vi.spyOn(TransactionsController, 'state', 'get').mockReturnValue({
       ...TransactionsController.state,
-      coinbaseTransactions: {
-        [currentYear]: {
-          [currentMonth]: [invalidTx]
-        }
-      }
+      transactions: [invalidTx]
     })
 
     const element: W3mOnRampActivityView = await fixture(
@@ -191,6 +170,6 @@ describe('W3mOnRampActivityView', () => {
     await fixture(html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`)
 
     expect(clearCursorSpy).toHaveBeenCalled()
-    expect(fetchTransactionsSpy).toHaveBeenCalledWith('0x123', 'coinbase')
+    expect(fetchTransactionsSpy).toHaveBeenCalledWith('0x123', 'meld')
   })
 })

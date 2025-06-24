@@ -36,14 +36,6 @@ const mockMetamaskMobileConnector = {
   chain: 'eip155' as const,
   type: 'ANNOUNCED' as const
 }
-const mockCoinbaseconnector = {
-  info: { rdns: 'io.coinbase' },
-  name: 'Coinbase',
-  id: '5',
-  explorerId: '5',
-  chain: 'eip155' as const,
-  type: 'EXTERNAL' as const
-}
 
 const mockBitGetConnector = {
   info: { rdns: 'io.bitget' },
@@ -58,7 +50,7 @@ const mockBitGetConnector = {
 const mockMetamaskWallet: WcWallet = { id: '1', name: 'Wallet 1', rdns: 'io.metamask' }
 const mockRainbowWallet: WcWallet = { id: '2', name: 'Wallet 2', rdns: 'io.rainbow' }
 const mockTrustWallet: WcWallet = { id: '3', name: 'Wallet 3', rdns: 'io.trustwallet' }
-const mockCoinbaseWallet: WcWallet = { id: '5', name: 'Wallet 5', rdns: 'io.coinbase' }
+
 const mockBitGetWallet: WcWallet = { id: '6', name: 'BitGet Wallet', rdns: null }
 
 describe('WalletUtil', () => {
@@ -78,12 +70,7 @@ describe('WalletUtil', () => {
 
   describe('filterOutDuplicatesByRDNS', () => {
     it("should filter out wallets with RDNS or wallets that exactly match a connector name when they don't have RDNS from connectors and recent wallets", () => {
-      const mockConnectors = [
-        mockMetamaskConnector,
-        mockRainbowConnector,
-        mockCoinbaseconnector,
-        mockBitGetConnector
-      ]
+      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector, mockBitGetConnector]
       const mockRecentWallets = [mockTrustWallet]
 
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
@@ -138,12 +125,9 @@ describe('WalletUtil', () => {
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
       vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue(mockRecentWallets)
 
-      const filteredWallets = WalletUtil.filterOutDuplicatesByIds([
-        ...mockWallets,
-        mockCoinbaseWallet
-      ])
+      const filteredWallets = WalletUtil.filterOutDuplicatesByIds([...mockWallets])
 
-      expect(filteredWallets).toEqual([mockCoinbaseWallet])
+      expect(filteredWallets).toEqual([])
     })
 
     it('should return all wallets if no connectors or recent wallets have IDs', () => {

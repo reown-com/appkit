@@ -64,10 +64,12 @@ const featureConfig = {
     },
     processFallback: (localValue: unknown): SocialProvider[] | false => {
       if (localValue === undefined) {
-        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials
+        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials as SocialProvider[]
       }
       if (typeof localValue === 'boolean') {
-        return localValue ? ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials : false
+        return localValue
+          ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials as SocialProvider[])
+          : false
       }
 
       return localValue as SocialProvider[] | false
@@ -89,10 +91,10 @@ const featureConfig = {
     },
     processFallback: (localValue: unknown): SwapProvider[] | false => {
       if (localValue === undefined) {
-        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps
+        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps as SwapProvider[]
       }
       if (typeof localValue === 'boolean') {
-        return localValue ? ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps : false
+        return localValue ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps as SwapProvider[]) : false
       }
 
       return localValue as SwapProvider[] | false
@@ -114,10 +116,12 @@ const featureConfig = {
     },
     processFallback: (localValue: unknown): OnRampProvider[] | false => {
       if (localValue === undefined) {
-        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp
+        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp as OnRampProvider[]
       }
       if (typeof localValue === 'boolean') {
-        return localValue ? ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp : false
+        return localValue
+          ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp as OnRampProvider[])
+          : false
       }
 
       return localValue as OnRampProvider[] | false
@@ -251,7 +255,7 @@ export const ConfigUtil = {
 
     const remoteFeaturesConfig: RemoteFeatures =
       useApiConfig && !isBasic
-        ? ConstantsUtil.DEFAULT_REMOTE_FEATURES
+        ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES as RemoteFeatures)
         : ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
 
     try {
@@ -271,7 +275,7 @@ export const ConfigUtil = {
         e
       )
 
-      return ConstantsUtil.DEFAULT_REMOTE_FEATURES
+      return ConstantsUtil.DEFAULT_REMOTE_FEATURES as RemoteFeatures
     }
 
     if (useApiConfig && this.localSettingsOverridden.size > 0) {

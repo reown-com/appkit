@@ -10,7 +10,7 @@ import {
   OptionsController,
   TransactionsController
 } from '@reown/appkit-controllers'
-import { TransactionUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-transaction-list-item-loader'
@@ -35,7 +35,7 @@ export class W3mOnRampActivityView extends LitElement {
 
   @state() protected loading = false
 
-  @state() private coinbaseTransactions = TransactionsController.state.coinbaseTransactions
+  @state() private transactions = TransactionsController.state.transactions
 
   @state() private tokenImages = AssetController.state.tokenImages
 
@@ -51,7 +51,7 @@ export class W3mOnRampActivityView extends LitElement {
           clearTimeout(this.refetchTimeout)
         },
         TransactionsController.subscribe(val => {
-          this.coinbaseTransactions = { ...val.coinbaseTransactions }
+          this.transactions = [...val.transactions]
         })
       ]
     )
@@ -98,51 +98,18 @@ export class W3mOnRampActivityView extends LitElement {
   }
 
   private templateTransactionsByYear() {
-    const sortedYearKeys = Object.keys(this.coinbaseTransactions).sort().reverse()
+    if (!this.transactions || this.transactions.length === 0) {
+      return html``
+    }
 
-    return sortedYearKeys.map(year => {
-      const yearInt = parseInt(year, 10)
-
-      const sortedMonthIndexes = new Array(12)
-        .fill(null)
-        .map((_, idx) => idx)
-        .reverse()
-
-      return sortedMonthIndexes.map(month => {
-        const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
-        const transactions = this.coinbaseTransactions[yearInt]?.[month]
-
-        if (!transactions) {
-          return null
-        }
-
-        return html`
-          <wui-flex flexDirection="column">
-            <wui-flex
-              alignItems="center"
-              flexDirection="row"
-              .padding=${['xs', 's', 's', 's'] as const}
-            >
-              <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
-            </wui-flex>
-            <wui-flex flexDirection="column" gap="xs">
-              ${this.templateTransactions(transactions)}
-            </wui-flex>
-          </wui-flex>
-        `
-      })
-    })
+    return html`
+      <wui-flex flexDirection="column" gap="xs">
+        ${this.templateTransactions(this.transactions)}
+      </wui-flex>
+    `
   }
 
   private async fetchTransactions() {
-    const provider = 'coinbase'
-
-    if (provider === 'coinbase') {
-      await this.fetchCoinbaseTransactions()
-    }
-  }
-
-  private async fetchCoinbaseTransactions() {
     const address = AccountController.state.address
     const projectId = OptionsController.state.projectId
 
@@ -156,17 +123,14 @@ export class W3mOnRampActivityView extends LitElement {
 
     this.loading = true
 
-    await TransactionsController.fetchTransactions(address, 'coinbase')
+    await TransactionsController.fetchTransactions(address, 'meld')
 
     this.loading = false
     this.refetchLoadingTransactions()
   }
 
   private refetchLoadingTransactions() {
-    const today = new Date()
-    const currentMonthTxs = this.coinbaseTransactions[today.getFullYear()]?.[today.getMonth()] || []
-
-    const loadingTransactions = currentMonthTxs.filter(
+    const loadingTransactions = this.transactions.filter(
       transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
@@ -179,7 +143,7 @@ export class W3mOnRampActivityView extends LitElement {
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
-      await TransactionsController.fetchTransactions(address, 'coinbase')
+      await TransactionsController.fetchTransactions(address, 'meld')
       this.refetchLoadingTransactions()
     }, 3000)
   }
