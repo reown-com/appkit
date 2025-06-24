@@ -10,6 +10,7 @@ import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
+import { getPreferredAccountType } from '../src/utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { StorageUtil } from '../src/utils/StorageUtil.js'
@@ -107,7 +108,7 @@ export function useAppKitAccount(options?: {
         ? {
             user: accountState?.user,
             authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
-            accountType: accountState?.preferredAccountTypes?.[activeChainNamespace],
+            accountType: getPreferredAccountType(activeChainNamespace),
             isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
           }
         : undefined

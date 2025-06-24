@@ -63,7 +63,8 @@ import {
   SendController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
@@ -324,12 +325,6 @@ export abstract class AppKitBaseClient {
 
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
-
-    // Get stored account types
-    const storedAccountTypes = StorageUtil.getPreferredAccountTypes() || {}
-    const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
-
-    AccountController.setPreferredAccountTypes(defaultTypes)
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
@@ -1630,8 +1625,7 @@ export abstract class AppKitBaseClient {
 
   public getProviderType = (namespace: ChainNamespace) => ProviderUtil.getProviderId(namespace)
 
-  public getPreferredAccountType = (namespace: ChainNamespace) =>
-    AccountController.state.preferredAccountTypes?.[namespace]
+  public getPreferredAccountType = (namespace: ChainNamespace) => getPreferredAccountType(namespace)
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
@@ -1930,7 +1924,7 @@ export abstract class AppKitBaseClient {
               authProvider:
                 accountState.socialProvider ||
                 ('email' as AccountControllerState['socialProvider'] | 'email'),
-              accountType: accountState.preferredAccountTypes?.[namespace || activeChain],
+              accountType: getPreferredAccountType(namespace || activeChain),
               isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
             }
           : undefined
@@ -2104,7 +2098,7 @@ export abstract class AppKitBaseClient {
     preferredAccountType,
     chain
   ) => {
-    AccountController.setPreferredAccountType(preferredAccountType, chain)
+    ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   }
 
   public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {

@@ -267,9 +267,7 @@ describe('Ethers5Adapter', () => {
     it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
         ...AccountController.state,
-        preferredAccountTypes: {
-          eip155: 'smartAccount'
-        }
+        preferredAccountType: 'smartAccount'
       })
 
       const ethers5Adapter = new Ethers5Adapter()

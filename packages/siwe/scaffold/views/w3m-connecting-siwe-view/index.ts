@@ -3,14 +3,14 @@ import { state } from 'lit/decorators.js'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -89,7 +89,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -103,15 +103,14 @@ export class W3mConnectingSiweView extends LitElement {
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            getPreferredAccountType(activeChainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
       return session
     } catch (error) {
-      const preferredAccountType =
-        AccountController.state.preferredAccountTypes?.[activeChainNamespace]
+      const preferredAccountType = getPreferredAccountType(activeChainNamespace)
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       if (isSmartAccount) {
@@ -152,7 +151,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
