@@ -108,6 +108,22 @@ document.getElementById('sign-message')?.addEventListener('click', async () => {
   signMessage()
 })
 
+document.getElementById('send-transfer')?.addEventListener('click', async () => {
+  if (!accountState.address) {
+    await modal.open()
+    return
+  }
+  sendTransfer()
+})
+
+document.getElementById('sign-psbt')?.addEventListener('click', async () => {
+  if (!accountState.address) {
+    await modal.open()
+    return
+  }
+  signPSBT()
+})
+
 async function signMessage() {
   if (bip122Provider && accountState.address) {
     try {
@@ -117,6 +133,31 @@ async function signMessage() {
       })
     } catch (error) {
       console.error('Error signing message:', error)
+    }
+  }
+}
+
+async function sendTransfer() {
+  if (bip122Provider && accountState.address) {
+    try {
+      await bip122Provider.sendTransfer({
+        recipient: accountState.address,
+        amount: 5000
+      })
+    } catch (error) {
+      console.error('Error signing message:', error)
+    }
+  }
+}
+
+async function signPSBT() {
+  if (bip122Provider && accountState.address) {
+    try {
+      await bip122Provider.signPSBT({
+        psbt: 'psbt_here'
+      })
+    } catch (error) {
+      console.error('Error signing psbt:', error)
     }
   }
 }

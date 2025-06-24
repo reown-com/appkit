@@ -67,7 +67,6 @@ export function useAppKitProvider<T>(chainNamespace: ChainNamespace): UseAppKitR
   const walletProviderType = ref(ProviderUtil.state.providerIds[chainNamespace])
 
   const unsubscribe = ProviderUtil.subscribe(newState => {
-    // @ts-expect-error dasd
     walletProvider.value = newState.providers[chainNamespace]
     walletProviderType.value = newState.providerIds[chainNamespace]
   })

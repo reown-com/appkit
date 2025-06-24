@@ -61,7 +61,7 @@ export class AsignaUiHelper {
     content.className = 'modal-content'
     content.style.cssText = `
       background: white;
-      border-radius: 12px;
+      border-radius: 24px;
       padding: 24px;
       text-align: center;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -198,7 +198,7 @@ export class AsignaUiHelper {
       if (data.psbt) {
         txInfo.textContent = `PSBT: ${data.psbt.substring(0, 20)}...`
       } else if (data.amount && data.recipient) {
-        txInfo.textContent = `Amount: ${data.amount} BTC\nRecipient: ${data.recipient}`
+        txInfo.textContent = `Amount: ${data.amount} sats\nRecipient: ${data.recipient}`
       } else {
         txInfo.textContent = 'Please confirm the transaction in your Asigna wallet'
       }
