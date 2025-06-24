@@ -913,6 +913,18 @@ export class WagmiAdapter extends AdapterBlueprint {
     return provider.request({ method: 'wallet_getAssets', params: [params] })
   }
 
+  public override setAuthProvider(authProvider: W3mFrameProvider) {
+    this.addConnector({
+      id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+      type: 'AUTH',
+      name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
+      provider: authProvider,
+      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
+      chain: this.namespace as ChainNamespace,
+      chains: []
+    })
+  }
+
   public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
     universalProvider.on('connect', () => {
       const connections = getConnections(this.wagmiConfig)
