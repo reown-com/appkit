@@ -8,6 +8,7 @@ import { EOA, ModalWalletValidator, SMART_ACCOUNT } from './shared/validators/Mo
 let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
+let tempEmail: string
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
@@ -41,7 +42,7 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
   await validator.expectSwitchedNetworkOnNetworksView('Polygon')
   await page.closeModal()
 
-  const tempEmail = await email.getEmailAddressToUse()
+  tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
@@ -192,6 +193,29 @@ smartAccountTest(
 smartAccountTest('it should disconnect correctly', async () => {
   await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
+  await page.disconnect()
+  await validator.expectDisconnected()
+})
+
+smartAccountTest('it should be able to switch after disconnecting', async ({ library }) => {
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
+  }
+
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+  if (namespace !== 'eip155') {
+    return
+  }
+
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+  await validator.expectConnected()
+
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow('smart account')
   await page.disconnect()
   await validator.expectDisconnected()
 })
