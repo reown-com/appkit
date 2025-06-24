@@ -64,10 +64,9 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
   async connect() {
     const connectFeature = this.getWalletFeature('bitcoin:connect')
-
     const response = await connectFeature.connect({ purposes: ['payment', 'ordinals'] })
-
     const account = response.accounts[0]
+
     if (!account) {
       throw new Error('No account found')
     }
