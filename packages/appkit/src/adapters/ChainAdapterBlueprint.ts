@@ -23,7 +23,7 @@ import {
 import { type CombinedProvider, type Provider } from '@reown/appkit-controllers'
 import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil } from '@reown/appkit-utils/ethers'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AppKitBaseClient } from '../client/appkit-base-client.js'
 import { ConnectionManager } from '../connections/ConnectionManager.js'
@@ -143,36 +143,30 @@ export abstract class AdapterBlueprint<
   public abstract setUniversalProvider(universalProvider: UniversalProvider): Promise<void>
 
   /**
+   * Handles the auth connected event.
+   * @param {W3mFrameTypes.Responses['FrameGetUserResponse']} user - The user response
+   */
+  private onAuthConnected({ accounts, chainId }: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+    const caipNetwork = this.getCaipNetworks()
+      .filter(n => n.chainNamespace === this.namespace)
+      .find(n => n.id.toString() === chainId?.toString())
+
+    if (accounts && caipNetwork) {
+      this.addConnection({
+        connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+        accounts,
+        caipNetwork
+      })
+    }
+  }
+
+  /**
    * Sets the auth provider.
    * @param {W3mFrameProvider} authProvider - The auth provider instance
    */
   public setAuthProvider(authProvider: W3mFrameProvider): void {
-    authProvider.onConnect(({ accounts, chainId }) => {
-      const caipNetwork = this.getCaipNetworks()
-        .filter(n => n.chainNamespace === this.namespace)
-        .find(n => n.id.toString() === chainId?.toString())
-
-      if (accounts && caipNetwork) {
-        this.addConnection({
-          connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH,
-          accounts,
-          caipNetwork
-        })
-      }
-    })
-    authProvider.onSocialConnected(({ accounts, chainId }) => {
-      const caipNetwork = this.getCaipNetworks()
-        .filter(n => n.chainNamespace === this.namespace)
-        .find(n => n.id.toString() === chainId?.toString())
-
-      if (accounts && caipNetwork) {
-        this.addConnection({
-          connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH,
-          accounts,
-          caipNetwork
-        })
-      }
-    })
+    authProvider.onConnect(this.onAuthConnected.bind(this))
+    authProvider.onSocialConnected(this.onAuthConnected.bind(this))
 
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
