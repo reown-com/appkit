@@ -155,9 +155,9 @@ export class AppKit extends AppKitBaseClient {
 
       this.setLoading(false, namespace)
     })
-    provider.onSocialConnected(({ userName }) => {
+    provider.onSocialConnected(user => {
       this.setUser(
-        { ...(AccountController.state.user || {}), username: userName },
+        { ...(AccountController.state.user || {}), ...user },
         ChainController.state.activeChain
       )
     })
