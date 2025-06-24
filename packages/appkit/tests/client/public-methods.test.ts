@@ -660,12 +660,16 @@ describe('Base Public methods', () => {
   })
 
   it('should set preferred account type', () => {
-    const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
+    const setPreferredAccountType = vi.spyOn(ChainController, 'setAccountProp')
 
     const appKit = new AppKit(mockOptions)
     appKit.setPreferredAccountType('eoa', mainnet.chainNamespace)
 
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
+    expect(setPreferredAccountType).toHaveBeenCalledWith(
+      'preferredAccountType',
+      'eoa',
+      mainnet.chainNamespace
+    )
   })
 
   it('should get Reown name', async () => {
@@ -1108,7 +1112,8 @@ describe('Base Public methods', () => {
       socialProvider: 'email' as SocialProvider,
       smartAccountDeployed: true,
       currentTab: 0,
-      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']]),
+      preferredAccountType: 'eoa'
     })
     vi.spyOn(CoreHelperUtil, 'getPlainAddress')
 
@@ -1163,7 +1168,8 @@ describe('Base Public methods', () => {
       socialProvider: 'email' as SocialProvider,
       smartAccountDeployed: true,
       currentTab: 0,
-      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']]),
+      preferredAccountType: 'eoa'
     })
     vi.spyOn(CoreHelperUtil, 'getPlainAddress')
 

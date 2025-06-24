@@ -119,7 +119,7 @@ describe('AccountController', () => {
       addressLabels: new Map<string, string>(),
       connectedWalletInfo: undefined,
       farcasterUrl: undefined,
-      preferredAccountType: undefined,
+      preferredAccountType: 'smartAccount',
       socialProvider: undefined,
       status: 'disconnected',
       user: undefined

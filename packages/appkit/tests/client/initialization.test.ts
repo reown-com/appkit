@@ -106,8 +106,6 @@ describe('Base', () => {
     })
 
     it('should set default account types', async () => {
-      const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
-      const setChainAccountData = vi.spyOn(ChainController, 'setChainAccountData')
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce({
         bip122: 'ordinal'
       })
@@ -121,25 +119,21 @@ describe('Base', () => {
 
       await appKit.ready()
 
-      expect(setDefaultAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa'
-      })
-      expect(setChainAccountData).toHaveBeenCalledWith('eip155', {
-        preferredAccountType: 'eoa'
-      })
+      expect(
+        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
+      ).toEqual('eoa')
     })
 
     it('should use default account types when no account types are set', () => {
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
         ConstantsUtil.DEFAULT_ACCOUNT_TYPES
       )
-      const setChainAccountData = vi.spyOn(ChainController, 'setChainAccountData')
 
       new AppKit(mockOptions)
 
-      expect(setChainAccountData).toHaveBeenCalledWith('eip155', {
-        preferredAccountType: 'eoa'
-      })
+      expect(
+        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
+      ).toEqual('smartAccount')
     })
 
     it('should use stored account types', () => {
@@ -147,15 +141,11 @@ describe('Base', () => {
         eip155: 'eoa',
         bip122: 'ordinal'
       })
-      const setChainAccountData = vi.spyOn(ChainController, 'setChainAccountData')
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
 
       new AppKit(mockOptions)
 
       expect(setDefaultAccountTypes).toHaveBeenCalledWith(undefined)
-      expect(setChainAccountData).toHaveBeenCalledWith('eip155', {
-        preferredAccountType: 'eoa'
-      })
     })
 
     it('should use default network prop when defaultNetwork prop is not included in the networks array', async () => {
