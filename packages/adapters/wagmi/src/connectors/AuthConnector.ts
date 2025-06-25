@@ -82,6 +82,7 @@ export function authConnector(parameters: AuthParameters) {
       chainId?: number
       isReconnecting?: boolean
       socialUri?: string
+      rpcUrl?: string
     } = {}
   ) {
     const provider = getProviderInstance()
@@ -107,7 +108,8 @@ export function authConnector(parameters: AuthParameters) {
     } = await provider.connect({
       chainId,
       preferredAccountType,
-      socialUri: options.socialUri
+      socialUri: options.socialUri,
+      rpcUrl: options.rpcUrl
     })
 
     currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
@@ -131,7 +133,12 @@ export function authConnector(parameters: AuthParameters) {
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
     async connect(
-      options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
+      options: {
+        chainId?: number
+        isReconnecting?: boolean
+        socialUri?: string
+        rpcUrl?: string
+      } = {}
     ) {
       if (connectSocialPromise) {
         return connectSocialPromise

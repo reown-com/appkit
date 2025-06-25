@@ -197,6 +197,8 @@ export const CaipNetworksUtil = {
     caipNetworks: AppKitNetwork[],
     { customNetworkImageUrls, projectId, customRpcUrls }: ExtendCaipNetworkParams
   ) {
+    console.trace('>> extendCaipNetworks', caipNetworks, customRpcUrls)
+
     return caipNetworks.map(caipNetwork =>
       CaipNetworksUtil.extendCaipNetwork(caipNetwork, {
         customNetworkImageUrls,

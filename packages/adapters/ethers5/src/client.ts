@@ -405,7 +405,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
     address,
     type,
     chainId,
-    socialUri
+    socialUri,
+    rpcUrl
   }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, id))
 
@@ -460,6 +461,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       ).connect({
         chainId,
         socialUri,
+        rpcUrl,
         preferredAccountType: getPreferredAccountType('eip155')
       })
 
