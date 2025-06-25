@@ -71,27 +71,13 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       if (activeCaipAddress) {
         const session = await getSession()
 
-        if (session) {
-          if (siwe.options.signOutOnAccountChange) {
-            const sessionAddress = session?.address
-            const caipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)
-            const isDifferentAddress = !HelpersUtil.isLowerCaseMatch(sessionAddress, caipAddress)
+        if (session && siwe.options.signOutOnAccountChange) {
+          const sessionAddress = session?.address
+          const caipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)
+          const isDifferentAddress = !HelpersUtil.isLowerCaseMatch(sessionAddress, caipAddress)
 
-            if (isDifferentAddress) {
-              await signOut()
-
-              return
-            }
-          }
-
-          if (siwe.options.signOutOnNetworkChange) {
-            const sessionChainId = session.chainId
-            const activeCaipNetworkId = NetworkUtil.caipNetworkIdToNumber(activeCaipAddress)
-            const isDifferentNetwork = sessionChainId !== activeCaipNetworkId
-
-            if (isDifferentNetwork) {
-              await signOut()
-            }
+          if (isDifferentAddress) {
+            await signOut()
           }
         }
       }
