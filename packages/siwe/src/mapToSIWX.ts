@@ -37,9 +37,21 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     }
   }
 
+  let signingOut: Promise<void> | undefined = undefined
+
   async function signOut() {
-    await siwe.methods.signOut()
-    siwe.methods.onSignOut?.()
+    if (signingOut) {
+      return signingOut
+    }
+
+    signingOut = new Promise(async resolve => {
+      await siwe.methods.signOut()
+      siwe.methods.onSignOut?.()
+      resolve()
+      signingOut = undefined
+    })
+
+    return signingOut
   }
 
   subscriptions.forEach(unsubscribe => unsubscribe())
@@ -54,17 +66,32 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return
       }
 
-      if (siwe.options.signOutOnAccountChange && activeCaipAddress) {
+      if (activeCaipAddress) {
         const session = await getSession()
 
-        const lowercaseSessionAddress = session?.address?.toLowerCase()
-        const lowercaseCaipAddress =
-          CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
+        if (session) {
+          if (siwe.options.signOutOnAccountChange) {
+            const lowercaseSessionAddress = session?.address
+            const lowercaseCaipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)
+            const isDifferentAddress = !HelpersUtil.isLowerCaseMatch(
+              lowercaseSessionAddress,
+              lowercaseCaipAddress
+            )
 
-        const isDifferentAddress = session && lowercaseSessionAddress !== lowercaseCaipAddress
+            if (isDifferentAddress) {
+              await signOut()
+            }
+          }
 
-        if (isDifferentAddress) {
-          await signOut()
+          if (siwe.options.signOutOnNetworkChange) {
+            const sessionChainId = session.chainId
+            const activeCaipNetworkId = Number(activeCaipAddress.split(':')[1])
+            const isDifferentNetwork = sessionChainId !== activeCaipNetworkId
+
+            if (isDifferentNetwork) {
+              await signOut()
+            }
+          }
         }
       }
     })
