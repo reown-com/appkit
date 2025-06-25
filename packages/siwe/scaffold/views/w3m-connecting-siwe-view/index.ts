@@ -113,12 +113,12 @@ export class W3mConnectingSiweView extends LitElement {
       const preferredAccountType = getPreferredAccountType(activeChainNamespace)
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      if (isSmartAccount) {
-        SnackController.showError('This application might not support Smart Accounts')
-      } else {
-        SnackController.showError('Signature declined')
-      }
+
+      SnackController.showError('Error signing message')
       SIWEController.setStatus('error')
+
+      // eslint-disable-next-line no-console
+      console.error('Failed to sign SIWE message', error)
 
       return EventsController.sendEvent({
         event: 'SIWX_AUTH_ERROR',

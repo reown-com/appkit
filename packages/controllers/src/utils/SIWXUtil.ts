@@ -125,12 +125,7 @@ export const SIWXUtil = {
         })
       }
 
-      if (properties.isSmartAccount) {
-        SnackController.showError('This application might not support Smart Accounts')
-      } else {
-        SnackController.showError('Signature declined')
-      }
-
+      SnackController.showError('Error signing message')
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
