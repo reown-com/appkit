@@ -96,6 +96,7 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
+
 export type Connector = {
   id: string
   type: ConnectorType

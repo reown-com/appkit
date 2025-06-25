@@ -19,11 +19,7 @@ export type { OnRampControllerState, OnRampProvider } from '../src/controllers/O
 
 export { ConnectionController } from '../src/controllers/ConnectionController.js'
 export { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
-export type {
-  ConnectionControllerClient,
-  ConnectionControllerState,
-  ConnectExternalOptions
-} from '../src/controllers/ConnectionController.js'
+export type * from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
 export { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'

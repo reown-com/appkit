@@ -767,7 +767,7 @@ export abstract class AppKitBaseClient {
     return { address: res.address, connectedCaipNetwork: caipNetworkToUse }
   }
 
-  protected async connectExternalRemainingNamespaces(
+  protected connectExternalRemainingNamespaces(
     params: ConnectExternalOptions,
     connectResult: { address: string; connectedCaipNetwork: CaipNetwork | undefined } | undefined
   ) {
@@ -778,7 +778,7 @@ export abstract class AppKitBaseClient {
     )
 
     if (isConnectingToAuth) {
-      otherAuthNamespaces.map(ns => {
+      otherAuthNamespaces.forEach(ns => {
         const provider = ProviderUtil.getProvider(ns)
         const caipNetwork = ChainController.getNetworkData(ns)?.caipNetwork
         const caipNetworkToUse = this.getCaipNetwork(ns)
@@ -792,14 +792,12 @@ export abstract class AppKitBaseClient {
           rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0]
         })
 
-        if (!res) {
-          return undefined
+        if (res) {
+          StorageUtil.addConnectedNamespace(ns)
+          StorageUtil.removeDisconnectedConnectorId(params.id, ns)
+          this.setStatus('connected', ns)
+          this.syncConnectedWalletInfo(ns)
         }
-
-        StorageUtil.addConnectedNamespace(ns)
-        StorageUtil.removeDisconnectedConnectorId(params.id, ns)
-        this.setStatus('connected', ns)
-        this.syncConnectedWalletInfo(ns)
       })
     }
   }
@@ -2002,7 +2000,6 @@ export abstract class AppKitBaseClient {
         )
       )
     )
-    console.log('>>> getAccount', namespace, accountState)
 
     if (!accountState) {
       return undefined
