@@ -58,7 +58,6 @@ export class W3mFrameProvider {
     this.abortController = abortController
     this.getActiveCaipNetwork = getActiveCaipNetwork
     const network = getActiveCaipNetwork()
-    console.log('>> Constructor network', network)
     const rpcUrl = network?.rpcUrls.default.http?.[0]
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger, rpcUrl })
     this.onTimeout = onTimeout

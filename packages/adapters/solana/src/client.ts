@@ -286,8 +286,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const address = await connector.connect({
       chainId: params.chainId as string,
-      socialUri: params.socialUri,
-      rpcUrl: params.rpcUrl
+      socialUri: params.socialUri
     })
 
     SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))

@@ -52,7 +52,6 @@ export interface Provider
     chainId?: string
     onUri?: ((uri: string) => void) | undefined
     socialUri?: string
-    rpcUrl?: string
   }) => Promise<string>
   disconnect: () => Promise<void>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
