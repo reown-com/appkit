@@ -125,10 +125,7 @@ export const SIWXUtil = {
         })
       }
 
-      const message = error instanceof Error ? error.message : 'Signature declined'
-
-      SnackController.showError(message)
-
+      SnackController.showError('Error signing message')
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',

@@ -114,10 +114,11 @@ export class W3mConnectingSiweView extends LitElement {
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
 
-      const message = error instanceof Error ? error.message : 'Signature declined'
-
-      SnackController.showError(message)
+      SnackController.showError('Error signing message')
       SIWEController.setStatus('error')
+
+      // eslint-disable-next-line no-console
+      console.error('Failed to sign SIWE message', error)
 
       return EventsController.sendEvent({
         event: 'SIWX_AUTH_ERROR',
