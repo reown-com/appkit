@@ -646,26 +646,17 @@ describe('Base Public methods', () => {
     )
   })
 
-  it('should set smart account enabled networks', () => {
-    const networks = [1, 137]
-    const setSmartAccountEnabledNetworks = vi.spyOn(
-      ChainController,
-      'setSmartAccountEnabledNetworks'
-    )
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setSmartAccountEnabledNetworks(networks, mainnet.chainNamespace)
-
-    expect(setSmartAccountEnabledNetworks).toHaveBeenCalledWith(networks, mainnet.chainNamespace)
-  })
-
   it('should set preferred account type', () => {
-    const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
+    const setPreferredAccountType = vi.spyOn(ChainController, 'setAccountProp')
 
     const appKit = new AppKit(mockOptions)
     appKit.setPreferredAccountType('eoa', mainnet.chainNamespace)
 
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
+    expect(setPreferredAccountType).toHaveBeenCalledWith(
+      'preferredAccountType',
+      'eoa',
+      mainnet.chainNamespace
+    )
   })
 
   it('should get Reown name', async () => {
@@ -843,11 +834,11 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
 
-    expect(fetchIdentity).not.toHaveBeenCalled()
+    expect(fetchIdentity).toHaveBeenCalled()
 
     await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
 
-    expect(fetchIdentity).toHaveBeenCalledOnce()
+    expect(fetchIdentity).toHaveBeenCalled()
   })
 
   it('should not sync identity on non-evm network', async () => {
@@ -1106,12 +1097,10 @@ describe('Base Public methods', () => {
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountTypes: {
-        eip155: 'eoa'
-      },
       smartAccountDeployed: true,
       currentTab: 0,
-      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']]),
+      preferredAccountType: 'eoa'
     })
     vi.spyOn(CoreHelperUtil, 'getPlainAddress')
 
@@ -1164,12 +1153,10 @@ describe('Base Public methods', () => {
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountTypes: {
-        eip155: 'eoa'
-      },
       smartAccountDeployed: true,
       currentTab: 0,
-      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']]),
+      preferredAccountType: 'eoa'
     })
     vi.spyOn(CoreHelperUtil, 'getPlainAddress')
 

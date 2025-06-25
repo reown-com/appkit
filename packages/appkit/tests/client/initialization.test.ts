@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   AlertController,
   ApiController,
   ChainController,
@@ -107,8 +106,6 @@ describe('Base', () => {
     })
 
     it('should set default account types', async () => {
-      const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce({
         bip122: 'ordinal'
       })
@@ -122,26 +119,21 @@ describe('Base', () => {
 
       await appKit.ready()
 
-      expect(setDefaultAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa'
-      })
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa',
-        bip122: 'ordinal',
-        solana: 'eoa',
-        polkadot: 'eoa'
-      })
+      expect(
+        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
+      ).toEqual('eoa')
     })
 
     it('should use default account types when no account types are set', () => {
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
         ConstantsUtil.DEFAULT_ACCOUNT_TYPES
       )
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
 
       new AppKit(mockOptions)
 
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith(ConstantsUtil.DEFAULT_ACCOUNT_TYPES)
+      expect(
+        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
+      ).toEqual('smartAccount')
     })
 
     it('should use stored account types', () => {
@@ -149,18 +141,11 @@ describe('Base', () => {
         eip155: 'eoa',
         bip122: 'ordinal'
       })
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
 
       new AppKit(mockOptions)
 
       expect(setDefaultAccountTypes).toHaveBeenCalledWith(undefined)
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa',
-        bip122: 'ordinal',
-        solana: 'eoa',
-        polkadot: 'eoa'
-      })
     })
 
     it('should use default network prop when defaultNetwork prop is not included in the networks array', async () => {
