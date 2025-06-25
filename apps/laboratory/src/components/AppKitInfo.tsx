@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@reown/appkit/react'
 
 import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 
@@ -20,7 +20,9 @@ import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 export function AppKitInfo() {
   const { caipAddress, address, embeddedWalletInfo } = useAppKitAccount()
+  const { walletInfo } = useWalletInfo()
   const { chainId } = useAppKitNetwork()
+  const appKitAccount = useAppKitAccount()
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
   const erc3770Address = React.useMemo(() => {
@@ -86,6 +88,24 @@ export function AppKitInfo() {
               <Text data-testid="w3m-embedded-wallet-info">
                 {JSON.stringify(embeddedWalletInfo, null, 2)}
               </Text>
+            </Box>
+          )}
+
+          {walletInfo && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Wallet Type
+              </Heading>
+              <Text data-testid="w3m-wallet-type">{walletInfo.type}</Text>
+            </Box>
+          )}
+
+          {appKitAccount?.status && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Status
+              </Heading>
+              <Text data-testid="apkt-account-status">{appKitAccount.status}</Text>
             </Box>
           )}
 

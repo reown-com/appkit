@@ -4,8 +4,8 @@ import type { ChainNamespace, Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
@@ -98,7 +98,7 @@ const controller = {
           projectId: OptionsController.state.projectId,
           cursor: state.next,
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            getPreferredAccountType(activeChainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })

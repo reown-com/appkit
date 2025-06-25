@@ -12,10 +12,11 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
+  OptionsController,
   RouterController,
   SendController,
-  SnackController
+  SnackController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
@@ -44,8 +45,6 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
-
   @state() private disconnecting = false
 
   @state() private loading = false
@@ -53,6 +52,8 @@ export class W3mAccountSettingsView extends LitElement {
   @state() private switched = false
 
   @state() private text = ''
+
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   public constructor() {
     super()
@@ -63,17 +64,15 @@ export class W3mAccountSettingsView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.preferredAccountTypes = val.preferredAccountTypes
           }
         }),
-        AccountController.subscribeKey(
-          'preferredAccountTypes',
-          val => (this.preferredAccountTypes = val)
-        ),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
             this.network = val
           }
+        }),
+        OptionsController.subscribeKey('remoteFeatures', val => {
+          this.remoteFeatures = val
         })
       ]
     )
@@ -247,9 +246,9 @@ export class W3mAccountSettingsView extends LitElement {
 
     if (!this.switched) {
       this.text =
-        this.preferredAccountTypes?.[namespace] === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           ? 'Switch to your EOA'
-          : 'Switch to your smart account'
+          : 'Switch to your Smart Account'
     }
 
     return html`
@@ -277,8 +276,8 @@ export class W3mAccountSettingsView extends LitElement {
     const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
 
     const accountTypeTarget =
-      this.preferredAccountTypes?.[namespace] ===
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT || !isSmartAccountEnabled
+      getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      !isSmartAccountEnabled
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     const authConnector = ConnectorController.getAuthConnector()
@@ -293,7 +292,7 @@ export class W3mAccountSettingsView extends LitElement {
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         ? 'Switch to your EOA'
-        : 'Switch to your smart account'
+        : 'Switch to your Smart Account'
     this.switched = true
 
     SendController.resetSend()
@@ -310,8 +309,18 @@ export class W3mAccountSettingsView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconnecting = true
-      await ConnectionController.disconnect()
-      ModalController.close()
+      const namespace = this.network?.chainNamespace as ChainNamespace
+      const connectionsByNamespace = ConnectionController.getConnections(namespace)
+      const hasConnections = connectionsByNamespace.length > 0
+      const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(
+        isMultiWalletEnabled ? { id: connectorId, namespace } : {}
+      )
+      if (hasConnections && isMultiWalletEnabled) {
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('Wallet deleted')
+      }
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

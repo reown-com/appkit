@@ -1,4 +1,10 @@
-import type { AdapterType, Balance, ChainNamespace, SdkVersion } from '@reown/appkit-common'
+import type {
+  AdapterType,
+  Balance,
+  ChainNamespace,
+  ParsedCaipAddress,
+  SdkVersion
+} from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 
@@ -458,6 +464,26 @@ export const CoreHelperUtil = {
       sections.filter(Boolean).length === 3 &&
       (namespace as string) in CommonConstants.CHAIN_NAME_MAP
     )
+  },
+  getAccount(account?: ParsedCaipAddress | string) {
+    if (!account) {
+      return {
+        address: undefined,
+        chainId: undefined
+      }
+    }
+
+    if (typeof account === 'string') {
+      return {
+        address: account,
+        chainId: undefined
+      }
+    }
+
+    return {
+      address: account.address,
+      chainId: account.chainId
+    }
   },
   isMac() {
     const ua = window?.navigator.userAgent.toLowerCase()

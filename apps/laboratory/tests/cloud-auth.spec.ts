@@ -1,8 +1,8 @@
 import { type BrowserContext, expect, test } from '@playwright/test'
 
-import { BASE_URL } from './shared/constants'
+import { BASE_URL, WalletPage } from '@reown/appkit-testing'
+
 import { CloudAuthModalPage } from './shared/pages/CloudAuthModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { CloudAuthModalValidator } from './shared/validators/CloudAuthModalValidator'
 
 /* eslint-disable init-declarations */

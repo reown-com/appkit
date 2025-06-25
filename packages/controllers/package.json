@@ -1,13 +1,14 @@
 {
   "name": "@reown/appkit-controllers",
-  "version": "1.7.8",
+  "version": "1.7.11",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -52,9 +53,9 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.2",
+    "@walletconnect/universal-provider": "2.21.3",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0"
+    "viem": ">=2.31.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
@@ -65,7 +66,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {

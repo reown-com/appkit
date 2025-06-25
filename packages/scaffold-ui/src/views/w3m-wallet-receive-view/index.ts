@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -10,7 +9,8 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
-  ThemeController
+  ThemeController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-chip-button'
@@ -36,8 +36,6 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -46,7 +44,6 @@ export class W3mWalletReceiveView extends LitElement {
           if (val.address) {
             this.address = val.address
             this.profileName = val.profileName
-            this.preferredAccountTypes = val.preferredAccountTypes
           } else {
             SnackController.showError('Account not found')
           }
@@ -122,7 +119,7 @@ export class W3mWalletReceiveView extends LitElement {
       network => network?.chainNamespace === caipNetwork?.chainNamespace
     )
     if (
-      this.preferredAccountTypes?.[caipNetwork?.chainNamespace as ChainNamespace] ===
+      getPreferredAccountType(caipNetwork?.chainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
       isNetworkEnabledForSmartAccounts
     ) {

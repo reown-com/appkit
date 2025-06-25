@@ -4,6 +4,7 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { type CaipNetwork, type SocialProvider } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { AppKitProvider } from '@/src/context/AppKitContext'
@@ -40,6 +41,7 @@ export default function BitcoinPage() {
   return (
     <AppKitProvider config={config}>
       <AppKitButtons />
+      <AppKitConnections namespace="bip122" />
       <AppKitInfo />
       <BitcoinTests />
     </AppKitProvider>

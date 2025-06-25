@@ -44,25 +44,6 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
   subscriptions.forEach(unsubscribe => unsubscribe())
   subscriptions.push(
-    ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
-      if (!siwe.options.signOutOnNetworkChange) {
-        return
-      }
-
-      const session = await getSession()
-      const isDifferentNetwork =
-        session &&
-        session.chainId !== NetworkUtil.caipNetworkIdToNumber(activeCaipNetwork?.caipNetworkId)
-
-      if (isDifferentNetwork) {
-        await signOut()
-        // If signOut doesn't delete the cookie, we need to sign out again
-        const siweSession = await getSession()
-        if (siweSession) {
-          await signOut()
-        }
-      }
-    }),
     ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {
       if (siwe.options.signOutOnDisconnect && !activeCaipAddress) {
         const session = await getSession()
