@@ -1000,7 +1000,7 @@ export abstract class AppKitBaseClient {
           chainId,
           chainNamespace
         })
-      } else if (ChainController.state.activeCaipNetwork?.id) {
+      } else if (isActiveChain && ChainController.state.activeCaipNetwork?.id) {
         this.syncAccount({
           address,
           chainId: ChainController.state.activeCaipNetwork?.id,
