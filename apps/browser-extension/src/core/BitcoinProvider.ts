@@ -1,5 +1,5 @@
 import ecc from '@bitcoinerlab/secp256k1'
-import type { WalletAccount } from '@wallet-standard/base'
+import type { IdentifierArray, WalletAccount } from '@wallet-standard/base'
 import BIP32Factory from 'bip32'
 import * as bip39 from 'bip39'
 import * as bitcoin from 'bitcoinjs-lib'
@@ -10,6 +10,17 @@ import { AccountUtil } from '../utils/AccountUtil'
 import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 bitcoin.initEccLib(ecc)
+
+const mainnetCAIP2 = 'bip122:000000000019d6689c085ae165831e93'
+const testnetCAIP1 = 'bip122:000000000933ea01ad0ee984209779ba'
+const accountFeatures = [
+  'bitcoin:connect',
+  'standard:events',
+  'standard:disconnect',
+  'bitcoin:signMessage'
+] as IdentifierArray
+const mainnetPath = "m/84'/0'/0/0"
+const testnetPath = "m/84'/1'/0/0"
 
 // eslint-disable-next-line new-cap
 const bip32 = BIP32Factory(ecc)
@@ -24,16 +35,13 @@ export class BitcoinProvider {
   name = 'Reown'
   version = '1.0.0' as const
   icon = ConstantsUtil.IconRaw as `data:image/png;base64,${string}`
-  chains = [
-    'bip122:000000000019d6689c085ae165831e93' as `${string}:${string}`,
-    'bip122:000000000933ea01ad0ee984209779ba' as `${string}:${string}`
-  ]
+  chains = [mainnetCAIP2, testnetCAIP1]
   isConnected = false
   private listeners: Record<string, ((...args: unknown[]) => void)[]> = {}
 
   private get activeNetwork(): `${string}:${string}` {
     return (localStorage.getItem('@reown-ext/active-network') ||
-      'bip122:000000000019d6689c085ae165831e93') as `${string}:${string}`
+      mainnetCAIP2) as `${string}:${string}`
   }
 
   private set activeNetwork(network: `${string}:${string}`) {
@@ -41,8 +49,8 @@ export class BitcoinProvider {
   }
 
   get accounts(): WalletAccount[] {
-    const child = root.derivePath("m/84'/0'/0/0")
-    const testnetChild = root.derivePath("m/84'/1'/0/0")
+    const child = root.derivePath(mainnetPath)
+    const testnetChild = root.derivePath(testnetPath)
 
     return [
       {
@@ -51,16 +59,8 @@ export class BitcoinProvider {
           network: bitcoin.networks.bitcoin
         }).address as string,
         publicKey: child.publicKey,
-        chains: [
-          'bip122:000000000933ea01ad0ee984209779ba',
-          'bip122:000000000019d6689c085ae165831e93'
-        ],
-        features: [
-          'bitcoin:connect',
-          'standard:events',
-          'standard:disconnect',
-          'bitcoin:signMessage'
-        ]
+        chains: [testnetCAIP1, mainnetCAIP2],
+        features: accountFeatures
       },
       {
         address: bitcoin.payments.p2wpkh({
@@ -68,16 +68,8 @@ export class BitcoinProvider {
           network: bitcoin.networks.testnet
         }).address as string,
         publicKey: testnetChild.publicKey,
-        chains: [
-          'bip122:000000000933ea01ad0ee984209779ba',
-          'bip122:000000000019d6689c085ae165831e93'
-        ],
-        features: [
-          'bitcoin:connect',
-          'standard:events',
-          'standard:disconnect',
-          'bitcoin:signMessage'
-        ]
+        chains: [testnetCAIP1, mainnetCAIP2],
+        features: accountFeatures
       }
     ]
   }
@@ -148,7 +140,7 @@ export class BitcoinProvider {
       throw new Error('Invalid account')
     }
 
-    const child = root.derivePath("m/84'/0'/0/0")
+    const child = root.derivePath(mainnetPath)
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keyPair = ECPair.fromPrivateKey(child.privateKey!)
@@ -167,10 +159,7 @@ export class BitcoinProvider {
   }
 
   switchNetwork(network: `${string}:${string}`) {
-    if (
-      network !== 'bip122:000000000019d6689c085ae165831e93' &&
-      network !== 'bip122:000000000933ea01ad0ee984209779ba'
-    ) {
+    if (network !== mainnetCAIP2 && network !== testnetCAIP1) {
       throw new Error('Unsupported network')
     }
     this.activeNetwork = network
