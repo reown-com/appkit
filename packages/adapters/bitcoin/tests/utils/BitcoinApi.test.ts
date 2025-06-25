@@ -45,20 +45,22 @@ describe('BitcoinApi', () => {
       )
     })
 
-    it('should throw an error if the request fails', async () => {
+    it('should return empty array if request fails', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch')
+      const consoleSpy = vi.spyOn(console, 'warn')
 
       fetchSpy.mockResolvedValueOnce({
         ok: false,
         text: vi.fn(() => Promise.resolve('mock_error'))
       } as any)
 
-      await expect(
-        BitcoinApi.getUTXOs({
-          network: bitcoin,
-          address: 'mock_address'
-        })
-      ).rejects.toThrow('Failed to fetch UTXOs: mock_error')
+      const response = await BitcoinApi.getUTXOs({
+        network: bitcoin,
+        address: 'mock_address'
+      })
+
+      expect(response).toEqual([])
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to fetch UTXOs: mock_error')
     })
   })
 })
