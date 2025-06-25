@@ -29,7 +29,6 @@ export function getTestnetByLibrary(library: string) {
       return 'Solana Devnet'
     case 'bitcoin':
       return 'Bitcoin Testnet'
-    case 'ethers':
     case 'wagmi':
     case 'ethers':
     case 'ethers5':
@@ -45,7 +44,6 @@ export function getTestnet2ByLibrary(library: string) {
       return 'Solana Testnet'
     case 'bitcoin':
       return 'Bitcoin Testnet'
-    case 'ethers':
     case 'wagmi':
     case 'ethers':
     case 'ethers5':
@@ -61,7 +59,6 @@ export function getMainnetByLibrary(library: string) {
       return 'Solana'
     case 'bitcoin':
       return 'Bitcoin'
-    case 'ethers':
     case 'wagmi':
     case 'ethers':
     case 'ethers5':
