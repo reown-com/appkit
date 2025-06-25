@@ -4,13 +4,13 @@ import { property, state } from 'lit/decorators.js'
 import { type ChainNamespace, DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  TransactionsController
+  TransactionsController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import type { TransactionType } from '@reown/appkit-ui'
@@ -318,7 +318,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+              getPreferredAccountType(activeChainNamespace) ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })

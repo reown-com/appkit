@@ -1,13 +1,12 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-banner'
@@ -24,16 +23,8 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  // -- State & Properties -------------------------------- //
-  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
-
   public constructor() {
     super()
-    this.unsubscribe.push(
-      AccountController.subscribeKey('preferredAccountTypes', val => {
-        this.preferredAccountTypes = val
-      })
-    )
   }
 
   public override disconnectedCallback() {
@@ -70,7 +61,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
     // For now, each network has a unique account
     if (
       isNetworkEnabledForSmartAccounts &&
-      this.preferredAccountTypes?.[caipNetwork?.chainNamespace as ChainNamespace] ===
+      getPreferredAccountType(caipNetwork?.chainNamespace as ChainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       if (!caipNetwork) {

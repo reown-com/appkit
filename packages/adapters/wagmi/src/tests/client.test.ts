@@ -25,7 +25,6 @@ import {
   type ConnectionControllerClient,
   CoreHelperUtil,
   type NetworkControllerClient,
-  type PreferredAccountTypes,
   type SocialProvider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -864,9 +863,7 @@ describe('WagmiAdapter', () => {
     it('should respect preferred account type when switching network with AUTH provider', async () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
         ...AccountController.state,
-        preferredAccountTypes: {
-          eip155: 'smartAccount'
-        } as PreferredAccountTypes
+        preferredAccountType: 'smartAccount'
       })
 
       await adapter.switchNetwork({

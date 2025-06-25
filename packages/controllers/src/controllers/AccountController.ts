@@ -8,6 +8,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
   ConnectedWalletInfo,
+  NamespaceTypeMap,
   PreferredAccountTypes,
   SocialProvider,
   User
@@ -34,7 +35,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   shouldUpdateToAddress?: string
   connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountTypes?: PreferredAccountTypes
+  preferredAccountType?: NamespaceTypeMap[keyof NamespaceTypeMap]
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
@@ -188,18 +189,7 @@ const controller = {
     preferredAccountType: PreferredAccountTypes[ChainNamespace],
     chain: ChainNamespace
   ) {
-    ChainController.setAccountProp(
-      'preferredAccountTypes',
-      {
-        ...state.preferredAccountTypes,
-        [chain]: preferredAccountType
-      },
-      chain
-    )
-  },
-
-  setPreferredAccountTypes(preferredAccountTypes: PreferredAccountTypes) {
-    state.preferredAccountTypes = preferredAccountTypes
+    ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   },
 
   setSocialProvider(

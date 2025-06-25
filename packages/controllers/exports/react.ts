@@ -107,7 +107,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
                 }
               : undefined,
             authProvider: chainAccountState?.socialProvider || 'email',
-            accountType: chainAccountState?.preferredAccountTypes?.[chainNamespace],
+            accountType: chainAccountState?.preferredAccountType,
             isSmartAccountDeployed: Boolean(chainAccountState?.smartAccountDeployed)
           }
         : undefined

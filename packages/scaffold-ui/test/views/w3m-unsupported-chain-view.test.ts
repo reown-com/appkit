@@ -80,7 +80,10 @@ describe('W3mUnsupportedChainView', () => {
 
       await element['onDisconnect']()
 
-      expect(ConnectionController.disconnect).toHaveBeenCalledWith({ id: TEST_CONNECTOR_ID })
+      expect(ConnectionController.disconnect).toHaveBeenCalledWith({
+        id: TEST_CONNECTOR_ID,
+        namespace: TEST_CHAIN
+      })
       expect(RouterController.push).toHaveBeenCalledWith('ProfileWallets')
       expect(SnackController.showSuccess).toHaveBeenCalledWith('Wallet deleted')
     })
@@ -91,7 +94,10 @@ describe('W3mUnsupportedChainView', () => {
 
       await element['onDisconnect']()
 
-      expect(ConnectionController.disconnect).toHaveBeenCalledWith({ id: TEST_CONNECTOR_ID })
+      expect(ConnectionController.disconnect).toHaveBeenCalledWith({
+        id: TEST_CONNECTOR_ID,
+        namespace: TEST_CHAIN
+      })
       expect(RouterController.reset).not.toHaveBeenCalled()
       expect(RouterController.push).not.toHaveBeenCalled()
       expect(SnackController.showSuccess).not.toHaveBeenCalled()
