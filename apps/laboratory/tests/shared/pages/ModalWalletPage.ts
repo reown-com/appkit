@@ -25,6 +25,11 @@ export class ModalWalletPage extends ModalPage {
     await this.openSettings()
   }
 
+  async goToProfileWalletsView() {
+    await this.openAccount()
+    await this.clickWalletSwitchButton()
+  }
+
   async openSettings() {
     await this.page.getByTestId('account-settings-button').click()
   }

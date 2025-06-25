@@ -1,5 +1,55 @@
 # @reown/appkit-core
 
+## 1.7.11
+
+### Patch Changes
+
+- [#4509](https://github.com/reown-com/appkit/pull/4509) [`c0e7b37`](https://github.com/reown-com/appkit/commit/c0e7b370f6eaa7503a4e9eb68b3677084e5e7483) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on Bitcoin adapter where getActiveNetwork function get's network of other namespaces
+
+- [#4518](https://github.com/reown-com/appkit/pull/4518) [`4c517ac`](https://github.com/reown-com/appkit/commit/4c517ac9ee245fa299db5c8f3956148e0d87fdd6) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where if a wallet doesnt have rdns it could show up as a duplicate connector in connect screen
+
+- [#4530](https://github.com/reown-com/appkit/pull/4530) [`269f621`](https://github.com/reown-com/appkit/commit/269f621b08d9cedd9176796df39499f196f8a23f) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where closing modal instead of cancelling the request would cause desync with embedded wallet modal state
+
+- [#4523](https://github.com/reown-com/appkit/pull/4523) [`7272728`](https://github.com/reown-com/appkit/commit/72727285c398cae29d3848c937a1c5c9d9ec5496) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue for the embedded wallet use case where switching network doesn't redirect AppKit back to previous screen
+
+- [#4526](https://github.com/reown-com/appkit/pull/4526) [`1bef587`](https://github.com/reown-com/appkit/commit/1bef5871476467662d499747fa828583c3d0b52c) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where AppKit would open sign message screen after it falls back to previous SIWE session
+
+- [#4529](https://github.com/reown-com/appkit/pull/4529) [`96d8b3f`](https://github.com/reown-com/appkit/commit/96d8b3f6bc30380e350f4e2c62cd6b3504ca753b) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on swap transaction order on UI for image and descriptions
+
+- [#4537](https://github.com/reown-com/appkit/pull/4537) [`e82d88b`](https://github.com/reown-com/appkit/commit/e82d88b88d5a5212c792d07063fad10dd5435c1b) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades Viem and Wagmi dependencies
+
+- [#4471](https://github.com/reown-com/appkit/pull/4471) [`ab4b093`](https://github.com/reown-com/appkit/commit/ab4b093d226aca7c5053001f1fdd3e13f7d68cc0) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue on the embedded wallet where rpc requests didn't target the correct chainId
+
+- [#4501](https://github.com/reown-com/appkit/pull/4501) [`c7d293b`](https://github.com/reown-com/appkit/commit/c7d293b41c18a40c76e9cff793138e5adf53ff7e) Thanks [@tomiir](https://github.com/tomiir)! - Adds registerWalletStandard flag to allow automatic registration of WalletConnect relay connector as a Wallet Standard wallet
+
+- [#4547](https://github.com/reown-com/appkit/pull/4547) [`52677fb`](https://github.com/reown-com/appkit/commit/52677fb5784c4f0da6454c2b4f0be6bc20330276) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where enableEIP6963 didn't result into the expected behaviour on wagmi adapter
+
+- [#4553](https://github.com/reown-com/appkit/pull/4553) [`7b64297`](https://github.com/reown-com/appkit/commit/7b64297a47e1d8c9fa86490e01ba800825987512) Thanks [@enesozturk](https://github.com/enesozturk)! - Adds `enableReconnect` flag to prevent automatic reconnection on initialization and page load.
+
+  ### Example usage:
+
+  ```jsx
+  createAppKit({
+    networks: [...],
+    metadata: {...},
+    enableReconnect: false // disables reconnection
+  })
+  ```
+
+- [#4544](https://github.com/reown-com/appkit/pull/4544) [`47663ce`](https://github.com/reown-com/appkit/commit/47663ce7e7f7b1fcd26ba52b1d21f73b7048a27c) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes a case where AppKit would stay in the wrong network when enableNetworkSwitch is disabled
+
+- [#4552](https://github.com/reown-com/appkit/pull/4552) [`c5e0650`](https://github.com/reown-com/appkit/commit/c5e065028ce8ca3e88b3cd66962c5a19cf1808e9) Thanks [@magiziz](https://github.com/magiziz)! - Fixes issue where appkit.disconnect would not disconnect all namespaces when no parameter was provided
+
+- [#4519](https://github.com/reown-com/appkit/pull/4519) [`4416586`](https://github.com/reown-com/appkit/commit/4416586acc1439ebdfdc29ff24c2426627dca5ed) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add version check script so devs get a warning if there is a mismatch between used appkit version
+
+- [#4545](https://github.com/reown-com/appkit/pull/4545) [`b9fd168`](https://github.com/reown-com/appkit/commit/b9fd168a16733fbe5434e8aa8ab815430a45aff6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where Sats Connect connectors (e.g Leather and Xverse) didn't appear in the connect modal after page load
+
+- [#4554](https://github.com/reown-com/appkit/pull/4554) [`f3717ce`](https://github.com/reown-com/appkit/commit/f3717ce9d8acef53dba3794e386cb3f7695d2a72) Thanks [@tomiir](https://github.com/tomiir)! - Makes `chainId` optional in RPC requests
+
+- Updated dependencies [[`c0e7b37`](https://github.com/reown-com/appkit/commit/c0e7b370f6eaa7503a4e9eb68b3677084e5e7483), [`4c517ac`](https://github.com/reown-com/appkit/commit/4c517ac9ee245fa299db5c8f3956148e0d87fdd6), [`269f621`](https://github.com/reown-com/appkit/commit/269f621b08d9cedd9176796df39499f196f8a23f), [`7272728`](https://github.com/reown-com/appkit/commit/72727285c398cae29d3848c937a1c5c9d9ec5496), [`1bef587`](https://github.com/reown-com/appkit/commit/1bef5871476467662d499747fa828583c3d0b52c), [`96d8b3f`](https://github.com/reown-com/appkit/commit/96d8b3f6bc30380e350f4e2c62cd6b3504ca753b), [`e82d88b`](https://github.com/reown-com/appkit/commit/e82d88b88d5a5212c792d07063fad10dd5435c1b), [`ab4b093`](https://github.com/reown-com/appkit/commit/ab4b093d226aca7c5053001f1fdd3e13f7d68cc0), [`c7d293b`](https://github.com/reown-com/appkit/commit/c7d293b41c18a40c76e9cff793138e5adf53ff7e), [`52677fb`](https://github.com/reown-com/appkit/commit/52677fb5784c4f0da6454c2b4f0be6bc20330276), [`7b64297`](https://github.com/reown-com/appkit/commit/7b64297a47e1d8c9fa86490e01ba800825987512), [`47663ce`](https://github.com/reown-com/appkit/commit/47663ce7e7f7b1fcd26ba52b1d21f73b7048a27c), [`c5e0650`](https://github.com/reown-com/appkit/commit/c5e065028ce8ca3e88b3cd66962c5a19cf1808e9), [`4416586`](https://github.com/reown-com/appkit/commit/4416586acc1439ebdfdc29ff24c2426627dca5ed), [`b9fd168`](https://github.com/reown-com/appkit/commit/b9fd168a16733fbe5434e8aa8ab815430a45aff6), [`f3717ce`](https://github.com/reown-com/appkit/commit/f3717ce9d8acef53dba3794e386cb3f7695d2a72)]:
+  - @reown/appkit-common@1.7.11
+  - @reown/appkit-wallet@1.7.11
+
 ## 1.7.10
 
 ### Patch Changes

@@ -1,12 +1,14 @@
 {
   "name": "@reown/appkit",
-  "version": "1.7.10",
+  "version": "1.7.11",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "scripts",
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -78,6 +80,11 @@
       "import": "./dist/esm/exports/connectors.js",
       "default": "./dist/esm/exports/connectors.js"
     },
+    "./connections": {
+      "types": "./dist/types/exports/connections.d.ts",
+      "import": "./dist/esm/exports/connections.js",
+      "default": "./dist/esm/exports/connections.js"
+    },
     "./core": {
       "types": "./dist/types/exports/core.d.ts",
       "import": "./dist/esm/exports/core.js",
@@ -136,7 +143,7 @@
     "bs58": "6.0.0",
     "semver": "7.7.2",
     "valtio": "1.13.2",
-    "viem": ">=2.29.0"
+    "viem": ">=2.31.3"
   },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",

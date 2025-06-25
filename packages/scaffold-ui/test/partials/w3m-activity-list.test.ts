@@ -1,5 +1,5 @@
 import { fixture } from '@open-wc/testing'
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Transaction, TransactionTransfer } from '@reown/appkit-common'
 import { TransactionsController } from '@reown/appkit-controllers'
@@ -43,6 +43,10 @@ class MockIntersectionObserver {
 describe('W3mActivityList', () => {
   beforeAll(() => {
     global.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver
+  })
+
+  beforeEach(() => {
+    vi.spyOn(TransactionsController, 'resetTransactions').mockImplementation(() => {})
   })
 
   afterEach(() => {

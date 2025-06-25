@@ -111,6 +111,11 @@ export interface OptionsControllerStatePublic {
    */
   enableInjected?: boolean
   /**
+   * Enable or disable automatic reconnection on initialization.
+   * @default true
+   */
+  enableReconnect?: boolean
+  /**
    * Enable or disable the WalletConnect QR code.
    * @default true
    */
@@ -196,7 +201,6 @@ export interface OptionsControllerStateInternal {
   sdkVersion: SdkVersion
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
-  hasMultipleAddresses?: boolean
   remoteFeatures?: RemoteFeatures
 }
 
@@ -345,10 +349,6 @@ export const OptionsController = {
     state.experimental_preferUniversalLinks = preferUniversalLinks
   },
 
-  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
-    state.hasMultipleAddresses = hasMultipleAddresses
-  },
-
   setSIWX(siwx: OptionsControllerState['siwx']) {
     state.siwx = siwx
   },
@@ -395,6 +395,10 @@ export const OptionsController = {
 
   setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
     state.enableNetworkSwitch = enableNetworkSwitch
+  },
+
+  setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {
+    state.enableReconnect = enableReconnect
   },
 
   setDefaultAccountTypes(

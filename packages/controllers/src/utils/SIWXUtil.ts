@@ -13,6 +13,7 @@ import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
+import { getPreferredAccountType } from './ChainControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 
 /**
@@ -148,7 +149,15 @@ export const SIWXUtil = {
       if (isRequired) {
         const lastNetwork = ChainController.getLastConnectedSIWECaipNetwork()
         if (lastNetwork) {
-          ChainController.switchActiveNetwork(lastNetwork)
+          const sessions = await siwx?.getSessions(
+            lastNetwork?.caipNetworkId,
+            CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+          )
+          if (sessions && sessions.length > 0) {
+            await ChainController.switchActiveNetwork(lastNetwork)
+          } else {
+            await ConnectionController.disconnect()
+          }
         } else {
           await ConnectionController.disconnect()
         }
@@ -156,7 +165,7 @@ export const SIWXUtil = {
         ModalController.close()
       }
 
-      RouterController.reset('Connect')
+      ModalController.close()
 
       EventsController.sendEvent({
         event: 'CLICK_CANCEL_SIWX',
@@ -321,7 +330,7 @@ export const SIWXUtil = {
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+        getPreferredAccountType(activeChainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },

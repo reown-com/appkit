@@ -93,7 +93,7 @@ export function Ethers5SendCallsTest() {
       })
     } catch {
       toast({
-        title: 'Error',
+        title: 'SendCalls Error',
         description: 'Failed to send calls',
         type: 'error'
       })

@@ -1,13 +1,14 @@
 {
   "name": "@reown/appkit-adapter-wagmi",
-  "version": "1.7.10",
+  "version": "1.7.11",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -33,7 +34,7 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=2.16.7",
-    "viem": ">=2.29.0",
+    "viem": ">=2.31.3",
     "wagmi": ">=2.15.6"
   },
   "devDependencies": {
