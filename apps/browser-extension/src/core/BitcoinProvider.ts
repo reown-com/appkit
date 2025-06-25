@@ -150,6 +150,7 @@ export class BitcoinProvider {
 
     const child = root.derivePath("m/84'/0'/0/0")
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keyPair = ECPair.fromPrivateKey(child.privateKey!)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pKey = keyPair.privateKey!

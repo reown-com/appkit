@@ -101,7 +101,12 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
 
 const CLOUD_AUTH_TESTS = ['cloud-auth.spec.ts']
 
-const SINGLE_ADAPTER_BITCOIN_TESTS = ['wallet.spec.ts', 'wallet-button.spec', 'basic-tests.spec.ts']
+const SINGLE_ADAPTER_BITCOIN_TESTS = [
+  'wallet.spec.ts',
+  'wallet-button.spec',
+  'basic-tests.spec.ts',
+  'siwx-extension.spec.ts'
+]
 
 function createRegex(tests: string[], isDesktop = true) {
   const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
