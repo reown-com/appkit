@@ -63,7 +63,8 @@ import {
   SendController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
@@ -164,8 +165,12 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    await this.syncExistingConnection()
-    await this.syncAdapterConnections()
+    if (OptionsController.state.enableReconnect) {
+      await this.syncExistingConnection()
+      await this.syncAdapterConnections()
+    } else {
+      await this.unSyncExistingConnection()
+    }
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
@@ -304,6 +309,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
+    OptionsController.setEnableReconnect(options.enableReconnect !== false)
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
@@ -324,12 +330,6 @@ export abstract class AppKitBaseClient {
 
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
-
-    // Get stored account types
-    const storedAccountTypes = StorageUtil.getPreferredAccountTypes() || {}
-    const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
-
-    AccountController.setPreferredAccountTypes(defaultTypes)
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
@@ -433,7 +433,11 @@ export abstract class AppKitBaseClient {
       const adapter = this.getAdapter(namespace)
       const { caipAddress } = ChainController.getAccountData(namespace) || {}
 
-      if (caipAddress && adapter?.disconnect) {
+      /**
+       * When the page loaded, the controller doesn't have address yet.
+       * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
+       */
+      if ((caipAddress || !OptionsController.state.enableReconnect) && adapter?.disconnect) {
         disconnectResult = await adapter.disconnect({ id })
       }
 
@@ -537,12 +541,12 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async params => {
-        const { id: connectorId, chainNamespace } = params || {}
+        const { id: connectorId, chainNamespace, initialDisconnect } = params || {}
 
         const namespaces = Array.from(ChainController.state.chains.keys())
-        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
-
-        const currentConnectorId = ConnectorController.getConnectorId(namespace)
+        const currentConnectorId = ConnectorController.getConnectorId(
+          chainNamespace || (ChainController.state.activeChain as ChainNamespace)
+        )
 
         const isAuth =
           connectorId === ConstantsUtil.CONNECTOR_ID.AUTH ||
@@ -552,7 +556,7 @@ export abstract class AppKitBaseClient {
           currentConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
         try {
-          let namespacesToDisconnect = [namespace]
+          let namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
 
           /*
            * If the connector is WalletConnect or Auth, disconnect all namespaces
@@ -569,6 +573,13 @@ export abstract class AppKitBaseClient {
               connectorIdToUse = currentConnectorId
             }
 
+            if (initialDisconnect && isAuth) {
+              StorageUtil.deleteConnectedSocialProvider()
+              namespacesToDisconnect.forEach(ns => {
+                StorageUtil.addDisconnectedConnectorId(connectorIdToUse || '', ns)
+              })
+            }
+
             const disconnectData = await this.disconnectNamespace(ns, connectorIdToUse)
 
             if (disconnectData) {
@@ -577,8 +588,12 @@ export abstract class AppKitBaseClient {
                   StorageUtil.deleteConnectedSocialProvider()
                 }
 
-                StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+                StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
               })
+            }
+
+            if (initialDisconnect) {
+              this.onDisconnectNamespace({ chainNamespace: ns, closeModal: false })
             }
           })
 
@@ -867,7 +882,10 @@ export abstract class AppKitBaseClient {
     }
 
     const connectionStatus = StorageUtil.getConnectionStatus()
-    if (connectionStatus === 'connected') {
+
+    if (OptionsController.state.enableReconnect === false) {
+      this.setStatus('disconnected', chainNamespace)
+    } else if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
     } else if (connectionStatus === 'disconnected') {
       /*
@@ -901,19 +919,7 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('disconnect', () => {
-      ChainController.resetAccount(chainNamespace)
-      ChainController.resetNetwork(chainNamespace)
-
-      ConnectorController.removeConnectorId(chainNamespace)
-
-      StorageUtil.removeConnectedNamespace(chainNamespace)
-      ProviderUtil.resetChain(chainNamespace)
-
-      this.setUser(undefined, chainNamespace)
-      this.setStatus('disconnected', chainNamespace)
-      this.setConnectedWalletInfo(undefined, chainNamespace)
-
-      ModalController.close()
+      this.onDisconnectNamespace({ chainNamespace })
     })
 
     adapter.on('connections', connections => {
@@ -987,6 +993,19 @@ export abstract class AppKitBaseClient {
     )
   }
 
+  protected async unSyncExistingConnection() {
+    try {
+      await Promise.allSettled(
+        this.chainNamespaces.map(namespace =>
+          ConnectionController.disconnect({ namespace, initialDisconnect: true })
+        )
+      )
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error disconnecting existing connections:', error)
+    }
+  }
+
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
       if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
@@ -1010,6 +1029,29 @@ export abstract class AppKitBaseClient {
     } catch (err) {
       console.warn("AppKit couldn't sync existing connection", err)
       this.setStatus('disconnected', namespace)
+    }
+  }
+
+  protected onDisconnectNamespace(options: {
+    chainNamespace: ChainNamespace
+    closeModal?: boolean
+  }) {
+    const { chainNamespace, closeModal } = options || {}
+
+    ChainController.resetAccount(chainNamespace)
+    ChainController.resetNetwork(chainNamespace)
+
+    ConnectorController.removeConnectorId(chainNamespace)
+
+    StorageUtil.removeConnectedNamespace(chainNamespace)
+    ProviderUtil.resetChain(chainNamespace)
+
+    this.setUser(undefined, chainNamespace)
+    this.setStatus('disconnected', chainNamespace)
+    this.setConnectedWalletInfo(undefined, chainNamespace)
+
+    if (closeModal !== false) {
+      ModalController.close()
     }
   }
 
@@ -1070,7 +1112,7 @@ export abstract class AppKitBaseClient {
         this.setStatus('disconnected', namespace)
       }
     } catch (e) {
-      this.setStatus('disconnected', namespace)
+      this.onDisconnectNamespace({ chainNamespace: namespace, closeModal: false })
     }
   }
 
@@ -1393,6 +1435,10 @@ export abstract class AppKitBaseClient {
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+    // Clear the session if we don't want to reconnect on init
+    if (OptionsController.state.enableReconnect === false && this.universalProvider.session) {
+      await this.universalProvider.disconnect()
+    }
     this.listenWalletConnect()
   }
 
@@ -1630,8 +1676,7 @@ export abstract class AppKitBaseClient {
 
   public getProviderType = (namespace: ChainNamespace) => ProviderUtil.getProviderId(namespace)
 
-  public getPreferredAccountType = (namespace: ChainNamespace) =>
-    AccountController.state.preferredAccountTypes?.[namespace]
+  public getPreferredAccountType = (namespace: ChainNamespace) => getPreferredAccountType(namespace)
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
@@ -1930,7 +1975,7 @@ export abstract class AppKitBaseClient {
               authProvider:
                 accountState.socialProvider ||
                 ('email' as AccountControllerState['socialProvider'] | 'email'),
-              accountType: accountState.preferredAccountTypes?.[namespace || activeChain],
+              accountType: getPreferredAccountType(namespace || activeChain),
               isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
             }
           : undefined
@@ -2100,16 +2145,11 @@ export abstract class AppKitBaseClient {
     AccountController.setSmartAccountDeployed(isDeployed, chain)
   }
 
-  public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
-    (smartAccountEnabledNetworks, chain) => {
-      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
-    }
-
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
     preferredAccountType,
     chain
   ) => {
-    AccountController.setPreferredAccountType(preferredAccountType, chain)
+    ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   }
 
   public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {

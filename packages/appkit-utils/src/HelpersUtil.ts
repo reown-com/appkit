@@ -33,5 +33,47 @@ export const HelpersUtil = {
         ConnectorController.getConnectorId(chain) === CommonConstantsUtil.CONNECTOR_ID.AUTH &&
         chain === activeChain
     )
+  },
+
+  /**
+   * Runs a condition function again and again until it returns true or the max number of tries is reached.
+   *
+   * @param conditionFn - A function (can be async) that returns true when the condition is met.
+   * @param intervalMs - Time to wait between tries, in milliseconds.
+   * @param maxRetries - Maximum number of times to try before stopping.
+   * @returns A Promise that resolves to true if the condition becomes true in time, or false if it doesn't.
+   */
+  withRetry({
+    conditionFn,
+    intervalMs,
+    maxRetries
+  }: {
+    conditionFn: () => boolean | Promise<boolean>
+    intervalMs: number
+    maxRetries: number
+  }): Promise<boolean> {
+    let attempts = 0
+
+    return new Promise(resolve => {
+      async function tryCheck() {
+        attempts += 1
+
+        const result = await conditionFn()
+
+        if (result) {
+          return resolve(true)
+        }
+
+        if (attempts >= maxRetries) {
+          return resolve(false)
+        }
+
+        setTimeout(tryCheck, intervalMs)
+
+        return null
+      }
+
+      tryCheck()
+    })
   }
 }

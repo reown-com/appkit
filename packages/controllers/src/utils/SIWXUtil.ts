@@ -13,6 +13,7 @@ import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
+import { getPreferredAccountType } from './ChainControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 
 /**
@@ -329,7 +330,7 @@ export const SIWXUtil = {
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+        getPreferredAccountType(activeChainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },

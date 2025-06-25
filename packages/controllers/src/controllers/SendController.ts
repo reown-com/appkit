@@ -11,7 +11,10 @@ import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
-import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import {
+  getActiveNetworkTokenAddress,
+  getPreferredAccountType
+} from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
@@ -123,7 +126,7 @@ const controller = {
 
   async sendEvmToken() {
     const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-    const activeAccountType = AccountController.state.preferredAccountTypes?.[activeChainNamespace]
+    const activeAccountType = getPreferredAccountType(activeChainNamespace)
 
     if (!SendController.state.sendTokenAmount || !SendController.state.receiverAddress) {
       throw new Error('An amount and receiver address are required')
@@ -252,8 +255,7 @@ const controller = {
       event: 'SEND_SUCCESS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.['eip155'] ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
         token: SendController.state.token?.symbol || '',
         amount: params.sendTokenAmount,
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
