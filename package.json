@@ -60,7 +60,7 @@
     "cli": "node packages/cli/index.js",
     "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
     "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/*",
-    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade wagmi @wagmi/*"
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/*"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",

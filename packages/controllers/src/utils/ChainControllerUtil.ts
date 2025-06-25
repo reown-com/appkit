@@ -72,3 +72,14 @@ export function getActiveNetworkTokenAddress() {
 
   return `${namespace}:${chainId}:${address}`
 }
+
+/**
+ * Get the preferred account type for a given namespace
+ * @param namespace - The namespace of the account
+ * @returns The preferred account type
+ */
+export function getPreferredAccountType(namespace: ChainNamespace | undefined) {
+  const preferredAccountType = ChainController.getAccountData(namespace)?.preferredAccountType
+
+  return preferredAccountType
+}

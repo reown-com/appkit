@@ -11,7 +11,8 @@ import {
   EventsController,
   OnRampController,
   type OnRampProvider,
-  RouterController
+  RouterController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -99,7 +100,7 @@ export class W3mOnRampProvidersView extends LitElement {
       properties: {
         provider: provider.name,
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

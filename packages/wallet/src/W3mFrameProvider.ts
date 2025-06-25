@@ -577,28 +577,24 @@ export class W3mFrameProvider {
     })
   }
 
-  public onGetSmartAccountEnabledNetworks(callback: (networks: number[]) => void) {
-    this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type === W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS) {
-        callback(event.payload.smartAccountEnabledNetworks)
-      } else if (event.type === W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR) {
-        callback([])
-      }
-    })
-  }
-
   public getAvailableChainIds() {
     return Object.keys(this.w3mFrame.networks)
   }
 
   // -- Private Methods -------------------------------------------------
-  public rejectRpcRequests() {
+  public async rejectRpcRequests() {
     try {
-      this.openRpcRequests.forEach(({ abortController, method }) => {
-        if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
-          abortController.abort()
-        }
-      })
+      await Promise.all(
+        this.openRpcRequests.map(async ({ abortController, method }) => {
+          if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
+            abortController.abort()
+          }
+
+          await this.appEvent<'RpcAbort'>({
+            type: W3mFrameConstants.APP_RPC_ABORT
+          })
+        })
+      )
       this.openRpcRequests = []
     } catch (e) {
       this.w3mLogger?.logger.error({ error: e }, 'Error aborting RPC request')
