@@ -73,7 +73,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return
       }
 
-      if (siwe.options.signOutOnAccountChange) {
+      if (siwe.options.signOutOnAccountChange && activeCaipAddress) {
         const session = await getSession()
 
         const lowercaseSessionAddress = session?.address?.toLowerCase()
