@@ -107,8 +107,8 @@ extensionTest(
       .textContent()) as string
 
     await modalPage.switchNetwork('Ethereum', true)
+    await modalPage.switchActiveChain()
     await modalPage.closeModal()
-    await modalPage.disconnect()
 
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
     if (!mailsacApiKey) {
@@ -133,7 +133,6 @@ extensionTest(
     await modalValidator.expectConnected()
     await modalValidator.expectAccountButtonAddress(extensionSolAddress)
     await modalValidator.expectNoUnsupportedUIOnAccountButton()
-    await modalPage.disconnect()
 
     // Disconnect from Ethereum
     await modalPage.switchNetworkWithNetworkButton('Ethereum')

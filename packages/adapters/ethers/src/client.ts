@@ -10,7 +10,8 @@ import {
   type ConnectorType,
   CoreHelperUtil,
   type Provider,
-  StorageUtil
+  StorageUtil,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
@@ -456,7 +457,7 @@ export class EthersAdapter extends AdapterBlueprint {
       ).connect({
         chainId,
         socialUri,
-        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
+        preferredAccountType: getPreferredAccountType('eip155')
       })
 
       const caipNetwork = this.getCaipNetworks().find(n => n.id.toString() === chainId?.toString())
@@ -541,7 +542,7 @@ export class EthersAdapter extends AdapterBlueprint {
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({
         chainId,
-        preferredAccountType: AccountController.state.preferredAccountTypes?.eip155
+        preferredAccountType: getPreferredAccountType('eip155')
       })
     }
   }

@@ -541,7 +541,7 @@ export const W3mFrameSchema = {
           .or(WalletRevokePermissionsRequest)
           .and(
             z.object({
-              chainId: z.string().or(z.number()),
+              chainId: z.string().or(z.number()).optional(),
               chainNamespace: z
                 .enum(['eip155', 'solana', 'polkadot', 'bip122', 'cosmos'])
                 .optional()
