@@ -943,7 +943,7 @@ export class ModalPage {
   }
 
   async connectToExtensionMultichain(
-    chainNamespace: 'eip155' | 'solana' | 'bitcoin',
+    chainNamespace: 'eip155' | 'solana' | 'bip122',
     modalOpen?: boolean,
     isAnotherNamespaceConnected?: boolean
   ) {

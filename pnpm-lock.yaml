@@ -100,6 +100,15 @@ importers:
       '@babel/preset-react':
         specifier: 7.27.1
         version: 7.27.1(@babel/core@7.27.3)
+      '@bitcoinerlab/secp256k1':
+        specifier: 1.2.0
+        version: 1.2.0
+      '@noble/curves':
+        specifier: 1.9.2
+        version: 1.9.2
+      '@noble/secp256k1':
+        specifier: 1.7.2
+        version: 1.7.2
       '@reown/appkit-common':
         specifier: workspace:*
         version: link:../../packages/common
@@ -130,6 +139,12 @@ importers:
       '@wagmi/core':
         specifier: 2.17.3
         version: 2.17.3(@tanstack/query-core@5.75.5)(@types/react@19.1.3)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.4.0(react@19.1.0))(viem@2.31.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.32))
+      '@wallet-standard/app':
+        specifier: 1.1.0
+        version: 1.1.0
+      '@wallet-standard/base':
+        specifier: 1.1.0
+        version: 1.1.0
       '@wallet-standard/core':
         specifier: 1.1.0
         version: 1.1.0
@@ -148,6 +163,9 @@ importers:
       bitcoinjs-lib:
         specifier: 6.1.7
         version: 6.1.7
+      bitcoinjs-message:
+        specifier: 2.2.0
+        version: 2.2.0
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -193,9 +211,6 @@ importers:
       stream-browserify:
         specifier: 3.0.0
         version: 3.0.0
-      tiny-secp256k1:
-        specifier: 2.2.3
-        version: 2.2.3
       tweetnacl:
         specifier: 1.0.3
         version: 1.0.3
@@ -17372,10 +17387,6 @@ packages:
     resolution: {integrity: sha512-eb+F6NabSnjbLwNoC+2o5ItbmP1kg7HliWue71JgLegQt6A5mTN8YbvTLCazdlg6e5SV6A+r8OGvZYskdlmhqQ==}
     engines: {node: '>=6.0.0'}
 
-  tiny-secp256k1@2.2.3:
-    resolution: {integrity: sha512-SGcL07SxcPN2nGKHTCvRMkQLYPSoeFcvArUSCYtjVARiFAWU44cCIqYS0mYAU6nY7XfvwURuTIGo2Omt3ZQr0Q==}
-    engines: {node: '>=14.0.0'}
-
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -17658,10 +17669,6 @@ packages:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}
     engines: {node: '>=0.8.0'}
     hasBin: true
-
-  uint8array-tools@0.0.7:
-    resolution: {integrity: sha512-vrrNZJiusLWoFWBqz5Y5KMCgP9W9hnjZHzZiZRT8oNAkq3d5Z5Oe76jAvVVSRh4U8GGR90N2X1dWtrhvx6L8UQ==}
-    engines: {node: '>=14.0.0'}
 
   uint8array-tools@0.0.8:
     resolution: {integrity: sha512-xS6+s8e0Xbx++5/0L+yyexukU7pz//Yg6IHg3BKhXotg1JcYtgxVcUctQ0HxLByiJzpAkNFawz1Nz5Xadzo82g==}
@@ -20106,7 +20113,7 @@ snapshots:
 
   '@bitcoinerlab/secp256k1@1.2.0':
     dependencies:
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.2
 
   '@chakra-ui/anatomy@2.3.6': {}
 
@@ -28046,7 +28053,7 @@ snapshots:
 
   '@solana/wallet-standard-util@1.1.2':
     dependencies:
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.2
       '@solana/wallet-standard-chains': 1.1.1
       '@solana/wallet-standard-features': 1.3.0
 
@@ -28097,7 +28104,7 @@ snapshots:
   '@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)':
     dependencies:
       '@babel/runtime': 7.26.9
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.2
       '@noble/hashes': 1.8.0
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.6.0
@@ -35444,8 +35451,8 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0)(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.5(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.56.0)
@@ -35468,7 +35475,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0)(eslint@8.56.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.1
@@ -35479,7 +35486,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.7.5
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -35490,11 +35497,11 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0)(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -41524,10 +41531,6 @@ snapshots:
       elliptic: 6.6.1
       nan: 2.22.2
 
-  tiny-secp256k1@2.2.3:
-    dependencies:
-      uint8array-tools: 0.0.7
-
   tinybench@2.9.0: {}
 
   tinyexec@0.3.2: {}
@@ -41796,8 +41799,6 @@ snapshots:
 
   uglify-js@3.19.3:
     optional: true
-
-  uint8array-tools@0.0.7: {}
 
   uint8array-tools@0.0.8: {}
 
@@ -43018,7 +43019,7 @@ snapshots:
 
   webauthn-p256@0.0.2:
     dependencies:
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.2
       '@noble/hashes': 1.8.0
 
   webextension-polyfill@0.10.0: {}
