@@ -131,7 +131,12 @@ export function authConnector(parameters: AuthParameters) {
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
     async connect(
-      options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
+      options: {
+        chainId?: number
+        isReconnecting?: boolean
+        socialUri?: string
+        rpcUrl?: string
+      } = {}
     ) {
       if (connectSocialPromise) {
         return connectSocialPromise
