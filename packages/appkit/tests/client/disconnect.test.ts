@@ -8,7 +8,9 @@ import {
   ConnectionController,
   ConnectorController,
   type ConnectorType,
+  ConstantsUtil,
   EventsController,
+  type SIWXConfig,
   SIWXUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
@@ -43,6 +45,7 @@ describe('AppKit - disconnect', () => {
 
     // Mock common dependencies
     vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
+    vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(ConstantsUtil.SIWX_DEFAULTS as SIWXConfig)
     vi.spyOn(ConnectorController, 'setFilterByNamespace').mockImplementation(() => {})
     vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
     vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
@@ -606,5 +609,14 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     expect(sendEventSpy).toHaveBeenCalledWith(
       expect.objectContaining({ event: 'DISCONNECT_SUCCESS' })
     )
+  })
+
+  it('should not clear SIWX sessions if signOutOnDisconnect is false', async () => {
+    const siwx = { ...ConstantsUtil.SIWX_DEFAULTS, signOutOnDisconnect: false } as SIWXConfig
+    vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(siwx)
+
+    await (appKit as any).connectionControllerClient.disconnect()
+
+    expect(SIWXUtil.clearSessions).not.toHaveBeenCalled()
   })
 })
