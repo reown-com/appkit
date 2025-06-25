@@ -44,12 +44,14 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       return signingOut
     }
 
-    signingOut = new Promise(async resolve => {
-      await siwe.methods.signOut()
-      siwe.methods.onSignOut?.()
-      resolve()
-      signingOut = undefined
-    })
+    signingOut = (async () => {
+      try {
+        await siwe.methods.signOut()
+        siwe.methods.onSignOut?.()
+      } finally {
+        signingOut = undefined
+      }
+    })()
 
     return signingOut
   }
