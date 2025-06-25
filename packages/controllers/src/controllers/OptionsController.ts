@@ -350,6 +350,18 @@ export const OptionsController = {
   },
 
   setSIWX(siwx: OptionsControllerState['siwx']) {
+    if (siwx) {
+      // If defaults are undefined we set them to the defaults
+      const defaultsKeys = Object.keys(
+        ConstantsUtil.SIWX_DEFAULTS
+      ) as (keyof typeof ConstantsUtil.SIWX_DEFAULTS)[]
+
+      defaultsKeys.forEach(key => {
+        if (typeof siwx[key] === 'undefined') {
+          siwx[key] = ConstantsUtil.SIWX_DEFAULTS[key]
+        }
+      })
+    }
     state.siwx = siwx
   },
 

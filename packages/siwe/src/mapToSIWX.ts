@@ -229,6 +229,8 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
     getRequired() {
       return siwe.options.required ?? true
-    }
+    },
+
+    signOutOnDisconnect: siwe.options.signOutOnDisconnect
   }
 }
