@@ -11,8 +11,8 @@ import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 bitcoin.initEccLib(ecc)
 
-const mainnetCAIP2 = 'bip122:000000000019d6689c085ae165831e93'
-const testnetCAIP1 = 'bip122:000000000933ea01ad0ee984209779ba'
+const mainnetCAIP2 = 'bip122:000000000019d6689c085ae165831e93' as `${string}:${string}`
+const testnetCAIP1 = 'bip122:000000000933ea01ad0ee984209779ba' as `${string}:${string}`
 const accountFeatures = [
   'bitcoin:connect',
   'standard:events',
