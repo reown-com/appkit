@@ -102,5 +102,21 @@ export const HelpersUtil = {
       default:
         return namespace as ChainNamespace
     }
+  },
+
+  /**
+   * Get all auth namespaces except the active one
+   * @param activeNamespace - The active namespace
+   * @returns All auth namespaces except the active one
+   */
+  getOtherAuthNamespaces(activeNamespace: ChainNamespace | undefined) {
+    if (!activeNamespace) {
+      return []
+    }
+
+    const authNamespaces = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
+    const otherAuthNamespaces = authNamespaces.filter(ns => ns !== activeNamespace)
+
+    return otherAuthNamespaces
   }
 }

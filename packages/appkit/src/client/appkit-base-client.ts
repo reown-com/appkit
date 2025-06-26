@@ -782,9 +782,8 @@ export abstract class AppKitBaseClient {
     connectResult: { address: string; connectedCaipNetwork: CaipNetwork | undefined } | undefined
   ) {
     const isConnectingToAuth = params.type === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
-    const authNamespaces = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
-    const otherAuthNamespaces = authNamespaces.filter(
-      ns => ns !== connectResult?.connectedCaipNetwork?.chainNamespace
+    const otherAuthNamespaces = HelpersUtil.getOtherAuthNamespaces(
+      connectResult?.connectedCaipNetwork?.chainNamespace
     )
 
     if (isConnectingToAuth) {
@@ -1239,8 +1238,7 @@ export abstract class AppKitBaseClient {
     ProviderUtil.setProvider(chainNamespace, provider)
     ConnectorController.setConnectorId(id, chainNamespace)
 
-    const authNamespaces = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
-    const otherAuthNamespaces = authNamespaces.filter(ns => ns !== chainNamespace)
+    const otherAuthNamespaces = HelpersUtil.getOtherAuthNamespaces(chainNamespace)
 
     if (type === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
       otherAuthNamespaces.forEach(ns => {
