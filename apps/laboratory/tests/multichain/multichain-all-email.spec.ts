@@ -29,8 +29,6 @@ test.beforeAll(async ({ browser }) => {
   const email = new Email(mailsacApiKey)
   const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-
-  await validator.expectConnected()
 })
 
 test.afterAll(async () => {
@@ -38,6 +36,21 @@ test.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+test('it should be connected to all namespaces at once', async () => {
+  await validator.expectAccountButtonReady('eip155')
+  await validator.expectBalanceFetched('ETH')
+  await validator.expectAccountButtonReady('solana')
+  await validator.expectBalanceFetched('SOL')
+})
+
+test('it refresh page and connect to all namespaces again', async () => {
+  await page.page.reload()
+  await validator.expectAccountButtonReady('eip155')
+  await validator.expectBalanceFetched('ETH')
+  await validator.expectAccountButtonReady('solana')
+  await validator.expectBalanceFetched('SOL')
+})
+
 test('it should switch networks between EVM and Solana and maintain connections', async () => {
   // Switch to Polygon and verify
   await page.switchNetwork('Polygon')

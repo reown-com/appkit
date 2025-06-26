@@ -748,7 +748,12 @@ export abstract class AppKitBaseClient {
     const caipNetworkToUse = params.caipNetwork || fallbackCaipNetwork
 
     const res = await adapter.connect({
-      ...params,
+      id: params.id,
+      address: params.address,
+      info: params.info,
+      type: params.type,
+      provider: params.provider,
+      socialUri: params.socialUri,
       chainId: caipNetworkToUse?.id,
       rpcUrl:
         params.caipNetwork?.rpcUrls?.default?.http?.[0] ||
@@ -759,9 +764,10 @@ export abstract class AppKitBaseClient {
       return undefined
     }
 
+    StorageUtil.addConnectedNamespace(chainToUse)
+    this.syncProvider({ ...res, chainNamespace: chainToUse })
     this.setStatus('connected', chainToUse)
     this.syncConnectedWalletInfo(chainToUse)
-    StorageUtil.addConnectedNamespace(chainToUse)
     StorageUtil.removeDisconnectedConnectorId(params.id, chainToUse)
 
     return { address: res.address, connectedCaipNetwork: caipNetworkToUse }
@@ -982,8 +988,6 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('accountChanged', ({ address, chainId, connector }) => {
-      const isActiveChain = ChainController.state.activeChain === chainNamespace
-
       if (connector?.provider) {
         this.syncProvider({
           id: connector.id,
@@ -994,16 +998,13 @@ export abstract class AppKitBaseClient {
         this.syncConnectedWalletInfo(chainNamespace)
       }
 
-      if (isActiveChain && chainId) {
+      const namespaceNetworkId = ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id
+      const syncAccountChainId = chainId || namespaceNetworkId
+
+      if (syncAccountChainId) {
         this.syncAccount({
           address,
-          chainId,
-          chainNamespace
-        })
-      } else if (isActiveChain && ChainController.state.activeCaipNetwork?.id) {
-        this.syncAccount({
-          address,
-          chainId: ChainController.state.activeCaipNetwork?.id,
+          chainId: syncAccountChainId,
           chainNamespace
         })
       } else {
