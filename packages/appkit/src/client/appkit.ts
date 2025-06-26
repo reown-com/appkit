@@ -117,7 +117,9 @@ export class AppKit extends AppKitBaseClient {
     }
 
     this.setCaipAddress(caipAddress, namespace)
-    this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { signature, siwxMessage, message, ...userWithOutSiwxData } = user
+    this.setUser({ ...(AccountController.state.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
 
