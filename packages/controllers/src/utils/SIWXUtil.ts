@@ -276,20 +276,7 @@ export const SIWXUtil = {
     })
 
     if (result.signature && result.message) {
-      addEmbeddedWalletSessionPromise = siwx
-        .addSession({
-          data: {
-            ...siwxMessageData,
-            accountAddress: result.address
-          },
-          message: result.message,
-          signature: result.signature
-        })
-        .finally(() => {
-          addEmbeddedWalletSessionPromise = null
-        })
-
-      await addEmbeddedWalletSessionPromise
+      await SIWXUtil.addEmbeddedWalletSession(siwxMessageData, result.message, result.signature)
     }
 
     return {
@@ -299,11 +286,33 @@ export const SIWXUtil = {
     }
   },
 
-  async addEmbeddedWalletSession() {
+  async addEmbeddedWalletSession(
+    siwxMessageData: SIWXMessage.Data,
+    message: string,
+    signature: string
+  ) {
     if (addEmbeddedWalletSessionPromise) {
-      await addEmbeddedWalletSessionPromise.finally(() => {
-        addEmbeddedWalletSessionPromise = null
-      })
+      await addEmbeddedWalletSessionPromise
+    } else {
+      const siwx = SIWXUtil.getSIWX()
+
+      if (!siwx) {
+        return
+      }
+
+      addEmbeddedWalletSessionPromise = siwx
+        .addSession({
+          data: {
+            ...siwxMessageData,
+            accountAddress: siwxMessageData.accountAddress
+          },
+          message,
+          signature
+        })
+        .finally(() => {
+          addEmbeddedWalletSessionPromise = null
+        })
+      await addEmbeddedWalletSessionPromise
     }
   },
   async universalProviderAuthenticate({

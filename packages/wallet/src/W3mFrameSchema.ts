@@ -108,7 +108,8 @@ export const FrameConnectSocialResponse = z.object({
   userName: z.string().optional().nullable(),
   preferredAccountType: z.optional(z.string()),
   signature: z.string().optional(),
-  message: z.string().optional()
+  message: z.string().optional(),
+  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
@@ -131,7 +132,8 @@ export const FrameGetUserResponse = z.object({
     .optional(),
   preferredAccountType: z.optional(z.string()),
   signature: z.string().optional(),
-  message: z.string().optional()
+  message: z.string().optional(),
+  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
