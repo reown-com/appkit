@@ -480,7 +480,10 @@ export class ModalValidator {
   async expectAccountButtonAddress(address: string) {
     const accountButton = this.page.getByTestId('account-button')
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
-    await expect(accountButton).toHaveAttribute('address', address)
+    await expect(accountButton, `Account button to have address ${address}`).toHaveAttribute(
+      'address',
+      address
+    )
   }
 
   async expectNoUnsupportedUIOnAccountButton() {
