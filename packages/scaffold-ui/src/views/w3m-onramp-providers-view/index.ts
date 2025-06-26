@@ -93,7 +93,11 @@ export class W3mOnRampProvidersView extends LitElement {
 
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
-    CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    CoreHelperUtil.openHref(
+      OnRampController.state.selectedProvider?.url || provider.url,
+      'popupWindow',
+      'width=600,height=800,scrollbars=yes'
+    )
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_BUY_PROVIDER',

@@ -1,5 +1,10 @@
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
+import {
+  getNamespaceByLibrary,
+  getTestnet2ByLibrary,
+  getTestnetByLibrary
+} from './shared/utils/namespace'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
@@ -29,24 +34,41 @@ extensionTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-extensionTest('it should connect', async () => {
-  await modalPage.connectToExtensionMultichain('solana')
+extensionTest('it should connect', async ({ library }) => {
+  const namespace = getNamespaceByLibrary(library)
+
+  await modalPage.connectToExtensionMultichain(namespace)
   await modalPage.promptSiwe()
   await modalValidator.expectConnected()
 })
 
-extensionTest('it should require request signature when switching networks', async () => {
-  await modalPage.switchNetwork('Solana Devnet')
-  await modalPage.promptSiwe()
-  await modalValidator.expectConnected()
-})
+extensionTest(
+  'it should require request signature when switching networks',
+  async ({ library }) => {
+    const network = getTestnetByLibrary(library)
 
-extensionTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
-  await modalPage.switchNetwork('Solana Testnet')
-  await modalPage.cancelSiwe()
-  await modalValidator.expectNetworkButton('Solana Devnet')
-  await modalValidator.expectConnected()
-})
+    await modalPage.switchNetwork(network)
+    await modalPage.promptSiwe()
+    await modalValidator.expectConnected()
+  }
+)
+
+extensionTest(
+  'it should fallback to the last session when cancel siwe from AppKit',
+  async ({ library }) => {
+    if (library === 'bitcoin') {
+      return
+    }
+
+    const newNetwork = getTestnet2ByLibrary(library)
+    const prevNetwork = getTestnetByLibrary(library)
+
+    await modalPage.switchNetwork(newNetwork)
+    await modalPage.cancelSiwe()
+    await modalValidator.expectNetworkButton(prevNetwork)
+    await modalValidator.expectConnected()
+  }
+)
 
 extensionTest('it should be connected after connecting and refreshing the page', async () => {
   await modalValidator.expectConnected()
@@ -59,9 +81,14 @@ extensionTest('it should disconnect', async () => {
   await modalValidator.expectDisconnected()
 })
 
-extensionTest('it should be disconnected when there is no previous session', async () => {
-  await modalPage.page.reload()
-  await modalPage.connectToExtensionMultichain('solana')
-  await modalPage.promptSiwe({ cancel: true })
-  await modalValidator.expectDisconnected()
-})
+extensionTest(
+  'it should be disconnected when there is no previous session',
+  async ({ library }) => {
+    const namespace = getNamespaceByLibrary(library)
+
+    await modalPage.page.reload()
+    await modalPage.connectToExtensionMultichain(namespace)
+    await modalPage.promptSiwe({ cancel: true })
+    await modalValidator.expectDisconnected()
+  }
+)
