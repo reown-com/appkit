@@ -3,4 +3,4 @@
 '@reown/appkit-scaffold-ui': patch
 ---
 
-fix(onramp): Meld popoup opens without url parameters
+fix(onramp): Meld popup opens without url parameters
