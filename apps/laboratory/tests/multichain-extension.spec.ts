@@ -98,7 +98,7 @@ extensionTest('it should disconnect and close modal', async () => {
 })
 
 extensionTest(
-  'it should connect with extension on Solana, switch to different chain with auth connector, switch back to Solanja and persist extension state',
+  'it should connect with extension on Solana, switch to different chain with auth connector, switch back to Solana and persist extension state',
   async () => {
     await modalPage.connectToExtensionMultichain('solana')
     await modalValidator.expectConnected()
