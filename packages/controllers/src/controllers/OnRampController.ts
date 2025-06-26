@@ -103,8 +103,7 @@ const controller = {
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
       const activeChain = ChainController.state.activeChain
-      const currency =
-        activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
+      const currency = activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
       const address = ChainController.getAccountProp('address', activeChain) ?? ''
       const url = new URL(provider.url)
       url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
