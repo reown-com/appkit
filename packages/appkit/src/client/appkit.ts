@@ -19,6 +19,7 @@ import {
   type Metadata,
   PublicStateController,
   type RemoteFeatures,
+  SIWXUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
@@ -64,7 +65,15 @@ export class AppKit extends AppKitBaseClient {
 
   // -- Private ------------------------------------------------------------------
 
-  private onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+  private async onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+    console.log('onAuthProviderConnected', user)
+
+    if (user.message && user.signature) {
+      console.log('await addEmbeddedWalletSession from ak client')
+
+      // OnAuthProviderConnected is getting triggered when we receive a success event on Social / Email login. Add this moment, if SIWX is enabled, we are still adding the session to SIWX. Await this promise to make sure that the modal doesn't show the SIWX Sign Message UI
+      await SIWXUtil.addEmbeddedWalletSession()
+    }
     const namespace = ChainController.state.activeChain as ChainNamespace
 
     // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
