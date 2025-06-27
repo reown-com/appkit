@@ -97,14 +97,10 @@ describe('AccountController', () => {
 
   it('should update state correctly on setPreferredAccountType()', () => {
     AccountController.setPreferredAccountType('eoa', chain)
-    expect(AccountController.state.preferredAccountTypes).toEqual({
-      eip155: 'eoa'
-    })
+    expect(AccountController.state.preferredAccountType).toEqual('eoa')
 
     AccountController.setPreferredAccountType('smartAccount', chain)
-    expect(AccountController.state.preferredAccountTypes).toEqual({
-      eip155: 'smartAccount'
-    })
+    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
   })
 
   it('should update state correctly on resetAccount()', () => {
@@ -123,7 +119,7 @@ describe('AccountController', () => {
       addressLabels: new Map<string, string>(),
       connectedWalletInfo: undefined,
       farcasterUrl: undefined,
-      preferredAccountType: undefined,
+      preferredAccountType: 'smartAccount',
       socialProvider: undefined,
       status: 'disconnected',
       user: undefined

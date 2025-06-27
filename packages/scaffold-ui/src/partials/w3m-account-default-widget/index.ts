@@ -14,7 +14,8 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
@@ -327,7 +328,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
