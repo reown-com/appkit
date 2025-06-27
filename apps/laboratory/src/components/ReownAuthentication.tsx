@@ -14,14 +14,14 @@ import {
 } from '@chakra-ui/react'
 
 import type { SIWXSession } from '@reown/appkit'
-import type { CloudAuthSIWX } from '@reown/appkit-siwx'
+import type { ReownAuthentication } from '@reown/appkit-siwx'
 import { useAppKitSIWX } from '@reown/appkit-siwx/react'
 
-export function CloudAuthTests() {
+export function ReownAuthenticationTests() {
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Cloud Auth Interactions</Heading>
+        <Heading size="md">Reown Authentication Interactions</Heading>
       </CardHeader>
 
       <Flex gap={5} p={5} flexDir="column">
@@ -36,7 +36,7 @@ export function CloudAuthTests() {
 }
 
 function SessionStatus() {
-  const siwx = useAppKitSIWX<CloudAuthSIWX>()
+  const siwx = useAppKitSIWX<ReownAuthentication>()
   const [session, setSession] = useState<SIWXSession | undefined>(undefined)
 
   useEffect(() => {
@@ -64,7 +64,7 @@ function SessionStatus() {
         whiteSpace="pre"
         overflow="auto"
         variant="outline"
-        data-testid="cloud-auth-session-status"
+        data-testid="reown-authentication-session-status"
       >
         {session ? JSON.stringify(session, null, 2) : 'No session detected yet'}
       </Code>
@@ -73,10 +73,10 @@ function SessionStatus() {
 }
 
 function SessionAccount() {
-  const siwx = useAppKitSIWX<CloudAuthSIWX>()
-  const [sessionAccount, setSessionAccount] = useState<CloudAuthSIWX.SessionAccount | undefined>(
-    undefined
-  )
+  const siwx = useAppKitSIWX<ReownAuthentication>()
+  const [sessionAccount, setSessionAccount] = useState<
+    ReownAuthentication.SessionAccount | undefined
+  >(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
@@ -116,14 +116,14 @@ function SessionAccount() {
 
       <Text>
         Your are able to get the data stored on the session account of your users by calling the
-        &nbsp;<Code>getSessionAccount</Code>&nbsp;method from&nbsp;<Code>CloudAuthSIWX</Code>.
+        &nbsp;<Code>getSessionAccount</Code>&nbsp;method from&nbsp;<Code>ReownAuthentication</Code>.
       </Text>
 
       <Button
         onClick={handleGetSessionAccount}
         isLoading={isLoading}
         isDisabled={isLoading}
-        data-testid="cloud-auth-get-session-account-button"
+        data-testid="reown-authentication-get-session-account-button"
       >
         Get Session Account
       </Button>
@@ -136,7 +136,7 @@ function SessionAccount() {
             whiteSpace="pre"
             overflow="auto"
             variant="outline"
-            data-testid="cloud-auth-session-account"
+            data-testid="reown-authentication-session-account"
           >
             {sessionAccount
               ? JSON.stringify(sessionAccount, null, 2)
@@ -149,7 +149,7 @@ function SessionAccount() {
 }
 
 function UpdateSessionAccountMetadata() {
-  const siwx = useAppKitSIWX<CloudAuthSIWX>()
+  const siwx = useAppKitSIWX<ReownAuthentication>()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [metadata, setMetadata] = useState<string>('')
@@ -188,9 +188,9 @@ function UpdateSessionAccountMetadata() {
       <Heading size="sm">Update Session Account Metadata</Heading>
 
       <Text>
-        Cloud Auth is able to store arbitrary metadata on the session account of your users. This
-        can be used to store extra information about your users that are relative to your
-        application.
+        Reown Authentication is able to store arbitrary metadata on the session account of your
+        users. This can be used to store extra information about your users that are relative to
+        your application.
       </Text>
 
       <Text>
@@ -203,7 +203,7 @@ function UpdateSessionAccountMetadata() {
         placeholder='{ "username": "satoshi" }'
         value={metadata}
         onChange={e => setMetadata(e.target.value)}
-        data-testid="cloud-auth-update-session-account-metadata"
+        data-testid="reown-authentication-update-session-account-metadata"
       />
 
       <Button

@@ -8,7 +8,7 @@ import {
 } from '@reown/appkit-controllers'
 import { ConstantsUtil } from '@reown/appkit-utils'
 
-import { CloudAuthSIWX } from '../../src/configs/CloudAuthSIWX'
+import { CloudAuthSIWX, ReownAuthentication } from '../../src/configs/ReownAuthenticationSIWX'
 import { mockSession } from '../mocks/mockSession'
 
 vi.useFakeTimers({
@@ -33,8 +33,8 @@ describe.each([
     id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU'
   }
-] as const)('CloudAuthSIWX - $namespace', ({ namespace, id, address }) => {
-  let siwx: CloudAuthSIWX
+] as const)('ReownAuthentication - $namespace', ({ namespace, id, address }) => {
+  let siwx: ReownAuthentication
 
   beforeAll(() => {
     global.fetch = vi.fn()
@@ -43,7 +43,7 @@ describe.each([
   })
 
   beforeEach(() => {
-    siwx = new CloudAuthSIWX()
+    siwx = new ReownAuthentication()
   })
 
   describe('createMessage', () => {
@@ -141,7 +141,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
     it('should use default domain and uri if document is not available', async () => {
       const documentSpy = vi.spyOn(global, 'document', 'get').mockReturnValue(undefined as any)
 
-      siwx = new CloudAuthSIWX()
+      siwx = new ReownAuthentication()
 
       vi.spyOn(global, 'fetch').mockResolvedValueOnce(
         mocks.mockFetchResponse({ token: 'mock_token', nonce: 'mock_nonce' })
@@ -445,7 +445,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
     })
 
     it('should return false for getRequired()', () => {
-      siwx = new CloudAuthSIWX({ required: false })
+      siwx = new ReownAuthentication({ required: false })
       expect(siwx.getRequired()).toBe(false)
     })
   })
@@ -704,4 +704,9 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       )
     })
   })
+})
+
+it('should have same instance for CloudAuthSIWX and ReownAuthentication guaranteeing backwards compatibility', () => {
+  expect(ReownAuthentication).toBe(CloudAuthSIWX)
+  expect(new ReownAuthentication()).toBeInstanceOf(CloudAuthSIWX)
 })
