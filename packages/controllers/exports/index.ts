@@ -100,3 +100,4 @@ export { FetchUtil } from '../src/utils/FetchUtil.js'
 
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'
+export * from '../src/utils/ChainControllerUtil.js'

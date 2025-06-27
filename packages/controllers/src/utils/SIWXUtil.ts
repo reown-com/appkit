@@ -13,6 +13,7 @@ import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
+import { getPreferredAccountType } from './ChainControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 
 /**
@@ -124,12 +125,7 @@ export const SIWXUtil = {
         })
       }
 
-      if (properties.isSmartAccount) {
-        SnackController.showError('This application might not support Smart Accounts')
-      } else {
-        SnackController.showError('Signature declined')
-      }
-
+      SnackController.showError('Error signing message')
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
@@ -329,7 +325,7 @@ export const SIWXUtil = {
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+        getPreferredAccountType(activeChainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },
@@ -411,6 +407,14 @@ export interface SIWXConfig {
    * @returns {boolean}
    */
   getRequired?: () => boolean
+
+  /**
+   * This method determines whether the session should be cleared when the user disconnects.
+   *
+   * @default true
+   * @returns {boolean}
+   */
+  signOutOnDisconnect?: boolean
 }
 
 /**

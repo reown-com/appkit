@@ -149,7 +149,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
 
-  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit) {
+  override async syncConnectors(_options?: AppKitOptions, appKit?: AppKit) {
     function getActiveNetwork() {
       return appKit?.getCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
     }
@@ -159,11 +159,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       requestedChains: this.networks
     })
 
+    const satsConnectConnectors = await SatsConnectConnector.getWallets({
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+
     this.addConnector(
-      ...SatsConnectConnector.getWallets({
-        requestedChains: this.networks,
-        getActiveNetwork
-      }).map(connector => {
+      ...satsConnectConnectors.map(connector => {
         switch (connector.wallet.id) {
           case LeatherConnector.ProviderId:
             return new LeatherConnector({
@@ -470,6 +472,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   // -- Private ------------------------------------------ //
+  public override setAuthProvider() {
+    return undefined
+  }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider) {
     this.universalProvider = universalProvider

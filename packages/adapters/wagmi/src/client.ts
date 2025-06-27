@@ -37,7 +37,12 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
-import { ChainController, CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  CoreHelperUtil,
+  OptionsController,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -306,7 +311,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(walletConnect(options, appKit))
     }
 
-    if (options.enableInjected !== false) {
+    if (options.enableEIP6963 !== false) {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
@@ -449,6 +454,14 @@ export class WagmiAdapter extends AdapterBlueprint {
      * We don't need to set auth connector or walletConnect connector
      * from wagmi since we already set it in chain adapter blueprint
      */
+
+    if (
+      connector.type === CommonConstantsUtil.CONNECTOR_ID.INJECTED &&
+      options.enableEIP6963 === false
+    ) {
+      return
+    }
+
     if (
       connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH ||
       connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
@@ -727,6 +740,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       )
 
       await wagmiDisconnect(this.wagmiConfig, { connector })
+      if (OptionsController.state.enableReconnect === false) {
+        this.deleteConnection(params.id)
+      }
 
       if (connection) {
         return {
@@ -779,14 +795,24 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
+
+    const wagmiChain = this.wagmiConfig.chains.find(
+      chain => chain.id.toString() === caipNetwork.id.toString()
+    )
+
     await switchChain(this.wagmiConfig, {
       chainId: caipNetwork.id as number,
       addEthereumChainParameter: {
-        chainName: caipNetwork.name,
-        nativeCurrency: caipNetwork.nativeCurrency,
-        rpcUrls: [caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
-        blockExplorerUrls: [caipNetwork.blockExplorers?.default.url ?? ''],
-        iconUrls: [caipNetwork.assets?.imageUrl ?? '']
+        chainName: wagmiChain?.name ?? caipNetwork.name,
+        nativeCurrency: wagmiChain?.nativeCurrency ?? caipNetwork.nativeCurrency,
+        rpcUrls: [
+          caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ??
+            wagmiChain?.rpcUrls?.default?.http?.[0] ??
+            ''
+        ],
+        blockExplorerUrls: [
+          wagmiChain?.blockExplorers?.default?.url ?? caipNetwork.blockExplorers?.default?.url ?? ''
+        ]
       }
     })
     await super.switchNetwork(params)
@@ -895,6 +921,18 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     return provider.request({ method: 'wallet_getAssets', params: [params] })
+  }
+
+  public override setAuthProvider(authProvider: W3mFrameProvider) {
+    this.addConnector({
+      id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+      type: 'AUTH',
+      name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
+      provider: authProvider,
+      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
+      chain: this.namespace as ChainNamespace,
+      chains: []
+    })
   }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {

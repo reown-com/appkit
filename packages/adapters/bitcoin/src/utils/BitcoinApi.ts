@@ -4,14 +4,15 @@ import { bitcoinTestnet } from '@reown/appkit/networks'
 export const BitcoinApi: BitcoinApi.Interface = {
   getUTXOs: async ({ network, address }: BitcoinApi.GetUTXOsParams): Promise<BitcoinApi.UTXO[]> => {
     const isTestnet = network.caipNetworkId === bitcoinTestnet.caipNetworkId
-    // Make chain dynamic
 
     const response = await fetch(
       `https://mempool.space${isTestnet ? '/testnet' : ''}/api/address/${address}/utxo`
     )
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch UTXOs: ${await response.text()}`)
+      console.warn(`Failed to fetch UTXOs: ${await response.text()}`)
+
+      return []
     }
 
     return (await response.json()) as BitcoinApi.UTXO[]

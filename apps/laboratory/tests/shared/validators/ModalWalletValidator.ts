@@ -3,7 +3,7 @@ import { expect } from '@playwright/test'
 import { ModalValidator } from './ModalValidator'
 
 export const EOA = 'EOA'
-export const SMART_ACCOUNT = 'smart account'
+export const SMART_ACCOUNT = 'Smart Account'
 
 type AccountType = typeof EOA | typeof SMART_ACCOUNT
 
