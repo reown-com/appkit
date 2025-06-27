@@ -811,7 +811,7 @@ export class WagmiAdapter extends AdapterBlueprint {
             ''
         ],
         blockExplorerUrls: [
-          wagmiChain?.blockExplorers?.default?.url ?? caipNetwork.blockExplorers?.[0]?.url ?? ''
+          wagmiChain?.blockExplorers?.default?.url ?? caipNetwork.blockExplorers?.default?.url ?? ''
         ]
       }
     })
