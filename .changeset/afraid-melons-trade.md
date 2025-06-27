@@ -1,5 +1,4 @@
 ---
-'@reown/appkit-controllers': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
@@ -11,6 +10,7 @@
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
 '@reown/appkit-common': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
@@ -24,4 +24,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fix an issue where AppKit would open sign message screen after it falls back to previous SIWE session
+Updates Bitcoin adapter's WalletStandardConnector to have switch network functionality from wallet's features

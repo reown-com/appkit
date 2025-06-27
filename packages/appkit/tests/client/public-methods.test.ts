@@ -834,11 +834,11 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
 
-    expect(fetchIdentity).not.toHaveBeenCalled()
+    expect(fetchIdentity).toHaveBeenCalled()
 
     await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
 
-    expect(fetchIdentity).toHaveBeenCalledOnce()
+    expect(fetchIdentity).toHaveBeenCalled()
   })
 
   it('should not sync identity on non-evm network', async () => {

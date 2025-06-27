@@ -248,7 +248,7 @@ export class W3mAccountSettingsView extends LitElement {
       this.text =
         getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           ? 'Switch to your EOA'
-          : 'Switch to your smart account'
+          : 'Switch to your Smart Account'
     }
 
     return html`
@@ -292,7 +292,7 @@ export class W3mAccountSettingsView extends LitElement {
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         ? 'Switch to your EOA'
-        : 'Switch to your smart account'
+        : 'Switch to your Smart Account'
     this.switched = true
 
     SendController.resetSend()
