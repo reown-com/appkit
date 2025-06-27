@@ -26,6 +26,7 @@
     }
   },
   "dependencies": {
+    "@asigna/core-js": "0.0.1",
     "@exodus/bitcoin-wallet-standard": "0.0.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",

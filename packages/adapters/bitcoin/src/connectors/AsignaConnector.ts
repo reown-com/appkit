@@ -7,7 +7,7 @@ import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
-import { AsignaUiHelper } from '../utils/AsignaUiHelper.js'
+import { AsignaConnector as AsignaCoreConnector } from '@asigna/core-js'
 
 export class AsignaConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'Asigna'
@@ -21,7 +21,7 @@ export class AsignaConnector extends ProviderEventEmitter implements BitcoinConn
   public readonly provider = this
 
   private readonly requestedChains: CaipNetwork[] = []
-  private multisigInfo: { threshold: number; users: string[]; address: string } | undefined
+  private coreConnector: AsignaCoreConnector;
 
   constructor({
     requestedChains,
@@ -30,6 +30,7 @@ export class AsignaConnector extends ProviderEventEmitter implements BitcoinConn
     super()
     this.requestedChains = requestedChains
     this.imageUrl = imageUrl
+    this.coreConnector = new AsignaCoreConnector()
   }
 
   public get chains() {
@@ -37,24 +38,8 @@ export class AsignaConnector extends ProviderEventEmitter implements BitcoinConn
   }
 
   public async connect(): Promise<string> {
-    interface ConnectResponse {
-      threshold: number
-      users: string[]
-      address: string
-      psbtInputConstructionFields: any
-    }
-    
-    const response = await this.sendMessageAndWait<ConnectResponse>(
-      { connect: true },
-      'psbtInputConstructionFields',
-      (data) => data.psbtInputConstructionFields && data.threshold && data.users && data.address
-    )
-    
-    this.multisigInfo = {
-      threshold: response.threshold,
-      users: response.users,
-      address: response.address
-    }
+    const response = await this.coreConnector.connect();
+  
     
     this.emit('accountsChanged', [response.address])
     return response.address
@@ -64,17 +49,8 @@ export class AsignaConnector extends ProviderEventEmitter implements BitcoinConn
     return Promise.resolve();
   }
 
-  public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
-    interface AccountResponse {
-      address: string
-      psbtInputConstructionFields: any
-    }
-    
-    const response = await this.sendMessageAndWait<AccountResponse>(
-      { connect: true },
-      'psbtInputConstructionFields',
-      (data) => data.psbtInputConstructionFields && data.address
-    )
+  public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {    
+    const response = await this.coreConnector.connect();
     
     return [{
       address: response.address,
@@ -83,269 +59,18 @@ export class AsignaConnector extends ProviderEventEmitter implements BitcoinConn
     }]
   }
 
-  private async pollSignatureStatus(
-    mode: 'message' | 'transaction',
-    data: any,
-    updateProgress: (current: number, total: number) => void,
-    collectedSignaturesRef: { signatures: any[]; initialPsbt?: string },
-    onComplete?: (result: any) => void
-  ): Promise<void> {
-    const totalSignatures = this.multisigInfo?.threshold || 2
-    
-    return new Promise<void>((resolve) => {
-      let currentSignatures = 0
-      const statusInterval = setInterval(async () => {
-        try {
-          if (mode === 'message') {
-            const status = await this.sendMessageAndWait<{messageInfo: any}>(
-              { messageInfo: data.message },
-              'messageInfo',
-              (data) => data.messageInfo && data.messageInfo.signatures
-            )
-            if (status.messageInfo && status.messageInfo.signatures) {
-              currentSignatures = status.messageInfo.signatures.length
-              updateProgress(currentSignatures, totalSignatures)
-              if (collectedSignaturesRef) {
-                collectedSignaturesRef.signatures = status.messageInfo.signatures
-              }
-              if (currentSignatures >= totalSignatures) {
-                clearInterval(statusInterval)
-                if (onComplete) {
-                  const mergedSignature = collectedSignaturesRef.signatures.map((sig: any) => sig.signature).join(',')
-                  onComplete(mergedSignature)
-                }
-                resolve()
-              }
-            }
-          } else {
-            const txId = data.getTxId ? data.getTxId() : data.txid
-            const isTxCreated = data.isTxCreated ? data.isTxCreated() : false
-            if (!isTxCreated) {
-              return
-            }
-            if (!txId) {
-              return
-            }
-            const status = await this.sendMessageAndWait<{transactionInfo: any}>(
-              { transactionInfo: txId },
-              'transactionInfo',
-              (data) => data.transactionInfo && data.transactionInfo.signatures
-            )
-            if (status.transactionInfo && status.transactionInfo.signatures) {
-              currentSignatures = status.transactionInfo.signatures.length
-              updateProgress(currentSignatures, totalSignatures)
-              if (collectedSignaturesRef) {
-                collectedSignaturesRef.signatures = status.transactionInfo.signatures
-                if (status.transactionInfo.initialPsbt) {
-                  collectedSignaturesRef.initialPsbt = status.transactionInfo.initialPsbt
-                }
-              }
-              if (currentSignatures >= totalSignatures) {
-                clearInterval(statusInterval)
-                if (onComplete) {
-                  onComplete(txId)
-                }
-                resolve()
-              }
-            }
-          }
-        } catch (error) {
-        }
-      }, 5000)
-    })
-  }
-
-  private async signWithModal<T>(
-    mode: 'message' | 'transaction',
-    data: any,
-    onApprove?: (result: T) => void
-  ): Promise<T> {
-    let modal: HTMLElement | null = null
-    let updateProgress: (current: number, total: number) => void = () => {}
-    try {
-      const collectedSignaturesRef = { signatures: [] as any[], initialPsbt: undefined as string | undefined }
-      
-      let approveResolve: ((value: T) => void) | null = null
-      const approvePromise = new Promise<T>((resolve) => {
-        approveResolve = resolve
-      })
-      
-      const modalResult = AsignaUiHelper.createSigningModal(mode, {
-        ...data,
-        threshold: this.multisigInfo?.threshold || 2,
-        collectedSignaturesRef: collectedSignaturesRef
-      }, (result: T) => {
-        if (approveResolve) {
-          approveResolve(result)
-        }
-        if (onApprove) {
-          onApprove(result)
-        }
-      })
-      modal = modalResult.modal
-      updateProgress = modalResult.updateProgress
-      document.body.appendChild(modal)
-      
-      requestAnimationFrame(() => {
-        modal!.style.opacity = '1'
-        modal!.querySelector('.modal-content')?.classList.add('show')
-      })
-      
-      let isCancelled = false
-      const cancelPromise = new Promise<never>((_, reject) => {
-        const cancelButton = modal!.querySelector('.cancel-button') as HTMLButtonElement
-        if (cancelButton) {
-          cancelButton.addEventListener('click', () => {
-            isCancelled = true
-            reject(new Error('Operation cancelled by user'))
-          })
-        }
-      })
-      
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => {
-          reject(new Error('Signature timeout expired'))
-        }, 25 * 60 * 1000)
-      })
-      
-      this.pollSignatureStatus(mode, data, updateProgress, collectedSignaturesRef, data.onComplete)
-      
-      const result = await Promise.race([
-        approvePromise,
-        cancelPromise,
-        timeoutPromise
-      ])
-      if (isCancelled) {
-        throw new Error('Operation cancelled by user')
-      }
-      return result
-    } catch (error) {
-      throw error
-    } finally {
-      if (modal) {
-        modal.style.opacity = '0'
-        modal.querySelector('.modal-content')?.classList.remove('show')
-        setTimeout(() => {
-          if (modal && modal.parentNode) {
-            modal.parentNode.removeChild(modal)
-          }
-        }, 200)
-      }
-    }
-  }
-
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    setTimeout(async () => {
-      try {
-        await this.sendMessageAndWait(
-          { message: params.message },
-          'signature',
-          (data) => data.signature
-        )
-      } catch (error) {
-        console.error('Error sending sign message request:', error)
-      }
-    }, 100)
-    
-    return this.signWithModal('message', {
-      message: params.message,
-      protocol: params.protocol || 'ecdsa',
-      onComplete: (_result: string) => {}
-    }, (result) => {
-      return result
-    })
+    return this.coreConnector.signMessage(params);
   }
 
   public async signPSBT(
     params: BitcoinConnector.SignPSBTParams
   ): Promise<BitcoinConnector.SignPSBTResponse> {
-    setTimeout(async () => {
-      try {
-        await this.sendMessageAndWait(
-          {
-            signPsbt: {
-              psbt: params.psbt,
-              signInputs: params.signInputs,
-              broadcast: params.broadcast
-            }
-          },
-          'signedPsbt',
-          (data) => data.signedPsbt && data.txid
-        )
-      } catch (error) {
-        console.error('Error sending sign PSBT request:', error)
-      }
-    }, 100)
-    
-    return this.signWithModal('transaction', {
-      psbt: params.psbt,
-      signInputs: params.signInputs,
-      broadcast: params.broadcast,
-      onComplete: (_result: string) => {
-      }
-    }, (result) => {
-      const response = {
-        psbt: result.psbt,
-        txid: undefined
-      }
-      
-      if (params.broadcast && result.psbt) {
-        return this.broadcastPSBT(result.psbt).then(txid => ({
-          ...response,
-          txid
-        }))
-      }
-      
-      return response
-    })
+    return this.coreConnector.signPSBT(params);
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
-    let txIdFromResponse: string | null = null 
-    let isTxCreated = false
-    
-    setTimeout(async () => {
-      try {
-        const response = await this.sendMessageAndWait<{txIdBtc: string}>(
-          {
-            btcAmount: params.amount,
-            type: 'SIGNATURE',
-            recipient: params.recipient
-          },
-          'txIdBtc',
-          (data) => data.txIdBtc
-        )
-        txIdFromResponse = response.txIdBtc
-        isTxCreated = true
-      } catch (error) {
-        console.error('Error sending BTC transfer request:', error)
-      }
-    }, 100)
-    
-    return new Promise<string>(async (resolve, reject) => {
-      try {
-        const result = await this.signWithModal<string>('transaction', {
-          amount: params.amount,
-          recipient: params.recipient,
-          type: 'SIGNATURE',
-          getTxId: () => txIdFromResponse,
-          isTxCreated: () => isTxCreated,
-          onComplete: (_result: string) => {}
-        }, (result) => {
-          return result
-        })
-        
-        const txHex = result
-        if (txHex) {
-          const txId = await this.broadcastPSBT(txHex)
-          resolve(txId)
-        } else {
-          reject(new Error('No transaction hex to broadcast'))
-        }
-      } catch (error) {
-        reject(error)
-      }
-    })
+    return this.coreConnector.sendTransfer(params);
   }
 
   public async switchNetwork(_caipNetworkId: string): Promise<void> {
@@ -375,52 +100,6 @@ export class AsignaConnector extends ProviderEventEmitter implements BitcoinConn
 
   public async getPublicKey(): Promise<string> {
     throw new Error('Method not implemented')
-  }
-
-  private async sendMessageAndWait<T>(
-    message: any, 
-    expectedResponse: string,
-    responseValidator?: (data: any) => boolean
-  ): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
-      const handleMessage = (e: MessageEvent) => {
-        if (e.data.source === 'asigna') {
-          if (e.data.data.error) {
-            window.removeEventListener('message', handleMessage)
-            reject(new Error(e.data.data.error))
-            return
-          }
-          
-          if (e.data.data[expectedResponse] || (responseValidator && responseValidator(e.data.data))) {
-            window.removeEventListener('message', handleMessage)
-            resolve(e.data.data)
-            return
-          }
-        }
-      }
-      
-      window.addEventListener('message', handleMessage)
-      window.top?.postMessage({ source: 'asigna-sdk', ...message }, '*')
-    })
-  }
-
-  public async broadcastPSBT(psbt: string): Promise<string> {
-    try {
-      const response = await this.sendMessageAndWait<{txid: string}>(
-        {
-          broadcastPsbt: {
-            psbt: psbt
-          }
-        },
-        'txid',
-        (data) => data.txid
-      )
-      
-      return response.txid
-    } catch (error) {
-      console.error('Error broadcasting PSBT:', error)
-      throw new Error(`Failed to broadcast PSBT: ${error}`)
-    }
   }
 }
 
