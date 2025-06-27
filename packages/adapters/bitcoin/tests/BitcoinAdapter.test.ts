@@ -16,6 +16,7 @@ import {
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
+  OptionsController,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
@@ -290,6 +291,64 @@ describe('BitcoinAdapter', () => {
 
       expect(mockGetActiveNetworks).toHaveBeenCalled()
       expect(getRequestedCaipNetworksSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.BITCOIN)
+    })
+
+    it('should exclude wallets based on excludeWalletIds option', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        excludeWalletIds: [
+          '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
+          'OKX'
+        ]
+      })
+
+      mockSatsConnectProvider({
+        id: '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
+        name: 'Xverse Wallet'
+      })
+      ;(window as any).okxwallet = { bitcoin: { connect: vi.fn() }, cardano: { icon: 'okx-icon' } }
+
+      await adapter.syncConnectors(undefined, undefined)
+
+      const xverseConnector = adapter.connectors.find(c => c.name === 'Xverse Wallet')
+      const okxConnector = adapter.connectors.find(c => c.name === 'OKX Wallet')
+
+      expect(xverseConnector).toBeUndefined()
+      expect(okxConnector).toBeUndefined()
+    })
+
+    it('should include wallets when excludeWalletIds is empty', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        excludeWalletIds: []
+      })
+
+      mockSatsConnectProvider({
+        id: '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
+        name: 'Xverse Wallet'
+      })
+
+      await adapter.syncConnectors(undefined, undefined)
+
+      const xverseConnector = adapter.connectors.find(c => c.name === 'Xverse Wallet')
+      expect(xverseConnector).toBeDefined()
+    })
+
+    it('should exclude wallets by name match', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        excludeWalletIds: ['xverse wallet']
+      })
+
+      mockSatsConnectProvider({
+        id: '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
+        name: 'Xverse Wallet'
+      })
+
+      await adapter.syncConnectors(undefined, undefined)
+
+      const xverseConnector = adapter.connectors.find(c => c.name === 'Xverse Wallet')
+      expect(xverseConnector).toBeUndefined()
     })
   })
 

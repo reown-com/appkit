@@ -9,7 +9,7 @@ import {
 } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -153,6 +153,18 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       return appKit?.getCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
     }
 
+    function isWalletExcluded(walletId: string, walletName: string): boolean {
+      const { excludeWalletIds } = OptionsController.state
+      if (!excludeWalletIds || excludeWalletIds.length === 0) {
+        return false
+      }
+
+      return excludeWalletIds.some(
+        excludedId =>
+          excludedId === walletId || HelpersUtil.isLowerCaseMatch(excludedId, walletName)
+      )
+    }
+
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
       requestedChains: this.networks
@@ -164,24 +176,26 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
 
     this.addConnector(
-      ...satsConnectConnectors.map(connector => {
-        switch (connector.wallet.id) {
-          case LeatherConnector.ProviderId:
-            return new LeatherConnector({
-              connector
-            })
+      ...satsConnectConnectors
+        .filter(connector => !isWalletExcluded(connector.wallet.id, connector.wallet.name))
+        .map(connector => {
+          switch (connector.wallet.id) {
+            case LeatherConnector.ProviderId:
+              return new LeatherConnector({
+                connector
+              })
 
-          default:
-            return connector
-        }
-      })
+            default:
+              return connector
+          }
+        })
     )
 
     const okxConnector = OKXConnector.getWallet({
       requestedChains: this.networks,
       getActiveNetwork
     })
-    if (okxConnector) {
+    if (okxConnector && !isWalletExcluded(okxConnector.id, okxConnector.name)) {
       this.addConnector(okxConnector)
     }
   }
