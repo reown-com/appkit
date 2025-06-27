@@ -305,15 +305,14 @@ export abstract class AppKitBaseClient {
 
     // On by default
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
-    OptionsController.setEnableWalletGuide(options.enableWalletGuide === true)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
     OptionsController.setEnableReconnect(options.enableReconnect !== false)
-
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
-    OptionsController.setCustomRpcUrls(options.customRpcUrls)
 
+    OptionsController.setEnableWalletGuide(options.enableWalletGuide === true)
+    OptionsController.setCustomRpcUrls(options.customRpcUrls)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
