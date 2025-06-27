@@ -3,6 +3,7 @@ import { z } from 'zod'
 import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
 
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import { W3mFrameTypes } from './W3mFrameTypes.js'
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() })
@@ -42,12 +43,14 @@ export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({
   uri: z.string(),
   preferredAccountType: z.optional(z.string()),
-  chainId: z.optional(z.string().or(z.number()))
+  chainId: z.optional(z.string().or(z.number())),
+  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.string().or(z.number())),
   preferredAccountType: z.optional(z.string()),
-  socialUri: z.optional(z.string())
+  socialUri: z.optional(z.string()),
+  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
 })
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
@@ -103,7 +106,10 @@ export const FrameConnectSocialResponse = z.object({
     )
     .optional(),
   userName: z.string().optional().nullable(),
-  preferredAccountType: z.optional(z.string())
+  preferredAccountType: z.optional(z.string()),
+  signature: z.string().optional(),
+  message: z.string().optional(),
+  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
@@ -124,7 +130,10 @@ export const FrameGetUserResponse = z.object({
       })
     )
     .optional(),
-  preferredAccountType: z.optional(z.string())
+  preferredAccountType: z.optional(z.string()),
+  signature: z.string().optional(),
+  message: z.string().optional(),
+  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
