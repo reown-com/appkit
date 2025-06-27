@@ -3,7 +3,6 @@ import { z } from 'zod'
 import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
 
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
-import { W3mFrameTypes } from './W3mFrameTypes.js'
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() })
@@ -15,6 +14,22 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
 // -- Custom Types -----------------------------------------------------------
 type SdkType = 'w3m' | 'appkit'
 type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion | undefined
+
+// -- SIWX Message Schema ----------------------------------------------------
+export const SIWXMessage = z.object({
+  accountAddress: z.string(),
+  chainId: z.string(),
+  notBefore: z.string().optional(),
+  domain: z.string(),
+  uri: z.string(),
+  version: z.string(),
+  nonce: z.string(),
+  statement: z.string().optional(),
+  resources: z.array(z.string()).optional(),
+  requestId: z.string().optional(),
+  issuedAt: z.string().optional(),
+  expirationTime: z.string().optional()
+})
 
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({
@@ -44,13 +59,13 @@ export const AppConnectSocialRequest = z.object({
   uri: z.string(),
   preferredAccountType: z.optional(z.string()),
   chainId: z.optional(z.string().or(z.number())),
-  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
+  siwxMessage: z.optional(SIWXMessage)
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.string().or(z.number())),
   preferredAccountType: z.optional(z.string()),
   socialUri: z.optional(z.string()),
-  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
+  siwxMessage: z.optional(SIWXMessage)
 })
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
@@ -109,7 +124,7 @@ export const FrameConnectSocialResponse = z.object({
   preferredAccountType: z.optional(z.string()),
   signature: z.string().optional(),
   message: z.string().optional(),
-  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
+  siwxMessage: z.optional(SIWXMessage)
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
@@ -133,7 +148,7 @@ export const FrameGetUserResponse = z.object({
   preferredAccountType: z.optional(z.string()),
   signature: z.string().optional(),
   message: z.string().optional(),
-  siwxMessage: z.optional(W3mFrameTypes.SIWXMessage)
+  siwxMessage: z.optional(SIWXMessage)
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
