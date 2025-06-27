@@ -276,7 +276,13 @@ export const SIWXUtil = {
     })
 
     if (result.signature && result.message) {
-      await SIWXUtil.addEmbeddedWalletSession(siwxMessageData, result.message, result.signature)
+      const promise = SIWXUtil.addEmbeddedWalletSession(
+        siwxMessageData,
+        result.message,
+        result.signature
+      )
+
+      await promise
     }
 
     return {
@@ -290,30 +296,31 @@ export const SIWXUtil = {
     siwxMessageData: SIWXMessage.Data,
     message: string,
     signature: string
-  ) {
+  ): Promise<void> {
     if (addEmbeddedWalletSessionPromise) {
-      await addEmbeddedWalletSessionPromise
-    } else {
-      const siwx = SIWXUtil.getSIWX()
-
-      if (!siwx) {
-        return
-      }
-
-      addEmbeddedWalletSessionPromise = siwx
-        .addSession({
-          data: {
-            ...siwxMessageData,
-            accountAddress: siwxMessageData.accountAddress
-          },
-          message,
-          signature
-        })
-        .finally(() => {
-          addEmbeddedWalletSessionPromise = null
-        })
-      await addEmbeddedWalletSessionPromise
+      return addEmbeddedWalletSessionPromise
     }
+
+    const siwx = SIWXUtil.getSIWX()
+
+    if (!siwx) {
+      return Promise.resolve()
+    }
+
+    addEmbeddedWalletSessionPromise = siwx
+      .addSession({
+        data: {
+          ...siwxMessageData,
+          accountAddress: siwxMessageData.accountAddress
+        },
+        message,
+        signature
+      })
+      .finally(() => {
+        addEmbeddedWalletSessionPromise = null
+      })
+
+    return addEmbeddedWalletSessionPromise
   },
   async universalProviderAuthenticate({
     universalProvider,
