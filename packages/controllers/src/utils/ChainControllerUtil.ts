@@ -68,10 +68,7 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
 export function getActiveNetworkTokenAddress() {
   const namespace = ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
   const chainId = ChainController.state.activeCaipNetwork?.id || 1
-  const address =
-    ConstantsUtil.NATIVE_TOKEN_ADDRESS[
-      namespace as keyof typeof ConstantsUtil.NATIVE_TOKEN_ADDRESS
-    ] || '0x'
+  const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
 
   return `${namespace}:${chainId}:${address}`
 }

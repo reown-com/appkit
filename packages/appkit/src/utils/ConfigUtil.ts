@@ -251,7 +251,7 @@ export const ConfigUtil = {
 
     const remoteFeaturesConfig: RemoteFeatures =
       useApiConfig && !isBasic
-        ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES as RemoteFeatures)
+        ? ConstantsUtil.DEFAULT_REMOTE_FEATURES
         : ConstantsUtil.DEFAULT_REMOTE_FEATURES_DISABLED
 
     try {
@@ -271,7 +271,7 @@ export const ConfigUtil = {
         e
       )
 
-      return ConstantsUtil.DEFAULT_REMOTE_FEATURES as RemoteFeatures
+      return ConstantsUtil.DEFAULT_REMOTE_FEATURES
     }
 
     if (useApiConfig && this.localSettingsOverridden.size > 0) {
