@@ -64,12 +64,10 @@ const featureConfig = {
     },
     processFallback: (localValue: unknown): SocialProvider[] | false => {
       if (localValue === undefined) {
-        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials as SocialProvider[]
+        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials
       }
       if (typeof localValue === 'boolean') {
-        return localValue
-          ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials as SocialProvider[])
-          : false
+        return localValue ? ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials : false
       }
 
       return localValue as SocialProvider[] | false
@@ -91,10 +89,10 @@ const featureConfig = {
     },
     processFallback: (localValue: unknown): SwapProvider[] | false => {
       if (localValue === undefined) {
-        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps as SwapProvider[]
+        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps
       }
       if (typeof localValue === 'boolean') {
-        return localValue ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps as SwapProvider[]) : false
+        return localValue ? ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps : false
       }
 
       return localValue as SwapProvider[] | false
@@ -116,12 +114,10 @@ const featureConfig = {
     },
     processFallback: (localValue: unknown): OnRampProvider[] | false => {
       if (localValue === undefined) {
-        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp as OnRampProvider[]
+        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp
       }
       if (typeof localValue === 'boolean') {
-        return localValue
-          ? (ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp as OnRampProvider[])
-          : false
+        return localValue ? ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp : false
       }
 
       return localValue as OnRampProvider[] | false

@@ -18,7 +18,7 @@ import { W3mOnRampActivityView } from '../../src/views/w3m-onramp-activity-view'
 const mockTransaction: Transaction = {
   id: 'tx-1',
   metadata: {
-    status: 'ONRAMP_TRANSACTION_STATUS_SUCCESS',
+    status: 'confirmed',
     minedAt: '2024-03-14T10:00:00Z',
     operationType: 'buy',
     hash: '0x123',
@@ -112,7 +112,7 @@ describe('W3mOnRampActivityView', () => {
   it('should handle transaction status correctly', async () => {
     const inProgressTx: Transaction = {
       ...mockTransaction,
-      metadata: { ...mockTransaction.metadata, status: 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS' }
+      metadata: { ...mockTransaction.metadata, status: 'pending' }
     }
 
     vi.spyOn(TransactionsController, 'state', 'get').mockReturnValue({

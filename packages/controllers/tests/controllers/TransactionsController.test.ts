@@ -21,8 +21,7 @@ const defaultState = {
   transactionsByYear: {},
   loading: false,
   empty: false,
-  next: undefined,
-  coinbaseTransactions: {}
+  next: undefined
 }
 
 // -- Tests --------------------------------------------------------------------
@@ -60,15 +59,11 @@ describe('TransactionsController', () => {
       ONRAMP_TRANSACTIONS_RESPONSES_FEB.FAILED
     ])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should update onramp transaction from pending to success', async () => {
     const { SUCCESS, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_FEB
     const accountAddress = SUCCESS.metadata.sentTo
-
-    // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -90,11 +85,6 @@ describe('TransactionsController', () => {
 
     expect(TransactionsController.state.transactions).toEqual([])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
-      2024: {
-        1: [IN_PROGRESS]
-      }
-    })
 
     // Update the transaction
     const successResponse = {
@@ -116,15 +106,11 @@ describe('TransactionsController', () => {
     // Transaction should be replaced
     expect(TransactionsController.state.transactions).toEqual([SUCCESS])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should update onramp transaction from pending to failed', async () => {
     const { FAILED, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_FEB
     const accountAddress = FAILED.metadata.sentTo
-
-    // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -146,11 +132,6 @@ describe('TransactionsController', () => {
 
     expect(TransactionsController.state.transactions).toEqual([])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
-      2024: {
-        1: [IN_PROGRESS]
-      }
-    })
 
     // Update the transaction
     const successResponse = {
@@ -172,15 +153,11 @@ describe('TransactionsController', () => {
     // Transaction should be replaced
     expect(TransactionsController.state.transactions).toEqual([FAILED])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should push new onramp transactions while updating old ones', async () => {
     const { SUCCESS, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_JAN
     const accountAddress = SUCCESS.metadata.sentTo
-
-    // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -202,7 +179,6 @@ describe('TransactionsController', () => {
 
     expect(TransactionsController.state.transactions).toEqual([IN_PROGRESS])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
 
     // Update the transaction
     const successResponse = {
@@ -222,9 +198,11 @@ describe('TransactionsController', () => {
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([SUCCESS, ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS])
+    expect(TransactionsController.state.transactions).toEqual([
+      SUCCESS,
+      ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS
+    ])
     expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({})
   })
 
   it('should clear cursor correctly', async () => {

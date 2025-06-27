@@ -7,7 +7,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       minedAt: '2024-01-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
-      status: 'ONRAMP_TRANSACTION_STATUS_SUCCESS',
+      status: 'confirmed',
       nonce: 1,
       chain: 'eip155:137'
     },
@@ -32,7 +32,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       minedAt: '2024-01-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
-      status: 'ONRAMP_TRANSACTION_STATUS_FAILED',
+      status: 'failed',
       nonce: 1
     },
     transfers: [
@@ -56,7 +56,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       minedAt: '2024-01-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
-      status: 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS',
+      status: 'pending',
       nonce: 1
     },
     transfers: [
@@ -83,7 +83,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       minedAt: '2024-02-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
-      status: 'ONRAMP_TRANSACTION_STATUS_SUCCESS',
+      status: 'confirmed',
       nonce: 1,
       chain: 'eip155:137'
     },
@@ -108,7 +108,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       minedAt: '2024-02-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
-      status: 'ONRAMP_TRANSACTION_STATUS_FAILED',
+      status: 'failed',
       nonce: 1
     },
     transfers: [
@@ -132,7 +132,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       minedAt: '2024-02-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
-      status: 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS',
+      status: 'pending',
       nonce: 1
     },
     transfers: [

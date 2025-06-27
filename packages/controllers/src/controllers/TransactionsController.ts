@@ -18,7 +18,6 @@ type TransactionByYearMap = Record<number, TransactionByMonthMap>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
-  coinbaseTransactions: TransactionByYearMap
   transactionsByYear: TransactionByYearMap
   lastNetworkInView: CaipNetworkId | undefined
   loading: boolean
@@ -29,7 +28,6 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
-  coinbaseTransactions: {},
   transactionsByYear: {},
   lastNetworkInView: undefined,
   loading: false,
@@ -61,8 +59,6 @@ const controller = {
         account: accountAddress,
         cursor: state.next,
         onramp,
-        // Meld transaction history state updates require the latest data
-        cache: onramp === 'meld' ? 'no-cache' : undefined,
         chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
       })
 
@@ -73,15 +69,11 @@ const controller = {
 
       state.loading = false
 
-      if (onramp === 'meld') {
-        state.transactions = [...state.transactions, ...response.data]
-      } else {
-        state.transactions = filteredTransactions
-        state.transactionsByYear = TransactionsController.groupTransactionsByYearAndMonth(
-          state.transactionsByYear,
-          sameChainTransactions
-        )
-      }
+      state.transactions = filteredTransactions
+      state.transactionsByYear = TransactionsController.groupTransactionsByYearAndMonth(
+        state.transactionsByYear,
+        sameChainTransactions
+      )
 
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined

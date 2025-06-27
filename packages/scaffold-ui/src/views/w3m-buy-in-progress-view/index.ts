@@ -130,8 +130,6 @@ export class W3mBuyInProgressView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchTransactions() {}
-
   private onTryAgain() {
     if (!this.selectedOnRampProvider) {
       return

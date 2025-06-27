@@ -1,4 +1,9 @@
-import { type ChainNamespace } from '@reown/appkit-common'
+import {
+  type ChainNamespace,
+  type OnRampProvider,
+  type SocialProvider,
+  type SwapProvider
+} from '@reown/appkit-common'
 
 import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
@@ -175,8 +180,9 @@ export const ConstantsUtil = {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
     polkadot: '0x',
-    bip122: '0x'
-  } as const,
+    bip122: '0x',
+    cosmos: '0x'
+  } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
 
@@ -187,10 +193,18 @@ export const ConstantsUtil = {
 
   SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   DEFAULT_REMOTE_FEATURES: {
-    swaps: ['1inch'],
-    onramp: ['meld'],
+    swaps: ['1inch'] as SwapProvider[],
+    onramp: ['meld'] as OnRampProvider[],
     email: true,
-    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[],
     activity: true,
     reownBranding: true,
     multiWallet: false
@@ -226,7 +240,15 @@ export const ConstantsUtil = {
     pay: false
   } satisfies Features,
 
-  DEFAULT_SOCIALS: ['google', 'x', 'farcaster', 'discord', 'apple', 'github', 'facebook'],
+  DEFAULT_SOCIALS: [
+    'google',
+    'x',
+    'farcaster',
+    'discord',
+    'apple',
+    'github',
+    'facebook'
+  ] as SocialProvider[],
 
   DEFAULT_ACCOUNT_TYPES: {
     bip122: 'payment',

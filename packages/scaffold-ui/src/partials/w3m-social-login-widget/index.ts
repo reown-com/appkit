@@ -87,7 +87,7 @@ export class W3mSocialLoginWidget extends LitElement {
     let socials = this.remoteFeatures?.socials
 
     if (!socials && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_SOCIALS as SocialProvider[]
+      socials = ConstantsUtil.DEFAULT_SOCIALS
 
       return this.renderTopViewContent(socials)
     }
@@ -136,7 +136,7 @@ export class W3mSocialLoginWidget extends LitElement {
     const isSocialDisabled = !this.authConnector || !socials || socials.length === 0
 
     if (isSocialDisabled && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_SOCIALS as SocialProvider[]
+      socials = ConstantsUtil.DEFAULT_SOCIALS
     }
 
     if (!socials) {

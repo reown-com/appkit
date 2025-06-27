@@ -1,6 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
@@ -116,7 +117,7 @@ const controller = {
     }
   },
 
-  setOnrampProviders(providers: string[]) {
+  setOnrampProviders(providers: OnRampProviderName[]) {
     if (Array.isArray(providers) && providers.every(item => typeof item === 'string')) {
       const validOnramp = providers as string[]
 

@@ -84,9 +84,9 @@ export class W3mOnRampActivityView extends LitElement {
       return html`
         <w3m-onramp-activity-item
           label="Bought"
-          .completed=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS'}
-          .inProgress=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'}
-          .failed=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_FAILED'}
+          .completed=${transaction.metadata.status === 'confirmed'}
+          .inProgress=${transaction.metadata.status === 'pending'}
+          .failed=${transaction.metadata.status === 'failed'}
           purchaseCurrency=${ifDefined(fungibleInfo.symbol)}
           purchaseValue=${transfer.quantity.numeric}
           date=${date}
@@ -131,7 +131,7 @@ export class W3mOnRampActivityView extends LitElement {
 
   private refetchLoadingTransactions() {
     const loadingTransactions = this.transactions.filter(
-      transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+      transaction => transaction.metadata.status === 'pending'
     )
 
     if (loadingTransactions.length === 0) {
