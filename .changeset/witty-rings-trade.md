@@ -24,4 +24,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where adding a network using wagmi used the WalletConnect RPC instead of wagmi RPC
+Fixed an issue where adding a network using wagmi used the WalletConnect rpc instead of wagmi rpc
