@@ -96,6 +96,11 @@ export class ModalValidator {
     )
   }
 
+  async expectStatus(status: 'connecting' | 'connected' | 'disconnected') {
+    const connectButton = this.page.getByTestId('apkt-account-status')
+    await expect(connectButton, `Account status should be ${status}`).toHaveText(status)
+  }
+
   async expectActiveProfileWalletItemToExist() {
     const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
     await expect(activeProfileWalletItem).toBeVisible({

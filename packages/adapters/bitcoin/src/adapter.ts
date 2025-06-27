@@ -463,6 +463,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   // -- Private ------------------------------------------ //
+  public override setAuthProvider() {
+    return undefined
+  }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider) {
     this.universalProvider = universalProvider

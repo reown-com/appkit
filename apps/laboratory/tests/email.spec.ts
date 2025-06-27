@@ -146,6 +146,33 @@ emailTest(
   }
 )
 
+emailTest('it should switch account and network correctly', async ({ library }) => {
+  // Only run on evm and solana
+  if (library === 'bitcoin') {
+    test.skip()
+  } else if (library === 'solana') {
+    await page.switchNetwork('Solana Testnet')
+    await validator.expectSwitchedNetworkOnNetworksView('Solana Testnet')
+    await page.closeModal()
+    await validator.expectNetworkButton('Solana Testnet')
+  } else {
+    const currentAddress = await page.getAddress()
+
+    await page.switchNetwork('Base')
+    await validator.expectSwitchedNetworkOnNetworksView('Base')
+    await page.closeModal()
+    await validator.expectNetworkButton('Base')
+    await page.openProfileWalletsView()
+
+    await validator.expectActiveConnectionsFromProfileWalletsCount(1)
+    const [secondAddress] = await page.getActiveConnectionsAddresses()
+    await page.switchAccountByAddress(secondAddress as string)
+    await page.closeModal()
+    await validator.expectAccountSwitched(currentAddress)
+    await validator.expectNetworkButton('Base')
+  }
+})
+
 emailTest('it should disconnect correctly', async () => {
   await page.goToProfileWalletsView()
   await page.clickProfileWalletsMoreButton()

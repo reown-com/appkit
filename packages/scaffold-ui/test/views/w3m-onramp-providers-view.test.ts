@@ -5,6 +5,8 @@ import { html } from 'lit'
 
 import {
   AccountController,
+  type AccountControllerState,
+  type ChainAdapter,
   ChainController,
   CoreHelperUtil,
   EventsController,
@@ -38,6 +40,17 @@ describe('W3mOnRampProvidersView', () => {
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              address: '0x123',
+              preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            } as AccountControllerState
+          } as ChainAdapter
+        ]
+      ]),
       activeChain: 'eip155',
       activeCaipNetwork: {
         id: 'eip155:1',
@@ -55,10 +68,7 @@ describe('W3mOnRampProvidersView', () => {
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      address: '0x123',
-      preferredAccountTypes: {
-        eip155: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      }
+      address: '0x123'
     })
   })
 
@@ -88,6 +98,21 @@ describe('W3mOnRampProvidersView', () => {
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
 
+    const parameterizedUrl = 'https://meldcrypto.com'
+    const mockState = vi.spyOn(OnRampController, 'state', 'get').mockReturnValue({
+      ...OnRampController.state,
+      providers: mockProviders,
+      selectedProvider: {
+        name: mockProviders[0]!.name,
+        label: mockProviders[0]!.label,
+        url: parameterizedUrl,
+        feeRange: mockProviders[0]!.feeRange,
+        supportedChains: mockProviders[0]!.supportedChains
+      } as OnRampProvider,
+      purchaseCurrency: { id: 'ETH', symbol: 'ETH', name: 'Ethereum', networks: [] },
+      purchaseCurrencies: [{ id: 'ETH', symbol: 'ETH', name: 'Ethereum', networks: [] }]
+    })
+
     const element: W3mOnRampProvidersView = await fixture(
       html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
     )
@@ -100,7 +125,7 @@ describe('W3mOnRampProvidersView', () => {
     expect(setSelectedProviderSpy).toHaveBeenCalledWith(mockProviders[0])
     expect(routerPushSpy).toHaveBeenCalledWith('BuyInProgress')
     expect(openHrefSpy).toHaveBeenCalledWith(
-      'https://meldcrypto.com',
+      parameterizedUrl,
       'popupWindow',
       'width=600,height=800,scrollbars=yes'
     )
@@ -112,6 +137,8 @@ describe('W3mOnRampProvidersView', () => {
         isSmartAccount: true
       }
     })
+
+    mockState.mockRestore()
   })
 
   it('should handle subscription updates', async () => {

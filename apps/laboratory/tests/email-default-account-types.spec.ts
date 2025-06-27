@@ -48,14 +48,7 @@ emailTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-
-emailTest('it should make the default account type as smart account', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-
-  if (namespace !== 'eip155') {
-    return
-  }
-
+emailTest('it should make the default account type as smart account', async () => {
   await page.goToProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
@@ -71,13 +64,7 @@ emailTest('it should make the default account type as smart account', async ({ l
   await validator.expectDisconnected()
 })
 
-emailTest('it should show make the default account type as EOA', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-
-  if (namespace !== 'eip155') {
-    return
-  }
-
+emailTest('it should show make the default account type as EOA', async () => {
   page = new ModalWalletPage(browserPage, 'default-account-types-eoa', 'default')
   await page.load()
 
