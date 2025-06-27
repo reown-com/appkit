@@ -481,7 +481,7 @@ export abstract class AppKitBaseClient {
       connectExternal: async params => {
         const connectResult = await this.onConnectExternal(params)
 
-        this.connectExternalRemainingNamespaces(params, connectResult)
+        await this.connectExternalRemainingNamespaces(params, connectResult)
 
         return connectResult ? { address: connectResult.address } : undefined
       },
@@ -777,7 +777,7 @@ export abstract class AppKitBaseClient {
     return { address: res.address, connectedCaipNetwork: caipNetworkToUse }
   }
 
-  protected connectExternalRemainingNamespaces(
+  protected async connectExternalRemainingNamespaces(
     params: ConnectExternalOptions,
     connectResult: { address: string; connectedCaipNetwork: CaipNetwork | undefined } | undefined
   ) {
@@ -787,27 +787,29 @@ export abstract class AppKitBaseClient {
     )
 
     if (isConnectingToAuth) {
-      otherAuthNamespaces.forEach(ns => {
-        const provider = ProviderUtil.getProvider(ns)
-        const caipNetwork = ChainController.getNetworkData(ns)?.caipNetwork
-        const caipNetworkToUse = this.getCaipNetwork(ns)
+      await Promise.all(
+        otherAuthNamespaces.map(async ns => {
+          const provider = ProviderUtil.getProvider(ns)
+          const caipNetwork = ChainController.getNetworkData(ns)?.caipNetwork
+          const caipNetworkToUse = this.getCaipNetwork(ns)
 
-        const adapter = this.getAdapter(ns)
-        const res = adapter?.connect({
-          ...params,
-          provider,
-          socialUri: undefined,
-          chainId: caipNetworkToUse?.id,
-          rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0]
+          const adapter = this.getAdapter(ns)
+          const res = await adapter?.connect({
+            ...params,
+            provider,
+            socialUri: undefined,
+            chainId: caipNetworkToUse?.id,
+            rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0]
+          })
+
+          if (res) {
+            StorageUtil.addConnectedNamespace(ns)
+            StorageUtil.removeDisconnectedConnectorId(params.id, ns)
+            this.setStatus('connected', ns)
+            this.syncConnectedWalletInfo(ns)
+          }
         })
-
-        if (res) {
-          StorageUtil.addConnectedNamespace(ns)
-          StorageUtil.removeDisconnectedConnectorId(params.id, ns)
-          this.setStatus('connected', ns)
-          this.syncConnectedWalletInfo(ns)
-        }
-      })
+      )
     }
   }
 

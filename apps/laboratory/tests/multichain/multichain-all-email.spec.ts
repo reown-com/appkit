@@ -38,17 +38,17 @@ test.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 test('it should be connected to all namespaces at once', async () => {
   await validator.expectAccountButtonReady('eip155')
-  await validator.expectBalanceFetched('ETH')
+  await validator.expectBalanceFetched('ETH', 'eip155')
   await validator.expectAccountButtonReady('solana')
-  await validator.expectBalanceFetched('SOL')
+  await validator.expectBalanceFetched('SOL', 'solana')
 })
 
 test('it refresh page and connect to all namespaces again', async () => {
   await page.page.reload()
   await validator.expectAccountButtonReady('eip155')
-  await validator.expectBalanceFetched('ETH')
+  await validator.expectBalanceFetched('ETH', 'eip155')
   await validator.expectAccountButtonReady('solana')
-  await validator.expectBalanceFetched('SOL')
+  await validator.expectBalanceFetched('SOL', 'solana')
 })
 
 test('it should switch networks between EVM and Solana and maintain connections', async () => {
