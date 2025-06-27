@@ -57,7 +57,11 @@ export const ProviderUtil = {
     }
   },
 
-  getProvider<T = UniversalProvider>(chainNamespace: ChainNamespace): T | undefined {
+  getProvider<T = UniversalProvider>(chainNamespace: ChainNamespace | undefined): T | undefined {
+    if (!chainNamespace) {
+      return undefined
+    }
+
     return state.providers[chainNamespace] as T | undefined
   },
 

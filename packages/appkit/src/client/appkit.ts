@@ -65,7 +65,7 @@ export class AppKit extends AppKitBaseClient {
   // -- Private ------------------------------------------------------------------
 
   private onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
-    const namespace = ChainController.state.activeChain as ChainNamespace
+    const namespace = HelpersUtil.userChainIdToChainNamespace(user?.chainId)
 
     // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
     const caipAddress =
@@ -232,9 +232,10 @@ export class AppKit extends AppKitBaseClient {
           info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
           type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
           provider,
-          chainId: ChainController.state.activeCaipNetwork?.id,
+          chainId: ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id,
           chain: chainNamespace
         })
+
         this.setStatus('connected', chainNamespace)
       } else if (
         ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH

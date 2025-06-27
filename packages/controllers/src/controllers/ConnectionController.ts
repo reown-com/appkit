@@ -68,6 +68,17 @@ interface DisconnectParams {
   initialDisconnect?: boolean
 }
 
+interface HandleAuthAccountSwitchParams {
+  address: string
+  namespace: ChainNamespace
+}
+
+export interface DisconnectParameters {
+  id?: string
+  chainNamespace?: ChainNamespace
+  initialDisconnect?: boolean
+}
+
 export interface ConnectExternalOptions {
   id: Connector['id']
   type: Connector['type']
@@ -79,17 +90,6 @@ export interface ConnectExternalOptions {
   caipNetwork?: CaipNetwork
   socialUri?: string
   preferredAccountType?: 'eoa' | 'smartAccount'
-}
-
-interface HandleAuthAccountSwitchParams {
-  address: string
-  namespace: ChainNamespace
-}
-
-export interface DisconnectParameters {
-  id?: string
-  chainNamespace?: ChainNamespace
-  initialDisconnect?: boolean
 }
 
 export interface ConnectionControllerClient {
