@@ -202,56 +202,6 @@ export namespace W3mFrameTypes {
 
   export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
-  export const SIWXMessage = z.object({
-    accountAddress: z.string(),
-    chainId: z.string(),
-    notBefore: z.string().optional(),
-    domain: z.string(),
-    uri: z.string(),
-    version: z.string(),
-    nonce: z.string(),
-    statement: z.string().optional(),
-    resources: z.array(z.string()).optional(),
-    requestId: z.string().optional(),
-    issuedAt: z.string().optional(),
-    expirationTime: z.string().optional()
-  })
-
-  export type SIWXMessage = z.infer<typeof SIWXMessage> & {
-    toString: () => string
-  }
-
-  export namespace SIWXMessage {
-    export interface Data extends Input, Metadata, Identifier {}
-
-    export interface Input {
-      accountAddress: string
-      chainId: CaipNetworkId
-      notBefore?: Timestamp
-    }
-
-    export interface Metadata {
-      domain: string
-      uri: string
-      version: string
-      nonce: string
-      statement?: string
-      resources?: string[]
-    }
-
-    export interface Identifier {
-      requestId?: string
-      issuedAt?: Timestamp
-      expirationTime?: Timestamp
-    }
-
-    export interface Methods {
-      toString: () => string
-    }
-
-    export type Timestamp = string
-  }
-
   export type ProviderRequestType =
     | 'ConnectEmail'
     | 'ConnectOtp'

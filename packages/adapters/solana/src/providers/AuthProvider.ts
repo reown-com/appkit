@@ -2,7 +2,7 @@ import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import { PublicKey, type SendOptions, Transaction, VersionedTransaction } from '@solana/web3.js'
 import base58 from 'bs58'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
@@ -64,7 +64,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       chainId: withSolanaNamespace(chainId),
       socialUri: params.socialUri,
       preferredAccountType,
-      chainNamespace: 'solana' as unknown as ChainNamespace
+      chainNamespace: ConstantsUtil.CHAIN.SOLANA
     })
 
     if (!this.publicKey) {
