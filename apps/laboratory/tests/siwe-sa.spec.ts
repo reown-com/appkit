@@ -44,8 +44,6 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
   await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-  await page.promptSiwe()
-  await page.approveSign()
 
   await validator.expectConnected()
   await validator.expectAuthenticated()

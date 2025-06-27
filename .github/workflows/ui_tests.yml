@@ -35,7 +35,7 @@ on:
         type: boolean
       secure-site-url:
         description: 'Secure site SDK url'
-        default: 'https://secure.walletconnect.org/sdk'
+        default: 'https://staging.secure.walletconnect.org/sdk'
         required: false
         type: string
       build-and-cache-only:
