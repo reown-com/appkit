@@ -57,11 +57,6 @@ export type AdapterType =
   | 'polkadot'
   | 'bip122'
 
-export type CoinbaseTransactionStatus =
-  | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
-  | 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
-  | 'ONRAMP_TRANSACTION_STATUS_FAILED'
-
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
 export type TransactionDirection = 'in' | 'out' | 'self'
@@ -84,7 +79,7 @@ export interface TransactionMetadata {
   minedAt: string
   sentFrom: string
   sentTo: string
-  status: TransactionStatus | CoinbaseTransactionStatus
+  status: TransactionStatus
   nonce: number
 }
 
@@ -206,7 +201,7 @@ export type SocialProvider =
 
 export type SwapProvider = '1inch'
 
-export type OnRampProvider = 'coinbase' | 'meld'
+export type OnRampProvider = 'meld'
 
 /**
  * Helper type to create a CaipNetwork with proper type inference from the chainNamespace field

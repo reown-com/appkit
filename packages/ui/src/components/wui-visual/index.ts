@@ -4,7 +4,6 @@ import { property } from 'lit/decorators.js'
 
 import { bitcoinSvg } from '../../assets/visual/bitcoin.js'
 import { browserSvg } from '../../assets/visual/browser.js'
-import { coinbaseSvg } from '../../assets/visual/coinbase.js'
 import { daoSvg } from '../../assets/visual/dao.js'
 import { defiSvg } from '../../assets/visual/defi.js'
 import { defiAltSvg } from '../../assets/visual/defiAlt.js'
@@ -46,7 +45,7 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   noun: nounSvg,
   profile: profileSvg,
   system: systemSvg,
-  coinbase: coinbaseSvg,
+
   meld: meldSvg,
   onrampCard: onrampCardSvg,
   moonpay: moonpaySvg,

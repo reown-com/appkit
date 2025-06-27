@@ -123,7 +123,7 @@ describe('ConfigUtil', () => {
         email: true,
         socials: ['google'],
         swaps: ['1inch'],
-        onramp: ['meld', 'coinbase'],
+        onramp: ['meld'],
         activity: true,
         reownBranding: true,
         multiWallet: false
