@@ -601,7 +601,11 @@ export abstract class AppKitBaseClient {
 
           SendController.resetSend()
           ConnectionController.resetWcConnection()
-          await SIWXUtil.clearSessions()
+
+          if (SIWXUtil.getSIWX()?.signOutOnDisconnect) {
+            await SIWXUtil.clearSessions()
+          }
+
           ConnectorController.setFilterByNamespace(undefined)
           ConnectionController.syncStorageConnections()
 

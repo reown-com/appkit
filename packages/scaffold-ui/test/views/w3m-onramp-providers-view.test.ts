@@ -110,6 +110,21 @@ describe('W3mOnRampProvidersView', () => {
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
 
+    const parameterizedUrl = 'https://coinbase.com/onramp?walletAddress=0x123&network=ethereum'
+    const mockState = vi.spyOn(OnRampController, 'state', 'get').mockReturnValue({
+      ...OnRampController.state,
+      providers: mockProviders,
+      selectedProvider: {
+        name: mockProviders[0]!.name,
+        label: mockProviders[0]!.label,
+        url: parameterizedUrl,
+        feeRange: mockProviders[0]!.feeRange,
+        supportedChains: mockProviders[0]!.supportedChains
+      } as OnRampProvider,
+      purchaseCurrency: { id: 'ETH', symbol: 'ETH', name: 'Ethereum', networks: [] },
+      purchaseCurrencies: [{ id: 'ETH', symbol: 'ETH', name: 'Ethereum', networks: [] }]
+    })
+
     const element: W3mOnRampProvidersView = await fixture(
       html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
     )
@@ -122,7 +137,7 @@ describe('W3mOnRampProvidersView', () => {
     expect(setSelectedProviderSpy).toHaveBeenCalledWith(mockProviders[0])
     expect(routerPushSpy).toHaveBeenCalledWith('BuyInProgress')
     expect(openHrefSpy).toHaveBeenCalledWith(
-      'https://coinbase.com/onramp',
+      parameterizedUrl,
       'popupWindow',
       'width=600,height=800,scrollbars=yes'
     )
@@ -134,6 +149,8 @@ describe('W3mOnRampProvidersView', () => {
         isSmartAccount: true
       }
     })
+
+    mockState.mockRestore()
   })
 
   it('should handle subscription updates', async () => {
