@@ -57,7 +57,6 @@ export class W3mBuyInProgressView extends LitElement {
         })
       ]
     )
-    this.watchTransactions()
   }
 
   public override disconnectedCallback() {
