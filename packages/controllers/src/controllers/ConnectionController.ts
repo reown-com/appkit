@@ -11,6 +11,7 @@ import {
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
+import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -64,6 +65,7 @@ interface HandleActiveConnectionParams {
 interface DisconnectParams {
   id?: string
   namespace?: ChainNamespace
+  initialDisconnect?: boolean
 }
 
 export interface ConnectExternalOptions {
@@ -76,6 +78,7 @@ export interface ConnectExternalOptions {
   chainId?: number | string
   caipNetwork?: CaipNetwork
   socialUri?: string
+  preferredAccountType?: 'eoa' | 'smartAccount'
 }
 
 interface HandleAuthAccountSwitchParams {
@@ -86,6 +89,7 @@ interface HandleAuthAccountSwitchParams {
 export interface DisconnectParameters {
   id?: string
   chainNamespace?: ChainNamespace
+  initialDisconnect?: boolean
 }
 
 export interface ConnectionControllerClient {
@@ -258,7 +262,15 @@ const controller = {
     AccountController.setPreferredAccountType(accountType, namespace)
     await authConnector.provider.setPreferredAccount(accountType)
     StorageUtil.setPreferredAccountTypes(
-      AccountController.state.preferredAccountTypes ?? { [namespace]: accountType }
+      Object.entries(ChainController.state.chains).reduce((acc, [key, _]) => {
+        const namespace = key as ChainNamespace
+        const accountType = getPreferredAccountType(namespace)
+        if (accountType !== undefined) {
+          ;(acc as Record<ChainNamespace, string>)[namespace] = accountType
+        }
+
+        return acc
+      }, {})
     )
     await ConnectionController.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)
@@ -393,11 +405,12 @@ const controller = {
     state.isSwitchingConnection = isSwitchingConnection
   },
 
-  async disconnect({ id, namespace }: DisconnectParams = {}) {
+  async disconnect({ id, namespace, initialDisconnect }: DisconnectParams = {}) {
     try {
       await ConnectionController._getClient()?.disconnect({
         id,
-        chainNamespace: namespace
+        chainNamespace: namespace,
+        initialDisconnect
       })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)

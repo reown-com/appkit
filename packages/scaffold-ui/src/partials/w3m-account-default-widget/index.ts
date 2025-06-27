@@ -14,7 +14,8 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
@@ -327,7 +328,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -342,7 +343,9 @@ export class W3mAccountDefaultWidget extends LitElement {
       const connectorId =
         this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
       const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-      await ConnectionController.disconnect(isMultiWalletEnabled ? { id: connectorId } : {})
+      await ConnectionController.disconnect(
+        isMultiWalletEnabled ? { id: connectorId, namespace: this.namespace } : {}
+      )
       if (hasConnections && isMultiWalletEnabled) {
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('Wallet deleted')

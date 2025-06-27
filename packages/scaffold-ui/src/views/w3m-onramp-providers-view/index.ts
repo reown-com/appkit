@@ -11,7 +11,8 @@ import {
   EventsController,
   OnRampController,
   type OnRampProvider,
-  RouterController
+  RouterController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -92,14 +93,18 @@ export class W3mOnRampProvidersView extends LitElement {
 
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
-    CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    CoreHelperUtil.openHref(
+      OnRampController.state.selectedProvider?.url || provider.url,
+      'popupWindow',
+      'width=600,height=800,scrollbars=yes'
+    )
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_BUY_PROVIDER',
       properties: {
         provider: provider.name,
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(activeChainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

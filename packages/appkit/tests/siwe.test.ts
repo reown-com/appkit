@@ -93,10 +93,7 @@ describe('SIWE mapped to SIWX', () => {
 
     it('should initializeIfEnabled', async () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(true)
-
-      OptionsController.state.siwx = {
-        getSessions: vi.fn().mockResolvedValueOnce([])
-      } as any
+      vi.spyOn(OptionsController.state.siwx!, 'getSessions').mockResolvedValueOnce([])
 
       await SIWXUtil.initializeIfEnabled()
 
@@ -242,10 +239,35 @@ describe('SIWE mapped to SIWX', () => {
       const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
       const setSessionsSpy = vi.spyOn(OptionsController.state.siwx!, 'setSessions')
 
+      expect(SIWXUtil.getSIWX()?.signOutOnDisconnect).toBe(true)
+
       await ConnectionController.disconnect()
 
       expect(signOutSpy).toHaveBeenCalled()
       expect(setSessionsSpy).toHaveBeenCalledWith([])
+    })
+
+    it('should not clear sessions on Connection.disconnect if signOutOnDisconnect is false', async () => {
+      siweConfig.options.signOutOnDisconnect = false
+
+      appkit = new AppKit({
+        adapters: [mockUniversalAdapter],
+        projectId: 'mock-project-id',
+        networks: [networks.mainnet],
+        defaultNetwork: networks.mainnet,
+        siweConfig,
+        sdkVersion: 'html-test-test'
+      })
+
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
+      const setSessionsSpy = vi.spyOn(OptionsController.state.siwx!, 'setSessions')
+
+      await ConnectionController.disconnect()
+
+      expect(signOutSpy).not.toHaveBeenCalled()
+      expect(setSessionsSpy).not.toHaveBeenCalled()
     })
   })
 

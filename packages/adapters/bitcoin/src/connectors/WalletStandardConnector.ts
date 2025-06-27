@@ -64,10 +64,9 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
   async connect() {
     const connectFeature = this.getWalletFeature('bitcoin:connect')
-
     const response = await connectFeature.connect({ purposes: ['payment', 'ordinals'] })
-
     const account = response.accounts[0]
+
     if (!account) {
       throw new Error('No account found')
     }
@@ -210,7 +209,18 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     return on('register', (...wallets) => callback(...wrapWallets(wallets)))
   }
 
-  public async switchNetwork(_caipNetworkId: string): Promise<void> {
+  public async switchNetwork(caipNetworkId: string): Promise<void> {
+    const switchFeature = this.wallet.features['bitcoin:switchNetwork'] as
+      | { switchNetwork: (caipNetworkId: string) => Promise<void> }
+      | undefined
+
+    if (switchFeature && typeof switchFeature.switchNetwork === 'function') {
+      await switchFeature.switchNetwork(caipNetworkId)
+      this.emit('change', { accounts: this.wallet.accounts })
+
+      return
+    }
+
     throw new Error(`${this.name} wallet does not support network switching`)
   }
 }

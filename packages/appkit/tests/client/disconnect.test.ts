@@ -8,7 +8,9 @@ import {
   ConnectionController,
   ConnectorController,
   type ConnectorType,
+  ConstantsUtil,
   EventsController,
+  type SIWXConfig,
   SIWXUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
@@ -43,6 +45,7 @@ describe('AppKit - disconnect', () => {
 
     // Mock common dependencies
     vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
+    vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(ConstantsUtil.SIWX_DEFAULTS as SIWXConfig)
     vi.spyOn(ConnectorController, 'setFilterByNamespace').mockImplementation(() => {})
     vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
     vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
@@ -126,6 +129,25 @@ describe('AppKit - disconnect', () => {
       expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
         id: undefined
       })
+    })
+
+    it('should disconnect from all chains when no namespace is provided', async () => {
+      const mockProvider = { disconnect: vi.fn() }
+
+      vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
+      vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+        UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+      )
+      vi.spyOn(ChainController, 'getAccountData').mockImplementation(ns => {
+        if (ns === 'eip155') return { caipAddress: 'eip155:1:0xyz' } as any
+        if (ns === 'solana') return { caipAddress: 'solana:1:0xyz' } as any
+        return undefined
+      })
+
+      await (appKit as any).connectionControllerClient.disconnect()
+
+      expect(mockEvmAdapter.disconnect).toHaveBeenCalled()
+      expect(mockSolanaAdapter.disconnect).toHaveBeenCalled()
     })
   })
 
@@ -538,7 +560,9 @@ describe('AppKit - disconnect - error handling scenarios', () => {
 
     // Call solana disconnect
     await expect(
-      (appKit as any).connectionControllerClient.disconnect({ chainNamespace: solanaNamespace })
+      (appKit as any).connectionControllerClient.disconnect({
+        chainNamespace: solanaNamespace
+      })
     ).rejects.toThrow(`Failed to disconnect chains: ${solanaAdapterError.message}`)
 
     // --- Assertions for eip155 (successful disconnect) ---
@@ -585,5 +609,14 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     expect(sendEventSpy).toHaveBeenCalledWith(
       expect.objectContaining({ event: 'DISCONNECT_SUCCESS' })
     )
+  })
+
+  it('should not clear SIWX sessions if signOutOnDisconnect is false', async () => {
+    const siwx = { ...ConstantsUtil.SIWX_DEFAULTS, signOutOnDisconnect: false } as SIWXConfig
+    vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(siwx)
+
+    await (appKit as any).connectionControllerClient.disconnect()
+
+    expect(SIWXUtil.clearSessions).not.toHaveBeenCalled()
   })
 })

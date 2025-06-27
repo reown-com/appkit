@@ -239,6 +239,20 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error('Provider not found')
     }
 
+    const connectorWithProvider = {
+      ...connector,
+      ...(params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+        ? {
+            /*
+             * For AuthProvider, we need to pass connector as the provider
+             * so the useAppKitProvider hook works properly when signing
+             * messages and transactions
+             */
+            provider: connector as CoreProvider
+          }
+        : {})
+    }
+
     const rpcUrl =
       params.rpcUrl ||
       this.getCaipNetworks()?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
@@ -258,7 +272,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.emit('accountChanged', {
         address: connection.account.address,
         chainId: connection.caipNetwork?.id,
-        connector
+        connector: connectorWithProvider
       })
 
       return {
@@ -280,7 +294,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     this.emit('accountChanged', {
       address,
       chainId: params.chainId as string,
-      connector
+      connector: connectorWithProvider
     })
 
     const isAuth = connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
