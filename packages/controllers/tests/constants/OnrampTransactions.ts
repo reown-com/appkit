@@ -33,7 +33,8 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'failed',
-      nonce: 1
+      nonce: 1,
+      chain: 'eip155:137'
     },
     transfers: [
       {
@@ -57,7 +58,8 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'pending',
-      nonce: 1
+      nonce: 1,
+      chain: 'eip155:137'
     },
     transfers: [
       {
@@ -109,7 +111,8 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'failed',
-      nonce: 1
+      nonce: 1,
+      chain: 'eip155:137'
     },
     transfers: [
       {
@@ -133,7 +136,8 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       sentFrom: 'Coinbase',
       sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'pending',
-      nonce: 1
+      nonce: 1,
+      chain: 'eip155:137'
     },
     transfers: [
       {
