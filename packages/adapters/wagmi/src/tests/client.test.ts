@@ -16,6 +16,7 @@ import {
 import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { proxy } from 'valtio/vanilla'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork, ConstantsUtil } from '@reown/appkit-common'
@@ -839,8 +840,10 @@ describe('WagmiAdapter', () => {
 
   describe('WagmiAdapter - switchNetwork', () => {
     it('should switch network successfully', async () => {
+      const mockProxyCaipNetwork = proxy(mockCaipNetworks[0])
+
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0]
+        caipNetwork: mockProxyCaipNetwork
       })
 
       expect(switchChain).toHaveBeenCalledWith(
@@ -848,14 +851,14 @@ describe('WagmiAdapter', () => {
         expect.objectContaining({
           chainId: 1,
           addEthereumChainParameter: {
-            chainName: mockCaipNetworks[0].name,
+            chainName: mockProxyCaipNetwork.name,
             nativeCurrency: {
-              name: mockCaipNetworks[0].nativeCurrency.name,
-              symbol: mockCaipNetworks[0].nativeCurrency.symbol,
-              decimals: mockCaipNetworks[0].nativeCurrency.decimals
+              name: mockProxyCaipNetwork.nativeCurrency.name,
+              symbol: mockProxyCaipNetwork.nativeCurrency.symbol,
+              decimals: mockProxyCaipNetwork.nativeCurrency.decimals
             },
-            rpcUrls: [mockCaipNetworks[0].rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
-            blockExplorerUrls: [mockCaipNetworks[0].blockExplorers?.default.url ?? '']
+            rpcUrls: [mockProxyCaipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
+            blockExplorerUrls: [mockProxyCaipNetwork.blockExplorers?.default.url ?? '']
           }
         })
       )
@@ -867,8 +870,10 @@ describe('WagmiAdapter', () => {
         preferredAccountType: 'smartAccount'
       })
 
+      const mockProxyCaipNetwork = proxy(mockCaipNetworks[0])
+
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
+        caipNetwork: mockProxyCaipNetwork,
         provider: mockAuthProvider,
         providerType: 'AUTH'
       })
