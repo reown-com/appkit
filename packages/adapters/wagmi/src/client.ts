@@ -25,6 +25,7 @@ import {
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { snapshot } from 'valtio/vanilla'
 import { type Address, type Hex, formatUnits, parseUnits } from 'viem'
 
 import { AppKit, type AppKitOptions } from '@reown/appkit'
@@ -794,7 +795,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
-    const { caipNetwork } = params
+    const caipNetwork = snapshot(params.caipNetwork)
 
     const wagmiChain = this.wagmiConfig.chains.find(
       chain => chain.id.toString() === caipNetwork.id.toString()
