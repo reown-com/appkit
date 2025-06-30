@@ -25,7 +25,10 @@
     "@vitest/coverage-v8": "2.1.9",
     "@types/node": "22.13.4",
     "@playwright/test": "1.48.2",
-    "dotenv": "16.4.7"
+    "dotenv": "16.4.7",
+    "@walletconnect/utils": "2.21.3",
+    "@walletconnect/core": "2.21.3",
+    "@reown/walletkit": "1.2.8"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
