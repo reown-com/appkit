@@ -256,7 +256,7 @@ export const SIWXUtil = {
       accountAddress: '<<AccountAddress>>'
     })
 
-    // // Extract only the serializable data properties for postMessage, toString() is not possible to include in the postMessage
+    // Extract only the serializable data properties for postMessage, toString() is not possible to include in the postMessage
     const siwxMessageData = {
       accountAddress: siwxMessage.accountAddress,
       chainId: siwxMessage.chainId,
