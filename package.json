@@ -93,10 +93,13 @@
     "overrides": {
       "@solana/web3.js": "1.98.0",
       "esbuild": ">=0.25.1",
+      "elliptic": ">=6.6.1",
       "@babel/runtime": ">=7.26.10",
       "cookie": ">=0.7.0",
       "brace-expansion@1": ">=1.1.12",
-      "brace-expansion@2": ">=2.0.2"
+      "brace-expansion@2": ">=2.0.2",
+      "axios": ">=1.8.2",
+      "ws": ">=7.5.10"
     },
     "patchedDependencies": {
       "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
@@ -104,13 +107,23 @@
   },
   "overrides": {
     "@solana/web3.js": "1.98.0",
+    "esbuild": ">=0.25.1",
     "elliptic": ">=6.6.1",
+    "@babel/runtime": ">=7.26.10",
+    "cookie": ">=0.7.0",
+    "brace-expansion@1": ">=1.1.12",
+    "brace-expansion@2": ">=2.0.2",
     "axios": ">=1.8.2",
     "ws": ">=7.5.10"
   },
   "resolutions": {
     "@solana/web3.js": "1.98.0",
+    "esbuild": ">=0.25.1",
     "elliptic": ">=6.6.1",
+    "@babel/runtime": ">=7.26.10",
+    "cookie": ">=0.7.0",
+    "brace-expansion@1": ">=1.1.12",
+    "brace-expansion@2": ">=2.0.2",
     "axios": ">=1.8.2",
     "ws": ">=7.5.10"
   },
