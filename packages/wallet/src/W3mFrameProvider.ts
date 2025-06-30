@@ -320,7 +320,8 @@ export class W3mFrameProvider {
           payload: {
             uri: payload.socialUri,
             preferredAccountType: payload.preferredAccountType,
-            chainId: payload.chainId
+            chainId: payload.chainId,
+            siwxMessage: payload.siwxMessage
           }
         } as W3mFrameTypes.AppEvent)
 
@@ -344,7 +345,8 @@ export class W3mFrameProvider {
 
         const response = await this.getUser({
           chainId,
-          preferredAccountType: payload?.preferredAccountType
+          preferredAccountType: payload?.preferredAccountType,
+          siwxMessage: payload?.siwxMessage
         })
 
         this.setLoginSuccess(response.email)

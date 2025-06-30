@@ -19,6 +19,7 @@ import {
   type Metadata,
   PublicStateController,
   type RemoteFeatures,
+  SIWXUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
@@ -64,7 +65,30 @@ export class AppKit extends AppKitBaseClient {
 
   // -- Private ------------------------------------------------------------------
 
-  private onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+  private async onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+    if (user.message && user.signature && user.siwxMessage) {
+      // OnAuthProviderConnected is getting triggered when we receive a success event on Social / Email login. At this moment, if SIWX is enabled, we are still adding the session to SIWX. Await this promise to make sure that the modal doesn't show the SIWX Sign Message UI
+
+      const promise = SIWXUtil.addEmbeddedWalletSession(
+        {
+          chainId: user.siwxMessage.chainId as CaipNetworkId,
+          accountAddress: user.siwxMessage.accountAddress,
+          notBefore: user.siwxMessage.notBefore,
+          statement: user.siwxMessage.statement,
+          resources: user.siwxMessage.resources,
+          requestId: user.siwxMessage.requestId,
+          issuedAt: user.siwxMessage.issuedAt,
+          domain: user.siwxMessage.domain,
+          uri: user.siwxMessage.uri,
+          version: user.siwxMessage.version,
+          nonce: user.siwxMessage.nonce
+        },
+        user.message,
+        user.signature
+      )
+
+      await promise
+    }
     const namespace = ChainController.state.activeChain as ChainNamespace
 
     // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
@@ -94,7 +118,9 @@ export class AppKit extends AppKitBaseClient {
     }
 
     this.setCaipAddress(caipAddress, namespace)
-    this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { signature, siwxMessage, message, ...userWithOutSiwxData } = user
+    this.setUser({ ...(AccountController.state.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
 

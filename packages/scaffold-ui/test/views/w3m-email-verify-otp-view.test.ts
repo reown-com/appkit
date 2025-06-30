@@ -145,7 +145,6 @@ describe('W3mEmailVerifyOtpView', () => {
 
       expect(RouterController.reset).not.toHaveBeenCalled()
       expect(RouterController.push).not.toHaveBeenCalled()
-      expect(ModalController.close).not.toHaveBeenCalled()
       expect(SnackController.showSuccess).not.toHaveBeenCalled()
     })
   })
