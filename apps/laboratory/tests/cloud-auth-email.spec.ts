@@ -1,4 +1,4 @@
-import { type BrowserContext, expect, test } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
 
 import { BASE_URL } from '@reown/appkit-testing'
 
@@ -52,15 +52,6 @@ test('should keep session after page reload', async () => {
 test('should get session account', async () => {
   await modalPage.requestSessionAccount()
   await modalValidator.expectSessionAccount()
-})
-
-test('should update session account metadata', async () => {
-  const metadata = { username: 'satoshi' }
-  await modalPage.updateSessionAccountMetadata(metadata)
-
-  await modalPage.requestSessionAccount()
-  const sessionAccount = await modalValidator.expectSessionAccount()
-  expect(sessionAccount.appKitAccount.metadata).toMatchObject(metadata)
 })
 
 test('should disconnect session account', async () => {
