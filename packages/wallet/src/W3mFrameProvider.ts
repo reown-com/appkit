@@ -57,8 +57,7 @@ export class W3mFrameProvider {
     }
     this.abortController = abortController
     this.getActiveCaipNetwork = getActiveCaipNetwork
-    const network = getActiveCaipNetwork()
-    const rpcUrl = network?.rpcUrls.default.http?.[0]
+    const rpcUrl = this.getRpcUrl(chainId)
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger, rpcUrl })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
