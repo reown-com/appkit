@@ -269,23 +269,19 @@ export const SIWXUtil = {
       resources: siwxMessage.resources,
       requestId: siwxMessage.requestId,
       issuedAt: siwxMessage.issuedAt,
-      expirationTime: siwxMessage.expirationTime
+      expirationTime: siwxMessage.expirationTime,
+      serializedMessage: siwxMessage.toString()
     }
-
-    console.log('>> siwxMessage', siwxMessage.toString())
-    console.log('>> siwxMessageData', siwxMessageData)
 
     const result = await authConnector.connect({
       chainId,
       socialUri,
-      siwxMessage: siwxMessage.toString(),
+      siwxMessage: siwxMessageData,
       preferredAccountType
     })
 
-    console.log('>> result', result)
-
     siwxMessageData.accountAddress = result.address
-    console.log('>> siwxMessageData', siwxMessageData)
+    siwxMessageData.serializedMessage = result.message || ''
 
     if (result.signature && result.message) {
       const promise = SIWXUtil.addEmbeddedWalletSession(
