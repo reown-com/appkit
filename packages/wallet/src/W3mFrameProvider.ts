@@ -769,7 +769,7 @@ export class W3mFrameProvider {
   }
 
   private getRpcUrl(chainId?: number | string) {
-    let namespace: ChainNamespace | undefined = chainId ? 'eip155' : undefined
+    let namespace: ChainNamespace | undefined = chainId === undefined ? undefined : 'eip155'
 
     if (typeof chainId === 'string') {
       if (chainId.includes(':')) {
