@@ -862,7 +862,7 @@ describe('Ethers5Adapter', () => {
         providerType: 'AUTH'
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'

@@ -877,7 +877,7 @@ describe('WagmiAdapter', () => {
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
       })
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
     })
   })
 
