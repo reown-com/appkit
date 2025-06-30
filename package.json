@@ -91,6 +91,7 @@
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
     "overrides": {
+      "@solana/web3.js": "1.98.0",
       "esbuild": "0.25.1",
       "@babel/runtime": "7.26.10",
       "cookie": "0.7.0",
