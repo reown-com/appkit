@@ -16,6 +16,7 @@ interface W3mFrameProviderConfig {
   enableLogger?: boolean
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
+  enableCloudAuthAccount?: boolean
   getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
 }
 
@@ -46,6 +47,7 @@ export class W3mFrameProvider {
     enableLogger = true,
     onTimeout,
     abortController,
+    enableCloudAuthAccount,
     getActiveCaipNetwork
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
@@ -54,7 +56,13 @@ export class W3mFrameProvider {
     this.abortController = abortController
     this.getActiveCaipNetwork = getActiveCaipNetwork
 
-    this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
+    this.w3mFrame = new W3mFrame({
+      projectId,
+      isAppClient: true,
+      chainId,
+      enableLogger,
+      enableCloudAuthAccount
+    })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
       this.createFrame()

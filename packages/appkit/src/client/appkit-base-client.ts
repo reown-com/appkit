@@ -1332,6 +1332,8 @@ export abstract class AppKitBaseClient {
           const isConnectorId = c.id === connectorId
           const isRdns = c.info?.rdns === connectorId
 
+          c.connectors?.find(innerConnector => innerConnector.id === connectorId)
+
           const hasMultiChainConnector = c.connectors?.some(
             _c => _c.id === connectorId || _c.info?.rdns === connectorId
           )
