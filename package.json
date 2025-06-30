@@ -72,7 +72,7 @@
     "@vitest/coverage-v8": "2.1.9",
     "@vitest/ui": "2.1.8",
     "buffer": "5.5.0||6.0.0",
-    "danger": "12.3.4",
+    "danger": "13.0.2",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.3",
@@ -84,7 +84,7 @@
     "process": "0.11.10",
     "turbo": "2.0.6-canary.0",
     "typescript": "5.8.3",
-    "vite": "5.4.12",
+    "vite": "5.4.19",
     "vite-plugin-node-polyfills": "0.23.0",
     "vitest": "2.1.9"
   },
@@ -92,9 +92,11 @@
   "pnpm": {
     "overrides": {
       "@solana/web3.js": "1.98.0",
-      "elliptic": ">=6.6.1",
-      "axios": ">=1.8.2",
-      "ws": ">=7.5.10"
+      "esbuild": ">=0.25.1",
+      "@babel/runtime": ">=7.26.10",
+      "cookie": ">=0.7.0",
+      "brace-expansion@1": ">=1.1.12",
+      "brace-expansion@2": ">=2.0.2"
     },
     "patchedDependencies": {
       "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
