@@ -10,7 +10,8 @@ import {
   type ConnectionControllerClient,
   CoreHelperUtil,
   type NetworkControllerClient,
-  type Provider
+  type Provider,
+  SIWXUtil
 } from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -78,7 +79,7 @@ const mockWalletConnectProvider = {
 } as unknown as UniversalProvider
 
 const mockAuthProvider = {
-  connect: vi.fn(),
+  connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
   getUser: vi.fn()
@@ -354,6 +355,36 @@ describe('EthersAdapter', () => {
       expect(connect).toHaveBeenCalledWith({
         chainId: 1,
         preferredAccountType: 'smartAccount'
+      })
+    })
+  })
+
+  describe('EthersAdapter -reconnect', () => {
+    it('should call SIWXUtil.authConnectorAuthenticate when reconnecting with AUTH provider', async () => {
+      const ethersAdapter = new EthersAdapter()
+      vi.spyOn(SIWXUtil, 'authConnectorAuthenticate')
+
+      Object.defineProperty(ethersAdapter, 'connectors', {
+        value: [
+          {
+            id: 'ID_AUTH',
+            type: 'AUTH',
+            provider: mockAuthProvider
+          }
+        ]
+      })
+
+      await ethersAdapter.reconnect({
+        id: 'ID_AUTH',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(SIWXUtil.authConnectorAuthenticate).toHaveBeenCalledWith({
+        authConnector: mockAuthProvider,
+        chainId: 1,
+        preferredAccountType: 'smartAccount',
+        chainNamespace: 'eip155'
       })
     })
   })
