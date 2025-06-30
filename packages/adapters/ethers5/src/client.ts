@@ -594,7 +594,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
     const connector = this.connectors.find(c => c.id === id)
 
     if (connector && connector.type === 'AUTH' && chainId) {
-      await (connector.provider as W3mFrameProvider).connect({
+      await SIWXUtil.authConnectorAuthenticate({
+        authConnector: connector.provider as unknown as W3mFrameProvider,
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
         chainId,
         preferredAccountType: getPreferredAccountType('eip155')
       })
