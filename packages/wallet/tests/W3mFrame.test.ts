@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
+
 import { W3mFrame } from '../src/W3mFrame.js'
 import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 import { W3mFrameHelpers } from '../src/W3mFrameHelpers.js'
@@ -197,6 +199,34 @@ describe('W3mFrame', () => {
       expect(mockStyle['borderBottomRightRadius']).toBe(
         'clamp(0px, var(--wui-border-radius-l), 44px)'
       )
+    })
+  })
+
+  describe('rpcUrl', () => {
+    it('should default to ConstantsUtil.BLOCKCHAIN_API_RPC_URL when rpcUrl is undefined', () => {
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
+
+      const encodedDefaultRpcUrl = encodeURIComponent(ConstantsUtil.BLOCKCHAIN_API_RPC_URL)
+
+      // iframe src should contain the encoded default rpc url
+      expect(w3mFrame['iframe']?.src).toContain(`rpcUrl=${encodedDefaultRpcUrl}`)
+
+      // networks getter should construct rpc urls based on the default value
+      const expectedNetworkRpcUrl = `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1/?chainId=eip155:1&projectId=${PROJECT_ID}`
+      expect(w3mFrame.networks?.['eip155:1']?.rpcUrl).toBe(expectedNetworkRpcUrl)
+    })
+
+    it('should use the provided custom rpcUrl when supplied', () => {
+      const CUSTOM_RPC_URL = 'https://custom.rpc.domain'
+
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true, rpcUrl: CUSTOM_RPC_URL })
+
+      // iframe src should contain the encoded custom rpc url
+      expect(w3mFrame['iframe']?.src).toContain(`rpcUrl=${encodeURIComponent(CUSTOM_RPC_URL)}`)
+
+      // networks getter should construct rpc urls based on the custom value
+      const expectedNetworkRpcUrl = `${CUSTOM_RPC_URL}/v1/?chainId=eip155:1&projectId=${PROJECT_ID}`
+      expect(w3mFrame.networks['eip155:1']?.rpcUrl).toBe(expectedNetworkRpcUrl)
     })
   })
 })

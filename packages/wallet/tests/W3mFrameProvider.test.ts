@@ -1,7 +1,11 @@
 import * as logger from '@walletconnect/logger'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
+import type {
+  CaipNetworkId,
+  ChainNamespace,
+  EmbeddedWalletTimeoutReason
+} from '@reown/appkit-common'
 
 import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
@@ -9,6 +13,15 @@ import { W3mFrameStorage } from '../src/W3mFrameStorage.js'
 import { SecureSiteMock } from './mocks/SecureSite.mock.js'
 // Mocks
 import { W3mFrameHelpers } from './mocks/W3mFrameHelpers.mock.js'
+
+const getActiveCaipNetwork = () => ({
+  name: 'Ethereum',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: { default: { http: ['https://rpc.ankr.com/eth'] } },
+  id: 'eip155:1',
+  chainNamespace: 'eip155' as ChainNamespace,
+  caipNetworkId: 'eip155:1' as CaipNetworkId
+})
 
 describe('W3mFrameProvider', () => {
   const mockTimeout = vi.fn<(reason: EmbeddedWalletTimeoutReason) => void>()
@@ -19,14 +32,19 @@ describe('W3mFrameProvider', () => {
 
   beforeEach(() => {
     abortController = new AbortController()
-    provider = new W3mFrameProvider({ projectId, abortController, onTimeout: mockTimeout })
+    provider = new W3mFrameProvider({
+      projectId,
+      abortController,
+      onTimeout: mockTimeout,
+      getActiveCaipNetwork
+    })
     window.postMessage = vi.fn()
     mockTimeout.mockClear()
   })
 
   it('should connect email', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
-    provider.isInitialized = true
+    provider['isInitialized'] = true
     const payload = { email: 'test@example.com' }
     W3mFrameHelpers.checkIfAllowedToTriggerEmail.mockReturnValue(true)
     const responsePayload = { action: 'VERIFY_OTP' }
@@ -53,7 +71,7 @@ describe('W3mFrameProvider', () => {
 
   it('should connect otp', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
-    provider.isInitialized = true
+    provider['isInitialized'] = true
     const payload = { otp: '123456' }
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
@@ -73,7 +91,7 @@ describe('W3mFrameProvider', () => {
 
   it('should connect', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
-    provider.isInitialized = true
+    provider['isInitialized'] = true
     const payload = { chainId: 1 }
     const responsePayload = { address: '0xd34db33f', chainId: 1, email: 'test@walletconnect.com' }
 
@@ -95,7 +113,7 @@ describe('W3mFrameProvider', () => {
 
   it('should connect social', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
-    provider.isInitialized = true
+    provider['isInitialized'] = true
     const payload = { chainId: 1, socialUri: '?auth=12345678' }
     const responsePayload = {
       address: '0xd34db33f',
@@ -141,7 +159,7 @@ describe('W3mFrameProvider', () => {
         })
       })
 
-    const response = await provider.switchNetwork(chainId)
+    const response = await provider.switchNetwork({ chainId })
 
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
@@ -155,12 +173,13 @@ describe('W3mFrameProvider', () => {
     const testProvider = new W3mFrameProvider({
       projectId,
       onTimeout: onTimeoutMock,
-      abortController: testAbortController
+      abortController: testAbortController,
+      getActiveCaipNetwork
     })
 
     vi.spyOn(testProvider['w3mFrame'].events, 'postAppEvent').mockImplementation(() => {})
 
-    testProvider.isInitialized = true
+    testProvider['isInitialized'] = true
     testProvider['w3mFrame'].iframeIsReady = true
     testProvider['w3mFrame'].frameLoadPromise = Promise.resolve()
 
@@ -181,7 +200,12 @@ describe('W3mFrameProvider', () => {
   it('should create logger if enableLogger is undefined', async () => {
     const generateChildLoggerSpy = vi.spyOn(logger, 'generateChildLogger')
 
-    provider = new W3mFrameProvider({ projectId, enableLogger: true, abortController })
+    provider = new W3mFrameProvider({
+      projectId,
+      enableLogger: true,
+      abortController,
+      getActiveCaipNetwork
+    })
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     expect(generateChildLoggerSpy).toHaveBeenCalled()
   })
@@ -189,7 +213,12 @@ describe('W3mFrameProvider', () => {
   it('should create logger if enableLogger is true', async () => {
     const generatePlatformLoggerSpy = vi.spyOn(logger, 'generatePlatformLogger')
 
-    provider = new W3mFrameProvider({ projectId, enableLogger: true, abortController })
+    provider = new W3mFrameProvider({
+      projectId,
+      enableLogger: true,
+      abortController,
+      getActiveCaipNetwork
+    })
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     expect(generatePlatformLoggerSpy).toHaveBeenCalled()
   })
@@ -197,7 +226,12 @@ describe('W3mFrameProvider', () => {
   it('should not create logger if enableLogger is false', async () => {
     const generatePlatformLoggerSpy = vi.spyOn(logger, 'generatePlatformLogger')
 
-    provider = new W3mFrameProvider({ projectId, enableLogger: false, abortController })
+    provider = new W3mFrameProvider({
+      projectId,
+      enableLogger: false,
+      abortController,
+      getActiveCaipNetwork
+    })
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     expect(generatePlatformLoggerSpy).not.toHaveBeenCalled()
   })
@@ -210,10 +244,11 @@ describe('W3mFrameProvider', () => {
     const testProvider = new W3mFrameProvider({
       projectId,
       onTimeout: onTimeoutMock,
-      abortController: testAbortController
+      abortController: testAbortController,
+      getActiveCaipNetwork
     })
 
-    testProvider.isInitialized = true
+    testProvider['isInitialized'] = true
     testProvider['w3mFrame'].frameLoadPromise = Promise.resolve()
 
     testProvider.connectEmail({ email: 'test@example.com' }).catch(() => {})
@@ -228,5 +263,45 @@ describe('W3mFrameProvider', () => {
     expect(testAbortController.signal.aborted).toBe(true)
 
     vi.useRealTimers()
+  })
+
+  it('should return correct rpc url based on chainId parameter in getRpcUrl', () => {
+    const eip155RpcUrl = 'https://rpc.ankr.com/eth'
+    const solanaRpcUrl = 'https://api.mainnet-beta.solana.com'
+
+    const customGetActiveCaipNetwork = (namespace?: ChainNamespace) => {
+      if (namespace === 'solana') {
+        return {
+          name: 'Solana',
+          nativeCurrency: { name: 'Sol', symbol: 'SOL', decimals: 9 },
+          rpcUrls: { default: { http: [solanaRpcUrl] } },
+          id: 'solana:1',
+          chainNamespace: 'solana' as ChainNamespace,
+          caipNetworkId: 'solana:1' as CaipNetworkId
+        }
+      }
+
+      return {
+        name: 'Ethereum',
+        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        rpcUrls: { default: { http: [eip155RpcUrl] } },
+        id: 'eip155:1',
+        chainNamespace: 'eip155' as ChainNamespace,
+        caipNetworkId: 'eip155:1' as CaipNetworkId
+      }
+    }
+
+    const rpcProvider = new W3mFrameProvider({
+      projectId,
+      enableLogger: false,
+      abortController: new AbortController(),
+      getActiveCaipNetwork: customGetActiveCaipNetwork
+    })
+
+    expect(rpcProvider['getRpcUrl']()).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl'](1)).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl']('eip155:1')).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl']('1')).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl']('AzDjsjkalwnalsdnj2kh')).toBe(solanaRpcUrl)
   })
 })
