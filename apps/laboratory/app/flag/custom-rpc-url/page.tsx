@@ -14,17 +14,23 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 const queryClient = new QueryClient()
 
+const customRpcUrls = {
+  'eip155:1': [{ url: 'https://ethereum-rpc.publicnode.com' }]
+}
+
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks: ConstantsUtil.EvmNetworks,
-  projectId: ConstantsUtil.ProjectId
+  projectId: ConstantsUtil.ProjectId,
+  customRpcUrls
 })
 
 const config = {
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
-  customWallets: ConstantsUtil.CustomWallets
+  customWallets: ConstantsUtil.CustomWallets,
+  customRpcUrls
 }
 const wagmiConfig = wagmiAdapter.wagmiConfig
 
