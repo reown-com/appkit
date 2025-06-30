@@ -11,6 +11,7 @@ import {
   type ConnectorType,
   CoreHelperUtil,
   type Provider,
+  SIWXUtil,
   StorageUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
@@ -455,13 +456,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
     let requestChainId: string | undefined = undefined
 
     if (type === 'AUTH') {
-      const { address: _address, accounts: authAccounts } = await (
-        selectedProvider as unknown as W3mFrameProvider
-      ).connect({
-        chainId,
-        socialUri,
-        preferredAccountType: getPreferredAccountType('eip155')
-      })
+      const { address: _address, accounts: authAccounts } =
+        await SIWXUtil.authConnectorAuthenticate({
+          authConnector: selectedProvider as unknown as W3mFrameProvider,
+          chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+          chainId,
+          socialUri,
+          preferredAccountType: getPreferredAccountType('eip155')
+        })
 
       const caipNetwork = this.getCaipNetworks().find(n => n.id.toString() === chainId?.toString())
 

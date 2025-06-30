@@ -13,6 +13,7 @@ import {
   AlertController,
   ChainController,
   ConnectorController,
+  SIWXUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
@@ -104,10 +105,12 @@ export function authConnector(parameters: AuthParameters) {
       address,
       chainId: frameChainId,
       accounts
-    } = await provider.connect({
+    } = await SIWXUtil.authConnectorAuthenticate({
+      authConnector: provider,
       chainId,
       preferredAccountType,
-      socialUri: options.socialUri
+      socialUri: options.socialUri,
+      chainNamespace: 'eip155' as unknown as ChainNamespace
     })
 
     currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
@@ -131,7 +134,11 @@ export function authConnector(parameters: AuthParameters) {
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
     async connect(
-      options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
+      options: {
+        chainId?: number
+        isReconnecting?: boolean
+        socialUri?: string
+      } = {}
     ) {
       if (connectSocialPromise) {
         return connectSocialPromise

@@ -2,6 +2,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { AccountController } from '../controllers/AccountController.js'
@@ -19,6 +20,8 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
  */
+
+let addEmbeddedWalletSessionPromise: Promise<void> | null = null
 
 export const SIWXUtil = {
   getSIWX() {
@@ -214,6 +217,110 @@ export const SIWXUtil = {
     }
 
     return false
+  },
+  async authConnectorAuthenticate({
+    authConnector,
+    chainId,
+    socialUri,
+    preferredAccountType,
+    chainNamespace
+  }: {
+    authConnector: W3mFrameProvider
+    chainId?: number | string
+    socialUri?: string
+    preferredAccountType?: string
+    chainNamespace: ChainNamespace
+  }) {
+    const siwx = SIWXUtil.getSIWX()
+
+    if (!siwx || !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM)) {
+      const result = await authConnector.connect({
+        chainId,
+        socialUri,
+        preferredAccountType
+      })
+
+      return {
+        address: result.address,
+        chainId: result.chainId,
+        accounts: result.accounts
+      }
+    }
+
+    const siwxMessage = await siwx.createMessage({
+      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
+      accountAddress: ''
+    })
+
+    // Extract only the serializable data properties for postMessage, toString() is not possible to include in the postMessage
+    const siwxMessageData = {
+      accountAddress: siwxMessage.accountAddress,
+      chainId: siwxMessage.chainId,
+      domain: siwxMessage.domain,
+      uri: siwxMessage.uri,
+      version: siwxMessage.version,
+      nonce: siwxMessage.nonce,
+      notBefore: siwxMessage.notBefore,
+      statement: siwxMessage.statement,
+      resources: siwxMessage.resources,
+      requestId: siwxMessage.requestId,
+      issuedAt: siwxMessage.issuedAt,
+      expirationTime: siwxMessage.expirationTime
+    }
+
+    const result = await authConnector.connect({
+      chainId,
+      socialUri,
+      siwxMessage: siwxMessageData,
+      preferredAccountType
+    })
+
+    if (result.signature && result.message) {
+      const promise = SIWXUtil.addEmbeddedWalletSession(
+        siwxMessageData,
+        result.message,
+        result.signature
+      )
+
+      await promise
+    }
+
+    return {
+      address: result.address,
+      chainId: result.chainId,
+      accounts: result.accounts
+    }
+  },
+
+  async addEmbeddedWalletSession(
+    siwxMessageData: SIWXMessage.Data,
+    message: string,
+    signature: string
+  ): Promise<void> {
+    if (addEmbeddedWalletSessionPromise) {
+      return addEmbeddedWalletSessionPromise
+    }
+
+    const siwx = SIWXUtil.getSIWX()
+
+    if (!siwx) {
+      return Promise.resolve()
+    }
+
+    addEmbeddedWalletSessionPromise = siwx
+      .addSession({
+        data: {
+          ...siwxMessageData,
+          accountAddress: siwxMessageData.accountAddress
+        },
+        message,
+        signature
+      })
+      .finally(() => {
+        addEmbeddedWalletSessionPromise = null
+      })
+
+    return addEmbeddedWalletSessionPromise
   },
   async universalProviderAuthenticate({
     universalProvider,
