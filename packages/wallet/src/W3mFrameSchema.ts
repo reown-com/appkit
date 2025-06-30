@@ -16,20 +16,21 @@ type SdkType = 'w3m' | 'appkit'
 type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion | undefined
 
 // -- SIWX Message Schema ----------------------------------------------------
-export const SIWXMessage = z.object({
-  accountAddress: z.string(),
-  chainId: z.string(),
-  notBefore: z.string().optional(),
-  domain: z.string(),
-  uri: z.string(),
-  version: z.string(),
-  nonce: z.string(),
-  statement: z.string().optional(),
-  resources: z.array(z.string()).optional(),
-  requestId: z.string().optional(),
-  issuedAt: z.string().optional(),
-  expirationTime: z.string().optional()
-})
+export const SIWXMessage = z.string()
+// z.object({
+//   accountAddress: z.string(),
+//   chainId: z.string(),
+//   notBefore: z.string().optional(),
+//   domain: z.string(),
+//   uri: z.string(),
+//   version: z.string(),
+//   nonce: z.string(),
+//   statement: z.string().optional(),
+//   resources: z.array(z.string()).optional(),
+//   requestId: z.string().optional(),
+//   issuedAt: z.string().optional(),
+//   expirationTime: z.string().optional()
+// })
 
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({

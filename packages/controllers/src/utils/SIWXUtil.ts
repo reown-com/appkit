@@ -253,10 +253,10 @@ export const SIWXUtil = {
 
     const siwxMessage = await siwx.createMessage({
       chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
-      accountAddress: ''
+      accountAddress: '<<AccountAddress>>'
     })
 
-    // Extract only the serializable data properties for postMessage, toString() is not possible to include in the postMessage
+    // // Extract only the serializable data properties for postMessage, toString() is not possible to include in the postMessage
     const siwxMessageData = {
       accountAddress: siwxMessage.accountAddress,
       chainId: siwxMessage.chainId,
@@ -272,12 +272,20 @@ export const SIWXUtil = {
       expirationTime: siwxMessage.expirationTime
     }
 
+    console.log('>> siwxMessage', siwxMessage.toString())
+    console.log('>> siwxMessageData', siwxMessageData)
+
     const result = await authConnector.connect({
       chainId,
       socialUri,
-      siwxMessage: siwxMessageData,
+      siwxMessage: siwxMessage.toString(),
       preferredAccountType
     })
+
+    console.log('>> result', result)
+
+    siwxMessageData.accountAddress = result.address
+    console.log('>> siwxMessageData', siwxMessageData)
 
     if (result.signature && result.message) {
       const promise = SIWXUtil.addEmbeddedWalletSession(
@@ -313,10 +321,7 @@ export const SIWXUtil = {
 
     addEmbeddedWalletSessionPromise = siwx
       .addSession({
-        data: {
-          ...siwxMessageData,
-          accountAddress: siwxMessageData.accountAddress
-        },
+        data: siwxMessageData,
         message,
         signature
       })
