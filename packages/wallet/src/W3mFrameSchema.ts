@@ -573,7 +573,8 @@ export const W3mFrameSchema = {
               chainId: z.string().or(z.number()).optional(),
               chainNamespace: z
                 .enum(['eip155', 'solana', 'polkadot', 'bip122', 'cosmos'])
-                .optional()
+                .optional(),
+              rpcUrl: z.string().optional()
             })
           )
       })
