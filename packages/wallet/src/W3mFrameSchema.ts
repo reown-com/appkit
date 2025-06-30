@@ -60,8 +60,8 @@ export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({
   uri: z.string(),
-  preferredAccountType: z.string().optional(),
-  chainId: z.string().or(z.number()).optional(),
+  preferredAccountType: z.optional(z.string()),
+  chainId: z.optional(z.string().or(z.number())),
   siwxMessage: z.optional(SIWXMessage),
   rpcUrl: z.optional(z.string())
 })
