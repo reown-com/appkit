@@ -63,7 +63,7 @@
     "@wallet-standard/wallet": "1.1.0",
     "@walletconnect/logger": "2.1.2",
     "@walletconnect/universal-provider": "2.21.3",
-    "valtio": "1.13.2",
+    "valtio": "2.1.5",
     "viem": ">=2.31.3"
   },
   "devDependencies": {
@@ -80,7 +80,7 @@
     "@walletconnect/types": "2.21.2"
   },
   "peerDependencies": {
-    "valtio": "1.13.2"
+    "valtio": "2.1.5"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",

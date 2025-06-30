@@ -27,7 +27,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.21.3",
-    "valtio": "1.13.2"
+    "valtio": "2.1.5"
   },
   "optionalDependencies": {
     "@coinbase/wallet-sdk": "4.3.0",
