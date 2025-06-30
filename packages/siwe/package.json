@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwe",
-  "version": "1.7.11",
+  "version": "1.7.12",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
