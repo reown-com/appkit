@@ -42,6 +42,10 @@ export const SIWXUtil = {
     }
 
     try {
+      if (addEmbeddedWalletSessionPromise) {
+        await addEmbeddedWalletSessionPromise
+      }
+
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
 
       if (sessions.length) {

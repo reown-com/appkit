@@ -29,8 +29,6 @@ test.beforeAll(async ({ browser }) => {
   await modalPage.load()
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
-  await modalPage.promptSiwe()
-  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
 })
 
@@ -42,8 +40,6 @@ test.afterAll(async () => {
 test('it should switch networks and sign siwe', async () => {
   const chainName = 'Polygon'
   await modalPage.switchNetwork(chainName)
-  await modalPage.promptSiwe()
-  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
   await modalPage.page.waitForTimeout(1000)
 

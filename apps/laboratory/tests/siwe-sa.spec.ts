@@ -77,8 +77,6 @@ smartAccountSiweTest(
 
     await page.switchNetwork(targetChain)
     await validator.expectSwitchedNetworkWithNetworkView()
-    await page.promptSiwe()
-    await page.approveSign()
     await validator.expectConnected()
     await validator.expectAuthenticated()
     await page.page.waitForTimeout(1000)
@@ -96,8 +94,6 @@ smartAccountSiweTest(
     const namespace = library === 'solana' ? 'solana' : 'eip155'
 
     await page.switchNetwork(targetChain)
-    await page.promptSiwe()
-    await page.approveSign()
     await validator.expectConnected()
     await validator.expectAuthenticated()
     await page.page.waitForTimeout(1000)
