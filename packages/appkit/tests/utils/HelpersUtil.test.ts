@@ -621,5 +621,22 @@ describe('WcHelpersUtil', () => {
         )
       ).toBe(true)
     })
+
+    test('should allow localhost with HTTPS', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://localhost:3000',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://localhost:8443',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
+    })
   })
 })
