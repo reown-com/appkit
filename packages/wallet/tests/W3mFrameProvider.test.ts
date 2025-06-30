@@ -264,4 +264,44 @@ describe('W3mFrameProvider', () => {
 
     vi.useRealTimers()
   })
+
+  it('should return correct rpc url based on chainId parameter in getRpcUrl', () => {
+    const eip155RpcUrl = 'https://rpc.ankr.com/eth'
+    const solanaRpcUrl = 'https://api.mainnet-beta.solana.com'
+
+    const customGetActiveCaipNetwork = (namespace?: ChainNamespace) => {
+      if (namespace === 'solana') {
+        return {
+          name: 'Solana',
+          nativeCurrency: { name: 'Sol', symbol: 'SOL', decimals: 9 },
+          rpcUrls: { default: { http: [solanaRpcUrl] } },
+          id: 'solana:1',
+          chainNamespace: 'solana' as ChainNamespace,
+          caipNetworkId: 'solana:1' as CaipNetworkId
+        }
+      }
+
+      return {
+        name: 'Ethereum',
+        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        rpcUrls: { default: { http: [eip155RpcUrl] } },
+        id: 'eip155:1',
+        chainNamespace: 'eip155' as ChainNamespace,
+        caipNetworkId: 'eip155:1' as CaipNetworkId
+      }
+    }
+
+    const rpcProvider = new W3mFrameProvider({
+      projectId,
+      enableLogger: false,
+      abortController: new AbortController(),
+      getActiveCaipNetwork: customGetActiveCaipNetwork
+    })
+
+    expect(rpcProvider['getRpcUrl']()).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl'](1)).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl']('eip155:1')).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl']('1')).toBe(eip155RpcUrl)
+    expect(rpcProvider['getRpcUrl']('AzDjsjkalwnalsdnj2kh')).toBe(solanaRpcUrl)
+  })
 })

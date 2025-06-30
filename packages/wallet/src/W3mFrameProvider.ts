@@ -770,14 +770,21 @@ export class W3mFrameProvider {
   }
 
   private getRpcUrl(chainId?: number | string) {
-    const namespace =
-      typeof chainId === 'string'
-        ? ParseUtil.parseCaipNetworkId(chainId as CaipNetworkId).chainNamespace
-        : 'eip155'
-    const activeNetwork = this.getActiveCaipNetwork(namespace)
-    const rpcUrl = activeNetwork?.rpcUrls.default.http?.[0]
+    let namespace: ChainNamespace | undefined = chainId ? 'eip155' : undefined
 
-    return rpcUrl
+    if (typeof chainId === 'string') {
+      if (chainId.includes(':')) {
+        namespace = ParseUtil.parseCaipNetworkId(chainId as CaipNetworkId)?.chainNamespace
+      } else if (Number.isInteger(Number(chainId))) {
+        namespace = 'eip155'
+      } else {
+        namespace = 'solana'
+      }
+    }
+
+    const activeNetwork = this.getActiveCaipNetwork(namespace)
+
+    return activeNetwork?.rpcUrls.default.http?.[0]
   }
 }
 
