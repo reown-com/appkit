@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 
-import { Emitter } from '@reown/appkit-common'
+import { type Connection, Emitter } from '@reown/appkit-common'
 
 import type { AdapterBlueprint } from '../../src/adapters/ChainAdapterBlueprint.js'
 import { bitcoin, mainnet, solana } from './Networks.js'
@@ -14,6 +14,7 @@ export const mockUniversalAdapter = {
   connect: vi.fn(),
   disconnect: vi.fn(),
   syncConnectors: vi.fn(),
+  syncConnections: vi.fn(),
   getWalletConnectProvider: vi.fn(),
   getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
   signMessage: vi.fn(),
@@ -61,6 +62,7 @@ export const mockEvmAdapter = {
   namespace: 'eip155',
   construct: vi.fn(),
   syncConnectors: vi.fn().mockResolvedValue(vi.fn()),
+  syncConnections: vi.fn().mockResolvedValue(vi.fn()),
   setAuthProvider: vi.fn().mockResolvedValue(vi.fn()),
   setUniversalProvider: vi.fn().mockResolvedValue(vi.fn()),
   getProvider: vi.fn().mockReturnValue(mockProvider),
@@ -81,13 +83,14 @@ export const mockEvmAdapter = {
   connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   reconnect: vi.fn().mockResolvedValue({ address: '0x123' }),
   connectWalletConnect: vi.fn().mockResolvedValue({ clientId: 'test-client' }),
-  disconnect: vi.fn().mockResolvedValue(undefined)
+  disconnect: vi.fn().mockResolvedValue({ connections: [] as Connection[] })
 } as unknown as AdapterBlueprint
 
 export const mockSolanaAdapter = {
   namespace: 'solana',
   construct: vi.fn(),
   syncConnectors: vi.fn().mockResolvedValue(vi.fn()),
+  syncConnections: vi.fn().mockResolvedValue(vi.fn()),
   setAuthProvider: vi.fn().mockResolvedValue(vi.fn()),
   setUniversalProvider: vi.fn().mockResolvedValue(vi.fn()),
   getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '7y523k4jsh90d', type: 'eoa' }] }),
@@ -103,5 +106,5 @@ export const mockSolanaAdapter = {
   off: solanaEmitter.off.bind(solanaEmitter),
   emit: solanaEmitter.emit.bind(solanaEmitter),
   removeAllEventListeners: vi.fn(),
-  disconnect: vi.fn().mockResolvedValue(undefined)
+  disconnect: vi.fn().mockResolvedValue(undefined).mockResolvedValue({ connections: [] })
 } as unknown as AdapterBlueprint

@@ -5,6 +5,7 @@ import {
   type SwapProvider
 } from '@reown/appkit-common'
 
+import type { SIWXConfig } from './SIWXUtil.js'
 import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
 const SECURE_SITE =
@@ -243,7 +244,8 @@ export const ConstantsUtil = {
       'facebook'
     ] as SocialProvider[],
     activity: true,
-    reownBranding: true
+    reownBranding: true,
+    multiWallet: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -299,5 +301,9 @@ export const ConstantsUtil = {
     ETHERS: 'ethers',
     ETHERS5: 'ethers5',
     BITCOIN: 'bitcoin'
-  }
+  },
+
+  SIWX_DEFAULTS: {
+    signOutOnDisconnect: true
+  } as const satisfies Pick<SIWXConfig, 'signOutOnDisconnect'>
 }

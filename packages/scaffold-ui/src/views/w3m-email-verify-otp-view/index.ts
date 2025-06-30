@@ -1,10 +1,13 @@
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
-  OptionsController
+  OptionsController,
+  RouterController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -20,6 +23,11 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
 
+        const connectionsByNamespace = ConnectionController.getConnections(
+          ChainController.state.activeChain as ChainNamespace
+        )
+        const hasConnections = connectionsByNamespace.length > 0
+
         if (ChainController.state.activeChain) {
           await ConnectionController.connectExternal(
             this.authConnector,
@@ -34,7 +42,15 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           event: 'CONNECT_SUCCESS',
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
-        if (!OptionsController.state.siwx) {
+
+        const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
+
+        if (OptionsController.state.siwx) {
+          ModalController.close()
+        } else if (hasConnections && isMultiWalletEnabled) {
+          RouterController.replace('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
+        } else {
           ModalController.close()
         }
       }

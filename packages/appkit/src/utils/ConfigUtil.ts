@@ -21,6 +21,7 @@ const FEATURE_KEYS: FeatureKey[] = [
   'onramp',
   'activity',
   'reownBranding',
+  'multiWallet',
   'emailCapture'
 ]
 
@@ -163,6 +164,15 @@ const featureConfig = {
     processApi: (apiConfig: TypedFeatureConfig): EmailCaptureOptions[] | false =>
       apiConfig.isEnabled && ((apiConfig.config ?? []) as EmailCaptureOptions[]),
     processFallback: (_localValue: unknown): EmailCaptureOptions[] | boolean => false
+  },
+  multiWallet: {
+    apiFeatureName: 'multi_wallet' as const,
+    localFeatureName: 'multiWallet',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.multiWallet
   }
 }
 

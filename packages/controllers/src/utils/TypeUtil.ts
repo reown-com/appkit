@@ -63,6 +63,10 @@ export type ConnectedWalletInfo = {
 export type User = {
   email?: string | null | undefined
   username?: string | null | undefined
+  accounts?: {
+    type: 'eoa' | 'smartAccount'
+    address: string
+  }[]
 }
 
 export interface LinkingRecord {
@@ -1164,6 +1168,7 @@ export type RemoteFeatures = {
   socials?: SocialProvider[] | false
   activity?: boolean
   reownBranding?: boolean
+  multiWallet?: boolean
   emailCapture?: EmailCaptureOptions[] | boolean
 }
 
@@ -1305,6 +1310,7 @@ export type PreferredAccountTypes = {
 // -- Feature Configuration Types -------------------------------------------------
 
 export type FeatureID =
+  | 'multi_wallet'
   | 'activity'
   | 'onramp'
   | 'swap'
@@ -1324,6 +1330,7 @@ export type TypedFeatureConfig =
   | BaseFeature<'swap', SwapProvider[]>
   | BaseFeature<'social_login', (SocialProvider | 'email')[]>
   | BaseFeature<'reown_branding', null | []>
+  | BaseFeature<'multi_wallet', null | []>
   | BaseFeature<'email_capture', EmailCaptureOptions[]>
 
 export type ApiGetProjectConfigResponse = {
@@ -1371,6 +1378,12 @@ export type FeatureConfigMap = {
     apiFeatureName: 'email_capture'
     localFeatureName: 'emailCapture'
     returnType: EmailCaptureOptions[] | boolean
+    isLegacy: false
+  }
+  multiWallet: {
+    apiFeatureName: 'multi_wallet'
+    localFeatureName: 'multiWallet'
+    returnType: boolean
     isLegacy: false
   }
 }

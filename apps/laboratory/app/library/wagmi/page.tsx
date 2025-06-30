@@ -6,6 +6,7 @@ import { WagmiProvider } from 'wagmi'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { AppKitProvider } from '@/src/context/AppKitContext'
@@ -33,6 +34,7 @@ export default function Wagmi() {
       <QueryClientProvider client={queryClient}>
         <AppKitProvider config={config}>
           <AppKitButtons />
+          <AppKitConnections namespace="eip155" />
           <AppKitInfo />
           <WagmiTests config={wagmiConfig} />
         </AppKitProvider>

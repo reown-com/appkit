@@ -8,6 +8,7 @@ import { type Mock, type MockInstance, beforeEach, describe, expect, it, vi } fr
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
@@ -42,16 +43,29 @@ describe('SatsConnectConnector', () => {
   })
 
   it('should get wallets correctly', async () => {
-    const wallets = SatsConnectConnector.getWallets({ requestedChains, getActiveNetwork })
+    const wallets = await SatsConnectConnector.getWallets({ requestedChains, getActiveNetwork })
 
     expect(wallets instanceof Array).toBeTruthy()
     wallets.forEach(wallet => expect(wallet instanceof SatsConnectConnector).toBeTruthy())
   })
 
-  it('should return an empty array when window is undefined (server-side)', () => {
+  it('should use withRetry to wait for providers', async () => {
+    const withRetrySpy = vi.spyOn(HelpersUtil, 'withRetry')
+    withRetrySpy.mockResolvedValue(true)
+
+    await SatsConnectConnector.getWallets({ requestedChains, getActiveNetwork })
+
+    expect(withRetrySpy).toHaveBeenCalledWith({
+      conditionFn: expect.any(Function),
+      intervalMs: 200,
+      maxRetries: 3
+    })
+  })
+
+  it('should return an empty array when window is undefined (server-side)', async () => {
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(false)
 
-    const wallets = SatsConnectConnector.getWallets({
+    const wallets = await SatsConnectConnector.getWallets({
       requestedChains: [],
       getActiveNetwork: () => undefined
     })

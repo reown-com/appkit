@@ -133,7 +133,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
       onCallsHash(batchCallHash)
     } catch {
       toast({
-        title: 'Error',
+        title: 'SendCalls Error',
         description: 'Failed to send calls',
         type: 'error'
       })
@@ -206,7 +206,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
                 </>
               ))
             ) : (
-              <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+              <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
                 Send Batch Calls to Vitalik
               </Button>
             )}
@@ -220,7 +220,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
           </Link>
         </Stack>
         {transactionsToBatch.length ? (
-          <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+          <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
             Send Calls
           </Button>
         ) : null}

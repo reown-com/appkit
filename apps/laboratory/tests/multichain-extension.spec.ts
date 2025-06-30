@@ -102,10 +102,13 @@ extensionTest(
   async () => {
     await modalPage.connectToExtensionMultichain('solana')
     await modalValidator.expectConnected()
-    const solanaAddress = (await modalPage.page.getByTestId('w3m-address').textContent()) as string
+    const extensionSolAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
 
     await modalPage.switchNetwork('Ethereum', true)
     await modalPage.switchActiveChain()
+    await modalPage.closeModal()
 
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
     if (!mailsacApiKey) {
@@ -117,14 +120,28 @@ extensionTest(
       emailAddress: await email.getEmailAddressToUse(),
       context: modalPage.page.context(),
       mailsacApiKey,
-      clickConnectButton: false
+      clickConnectButton: true
     })
     await modalValidator.expectConnected()
+
+    const emailEthAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
     await modalPage.switchNetwork('Solana', true)
     await modalPage.closeModal()
     await modalValidator.expectConnected()
-    await modalValidator.expectAddress(solanaAddress)
-    await modalPage.disconnect()
+    await modalValidator.expectAccountButtonAddress(extensionSolAddress)
+    await modalValidator.expectNoUnsupportedUIOnAccountButton()
+
+    // Disconnect from Ethereum
+    await modalPage.switchNetworkWithNetworkButton('Ethereum')
+    await modalPage.closeModal()
+    await modalValidator.expectAccountButtonAddress(emailEthAddress)
+    await modalValidator.expectNoUnsupportedUIOnAccountButton()
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickProfileWalletsMoreButton()
+    await modalPage.disconnect(false)
   }
 )
 

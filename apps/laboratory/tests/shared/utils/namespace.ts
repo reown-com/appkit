@@ -22,3 +22,48 @@ export function getNamespaceByNetworkName(networkName: string) {
       return 'eip155'
   }
 }
+
+export function getTestnetByLibrary(library: string) {
+  switch (library) {
+    case 'solana':
+      return 'Solana Devnet'
+    case 'bitcoin':
+      return 'Bitcoin Testnet'
+    case 'wagmi':
+    case 'ethers':
+    case 'ethers5':
+      return 'Polygon'
+    default:
+      return 'Polygon'
+  }
+}
+
+export function getTestnet2ByLibrary(library: string) {
+  switch (library) {
+    case 'solana':
+      return 'Solana Testnet'
+    case 'bitcoin':
+      return 'Bitcoin Testnet'
+    case 'wagmi':
+    case 'ethers':
+    case 'ethers5':
+      return 'OP Mainnet'
+    default:
+      return 'OP Mainnet'
+  }
+}
+
+export function getMainnetByLibrary(library: string) {
+  switch (library) {
+    case 'solana':
+      return 'Solana'
+    case 'bitcoin':
+      return 'Bitcoin'
+    case 'wagmi':
+    case 'ethers':
+    case 'ethers5':
+      return 'Ethereum'
+    default:
+      return 'Ethereum'
+  }
+}
