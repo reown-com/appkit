@@ -233,7 +233,7 @@ export const SIWXUtil = {
   }) {
     const siwx = SIWXUtil.getSIWX()
 
-    if (!siwx || !chainNamespace.includes('eip155')) {
+    if (!siwx || !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM)) {
       const result = await authConnector.connect({
         chainId,
         socialUri,
