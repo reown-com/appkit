@@ -2,7 +2,7 @@ import { devices } from '@playwright/test'
 
 import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
 
-const LIBRARIES = ['ethers', 'wagmi'] as const
+const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
@@ -101,7 +101,12 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
 
 const CLOUD_AUTH_TESTS = ['cloud-auth.spec.ts']
 
-const SINGLE_ADAPTER_BITCOIN_TESTS = ['wallet.spec.ts', 'wallet-button.spec', 'basic-tests.spec.ts']
+const SINGLE_ADAPTER_BITCOIN_TESTS = [
+  'wallet.spec.ts',
+  'wallet-button.spec',
+  'basic-tests.spec.ts',
+  'siwx-extension.spec.ts'
+]
 
 function createRegex(tests: string[], isDesktop = true) {
   const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''

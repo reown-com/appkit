@@ -61,19 +61,21 @@ emailSiweTest.beforeAll(async ({ browser, library }) => {
     timeMs: new Date().getTime() - emailFlow.getTime()
   })
 
-  const promptSiwe = new Date()
-  await page.promptSiwe()
-  beforeAllTimingRecords.push({
-    item: 'promptSiwe',
-    timeMs: new Date().getTime() - promptSiwe.getTime()
-  })
+  if (library === 'solana') {
+    const promptSiwe = new Date()
+    await page.promptSiwe()
+    beforeAllTimingRecords.push({
+      item: 'promptSiwe',
+      timeMs: new Date().getTime() - promptSiwe.getTime()
+    })
 
-  const approveSign = new Date()
-  await page.approveSign()
-  beforeAllTimingRecords.push({
-    item: 'approveSign',
-    timeMs: new Date().getTime() - approveSign.getTime()
-  })
+    const approveSign = new Date()
+    await page.approveSign()
+    beforeAllTimingRecords.push({
+      item: 'approveSign',
+      timeMs: new Date().getTime() - approveSign.getTime()
+    })
+  }
 
   const startExpectConnected = new Date()
   await validator.expectConnected()

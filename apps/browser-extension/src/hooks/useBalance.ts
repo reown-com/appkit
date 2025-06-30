@@ -6,10 +6,6 @@ import { useBalance as useWagmiBalance } from 'wagmi'
 
 import { ChainNamespace } from '@reown/appkit-common'
 
-import { BitcoinProvider } from '../core/BitcoinProvider'
-
-const bitcoinProvider = new BitcoinProvider()
-
 export function useBalance(chain: ChainNamespace, account: string) {
   const { data: ethereumBalance } = useWagmiBalance({
     address: account as Address,
@@ -38,7 +34,7 @@ export function useBalance(chain: ChainNamespace, account: string) {
       case 'solana':
         return solanaBalance.toString()
       case 'bip122':
-        return bitcoinProvider.getBalance(account).toString()
+        return '0'
       default:
         return '0'
     }

@@ -327,6 +327,7 @@ export class W3mFrameProvider {
             uri: payload.socialUri,
             preferredAccountType: payload.preferredAccountType,
             chainId: payload.chainId,
+            siwxMessage: payload.siwxMessage,
             rpcUrl
           }
         } as W3mFrameTypes.AppEvent)
@@ -352,6 +353,7 @@ export class W3mFrameProvider {
         const response = await this.getUser({
           chainId,
           preferredAccountType: payload?.preferredAccountType,
+          siwxMessage: payload?.siwxMessage,
           rpcUrl: this.getRpcUrl(chainId)
         })
 

@@ -86,6 +86,7 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   customNetworkImageUrls: {}
 })
 const mockWagmiConfig = {
+  chains: mockCaipNetworks,
   connectors: [
     {
       id: 'test-connector',
@@ -152,6 +153,7 @@ describe('WagmiAdapter', () => {
       networks: mockNetworks,
       projectId: mockProjectId
     })
+    adapter.wagmiConfig = mockWagmiConfig
     ChainController.initialize([adapter], mockCaipNetworks, {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient
@@ -853,8 +855,7 @@ describe('WagmiAdapter', () => {
               decimals: mockCaipNetworks[0].nativeCurrency.decimals
             },
             rpcUrls: [mockCaipNetworks[0].rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
-            blockExplorerUrls: [mockCaipNetworks[0].blockExplorers?.default.url ?? ''],
-            iconUrls: [mockCaipNetworks[0].assets?.imageUrl ?? '']
+            blockExplorerUrls: [mockCaipNetworks[0].blockExplorers?.default.url ?? '']
           }
         })
       )
