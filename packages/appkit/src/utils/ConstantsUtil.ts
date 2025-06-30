@@ -4,6 +4,8 @@ export const WcConstantsUtil = {
   ERROR_INVALID_CHAIN_ID: 32603,
   DEFAULT_ALLOWED_ANCESTORS: [
     'http://localhost:*',
+    'http://127.0.0.1:*',
+    'https://127.0.0.1:*',
     'https://*.pages.dev',
     'https://*.vercel.app',
     'https://*.ngrok-free.app',
