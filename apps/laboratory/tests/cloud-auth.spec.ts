@@ -62,6 +62,7 @@ test('should update session account metadata', async () => {
 })
 
 test('should disconnect session account', async () => {
+  await modalPage.openModal()
   await modalPage.disconnect()
   await modalValidator.expectEmptySession()
 })
