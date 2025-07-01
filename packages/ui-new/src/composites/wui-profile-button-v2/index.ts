@@ -35,8 +35,7 @@ export class WuiProfileButtonV2 extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
     const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
     return html`<button data-testid="wui-profile-button" @click=${this.handleClick}>

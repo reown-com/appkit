@@ -23,7 +23,6 @@ import { WcHelpersUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { ChainNamespace } from '@reown/appkit-common'
 import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
@@ -251,7 +250,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       if (chainId && currentChainId !== chainId && activeNamespace) {
         const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
-        const appKitCaipNetworks = appKit.getCaipNetworks(activeNamespace as ChainNamespace)
+        const appKitCaipNetworks = activeNamespace ? appKit.getCaipNetworks(activeNamespace) : []
         const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {

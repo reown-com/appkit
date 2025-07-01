@@ -32,7 +32,6 @@ import type {
   AppKitNetwork,
   BaseNetwork,
   CaipNetwork,
-  ChainNamespace,
   Connection,
   CustomRpcUrlMap
 } from '@reown/appkit-common'
@@ -343,6 +342,10 @@ export class WagmiAdapter extends AdapterBlueprint {
     chainId: number | string
     connector: Connector
   }) {
+    if (!this.namespace) {
+      throw new Error('WagmiAdapter:handleAccountChanged - namespace is required')
+    }
+
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
 
     this.emit('accountChanged', {
@@ -358,7 +361,7 @@ export class WagmiAdapter extends AdapterBlueprint {
             ? undefined
             : { rdns: connector.id },
         provider,
-        chain: this.namespace as ChainNamespace,
+        chain: this.namespace,
         chains: []
       }
     })
@@ -450,6 +453,10 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
+    if (!this.namespace) {
+      throw new Error('WagmiAdapter:addWagmiConnector - namespace is required')
+    }
+
     /*
      * We don't need to set auth connector or walletConnect connector
      * from wagmi since we already set it in chain adapter blueprint
@@ -483,7 +490,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           ? undefined
           : { rdns: connector.id },
       provider,
-      chain: this.namespace as ChainNamespace,
+      chain: this.namespace,
       chains: []
     })
   }
@@ -924,13 +931,17 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override setAuthProvider(authProvider: W3mFrameProvider) {
+    if (!this.namespace) {
+      throw new Error('WagmiAdapter:setAuthProvider - namespace is required')
+    }
+
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
       name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
       provider: authProvider,
       imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
-      chain: this.namespace as ChainNamespace,
+      chain: this.namespace,
       chains: []
     })
   }

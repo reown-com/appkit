@@ -159,10 +159,7 @@ export class W3mEmailLoginWidget extends LitElement {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-        await ConnectionController.connectExternal(
-          authConnector,
-          ChainController.state.activeChain as ChainNamespace
-        )
+        await ConnectionController.connectExternal(authConnector, ChainController.state.activeChain)
 
         if (isMultiWalletEnabled) {
           RouterController.replace('ProfileWallets')

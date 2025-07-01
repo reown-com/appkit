@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
@@ -37,7 +37,7 @@ export class W3mUnsupportedChainView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
-  @state() private disconecting = false
+  @state() private disconnecting = false
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
@@ -80,7 +80,7 @@ export class W3mUnsupportedChainView extends LitElement {
             iconVariant="overlay"
             icon="disconnect"
             ?chevron=${false}
-            .loading=${this.disconecting}
+            .loading=${this.disconnecting}
             @click=${this.onDisconnect.bind(this)}
             data-testid="disconnect-button"
           >
@@ -138,12 +138,12 @@ export class W3mUnsupportedChainView extends LitElement {
 
   private async onDisconnect() {
     try {
-      this.disconecting = true
+      this.disconnecting = true
 
-      const namespace = ChainController.state.activeChain as ChainNamespace
+      const namespace = ChainController.state.activeChain
       const connectionsByNamespace = ConnectionController.getConnections(namespace)
       const hasConnections = connectionsByNamespace.length > 0
-      const connectorId = ConnectorController.state.activeConnectorIds[namespace]
+      const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
       const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
       await ConnectionController.disconnect(
         isMultiWalletEnabled ? { id: connectorId, namespace } : {}
@@ -156,7 +156,7 @@ export class W3mUnsupportedChainView extends LitElement {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
     } finally {
-      this.disconecting = false
+      this.disconnecting = false
     }
   }
 
@@ -167,7 +167,6 @@ export class W3mUnsupportedChainView extends LitElement {
       'supportsAllNetworks',
       network.chainNamespace
     )
-
     const routerData = RouterController.state.data
 
     if (caipAddress) {

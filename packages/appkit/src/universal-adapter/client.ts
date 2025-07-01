@@ -16,11 +16,15 @@ import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
+    if (!this.namespace) {
+      throw new Error('UniversalAdapter:setUniversalProvider - namespace is required')
+    }
+
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
         caipNetworks: this.getCaipNetworks(),
-        namespace: this.namespace as ChainNamespace
+        namespace: this.namespace
       })
     )
 

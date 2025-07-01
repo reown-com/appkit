@@ -110,14 +110,12 @@ export class W3mAccountTokensWidget extends LitElement {
   }
 
   private onBuyClick() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_BUY_CRYPTO',
       properties: {
         isSmartAccount:
-          getPreferredAccountType(activeChainNamespace) ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

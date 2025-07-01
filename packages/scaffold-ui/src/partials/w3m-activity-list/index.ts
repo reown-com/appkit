@@ -304,7 +304,6 @@ export class W3mActivityList extends LitElement {
   }
 
   private createPaginationObserver() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     const { projectId } = OptionsController.state
 
     this.paginationObserver = new IntersectionObserver(([element]) => {
@@ -318,7 +317,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              getPreferredAccountType(activeChainNamespace) ===
+              getPreferredAccountType(ChainController.state.activeChain) ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })

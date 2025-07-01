@@ -125,7 +125,12 @@ const controller = {
   },
 
   async sendEvmToken() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+    const activeChainNamespace = ChainController.state.activeChain
+
+    if (!activeChainNamespace) {
+      throw new Error('SendController:sendEvmToken - activeChainNamespace is required')
+    }
+
     const activeAccountType = getPreferredAccountType(activeChainNamespace)
 
     if (!SendController.state.sendTokenAmount || !SendController.state.receiverAddress) {

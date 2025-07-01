@@ -297,8 +297,7 @@ export const PayController = {
       return
     }
     ProviderUtil.subscribeProviders(async _ => {
-      const chainNamespace = ChainController.state.activeChain as ChainNamespace
-      const provider = ProviderUtil.getProvider(chainNamespace)
+      const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
       if (!provider) {
         return
       }
@@ -323,7 +322,7 @@ export const PayController = {
     }
 
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain as ChainNamespace
+    const chainNamespace = ChainController.state.activeChain
     if (!address || !chainId || !chainNamespace) {
       return
     }
@@ -429,7 +428,7 @@ export const PayController = {
       return
     }
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain as ChainNamespace
+    const chainNamespace = ChainController.state.activeChain
     if (!address || !chainId || !chainNamespace) {
       RouterController.push('Connect')
 

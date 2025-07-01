@@ -187,10 +187,9 @@ const controller = {
 
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
-    const namespace = ChainController.state.activeChain as ChainNamespace
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = getActiveNetworkTokenAddress()
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')

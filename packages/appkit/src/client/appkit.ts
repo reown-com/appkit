@@ -89,7 +89,11 @@ export class AppKit extends AppKitBaseClient {
 
       await promise
     }
-    const namespace = ChainController.state.activeChain as ChainNamespace
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('AppKit:onAuthProviderConnected - namespace is required')
+    }
 
     // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
     const caipAddress =
@@ -174,7 +178,12 @@ export class AppKit extends AppKitBaseClient {
       }
     })
     provider.onNotConnected(() => {
-      const namespace = ChainController.state.activeChain as ChainNamespace
+      const namespace = ChainController.state.activeChain
+
+      if (!namespace) {
+        throw new Error('AppKit:onNotConnected - namespace is required')
+      }
+
       const connectorId = ConnectorController.getConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
@@ -186,14 +195,17 @@ export class AppKit extends AppKitBaseClient {
     provider.onConnect(this.onAuthProviderConnected.bind(this))
     provider.onSocialConnected(this.onAuthProviderConnected.bind(this))
     provider.onSetPreferredAccount(({ address, type }) => {
+      const namespace = ChainController.state.activeChain
+
+      if (!namespace) {
+        throw new Error('AppKit:onSetPreferredAccount - namespace is required')
+      }
+
       if (!address) {
         return
       }
 
-      this.setPreferredAccountType(
-        type as W3mFrameTypes.AccountType,
-        ChainController.state.activeChain as ChainNamespace
-      )
+      this.setPreferredAccountType(type as W3mFrameTypes.AccountType, namespace)
     })
   }
 
@@ -429,6 +441,10 @@ export class AppKit extends AppKitBaseClient {
       const isNewNamespaceSupportsAuthConnector =
         ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
 
+      if (!networkNamespace) {
+        throw new Error('AppKit:switchCaipNetwork - networkNamespace is required')
+      }
+
       /*
        * Only connect with the auth connector if:
        * 1. The current namespace is an auth connector AND
@@ -450,7 +466,7 @@ export class AppKit extends AppKitBaseClient {
           ChainController.state.activeChain = caipNetwork.chainNamespace
 
           if (namespaceAddress) {
-            const adapter = this.getAdapter(networkNamespace as ChainNamespace)
+            const adapter = this.getAdapter(networkNamespace)
             await adapter?.switchNetwork({
               caipNetwork,
               provider: this.authProvider,
@@ -468,7 +484,7 @@ export class AppKit extends AppKitBaseClient {
           }
           this.setCaipNetwork(caipNetwork)
         } catch (error) {
-          const adapter = this.getAdapter(networkNamespace as ChainNamespace)
+          const adapter = this.getAdapter(networkNamespace)
           await adapter?.switchNetwork({
             caipNetwork,
             provider: this.authProvider,

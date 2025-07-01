@@ -431,13 +431,16 @@ export const SIWXUtil = {
     return true
   },
   getSIWXEventProperties() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('SIWXUtil:getSIWXEventProperties - namespace is required')
+    }
 
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        getPreferredAccountType(activeChainNamespace) ===
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },
   async clearSessions() {

@@ -306,11 +306,10 @@ export class W3mSwapView extends LitElement {
   }
 
   private async onSwapPreview() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     if (this.fetchError) {
       await SwapController.swapTokens()
     }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'INITIATE_SWAP',
@@ -321,7 +320,7 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          getPreferredAccountType(activeChainNamespace) ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
