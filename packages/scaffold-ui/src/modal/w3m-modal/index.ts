@@ -5,7 +5,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   type CaipAddress,
   type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil
+  ConstantsUtil as CommonConstantsUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import {
   ApiController,
@@ -227,9 +228,11 @@ export class W3mModalBase extends LitElement {
     const isPrevDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
     const isNextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
     const sessions = await SIWXUtil.getAllSessions()
-    const isNextAuthenticated = sessions.some(
-      session => session.data.accountAddress === caipAddress
-    )
+    const isNextAuthenticated =
+      caipAddress &&
+      sessions.some(
+        session => session.data.accountAddress === ParseUtil.parseCaipAddress(caipAddress)?.address
+      )
 
     // When users decline SIWE signature, we should close the modal
     const isDisconnectedInSameNamespace = !isNextConnected && !isSwitchingNamespace
