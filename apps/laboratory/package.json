@@ -53,6 +53,7 @@
     "playwright:test:email-default-account-types": "playwright test --grep email-default-account-types.spec.ts",
     "playwright:test:core-sign-client": "playwright test --grep sign-client.spec.ts",
     "playwright:test:cloud-auth": "playwright test --grep cloud-auth.spec.ts",
+    "playwright:test:cloud-auth-email": "playwright test --grep cloud-auth-email.spec.ts",
     "playwright:test:multi-wallet": "HEADLESS=true playwright test --grep multi-wallet.spec.ts",
     "playwright:test:multi-wallet-siwx": "HEADLESS=true playwright test --grep multi-wallet-siwx.spec.ts",
     "playwright:test:multi-wallet-multichain": "HEADLESS=true playwright test --grep multi-wallet-multichain.spec.ts",
@@ -99,6 +100,7 @@
     "playwright:debug:multichain-ethers5-siwe": "pnpm playwright:test:multichain-ethers5-siwe --debug",
     "playwright:debug:email-default-account-types": "pnpm playwright:test:email-default-account-types --debug",
     "playwright:debug:cloud-auth": "pnpm playwright:test:cloud-auth --debug",
+    "playwright:debug:cloud-auth-email": "pnpm playwright:test:cloud-auth-email --debug",
     "playwright:debug:multi-wallet": "playwright test --grep 'multi-wallet.spec.ts' --debug",
     "playwright:debug:multi-wallet-siwx": "playwright test --grep 'multi-wallet-siwx.spec.ts' --debug",
     "playwright:debug:multi-wallet-multichain": "playwright test --grep 'multi-wallet-multichain.spec.ts' --debug"

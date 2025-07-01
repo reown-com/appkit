@@ -55,6 +55,6 @@ test('should get session account', async () => {
 })
 
 test('should disconnect session account', async () => {
-  await modalPage.disconnect()
+  await modalPage.disconnectWithHook()
   await modalValidator.expectEmptySession()
 })
