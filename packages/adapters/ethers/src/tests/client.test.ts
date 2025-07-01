@@ -862,7 +862,7 @@ describe('EthersAdapter', () => {
         symbol: 'ETH'
       })
     })
-    gi
+
     it('should set balance to zero if balance call fails', async () => {
       vi.mocked(JsonRpcProvider).mockImplementation(
         () =>
