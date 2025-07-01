@@ -46,10 +46,6 @@ cloudAuthEmailTest.beforeAll(async ({ browser, library }) => {
   await modalValidator.expectConnected()
 })
 
-cloudAuthEmailTest.afterAll(async () => {
-  await context.close()
-})
-
 cloudAuthEmailTest('should authenticate', async () => {
   await modalValidator.expectSession()
 })
