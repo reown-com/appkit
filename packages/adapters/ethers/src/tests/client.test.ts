@@ -863,6 +863,25 @@ describe('EthersAdapter', () => {
       })
     })
 
+    it('should set balance to zero if balance call fails', async () => {
+      vi.mocked(JsonRpcProvider).mockImplementation(
+        () =>
+          ({
+            getBalance: vi.fn().mockRejectedValue(new Error('Failed to get balance'))
+          }) as any
+      )
+
+      const result = await adapter.getBalance({
+        address: '0x123',
+        chainId: 1
+      })
+
+      expect(result).toEqual({
+        balance: '0.00',
+        symbol: 'ETH'
+      })
+    })
+
     it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
       const mockBalance = BigInt(1500000000000000000)
       // delay the response to simulate http request latency
