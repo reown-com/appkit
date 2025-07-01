@@ -105,7 +105,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: true
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })
@@ -155,7 +155,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: true
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: false
           }
         })
@@ -180,7 +180,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: false
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })
@@ -214,7 +214,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: true
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })
@@ -264,7 +264,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: false
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })

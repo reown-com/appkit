@@ -61,7 +61,7 @@ describe('W3mAccountDefaultWidget', () => {
         walletFeaturesOrder: ['onramp', 'swaps', 'send']
       },
       remoteFeatures: {
-        onramp: ['coinbase'],
+        onramp: ['meld'],
         swaps: ['1inch'],
         send: true
       }

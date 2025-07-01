@@ -34,7 +34,7 @@ describe('W3mAccountTokensWidget', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       remoteFeatures: {
-        onramp: ['meld', 'coinbase']
+        onramp: ['meld']
       }
     })
 
@@ -53,7 +53,7 @@ describe('W3mAccountTokensWidget', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       remoteFeatures: {
-        onramp: ['meld', 'coinbase']
+        onramp: ['meld']
       }
     })
     vi.spyOn(RouterController, 'push')

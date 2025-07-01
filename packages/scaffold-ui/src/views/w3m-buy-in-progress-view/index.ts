@@ -3,8 +3,6 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
-  BlockchainApiController,
   ConnectionController,
   CoreHelperUtil,
   OnRampController,
@@ -46,8 +44,6 @@ export class W3mBuyInProgressView extends LitElement {
 
   @state() private error = false
 
-  @state() private startTime: number | null = null
-
   @property({ type: Boolean }) public isMobile = false
 
   @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
@@ -61,7 +57,6 @@ export class W3mBuyInProgressView extends LitElement {
         })
       ]
     )
-    this.watchTransactions()
   }
 
   public override disconnectedCallback() {
@@ -134,58 +129,6 @@ export class W3mBuyInProgressView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchTransactions() {
-    if (!this.selectedOnRampProvider) {
-      return
-    }
-
-    switch (this.selectedOnRampProvider.name) {
-      case 'coinbase':
-        this.startTime = Date.now()
-        this.initializeCoinbaseTransactions()
-        break
-      default:
-        break
-    }
-  }
-
-  private async initializeCoinbaseTransactions() {
-    await this.watchCoinbaseTransactions()
-    this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 4000)
-  }
-
-  private async watchCoinbaseTransactions() {
-    try {
-      const address = AccountController.state.address
-
-      if (!address) {
-        throw new Error('No address found')
-      }
-
-      const coinbaseResponse = await BlockchainApiController.fetchTransactions({
-        account: address,
-        onramp: 'coinbase'
-      })
-
-      const newTransactions = coinbaseResponse.data.filter(
-        tx =>
-          // @ts-expect-error - start time will always be set at this point
-          new Date(tx.metadata.minedAt) > new Date(this.startTime) ||
-          tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
-      )
-
-      if (newTransactions.length) {
-        clearInterval(this.intervalId)
-        RouterController.replace('OnRampActivity')
-      } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
-        clearInterval(this.intervalId)
-        this.error = true
-      }
-    } catch (error) {
-      SnackController.showError(error)
-    }
-  }
-
   private onTryAgain() {
     if (!this.selectedOnRampProvider) {
       return
