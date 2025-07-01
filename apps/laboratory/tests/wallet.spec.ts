@@ -1,16 +1,14 @@
 import { type BrowserContext, test } from '@playwright/test'
 
 import type { CaipNetworkId } from '@reown/appkit'
+import { DEFAULT_CHAIN_NAME, WalletPage, WalletValidator } from '@reown/appkit-testing'
+
+import { ModalPage } from './shared/pages/ModalPage'
 import {
-  DEFAULT_CHAIN_NAME,
-  WalletPage,
-  WalletValidator,
   getBalanceSymbolByLibrary,
   getLastNetworkNameByLibrary,
   getNetworksByLibrary
-} from '@reown/appkit-testing'
-
-import { ModalPage } from './shared/pages/ModalPage'
+} from './shared/utils/networks'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
