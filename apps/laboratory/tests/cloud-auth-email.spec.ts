@@ -55,6 +55,12 @@ cloudAuthEmailTest('should get session account', async () => {
   await modalValidator.expectSessionAccount()
 })
 
+cloudAuthEmailTest('should switch namespace', async () => {
+  await modalPage.switchNetwork('Solana')
+  await modalPage.closeModal()
+  await modalValidator.expectSession()
+})
+
 cloudAuthEmailTest('should disconnect session account', async () => {
   await modalPage.disconnectWithHook()
   await modalValidator.expectEmptySession()
