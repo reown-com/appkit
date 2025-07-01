@@ -21,6 +21,12 @@ const cloudAuthEmailTest = test.extend<{ library: string }>({
 cloudAuthEmailTest.describe.configure({ mode: 'serial' })
 
 cloudAuthEmailTest.beforeAll(async ({ browser, library }) => {
+  // Library is irrelevant but it's somehow duplicated
+  if (library !== 'wagmi') {
+    test.skip()
+
+    return
+  }
   context = await browser.newContext()
   modalPage = new CloudAuthModalPage(await context.newPage(), library, 'default')
   modalValidator = new CloudAuthModalValidator(modalPage.page)
@@ -36,11 +42,7 @@ cloudAuthEmailTest.beforeAll(async ({ browser, library }) => {
   tempEmail = await email.getEmailAddressToUse()
 
   await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-  if (library === 'solana') {
-    await modalPage.switchNetwork('Solana', true)
-    await modalPage.promptSiwe()
-    await modalPage.approveSign()
-  }
+
   await modalValidator.expectConnected()
 })
 
