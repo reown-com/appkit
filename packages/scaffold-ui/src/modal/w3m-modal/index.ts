@@ -229,10 +229,12 @@ export class W3mModalBase extends LitElement {
     const isNextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
     const sessions = await SIWXUtil.getAllSessions()
     const isNextAuthenticated =
-      caipAddress &&
-      sessions.some(
-        session => session.data.accountAddress === ParseUtil.parseCaipAddress(caipAddress)?.address
-      )
+      caipAddress && SIWXUtil.getSIWX()
+        ? sessions.some(
+            session =>
+              session.data.accountAddress === ParseUtil.parseCaipAddress(caipAddress)?.address
+          )
+        : true
 
     // When users decline SIWE signature, we should close the modal
     const isDisconnectedInSameNamespace = !isNextConnected && !isSwitchingNamespace
