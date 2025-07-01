@@ -681,18 +681,21 @@ export class EthersAdapter extends AdapterBlueprint {
         try {
           this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
             async resolve => {
-              const balance = await jsonRpcProvider.getBalance(address)
+              try {
+                const balance = await jsonRpcProvider.getBalance(address)
+                const formattedBalance = formatEther(balance)
 
-              const formattedBalance = formatEther(balance)
+                StorageUtil.updateNativeBalanceCache({
+                  caipAddress,
+                  balance: formattedBalance,
+                  symbol: caipNetwork.nativeCurrency.symbol,
+                  timestamp: Date.now()
+                })
 
-              StorageUtil.updateNativeBalanceCache({
-                caipAddress,
-                balance: formattedBalance,
-                symbol: caipNetwork.nativeCurrency.symbol,
-                timestamp: Date.now()
-              })
-
-              resolve({ balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol })
+                resolve({ balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol })
+              } catch (error) {
+                resolve({ balance: '0.00', symbol: 'ETH' })
+              }
             }
           ).finally(() => {
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
