@@ -15,7 +15,7 @@ const FLAGS = ['default-account-types'] as const
 
 const CORE_LIRARIES = ['core'] as const
 
-const CLOUD_AUTH_LIBRARIES = ['cloud-auth', 'cloud-auth-email'] as const
+const CLOUD_AUTH_LIBRARIES = ['cloud-auth'] as const
 
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
