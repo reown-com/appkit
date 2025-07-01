@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test'
 
-import { ModalPage } from './ModalPage'
+import { ModalWalletPage } from './ModalWalletPage'
 
-export class CloudAuthModalPage extends ModalPage {
+export class CloudAuthModalPage extends ModalWalletPage {
   get sessionAccountButton() {
     return this.page.getByTestId('cloud-auth-get-session-account-button')
   }

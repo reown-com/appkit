@@ -14,11 +14,15 @@ let email: Email
 let tempEmail: string
 /* eslint-enable init-declarations */
 
-test.describe.configure({ mode: 'serial' })
+const cloudAuthEmailTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
+})
 
-test.beforeAll(async ({ browser }) => {
+cloudAuthEmailTest.describe.configure({ mode: 'serial' })
+
+cloudAuthEmailTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
-  modalPage = new CloudAuthModalPage(await context.newPage(), 'library', 'default')
+  modalPage = new CloudAuthModalPage(await context.newPage(), library, 'default')
   modalValidator = new CloudAuthModalValidator(modalPage.page)
 
   await modalPage.page.goto(`${BASE_URL}library/siwx-cloud-auth`)
@@ -32,29 +36,34 @@ test.beforeAll(async ({ browser }) => {
   tempEmail = await email.getEmailAddressToUse()
 
   await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+  if (library === 'solana') {
+    await modalPage.switchNetwork('Solana', true)
+    await modalPage.promptSiwe()
+    await modalPage.approveSign()
+  }
   await modalValidator.expectConnected()
 })
 
-test.afterAll(async () => {
+cloudAuthEmailTest.afterAll(async () => {
   await context.close()
 })
 
-test('should authenticate', async () => {
+cloudAuthEmailTest('should authenticate', async () => {
   await modalValidator.expectSession()
 })
 
-test('should keep session after page reload', async () => {
+cloudAuthEmailTest('should keep session after page reload', async () => {
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalValidator.expectSession()
 })
 
-test('should get session account', async () => {
+cloudAuthEmailTest('should get session account', async () => {
   await modalPage.requestSessionAccount()
   await modalValidator.expectSessionAccount()
 })
 
-test('should disconnect session account', async () => {
+cloudAuthEmailTest('should disconnect session account', async () => {
   await modalPage.disconnectWithHook()
   await modalValidator.expectEmptySession()
 })
