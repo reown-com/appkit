@@ -21,12 +21,6 @@ const cloudAuthEmailTest = test.extend<{ library: string }>({
 cloudAuthEmailTest.describe.configure({ mode: 'serial' })
 
 cloudAuthEmailTest.beforeAll(async ({ browser, library }) => {
-  // Library is irrelevant but it's somehow duplicated
-  if (library !== 'wagmi') {
-    test.skip()
-
-    return
-  }
   context = await browser.newContext()
   modalPage = new CloudAuthModalPage(await context.newPage(), library, 'default')
   modalValidator = new CloudAuthModalValidator(modalPage.page)

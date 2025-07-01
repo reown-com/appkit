@@ -9,13 +9,14 @@ import {
   Flex,
   Heading,
   Text,
-  Textarea,
-  useToast
+  Textarea
 } from '@chakra-ui/react'
 
 import type { SIWXSession } from '@reown/appkit'
 import type { CloudAuthSIWX } from '@reown/appkit-siwx'
 import { useAppKitSIWX } from '@reown/appkit-siwx/react'
+
+import { useChakraToast } from '@/src/components/Toast'
 
 export function CloudAuthTests() {
   return (
@@ -79,7 +80,7 @@ function SessionAccount() {
   )
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
-  const toast = useToast()
+  const toast = useChakraToast()
 
   const handleGetSessionAccount = useCallback(async () => {
     try {
@@ -96,14 +97,14 @@ function SessionAccount() {
       toast({
         title: 'Session account retrieved',
         description: 'The session account has been retrieved successfully',
-        status: 'success'
+        type: 'success'
       })
     } catch (requestError) {
       setError(requestError as Error)
       toast({
         title: 'Error retrieving session account',
         description: (requestError as Error).message,
-        status: 'error'
+        type: 'error'
       })
     } finally {
       setIsLoading(false)
@@ -153,7 +154,7 @@ function UpdateSessionAccountMetadata() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [metadata, setMetadata] = useState<string>('')
-  const toast = useToast()
+  const toast = useChakraToast()
 
   const handleUpdateSessionAccountMetadata = useCallback(async () => {
     try {
@@ -169,14 +170,14 @@ function UpdateSessionAccountMetadata() {
       toast({
         title: 'Metadata updated',
         description: 'The metadata has been updated successfully',
-        status: 'success'
+        type: 'success'
       })
     } catch (requestError) {
       setError(requestError as Error)
       toast({
         title: 'Error updating metadata',
         description: (requestError as Error).message,
-        status: 'error'
+        type: 'error'
       })
     } finally {
       setIsLoading(false)
