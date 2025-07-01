@@ -192,7 +192,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletGrantPermissionsRequest>
     | z.infer<typeof WalletRevokePermissionsRequest>
     | z.infer<typeof WalletGetAssetsRequest>
-  ) & { chainNamespace?: ChainNamespace; chainId?: string | number }
+  ) & { chainNamespace?: ChainNamespace; chainId?: string | number; rpcUrl?: string }
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 

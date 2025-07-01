@@ -52,20 +52,25 @@ export const GetTransactionByHashResponse = z.object({
   v: z.string(),
   value: z.string()
 })
-export const AppSwitchNetworkRequest = z.object({ chainId: z.string().or(z.number()) })
+export const AppSwitchNetworkRequest = z.object({
+  chainId: z.string().or(z.number()),
+  rpcUrl: z.optional(z.string())
+})
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({
   uri: z.string(),
   preferredAccountType: z.optional(z.string()),
   chainId: z.optional(z.string().or(z.number())),
-  siwxMessage: z.optional(SIWXMessage)
+  siwxMessage: z.optional(SIWXMessage),
+  rpcUrl: z.optional(z.string())
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.string().or(z.number())),
   preferredAccountType: z.optional(z.string()),
   socialUri: z.optional(z.string()),
-  siwxMessage: z.optional(SIWXMessage)
+  siwxMessage: z.optional(SIWXMessage),
+  rpcUrl: z.optional(z.string())
 })
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
@@ -568,7 +573,8 @@ export const W3mFrameSchema = {
               chainId: z.string().or(z.number()).optional(),
               chainNamespace: z
                 .enum(['eip155', 'solana', 'polkadot', 'bip122', 'cosmos'])
-                .optional()
+                .optional(),
+              rpcUrl: z.string().optional()
             })
           )
       })

@@ -9,7 +9,8 @@ import {
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  type Provider
+  type Provider,
+  SIWXUtil
 } from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -57,7 +58,7 @@ const mockWalletConnectProvider = {
 } as unknown as UniversalProvider
 
 const mockAuthProvider = {
-  connect: vi.fn(),
+  connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
   getUser: vi.fn()
@@ -458,6 +459,36 @@ describe('Ethers5Adapter', () => {
     })
   })
 
+  describe('Ethers5Adapter -reconnect', () => {
+    it('should call SIWXUtil.authConnectorAuthenticate when reconnecting with AUTH provider', async () => {
+      const ethers5Adapter = new Ethers5Adapter()
+      const authConnectorAuthenticateSpy = vi.spyOn(SIWXUtil, 'authConnectorAuthenticate')
+
+      Object.defineProperty(ethers5Adapter, 'connectors', {
+        value: [
+          {
+            id: 'ID_AUTH',
+            type: 'AUTH',
+            provider: mockAuthProvider
+          }
+        ]
+      })
+
+      await ethers5Adapter.reconnect({
+        id: 'ID_AUTH',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(authConnectorAuthenticateSpy).toHaveBeenCalledWith({
+        authConnector: mockAuthProvider,
+        chainId: 1,
+        preferredAccountType: 'smartAccount',
+        chainNamespace: 'eip155'
+      })
+    })
+  })
+
   describe('Ethers5Adapter -syncConnections', () => {
     let mockGetConnectorStorageInfo: Mock
     let mockEmitFirstAvailableConnection: any
@@ -831,7 +862,7 @@ describe('Ethers5Adapter', () => {
         providerType: 'AUTH'
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
