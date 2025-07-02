@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
+import { WcConstantsUtil } from '../../src/utils/ConstantsUtil'
 import { WcHelpersUtil } from '../../src/utils/HelpersUtil'
 
 const mockEthereumNetwork = {
@@ -585,6 +586,57 @@ describe('WcHelpersUtil', () => {
       expect(
         WcHelpersUtil.isOriginAllowed('https://app.SAFE.org', allowedPatterns, defaultOrigins)
       ).toBe(false)
+    })
+
+    test('should allow 127.0.0.1 IP address with HTTP', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'http://127.0.0.1:3000',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'http://127.0.0.1:8080',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
+    })
+
+    test('should allow 127.0.0.1 IP address with HTTPS', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://127.0.0.1:3000',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://127.0.0.1:8443',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
+    })
+
+    test('should allow localhost with HTTPS', () => {
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://localhost:3000',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
+      expect(
+        WcHelpersUtil.isOriginAllowed(
+          'https://localhost:8443',
+          [],
+          WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        )
+      ).toBe(true)
     })
   })
 })

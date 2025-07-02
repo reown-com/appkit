@@ -1,4 +1,6 @@
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
+
+import type { ChainControllerState } from '../controllers/ChainController.js'
 
 /*
  * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
@@ -28,7 +30,7 @@ export const MobileWalletUtil = {
    * @param {string} id - The id of the wallet.
    * @param {ChainNamespace} namespace - The namespace of the chain.
    */
-  handleMobileDeeplinkRedirect(id: string, namespace: ChainNamespace): void {
+  handleMobileDeeplinkRedirect(id: string, namespace: ChainControllerState['activeChain']): void {
     /**
      * Universal Links requires explicit user interaction to open the wallet app.
      * Previously we've been calling this with the life-cycle methods in the Solana clients by listening the SELECT_WALLET event of EventController.

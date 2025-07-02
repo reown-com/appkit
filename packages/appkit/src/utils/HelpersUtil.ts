@@ -92,32 +92,32 @@ export const WcHelpersUtil = {
 
     const result = { ...baseNamespaces }
 
-    const namespacesToOverride = new Set<string>()
+    const namespacesToOverride = new Set<ChainNamespace>()
 
     if (overrides.methods) {
-      Object.keys(overrides.methods).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.methods).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.chains) {
-      Object.keys(overrides.chains).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.chains).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.events) {
-      Object.keys(overrides.events).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.events).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.rpcMap) {
       Object.keys(overrides.rpcMap).forEach(chainId => {
         const [ns] = chainId.split(':')
         if (ns) {
-          namespacesToOverride.add(ns)
+          namespacesToOverride.add(ns as ChainNamespace)
         }
       })
     }
 
     namespacesToOverride.forEach(ns => {
       if (!result[ns]) {
-        result[ns] = this.createDefaultNamespace(ns as ChainNamespace)
+        result[ns] = this.createDefaultNamespace(ns)
       }
     })
 

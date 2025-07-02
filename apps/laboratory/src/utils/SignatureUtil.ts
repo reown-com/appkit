@@ -1,5 +1,7 @@
 import { createPublicClient, http } from 'viem'
 
+import type { Address, Hex } from '@reown/appkit-common'
+
 function getTransport({ chainId }: { chainId: number }) {
   return http(
     `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
@@ -23,7 +25,7 @@ export async function verifySignature({
 
   return publicClient.verifyMessage({
     message,
-    address: address as `0x${string}`,
-    signature: signature as `0x${string}`
+    address: address as Address,
+    signature: signature as Hex
   })
 }

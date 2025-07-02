@@ -1,7 +1,7 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, type Hex } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
@@ -202,9 +202,11 @@ export const SmartSessionsController = {
 
       // Ensure the namespace is supported and extract address
       const chainAndAddress = extractChainAndAddress(activeCaipAddress)
+
       if (!activeCaipAddress || !chainAndAddress) {
         throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
       }
+
       // Fetch the ConnectionController client
       const connectionControllerClient = ConnectionController._getClient()
 
@@ -224,15 +226,11 @@ export const SmartSessionsController = {
         pci: session.pci,
         permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
         expiry: Math.floor(session.expiry / 1000),
-        address: activeCaipAddress as `0x${string}`
+        address: activeCaipAddress
       })
 
       // Activate the permissions using CosignerService
-      await cosignerService.revokePermissions(
-        activeCaipAddress,
-        session.pci,
-        signature as `0x${string}`
-      )
+      await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature as Hex)
       state.sessions = state.sessions.filter(s => s.pci !== session.pci)
     } catch (e) {
       SnackController.showError('Error revoking smart session')
