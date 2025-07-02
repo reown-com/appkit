@@ -99,7 +99,10 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'multi-wallet.spec.ts'
 ]
 
-const REOWN_AUTHENTICATION_TESTS = ['reown-authentication.spec.ts', 'cloud-auth-email.spec.ts']
+const REOWN_AUTHENTICATION_TESTS = [
+  'reown-authentication.spec.ts',
+  'reown-authentication-email.spec.ts'
+]
 
 const SINGLE_ADAPTER_BITCOIN_TESTS = [
   'wallet.spec.ts',
@@ -132,45 +135,45 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/ethers5': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/ethers5': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/wagmi': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/wagmi': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/bitcoin': {
     testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/bitcoin': {
     testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
-    testIgnore: /cloud-auth.*\.spec\.ts/u
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
     testIgnore:
-      /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts|cloud-auth.*\.spec\.ts/u
+      /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
     testIgnore:
-      /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts|cloud-auth.*\.spec\.ts/u
+      /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/multichain-all': {
     testMatch: /^.*\/multichain-all\.spec\.ts$/u

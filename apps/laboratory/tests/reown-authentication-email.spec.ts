@@ -25,7 +25,7 @@ cloudAuthEmailTest.beforeAll(async ({ browser, library }) => {
   modalPage = new ReownAuthenticationModalPage(await context.newPage(), library, 'default')
   modalValidator = new ReownAuthenticationModalValidator(modalPage.page)
 
-  await modalPage.page.goto(`${BASE_URL}library/siwx-cloud-auth`)
+  await modalPage.page.goto(`${BASE_URL}library/reown-authentication`)
 
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
