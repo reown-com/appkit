@@ -130,4 +130,77 @@ describe('W3mInputAddress', () => {
     const textarea = element.shadowRoot?.querySelector('textarea')
     expect(textarea?.disabled).toBe(false)
   })
+
+  it('should handle nacho.ccmc resolution', async () => {
+    const mockAddress = '0x1234567890123456789012345678901234567890'
+    const ccmcName = 'nacho.ccmc'
+
+    vi.spyOn(ConnectionController, 'getEnsAddress').mockResolvedValue(mockAddress)
+    vi.spyOn(ConnectionController, 'getEnsAvatar').mockResolvedValue(undefined)
+    const setReceiverAddressSpy = vi.spyOn(SendController, 'setReceiverAddress')
+    const setReceiverProfileNameSpy = vi.spyOn(SendController, 'setReceiverProfileName')
+    const setLoadingSpy = vi.spyOn(SendController, 'setLoading')
+
+    const element: W3mInputAddress = await fixture(html`<w3m-input-address></w3m-input-address>`)
+
+    const input = element.inputElementRef.value as HTMLInputElement
+    input.value = ccmcName
+    input.dispatchEvent(new InputEvent('input'))
+
+    await vi.runAllTimersAsync()
+    await elementUpdated(element)
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true)
+    expect(setReceiverAddressSpy).toHaveBeenCalledWith(mockAddress)
+    expect(setReceiverProfileNameSpy).toHaveBeenCalledWith(ccmcName)
+    expect(setLoadingSpy).toHaveBeenCalledWith(false)
+  })
+
+  it('should handle invalid.ccmc resolution failure', async () => {
+    const ccmcName = 'invalid.ccmc'
+
+    vi.spyOn(ConnectionController, 'getEnsAddress').mockResolvedValue(false)
+    const setReceiverAddressSpy = vi.spyOn(SendController, 'setReceiverAddress')
+    const setReceiverProfileNameSpy = vi.spyOn(SendController, 'setReceiverProfileName')
+    const setLoadingSpy = vi.spyOn(SendController, 'setLoading')
+
+    const element: W3mInputAddress = await fixture(html`<w3m-input-address></w3m-input-address>`)
+
+    const input = element.inputElementRef.value as HTMLInputElement
+    input.value = ccmcName
+    input.dispatchEvent(new InputEvent('input'))
+
+    await vi.runAllTimersAsync()
+    await elementUpdated(element)
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true)
+    expect(setReceiverAddressSpy).not.toHaveBeenCalled()
+    expect(setReceiverProfileNameSpy).not.toHaveBeenCalled()
+    expect(setLoadingSpy).toHaveBeenCalledWith(false)
+  })
+
+  it('should handle nacho.ccmc resolution on Solana chain', async () => {
+    const mockSolanaAddress = '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU'
+    const ccmcName = 'nacho.ccmc'
+
+    vi.spyOn(ConnectionController, 'getEnsAddress').mockResolvedValue(mockSolanaAddress)
+    vi.spyOn(ConnectionController, 'getEnsAvatar').mockResolvedValue(undefined)
+    const setReceiverAddressSpy = vi.spyOn(SendController, 'setReceiverAddress')
+    const setReceiverProfileNameSpy = vi.spyOn(SendController, 'setReceiverProfileName')
+    const setLoadingSpy = vi.spyOn(SendController, 'setLoading')
+
+    const element: W3mInputAddress = await fixture(html`<w3m-input-address></w3m-input-address>`)
+
+    const input = element.inputElementRef.value as HTMLInputElement
+    input.value = ccmcName
+    input.dispatchEvent(new InputEvent('input'))
+
+    await vi.runAllTimersAsync()
+    await elementUpdated(element)
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true)
+    expect(setReceiverAddressSpy).toHaveBeenCalledWith(mockSolanaAddress)
+    expect(setReceiverProfileNameSpy).toHaveBeenCalledWith(ccmcName)
+    expect(setLoadingSpy).toHaveBeenCalledWith(false)
+  })
 })
