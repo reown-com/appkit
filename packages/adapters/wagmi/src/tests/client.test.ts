@@ -18,7 +18,7 @@ import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -962,7 +962,7 @@ describe('WagmiAdapter', () => {
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123',
+        address: 'eip155:1:0x123' as CaipAddress,
         permissions: ['eth_accounts']
       }
 
@@ -983,7 +983,7 @@ describe('WagmiAdapter', () => {
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123' as `0x${string}`,
+        address: 'eip155:1:0x123' as CaipAddress,
         permissions: ['eth_accounts']
       }
 

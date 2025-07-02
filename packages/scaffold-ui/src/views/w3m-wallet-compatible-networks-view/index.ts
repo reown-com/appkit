@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -61,7 +60,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
     // For now, each network has a unique account
     if (
       isNetworkEnabledForSmartAccounts &&
-      getPreferredAccountType(caipNetwork?.chainNamespace as ChainNamespace) ===
+      getPreferredAccountType(caipNetwork?.chainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       if (!caipNetwork) {
