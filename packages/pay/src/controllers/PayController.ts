@@ -26,7 +26,8 @@ import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
   ensureCorrectNetwork,
   processEvmErc20Payment,
-  processEvmNativePayment
+  processEvmNativePayment,
+  processSolanaPayment
 } from '../utils/PaymentUtil.js'
 
 const DEFAULT_PAGE = 0
@@ -379,6 +380,18 @@ export const PayController = {
               fromAddress: address as `0x${string}`
             })
           }
+          state.currentPayment.status = 'SUCCESS'
+          break
+        case ConstantsUtil.CHAIN.SOLANA:
+          state.currentPayment.result = await processSolanaPayment(
+            state.paymentAsset,
+            chainNamespace,
+            {
+              recipient: state.recipient,
+              amount: state.amount,
+              fromAddress: address
+            }
+          )
           state.currentPayment.status = 'SUCCESS'
           break
         default:
