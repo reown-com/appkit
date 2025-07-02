@@ -13,7 +13,7 @@
   "dependencies": {
     "chalk": "5.4.1",
     "figlet": "1.8.0",
-    "inquirer": "12.4.2",
+    "inquirer": "12.6.3",
     "tiged": "2.12.7"
   },
   "devDependencies": {
