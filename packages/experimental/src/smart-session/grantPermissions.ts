@@ -85,6 +85,8 @@ export async function grantPermissions(
     }
   })
 
+  // Version 2.0 uses OwnableValidator instead of MultiKeyValidator
+  request.version = '2.0'
   const rawResponse = await connectionControllerClient?.grantPermissions([request])
 
   // Validate and type guard the response
