@@ -700,14 +700,14 @@ export abstract class AppKitBaseClient {
           const adapter = this.getAdapter(namespace)
 
           if (!adapter) {
-            throw new Error('estimateGas: adapter not found')
+            throw new Error('estimateGas: adapter is required but got undefined')
           }
 
           const provider = ProviderUtil.getProvider(namespace)
           const caipNetwork = this.getCaipNetwork()
 
           if (!caipNetwork) {
-            throw new Error('estimateGas: caipNetwork is undefined')
+            throw new Error('estimateGas: caipNetwork is required but got undefined')
           }
 
           const result = await adapter?.estimateGas({ ...args, provider, caipNetwork })
@@ -721,7 +721,7 @@ export abstract class AppKitBaseClient {
         const namespace = ChainController.state.activeChain
 
         if (!namespace) {
-          throw new Error('getEnsAvatar: namespace not found')
+          throw new Error('getEnsAvatar: namespace is required but got undefined')
         }
 
         await this.syncIdentity({
@@ -738,11 +738,11 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(namespace)
 
         if (!namespace) {
-          throw new Error('writeContract: namespace not found')
+          throw new Error('writeContract: namespace is required but got undefined')
         }
 
         if (!adapter) {
-          throw new Error('writeContract: adapter not found')
+          throw new Error('writeContract: adapter is required but got undefined')
         }
 
         const caipNetwork = this.getCaipNetwork()
@@ -750,7 +750,7 @@ export abstract class AppKitBaseClient {
         const provider = ProviderUtil.getProvider(namespace)
 
         if (!caipNetwork || !caipAddress) {
-          throw new Error('writeContract: caipNetwork or caipAddress is undefined')
+          throw new Error('writeContract: caipNetwork or caipAddress is required but got undefined')
         }
 
         const result = await adapter?.writeContract({ ...args, caipNetwork, provider, caipAddress })
@@ -761,7 +761,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
-          throw new Error('parseUnits: adapter not found')
+          throw new Error('parseUnits: adapter is required but got undefined')
         }
 
         return adapter?.parseUnits({ value, decimals }) ?? 0n
@@ -770,7 +770,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
-          throw new Error('formatUnits: adapter not found')
+          throw new Error('formatUnits: adapter is required but got undefined')
         }
 
         return adapter?.formatUnits({ value, decimals }) ?? '0'
@@ -779,7 +779,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
-          throw new Error('getCapabilities: adapter not found')
+          throw new Error('getCapabilities: adapter is required but got undefined')
         }
 
         return await adapter?.getCapabilities(params)
@@ -788,7 +788,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
-          throw new Error('grantPermissions: adapter not found')
+          throw new Error('grantPermissions: adapter is required but got undefined')
         }
 
         return await adapter?.grantPermissions(params)
@@ -797,7 +797,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
-          throw new Error('revokePermissions: adapter not found')
+          throw new Error('revokePermissions: adapter is required but got undefined')
         }
 
         if (adapter?.revokePermissions) {
@@ -810,7 +810,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
-          throw new Error('walletGetAssets: adapter not found')
+          throw new Error('walletGetAssets: adapter is required but got undefined')
         }
 
         return (await adapter?.walletGetAssets(params)) ?? {}
@@ -2014,14 +2014,15 @@ export abstract class AppKitBaseClient {
     return AccountController.state.connectedWalletInfo
   }
 
-  public getAccount(namespace?: ChainNamespace) {
+  public getAccount(_namespace?: ChainNamespace) {
+    const namespace = _namespace || ChainController.state.activeChain
     const authConnector = ConnectorController.getAuthConnector(namespace)
     const accountState = ChainController.getAccountData(namespace)
     const activeConnectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
     const connections = ConnectionController.getConnections(namespace)
 
     if (!namespace) {
-      throw new Error('getAccount namespace is required')
+      throw new Error('AppKit:getAccount - namespace is required')
     }
 
     const allAccounts = connections.flatMap(connection =>

@@ -363,8 +363,9 @@ describe('AppKit - disconnect - functional scenarios', () => {
 
     ChainController.state.chains = new Map([
       [
-        'eip155',
+        CommonConstantsUtil.CHAIN.EVM,
         {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
           caipNetwork: {
             id: '1',
             name: 'Ethereum',
@@ -375,8 +376,9 @@ describe('AppKit - disconnect - functional scenarios', () => {
         } as any
       ],
       [
-        'solana',
+        CommonConstantsUtil.CHAIN.SOLANA,
         {
+          namespace: CommonConstantsUtil.CHAIN.SOLANA,
           caipNetwork: {
             id: 'mainnet',
             name: 'Solana',
@@ -487,8 +489,9 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     // Simulate two connected chains for getChainsToDisconnect (utility)
     ChainController.state.chains = new Map([
       [
-        'eip155',
+        CommonConstantsUtil.CHAIN.EVM,
         {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
           caipNetwork: {
             id: '1',
             name: 'Ethereum',
@@ -499,8 +502,9 @@ describe('AppKit - disconnect - error handling scenarios', () => {
         } as any
       ],
       [
-        'solana',
+        CommonConstantsUtil.CHAIN.SOLANA,
         {
+          namespace: CommonConstantsUtil.CHAIN.SOLANA,
           caipNetwork: {
             id: 'mainnet',
             name: 'Solana',

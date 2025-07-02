@@ -1,6 +1,6 @@
 import { ConstantsUtil } from '@reown/appkit-common'
 
-import type { ChainControllerState } from '../controllers/ChainController'
+import type { ChainControllerState } from '../controllers/ChainController.js'
 
 /*
  * Exclude wallets that do not support relay connections but have custom deeplink mechanisms

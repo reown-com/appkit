@@ -277,7 +277,7 @@ describe('Common field validation', () => {
         signer: {
           type: 'keys',
           data: {
-            keys: [{ type: 'secp256k1', publicKey: '0xinvalid' as Hex }]
+            keys: [{ type: 'secp256k1', publicKey: 'invalid' as Hex }]
           }
         } as MultiKeySigner
       }

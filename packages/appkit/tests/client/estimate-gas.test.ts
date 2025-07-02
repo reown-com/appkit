@@ -133,7 +133,7 @@ describe('AppKit Gas Estimation', () => {
 
     await expect(
       appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
-    ).rejects.toThrow('CaipNetwork is undefined')
+    ).rejects.toThrow('estimateGas: caipNetwork is required but got undefined')
   })
 
   it('should handle missing adapter gracefully', async () => {

@@ -55,11 +55,7 @@ export const ProviderUtil = {
     chainNamespace: ChainControllerState['activeChain'],
     provider: T
   ) {
-    if (!chainNamespace) {
-      return undefined
-    }
-
-    if (provider) {
+    if (chainNamespace && provider) {
       state.providers[chainNamespace] = ref(provider) as T
     }
   },
