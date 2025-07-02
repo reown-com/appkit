@@ -1,5 +1,6 @@
 import type {
   AdapterType,
+  Address,
   Balance,
   ChainNamespace,
   ParsedCaipAddress,
@@ -115,7 +116,7 @@ export const CoreHelperUtil = {
   },
 
   getPlainAddress(caipAddress: CaipAddress | undefined) {
-    return caipAddress?.split(':')[2]
+    return caipAddress?.split(':')[2] as Address | undefined
   },
 
   async wait(milliseconds: number) {

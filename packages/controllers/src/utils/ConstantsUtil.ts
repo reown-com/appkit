@@ -1,3 +1,4 @@
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   type ChainNamespace,
   type OnRampProvider,
@@ -183,7 +184,10 @@ export const ConstantsUtil = {
     'DE',
     'WNT'
   ],
-  BALANCE_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
+  BALANCE_SUPPORTED_CHAINS: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',
@@ -211,9 +215,12 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
-  NAMES_SUPPORTED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
-  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
-  ACTIVITY_ENABLED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
+  NAMES_SUPPORTED_CHAIN_NAMESPACES: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
+  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
+  ACTIVITY_ENABLED_CHAIN_NAMESPACES: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
@@ -229,7 +236,10 @@ export const ConstantsUtil = {
     WEB: 'Open and continue in the wallet app'
   },
 
-  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
+  SEND_SUPPORTED_NAMESPACES: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
   DEFAULT_REMOTE_FEATURES: {
     swaps: ['1inch'] as SwapProvider[],
     onramp: ['meld', 'coinbase'] as OnRampProvider[],

@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
   EventsController,
@@ -167,16 +166,15 @@ export class W3mWalletSendPreviewView extends LitElement {
       // eslint-disable-next-line no-console
       console.error('SendController:sendToken - failed to send transaction', error)
 
-      const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
         properties: {
           message: errorMessage,
           isSmartAccount:
-            getPreferredAccountType(activeChainNamespace) ===
+            getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.token?.symbol || '',
           amount: this.sendTokenAmount,
