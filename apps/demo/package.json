@@ -63,7 +63,7 @@
     "tailwindcss-animate": "1.0.7",
     "viem": "2.31.3",
     "wagmi": "2.15.6",
-    "valtio": "1.13.2"
+    "valtio": "2.1.5"
   },
   "devDependencies": {
     "@types/node": "22.13.4",

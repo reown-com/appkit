@@ -142,7 +142,7 @@
     "@walletconnect/universal-provider": "2.21.3",
     "bs58": "6.0.0",
     "semver": "7.7.2",
-    "valtio": "1.13.2",
+    "valtio": "2.1.5",
     "viem": ">=2.31.3"
   },
   "devDependencies": {
