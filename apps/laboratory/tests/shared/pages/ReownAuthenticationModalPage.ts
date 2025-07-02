@@ -1,14 +1,14 @@
 import { expect } from '@playwright/test'
 
-import { ModalPage } from './ModalPage'
+import { ModalWalletPage } from './ModalWalletPage'
 
-export class CloudAuthModalPage extends ModalPage {
+export class ReownAuthenticationModalPage extends ModalWalletPage {
   get sessionAccountButton() {
-    return this.page.getByTestId('cloud-auth-get-session-account-button')
+    return this.page.getByTestId('reown-authentication-get-session-account-button')
   }
 
   get updateSessionAccountMetadataInput() {
-    return this.page.getByTestId('cloud-auth-update-session-account-metadata')
+    return this.page.getByTestId('reown-authentication-update-session-account-metadata')
   }
 
   get updateSessionAccountMetadataButton() {

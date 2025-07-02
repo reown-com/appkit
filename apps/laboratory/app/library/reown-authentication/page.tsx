@@ -3,13 +3,13 @@
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { CloudAuthSIWX } from '@reown/appkit-siwx'
+import { ReownAuthentication } from '@reown/appkit-siwx'
 import { mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
-import { CloudAuthTests } from '@/src/components/CloudAuthTests'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
+import { ReownAuthenticationTests } from '@/src/components/ReownAuthentication'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -25,15 +25,15 @@ const config = {
 
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  siwx: new CloudAuthSIWX()
+  siwx: new ReownAuthentication()
 }
 
-export default function SIWXCloudAuth() {
+export default function ReownAuthenticationPage() {
   return (
     <AppKitProvider config={config}>
       <AppKitButtons />
       <AppKitInfo />
-      <CloudAuthTests />
+      <ReownAuthenticationTests />
       <EthersTests />
       <SolanaTests />
     </AppKitProvider>

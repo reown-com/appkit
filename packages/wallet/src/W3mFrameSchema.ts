@@ -17,6 +17,7 @@ type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion 
 
 // -- SIWX Message Schema ----------------------------------------------------
 export const SIWXMessage = z.object({
+  serializedMessage: z.string().optional(),
   accountAddress: z.string(),
   chainId: z.string(),
   notBefore: z.string().optional(),
