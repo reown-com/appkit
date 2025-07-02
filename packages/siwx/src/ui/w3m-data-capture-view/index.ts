@@ -10,6 +10,7 @@ import {
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
 import { CloudAuthSIWX } from '../../configs/index.js'
+import './email-suffixes-widget.js'
 import styles from './styles.js'
 
 @customElement('w3m-data-capture-view')
@@ -90,52 +91,21 @@ export class W3mDataCaptureView extends LitElement {
       this.email = event.detail
     }
 
-    const completeOptions = [
-      '@gmail.com',
-      '@outlook.com',
-      '@yahoo.com',
-      '@hotmail.com',
-      '@aol.com',
-      '@icloud.com',
-      '@zoho.com'
-    ]
-      .filter(option => {
-        if (!this.email) {
-          return false
-        }
+    return html`
+      <wui-flex flexDirection="column">
+        <wui-email-input
+          .value=${this.email}
+          .disabled=${this.loading}
+          @inputChange=${changeHandler}
+          @keydown=${keydownHandler}
+        ></wui-email-input>
 
-        const pieces = this.email.split('@')
-
-        if (pieces.length < 2) {
-          return true
-        }
-        const host = pieces.pop() as string
-
-        return option.includes(host) && option !== `@${host}`
-      })
-      .map(option => {
-        const handleClick = () => {
-          const pieces = this.email.split('@')
-          if (pieces.length > 1) {
-            pieces.pop()
-          }
-          pieces.push(option)
-          this.email = pieces.join('')
-        }
-
-        return html`<wui-button variant="neutral" size="sm" @click=${handleClick}
-          >${option}</wui-button
-        >`
-      })
-
-    return html`<wui-email-input
-        .value=${this.email}
-        .disabled=${this.loading}
-        @inputChange=${changeHandler}
-        @keydown=${keydownHandler}
-      ></wui-email-input>
-      ${completeOptions.length > 0 ? html`<div class="email-sufixes">${completeOptions}</div>` : null}
-      </div> `
+        <w3m-email-suffixes-widget
+          .email=${this.email}
+          @change=${changeHandler}
+        ></w3m-email-suffixes-widget>
+      </wui-flex>
+    `
   }
 
   private footerActions() {

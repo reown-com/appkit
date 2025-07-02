@@ -7,5 +7,6 @@ export default css`
     gap: 4px;
     overflow-x: auto;
     max-width: 100%;
+    margin-top: 12px;
   }
 `
