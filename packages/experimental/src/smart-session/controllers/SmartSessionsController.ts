@@ -226,7 +226,7 @@ export const SmartSessionsController = {
         pci: session.pci,
         permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
         expiry: Math.floor(session.expiry / 1000),
-        address: chainAndAddress.address
+        address: activeCaipAddress
       })
 
       // Activate the permissions using CosignerService

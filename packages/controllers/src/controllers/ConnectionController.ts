@@ -3,7 +3,7 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
-  type Address,
+  type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
@@ -113,7 +113,7 @@ export interface ConnectionControllerClient {
     pci: string
     permissions: unknown[]
     expiry: number
-    address: Address
+    address: CaipAddress
   }) => Promise<Hex>
   getCapabilities: (params: string) => Promise<unknown>
   walletGetAssets: (params: WalletGetAssetsParams) => Promise<WalletGetAssetsResponse>

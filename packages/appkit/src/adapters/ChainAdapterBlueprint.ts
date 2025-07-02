@@ -825,7 +825,7 @@ export namespace AdapterBlueprint {
     pci: string
     permissions: unknown[]
     expiry: number
-    address: Address
+    address: CaipAddress
   }
 
   export type WalletGetAssetsParams = {

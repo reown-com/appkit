@@ -3,7 +3,11 @@ import { JsonRpcProvider } from 'ethers'
 import { type Mock, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
-import { type Address, ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  ConstantsUtil as CommonConstantsUtil,
+  Emitter
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -1126,7 +1130,7 @@ describe('EthersAdapter', () => {
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123' as Address,
+        address: 'eip155:1:0x123' as CaipAddress,
         permissions: ['eth_accounts']
       }
 

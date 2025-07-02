@@ -3,7 +3,11 @@ import { providers } from 'ethers'
 import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcHelpersUtil } from '@reown/appkit'
-import { type Address, ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  ConstantsUtil as CommonConstantsUtil,
+  Emitter
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -1007,7 +1011,7 @@ describe('Ethers5Adapter', () => {
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123' as Address,
+        address: 'eip155:1:0x123' as CaipAddress,
         permissions: ['eth_accounts']
       }
 
