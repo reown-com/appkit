@@ -11,7 +11,7 @@ import { AsignaConnector as AsignaCoreConnector } from '@asigna/core-js'
 
 export class AsignaConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'Asigna'
-  public readonly name = 'Asigna Wallet'
+  public readonly name = 'Asigna Multisig'
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
   public readonly explorerId =
