@@ -2,12 +2,12 @@ import { type BrowserContext, expect, test } from '@playwright/test'
 
 import { BASE_URL, WalletPage } from '@reown/appkit-testing'
 
-import { CloudAuthModalPage } from './shared/pages/CloudAuthModalPage'
-import { CloudAuthModalValidator } from './shared/validators/CloudAuthModalValidator'
+import { ReownAuthenticationModalPage } from './shared/pages/ReownAuthenticationModalPage'
+import { ReownAuthenticationModalValidator } from './shared/validators/ReownAuthenticationModalValidator'
 
 /* eslint-disable init-declarations */
-let modalPage: CloudAuthModalPage
-let modalValidator: CloudAuthModalValidator
+let modalPage: ReownAuthenticationModalPage
+let modalValidator: ReownAuthenticationModalValidator
 let walletPage: WalletPage
 let context: BrowserContext
 /* eslint-enable init-declarations */
@@ -17,12 +17,12 @@ test.describe.configure({ mode: 'serial' })
 test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()
 
-  modalPage = new CloudAuthModalPage(await context.newPage(), 'library', 'default')
-  modalValidator = new CloudAuthModalValidator(modalPage.page)
+  modalPage = new ReownAuthenticationModalPage(await context.newPage(), 'library', 'default')
+  modalValidator = new ReownAuthenticationModalValidator(modalPage.page)
   walletPage = new WalletPage(await context.newPage())
 
   await walletPage.load()
-  await modalPage.page.goto(`${BASE_URL}library/siwx-cloud-auth`)
+  await modalPage.page.goto(`${BASE_URL}library/reown-authentication`)
   await modalValidator.expectDisconnected()
 })
 

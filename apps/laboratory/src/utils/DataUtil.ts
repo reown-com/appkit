@@ -229,9 +229,9 @@ export const bitcoinSdkOptions: SdkOption[] = [
 
 export const siwxSdkOptions: SdkOption[] = [
   {
-    title: 'Cloud Auth SIWX',
-    link: '/library/siwx-cloud-auth',
-    description: 'SIWX configuration using Cloud Auth'
+    title: 'Reown Authentication',
+    link: '/library/reown-authentication',
+    description: 'SIWX configuration using Reown Authentication'
   },
   {
     title: 'Default SIWX',

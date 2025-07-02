@@ -2,13 +2,13 @@ import { type BrowserContext, test } from '@playwright/test'
 
 import { BASE_URL } from '@reown/appkit-testing'
 
-import { CloudAuthModalPage } from './shared/pages/CloudAuthModalPage'
+import { ReownAuthenticationModalPage } from './shared/pages/ReownAuthenticationModalPage'
 import { Email } from './shared/utils/email'
-import { CloudAuthModalValidator } from './shared/validators/CloudAuthModalValidator'
+import { ReownAuthenticationModalValidator } from './shared/validators/ReownAuthenticationModalValidator'
 
 /* eslint-disable init-declarations */
-let modalPage: CloudAuthModalPage
-let modalValidator: CloudAuthModalValidator
+let modalPage: ReownAuthenticationModalPage
+let modalValidator: ReownAuthenticationModalValidator
 let context: BrowserContext
 let email: Email
 let tempEmail: string
@@ -22,10 +22,10 @@ cloudAuthEmailTest.describe.configure({ mode: 'serial' })
 
 cloudAuthEmailTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
-  modalPage = new CloudAuthModalPage(await context.newPage(), library, 'default')
-  modalValidator = new CloudAuthModalValidator(modalPage.page)
+  modalPage = new ReownAuthenticationModalPage(await context.newPage(), library, 'default')
+  modalValidator = new ReownAuthenticationModalValidator(modalPage.page)
 
-  await modalPage.page.goto(`${BASE_URL}library/siwx-cloud-auth`)
+  await modalPage.page.goto(`${BASE_URL}library/reown-authentication`)
 
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
