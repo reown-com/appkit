@@ -220,13 +220,12 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const accountsList = provider?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
-      const accounts = (accountsList?.map(account => account.split(':')[2]) ??
-        []) as `0x${string}`[]
+      const accounts = (accountsList?.map(account => account.split(':')[2]) ?? []) as Address[]
 
       const accountsAdded = new Set<`0x${string}`>()
 
       const deduplicatedAccounts = accounts.filter(account => {
-        const lowerCasedAccount = account?.toLowerCase() as `0x${string}`
+        const lowerCasedAccount = account?.toLowerCase() as Lowercase<Address>
 
         if (accountsAdded.has(lowerCasedAccount)) {
           return false

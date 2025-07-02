@@ -1,12 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import {
-  type CaipAddress,
-  type CaipNetwork,
-  type ChainNamespace,
-  NumberUtil
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, NumberUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,

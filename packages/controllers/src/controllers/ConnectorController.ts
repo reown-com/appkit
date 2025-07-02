@@ -152,9 +152,7 @@ const controller = {
   },
 
   getEnabledConnectors(enabledNamespaces: ChainNamespace[]): Connector[] {
-    return state.allConnectors.filter(connector =>
-      enabledNamespaces.includes(connector.chain as ChainNamespace)
-    )
+    return state.allConnectors.filter(connector => enabledNamespaces.includes(connector.chain))
   },
 
   areAllNamespacesEnabled(): boolean {
@@ -340,8 +338,11 @@ const controller = {
 
   selectWalletConnector(wallet: WcWallet) {
     const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    MobileWalletUtil.handleMobileDeeplinkRedirect(connector?.explorerId || wallet.id, namespace)
+
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      connector?.explorerId || wallet.id,
+      ChainController.state.activeChain
+    )
 
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })

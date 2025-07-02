@@ -111,7 +111,7 @@ export const SIWXUtil = {
       await siwx.addSession({
         data: siwxMessage,
         message,
-        signature: signature as `0x${string}`
+        signature
       })
 
       ChainController.setLastConnectedSIWECaipNetwork(network)

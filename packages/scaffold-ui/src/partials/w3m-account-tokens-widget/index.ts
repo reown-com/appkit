@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,

@@ -90,6 +90,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     const isBalanceSupported =
       params.caipNetwork &&
       CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(params.caipNetwork?.chainNamespace)
+
     if (!isBalanceSupported || params.caipNetwork?.testnet) {
       return {
         balance: '0.00',

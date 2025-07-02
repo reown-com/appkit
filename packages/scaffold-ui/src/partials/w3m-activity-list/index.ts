@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { type ChainNamespace, DateUtil } from '@reown/appkit-common'
+import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
   ChainController,

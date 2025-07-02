@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,

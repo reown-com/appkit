@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
 
 import { ConnectorController } from '../../exports'
 import { AccountController } from '../../src/controllers/AccountController'
@@ -99,7 +99,7 @@ describe('BalanceUtil', () => {
       const mockAssetsResponse: WalletGetAssetsResponse = {
         [mockEthChainIdAsHex]: [
           {
-            address: mockEthereumAddress as `0x${string}`,
+            address: mockEthereumAddress as Address,
             balance: '0xDE0B6B3A7640000',
             type: 'NATIVE',
             metadata: {
@@ -337,8 +337,8 @@ describe('BalanceUtil', () => {
       const mockAssetsResponse = {
         [mockEthChainIdAsHex]: [
           {
-            address: mockEthereumAddress as `0x${string}`,
-            balance: '0xDE0B6B3A7640000' as `0x${string}`,
+            address: mockEthereumAddress as Address,
+            balance: '0xDE0B6B3A7640000' as Hex,
             type: 'NATIVE' as const,
             metadata: {
               name: 'Ethereum',
@@ -411,8 +411,8 @@ describe('BalanceUtil', () => {
       const mockAssetsResponse = {
         [mockEthChainIdAsHex]: [
           {
-            address: mockEthereumAddress as `0x${string}`,
-            balance: '0xDE0B6B3A7640000' as `0x${string}`,
+            address: mockEthereumAddress as Address,
+            balance: '0xDE0B6B3A7640000' as Hex,
             type: 'NATIVE' as const,
             metadata: {
               name: 'Ethereum',

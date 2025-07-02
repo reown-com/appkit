@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -30,7 +30,6 @@ import {
 } from '../utils/PaymentUtil.js'
 
 const DEFAULT_PAGE = 0
-
 const DEFAULT_PAYMENT_ID = 'unknown'
 
 // -- Types --------------------------------------------- //
@@ -365,17 +364,17 @@ export const PayController = {
               state.paymentAsset,
               chainNamespace,
               {
-                recipient: state.recipient as `0x${string}`,
+                recipient: state.recipient as Address,
                 amount: state.amount,
-                fromAddress: address as `0x${string}`
+                fromAddress: address as Address
               }
             )
           }
           if (state.paymentAsset.asset.startsWith('0x')) {
             state.currentPayment.result = await processEvmErc20Payment(state.paymentAsset, {
-              recipient: state.recipient as `0x${string}`,
+              recipient: state.recipient as Address,
               amount: state.amount,
-              fromAddress: address as `0x${string}`
+              fromAddress: address as Address
             })
           }
           state.currentPayment.status = 'SUCCESS'

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
 import type { AdapterNetworkState, EstimateGasTransactionArgs } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
@@ -54,9 +54,9 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
@@ -99,9 +99,9 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     await expect(
@@ -126,9 +126,9 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     await expect(
@@ -149,9 +149,9 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)

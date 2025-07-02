@@ -3,10 +3,12 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
+  type Address,
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
+  type Hex,
   ParseUtil
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
@@ -111,8 +113,8 @@ export interface ConnectionControllerClient {
     pci: string
     permissions: unknown[]
     expiry: number
-    address: `0x${string}`
-  }) => Promise<`0x${string}`>
+    address: Address
+  }) => Promise<Hex>
   getCapabilities: (params: string) => Promise<unknown>
   walletGetAssets: (params: WalletGetAssetsParams) => Promise<WalletGetAssetsResponse>
   updateBalance: (chainNamespace: ChainNamespace) => void

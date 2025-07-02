@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { ChainController, ConnectorController } from '@reown/appkit-controllers'
 
 import '../../components/wui-icon/index.js'

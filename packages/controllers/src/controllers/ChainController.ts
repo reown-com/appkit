@@ -16,8 +16,7 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   AdapterNetworkState,
   ChainAdapter,
-  NetworkControllerClient,
-  PreferredAccountTypes
+  NetworkControllerClient
 } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'

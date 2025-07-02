@@ -9,6 +9,7 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
+  Hex,
   ParsedCaipAddress,
   SdkVersion
 } from '@reown/appkit-common'
@@ -754,7 +755,7 @@ export abstract class AppKitBaseClient {
 
         const result = await adapter?.writeContract({ ...args, caipNetwork, provider, caipAddress })
 
-        return result?.hash as `0x${string}` | null
+        return result?.hash as Hex | null
       },
       parseUnits: (value: string, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain)

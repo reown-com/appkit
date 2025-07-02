@@ -3,7 +3,7 @@ import { JsonRpcProvider } from 'ethers'
 import { type Mock, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
-import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
+import { type Address, ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -1121,14 +1121,12 @@ describe('EthersAdapter', () => {
     })
 
     it('should call wallet_revokePermissions', async () => {
-      vi.mocked(mockProvider.request).mockImplementation(() =>
-        Promise.resolve('0x123' as `0x${string}`)
-      )
+      vi.mocked(mockProvider.request).mockImplementation(() => Promise.resolve('0x123'))
 
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123' as `0x${string}`,
+        address: '0x123' as Address,
         permissions: ['eth_accounts']
       }
 
