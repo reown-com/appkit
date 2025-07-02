@@ -184,16 +184,21 @@ describe('SIWXUtil', () => {
 
       expect(mockSIWX.createMessage).toHaveBeenCalledWith({
         chainId: 'eip155:1',
-        accountAddress: ''
+        accountAddress: '<<AccountAddress>>'
       })
+      const completeSiwxMessage = {
+        ...mockSiwxMessage,
+        accountAddress: '0x1234567890123456789012345678901234567890',
+        serializedMessage: 'test message'
+      }
       expect(mockAuthConnector.connect).toHaveBeenCalledWith({
         chainId: 1,
         socialUri: 'test-uri',
-        siwxMessage: mockSiwxMessage,
+        siwxMessage: completeSiwxMessage,
         preferredAccountType: 'eoa'
       })
       expect(addEmbeddedWalletSessionSpy).toHaveBeenCalledWith(
-        mockSiwxMessage,
+        completeSiwxMessage,
         'test message',
         '0xsignature'
       )
