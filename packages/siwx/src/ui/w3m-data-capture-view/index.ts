@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   ChainController,
   OptionsController,
@@ -31,6 +32,8 @@ export class W3mDataCaptureView extends LitElement {
   @state() private isRequired =
     Array.isArray(OptionsController.state.remoteFeatures?.emailCapture) &&
     OptionsController.state.remoteFeatures?.emailCapture.includes('required')
+
+  @state() private recentEmails = this.getRecentEmails()
 
   public override firstUpdated() {
     if (!this.siwx || !(this.siwx instanceof CloudAuthSIWX)) {
@@ -91,6 +94,11 @@ export class W3mDataCaptureView extends LitElement {
       this.email = event.detail
     }
 
+    const recentEmailSelectHandler = (event: CustomEvent<string>) => {
+      this.email = event.detail
+      this.onSubmit()
+    }
+
     return html`
       <wui-flex flexDirection="column">
         <wui-email-input
@@ -105,6 +113,13 @@ export class W3mDataCaptureView extends LitElement {
           @change=${changeHandler}
         ></w3m-email-suffixes-widget>
       </wui-flex>
+
+      ${this.recentEmails.length > 0
+        ? html`<w3m-recent-emails-widget
+            .emails=${this.recentEmails}
+            @select=${recentEmailSelectHandler}
+          ></w3m-recent-emails-widget>`
+        : null}
     `
   }
 
@@ -150,6 +165,8 @@ export class W3mDataCaptureView extends LitElement {
         account
       })
 
+      this.pushRecentEmail(this.email)
+
       if (otp.uuid === null) {
         RouterController.replace('SIWXSignMessage')
       } else {
@@ -164,6 +181,19 @@ export class W3mDataCaptureView extends LitElement {
 
   private onSkip() {
     RouterController.replace('SIWXSignMessage')
+  }
+
+  private getRecentEmails() {
+    const recentEmails = SafeLocalStorage.getItem(SafeLocalStorageKeys.RECENT_EMAILS)
+    const parsedEmails = recentEmails ? recentEmails.split(',') : []
+
+    return parsedEmails.filter(email => /^\S+@\S+\.\S+$/u.test(email)).slice(0, 3)
+  }
+
+  private pushRecentEmail(email: string) {
+    const recentEmails = this.getRecentEmails()
+    const newEmails = Array.from(new Set([email, ...recentEmails])).slice(0, 3)
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_EMAILS, newEmails.join(','))
   }
 }
 
