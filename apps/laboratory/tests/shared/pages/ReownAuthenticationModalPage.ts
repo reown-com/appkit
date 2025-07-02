@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test'
 
-import { ModalPage } from './ModalPage'
+import { ModalWalletPage } from './ModalWalletPage'
 
-export class ReownAuthenticationModalPage extends ModalPage {
+export class ReownAuthenticationModalPage extends ModalWalletPage {
   get sessionAccountButton() {
     return this.page.getByTestId('reown-authentication-get-session-account-button')
   }

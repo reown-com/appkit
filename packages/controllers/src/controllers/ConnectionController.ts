@@ -446,22 +446,24 @@ const controller = {
       throw new Error(`No connector found for connection: ${connection.connectorId}`)
     }
 
-    const connectData = await ConnectionController.connectExternal(
-      {
-        id: connector.id,
-        type: connector.type,
-        provider: connector.provider,
-        address,
-        chain: namespace
-      },
-      namespace
-    )
+    if (!isAuthConnector) {
+      const connectData = await ConnectionController.connectExternal(
+        {
+          id: connector.id,
+          type: connector.type,
+          provider: connector.provider,
+          address,
+          chain: namespace
+        },
+        namespace
+      )
 
-    if (isAuthConnector && address) {
+      return connectData?.address
+    } else if (isAuthConnector && address) {
       await ConnectionController.handleAuthAccountSwitch({ address, namespace })
     }
 
-    return connectData?.address
+    return address
   },
 
   async handleDisconnectedConnection({

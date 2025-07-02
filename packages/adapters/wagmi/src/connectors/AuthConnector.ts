@@ -138,6 +138,7 @@ export function authConnector(parameters: AuthParameters) {
         chainId?: number
         isReconnecting?: boolean
         socialUri?: string
+        rpcUrl?: string
       } = {}
     ) {
       if (connectSocialPromise) {

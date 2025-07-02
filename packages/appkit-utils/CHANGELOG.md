@@ -1,5 +1,29 @@
 # @reown/appkit-utils
 
+## 1.7.12
+
+### Patch Changes
+
+- [#4525](https://github.com/reown-com/appkit/pull/4525) [`f17c13a`](https://github.com/reown-com/appkit/commit/f17c13a584ca121416d73eb65f8e02bf6f2a34b1) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates Bitcoin adapter's WalletStandardConnector to have switch network functionality from wallet's features
+
+- [#4595](https://github.com/reown-com/appkit/pull/4595) [`6ff6759`](https://github.com/reown-com/appkit/commit/6ff675996c52a46280370227165c532047f0fd63) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates balance fetch on Ethers and Ethers5 adapters to make sure to resolve promise to not block initialization
+
+- [#4551](https://github.com/reown-com/appkit/pull/4551) [`6c0a28b`](https://github.com/reown-com/appkit/commit/6c0a28b5c548d4524cba06e2048233d8d96982c3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where declining a SIWX signature showed an incorrect error message
+
+- [#4575](https://github.com/reown-com/appkit/pull/4575) [`3eae9b3`](https://github.com/reown-com/appkit/commit/3eae9b34dbe58760ee5d0bf585743f2f880e4392) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Adds supports for 1CA in Embedded Wallet flows
+
+- [#4570](https://github.com/reown-com/appkit/pull/4570) [`df78462`](https://github.com/reown-com/appkit/commit/df78462e0e72ca23459b8fdaa31406906a99d153) Thanks [@tomiir](https://github.com/tomiir)! - Add forwarding of custom RPC urls to be used in embedded wallet requests
+
+- [#4569](https://github.com/reown-com/appkit/pull/4569) [`a5870fa`](https://github.com/reown-com/appkit/commit/a5870fa6c87c9ce76bf1683543ddc325b04f0331) Thanks [@zoruka](https://github.com/zoruka)! - Introduce signOutOnDisconnect SIWXConfig flag and fix the same flag on SIWE that was not working properly.
+
+- [#4577](https://github.com/reown-com/appkit/pull/4577) [`2b5c17c`](https://github.com/reown-com/appkit/commit/2b5c17cc4dc938543371208994acba56e15dba6a) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where switching network using wagmi used the walletconnect rpc instead of wagmi rpc
+
+- Updated dependencies [[`f17c13a`](https://github.com/reown-com/appkit/commit/f17c13a584ca121416d73eb65f8e02bf6f2a34b1), [`22f7796`](https://github.com/reown-com/appkit/commit/22f77965d5c782b5bcf155caab41876e5c911629), [`6ff6759`](https://github.com/reown-com/appkit/commit/6ff675996c52a46280370227165c532047f0fd63), [`6c0a28b`](https://github.com/reown-com/appkit/commit/6c0a28b5c548d4524cba06e2048233d8d96982c3), [`3eae9b3`](https://github.com/reown-com/appkit/commit/3eae9b34dbe58760ee5d0bf585743f2f880e4392), [`df78462`](https://github.com/reown-com/appkit/commit/df78462e0e72ca23459b8fdaa31406906a99d153), [`a5870fa`](https://github.com/reown-com/appkit/commit/a5870fa6c87c9ce76bf1683543ddc325b04f0331), [`2b5c17c`](https://github.com/reown-com/appkit/commit/2b5c17cc4dc938543371208994acba56e15dba6a)]:
+  - @reown/appkit-common@1.7.12
+  - @reown/appkit-controllers@1.7.12
+  - @reown/appkit-polyfills@1.7.12
+  - @reown/appkit-wallet@1.7.12
+
 ## 1.7.11
 
 ### Patch Changes
