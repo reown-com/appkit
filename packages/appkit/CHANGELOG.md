@@ -1,5 +1,29 @@
 # @reown/appkit
 
+## 1.7.13
+
+### Patch Changes
+
+- [#4581](https://github.com/reown-com/appkit/pull/4581) [`37aa39c`](https://github.com/reown-com/appkit/commit/37aa39c03f4a67253ff9cf7517408293a512c941) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Add 127.0.0.1 to the allowlist for localhost IP address support
+
+- [#4600](https://github.com/reown-com/appkit/pull/4600) [`2d96652`](https://github.com/reown-com/appkit/commit/2d966523bb7d08218df00b9f333f00460f4c15a9) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes type castings and handles errors instead
+
+- [#4358](https://github.com/reown-com/appkit/pull/4358) [`f76135f`](https://github.com/reown-com/appkit/commit/f76135fe25588faf610def5f0c5a2a9af9c25b45) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades Valtio to v2
+
+- [#4602](https://github.com/reown-com/appkit/pull/4602) [`ac76c05`](https://github.com/reown-com/appkit/commit/ac76c0545bab7ab2457e5d27889abfe7472115e2) Thanks [@tomiir](https://github.com/tomiir)! - Updates Smart Sessions validator with audited OwnableValidator contract by Rhinestone
+
+- [#4492](https://github.com/reown-com/appkit/pull/4492) [`19d986f`](https://github.com/reown-com/appkit/commit/19d986fb0dbd15b14c5402c1e7aefdf364a3c908) Thanks [@zoruka](https://github.com/zoruka)! - Rename CloudAuthSIWX to ReownAuthentication keeping backwards compatibility.
+
+- Updated dependencies [[`37aa39c`](https://github.com/reown-com/appkit/commit/37aa39c03f4a67253ff9cf7517408293a512c941), [`2d96652`](https://github.com/reown-com/appkit/commit/2d966523bb7d08218df00b9f333f00460f4c15a9), [`f76135f`](https://github.com/reown-com/appkit/commit/f76135fe25588faf610def5f0c5a2a9af9c25b45), [`ac76c05`](https://github.com/reown-com/appkit/commit/ac76c0545bab7ab2457e5d27889abfe7472115e2), [`19d986f`](https://github.com/reown-com/appkit/commit/19d986fb0dbd15b14c5402c1e7aefdf364a3c908)]:
+  - @reown/appkit-utils@1.7.13
+  - @reown/appkit-common@1.7.13
+  - @reown/appkit-controllers@1.7.13
+  - @reown/appkit-pay@1.7.13
+  - @reown/appkit-polyfills@1.7.13
+  - @reown/appkit-scaffold-ui@1.7.13
+  - @reown/appkit-ui@1.7.13
+  - @reown/appkit-wallet@1.7.13
+
 ## 1.7.12
 
 ### Patch Changes
