@@ -83,3 +83,16 @@ export function getPreferredAccountType(namespace: ChainNamespace | undefined) {
 
   return preferredAccountType
 }
+
+/**
+ * Get the active CAIP network for a given chain namespace, if no namespace is provided, it returns the active CAIP network
+ * @param chainNamespace - The chain namespace to get the active CAIP network for
+ * @returns The active CAIP network
+ */
+export function getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
+  if (chainNamespace) {
+    return ChainController.state.chains.get(chainNamespace)?.networkState?.caipNetwork
+  }
+
+  return ChainController.state.activeCaipNetwork
+}

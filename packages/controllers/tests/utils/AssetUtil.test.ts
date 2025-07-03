@@ -64,10 +64,6 @@ beforeEach(() => {
 
 // -- Tests --------------------------------------------------------------------
 describe('AssetUtil', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should get the connector image from connector object', () => {
     // @ts-expect-error it's a partial connector object
     expect(AssetUtil.getConnectorImage(connectorWithImageUrl)).toBe(

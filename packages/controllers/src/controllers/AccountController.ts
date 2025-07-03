@@ -101,7 +101,11 @@ const controller = {
   },
 
   getCaipAddress(chain: ChainNamespace | undefined) {
-    return ChainController.getAccountProp('caipAddress', chain)
+    if (!chain) {
+      return undefined
+    }
+
+    return ChainController.state.chains.get(chain)?.accountState?.caipAddress
   },
 
   setCaipAddress(
@@ -167,13 +171,21 @@ const controller = {
   },
 
   addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.set(address, label)
     ChainController.setAccountProp('addressLabels', map, chain)
   },
 
   removeAddressLabel(address: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.delete(address)
     ChainController.setAccountProp('addressLabels', map, chain)
   },

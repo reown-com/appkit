@@ -58,7 +58,6 @@ describe('BitcoinAdapter', () => {
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient
     })
     ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
-    vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([bitcoin])
   })
 
   describe('constructor', () => {

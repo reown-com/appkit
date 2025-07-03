@@ -1,10 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-  type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil,
-  ConstantsUtil
-} from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
 import {
@@ -22,6 +18,7 @@ import {
   useAppKitNetworkCore,
   useDisconnect
 } from '../../exports/react.js'
+import { extendedMainnet } from '../../exports/testing.js'
 import { AssetUtil } from '../../exports/utils.js'
 import { ConnectionControllerUtil } from '../../src/utils/ConnectionControllerUtil.js'
 
@@ -44,35 +41,11 @@ describe('useAppKitNetwork', () => {
   })
 
   it('should return the correct network state', () => {
-    const mockNetwork: CaipNetwork = {
-      id: 1,
-      name: 'Ethereum',
-      assets: {
-        imageId: 'ethereum',
-        imageUrl: ''
-      },
-      caipNetworkId: 'eip155:1',
-      chainNamespace: 'eip155',
-      nativeCurrency: {
-        name: 'Ethereum',
-        decimals: 18,
-        symbol: 'ETH'
-      },
-      rpcUrls: {
-        default: {
-          http: ['']
-        }
-      }
-    }
-
-    // Mock the useSnapshot hook
-    useSnapshot.mockReturnValue({
-      activeCaipNetwork: mockNetwork
-    })
+    useSnapshot.mockReturnValue({ activeCaipNetwork: extendedMainnet })
 
     const { caipNetwork, chainId } = useAppKitNetworkCore()
 
-    expect(caipNetwork).toBe(mockNetwork)
+    expect(caipNetwork).toBe(extendedMainnet)
     expect(chainId).toBe(1)
     expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
   })

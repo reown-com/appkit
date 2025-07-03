@@ -80,7 +80,6 @@ describe('OptionsController', () => {
   })
 
   it('should set remoteFeatures and call OptionsUtil.filterSocialsByPlatform if socials data exists', () => {
-    vi.clearAllMocks()
     const socialProviders = ['google' as SocialProvider]
     const filteredSocialProviders = ['google' as SocialProvider]
     vi.mocked(OptionsUtil.filterSocialsByPlatform).mockReturnValue(filteredSocialProviders)

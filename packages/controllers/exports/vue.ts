@@ -3,7 +3,6 @@ import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
-import { AccountController } from '../src/controllers/AccountController.js'
 import { AlertController } from '../src/controllers/AlertController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
@@ -93,10 +92,10 @@ export function useAppKitAccount(options?: {
     const authConnector = _chainNamespace
       ? ConnectorController.getAuthConnector(_chainNamespace)
       : undefined
-    const accountState = _chainNamespace
-      ? _chains.get(_chainNamespace)?.accountState
-      : AccountController.state
     const activeChainNamespace = _chainNamespace || ChainController.state.activeChain
+    const accountState = activeChainNamespace
+      ? _chains.get(activeChainNamespace)?.accountState
+      : undefined
 
     state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
     state.value.caipAddress = accountState?.caipAddress

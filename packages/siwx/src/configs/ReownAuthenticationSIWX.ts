@@ -9,10 +9,10 @@ import {
   AccountController,
   ApiController,
   BlockchainApiController,
-  ChainController,
   type SIWXConfig,
   type SIWXMessage,
-  type SIWXSession
+  type SIWXSession,
+  getActiveCaipNetwork
 } from '@reown/appkit-controllers'
 import { ConstantsUtil as AppKitConstantUtil } from '@reown/appkit-utils'
 
@@ -112,7 +112,7 @@ export class ReownAuthentication implements SIWXConfig {
       this.clearStorageTokens()
     } else {
       const session = (sessions.find(
-        s => s.data.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
+        s => s.data.chainId === getActiveCaipNetwork()?.caipNetworkId
       ) || sessions[0]) as SIWXSession
 
       await this.addSession(session)
