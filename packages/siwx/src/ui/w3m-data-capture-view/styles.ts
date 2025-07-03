@@ -1,6 +1,29 @@
 import { css } from 'lit'
 
 export default css`
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 56px;
+    padding-top: 112px;
+    transition: padding var(--wui-ease-out-power-1) var(--wui-duration-lg);
+
+    &[data-state='loading'] {
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+  }
+
+  .hero-main-icon {
+    width: 176px;
+    transition: width var(--wui-ease-out-power-1) var(--wui-duration-lg);
+
+    &[data-state='loading'] {
+      width: 56px;
+    }
+  }
+
   .email-sufixes {
     display: flex;
     flex-direction: row;
@@ -19,15 +42,7 @@ export default css`
   }
 
   .recent-emails-heading {
-    font-family: Inter;
-    font-weight: 600;
-    font-size: 10px;
-    line-height: 130%;
-    letter-spacing: 2%;
-    vertical-align: middle;
-    text-transform: uppercase;
     margin-bottom: 12px;
-    color: var(--wui-color-fg-200);
   }
 
   .recent-emails-list-item {

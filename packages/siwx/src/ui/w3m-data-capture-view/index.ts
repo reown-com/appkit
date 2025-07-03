@@ -25,7 +25,7 @@ export class W3mDataCaptureView extends LitElement {
 
   @state() private loading = false
 
-  @state() private appName = OptionsController.state.metadata?.name ?? 'This app'
+  @state() private appName = OptionsController.state.metadata?.name ?? 'AppKit'
 
   @state() private siwx = OptionsController.state.siwx as CloudAuthSIWX
 
@@ -48,34 +48,65 @@ export class W3mDataCaptureView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" .padding=${['3xs', 'm', 'm', 'm'] as const} gap="l">
-        ${this.paragraph()} ${this.emailInput()} ${this.footerActions()}
+        ${this.hero()} ${this.paragraph()} ${this.emailInput()} ${this.footerActions()}
       </wui-flex>
+    `
+  }
+
+  private hero() {
+    return html`
+      <div class="hero" data-state=${this.loading ? 'loading' : 'default'}>
+        <wui-icon-box
+          size="xl"
+          iconSize="2xl"
+          iconColor=${this.loading ? 'fg-100' : 'accent-100'}
+          backgroundColor=${this.loading ? 'fg-100' : 'accent-100'}
+          icon=${this.loading ? 'id' : 'id'}
+          isOpaque
+          class="hero-main-icon"
+          data-state=${this.loading ? 'loading' : 'default'}
+        >
+        </wui-icon-box>
+      </div>
     `
   }
 
   private paragraph() {
     if (this.loading) {
       return html`
-        <wui-text variant="paragraph-400" color="fg-100" align="center"
-          >We are verifying your account with email <b>${this.email}</b> and address
-          <b
-            >${UiHelperUtil.getTruncateString({
+        <wui-text variant="paragraph-400" color="fg-200" align="center"
+          >We are verifying your account with email
+          <wui-text variant="paragraph-600" color="accent-100">${this.email}</wui-text> and address
+          <wui-text variant="paragraph-600" color="fg-100">
+            ${UiHelperUtil.getTruncateString({
               string: this.address,
               charsEnd: 4,
               charsStart: 4,
               truncate: 'middle'
-            })}</b
+            })} </wui-text
           >, please wait a moment.</wui-text
         >
       `
     }
 
+    if (this.isRequired) {
+      return html`
+        <wui-text variant="paragraph-600" color="fg-100" align="center">
+          ${this.appName} requires your email for authentication.
+        </wui-text>
+      `
+    }
+
     return html`
-      <wui-text variant="paragraph-400" color="fg-100" align="center">
-        ${this.isRequired
-          ? `${this.appName} requires your email for authentication.`
-          : `${this.appName} is requesting your email for authentication.`}
-      </wui-text>
+      <wui-flex flexDirection="column" gap="xs" alignItems="center">
+        <wui-text variant="paragraph-600" color="fg-100" align="center" size>
+          ${this.appName} would like to collect your email.
+        </wui-text>
+
+        <wui-text variant="small-400" color="fg-200" align="center">
+          Don't worry, it's optional&mdash;you can skip this step.
+        </wui-text>
+      </wui-flex>
     `
   }
 
@@ -172,6 +203,11 @@ export class W3mDataCaptureView extends LitElement {
       } else {
         RouterController.replace('DataCaptureOtpConfirm', { email: this.email })
       }
+
+      await new Promise(resolve => {
+        // Wait for view transition
+        setTimeout(resolve, 300)
+      })
     } catch (error) {
       SnackController.showError('Failed to send email OTP')
     } finally {

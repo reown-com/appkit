@@ -17,7 +17,9 @@ export class W3mRecentEmailsWidget extends LitElement {
     }
 
     return html`<div class="recent-emails">
-      <span class="recent-emails-heading">Recently used emails</span>
+      <wui-text variant="micro-600" color="fg-200" class="recent-emails-heading"
+        >Recently used emails</wui-text
+      >
       ${this.emails.map(this.item.bind(this))}
     </div>`
   }
