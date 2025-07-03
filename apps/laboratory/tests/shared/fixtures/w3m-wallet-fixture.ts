@@ -51,7 +51,7 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
     timeEnd('modalPage.getConnectUri')
 
     timeStart('walletPage.connectWithUri')
-    await walletPage.connectWithUri(uri, 'eip155')
+    await walletPage.connectWithUri(uri)
     timeEnd('walletPage.connectWithUri')
 
     const connectionInitiated = new Date()
@@ -93,7 +93,7 @@ export const testMWMultiChain = multiChain.extend<ModalWalletFixture>({
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
     const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri, 'eip155')
+    await walletPage.connectWithUri(uri)
     await modalValidator.expectConnected()
     await use(walletPage)
   },

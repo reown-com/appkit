@@ -21,9 +21,6 @@ let walletPage: WalletPage
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
-// -- Constants ----------------------------------------------------------------
-const NAMESPACE = 'eip155'
-
 // -- Setup --------------------------------------------------------------------
 const sampleWalletTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
@@ -44,7 +41,6 @@ sampleWalletTest.beforeAll(async ({ browser, library }) => {
   await modalPage.qrCodeFlow({
     page: modalPage,
     walletPage,
-    namespace: NAMESPACE,
     disabledChainIds: [gnosis.id, solanaNotExist.id]
   })
   await modalValidator.expectConnected()
@@ -216,8 +212,7 @@ sampleWalletTest('it should disconnect and connect to a single account', async (
   walletPage.setConnectToSingleAccount(true)
   await modalPage.qrCodeFlow({
     page: modalPage,
-    walletPage,
-    namespace: NAMESPACE
+    walletPage
   })
   await modalPage.openAccount()
   await modalValidator.expectSingleAccount()
@@ -236,8 +231,7 @@ sampleWalletTest(
     await modalValidator.expectDisconnected()
     await modalPage.qrCodeFlow({
       page: modalPage,
-      walletPage,
-      namespace: NAMESPACE
+      walletPage
     })
     await walletPage.switchNetwork('eip155:5')
     await modalValidator.expectNetworkNotSupportedVisible()
@@ -262,8 +256,7 @@ sampleWalletTest(
 
     await modalPage.qrCodeFlow({
       page: modalPage,
-      walletPage,
-      namespace: NAMESPACE
+      walletPage
     })
     await modalValidator.expectConnected()
     await modalPage.openModal()
@@ -280,8 +273,7 @@ sampleWalletTest('it should connect and disconnect using hook', async () => {
   await modalValidator.expectDisconnected()
   await modalPage.qrCodeFlow({
     page: modalPage,
-    walletPage,
-    namespace: NAMESPACE
+    walletPage
   })
   await modalValidator.expectConnected()
   await modalPage.clickHookDisconnectButton()
@@ -291,8 +283,7 @@ sampleWalletTest('it should connect and disconnect using hook', async () => {
 sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
   await modalPage.qrCodeFlow({
     page: modalPage,
-    walletPage,
-    namespace: NAMESPACE
+    walletPage
   })
   await modalValidator.expectConnected()
   await modalPage.openModal()
@@ -316,8 +307,7 @@ sampleWalletTest('it should display wallet guide and show explore option', async
 sampleWalletTest('it should disconnect as expected', async () => {
   await modalPage.qrCodeFlow({
     page: modalPage,
-    walletPage,
-    namespace: NAMESPACE
+    walletPage
   })
   await modalValidator.expectConnected()
   await modalPage.disconnect()

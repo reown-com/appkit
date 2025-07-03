@@ -5,7 +5,6 @@ import { expect } from '@playwright/test'
 import 'crypto'
 
 import type { WalletFeature } from '@reown/appkit'
-import type { ChainNamespace } from '@reown/appkit-common'
 import { WalletPage } from '@reown/appkit-testing'
 import { BASE_URL, EXTENSION_NAME, EXTENSION_RDNS } from '@reown/appkit-testing'
 
@@ -62,7 +61,6 @@ interface QrCodeFlowOptions {
   page: ModalPage
   walletPage: WalletPage
   qrCodeFlowType?: 'immediate-connect' | 'immediate'
-  namespace: ChainNamespace
   disabledChainIds?: (string | number)[]
 }
 
@@ -195,7 +193,6 @@ export class ModalPage {
     page,
     walletPage,
     qrCodeFlowType,
-    namespace,
     disabledChainIds = []
   }: QrCodeFlowOptions): Promise<void> {
     // eslint-disable-next-line init-declarations
@@ -208,7 +205,7 @@ export class ModalPage {
     } else {
       uri = await page.getConnectUri()
     }
-    await walletPage.connectWithUri(uri, namespace, disabledChainIds)
+    await walletPage.connectWithUri(uri, disabledChainIds)
   }
 
   async emailFlow({

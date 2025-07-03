@@ -1,5 +1,7 @@
 import { Keypair } from '@solana/web3.js'
 import * as bitcoin from 'bitcoinjs-lib'
+import bitcoinMessage from 'bitcoinjs-message'
+import bs58 from 'bs58'
 import ECPairFactory from 'ecpair'
 import * as ecc from 'tiny-secp256k1'
 import nacl from 'tweetnacl'
@@ -11,9 +13,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 
 bitcoin.initEccLib(ecc)
 
-// eslint-disable-next-line new-cap
-const ECPair = ECPairFactory(ecc)
-
+// -- Types -------------------------------------------- //
 interface WalletManagerOptions {
   namespaces: ChainNamespace[]
 }
@@ -24,16 +24,20 @@ interface Account {
 
 interface Connection {
   accounts: Account[]
-  signMessage: (message: string) => Promise<string | Uint8Array>
+  signMessage: (message: string) => Promise<string>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signTypedData: (data: any) => Promise<string>
 }
 
+// -- Utils & Others ---------------------------------------- //
 function toBitcoinAddress(pair: ReturnType<typeof ECPair.makeRandom>): string {
   const address = bitcoin.payments.p2wpkh({ pubkey: Buffer.from(pair.publicKey) })?.address
 
   return address ?? ''
 }
+
+// eslint-disable-next-line new-cap
+const ECPair = ECPairFactory(ecc)
 
 export class WalletManager {
   private connections = new Map<ChainNamespace, Connection>()
@@ -70,8 +74,9 @@ export class WalletManager {
             signMessage: message => {
               const messageBytes = new TextEncoder().encode(message)
               const signature = nacl.sign.detached(messageBytes, acc.secretKey)
+              const signatureBase58 = bs58.encode(Buffer.from(signature))
 
-              return Promise.resolve(signature)
+              return Promise.resolve(signatureBase58)
             },
             signTypedData: () => {
               throw new Error('signTypedData not supported for bip122')
@@ -90,9 +95,20 @@ export class WalletManager {
               { address: toBitcoinAddress(secondAcc) }
             ],
             signMessage: message => {
-              const hash = bitcoin.crypto.sha256(Buffer.from(message))
+              const keyPair = ECPair.fromPrivateKey(acc.privateKey as Uint8Array)
+              const pKey = keyPair.privateKey as Uint8Array
+              const messageBuffer = new TextEncoder().encode(message)
 
-              return Promise.resolve(acc.sign(hash))
+              const signature = bitcoinMessage.sign(
+                messageBuffer as Buffer,
+                Buffer.from(pKey),
+                keyPair.compressed,
+                {
+                  segwitType: 'p2wpkh'
+                }
+              )
+
+              return Promise.resolve(bs58.encode(Buffer.from(signature)))
             },
             signTypedData: () => {
               throw new Error('signTypedData not supported for bip122')
@@ -129,7 +145,7 @@ export class WalletManager {
       : connection.accounts.map(a => a.address)
   }
 
-  async signMessage(namespace: ChainNamespace, message: string) {
+  async signMessage(message: string, namespace: ChainNamespace) {
     const connection = this.connections.get(namespace)
 
     if (!connection) {
@@ -139,7 +155,7 @@ export class WalletManager {
     return connection.signMessage(message)
   }
 
-  async signTypedData(namespace: ChainNamespace, typedData: string) {
+  async signTypedData(typedData: string, namespace: ChainNamespace) {
     const connection = this.connections.get(namespace)
 
     if (!connection) {

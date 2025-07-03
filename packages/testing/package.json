@@ -22,6 +22,7 @@
     "@reown/appkit-common": "workspace:*"
   },
   "devDependencies": {
+    "@json-rpc-tools/utils": "1.7.6",
     "@playwright/test": "1.48.2",
     "@reown/walletkit": "1.2.8",
     "@solana/web3.js": "1.98.0",
@@ -32,6 +33,8 @@
     "@walletconnect/universal-provider": "2.21.3",
     "@walletconnect/utils": "2.21.3",
     "bitcoinjs-lib": "^6.1.7",
+    "bitcoinjs-message": "2.2.0",
+    "bs58": "6.0.0",
     "dotenv": "16.4.7",
     "ecpair": "3.0.0",
     "sinon": "^21.0.0",

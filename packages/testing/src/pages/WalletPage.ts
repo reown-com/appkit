@@ -1,14 +1,27 @@
 /* eslint-disable no-await-in-loop */
+import { formatJsonRpcResult } from '@json-rpc-tools/utils'
 import { type Page } from '@playwright/test'
 import { type BuildApprovedNamespacesParams, getSdkError } from '@walletconnect/utils'
 import { fromHex } from 'viem'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { DEFAULT_METHODS } from '@reown/appkit'
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import type { WalletKitTypes } from '@reown/walletkit'
 
 import { WalletManager } from '../managers/wallet.js'
 import { WalletKitManager } from '../managers/walletkit.js'
 
+// -- Constants ----------------------------------------------------------------
 const namespaces: ChainNamespace[] = ['eip155', 'solana', 'bip122']
+
+// -- Types --------------------------------------------------------------------
+type BuildNamespaceParameters = {
+  namespace: ChainNamespace
+  params: WalletKitTypes.SessionProposal['params']
+  disabledIds: string[]
+  walletManager: WalletManager
+  connectToSingleAccount: boolean
+}
 
 export class WalletPage {
   public connectToSingleAccount = false
@@ -37,89 +50,26 @@ export class WalletPage {
    * Connect by inserting provided URI into the input element
    */
 
-  async connectWithUri(uri: string, disabledChainIds: (string | number)[]) {
-    if (!this.walletKitManager) {
+  async connectWithUri(uri: string, disabledChainIds: (string | number)[] = []) {
+    const walletKitManager = this.walletKitManager
+    const walletManager = this.walletManager
+
+    if (!walletKitManager) {
       throw new Error('WalletKitManager not initialized')
     }
 
+    if (!walletManager) {
+      throw new Error('WalletManager not initialized')
+    }
+
     return new Promise((resolve, reject) => {
-      this.walletKitManager?.listenEvents({
-        onSessionProposal: async ({ id, params }) => {
-          const optionalNamespaces: Record<
-            ChainNamespace,
-            BuildApprovedNamespacesParams['supportedNamespaces']
-          > = {}
-
-          for (const namespace of namespaces) {
-            const optionalNamespaceProperties =
-              params.optionalNamespaces?.[namespace as keyof typeof params.optionalNamespaces]
-
-            const accounts =
-              this.walletManager?.getAccounts(namespace, this.connectToSingleAccount) ?? []
-            const chains = optionalNamespaceProperties?.chains ?? []
-
-            const filteredChains = chains.filter(chain => {
-              const chainId = chain.split(':')[1]
-
-              if (chainId) {
-                return !disabledChainIds.map(_chainId => _chainId.toString()).includes(chainId)
-              }
-
-              return true
-            })
-
-            const accountsWithChains = accounts.flatMap(account =>
-              filteredChains.map(chain => `${chain}:${account}`)
-            )
-
-            optionalNamespaces[namespace] = {
-              ...optionalNamespaceProperties,
-              chains: filteredChains,
-              accounts: accountsWithChains
-            }
-          }
-
-          await this.walletKitManager
-            ?.approveSession({
-              id,
-              params,
-              namespaces: optionalNamespaces
-            })
-            .then(resolve)
-            .catch(reject)
-        },
-        onSessionRequest: async event => {
-          const { topic, params, id } = event
-
-          const walletKit = this.walletKitManager?.getWalletKit()
-
-          if (this.shouldRejectSigning) {
-            await walletKit?.respondSessionRequest({
-              topic,
-              response: {
-                id,
-                jsonrpc: '2.0',
-                error: {
-                  code: 5000,
-                  message: 'User rejected.'
-                }
-              }
-            })
-          } else {
-            const { request } = params
-
-            const message = fromHex(request.params[0], 'string')
-
-            const signedMessage = await this.walletManager?.signMessage(message)
-
-            const response = { id, result: signedMessage, jsonrpc: '2.0' }
-
-            await walletKit?.respondSessionRequest({ topic, response })
-          }
-        }
+      walletKitManager.listenEvents({
+        onSessionProposal: async event =>
+          this.onSessionProposal(event, disabledChainIds).then(resolve).catch(reject),
+        onSessionRequest: event => this.onSessionRequest(event)
       })
 
-      this.walletKitManager?.pair(uri).catch(reject)
+      walletKitManager.pair(uri).catch(reject)
     })
   }
 
@@ -146,7 +96,14 @@ export class WalletPage {
       throw new Error('Invalid chainId')
     }
 
-    const [address] = this.walletManager.getAccounts()
+    const [address] = this.walletManager.getAccounts(
+      namespace as ChainNamespace,
+      this.connectToSingleAccount
+    )
+
+    if (!address) {
+      throw new Error('No address found')
+    }
 
     const caipAddress = `${network}:${address}`
 
@@ -223,5 +180,154 @@ export class WalletPage {
    */
   setConnectToSingleAccount(connectToSingleAccount: boolean) {
     this.connectToSingleAccount = connectToSingleAccount
+  }
+
+  private async onSessionRequest(event: WalletKitTypes.SessionRequest) {
+    const walletKitManager = this.walletKitManager
+    const walletManager = this.walletManager
+
+    if (!walletKitManager) {
+      throw new Error('WalletKitManager not initialized')
+    }
+
+    if (!walletManager) {
+      throw new Error('WalletManager not initialized')
+    }
+
+    const { topic, id } = event
+
+    const walletKit = walletKitManager.getWalletKit()
+
+    if (this.shouldRejectSigning) {
+      return walletKit.respondSessionRequest({
+        topic,
+        response: {
+          id,
+          jsonrpc: '2.0',
+          error: {
+            code: 5000,
+            message: 'User rejected'
+          }
+        }
+      })
+    }
+
+    const response = await this.handleSessionRequest(id, event)
+
+    await walletKit.respondSessionRequest({
+      topic,
+      response
+    })
+
+    return null
+  }
+
+  async onSessionProposal(
+    event: WalletKitTypes.SessionProposal,
+    disabledChainIds: (string | number)[]
+  ) {
+    const walletKitManager = this.walletKitManager
+    const walletManager = this.walletManager
+
+    if (!walletKitManager) {
+      throw new Error('WalletKitManager not initialized')
+    }
+
+    if (!walletManager) {
+      throw new Error('WalletManager not initialized')
+    }
+
+    const { params, id } = event
+
+    const optionalNamespaces: Partial<
+      Record<ChainNamespace, BuildApprovedNamespacesParams['supportedNamespaces'][string]>
+    > = {}
+
+    for (const namespace of namespaces) {
+      optionalNamespaces[namespace] = this.buildNamespaceForSessionProposal({
+        namespace,
+        params,
+        disabledIds: [...new Set(disabledChainIds.map(chainId => chainId.toString()))],
+        walletManager,
+        connectToSingleAccount: this.connectToSingleAccount
+      })
+    }
+
+    await walletKitManager.approveSession({
+      id,
+      params,
+      namespaces: optionalNamespaces as BuildApprovedNamespacesParams['supportedNamespaces']
+    })
+
+    return null
+  }
+
+  private async handleSessionRequest(id: number, event: WalletKitTypes.SessionRequest) {
+    const walletManager = this.walletManager
+
+    if (!walletManager) {
+      throw new Error('WalletManager not initialized')
+    }
+
+    const { request } = event.params
+
+    const method = request.method
+
+    if (DEFAULT_METHODS.eip155.includes(method)) {
+      const message = fromHex(request.params[0], 'string')
+      const signed = await walletManager.signMessage(message, ConstantsUtil.CHAIN.EVM)
+
+      return formatJsonRpcResult(id, signed)
+    }
+
+    if (DEFAULT_METHODS.solana.includes(method)) {
+      const message = request.params.message as string
+      const signed = await walletManager.signMessage(message, ConstantsUtil.CHAIN.SOLANA)
+
+      return formatJsonRpcResult(id, { signature: signed })
+    }
+
+    if (DEFAULT_METHODS.bip122.includes(method)) {
+      const message = request.params[0] as string
+      const signed = await walletManager.signMessage(message, ConstantsUtil.CHAIN.BITCOIN)
+      const address = walletManager.getAddress(ConstantsUtil.CHAIN.BITCOIN)
+
+      return formatJsonRpcResult(id, { signature: signed, address })
+    }
+
+    throw new Error(`Unsupported method: ${method}`)
+  }
+
+  private buildNamespaceForSessionProposal({
+    namespace,
+    params,
+    disabledIds,
+    walletManager,
+    connectToSingleAccount
+  }: BuildNamespaceParameters) {
+    const namespaceProperties = params.optionalNamespaces?.[namespace] ?? {
+      chains: [],
+      methods: [],
+      events: []
+    }
+
+    const accounts = walletManager.getAccounts(namespace, connectToSingleAccount)
+
+    const filteredChains =
+      namespaceProperties.chains?.filter(chain => {
+        const chainId = chain.split(':')[1]
+
+        return chainId ? !disabledIds.includes(chainId) : true
+      }) ?? []
+
+    const accountsWithChains = accounts.flatMap(account =>
+      filteredChains.map(chain => `${chain}:${account}`)
+    )
+
+    return {
+      ...namespaceProperties,
+      chains: filteredChains,
+      accounts: accountsWithChains
+    }
   }
 }
