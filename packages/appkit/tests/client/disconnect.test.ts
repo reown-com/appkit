@@ -2,7 +2,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ConnectionController,
   ConnectorController,
@@ -181,7 +181,7 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should set loading to false even if operations fail', async () => {
-      const chainNamespace = 'eip155' as ChainNamespace
+      const chainNamespace = CommonConstantsUtil.CHAIN.EVM
       const error = new Error('Test error')
 
       vi.spyOn(SIWXUtil, 'clearSessions').mockRejectedValue(error)
@@ -243,7 +243,7 @@ describe('AppKit - disconnect', () => {
       expect(mockSolanaAdapter.disconnect).toHaveBeenCalledWith({ id: undefined })
     })
 
-    it.only('should handle disconnect when connected via WalletConnect', async () => {
+    it('should handle disconnect when connected via WalletConnect', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
       const mockProvider = { disconnect: vi.fn(), id: 'walletConnect' }
 
@@ -280,7 +280,7 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should handle disconnect when connected via announced connector', async () => {
-      const chainNamespace = 'eip155' as ChainNamespace
+      const chainNamespace = CommonConstantsUtil.CHAIN.EVM
       const mockProvider = { disconnect: vi.fn(), id: 'mockConnector' }
 
       vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
@@ -299,8 +299,8 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should properly cleanup state across multiple disconnect operations', async () => {
-      const firstNamespace = 'eip155' as ChainNamespace
-      const secondNamespace = 'solana' as ChainNamespace
+      const firstNamespace = CommonConstantsUtil.CHAIN.EVM
+      const secondNamespace = CommonConstantsUtil.CHAIN.SOLANA
       const mockProvider = { disconnect: vi.fn() }
 
       vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
@@ -397,8 +397,8 @@ describe('AppKit - disconnect - functional scenarios', () => {
   })
 
   it('should properly handle disconnect of all connected chains', async () => {
-    const eip155Namespace = 'eip155' as ChainNamespace
-    const solanaNamespace = 'solana' as ChainNamespace
+    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
+    const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
 
     await (appKit as any).connectionControllerClient.disconnect({ chainNamespace: eip155Namespace })
     await (appKit as any).connectionControllerClient.disconnect({ chainNamespace: solanaNamespace })
@@ -509,8 +509,8 @@ describe('AppKit - disconnect - error handling scenarios', () => {
   })
 
   it('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
-    const eip155Namespace = 'eip155' as ChainNamespace
-    const solanaNamespace = 'solana' as ChainNamespace
+    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
+    const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
     const solanaAdapterError = new Error('Solana adapter failed') // Corrected error message for clarity
 
     const mockEip155Provider = { disconnect: vi.fn().mockResolvedValue(undefined) }

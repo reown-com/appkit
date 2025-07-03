@@ -2,6 +2,7 @@ import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
 import type { Provider } from '@reown/appkit-utils/solana'
 
@@ -62,7 +63,8 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
   }
 
   beforeAll(() => {
-    ChainController.state.chains.set('solana', {
+    ChainController.state.chains.set(ConstantsUtil.CHAIN.SOLANA, {
+      namespace: ConstantsUtil.CHAIN.SOLANA,
       accountState: {
         address: TestConstants.accounts[0].address,
         currentTab: 0,

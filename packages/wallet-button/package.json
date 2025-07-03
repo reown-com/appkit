@@ -42,7 +42,7 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.3.0",
-    "valtio": "1.13.2"
+    "valtio": "2.1.5"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",

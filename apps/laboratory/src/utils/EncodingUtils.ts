@@ -1,5 +1,7 @@
 import bs58 from 'bs58'
 
+import type { Address } from '@reown/appkit-common'
+
 const PUBLIC_KEY_PREFIX = 0x04
 const PUBLIC_KEY_LENGTH = 65
 
@@ -69,7 +71,7 @@ export function decodeDIDToPublicKey(did: string): {
   const keyType = didPrefixToKeyType[matchingPrefix]
 
   return {
-    key: formattedPublicKey as `0x${string}`,
+    key: formattedPublicKey as Address,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     keyType: keyType!
   }

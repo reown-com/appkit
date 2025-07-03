@@ -61,7 +61,7 @@
     "@wallet-standard/base": "1.1.0",
     "@wallet-standard/features": "1.1.0",
     "@walletconnect/universal-provider": "2.21.3",
-    "valtio": "1.13.2"
+    "valtio": "2.1.5"
   },
   "optionalDependencies": {
     "borsh": "0.7.0",

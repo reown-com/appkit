@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
 import {
@@ -248,7 +248,7 @@ describe('useAppKitConnections', () => {
       name: 'Ethereum',
 
       caipNetworkId: 'eip155:1',
-      chainNamespace: 'eip155' as ChainNamespace
+      chainNamespace: ConstantsUtil.CHAIN.EVM
     }
   } as unknown as Connection
 

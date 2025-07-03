@@ -1,11 +1,13 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import {
+  type Address,
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
+  type Hex,
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 import {
@@ -482,9 +484,7 @@ export abstract class AdapterBlueprint<
     params: AdapterBlueprint.GrantPermissionsParams
   ): Promise<unknown>
 
-  public abstract revokePermissions(
-    params: AdapterBlueprint.RevokePermissionsParams
-  ): Promise<`0x${string}`>
+  public abstract revokePermissions(params: AdapterBlueprint.RevokePermissionsParams): Promise<Hex>
 
   public abstract walletGetAssets(
     params: AdapterBlueprint.WalletGetAssetsParams
@@ -825,21 +825,21 @@ export namespace AdapterBlueprint {
     pci: string
     permissions: unknown[]
     expiry: number
-    address: `0x${string}`
+    address: CaipAddress
   }
 
   export type WalletGetAssetsParams = {
-    account: `0x${string}`
-    assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+    account: Address
+    assetFilter?: Record<Address, (Address | 'native')[]>
     assetTypeFilter?: ('NATIVE' | 'ERC20')[]
-    chainFilter?: `0x${string}`[]
+    chainFilter?: Address[]
   }
 
   export type WalletGetAssetsResponse = Record<
-    `0x${string}`,
+    Address,
     {
-      address: `0x${string}` | 'native'
-      balance: `0x${string}`
+      address: Address | 'native'
+      balance: Hex
       type: 'NATIVE' | 'ERC20'
       metadata: Record<string, unknown>
     }[]

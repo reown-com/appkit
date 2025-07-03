@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { App } from 'vue'
 import { createApp, nextTick } from 'vue'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
   type AuthConnector,
@@ -350,7 +350,7 @@ describe('useAppKitConnection', () => {
   })
 
   it('should return current connection and connection state', async () => {
-    const mockConnections = new Map([['eip155' as ChainNamespace, [mockConnection]]])
+    const mockConnections = new Map([[ConstantsUtil.CHAIN.EVM, [mockConnection]]])
 
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(mockConnections)
@@ -507,8 +507,8 @@ describe('useAppKitConnection', () => {
 
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
       new Map([
-        ['eip155' as ChainNamespace, [mockConnection]],
-        ['solana' as ChainNamespace, [solanaConnection]]
+        [ConstantsUtil.CHAIN.EVM, [mockConnection]],
+        [ConstantsUtil.CHAIN.SOLANA, [solanaConnection]]
       ])
     )
     vi.spyOn(ConnectorController.state, 'activeConnectorIds', 'get').mockReturnValue({
@@ -546,7 +546,7 @@ describe('useAppKitConnection', () => {
   })
 
   it('should return undefined connection when no matching connector found', () => {
-    const mockConnections = new Map([['eip155' as ChainNamespace, [mockConnection]]])
+    const mockConnections = new Map([[ConstantsUtil.CHAIN.EVM, [mockConnection]]])
 
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(mockConnections)
@@ -562,7 +562,7 @@ describe('useAppKitConnection', () => {
 
   it('should handle case-insensitive connector matching', () => {
     const upperCaseConnection = { ...mockConnection, connectorId: 'TEST-CONNECTOR' }
-    const mockConnections = new Map([['eip155' as ChainNamespace, [upperCaseConnection]]])
+    const mockConnections = new Map([[ConstantsUtil.CHAIN.EVM, [upperCaseConnection]]])
 
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(mockConnections)

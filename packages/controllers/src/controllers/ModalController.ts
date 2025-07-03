@@ -75,7 +75,7 @@ const controller = {
     if (namespace && isSwitchingNamespace) {
       const namespaceNetwork =
         ChainController.getNetworkData(namespace)?.caipNetwork ||
-        ChainController.getRequestedCaipNetworks(namespace as ChainNamespace)[0]
+        ChainController.getRequestedCaipNetworks(namespace)[0]
 
       if (namespaceNetwork) {
         NetworkUtil.onSwitchNetwork({ network: namespaceNetwork, ignoreSwitchConfirmation: true })
