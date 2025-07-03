@@ -187,7 +187,7 @@ describe('CoSigner API Tests', () => {
 
       const expectedUrl = `${ConstantsUtil.COSIGNER_BASE_URL}/${encodeURIComponent(
         mockAddress
-      )}?projectId=${encodeURIComponent(projectId)}`
+      )}?projectId=${encodeURIComponent(projectId)}&v=2`
 
       expect(mockFetch).toHaveBeenCalledWith(
         expectedUrl,
