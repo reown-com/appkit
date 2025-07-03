@@ -41,7 +41,7 @@ export type SmartSessionGrantPermissionsRequest = {
     type: string
     data: Record<string, unknown>
   }[]
-  version?: '1.0' | '2.0'
+  version?: '1' | '2'
 }
 
 export type WalletGrantPermissionsResponse = SmartSessionGrantPermissionsRequest & {
