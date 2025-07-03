@@ -15,4 +15,8 @@ export const EXTENSION_RDNS = 'reown.com'
 export const EXTENSION_NAME = 'Reown'
 export const ALL_SOCIALS = ['google', 'farcaster', 'github', 'discord', 'apple', 'facebook']
 
-export const PROJECT_ID = '7d59d2594a9d2527f22f89d8014b887b'
+/**
+ * Project ID for AppKit E2E testing
+ * @description This project ID belongs to the admin team
+ */
+export const PROJECT_ID = '802c99f9890fa52057bd493c6f84bb82'
