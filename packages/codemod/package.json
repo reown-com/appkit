@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-codemod",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "sideEffects": false,
   "description": "Reown AppKit Codemod",
   "main": "index.js",

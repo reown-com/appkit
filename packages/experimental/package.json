@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-experimental",
-  "version": "1.7.12",
+  "version": "1.7.13",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
