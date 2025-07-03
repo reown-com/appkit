@@ -2,15 +2,12 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
+import 'crypto'
 
 import type { WalletFeature } from '@reown/appkit'
-import { WalletPage, WalletValidator } from '@reown/appkit-testing'
-import {
-  BASE_URL,
-  DEFAULT_SESSION_PARAMS,
-  EXTENSION_NAME,
-  EXTENSION_RDNS
-} from '@reown/appkit-testing'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { WalletPage } from '@reown/appkit-testing'
+import { BASE_URL, EXTENSION_NAME, EXTENSION_RDNS } from '@reown/appkit-testing'
 
 import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
 
@@ -59,6 +56,14 @@ function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
+}
+
+interface QrCodeFlowOptions {
+  page: ModalPage
+  walletPage: WalletPage
+  qrCodeFlowType?: 'immediate-connect' | 'immediate'
+  namespace: ChainNamespace
+  disabledChainIds?: (string | number)[]
 }
 
 export class ModalPage {
@@ -111,10 +116,8 @@ export class ModalPage {
       await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/ethers-verify-evil/')
     }
 
+    console.log('this.url', this.url)
     await this.page.goto(this.url)
-
-    // Wait for w3m-modal to be injected
-    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 5_000 })
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -188,11 +191,13 @@ export class ModalPage {
     return uri
   }
 
-  async qrCodeFlow(
-    page: ModalPage,
-    walletPage: WalletPage,
-    qrCodeFlowType?: 'immediate-connect' | 'immediate'
-  ): Promise<void> {
+  async qrCodeFlow({
+    page,
+    walletPage,
+    qrCodeFlowType,
+    namespace,
+    disabledChainIds = []
+  }: QrCodeFlowOptions): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
     if (!walletPage.isPageLoaded) {
@@ -203,11 +208,7 @@ export class ModalPage {
     } else {
       uri = await page.getConnectUri()
     }
-    await walletPage.connectWithUri(uri)
-
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    const walletValidator = new WalletValidator(walletPage.page)
-    await walletValidator.expectConnected()
+    await walletPage.connectWithUri(uri, namespace, disabledChainIds)
   }
 
   async emailFlow({

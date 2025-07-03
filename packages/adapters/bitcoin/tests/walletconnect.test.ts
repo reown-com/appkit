@@ -24,7 +24,7 @@ describe('WagmiAdapter - WalletConnect', () => {
 
     adapter = new BitcoinAdapter()
     walletKitManager = new WalletKitManager()
-    walletManager = new WalletManager()
+    walletManager = new WalletManager({ namespaces: ['bip122'] })
     universalProviderManager = new UniversalProviderManager()
 
     await walletKitManager.init()
@@ -70,7 +70,7 @@ describe('WagmiAdapter - WalletConnect', () => {
             bip122: {
               ...DEFAULT_WC_BITCOIN_NAMESPACE_CONFIG,
               accounts: mockNetworks.map(
-                network => `bip122:${network.id}:${walletManager.getAddress()}`
+                network => `bip122:${network.id}:${walletManager.getAddress('bip122')}`
               )
             }
           }
@@ -88,7 +88,7 @@ describe('WagmiAdapter - WalletConnect', () => {
         expect(onConnect).toHaveBeenCalled()
         expect(onAccountsChanged).toHaveBeenCalledWith(
           expect.objectContaining({
-            address: walletManager.getAddress(),
+            address: walletManager.getAddress('bip122'),
             chainId: mockNetworks[0].id.toString()
           })
         )

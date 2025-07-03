@@ -214,7 +214,7 @@ describe('W3mConnectingWcView - Connect with WalletConnect', () => {
   const chain = 'eip155'
 
   beforeAll(async () => {
-    walletManager = new WalletManager()
+    walletManager = new WalletManager({ namespaces: ['eip155'] })
     walletKitManager = new WalletKitManager()
     universalProviderManager = new UniversalProviderManager()
 
@@ -246,7 +246,9 @@ describe('W3mConnectingWcView - Connect with WalletConnect', () => {
           namespaces: {
             eip155: {
               ...DEFAULT_WC_EIP155_NAMESPACE_CONFIG,
-              accounts: walletManager.getAccounts().map(account => `${chain}:${chainId}:${account}`)
+              accounts: walletManager
+                .getAccounts('eip155')
+                .map(account => `${chain}:${chainId}:${account}`)
             }
           }
         })

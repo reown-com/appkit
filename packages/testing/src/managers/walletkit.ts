@@ -28,7 +28,7 @@ interface WalletKitOptions {
   }
 }
 
-type ApproveSessionsParams = Pick<WalletKitTypes.SessionProposal, 'id' | 'params'> & {
+export type ApproveSessionsParams = Pick<WalletKitTypes.SessionProposal, 'id' | 'params'> & {
   namespaces: BuildApprovedNamespacesParams['supportedNamespaces']
 }
 

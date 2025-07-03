@@ -26,7 +26,7 @@ describe('WagmiAdapter - WalletConnect', () => {
 
     adapter = new SolanaAdapter()
     walletKitManager = new WalletKitManager()
-    walletManager = new WalletManager()
+    walletManager = new WalletManager({ namespaces: ['solana'] })
     universalProviderManager = new UniversalProviderManager()
 
     await walletKitManager.init()
@@ -73,7 +73,7 @@ describe('WagmiAdapter - WalletConnect', () => {
             solana: {
               ...DEFAULT_WC_SOLANA_NAMESPACE_CONFIG,
               accounts: mockNetworks.map(
-                network => `solana:${network.id}:${walletManager.getAddress()}`
+                network => `solana:${network.id}:${walletManager.getAddress('solana')}`
               )
             }
           }
@@ -91,7 +91,7 @@ describe('WagmiAdapter - WalletConnect', () => {
         expect(onConnect).toHaveBeenCalled()
         expect(onAccountsChanged).toHaveBeenCalledWith(
           expect.objectContaining({
-            address: walletManager.getAddress(),
+            address: walletManager.getAddress('solana'),
             chainId: mockNetworks[0].id.toString()
           })
         )

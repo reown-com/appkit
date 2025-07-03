@@ -659,9 +659,15 @@ importers:
       '@types/react-dom':
         specifier: 19.1.3
         version: 19.1.3(@types/react@19.1.3)
+      '@walletconnect/environment':
+        specifier: ^1.0.1
+        version: 1.0.1
       dotenv:
         specifier: 16.4.7
         version: 16.4.7
+      sinon:
+        specifier: ^21.0.0
+        version: 21.0.0
 
   examples/html-ak-basic:
     dependencies:
@@ -2126,6 +2132,9 @@ importers:
       '@leather.io/rpc':
         specifier: 2.1.21
         version: 2.1.21
+      '@reown/appkit-testing':
+        specifier: workspace:*
+        version: link:../../testing
       '@vitest/coverage-v8':
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.40.0))
@@ -2185,6 +2194,9 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
     devDependencies:
+      '@reown/appkit-testing':
+        specifier: workspace:*
+        version: link:../../testing
       '@vitest/coverage-v8':
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.40.0))
@@ -2241,6 +2253,9 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
     devDependencies:
+      '@reown/appkit-testing':
+        specifier: workspace:*
+        version: link:../../testing
       '@vitest/coverage-v8':
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.40.0))
@@ -2328,6 +2343,9 @@ importers:
         specifier: 6.0.0
         version: 6.0.0
     devDependencies:
+      '@reown/appkit-testing':
+        specifier: workspace:*
+        version: link:../../testing
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -2915,6 +2933,9 @@ importers:
       '@reown/appkit':
         specifier: workspace:*
         version: link:../appkit
+      '@reown/appkit-common':
+        specifier: workspace:*
+        version: link:../common
     devDependencies:
       '@playwright/test':
         specifier: 1.48.2
@@ -2922,21 +2943,48 @@ importers:
       '@reown/walletkit':
         specifier: 1.2.8
         version: 1.2.8(bufferutil@4.0.9)(db0@0.3.2)(ioredis@5.6.1)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.32)
+      '@solana/web3.js':
+        specifier: 1.98.0
+        version: 1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@types/node':
         specifier: 22.13.4
         version: 22.13.4
+      '@types/sinon':
+        specifier: ^17.0.4
+        version: 17.0.4
       '@vitest/coverage-v8':
         specifier: 2.1.9
         version: 2.1.9(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jiti@2.4.2)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.40.0)(yaml@2.8.0))
       '@walletconnect/core':
         specifier: 2.21.3
         version: 2.21.3(bufferutil@4.0.9)(db0@0.3.2)(ioredis@5.6.1)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.32)
+      '@walletconnect/universal-provider':
+        specifier: 2.21.3
+        version: 2.21.3(bufferutil@4.0.9)(db0@0.3.2)(ioredis@5.6.1)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.32)
       '@walletconnect/utils':
         specifier: 2.21.3
         version: 2.21.3(bufferutil@4.0.9)(db0@0.3.2)(ioredis@5.6.1)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.32)
+      bitcoinjs-lib:
+        specifier: ^6.1.7
+        version: 6.1.7
       dotenv:
         specifier: 16.4.7
         version: 16.4.7
+      ecpair:
+        specifier: 3.0.0
+        version: 3.0.0(typescript@5.8.3)
+      sinon:
+        specifier: ^21.0.0
+        version: 21.0.0
+      tiny-secp256k1:
+        specifier: ^2.2.4
+        version: 2.2.4
+      tweetnacl:
+        specifier: 1.0.3
+        version: 1.0.3
+      viem:
+        specifier: 2.31.3
+        version: 2.31.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.32)
       vitest:
         specifier: 3.1.3
         version: 3.1.3(@types/debug@4.1.12)(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jiti@2.4.2)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.40.0)(yaml@2.8.0)
@@ -8045,6 +8093,15 @@ packages:
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
 
+  '@sinonjs/commons@3.0.1':
+    resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
+
+  '@sinonjs/fake-timers@13.0.5':
+    resolution: {integrity: sha512-36/hTbH2uaWuGVERyC6da9YwGWnzUZXuPro/F2LfsdOsLnCojz/iSH8MxUt/FD2S5XBSVPhmArFUXcpCQ2Hkiw==}
+
+  '@sinonjs/samsam@8.0.2':
+    resolution: {integrity: sha512-v46t/fwnhejRSFTGqbpn9u+LQ9xJDse10gNnPgAcxgdoCDMXj/G2asWAC/8Qs+BAZDicX+MNZouXT1A7c83kVw==}
+
   '@smithy/abort-controller@4.0.3':
     resolution: {integrity: sha512-AqXFf6DXnuRBXy4SoK/n1mfgHaKaq36bmkphmD1KO0nHq6xK/g9KHSW4HEsPQUBCGdIEfuJifGHwxFXPIFay9Q==}
     engines: {node: '>=18.0.0'}
@@ -11095,9 +11152,6 @@ packages:
 
   bn.js@4.12.2:
     resolution: {integrity: sha512-n4DSx829VRTRByMRGdjQ9iqsN0Bh4OolPsFnaZBLcbi8iXcB+kJ9s7EnRt4wILZNV3kPLHkRVfOc/HvhC3ovDw==}
-
-  bn.js@5.2.1:
-    resolution: {integrity: sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==}
 
   bn.js@5.2.2:
     resolution: {integrity: sha512-v2YAxEmKaBLahNwE1mjp4WON6huMNeuDvagFZW+ASCuA/ku0bXR9hSMw0XpiqMoA3+rmnyck/tPRSFQkoC9Cuw==}
@@ -14495,6 +14549,10 @@ packages:
   lodash.find@4.6.0:
     resolution: {integrity: sha512-yaRZoAV3Xq28F1iafWN1+a0rflOej93l1DQUejs3SZ41h2O9UJBoS9aueGjPDgAl4B6tPC0NuuchLKaDQQ3Isg==}
 
+  lodash.get@4.4.2:
+    resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
+
   lodash.includes@4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
 
@@ -16841,6 +16899,9 @@ packages:
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
 
+  sinon@21.0.0:
+    resolution: {integrity: sha512-TOgRcwFPbfGtpqvZw+hyqJDvqfapr1qUlOizROIk4bBLjlsjlB00Pg6wMFXNtJRpu+eCZuVOaLatG7M8105kAw==}
+
   sirv@3.0.1:
     resolution: {integrity: sha512-FoqMu0NCGBLCcAkS1qA+XJIQTR6/JHfQXl+uGteNCQ76T91DMUjPa9xfmeqMY3z80nLSg9yQmNjK0Px6RWsH/A==}
     engines: {node: '>=18'}
@@ -17424,6 +17485,10 @@ packages:
     resolution: {integrity: sha512-eb+F6NabSnjbLwNoC+2o5ItbmP1kg7HliWue71JgLegQt6A5mTN8YbvTLCazdlg6e5SV6A+r8OGvZYskdlmhqQ==}
     engines: {node: '>=6.0.0'}
 
+  tiny-secp256k1@2.2.4:
+    resolution: {integrity: sha512-FoDTcToPqZE454Q04hH9o2EhxWsm7pOSpicyHkgTwKhdKWdsTUuqfP5MLq3g+VjAtl2vSx6JpXGdwA2qpYkI0Q==}
+    engines: {node: '>=14.0.0'}
+
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -17626,6 +17691,14 @@ packages:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
 
+  type-detect@4.0.8:
+    resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
+    engines: {node: '>=4'}
+
+  type-detect@4.1.0:
+    resolution: {integrity: sha512-Acylog8/luQ8L7il+geoSxhEkazvkslg7PSNKOX59mbB9cOveP5aq9h74Y7YU8yDpJwetzQQrfIwtf4Wp4LKcw==}
+    engines: {node: '>=4'}
+
   type-fest@0.16.0:
     resolution: {integrity: sha512-eaBzG6MxNzEn9kiwvtre90cXaNLkmadMWa1zQMs3XORCXNbsH/OewwbxC5ia9dCxIxnTAsSxXJaa/p5y8DlvJg==}
     engines: {node: '>=10'}
@@ -17706,6 +17779,10 @@ packages:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}
     engines: {node: '>=0.8.0'}
     hasBin: true
+
+  uint8array-tools@0.0.7:
+    resolution: {integrity: sha512-vrrNZJiusLWoFWBqz5Y5KMCgP9W9hnjZHzZiZRT8oNAkq3d5Z5Oe76jAvVVSRh4U8GGR90N2X1dWtrhvx6L8UQ==}
+    engines: {node: '>=14.0.0'}
 
   uint8array-tools@0.0.8:
     resolution: {integrity: sha512-xS6+s8e0Xbx++5/0L+yyexukU7pz//Yg6IHg3BKhXotg1JcYtgxVcUctQ0HxLByiJzpAkNFawz1Nz5Xadzo82g==}
@@ -21338,7 +21415,7 @@ snapshots:
       '@ethersproject/bytes': 5.8.0
       '@ethersproject/logger': 5.8.0
       '@ethersproject/properties': 5.8.0
-      bn.js: 5.2.1
+      bn.js: 5.2.2
       elliptic: 6.6.1
       hash.js: 1.1.7
 
@@ -26975,6 +27052,20 @@ snapshots:
   '@sindresorhus/is@7.0.1': {}
 
   '@sindresorhus/merge-streams@2.3.0': {}
+
+  '@sinonjs/commons@3.0.1':
+    dependencies:
+      type-detect: 4.0.8
+
+  '@sinonjs/fake-timers@13.0.5':
+    dependencies:
+      '@sinonjs/commons': 3.0.1
+
+  '@sinonjs/samsam@8.0.2':
+    dependencies:
+      '@sinonjs/commons': 3.0.1
+      lodash.get: 4.4.2
+      type-detect: 4.1.0
 
   '@smithy/abort-controller@4.0.3':
     dependencies:
@@ -33965,8 +34056,6 @@ snapshots:
 
   bn.js@4.12.2: {}
 
-  bn.js@5.2.1: {}
-
   bn.js@5.2.2: {}
 
   body-parser@1.20.3:
@@ -35675,8 +35764,8 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0)(eslint@8.56.0)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.5(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.56.0)
@@ -35699,7 +35788,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0)(eslint@8.56.0):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.1
@@ -35710,7 +35799,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.7.5
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -35721,11 +35810,11 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -38032,6 +38121,8 @@ snapshots:
   lodash.defaults@4.2.0: {}
 
   lodash.find@4.6.0: {}
+
+  lodash.get@4.4.2: {}
 
   lodash.includes@4.3.0: {}
 
@@ -41024,6 +41115,14 @@ snapshots:
     dependencies:
       is-arrayish: 0.3.2
 
+  sinon@21.0.0:
+    dependencies:
+      '@sinonjs/commons': 3.0.1
+      '@sinonjs/fake-timers': 13.0.5
+      '@sinonjs/samsam': 8.0.2
+      diff: 7.0.0
+      supports-color: 7.2.0
+
   sirv@3.0.1:
     dependencies:
       '@polka/url': 1.0.0-next.29
@@ -41755,6 +41854,10 @@ snapshots:
       elliptic: 6.6.1
       nan: 2.22.2
 
+  tiny-secp256k1@2.2.4:
+    dependencies:
+      uint8array-tools: 0.0.7
+
   tinybench@2.9.0: {}
 
   tinyexec@0.3.2: {}
@@ -41943,6 +42046,10 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
 
+  type-detect@4.0.8: {}
+
+  type-detect@4.1.0: {}
+
   type-fest@0.16.0: {}
 
   type-fest@0.20.2: {}
@@ -42023,6 +42130,8 @@ snapshots:
 
   uglify-js@3.19.3:
     optional: true
+
+  uint8array-tools@0.0.7: {}
 
   uint8array-tools@0.0.8: {}
 

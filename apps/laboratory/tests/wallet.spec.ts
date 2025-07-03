@@ -1,7 +1,10 @@
 import { type BrowserContext, test } from '@playwright/test'
+import { gnosis } from 'viem/chains'
 
 import type { CaipNetworkId } from '@reown/appkit'
-import { DEFAULT_CHAIN_NAME, WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { DEFAULT_CHAIN_NAME, WalletPage } from '@reown/appkit-testing'
+
+import { solanaNotExist } from '@/src/utils/ConstantsUtil'
 
 import { ModalPage } from './shared/pages/ModalPage'
 import {
@@ -15,9 +18,11 @@ import { ModalValidator } from './shared/validators/ModalValidator'
 let modalPage: ModalPage
 let modalValidator: ModalValidator
 let walletPage: WalletPage
-let walletValidator: WalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
+
+// -- Constants ----------------------------------------------------------------
+const NAMESPACE = 'eip155'
 
 // -- Setup --------------------------------------------------------------------
 const sampleWalletTest = test.extend<{ library: string }>({
@@ -33,10 +38,15 @@ sampleWalletTest.beforeAll(async ({ browser, library }) => {
   modalPage = new ModalPage(browserPage, library, 'default')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
-  walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage,
+    namespace: NAMESPACE,
+    disabledChainIds: [gnosis.id, solanaNotExist.id]
+  })
   await modalValidator.expectConnected()
 })
 
@@ -113,11 +123,6 @@ sampleWalletTest('it should switch networks and sign', async ({ library, browser
        * This is happening due to ecpair package that sample wallet is using while signing Bitcoin messages, and only happening with Firefox browser.
        */
       await modalPage.sign()
-      await walletValidator.expectReceivedSign({
-        chainName: chainNameOnWalletPage,
-        expectNetworkName: library !== 'bitcoin'
-      })
-      await walletPage.handleRequest({ accept: true })
       await modalValidator.expectAcceptedSign()
     }
 
@@ -171,13 +176,11 @@ sampleWalletTest('it should show last connected network after refreshing', async
   await modalPage.closeModal()
 })
 
-sampleWalletTest('it should reject sign', async ({ library }) => {
-  const chainName = getLastNetworkNameByLibrary(library)
-
+sampleWalletTest('it should reject sign', async () => {
+  walletPage.setShouldRejectSigning(true)
   await modalPage.sign()
-  await walletValidator.expectReceivedSign({ chainName, expectNetworkName: library !== 'bitcoin' })
-  await walletPage.handleRequest({ accept: false })
   await modalValidator.expectRejectedSign()
+  walletPage.setShouldRejectSigning(false)
 })
 
 sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
@@ -211,7 +214,11 @@ sampleWalletTest('it should disconnect and connect to a single account', async (
   await walletPage.disconnectConnection()
   await modalValidator.expectDisconnected()
   walletPage.setConnectToSingleAccount(true)
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage,
+    namespace: NAMESPACE
+  })
   await modalPage.openAccount()
   await modalValidator.expectSingleAccount()
   walletPage.setConnectToSingleAccount(false)
@@ -227,13 +234,15 @@ sampleWalletTest(
 
     await walletPage.disconnectConnection()
     await modalValidator.expectDisconnected()
-    await modalPage.qrCodeFlow(modalPage, walletPage)
-    await walletPage.enableTestnets()
+    await modalPage.qrCodeFlow({
+      page: modalPage,
+      walletPage,
+      namespace: NAMESPACE
+    })
     await walletPage.switchNetwork('eip155:5')
     await modalValidator.expectNetworkNotSupportedVisible()
     await walletPage.switchNetwork('eip155:1')
     await modalValidator.expectConnected()
-    await modalPage.closeModal()
   }
 )
 
@@ -251,14 +260,17 @@ sampleWalletTest(
     await modalValidator.expectSwitchChainWithNetworkButton('Aurora')
     await modalPage.closeModal()
 
-    await modalPage.qrCodeFlow(modalPage, walletPage)
+    await modalPage.qrCodeFlow({
+      page: modalPage,
+      walletPage,
+      namespace: NAMESPACE
+    })
     await modalValidator.expectConnected()
     await modalPage.openModal()
     await modalPage.openNetworks()
     await modalValidator.expectSwitchedNetwork('Ethereum')
     await modalPage.closeModal()
     await modalPage.sign()
-    await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
   }
 )
@@ -266,18 +278,25 @@ sampleWalletTest(
 sampleWalletTest('it should connect and disconnect using hook', async () => {
   await walletPage.disconnectConnection()
   await modalValidator.expectDisconnected()
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage,
+    namespace: NAMESPACE
+  })
   await modalValidator.expectConnected()
   await modalPage.clickHookDisconnectButton()
   await modalValidator.expectDisconnected()
 })
 
 sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage,
+    namespace: NAMESPACE
+  })
   await modalValidator.expectConnected()
   await modalPage.openModal()
   await walletPage.disconnectConnection()
-  await walletValidator.expectSessionCard({ visible: false })
   await modalValidator.expectModalNotVisible()
   await walletPage.page.waitForTimeout(500)
 })
@@ -295,7 +314,11 @@ sampleWalletTest('it should display wallet guide and show explore option', async
 })
 
 sampleWalletTest('it should disconnect as expected', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage,
+    namespace: NAMESPACE
+  })
   await modalValidator.expectConnected()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()

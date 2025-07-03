@@ -108,6 +108,7 @@ const controller = {
   },
 
   close() {
+    console.trace('close')
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
     const isConnected = Boolean(ChainController.state.activeCaipAddress)
 

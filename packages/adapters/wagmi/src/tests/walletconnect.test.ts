@@ -44,7 +44,7 @@ describe('WagmiAdapter - WalletConnect', () => {
       projectId: PROJECT_ID
     })
     walletKitManager = new WalletKitManager()
-    walletManager = new WalletManager()
+    walletManager = new WalletManager({ namespaces: ['eip155'] })
     universalProviderManager = new UniversalProviderManager()
 
     await walletKitManager.init()
@@ -89,7 +89,7 @@ describe('WagmiAdapter - WalletConnect', () => {
             eip155: {
               ...DEFAULT_WC_EIP155_NAMESPACE_CONFIG,
               accounts: mockNetworks.map(
-                network => `eip155:${network.id}:${walletManager.getAddress()}`
+                network => `eip155:${network.id}:${walletManager.getAddress('eip155')}`
               )
             }
           }
@@ -109,7 +109,7 @@ describe('WagmiAdapter - WalletConnect', () => {
         expect(onConnect).toHaveBeenCalled()
 
         // Validate account
-        expect(account?.address).not.toBeUndefined()
+        expect(account?.address).toBe(walletManager.getAddress('eip155'))
         expect(account?.status).toBe('connected')
         expect(account?.isDisconnected).toBe(false)
         expect(account?.isReconnecting).toBe(false)
