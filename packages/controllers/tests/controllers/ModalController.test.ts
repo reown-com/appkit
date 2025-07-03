@@ -130,33 +130,27 @@ describe('ModalController', () => {
     expect(NetworkUtil.onSwitchNetwork).toHaveBeenCalled()
   })
 
-  // it('should not open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is false', async () => {
-  //   // ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
-  //   // ChainController.state.noAdapters = true
-  //   // ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, {
-  //   //   accountState: { caipAddress: 'eip155:1:0x123' }
-  //   // })
-  //   mockChainControllerState({
-  //     activeChain: ConstantsUtil.CHAIN.EVM,
-  //     noAdapters: true,
-  //     chains: new Map([
-  //       [ConstantsUtil.CHAIN.EVM, { accountState: { caipAddress: 'eip155:1:0x123' } }]
-  //     ])
-  //   })
-  //   vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-  //     ...OptionsController.state,
-  //     manualWCControl: false
-  //   })
-  //   vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+  it.skip('should not open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is false', async () => {
+    ChainController.state.activeCaipAddress = 'eip155:1:0x123'
+    ChainController.state.noAdapters = true
+    // @ts-expect-error - we are mocking the state
+    ChainController.state.chains = new Map([
+      [ConstantsUtil.CHAIN.EVM, { accountState: { caipAddress: 'eip155:1:0x123' } }]
+    ])
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      manualWCControl: false
+    })
+    vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
 
-  //   const resetSpy = vi.spyOn(RouterController, 'reset')
+    const resetSpy = vi.spyOn(RouterController, 'reset')
 
-  //   await ModalController.open()
+    await ModalController.open()
 
-  //   expect(resetSpy).not.toHaveBeenCalledWith('ConnectingWalletConnectBasic')
-  // })
+    expect(resetSpy).not.toHaveBeenCalledWith('ConnectingWalletConnectBasic')
+  })
 
-  it.only('should open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is true', async () => {
+  it('should open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is true', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       manualWCControl: true

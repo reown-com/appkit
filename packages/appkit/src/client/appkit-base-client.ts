@@ -431,7 +431,7 @@ export abstract class AppKitBaseClient {
       }
 
       const adapter = this.getAdapter(namespace)
-      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+      const caipAddress = ChainController.state.chains.get(namespace)?.accountState?.caipAddress
 
       /**
        * When the page loaded, the controller doesn't have address yet.
