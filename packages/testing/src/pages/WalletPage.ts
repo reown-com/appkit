@@ -30,6 +30,7 @@ export class WalletPage {
   public walletKitManager: WalletKitManager | null = null
   public walletManager: WalletManager | null = null
   public shouldRejectSigning = false
+  public lastSessionRequest: WalletKitTypes.SessionRequest | null = null
 
   constructor(page: Page) {
     this.page = page
@@ -276,6 +277,7 @@ export class WalletPage {
     if (DEFAULT_METHODS.eip155.includes(method)) {
       const message = fromHex(request.params[0], 'string')
       const signed = await walletManager.signMessage(message, ConstantsUtil.CHAIN.EVM)
+      this.lastSessionRequest = event
 
       return formatJsonRpcResult(id, signed)
     }
@@ -283,6 +285,7 @@ export class WalletPage {
     if (DEFAULT_METHODS.solana.includes(method)) {
       const message = request.params.message as string
       const signed = await walletManager.signMessage(message, ConstantsUtil.CHAIN.SOLANA)
+      this.lastSessionRequest = event
 
       return formatJsonRpcResult(id, { signature: signed })
     }
@@ -291,6 +294,7 @@ export class WalletPage {
       const message = request.params[0] as string
       const signed = await walletManager.signMessage(message, ConstantsUtil.CHAIN.BITCOIN)
       const address = walletManager.getAddress(ConstantsUtil.CHAIN.BITCOIN)
+      this.lastSessionRequest = event
 
       return formatJsonRpcResult(id, { signature: signed, address })
     }

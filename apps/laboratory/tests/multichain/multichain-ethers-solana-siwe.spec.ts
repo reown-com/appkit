@@ -24,14 +24,16 @@ test.beforeAll(async ({ browser }) => {
   modalPage = new ModalPage(browserPage, 'multichain-ethers-solana-siwe', 'default')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
-  walletValidator = new WalletValidator(walletPage.page)
+  walletValidator = new WalletValidator(walletPage)
 
   await modalPage.load()
   await modalPage.load()
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
   await modalValidator.expectConnected()
   await modalPage.promptSiwe()
-  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
 })
 
@@ -44,14 +46,12 @@ test('it should switch networks and sign siwe', async () => {
   const chainName = 'Polygon'
   await modalPage.switchNetwork(chainName)
   await modalPage.promptSiwe()
-  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
   await modalPage.page.waitForTimeout(1000)
 
   // -- Sign ------------------------------------------------------------------
   await modalPage.sign('eip155')
-  await walletValidator.expectReceivedSign({ chainName })
-  await walletPage.handleRequest({ accept: true })
+  await walletValidator.expectReceivedSign({ network: 'eip155:137' })
   await modalValidator.expectAcceptedSign()
 })
 

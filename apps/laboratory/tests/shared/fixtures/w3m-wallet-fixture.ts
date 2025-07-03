@@ -70,7 +70,7 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
       })
     }
 
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     timeStart('walletValidator.expectConnected')
     await walletValidator.expectConnected()
@@ -98,7 +98,7 @@ export const testMWMultiChain = multiChain.extend<ModalWalletFixture>({
     await use(walletPage)
   },
   walletValidator: async ({ walletPage }, use) => {
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
     await use(walletValidator)
   }
 })

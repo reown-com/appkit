@@ -53,7 +53,10 @@ configTest('Should fetch correct config of projectId with all features enabled',
   await modalValidator.expectSpecificSocialsVisible(ALL_SOCIALS)
   await modalPage.closeModal()
 
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
   await modalValidator.expectConnected()
 
   await modalPage.openModal()
@@ -78,7 +81,10 @@ configTest('Should fetch correct config of projectId with specific features enab
   await modalValidator.expectSpecificSocialsVisible(['google', 'x', 'discord'])
   await modalPage.closeModal()
 
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
   await modalValidator.expectConnected()
 
   await modalPage.openModal()
@@ -102,7 +108,10 @@ configTest('Should fetch correct config of projectId with all features disabled'
   await modalValidator.expectSocialsNotVisible()
   await modalPage.closeModal()
 
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
   await modalValidator.expectConnected()
 
   await modalPage.openModal()

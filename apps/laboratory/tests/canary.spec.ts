@@ -9,7 +9,7 @@ import { ModalValidator } from './shared/validators/ModalValidator'
 
 testConnectedMW.beforeEach(async ({ modalPage, walletPage }) => {
   const modalValidator = new ModalValidator(modalPage.page)
-  const walletValidator = new WalletValidator(walletPage.page)
+  const walletValidator = new WalletValidator(walletPage)
   timeStart('beforeEach expectConnection')
   await expectConnection(modalValidator, walletValidator)
   timeEnd('beforeEach expectConnection')
@@ -27,22 +27,10 @@ testConnectedMW(
   getCanaryTagAndAnnotation('HappyPath.sign'),
   async ({ modalPage, walletPage, timingRecords }) => {
     const modalValidator = new ModalValidator(modalPage.page)
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
     timeStart('modalPage.sign()')
     await modalPage.sign()
     timeEnd('modalPage.sign()')
-    const signRequestedTime = new Date()
-    timeStart('walletValidator.expectReceivedSign')
-    await walletValidator.expectReceivedSign({})
-    timeEnd('walletValidator.expectReceivedSign')
-    const signReceivedTime = new Date()
-    timingRecords.push({
-      item: 'sign',
-      timeMs: signReceivedTime.getTime() - signRequestedTime.getTime()
-    })
-    timeStart('walletPage.handleRequest')
-    await walletPage.handleRequest({ accept: true })
-    timeEnd('walletPage.handleRequest')
     timeStart('modalValidator.expectAcceptedSign')
     await modalValidator.expectAcceptedSign()
     timeEnd('modalValidator.expectAcceptedSign')
