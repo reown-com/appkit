@@ -110,7 +110,7 @@ export function authConnector(parameters: AuthParameters) {
       chainId,
       preferredAccountType,
       socialUri: options.socialUri,
-      chainNamespace: 'eip155' as unknown as ChainNamespace
+      chainNamespace: CommonConstantsUtil.CHAIN.EVM
     })
 
     currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
@@ -138,6 +138,7 @@ export function authConnector(parameters: AuthParameters) {
         chainId?: number
         isReconnecting?: boolean
         socialUri?: string
+        rpcUrl?: string
       } = {}
     ) {
       if (connectSocialPromise) {

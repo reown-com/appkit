@@ -9,7 +9,7 @@
       <img src="/appkit-logo.png" alt="Reown" width="150" />
     </div>
 
-    <h1 class="page-title">Vue AppKit Cloud Auth Example</h1>
+    <h1 class="page-title">Vue AppKit Reown Authentication Example</h1>
 
     <div class="appkit-buttons-container">
       <appkit-button />
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { CloudAuthSIWX } from '@reown/appkit-siwx'
+import { ReownAuthentication } from '@reown/appkit-siwx'
 import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
 
 import ActionButtonList from './components/ActionButton.vue'
@@ -45,7 +45,7 @@ createAppKit({
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
-  siwx: new CloudAuthSIWX()
+  siwx: new ReownAuthentication()
 })
 
 export default {

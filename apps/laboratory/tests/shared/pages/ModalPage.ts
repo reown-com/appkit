@@ -4,6 +4,7 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
+import type { Address, Hex } from '@reown/appkit-common'
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import { BASE_URL, EXTENSION_NAME, EXTENSION_RDNS } from '@reown/appkit-testing'
 
@@ -883,7 +884,7 @@ export class ModalPage {
       .textContent()
     expect(address, 'Address should be present').toBeTruthy()
 
-    return address as `0x${string}`
+    return address as Address
   }
 
   async getActiveConnectionsAddresses() {
@@ -915,7 +916,7 @@ export class ModalPage {
     const signature = await this.page.getByTestId('w3m-signature').textContent()
     expect(signature, 'Signature should be present').toBeTruthy()
 
-    return signature as `0x${string}`
+    return signature as Hex
   }
 
   async switchNetworkWithHook() {

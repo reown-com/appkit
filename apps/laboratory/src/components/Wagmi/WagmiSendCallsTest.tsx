@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react'
 
 import { Button, Heading, Stack, Text } from '@chakra-ui/react'
-import { type Address, parseGwei } from 'viem'
+import { parseGwei } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 
+import type { Address } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -18,7 +19,7 @@ const TEST_TX_1 = {
 }
 const TEST_TX_2 = {
   to: vitalikEthAddress as Address,
-  data: '0xdeadbeef' as `0x${string}`
+  data: '0xdeadbeef' as Address
 }
 
 export function WagmiSendCallsTest() {

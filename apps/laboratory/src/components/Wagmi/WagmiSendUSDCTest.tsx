@@ -17,10 +17,11 @@ import {
   VStack,
   useDisclosure
 } from '@chakra-ui/react'
-import { type Chain, type Hex, erc20Abi } from 'viem'
+import { type Chain, erc20Abi } from 'viem'
 import { type Config, useAccount } from 'wagmi'
 import { getWalletClient } from 'wagmi/actions'
 
+import type { Address, Hex } from '@reown/appkit-common'
 import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -71,7 +72,7 @@ function SendUSDCForm({ isOpen, onClose, chain, config, balance }: SendUSDCFormP
       const hash = await client.writeContract({
         abi: erc20Abi,
         functionName: 'transfer',
-        args: [address as `0x${string}`, usdcAmount],
+        args: [address as Address, usdcAmount],
         address: contractAddress
       })
 

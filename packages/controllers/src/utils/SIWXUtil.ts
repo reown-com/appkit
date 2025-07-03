@@ -42,6 +42,10 @@ export const SIWXUtil = {
     }
 
     try {
+      if (addEmbeddedWalletSessionPromise) {
+        await addEmbeddedWalletSessionPromise
+      }
+
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
 
       if (sessions.length) {
@@ -107,7 +111,7 @@ export const SIWXUtil = {
       await siwx.addSession({
         data: siwxMessage,
         message,
-        signature: signature as `0x${string}`
+        signature
       })
 
       ChainController.setLastConnectedSIWECaipNetwork(network)
@@ -249,7 +253,7 @@ export const SIWXUtil = {
 
     const siwxMessage = await siwx.createMessage({
       chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
-      accountAddress: ''
+      accountAddress: '<<AccountAddress>>'
     })
 
     // Extract only the serializable data properties for postMessage, toString() is not possible to include in the postMessage
@@ -265,7 +269,8 @@ export const SIWXUtil = {
       resources: siwxMessage.resources,
       requestId: siwxMessage.requestId,
       issuedAt: siwxMessage.issuedAt,
-      expirationTime: siwxMessage.expirationTime
+      expirationTime: siwxMessage.expirationTime,
+      serializedMessage: siwxMessage.toString()
     }
 
     const result = await authConnector.connect({
@@ -274,6 +279,9 @@ export const SIWXUtil = {
       siwxMessage: siwxMessageData,
       preferredAccountType
     })
+
+    siwxMessageData.accountAddress = result.address
+    siwxMessageData.serializedMessage = result.message || ''
 
     if (result.signature && result.message) {
       const promise = SIWXUtil.addEmbeddedWalletSession(
@@ -309,10 +317,7 @@ export const SIWXUtil = {
 
     addEmbeddedWalletSessionPromise = siwx
       .addSession({
-        data: {
-          ...siwxMessageData,
-          accountAddress: siwxMessageData.accountAddress
-        },
+        data: siwxMessageData,
         message,
         signature
       })
@@ -427,13 +432,16 @@ export const SIWXUtil = {
     return true
   },
   getSIWXEventProperties() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('SIWXUtil:getSIWXEventProperties - namespace is required')
+    }
 
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        getPreferredAccountType(activeChainNamespace) ===
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },
   async clearSessions() {

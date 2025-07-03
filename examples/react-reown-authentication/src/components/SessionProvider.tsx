@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import type { SIWXSession } from '@reown/appkit'
-import type { CloudAuthSIWX } from '@reown/appkit-siwx'
+import type { ReownAuthentication } from '@reown/appkit-siwx'
 import { useAppKitSIWX } from '@reown/appkit-siwx/react'
 
 type SessionContextType = SIWXSession | undefined
@@ -9,7 +9,7 @@ type SessionContextType = SIWXSession | undefined
 const SessionContext = createContext<SessionContextType>(undefined)
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const siwx = useAppKitSIWX<CloudAuthSIWX>()
+  const siwx = useAppKitSIWX<ReownAuthentication>()
   const [value, setValue] = useState<SessionContextType>(undefined)
 
   useEffect(() => {

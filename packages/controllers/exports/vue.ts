@@ -96,13 +96,12 @@ export function useAppKitAccount(options?: {
     const accountState = _chainNamespace
       ? _chains.get(_chainNamespace)?.accountState
       : AccountController.state
+    const activeChainNamespace = _chainNamespace || ChainController.state.activeChain
 
     state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
     state.value.caipAddress = accountState?.caipAddress
     state.value.status = accountState?.status
     state.value.isConnected = Boolean(accountState?.caipAddress)
-    const activeChainNamespace =
-      _chainNamespace || (ChainController.state.activeChain as ChainNamespace)
     state.value.embeddedWalletInfo =
       authConnector && activeConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
         ? {
