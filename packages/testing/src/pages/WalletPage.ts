@@ -107,24 +107,22 @@ export class WalletPage {
 
     await Promise.all(
       Object.values(sessions).map(async session => {
-        const prev = session.namespaces[namespace] ?? {
+        const prevNamespaces = session.namespaces[namespace] ?? {
           chains: [],
           methods: [],
           events: [],
           accounts: []
         }
 
-        const updatedNamespace = {
-          ...prev,
-          chains: [...new Set([network, ...(prev.chains ?? [])])],
-          accounts: [...new Set([caipAddress, ...prev.accounts])]
-        }
-
         await walletKit.updateSession({
           topic: session.topic,
           namespaces: {
             ...session.namespaces,
-            [namespace]: updatedNamespace
+            [namespace]: {
+              ...prevNamespaces,
+              chains: [...new Set([network, ...(prevNamespaces.chains ?? [])])],
+              accounts: [...new Set([caipAddress, ...prevNamespaces.accounts])]
+            }
           }
         })
 
