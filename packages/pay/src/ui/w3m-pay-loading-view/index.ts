@@ -183,30 +183,31 @@ export class W3mPayLoadingView extends LitElement {
 
         return exchange?.imageUrl
       }
-      if (currentPayment.type === 'wallet') {
-        const walletIcon = AccountController.state.connectedWalletInfo?.icon
-        if (walletIcon) {
-          return walletIcon
-        }
+    }
 
-        // Fallback
-        const chainNamespace = ChainController.state.activeChain
-        if (!chainNamespace) {
-          return undefined
-        }
-
-        const connectorId = ConnectorController.getConnectorId(chainNamespace)
-        if (!connectorId) {
-          return undefined
-        }
-
-        const connector = ConnectorController.getConnectorById(connectorId)
-        if (!connector) {
-          return undefined
-        }
-
-        return AssetUtil.getConnectorImage(connector)
+    if (currentPayment.type === 'wallet') {
+      const walletIcon = AccountController.state.connectedWalletInfo?.icon
+      if (walletIcon) {
+        return walletIcon
       }
+
+      // Fallback
+      const chainNamespace = ChainController.state.activeChain
+      if (!chainNamespace) {
+        return undefined
+      }
+
+      const connectorId = ConnectorController.getConnectorId(chainNamespace)
+      if (!connectorId) {
+        return undefined
+      }
+
+      const connector = ConnectorController.getConnectorById(connectorId)
+      if (!connector) {
+        return undefined
+      }
+
+      return AssetUtil.getConnectorImage(connector)
     }
 
     return undefined
