@@ -113,8 +113,7 @@
     "@vitest/coverage-v8": "2.1.9",
     "@walletconnect/utils": "2.21.3",
     "@walletconnect/core": "2.21.3",
-    "@reown/walletkit": "1.2.8",
-    "@reown/appkit-testing": "workspace:*"
+    "@reown/walletkit": "1.2.8"
   },
   "keywords": [
     "appkit",

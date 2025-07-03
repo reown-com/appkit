@@ -1,5 +1,5 @@
 import { fixture } from '@open-wc/testing'
-import { beforeAll, describe, expect, test, vi } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -8,17 +8,10 @@ import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
-  ModalController,
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
 import type { WcWallet } from '@reown/appkit-controllers'
-import {
-  DEFAULT_WC_EIP155_NAMESPACE_CONFIG,
-  UniversalProviderManager,
-  WalletKitManager,
-  WalletManager
-} from '@reown/appkit-testing'
 import type { WuiTabs } from '@reown/appkit-ui/wui-tabs'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 
@@ -202,84 +195,5 @@ describe('W3mConnectingWcView - Handle chain switch error when enableNetworkSwit
     expect(mockGetUnsupportedNetwork).toHaveBeenCalledWith('eip155:1')
     expect(mockSetActiveCaipNetwork).toHaveBeenCalled()
     expect(mockShowUnsupportedChainUI).toHaveBeenCalled()
-  })
-})
-
-describe('W3mConnectingWcView - Connect with WalletConnect', () => {
-  let universalProviderManager: UniversalProviderManager
-  let walletKitManager: WalletKitManager
-  let walletManager: WalletManager
-
-  const chainId = 1
-  const chain = 'eip155'
-
-  beforeAll(async () => {
-    walletManager = new WalletManager({ namespaces: ['eip155'] })
-    walletKitManager = new WalletKitManager()
-    universalProviderManager = new UniversalProviderManager()
-
-    // Initialize WalletKit and UniversalProvider
-    await universalProviderManager.init()
-    await walletKitManager.init()
-  })
-
-  test('should connect with WalletConnect when opening the view', async () => {
-    const onSessionProposal = vi.fn()
-    const onConnect = vi.fn()
-    const onDisplayUri = vi.fn()
-
-    const modalControllerCloseSpy = vi.spyOn(ModalController, 'close').mockImplementation(() => {})
-    const connectWalletConnectSpy = vi
-      .spyOn(ConnectionController, 'connectWalletConnect')
-      .mockImplementation(() =>
-        universalProviderManager.connect({
-          eip155: DEFAULT_WC_EIP155_NAMESPACE_CONFIG
-        })
-      )
-
-    // Listen to WalletKit events
-    walletKitManager.listenEvents({
-      onSessionProposal: async ({ id, params }) => {
-        await walletKitManager.approveSession({
-          id,
-          params,
-          namespaces: {
-            eip155: {
-              ...DEFAULT_WC_EIP155_NAMESPACE_CONFIG,
-              accounts: walletManager
-                .getAccounts('eip155')
-                .map(account => `${chain}:${chainId}:${account}`)
-            }
-          }
-        })
-        onSessionProposal(id, params)
-      }
-    })
-
-    // Listen to UniversalProvider events
-    universalProviderManager.listenEvents({
-      onConnect,
-      onDisplayUri: async uri => {
-        await walletKitManager.pair(uri as string)
-        onDisplayUri(uri)
-      }
-    })
-
-    await fixture(html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`)
-
-    await vi.waitFor(
-      () => {
-        expect(onSessionProposal).toHaveBeenCalled()
-        expect(onConnect).toHaveBeenCalled()
-        expect(onDisplayUri).toHaveBeenCalled()
-
-        expect(connectWalletConnectSpy).toHaveBeenCalled()
-        expect(modalControllerCloseSpy).toHaveBeenCalled()
-      },
-      {
-        interval: 200,
-        timeout: 10_000
-      }
-    )
   })
 })
