@@ -479,29 +479,6 @@ const controller = {
     return chainAdapter.connectionControllerClient
   },
 
-  getAccountProp<K extends keyof AccountControllerState>(
-    key: K,
-    _chain?: ChainNamespace
-  ): AccountControllerState[K] | undefined {
-    let chain = state.activeChain
-
-    if (_chain) {
-      chain = _chain
-    }
-
-    if (!chain) {
-      return undefined
-    }
-
-    const chainAccountState = state.chains.get(chain)?.accountState
-
-    if (!chainAccountState) {
-      return undefined
-    }
-
-    return chainAccountState[key]
-  },
-
   getNetworkProp<K extends keyof AdapterNetworkState>(
     key: K,
     namespace: ChainNamespace
@@ -658,7 +635,8 @@ const controller = {
       throw new Error('Chain is required to set account prop')
     }
 
-    const currentAccountType = ChainController.getAccountProp('preferredAccountType', chainToWrite)
+    const currentAccountType =
+      ChainController.state.chains.get(chainToWrite)?.accountState?.preferredAccountType
 
     state.activeCaipAddress = undefined
     ChainController.setChainAccountData(chainToWrite, {
@@ -712,11 +690,13 @@ const controller = {
   },
 
   getAccountData(chainNamespace?: ChainNamespace) {
-    if (!chainNamespace) {
-      return AccountController.state
+    const namespace = chainNamespace || state.activeChain
+
+    if (!namespace) {
+      return undefined
     }
 
-    return ChainController.state.chains.get(chainNamespace)?.accountState
+    return ChainController.state.chains.get(namespace)?.accountState
   },
 
   getNetworkData(chainNamespace?: ChainNamespace) {
