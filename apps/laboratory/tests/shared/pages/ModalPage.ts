@@ -2,10 +2,9 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-import 'crypto'
 
 import type { WalletFeature } from '@reown/appkit'
-import { WalletPage } from '@reown/appkit-testing'
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import { BASE_URL, EXTENSION_NAME, EXTENSION_RDNS } from '@reown/appkit-testing'
 
 import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
@@ -114,7 +113,6 @@ export class ModalPage {
       await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/ethers-verify-evil/')
     }
 
-    console.log('this.url', this.url)
     await this.page.goto(this.url)
   }
 
@@ -206,6 +204,8 @@ export class ModalPage {
       uri = await page.getConnectUri()
     }
     await walletPage.connectWithUri(uri, disabledChainIds)
+    const walletValidator = new WalletValidator(walletPage)
+    await walletValidator.expectConnected()
   }
 
   async emailFlow({

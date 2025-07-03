@@ -65,7 +65,6 @@ describe('WagmiAdapter - WalletConnect', () => {
 
     walletKitManager.listenEvents({
       onSessionProposal: async ({ id, params }) => {
-        console.log('onSessionProposal', id, params)
         await walletKitManager.approveSession({
           id,
           params,

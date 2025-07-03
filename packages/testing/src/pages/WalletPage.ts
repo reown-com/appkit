@@ -15,7 +15,7 @@ import { WalletKitManager } from '../managers/walletkit.js'
 const namespaces: ChainNamespace[] = ['eip155', 'solana', 'bip122']
 
 // -- Types --------------------------------------------------------------------
-type BuildNamespaceParameters = {
+interface BuildNamespaceParameters {
   namespace: ChainNamespace
   params: WalletKitTypes.SessionProposal['params']
   disabledIds: string[]
@@ -73,83 +73,76 @@ export class WalletPage {
       walletKitManager.pair(uri).catch(reject)
     })
   }
-
   async switchNetwork(network: string) {
-    if (!this.walletKitManager) {
+    const walletKitManager = this.walletKitManager
+    const walletManager = this.walletManager
+
+    if (!walletKitManager) {
       throw new Error('WalletKit not initialized')
     }
 
-    if (!this.walletManager) {
+    if (!walletManager) {
       throw new Error('WalletManager not initialized')
     }
 
-    const walletkit = this.walletKitManager.getWalletKit()
-
-    const sessions = walletkit.getActiveSessions()
+    const walletKit = walletKitManager.getWalletKit()
+    const sessions = walletKit.getActiveSessions()
 
     const [namespace, chainId] = network.split(':')
 
-    if (!namespace) {
-      throw new Error('Invalid namespace')
+    if (!namespace || !chainId) {
+      throw new Error(`Invalid network format: "${network}". Expected "namespace:chainId"`)
     }
 
-    if (!chainId) {
-      throw new Error('Invalid chainId')
-    }
-
-    const [address] = this.walletManager.getAccounts(
+    const [address] = walletManager.getAccounts(
       namespace as ChainNamespace,
       this.connectToSingleAccount
     )
 
     if (!address) {
-      throw new Error('No address found')
+      throw new Error('No wallet address found')
     }
 
     const caipAddress = `${network}:${address}`
 
     await Promise.all(
       Object.values(sessions).map(async session => {
-        await walletkit.updateSession({
+        const prev = session.namespaces[namespace] ?? {
+          chains: [],
+          methods: [],
+          events: [],
+          accounts: []
+        }
+
+        const updatedNamespace = {
+          ...prev,
+          chains: [...new Set([network, ...(prev.chains ?? [])])],
+          accounts: [...new Set([caipAddress, ...prev.accounts])]
+        }
+
+        await walletKit.updateSession({
           topic: session.topic,
           namespaces: {
             ...session.namespaces,
-            [namespace]: {
-              ...session.namespaces[namespace],
-              methods: session.namespaces?.[namespace]?.methods ?? [],
-              events: session.namespaces?.[namespace]?.events ?? [],
-              chains: [...new Set([network, ...(session?.namespaces?.[namespace]?.chains || [])])],
-              accounts: [
-                ...new Set([caipAddress, ...(session?.namespaces?.[namespace]?.accounts || [])])
-              ]
-            }
+            [namespace]: updatedNamespace
           }
         })
 
-        await new Promise(resolve => {
-          setTimeout(resolve, 1000)
+        // Wait for session to sync (avoid race conditions)
+        await new Promise(res => {
+          setTimeout(res, 1000)
         })
 
-        const chainChanged = {
+        await walletKit.emitSessionEvent({
           topic: session.topic,
-          event: {
-            name: 'chainChanged',
-            data: Number(chainId)
-          },
-          chainId: network
-        }
-
-        const accountsChanged = {
+          chainId: network,
+          event: { name: 'chainChanged', data: Number(chainId) }
+        })
+        await walletKit.emitSessionEvent({
           topic: session.topic,
-          event: {
-            name: 'accountsChanged',
-            data: [caipAddress]
-          },
-          chainId: network
-        }
-
-        await walletkit.emitSessionEvent(chainChanged)
-        await walletkit.emitSessionEvent(accountsChanged)
+          chainId: network,
+          event: { name: 'accountsChanged', data: [caipAddress] }
+        })
       })
     )
   }

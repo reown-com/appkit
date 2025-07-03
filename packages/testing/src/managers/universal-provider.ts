@@ -1,7 +1,6 @@
 import UniversalProvider, { type NamespaceConfig } from '@walletconnect/universal-provider'
 
-// -- Constants ----------------------------------------------------------------
-const DEFAULT_PROJECT_ID = '1b0841d0acfe3e32dcb0d53dbf505bdd'
+import { PROJECT_ID } from '../constants/index.js'
 
 // -- Types --------------------------------------------------------------------
 type ListenEventsParams = {
@@ -10,10 +9,9 @@ type ListenEventsParams = {
 }
 
 export class UniversalProviderManager {
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   private provider: UniversalProvider | null = null
 
-  public async init(projectId = DEFAULT_PROJECT_ID) {
+  public async init(projectId = PROJECT_ID) {
     this.provider = await UniversalProvider.init({ projectId })
 
     return this.provider

@@ -16,19 +16,3 @@ export const EXTENSION_NAME = 'Reown'
 export const ALL_SOCIALS = ['google', 'farcaster', 'github', 'discord', 'apple', 'facebook']
 
 export const PROJECT_ID = '7d59d2594a9d2527f22f89d8014b887b'
-
-export const DEFAULT_WC_EIP155_NAMESPACE_CONFIG = {
-  methods: ['eth_requestAccounts'],
-  events: ['accountsChanged', 'chainChanged'],
-  chains: ['eip155:1']
-}
-export const DEFAULT_WC_SOLANA_NAMESPACE_CONFIG = {
-  methods: ['solana_requestAccounts'],
-  events: ['accountsChanged', 'chainChanged'],
-  chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']
-}
-export const DEFAULT_WC_BITCOIN_NAMESPACE_CONFIG = {
-  methods: ['bip122_requestAccounts'],
-  events: ['accountsChanged', 'chainChanged'],
-  chains: ['bip122:000000000019d6689c085ae165831e93']
-}
