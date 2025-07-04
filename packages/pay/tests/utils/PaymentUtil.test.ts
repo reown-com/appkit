@@ -10,7 +10,7 @@ import {
   ensureCorrectNetwork,
   processEvmErc20Payment,
   processEvmNativePayment,
-  processSolanaPayment
+  processSolanaNativePayment
 } from '../../src/utils/PaymentUtil'
 
 // --- Mocks -------------------------------------------------------------------
@@ -54,15 +54,6 @@ const MOCK_OTHER_EVM_NETWORK: CaipNetwork = {
   id: '137',
   name: 'Polygon',
   nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 }
-}
-
-const MOCK_SOLANA_NETWORK: CaipNetwork = {
-  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  chainNamespace: ConstantsUtil.CHAIN.SOLANA,
-  rpcUrls: { default: { http: ['https://api.mainnet-beta.solana.com'] } },
-  id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  name: 'Solana',
-  nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 }
 }
 
 const MOCK_FROM_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678' as `0x${string}`
@@ -338,11 +329,6 @@ describe('PaymentUtil', () => {
 
   // --- processSolanaPayment Tests ------------------------------------------
   describe('processSolanaPayment', () => {
-    const solanaPaymentAsset: PaymentAsset = {
-      asset: 'native' as const,
-      network: MOCK_SOLANA_NETWORK.caipNetworkId,
-      metadata: { name: 'Solana', symbol: 'SOL', decimals: 9 }
-    }
     const solanaPaymentParams = {
       fromAddress: MOCK_SOLANA_FROM_ADDRESS,
       recipient: MOCK_SOLANA_RECIPIENT_ADDRESS,
@@ -355,8 +341,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
-      const txHash = await processSolanaPayment(
-        solanaPaymentAsset,
+      const txHash = await processSolanaNativePayment(
         ConstantsUtil.CHAIN.SOLANA,
         solanaPaymentParams
       )
@@ -377,7 +362,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
-      const txHash = await processSolanaPayment(solanaPaymentAsset, ConstantsUtil.CHAIN.SOLANA, {
+      const txHash = await processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, {
         ...solanaPaymentParams,
         amount: stringAmount
       })
@@ -392,7 +377,7 @@ describe('PaymentUtil', () => {
 
     test('should throw if chain namespace is not SOLANA', async () => {
       await expect(
-        processSolanaPayment(solanaPaymentAsset, ConstantsUtil.CHAIN.EVM, solanaPaymentParams)
+        processSolanaNativePayment(ConstantsUtil.CHAIN.EVM, solanaPaymentParams)
       ).rejects.toThrow(new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE))
     })
 
@@ -400,7 +385,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ProviderUtil.getProvider).mockReturnValue(null)
 
       await expect(
-        processSolanaPayment(solanaPaymentAsset, ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
+        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
       ).rejects.toThrow(
         new AppKitPayError(
           AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
@@ -412,7 +397,7 @@ describe('PaymentUtil', () => {
     test('should throw if fromAddress is missing', async () => {
       const paramsWithoutFrom = { ...solanaPaymentParams, fromAddress: undefined }
       await expect(
-        processSolanaPayment(solanaPaymentAsset, ConstantsUtil.CHAIN.SOLANA, paramsWithoutFrom)
+        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, paramsWithoutFrom)
       ).rejects.toThrow(
         new AppKitPayError(
           AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG,
@@ -424,11 +409,7 @@ describe('PaymentUtil', () => {
     test('should throw if amount is invalid', async () => {
       const paramsWithInvalidAmount = { ...solanaPaymentParams, amount: 'invalid' }
       await expect(
-        processSolanaPayment(
-          solanaPaymentAsset,
-          ConstantsUtil.CHAIN.SOLANA,
-          paramsWithInvalidAmount
-        )
+        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, paramsWithInvalidAmount)
       ).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
       )
@@ -437,23 +418,15 @@ describe('PaymentUtil', () => {
     test('should throw if amount is negative', async () => {
       const paramsWithNegativeAmount = { ...solanaPaymentParams, amount: -1 }
       await expect(
-        processSolanaPayment(
-          solanaPaymentAsset,
-          ConstantsUtil.CHAIN.SOLANA,
-          paramsWithNegativeAmount
-        )
+        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, paramsWithNegativeAmount)
       ).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
       )
     })
 
     test('should throw if SPL token payment is attempted', async () => {
-      const splTokenAsset = {
-        ...solanaPaymentAsset,
-        asset: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
-      }
       await expect(
-        processSolanaPayment(splTokenAsset, ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
+        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
       ).rejects.toThrow(
         new AppKitPayError(
           AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
@@ -468,7 +441,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(undefined)
 
       await expect(
-        processSolanaPayment(solanaPaymentAsset, ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
+        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
       ).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR, 'Transaction failed.')
       )

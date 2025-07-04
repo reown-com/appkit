@@ -27,7 +27,8 @@ import {
   ensureCorrectNetwork,
   processEvmErc20Payment,
   processEvmNativePayment,
-  processSolanaNativePayment
+  processSolanaNativePayment,
+  processSolanaSPLPayment
 } from '../utils/PaymentUtil.js'
 
 const DEFAULT_PAGE = 0
@@ -383,11 +384,23 @@ export const PayController = {
           state.currentPayment.status = 'SUCCESS'
           break
         case ConstantsUtil.CHAIN.SOLANA:
-          state.currentPayment.result = await processSolanaNativePayment(chainNamespace, {
-            recipient: state.recipient,
-            amount: state.amount,
-            fromAddress: address
-          })
+          if (state.paymentAsset.asset === 'native') {
+            state.currentPayment.result = await processSolanaNativePayment(chainNamespace, {
+              recipient: state.recipient,
+              amount: state.amount,
+              fromAddress: address
+            })
+          } else {
+            state.currentPayment.result = await processSolanaSPLPayment(
+              state.paymentAsset,
+              chainNamespace,
+              {
+                recipient: state.recipient,
+                amount: state.amount,
+                fromAddress: address
+              }
+            )
+          }
           state.currentPayment.status = 'SUCCESS'
           break
         default:

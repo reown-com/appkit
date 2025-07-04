@@ -7,10 +7,14 @@ import {
 } from '@reown/appkit-common'
 import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
+import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'
 import type { PaymentOptions } from '../types/options.js'
+import { createSPLTokenTransaction } from './SolanaUtil.js'
+
+const { Connection } = await import('@solana/web3.js')
 
 interface EnsureNetworkOptions {
   paymentAssetNetwork: string
@@ -187,6 +191,87 @@ export async function processSolanaNativePayment(
     throw new AppKitPayError(
       AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
       `Solana payment failed: ${error}`
+    )
+  }
+}
+
+export async function processSolanaSPLPayment(
+  paymentAsset: PaymentOptions['paymentAsset'],
+  chainNamespace: ChainNamespace,
+  params: SolanaPaymentParams
+): Promise<string | undefined> {
+  if (chainNamespace !== ConstantsUtil.CHAIN.SOLANA) {
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
+  }
+
+  if (!params.fromAddress) {
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG,
+      'fromAddress is required for SPL payments.'
+    )
+  }
+
+  const tokenMint = paymentAsset.asset
+  const amountValue = typeof params.amount === 'string' ? parseFloat(params.amount) : params.amount
+  if (isNaN(amountValue) || amountValue <= 0) {
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
+  }
+
+  const decimals = paymentAsset.metadata?.decimals ?? 9
+
+  try {
+    const provider = ProviderUtil.getProvider(chainNamespace) as SolanaProvider
+    if (!provider) {
+      throw new AppKitPayError(
+        AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
+        'No Solana provider available.'
+      )
+    }
+
+    const activeNetwork = ChainController.getActiveCaipNetwork()
+    const rpcUrl = activeNetwork?.rpcUrls?.default?.http?.[0]
+
+    if (!rpcUrl) {
+      throw new AppKitPayError(
+        AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
+        'No RPC URL available for active network.'
+      )
+    }
+
+    const connection = new Connection(rpcUrl, 'confirmed')
+
+    // Create SPL token transaction
+    const transaction = await createSPLTokenTransaction({
+      provider,
+      connection,
+      to: params.recipient,
+      amount: amountValue,
+      tokenMint,
+      decimals
+    })
+
+    // Send transaction using provider
+    const signature = await provider.sendTransaction(transaction, connection)
+
+    // Wait for transaction confirmation
+    await new Promise<void>(resolve => {
+      const interval = setInterval(async () => {
+        const status = await connection.getSignatureStatus(signature)
+        if (status?.value) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 1000)
+    })
+
+    return signature
+  } catch (error) {
+    if (error instanceof AppKitPayError) {
+      throw error
+    }
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
+      `Solana SPL payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`
     )
   }
 }
