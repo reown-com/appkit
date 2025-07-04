@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { type CaipNetwork, ConstantsUtil, erc20ABI } from '@reown/appkit-common'
+import { type Address, type CaipNetwork, ConstantsUtil, erc20ABI } from '@reown/appkit-common'
 import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
 
 import { AppKitPayError, AppKitPayErrorCodes } from '../../src/types/errors'
@@ -48,9 +48,9 @@ const MOCK_OTHER_EVM_NETWORK: CaipNetwork = {
   nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 }
 }
 
-const MOCK_FROM_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678' as `0x${string}`
-const MOCK_RECIPIENT_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12' as `0x${string}`
-const MOCK_TOKEN_ADDRESS = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9' as `0x${string}`
+const MOCK_FROM_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678' as Address
+const MOCK_RECIPIENT_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12' as Address
+const MOCK_TOKEN_ADDRESS = '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9' as Address
 const MOCK_NATIVE_AMOUNT = 1.5
 const MOCK_ERC20_AMOUNT = 100.5
 

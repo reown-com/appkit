@@ -2,6 +2,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type {
   AdapterType,
+  Address,
   AppKitNetwork,
   AppKitSdkVersion,
   Balance,
@@ -9,6 +10,7 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
+  Hex,
   OnRampProvider,
   SdkFramework,
   SwapProvider,
@@ -322,7 +324,7 @@ export interface BlockchainApiGenerateSwapCalldataResponse {
   tx: {
     from: CaipAddress
     to: CaipAddress
-    data: `0x${string}`
+    data: Address
     amount: string
     eip155: {
       gas: string
@@ -342,7 +344,7 @@ export interface BlockchainApiGenerateApproveCalldataResponse {
   tx: {
     from: CaipAddress
     to: CaipAddress
-    data: `0x${string}`
+    data: Address
     value: string
     eip155: {
       gas: number
@@ -376,7 +378,7 @@ export interface BlockchainApiRegisterNameParams {
   coinType: number
   message: string
   signature: string
-  address: `0x${string}`
+  address: Address
 }
 
 export interface BlockchainApiSuggestionResponse {
@@ -1038,17 +1040,17 @@ export type AccountTypeMap = {
   }
 }
 export type WalletGetAssetsParams = {
-  account: `0x${string}`
-  assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+  account: Address
+  assetFilter?: Record<Address, (Address | 'native')[]>
   assetTypeFilter?: ('NATIVE' | 'ERC20')[]
-  chainFilter?: `0x${string}`[]
+  chainFilter?: Address[]
 }
 
 export type WalletGetAssetsResponse = Record<
-  `0x${string}`,
+  Address,
   {
-    address: `0x${string}` | 'native'
-    balance: `0x${string}`
+    address: Address | 'native'
+    balance: Hex
     type: 'NATIVE' | 'ERC20'
     metadata: Record<string, unknown>
   }[]
@@ -1057,29 +1059,29 @@ export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'
-      to: `0x${string}`
-      data: `0x${string}`
+      to: Address
+      data: Hex
       value: bigint
       gas?: bigint
       gasPrice?: bigint
-      address: `0x${string}`
+      address: Address
     }
   | { chainNamespace: 'solana'; to: string; value: number }
 
 export type EstimateGasTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'
-      address: `0x${string}`
-      to: `0x${string}`
-      data: `0x${string}`
+      address: Address
+      to: Address
+      data: Hex
     }
   | {
       chainNamespace: 'solana'
     }
 
 export interface WriteContractArgs {
-  tokenAddress: `0x${string}`
-  fromAddress: `0x${string}`
+  tokenAddress: Address
+  fromAddress: Address
   method: 'send' | 'transfer' | 'call' | 'approve'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any

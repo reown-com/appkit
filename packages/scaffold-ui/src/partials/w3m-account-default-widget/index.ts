@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -85,11 +85,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         }),
         ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
-          if (val) {
-            const [namespace, chainId] = val?.caipNetworkId?.split(':') || []
-            if (namespace && chainId) {
-              this.namespace = namespace as ChainNamespace
-            }
+          if (val?.chainNamespace) {
+            this.namespace = val?.chainNamespace
           }
         })
       ]
@@ -248,8 +245,13 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private sendTemplate() {
     const isSendEnabled = this.features?.send
-    const activeNamespace = ChainController.state.activeChain as ChainNamespace
-    const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace)
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('SendController:sendTemplate - namespace is required')
+    }
+
+    const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(namespace)
 
     if (!isSendEnabled || !isSendSupported) {
       return null
@@ -269,10 +271,16 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('AuthCardTemplate:authCardTemplate - namespace is required')
+    }
+
     const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
+
     if (
       !authConnector ||
       connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH ||
@@ -321,14 +329,12 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onTransactions() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     EventsController.sendEvent({
       type: 'track',
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          getPreferredAccountType(activeChainNamespace) ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

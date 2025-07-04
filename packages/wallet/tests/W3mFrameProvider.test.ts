@@ -1,10 +1,11 @@
 import * as logger from '@walletconnect/logger'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type {
-  CaipNetworkId,
-  ChainNamespace,
-  EmbeddedWalletTimeoutReason
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil,
+  type EmbeddedWalletTimeoutReason
 } from '@reown/appkit-common'
 
 import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
@@ -19,7 +20,7 @@ const getActiveCaipNetwork = () => ({
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: { default: { http: ['https://rpc.ankr.com/eth'] } },
   id: 'eip155:1',
-  chainNamespace: 'eip155' as ChainNamespace,
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
   caipNetworkId: 'eip155:1' as CaipNetworkId
 })
 
@@ -276,7 +277,7 @@ describe('W3mFrameProvider', () => {
           nativeCurrency: { name: 'Sol', symbol: 'SOL', decimals: 9 },
           rpcUrls: { default: { http: [solanaRpcUrl] } },
           id: 'solana:1',
-          chainNamespace: 'solana' as ChainNamespace,
+          chainNamespace: ConstantsUtil.CHAIN.SOLANA,
           caipNetworkId: 'solana:1' as CaipNetworkId
         }
       }
@@ -286,7 +287,7 @@ describe('W3mFrameProvider', () => {
         nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
         rpcUrls: { default: { http: [eip155RpcUrl] } },
         id: 'eip155:1',
-        chainNamespace: 'eip155' as ChainNamespace,
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
         caipNetworkId: 'eip155:1' as CaipNetworkId
       }
     }

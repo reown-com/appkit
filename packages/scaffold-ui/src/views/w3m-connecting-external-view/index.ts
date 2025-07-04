@@ -28,6 +28,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
 
   public constructor() {
     super()
+
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
     }
