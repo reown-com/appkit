@@ -1,6 +1,6 @@
 import { type BrowserContext, type Page, test } from '@playwright/test'
 
-import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { WalletPage } from '@reown/appkit-testing'
 
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
@@ -9,7 +9,6 @@ import { ModalValidator } from './shared/validators/ModalValidator'
 let modalPage: ModalPage
 let modalValidator: ModalValidator
 let walletPage: WalletPage
-let walletValidator: WalletValidator
 let context: BrowserContext
 let browserPage: Page
 /* eslint-enable init-declarations */
@@ -28,7 +27,6 @@ siweWalletTest.beforeAll(async ({ browser, library }) => {
 
   modalPage = new ModalPage(browserPage, library, 'siwe')
   walletPage = new WalletPage(await context.newPage())
-  walletValidator = new WalletValidator(walletPage.page)
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
@@ -41,7 +39,10 @@ siweWalletTest.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 siweWalletTest('it should be authenticated', async () => {
   await modalValidator.expectOnSignInEventCalled(false)
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
   await modalValidator.expectConnected()
   await modalValidator.expectAuthenticated()
   await modalValidator.expectOnSignInEventCalled(true)
@@ -50,7 +51,6 @@ siweWalletTest('it should be authenticated', async () => {
 siweWalletTest('it should require re-authentication when switching networks', async () => {
   await modalPage.switchNetwork('Polygon')
   await modalPage.promptSiwe()
-  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
 })
 
@@ -68,19 +68,19 @@ siweWalletTest('it should be authenticated when refresh page', async () => {
   await modalValidator.expectAuthenticated()
   await modalValidator.expectOnSignInEventCalled(false)
   await modalPage.sign()
-  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
   await modalValidator.expectUnauthenticated()
-  await walletValidator.expectSessionCard({ visible: false })
 })
 
 siweWalletTest('it should be unauthenticated when disconnect', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
   await modalValidator.expectConnected()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
   await modalValidator.expectUnauthenticated()
-  await walletValidator.expectSessionCard({ visible: false })
 })

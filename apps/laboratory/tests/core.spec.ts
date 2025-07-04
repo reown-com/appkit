@@ -28,7 +28,7 @@ coreTest.beforeAll(async ({ browser }) => {
 
   modalPage = new ModalPage(browserPage, 'library', 'core')
   walletPage = new WalletPage(await context.newPage())
-  walletValidator = new WalletValidator(walletPage.page)
+  walletValidator = new WalletValidator(walletPage)
 
   await walletPage.load()
 
@@ -43,11 +43,6 @@ coreTest.beforeAll(async ({ browser }) => {
   expect(uri).toBeTruthy()
 
   await walletPage.connectWithUri(uri as string)
-  await walletPage.handleSessionProposal({
-    reqAccounts: ['1', '2'],
-    optAccounts: ['1', '2'],
-    accept: true
-  })
 
   // Wait for connection
   await expect(browserPage.getByTestId('disconnect-hook-button')).toBeVisible()
@@ -64,8 +59,7 @@ coreTest('it should be connected', async () => {
 
 coreTest('it should sign message', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
-  await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
-  await walletPage.handleRequest({ accept: true })
+  await walletValidator.expectReceivedSign({ network: 'eip155:1' })
   await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
 })
 
@@ -80,8 +74,7 @@ coreTest('it should switch networks', async () => {
 
 coreTest('it should sign message after network switch', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
-  await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
-  await walletPage.handleRequest({ accept: true })
+  await walletValidator.expectReceivedSign({ network: 'eip155:137' })
   await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
 })
 
@@ -92,8 +85,7 @@ coreTest('it should stay connected after page refresh', async () => {
 
 coreTest('it should reject sign message', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
-  await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
-  await walletPage.handleRequest({ accept: false })
+  await walletValidator.expectReceivedSign({ network: 'eip155:137' })
   await expect(modalPage.page.getByText('Signing Failed')).toBeVisible()
 })
 

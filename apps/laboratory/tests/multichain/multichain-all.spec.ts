@@ -1,6 +1,7 @@
 import { type BrowserContext, test } from '@playwright/test'
 
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { solana } from '@reown/appkit/networks'
 
 import { ModalPage } from '../shared/pages/ModalPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
@@ -23,10 +24,13 @@ test.beforeAll(async ({ browser }) => {
   modalPage = new ModalPage(browserPage, 'multichain-all', 'default')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
-  walletValidator = new WalletValidator(walletPage.page)
+  walletValidator = new WalletValidator(walletPage)
 
   await modalPage.load()
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
 })
 
 test.afterAll(async () => {
@@ -44,13 +48,11 @@ test('should sign message for each chain', async ({ browser }) => {
   const isFirefox = browser.browserType().name() === 'firefox'
 
   await modalPage.sign('eip155')
-  await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
-  await walletPage.handleRequest({ accept: true })
+  await walletValidator.expectReceivedSign({ network: 'eip155:1' })
   await modalValidator.expectAcceptedSign()
 
   await modalPage.sign('solana')
-  await walletValidator.expectReceivedSign({ chainName: 'Solana' })
-  await walletPage.handleRequest({ accept: true })
+  await walletValidator.expectReceivedSign({ network: `solana:${solana.id}` })
   await modalValidator.expectAcceptedSign()
 
   if (!isFirefox) {
@@ -59,8 +61,6 @@ test('should sign message for each chain', async ({ browser }) => {
      * This is happening due to ecpair package that sample wallet is using while signing Bitcoin messages, and only happening with Firefox browser.
      */
     await modalPage.sign('bip122')
-    await walletValidator.expectReceivedSignMessage({ message: 'Hello, World!' })
-    await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
   }
 })
@@ -129,7 +129,10 @@ test('should disconnect from all namespaces', async () => {
 })
 
 test('should disconnect from all namespaces when try to disconnect only one when connected with wc', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalPage.qrCodeFlow({
+    page: modalPage,
+    walletPage
+  })
 
   await modalValidator.expectAccountButtonReady('eip155')
   await modalValidator.expectAccountButtonReady('solana')

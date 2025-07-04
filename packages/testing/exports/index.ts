@@ -3,5 +3,7 @@ export * from '../src/validators/WalletValidator.js'
 
 export * from '../src/constants/index.js'
 export * from '../src/constants/devices.js'
-export * from '../src/utils/networks.js'
+export * from '../src/managers/wallet.js'
+export * from '../src/managers/walletkit.js'
+export * from '../src/managers/universal-provider.js'
 export * from '../src/utils/timeouts.js'

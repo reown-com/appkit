@@ -43,6 +43,7 @@
     "@vitest/coverage-v8": "2.1.9",
     "@wallet-standard/features": "1.0.3",
     "@walletconnect/types": "2.21.3",
+    "@reown/appkit-testing": "workspace:*",
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",

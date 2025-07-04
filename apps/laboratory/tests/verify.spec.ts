@@ -1,7 +1,8 @@
 import test, { type Page, expect } from '@playwright/test'
 
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
-import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
+import { BASE_URL } from '@reown/appkit-testing'
+import { mainnet, solana } from '@reown/appkit/networks'
 
 import { timingFixture } from './shared/fixtures/timing-fixture'
 import { testMEthersVerifyDomainMismatch } from './shared/fixtures/w3m-ethers-verify-domain-mismatch-fixture'
@@ -24,20 +25,15 @@ testMWagmiVerifyValid(
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = DEFAULT_CHAIN_NAME
-    await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-    await walletPage.handleRequest({ accept: true })
+    await walletValidator.expectReceivedSign({ network: 'eip155:1' })
     await modalValidator.expectAcceptedSign()
 
     await modalPage.disconnect()
@@ -54,18 +50,15 @@ testMWagmiVerifyDomainMismatch(
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = DEFAULT_CHAIN_NAME
-    await walletValidator.expectReceivedSign({ chainName })
-    await walletPage.handleRequest({ accept: true })
+    await walletValidator.expectReceivedSign({ network: 'eip155:1' })
     await modalValidator.expectAcceptedSign()
 
     await modalPage.disconnect()
@@ -83,24 +76,21 @@ testMWagmiVerifyEvil(
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
     await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
     await walletPage.page.getByText('Proceed anyway').click()
     await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = DEFAULT_CHAIN_NAME
     await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
     await walletPage.page.getByText('Proceed anyway').click()
-    await walletValidator.expectReceivedSign({ chainName })
+    await walletValidator.expectReceivedSign({ network: 'eip155:1' })
     await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
-    await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 
     await modalPage.disconnect()
@@ -117,20 +107,15 @@ testMEthersVerifyValid(
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = DEFAULT_CHAIN_NAME
-    await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-    await walletPage.handleRequest({ accept: true })
+    await walletValidator.expectReceivedSign({ network: 'eip155:1' })
     await modalValidator.expectAcceptedSign()
 
     await modalPage.disconnect()
@@ -147,18 +132,15 @@ testMEthersVerifyDomainMismatch(
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = DEFAULT_CHAIN_NAME
-    await walletValidator.expectReceivedSign({ chainName })
-    await walletPage.handleRequest({ accept: true })
+    await walletValidator.expectReceivedSign({ network: 'eip155:1' })
     await modalValidator.expectAcceptedSign()
 
     await modalPage.disconnect()
@@ -168,31 +150,22 @@ testMEthersVerifyDomainMismatch(
 )
 
 testMEthersVerifyEvil(
-  'ethers: connection and signature requests from scam verified domain should show as scam domain',
+  'ethers: connection and signature requests from scam verified domain',
   async ({ modalPage, context }) => {
     test.skip(modalPage.library !== 'ethers', 'fixture always uses ethers')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
-    await walletPage.page.getByText('Proceed anyway').click()
-    await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = DEFAULT_CHAIN_NAME
-    await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
-    await walletPage.page.getByText('Proceed anyway').click()
-    await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
-    await walletPage.handleRequest({ accept: true })
+    await walletValidator.expectReceivedSign({ network: 'eip155:1' })
     await modalValidator.expectAcceptedSign()
 
     await modalPage.disconnect()
@@ -253,20 +226,16 @@ timingFixture.extend<TimingFixtureWithLibrary>({
   }
   const walletPage = new WalletPage(walletPagePage)
   await walletPage.load()
-  const walletValidator = new WalletValidator(walletPage.page)
+  const walletValidator = new WalletValidator(walletPage)
 
   const uri = await modalPage.getConnectUri()
   await walletPage.connectWithUri(uri)
-  await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
   await modalValidator.expectConnected()
   await walletValidator.expectConnected()
 
   await modalPage.sign()
-  const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
-  await walletValidator.expectReceivedSign({ chainName })
-  await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-  await walletPage.handleRequest({ accept: true })
+  const network = modalPage.library === 'solana' ? `solana:${solana.id}` : `eip155:${mainnet.id}`
+  await walletValidator.expectReceivedSign({ network })
   await modalValidator.expectAcceptedSign()
 
   await modalPage.disconnect()

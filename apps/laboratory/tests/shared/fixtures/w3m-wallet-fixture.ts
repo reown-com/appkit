@@ -1,6 +1,5 @@
 /* eslint no-console: 0 */
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
-import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
 
 import { timeEnd, timeStart } from '../utils/logs'
 import { testM as base, testMultiChainM as multiChain, testMSiwe as siwe } from './w3m-fixture'
@@ -57,11 +56,6 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
 
     const connectionInitiated = new Date()
 
-    // Handle session proposal
-    timeStart('walletPage.handleSessionProposal')
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    timeEnd('walletPage.handleSessionProposal')
-
     const proposalReceived = new Date()
 
     timingRecords.push({
@@ -76,7 +70,7 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
       })
     }
 
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
 
     timeStart('walletValidator.expectConnected')
     await walletValidator.expectConnected()
@@ -100,12 +94,11 @@ export const testMWMultiChain = multiChain.extend<ModalWalletFixture>({
     await walletPage.load()
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await use(walletPage)
   },
   walletValidator: async ({ walletPage }, use) => {
-    const walletValidator = new WalletValidator(walletPage.page)
+    const walletValidator = new WalletValidator(walletPage)
     await use(walletValidator)
   }
 })

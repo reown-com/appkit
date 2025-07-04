@@ -1,84 +1,43 @@
 import { expect } from '@playwright/test'
-import type { Locator, Page } from '@playwright/test'
 
-import { getMaximumWaitConnections } from '../utils/timeouts.js'
-
-const MAX_WAIT = getMaximumWaitConnections()
+import type { WalletPage } from '../pages/WalletPage.js'
 
 export class WalletValidator {
-  private gotoSessions: Locator
-  public page: Page
+  public walletPage: WalletPage
 
-  constructor(page: Page) {
-    this.page = page
-    this.gotoSessions = this.page.getByTestId('sessions')
-  }
-
-  loadNewPage(page: Page) {
-    this.page = page
-    this.gotoSessions = this.page.getByTestId('sessions')
+  constructor(walletPage: WalletPage) {
+    this.walletPage = walletPage
   }
 
   async expectConnected() {
-    await expect(
-      this.gotoSessions,
-      'Approve screen should be closed and sessions tab visible'
-    ).toBeVisible()
-    await this.gotoSessions.click()
-    await this.expectSessionCard({ visible: true })
-  }
+    const walletKit = this.walletPage.walletKitManager?.getWalletKit()
 
-  async expectSessionCard({ visible = true }: { visible?: boolean }) {
-    if (visible) {
-      await expect(
-        this.page.getByTestId('session-card'),
-        'Session card should be visible'
-      ).toBeVisible({
-        timeout: MAX_WAIT
-      })
-    } else {
-      await expect(
-        this.page.getByTestId('session-card'),
-        'Session card should not be visible'
-      ).not.toBeVisible({
-        timeout: MAX_WAIT
-      })
+    if (!walletKit) {
+      throw new Error('WalletKitManager not initialized')
     }
+
+    await expect(() => {
+      expect(Object.keys(walletKit.getActiveSessions()).length).toBeGreaterThan(0)
+    }).toPass({ timeout: 10_000 })
   }
 
   async expectDisconnected() {
-    await this.gotoSessions.click()
-    await expect(
-      this.page.getByTestId('session-card'),
-      'Session card should not be visible'
-    ).not.toBeVisible({
-      timeout: MAX_WAIT
-    })
-  }
+    const walletKit = this.walletPage.walletKitManager?.getWalletKit()
 
-  async expectReceivedSign({ chainName = 'Ethereum', expectNetworkName = true }) {
-    await expect(
-      this.page.getByTestId('session-approve-button'),
-      'Session approve button should be visible'
-    ).toBeVisible({
-      timeout: MAX_WAIT
-    })
-    if (expectNetworkName) {
-      await expect(
-        this.page.getByTestId('request-details-chain'),
-        'Request details should contain chain name'
-      ).toContainText(chainName)
+    if (!walletKit) {
+      throw new Error('WalletKitManager not initialized')
     }
+
+    await expect(() => {
+      expect(Object.keys(walletKit.getActiveSessions()).length).toBe(0)
+    }).toPass({ timeout: 10_000 })
   }
 
-  async expectReceivedSignMessage({ message = 'Hello, World!' }) {
-    await expect(
-      this.page.getByTestId('session-approve-button'),
-      'Session approve button should be visible'
-    ).toBeVisible({ timeout: MAX_WAIT })
-    await expect(
-      this.page.getByText(message),
-      'Request details should contain sign message'
-    ).toBeVisible({ timeout: MAX_WAIT })
+  async expectReceivedSign({ network = 'eip155:1' }) {
+    await expect(() => {
+      const lastSessionRequest = this.walletPage.lastSessionRequest
+
+      expect(lastSessionRequest?.params.chainId).toBe(network)
+    }).toPass({ timeout: 10_000 })
   }
 }
