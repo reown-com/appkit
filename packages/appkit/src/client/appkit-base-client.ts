@@ -557,7 +557,6 @@ export abstract class AppKitBaseClient {
         const { id: connectorId, chainNamespace, initialDisconnect } = params || {}
 
         const namespace = chainNamespace || ChainController.state.activeChain
-        const namespaces = Array.from(ChainController.state.chains.keys())
         const currentConnectorId = ConnectorController.getConnectorId(namespace)
 
         const isAuth =
@@ -568,6 +567,7 @@ export abstract class AppKitBaseClient {
           currentConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
         try {
+          const namespaces = Array.from(ChainController.state.chains.keys())
           let namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
 
           /*
@@ -579,27 +579,10 @@ export abstract class AppKitBaseClient {
           }
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
-            let connectorIdToUse = connectorId
-
-            if ((isWalletConnect || isAuth) && !connectorId) {
-              connectorIdToUse = currentConnectorId
-            }
-
-            if (initialDisconnect && isAuth) {
-              StorageUtil.deleteConnectedSocialProvider()
-              namespacesToDisconnect.forEach(ns => {
-                StorageUtil.addDisconnectedConnectorId(connectorIdToUse || '', ns)
-              })
-            }
-
-            const disconnectData = await this.disconnectNamespace(ns, connectorIdToUse)
+            const disconnectData = await this.disconnectNamespace(ns, currentConnectorId)
 
             if (disconnectData) {
               disconnectData.connections.forEach(connection => {
-                if (connection.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
-                  StorageUtil.deleteConnectedSocialProvider()
-                }
-
                 StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
               })
             }
@@ -1117,9 +1100,15 @@ export abstract class AppKitBaseClient {
     ChainController.resetAccount(chainNamespace)
     ChainController.resetNetwork(chainNamespace)
 
+    StorageUtil.removeConnectedNamespace(chainNamespace)
+    StorageUtil.deleteConnectedSocialProvider()
+    const namespaces = Array.from(ChainController.state.chains.keys())
+    const namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
+    namespacesToDisconnect.forEach(ns =>
+      StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
+    )
     ConnectorController.removeConnectorId(chainNamespace)
 
-    StorageUtil.removeConnectedNamespace(chainNamespace)
     ProviderUtil.resetChain(chainNamespace)
 
     this.setUser(undefined, chainNamespace)
