@@ -385,12 +385,13 @@ export function AppKitPay() {
 
             <FormControl>
               <FormLabel>Presets</FormLabel>
-              <ButtonGroup spacing="4" width="full">
+              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing="3" width="full">
                 <Button
                   onClick={() => handlePresetClick(PRESETS['NATIVE_BASE'])}
                   isActive={isPresetActive(PRESETS['NATIVE_BASE'])}
                   variant={isPresetActive(PRESETS['NATIVE_BASE']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   Native Base
                 </Button>
@@ -398,7 +399,8 @@ export function AppKitPay() {
                   onClick={() => handlePresetClick(PRESETS['NATIVE_BASE_SEPOLIA'])}
                   isActive={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA'])}
                   variant={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   Native Base Sepolia
                 </Button>
@@ -406,7 +408,8 @@ export function AppKitPay() {
                   onClick={() => handlePresetClick(PRESETS['USDC_BASE'])}
                   isActive={isPresetActive(PRESETS['USDC_BASE'])}
                   variant={isPresetActive(PRESETS['USDC_BASE']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   USDC Base
                 </Button>
@@ -414,7 +417,8 @@ export function AppKitPay() {
                   onClick={() => handlePresetClick(PRESETS['USDC_SOLANA'])}
                   isActive={isPresetActive(PRESETS['USDC_SOLANA'])}
                   variant={isPresetActive(PRESETS['USDC_SOLANA']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   USDC Solana
                 </Button>
@@ -422,11 +426,12 @@ export function AppKitPay() {
                   onClick={() => handlePresetClick(PRESETS['SOL_DEV'])}
                   isActive={isPresetActive(PRESETS['SOL_DEV'])}
                   variant={isPresetActive(PRESETS['SOL_DEV']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   SOL Dev
                 </Button>
-              </ButtonGroup>
+              </SimpleGrid>
             </FormControl>
 
             <Button onClick={onToggle} variant="outline" width="full">
