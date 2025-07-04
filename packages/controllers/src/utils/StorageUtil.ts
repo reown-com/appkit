@@ -838,9 +838,17 @@ export const StorageUtil = {
   removeTransactionsCache({ address, chainId }: { address: string; chainId: string }) {
     try {
       const cache = StorageUtil.getTransactionsCache()
+      const addressCache = cache?.[address] || {}
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [chainId]: _removed, ...updatedChainData } = addressCache
+
       SafeLocalStorage.setItem(
         SafeLocalStorageKeys.HISTORY_TRANSACTIONS_CACHE,
-        JSON.stringify({ ...cache, [address]: { ...cache[address], [chainId]: undefined } })
+        JSON.stringify({
+          ...cache,
+          [address]: updatedChainData
+        })
       )
     } catch {
       console.info('Unable to remove transactions cache', { address, chainId })

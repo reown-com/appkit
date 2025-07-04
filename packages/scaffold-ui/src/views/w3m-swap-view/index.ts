@@ -173,6 +173,7 @@ export class W3mSwapView extends LitElement {
   private visibilityChangeHandler = () => {
     if (document?.hidden) {
       clearInterval(this.interval)
+      this.interval = undefined
     } else {
       this.startTokenPriceInterval()
     }
