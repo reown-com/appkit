@@ -1097,11 +1097,10 @@ export abstract class AppKitBaseClient {
     StorageUtil.removeConnectedNamespace(chainNamespace)
     StorageUtil.deleteConnectedSocialProvider()
     const namespaces = Array.from(ChainController.state.chains.keys())
-    let namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
-    namespacesToDisconnect.forEach(ns => {
-      const connectorId = ConnectorController.getConnectorId(ns)
-      StorageUtil.addDisconnectedConnectorId(connectorId || '', ns)
-    })
+    const namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
+    namespacesToDisconnect.forEach(ns =>
+      StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
+    )
     ConnectorController.removeConnectorId(chainNamespace)
 
     ProviderUtil.resetChain(chainNamespace)
