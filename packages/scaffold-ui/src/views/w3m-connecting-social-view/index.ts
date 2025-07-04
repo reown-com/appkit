@@ -3,6 +3,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { CaipNetworkId } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -186,7 +187,10 @@ export class W3mConnectingSocialView extends LitElement {
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',
-                properties: { provider: this.socialProvider }
+                properties: {
+                  provider: this.socialProvider,
+                  chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId as CaipNetworkId
+                }
               })
             }
           }

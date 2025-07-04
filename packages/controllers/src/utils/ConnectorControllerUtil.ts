@@ -1,5 +1,10 @@
 /* eslint-disable max-depth */
-import { type ChainNamespace, ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  ParseUtil,
+  type ParsedCaipAddress
+} from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -180,7 +185,11 @@ export const ConnectorControllerUtil = {
                   EventsController.sendEvent({
                     type: 'track',
                     event: 'SOCIAL_LOGIN_SUCCESS',
-                    properties: { provider: socialProvider }
+                    properties: {
+                      provider: socialProvider,
+                      chainId: ChainController.getActiveCaipNetwork()
+                        ?.caipNetworkId as CaipNetworkId
+                    }
                   })
                 }
               }

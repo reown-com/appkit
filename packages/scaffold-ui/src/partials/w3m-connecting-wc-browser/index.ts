@@ -1,5 +1,7 @@
+import type { CaipNetworkId } from '@reown/appkit-common'
 import type { BaseError } from '@reown/appkit-controllers'
 import {
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -49,7 +51,11 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_SUCCESS',
-        properties: { method: 'browser', name: this.wallet?.name || 'Unknown' }
+        properties: {
+          method: 'browser',
+          name: this.wallet?.name || 'Unknown',
+          chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId as CaipNetworkId
+        }
       })
     } catch (error) {
       EventsController.sendEvent({

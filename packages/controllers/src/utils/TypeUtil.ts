@@ -458,6 +458,7 @@ export type Event =
       properties: {
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
+        chainId: CaipNetworkId
       }
     }
   | {
@@ -757,6 +758,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_SUCCESS'
       properties: {
         provider: SocialProvider
+        chainId: CaipNetworkId
       }
     }
   | {
