@@ -17,6 +17,7 @@ export const ConstantsUtil = {
     SAFE: 'safe',
     LEDGER: 'ledger',
     OKX: 'okx',
+    ASIGNA: 'asigna',
     EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
   },
