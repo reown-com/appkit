@@ -73,7 +73,7 @@ describe('W3mConnectingWcBrowser', () => {
     expect(EventsController.sendEvent).toHaveBeenCalledWith({
       type: 'track',
       event: 'CONNECT_SUCCESS',
-      properties: { method: 'browser', name: CONNECTOR.name, chainId: CONNECTOR.chain }
+      properties: { method: 'browser', name: CONNECTOR.name, chainId: 'eip155:1' }
     })
   })
 
