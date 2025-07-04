@@ -795,7 +795,7 @@ export const StorageUtil = {
       ) {
         return transactionsCache.transactions
       }
-      StorageUtil.removeTransactionsCache(address)
+      StorageUtil.removeTransactionsCache({ address, chainId })
     } catch {
       console.info('Unable to get transactions cache')
     }
@@ -835,15 +835,15 @@ export const StorageUtil = {
       })
     }
   },
-  removeTransactionsCache(address: string) {
+  removeTransactionsCache({ address, chainId }: { address: string; chainId: string }) {
     try {
       const cache = StorageUtil.getTransactionsCache()
       SafeLocalStorage.setItem(
         SafeLocalStorageKeys.HISTORY_TRANSACTIONS_CACHE,
-        JSON.stringify({ ...cache, [address]: undefined })
+        JSON.stringify({ ...cache, [address]: { ...cache[address], [chainId]: undefined } })
       )
     } catch {
-      console.info('Unable to remove transactions cache', address)
+      console.info('Unable to remove transactions cache', { address, chainId })
     }
   },
   getTokenPriceCache() {

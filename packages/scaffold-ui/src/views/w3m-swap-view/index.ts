@@ -192,7 +192,7 @@ export class W3mSwapView extends LitElement {
     if (this.lastTokenPriceUpdate && Date.now() - this.lastTokenPriceUpdate > 10_000) {
       this.fetchTokensAndValues()
     }
-
+    clearInterval(this.interval)
     this.interval = setInterval(() => {
       this.fetchTokensAndValues()
     }, 10_000)
