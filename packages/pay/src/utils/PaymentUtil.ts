@@ -140,8 +140,7 @@ interface SolanaPaymentParams {
   fromAddress?: string
 }
 
-export async function processSolanaPayment(
-  paymentAsset: PaymentOptions['paymentAsset'],
+export async function processSolanaNativePayment(
   chainNamespace: ChainNamespace,
   params: SolanaPaymentParams
 ): Promise<string | undefined> {
@@ -161,15 +160,7 @@ export async function processSolanaPayment(
     throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
   }
 
-  if (paymentAsset.asset !== 'native') {
-    throw new AppKitPayError(
-      AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
-      'SPL token payments not yet supported.'
-    )
-  }
-
   try {
-    // Get the Solana provider for proper transaction creation
     const provider = ProviderUtil.getProvider(chainNamespace)
     if (!provider) {
       throw new AppKitPayError(
