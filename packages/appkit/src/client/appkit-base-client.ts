@@ -592,7 +592,10 @@ export abstract class AppKitBaseClient {
               })
             }
 
-            const disconnectData = await this.disconnectNamespace(ns, connectorIdToUse)
+            const disconnectData = await this.disconnectNamespace(
+              ns,
+              connectorIdToUse || currentConnectorId
+            )
 
             if (disconnectData) {
               disconnectData.connections.forEach(connection => {
