@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import { useEffect, useState, useSyncExternalStore } from 'react'
-
-import { useSnapshot } from 'valtio'
+import { useEffect, useState } from 'react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import type {
@@ -15,6 +13,7 @@ import type {
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
 import { ProviderUtil } from '@reown/appkit-utils'
+import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 
 import type {
   AppKitBaseClient as AppKit,
@@ -77,7 +76,29 @@ export function getAppKit(appKit: AppKit) {
 export * from '@reown/appkit-controllers/react'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
-  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
+  const [providers, setProviders] = useState(ProviderUtil.state.providers)
+  const [providerIds, setProviderIds] = useState(ProviderUtil.state.providerIds)
+
+  useEffect(() => {
+    const unsubscribeProviders = ProviderUtil.subscribeKey(
+      'providers',
+      (newProviders: ProviderStoreUtilState['providers']) => {
+        setProviders(newProviders)
+      }
+    )
+
+    const unsubscribeProviderIds = ProviderUtil.subscribeKey(
+      'providerIds',
+      (newProviderIds: ProviderStoreUtilState['providerIds']) => {
+        setProviderIds(newProviderIds)
+      }
+    )
+
+    return () => {
+      unsubscribeProviders()
+      unsubscribeProviderIds()
+    }
+  }, [])
 
   const walletProvider = providers[chainNamespace] as T
   const walletProviderType = providerIds[chainNamespace]
@@ -147,15 +168,16 @@ export function useWalletInfo(namespace?: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useWalletInfo" hook')
   }
-  const walletInfo = useSyncExternalStore(
-    callback => {
-      const unsubscribe = modal?.subscribeWalletInfo(callback, namespace)
 
-      return () => unsubscribe?.()
-    },
-    () => modal?.getWalletInfo(namespace),
-    () => modal?.getWalletInfo(namespace)
-  )
+  const [walletInfo, setWalletInfo] = useState(() => modal?.getWalletInfo(namespace))
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeWalletInfo(newWalletInfo => {
+      setWalletInfo(newWalletInfo)
+    }, namespace)
+
+    return () => unsubscribe?.()
+  }, [namespace])
 
   return { walletInfo }
 }
