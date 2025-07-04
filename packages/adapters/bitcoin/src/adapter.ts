@@ -19,6 +19,7 @@ import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnect
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
+import { UnisatConnector } from './connectors/UnisatConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
@@ -183,6 +184,36 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
     if (okxConnector) {
       this.addConnector(okxConnector)
+    }
+
+    const unisatConnector = UnisatConnector.getWallet({
+      id: 'unisat',
+      name: 'Unisat Wallet',
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (unisatConnector) {
+      this.addConnector(unisatConnector)
+    }
+
+    const bitgetConnector = UnisatConnector.getWallet({
+      id: 'bitget',
+      name: 'Bitget Wallet',
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (bitgetConnector) {
+      this.addConnector(bitgetConnector)
+    }
+
+    const binanceWeb3Wallet = UnisatConnector.getWallet({
+      id: 'binancew3w',
+      name: 'Binance Web3 Wallet',
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (binanceWeb3Wallet) {
+      this.addConnector(binanceWeb3Wallet)
     }
   }
 
