@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 describe('Bitcoin Adapter Exports', () => {
@@ -8,14 +9,14 @@ describe('Bitcoin Adapter Exports', () => {
 
   it('should ensure polyfills are loaded when importing exports', () => {
     const polyfills = {
-      Buffer: window.Buffer,
+      Buffer: Buffer,
       global: window.global,
       process: window.process,
       'process.env': window.process.env
     }
 
-    expect(window.Buffer).toBeDefined()
-    expect(typeof window.Buffer).toBe('function')
+    expect(Buffer).toBeDefined()
+    expect(typeof Buffer).toBe('function')
 
     expect(window.global).toBeDefined()
     expect(window.global).toBe(window)

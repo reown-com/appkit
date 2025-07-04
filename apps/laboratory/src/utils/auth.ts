@@ -1,7 +1,40 @@
-import { type AuthOptions, getServerSession } from 'next-auth'
-import credentialsProvider from 'next-auth/providers/credentials'
+import CredentialsProvider from 'next-auth/providers/credentials'
 
 import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@reown/appkit-siwe'
+
+import { auth } from '@/auth'
+
+// Define Session type manually
+interface Session {
+  user?: {
+    name?: string
+    email?: string
+    image?: string
+  }
+  expires: string
+}
+
+// Redefine AuthOptions and JWT types accurately
+interface AuthOptions {
+  secret: string
+  providers: object[]
+  session: {
+    strategy: string
+  }
+  callbacks: {
+    session: (params: { session: Session; token: JWT }) => Session
+  }
+}
+
+interface JWT {
+  sub?: string
+}
+
+// Define ExtendedSession type
+interface ExtendedSession extends Session {
+  address?: string
+  chainId?: number
+}
 
 export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOptions {
   const nextAuthSecret = process.env['NEXTAUTH_SECRET']
@@ -15,7 +48,8 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
   }
 
   const providers = [
-    credentialsProvider({
+    // eslint-disable-next-line new-cap
+    CredentialsProvider({
       name: 'Ethereum',
       credentials: {
         message: {
@@ -29,12 +63,13 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
           placeholder: '0x0'
         }
       },
-      async authorize(credentials) {
+      async authorize(credentials: Partial<Record<'message' | 'signature', unknown>>) {
         try {
-          if (!credentials?.message) {
+          const message = credentials.message as string
+          const signature = credentials.signature as string
+          if (!message) {
             throw new Error('SiweMessage is undefined')
           }
-          const { message, signature } = credentials
           const address = getAddressFromMessage(message)
           const chainId = getChainIdFromMessage(message)
           const isValid = await verifySignature({
@@ -71,18 +106,19 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
       strategy: 'jwt'
     },
     callbacks: {
-      session({ session, token }) {
+      session({ session, token }: { session: Session; token: JWT }) {
+        const extendedSession = session as ExtendedSession
         if (!token.sub) {
-          return session
+          return extendedSession
         }
 
         const [, chainId, address] = token.sub.split(':')
         if (chainId && address) {
-          session.address = address
-          session.chainId = parseInt(chainId, 10)
+          extendedSession.address = address
+          extendedSession.chainId = parseInt(chainId, 10)
         }
 
-        return session
+        return extendedSession
       }
     }
   }
@@ -93,5 +129,7 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
  * @returns The session object or null
  */
 export async function getSession() {
-  return await getServerSession(getAuthOptions(true))
+  const session = await auth()
+
+  return session
 }
