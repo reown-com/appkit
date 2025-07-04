@@ -78,7 +78,7 @@ jobs:
             exit 1
           fi
 
-          echo "Sending Slack notification for Docs Analysis."
+          echo "Sending Slack notification for Unity Update."
           # Echo context information using direct GitHub context expressions for clarity and consistency.
           echo "AppKit Repo: ${{ github.repository }}"
           echo "Commit SHA: ${{ github.sha }}"
