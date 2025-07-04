@@ -40,8 +40,7 @@ export class W3mSendSelectTokenView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    this.fetchNetworkPrice()
-    this.fetchBalances()
+    this.fetchBalancesAndNetworkPrice()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
@@ -65,6 +64,13 @@ export class W3mSendSelectTokenView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private async fetchBalancesAndNetworkPrice() {
+    if (!this.tokenBalances || this.tokenBalances?.length === 0) {
+      await this.fetchBalances()
+      await this.fetchNetworkPrice()
+    }
+  }
 
   private async fetchBalances() {
     await SendController.fetchTokenBalance()
