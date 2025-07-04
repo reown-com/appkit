@@ -126,7 +126,8 @@ export const SmartSessionsController = {
       }
     })
 
-    const rawResponse = await connectionControllerClient?.grantPermissions([request])
+    const versionedRequest = { ...request, version: 2 }
+    const rawResponse = await connectionControllerClient?.grantPermissions([versionedRequest])
 
     // Validate and type guard the response
     const response = assertWalletGrantPermissionsResponse(rawResponse)
