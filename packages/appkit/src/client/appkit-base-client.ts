@@ -579,7 +579,13 @@ export abstract class AppKitBaseClient {
           }
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
-            await this.disconnectNamespace(ns, currentConnectorId)
+            const disconnectData = await this.disconnectNamespace(ns, currentConnectorId)
+
+            if (disconnectData) {
+              disconnectData.connections.forEach(connection => {
+                StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
+              })
+            }
 
             if (initialDisconnect) {
               this.onDisconnectNamespace({ chainNamespace: ns, closeModal: false })
