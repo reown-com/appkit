@@ -3,15 +3,16 @@ import { css } from 'lit'
 export default css`
   .hero {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 56px;
-    padding-top: 112px;
-    transition: padding var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: margin var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    gap: 4px;
+    margin-top: -100px;
+    height: 332px;
 
     &[data-state='loading'] {
-      padding-bottom: 0;
-      padding-top: 0;
+      height: 184px;
     }
   }
 
@@ -21,6 +22,36 @@ export default css`
 
     &[data-state='loading'] {
       width: 56px;
+    }
+  }
+
+  .hero-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+    min-width: fit-content;
+
+    &:nth-child(1) {
+      transform: translateX(-30px);
+    }
+
+    &:nth-child(2) {
+      transform: translateX(30px);
+    }
+
+    &:nth-child(4) {
+      transform: translateX(10px);
+    }
+  }
+
+  .hero-row-icon {
+    opacity: 0.1;
+
+    &[data-state='loading'] {
+      opacity: 0;
     }
   }
 

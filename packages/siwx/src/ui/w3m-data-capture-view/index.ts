@@ -56,18 +56,45 @@ export class W3mDataCaptureView extends LitElement {
   private hero() {
     return html`
       <div class="hero" data-state=${this.loading ? 'loading' : 'default'}>
-        <wui-icon-box
-          size="xl"
-          iconSize="2xl"
-          iconColor=${this.loading ? 'fg-100' : 'accent-100'}
-          backgroundColor=${this.loading ? 'fg-100' : 'accent-100'}
-          icon=${this.loading ? 'id' : 'id'}
-          isOpaque
-          class="hero-main-icon"
-          data-state=${this.loading ? 'loading' : 'default'}
-        >
-        </wui-icon-box>
+        ${this.heroRow(['id', 'mail', 'wallet', 'x', 'solana', 'qrCode'])}
+        ${this.heroRow(['mail', 'farcaster', 'wallet', 'discord', 'mobile', 'qrCode'])}
+        <div class="hero-row">
+          ${this.heroIcon('github')} ${this.heroIcon('bank')}
+          <wui-icon-box
+            size="xl"
+            iconSize="xxl"
+            iconColor=${this.loading ? 'fg-100' : 'accent-100'}
+            backgroundColor=${this.loading ? 'fg-100' : 'accent-100'}
+            icon=${this.loading ? 'id' : 'id'}
+            isOpaque
+            class="hero-main-icon"
+            data-state=${this.loading ? 'loading' : 'default'}
+          >
+          </wui-icon-box>
+          ${this.heroIcon('id')} ${this.heroIcon('card')}
+        </div>
+        ${this.heroRow(['google', 'id', 'wallet', 'verify', 'apple', 'mobile'])}
       </div>
+    `
+  }
+
+  private heroRow(icons: string[]) {
+    return html` <div class="hero-row">${icons.map(this.heroIcon.bind(this))}</div> `
+  }
+
+  private heroIcon(icon: string) {
+    return html`
+      <wui-icon-box
+        size="xl"
+        iconSize="xxl"
+        iconColor="fg-100"
+        backgroundColor="fg-100"
+        icon=${icon}
+        data-state=${this.loading ? 'loading' : 'default'}
+        isOpaque
+        class="hero-row-icon"
+      >
+      </wui-icon-box>
     `
   }
 
