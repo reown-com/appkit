@@ -66,6 +66,7 @@ const providers = [
   })
 ]
 
+// eslint-disable-next-line new-cap
 export const { auth, handlers, signIn, signOut } = NextAuth({
   secret: nextAuthSecret,
   providers,
