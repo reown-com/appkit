@@ -15,7 +15,7 @@ jobs:
       contains(github.event.head_commit.message, 'chore: version packages')
     runs-on: ubuntu-latest
     steps:
-      - name: Send Slack Notification for Docs Analysis
+      - name: Send Slack Notification for Unity Update
         env:
           DEVIN_SLACK_WEBHOOK_URL: ${{ secrets.DEVIN_SLACK_WEBHOOK_URL }}
           DEVIN_SLACK_USER_ID: U08M9DKD4MC
