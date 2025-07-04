@@ -1,4 +1,4 @@
-name: Trigger Devin for Docs Update
+name: Trigger Devin for appkit-cdn Update in Unity
 
 on:
   push:
