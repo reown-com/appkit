@@ -28,7 +28,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@types/react": "19.0.0",
-    "@types/react-dom": "19.0.4",
+    "@types/react-dom": "19.0.3",
     "@vitest/coverage-v8": "2.1.9",
     "eslint-plugin-lit": "1.15.0",
     "eslint-plugin-wc": "2.2.1",
