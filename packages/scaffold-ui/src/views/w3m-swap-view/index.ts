@@ -80,6 +80,8 @@ export class W3mSwapView extends LitElement {
 
   @state() private fetchError = SwapController.state.fetchError
 
+  @state() private lastTokenPriceUpdate = Date.now()
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -124,6 +126,10 @@ export class W3mSwapView extends LitElement {
           }
         }),
         SwapController.subscribe(newState => {
+          if (newState.sourceToken && newState.toToken) {
+            this.watchTokensAndValues()
+          }
+
           this.initialized = newState.initialized
           this.loadingQuote = newState.loadingQuote
           this.loadingPrices = newState.loadingPrices
@@ -150,6 +156,7 @@ export class W3mSwapView extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
     clearInterval(this.interval)
+    document?.removeEventListener('visibilitychange', this.visibilityChangeHandler)
   }
 
   // -- Render -------------------------------------------- //
@@ -162,12 +169,51 @@ export class W3mSwapView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchTokensAndValues() {
+
+  private visibilityChangeHandler = () => {
+    if (document?.hidden) {
+      clearInterval(this.interval)
+      this.interval = undefined
+    } else {
+      this.startTokenPriceInterval()
+    }
+  }
+
+  private subscribeToVisibilityChange() {
+    document?.removeEventListener('visibilitychange', this.visibilityChangeHandler)
+    document?.addEventListener('visibilitychange', this.visibilityChangeHandler)
+  }
+
+  private startTokenPriceInterval = () => {
+    if (this.interval && Date.now() - this.lastTokenPriceUpdate < 10_000) {
+      return
+    }
+
+    // Quick fetch tokens and values if last update is more than 10 seconds ago
+    if (this.lastTokenPriceUpdate && Date.now() - this.lastTokenPriceUpdate > 10_000) {
+      this.fetchTokensAndValues()
+    }
+    clearInterval(this.interval)
     this.interval = setInterval(() => {
-      SwapController.getNetworkTokenPrice()
-      SwapController.getMyTokensWithBalance()
-      SwapController.swapTokens()
+      this.fetchTokensAndValues()
     }, 10_000)
+  }
+
+  private watchTokensAndValues = () => {
+    // Only fetch tokens and values if source and to token are set
+    if (!this.sourceToken || !this.toToken) {
+      return
+    }
+
+    this.subscribeToVisibilityChange()
+    this.startTokenPriceInterval()
+  }
+
+  private fetchTokensAndValues() {
+    SwapController.getNetworkTokenPrice()
+    SwapController.getMyTokensWithBalance()
+    SwapController.swapTokens()
+    this.lastTokenPriceUpdate = Date.now()
   }
 
   private templateSwap() {

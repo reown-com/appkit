@@ -362,7 +362,7 @@ const controller = {
     if (networkToken) {
       state.networkTokenSymbol = networkToken.symbol
       SwapController.setSourceToken(networkToken)
-      SwapController.setSourceTokenAmount('1')
+      SwapController.setSourceTokenAmount('0')
     }
   },
 

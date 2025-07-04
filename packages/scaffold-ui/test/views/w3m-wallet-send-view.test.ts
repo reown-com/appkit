@@ -218,13 +218,25 @@ describe('W3mWalletSendView', () => {
     viExpect(routerSpy).toHaveBeenCalledWith('WalletSendPreview')
   })
 
-  it('should fetch network price on initialization', async () => {
+  it('should fetch network price on initialization if token is set', async () => {
+    SendController.setToken(mockToken)
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
 
     viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
   })
 
-  it('should fetch balances on initialization', async () => {
+  it('should not fetch network price on initialization if no token is set', async () => {
+    await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
+    viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalledTimes(0)
+  })
+
+  it('should not fetch balances on initialization if no token is set', async () => {
+    await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
+    viExpect(SendController.fetchTokenBalance).toHaveBeenCalledTimes(0)
+  })
+
+  it('should fetch balances on initialization if token is set', async () => {
+    SendController.setToken(mockToken)
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
     viExpect(SendController.fetchTokenBalance).toHaveBeenCalled()
   })
