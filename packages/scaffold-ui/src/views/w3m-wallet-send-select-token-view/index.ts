@@ -6,7 +6,8 @@ import {
   ChainController,
   CoreHelperUtil,
   RouterController,
-  SendController
+  SendController,
+  SwapController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -39,6 +40,8 @@ export class W3mSendSelectTokenView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+    this.fetchNetworkPrice()
+    this.fetchBalances()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
@@ -62,6 +65,15 @@ export class W3mSendSelectTokenView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private async fetchBalances() {
+    await SendController.fetchTokenBalance()
+    SendController.fetchNetworkBalance()
+  }
+
+  private async fetchNetworkPrice() {
+    await SwapController.getNetworkTokenPrice()
+  }
 
   private templateSearchInput() {
     return html`
