@@ -446,7 +446,7 @@ export abstract class AppKitBaseClient {
       return disconnectResult
     } catch (error) {
       this.setLoading(false, namespace)
-      throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
+      return Promise.reject(new Error(`Failed to disconnect chains: ${(error as Error).message}`))
     }
   }
 
@@ -554,17 +554,17 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async params => {
-        const { id: connectorId, chainNamespace, initialDisconnect } = params || {}
+        const { id: connectorIdParam, chainNamespace, initialDisconnect } = params || {}
 
         const namespace = chainNamespace || ChainController.state.activeChain
-        const currentConnectorId = ConnectorController.getConnectorId(namespace)
+        const namespaceConnectorId = ConnectorController.getConnectorId(namespace)
 
         const isAuth =
-          connectorId === ConstantsUtil.CONNECTOR_ID.AUTH ||
-          currentConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+          connectorIdParam === ConstantsUtil.CONNECTOR_ID.AUTH ||
+          namespaceConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
         const isWalletConnect =
-          connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT ||
-          currentConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+          connectorIdParam === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT ||
+          namespaceConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
         try {
           const namespaces = Array.from(ChainController.state.chains.keys())
@@ -579,7 +579,8 @@ export abstract class AppKitBaseClient {
           }
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
-            const disconnectData = await this.disconnectNamespace(ns, currentConnectorId)
+            const connectorIdToDisconnect = ConnectorController.getConnectorId(ns)
+            const disconnectData = await this.disconnectNamespace(ns, connectorIdToDisconnect)
 
             if (disconnectData) {
               disconnectData.connections.forEach(connection => {
