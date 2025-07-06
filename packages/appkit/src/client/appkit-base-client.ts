@@ -446,7 +446,7 @@ export abstract class AppKitBaseClient {
       return disconnectResult
     } catch (error) {
       this.setLoading(false, namespace)
-      return Promise.reject(new Error(`Failed to disconnect chains: ${(error as Error).message}`))
+      throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
     }
   }
 
@@ -580,7 +580,10 @@ export abstract class AppKitBaseClient {
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
             const connectorIdToDisconnect = ConnectorController.getConnectorId(ns)
-            const disconnectData = await this.disconnectNamespace(ns, connectorIdToDisconnect)
+            const disconnectData = await this.disconnectNamespace(
+              ns,
+              connectorIdParam || connectorIdToDisconnect
+            )
 
             if (disconnectData) {
               disconnectData.connections.forEach(connection => {
