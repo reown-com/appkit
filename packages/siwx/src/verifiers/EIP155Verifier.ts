@@ -1,6 +1,6 @@
 import { createPublicClient, http } from 'viem'
 
-import { type BaseNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type Address, type BaseNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { ChainController, type SIWXSession } from '@reown/appkit-controllers'
 
 import { SIWXVerifier } from '../core/SIWXVerifier.js'
@@ -28,8 +28,8 @@ export class EIP155Verifier extends SIWXVerifier {
 
       return await client.verifyMessage({
         message: session.message.toString(),
-        signature: session.signature as `0x${string}`,
-        address: session.data.accountAddress as `0x${string}`
+        signature: session.signature as Address,
+        address: session.data.accountAddress as Address
       })
     } catch (error) {
       return false

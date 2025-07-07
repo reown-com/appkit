@@ -1,4 +1,5 @@
 import type { AppKitOptions, ChainAdapter } from '@reown/appkit'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { solana } from '@reown/appkit/networks'
 
 export const mockSolanaChainImage =
@@ -6,7 +7,7 @@ export const mockSolanaChainImage =
 
 export const mockOptions: AppKitOptions = {
   projectId: 'test-project-id',
-  adapters: [{ chainNamespace: 'solana' } as unknown as ChainAdapter],
+  adapters: [{ chainNamespace: ConstantsUtil.CHAIN.SOLANA } as unknown as ChainAdapter],
   networks: [solana],
   chainImages: {
     [solana.id]: mockSolanaChainImage

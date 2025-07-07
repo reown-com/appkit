@@ -2,13 +2,13 @@ import { expect } from '@playwright/test'
 
 import { ModalValidator } from './ModalValidator'
 
-export class CloudAuthModalValidator extends ModalValidator {
+export class ReownAuthenticationModalValidator extends ModalValidator {
   get sessionStatus() {
-    return this.page.getByTestId('cloud-auth-session-status')
+    return this.page.getByTestId('reown-authentication-session-status')
   }
 
   get sessionAccount() {
-    return this.page.getByTestId('cloud-auth-session-account')
+    return this.page.getByTestId('reown-authentication-session-account')
   }
 
   async expectEmptySession() {

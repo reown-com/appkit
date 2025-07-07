@@ -3,7 +3,7 @@ import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import type { ConnectorType } from '@reown/appkit-controllers'
+import type { ChainControllerState, ConnectorType } from '@reown/appkit-controllers'
 
 type StateKey = keyof ProviderStoreUtilState
 
@@ -51,13 +51,22 @@ export const ProviderUtil = {
     return subscribe(state.providers, () => callback(state.providers))
   },
 
-  setProvider<T = UniversalProvider>(chainNamespace: ChainNamespace, provider: T) {
-    if (provider) {
+  setProvider<T = UniversalProvider>(
+    chainNamespace: ChainControllerState['activeChain'],
+    provider: T
+  ) {
+    if (chainNamespace && provider) {
       state.providers[chainNamespace] = ref(provider) as T
     }
   },
 
-  getProvider<T = UniversalProvider>(chainNamespace: ChainNamespace): T | undefined {
+  getProvider<T = UniversalProvider>(
+    chainNamespace: ChainControllerState['activeChain']
+  ): T | undefined {
+    if (!chainNamespace) {
+      return undefined
+    }
+
     return state.providers[chainNamespace] as T | undefined
   },
 

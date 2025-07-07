@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
   ChainController,
@@ -94,7 +93,7 @@ export class W3mConnectingWcView extends LitElement {
         status === 'connecting'
       ) {
         const connectionsByNamespace = ConnectionController.getConnections(
-          ChainController.state.activeChain as ChainNamespace
+          ChainController.state.activeChain
         )
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0

@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -30,7 +30,6 @@ import {
 } from '../utils/PaymentUtil.js'
 
 const DEFAULT_PAGE = 0
-
 const DEFAULT_PAYMENT_ID = 'unknown'
 
 // -- Types --------------------------------------------- //
@@ -297,8 +296,7 @@ export const PayController = {
       return
     }
     ProviderUtil.subscribeProviders(async _ => {
-      const chainNamespace = ChainController.state.activeChain as ChainNamespace
-      const provider = ProviderUtil.getProvider(chainNamespace)
+      const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
       if (!provider) {
         return
       }
@@ -323,7 +321,7 @@ export const PayController = {
     }
 
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain as ChainNamespace
+    const chainNamespace = ChainController.state.activeChain
     if (!address || !chainId || !chainNamespace) {
       return
     }
@@ -366,17 +364,17 @@ export const PayController = {
               state.paymentAsset,
               chainNamespace,
               {
-                recipient: state.recipient as `0x${string}`,
+                recipient: state.recipient as Address,
                 amount: state.amount,
-                fromAddress: address as `0x${string}`
+                fromAddress: address as Address
               }
             )
           }
           if (state.paymentAsset.asset.startsWith('0x')) {
             state.currentPayment.result = await processEvmErc20Payment(state.paymentAsset, {
-              recipient: state.recipient as `0x${string}`,
+              recipient: state.recipient as Address,
               amount: state.amount,
-              fromAddress: address as `0x${string}`
+              fromAddress: address as Address
             })
           }
           state.currentPayment.status = 'SUCCESS'
@@ -429,7 +427,7 @@ export const PayController = {
       return
     }
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain as ChainNamespace
+    const chainNamespace = ChainController.state.activeChain
     if (!address || !chainId || !chainNamespace) {
       RouterController.push('Connect')
 

@@ -21,23 +21,22 @@ import type { SIWXMessenger } from '../core/SIWXMessenger.js'
 import { InformalMessenger } from '../index.js'
 
 /**
- * This is the configuration for using SIWX with Cloud Auth service.
+ * This is the configuration for using SIWX with Reown Authentication service.
  * It allows you to authenticate and capture user sessions through the Cloud Dashboard.
  */
-export class CloudAuthSIWX implements SIWXConfig {
+export class ReownAuthentication implements SIWXConfig {
   private readonly localAuthStorageKey: keyof SafeLocalStorageItems
   private readonly localNonceStorageKey: keyof SafeLocalStorageItems
   private readonly messenger: SIWXMessenger
 
   private required: boolean
-
   private otpUuid: string | null = null
 
-  private listeners: CloudAuthSIWX.EventListeners = {
+  private listeners: ReownAuthentication.EventListeners = {
     sessionChanged: []
   }
 
-  constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
+  constructor(params: ReownAuthentication.ConstructorParams = {}) {
     this.localAuthStorageKey =
       (params.localAuthStorageKey as keyof SafeLocalStorageItems) ||
       SafeLocalStorageKeys.SIWX_AUTH_TOKEN
@@ -170,21 +169,21 @@ export class CloudAuthSIWX implements SIWXConfig {
     })
   }
 
-  on<Event extends keyof CloudAuthSIWX.Events>(
+  on<Event extends keyof ReownAuthentication.Events>(
     event: Event,
-    callback: CloudAuthSIWX.Listener<Event>
+    callback: ReownAuthentication.Listener<Event>
   ) {
     this.listeners[event].push(callback)
 
     return () => {
       this.listeners[event] = this.listeners[event].filter(
         cb => cb !== callback
-      ) as CloudAuthSIWX.EventListeners[Event]
+      ) as ReownAuthentication.EventListeners[Event]
     }
   }
 
   removeAllListeners() {
-    const keys = Object.keys(this.listeners) as (keyof CloudAuthSIWX.Events)[]
+    const keys = Object.keys(this.listeners) as (keyof ReownAuthentication.Events)[]
     keys.forEach(key => {
       this.listeners[key] = []
     })
@@ -214,16 +213,16 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   private async request<
-    Method extends CloudAuthSIWX.Methods,
-    Key extends CloudAuthSIWX.RequestKeys<Method>
+    Method extends ReownAuthentication.Methods,
+    Key extends ReownAuthentication.RequestKeys<Method>
   >({
     method,
     key,
     query,
     body,
     headers
-  }: CloudAuthSIWX.RequestParams<Key, Method>): Promise<
-    CloudAuthSIWX.RequestResponse<Method, Key>
+  }: ReownAuthentication.RequestParams<Key, Method>): Promise<
+    ReownAuthentication.RequestResponse<Method, Key>
   > {
     const { projectId, st, sv } = this.getSDKProperties()
 
@@ -272,7 +271,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       return response.json()
     }
 
-    return null as CloudAuthSIWX.RequestResponse<Method, Key>
+    return null as ReownAuthentication.RequestResponse<Method, Key>
   }
 
   private getStorageToken(key: keyof SafeLocalStorageItems): string | undefined {
@@ -305,7 +304,7 @@ export class CloudAuthSIWX implements SIWXConfig {
     return BlockchainApiController.state.clientId
   }
 
-  private getWalletInfo(): CloudAuthSIWX.WalletInfo | undefined {
+  private getWalletInfo(): ReownAuthentication.WalletInfo | undefined {
     const { connectedWalletInfo } = AccountController.state
 
     if (!connectedWalletInfo) {
@@ -321,7 +320,7 @@ export class CloudAuthSIWX implements SIWXConfig {
 
     const { name, icon } = connectedWalletInfo
 
-    let type: CloudAuthSIWX.WalletInfo['type'] = 'unknown'
+    let type: ReownAuthentication.WalletInfo['type'] = 'unknown'
 
     switch (connectedWalletInfo['type']) {
       case AppKitConstantUtil.CONNECTOR_TYPE_EXTERNAL:
@@ -347,14 +346,14 @@ export class CloudAuthSIWX implements SIWXConfig {
     return ApiController._getSdkProperties()
   }
 
-  private emit<Event extends keyof CloudAuthSIWX.Events>(
+  private emit<Event extends keyof ReownAuthentication.Events>(
     event: Event,
-    data: CloudAuthSIWX.Events[Event]
+    data: ReownAuthentication.Events[Event]
   ) {
     this.listeners[event].forEach(listener => listener(data))
   }
 
-  private setAppKitAccountUser(session: CloudAuthSIWX.SessionAccount) {
+  private setAppKitAccountUser(session: ReownAuthentication.SessionAccount) {
     const { email } = session
 
     if (email) {
@@ -371,7 +370,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 }
 
-export namespace CloudAuthSIWX {
+export namespace ReownAuthentication {
   export type ConstructorParams = {
     /**
      * The key to use for storing the session token in local storage.
@@ -524,7 +523,7 @@ export namespace CloudAuthSIWX {
  * @param token - The JWT token to decode
  * @returns The decoded payload or null if invalid
  */
-function jwtDecode(token: string): Omit<CloudAuthSIWX.SessionAccount, 'appKitAccount'> {
+function jwtDecode(token: string): Omit<ReownAuthentication.SessionAccount, 'appKitAccount'> {
   // Split the token into parts
   const parts = token.split('.')
 
@@ -551,3 +550,5 @@ function jwtDecode(token: string): Omit<CloudAuthSIWX.SessionAccount, 'appKitAcc
 
   return decoded
 }
+
+export { ReownAuthentication as CloudAuthSIWX }

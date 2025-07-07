@@ -1,7 +1,7 @@
-import type { ChainFormatters, HttpTransportConfig } from 'viem'
+import type { Address, ChainFormatters, Hex, HttpTransportConfig } from 'viem'
 import type { Chain as BaseChain } from 'viem/chains'
 
-export type { BaseChain }
+export type { BaseChain, Address, Hex }
 
 export type BaseNetwork<
   formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
