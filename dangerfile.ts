@@ -358,18 +358,14 @@ async function checkWalletSchema() {
     const removedLines = diff.removed.split('\n')
 
     // Debug: Show the actual changes
-    message(`Added lines (${addedLines.length}): ${JSON.stringify(addedLines.slice(0, 5))}`)
-    message(`Removed lines (${removedLines.length}): ${JSON.stringify(removedLines.slice(0, 5))}`)
+    message(`Added lines (${addedLines.length}): ${JSON.stringify(addedLines.slice(0, 3))}`)
+    message(`Removed lines (${removedLines.length}): ${JSON.stringify(removedLines.slice(0, 3))}`)
 
     // More flexible pattern to catch field definitions (accounting for git diff prefixes)
     const fieldPattern = /^[+-]?\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
 
     // Check for new required fields
     for (const line of addedLines) {
-      if (line.trim() && line.includes(':') && line.includes('z.')) {
-        message(`Debug added line: "${line}"`)
-      }
-
       const fieldMatch = line.match(fieldPattern)
       if (!fieldMatch) {
         // eslint-disable-next-line no-continue
@@ -377,11 +373,10 @@ async function checkWalletSchema() {
       }
 
       const fieldName = fieldMatch.groups?.['fieldName']
-      message(
-        `Regex matched field: ${fieldName} in line: "${line}", optional: ${line.includes('.optional()')}`
-      )
+      const isOptional = line.includes('.optional()') || line.includes('z.optional(')
+      message(`Regex matched field: ${fieldName} in line: "${line}", optional: ${isOptional}`)
 
-      if (line.includes('.optional()')) {
+      if (isOptional) {
         // eslint-disable-next-line no-continue
         continue
       }
@@ -402,7 +397,8 @@ async function checkWalletSchema() {
     // Check for removed required fields
     for (const removedLine of removedLines) {
       const fieldMatch = removedLine.match(fieldPattern)
-      if (!fieldMatch || removedLine.includes('.optional()')) {
+      const isOptional = removedLine.includes('.optional()') || removedLine.includes('z.optional(')
+      if (!fieldMatch || isOptional) {
         // eslint-disable-next-line no-continue
         continue
       }
@@ -431,11 +427,8 @@ async function checkWalletSchema() {
 
     // Check for fields changed from optional to required
     for (const removedLine of removedLines) {
-      if (removedLine.trim() && removedLine.includes(':') && removedLine.includes('z.')) {
-        message(`Debug removed line: "${removedLine}"`)
-      }
-
-      if (!removedLine.includes('.optional()')) {
+      const wasOptional = removedLine.includes('.optional()') || removedLine.includes('z.optional(')
+      if (!wasOptional) {
         // eslint-disable-next-line no-continue
         continue
       }
@@ -456,11 +449,11 @@ async function checkWalletSchema() {
 
       const madeRequired = addedLines.some(addedLine => {
         const addedFieldMatch = addedLine.match(fieldPattern)
+        const addedIsOptional =
+          addedLine.includes('.optional()') || addedLine.includes('z.optional(')
 
         return (
-          addedFieldMatch &&
-          addedFieldMatch.groups?.['fieldName'] === fieldName &&
-          !addedLine.includes('.optional()')
+          addedFieldMatch && addedFieldMatch.groups?.['fieldName'] === fieldName && !addedIsOptional
         )
       })
 
@@ -486,7 +479,8 @@ async function checkWalletSchema() {
           !line.trim().startsWith('//') &&
           !line.includes('export') &&
           !line.includes('interface') &&
-          !line.includes('.optional()')
+          !line.includes('.optional()') &&
+          !line.includes('z.optional(')
       )
 
       if (removedInterfaceProps.length > 0) {

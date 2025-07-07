@@ -172,7 +172,8 @@ export const FrameInitSmartAccountResponse = z.object({
 
 export const FrameReadyResponse = z.object({
   // Placeholder for future data
-  version: z.string().optional()
+  version: z.string().optional(),
+  testVersion: z.string()
 })
 
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
