@@ -158,7 +158,15 @@ describe('OnRampController', () => {
   it('should filter out invalid provider names', () => {
     const mixedProviderNames = ['meld', 'coinbase', 'invalidProvider', 'moonpay']
     OnRampController.setOnrampProviders(mixedProviderNames as any)
-    expect(OnRampController.state.providers).toEqual(['meld'])
+    expect(OnRampController.state.providers).toEqual([
+      {
+        feeRange: '1-2%',
+        label: 'Meld.io',
+        name: 'meld',
+        supportedChains: ['eip155', 'solana'],
+        url: 'https://meldcrypto.com'
+      }
+    ])
   })
 
   it('should set an empty array if no valid provider names are provided', () => {
