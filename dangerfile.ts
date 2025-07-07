@@ -649,3 +649,5 @@ async function checkForKeys() {
 }
 
 checkForKeys()
+
+warn('test')
