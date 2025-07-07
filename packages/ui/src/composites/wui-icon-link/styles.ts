@@ -8,7 +8,7 @@ export default css`
   }
 
   @media (max-width: 700px) {
-    :host(:not([size='sm'])) button {
+    button {
       padding: var(--wui-spacing-s);
     }
   }

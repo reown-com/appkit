@@ -3,12 +3,37 @@ import { css, unsafeCSS } from 'lit'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import type { ThemeType, ThemeVariables } from '@reown/appkit-common'
 
+import { ThemeHelperUtil } from './ThemeHelperUtil.js'
+
 // -- Utilities ---------------------------------------------------------------
+let apktTag: HTMLStyleElement | undefined = undefined
 let themeTag: HTMLStyleElement | undefined = undefined
 let darkModeTag: HTMLStyleElement | undefined = undefined
 let lightModeTag: HTMLStyleElement | undefined = undefined
 
-export function initializeTheming(themeVariables?: ThemeVariables, themeMode?: ThemeType) {
+/* @TODO: Replace fonts */
+const fonts = {
+  'KHTeka-500':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Medium_dzj5on.woff',
+  'KHTeka-400':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Regular_rgphis.woff',
+  'KHTeka-300':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Light_jzizi3.woff',
+  'KHTekaMono-400':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTekaMono-Regular_nytitk.woff'
+}
+
+function createAppKitTheme(theme: ThemeType = 'dark') {
+  if (apktTag) {
+    document.head.removeChild(apktTag)
+  }
+
+  apktTag = document.createElement('style')
+  apktTag.textContent = ThemeHelperUtil.createRootStyles(theme)
+  document.head.appendChild(apktTag)
+}
+
+export function initializeTheming(themeVariables?: ThemeVariables, themeMode: ThemeType = 'dark') {
   themeTag = document.createElement('style')
   darkModeTag = document.createElement('style')
   lightModeTag = document.createElement('style')
@@ -18,15 +43,30 @@ export function initializeTheming(themeVariables?: ThemeVariables, themeMode?: T
   document.head.appendChild(themeTag)
   document.head.appendChild(darkModeTag)
   document.head.appendChild(lightModeTag)
+  createAppKitTheme(themeMode)
+  setColorTheme(themeMode)
+
+  // Preload fonts
+  for (const url of Object.values(fonts)) {
+    const link = document.createElement('link')
+    link.rel = 'preload'
+    link.href = url
+    link.as = 'font'
+    link.type = 'font/otf'
+    document.head.appendChild(link)
+  }
+
   setColorTheme(themeMode)
 }
 
-export function setColorTheme(themeMode?: string) {
-  if (darkModeTag && lightModeTag) {
+export function setColorTheme(themeMode: ThemeType = 'dark') {
+  if (darkModeTag && lightModeTag && apktTag) {
     if (themeMode === 'light') {
+      createAppKitTheme(themeMode)
       darkModeTag.removeAttribute('media')
       lightModeTag.media = 'enabled'
     } else {
+      createAppKitTheme(themeMode)
       lightModeTag.removeAttribute('media')
       darkModeTag.media = 'enabled'
     }
@@ -44,7 +84,34 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      @font-face {
+        font-family: 'KHTeka';
+        src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('woff');
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'KHTeka';
+        src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('woff');
+        font-weight: 300;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'KHTekaMono';
+        src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('woff');
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'KHTeka';
+        src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('woff');
+        font-weight: 400;
+        font-style: normal;
+      }
+
       @keyframes w3m-shake {
         0% {
           transform: scale(1) rotate(0deg);
@@ -102,7 +169,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         )};
         --w3m-font-family: ${unsafeCSS(
           themeVariables?.['--w3m-font-family'] ||
-            'Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;'
+            'KHTekaMono, Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;'
         )};
         --w3m-font-size-master: ${unsafeCSS(themeVariables?.['--w3m-font-size-master'] || '10px')};
         --w3m-border-radius-master: ${unsafeCSS(
@@ -171,7 +238,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-box-size-xs: 20px;
         --wui-icon-box-size-sm: 24px;
         --wui-icon-box-size-md: 32px;
-        --wui-icon-box-size-mdl: 36px;
         --wui-icon-box-size-lg: 40px;
         --wui-icon-box-size-2lg: 48px;
         --wui-icon-box-size-xl: 64px;
@@ -271,8 +337,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-avatar-border: var(--wui-avatar-border-base);
 
         --wui-thumbnail-border: var(--wui-thumbnail-border-base);
-
-        --wui-wallet-button-bg: var(--wui-wallet-button-bg-base);
 
         --wui-box-shadow-blue: var(--wui-color-accent-glass-020);
       }
@@ -526,12 +590,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-thumbnail-border-base)
           );
-
-          --wui-wallet-button-bg: color-mix(
-            in srgb,
-            var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-wallet-button-bg-base)
-          );
         }
       }
     `,
@@ -638,10 +696,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-avatar-border-base: #252525;
 
         --wui-thumbnail-border-base: #252525;
-
-        --wui-wallet-button-bg-base: var(--wui-color-bg-125);
-
-        --w3m-card-embedded-shadow-color: rgb(17 17 18 / 25%);
       }
     `,
     dark: css`
@@ -733,8 +787,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-thumbnail-border-base: #eaefef;
 
-        --wui-wallet-button-bg-base: var(--wui-color-bg-125);
-
         --wui-color-gray-glass-001: rgba(0, 0, 0, 0.01);
         --wui-color-gray-glass-002: rgba(0, 0, 0, 0.02);
         --wui-color-gray-glass-005: rgba(0, 0, 0, 0.05);
@@ -748,8 +800,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-gray-glass-090: rgba(0, 0, 0, 0.9);
 
         --wui-color-dark-glass-100: rgba(233, 233, 233, 1);
-
-        --w3m-card-embedded-shadow-color: rgb(224 225 233 / 25%);
       }
     `
   }
@@ -757,10 +807,16 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
 // -- Presets -----------------------------------------------------------------
 export const resetStyles = css`
-  *,
+  div,
+  span,
+  iframe,
+  a,
+  img,
+  form,
+  button,
+  label,
   *::after,
-  *::before,
-  :host {
+  *::before {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -769,11 +825,19 @@ export const resetStyles = css`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
-    font-family: var(--wui-font-family);
     backface-visibility: hidden;
+  }
+
+  :host {
+    font-family: var(--wui-font-family);
   }
 `
 
+/*
+ * @TODO: Include input checkbox default styles
+ * @TOOD: Include focus visible and focus styles (button)
+ * @TODO: Add disabled state to have opacity 0.3
+ */
 export const elementStyles = css`
   button,
   a {
@@ -782,46 +846,14 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition:
-      color var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      border var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
-    will-change: background-color, color, border, box-shadow, border-radius;
+    will-change: background-color, color, border, box-shadow;
     outline: none;
     border: none;
-    column-gap: var(--wui-spacing-3xs);
-    background-color: transparent;
     text-decoration: none;
   }
 
-  wui-flex {
-    transition: border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1);
-    will-change: border-radius;
-  }
-
-  button:disabled > wui-wallet-image,
-  button:disabled > wui-all-wallets-image,
-  button:disabled > wui-network-image,
-  button:disabled > wui-image,
-  button:disabled > wui-transaction-visual,
-  button:disabled > wui-logo {
-    filter: grayscale(1);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled {
-      background-color: var(--wui-color-gray-glass-005);
-    }
-
-    button:active:enabled {
-      background-color: var(--wui-color-gray-glass-010);
-    }
-  }
-
-  button:disabled > wui-icon-box {
-    opacity: 0.5;
+  button:disabled {
+    cursor: default;
   }
 
   input {

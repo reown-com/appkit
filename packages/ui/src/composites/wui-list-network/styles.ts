@@ -36,8 +36,6 @@ export default css`
 
   button:disabled {
     background-color: var(--wui-color-gray-glass-002);
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 
   button:disabled > wui-tag {

@@ -1,6 +1,6 @@
 {
   "name": "@apps/gallery",
-  "version": "1.5.2",
+  "version": "1.4.1",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -13,15 +13,13 @@
     "@reown/appkit-ui": "workspace:*",
     "lit": "3.3.0",
     "react": "19.1.0",
-    "storybook": "7.6.20"
+    "storybook": "9.0.15"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.6.7",
-    "@storybook/addon-links": "7.6.7",
-    "@storybook/blocks": "7.6.7",
-    "@storybook/theming": "7.6.7",
-    "@storybook/web-components": "7.6.7",
-    "@storybook/web-components-vite": "7.6.7",
-    "file-system-cache": "2.4.4"
+    "@storybook/addon-links": "9.0.15",
+    "@storybook/addon-docs": "9.0.15",
+    "@storybook/web-components": "9.0.15",
+    "@storybook/web-components-vite": "9.0.15",
+    "file-system-cache": "2.4.7"
   }
 }

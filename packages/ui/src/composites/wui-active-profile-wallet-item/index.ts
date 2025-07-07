@@ -54,7 +54,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public iconBadgeSize?: SizeType = 'md'
 
-  @property() public buttonVariant: ButtonVariant = 'neutral'
+  @property() public buttonVariant: ButtonVariant = 'neutral-primary'
 
   @property({ type: Boolean }) public enableMoreButton = false
 

@@ -3,8 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import '../../layout/wui-flex/index.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
@@ -12,7 +11,7 @@ import styles from './styles.js'
 
 @customElement('wui-wallet-image')
 export class WuiWalletImage extends LitElement {
-  public static override styles = [elementStyles, resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'xl' | 'xs' | 'xxs'> = 'md'
@@ -29,13 +28,13 @@ export class WuiWalletImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let borderRadius: BorderRadiusType = 'xxs'
+    let borderRadius: BorderRadiusType = '1'
     if (this.size === 'lg') {
-      borderRadius = 'm'
+      borderRadius = '3'
     } else if (this.size === 'md') {
-      borderRadius = 'xs'
+      borderRadius = '2'
     } else {
-      borderRadius = 'xxs'
+      borderRadius = '1'
     }
     this.style.cssText = `
        --local-border-radius: var(--wui-border-radius-${borderRadius});
