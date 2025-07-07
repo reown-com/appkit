@@ -79,7 +79,11 @@ export class W3mDataCaptureView extends LitElement {
   }
 
   private heroRow(icons: string[]) {
-    return html` <div class="hero-row">${icons.map(this.heroIcon.bind(this))}</div> `
+    return html`
+      <div class="hero-row" data-state=${this.loading ? 'loading' : 'default'}>
+        ${icons.map(this.heroIcon.bind(this))}
+      </div>
+    `
   }
 
   private heroIcon(icon: string) {
