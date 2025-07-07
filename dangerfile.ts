@@ -346,7 +346,6 @@ async function checkWalletSchema() {
     const addedLines = diff.added.split('\n')
     const removedLines = diff.removed.split('\n')
 
-    // More flexible pattern to catch field definitions (accounting for git diff prefixes)
     const fieldPattern = /^[+-]?\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
 
     // Check for new required fields
