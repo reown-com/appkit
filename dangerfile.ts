@@ -429,6 +429,7 @@ async function checkWalletSchema() {
 
       const madeRequired = addedLines.some(addedLine => {
         const addedFieldMatch = addedLine.match(fieldPattern)
+
         return (
           addedFieldMatch &&
           addedFieldMatch.groups?.['fieldName'] === fieldName &&
