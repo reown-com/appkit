@@ -391,9 +391,26 @@ async function checkWalletSchema() {
         continue
       }
 
-      const isMovedOrMadeOptional = addedLines.some(
-        addedLine => addedLine.includes(fieldName) && addedLine.match(fieldPattern)
-      )
+      const isMovedOrMadeOptional = addedLines.some(addedLine => {
+        const addedFieldMatch = addedLine.match(fieldPattern)
+        if (!addedFieldMatch) {
+          return false
+        }
+
+        const addedFieldName = addedFieldMatch.groups?.['fieldName']
+        if (addedFieldName !== fieldName) {
+          return false
+        }
+
+        const addedIsOptional =
+          addedLine.includes('.optional()') || addedLine.includes('z.optional(')
+
+        const normalizedRemoved = removedLine.replace(/^[+-]\s*/u, '').trim()
+        const normalizedAdded = addedLine.replace(/^[+-]\s*/u, '').trim()
+        const isSameDefinition = normalizedAdded === normalizedRemoved
+
+        return addedIsOptional || isSameDefinition
+      })
 
       if (
         !isMovedOrMadeOptional &&
