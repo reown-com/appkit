@@ -273,7 +273,6 @@ describe('TransactionsController', () => {
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
       cursor: undefined,
-      onramp: undefined,
       chainId: 'eip155:137'
     })
     expect(TransactionsController.state.next).toBe('cursor')

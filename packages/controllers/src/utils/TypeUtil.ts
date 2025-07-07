@@ -216,7 +216,6 @@ export interface BlockchainApiIdentityResponse {
 export interface BlockchainApiTransactionsRequest {
   account: string
   cursor?: string
-  onramp?: 'meld'
   signal?: AbortSignal
   cache?: RequestCache
   chainId?: string
