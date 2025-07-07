@@ -357,14 +357,22 @@ async function checkWalletSchema() {
     const addedLines = diff.added.split('\n')
     const removedLines = diff.removed.split('\n')
 
+    // Debug: Show the actual changes
+    message(`Added lines (${addedLines.length}): ${JSON.stringify(addedLines.slice(0, 5))}`)
+    message(`Removed lines (${removedLines.length}): ${JSON.stringify(removedLines.slice(0, 5))}`)
+
     // More flexible pattern to catch field definitions
     const fieldPattern = /^\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
 
     // Check for new required fields
     for (const line of addedLines) {
+      if (line.trim() && line.includes(':') && line.includes('z.')) {
+        message(`Debug added line: "${line}"`)
+      }
       const fieldMatch = line.match(fieldPattern)
       if (fieldMatch && !line.includes('.optional()')) {
         const fieldName = fieldMatch.groups?.['fieldName']
+        message(`Found new required field: ${fieldName} in line: "${line}"`)
         if (
           fieldName &&
           !line.trim().startsWith('//') &&
@@ -410,6 +418,10 @@ async function checkWalletSchema() {
 
     // Check for fields changed from optional to required
     for (const removedLine of removedLines) {
+      if (removedLine.trim() && removedLine.includes(':') && removedLine.includes('z.')) {
+        message(`Debug removed line: "${removedLine}"`)
+      }
+
       if (!removedLine.includes('.optional()')) {
         // eslint-disable-next-line no-continue
         continue
@@ -426,6 +438,8 @@ async function checkWalletSchema() {
         // eslint-disable-next-line no-continue
         continue
       }
+
+      message(`Found removed optional field: ${fieldName} in line: "${removedLine}"`)
 
       const madeRequired = addedLines.some(addedLine => {
         const addedFieldMatch = addedLine.match(fieldPattern)
