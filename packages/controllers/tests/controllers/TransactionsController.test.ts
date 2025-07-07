@@ -60,11 +60,10 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(response)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'meld')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'meld',
       cursor: undefined,
       chainId: 'eip155:137'
     })
@@ -96,11 +95,10 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'meld')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'meld',
       cursor: undefined,
       chainId: 'eip155:137'
     })
@@ -120,11 +118,10 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'meld')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'meld',
       cursor: undefined,
       chainId: 'eip155:137'
     })
@@ -153,11 +150,10 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'meld')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'meld',
       cursor: undefined,
       chainId: 'eip155:137'
     })
@@ -177,11 +173,10 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'meld')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'meld',
       cursor: undefined,
       chainId: 'eip155:137'
     })
@@ -210,11 +205,10 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'meld')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'meld',
       cursor: undefined,
       chainId: 'eip155:137'
     })
@@ -234,11 +228,10 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'meld')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'meld',
       cursor: undefined,
       chainId: 'eip155:137'
     })

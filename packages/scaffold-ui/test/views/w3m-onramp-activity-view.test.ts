@@ -170,6 +170,6 @@ describe('W3mOnRampActivityView', () => {
     await fixture(html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`)
 
     expect(clearCursorSpy).toHaveBeenCalled()
-    expect(fetchTransactionsSpy).toHaveBeenCalledWith('0x123', 'meld')
+    expect(fetchTransactionsSpy).toHaveBeenCalledWith('0x123')
   })
 })

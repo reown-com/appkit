@@ -230,7 +230,6 @@ export const BlockchainApiController = {
   async fetchTransactions({
     account,
     cursor,
-    onramp,
     signal,
     cache,
     chainId
@@ -246,7 +245,6 @@ export const BlockchainApiController = {
       path: `/v1/account/${account}/history`,
       params: {
         cursor,
-        onramp,
         chainId
       },
       signal,

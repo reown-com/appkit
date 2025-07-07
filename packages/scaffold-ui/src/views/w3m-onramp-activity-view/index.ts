@@ -123,7 +123,7 @@ export class W3mOnRampActivityView extends LitElement {
 
     this.loading = true
 
-    await TransactionsController.fetchTransactions(address, 'meld')
+    await TransactionsController.fetchTransactions(address)
 
     this.loading = false
     this.refetchLoadingTransactions()
@@ -143,7 +143,7 @@ export class W3mOnRampActivityView extends LitElement {
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
-      await TransactionsController.fetchTransactions(address, 'meld')
+      await TransactionsController.fetchTransactions(address)
       this.refetchLoadingTransactions()
     }, 3000)
   }

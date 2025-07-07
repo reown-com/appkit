@@ -47,7 +47,7 @@ const controller = {
     state.lastNetworkInView = lastNetworkInView
   },
 
-  async fetchTransactions(accountAddress?: string, onramp?: 'meld') {
+  async fetchTransactions(accountAddress?: string) {
     if (!accountAddress) {
       throw new Error("Transactions can't be fetched without an accountAddress")
     }
@@ -58,7 +58,6 @@ const controller = {
       const response = await BlockchainApiController.fetchTransactions({
         account: accountAddress,
         cursor: state.next,
-        onramp,
         chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
       })
 
