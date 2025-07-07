@@ -55,7 +55,7 @@ export const GetTransactionByHashResponse = z.object({
 })
 export const AppSwitchNetworkRequest = z.object({
   chainId: z.string().or(z.number()),
-  rpcUrl: z.optional(z.string())
+  rpcUrl: z.string()
 })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
@@ -64,7 +64,8 @@ export const AppConnectSocialRequest = z.object({
   preferredAccountType: z.optional(z.string()),
   chainId: z.optional(z.string().or(z.number())),
   siwxMessage: z.optional(SIWXMessage),
-  rpcUrl: z.optional(z.string())
+  rpcUrl: z.optional(z.string()),
+  test: z.string()
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.string().or(z.number())),

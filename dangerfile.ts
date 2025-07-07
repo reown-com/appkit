@@ -329,6 +329,110 @@ async function checkWallet() {
 
 checkWallet()
 
+// -- Check wallet schema breaking changes -------------------------------------
+async function checkWalletSchema() {
+  const wallet_schema_files = modified_files.filter(
+    f =>
+      f.includes('/wallet/') && (f.includes('W3mFrameSchema.ts') || f.includes('W3mFrameTypes.ts'))
+  )
+
+  for (const f of wallet_schema_files) {
+    const diff = await diffForFile(f)
+    if (!diff) {
+      // eslint-disable-next-line no-continue
+      continue
+    }
+
+    const addedLines = diff.added.split('\n')
+    const removedLines = diff.removed.split('\n')
+
+    const fieldPattern = /^\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
+
+    for (const line of addedLines) {
+      const fieldMatch = line.match(fieldPattern)
+      if (fieldMatch && !line.includes('.optional()')) {
+        const fieldName = fieldMatch[1]
+        if (!line.trim().startsWith('//') && !line.includes('*')) {
+          fail(
+            `Breaking change in ${f}: New required field '${fieldName}' added. Make it optional with .optional() for backwards compatibility.`
+          )
+        }
+      }
+    }
+
+    // Check for removed required fields
+    for (const removedLine of removedLines) {
+      const fieldMatch = removedLine.match(fieldPattern)
+      if (fieldMatch && !removedLine.includes('.optional()')) {
+        const fieldName = fieldMatch[1]
+        const isMovedOrMadeOptional = addedLines.some(
+          addedLine => addedLine.includes(fieldName as string) && fieldMatch.groups?.['fieldName']
+        )
+
+        if (
+          !isMovedOrMadeOptional &&
+          !removedLine.trim().startsWith('//') &&
+          !removedLine.includes('*')
+        ) {
+          fail(
+            `Breaking change in ${f}: Required field '${fieldName}' was removed. This breaks backwards compatibility.`
+          )
+        }
+      }
+    }
+
+    for (const removedLine of removedLines) {
+      if (removedLine.includes('.optional()')) {
+        const fieldMatch = removedLine.match(fieldPattern)
+        if (fieldMatch) {
+          const fieldName = fieldMatch[1]
+          const madeRequired = addedLines.some(addedLine => {
+            const addedFieldMatch = addedLine.match(fieldPattern)
+
+            return (
+              addedFieldMatch &&
+              addedFieldMatch[1] === fieldName &&
+              !addedLine.includes('.optional()')
+            )
+          })
+
+          // eslint-disable-next-line max-depth
+          if (madeRequired) {
+            fail(
+              `Breaking change in ${f}: Field '${fieldName}' changed from optional to required. This breaks backwards compatibility.`
+            )
+          }
+        }
+      }
+    }
+
+    if (diff.added.includes('z.enum(') || diff.removed.includes('z.enum(')) {
+      warn(
+        `Enum changes detected in ${f}. Please verify that enum modifications maintain backwards compatibility.`
+      )
+    }
+
+    if (f.includes('W3mFrameTypes.ts')) {
+      const removedInterfaceProps = removedLines.filter(
+        line =>
+          line.includes(':') &&
+          !line.trim().startsWith('//') &&
+          !line.includes('export') &&
+          !line.includes('interface') &&
+          !line.includes('.optional()')
+      )
+
+      if (removedInterfaceProps.length > 0) {
+        warn(
+          `Type interface changes detected in ${f}. Please verify that removed properties maintain backwards compatibility.`
+        )
+      }
+    }
+  }
+}
+
+checkWalletSchema()
+
 // -- Check laboratory ------------------------------------------------------------
 
 async function checkLaboratory() {
