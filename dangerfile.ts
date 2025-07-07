@@ -336,30 +336,15 @@ async function checkWalletSchema() {
       f.includes('wallet/') && (f.includes('W3mFrameSchema.ts') || f.includes('W3mFrameTypes.ts'))
   )
 
-  // Debug logging
-  message(`🔍 Checking wallet schema files: ${wallet_schema_files.length} files found`)
-  if (wallet_schema_files.length > 0) {
-    message(`Files: ${wallet_schema_files.join(', ')}`)
-  }
-
   for (const f of wallet_schema_files) {
     const diff = await diffForFile(f)
     if (!diff) {
-      message(`No diff found for ${f}`)
       // eslint-disable-next-line no-continue
       continue
     }
 
-    message(
-      `Processing ${f} - added: ${diff.added.length} chars, removed: ${diff.removed.length} chars`
-    )
-
     const addedLines = diff.added.split('\n')
     const removedLines = diff.removed.split('\n')
-
-    // Debug: Show the actual changes
-    message(`Added lines (${addedLines.length}): ${JSON.stringify(addedLines.slice(0, 3))}`)
-    message(`Removed lines (${removedLines.length}): ${JSON.stringify(removedLines.slice(0, 3))}`)
 
     // More flexible pattern to catch field definitions (accounting for git diff prefixes)
     const fieldPattern = /^[+-]?\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
@@ -374,14 +359,12 @@ async function checkWalletSchema() {
 
       const fieldName = fieldMatch.groups?.['fieldName']
       const isOptional = line.includes('.optional()') || line.includes('z.optional(')
-      message(`Regex matched field: ${fieldName} in line: "${line}", optional: ${isOptional}`)
 
       if (isOptional) {
         // eslint-disable-next-line no-continue
         continue
       }
 
-      message(`✓ Found new required field: ${fieldName}`)
       if (
         fieldName &&
         !line.trim().startsWith('//') &&
@@ -444,8 +427,6 @@ async function checkWalletSchema() {
         // eslint-disable-next-line no-continue
         continue
       }
-
-      message(`Found removed optional field: ${fieldName} in line: "${removedLine}"`)
 
       const madeRequired = addedLines.some(addedLine => {
         const addedFieldMatch = addedLine.match(fieldPattern)

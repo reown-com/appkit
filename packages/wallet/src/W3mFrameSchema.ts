@@ -55,8 +55,7 @@ export const GetTransactionByHashResponse = z.object({
 })
 export const AppSwitchNetworkRequest = z.object({
   chainId: z.string().or(z.number()),
-  rpcUrl: z.optional(z.string()),
-  test: z.string().optional()
+  rpcUrl: z.optional(z.string())
 })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
@@ -172,8 +171,7 @@ export const FrameInitSmartAccountResponse = z.object({
 
 export const FrameReadyResponse = z.object({
   // Placeholder for future data
-  version: z.string().optional(),
-  testVersion: z.string()
+  version: z.string().optional()
 })
 
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
