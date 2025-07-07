@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { Button, Stack, Text } from '@chakra-ui/react'
+import { Button, Input, Stack, Text } from '@chakra-ui/react'
 import { type Address, toHex } from 'viem'
 
 import {
@@ -12,6 +12,7 @@ import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useLocalEcdsaKey } from '@/src/context/LocalEcdsaKeyContext'
+import useDebounce from '@/src/hooks/useDebounce'
 import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
 import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 import { bigIntReplacer } from '@/src/utils/CommonUtils'
@@ -57,6 +58,10 @@ function ConnectedTestContent({
   const { clearSmartSession, setSmartSession, smartSession } = useERC7715Permissions()
   const { signer } = useLocalEcdsaKey()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
+  // In minutes
+  const [expiry, setExpiry] = useState<number>(1)
+  const debouncedExpiry = useDebounce<number>(expiry, 500)
+
   const toast = useChakraToast()
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
@@ -67,7 +72,7 @@ function ConnectedTestContent({
       const purchaseDonutPermissions = getPurchaseDonutPermissions()
       const grantPurchaseDonutPermissions: SmartSessionGrantPermissionsRequest = {
         // Adding 24 hours to the current time
-        expiry: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+        expiry: Math.floor(Date.now() / 1000) + debouncedExpiry * 60,
         chainId: toHex(chainId),
         address,
         signer: {
@@ -138,8 +143,25 @@ function ConnectedTestContent({
     }
   }, [signer, address, chainId, grantPermissions, toast])
 
+  function onExpiryChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value
+    const expiryNumber = Number(value)
+    if (isNaN(expiryNumber)) {
+      setExpiry(0)
+    } else {
+      setExpiry(expiryNumber)
+    }
+  }
+
   return (
     <Stack direction={['column', 'column', 'row']}>
+      <Input
+        type="number"
+        value={expiry}
+        onChange={onExpiryChange}
+        placeholder="Expiry in minutes"
+        min={1}
+      />
       <Button
         data-test-id="request-permissions-button"
         onClick={onRequestPermissions}
