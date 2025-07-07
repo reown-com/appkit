@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
-import type { EstimateGasTransactionArgs } from '@reown/appkit-controllers'
+import type { AdapterNetworkState, EstimateGasTransactionArgs } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client.js'
@@ -35,6 +35,7 @@ describe('AppKit Gas Estimation', () => {
     mockBlockchainApiController()
     // Mock ChainController.initialize before creating TestAppKit
     vi.spyOn(ChainController, 'initialize').mockImplementation(() => {})
+    vi.spyOn(ChainController, 'getNetworkData').mockResolvedValue({} as AdapterNetworkState)
 
     appKit = new TestAppKit(mockOptions)
   })
@@ -53,9 +54,9 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
@@ -98,9 +99,9 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     await expect(
@@ -125,14 +126,14 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     await expect(
       appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
-    ).rejects.toThrow('CaipNetwork is undefined')
+    ).rejects.toThrow('estimateGas: caipNetwork is required but got undefined')
   })
 
   it('should handle missing adapter gracefully', async () => {
@@ -148,9 +149,9 @@ describe('AppKit Gas Estimation', () => {
 
     const transactionArgs: EstimateGasTransactionArgs = {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      to: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-      data: '0x' as `0x${string}`
+      address: '0x1234567890123456789012345678901234567890' as Address,
+      to: '0x1234567890123456789012345678901234567890' as Address,
+      data: '0x' as Hex
     }
 
     const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)

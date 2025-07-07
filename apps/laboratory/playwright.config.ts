@@ -1,7 +1,8 @@
 import { defineConfig } from '@playwright/test'
 import { config } from 'dotenv'
 
-import { BASE_URL } from './tests/shared/constants'
+import { BASE_URL } from '@reown/appkit-testing'
+
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
 import { getValue } from './tests/shared/utils/config'
 import { getProjects } from './tests/shared/utils/project'

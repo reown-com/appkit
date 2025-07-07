@@ -1,11 +1,12 @@
 import { devices } from '@playwright/test'
 
-import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
+import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
 
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
+  'multi-wallet-multichain',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
@@ -14,7 +15,7 @@ const FLAGS = ['default-account-types'] as const
 
 const CORE_LIRARIES = ['core'] as const
 
-const CLOUD_AUTH_LIBRARIES = ['cloud-auth'] as const
+const REOWN_AUTHENTICATION_LIBRARIES = ['reown-authentication'] as const
 
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -32,8 +33,8 @@ const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   CORE_LIRARIES.map(library => ({ device, library }))
 )
 
-const CLOUD_AUTH_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
-  CLOUD_AUTH_LIBRARIES.map(library => ({ device, library }))
+const REOWN_AUTHENTICATION_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  REOWN_AUTHENTICATION_LIBRARIES.map(library => ({ device, library }))
 )
 
 const FLAG_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
@@ -76,7 +77,10 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'wallet.spec.ts',
   'wallet-button.spec',
   'verify.spec.ts',
-  'email-after-farcaster.spec.ts'
+  'email-after-farcaster.spec.ts',
+  'multi-wallet.spec.ts',
+  'multi-wallet-siwx.spec.ts',
+  'flag-enable-reconnect.spec.ts'
 ]
 
 const CORE_TESTS = ['sign-client.spec.ts', 'universal-provider.spec.ts', 'core.spec.ts']
@@ -91,12 +95,21 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'wallet.spec.ts',
-  'wallet-button.spec'
+  'wallet-button.spec',
+  'multi-wallet.spec.ts'
 ]
 
-const CLOUD_AUTH_TESTS = ['cloud-auth.spec.ts']
+const REOWN_AUTHENTICATION_TESTS = [
+  'reown-authentication.spec.ts',
+  'reown-authentication-email.spec.ts'
+]
 
-const SINGLE_ADAPTER_BITCOIN_TESTS = ['wallet.spec.ts', 'wallet-button.spec', 'basic-tests.spec.ts']
+const SINGLE_ADAPTER_BITCOIN_TESTS = [
+  'wallet.spec.ts',
+  'wallet-button.spec',
+  'basic-tests.spec.ts',
+  'siwx-extension.spec.ts'
+]
 
 function createRegex(tests: string[], isDesktop = true) {
   const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
@@ -111,7 +124,7 @@ const SINGLE_ADAPTER_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_MOBILE_TESTS, fal
 
 const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
-const CLOUD_AUTH_TESTS_REGEX = createRegex(CLOUD_AUTH_TESTS)
+const REOWN_AUTHENTICATION_TESTS_REGEX = createRegex(REOWN_AUTHENTICATION_TESTS)
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/core': {
@@ -121,42 +134,58 @@ const customProjectProperties: CustomProjectProperties = {
     testMatch: CORE_TESTS_REGEX
   },
   'Desktop Chrome/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/bitcoin': {
-    testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/bitcoin': {
-    testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
+    testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts/u
+    testIgnore:
+      /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts/u
+    testIgnore:
+      /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/multichain-all': {
     testMatch: /^.*\/multichain-all\.spec\.ts$/u
   },
   'Desktop Chrome/multichain-all': {
     testMatch: /^.*\/multichain-all\.spec\.ts$/u
+  },
+  'Desktop Firefox/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
+  },
+  'Desktop Chrome/multi-wallet-multichain': {
+    testMatch: /^.*\/multi-wallet-multichain\.spec\.ts$/u
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
@@ -224,11 +253,11 @@ const customProjectProperties: CustomProjectProperties = {
   'Galaxy S5/solana': {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
   },
-  'Desktop Chrome/cloud-auth': {
-    testMatch: CLOUD_AUTH_TESTS_REGEX
+  'Desktop Chrome/reown-authentication': {
+    testMatch: REOWN_AUTHENTICATION_TESTS_REGEX
   },
-  'Desktop Firefox/cloud-auth': {
-    testMatch: CLOUD_AUTH_TESTS_REGEX
+  'Desktop Firefox/reown-authentication': {
+    testMatch: REOWN_AUTHENTICATION_TESTS_REGEX
   }
 }
 
@@ -264,7 +293,7 @@ export function getProjects() {
   const libraryMobileProjects = LIBRARY_MOBILE_PERMUTATIONS.map(createProject)
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
-  const cloudAuthProjects = CLOUD_AUTH_PERMUTATIONS.map(createProject)
+  const reownAuthenticationProjects = REOWN_AUTHENTICATION_PERMUTATIONS.map(createProject)
   const flagProjects = FLAG_PERMUTATIONS.map(createProject)
 
   const projects = [
@@ -272,7 +301,7 @@ export function getProjects() {
     ...libraryMobileProjects,
     ...multichainProjects,
     ...coreProjects,
-    ...cloudAuthProjects,
+    ...reownAuthenticationProjects,
     ...flagProjects
   ]
 

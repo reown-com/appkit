@@ -5,6 +5,7 @@ import { type Abi, encodeFunctionData, parseEther } from 'viem'
 import { useAccount, useSwitchChain } from 'wagmi'
 import { useSendCalls } from 'wagmi'
 
+import type { Address } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -188,7 +189,7 @@ function AvailableTestContent() {
     })
 
     const testTransaction = {
-      to: contractAddress as `0x${string}`,
+      to: contractAddress as Address,
       data: callData,
       value
     }
@@ -197,10 +198,8 @@ function AvailableTestContent() {
       calls: [testTransaction],
       capabilities: {
         paymasterService: {
-          1: {
-            url: paymasterServiceUrl,
-            context
-          }
+          url: paymasterServiceUrl,
+          context
         }
       }
     })

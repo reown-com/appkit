@@ -68,6 +68,8 @@ on:
         required: false
       SOLANA_PRIVATE_KEY:
         required: false
+      BIP122_PRIVATE_KEY:
+        required: false
       PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID:
         required: false
       PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
@@ -130,6 +132,7 @@ jobs:
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+          BIP122_PRIVATE_KEY: ${{ secrets.BIP122_PRIVATE_KEY }}
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
         working-directory: ./apps/browser-extension/
         run: pnpm build

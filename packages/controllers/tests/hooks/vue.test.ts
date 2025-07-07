@@ -2,7 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import type { App } from 'vue'
 import { createApp, nextTick } from 'vue'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
   AccountController,
@@ -10,6 +10,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
+  OptionsController,
   StorageUtil
 } from '../../exports/index.js'
 import { AssetUtil } from '../../exports/utils.js'
@@ -176,6 +177,15 @@ describe('useAppKitConnections', () => {
     vi.restoreAllMocks()
   })
 
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
+  })
+
   it('should return formatted connections and storage connections', async () => {
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockConnection],
@@ -258,6 +268,18 @@ describe('useAppKitConnections', () => {
 
     await nextTick()
   })
+
+  it('should return empty state when multiWallet is disabled', () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: false }
+    })
+
+    const [state] = withSetup(() => useAppKitConnections())
+
+    expect(state.value.connections).toEqual([])
+    expect(state.value.recentConnections).toEqual([])
+  })
 })
 
 describe('useAppKitConnection', () => {
@@ -295,11 +317,15 @@ describe('useAppKitConnection', () => {
       ...ConnectorController.state.activeConnectorIds,
       eip155: 'test-connector'
     })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
   })
 
   it('should return current connection and connection state', async () => {
-    const mockConnections = new Map([['eip155' as ChainNamespace, [mockConnection]]])
+    const mockConnections = new Map([[ConstantsUtil.CHAIN.EVM, [mockConnection]]])
 
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(mockConnections)
@@ -456,8 +482,8 @@ describe('useAppKitConnection', () => {
 
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
       new Map([
-        ['eip155' as ChainNamespace, [mockConnection]],
-        ['solana' as ChainNamespace, [solanaConnection]]
+        [ConstantsUtil.CHAIN.EVM, [mockConnection]],
+        [ConstantsUtil.CHAIN.SOLANA, [solanaConnection]]
       ])
     )
     vi.spyOn(ConnectorController.state, 'activeConnectorIds', 'get').mockReturnValue({
@@ -495,7 +521,7 @@ describe('useAppKitConnection', () => {
   })
 
   it('should return undefined connection when no matching connector found', () => {
-    const mockConnections = new Map([['eip155' as ChainNamespace, [mockConnection]]])
+    const mockConnections = new Map([[ConstantsUtil.CHAIN.EVM, [mockConnection]]])
 
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(mockConnections)
@@ -511,7 +537,7 @@ describe('useAppKitConnection', () => {
 
   it('should handle case-insensitive connector matching', () => {
     const upperCaseConnection = { ...mockConnection, connectorId: 'TEST-CONNECTOR' }
-    const mockConnections = new Map([['eip155' as ChainNamespace, [upperCaseConnection]]])
+    const mockConnections = new Map([[ConstantsUtil.CHAIN.EVM, [upperCaseConnection]]])
 
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(mockConnections)
@@ -523,5 +549,17 @@ describe('useAppKitConnection', () => {
     const [state] = withSetup(() => useAppKitConnection({ namespace: 'eip155' }))
 
     expect(state.value.connection).toStrictEqual(upperCaseConnection)
+  })
+
+  it('should return empty state when multiWallet is disabled', () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: false }
+    })
+
+    const [state] = withSetup(() => useAppKitConnection({ namespace: 'eip155' }))
+
+    expect(state.value.connection).toBeUndefined()
+    expect(state.value.isPending).toBe(false)
   })
 })

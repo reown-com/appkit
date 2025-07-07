@@ -6,6 +6,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ChainController,
+  ConnectionController,
   ConnectorController,
   ConstantsUtil,
   OptionsController,
@@ -110,7 +111,7 @@ export class W3mSocialLoginWidget extends LitElement {
               }}
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
-              ?disabled=${this.isPwaLoading}
+              ?disabled=${this.isPwaLoading || this.hasConnection()}
             ></wui-logo-select>`
         )}
       </wui-flex>`
@@ -125,7 +126,7 @@ export class W3mSocialLoginWidget extends LitElement {
       align="center"
       name=${`Continue with ${socials[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
-      ?disabled=${this.isPwaLoading}
+      ?disabled=${this.isPwaLoading || this.hasConnection()}
     ></wui-list-social>`
   }
 
@@ -158,14 +159,14 @@ export class W3mSocialLoginWidget extends LitElement {
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
               ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
-              ?disabled=${this.isPwaLoading}
+              ?disabled=${this.isPwaLoading || this.hasConnection()}
             ></wui-logo-select>`
         )}
         <wui-logo-select
           logo="more"
           tabIdx=${ifDefined(this.tabIdx)}
           @click=${this.onMoreSocialsClick.bind(this)}
-          ?disabled=${this.isPwaLoading}
+          ?disabled=${this.isPwaLoading || this.hasConnection()}
           data-testid="social-selector-more"
         ></wui-logo-select>
       </wui-flex>`
@@ -186,7 +187,7 @@ export class W3mSocialLoginWidget extends LitElement {
             logo=${social}
             tabIdx=${ifDefined(this.tabIdx)}
             ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
-            ?disabled=${this.isPwaLoading}
+            ?disabled=${this.isPwaLoading || this.hasConnection()}
           ></wui-logo-select>`
       )}
     </wui-flex>`
@@ -240,6 +241,10 @@ export class W3mSocialLoginWidget extends LitElement {
         this.isPwaLoading = false
       }
     }
+  }
+
+  private hasConnection() {
+    return ConnectionController.hasAnyConnection(CommonConstantsUtil.CONNECTOR_ID.AUTH)
   }
 }
 

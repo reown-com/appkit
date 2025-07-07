@@ -44,7 +44,7 @@ import { mockUser, mockUserBalance } from '../mocks/Account.js'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, bitcoin, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
-import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
+import { mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
   mockRemoteFeatures,
@@ -205,6 +205,17 @@ describe('Base Public methods', () => {
     expect(appKit.getWalletInfo()).toEqual({ name: 'Test Wallet' })
   })
 
+  it('should get wallet info with namespace', () => {
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectedWalletInfo({ name: 'Test Wallet' }, 'eip155')
+
+    expect(appKit.getWalletInfo('eip155')).toEqual({ name: 'Test Wallet' })
+    expect(appKit.getWalletInfo('solana')).toEqual(undefined)
+
+    appKit.setConnectedWalletInfo({ name: 'Test Wallet' }, 'solana')
+    expect(appKit.getWalletInfo('solana')).toEqual({ name: 'Test Wallet' })
+  })
+
   it('should subscribe to wallet info changes', () => {
     const subscribe = vi.spyOn(AccountController, 'subscribeKey')
     const callback = vi.fn()
@@ -328,31 +339,6 @@ describe('Base Public methods', () => {
     appKit.setStatus('connected', 'eip155')
 
     expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
-  })
-
-  it('should set all accounts', () => {
-    const setAllAccounts = vi.spyOn(AccountController, 'setAllAccounts')
-    const setHasMultipleAddresses = vi.spyOn(OptionsController, 'setHasMultipleAddresses')
-    const evmAddresses = [
-      { address: '0x1', namespace: 'eip155', type: 'eoa' } as const,
-      { address: '0x2', namespace: 'eip155', type: 'smartAccount' } as const
-    ]
-    const solanaAddresses = [{ address: 'asdbjk', namespace: 'solana', type: 'eoa' } as const]
-    const bip122Addresses = [
-      { address: 'asdasd1', namespace: 'bip122', type: 'payment' } as const,
-      { address: 'asdasd2', namespace: 'bip122', type: 'ordinal' } as const,
-      { address: 'ASDASD3', namespace: 'bip122', type: 'stx' } as const
-    ]
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setAllAccounts(evmAddresses, 'eip155')
-    appKit.setAllAccounts(solanaAddresses, 'solana')
-    appKit.setAllAccounts(bip122Addresses, 'bip122')
-
-    expect(setAllAccounts).toHaveBeenCalledWith(evmAddresses, 'eip155')
-    expect(setAllAccounts).toHaveBeenCalledWith(solanaAddresses, 'solana')
-    expect(setAllAccounts).toHaveBeenCalledWith(bip122Addresses, 'bip122')
-    expect(setHasMultipleAddresses).toHaveBeenCalledWith(true)
   })
 
   it('should add address label', () => {
@@ -660,52 +646,16 @@ describe('Base Public methods', () => {
     )
   })
 
-  it('should set smart account enabled networks', () => {
-    const networks = [1, 137]
-    const setSmartAccountEnabledNetworks = vi.spyOn(
-      ChainController,
-      'setSmartAccountEnabledNetworks'
-    )
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setSmartAccountEnabledNetworks(networks, mainnet.chainNamespace)
-
-    expect(setSmartAccountEnabledNetworks).toHaveBeenCalledWith(networks, mainnet.chainNamespace)
-  })
-
   it('should set preferred account type', () => {
-    const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
+    const setPreferredAccountType = vi.spyOn(ChainController, 'setAccountProp')
 
     const appKit = new AppKit(mockOptions)
     appKit.setPreferredAccountType('eoa', mainnet.chainNamespace)
 
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
-  })
-
-  it('should create accounts with correct account types from user accounts', async () => {
-    const createAccount = vi.spyOn(CoreHelperUtil, 'createAccount')
-    const setAllAccounts = vi.spyOn(AccountController, 'setAllAccounts')
-    const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
-
-    const appKitWithAuth = new AppKit(mockOptions)
-    ;(appKitWithAuth as any).authProvider = mockAuthProvider
-
-    await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider, mainnet.chainNamespace)
-
-    await vi.waitFor(
-      () => {
-        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
-        expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
-        expect(setAllAccounts).toHaveBeenCalledWith(
-          [
-            { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
-            { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
-          ],
-          mainnet.chainNamespace
-        )
-        expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
-      },
-      { interval: 100, timeout: 2000 }
+    expect(setPreferredAccountType).toHaveBeenCalledWith(
+      'preferredAccountType',
+      'eoa',
+      mainnet.chainNamespace
     )
   })
 
@@ -884,11 +834,11 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
 
-    expect(fetchIdentity).not.toHaveBeenCalled()
+    expect(fetchIdentity).toHaveBeenCalled()
 
     await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
 
-    expect(fetchIdentity).toHaveBeenCalledOnce()
+    expect(fetchIdentity).toHaveBeenCalled()
   })
 
   it('should not sync identity on non-evm network', async () => {
@@ -1143,17 +1093,14 @@ describe('Base Public methods', () => {
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     ChainController.state.activeChain = 'eip155'
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
-      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountTypes: {
-        eip155: 'eoa'
-      },
       smartAccountDeployed: true,
       currentTab: 0,
-      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']]),
+      preferredAccountType: 'eoa'
     })
     vi.spyOn(CoreHelperUtil, 'getPlainAddress')
 
@@ -1178,9 +1125,9 @@ describe('Base Public methods', () => {
     const account = appKit.getAccount()
 
     expect(account).toEqual({
-      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       address: '0x123',
+      allAccounts: [],
       isConnected: true,
       status: 'connected',
       embeddedWalletInfo: {
@@ -1202,17 +1149,14 @@ describe('Base Public methods', () => {
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
-      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       status: 'connected',
       user: { email: 'test@example.com' },
       socialProvider: 'email' as SocialProvider,
-      preferredAccountTypes: {
-        eip155: 'eoa'
-      },
       smartAccountDeployed: true,
       currentTab: 0,
-      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']]),
+      preferredAccountType: 'eoa'
     })
     vi.spyOn(CoreHelperUtil, 'getPlainAddress')
 
@@ -1220,8 +1164,8 @@ describe('Base Public methods', () => {
     const account = appKit.getAccount('eip155')
 
     expect(account).toEqual({
-      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
+      allAccounts: [],
       address: '0x123',
       isConnected: true,
       status: 'connected',

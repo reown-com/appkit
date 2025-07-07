@@ -1,2 +1,2 @@
 export * from './DefaultSIWX.js'
-export * from './CloudAuthSIWX.js'
+export * from './ReownAuthenticationSIWX.js'

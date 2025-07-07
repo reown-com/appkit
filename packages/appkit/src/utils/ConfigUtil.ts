@@ -19,7 +19,8 @@ const FEATURE_KEYS: FeatureKey[] = [
   'swaps',
   'onramp',
   'activity',
-  'reownBranding'
+  'reownBranding',
+  'multiWallet'
 ]
 
 const featureConfig = {
@@ -151,6 +152,15 @@ const featureConfig = {
 
       return Boolean(localValue)
     }
+  },
+  multiWallet: {
+    apiFeatureName: 'multi_wallet' as const,
+    localFeatureName: 'multiWallet',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.multiWallet
   }
 }
 

@@ -1,3 +1,4 @@
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   type ChainNamespace,
   type OnRampProvider,
@@ -5,6 +6,7 @@ import {
   type SwapProvider
 } from '@reown/appkit-common'
 
+import type { SIWXConfig } from './SIWXUtil.js'
 import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
 const SECURE_SITE =
@@ -182,7 +184,10 @@ export const ConstantsUtil = {
     'DE',
     'WNT'
   ],
-  BALANCE_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
+  BALANCE_SUPPORTED_CHAINS: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',
@@ -210,9 +215,12 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
-  NAMES_SUPPORTED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
-  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
-  ACTIVITY_ENABLED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
+  NAMES_SUPPORTED_CHAIN_NAMESPACES: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
+  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
+  ACTIVITY_ENABLED_CHAIN_NAMESPACES: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
@@ -228,7 +236,10 @@ export const ConstantsUtil = {
     WEB: 'Open and continue in the wallet app'
   },
 
-  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
+  SEND_SUPPORTED_NAMESPACES: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
   DEFAULT_REMOTE_FEATURES: {
     swaps: ['1inch'] as SwapProvider[],
     onramp: ['meld', 'coinbase'] as OnRampProvider[],
@@ -243,7 +254,8 @@ export const ConstantsUtil = {
       'facebook'
     ] as SocialProvider[],
     activity: true,
-    reownBranding: true
+    reownBranding: true,
+    multiWallet: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -299,5 +311,9 @@ export const ConstantsUtil = {
     ETHERS: 'ethers',
     ETHERS5: 'ethers5',
     BITCOIN: 'bitcoin'
-  }
+  },
+
+  SIWX_DEFAULTS: {
+    signOutOnDisconnect: true
+  } as const satisfies Pick<SIWXConfig, 'signOutOnDisconnect'>
 }

@@ -6,7 +6,6 @@ import { type ChainNamespace } from '@reown/appkit-common'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil } from '../utils/NetworkUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -58,7 +57,6 @@ const controller = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
-    const isConnected = AccountController.state.status === 'connected'
     const namespace = options?.namespace
     const currentNamespace = ChainController.state.activeChain
     const isSwitchingNamespace = namespace && namespace !== currentNamespace
@@ -68,11 +66,7 @@ const controller = {
       // No need to add an await here if we are use basic
       ApiController.prefetch({ fetchNetworkImages: false, fetchConnectorImages: false })
     } else {
-      await ApiController.prefetch({
-        fetchConnectorImages: !isConnected,
-        fetchFeaturedWallets: !isConnected,
-        fetchRecommendedWallets: !isConnected
-      })
+      await ApiController.prefetch()
     }
 
     ConnectorController.setFilterByNamespace(options?.namespace)
@@ -81,7 +75,7 @@ const controller = {
     if (namespace && isSwitchingNamespace) {
       const namespaceNetwork =
         ChainController.getNetworkData(namespace)?.caipNetwork ||
-        ChainController.getRequestedCaipNetworks(namespace as ChainNamespace)[0]
+        ChainController.getRequestedCaipNetworks(namespace)[0]
 
       if (namespaceNetwork) {
         NetworkUtil.onSwitchNetwork({ network: namespaceNetwork, ignoreSwitchConfirmation: true })

@@ -23,7 +23,6 @@ import { WcHelpersUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { ChainNamespace } from '@reown/appkit-common'
 import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
@@ -221,9 +220,23 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const accountsList = provider?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
-      const accounts = accountsList?.map(account => account.split(':')[2]) ?? []
+      const accounts = (accountsList?.map(account => account.split(':')[2]) ?? []) as Address[]
 
-      return accounts as `0x${string}`[]
+      const accountsAdded = new Set<`0x${string}`>()
+
+      const deduplicatedAccounts = accounts.filter(account => {
+        const lowerCasedAccount = account?.toLowerCase() as Lowercase<Address>
+
+        if (accountsAdded.has(lowerCasedAccount)) {
+          return false
+        }
+
+        accountsAdded.add(lowerCasedAccount)
+
+        return true
+      })
+
+      return deduplicatedAccounts
     },
     async getProvider({ chainId } = {}) {
       if (!provider_) {
@@ -236,7 +249,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       if (chainId && currentChainId !== chainId && activeNamespace) {
         const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
-        const appKitCaipNetworks = appKit.getCaipNetworks(activeNamespace as ChainNamespace)
+        const appKitCaipNetworks = activeNamespace ? appKit.getCaipNetworks(activeNamespace) : []
         const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
@@ -272,6 +285,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If the chains are stale on the session, then the connector is unauthorized.
         const isChainsStale = await this.isChainsStale()
+
         if (isChainsStale && provider.session) {
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           await provider.disconnect().catch(() => {})

@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-controllers'
 import {
   AssetUtil,
@@ -25,6 +26,7 @@ export class W3mConnectCustomWidget extends LitElement {
   @property() public tabIdx?: number = undefined
 
   @state() private connectors = ConnectorController.state.connectors
+
   @state() private loading = false
 
   public constructor() {
@@ -56,6 +58,10 @@ export class W3mConnectCustomWidget extends LitElement {
 
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+
     return html`<wui-flex flexDirection="column" gap="xs">
       ${wallets.map(
         wallet => html`
@@ -66,6 +72,7 @@ export class W3mConnectCustomWidget extends LitElement {
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
             ?loading=${this.loading}
+            ?disabled=${hasWcConnection}
           >
           </wui-list-wallet>
         `

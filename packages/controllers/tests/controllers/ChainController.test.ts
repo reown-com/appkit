@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   type CaipNetwork,
   type CaipNetworkId,
-  type ChainNamespace,
   ConstantsUtil,
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
@@ -20,7 +19,7 @@ import { type ConnectionControllerClient } from '../../src/controllers/Connectio
 import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUtil.js'
 
 // -- Setup --------------------------------------------------------------------
-const chainNamespace = 'eip155' as ChainNamespace
+const chainNamespace = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
 
@@ -147,6 +146,7 @@ describe('ChainController', () => {
       networkControllerClient
     })
   })
+
   it('should be initialized as expected', () => {
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
     expect(ChainController.getConnectionControllerClient()).toEqual(connectionControllerClient)
@@ -288,7 +288,7 @@ describe('ChainController', () => {
     expect(AccountController.state.addressExplorerUrl).toEqual(undefined)
     expect(AccountController.state.tokenBalance).toEqual([])
     expect(AccountController.state.connectedWalletInfo).toEqual(undefined)
-    expect(AccountController.state.preferredAccountTypes).toEqual(undefined)
+    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
     expect(AccountController.state.status).toEqual('disconnected')
     expect(AccountController.state.socialProvider).toEqual(undefined)
     expect(AccountController.state.socialWindow).toEqual(undefined)

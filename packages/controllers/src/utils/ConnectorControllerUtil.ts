@@ -11,6 +11,7 @@ import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
 import { ModalController } from '../controllers/ModalController.js'
 import { RouterController, type RouterControllerState } from '../controllers/RouterController.js'
+import { getPreferredAccountType } from './ChainControllerUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
@@ -149,7 +150,11 @@ export const ConnectorControllerUtil = {
                     properties: { provider: socialProvider }
                   })
                 }
-                await authConnector.provider.connectSocial(uri)
+                const network = ChainController.state.activeCaipNetwork
+                await authConnector.provider.connectSocial({
+                  uri,
+                  chainId: network?.caipNetworkId
+                })
 
                 if (socialProvider) {
                   StorageUtil.setConnectedSocialProvider(socialProvider)
@@ -357,8 +362,7 @@ export const ConnectorControllerUtil = {
 
     return (
       isSmartAccountEnabled &&
-      AccountController.state.preferredAccountTypes?.[namespace] ===
-        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+      getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
     )
   }
 }

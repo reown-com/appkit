@@ -15,14 +15,20 @@ import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
+    if (!this.namespace) {
+      throw new Error('UniversalAdapter:setUniversalProvider - namespace is required')
+    }
+
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
         caipNetworks: this.getCaipNetworks(),
-        namespace: this.namespace as ChainNamespace
+        namespace: this.namespace
       })
     )
+
+    return Promise.resolve()
   }
 
   public async connect(
@@ -41,9 +47,16 @@ export class UniversalAdapter extends AdapterBlueprint {
     try {
       const connector = this.getWalletConnectConnector()
       await connector.disconnect()
+      this.emit('disconnect')
     } catch (error) {
       console.warn('UniversalAdapter:disconnect - error', error)
     }
+
+    return { connections: [] }
+  }
+
+  public override syncConnections() {
+    return Promise.resolve()
   }
 
   public async getAccounts({
@@ -77,6 +90,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     const isBalanceSupported =
       params.caipNetwork &&
       CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(params.caipNetwork?.chainNamespace)
+
     if (!isBalanceSupported || params.caipNetwork?.testnet) {
       return {
         balance: '0.00',
@@ -170,6 +184,10 @@ export class UniversalAdapter extends AdapterBlueprint {
     return Promise.resolve({
       hash: ''
     })
+  }
+
+  public override emitFirstAvailableConnection(): void {
+    return undefined
   }
 
   public parseUnits(): AdapterBlueprint.ParseUnitsResult {

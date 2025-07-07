@@ -48,34 +48,23 @@ emailTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-
-emailTest('it should make the default account type as smart account', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-
-  if (namespace !== 'eip155') {
-    return
-  }
-
-  await page.goToSettings()
+emailTest('it should make the default account type as smart account', async () => {
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
 
   await page.page.reload()
   await validator.expectAccountButtonReady()
 
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.disconnect()
   await validator.expectDisconnected()
 })
 
-emailTest('it should show make the default account type as EOA', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-
-  if (namespace !== 'eip155') {
-    return
-  }
-
+emailTest('it should show make the default account type as EOA', async () => {
   page = new ModalWalletPage(browserPage, 'default-account-types-eoa', 'default')
   await page.load()
 
@@ -88,14 +77,16 @@ emailTest('it should show make the default account type as EOA', async ({ librar
   await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
   await validator.expectConnected()
 
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
 
   await page.page.reload()
   await validator.expectAccountButtonReady()
 
-  await page.goToSettings()
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.disconnect()
   await validator.expectDisconnected()

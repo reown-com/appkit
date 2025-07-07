@@ -13,6 +13,7 @@ import {
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-connecting-header/index.js'
 import '../../partials/w3m-connecting-wc-browser/index.js'
@@ -91,12 +92,45 @@ export class W3mConnectingWcView extends LitElement {
         CoreHelperUtil.isPairingExpired(wcPairingExpiry) ||
         status === 'connecting'
       ) {
+        const connectionsByNamespace = ConnectionController.getConnections(
+          ChainController.state.activeChain
+        )
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+        const hasConnections = connectionsByNamespace.length > 0
         await ConnectionController.connectWalletConnect()
+
         if (!this.isSiwxEnabled) {
-          ModalController.close()
+          if (hasConnections && isMultiWalletEnabled) {
+            RouterController.replace('ProfileWallets')
+            SnackController.showSuccess('New Wallet Added')
+          } else {
+            ModalController.close()
+          }
         }
       }
     } catch (error) {
+      /*
+       * In some cases when a wallet is connecting to AppKit and is not connecting to the right network and there are only a few networks enabled; Wagmi is unable to switch to the chain because this wallet is not enabled in wagmi. In this case AppKit will still connect and will switch to the wallets chain. In some cases this will open the unsupportedChainUI if the network is not supported.
+       *
+       * But there are also cases when enableNetworkSwitch is turned off. In this case wagmi will still connect, fail to switch chain, but AppKit keeps in the wrong chain. We need to simulate a showUnsupportedChain to show the user the correct error on the screen, so they can manually switch to the correct network.
+       */
+      if (
+        error instanceof Error &&
+        error.message.includes('An error occurred when attempting to switch chain') &&
+        !OptionsController.state.enableNetworkSwitch
+      ) {
+        if (ChainController.state.activeChain) {
+          ChainController.setActiveCaipNetwork(
+            CaipNetworksUtil.getUnsupportedNetwork(
+              `${ChainController.state.activeChain}:${ChainController.state.activeCaipNetwork?.id}`
+            )
+          )
+          ChainController.showUnsupportedChainUI()
+
+          return
+        }
+      }
+
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_ERROR',

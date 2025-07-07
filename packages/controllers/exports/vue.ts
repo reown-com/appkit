@@ -4,10 +4,13 @@ import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
 import { AccountController } from '../src/controllers/AccountController.js'
+import { AlertController } from '../src/controllers/AlertController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
+import { OptionsController } from '../src/controllers/OptionsController.js'
+import { getPreferredAccountType } from '../src/utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { StorageUtil } from '../src/utils/StorageUtil.js'
@@ -93,20 +96,18 @@ export function useAppKitAccount(options?: {
     const accountState = _chainNamespace
       ? _chains.get(_chainNamespace)?.accountState
       : AccountController.state
+    const activeChainNamespace = _chainNamespace || ChainController.state.activeChain
 
-    state.value.allAccounts = accountState?.allAccounts || []
     state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
     state.value.caipAddress = accountState?.caipAddress
     state.value.status = accountState?.status
     state.value.isConnected = Boolean(accountState?.caipAddress)
-    const activeChainNamespace =
-      _chainNamespace || (ChainController.state.activeChain as ChainNamespace)
     state.value.embeddedWalletInfo =
       authConnector && activeConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
         ? {
             user: accountState?.user,
             authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
-            accountType: accountState?.preferredAccountTypes?.[activeChainNamespace],
+            accountType: getPreferredAccountType(activeChainNamespace),
             isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
           }
         : undefined
@@ -227,6 +228,20 @@ export function useAppKitConnections(namespace?: ChainNamespace): Ref<UseAppKitC
     unsubscribe.forEach(unsubscribe => unsubscribe())
   })
 
+  const isMultiWalletEnabled = Boolean(OptionsController.state.remoteFeatures?.multiWallet)
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
+      'info'
+    )
+
+    return ref({
+      connections: [],
+      recentConnections: []
+    })
+  }
+
   return state
 }
 
@@ -318,6 +333,7 @@ export function useAppKitConnection(
     }
 
     StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+    ConnectionController.syncStorageConnections()
     onSuccess?.({
       address,
       namespace: chainNamespace,
@@ -359,6 +375,22 @@ export function useAppKitConnection(
   onUnmounted(() => {
     unsubscribe.forEach(unsubscribe => unsubscribe())
   })
+
+  const isMultiWalletEnabled = Boolean(OptionsController.state.remoteFeatures?.multiWallet)
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTION_HOOK,
+      'info'
+    )
+
+    return ref({
+      connection: undefined,
+      isPending: false,
+      switchConnection: () => Promise.resolve(undefined),
+      deleteConnection: () => ({})
+    })
+  }
 
   return state
 }

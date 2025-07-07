@@ -2,6 +2,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { AccountController } from '../controllers/AccountController.js'
@@ -13,11 +14,15 @@ import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
+import { getPreferredAccountType } from './ChainControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
  */
+
+let addEmbeddedWalletSessionPromise: Promise<void> | null = null
+
 export const SIWXUtil = {
   getSIWX() {
     return OptionsController.state.siwx
@@ -37,6 +42,10 @@ export const SIWXUtil = {
     }
 
     try {
+      if (addEmbeddedWalletSessionPromise) {
+        await addEmbeddedWalletSessionPromise
+      }
+
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
 
       if (sessions.length) {
@@ -102,8 +111,10 @@ export const SIWXUtil = {
       await siwx.addSession({
         data: siwxMessage,
         message,
-        signature: signature as `0x${string}`
+        signature
       })
+
+      ChainController.setLastConnectedSIWECaipNetwork(network)
 
       ModalController.close()
 
@@ -121,12 +132,7 @@ export const SIWXUtil = {
         })
       }
 
-      if (properties.isSmartAccount) {
-        SnackController.showError('This application might not support Smart Accounts')
-      } else {
-        SnackController.showError('Signature declined')
-      }
-
+      SnackController.showError('Error signing message')
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
@@ -143,12 +149,25 @@ export const SIWXUtil = {
       const isRequired = siwx?.getRequired?.()
 
       if (isRequired) {
-        await ConnectionController.disconnect()
+        const lastNetwork = ChainController.getLastConnectedSIWECaipNetwork()
+        if (lastNetwork) {
+          const sessions = await siwx?.getSessions(
+            lastNetwork?.caipNetworkId,
+            CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+          )
+          if (sessions && sessions.length > 0) {
+            await ChainController.switchActiveNetwork(lastNetwork)
+          } else {
+            await ConnectionController.disconnect()
+          }
+        } else {
+          await ConnectionController.disconnect()
+        }
       } else {
         ModalController.close()
       }
 
-      RouterController.reset('Connect')
+      ModalController.close()
 
       EventsController.sendEvent({
         event: 'CLICK_CANCEL_SIWX',
@@ -159,6 +178,24 @@ export const SIWXUtil = {
       // eslint-disable-next-line no-console
       console.error('SIWXUtil:cancelSignMessage', error)
     }
+  },
+  async getAllSessions() {
+    const siwx = this.getSIWX()
+    const allRequestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const sessions = [] as SIWXSession[]
+    await Promise.all(
+      allRequestedCaipNetworks.map(async caipNetwork => {
+        const session = await siwx?.getSessions(
+          caipNetwork.caipNetworkId,
+          CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+        )
+        if (session) {
+          sessions.push(...session)
+        }
+      })
+    )
+
+    return sessions
   },
   async getSessions() {
     const siwx = OptionsController.state.siwx
@@ -184,6 +221,111 @@ export const SIWXUtil = {
     }
 
     return false
+  },
+  async authConnectorAuthenticate({
+    authConnector,
+    chainId,
+    socialUri,
+    preferredAccountType,
+    chainNamespace
+  }: {
+    authConnector: W3mFrameProvider
+    chainId?: number | string
+    socialUri?: string
+    preferredAccountType?: string
+    chainNamespace: ChainNamespace
+  }) {
+    const siwx = SIWXUtil.getSIWX()
+
+    if (!siwx || !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM)) {
+      const result = await authConnector.connect({
+        chainId,
+        socialUri,
+        preferredAccountType
+      })
+
+      return {
+        address: result.address,
+        chainId: result.chainId,
+        accounts: result.accounts
+      }
+    }
+
+    const siwxMessage = await siwx.createMessage({
+      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
+      accountAddress: '<<AccountAddress>>'
+    })
+
+    // Extract only the serializable data properties for postMessage, toString() is not possible to include in the postMessage
+    const siwxMessageData = {
+      accountAddress: siwxMessage.accountAddress,
+      chainId: siwxMessage.chainId,
+      domain: siwxMessage.domain,
+      uri: siwxMessage.uri,
+      version: siwxMessage.version,
+      nonce: siwxMessage.nonce,
+      notBefore: siwxMessage.notBefore,
+      statement: siwxMessage.statement,
+      resources: siwxMessage.resources,
+      requestId: siwxMessage.requestId,
+      issuedAt: siwxMessage.issuedAt,
+      expirationTime: siwxMessage.expirationTime,
+      serializedMessage: siwxMessage.toString()
+    }
+
+    const result = await authConnector.connect({
+      chainId,
+      socialUri,
+      siwxMessage: siwxMessageData,
+      preferredAccountType
+    })
+
+    siwxMessageData.accountAddress = result.address
+    siwxMessageData.serializedMessage = result.message || ''
+
+    if (result.signature && result.message) {
+      const promise = SIWXUtil.addEmbeddedWalletSession(
+        siwxMessageData,
+        result.message,
+        result.signature
+      )
+
+      await promise
+    }
+
+    return {
+      address: result.address,
+      chainId: result.chainId,
+      accounts: result.accounts
+    }
+  },
+
+  async addEmbeddedWalletSession(
+    siwxMessageData: SIWXMessage.Data,
+    message: string,
+    signature: string
+  ): Promise<void> {
+    if (addEmbeddedWalletSessionPromise) {
+      return addEmbeddedWalletSessionPromise
+    }
+
+    const siwx = SIWXUtil.getSIWX()
+
+    if (!siwx) {
+      return Promise.resolve()
+    }
+
+    addEmbeddedWalletSessionPromise = siwx
+      .addSession({
+        data: siwxMessageData,
+        message,
+        signature
+      })
+      .finally(() => {
+        addEmbeddedWalletSessionPromise = null
+      })
+
+    return addEmbeddedWalletSessionPromise
   },
   async universalProviderAuthenticate({
     universalProvider,
@@ -290,13 +432,16 @@ export const SIWXUtil = {
     return true
   },
   getSIWXEventProperties() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('SIWXUtil:getSIWXEventProperties - namespace is required')
+    }
 
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },
   async clearSessions() {
@@ -377,6 +522,14 @@ export interface SIWXConfig {
    * @returns {boolean}
    */
   getRequired?: () => boolean
+
+  /**
+   * This method determines whether the session should be cleared when the user disconnects.
+   *
+   * @default true
+   * @returns {boolean}
+   */
+  signOutOnDisconnect?: boolean
 }
 
 /**
