@@ -361,28 +361,41 @@ async function checkWalletSchema() {
     message(`Added lines (${addedLines.length}): ${JSON.stringify(addedLines.slice(0, 5))}`)
     message(`Removed lines (${removedLines.length}): ${JSON.stringify(removedLines.slice(0, 5))}`)
 
-    // More flexible pattern to catch field definitions
-    const fieldPattern = /^\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
+    // More flexible pattern to catch field definitions (accounting for git diff prefixes)
+    const fieldPattern = /^[+-]?\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
 
     // Check for new required fields
     for (const line of addedLines) {
       if (line.trim() && line.includes(':') && line.includes('z.')) {
         message(`Debug added line: "${line}"`)
       }
+
       const fieldMatch = line.match(fieldPattern)
-      if (fieldMatch && !line.includes('.optional()')) {
-        const fieldName = fieldMatch.groups?.['fieldName']
-        message(`Found new required field: ${fieldName} in line: "${line}"`)
-        if (
-          fieldName &&
-          !line.trim().startsWith('//') &&
-          !line.includes('*') &&
-          !line.includes('export')
-        ) {
-          fail(
-            `Breaking change in ${f}: New required field '${fieldName}' added. Make it optional with .optional() for backwards compatibility.`
-          )
-        }
+      if (!fieldMatch) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const fieldName = fieldMatch.groups?.['fieldName']
+      message(
+        `Regex matched field: ${fieldName} in line: "${line}", optional: ${line.includes('.optional()')}`
+      )
+
+      if (line.includes('.optional()')) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      message(`✓ Found new required field: ${fieldName}`)
+      if (
+        fieldName &&
+        !line.trim().startsWith('//') &&
+        !line.includes('*') &&
+        !line.includes('export')
+      ) {
+        fail(
+          `Breaking change in ${f}: New required field '${fieldName}' added. Make it optional with .optional() for backwards compatibility.`
+        )
       }
     }
 
