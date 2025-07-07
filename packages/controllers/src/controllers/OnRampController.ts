@@ -13,7 +13,7 @@ import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
-export type OnRampProviderOption = 'moonpay' | 'stripe' | 'paypal' | 'meld'
+export type OnRampProviderOption = 'meld'
 
 export type OnRampProvider = {
   label: string
