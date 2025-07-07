@@ -381,49 +381,65 @@ async function checkWalletSchema() {
     // Check for removed required fields
     for (const removedLine of removedLines) {
       const fieldMatch = removedLine.match(fieldPattern)
-      if (fieldMatch && !removedLine.includes('.optional()')) {
-        const fieldName = fieldMatch.groups?.['fieldName']
-        if (fieldName) {
-          const isMovedOrMadeOptional = addedLines.some(
-            addedLine => addedLine.includes(fieldName) && addedLine.match(fieldPattern)
-          )
+      if (!fieldMatch || removedLine.includes('.optional()')) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
 
-        if (
-          !isMovedOrMadeOptional &&
-          !removedLine.trim().startsWith('//') &&
-          !removedLine.includes('*') &&
-          !removedLine.includes('export')
-        ) {
-          fail(
-            `Breaking change in ${f}: Required field '${fieldName}' was removed. This breaks backwards compatibility.`
-          )
-        }
+      const fieldName = fieldMatch.groups?.['fieldName']
+      if (!fieldName) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const isMovedOrMadeOptional = addedLines.some(
+        addedLine => addedLine.includes(fieldName) && addedLine.match(fieldPattern)
+      )
+
+      if (
+        !isMovedOrMadeOptional &&
+        !removedLine.trim().startsWith('//') &&
+        !removedLine.includes('*') &&
+        !removedLine.includes('export')
+      ) {
+        fail(
+          `Breaking change in ${f}: Required field '${fieldName}' was removed. This breaks backwards compatibility.`
+        )
       }
     }
 
     // Check for fields changed from optional to required
     for (const removedLine of removedLines) {
-      if (removedLine.includes('.optional()')) {
-        const fieldMatch = removedLine.match(fieldPattern)
-        if (fieldMatch) {
-          const fieldName = fieldMatch[1]
-          const madeRequired = addedLines.some(addedLine => {
-            const addedFieldMatch = addedLine.match(fieldPattern)
+      if (!removedLine.includes('.optional()')) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
 
-            return (
-              addedFieldMatch &&
-              addedFieldMatch[1] === fieldName &&
-              !addedLine.includes('.optional()')
-            )
-          })
+      const fieldMatch = removedLine.match(fieldPattern)
+      if (!fieldMatch) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
 
-          // eslint-disable-next-line max-depth
-          if (madeRequired) {
-            fail(
-              `Breaking change in ${f}: Field '${fieldName}' changed from optional to required. This breaks backwards compatibility.`
-            )
-          }
-        }
+      const fieldName = fieldMatch.groups?.['fieldName']
+      if (!fieldName) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const madeRequired = addedLines.some(addedLine => {
+        const addedFieldMatch = addedLine.match(fieldPattern)
+        return (
+          addedFieldMatch &&
+          addedFieldMatch.groups?.['fieldName'] === fieldName &&
+          !addedLine.includes('.optional()')
+        )
+      })
+
+      if (madeRequired) {
+        fail(
+          `Breaking change in ${f}: Field '${fieldName}' changed from optional to required. This breaks backwards compatibility.`
+        )
       }
     }
 
@@ -649,5 +665,3 @@ async function checkForKeys() {
 }
 
 checkForKeys()
-
-warn('test')
