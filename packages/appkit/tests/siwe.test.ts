@@ -357,14 +357,14 @@ describe('SIWE mapped to SIWX', () => {
     })
 
     vi.spyOn(ChainController, 'getLastConnectedSIWECaipNetwork').mockReturnValue(mockLastNetwork)
-    vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue('mock-address')
+    vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue('0xmock-address')
     const switchActiveNetworkSpy = vi.spyOn(ChainController, 'switchActiveNetwork')
     const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
     const modalCloseSpy = vi.spyOn(ModalController, 'close')
 
     await SIWXUtil.cancelSignMessage()
 
-    expect(getSessionsSpy).toHaveBeenCalledWith('eip155:1', 'mock-address')
+    expect(getSessionsSpy).toHaveBeenCalledWith('eip155:1', '0xmock-address')
     expect(switchActiveNetworkSpy).toHaveBeenCalledWith(mockLastNetwork)
     expect(disconnectSpy).not.toHaveBeenCalled()
     expect(modalCloseSpy).toHaveBeenCalled()
@@ -387,7 +387,7 @@ describe('SIWE mapped to SIWX', () => {
     })
 
     vi.spyOn(ChainController, 'getLastConnectedSIWECaipNetwork').mockReturnValue(mockLastNetwork)
-    vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue('mock-address')
+    vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue('0xmock-address')
     const switchActiveNetworkSpy = vi.spyOn(ChainController, 'switchActiveNetwork')
     const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
 

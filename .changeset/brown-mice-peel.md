@@ -4,24 +4,24 @@
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-utils': patch
+'@reown/appkit-experimental': patch
 '@reown/appkit-controllers': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit': patch
+'@reown/appkit-common': patch
 '@reown/appkit-wallet': patch
+'@reown/appkit-siwe': patch
+'@reown/appkit-siwx': patch
+'@reown/appkit-pay': patch
+'@reown/appkit-ui': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
-'@reown/appkit-common': patch
 '@reown/appkit-core': patch
-'@reown/appkit-experimental': patch
-'@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
-'@reown/appkit-siwe': patch
-'@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
-'@reown/appkit-ui': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Add forwarding of custom RPC urls to be used in embedded wallet requests
+Removes type castings and handles errors instead

@@ -24,4 +24,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updates Bitcoin adapter's WalletStandardConnector to have switch network functionality from wallet's features
+Add 127.0.0.1 to the allowlist for localhost IP address support

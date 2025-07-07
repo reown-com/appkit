@@ -1,6 +1,7 @@
 /* eslint-disable max-params */
 import { Contract, ethers } from 'ethers'
 
+import type { Hex } from '@reown/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
@@ -21,7 +22,7 @@ export const Ethers5Methods = {
       params: [hexMessage, address]
     })
 
-    return signature as `0x${string}`
+    return signature as Hex
   },
 
   estimateGas: async (
@@ -82,7 +83,7 @@ export const Ethers5Methods = {
     const txResponse = await signer.sendTransaction(txParams)
     const txReceipt = await txResponse.wait()
 
-    return (txReceipt?.blockHash as `0x${string}`) || null
+    return (txReceipt?.blockHash as Hex) || null
   },
 
   writeContract: async (
