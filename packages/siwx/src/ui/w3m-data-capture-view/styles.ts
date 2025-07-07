@@ -6,7 +6,7 @@ export default css`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: var(--wui-spacing-3xs);
 
     transition-property: margin, height;
     transition-duration: var(--wui-duration-md);
@@ -49,7 +49,7 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: var(--wui-spacing-3xs);
     flex-wrap: nowrap;
     min-width: fit-content;
 
@@ -89,22 +89,32 @@ export default css`
   .email-sufixes {
     display: flex;
     flex-direction: row;
-    gap: 4px;
+    gap: var(--wui-spacing-3xs);
     overflow-x: auto;
     max-width: 100%;
-    margin-top: 12px;
+    margin-top: var(--wui-spacing-s);
+    margin-bottom: calc(-1 * var(--wui-spacing-m));
+    padding-bottom: var(--wui-spacing-m);
+    margin-left: calc(-1 * var(--wui-spacing-m));
+    margin-right: calc(-1 * var(--wui-spacing-m));
+    padding-left: var(--wui-spacing-m);
+    padding-right: var(--wui-spacing-m);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .recent-emails {
     display: flex;
     flex-direction: column;
-    padding: 12px 0;
+    padding: var(--wui-spacing-s) 0;
     border-top: 1px solid var(--wui-color-gray-glass-005);
     border-bottom: 1px solid var(--wui-color-gray-glass-005);
   }
 
   .recent-emails-heading {
-    margin-bottom: 12px;
+    margin-bottom: var(--wui-spacing-s);
   }
 
   .recent-emails-list-item {
