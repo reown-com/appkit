@@ -28,7 +28,7 @@ export default css`
         96.11% 53.95% at 50% 51.28%,
         transparent 0%,
         color-mix(in srgb, var(--wui-color-bg-100) 5%, transparent) 49%,
-        color-mix(in srgb, var(--wui-color-bg-100) 50%, transparent) 99.43%
+        color-mix(in srgb, var(--wui-color-bg-100) 65%, transparent) 99.43%
       );
     }
   }
@@ -62,7 +62,7 @@ export default css`
     }
 
     &:nth-child(4) {
-      transform: translateX(10px);
+      transform: translateX(40px);
     }
 
     transition-property: height;

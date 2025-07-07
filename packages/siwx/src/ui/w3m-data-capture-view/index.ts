@@ -65,7 +65,7 @@ export class W3mDataCaptureView extends LitElement {
             iconSize="xxl"
             iconColor=${this.loading ? 'fg-100' : 'accent-100'}
             backgroundColor=${this.loading ? 'fg-100' : 'accent-100'}
-            icon=${this.loading ? 'id' : 'id'}
+            icon=${this.loading ? 'id' : 'user'}
             isOpaque
             class="hero-main-icon"
             data-state=${this.loading ? 'loading' : 'default'}
@@ -73,7 +73,7 @@ export class W3mDataCaptureView extends LitElement {
           </wui-icon-box>
           ${this.heroIcon('id')} ${this.heroIcon('card')}
         </div>
-        ${this.heroRow(['google', 'id', 'wallet', 'verify', 'apple', 'mobile'])}
+        ${this.heroRow(['google', 'id', 'github', 'verify', 'apple', 'mobile'])}
       </div>
     `
   }
