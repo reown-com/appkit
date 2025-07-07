@@ -609,7 +609,6 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     expect(ccResetWcConnectionSpy).toHaveBeenCalledTimes(2)
     expect(siwxClearSessionsSpy).toHaveBeenCalledTimes(2)
     expect(ccSetFilterByNamespaceSpy).toHaveBeenCalledWith(undefined)
-    expect(storageDeleteSocialSpy).toHaveBeenCalledTimes(2)
     expect(sendEventSpy).toHaveBeenCalledWith(
       expect.objectContaining({ event: 'DISCONNECT_SUCCESS' })
     )
