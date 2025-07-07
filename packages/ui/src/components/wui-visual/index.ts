@@ -14,16 +14,13 @@ import { lightbulbSvg } from '../../assets/visual/lightbulb.js'
 import { lockSvg } from '../../assets/visual/lock.js'
 import { loginSvg } from '../../assets/visual/login.js'
 import { meldSvg } from '../../assets/visual/meld.js'
-import { moonpaySvg } from '../../assets/visual/moonpay.js'
 import { networkSvg } from '../../assets/visual/network.js'
 import { nftSvg } from '../../assets/visual/nft.js'
 import { nounSvg } from '../../assets/visual/noun.js'
 import { onrampCardSvg } from '../../assets/visual/onramp-card.js'
-import { paypalSvg } from '../../assets/visual/paypal.js'
 import { pencilSvg } from '../../assets/visual/pencil.js'
 import { profileSvg } from '../../assets/visual/profile.js'
 import { solanaSvg } from '../../assets/visual/solana.js'
-import { stripeSvg } from '../../assets/visual/stripe.js'
 import { systemSvg } from '../../assets/visual/system.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { VisualSize, VisualType } from '../../utils/TypeUtil.js'
@@ -45,12 +42,8 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   noun: nounSvg,
   profile: profileSvg,
   system: systemSvg,
-
   meld: meldSvg,
   onrampCard: onrampCardSvg,
-  moonpay: moonpaySvg,
-  stripe: stripeSvg,
-  paypal: paypalSvg,
   google: googleSvg,
   pencil: pencilSvg,
   lightbulb: lightbulbSvg,
