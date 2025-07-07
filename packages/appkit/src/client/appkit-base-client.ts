@@ -586,6 +586,10 @@ export abstract class AppKitBaseClient {
             )
 
             if (disconnectData) {
+              if (isAuth) {
+                StorageUtil.deleteConnectedSocialProvider()
+              }
+
               disconnectData.connections.forEach(connection => {
                 StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
               })
@@ -1105,7 +1109,7 @@ export abstract class AppKitBaseClient {
     ChainController.resetNetwork(chainNamespace)
 
     StorageUtil.removeConnectedNamespace(chainNamespace)
-    StorageUtil.deleteConnectedSocialProvider()
+
     const namespaces = Array.from(ChainController.state.chains.keys())
     const namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
     namespacesToDisconnect.forEach(ns =>
