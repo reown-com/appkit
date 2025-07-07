@@ -204,6 +204,7 @@ export class W3mDataCaptureView extends LitElement {
           variant="main"
           type="submit"
           fullWidth
+          .disabled=${!this.email || !this.isValidEmail(this.email)}
           .loading=${this.loading}
           @click=${this.onSubmit.bind(this)}
         >
@@ -216,8 +217,14 @@ export class W3mDataCaptureView extends LitElement {
   private async onSubmit() {
     const account = ChainController.getActiveCaipAddress()
 
-    if (!account || !this.email) {
-      throw new Error('No account data found')
+    if (!account) {
+      throw new Error('Account is not connected.')
+    }
+
+    if (!this.isValidEmail(this.email)) {
+      SnackController.showError('Please provide a valid email.')
+
+      return
     }
 
     try {
@@ -254,13 +261,17 @@ export class W3mDataCaptureView extends LitElement {
     const recentEmails = SafeLocalStorage.getItem(SafeLocalStorageKeys.RECENT_EMAILS)
     const parsedEmails = recentEmails ? recentEmails.split(',') : []
 
-    return parsedEmails.filter(email => /^\S+@\S+\.\S+$/u.test(email)).slice(0, 3)
+    return parsedEmails.filter(this.isValidEmail.bind(this)).slice(0, 3)
   }
 
   private pushRecentEmail(email: string) {
     const recentEmails = this.getRecentEmails()
     const newEmails = Array.from(new Set([email, ...recentEmails])).slice(0, 3)
     SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_EMAILS, newEmails.join(','))
+  }
+
+  private isValidEmail(email: string) {
+    return /^\S+@\S+\.\S+$/u.test(email)
   }
 }
 
