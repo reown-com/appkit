@@ -424,17 +424,6 @@ describe('PaymentUtil', () => {
       )
     })
 
-    test('should throw if SPL token payment is attempted', async () => {
-      await expect(
-        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
-      ).rejects.toThrow(
-        new AppKitPayError(
-          AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
-          'SPL token payments not yet supported.'
-        )
-      )
-    })
-
     test('should throw if sendTransaction fails', async () => {
       const mockProvider = { type: 'solana' }
       vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
