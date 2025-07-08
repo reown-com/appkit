@@ -322,7 +322,7 @@ export class AppKit extends AppKitBaseClient {
           event: 'SOCIAL_LOGIN_SUCCESS',
           properties: {
             provider: socialProviderToConnect,
-            chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId as CaipNetworkId
+            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
           }
         })
       }
