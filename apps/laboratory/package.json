@@ -151,7 +151,7 @@
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
     "valtio": "2.1.5",
-    "viem": "2.31.3",
+    "viem": "2.31.7",
     "wagmi": "2.15.6",
     "webauthn-p256": "0.0.2",
     "@walletconnect/sign-client": "2.21.3"
