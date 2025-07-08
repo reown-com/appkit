@@ -1,6 +1,7 @@
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { type WalletCapabilities, fromHex } from 'viem'
 
+import type { Address } from '@reown/appkit-common'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { parseJSON } from './CommonUtils'
@@ -37,7 +38,7 @@ export function getFilteredCapabilitySupportedChainInfo(
       return capabilitiesPerChain?.[capability]?.supported === true
     })
     .map(cId => {
-      const chainId = fromHex(cId as `0x${string}`, 'number')
+      const chainId = fromHex(cId as Address, 'number')
       const capabilityChain = getChain(chainId)
 
       return {
@@ -88,10 +89,10 @@ export async function getCapabilitySupportedChainInfo(
   if (provider instanceof W3mFrameProvider) {
     const rawCapabilities = await provider.getCapabilities()
     const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
-      const chain = getChain(fromHex(chainId as `0x${string}`, 'number'))
+      const chain = getChain(fromHex(chainId as Address, 'number'))
 
       return {
-        chainId: fromHex(chainId as `0x${string}`, 'number'),
+        chainId: fromHex(chainId as Address, 'number'),
         chainName: chain?.name ?? `Unknown Chain (${chainId})`
       }
     })

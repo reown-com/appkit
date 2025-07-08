@@ -27,7 +27,7 @@ import {
 
 describe('Base', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
     vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider as any)
     mockWindowAndDocument()
     mockStorageUtil()
@@ -105,6 +105,20 @@ describe('Base', () => {
       expect(setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
 
+    it('should use default account types when no account types are set', async () => {
+      vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
+        ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+      )
+
+      const appKit = new AppKit(mockOptions)
+
+      await appKit.ready()
+
+      expect(
+        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
+      ).toEqual('smartAccount')
+    })
+
     it('should set default account types', async () => {
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce({
         bip122: 'ordinal'
@@ -122,18 +136,6 @@ describe('Base', () => {
       expect(
         ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
       ).toEqual('eoa')
-    })
-
-    it('should use default account types when no account types are set', () => {
-      vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
-        ConstantsUtil.DEFAULT_ACCOUNT_TYPES
-      )
-
-      new AppKit(mockOptions)
-
-      expect(
-        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
-      ).toEqual('smartAccount')
     })
 
     it('should use stored account types', () => {

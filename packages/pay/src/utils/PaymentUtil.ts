@@ -1,6 +1,7 @@
 import { Connection } from '@solana/web3.js'
 
 import {
+  type Address,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace,
@@ -76,9 +77,9 @@ export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promi
 }
 
 interface EvmPaymentParams {
-  recipient: `0x${string}`
+  recipient: Address
   amount: number | string
-  fromAddress?: `0x${string}`
+  fromAddress?: Address
 }
 
 export async function processEvmNativePayment(
@@ -129,7 +130,7 @@ export async function processEvmErc20Payment(
       'fromAddress is required for ERC20 EVM payments.'
     )
   }
-  const tokenAddress = paymentAsset.asset as `0x${string}`
+  const tokenAddress = paymentAsset.asset as Address
   const recipientAddress = params.recipient
   const decimals = Number(paymentAsset.metadata.decimals)
   const amountBigInt = ConnectionController.parseUnits(params.amount.toString(), decimals)

@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -104,8 +104,7 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private getSubLabel() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return ''
@@ -117,8 +116,7 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   private getLabel() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`
