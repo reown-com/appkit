@@ -217,8 +217,6 @@ describe('Base', () => {
     })
 
     it('should disable email and social features when pay feature is enabled', async () => {
-      const setRemoteFeatures = vi.spyOn(OptionsController, 'setRemoteFeatures')
-
       const appKit = new AppKit({
         ...mockOptions,
         features: {
@@ -227,13 +225,6 @@ describe('Base', () => {
       })
 
       await appKit.ready()
-
-      expect(setRemoteFeatures).toHaveBeenCalledWith(
-        expect.objectContaining({
-          email: false,
-          socials: false
-        })
-      )
 
       expect(OptionsController.state.remoteFeatures?.email).toBe(false)
       expect(OptionsController.state.remoteFeatures?.socials).toBe(false)
