@@ -1,4 +1,12 @@
 import {
+  TOKEN_PROGRAM_ID,
+  TokenAccountNotFoundError,
+  createAssociatedTokenAccountInstruction,
+  createTransferInstruction,
+  getAccount,
+  getAssociatedTokenAddressSync
+} from '@solana/spl-token'
+import {
   ComputeBudgetProgram,
   type Connection,
   PublicKey,
@@ -7,15 +15,6 @@ import {
 } from '@solana/web3.js'
 
 import type { Provider } from '@reown/appkit-utils/solana'
-
-const {
-  TOKEN_PROGRAM_ID,
-  createAssociatedTokenAccountInstruction,
-  createTransferInstruction,
-  getAccount,
-  getAssociatedTokenAddressSync,
-  TokenAccountNotFoundError
-} = await import('@solana/spl-token')
 
 type SPLTokenTransactionArgs = {
   provider: Provider
