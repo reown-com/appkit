@@ -26,7 +26,7 @@ updates:
     schedule:
       interval: 'weekly'
     labels:
-      - 'chore: update `@walletconnect/*`, `viem` and `@wagmi/*` dependencies'
+      - 'chore: update dependencies'
     groups:
       # All "dependencies" that `packages/*` depends on
       'all-production-dependencies':
