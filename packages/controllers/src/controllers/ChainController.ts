@@ -524,8 +524,9 @@ const controller = {
       approvedCaipNetworkIds,
       requestedCaipNetworks
     )
+    const filteredNetworks = sortedNetworks.filter(network => network?.id)
 
-    return sortedNetworks
+    return filteredNetworks
   },
 
   getAllRequestedCaipNetworks(): CaipNetwork[] {
