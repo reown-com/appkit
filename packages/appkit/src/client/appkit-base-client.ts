@@ -1693,9 +1693,9 @@ export abstract class AppKitBaseClient {
   // -- Public Internal ---------------------------------------------------
   public getCaipNetwork = (chainNamespace?: ChainNamespace, id?: string | number) => {
     if (chainNamespace) {
-      const caipNetworkWithId = ChainController.getNetworkData(
-        chainNamespace
-      )?.requestedCaipNetworks?.find(c => c.id === id)
+      const caipNetworkWithId = ChainController.getCaipNetworks(chainNamespace)?.find(
+        c => c.id === id
+      )
 
       if (caipNetworkWithId) {
         return caipNetworkWithId

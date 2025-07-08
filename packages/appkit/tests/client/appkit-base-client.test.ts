@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
+  type ChainAdapter,
   ChainController,
   ConnectionController
 } from '@reown/appkit-controllers'
@@ -205,5 +207,52 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
     await connectionControllerClient.connectWalletConnect()
 
     expect(closeSpy).toHaveBeenCalled()
+  })
+})
+
+describe('AppKitBaseClient.getCaipNetwork', () => {
+  let baseClient: AppKitBaseClient
+
+  beforeEach(() => {
+    vi.restoreAllMocks()
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            networkState: {
+              requestedCaipNetworks: [mainnet],
+              approvedCaipNetworkIds: [mainnet.id]
+            }
+          }
+        ]
+      ]) as Map<ChainNamespace, ChainAdapter>
+    })
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
+  })
+
+  it('should call ChainController.getCaipNetworks when chainNamespace is provided', () => {
+    const getCaipNetworksSpy = vi.spyOn(ChainController, 'getCaipNetworks')
+    const chainNamespace = 'eip155'
+
+    baseClient.getCaipNetwork(chainNamespace)
+
+    expect(getCaipNetworksSpy).toHaveBeenCalledWith(chainNamespace)
   })
 })
