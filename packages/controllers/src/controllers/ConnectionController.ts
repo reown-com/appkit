@@ -5,7 +5,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import {
   type CaipAddress,
   type CaipNetwork,
-  type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
@@ -381,7 +380,7 @@ const controller = {
       properties: {
         method: wcLinking ? 'mobile' : 'qrcode',
         name: RouterController.state.data?.wallet?.name || 'Unknown',
-        chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId as CaipNetworkId
+        caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
       }
     })
   },

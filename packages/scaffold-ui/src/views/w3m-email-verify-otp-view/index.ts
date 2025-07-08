@@ -1,4 +1,3 @@
-import type { CaipNetworkId } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -41,7 +40,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           properties: {
             method: 'email',
             name: this.authConnector.name || 'Unknown',
-            chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId as CaipNetworkId
+            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
           }
         })
 

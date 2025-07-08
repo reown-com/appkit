@@ -1,4 +1,3 @@
-import type { CaipNetworkId } from '@reown/appkit-common'
 import type { BaseError } from '@reown/appkit-controllers'
 import {
   ChainController,
@@ -54,7 +53,7 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
         properties: {
           method: 'browser',
           name: this.wallet?.name || 'Unknown',
-          chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId as CaipNetworkId
+          caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
         }
       })
     } catch (error) {
