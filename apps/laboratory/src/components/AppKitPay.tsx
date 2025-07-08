@@ -517,11 +517,7 @@ export function AppKitPay() {
         </CardHeader>
         <CardBody>
           <Stack spacing="4">
-            <Button
-              onClick={handleOpenPay}
-              isDisabled={!paymentDetails.recipient || isPending}
-              width="full"
-            >
+            <Button onClick={handleOpenPay} isDisabled={isPending} width="full">
               {isPending ? <Spinner /> : 'Open Pay Modal'}
             </Button>
 
