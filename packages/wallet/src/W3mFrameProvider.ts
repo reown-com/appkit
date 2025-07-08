@@ -321,9 +321,9 @@ export class W3mFrameProvider {
         await this.init()
         const rpcUrl = this.getRpcUrl(payload.chainId)
         const response = await this.appEvent<'ConnectSocial'>({
-          type: W3mFrameConstants.APP_CONNECT_SOCIAL,
+          type: W3mFrameConstants.APP_GET_USER,
           payload: {
-            uri: payload.socialUri,
+            socialUri: payload.socialUri,
             preferredAccountType: payload.preferredAccountType,
             chainId: payload.chainId,
             siwxMessage: payload.siwxMessage,
