@@ -1,6 +1,14 @@
+import { calculateTxGas, createInput, utxoToInput } from '@asigna/core-js'
+import * as bitcoin from 'bitcoinjs-lib'
+import ecc from '@bitcoinerlab/secp256k1'
+
+// Initialize ECC library for bitcoinjs-lib
+bitcoin.initEccLib(ecc)
+
 import { createAppKit } from '@reown/appkit'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin as bitcoinMainnet, bitcoinTestnet } from '@reown/appkit/networks'
+
 
 // Get projectId
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
@@ -11,7 +19,7 @@ const bitcoinAdapter = new BitcoinAdapter()
 // Instantiate AppKit
 const modal = createAppKit({
   adapters: [bitcoinAdapter],
-  networks: [bitcoin, bitcoinTestnet],
+  networks: [bitcoinMainnet, bitcoinTestnet],
   projectId,
   themeMode: 'light',
 
@@ -108,6 +116,22 @@ document.getElementById('sign-message')?.addEventListener('click', async () => {
   signMessage()
 })
 
+document.getElementById('send-transfer')?.addEventListener('click', async () => {
+  if (!accountState.address) {
+    await modal.open()
+    return
+  }
+  sendTransfer()
+})
+
+document.getElementById('sign-psbt')?.addEventListener('click', async () => {
+  if (!accountState.address) {
+    await modal.open()
+    return
+  }
+  signPSBT()
+})
+
 async function signMessage() {
   if (bip122Provider && accountState.address) {
     try {
@@ -117,6 +141,59 @@ async function signMessage() {
       })
     } catch (error) {
       console.error('Error signing message:', error)
+    }
+  }
+}
+
+async function sendTransfer() {
+  if (bip122Provider && accountState.address) {
+    try {
+      await bip122Provider.sendTransfer({
+        recipient: accountState.address,
+        amount: 546
+      })
+    } catch (error) {
+      console.error('Error signing message:', error)
+    }
+  }
+}
+
+async function signPSBT() {
+  if (bip122Provider && accountState.address) {
+    try {
+      const psbt = new bitcoin.Psbt({})
+      const utxosResponse = await fetch('https://mempool.space/api/address/' + accountState.address + '/utxo');
+      const utxos = await utxosResponse.json();
+      
+      if (!utxos || utxos.length === 0) {
+        console.error('No UTXOs found for address:', accountState.address);
+        return;
+      }
+      const utxo1 =  {
+        txId: utxos[0].txid,
+        outputIndex: utxos[0].vout,
+        satoshis: utxos[0].value,
+      }
+      const input = utxoToInput(utxo1, bip122Provider.multisigInfo);
+      psbt.addInput(input);
+      const amountToSend = 546;
+      psbt.addOutput({value: amountToSend, address: 'RECEIVE_ADDRESS'});
+      const feeRate = 6;
+      const gas = calculateTxGas(psbt, bip122Provider.multisigInfo) * feeRate;
+
+      psbt.addOutput({value: utxo1.satoshis - amountToSend - gas, address: accountState.address});
+
+      const signedPsbt = await bip122Provider.signPSBT({
+        psbt: psbt.toBase64(),
+        signInputs: [{
+          address: accountState.address,
+          index: 0,
+          sighashTypes: [0x01, 0x02]
+        }],
+        broadcast: true,
+      });
+    } catch (error) {
+      console.error('Error signing psbt:', error)
     }
   }
 }

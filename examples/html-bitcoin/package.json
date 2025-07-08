@@ -8,9 +8,13 @@
   },
   "dependencies": {
     "@reown/appkit-adapter-bitcoin": "workspace:*",
-    "@reown/appkit": "workspace:*"
+    "@reown/appkit": "workspace:*",
+    "@asigna/core-js": "0.0.8",
+    "bitcoinjs-lib": "6.1.7",
+    "@bitcoinerlab/secp256k1": "^1.0.5"
   },
   "devDependencies": {
-    "vite": "5.4.19"
+    "vite": "5.4.19",
+    "vite-plugin-node-polyfills": "^0.21.0"
   }
 }
