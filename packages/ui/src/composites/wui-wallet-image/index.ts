@@ -14,7 +14,7 @@ export class WuiWalletImage extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'xl' | 'xs' | 'xxs'> = 'md'
+  @property() public size: 'md' | 'sm' = 'md'
 
   @property() public name = ''
 
@@ -29,18 +29,16 @@ export class WuiWalletImage extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     let borderRadius: BorderRadiusType = '1'
-    if (this.size === 'lg') {
-      borderRadius = '3'
-    } else if (this.size === 'md') {
+    if (this.size === 'md') {
       borderRadius = '2'
-    } else {
+    } else if (this.size === 'sm') {
       borderRadius = '1'
     }
     this.style.cssText = `
        --local-border-radius: var(--wui-border-radius-${borderRadius});
-       --local-size: var(--wui-wallet-image-size-${this.size});
    `
 
+    this.dataset['size'] = this.size
     if (this.walletIcon) {
       this.dataset['walletIcon'] = this.walletIcon
     }

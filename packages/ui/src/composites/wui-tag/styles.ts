@@ -6,6 +6,7 @@ export default css`
     justify-content: center;
     align-items: center;
     gap: ${({ spacing }) => spacing[1]};
+    text-transform: uppercase;
   }
 
   :host([data-variant='accent']) {

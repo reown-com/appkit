@@ -327,7 +327,7 @@ export type CardSelectType = 'network' | 'wallet'
 
 export type BackgroundType = 'opaque' | 'gray' | 'transparent'
 
-export type TagType = 'main' | 'shade' | 'error' | 'success'
+export type TagType = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
 
 export type AccountEntryType = 'icon' | 'image'
 

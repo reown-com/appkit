@@ -1,13 +1,17 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
-  button {
-    column-gap: var(--wui-spacing-s);
-    padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
+  :host {
     width: 100%;
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-100);
+  }
+
+  button {
+    column-gap: ${({ spacing }) => spacing[2]};
+    padding: ${({ spacing }) => spacing[3]};
+    width: 100%;
+    background-color: transparent;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
   button > wui-text:nth-child(2) {

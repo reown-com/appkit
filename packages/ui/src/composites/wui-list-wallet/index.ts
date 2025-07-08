@@ -24,11 +24,11 @@ export class WuiListWallet extends LitElement {
 
   @property() public name = ''
 
+  @property() public size?: 'sm' | 'md' = 'md'
+
   @property() public tagLabel?: string
 
   @property() public tagVariant?: TagType
-
-  @property() public icon?: IconType
 
   @property() public walletIcon?: IconType
 
@@ -46,10 +46,12 @@ export class WuiListWallet extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['size'] = this.size
+
     return html`
       <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
-        <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text>
+        <wui-text variant="lg-regular" color="inherit">${this.name}</wui-text>
         ${this.templateStatus()}
       </button>
     `
@@ -69,7 +71,7 @@ export class WuiListWallet extends LitElement {
   private templateWalletImage() {
     if (!this.showAllWallets && this.imageSrc) {
       return html`<wui-wallet-image
-        size="sm"
+        size=${ifDefined(this.size === 'sm' ? 'sm' : 'md')}
         imageSrc=${this.imageSrc}
         name=${this.name}
         .installed=${this.installed}
@@ -88,9 +90,7 @@ export class WuiListWallet extends LitElement {
         color=${this.loadingSpinnerColor}
       ></wui-loading-spinner>`
     } else if (this.tagLabel && this.tagVariant) {
-      return html`<wui-tag variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
-    } else if (this.icon) {
-      return html`<wui-icon color="inherit" size="sm" name=${this.icon}></wui-icon>`
+      return html`<wui-tag size="sm" variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
     }
 
     return null

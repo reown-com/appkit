@@ -463,6 +463,11 @@
       "import": "./dist/esm/exports/wui-transaction-thumbnail.js",
       "default": "./dist/esm/exports/wui-transaction-thumbnail.js"
     },
+    "./wui-toast-message": {
+      "types": "./dist/types/exports/wui-toast-message.d.ts",
+      "import": "./dist/esm/exports/wui-toast-message.js",
+      "default": "./dist/esm/exports/wui-toast-message.js"
+    },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",
       "import": "./dist/esm/exports/jsx.js",

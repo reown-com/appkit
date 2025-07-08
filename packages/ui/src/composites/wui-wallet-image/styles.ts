@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -7,16 +7,14 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: var(--local-size);
-    height: var(--local-size);
     border-radius: inherit;
-    border-radius: var(--local-border-radius);
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
   }
 
   :host > wui-flex {
     overflow: hidden;
     border-radius: inherit;
-    border-radius: var(--local-border-radius);
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
   }
 
   :host::after {
@@ -29,6 +27,16 @@ export default css`
     border-radius: inherit;
     border: 1px solid var(--wui-color-gray-glass-010);
     pointer-events: none;
+  }
+
+  :host([data-size='sm']) {
+    width: 32px;
+    height: 32px;
+  }
+
+  :host([data-size='md']) {
+    width: 40px;
+    height: 40px;
   }
 
   :host([name='Extension'])::after {
@@ -50,23 +58,13 @@ export default css`
   }
 
   wui-icon[data-parent-size='sm'] {
-    width: 18px;
-    height: 18px;
+    width: 32px;
+    height: 32px;
   }
 
   wui-icon[data-parent-size='md'] {
-    width: 24px;
-    height: 24px;
-  }
-
-  wui-icon[data-parent-size='lg'] {
-    width: 42px;
-    height: 42px;
-  }
-
-  wui-icon[data-parent-size='full'] {
-    width: 100%;
-    height: 100%;
+    width: 40px;
+    height: 40px;
   }
 
   :host > wui-icon-box {

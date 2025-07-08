@@ -169,7 +169,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         )};
         --w3m-font-family: ${unsafeCSS(
           themeVariables?.['--w3m-font-family'] ||
-            'KHTekaMono, Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;'
+            'KHTekaMono, KHTeka, Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;'
         )};
         --w3m-font-size-master: ${unsafeCSS(themeVariables?.['--w3m-font-size-master'] || '10px')};
         --w3m-border-radius-master: ${unsafeCSS(
