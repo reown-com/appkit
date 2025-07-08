@@ -106,12 +106,6 @@ describe('WalletStandardConnector', () => {
 
       await expect(connector.connect()).rejects.toThrow('No account found')
     })
-
-    it('should bind events', async () => {
-      const eventsFeatureSpy = vi.spyOn(wallet.features['standard:events'] as any, 'on')
-      await connector.connect()
-      expect(eventsFeatureSpy).toHaveBeenCalledWith('change', expect.any(Function))
-    })
   })
 
   describe('getAccountAddresses', () => {
@@ -173,6 +167,36 @@ describe('WalletStandardConnector', () => {
         message: expect.objectContaining(Uint8Array.from([109, 101, 115, 115, 97, 103, 101, 49])),
         account: expect.objectContaining(accountMock)
       })
+    })
+
+    it('should log warning when protocol parameter is provided', async () => {
+      const accountMock = mockWalletStandardProvider.mockAccount({
+        address: 'address',
+        publicKey: new Uint8Array(Buffer.from('publicKey1'))
+      })
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
+
+      const signMessageFeatureSpy = vi.spyOn(
+        wallet.features['bitcoin:signMessage'] as any,
+        'signMessage'
+      )
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      await connector.signMessage({
+        address: 'address',
+        message: 'message1',
+        protocol: 'bip322'
+      })
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'WalletStandardConnector:signMessage - protocol parameter not supported in WalletStandard:bitcoin - signMessage'
+      )
+      expect(signMessageFeatureSpy).toHaveBeenCalledWith({
+        message: expect.objectContaining(Uint8Array.from([109, 101, 115, 115, 97, 103, 101, 49])),
+        account: expect.objectContaining(accountMock)
+      })
+
+      consoleSpy.mockRestore()
     })
 
     it('should throw if account is not found', async () => {
@@ -321,16 +345,6 @@ describe('WalletStandardConnector', () => {
     it('should disconnect correctly', async () => {
       await expect(connector.disconnect()).resolves.not.toThrow()
     })
-
-    it('should unbind events', async () => {
-      const unsubscribeCallbackMock = vi.fn<() => void>(() => {})
-      vi.spyOn(wallet.features['standard:events'] as any, 'on').mockReturnValueOnce(
-        unsubscribeCallbackMock
-      )
-      await connector.connect()
-      await connector.disconnect()
-      expect(unsubscribeCallbackMock).toHaveBeenCalled()
-    })
   })
 
   describe('request', () => {
@@ -343,28 +357,6 @@ describe('WalletStandardConnector', () => {
     it('should not throw if events feature is not available', async () => {
       delete (wallet.features as any)['standard:events']
       await expect(connector.connect()).resolves.not.toThrow()
-    })
-
-    it('should emit disconnect if change event has no accounts', async () => {
-      const eventsFeatureSpy = vi.spyOn(wallet.features['standard:events'] as any, 'on')
-      await connector.connect()
-      const changeCallback = eventsFeatureSpy.mock.calls[0]![1] as (data: any) => void
-      const disconnectCallback = vi.fn(() => {})
-      connector.on('disconnect', disconnectCallback)
-
-      changeCallback({ accounts: [] })
-      expect(disconnectCallback).toHaveBeenCalled()
-    })
-
-    it('should emit accountsChanged if change event has accounts', async () => {
-      const eventsFeatureSpy = vi.spyOn(wallet.features['standard:events'] as any, 'on')
-      await connector.connect()
-      const changeCallback = eventsFeatureSpy.mock.calls[0]![1] as (data: any) => void
-      const accountsChangedCallback = vi.fn(() => {})
-      connector.on('accountsChanged', accountsChangedCallback)
-
-      changeCallback({ accounts: [{ address: 'address1' }, { address: 'address2' }] })
-      expect(accountsChangedCallback).toHaveBeenCalledWith(['address1', 'address2'])
     })
   })
 })

@@ -1,7 +1,7 @@
 import { onUnmounted, reactive, ref } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type Event } from '@reown/appkit-controllers'
+import { type ConnectorType, type Event } from '@reown/appkit-controllers'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -12,9 +12,13 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
+import { ProviderUtil } from '@reown/appkit-utils'
 
-import type { AppKitBaseClient as AppKit } from '../../client/appkit-base-client.js'
-import { ProviderUtil } from '../../store/ProviderUtil.js'
+import type {
+  AppKitBaseClient as AppKit,
+  OpenOptions,
+  Views
+} from '../../client/appkit-base-client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 export interface AppKitEvent {
@@ -22,25 +26,14 @@ export interface AppKitEvent {
   data: Event
 }
 
-type OpenOptions = {
-  view?:
-    | 'Account'
-    | 'Connect'
-    | 'Networks'
-    | 'ApproveTransaction'
-    | 'OnRampProviders'
-    | 'Swap'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'AllWallets'
-    | 'WalletSend'
-  uri?: string
-  namespace?: ChainNamespace
-}
-
 type ThemeModeOptions = AppKitOptions['themeMode']
 
 type ThemeVariablesOptions = AppKitOptions['themeVariables']
+
+type UseAppKitReturnType<T> = {
+  walletProvider: T | undefined
+  walletProviderType: ConnectorType | undefined
+}
 
 declare module 'vue' {
   export interface ComponentCustomProperties {
@@ -69,17 +62,23 @@ export function getAppKit(appKit: AppKit) {
 // -- Core Hooks ---------------------------------------------------------------
 export * from '@reown/appkit-controllers/vue'
 
-export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
-  const state = ref(ProviderUtil.state)
-  const { providers, providerIds } = state.value
+export function useAppKitProvider<T>(chainNamespace: ChainNamespace): UseAppKitReturnType<T> {
+  const walletProvider = ref(ProviderUtil.state.providers[chainNamespace] as T | undefined)
+  const walletProviderType = ref(ProviderUtil.state.providerIds[chainNamespace])
 
-  const walletProvider = providers[chainNamespace] as T | undefined
-  const walletProviderType = providerIds[chainNamespace]
+  const unsubscribe = ProviderUtil.subscribe(newState => {
+    walletProvider.value = newState.providers[chainNamespace]
+    walletProviderType.value = newState.providerIds[chainNamespace]
+  })
 
-  return {
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return reactive({
     walletProvider,
     walletProviderType
-  }
+  }) as UseAppKitReturnType<T>
 }
 
 export function useAppKitTheme() {
@@ -124,7 +123,7 @@ export function useAppKit() {
     throw new Error('Please call "createAppKit" before using "useAppKit" composable')
   }
 
-  async function open(options?: OpenOptions) {
+  async function open<View extends Views>(options?: OpenOptions<View>) {
     await modal?.open(options)
   }
 
@@ -138,16 +137,16 @@ export function useAppKit() {
   })
 }
 
-export function useWalletInfo() {
+export function useWalletInfo(namespace?: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKit" composable')
   }
 
-  const walletInfo = ref(modal.getWalletInfo())
+  const walletInfo = ref(modal.getWalletInfo(namespace))
 
   const unsubscribe = modal.subscribeWalletInfo(newValue => {
     walletInfo.value = newValue
-  })
+  }, namespace)
 
   onUnmounted(() => {
     unsubscribe?.()
@@ -162,7 +161,9 @@ export function useAppKitState() {
   }
 
   const initial = modal.getState()
+  const initialRemoteFeatures = modal.getRemoteFeatures()
   const open = ref(initial.open)
+  const remoteFeatures = ref(initialRemoteFeatures)
   const selectedNetworkId = ref(initial.selectedNetworkId)
 
   const unsubscribe = modal?.subscribeState(next => {
@@ -174,7 +175,7 @@ export function useAppKitState() {
     unsubscribe?.()
   })
 
-  return reactive({ open, selectedNetworkId })
+  return reactive({ open, remoteFeatures, selectedNetworkId })
 }
 
 export function useAppKitEvents(): AppKitEvent {

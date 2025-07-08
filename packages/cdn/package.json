@@ -1,12 +1,13 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.7.0",
+  "version": "1.7.13",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -16,12 +17,12 @@
     "serve": "http-server dist -p 8080 --cors"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.7.7",
+    "@wagmi/connectors": "5.7.12",
     "http-server": "14.1.1",
     "vite-plugin-node-polyfills": "0.23.0"
   },
   "peerDependencies": {
-    "typescript": "5.7.3"
+    "typescript": "5.8.3"
   },
   "peerDependenciesMeta": {
     "typescript": {
@@ -35,11 +36,11 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@wagmi/connectors": "5.7.8",
-    "@wagmi/core": "2.16.5",
-    "viem": "2.23.5",
-    "vite": "5.4.12",
-    "wagmi": "2.14.12"
+    "@wagmi/connectors": "5.8.5",
+    "@wagmi/core": "2.17.3",
+    "viem": "2.31.3",
+    "vite": "5.4.19",
+    "wagmi": "2.15.6"
   },
   "keywords": [
     "appkit",

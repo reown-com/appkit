@@ -1,42 +1,41 @@
 'use client'
 
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const networks = ConstantsUtil.SolanaNetworks
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter()]
 })
 
-const modal = createAppKit({
+const config = {
   adapters: [solanaWeb3JsAdapter],
-  projectId: ConstantsUtil.ProjectId,
   networks,
-  defaultNetwork: solana
-})
+  defaultNetwork: solana,
+  customWallets: ConstantsUtil.CustomWallets
+}
 
-ThemeStore.setModal(modal)
-
-export default function Solana() {
+export default function SolanaWalletButton() {
   return (
-    <>
+    <AppKitProvider config={config}>
       <AppKitButtons />
-      <AppKitInfo />
       <AppKitWalletButtons
-        wallets={[...ConstantsUtil.SolanaWalletButtons, ...ConstantsUtil.Socials]}
+        wallets={[
+          ...ConstantsUtil.SolanaWalletButtons,
+          ...ConstantsUtil.Socials,
+          ConstantsUtil.Email
+        ]}
       />
       <SolanaTests />
-    </>
+    </AppKitProvider>
   )
 }

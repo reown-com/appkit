@@ -3,8 +3,9 @@ import { useCallback, useMemo, useState } from 'react'
 import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { encodeFunctionData, parseEther } from 'viem'
 import { useAccount } from 'wagmi'
-import { useSendCalls } from 'wagmi/experimental'
+import { useSendCalls } from 'wagmi'
 
+import type { Address } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -24,7 +25,7 @@ const purchaseDonutCallData = encodeFunctionData({
 })
 
 const TEST_TX = {
-  to: donutContractaddress as `0x${string}`,
+  to: donutContractaddress as Address,
   value: parseEther('0.00001'),
   data: purchaseDonutCallData
 }
@@ -112,7 +113,6 @@ function AvailableTestContent() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
   const toast = useChakraToast()
-
   const context = useMemo(() => {
     const contexts: Record<string, unknown> = {
       biconomy: BICONOMY_PAYMASTER_CONTEXT,
@@ -121,7 +121,7 @@ function AvailableTestContent() {
       }
     }
 
-    return contexts[paymasterProvider || '']
+    return contexts[paymasterProvider || ''] as Record<string, unknown>
   }, [paymasterProvider])
 
   function onPaymasterUrlChange(url: string) {
@@ -139,7 +139,7 @@ function AvailableTestContent() {
         setLoading(false)
         toast({
           title: 'SendCalls Success',
-          description: hash,
+          description: hash.id,
           type: 'success'
         })
       },
@@ -174,7 +174,7 @@ function AvailableTestContent() {
     <Stack direction={['column', 'column', 'column']}>
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
-          placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
+          placeholder="https://paymaster-api.reown.com/11155111/rpc?projectId=..."
           onChange={e => onPaymasterUrlChange(e.target.value)}
           value={paymasterServiceUrl}
           isDisabled={isLoading}

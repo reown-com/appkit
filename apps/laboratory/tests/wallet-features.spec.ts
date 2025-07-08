@@ -44,7 +44,7 @@ walletFeaturesTest.beforeAll(async ({ browser, browserName, library }) => {
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
 })
@@ -69,16 +69,28 @@ walletFeaturesTest('it should initialize swap as expected', async () => {
   await page.closeModal()
 })
 
+walletFeaturesTest('it should show swap view with preselected tokens', async () => {
+  await page.page.getByTestId('open-swap-with-arguments-hook-button').click()
+
+  await expect(page.page.getByTestId('swap-input-token-sourceToken')).toHaveText('USDC')
+  await expect(page.page.getByTestId('swap-input-token-toToken')).toHaveText('ETH')
+  await expect(page.page.getByTestId('swap-input-sourceToken')).toHaveValue('321.123')
+  await expect(page.page.getByTestId('swap-action-button')).toHaveText('Insufficient balance')
+
+  await page.closeModal()
+})
+
 walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
   await walletFeatureButton.click()
-  await expect(page.page.getByText('Coinbase')).toBeVisible()
+  await expect(page.page.getByText('Meld.io')).toBeVisible()
   await page.closeModal()
 })
 
 walletFeaturesTest('it should find account name as expected', async () => {
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.openChooseNameIntro()
   await page.openChooseName()
   await page.typeName('test-ens-check')
@@ -90,7 +102,8 @@ walletFeaturesTest('it should find account name as expected', async () => {
 })
 
 walletFeaturesTest('it should open web app wallet', async () => {
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await page.openConnectModal()
   await validator.expectAllWallets()

@@ -7,16 +7,16 @@ import type { Features, FeaturesKeys } from '../../src/utils/TypeUtil'
 describe('OptionsUtil', () => {
   describe('getFeatureValue', () => {
     it('should return the default value when feature is not provided', () => {
-      const defaultValue = ConstantsUtil.DEFAULT_FEATURES.swaps
-      const result = OptionsUtil.getFeatureValue('swaps' as FeaturesKeys)
+      const defaultValue = ConstantsUtil.DEFAULT_FEATURES.allWallets
+      const result = OptionsUtil.getFeatureValue('allWallets' as FeaturesKeys)
       expect(result).toBe(defaultValue)
     })
 
     it('should handle disabling feature values', () => {
       const features: Features = {
-        swaps: false
+        allWallets: false
       }
-      const result = OptionsUtil.getFeatureValue('swaps' as FeaturesKeys, features)
+      const result = OptionsUtil.getFeatureValue('allWallets' as FeaturesKeys, features)
       expect(result).toBe(false)
     })
   })

@@ -2,14 +2,14 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -86,7 +86,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -100,22 +100,22 @@ export class W3mConnectingSiweView extends LitElement {
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
       return session
     } catch (error) {
-      const preferredAccountType = AccountController.state.preferredAccountType
+      const preferredAccountType = getPreferredAccountType(ChainController.state.activeChain)
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      if (isSmartAccount) {
-        SnackController.showError('This application might not support Smart Accounts')
-      } else {
-        SnackController.showError('Signature declined')
-      }
+
+      SnackController.showError('Error signing message')
       SIWEController.setStatus('error')
+
+      // eslint-disable-next-line no-console
+      console.error('Failed to sign SIWE message', error)
 
       return EventsController.sendEvent({
         event: 'SIWX_AUTH_ERROR',
@@ -146,7 +146,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

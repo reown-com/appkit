@@ -1,9 +1,11 @@
+import { ChainNamespace } from '@reown/appkit-common'
+
 import { touchableStyles } from '../../css/touchableStyles'
 import { Box } from '../Box'
 import { Text } from '../Text'
 
-const tokens = {
-  ethereum: {
+const tokens: Record<ChainNamespace, { title: string; symbol: string; src: string }> = {
+  eip155: {
     title: 'Ethereum',
     symbol: 'ETH',
     src: '/assets/images/eth.png'
@@ -12,13 +14,26 @@ const tokens = {
     title: 'Solana',
     symbol: 'SOL',
     src: '/assets/images/sol.png'
+  },
+  bip122: {
+    title: 'Bitcoin',
+    symbol: 'BTC',
+    src: '/assets/images/btc.png'
+  },
+  polkadot: {
+    title: 'Polkadot',
+    symbol: 'DOT',
+    src: '/assets/images/dot.png'
+  },
+  cosmos: {
+    title: 'Cosmos',
+    symbol: 'ATOM',
+    src: '/assets/images/atom.png'
   }
 }
 
-export type TokenKey = keyof typeof tokens
-
 interface TokenProps {
-  token: TokenKey
+  token: ChainNamespace
   balance: string
 }
 

@@ -4,8 +4,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { Connector } from '@reown/appkit-controllers'
 import {
-  ApiController,
   AssetUtil,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   RouterController
@@ -13,6 +13,9 @@ import {
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
+import { HelpersUtil } from '@reown/appkit-utils'
+
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 
 @customElement('w3m-connect-announced-widget')
 export class W3mConnectAnnouncedWidget extends LitElement {
@@ -24,10 +27,13 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private connections = ConnectionController.state.connections
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ConnectionController.subscribeKey('connections', val => (this.connections = val))
     )
   }
 
@@ -47,20 +53,19 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${announcedConnectors.map(connector => {
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
-              return null
-            }
-          }
+        ${announcedConnectors.filter(ConnectorUtil.showConnector).map(connector => {
+          const connectionsByNamespace = this.connections.get(connector.chain) ?? []
+          const isAlreadyConnected = connectionsByNamespace.some(c =>
+            HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
+          )
 
           return html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               name=${connector.name ?? 'Unknown'}
               @click=${() => this.onConnector(connector)}
-              tagVariant="success"
-              tagLabel="installed"
+              tagVariant=${isAlreadyConnected ? 'shade' : 'success'}
+              tagLabel=${isAlreadyConnected ? 'connected' : 'installed'}
               data-testid=${`wallet-selector-${connector.id}`}
               .installed=${true}
               tabIdx=${ifDefined(this.tabIdx)}

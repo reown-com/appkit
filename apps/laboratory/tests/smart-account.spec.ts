@@ -8,6 +8,7 @@ import { EOA, ModalWalletValidator, SMART_ACCOUNT } from './shared/validators/Mo
 let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
+let tempEmail: string
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
@@ -21,7 +22,6 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
   smartAccountTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
@@ -42,8 +42,8 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
   await validator.expectSwitchedNetworkOnNetworksView('Polygon')
   await page.closeModal()
 
-  const tempEmail = await email.getEmailAddressToUse()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  tempEmail = await email.getEmailAddressToUse()
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
 })
@@ -55,10 +55,8 @@ smartAccountTest.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 smartAccountTest('it should use a smart account', async () => {
   await validator.expectConnected()
-  await page.openAccount()
-  await validator.expectActivateSmartAccountPromoVisible(false)
-  await page.openProfileView()
-  await page.openSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
 })
@@ -86,11 +84,13 @@ smartAccountTest(
     await page.switchNetwork(targetChain)
     await validator.expectSwitchedNetwork(targetChain)
     await page.closeModal()
+    await validator.expectAccountButtonReady()
 
-    await page.openAccount()
-    await page.openProfileView()
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
     await validator.expectTogglePreferredTypeVisible(false)
     await page.closeModal()
+    await validator.expectAccountButtonReady()
 
     await page.sign(namespace)
     await page.approveSign()
@@ -105,10 +105,13 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
+  await validator.expectAccountButtonReady()
 
-  await page.goToSettings()
-  await page.togglePreferredAccountType()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
@@ -126,9 +129,11 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
 smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
   const namespace = library === 'solana' ? 'solana' : 'eip155'
 
-  await page.goToSettings()
-  await page.togglePreferredAccountType()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(EOA)
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
@@ -137,8 +142,80 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
   await validator.expectAcceptedSign()
 })
 
+smartAccountTest(
+  'it should keep the same account type after page refresh (with EOA)',
+  async ({ library }) => {
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+    if (namespace !== 'eip155') {
+      return
+    }
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+    await page.closeModal()
+
+    await page.page.reload()
+    await validator.expectAccountButtonReady()
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+    await page.closeModal()
+  }
+)
+
+smartAccountTest(
+  'it should keep the same account type after page refresh (with SA)',
+  async ({ library }) => {
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+    if (namespace !== 'eip155') {
+      return
+    }
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await page.togglePreferredAccountType()
+    await validator.expectChangePreferredAccountToShow(EOA)
+
+    await page.page.reload()
+    await validator.expectAccountButtonReady()
+
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
+    await validator.expectChangePreferredAccountToShow(EOA)
+    await page.closeModal()
+  }
+)
+
 smartAccountTest('it should disconnect correctly', async () => {
-  await page.goToSettings()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
+  await page.disconnect()
+  await validator.expectDisconnected()
+})
+
+smartAccountTest('it should be able to switch after disconnecting', async ({ library }) => {
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
+  }
+
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
+
+  if (namespace !== 'eip155') {
+    return
+  }
+
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+  await validator.expectConnected()
+
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.disconnect()
   await validator.expectDisconnected()
 })

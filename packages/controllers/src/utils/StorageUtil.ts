@@ -2,19 +2,29 @@
 import {
   type CaipNetworkId,
   type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
 
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
   ConnectionStatus,
+  PreferredAccountTypes,
   SocialProvider,
   WcWallet
 } from './TypeUtil.js'
+
+// -- Types -------------------------------------------------------------------
+interface DeleteAddressFromConnectionParams {
+  address: string
+  connectorId: string
+  namespace: ChainNamespace
+}
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -181,7 +191,7 @@ export const StorageUtil = {
 
       return SafeLocalStorage.getItem(key)
     } catch (e) {
-      console.info('Unable to get connected connector id in namespace ', namespace)
+      console.info('Unable to get connected connector id in namespace', namespace)
     }
 
     return undefined
@@ -560,5 +570,200 @@ export const StorageUtil = {
     } catch {
       console.info('Unable to clear address cache')
     }
+  },
+  setPreferredAccountTypes(accountTypes: PreferredAccountTypes) {
+    try {
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES,
+        JSON.stringify(accountTypes)
+      )
+    } catch {
+      console.info('Unable to set preferred account types', accountTypes)
+    }
+  },
+  getPreferredAccountTypes() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PREFERRED_ACCOUNT_TYPES)
+      if (!result) {
+        return {}
+      }
+
+      return JSON.parse(result) as PreferredAccountTypes
+    } catch {
+      console.info('Unable to get preferred account types')
+    }
+
+    return {}
+  },
+  setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
+    try {
+      const existingConnections = StorageUtil.getConnections()
+      const existing = existingConnections[chainNamespace] ?? []
+
+      const connectorConnectionMap = new Map<string, Connection>()
+
+      for (const conn of existing) {
+        connectorConnectionMap.set(conn.connectorId, { ...conn })
+      }
+
+      for (const conn of connections) {
+        const existingConn = connectorConnectionMap.get(conn.connectorId)
+        const isAuth = conn.connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+        if (existingConn && !isAuth) {
+          const existingAddrs = new Set(existingConn.accounts.map(a => a.address.toLowerCase()))
+          const newAccounts = conn.accounts.filter(a => !existingAddrs.has(a.address.toLowerCase()))
+          existingConn.accounts.push(...newAccounts)
+        } else {
+          connectorConnectionMap.set(conn.connectorId, { ...conn })
+        }
+      }
+
+      const dedupedConnections = {
+        ...existingConnections,
+        [chainNamespace]: Array.from(connectorConnectionMap.values())
+      }
+
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTIONS, JSON.stringify(dedupedConnections))
+    } catch (error) {
+      console.error('Unable to sync connections to storage', error)
+    }
+  },
+  getConnections() {
+    try {
+      const connectionsStorage = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTIONS)
+
+      if (!connectionsStorage) {
+        return {} as { [key in ChainNamespace]: Connection[] }
+      }
+
+      return JSON.parse(connectionsStorage) as { [key in ChainNamespace]: Connection[] }
+    } catch (error) {
+      console.error('Unable to get connections from storage', error)
+
+      return {} as { [key in ChainNamespace]: Connection[] }
+    }
+  },
+  deleteAddressFromConnection({
+    connectorId,
+    address,
+    namespace
+  }: DeleteAddressFromConnectionParams) {
+    try {
+      const connections = StorageUtil.getConnections()
+      const namespaceConnections = connections[namespace] ?? []
+
+      const connectionMap = new Map(namespaceConnections.map(conn => [conn.connectorId, conn]))
+
+      const connector = connectionMap.get(connectorId)
+
+      if (connector) {
+        const updatedAccounts = connector.accounts.filter(
+          acc => acc.address.toLowerCase() !== address.toLowerCase()
+        )
+
+        if (updatedAccounts.length === 0) {
+          connectionMap.delete(connectorId)
+        } else {
+          connectionMap.set(connectorId, {
+            ...connector,
+            accounts: connector.accounts.filter(
+              acc => acc.address.toLowerCase() !== address.toLowerCase()
+            )
+          })
+        }
+      }
+
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.CONNECTIONS,
+        JSON.stringify({
+          ...connections,
+          [namespace]: Array.from(connectionMap.values())
+        })
+      )
+    } catch {
+      console.error(
+        `Unable to remove address "${address}" from connector "${connectorId}" in namespace "${namespace}"`
+      )
+    }
+  },
+  getDisconnectedConnectorIds() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.DISCONNECTED_CONNECTOR_IDS)
+
+      if (!result) {
+        return {} as { [key in ChainNamespace]: string[] }
+      }
+
+      return JSON.parse(result) as { [key in ChainNamespace]: string[] }
+    } catch {
+      console.info('Unable to get disconnected connector ids')
+    }
+
+    return {} as { [key in ChainNamespace]: string[] }
+  },
+  addDisconnectedConnectorId(connectorId: string, chainNamespace: ChainNamespace) {
+    try {
+      const currentDisconnectedConnectorIds = StorageUtil.getDisconnectedConnectorIds()
+
+      const disconnectedConnectorIdsByNamespace =
+        currentDisconnectedConnectorIds[chainNamespace] ?? []
+
+      disconnectedConnectorIdsByNamespace.push(connectorId)
+
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.DISCONNECTED_CONNECTOR_IDS,
+        JSON.stringify({
+          ...currentDisconnectedConnectorIds,
+          [chainNamespace]: Array.from(new Set(disconnectedConnectorIdsByNamespace))
+        })
+      )
+    } catch {
+      console.error(
+        `Unable to set disconnected connector id "${connectorId}" for namespace "${chainNamespace}"`
+      )
+    }
+  },
+  removeDisconnectedConnectorId(connectorId: string, chainNamespace: ChainNamespace) {
+    try {
+      const currentDisconnectedConnectorIds = StorageUtil.getDisconnectedConnectorIds()
+
+      let disconnectedConnectorIdsByNamespace =
+        currentDisconnectedConnectorIds[chainNamespace] ?? []
+
+      disconnectedConnectorIdsByNamespace = disconnectedConnectorIdsByNamespace.filter(
+        id => id.toLowerCase() !== connectorId.toLowerCase()
+      )
+
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.DISCONNECTED_CONNECTOR_IDS,
+        JSON.stringify({
+          ...currentDisconnectedConnectorIds,
+          [chainNamespace]: Array.from(new Set(disconnectedConnectorIdsByNamespace))
+        })
+      )
+    } catch {
+      console.error(
+        `Unable to remove disconnected connector id "${connectorId}" for namespace "${chainNamespace}"`
+      )
+    }
+  },
+  isConnectorDisconnected(connectorId: string, chainNamespace: ChainNamespace) {
+    try {
+      const currentDisconnectedConnectorIds = StorageUtil.getDisconnectedConnectorIds()
+
+      const disconnectedConnectorIdsByNamespace =
+        currentDisconnectedConnectorIds[chainNamespace] ?? []
+
+      return disconnectedConnectorIdsByNamespace.some(
+        id => id.toLowerCase() === connectorId.toLowerCase()
+      )
+    } catch {
+      console.info(
+        `Unable to get disconnected connector id "${connectorId}" for namespace "${chainNamespace}"`
+      )
+    }
+
+    return false
   }
 }

@@ -11,13 +11,13 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
-    "ethers": "5.7.2",
+    "ethers": "5.8.0",
     "vue": "3.4.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2",
-    "typescript": "5.7.3",
-    "vite": "5.4.12",
+    "typescript": "5.8.3",
+    "vite": "5.4.19",
     "vue-tsc": "2.1.8"
   }
 }

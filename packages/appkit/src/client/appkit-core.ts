@@ -9,7 +9,11 @@ import {
 } from '@reown/appkit-controllers'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { AppKitBaseClient } from './appkit-base-client.js'
+import {
+  AppKitBaseClient,
+  type OpenOptions as BaseOpenOptions,
+  type Views
+} from './appkit-base-client.js'
 
 declare global {
   interface Window {
@@ -21,21 +25,7 @@ declare global {
 export { AccountController }
 
 // -- Types --------------------------------------------------------------------
-export interface OpenOptions {
-  view?:
-    | 'Account'
-    | 'Connect'
-    | 'Networks'
-    | 'ApproveTransaction'
-    | 'OnRampProviders'
-    | 'ConnectingWalletConnectBasic'
-    | 'Swap'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'AllWallets'
-    | 'WalletSend'
-  uri?: string
-}
+export type OpenOptions<View extends Views> = Omit<BaseOpenOptions<View>, 'namespace'>
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -51,7 +41,7 @@ export class AppKit extends AppKitBaseClient {
   public adapter?: ChainAdapter
 
   // -- Overrides --------------------------------------------------------------
-  public override async open(options?: OpenOptions) {
+  public override async open<View extends Views>(options?: OpenOptions<View>) {
     // Only open modal when not connected
     const isConnected = ConnectorController.isConnected()
 

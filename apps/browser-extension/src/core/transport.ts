@@ -38,19 +38,19 @@ export function createReownTransport() {
           return toHex(Number(chainId))
 
         case 'eth_estimateGas': {
-          const gas = await publicClient.estimateGas(params[0])
+          const gas = await publicClient?.estimateGas(params[0])
 
           return toHex(gas)
         }
 
         case 'eth_blockNumber': {
-          const blockNumber = await publicClient.getBlockNumber()
+          const blockNumber = await publicClient?.getBlockNumber()
 
           return toHex(blockNumber)
         }
 
         case 'eth_call':
-          return publicClient.call(params[0])
+          return publicClient?.call(params[0])
 
         case 'eth_requestAccounts':
           localStorage.setItem(LOCAL_STORAGE_KEYS.HAS_CONNECTED, 'true')

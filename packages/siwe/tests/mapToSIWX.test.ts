@@ -364,7 +364,7 @@ describe('SIWE: mapToSIWX', () => {
   })
 
   describe('siwe.options.signOutOnNetworkChange', () => {
-    it('should sign out on network change', async () => {
+    it('should not sign out on network change if getLastConnectedSIWECaipNetwork is defined', async () => {
       const siwx = mapToSIWX(siweConfig)
 
       vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValue({
@@ -375,12 +375,13 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
+      ChainController.setLastConnectedSIWECaipNetwork(networks.mainnet)
       ChainController.setActiveCaipNetwork(networks.polygon)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
-      expect(signOutSpy).toHaveBeenCalled()
-      expect(onSignOutSpy).toHaveBeenCalled()
+      expect(signOutSpy).not.toHaveBeenCalled()
+      expect(onSignOutSpy).not.toHaveBeenCalled()
     })
 
     it('should not sign out on network change if disabled', async () => {
@@ -404,6 +405,25 @@ describe('SIWE: mapToSIWX', () => {
       expect(onSignOutSpy).not.toHaveBeenCalled()
 
       siweConfig.options.signOutOnNetworkChange = true
+    })
+
+    it('should not sign out on network change if no active caip address', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValue({
+        address: 'mock-address',
+        chainId: 1
+      })
+      const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
+      const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
+
+      OptionsController.setSIWX(siwx)
+      ChainController.setActiveCaipNetwork(undefined)
+
+      // Wait for the event loop to finish
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(signOutSpy).not.toHaveBeenCalled()
+      expect(onSignOutSpy).not.toHaveBeenCalled()
     })
   })
 

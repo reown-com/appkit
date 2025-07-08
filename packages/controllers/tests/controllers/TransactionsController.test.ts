@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Transaction } from '@reown/appkit-common'
 
@@ -21,17 +21,31 @@ const defaultState = {
   transactionsByYear: {},
   loading: false,
   empty: false,
-  next: undefined,
-  coinbaseTransactions: {}
+  next: undefined
 }
 
 // -- Tests --------------------------------------------------------------------
 describe('TransactionsController', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeCaipNetwork: {
+        id: 137,
+        caipNetworkId: 'eip155:137'
+      }
+    } as any)
+  })
+
   it('should have valid default state', () => {
+    TransactionsController.state.transactions = []
+    TransactionsController.state.transactionsByYear = {}
     expect(TransactionsController.state).toEqual(defaultState)
   })
 
   it('should fetch onramp transactions and group them appropiately', async () => {
+    TransactionsController.state.transactions = []
+    TransactionsController.state.transactionsByYear = {}
+
     const accountAddress = ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS.metadata.sentTo
 
     const response = {
@@ -46,18 +60,19 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(response)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
       cursor: undefined,
-      cache: 'no-cache'
+      chainId: 'eip155:137'
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(TransactionsController.state.transactions).toEqual([
+      ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS,
+      ONRAMP_TRANSACTIONS_RESPONSES_FEB.FAILED
+    ])
+    expect(TransactionsController.state.transactionsByYear).toEqual({
       2024: {
         0: [ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS],
         1: [ONRAMP_TRANSACTIONS_RESPONSES_FEB.FAILED]
@@ -66,11 +81,10 @@ describe('TransactionsController', () => {
   })
 
   it('should update onramp transaction from pending to success', async () => {
+    TransactionsController.state.transactions = []
+    TransactionsController.state.transactionsByYear = {}
     const { SUCCESS, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_FEB
     const accountAddress = SUCCESS.metadata.sentTo
-
-    // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -81,18 +95,16 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
       cursor: undefined,
-      cache: 'no-cache'
+      chainId: 'eip155:137'
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(TransactionsController.state.transactions).toEqual([IN_PROGRESS])
+    expect(TransactionsController.state.transactionsByYear).toEqual({
       2024: {
         1: [IN_PROGRESS]
       }
@@ -106,19 +118,17 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
       cursor: undefined,
-      cache: 'no-cache'
+      chainId: 'eip155:137'
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(TransactionsController.state.transactions).toEqual([IN_PROGRESS, SUCCESS])
+    expect(TransactionsController.state.transactionsByYear).toEqual({
       2024: {
         1: [SUCCESS]
       }
@@ -126,11 +136,10 @@ describe('TransactionsController', () => {
   })
 
   it('should update onramp transaction from pending to failed', async () => {
+    TransactionsController.state.transactions = []
+    TransactionsController.state.transactionsByYear = {}
     const { FAILED, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_FEB
     const accountAddress = FAILED.metadata.sentTo
-
-    // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -141,18 +150,16 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
       cursor: undefined,
-      cache: 'no-cache'
+      chainId: 'eip155:137'
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(TransactionsController.state.transactions).toEqual([IN_PROGRESS])
+    expect(TransactionsController.state.transactionsByYear).toEqual({
       2024: {
         1: [IN_PROGRESS]
       }
@@ -166,19 +173,17 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
       cursor: undefined,
-      cache: 'no-cache'
+      chainId: 'eip155:137'
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(TransactionsController.state.transactions).toEqual([IN_PROGRESS, FAILED])
+    expect(TransactionsController.state.transactionsByYear).toEqual({
       2024: {
         1: [FAILED]
       }
@@ -186,11 +191,10 @@ describe('TransactionsController', () => {
   })
 
   it('should push new onramp transactions while updating old ones', async () => {
+    TransactionsController.state.transactions = []
+    TransactionsController.state.transactionsByYear = {}
     const { SUCCESS, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_JAN
     const accountAddress = SUCCESS.metadata.sentTo
-
-    // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -201,18 +205,16 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
       cursor: undefined,
-      cache: 'no-cache'
+      chainId: 'eip155:137'
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(TransactionsController.state.transactions).toEqual([IN_PROGRESS])
+    expect(TransactionsController.state.transactionsByYear).toEqual({
       2024: {
         0: [IN_PROGRESS]
       }
@@ -226,19 +228,21 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await TransactionsController.fetchTransactions(accountAddress)
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      onramp: 'coinbase',
       cursor: undefined,
-      cache: 'no-cache'
+      chainId: 'eip155:137'
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(TransactionsController.state.transactions).toEqual([
+      IN_PROGRESS,
+      SUCCESS,
+      ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS
+    ])
+    expect(TransactionsController.state.transactionsByYear).toEqual({
       2024: {
         0: [SUCCESS],
         1: [ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS]
@@ -247,6 +251,8 @@ describe('TransactionsController', () => {
   })
 
   it('should clear cursor correctly', async () => {
+    TransactionsController.state.transactions = []
+    TransactionsController.state.transactionsByYear = {}
     // Mock fetch transactions
     const fetchTransactions = vi
       .spyOn(BlockchainApiController, 'fetchTransactions')
@@ -267,34 +273,8 @@ describe('TransactionsController', () => {
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
       cursor: undefined,
-      onramp: undefined,
-      cache: undefined
+      chainId: 'eip155:137'
     })
     expect(TransactionsController.state.next).toBe('cursor')
-  })
-
-  it('should call fetchTransactions with chainId', async () => {
-    const fetchTransactions = vi
-      .spyOn(BlockchainApiController, 'fetchTransactions')
-      .mockResolvedValue({
-        data: [],
-        next: 'cursor'
-      })
-
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeCaipNetwork: {
-        id: 1,
-        caipNetworkId: 'eip155:1'
-      }
-    } as any)
-
-    await TransactionsController.fetchTransactions('0x123', 'coinbase')
-    expect(fetchTransactions).toHaveBeenCalledWith({
-      account: '0x123',
-      cursor: 'cursor',
-      onramp: 'coinbase',
-      cache: 'no-cache',
-      chainId: 'eip155:1'
-    })
   })
 })

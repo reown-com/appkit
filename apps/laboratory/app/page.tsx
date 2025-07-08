@@ -5,10 +5,12 @@ import { Badge } from '@chakra-ui/react'
 import { ConfigurationList } from '@/src/components/ConfigurationList'
 import {
   bitcoinSdkOptions,
+  customSdkOptions,
   ethers5SdkOptions,
   ethersSdkOptions,
   featuredSdkOptions,
   multichainSdkOptions,
+  paySdkOptions,
   siwxSdkOptions,
   solanaSdkOptions,
   testingSdkOptions,
@@ -34,6 +36,8 @@ export default function HomePage() {
         sdkOptions={multichainSdkOptions}
       />
       <ConfigurationList title="SIWX" sdkOptions={siwxSdkOptions} />
+      <ConfigurationList title="Pay" sdkOptions={paySdkOptions} />
+      <ConfigurationList title="Custom Configurations" sdkOptions={customSdkOptions} />
     </>
   )
 }

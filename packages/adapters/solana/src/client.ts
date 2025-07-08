@@ -1,11 +1,11 @@
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey, Connection as SolanaConnection } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
-import { type AppKit, type AppKitOptions } from '@reown/appkit'
-import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ChainController,
@@ -14,8 +14,9 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
-import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import { HelpersUtil } from '@reown/appkit-utils'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 
@@ -32,19 +33,33 @@ import { watchStandard } from './utils/watchStandard.js'
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
   wallets?: BaseWalletAdapter[]
+  /**
+   * Enable or disable registering WalletConnect as a Wallet Standard wallet.
+   * @default false
+   */
+  registerWalletStandard?: boolean
 }
+
+const IGNORED_CONNECTIONS_IDS: string[] = [
+  CommonConstantsUtil.CONNECTOR_ID.AUTH,
+  CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+]
 
 export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
-  public adapterType = 'solana'
   public wallets?: BaseWalletAdapter[]
+  private registerWalletStandard?: boolean
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
+  private universalProvider: UniversalProvider | undefined
 
   constructor(options: AdapterOptions = {}) {
-    super({})
-    this.namespace = CommonConstantsUtil.CHAIN.SOLANA
+    super({
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.SOLANA,
+      namespace: CommonConstantsUtil.CHAIN.SOLANA
+    })
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
+    this.registerWalletStandard = options.registerWalletStandard
   }
 
   public override construct(params: AdapterBlueprint.Params): void {
@@ -54,7 +69,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       params.networks?.find(n => n.caipNetworkId === connectedCaipNetwork) || params.networks?.[0]
     const rpcUrl = caipNetwork?.rpcUrls.default.http[0] as string
     if (rpcUrl) {
-      SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+      SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))
     }
   }
 
@@ -63,7 +78,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       new AuthProvider({
         w3mFrameProvider,
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace),
-        chains: this.caipNetworks as CaipNetwork[]
+        chains: this.getCaipNetworks()
       })
     )
   }
@@ -80,14 +95,14 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.addConnector(
         new CoinbaseWalletProvider({
           provider: window.coinbaseSolana as SolanaCoinbaseWallet,
-          chains: this.caipNetworks as CaipNetwork[],
+          chains: this.getCaipNetworks(),
           getActiveChain
         })
       )
     }
 
     // Watch for standard wallet adapters
-    watchStandard(this.caipNetworks as CaipNetwork[], getActiveChain, this.addConnector.bind(this))
+    watchStandard(this.getCaipNetworks(), getActiveChain, this.addConnector.bind(this))
   }
 
   // -- Transaction methods ---------------------------------------------------
@@ -97,11 +112,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
    * These function definition is to have a type parity between the clients. Currently not in use.
    */
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async getEnsAddress(
-    params: AdapterBlueprint.GetEnsAddressParams
-  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    return { address: params.name }
-  }
 
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
@@ -181,7 +191,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     const connection = SolStoreUtil.state.connection
 
-    if (!connection || !params.address || !params.provider) {
+    if (!connection || !params.provider) {
       throw new Error('Connection is not set')
     }
 
@@ -191,7 +201,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       provider,
       connection,
       to: params.to,
-      value: params.value as number
+      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
     })
 
     const result = await provider.sendTransaction(transaction, connection)
@@ -229,20 +239,82 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error('Provider not found')
     }
 
+    const connectorWithProvider = {
+      ...connector,
+      ...(params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+        ? {
+            /*
+             * For AuthProvider, we need to pass connector as the provider
+             * so the useAppKitProvider hook works properly when signing
+             * messages and transactions
+             */
+            provider: connector as CoreProvider
+          }
+        : {})
+    }
+
     const rpcUrl =
       params.rpcUrl ||
-      this.caipNetworks?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
+      this.getCaipNetworks()?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
 
     if (!rpcUrl) {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
     }
 
-    const address = await connector.connect({
-      chainId: params.chainId as string
+    const connection = this.connectionManager?.getConnection({
+      address: params.address,
+      connectorId: connector.id,
+      connections: this.connections,
+      connectors: this.connectors
     })
-    this.listenProviderEvents(connector)
 
-    SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+    if (connection?.account) {
+      this.emit('accountChanged', {
+        address: connection.account.address,
+        chainId: connection.caipNetwork?.id,
+        connector: connectorWithProvider
+      })
+
+      return {
+        id: connector.id,
+        address: connection.account.address,
+        chainId: params.chainId as string,
+        provider: connector as CoreProvider,
+        type: connector.type
+      }
+    }
+
+    const address = await connector.connect({
+      chainId: params.chainId as string,
+      socialUri: params.socialUri
+    })
+
+    SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))
+
+    this.emit('accountChanged', {
+      address,
+      chainId: params.chainId as string,
+      connector: connectorWithProvider
+    })
+
+    const isAuth = connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+    const caipNetwork = this.getCaipNetworks()?.find(network => network.id === params.chainId)
+
+    this.addConnection({
+      connectorId: connector.id,
+      accounts: [{ address }],
+      caipNetwork,
+      auth: isAuth
+        ? {
+            name: StorageUtil.getConnectedSocialProvider(),
+            username: StorageUtil.getConnectedSocialUsername()
+          }
+        : undefined
+    })
+
+    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+      this.listenSolanaProviderEvents(connector.id, connector.provider as SolanaProvider)
+    }
 
     return {
       id: connector.id,
@@ -257,13 +329,13 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+    const caipNetwork = this.getCaipNetworks()?.find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'SOL' })
     }
 
-    const connection = new Connection(
+    const connection = new SolanaConnection(
       caipNetwork?.rpcUrls?.default?.http?.[0] as string,
       this.connectionSettings
     )
@@ -317,85 +389,109 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     if (caipNetwork?.rpcUrls?.default?.http?.[0]) {
       SolStoreUtil.setConnection(
-        new Connection(caipNetwork.rpcUrls.default.http[0], this.connectionSettings)
+        new SolanaConnection(caipNetwork.rpcUrls.default.http[0], this.connectionSettings)
       )
     }
   }
 
-  private listenProviderEvents(provider: SolanaProvider) {
-    const disconnectHandler = () => {
-      this.removeProviderListeners(provider)
-      this.emit('disconnect')
+  // We use listenSolanaProviderEvents instead of listenProviderEvents
+  protected override listenProviderEvents() {
+    return undefined
+  }
+
+  public listenSolanaProviderEvents(connectorId: string, provider: SolanaProvider) {
+    if (IGNORED_CONNECTIONS_IDS.includes(connectorId)) {
+      return
     }
 
     const accountsChangedHandler = (publicKey: PublicKey) => {
-      const address = publicKey.toBase58()
-      if (address) {
-        this.emit('accountChanged', { address })
+      this.onAccountsChanged([publicKey.toBase58()], connectorId, false)
+    }
+    const disconnectHandler = () => this.onDisconnect(connectorId)
+
+    if (!this.providerHandlers[connectorId]) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('connect', accountsChangedHandler)
+
+      this.providerHandlers[connectorId] = {
+        provider: provider as CoreProvider,
+        disconnect: disconnectHandler,
+        accountsChanged: accountsChangedHandler as unknown as (accounts: string[]) => void,
+        chainChanged: () => undefined
       }
     }
+  }
 
-    provider.on('disconnect', disconnectHandler)
-    provider.on('accountsChanged', accountsChangedHandler)
-    provider.on('connect', accountsChangedHandler)
-    provider.on('pendingTransaction', () => {
-      this.emit('pendingTransactions')
+  public override async setUniversalProvider(universalProvider: UniversalProvider): Promise<void> {
+    this.universalProvider = universalProvider
+
+    const wcConnectorId = CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+
+    WcHelpersUtil.listenWcProvider({
+      universalProvider,
+      namespace: CommonConstantsUtil.CHAIN.SOLANA,
+      onConnect: accounts => this.onConnect(accounts, wcConnectorId),
+      onDisconnect: () => this.onDisconnect(wcConnectorId),
+      onAccountsChanged: accounts => this.onAccountsChanged(accounts, wcConnectorId, false)
     })
 
-    this.providerHandlers = {
-      disconnect: disconnectHandler,
-      accountsChanged: accountsChangedHandler
+    const solanaProvider = new SolanaWalletConnectProvider({
+      provider: universalProvider,
+      chains: this.getCaipNetworks(),
+      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+    })
+
+    if (this.registerWalletStandard) {
+      const { SolanaWalletConnectStandardWallet } = await import(
+        '@reown/appkit-utils/wallet-standard'
+      )
+      SolanaWalletConnectStandardWallet.register(universalProvider)
     }
-  }
 
-  private providerHandlers: {
-    disconnect: () => void
-    accountsChanged: (publicKey: PublicKey) => void
-  } | null = null
+    this.addConnector(solanaProvider)
 
-  private removeProviderListeners(provider: SolanaProvider) {
-    if (this.providerHandlers) {
-      provider.removeListener('disconnect', this.providerHandlers.disconnect)
-      provider.removeListener('accountsChanged', this.providerHandlers.accountsChanged)
-      provider.removeListener('connect', this.providerHandlers.accountsChanged)
-      this.providerHandlers = null
-    }
-  }
-
-  public override setUniversalProvider(universalProvider: UniversalProvider): void {
-    this.addConnector(
-      new SolanaWalletConnectProvider({
-        provider: universalProvider,
-        chains: this.caipNetworks as CaipNetwork[],
-        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
-      })
-    )
+    return Promise.resolve()
   }
 
   public override async connectWalletConnect(chainId?: string | number) {
     const result = await super.connectWalletConnect(chainId)
 
-    const rpcUrl = this.caipNetworks?.find(n => n.id === chainId)?.rpcUrls.default.http[0] as string
-    const connection = new Connection(rpcUrl, this.connectionSettings)
+    const rpcUrl = this.getCaipNetworks()?.find(n => n.id === chainId)?.rpcUrls.default
+      .http[0] as string
+    const connection = new SolanaConnection(rpcUrl, this.connectionSettings)
 
     SolStoreUtil.setConnection(connection)
 
     return result
   }
 
-  public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
-    if (!params.provider || !params.providerType) {
-      throw new Error('Provider or providerType not provided')
+  public async disconnect(params: AdapterBlueprint.DisconnectParams) {
+    if (params.id) {
+      const connector = this.connectors.find(c => c.id === params.id)
+
+      if (!connector) {
+        throw new Error('Provider not found')
+      }
+
+      const connection = this.connections.find(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, params.id)
+      )
+
+      await connector.provider.disconnect()
+
+      this.deleteConnection(connector.id)
+
+      if (this.connections.length === 0) {
+        this.emit('disconnect')
+      } else {
+        this.emitFirstAvailableConnection()
+      }
+
+      return { connections: connection ? [connection] : [] }
     }
 
-    await params.provider.disconnect()
-  }
-
-  public async getProfile(): Promise<AdapterBlueprint.GetProfileResult> {
-    return Promise.resolve({
-      profileName: undefined,
-      profileImage: undefined
-    })
+    return this.disconnectAll()
   }
 
   public async syncConnection(
@@ -405,6 +501,26 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       ...params,
       type: ''
     })
+  }
+
+  public async syncConnections({
+    connectToFirstConnector,
+    caipNetwork,
+    getConnectorStorageInfo
+  }: AdapterBlueprint.SyncConnectionsParams) {
+    await this.connectionManager?.syncConnections({
+      connectors: this.connectors,
+      caipNetwork,
+      caipNetworks: this.getCaipNetworks(),
+      universalProvider: this.universalProvider as UniversalProvider,
+      onConnection: this.addConnection.bind(this),
+      onListenProvider: this.listenSolanaProviderEvents.bind(this),
+      getConnectionStatusInfo: getConnectorStorageInfo
+    })
+
+    if (connectToFirstConnector) {
+      this.emitFirstAvailableConnection()
+    }
   }
 
   public getWalletConnectProvider(
@@ -417,5 +533,27 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     })
 
     return walletConnectProvider as unknown as UniversalProvider
+  }
+
+  private async disconnectAll() {
+    const connections = await Promise.all(
+      this.connections.map(async connection => {
+        const connector = this.connectors.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.id, connection.connectorId)
+        )
+
+        if (!connector) {
+          throw new Error('Connector not found')
+        }
+
+        await this.disconnect({
+          id: connector.id
+        })
+
+        return connection
+      })
+    )
+
+    return { connections }
   }
 }

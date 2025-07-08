@@ -6,7 +6,8 @@ import {
   AssetController,
   ModalController,
   OnRampController,
-  OptionsController
+  OptionsController,
+  OptionsStateController
 } from '@reown/appkit-controllers'
 import type { PaymentCurrency } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -29,7 +30,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
   @state() public selectedCurrency = OnRampController.state.paymentCurrency
   @state() public currencies = OnRampController.state.paymentCurrencies
   @state() private currencyImages = AssetController.state.currencyImages
-  @state() private checked = false
+  @state() private checked = OptionsStateController.state.isLegalCheckboxChecked
 
   public constructor() {
     super()
@@ -39,7 +40,10 @@ export class W3mOnrampFiatSelectView extends LitElement {
           this.selectedCurrency = val.paymentCurrency
           this.currencies = val.paymentCurrencies
         }),
-        AssetController.subscribeKey('currencyImages', val => (this.currencyImages = val))
+        AssetController.subscribeKey('currencyImages', val => (this.currencyImages = val)),
+        OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => {
+          this.checked = val
+        })
       ]
     )
   }
@@ -60,7 +64,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
     const disabled = showLegalCheckbox && !this.checked
 
     return html`
-      <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
+      <w3m-legal-checkbox></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
         .padding=${['0', 's', 's', 's']}
@@ -96,11 +100,6 @@ export class W3mOnrampFiatSelectView extends LitElement {
 
     OnRampController.setPaymentCurrency(currency)
     ModalController.close()
-  }
-
-  // -- Private Methods ----------------------------------- //
-  private onCheckboxChange(event: CustomEvent<string>) {
-    this.checked = Boolean(event.detail)
   }
 }
 

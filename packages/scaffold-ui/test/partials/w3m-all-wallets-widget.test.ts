@@ -10,11 +10,11 @@ import {
   type ConnectorControllerState,
   type ConnectorWithProviders,
   CoreHelperUtil,
-  type DefaultAccountTypes,
   EventsController,
   OptionsController,
   type OptionsControllerState,
   type OptionsControllerStateInternal,
+  type PreferredAccountTypes,
   RouterController,
   type SdkVersion
 } from '@reown/appkit-controllers'
@@ -35,7 +35,15 @@ const mockConnectorState: ConnectorControllerState = {
     eip155: undefined,
     solana: undefined,
     polkadot: undefined,
-    bip122: undefined
+    bip122: undefined,
+    cosmos: undefined
+  },
+  filterByNamespaceMap: {
+    eip155: true,
+    solana: true,
+    polkadot: true,
+    bip122: true,
+    cosmos: true
   }
 }
 
@@ -44,7 +52,7 @@ const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal 
   projectId: 'test-project-id',
   sdkVersion: '1.0.0' as SdkVersion,
   sdkType: 'appkit' as const,
-  defaultAccountTypes: {} as DefaultAccountTypes
+  defaultAccountTypes: {} as PreferredAccountTypes
 }
 
 const mockConnector: ConnectorWithProviders = {
@@ -54,24 +62,30 @@ const mockConnector: ConnectorWithProviders = {
   chain: 'eip155'
 }
 
+const featuredWallets = [
+  {
+    id: '1',
+    name: 'Test Wallet',
+    rdns: 'io.test',
+    homepage: 'https://test.com',
+    image_url: 'https://test.com/image.png'
+  }
+]
+
 const mockApiState: ApiControllerState = {
   page: 1,
   count: 8,
-  featured: [
-    {
-      id: '1',
-      name: 'Test Wallet',
-      rdns: 'io.test',
-      homepage: 'https://test.com',
-      image_url: 'https://test.com/image.png'
-    }
-  ],
+  featured: featuredWallets,
+  allFeatured: featuredWallets,
+  allRecommended: [],
+  promises: {},
   recommended: [],
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
-  excludedRDNS: [],
-  isFetchingRecommendedWallets: false
+  excludedWallets: [],
+  isFetchingRecommendedWallets: false,
+  filteredWallets: []
 }
 
 describe('W3mAllWalletsWidget', () => {
@@ -163,5 +177,76 @@ describe('W3mAllWalletsWidget', () => {
 
     expect(sendEventSpy).toHaveBeenCalledWith({ type: 'track', event: 'CLICK_ALL_WALLETS' })
     expect(routerPushSpy).toHaveBeenCalledWith('AllWallets')
+  })
+
+  it('should update wallet count when filteredWallets changes', async () => {
+    const initialFilteredWallets = [
+      {
+        id: '2',
+        name: 'Filtered Wallet',
+        rdns: 'io.filtered',
+        homepage: 'https://filtered.com',
+        image_url: 'https://filtered.com/image.png'
+      }
+    ]
+
+    const apiState = {
+      ...mockApiState,
+      filteredWallets: initialFilteredWallets
+    }
+
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...mockConnectorState,
+      connectors: [mockConnector]
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue(mockOptionsState)
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue(apiState)
+
+    const element: W3mAllWalletsWidget = await fixture(
+      html`<w3m-all-wallets-widget></w3m-all-wallets-widget>`
+    )
+
+    let walletList = HelpersUtil.getByTestId(element, ALL_WALLETS_TEST_ID)
+    expect(walletList.getAttribute('tagLabel')).toBe('1')
+
+    apiState.filteredWallets = [
+      ...initialFilteredWallets,
+      {
+        id: '3',
+        name: 'Another Filtered Wallet',
+        rdns: 'io.another',
+        homepage: 'https://another.com',
+        image_url: 'https://another.com/image.png'
+      }
+    ]
+
+    // Trigger update
+    element.requestUpdate()
+    await element.updateComplete
+
+    walletList = HelpersUtil.getByTestId(element, ALL_WALLETS_TEST_ID)
+    expect(walletList.getAttribute('tagLabel')).toBe('1')
+  })
+
+  it('should show total wallet count when filteredWallets is empty', async () => {
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...mockConnectorState,
+      connectors: [mockConnector]
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue(mockOptionsState)
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...mockApiState,
+      count: 15,
+      featured: featuredWallets,
+      filteredWallets: []
+    })
+
+    const element: W3mAllWalletsWidget = await fixture(
+      html`<w3m-all-wallets-widget></w3m-all-wallets-widget>`
+    )
+
+    const walletList = HelpersUtil.getByTestId(element, ALL_WALLETS_TEST_ID)
+    expect(walletList).not.toBeNull()
+    expect(walletList.getAttribute('tagLabel')).toBe('10+')
   })
 })

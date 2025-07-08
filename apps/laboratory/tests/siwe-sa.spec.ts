@@ -1,6 +1,7 @@
 import { type BrowserContext, expect, test } from '@playwright/test'
 
-import { SECURE_WEBSITE_URL } from './shared/constants'
+import { SECURE_WEBSITE_URL } from '@reown/appkit-testing'
+
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
@@ -22,7 +23,6 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   smartAccountSiweTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
-
   page = new ModalWalletPage(browserPage, library, 'all')
   validator = new ModalWalletValidator(browserPage)
 
@@ -43,9 +43,7 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
-  await page.promptSiwe()
-  await page.approveSign()
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
   await validator.expectAuthenticated()
@@ -64,8 +62,8 @@ smartAccountSiweTest('it should sign with siwe + smart account', async ({ librar
   await validator.expectAcceptedSign()
 })
 
-smartAccountSiweTest('it should upgrade wallet', async ({ library }) => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
+smartAccountSiweTest('it should upgrade wallet', async () => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -81,6 +79,9 @@ smartAccountSiweTest(
     await validator.expectSwitchedNetworkWithNetworkView()
     await page.promptSiwe()
     await page.approveSign()
+    await validator.expectConnected()
+    await validator.expectAuthenticated()
+    await page.page.waitForTimeout(1000)
 
     await page.sign(namespace)
     await page.approveSign()
@@ -95,9 +96,11 @@ smartAccountSiweTest(
     const namespace = library === 'solana' ? 'solana' : 'eip155'
 
     await page.switchNetwork(targetChain)
-    await page.page.waitForTimeout(1000)
     await page.promptSiwe()
     await page.approveSign()
+    await validator.expectConnected()
+    await validator.expectAuthenticated()
+    await page.page.waitForTimeout(1000)
 
     await page.openAccount()
     // Shouldn't show the toggle on a non enabled network
@@ -111,8 +114,8 @@ smartAccountSiweTest(
 )
 
 smartAccountSiweTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
+  await page.openProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
   await page.disconnect()
   await validator.expectDisconnected()
 })

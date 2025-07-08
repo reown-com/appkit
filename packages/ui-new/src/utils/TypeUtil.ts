@@ -195,7 +195,6 @@ export type IconType =
 export type VisualType =
   | 'browser'
   | 'meld'
-  | 'coinbase'
   | 'dao'
   | 'defi'
   | 'defiAlt'
@@ -211,9 +210,6 @@ export type VisualType =
   | 'onrampCard'
   | 'profile'
   | 'system'
-  | 'moonpay'
-  | 'stripe'
-  | 'paypal'
   | 'pencil'
   | 'solana'
 

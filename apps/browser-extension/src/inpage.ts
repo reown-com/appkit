@@ -2,16 +2,18 @@ import { registerWallet } from '@wallet-standard/core'
 import { announceProvider } from 'mipd'
 import { v4 as uuidv4 } from 'uuid'
 
+import { BitcoinProvider } from './core/BitcoinProvider'
 import { EvmProvider } from './core/EvmProvider'
 import { SolanaProvider } from './core/SolanaProvider'
 import { ConstantsUtil } from './utils/ConstantsUtil'
 
 const evmProvider = new EvmProvider()
 const solanaProvider = new SolanaProvider()
+const bitcoinProvider = new BitcoinProvider()
 
 announceProvider({
   info: {
-    icon: ConstantsUtil.IconRaw,
+    icon: ConstantsUtil.IconRaw as `data:image/${string}`,
     name: 'Reown',
     rdns: 'reown.com',
     uuid: uuidv4()
@@ -23,3 +25,4 @@ announceProvider({
 })
 
 registerWallet(solanaProvider)
+registerWallet(bitcoinProvider)

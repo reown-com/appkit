@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { SIWXUtil } from '@reown/appkit-controllers'
+import { ChainController, SIWXUtil } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
 import { WalletConnectConnector } from '../../src/connectors'
@@ -27,6 +27,7 @@ describe('WalletConnectConnector', () => {
       caipNetworks,
       namespace
     })
+    vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue(caipNetworks)
   })
 
   it('should have correct metadata', () => {
@@ -42,7 +43,7 @@ describe('WalletConnectConnector', () => {
   })
 
   it('should expose chains', () => {
-    expect(connector.chains).toBe(caipNetworks)
+    expect(connector.chains).toStrictEqual(caipNetworks)
   })
 
   describe('connectWalletConnect', () => {

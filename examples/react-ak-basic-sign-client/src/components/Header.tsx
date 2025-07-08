@@ -5,7 +5,7 @@ export default function Header() {
         <img src="/reown-logo.png" alt="Reown" width="150" />
         <img src="/appkit-logo.png" alt="Reown" width="150" />
       </div>
-      <h1 className="page-title">React AppKit Basic Sign Client Example</h1>
+      <h1 className="page-title">React AppKit Core Sign Client Example</h1>
     </>
   )
 }

@@ -1,9 +1,9 @@
 import { type BrowserContext, test } from '@playwright/test'
 
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+
 import { ModalPage } from '../shared/pages/ModalPage'
-import { WalletPage } from '../shared/pages/WalletPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
-import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -34,7 +34,7 @@ test.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-test('should connect to all chains', async () => {
+test('should connect to all namespaces', async () => {
   await modalValidator.expectAccountButtonReady('eip155')
   await modalValidator.expectAccountButtonReady('solana')
   await modalValidator.expectAccountButtonReady('bip122')
@@ -63,6 +63,13 @@ test('should sign message for each chain', async ({ browser }) => {
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
   }
+})
+
+test('should refresh page and expect reconnected', async () => {
+  await modalPage.page.reload()
+  await modalValidator.expectAccountButtonReady('eip155')
+  await modalValidator.expectAccountButtonReady('solana')
+  await modalValidator.expectAccountButtonReady('bip122')
 })
 
 test('should switch network as expected', async () => {
@@ -114,8 +121,22 @@ test('should switch network when clicking custom buttons per namespace', async (
   await modalValidator.expectBalanceFetched('BTC')
 })
 
-test('should disconnect from all chains', async () => {
+test('should disconnect from all namespaces', async () => {
   await modalPage.disconnect()
+  await modalValidator.expectDisconnected('eip155')
+  await modalValidator.expectDisconnected('solana')
+  await modalValidator.expectDisconnected('bip122')
+})
+
+test('should disconnect from all namespaces when try to disconnect only one when connected with wc', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+
+  await modalValidator.expectAccountButtonReady('eip155')
+  await modalValidator.expectAccountButtonReady('solana')
+  await modalValidator.expectAccountButtonReady('bip122')
+
+  await modalPage.disconnectWithHook('eip155')
+
   await modalValidator.expectDisconnected('eip155')
   await modalValidator.expectDisconnected('solana')
   await modalValidator.expectDisconnected('bip122')

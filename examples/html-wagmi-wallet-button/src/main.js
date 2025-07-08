@@ -7,7 +7,7 @@ import { mainnet, polygon } from '@reown/appkit/networks'
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
 const networks = [mainnet, polygon]
-const walletButtons = ['google', 'metamask', 'walletConnect']
+const walletButtons = ['email', 'google', 'metamask', 'walletConnect']
 
 // Create adapter
 const wagmiAdapter = new WagmiAdapter({
@@ -21,9 +21,7 @@ const modal = createAppKit({
   networks,
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: true
-  },
+
   metadata: {
     name: 'AppKit HTML Wallet Button Example',
     description: 'AppKit HTML Wallet Button Example',
@@ -102,6 +100,16 @@ walletButtons.forEach(wallet => {
   })
 })
 
+document.getElementById('update-email')?.addEventListener('click', () => {
+  appKitWalletButton
+    .updateEmail()
+    .then(data => {
+      console.log('updated email', data)
+    })
+    .catch(err => {
+      console.log('error updating email', err)
+    })
+})
 // Button event listeners
 document.getElementById('toggle-theme')?.addEventListener('click', () => {
   const newTheme = themeState.themeMode === 'dark' ? 'light' : 'dark'

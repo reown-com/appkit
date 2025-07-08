@@ -2,22 +2,22 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
-  type AccountType,
+  AssetUtil,
   ChainController,
   ConnectionController,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -29,6 +29,7 @@ import '@reown/appkit-ui/wui-profile-button-v2'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-switch'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../w3m-account-auth-button/index.js'
@@ -46,8 +47,6 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() public address = CoreHelperUtil.getPlainAddress(AccountController.state.caipAddress)
 
-  @state() public allAccounts: AccountType[] = AccountController.state.allAccounts
-
   @state() private profileImage = AccountController.state.profileImage
 
   @state() private profileName = AccountController.state.profileName
@@ -60,12 +59,15 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   @state() private namespace = ChainController.state.activeChain
 
-  @state() private chainId = ChainController.state.activeCaipNetwork?.id
+  @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
 
   public constructor() {
     super()
+
     this.unsubscribe.push(
       ...[
         AccountController.subscribeKey('caipAddress', val => {
@@ -77,17 +79,14 @@ export class W3mAccountDefaultWidget extends LitElement {
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         OptionsController.subscribeKey('features', val => (this.features = val)),
-        AccountController.subscribeKey('allAccounts', allAccounts => {
-          this.allAccounts = allAccounts
+        OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
+        ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
+          this.activeConnectorIds = newActiveConnectorIds
         }),
         ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
-          if (val) {
-            const [namespace, chainId] = val?.caipNetworkId?.split(':') || []
-            if (namespace && chainId) {
-              this.namespace = namespace as ChainNamespace
-              this.chainId = chainId
-            }
+          if (val?.chainNamespace) {
+            this.namespace = val?.chainNamespace
           }
         })
       ]
@@ -100,21 +99,35 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.caipAddress) {
+    if (!this.caipAddress || !this.namespace) {
       return null
     }
 
-    const shouldShowMultiAccount =
-      ChainController.state.activeChain !== ConstantsUtil.CHAIN.SOLANA &&
-      this.allAccounts.length > 1
+    const connectorId = this.activeConnectorIds[this.namespace]
+
+    const connector = connectorId ? ConnectorController.getConnectorById(connectorId) : undefined
+    const connectorImage = AssetUtil.getConnectorImage(connector)
 
     return html`<wui-flex
         flexDirection="column"
         .padding=${['0', 'xl', 'm', 'xl'] as const}
         alignItems="center"
-        gap="l"
+        gap="s"
       >
-        ${shouldShowMultiAccount ? this.multiAccountTemplate() : this.singleAccountTemplate()}
+        <wui-avatar
+          alt=${ifDefined(this.caipAddress)}
+          address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
+          imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
+          data-testid="single-account-avatar"
+        ></wui-avatar>
+        <wui-wallet-switch
+          profileName=${this.profileName}
+          address=${this.address}
+          imageSrc=${connectorImage}
+          alt=${connector?.name}
+          @click=${this.onGoToProfileWalletsView.bind(this)}
+          data-testid="wui-wallet-switch"
+        ></wui-wallet-switch>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-200">
             ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
@@ -146,12 +159,12 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    const onramp = this.features?.onramp
+    const isOnrampEnabled = this.remoteFeatures?.onramp
     const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
       this.namespace
     )
 
-    if (!onramp || !hasNetworkSupport) {
+    if (!isOnrampEnabled || !hasNetworkSupport) {
       return null
     }
 
@@ -191,9 +204,8 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
     const isEnabled =
-      this.features?.history &&
+      this.remoteFeatures?.activity &&
       CoreConstantsUtil.ACTIVITY_ENABLED_CHAIN_NAMESPACES.includes(this.namespace)
 
     return isEnabled
@@ -201,24 +213,22 @@ export class W3mAccountDefaultWidget extends LitElement {
           iconVariant="blue"
           icon="clock"
           iconSize="sm"
-          ?chevron=${!isSolana}
-          ?disabled=${isSolana}
+          ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
+          data-testid="w3m-account-default-activity-button"
         >
-          <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}>
-            Activity
-          </wui-text>
-          ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
         </wui-list-item>`
       : null
   }
 
   private swapsTemplate() {
-    const swaps = this.features?.swaps
+    const isSwapsEnabled = this.remoteFeatures?.swaps
     const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
     const isTestNet = ChainController.state.activeCaipNetwork?.testnet
 
-    if (!swaps || !isEvm || isTestNet) {
+
+    if (!isSwapsEnabled || !isEvm || isTestNet) {
       return null
     }
 
@@ -228,6 +238,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="recycleHorizontal"
         ?chevron=${true}
         @click=${this.handleClickSwap.bind(this)}
+        data-testid="w3m-account-default-swaps-button"
       >
         <wui-text variant="paragraph-500" color="fg-100">Swap</wui-text>
       </wui-list-item>
@@ -235,10 +246,16 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private sendTemplate() {
-    const send = this.features?.send
-    const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const isSendEnabled = this.features?.send
+    const namespace = ChainController.state.activeChain
 
-    if (!send || !isEvm) {
+    if (!namespace) {
+      throw new Error('SendController:sendTemplate - namespace is required')
+    }
+
+    const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(namespace)
+
+    if (!isSendEnabled || !isSendSupported) {
       return null
     }
 
@@ -248,6 +265,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="send"
         ?chevron=${true}
         @click=${this.handleClickSend.bind(this)}
+        data-testid="w3m-account-default-send-button"
       >
         <wui-text variant="paragraph-500" color="fg-100">Send</wui-text>
       </wui-list-item>
@@ -255,10 +273,16 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('AuthCardTemplate:authCardTemplate - namespace is required')
+    }
+
     const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
+
     if (
       !authConnector ||
       connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH ||
@@ -276,10 +300,6 @@ export class W3mAccountDefaultWidget extends LitElement {
         data-testid="w3m-wallet-upgrade-card"
       ></wui-notice-card>
     `
-  }
-
-  private handleSwitchAccountsView() {
-    RouterController.push('SwitchAddress')
   }
 
   private handleClickPay() {
@@ -310,119 +330,13 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private singleAccountTemplate() {
-    return html`
-      <wui-avatar
-        alt=${ifDefined(this.caipAddress)}
-        address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
-        imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
-        data-testid="single-account-avatar"
-      ></wui-avatar>
-      <wui-flex flexDirection="column" alignItems="center">
-        <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-          <wui-text variant="large-600" color="fg-100">
-            ${this.profileName
-              ? UiHelperUtil.getTruncateString({
-                  string: this.profileName,
-                  charsStart: 20,
-                  charsEnd: 0,
-                  truncate: 'end'
-                })
-              : UiHelperUtil.getTruncateString({
-                  string: this.address || '',
-                  charsStart: 4,
-                  charsEnd: 4,
-                  truncate: 'middle'
-                })}
-          </wui-text>
-          <wui-icon-link
-            size="md"
-            icon="copy"
-            iconColor="fg-200"
-            @click=${this.onCopyAddress}
-          ></wui-icon-link> </wui-flex
-      ></wui-flex>
-    `
-  }
-
-  private multiAccountTemplate() {
-    if (!this.address) {
-      throw new Error('w3m-account-view: No account provided')
-    }
-
-    const account = this.allAccounts.find(acc => acc.address === this.address)
-    const label = AccountController.state.addressLabels.get(this.address)
-    if (this.namespace === 'bip122') {
-      return this.btcAccountsTemplate()
-    }
-
-    return html`
-      <wui-profile-button-v2
-        .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
-        address=${ifDefined(this.address)}
-        icon="${account?.type === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
-        ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
-          ? 'lightbulb'
-          : 'mail'}"
-        avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-        profileName=${ifDefined(label ? label : this.profileName)}
-        .onCopyClick=${this.onCopyAddress.bind(this)}
-      ></wui-profile-button-v2>
-    `
-  }
-
-  private btcAccountsTemplate() {
-    return html`<wui-flex gap="m" alignItems="center" flexDirection="column">
-      <wui-avatar
-        .imageSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-        alt=${this.address}
-        address=${this.address}
-      ></wui-avatar>
-      <wui-tabs
-        .tabs=${[{ label: 'Payment' }, { label: 'Ordinals' }]}
-        .onTabChange=${(index: number) =>
-          AccountController.setCaipAddress(
-            `bip122:${this.chainId}:${this.allAccounts[index]?.address || ''}`,
-            this.namespace
-          )}
-      ></wui-tabs>
-      <wui-flex gap="xs" alignItems="center" justifyContent="center">
-        <wui-text variant="large-600" color="fg-100">
-          ${UiHelperUtil.getTruncateString({
-            string: this.profileName || this.address || '',
-            charsStart: this.profileName ? 18 : 4,
-            charsEnd: this.profileName ? 0 : 4,
-            truncate: this.profileName ? 'end' : 'middle'
-          })}
-        </wui-text>
-        <wui-icon-link
-          size="md"
-          icon="copy"
-          iconColor="fg-200"
-          @click=${this.onCopyAddress}
-        ></wui-icon-link>
-      </wui-flex>
-    </wui-flex>`
-  }
-
-  private onCopyAddress() {
-    try {
-      if (this.address) {
-        CoreHelperUtil.copyToClopboard(this.address)
-        SnackController.showSuccess('Address copied')
-      }
-    } catch {
-      SnackController.showError('Failed to copy')
-    }
-  }
-
   private onTransactions() {
     EventsController.sendEvent({
       type: 'track',
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -432,9 +346,18 @@ export class W3mAccountDefaultWidget extends LitElement {
   private async onDisconnect() {
     try {
       this.disconnecting = true
-      await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
-      ModalController.close()
+      const connectionsByNamespace = ConnectionController.getConnections(this.namespace)
+      const hasConnections = connectionsByNamespace.length > 0
+      const connectorId =
+        this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(
+        isMultiWalletEnabled ? { id: connectorId, namespace: this.namespace } : {}
+      )
+      if (hasConnections && isMultiWalletEnabled) {
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('Wallet deleted')
+      }
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
@@ -454,6 +377,10 @@ export class W3mAccountDefaultWidget extends LitElement {
   private onGoToUpgradeView() {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
+  }
+
+  private onGoToProfileWalletsView() {
+    RouterController.push('ProfileWallets')
   }
 }
 

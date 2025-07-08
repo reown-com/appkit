@@ -1,4 +1,5 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { subscribeKey } from 'valtio/vanilla/utils'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
@@ -46,6 +47,10 @@ export const PublicStateController = {
 
   subscribe(callback: (newState: PublicStateControllerState) => void) {
     return sub(state, () => callback(state))
+  },
+
+  subscribeOpen(callback: (newState: PublicStateControllerState['open']) => void) {
+    return subscribeKey(state, 'open', callback)
   },
 
   set(newState: Partial<PublicStateControllerState>) {

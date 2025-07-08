@@ -1,7 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { Provider as CoreProvider } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  type ConnectionControllerClient,
+  type Provider as CoreProvider,
+  type NetworkControllerClient
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 
@@ -56,6 +62,7 @@ const mockWalletConnectConnector = vi.mocked(
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
   vi.spyOn(SolStoreUtil, 'setConnection')
+  vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue(mockNetworks)
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -63,27 +70,27 @@ describe('SolanaAdapter', () => {
     adapter.construct({
       networks: mockNetworks,
       projectId: 'test-project-id',
-      namespace: 'solana'
+      namespace: ConstantsUtil.CHAIN.SOLANA,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.SOLANA
     })
+    ChainController.initialize([adapter], mockCaipNetworks, {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    })
+    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'solana')
   })
 
   describe('SolanaAdapter - syncConnectors', () => {
     it('should not add coinbase connector if window.coinbaseSolana does not exist', async () => {
       const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
-      adapter.syncConnectors(
-        { networks: [solana], projectId: '123', features: { email: false } },
-        mockAppKit
-      )
+      adapter.syncConnectors({ networks: [solana], projectId: '123' }, mockAppKit)
       expect(addConnectorSpy).not.toHaveBeenCalled()
     })
 
     it('should add coinbase connector if window.coinbaseSolana exist', async () => {
       ;(window as any).coinbaseSolana = mockCoinbaseWallet()
       const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
-      adapter.syncConnectors(
-        { networks: [solana], projectId: '123', features: { email: false } },
-        mockAppKit
-      )
+      adapter.syncConnectors({ networks: [solana], projectId: '123' }, mockAppKit)
       expect(addConnectorSpy).toHaveBeenCalledOnce()
       expect(addConnectorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -99,8 +106,8 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - constructor', () => {
     it('should initialize with correct parameters', () => {
-      expect(adapter.adapterType).toBe('solana')
-      expect(adapter.namespace).toBe('solana')
+      expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.SOLANA)
+      expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.SOLANA)
       expect(adapter.networks).toEqual(mockNetworks)
       expect(adapter.projectId).toBe('test-project-id')
       expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
@@ -168,12 +175,395 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - disconnect', () => {
     it('should disconnect provider', async () => {
+      const adapter = new SolanaAdapter()
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [
+          {
+            id: 'test',
+            provider: mockProvider,
+            type: 'EXTERNAL'
+          }
+        ]
+      })
+
       await adapter.disconnect({
-        provider: mockProvider as unknown as CoreProvider,
-        providerType: 'EXTERNAL'
+        id: 'test'
       })
 
       expect(mockProvider.disconnect).toHaveBeenCalled()
+    })
+
+    it('should disconnect all connectors if no connector id provided and return them as connections', async () => {
+      const connector1 = {
+        id: 'test1',
+        provider: {
+          connect: vi.fn().mockResolvedValue('mock-address-1'),
+          disconnect: vi.fn(),
+          on: vi.fn(),
+          removeListener: vi.fn(),
+          signMessage: vi.fn().mockResolvedValue(new Uint8Array([1, 2, 3])),
+          sendTransaction: vi.fn().mockResolvedValue('mock-signature-1')
+        } as unknown as WalletStandardProvider,
+        type: 'EXTERNAL'
+      }
+
+      const connector2 = {
+        id: 'test2',
+        provider: {
+          connect: vi.fn().mockResolvedValue('mock-address-2'),
+          disconnect: vi.fn(),
+          on: vi.fn(),
+          removeListener: vi.fn(),
+          signMessage: vi.fn().mockResolvedValue(new Uint8Array([4, 5, 6])),
+          sendTransaction: vi.fn().mockResolvedValue('mock-signature-2')
+        } as unknown as WalletStandardProvider,
+        type: 'EXTERNAL'
+      }
+
+      const solanaAdapter = new SolanaAdapter()
+
+      Object.defineProperty(solanaAdapter, 'connectors', {
+        value: [connector1, connector2]
+      })
+
+      // Add connections
+      ;(solanaAdapter as any).addConnection({
+        connectorId: connector1.id,
+        accounts: [{ address: 'address1' }],
+        caipNetwork: mockCaipNetworks[0]
+      })
+      ;(solanaAdapter as any).addConnection({
+        connectorId: connector2.id,
+        accounts: [{ address: 'address2' }],
+        caipNetwork: mockCaipNetworks[0]
+      })
+
+      const result = await solanaAdapter.disconnect({ id: undefined })
+
+      expect(connector1.provider.disconnect).toHaveBeenCalled()
+      expect(connector2.provider.disconnect).toHaveBeenCalled()
+      expect(result.connections).toHaveLength(2)
+
+      const connectorIds = result.connections.map(c => c.connectorId)
+      expect(connectorIds).toContain(connector1.id)
+      expect(connectorIds).toContain(connector2.id)
+    })
+
+    it('should handle empty connections', async () => {
+      const solanaAdapter = new SolanaAdapter()
+
+      Object.defineProperty(solanaAdapter, 'connectors', {
+        value: []
+      })
+
+      const result = await solanaAdapter.disconnect({ id: undefined })
+
+      expect(result.connections).toHaveLength(0)
+    })
+
+    it('should throw error if one of the connector is not found from connections', async () => {
+      const solanaAdapter = new SolanaAdapter()
+
+      Object.defineProperty(solanaAdapter, 'connectors', {
+        value: []
+      })
+
+      // Add connection with non-existent connector
+      ;(solanaAdapter as any).addConnection({
+        connectorId: 'non-existent-connector',
+        accounts: [{ address: 'address1' }],
+        caipNetwork: mockCaipNetworks[0]
+      })
+
+      await expect(solanaAdapter.disconnect({ id: undefined })).rejects.toThrow(
+        'Connector not found'
+      )
+    })
+
+    it('should throw error if one of the connector fails to disconnect', async () => {
+      const connector = {
+        id: 'test',
+        provider: {
+          connect: vi.fn().mockResolvedValue('mock-address'),
+          disconnect: vi.fn().mockRejectedValue(new Error('Disconnect failed')),
+          on: vi.fn(),
+          removeListener: vi.fn(),
+          signMessage: vi.fn().mockResolvedValue(new Uint8Array([1, 2, 3])),
+          sendTransaction: vi.fn().mockResolvedValue('mock-signature')
+        } as unknown as WalletStandardProvider,
+        type: 'EXTERNAL'
+      }
+
+      const solanaAdapter = new SolanaAdapter()
+
+      Object.defineProperty(solanaAdapter, 'connectors', {
+        value: [connector]
+      })
+
+      // Add connection
+      ;(solanaAdapter as any).addConnection({
+        connectorId: connector.id,
+        accounts: [{ address: 'address1' }],
+        caipNetwork: mockCaipNetworks[0]
+      })
+
+      await expect(solanaAdapter.disconnect({ id: undefined })).rejects.toThrow('Disconnect failed')
+      expect(connector.provider.disconnect).toHaveBeenCalled()
+    })
+  })
+
+  describe('SolanaAdapter - syncConnections', () => {
+    let mockGetConnectorStorageInfo: Mock
+    let mockEmitFirstAvailableConnection: any
+
+    beforeEach(() => {
+      mockGetConnectorStorageInfo = vi.fn()
+      mockEmitFirstAvailableConnection = vi
+        .spyOn(adapter as any, 'emitFirstAvailableConnection')
+        .mockImplementation(() => {})
+    })
+
+    it('should sync connections for connectors that have connected and are not disconnected', async () => {
+      const mockConnector = {
+        id: 'test',
+        type: 'EXTERNAL',
+        provider: mockProvider,
+        connect: vi.fn().mockResolvedValue('mock-address')
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [mockConnector]
+      })
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: false,
+        hasConnected: true
+      })
+
+      const listenSolanaProviderEventsSpy = vi
+        .spyOn(adapter as any, 'listenSolanaProviderEvents')
+        .mockImplementation(() => {})
+
+      await adapter.syncConnections({
+        connectToFirstConnector: false,
+        caipNetwork: mockCaipNetworks[0],
+        getConnectorStorageInfo: mockGetConnectorStorageInfo
+      })
+
+      expect(mockConnector.connect).toHaveBeenCalledWith({
+        chainId: mockCaipNetworks[0].id
+      })
+      expect(listenSolanaProviderEventsSpy).toHaveBeenCalledWith(
+        mockConnector.id,
+        mockConnector.provider
+      )
+      expect(adapter.connections).toHaveLength(1)
+      expect(adapter.connections[0]?.connectorId).toBe(mockConnector.id)
+    })
+
+    it('should skip connectors that are disconnected', async () => {
+      const mockConnector = {
+        id: 'test',
+        type: 'EXTERNAL',
+        provider: mockProvider,
+        connect: vi.fn().mockResolvedValue('mock-address')
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [mockConnector]
+      })
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: true,
+        hasConnected: true
+      })
+
+      await adapter.syncConnections({
+        connectToFirstConnector: false,
+        caipNetwork: mockCaipNetworks[0],
+        getConnectorStorageInfo: mockGetConnectorStorageInfo
+      })
+
+      expect(mockConnector.connect).not.toHaveBeenCalled()
+      expect(adapter.connections).toHaveLength(0)
+    })
+
+    it('should handle WalletConnect connector specially', async () => {
+      const mockWcProvider = mockWalletConnectConnector
+      await adapter.setUniversalProvider(mockWcProvider.provider)
+
+      const wcConnector = adapter.connectors.find(c => c.id === 'walletConnect')
+      expect(wcConnector).toBeDefined()
+
+      vi.spyOn(WcHelpersUtil, 'getWalletConnectAccounts').mockReturnValue([
+        {
+          address: '0xwcaddress',
+          chainId: 1,
+          chainNamespace: 'eip155' as any
+        }
+      ])
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: false,
+        hasConnected: true
+      })
+
+      await adapter.syncConnections({
+        connectToFirstConnector: false,
+        getConnectorStorageInfo: mockGetConnectorStorageInfo
+      })
+
+      const wcConnection = adapter.connections.find(c => c.connectorId === 'walletConnect')
+      expect(WcHelpersUtil.getWalletConnectAccounts).toHaveBeenCalledWith(
+        mockWcProvider.provider,
+        'solana'
+      )
+      expect(wcConnection).toBeDefined()
+    })
+
+    it('should call emitFirstAvailableConnection when connectToFirstConnector is true', async () => {
+      const mockConnector = {
+        id: 'test',
+        type: 'EXTERNAL',
+        provider: mockProvider,
+        connect: vi.fn().mockResolvedValue('mock-address')
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [mockConnector]
+      })
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: false,
+        hasConnected: true
+      })
+
+      await adapter.syncConnections({
+        connectToFirstConnector: true,
+        caipNetwork: mockCaipNetworks[0],
+        getConnectorStorageInfo: mockGetConnectorStorageInfo
+      })
+
+      expect(mockEmitFirstAvailableConnection).toHaveBeenCalled()
+    })
+
+    it('should not call emitFirstAvailableConnection when connectToFirstConnector is false', async () => {
+      const mockConnector = {
+        id: 'test',
+        type: 'EXTERNAL',
+        provider: mockProvider,
+        connect: vi.fn().mockResolvedValue('mock-address')
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [mockConnector]
+      })
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: false,
+        hasConnected: true
+      })
+
+      await adapter.syncConnections({
+        connectToFirstConnector: false,
+        caipNetwork: mockCaipNetworks[0],
+        getConnectorStorageInfo: mockGetConnectorStorageInfo
+      })
+
+      expect(mockEmitFirstAvailableConnection).not.toHaveBeenCalled()
+    })
+
+    it('should handle connector connection failures', async () => {
+      const mockConnector1 = {
+        id: 'test1',
+        type: 'EXTERNAL',
+        provider: mockProvider,
+        connect: vi.fn().mockRejectedValue(new Error('Connection failed'))
+      }
+
+      const mockConnector2 = {
+        id: 'test2',
+        type: 'EXTERNAL',
+        provider: mockProvider,
+        connect: vi.fn().mockResolvedValue('mock-address-2')
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [mockConnector1, mockConnector2]
+      })
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: false,
+        hasConnected: true
+      })
+
+      await expect(
+        adapter.syncConnections({
+          connectToFirstConnector: false,
+          caipNetwork: mockCaipNetworks[0],
+          getConnectorStorageInfo: mockGetConnectorStorageInfo
+        })
+      ).rejects.toThrow('Connection failed')
+
+      expect(adapter.connections).toHaveLength(1)
+      expect(adapter.connections[0]?.connectorId).toBe(mockConnector2.id)
+    })
+
+    it('should not add connection if no address returned from connector', async () => {
+      const mockConnector = {
+        id: 'test',
+        type: 'EXTERNAL',
+        provider: mockProvider,
+        connect: vi.fn().mockResolvedValue(undefined)
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [mockConnector]
+      })
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: false,
+        hasConnected: true
+      })
+
+      await adapter.syncConnections({
+        connectToFirstConnector: false,
+        caipNetwork: mockCaipNetworks[0],
+        getConnectorStorageInfo: mockGetConnectorStorageInfo
+      })
+
+      expect(adapter.connections).toHaveLength(0)
+    })
+
+    it('should not listen to provider events for WalletConnect connectors', async () => {
+      const wcConnector = {
+        id: 'walletConnect',
+        type: 'WALLET_CONNECT',
+        provider: mockWalletConnectConnector.provider,
+        connect: vi.fn().mockResolvedValue('wc-address')
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [wcConnector]
+      })
+
+      mockGetConnectorStorageInfo.mockReturnValue({
+        hasDisconnected: false,
+        hasConnected: true
+      })
+
+      const listenProviderEventsSpy = vi
+        .spyOn(adapter as any, 'listenProviderEvents')
+        .mockImplementation(() => {})
+
+      await adapter.syncConnections({
+        connectToFirstConnector: false,
+        caipNetwork: mockCaipNetworks[0],
+        getConnectorStorageInfo: mockGetConnectorStorageInfo
+      })
+
+      expect(listenProviderEventsSpy).not.toHaveBeenCalled()
     })
   })
 
@@ -290,10 +680,7 @@ describe('SolanaAdapter', () => {
       walletName => {
         const watchStandardSpy = vi.mocked(watchStandard)
         const addProviderSpy = vi.spyOn(adapter as any, 'addConnector')
-        adapter.syncConnectors(
-          { features: { email: false, socials: false }, projectId: '1234' } as any,
-          {} as any
-        )
+        adapter.syncConnectors({ features: {}, projectId: '1234' } as any, {} as any)
 
         const callback = watchStandardSpy.mock.calls[0]![2]
         callback({ name: walletName } as any)

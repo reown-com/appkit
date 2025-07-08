@@ -8,6 +8,7 @@ import {
   ModalController,
   OnRampController,
   OptionsController,
+  OptionsStateController,
   type PaymentCurrency
 } from '@reown/appkit-controllers'
 
@@ -21,6 +22,8 @@ const mockCurrencies: PaymentCurrency[] = [
 
 describe('W3mOnrampFiatSelectView', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
+
     vi.spyOn(OnRampController, 'state', 'get').mockReturnValue({
       ...OnRampController.state,
       paymentCurrency: mockCurrencies[0] as PaymentCurrency,
@@ -102,6 +105,18 @@ describe('W3mOnrampFiatSelectView', () => {
   })
 
   it('should enable currency selection when legal checkbox is checked', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      termsConditionsUrl: '...',
+      privacyPolicyUrl: '...',
+      features: {
+        legalCheckbox: true
+      }
+    })
+    vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
+      ...OptionsStateController.state,
+      isLegalCheckboxChecked: false
+    })
     const element: W3mOnrampFiatSelectView = await fixture(
       html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
     )
@@ -109,10 +124,14 @@ describe('W3mOnrampFiatSelectView', () => {
     await elementUpdated(element)
 
     const checkbox = element.shadowRoot?.querySelector('w3m-legal-checkbox')
-    if (checkbox) {
-      checkbox.dispatchEvent(new CustomEvent('checkboxChange', { detail: true }))
-    }
+    const wuiCheckbox = checkbox?.shadowRoot?.querySelector('wui-checkbox')
+    const input = wuiCheckbox?.shadowRoot?.querySelector('input')
 
+    expect(input).not.toBeNull()
+
+    input?.click()
+
+    element.requestUpdate()
     await elementUpdated(element)
 
     const container = element.shadowRoot?.querySelector('wui-flex')
@@ -125,6 +144,10 @@ describe('W3mOnrampFiatSelectView', () => {
   })
 
   it('should handle subscription updates', async () => {
+    vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
+      ...OptionsStateController.state,
+      isLegalCheckboxChecked: false
+    })
     const element: W3mOnrampFiatSelectView = await fixture(
       html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
     )
@@ -150,6 +173,10 @@ describe('W3mOnrampFiatSelectView', () => {
   })
 
   it('should cleanup subscriptions on disconnect', async () => {
+    vi.spyOn(OptionsStateController, 'state', 'get').mockReturnValue({
+      ...OptionsStateController.state,
+      isLegalCheckboxChecked: false
+    })
     const unsubscribeSpy = vi.fn()
     const subscribeSpy = vi.spyOn(OnRampController, 'subscribe').mockReturnValue(unsubscribeSpy)
     const subscribeKeySpy = vi

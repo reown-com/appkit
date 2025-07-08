@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
 import type { ChainNamespace } from './TypeUtil.js'
 
 export const ConstantsUtil = {
@@ -36,8 +37,16 @@ export const ConstantsUtil = {
     eip155: 'EVM Networks',
     solana: 'Solana',
     polkadot: 'Polkadot',
-    bip122: 'Bitcoin'
+    bip122: 'Bitcoin',
+    cosmos: 'Cosmos'
   } as const satisfies Record<ChainNamespace, string>,
+  ADAPTER_TYPES: {
+    BITCOIN: 'bitcoin',
+    SOLANA: 'solana',
+    WAGMI: 'wagmi',
+    ETHERS: 'ethers',
+    ETHERS5: 'ethers5'
+  } as const satisfies Record<string, string>,
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
     '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -55,8 +64,33 @@ export const ConstantsUtil = {
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
   ],
   HTTP_STATUS_CODES: {
+    SERVER_ERROR: 500,
+    TOO_MANY_REQUESTS: 429,
     SERVICE_UNAVAILABLE: 503,
     FORBIDDEN: 403
   },
-  UNSUPPORTED_NETWORK_NAME: 'Unknown Network'
+  UNSUPPORTED_NETWORK_NAME: 'Unknown Network',
+  SECURE_SITE_SDK_ORIGIN:
+    (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+      : undefined) || 'https://secure.walletconnect.org',
+  REMOTE_FEATURES_ALERTS: {
+    MULTI_WALLET_NOT_ENABLED: {
+      DEFAULT: {
+        shortMessage: 'Multi-Wallet Not Enabled',
+        longMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com.'
+      },
+      CONNECTIONS_HOOK: {
+        shortMessage: 'Multi-Wallet Not Enabled',
+        longMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnections hook.'
+      },
+      CONNECTION_HOOK: {
+        shortMessage: 'Multi-Wallet Not Enabled',
+        longMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnection hook.'
+      }
+    }
+  }
 } as const

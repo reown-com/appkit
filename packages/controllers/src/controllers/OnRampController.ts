@@ -1,17 +1,19 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
-export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
+export type OnRampProviderOption = 'meld'
 
 export type OnRampProvider = {
   label: string
@@ -87,7 +89,7 @@ const defaultState = {
 const state = proxy<OnRampControllerState>(defaultState)
 
 // -- Controller ---------------------------------------- //
-export const OnRampController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: OnRampControllerState) => void) {
@@ -100,16 +102,30 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
-      const currency =
-        ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
-      const address = AccountController.state.address ?? ''
+      const activeChain = ChainController.state.activeChain
+      const currency = activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
+      const address = ChainController.getAccountProp('address', activeChain) ?? ''
       const url = new URL(provider.url)
       url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)
       url.searchParams.append('walletAddress', address)
-      provider.url = url.toString()
+      url.searchParams.append('externalCustomerId', OptionsController.state.projectId)
+      state.selectedProvider = { ...provider, url: url.toString() }
+    } else {
+      state.selectedProvider = provider
     }
-    state.selectedProvider = provider
+  },
+
+  setOnrampProviders(providers: OnRampProviderName[]) {
+    if (Array.isArray(providers) && providers.every(item => typeof item === 'string')) {
+      const validOnramp = providers as string[]
+
+      const newProviders = ONRAMP_PROVIDERS.filter(provider => validOnramp.includes(provider.name))
+
+      state.providers = newProviders as OnRampProvider[]
+    } else {
+      state.providers = []
+    }
   },
 
   setPurchaseCurrency(currency: PurchaseCurrency) {
@@ -121,11 +137,11 @@ export const OnRampController = {
   },
 
   setPurchaseAmount(amount: number) {
-    this.state.purchaseAmount = amount
+    OnRampController.state.purchaseAmount = amount
   },
 
   setPaymentAmount(amount: number) {
-    this.state.paymentAmount = amount
+    OnRampController.state.paymentAmount = amount
   },
 
   async getAvailableCurrencies() {
@@ -164,7 +180,6 @@ export const OnRampController = {
   },
 
   resetState() {
-    state.providers = ONRAMP_PROVIDERS as OnRampProvider[]
     state.selectedProvider = null
     state.error = null
     state.purchaseCurrency = USDC_CURRENCY_DEFAULT
@@ -176,3 +191,6 @@ export const OnRampController = {
     state.quotesLoading = false
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const OnRampController = withErrorBoundary(controller)

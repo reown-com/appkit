@@ -1,2 +1,2 @@
-export { ProviderUtil } from './ProviderUtil.js'
-export type { ProviderStoreUtilState, ProviderType } from './ProviderUtil.js'
+export { ProviderUtil } from '@reown/appkit-utils'
+export type { ProviderStoreUtilState, ProviderType } from '@reown/appkit-utils'

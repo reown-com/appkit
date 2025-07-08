@@ -19,7 +19,7 @@ const cases: Case[] = [
       uri: 'siwx://example.com',
       getNonce: () => Promise.resolve('123')
     },
-    expected: `example.com wants you to sign in with your **blockchain** account:
+    expected: `example.com wants you to sign in with your EVM Networks account:
 0x1234567890abcdef1234567890abcdef12345678
 
 This is a statement
@@ -42,7 +42,7 @@ Issued At: 2024-01-01T00:00:00.000Z`
       notBefore: '2022-01-02T00:00:00Z',
       resources: ['resource1', 'resource2']
     },
-    expected: `example.com wants you to sign in with your **blockchain** account:
+    expected: `example.com wants you to sign in with your EVM Networks account:
 0x1234567890abcdef1234567890abcdef12345678
 
 URI: siwx://example.com
@@ -70,7 +70,7 @@ Resources:
       resources: ['resource1', 'resource2'],
       clearChainIdNamespace: true
     },
-    expected: `example.com wants you to sign in with your **blockchain** account:
+    expected: `example.com wants you to sign in with your EVM Networks account:
 0x1234567890abcdef1234567890abcdef12345678
 
 URI: siwx://example.com

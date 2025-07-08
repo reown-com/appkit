@@ -1,8 +1,10 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { DEFAULT_CHAIN_NAME } from '../shared/constants'
+import { DEFAULT_CHAIN_NAME } from '@reown/appkit-testing'
+
 import { ModalWalletPage } from '../shared/pages/ModalWalletPage'
 import { Email } from '../shared/utils/email'
+import { getNamespaceByNetworkName } from '../shared/utils/namespace'
 import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
@@ -29,7 +31,7 @@ test.beforeAll(async ({ browser }) => {
   }
   const email = new Email(mailsacApiKey)
   const tempEmail = await email.getEmailAddressToUse()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
 })
@@ -40,7 +42,7 @@ test.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 test('it should switch networks (including different namespaces) and sign', async () => {
-  const chains = ['Polygon', 'Solana']
+  const chains = ['Polygon', 'Solana', 'OP Mainnet']
 
   async function processChain(index: number) {
     if (index >= chains.length) {
@@ -53,8 +55,16 @@ test('it should switch networks (including different namespaces) and sign', asyn
     await validator.expectSwitchedNetwork(chainName)
     await page.closeModal()
 
+    // -- Refresh and verify connection persists ----------------------------------
+    await page.page.reload()
+    await validator.expectConnected()
+    await page.openModal()
+    await page.openNetworks()
+    await validator.expectSwitchedNetwork(chainName)
+    await page.closeModal()
+
     // -- Sign ------------------------------------------------------------------
-    await page.sign(chainName === 'Polygon' ? 'eip155' : 'solana')
+    await page.sign(getNamespaceByNetworkName(chainName))
     // For Solana, the chain name on the wallet page is Solana Mainnet
     const chainNameOnWalletPage = chainName === 'Solana' ? 'Solana Mainnet' : chainName
     await validator.expectReceivedSign({ chainName: chainNameOnWalletPage })

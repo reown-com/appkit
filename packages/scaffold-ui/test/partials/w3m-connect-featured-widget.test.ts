@@ -13,6 +13,7 @@ import {
 import { ConstantsUtil } from '@reown/appkit-utils'
 
 import { W3mConnectFeaturedWidget } from '../../src/partials/w3m-connect-featured-widget'
+import { WalletUtil } from '../../src/utils/WalletUtil'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
@@ -53,8 +54,10 @@ describe('W3mConnectFeaturedWidget', () => {
   })
 
   it('should not render anything if there are no featured wallets', async () => {
+    const featured = WalletUtil.filterOutDuplicateWallets(ApiController.state.featured)
+
     const element: W3mConnectFeaturedWidget = await fixture(
-      html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
+      html`<w3m-connect-featured-widget .wallets=${featured}></w3m-connect-featured-widget>`
     )
 
     expect(element.style.display).toBe('none')
@@ -66,8 +69,10 @@ describe('W3mConnectFeaturedWidget', () => {
       featured: [MOCK_WALLET]
     })
 
+    const featured = WalletUtil.filterOutDuplicateWallets(ApiController.state.featured)
+
     const element: W3mConnectFeaturedWidget = await fixture(
-      html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
+      html`<w3m-connect-featured-widget .wallets=${featured}></w3m-connect-featured-widget>`
     )
 
     element.requestUpdate()
@@ -90,8 +95,10 @@ describe('W3mConnectFeaturedWidget', () => {
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(MOCK_CONNECTOR)
     const pushSpy = vi.spyOn(RouterController, 'push')
 
+    const featured = WalletUtil.filterOutDuplicateWallets(ApiController.state.featured)
+
     const element: W3mConnectFeaturedWidget = await fixture(
-      html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
+      html`<w3m-connect-featured-widget .wallets=${featured}></w3m-connect-featured-widget>`
     )
 
     const walletSelector = HelpersUtil.getByTestId(
@@ -111,8 +118,10 @@ describe('W3mConnectFeaturedWidget', () => {
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
     const pushSpy = vi.spyOn(RouterController, 'push')
 
+    const featured = WalletUtil.filterOutDuplicateWallets(ApiController.state.featured)
+
     const element: W3mConnectFeaturedWidget = await fixture(
-      html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
+      html`<w3m-connect-featured-widget .wallets=${featured}></w3m-connect-featured-widget>`
     )
 
     const walletSelector = HelpersUtil.getByTestId(
@@ -134,8 +143,10 @@ describe('W3mConnectFeaturedWidget', () => {
       featured: [unknownWallet]
     })
 
+    const featured = WalletUtil.filterOutDuplicateWallets(ApiController.state.featured)
+
     const element: W3mConnectFeaturedWidget = await fixture(
-      html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
+      html`<w3m-connect-featured-widget .wallets=${featured}></w3m-connect-featured-widget>`
     )
 
     const walletSelector = HelpersUtil.getByTestId(
@@ -151,8 +162,13 @@ describe('W3mConnectFeaturedWidget', () => {
       featured: [MOCK_WALLET]
     })
 
+    const featured = WalletUtil.filterOutDuplicateWallets(ApiController.state.featured)
+
     const element: W3mConnectFeaturedWidget = await fixture(
-      html`<w3m-connect-featured-widget .tabIdx=${1}></w3m-connect-featured-widget>`
+      html`<w3m-connect-featured-widget
+        .wallets=${featured}
+        .tabIdx=${1}
+      ></w3m-connect-featured-widget>`
     )
 
     element.requestUpdate()

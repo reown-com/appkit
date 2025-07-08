@@ -11,8 +11,9 @@ import {
   type Connector,
   ConnectorController,
   CoreHelperUtil,
-  type Features,
   OptionsController,
+  OptionsStateController,
+  type RemoteFeatures,
   RouterController,
   type WalletGuideType
 } from '@reown/appkit-controllers'
@@ -48,18 +49,22 @@ export class W3mConnectView extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
   @state() private enableWallets = OptionsController.state.enableWallets
 
   @state() private noAdapters = ChainController.state.noAdapters
 
   @property() private walletGuide: WalletGuideType = 'get-started'
 
-  @state() private checked = false
+  @state() private checked = OptionsStateController.state.isLegalCheckboxChecked
 
-  @state() private isEmailEnabled = this.features?.email && !ChainController.state.noAdapters
+  @state() private isEmailEnabled = this.remoteFeatures?.email && !ChainController.state.noAdapters
 
   @state() private isSocialEnabled =
-    this.features?.socials && this.features.socials.length > 0 && !ChainController.state.noAdapters
+    this.remoteFeatures?.socials &&
+    this.remoteFeatures.socials.length > 0 &&
+    !ChainController.state.noAdapters
 
   @state() private isAuthEnabled = this.checkIfAuthEnabled(this.connectors)
 
@@ -73,13 +78,18 @@ export class W3mConnectView extends LitElement {
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
         this.isAuthEnabled = this.checkIfAuthEnabled(this.connectors)
       }),
-      OptionsController.subscribeKey('features', val =>
-        this.setEmailAndSocialEnableCheck(val, this.noAdapters)
-      ),
+      OptionsController.subscribeKey('features', val => {
+        this.features = val
+      }),
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
+        this.setEmailAndSocialEnableCheck(this.noAdapters, this.remoteFeatures)
+      }),
       OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val)),
       ChainController.subscribeKey('noAdapters', val =>
-        this.setEmailAndSocialEnableCheck(this.features, val)
-      )
+        this.setEmailAndSocialEnableCheck(val, this.remoteFeatures)
+      ),
+      OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => (this.checked = val))
     )
   }
 
@@ -158,10 +168,11 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private setEmailAndSocialEnableCheck(features: Features | undefined, noAdapters: boolean) {
-    this.isEmailEnabled = features?.email && !noAdapters
-    this.isSocialEnabled = features?.socials && features.socials.length > 0 && !noAdapters
-    this.features = features
+  private setEmailAndSocialEnableCheck(noAdapters: boolean, remoteFeatures?: RemoteFeatures) {
+    this.isEmailEnabled = remoteFeatures?.email && !noAdapters
+    this.isSocialEnabled =
+      remoteFeatures?.socials && remoteFeatures.socials.length > 0 && !noAdapters
+    this.remoteFeatures = remoteFeatures
     this.noAdapters = noAdapters
   }
 
@@ -292,7 +303,7 @@ export class W3mConnectView extends LitElement {
       return null
     }
     // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
-    if ((CoreHelperUtil.isTelegram() || CoreHelperUtil.isSafari()) && CoreHelperUtil.isIos()) {
+    if (CoreHelperUtil.isTelegram() && (CoreHelperUtil.isSafari() || CoreHelperUtil.isIos())) {
       ConnectionController.connectWalletConnect().catch(_e => ({}))
     }
 
@@ -336,12 +347,11 @@ export class W3mConnectView extends LitElement {
       ${this.walletGuide === 'explore' && !ChainController.state.noAdapters
         ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
         : null}
-      <wui-flex flexDirection="column" .padding=${['l', '0', '0', '0']} class=${classMap(classes)}>
-        <w3m-wallet-guide
-          tabIdx=${ifDefined(tabIndex)}
-          walletGuide=${this.walletGuide}
-        ></w3m-wallet-guide>
-      </wui-flex>
+      <w3m-wallet-guide
+        class=${classMap(classes)}
+        tabIdx=${ifDefined(tabIndex)}
+        walletGuide=${this.walletGuide}
+      ></w3m-wallet-guide>
     `
   }
 
@@ -350,10 +360,7 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    return html`<w3m-legal-checkbox
-      @checkboxChange=${this.onCheckboxChange.bind(this)}
-      data-testid="w3m-legal-checkbox"
-    ></w3m-legal-checkbox>`
+    return html`<w3m-legal-checkbox data-testid="w3m-legal-checkbox"></w3m-legal-checkbox>`
   }
 
   private handleConnectListScroll() {
@@ -401,10 +408,6 @@ export class W3mConnectView extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onContinueWalletClick() {
     RouterController.push('ConnectWallets')
-  }
-
-  private onCheckboxChange(event: CustomEvent<string>) {
-    this.checked = Boolean(event.detail)
   }
 }
 

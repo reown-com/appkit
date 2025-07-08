@@ -1,10 +1,11 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 
-import type { Transaction } from '@reown/appkit-common'
+import type { ChainNamespace, Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { AccountController } from './AccountController.js'
+import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
@@ -17,7 +18,6 @@ type TransactionByYearMap = Record<number, TransactionByMonthMap>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
-  coinbaseTransactions: TransactionByYearMap
   transactionsByYear: TransactionByYearMap
   lastNetworkInView: CaipNetworkId | undefined
   loading: boolean
@@ -28,7 +28,6 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
-  coinbaseTransactions: {},
   transactionsByYear: {},
   lastNetworkInView: undefined,
   loading: false,
@@ -37,7 +36,7 @@ const state = proxy<TransactionsControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const TransactionsController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: TransactionsControllerState) => void) {
@@ -48,7 +47,7 @@ export const TransactionsController = {
     state.lastNetworkInView = lastNetworkInView
   },
 
-  async fetchTransactions(accountAddress?: string, onramp?: 'coinbase') {
+  async fetchTransactions(accountAddress?: string) {
     if (!accountAddress) {
       throw new Error("Transactions can't be fetched without an accountAddress")
     }
@@ -59,34 +58,26 @@ export const TransactionsController = {
       const response = await BlockchainApiController.fetchTransactions({
         account: accountAddress,
         cursor: state.next,
-        onramp,
-        // Coinbase transaction history state updates require the latest data
-        cache: onramp === 'coinbase' ? 'no-cache' : undefined,
         chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
       })
 
-      const nonSpamTransactions = this.filterSpamTransactions(response.data)
-      const sameChainTransactions = this.filterByConnectedChain(nonSpamTransactions)
+      const nonSpamTransactions = TransactionsController.filterSpamTransactions(response.data)
+      const sameChainTransactions =
+        TransactionsController.filterByConnectedChain(nonSpamTransactions)
       const filteredTransactions = [...state.transactions, ...sameChainTransactions]
 
       state.loading = false
 
-      if (onramp === 'coinbase') {
-        state.coinbaseTransactions = this.groupTransactionsByYearAndMonth(
-          state.coinbaseTransactions,
-          response.data
-        )
-      } else {
-        state.transactions = filteredTransactions
-        state.transactionsByYear = this.groupTransactionsByYearAndMonth(
-          state.transactionsByYear,
-          sameChainTransactions
-        )
-      }
+      state.transactions = filteredTransactions
+      state.transactionsByYear = TransactionsController.groupTransactionsByYearAndMonth(
+        state.transactionsByYear,
+        sameChainTransactions
+      )
 
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
     } catch (error) {
+      const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
       EventsController.sendEvent({
         type: 'track',
         event: 'ERROR_FETCH_TRANSACTIONS',
@@ -95,7 +86,7 @@ export const TransactionsController = {
           projectId: OptionsController.state.projectId,
           cursor: state.next,
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            getPreferredAccountType(activeChainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -164,3 +155,6 @@ export const TransactionsController = {
     state.next = undefined
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const TransactionsController = withErrorBoundary(controller, 'API_ERROR')

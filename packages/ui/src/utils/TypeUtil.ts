@@ -21,6 +21,7 @@ export type TextType =
   | 'medium-600'
   | 'medium-title-600'
   | 'micro-600'
+  | 'micro-500'
   | 'title-6-600'
   | 'micro-700'
   | 'mini-700'
@@ -180,7 +181,6 @@ export type IconType =
 export type VisualType =
   | 'browser'
   | 'meld'
-  | 'coinbase'
   | 'dao'
   | 'defi'
   | 'defiAlt'
@@ -196,11 +196,9 @@ export type VisualType =
   | 'onrampCard'
   | 'profile'
   | 'system'
-  | 'moonpay'
-  | 'stripe'
-  | 'paypal'
   | 'pencil'
   | 'solana'
+  | 'bitcoin'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
@@ -222,7 +220,7 @@ export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'succes
 
 export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
 
-export type ButtonSize = 'lg' | 'md'
+export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs'
 
 export type ButtonVariant =
   | 'main'

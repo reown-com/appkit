@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import { type AccountControllerState, ChainController } from '@reown/appkit-controllers'
 
 import { AuthProvider } from '../providers/AuthProvider'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
@@ -17,6 +18,13 @@ describe('AuthProvider specific tests', () => {
   })
 
   beforeEach(() => {
+    ChainController.state.chains.set('solana', {
+      accountState: {
+        address: TestConstants.accounts[0].address,
+        currentTab: 0,
+        addressLabels: new Map()
+      }
+    })
     provider = mockW3mFrameProvider()
     getActiveChain = vi.fn(() => TestConstants.chains[0])
     authProvider = new AuthProvider({
@@ -44,6 +52,30 @@ describe('AuthProvider specific tests', () => {
     expect(provider.connect).toHaveBeenCalled()
   })
 
+  it('should respect preferred account type on connect', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      chains: new Map([
+        [
+          'solana',
+          {
+            accountState: {
+              address: TestConstants.accounts[0].address,
+              preferredAccountType: 'eoa'
+            } as AccountControllerState
+          }
+        ]
+      ])
+    })
+
+    await authProvider.connect()
+
+    expect(provider.connect).toHaveBeenCalledWith({
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      preferredAccountType: 'eoa'
+    })
+  })
+
   it('should call disconnect', async () => {
     await authProvider.disconnect()
 
@@ -56,6 +88,7 @@ describe('AuthProvider specific tests', () => {
     await authProvider.signMessage(message)
 
     expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
       method: 'solana_signMessage',
       params: {
         message: '7bWpTW',
@@ -70,6 +103,7 @@ describe('AuthProvider specific tests', () => {
     await authProvider.signTransaction(transaction)
 
     expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
       method: 'solana_signTransaction',
       params: {
         transaction:
@@ -84,6 +118,7 @@ describe('AuthProvider specific tests', () => {
     await authProvider.signTransaction(transaction)
 
     expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
       method: 'solana_signTransaction',
       params: {
         transaction:
@@ -98,6 +133,7 @@ describe('AuthProvider specific tests', () => {
 
     await authProvider.signAndSendTransaction(transaction)
     expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
       method: 'solana_signAndSendTransaction',
       params: {
         transaction:
@@ -110,6 +146,7 @@ describe('AuthProvider specific tests', () => {
       preflightCommitment: 'singleGossip'
     })
     expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
       method: 'solana_signAndSendTransaction',
       params: {
         transaction:
@@ -125,6 +162,7 @@ describe('AuthProvider specific tests', () => {
     await authProvider.signAllTransactions(transactions)
 
     expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
       method: 'solana_signAllTransactions',
       params: {
         transactions: [

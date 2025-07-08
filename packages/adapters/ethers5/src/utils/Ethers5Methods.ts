@@ -1,8 +1,7 @@
 /* eslint-disable max-params */
 import { Contract, ethers } from 'ethers'
 
-import { WcHelpersUtil } from '@reown/appkit'
-import { type CaipNetwork, isReownName } from '@reown/appkit-common'
+import type { Hex } from '@reown/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
@@ -23,7 +22,7 @@ export const Ethers5Methods = {
       params: [hexMessage, address]
     })
 
-    return signature as `0x${string}`
+    return signature as Hex
   },
 
   estimateGas: async (
@@ -84,7 +83,7 @@ export const Ethers5Methods = {
     const txResponse = await signer.sendTransaction(txParams)
     const txReceipt = await txResponse.wait()
 
-    return (txReceipt?.blockHash as `0x${string}`) || null
+    return (txReceipt?.blockHash as Hex) || null
   },
 
   writeContract: async (
@@ -112,38 +111,6 @@ export const Ethers5Methods = {
     throw new Error('Contract method is undefined')
   },
 
-  getEnsAddress: async (value: string, caipNetwork: CaipNetwork) => {
-    try {
-      const chainId = Number(caipNetwork.id)
-      let ensName: string | null = null
-      let wcName: boolean | string = false
-
-      if (isReownName(value)) {
-        wcName = (await WcHelpersUtil.resolveReownName(value)) || false
-      }
-
-      if (chainId === 1) {
-        const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-        ensName = await ensProvider.resolveName(value)
-      }
-
-      return ensName || wcName || false
-    } catch {
-      return false
-    }
-  },
-
-  getEnsAvatar: async (value: string, chainId: number) => {
-    if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-      const avatar = await ensProvider.getAvatar(value)
-
-      return avatar || false
-    }
-
-    return false
-  },
-
   parseWalletCapabilities: (str: string) => {
     try {
       return JSON.parse(str)
@@ -152,6 +119,8 @@ export const Ethers5Methods = {
     }
   },
 
-  parseUnits: (value: string, _: number) => ethers.utils.parseUnits(value, 'gwei').toBigInt(),
+  parseUnits: (value: string, decimals: number) =>
+    ethers.utils.parseUnits(value, decimals).toBigInt(),
+
   formatUnits: ethers.utils.formatUnits
 }

@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 const Dotenv = require('dotenv-webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -12,7 +13,8 @@ module.exports = {
     main: './src/index.tsx',
     inpage: './src/inpage.ts',
     background: './src/background.ts',
-    contentscript: './src/content.ts'
+    contentscript: './src/content.ts',
+    webapp: './src/webapp.tsx'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -39,16 +41,34 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.wasm$/,
+        type: 'webassembly/async'
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    fallback: {
+      vm: require.resolve('vm-browserify'),
+      stream: require.resolve('stream-browserify'),
+      crypto: require.resolve('crypto-browserify'),
+      zlib: require.resolve('browserify-zlib'),
+      'process/browser': require.resolve('process/browser'),
+      fs: false
+    }
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser'
+    }),
     function () {
       this.hooks.afterEnvironment.tap('JSDOM', () => {
-        const { window } = new JSDOM('')
+        const { window } = new JSDOM('', {
+          url: 'http://localhost'
+        })
 
         global.window = window
         global.document = window.document
@@ -56,6 +76,7 @@ module.exports = {
         global.navigator = window.navigator
         global.customElements = window.customElements
         global.CSSStyleSheet = window.CSSStyleSheet
+        global.localStorage = window.localStorage
       })
     },
     new Dotenv({
@@ -66,6 +87,11 @@ module.exports = {
       chunks: ['main'],
       template: './src/index.html',
       filename: 'popup.html'
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ['webapp'],
+      template: './src/webapp.html',
+      filename: 'index.html'
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -78,9 +104,14 @@ module.exports = {
     new VanillaExtractPlugin()
   ],
   devServer: {
-    contentBase: path.join(__dirname, 'src'),
+    static: {
+      directory: path.join(__dirname, 'src')
+    },
     compress: true,
     port: 9000,
     hot: true
+  },
+  experiments: {
+    asyncWebAssembly: true
   }
 }

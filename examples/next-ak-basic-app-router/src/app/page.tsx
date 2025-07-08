@@ -20,7 +20,7 @@ export default function Home() {
         <img src="/appkit-logo.png" alt="Reown" width="150" />
       </div>
 
-      <h1 className="page-title">Next.js App Router AppKit Basic Example</h1>
+      <h1 className="page-title">Next.js App Router AppKit Core Example</h1>
 
       <div className="appkit-buttons-container">
         <appkit-button />

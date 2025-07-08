@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { Provider, RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
-import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 
@@ -18,8 +20,6 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   readonly provider: Provider
   readonly wallet: Wallet
   private requestedChains: CaipNetwork[] = []
-
-  private walletUnsubscribes: (() => void)[] = []
 
   constructor({ wallet, requestedChains }: WalletStandardConnector.ConstructorParams) {
     super()
@@ -65,13 +65,11 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   async connect() {
     const connectFeature = this.getWalletFeature('bitcoin:connect')
     const response = await connectFeature.connect({ purposes: ['payment', 'ordinals'] })
-
     const account = response.accounts[0]
+
     if (!account) {
       throw new Error('No account found')
     }
-
-    this.bindEvents()
 
     return account.address
   }
@@ -81,7 +79,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     const mappedAccounts = this.wallet.accounts
       .map<BitcoinConnector.AccountAddress>(acc => ({
         address: acc.address,
-        purpose: 'payment',
+        purpose: AddressPurpose.Payment,
         publicKey: Buffer.from(acc.publicKey).toString('hex')
       }))
       .filter(acc => {
@@ -97,6 +95,12 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    if (params.protocol) {
+      console.warn(
+        'WalletStandardConnector:signMessage - protocol parameter not supported in WalletStandard:bitcoin - signMessage'
+      )
+    }
+
     const feature = this.getWalletFeature('bitcoin:signMessage')
 
     const account = this.wallet.accounts.find(acc => acc.address === params.address)
@@ -170,8 +174,6 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async disconnect() {
-    this.unbindEvents()
-
     return Promise.resolve()
   }
 
@@ -187,38 +189,6 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     return this.wallet.features[feature] as WalletWithFeatures<
       Record<Name, BitcoinFeatures[Name]>
     >['features'][Name]
-  }
-
-  private bindEvents() {
-    this.unbindEvents()
-
-    try {
-      const feature = this.getWalletFeature('standard:events')
-
-      this.walletUnsubscribes.push(
-        feature.on('change', data => {
-          if ('accounts' in data && data.accounts) {
-            if (data.accounts.length === 0) {
-              this.emit('disconnect')
-            } else {
-              this.emit(
-                'accountsChanged',
-                data.accounts.map(acc => acc.address)
-              )
-            }
-          }
-        })
-      )
-    } catch {
-      console.warn(
-        `WalletStandardConnector:bindEvents - wallet provider "${this.name}" does not support events`
-      )
-    }
-  }
-
-  private unbindEvents() {
-    this.walletUnsubscribes.forEach(unsubscribe => unsubscribe())
-    this.walletUnsubscribes = []
   }
 
   public static watchWallets({
@@ -237,6 +207,21 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     callback(...wrapWallets(get()))
 
     return on('register', (...wallets) => callback(...wrapWallets(wallets)))
+  }
+
+  public async switchNetwork(caipNetworkId: string): Promise<void> {
+    const switchFeature = this.wallet.features['bitcoin:switchNetwork'] as
+      | { switchNetwork: (caipNetworkId: string) => Promise<void> }
+      | undefined
+
+    if (switchFeature && typeof switchFeature.switchNetwork === 'function') {
+      await switchFeature.switchNetwork(caipNetworkId)
+      this.emit('change', { accounts: this.wallet.accounts })
+
+      return
+    }
+
+    throw new Error(`${this.name} wallet does not support network switching`)
   }
 }
 

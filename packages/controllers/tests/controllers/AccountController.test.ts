@@ -9,9 +9,11 @@ import {
   ChainController,
   type ChainControllerState,
   type ConnectionControllerClient,
+  ConnectorController,
   CoreHelperUtil,
   type NetworkControllerClient,
   SnackController,
+  StorageUtil,
   SwapController
 } from '../../exports/index.js'
 
@@ -31,29 +33,32 @@ const extendedMainnet = {
 const networks = [extendedMainnet] as CaipNetwork[]
 
 // -- Tests --------------------------------------------------------------------
-beforeAll(() => {
-  ChainController.initialize(
-    [
-      {
-        namespace: ConstantsUtil.CHAIN.EVM,
-        caipNetworks: networks
-      }
-    ],
-    networks,
-    {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
-    }
-  )
-})
-
 describe('AccountController', () => {
+  beforeAll(() => {
+    ChainController.initialize(
+      [
+        {
+          namespace: ConstantsUtil.CHAIN.EVM,
+          caipNetworks: networks
+        }
+      ],
+      networks,
+      {
+        connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      }
+    )
+  })
+
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should have valid default state', () => {
     expect(AccountController.state).toEqual({
       smartAccountDeployed: false,
       currentTab: 0,
       tokenBalance: [],
-      allAccounts: [],
       addressLabels: new Map<string, string>()
     })
   })
@@ -111,11 +116,10 @@ describe('AccountController', () => {
       profileImage: undefined,
       addressExplorerUrl: undefined,
       tokenBalance: [],
-      allAccounts: [],
       addressLabels: new Map<string, string>(),
       connectedWalletInfo: undefined,
       farcasterUrl: undefined,
-      preferredAccountType: undefined,
+      preferredAccountType: 'smartAccount',
       socialProvider: undefined,
       status: 'disconnected',
       user: undefined
@@ -191,6 +195,11 @@ describe('AccountController', () => {
 
       const now = Date.now()
       vi.setSystemTime(now)
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
+        ConstantsUtil.CONNECTOR_ID.INJECTED
+      )
+      vi.spyOn(StorageUtil, 'getBalanceCacheForCaipAddress').mockReturnValue(undefined)
+      AccountController.setCaipAddress(caipAddress, chain)
 
       const result = await AccountController.fetchTokenBalance(onError)
 
@@ -216,7 +225,6 @@ describe('AccountController', () => {
 
       const setTokenBalanceSpy = vi.spyOn(AccountController, 'setTokenBalance')
       const setBalancesSpy = vi.spyOn(SwapController, 'setBalances')
-
       const result = await AccountController.fetchTokenBalance()
 
       expect(result).toEqual([
@@ -230,7 +238,7 @@ describe('AccountController', () => {
         ]),
         'eip155'
       )
-      expect(setBalancesSpy).toHaveBeenCalled()
+      expect(setBalancesSpy).not.toHaveBeenCalled()
       expect(AccountController.state.lastRetry).toBeUndefined()
       expect(AccountController.state.balanceLoading).toBe(false)
     })

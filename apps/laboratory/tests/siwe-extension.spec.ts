@@ -40,23 +40,19 @@ extensionTest('it should be authenticated', async () => {
 
 extensionTest('it should require re-authentication when switching networks', async () => {
   await modalPage.switchNetwork('Polygon')
-  await modalValidator.expectOnSignOutEventCalled(true)
   await modalPage.promptSiwe()
   await modalValidator.expectAuthenticated()
 })
 
-extensionTest('it should disconnect when cancel siwe from AppKit', async () => {
+extensionTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
   await modalPage.switchNetwork('Ethereum')
   await modalPage.cancelSiwe()
-  await modalValidator.expectDisconnected()
-  await modalValidator.expectUnauthenticated()
+  await modalValidator.expectNetworkButton('Polygon')
+  await modalValidator.expectAuthenticated()
 })
 
 extensionTest('it should be authenticated after connecting and refreshing the page', async () => {
-  await modalPage.connectToExtension()
-  await modalPage.promptSiwe()
   await modalValidator.expectConnected()
-  // Reload the page
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalValidator.expectAuthenticated()
@@ -65,6 +61,14 @@ extensionTest('it should be authenticated after connecting and refreshing the pa
 
 extensionTest('it should be unauthenticated after disconnecting', async () => {
   await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+  await modalValidator.expectUnauthenticated()
+})
+
+extensionTest('it should be unauthenticated when there is no previous session', async () => {
+  await modalPage.page.reload()
+  await modalPage.connectToExtension()
+  await modalPage.promptSiwe({ cancel: true })
   await modalValidator.expectDisconnected()
   await modalValidator.expectUnauthenticated()
 })

@@ -1,9 +1,9 @@
 import { type BrowserContext, type Page, test } from '@playwright/test'
 
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+
 import { ModalPage } from './shared/pages/ModalPage'
-import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletValidator } from './shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -24,6 +24,7 @@ siweWalletTest.describe.configure({ mode: 'serial' })
 siweWalletTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   browserPage = await context.newPage()
+  await context.clearCookies()
 
   modalPage = new ModalPage(browserPage, library, 'siwe')
   walletPage = new WalletPage(await context.newPage())
@@ -48,25 +49,20 @@ siweWalletTest('it should be authenticated', async () => {
 
 siweWalletTest('it should require re-authentication when switching networks', async () => {
   await modalPage.switchNetwork('Polygon')
-  await modalValidator.expectUnauthenticated()
-  await modalValidator.expectOnSignOutEventCalled(true)
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
 })
 
-siweWalletTest('it should disconnect when cancel siwe from AppKit', async () => {
+siweWalletTest('it should fallback to the last session when cancel siwe from AppKit', async () => {
   await modalPage.switchNetwork('Ethereum')
-  await modalValidator.expectUnauthenticated()
   await modalPage.cancelSiwe()
-  await modalValidator.expectDisconnected()
-  await modalValidator.expectUnauthenticated()
-  await walletValidator.expectSessionCard({ visible: false })
+  await modalValidator.expectNetworkButton('Polygon')
+  await modalValidator.expectAuthenticated()
 })
 
 siweWalletTest('it should be authenticated when refresh page', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
-  await modalValidator.expectConnected()
+  await modalValidator.expectAuthenticated()
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalValidator.expectAuthenticated()

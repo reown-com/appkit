@@ -3,22 +3,23 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   type CaipNetwork,
   type CaipNetworkId,
-  type ChainNamespace,
   ConstantsUtil,
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import { SafeLocalStorage } from '@reown/appkit-common'
 
-import type { NetworkControllerClient } from '../../exports/index.js'
+import {
+  AccountController,
+  CoreHelperUtil,
+  ModalController,
+  type NetworkControllerClient
+} from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
-import { ConnectionController } from '../../src/controllers/ConnectionController.js'
-import { EventsController } from '../../src/controllers/EventsController.js'
-import { RouterController } from '../../src/controllers/RouterController.js'
-import { StorageUtil } from '../../src/utils/StorageUtil.js'
+import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUtil.js'
 
 // -- Setup --------------------------------------------------------------------
-const chainNamespace = 'eip155' as ChainNamespace
+const chainNamespace = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
 
@@ -110,7 +111,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve(''),
   revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({})
+  walletGetAssets: async () => Promise.resolve({}),
+  updateBalance: () => Promise.resolve()
 }
 
 const networkControllerClient: NetworkControllerClient = {
@@ -133,17 +135,18 @@ const solanaAdapter = {
   caipNetworks: [solanaCaipNetwork] as unknown as CaipNetwork[]
 }
 
-beforeEach(() => {
-  vi.resetAllMocks()
-  ChainController.state.noAdapters = false
-  ChainController.initialize([evmAdapter], requestedCaipNetworks, {
-    connectionControllerClient,
-    networkControllerClient
-  })
-})
-
 // -- Tests --------------------------------------------------------------------
 describe('ChainController', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    ChainController.state.noAdapters = false
+    ChainController.initialize([evmAdapter], requestedCaipNetworks, {
+      connectionControllerClient,
+      networkControllerClient
+    })
+  })
+
   it('should be initialized as expected', () => {
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
     expect(ChainController.getConnectionControllerClient()).toEqual(connectionControllerClient)
@@ -235,17 +238,17 @@ describe('ChainController', () => {
     let mock = vi
       .spyOn(ChainController.state, 'activeCaipNetwork', 'get')
       .mockReturnValue(undefined)
-    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+    expect(getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
     mock.mockReturnValue(mainnetCaipNetwork)
-    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+    expect(getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
     mock.mockReturnValue(solanaCaipNetwork)
-    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+    expect(getActiveNetworkTokenAddress()).toEqual(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111111'
     )
 
@@ -256,6 +259,26 @@ describe('ChainController', () => {
     ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chainNamespace)
     const requestedNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
     expect(requestedNetworks).toEqual(requestedCaipNetworks)
+  })
+
+  it('should filter out networks without id values in getRequestedCaipNetworks', () => {
+    const chainNamespace = ConstantsUtil.CHAIN.EVM
+    const networksWithMissingId = [
+      ...requestedCaipNetworks,
+      {
+        caipNetworkId: 'eip155:999',
+        name: 'Test Network',
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
+        nativeCurrency: { name: 'Test', symbol: 'TST', decimals: 18 },
+        rpcUrls: { default: { http: ['https://rpc.test.com/v1/'] } },
+        blockExplorers: { default: { name: 'Test Explorer', url: 'https://explorer.test.io' } }
+      }
+    ]
+
+    ChainController.setRequestedCaipNetworks(networksWithMissingId as CaipNetwork[], chainNamespace)
+    const filteredNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
+    expect(filteredNetworks).toEqual(requestedCaipNetworks)
   })
 
   it('should reset state correctly on resetNetwork()', () => {
@@ -274,28 +297,26 @@ describe('ChainController', () => {
 
   it('should reset account as expected', () => {
     ChainController.resetAccount(chainNamespace)
-    expect(ChainController.getAccountProp('smartAccountDeployed', chainNamespace)).toEqual(false)
-    expect(ChainController.getAccountProp('currentTab', chainNamespace)).toEqual(0)
-    expect(ChainController.getAccountProp('caipAddress', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('address', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('balance', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('balanceSymbol', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('profileName', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('profileImage', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('addressExplorerUrl', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('tokenBalance', chainNamespace)).toEqual([])
-    expect(ChainController.getAccountProp('connectedWalletInfo', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('preferredAccountType', chainNamespace)).toEqual(
-      undefined
-    )
-    expect(ChainController.getAccountProp('status', chainNamespace)).toEqual('disconnected')
-    expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
-    expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
+    expect(AccountController.state.smartAccountDeployed).toEqual(false)
+    expect(AccountController.state.currentTab).toEqual(0)
+    expect(AccountController.state.caipAddress).toEqual(undefined)
+    expect(AccountController.state.address).toEqual(undefined)
+    expect(AccountController.state.balance).toEqual(undefined)
+    expect(AccountController.state.balanceSymbol).toEqual(undefined)
+    expect(AccountController.state.profileName).toEqual(undefined)
+    expect(AccountController.state.profileImage).toEqual(undefined)
+    expect(AccountController.state.addressExplorerUrl).toEqual(undefined)
+    expect(AccountController.state.tokenBalance).toEqual([])
+    expect(AccountController.state.connectedWalletInfo).toEqual(undefined)
+    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
+    expect(AccountController.state.status).toEqual('disconnected')
+    expect(AccountController.state.socialProvider).toEqual(undefined)
+    expect(AccountController.state.socialWindow).toEqual(undefined)
   })
 
   it('Expect modal to close after switching from unsupported network to supported network', async () => {
-    // Mock RouterController.goBack
-    const routerGoBackSpy = vi.spyOn(RouterController, 'goBack')
+    // Mock ModalController.close
+    const modalCloseSpy = vi.spyOn(ModalController, 'close')
 
     // Setup adapter with limited network support
     const limitedEvmAdapter = {
@@ -326,9 +347,9 @@ describe('ChainController', () => {
     ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, limitedEvmAdapter)
     await ChainController.switchActiveNetwork(mainnetCaipNetwork)
 
-    expect(routerGoBackSpy).toHaveBeenCalled()
+    expect(modalCloseSpy).toHaveBeenCalled()
 
-    routerGoBackSpy.mockRestore()
+    modalCloseSpy.mockRestore()
   })
 
   it('should initialize with active network from local storage', () => {
@@ -373,96 +394,5 @@ describe('ChainController', () => {
       networkControllerClient
     })
     expect(ChainController.state.noAdapters).toBe(true)
-  })
-
-  it('should properly handle disconnect', async () => {
-    const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
-    const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
-    const deleteConnectedSocialProviderSpy = vi.spyOn(StorageUtil, 'deleteConnectedSocialProvider')
-    const resetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
-    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
-
-    const connectionController = {
-      ...connectionControllerClient,
-      disconnect: vi.fn()
-    }
-
-    const evmAdapterCustom = {
-      ...evmAdapter,
-      connectionControllerClient: connectionController
-    }
-
-    const solanaAdapterCustom = {
-      ...solanaAdapter,
-      connectionControllerClient: connectionController
-    }
-
-    ChainController.initialize(
-      [evmAdapterCustom, solanaAdapterCustom],
-      [...requestedCaipNetworks, solanaCaipNetwork],
-      {
-        connectionControllerClient: connectionController,
-        networkControllerClient
-      }
-    )
-
-    await ChainController.disconnect()
-
-    expect(connectionController.disconnect).toHaveBeenCalledTimes(2)
-
-    expect(resetAccountSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
-    expect(resetAccountSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
-    expect(resetNetworkSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
-    expect(resetNetworkSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
-
-    expect(deleteConnectedSocialProviderSpy).toHaveBeenCalled()
-    expect(resetWcConnectionSpy).toHaveBeenCalled()
-
-    expect(sendEventSpy).toHaveBeenCalledWith({
-      type: 'track',
-      event: 'DISCONNECT_SUCCESS'
-    })
-
-    resetAccountSpy.mockRestore()
-    resetNetworkSpy.mockRestore()
-    resetWcConnectionSpy.mockRestore()
-    sendEventSpy.mockRestore()
-  })
-
-  it('should handle disconnect errors gracefully', async () => {
-    const evmConnectionController = {
-      disconnect: vi.fn().mockRejectedValue(new Error('EVM disconnect failed'))
-    } as unknown as ConnectionControllerClient
-
-    const customEvmAdapter = {
-      ...evmAdapter,
-      connectionControllerClient: evmConnectionController
-    }
-
-    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-    ChainController.initialize([customEvmAdapter as any], requestedCaipNetworks, {
-      connectionControllerClient: evmConnectionController,
-      networkControllerClient
-    })
-
-    await ChainController.disconnect()
-
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('EVM disconnect failed'))
-    expect(sendEventSpy).toHaveBeenCalledWith({
-      type: 'track',
-      event: 'DISCONNECT_ERROR',
-      properties: {
-        message: expect.stringContaining('EVM disconnect failed')
-      }
-    })
-    expect(sendEventSpy).not.toHaveBeenCalledWith({
-      type: 'track',
-      event: 'DISCONNECT_SUCCESS'
-    })
-
-    sendEventSpy.mockRestore()
-    consoleSpy.mockRestore()
   })
 })

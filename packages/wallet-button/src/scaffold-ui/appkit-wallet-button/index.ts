@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -7,13 +8,14 @@ import {
   ChainController,
   type Connector,
   ConnectorController,
-  ModalController
+  ConnectorControllerUtil,
+  ModalController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-wallet-button'
 
 import { ApiController } from '../../controllers/ApiController.js'
-import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import type { SocialProvider, Wallet } from '../../utils/TypeUtil.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -71,6 +73,10 @@ export class AppKitWalletButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.wallet === 'email') {
+      return this.emailTemplate()
+    }
+
     if (ConstantsUtil.Socials.some(social => social === this.wallet)) {
       return this.socialTemplate()
     }
@@ -107,10 +113,23 @@ export class AppKitWalletButton extends LitElement {
           : ifDefined(walletName)}
         @click=${async () => {
           this.loading = true
-          await ConnectorUtil.connectWalletConnect({
+          await ConnectorControllerUtil.connectWalletConnect({
             walletConnect: this.wallet === 'walletConnect',
-            wallet: walletButton,
-            connector: this.connectors.find(c => c.id === 'walletConnect')
+            connector: this.connectors.find(c => c.id === 'walletConnect'),
+            onOpen(isMobile) {
+              ModalController.open().then(() => {
+                if (isMobile) {
+                  RouterController.replace('AllWallets')
+                } else {
+                  RouterController.replace('ConnectingWalletConnect', {
+                    wallet: walletButton
+                  })
+                }
+              })
+            },
+            onConnect() {
+              RouterController.replace('Connect')
+            }
           })
             .catch(() => {
               // Ignore. We don't want to handle errors if user closes QR modal
@@ -139,7 +158,7 @@ export class AppKitWalletButton extends LitElement {
         @click=${async () => {
           this.loading = true
           this.error = false
-          await ConnectorUtil.connectExternal(connector)
+          await ConnectorControllerUtil.connectExternal(connector)
             .catch(() => (this.error = true))
             .finally(() => (this.loading = false))
         }}
@@ -158,11 +177,46 @@ export class AppKitWalletButton extends LitElement {
       @click=${async () => {
         this.loading = true
         this.error = false
-        await ConnectorUtil.connectSocial(this.wallet as SocialProvider)
+
+        return ConnectorControllerUtil.connectSocial({
+          social: this.wallet as SocialProvider,
+          onOpenFarcaster() {
+            ModalController.open({ view: 'ConnectingFarcaster' })
+          },
+          onConnect() {
+            RouterController.push('Connect')
+          }
+        })
           .catch(() => (this.error = true))
           .finally(() => (this.loading = false))
       }}
       .icon=${this.wallet}
+      ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
+      ?loading=${this.loading || this.modalLoading}
+      ?error=${this.error}
+    ></wui-wallet-button>`
+  }
+
+  private emailTemplate() {
+    return html`<wui-wallet-button
+      data-testid="apkt-wallet-button-email"
+      name=${this.modalLoading ? 'Loading...' : 'Email'}
+      @click=${async () => {
+        this.loading = true
+        this.error = false
+        await ConnectorControllerUtil.connectEmail({
+          onOpen() {
+            ModalController.open().then(() => RouterController.push('EmailLogin'))
+          },
+          onConnect() {
+            RouterController.push('Connect')
+          }
+        })
+          .catch(() => (this.error = true))
+          .finally(() => (this.loading = false))
+      }}
+      .icon=${'mail'}
+      .iconSize=${'lg'}
       ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
       ?loading=${this.loading || this.modalLoading}
       ?error=${this.error}

@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
 import { NumberUtil } from '@reown/appkit-common'
-import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-controllers'
+import { RouterController, SendController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -22,10 +22,6 @@ export class W3mInputToken extends LitElement {
   @property({ type: Object }) public token?: Balance
 
   @property({ type: Number }) public sendTokenAmount?: number
-
-  @property({ type: Number }) public gasPriceInUSD?: number
-
-  @property({ type: Number }) public gasPrice?: number
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -122,20 +118,8 @@ export class W3mInputToken extends LitElement {
   }
 
   private onMaxClick() {
-    if (this.token && typeof this.gasPrice !== 'undefined') {
-      const isNetworkToken =
-        this.token.address === undefined ||
-        Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
-          nativeAddress => this.token?.address === nativeAddress
-        )
-
-      const numericGas = NumberUtil.bigNumber(this.gasPrice).div(
-        NumberUtil.bigNumber(10).pow(Number(this.token.quantity.decimals))
-      )
-
-      const maxValue = isNetworkToken
-        ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(numericGas)
-        : NumberUtil.bigNumber(this.token.quantity.numeric)
+    if (this.token) {
+      const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)))
     }

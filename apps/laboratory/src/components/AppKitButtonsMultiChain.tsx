@@ -14,8 +14,12 @@ import { useAppKit, useAppKitAccount, useDisconnect } from '@reown/appkit/react'
 
 export function AppKitButtonsMultiChain() {
   const { open } = useAppKit()
-  const { isConnected } = useAppKitAccount()
   const { disconnect } = useDisconnect()
+  const evmAccount = useAppKitAccount({ namespace: 'eip155' })
+  const solanaAccount = useAppKitAccount({ namespace: 'solana' })
+  const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
+  const isAnyAccountConnected =
+    evmAccount.isConnected || solanaAccount.isConnected || bitcoinAccount.isConnected
 
   function handleConnectToEVM() {
     open({ namespace: 'eip155' })
@@ -76,28 +80,62 @@ export function AppKitButtonsMultiChain() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Hooks Interactions
             </Heading>
-            <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap">
-              <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
-                Open
-              </Button>
+            <Box display="flex" alignItems="center" gap={4} flexWrap="wrap">
+              <Box>
+                <Heading size="xs" textTransform="uppercase" pb="2" color="gray.500">
+                  Open
+                </Heading>
+                <Box display="flex" alignItems="center" gap={4} flexWrap="wrap">
+                  <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
+                    Open
+                  </Button>
+                  <Button data-testid="evm-connect-button" onClick={handleConnectToEVM}>
+                    Open EVM Modal
+                  </Button>
+                  <Button data-testid="solana-connect-button" onClick={handleConnectToSolana}>
+                    Open Solana Modal
+                  </Button>
+                  <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
+                    Open Bitcoin Modal
+                  </Button>
+                </Box>
+              </Box>
 
-              {isConnected ? (
-                <Button data-testid="disconnect-hook-button" onClick={disconnect}>
+              <Box>
+                <Heading size="xs" textTransform="uppercase" pb="2" color="gray.500">
                   Disconnect
-                </Button>
-              ) : null}
-
-              <Button data-testid="evm-connect-button" onClick={handleConnectToEVM}>
-                Open EVM Modal
-              </Button>
-
-              <Button data-testid="solana-connect-button" onClick={handleConnectToSolana}>
-                Open Solana Modal
-              </Button>
-
-              <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
-                Open Bitcoin Modal
-              </Button>
+                </Heading>
+                <Box display="flex" alignItems="center" gap={4} flexWrap="wrap">
+                  <Button
+                    isDisabled={!isAnyAccountConnected}
+                    data-testid="disconnect-hook-button"
+                    onClick={() => disconnect()}
+                  >
+                    Disconnect All
+                  </Button>
+                  <Button
+                    isDisabled={!evmAccount.isConnected}
+                    data-testid="eip155-disconnect-button"
+                    onClick={() => disconnect({ namespace: 'eip155' })}
+                  >
+                    Disconnect EVM
+                  </Button>
+                  <Button
+                    isDisabled={!solanaAccount.isConnected}
+                    data-testid="solana-disconnect-button"
+                    onClick={() => disconnect({ namespace: 'solana' })}
+                  >
+                    Disconnect Solana
+                  </Button>
+                  <Button
+                    isDisabled={!bitcoinAccount.isConnected}
+                    data-testid="bip122-disconnect-button"
+                    onClick={() => disconnect({ namespace: 'bip122' })}
+                  >
+                    Disconnect Bitcoin
+                  </Button>
+                </Box>
+              </Box>
             </Box>
           </Box>
         </Stack>

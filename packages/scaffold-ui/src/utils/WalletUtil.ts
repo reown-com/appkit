@@ -1,10 +1,12 @@
 import {
+  ApiController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
   StorageUtil
 } from '@reown/appkit-controllers'
 import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
@@ -30,7 +32,25 @@ export const WalletUtil = {
       const index = allRDNSs.indexOf('io.metamask.mobile')
       allRDNSs[index] = 'io.metamask'
     }
-    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
+
+    const filtered = wallets.filter(wallet => {
+      // Check RDNS match first
+      if (wallet?.rdns && allRDNSs.includes(String(wallet.rdns))) {
+        return false
+      }
+
+      // Some wallets don't have RDNS, so we need to check if the name matches a connector name
+      if (!wallet?.rdns) {
+        const hasMatchingConnectorName = connectors.some(
+          connector => connector.name === wallet.name
+        )
+        if (hasMatchingConnectorName) {
+          return false
+        }
+      }
+
+      return true
+    })
 
     return filtered
   },
@@ -59,27 +79,61 @@ export const WalletUtil = {
     return uniqueWallets
   },
 
+  /**
+   * Marks wallets as installed based on available connectors and sorts them
+   * according to both installation status and featuredWalletIds order.
+   *
+   * @param wallets - Array of wallets to process
+   * @returns Array of wallets marked as installed and sorted by priority
+   */
   markWalletsAsInstalled(wallets: WcWallet[]) {
     const { connectors } = ConnectorController.state
-    const installedConnectors = connectors
-      .filter(c => c.type === 'ANNOUNCED')
-      .reduce<Record<string, boolean>>((acum, val) => {
-        if (!val.info?.rdns) {
-          return acum
-        }
-        acum[val.info.rdns] = true
+    const { featuredWalletIds } = OptionsController.state
 
-        return acum
+    const installedWalletRdnsMap = connectors
+      .filter(connector => connector.type === 'ANNOUNCED')
+      .reduce<Record<string, boolean>>((rdnsMap, connector) => {
+        if (!connector.info?.rdns) {
+          return rdnsMap
+        }
+        rdnsMap[connector.info.rdns] = true
+
+        return rdnsMap
       }, {})
 
-    const walletsWithInstalled: AppKitWallet[] = wallets.map(wallet => ({
+    // Mark each wallet as installed if its RDNS exists in the installed connectors
+    const walletsWithInstallationStatus: AppKitWallet[] = wallets.map(wallet => ({
       ...wallet,
-      installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
+      installed: Boolean(wallet.rdns) && Boolean(installedWalletRdnsMap[wallet.rdns ?? ''])
     }))
 
-    const sortedWallets = walletsWithInstalled.sort(
-      (a, b) => Number(b.installed) - Number(a.installed)
-    )
+    const sortedWallets = walletsWithInstallationStatus.sort((walletA, walletB) => {
+      const installationComparison = Number(walletB.installed) - Number(walletA.installed)
+      if (installationComparison !== 0) {
+        return installationComparison
+      }
+
+      if (featuredWalletIds?.length) {
+        const walletAFeaturedIndex = featuredWalletIds.indexOf(walletA.id)
+        const walletBFeaturedIndex = featuredWalletIds.indexOf(walletB.id)
+
+        if (walletAFeaturedIndex !== -1 && walletBFeaturedIndex !== -1) {
+          return walletAFeaturedIndex - walletBFeaturedIndex
+        }
+
+        // WalletA is featured, place it first
+        if (walletAFeaturedIndex !== -1) {
+          return -1
+        }
+
+        // WalletB is featured, place it first
+        if (walletBFeaturedIndex !== -1) {
+          return 1
+        }
+      }
+
+      return 0
+    })
 
     return sortedWallets
   },
@@ -93,7 +147,11 @@ export const WalletUtil = {
       return connectMethodOrder
     }
 
-    const { injected, announced } = ConnectorUtil.getConnectorsByType(connectors)
+    const { injected, announced } = ConnectorUtil.getConnectorsByType(
+      connectors,
+      ApiController.state.recommended,
+      ApiController.state.featured
+    )
 
     const shownInjected = injected.filter(ConnectorUtil.showConnector)
     const shownAnnounced = announced.filter(ConnectorUtil.showConnector)
@@ -103,5 +161,17 @@ export const WalletUtil = {
     }
 
     return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
+  },
+  isExcluded(wallet: WcWallet) {
+    const isRDNSExcluded =
+      Boolean(wallet.rdns) && ApiController.state.excludedWallets.some(w => w.rdns === wallet.rdns)
+
+    const isNameExcluded =
+      Boolean(wallet.name) &&
+      ApiController.state.excludedWallets.some(w =>
+        HelpersUtil.isLowerCaseMatch(w.name, wallet.name)
+      )
+
+    return isRDNSExcluded || isNameExcluded
   }
 }

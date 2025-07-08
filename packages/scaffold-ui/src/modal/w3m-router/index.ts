@@ -97,6 +97,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connecting-social-view></w3m-connecting-social-view>`
       case 'Downloads':
         return html`<w3m-downloads-view></w3m-downloads-view>`
+      case 'EmailLogin':
+        return html`<w3m-email-login-view></w3m-email-login-view>`
       case 'EmailVerifyOtp':
         return html`<w3m-email-verify-otp-view></w3m-email-verify-otp-view>`
       case 'EmailVerifyDevice':
@@ -107,16 +109,12 @@ export class W3mRouter extends LitElement {
         return html`<w3m-networks-view></w3m-networks-view>`
       case 'SwitchNetwork':
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
-      case 'Profile':
-        return html`<w3m-profile-view></w3m-profile-view>`
-      case 'SwitchAddress':
-        return html`<w3m-switch-address-view></w3m-switch-address-view>`
+      case 'ProfileWallets':
+        return html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
       case 'Transactions':
         return html`<w3m-transactions-view></w3m-transactions-view>`
       case 'OnRampProviders':
         return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
-      case 'OnRampActivity':
-        return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
       case 'OnRampTokenSelect':
         return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
       case 'OnRampFiatSelect':
@@ -169,6 +167,10 @@ export class W3mRouter extends LitElement {
         return html`<w3m-smart-session-list-view></w3m-smart-session-list-view>`
       case 'SIWXSignMessage':
         return html`<w3m-siwx-sign-message-view></w3m-siwx-sign-message-view>`
+      case 'Pay':
+        return html`<w3m-pay-view></w3m-pay-view>`
+      case 'PayLoading':
+        return html`<w3m-pay-loading-view></w3m-pay-loading-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

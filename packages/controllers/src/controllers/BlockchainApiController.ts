@@ -177,15 +177,19 @@ export const BlockchainApiController = {
   },
 
   async getSupportedNetworks() {
-    const supportedChains = await BlockchainApiController.get<
-      BlockchainApiControllerState['supportedChains']
-    >({
-      path: 'v1/supported-chains'
-    })
+    try {
+      const supportedChains = await BlockchainApiController.get<
+        BlockchainApiControllerState['supportedChains']
+      >({
+        path: 'v1/supported-chains'
+      })
 
-    state.supportedChains = supportedChains
+      state.supportedChains = supportedChains
 
-    return supportedChains
+      return supportedChains
+    } catch {
+      return state.supportedChains
+    }
   },
 
   async fetchIdentity({
@@ -226,7 +230,6 @@ export const BlockchainApiController = {
   async fetchTransactions({
     account,
     cursor,
-    onramp,
     signal,
     cache,
     chainId
@@ -242,7 +245,6 @@ export const BlockchainApiController = {
       path: `/v1/account/${account}/history`,
       params: {
         cursor,
-        onramp,
         chainId
       },
       signal,
@@ -357,7 +359,8 @@ export const BlockchainApiController = {
     amount,
     from,
     to,
-    userAddress
+    userAddress,
+    disableEstimate
   }: BlockchainApiGenerateSwapCalldataRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
@@ -379,7 +382,8 @@ export const BlockchainApiController = {
         projectId: OptionsController.state.projectId,
         from,
         to,
-        userAddress
+        userAddress,
+        disableEstimate
       }
     })
   },
@@ -426,6 +430,7 @@ export const BlockchainApiController = {
     }
     const caipAddress = `${chainId}:${address}`
     const cachedBalance = StorageUtil.getBalanceCacheForCaipAddress(caipAddress)
+
     if (cachedBalance) {
       return cachedBalance
     }
@@ -602,7 +607,6 @@ export const BlockchainApiController = {
     } catch (e) {
       // Mocking response as 1:1 until endpoint is ready
       return {
-        coinbaseFee: { amount, currency: paymentCurrency.id },
         networkFee: { amount, currency: paymentCurrency.id },
         paymentSubtotal: { amount, currency: paymentCurrency.id },
         paymentTotal: { amount, currency: paymentCurrency.id },

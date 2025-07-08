@@ -52,7 +52,7 @@ export function AppKitCoreHooks({ networks }: AppKitCoreHooksProps) {
       </Heading>
       <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap" mb={4}>
         {caipAddress ? (
-          <Button data-testid="disconnect-hook-button" onClick={disconnect}>
+          <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
             Disconnect
           </Button>
         ) : (

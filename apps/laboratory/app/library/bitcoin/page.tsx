@@ -1,13 +1,14 @@
 'use client'
 
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { type CaipNetwork, createAppKit } from '@reown/appkit/react'
+import { type CaipNetwork, type SocialProvider } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
+import { AppKitProvider } from '@/src/context/AppKitContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
-import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const networks = ConstantsUtil.BitcoinNetworks
 
@@ -16,27 +17,33 @@ const bitcoinAdapter = new BitcoinAdapter({
   projectId: ConstantsUtil.ProjectId
 })
 
-const appkit = createAppKit({
+const config = {
   adapters: [bitcoinAdapter],
   networks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    email: false,
-    socials: []
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[]
   },
   metadata: ConstantsUtil.Metadata,
   debug: true
-})
+}
 
-ThemeStore.setModal(appkit)
-
-export default function MultiChainBitcoinAdapterOnly() {
+export default function BitcoinPage() {
   return (
-    <>
+    <AppKitProvider config={config}>
       <AppKitButtons />
+      <AppKitConnections namespace="bip122" />
       <AppKitInfo />
       <BitcoinTests />
-    </>
+    </AppKitProvider>
   )
 }

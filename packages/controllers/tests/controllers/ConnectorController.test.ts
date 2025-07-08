@@ -1,10 +1,11 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 import {
   type AuthConnector,
   ChainController,
+  type ChainControllerState,
   ConnectorController,
   type Metadata,
   OptionsController,
@@ -13,8 +14,11 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../exports/index.js'
+import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 // -- Setup --------------------------------------------------------------------
+const ORIGINAL_HREF = 'https://example.com/path'
+
 const authProvider = {
   syncDappData: (_args: { metadata: Metadata; sdkVersion: SdkVersion; projectId: string }) =>
     Promise.resolve(),
@@ -102,9 +106,19 @@ const zerionConnector = {
 
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+    vi.stubGlobal('window', {
+      location: {
+        href: ORIGINAL_HREF
+      }
+    })
   })
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should have valid default state', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })
@@ -122,6 +136,38 @@ describe('ConnectorController', () => {
         connectors: [walletConnectConnector, walletConnectSolanaConnector]
       }
     ])
+  })
+
+  it('should find connector by active namespace only', () => {
+    const EVM_EXPLORER_ID = 'evm-explorer-id'
+    const SOLANA_EXPLORER_ID = 'solana-explorer-id'
+
+    const evmConnector = {
+      id: 'evm-connector',
+      explorerId: EVM_EXPLORER_ID,
+      type: 'INJECTED',
+      chain: ConstantsUtil.CHAIN.EVM,
+      name: 'EVM Connector'
+    } as const
+
+    const solanaConnector = {
+      id: 'solana-connector',
+      explorerId: SOLANA_EXPLORER_ID,
+      type: 'INJECTED',
+      chain: ConstantsUtil.CHAIN.SOLANA,
+      name: 'Solana Connector'
+    } as const
+
+    ConnectorController.setConnectors([evmConnector, solanaConnector])
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+
+    expect(ConnectorController.getConnector(EVM_EXPLORER_ID, '')).toEqual(evmConnector)
+    expect(ConnectorController.getConnector(SOLANA_EXPLORER_ID, '')).toBeUndefined()
+
+    ChainController.setActiveNamespace(ConstantsUtil.CHAIN.SOLANA)
+
+    expect(ConnectorController.getConnector(SOLANA_EXPLORER_ID, '')).toEqual(solanaConnector)
+    expect(ConnectorController.getConnector(EVM_EXPLORER_ID, '')).toBeUndefined()
   })
 
   it('should update state correctly on setConnectors()', () => {
@@ -300,10 +346,9 @@ describe('ConnectorController', () => {
       id: 'connector',
       name: 'Connector',
       type: 'INJECTED' as const,
-      chain: 'solana' as const
+      chain: ConstantsUtil.CHAIN.SOLANA
     }
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
-
     vi.spyOn(RouterController, 'push')
 
     ConnectorController.selectWalletConnector({ name: 'Connector', id: 'connector' })
@@ -312,6 +357,89 @@ describe('ConnectorController', () => {
       connector: mockConnector
     })
   })
+
+  it('should call mobile wallet util when selecting wallet is Phantom ', () => {
+    const mockConnector = {
+      id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+      name: 'Phantom',
+      type: 'INJECTED' as const,
+      chain: ConstantsUtil.CHAIN.SOLANA
+    }
+    const handleMobileDeeplinkRedirectSpy = vi.spyOn(
+      MobileWalletUtil,
+      'handleMobileDeeplinkRedirect'
+    )
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const encodedRef = encodeURIComponent('https://example.com')
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
+
+    expect(window.location.href).toBe(expectedUrl)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.id,
+      ConstantsUtil.CHAIN.EVM
+    )
+  })
+
+  it('should call mobile wallet util when selecting wallet is Coinbase only on Solana ', () => {
+    const mockConnector = {
+      id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      name: 'Coinbase Wallet',
+      type: 'INJECTED' as const,
+      chain: ConstantsUtil.CHAIN.EVM
+    }
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: ConstantsUtil.CHAIN.SOLANA
+    } as unknown as ChainControllerState)
+    const handleMobileDeeplinkRedirectSpy = vi.spyOn(
+      MobileWalletUtil,
+      'handleMobileDeeplinkRedirect'
+    )
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`
+
+    expect(window.location.href).toBe(expectedUrl)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.id,
+      ConstantsUtil.CHAIN.SOLANA
+    )
+  })
+
+  it('should not call redirect when selected wallet is Coinbase and active chain is not Solana ', () => {
+    const mockConnector = {
+      id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      name: 'Coinbase Wallet',
+      type: 'INJECTED' as const,
+      chain: ConstantsUtil.CHAIN.EVM
+    }
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: ConstantsUtil.CHAIN.EVM
+    } as unknown as ChainControllerState)
+    const handleMobileDeeplinkRedirectSpy = vi.spyOn(
+      MobileWalletUtil,
+      'handleMobileDeeplinkRedirect'
+    )
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
+
+    expect(window.location.href).toBe(ORIGINAL_HREF)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.id,
+      ConstantsUtil.CHAIN.EVM
+    )
+  })
+
   it('should route to ConnectingWalletConnect when selecting wallet if there is not a connector', () => {
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
     vi.spyOn(RouterController, 'push')

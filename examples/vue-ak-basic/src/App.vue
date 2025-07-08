@@ -9,7 +9,7 @@
       <img src="/appkit-logo.png" alt="Reown" width="150" />
     </div>
 
-    <h1 class="page-title">Vue AppKit Basic Example</h1>
+    <h1 class="page-title">Vue AppKit Core Example</h1>
 
     <div class="appkit-buttons-container">
       <appkit-button />
@@ -38,12 +38,9 @@ createAppKit({
   networks,
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: true
-  },
   metadata: {
-    name: 'AppKit AppKit Basic Example',
-    description: 'AppKit AppKit Basic Example',
+    name: 'AppKit AppKit Core Example',
+    description: 'AppKit AppKit Core Example',
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   }
