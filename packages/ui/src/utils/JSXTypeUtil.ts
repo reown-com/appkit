@@ -34,7 +34,6 @@ import type { WuiIconButton } from '../composites/wui-icon-button/index.js'
 import type { WuiIconLink } from '../composites/wui-icon-link/index.js'
 import type { WuiInactiveProfileWalletItem } from '../composites/wui-inactive-profile-wallet-item/index.js'
 import type { WuiInputAmount } from '../composites/wui-input-amount/index.js'
-import type { WuiInputElement } from '../composites/wui-input-element/index.js'
 import type { WuiInputNumeric } from '../composites/wui-input-numeric/index.js'
 import type { WuiInputText } from '../composites/wui-input-text/index.js'
 import type { WuiLink } from '../composites/wui-link/index.js'
@@ -115,7 +114,6 @@ interface AppKitElements {
   'wui-icon-box': CustomElement<WuiIconBox>
   'wui-icon-link': CustomElement<WuiIconLink>
   'wui-input-amount': CustomElement<WuiInputAmount>
-  'wui-input-element': CustomElement<WuiInputElement>
   'wui-input-numeric': CustomElement<WuiInputNumeric>
   'wui-input-text': CustomElement<WuiInputText>
   'wui-link': CustomElement<WuiLink>

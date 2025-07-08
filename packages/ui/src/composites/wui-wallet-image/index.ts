@@ -14,7 +14,7 @@ export class WuiWalletImage extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: 'md' | 'sm' = 'md'
+  @property() public size: 'lg' | 'md' | 'sm' = 'md'
 
   @property() public name = ''
 
@@ -29,7 +29,9 @@ export class WuiWalletImage extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     let borderRadius: BorderRadiusType = '1'
-    if (this.size === 'md') {
+    if (this.size === 'lg') {
+      borderRadius = '4'
+    } else if (this.size === 'md') {
       borderRadius = '2'
     } else if (this.size === 'sm') {
       borderRadius = '1'
