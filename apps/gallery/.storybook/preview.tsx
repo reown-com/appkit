@@ -9,10 +9,7 @@ initializeTheming({})
 const backgroundChangeListener = args => {
   const bgColor = args.globals.backgrounds?.value
   if (bgColor) {
-    const theme = bgColor === '#202020' ? 'dark' : 'light'
-    setColorTheme(theme)
-  } else {
-    setColorTheme('dark')
+    setColorTheme(bgColor)
   }
 }
 
