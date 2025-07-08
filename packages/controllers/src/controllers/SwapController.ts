@@ -736,6 +736,7 @@ const controller = {
       RouterController.pushTransactionStack({
         onSuccess() {
           SnackController.showLoading(approveLimitMessage)
+          RouterController.replace('SwapPreview')
         }
       })
     } else {
