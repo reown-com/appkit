@@ -240,7 +240,6 @@ export async function processSolanaSPLPayment(
 
     const connection = new Connection(rpcUrl, 'confirmed')
 
-    // Create SPL token transaction
     const transaction = await createSPLTokenTransaction({
       provider,
       connection,
@@ -250,19 +249,9 @@ export async function processSolanaSPLPayment(
       decimals
     })
 
-    // Send transaction using provider
     const signature = await provider.sendTransaction(transaction, connection)
 
-    // Wait for transaction confirmation
-    await new Promise<void>(resolve => {
-      const interval = setInterval(async () => {
-        const status = await connection.getSignatureStatus(signature)
-        if (status?.value) {
-          clearInterval(interval)
-          resolve()
-        }
-      }, 1000)
-    })
+    await waitForConfirmation(connection, signature)
 
     return signature
   } catch (error) {
@@ -274,4 +263,19 @@ export async function processSolanaSPLPayment(
       `Solana SPL payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`
     )
   }
+}
+
+async function waitForConfirmation(
+  connection: InstanceType<typeof Connection>,
+  signature: string
+): Promise<void> {
+  return new Promise<void>(resolve => {
+    const interval = setInterval(async () => {
+      const status = await connection.getSignatureStatus(signature)
+      if (status?.value) {
+        clearInterval(interval)
+        resolve()
+      }
+    }, 1000)
+  })
 }
