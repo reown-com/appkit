@@ -18,10 +18,10 @@ export default {
     imageSrc: walletImageSrc,
     tagLabel: 'Recent',
     tagVariant: 'accent',
-    installed: false,
     disabled: false,
     loading: false,
-    showAllWallets: false
+    showAllWallets: false,
+    size: 'md'
   },
   argTypes: {
     tagVariant: {
@@ -30,6 +30,10 @@ export default {
     },
     icon: {
       options: [undefined, ...iconOptions],
+      control: { type: 'select' }
+    },
+    size: {
+      options: ['sm', 'md'],
       control: { type: 'select' }
     },
     installed: {
@@ -55,7 +59,7 @@ export const Default: Component = {
         imageSrc=${ifDefined(args.imageSrc)}
         tagLabel=${ifDefined(args.tagLabel)}
         tagVariant=${ifDefined(args.tagVariant)}
-        ?installed=${args.installed}
+        size=${ifDefined(args.size)}
         ?disabled=${args.disabled}
         ?loading=${args.loading}
         ?showAllWallets=${args.showAllWallets}

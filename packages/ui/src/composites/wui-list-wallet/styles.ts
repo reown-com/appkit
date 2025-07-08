@@ -19,17 +19,23 @@ export default css`
     flex: 1;
   }
 
+  button:hover:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  button:focus-visible:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
+  }
+
   button:disabled {
-    background-color: var(--wui-color-gray-glass-015);
-    color: var(--wui-color-gray-glass-015);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   button:disabled > wui-tag {
     background-color: var(--wui-color-gray-glass-010);
     color: var(--wui-color-fg-300);
-  }
-
-  wui-icon {
-    color: var(--wui-color-fg-200) !important;
   }
 `

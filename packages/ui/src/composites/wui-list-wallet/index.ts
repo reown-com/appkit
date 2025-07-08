@@ -34,8 +34,6 @@ export class WuiListWallet extends LitElement {
 
   @property() public tabIdx?: number = undefined
 
-  @property({ type: Boolean }) public installed = false
-
   @property({ type: Boolean }) public disabled = false
 
   @property({ type: Boolean }) public showAllWallets = false
@@ -74,7 +72,6 @@ export class WuiListWallet extends LitElement {
         size=${ifDefined(this.size === 'sm' ? 'sm' : 'md')}
         imageSrc=${this.imageSrc}
         name=${this.name}
-        .installed=${this.installed}
       ></wui-wallet-image>`
     } else if (!this.showAllWallets && !this.imageSrc) {
       return html`<wui-wallet-image size="sm" name=${this.name}></wui-wallet-image>`
