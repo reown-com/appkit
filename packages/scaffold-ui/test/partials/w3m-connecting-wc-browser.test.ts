@@ -3,7 +3,9 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
+  ChainController,
   ConnectionController,
   type Connector,
   ConnectorController,
@@ -29,6 +31,9 @@ describe('W3mConnectingWcBrowser', () => {
   beforeAll(() => {
     Element.prototype.animate = vi.fn()
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
+      caipNetworkId: 'eip155:1'
+    } as unknown as CaipNetwork)
   })
 
   afterEach(() => {
@@ -68,7 +73,7 @@ describe('W3mConnectingWcBrowser', () => {
     expect(EventsController.sendEvent).toHaveBeenCalledWith({
       type: 'track',
       event: 'CONNECT_SUCCESS',
-      properties: { method: 'browser', name: CONNECTOR.name }
+      properties: { method: 'browser', name: CONNECTOR.name, caipNetworkId: 'eip155:1' }
     })
   })
 

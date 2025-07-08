@@ -4,6 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -216,7 +217,10 @@ export class W3mConnectingFarcasterView extends LitElement {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_SUCCESS',
-            properties: { provider: this.socialProvider }
+            properties: {
+              provider: this.socialProvider,
+              caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+            }
           })
         }
         this.loading = false
