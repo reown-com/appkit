@@ -410,18 +410,6 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private syncFeatures(options: AppKitOptionsWithSdk) {
-    // If pay feature is enabled, disable email and social features
-    if (options.features?.pay) {
-      this.remoteFeatures = {
-        ...this.remoteFeatures,
-        email: false,
-        socials: false
-      }
-      OptionsController.setRemoteFeatures(this.remoteFeatures)
-    }
-  }
-
   protected override async switchCaipNetwork(caipNetwork: CaipNetwork) {
     if (!caipNetwork) {
       return
@@ -529,8 +517,6 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
-
-    this.syncFeatures(options)
 
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
