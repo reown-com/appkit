@@ -261,6 +261,26 @@ describe('ChainController', () => {
     expect(requestedNetworks).toEqual(requestedCaipNetworks)
   })
 
+  it('should filter out networks without id values in getRequestedCaipNetworks', () => {
+    const chainNamespace = ConstantsUtil.CHAIN.EVM
+    const networksWithMissingId = [
+      ...requestedCaipNetworks,
+      {
+        caipNetworkId: 'eip155:999',
+        name: 'Test Network',
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
+        nativeCurrency: { name: 'Test', symbol: 'TST', decimals: 18 },
+        rpcUrls: { default: { http: ['https://rpc.test.com/v1/'] } },
+        blockExplorers: { default: { name: 'Test Explorer', url: 'https://explorer.test.io' } }
+      }
+    ]
+
+    ChainController.setRequestedCaipNetworks(networksWithMissingId as CaipNetwork[], chainNamespace)
+    const filteredNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
+    expect(filteredNetworks).toEqual(requestedCaipNetworks)
+  })
+
   it('should reset state correctly on resetNetwork()', () => {
     const namespace = 'eip155'
     ChainController.resetNetwork(namespace)
