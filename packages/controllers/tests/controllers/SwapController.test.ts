@@ -13,7 +13,6 @@ import {
   ConnectorController,
   type NetworkControllerClient,
   RouterController,
-  SnackController,
   SwapController
 } from '../../exports/index.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
