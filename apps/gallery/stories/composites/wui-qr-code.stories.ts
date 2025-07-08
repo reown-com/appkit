@@ -1,10 +1,9 @@
 import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/src/composites/wui-qr-code'
-import type { WuiQrCode } from '@reown/appkit-ui/src/composites/wui-qr-code'
+import '@reown/appkit-ui/wui-qr-code'
+import type { WuiQrCode } from '@reown/appkit-ui/wui-qr-code'
 
 import { themeOptions, walletImageSrc } from '../../utils/PresetUtils'
 
@@ -23,9 +22,6 @@ export default {
     theme: {
       options: themeOptions,
       control: { type: 'select' }
-    },
-    color: {
-      control: { type: 'color' }
     }
   }
 } as Component
@@ -38,6 +34,5 @@ export const Default: Component = {
       theme=${args.theme}
       uri=${args.uri}
       size=${args.size}
-      color=${ifDefined(args.color)}
     ></wui-qr-code>`
 }

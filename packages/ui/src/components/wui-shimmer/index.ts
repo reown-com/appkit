@@ -17,7 +17,7 @@ export class WuiShimmer extends LitElement {
 
   @property() public height = ''
 
-  @property() public borderRadius: BorderRadiusType = 'm'
+  @property() public borderRadius: BorderRadiusType = '2'
 
   @property() public variant: Variant = 'default'
 

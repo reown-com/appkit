@@ -28,7 +28,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public buttonLabel = ''
 
-  @property() public buttonVariant: ButtonVariant = 'accent'
+  @property() public buttonVariant: ButtonVariant = 'accent-primary'
 
   @property() public imageSrc = ''
 

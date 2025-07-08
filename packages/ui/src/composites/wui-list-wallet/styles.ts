@@ -1,13 +1,17 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
-  button {
-    column-gap: var(--wui-spacing-s);
-    padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
+  :host {
     width: 100%;
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-100);
+  }
+
+  button {
+    column-gap: ${({ spacing }) => spacing[2]};
+    padding: ${({ spacing }) => spacing[3]};
+    width: 100%;
+    background-color: transparent;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
   button > wui-text:nth-child(2) {
@@ -15,17 +19,23 @@ export default css`
     flex: 1;
   }
 
+  button:hover:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  button:focus-visible:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
+  }
+
   button:disabled {
-    background-color: var(--wui-color-gray-glass-015);
-    color: var(--wui-color-gray-glass-015);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   button:disabled > wui-tag {
     background-color: var(--wui-color-gray-glass-010);
     color: var(--wui-color-fg-300);
-  }
-
-  wui-icon {
-    color: var(--wui-color-fg-200) !important;
   }
 `

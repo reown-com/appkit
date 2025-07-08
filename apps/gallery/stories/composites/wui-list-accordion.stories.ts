@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-list-accordion'
-import type { WuiListAccordion } from '@reown/appkit-ui/src/composites/wui-list-accordion'
+import '@reown/appkit-ui/wui-list-accordion'
+import type { WuiListAccordion } from '@reown/appkit-ui/wui-list-accordion'
 
 import '../../components/gallery-container'
 import { signTypedData } from '../../utils/PresetUtils'

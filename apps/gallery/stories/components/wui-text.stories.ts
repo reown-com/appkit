@@ -3,18 +3,19 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/src/components/wui-text'
-import type { WuiText } from '@reown/appkit-ui/src/components/wui-text'
+import '@reown/appkit-ui/wui-text'
+import type { WuiText } from '@reown/appkit-ui/wui-text'
 
-import { colorOptions, textAlignOptions, textOptions } from '../../utils/PresetUtils'
+import { textAlignOptions, textColorOptions, textOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiText>
 
 export default {
-  title: 'Components/wui-text',
+  title: 'Components/Text',
   args: {
-    variant: 'paragraph-500',
-    color: 'fg-100'
+    variant: 'h2-regular-mono',
+    align: 'left',
+    color: 'primary'
   },
   argTypes: {
     variant: {
@@ -22,7 +23,7 @@ export default {
       control: { type: 'select' }
     },
     color: {
-      options: colorOptions,
+      options: textColorOptions,
       control: { type: 'select' }
     },
     align: {
@@ -34,8 +35,8 @@ export default {
 
 export const Default: Component = {
   render: args => html`
-    <wui-text variant=${args.variant} color=${args.color} align=${ifDefined(args.align)}>
-      The fox jumped over the lazy dog
+    <wui-text variant=${args.variant} color=${ifDefined(args.color)} align=${ifDefined(args.align)}>
+      Designed for Ownership
     </wui-text>
   `
 }
@@ -45,7 +46,7 @@ export const LineClamp: Component = {
     <div style="max-width:300px">
       <wui-text
         variant=${args.variant}
-        color=${args.color}
+        color=${ifDefined(args.color)}
         align=${ifDefined(args.align)}
         lineClamp="1"
       >

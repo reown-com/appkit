@@ -35,17 +35,8 @@ function getMatrix(value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCo
 }
 
 export const QrCodeUtil = {
-  generate({
-    uri,
-    size,
-    logoSize,
-    dotColor = '#141414'
-  }: {
-    uri: string
-    size: number
-    logoSize: number
-    dotColor?: string
-  }) {
+  generate(uri: string, size: number, logoSize: number) {
+    const dotColor = '#141414'
     const edgeColor = 'transparent'
     const strokeWidth = 5
     const dots: TemplateResult[] = []
