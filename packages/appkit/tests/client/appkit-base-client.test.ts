@@ -216,20 +216,6 @@ describe('AppKitBaseClient.getCaipNetwork', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
 
-    baseClient = new (class extends AppKitBaseClient {
-      constructor() {
-        super({
-          projectId: 'test-project-id',
-          networks: [mainnet],
-          adapters: [],
-          sdkVersion: 'html-wagmi-1'
-        })
-      }
-
-      async injectModalUi() {}
-      async syncIdentity() {}
-    })()
-
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       activeChain: 'eip155',
@@ -245,6 +231,20 @@ describe('AppKitBaseClient.getCaipNetwork', () => {
         ]
       ]) as Map<ChainNamespace, ChainAdapter>
     })
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
   })
 
   it('should call ChainController.getCaipNetworks when chainNamespace is provided', () => {
