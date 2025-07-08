@@ -230,7 +230,6 @@ export const BlockchainApiController = {
   async fetchTransactions({
     account,
     cursor,
-    onramp,
     signal,
     cache,
     chainId
@@ -246,7 +245,6 @@ export const BlockchainApiController = {
       path: `/v1/account/${account}/history`,
       params: {
         cursor,
-        onramp,
         chainId
       },
       signal,
@@ -609,7 +607,6 @@ export const BlockchainApiController = {
     } catch (e) {
       // Mocking response as 1:1 until endpoint is ready
       return {
-        coinbaseFee: { amount, currency: paymentCurrency.id },
         networkFee: { amount, currency: paymentCurrency.id },
         paymentSubtotal: { amount, currency: paymentCurrency.id },
         paymentTotal: { amount, currency: paymentCurrency.id },

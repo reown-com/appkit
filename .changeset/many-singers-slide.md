@@ -1,10 +1,10 @@
 ---
+'@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -24,4 +24,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Add 127.0.0.1 to the allowlist for localhost IP address support
+Fixes unsyncing issue on initialization if enableReconnect is false
