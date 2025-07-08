@@ -221,8 +221,8 @@ describe('CaipNetworksUtil', () => {
   })
 
   describe('handle network without rpcUrls', () => {
-    it.only('should handle network without rpcUrls field gracefully', () => {
-      const networkWithoutRpcUrls: AppKitNetwork = {
+    it('should handle network without rpcUrls field gracefully', () => {
+      const networkWithoutRpcUrls = {
         id: 123,
         name: 'No RPC Network',
         nativeCurrency: {
@@ -231,7 +231,7 @@ describe('CaipNetworksUtil', () => {
           decimals: 18
         }
         // Note: rpcUrls field is intentionally omitted
-      }
+      } as AppKitNetwork
 
       const result = CaipNetworksUtil.extendCaipNetwork(networkWithoutRpcUrls, {
         customNetworkImageUrls: undefined,

@@ -209,8 +209,24 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
 })
 
 describe('AppKitBaseClient.getCaipNetwork', () => {
+  let baseClient: AppKitBaseClient
+
   beforeEach(() => {
     vi.restoreAllMocks()
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
   })
 
   it('should call ChainController.getCaipNetworks when chainNamespace is provided', () => {

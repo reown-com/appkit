@@ -275,7 +275,7 @@ describe('ChainController', () => {
       }
     ]
 
-    ChainController.setRequestedCaipNetworks(networksWithMissingId, chainNamespace)
+    ChainController.setRequestedCaipNetworks(networksWithMissingId as CaipNetwork[], chainNamespace)
     const filteredNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
 
     expect(filteredNetworks).toEqual(requestedCaipNetworks)
