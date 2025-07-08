@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 
 import { W3mOnRampProviderItem } from '../../src/partials/w3m-onramp-provider-item'
@@ -14,7 +14,7 @@ describe('W3mOnRampProviderItem', () => {
       {
         id: '1',
         name: 'Ethereum',
-        chainNamespace: 'eip155' as ChainNamespace,
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
         caipNetworkId: 'eip155:1',
         nativeCurrency: {
           name: 'Ether',
@@ -29,7 +29,7 @@ describe('W3mOnRampProviderItem', () => {
       {
         id: '137',
         name: 'Polygon',
-        chainNamespace: 'eip155' as ChainNamespace,
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
         caipNetworkId: 'eip155:137',
         nativeCurrency: {
           name: 'MATIC',

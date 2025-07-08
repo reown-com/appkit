@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { type ChainNamespace, DateUtil } from '@reown/appkit-common'
+import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
   ChainController,
@@ -304,7 +304,6 @@ export class W3mActivityList extends LitElement {
   }
 
   private createPaginationObserver() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     const { projectId } = OptionsController.state
 
     this.paginationObserver = new IntersectionObserver(([element]) => {
@@ -318,7 +317,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              getPreferredAccountType(activeChainNamespace) ===
+              getPreferredAccountType(ChainController.state.activeChain) ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })

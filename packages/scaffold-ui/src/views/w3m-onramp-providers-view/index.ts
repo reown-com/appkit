@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -68,8 +67,6 @@ export class W3mOnRampProvidersView extends LitElement {
   }
 
   private onClickProvider(provider: OnRampProvider) {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
     CoreHelperUtil.openHref(
@@ -83,7 +80,7 @@ export class W3mOnRampProvidersView extends LitElement {
       properties: {
         provider: provider.name,
         isSmartAccount:
-          getPreferredAccountType(activeChainNamespace) ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

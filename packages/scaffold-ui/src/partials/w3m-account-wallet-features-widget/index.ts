@@ -331,8 +331,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSwapClick() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     if (
       this.network?.caipNetworkId &&
       !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.caipNetworkId)
@@ -347,7 +345,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         properties: {
           network: this.network?.caipNetworkId || '',
           isSmartAccount:
-            getPreferredAccountType(activeChainNamespace) ===
+            getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -382,15 +380,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSendClick() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     EventsController.sendEvent({
       type: 'track',
       event: 'OPEN_SEND',
       properties: {
         network: this.network?.caipNetworkId || '',
         isSmartAccount:
-          getPreferredAccountType(activeChainNamespace) ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

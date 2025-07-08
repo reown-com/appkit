@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
@@ -158,10 +158,11 @@ export class W3mAccountSettingsView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
-    const namespace = this.network?.chainNamespace as ChainNamespace
+    const namespace = this.network?.chainNamespace
     const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
+
     if (
       !hasNetworkSupport ||
       !authConnector ||
@@ -187,10 +188,10 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private authCardTemplate() {
-    const namespace = this.network?.chainNamespace as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(this.network?.chainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
+
     if (
       !authConnector ||
       connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH ||
@@ -230,8 +231,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private togglePreferredAccountBtnTemplate() {
-    const namespace = this.network?.chainNamespace as ChainNamespace
-
+    const namespace = this.network?.chainNamespace
     const isNetworkEnabled = ChainController.checkIfSmartAccountEnabled()
     const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
@@ -272,9 +272,8 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
-    const namespace = this.network?.chainNamespace as ChainNamespace
+    const namespace = this.network?.chainNamespace
     const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
-
     const accountTypeTarget =
       getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
       !isSmartAccountEnabled
@@ -309,7 +308,7 @@ export class W3mAccountSettingsView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconnecting = true
-      const namespace = this.network?.chainNamespace as ChainNamespace
+      const namespace = this.network?.chainNamespace
       const connectionsByNamespace = ConnectionController.getConnections(namespace)
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]

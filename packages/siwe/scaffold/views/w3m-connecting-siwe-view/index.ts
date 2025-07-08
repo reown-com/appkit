@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -80,8 +79,6 @@ export class W3mConnectingSiweView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async onSign() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     this.isSigning = true
     EventsController.sendEvent({
       event: 'CLICK_SIGN_SIWX_MESSAGE',
@@ -89,7 +86,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          getPreferredAccountType(activeChainNamespace) ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -103,14 +100,14 @@ export class W3mConnectingSiweView extends LitElement {
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           isSmartAccount:
-            getPreferredAccountType(activeChainNamespace) ===
+            getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
       return session
     } catch (error) {
-      const preferredAccountType = getPreferredAccountType(activeChainNamespace)
+      const preferredAccountType = getPreferredAccountType(ChainController.state.activeChain)
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
 
@@ -134,8 +131,6 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onCancel() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     this.isCancelling = true
     const caipAddress = ChainController.state.activeCaipAddress
     if (caipAddress) {
@@ -151,7 +146,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          getPreferredAccountType(activeChainNamespace) ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

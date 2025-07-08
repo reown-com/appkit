@@ -5,7 +5,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   type CaipAddress,
   type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil
+  ConstantsUtil as CommonConstantsUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import {
   ApiController,
@@ -226,12 +227,21 @@ export class W3mModalBase extends LitElement {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const isPrevDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
     const isNextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
+    const sessions = await SIWXUtil.getAllSessions()
+    const isNextAuthenticated =
+      caipAddress && SIWXUtil.getSIWX()
+        ? sessions.some(
+            session =>
+              session.data.accountAddress === ParseUtil.parseCaipAddress(caipAddress)?.address
+          )
+        : true
 
     // When users decline SIWE signature, we should close the modal
     const isDisconnectedInSameNamespace = !isNextConnected && !isSwitchingNamespace
 
     // If user is switching to another namespace and connected in that namespace, we should go back
-    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && isNextConnected
+    const isSwitchingNamespaceAndConnected =
+      isSwitchingNamespace && isNextConnected && isNextAuthenticated
 
     // If user is in profile wallets view, we should not go back or close the modal
     const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'

@@ -1,11 +1,11 @@
 ---
+'@reown/appkit-utils': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
 '@reown/appkit': patch
-'@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
@@ -24,4 +24,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updates Bitcoin adapter's WalletStandardConnector to have switch network functionality from wallet's features
+Upgrades `@solana/web3.js` to latest for high severity dependency issue
