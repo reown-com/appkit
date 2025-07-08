@@ -725,6 +725,11 @@ const controller = {
     }
   },
 
+  onEmbeddedWalletApprovalSuccess() {
+    SnackController.showLoading('Approve limit increase in your wallet')
+    RouterController.replace('SwapPreview')
+  },
+
   // -- Send Transactions --------------------------------- //
   async sendTransactionForApproval(data: TransactionParams) {
     const { fromAddress, isAuthConnector } = SwapController.getParams()
@@ -734,10 +739,7 @@ const controller = {
 
     if (isAuthConnector) {
       RouterController.pushTransactionStack({
-        onSuccess() {
-          SnackController.showLoading(approveLimitMessage)
-          RouterController.replace('SwapPreview')
-        }
+        onSuccess: SwapController.onEmbeddedWalletApprovalSuccess
       })
     } else {
       SnackController.showLoading(approveLimitMessage)
