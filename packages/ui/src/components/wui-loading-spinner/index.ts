@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import { vars } from '../../utils/ThemeHelperUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { SizeType } from '../../utils/TypeUtil.js'
+import type { SizeType, TextColorType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -12,15 +12,27 @@ import styles from './styles.js'
 export class WuiLoadingSpinner extends LitElement {
   public static override styles = [resetStyles, styles]
 
-  @property() public color = vars.colors.white
+  @property() public color: TextColorType = 'primary'
 
   @property() public size: Exclude<SizeType, 'inherit' | 'xs' | 'xxs' | 'mdl'> = 'lg'
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `--local-color: ${
-      this.color === 'inherit' ? 'inherit' : `var(--wui-color-${this.color})`
-    }`
+    const VARS_BY_COLOR = {
+      /* Colors */
+      primary: vars.tokens.theme.textPrimary,
+      secondary: vars.tokens.theme.textSecondary,
+      tertiary: vars.tokens.theme.textTertiary,
+      invert: vars.tokens.theme.textInvert,
+      error: vars.tokens.core.textError,
+      warning: vars.tokens.core.textWarning,
+
+      /* Token colors */
+      'accent-primary': vars.tokens.core.textAccentPrimary
+    }
+    this.style.cssText = `
+      --local-color: ${this.color === 'inherit' ? 'inherit' : VARS_BY_COLOR[this.color]};
+      `
 
     this.dataset['size'] = this.size
 

@@ -5,14 +5,14 @@ import { html } from 'lit'
 import '@reown/appkit-ui/wui-loading-spinner'
 import type { WuiLoadingSpinner } from '@reown/appkit-ui/wui-loading-spinner'
 
-import { colorOptions } from '../../utils/PresetUtils'
+import { textColorOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLoadingSpinner>
 
 export default {
   title: 'Composites/wui-loading-spinner',
   args: {
-    color: 'accent-100',
+    color: 'accent-primary',
     size: 'lg'
   },
   argTypes: {
@@ -21,7 +21,7 @@ export default {
       control: { type: 'select' }
     },
     color: {
-      options: colorOptions,
+      options: textColorOptions,
       control: { type: 'select' }
     }
   }
