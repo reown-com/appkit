@@ -47,7 +47,7 @@ export async function createSPLTokenTransaction({
     throw new Error('Amount must be greater than 0')
   }
 
-  if (decimals < 0 || decimals > 9) {
+  if (decimals < 0) {
     throw new Error('Invalid token decimals')
   }
 
