@@ -69,7 +69,11 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    return html`<a href=${termsConditionsUrl}>Terms of Service</a>`
+    return html`<a 
+      href=${termsConditionsUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+    >Terms of Service</a>`
   }
 
   private privacyTemplate() {
@@ -78,7 +82,11 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    return html`<a href=${privacyPolicyUrl}>Privacy Policy</a>`
+    return html`<a 
+      href=${privacyPolicyUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+    >Privacy Policy</a>`
   }
 
   private reownBrandingTemplate(showOnlyBranding = false) {
