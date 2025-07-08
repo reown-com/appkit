@@ -10,7 +10,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiTab>
 
 export default {
-  title: 'Components/Tab Item',
+  title: 'Composites/wui-tab-item',
   args: {
     icon: 'mobile',
     size: 'md',

@@ -11,7 +11,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiInputText & { showSubmitButton: boolean }>
 
 export default {
-  title: 'Components/Input Text',
+  title: 'Composites/wui-input-text',
   args: {
     placeholder: 'Search wallet',
     icon: 'search',

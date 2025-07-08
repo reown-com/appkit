@@ -10,7 +10,7 @@ import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiIcon>
 
 export default {
-  title: 'Components/Icon',
+  title: 'Components/wui-icon',
   args: {
     size: 'md',
     name: 'copy',

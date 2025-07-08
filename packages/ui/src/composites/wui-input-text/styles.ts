@@ -8,6 +8,7 @@ export default css`
     flex-direction: column;
     gap: ${({ spacing }) => spacing[3]};
     color: ${({ tokens }) => tokens.theme.textPrimary};
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
   }
 
   .wui-input-text-container {
@@ -16,16 +17,13 @@ export default css`
 
   input {
     width: 100%;
-    height: 56px;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     color: inherit;
     background: transparent;
     border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
     caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
-    padding-left: ${({ spacing }) => spacing[4]};
-    padding-right: ${({ spacing }) => spacing[4]};
-    padding-top: ${({ spacing }) => spacing[5]};
-    padding-bottom: ${({ spacing }) => spacing[5]};
+    padding: ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[3]}
+      ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[8]};
     font-size: ${({ textSize }) => textSize.large};
     line-height: ${({ typography }) => typography['lg-regular'].lineHeight};
     letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
@@ -65,7 +63,7 @@ export default css`
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    left: ${({ spacing }) => spacing[4]};
+    left: ${({ spacing }) => spacing[2]};
     color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
@@ -94,16 +92,19 @@ export default css`
     background: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
-  wui-icon.wui-input-text-left-icon + input {
-    padding-left: ${({ spacing }) => spacing[10]};
-  }
-
   input:has(+ .wui-input-text-submit-button) {
     padding-right: ${({ spacing }) => spacing[12]};
   }
 
   input[type='number'] {
     -moz-appearance: textfield;
+  }
+
+  input[type='search']::-webkit-search-decoration,
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-results-button,
+  input[type='search']::-webkit-search-results-decoration {
+    -webkit-appearance: none;
   }
 
   /* -- Keyframes --------------------------------------------------- */

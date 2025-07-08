@@ -11,7 +11,7 @@ import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiButton & { iconLeft?: IconType; iconRight?: IconType }>
 
 export default {
-  title: 'Components/Button',
+  title: 'Composites/wui-button',
   args: {
     size: 'lg',
     variant: 'accent-primary',

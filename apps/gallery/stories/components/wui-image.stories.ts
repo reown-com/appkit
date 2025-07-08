@@ -10,7 +10,7 @@ import { walletImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiImage>
 
 export default {
-  title: 'Components/Image',
+  title: 'Components/wui-image',
   args: {
     src: walletImageSrc,
     alt: 'Image of Rainbow'

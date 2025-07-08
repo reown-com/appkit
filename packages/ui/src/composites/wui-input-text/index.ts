@@ -37,6 +37,7 @@ export class WuiInputText extends LitElement {
 
   @property() public onSubmit?: () => void
 
+  @property() public size: 'sm' | 'md' = 'md'
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <div class="wui-input-text-container">
@@ -52,6 +53,7 @@ export class WuiInputText extends LitElement {
           .value=${this.value || ''}
         />
         ${this.templateSubmitButton()}
+        <slot class="wui-input-text-slot"></slot>
       </div>
       ${this.templateError()} ${this.templateWarning()}`
   }
