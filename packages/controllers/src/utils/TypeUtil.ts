@@ -22,7 +22,6 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
-import type { ConstantsUtil } from './ConstantsUtil.js'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -219,7 +218,6 @@ export interface BlockchainApiIdentityResponse {
 export interface BlockchainApiTransactionsRequest {
   account: string
   cursor?: string
-  onramp?: 'coinbase'
   signal?: AbortSignal
   cache?: RequestCache
   chainId?: string
@@ -1010,7 +1008,6 @@ export type OnrampQuote = {
   paymentTotal: QuoteAmount
   paymentSubtotal: QuoteAmount
   purchaseAmount: QuoteAmount
-  coinbaseFee: QuoteAmount
   networkFee: QuoteAmount
   quoteId: string
 }
@@ -1143,9 +1140,6 @@ export interface Provider {
 }
 
 export type CombinedProvider = W3mFrameProvider & Provider
-
-export type CoinbasePaySDKChainNameValues =
-  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
 
 export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
 
