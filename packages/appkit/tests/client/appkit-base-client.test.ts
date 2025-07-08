@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
+  type ChainAdapter,
   ChainController,
   ConnectionController
 } from '@reown/appkit-controllers'
@@ -227,6 +229,22 @@ describe('AppKitBaseClient.getCaipNetwork', () => {
       async injectModalUi() {}
       async syncIdentity() {}
     })()
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            networkState: {
+              requestedCaipNetworks: [mainnet],
+              approvedCaipNetworkIds: [mainnet.id]
+            }
+          }
+        ]
+      ]) as Map<ChainNamespace, ChainAdapter>
+    })
   })
 
   it('should call ChainController.getCaipNetworks when chainNamespace is provided', () => {
