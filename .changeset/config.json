@@ -3,7 +3,9 @@
   "changelog": ["@changesets/changelog-github", 
   { "repo": "reown-com/appkit" }],
   "commit": false,
-  "fixed": [],
+  "fixed": [[
+    "@reown/appkit-*"
+  ]],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
