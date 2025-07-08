@@ -180,6 +180,7 @@ export const iconOptions: IconType[] = [
   'arrowRight',
   'arrowTop',
   'browser',
+  'bin',
   'checkmark',
   'chevronBottom',
   'chevronLeft',
@@ -204,6 +205,7 @@ export const iconOptions: IconType[] = [
   'google',
   'helpCircle',
   'infoCircle',
+  'lightbulb',
   'mail',
   'mobile',
   'networkPlaceholder',
@@ -239,11 +241,7 @@ export const visualOptions: VisualType[] = [
   'nft',
   'noun',
   'profile',
-  'system',
-  'coinbase',
-  'stripe',
-  'moonpay',
-  'paypal'
+  'system'
 ]
 
 export const logoOptions: LogoType[] = [

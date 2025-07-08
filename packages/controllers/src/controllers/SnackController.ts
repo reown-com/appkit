@@ -35,7 +35,7 @@ const state = proxy<SnackControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const SnackController = {
+const controller = {
   state,
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: SnackControllerState[K]) => void) {
@@ -91,3 +91,5 @@ export const SnackController = {
     }
   }
 }
+
+export const SnackController = controller

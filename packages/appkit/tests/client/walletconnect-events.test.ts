@@ -8,6 +8,7 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
+  mockRemoteFeatures,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -17,15 +18,17 @@ describe('WalletConnect Events', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    mockRemoteFeatures()
   })
 
   describe('chainChanged', () => {
-    it('should call setUnsupportedNetwork', () => {
+    it('should call setUnsupportedNetwork', async () => {
       const appkit = new AppKit({
         ...mockOptions,
         adapters: [],
         universalProvider: mockUniversalProvider as any
       })
+      await appkit.ready()
       const setUnsupportedNetworkSpy = vi.spyOn(appkit as any, 'setUnsupportedNetwork')
       const chainChangedCallback = mockUniversalProvider.on.mock.calls.find(
         ([event]) => event === 'chainChanged'
@@ -40,12 +43,13 @@ describe('WalletConnect Events', () => {
       expect(setUnsupportedNetworkSpy).toHaveBeenCalledWith('unknown_chain_id')
     })
 
-    it('should call setCaipNetwork', () => {
-      new AppKit({
+    it('should call setCaipNetwork', async () => {
+      const appkit = new AppKit({
         ...mockOptions,
         adapters: [],
         universalProvider: mockUniversalProvider as any
       })
+      await appkit.ready()
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
       const chainChangedCallback = mockUniversalProvider.on.mock.calls.find(
@@ -93,11 +97,12 @@ describe('WalletConnect Events', () => {
         .mockReturnValueOnce()
       mockUniversalProvider.on.mockClear()
 
-      new AppKit({
+      const appkit = new AppKit({
         ...mockOptions,
         adapters: [],
         universalProvider: mockUniversalProvider as any
       })
+      await appkit.ready()
 
       const connectCallback = mockUniversalProvider.on.mock.calls.find(
         ([event]) => event === 'connect'

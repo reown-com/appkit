@@ -12,7 +12,12 @@ import {
   type AppKitPayErrorMessage
 } from '../src/types/errors.js'
 import type { Exchange } from '../src/types/exchange.js'
-import type { PayUrlParams, PayUrlResponse, PaymentOptions } from '../src/types/options.js'
+import type {
+  GetExchangesParams,
+  PayUrlParams,
+  PayUrlResponse,
+  PaymentOptions
+} from '../src/types/options.js'
 
 const MINIMUM_POLLING_INTERVAL = 3000
 /**
@@ -74,36 +79,6 @@ interface UsePayParameters {
  *
  * @param {UsePayParameters} [parameters] - Optional configuration for the hook, including success and error callbacks.
  * @returns {UsePayReturn} An object containing the payment state and actions.
- *
- * @example
- * ```tsx
- * import { usePay } from '@reown/appkit-pay/react';
- *
- * function PayButton() {
- *   const { open, isPending, isSuccess, isError, data, error } = usePay({
- *     onSuccess: (result) => console.log('Payment successful:', result),
- *     onError: (err) => console.error('Payment failed:', err),
- *   });
- *
- *   const handlePay = () => {
- *     open({
- *       // Add your payment options here, e.g.:
- *       // paymentAsset: { network: 'eip155:1', recipient: '...', ... },
- *       // redirectUrl: { success: '...', failure: '...' }
- *     });
- *   };
- *
- *   return (
- *     <div>
- *       <button onClick={handlePay} disabled={isPending}>
- *         {isPending ? 'Processing...' : 'Pay Now'}
- *       </button>
- *       {isError && <p style={{ color: 'red' }}>Error: {error?.message}</p>}
- *       {isSuccess && <p style={{ color: 'green' }}>Payment Successful! Result: {JSON.stringify(data)}</p>}
- *     </div>
- *   );
- * }
- * ```
  */
 export function usePay(parameters?: UsePayParameters): UsePayReturn {
   const { onSuccess, onError } = parameters ?? {}
@@ -180,57 +155,35 @@ interface UseAvailableExchangesReturn {
   /** Stores any error encountered during fetching. Null if no error. */
   error: Error | null
   /** Function to manually trigger fetching exchanges. Can optionally take a page number. */
-  fetch: (page?: number) => Promise<void>
+  fetch: (params?: GetExchangesParams) => Promise<void>
 }
 
 /**
  * React hook to fetch available exchanges.
  *
  * @param {object} [options] - Optional configuration for the hook.
- * @param {boolean} [options.fetchOnInit=true] - Whether to fetch exchanges when the hook mounts.
- * @param {number} [options.initialPage] - The initial page number to fetch if `fetchOnInit` is true.
+ * @param {boolean} [options.shouldFetchOnInit=true] - Whether to fetch exchanges when the hook mounts.
+ * @param {number} [options.initialPage] - The initial page number to fetch if `shouldFetchOnInit` is true.
+ * @param {string} [options.asset] - The asset to fetch exchanges for.
+ * @param {number | string} [options.amount] - The amount to fetch exchanges for.
+ * @param {CaipNetworkId} [options.network] - The network to fetch exchanges for.
  * @returns {UseAvailableExchangesReturn} An object containing the exchange data, loading state, error state, and a function to trigger fetching.
- *
- * @example
- * ```tsx
- * import { useAvailableExchanges } from '@reown/appkit-pay/react';
- *
- * function ExchangeList() {
- *   const { data, isLoading, error, fetch } = useAvailableExchanges();
- *
- *   if (isLoading) return <p>Loading exchanges...</p>;
- *   if (error) return <p>Error loading exchanges: {error.message}</p>;
- *
- *   return (
- *     <div>
- *       <button onClick={() => fetch()}>Refresh Exchanges</button>
- *       {data ? (
- *         <ul>
- *           {data.map(exchange => <li key={exchange.id}>{exchange.name}</li>)}
- *         </ul>
- *       ) : (
- *         <p>No exchanges found.</p>
- *       )}
- *     </div>
- *
- *   );
- * }
- * ```
  */
-export function useAvailableExchanges(options?: {
-  isFetchOnInit?: boolean
-  initialPage?: number
-}): UseAvailableExchangesReturn {
-  const { isFetchOnInit = true, initialPage } = options ?? {}
+export function useAvailableExchanges(
+  options?: {
+    shouldFetchOnInit?: boolean
+  } & GetExchangesParams
+): UseAvailableExchangesReturn {
+  const { shouldFetchOnInit = true, page: initialPage, asset, amount, network } = options ?? {}
   const [data, setData] = useState<Exchange[] | null>(null)
-  const [isLoading, setIsLoading] = useState(isFetchOnInit)
+  const [isLoading, setIsLoading] = useState(shouldFetchOnInit)
   const [error, setError] = useState<Error | null>(null)
 
-  const fetchExchanges = useCallback(async (page?: number) => {
+  const fetchExchanges = useCallback(async (params?: GetExchangesParams) => {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await getAvailableExchanges(page)
+      const response = await getAvailableExchanges(params)
       setData(response.exchanges)
     } catch (err) {
       const fetchError =
@@ -243,16 +196,16 @@ export function useAvailableExchanges(options?: {
   }, [])
 
   useEffect(() => {
-    if (isFetchOnInit) {
-      fetchExchanges(initialPage).catch(() => {
+    if (shouldFetchOnInit) {
+      fetchExchanges({ page: initialPage, asset, amount, network }).catch(() => {
         // Error is already handled and set in state by fetchExchanges
       })
     }
-  }, [isFetchOnInit, initialPage])
+  }, [shouldFetchOnInit, initialPage])
 
   const fetch = useCallback(
-    async (page?: number) => {
-      await fetchExchanges(page)
+    async (params?: GetExchangesParams) => {
+      await fetchExchanges(params)
     },
     [fetchExchanges]
   )
@@ -264,36 +217,6 @@ export function useAvailableExchanges(options?: {
  * React hook providing memoized functions for generating and opening pay URLs.
  *
  * @returns {{ getUrl: (exchangeId: string, params: PayUrlParams) => Promise<string>; openUrl: (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) => void; }} An object containing memoized functions `getUrl` and `openUrl`.
- *
- * @example
- * ```tsx
- * import { usePayUrlActions } from '@reown/appkit-pay/react';
- *
- * function PayActionsComponent({ exchangeId, params }) {
- *   const { getUrl, openUrl } = usePayUrlActions();
- *
- *   const handleGenerateLink = async () => {
- *     try {
- *       const url = await getUrl(exchangeId, params);
- *       console.log('Generated Pay URL:', url);
- *       // You could display this URL or use it in an <a> tag
- *     } catch (error) {
- *       console.error('Failed to generate pay URL:', error);
- *     }
- *   };
- *
- *   const handleOpenLink = () => {
- *     openUrl(exchangeId, params, true); // Opens in a new tab
- *   };
- *
- *   return (
- *     <div>
- *       <button onClick={handleGenerateLink}>Generate Pay Link</button>
- *       <button onClick={handleOpenLink}>Open Pay Link in New Tab</button>
- *     </div>
- *   );
- * }
- * ```
  */
 export function usePayUrlActions(): {
   getUrl: (exchangeId: string, params: PayUrlParams) => Promise<PayUrlResponse>
@@ -364,32 +287,6 @@ interface UseExchangeBuyStatusReturn {
  * @param {UseExchangeBuyStatusParameters} params - Parameters including exchangeId, sessionId, and optional polling configuration.
  * @returns {UseExchangeBuyStatusReturn} An object containing the status data, loading state, error state, and a refetch function.
  *
- * @example
- * ```tsx
- * import { useExchangeBuyStatus } from '@reown/appkit-pay/react';
- *
- * function BuyStatusChecker({ exchangeId, sessionId }) {
- *   const { data, isLoading, error, refetch } = useExchangeBuyStatus({
- *     exchangeId,
- *     sessionId,
- *     pollingInterval: 5000, // Poll every 5 seconds
- *     onSuccess: (statusData) => console.log('Status updated:', statusData),
- *     onError: (err) => console.error('Error fetching status:', err),
- *   });
- *
- *   if (isLoading && !data) return <p>Loading initial status...</p>; // Show initial loading indicator
- *   if (error) return <p>Error fetching status: {error.message}</p>;
- *
- *   return (
- *     <div>
- *       <p>Current Status: {data?.status ?? 'Unknown'}</p>
- *       {data?.txHash && <p>Transaction Hash: {data.txHash}</p>}
- *       {isLoading && <p> (Checking status...)</p>}
- *       <button onClick={refetch} disabled={isLoading}>Refresh Status</button>
- *     </div>
- *   );
- * }
- * ```
  */
 export function useExchangeBuyStatus(
   params: UseExchangeBuyStatusParameters

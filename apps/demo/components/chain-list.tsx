@@ -24,7 +24,7 @@ export function ChainList() {
   const { caipAddress } = useAppKitAccount()
   const { enabledChains, enableChain, disableChain } = useAppKitContext()
 
-  const handleChainChange = (chainId: ChainNamespace) => {
+  function handleChainChange(chainId: ChainNamespace) {
     if (enabledChains.includes(chainId)) {
       if (enabledChains.length > 1) {
         disableChain(chainId)

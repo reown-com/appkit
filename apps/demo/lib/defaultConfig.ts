@@ -1,7 +1,8 @@
-import { ConstantsUtil, ThemeMode } from '@reown/appkit-controllers'
+import { ConstantsUtil, type ThemeMode } from '@reown/appkit-controllers'
 
 export const defaultCustomizationConfig = {
   features: ConstantsUtil.DEFAULT_FEATURES,
+  remoteFeatures: {},
   collapseWallets: false,
   enableWallets: true,
   themeMode: 'dark' as ThemeMode,

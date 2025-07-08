@@ -15,7 +15,7 @@ on:
         type: string
       demo-base-url:
         description: 'The AppKit Demo app url'
-        default: 'http://localhost:3003/'
+        default: 'http://localhost:3000/'
         required: false
         type: string
       wallet-url:
@@ -48,6 +48,11 @@ on:
         required: false
         default: '{"shard":[1], "shardTotal":[1]}'
         type: string
+      build_trigger_type:
+        description: 'The type of event that triggered the build (e.g., push, pull_request, merge_group)'
+        required: false
+        default: ''
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -62,6 +67,12 @@ on:
       EIP155_PRIVATE_KEY:
         required: false
       SOLANA_PRIVATE_KEY:
+        required: false
+      BIP122_PRIVATE_KEY:
+        required: false
+      PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID:
+        required: false
+      PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
         required: false
 
 jobs:
@@ -100,7 +111,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/apps/laboratory/out/cache
-            ${{ github.workspace }}/apps/demo/.next/cache
+            ${{ github.workspace }}/apps/demo/out/cache
           # NOTE: apps/browser-extension likely does NOT use .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
           restore-keys: |
@@ -121,6 +132,7 @@ jobs:
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+          BIP122_PRIVATE_KEY: ${{ secrets.BIP122_PRIVATE_KEY }}
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
         working-directory: ./apps/browser-extension/
         run: pnpm build
@@ -130,6 +142,7 @@ jobs:
         run: pnpm build:demo
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           BASE_URL: ${{ inputs.demo-base-url }}
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
 
@@ -145,8 +158,8 @@ jobs:
             turbo/
             packages/*/dist/
             apps/*/dist/
-            apps/*/.next/
-            apps/*/out/
+            apps/demo/out/
+            apps/laboratory/out/
             .turbo/
           retention-days: 1
 
@@ -283,6 +296,18 @@ jobs:
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
 
+      - name: Run Playwright tests for Demo
+        if: matrix.shard == 2
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
+          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
+          BASE_URL: ${{ inputs.demo-base-url }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          CI: true
+        working-directory: ./apps/demo/
+        run: pnpm playwright:test
+
       - name: Run Playwright tests
         env:
           PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
@@ -296,6 +321,7 @@ jobs:
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
+          PLAYWRIGHT_SHARD_SUFFIX: ${{ matrix.shard }} # Pass shard index for unique blob filenames
         working-directory: ./apps/laboratory/
         run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
@@ -311,11 +337,27 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
 
+      - name: List blob reports directory before upload
+        if: always() # Run even if previous steps failed, to see state
+        working-directory: ${{ github.workspace }}/apps/laboratory/
+        run: |
+          echo "Listing contents of playwright-blob-reports in ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/"
+          ls -la playwright-blob-reports/
+        continue-on-error: true # Don't fail the job if ls fails or dir doesn't exist
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report-${{ matrix.shard }}
-          path: ./apps/laboratory/playwright-report/
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/
+          retention-days: 7
+
+      - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
+        uses: actions/upload-artifact@v4
+        if: always() # Ensure it runs even if tests fail to get all blob data
+        with:
+          name: playwright-blob-artifact-shard-${{ matrix.shard }} # New unique artifact name pattern for blobs
+          path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
           retention-days: 7
 
       - name: Verify Cache Dir Exists Before Post Job
@@ -323,3 +365,120 @@ jobs:
           echo "Checking cache directory just before post-job phase:"
           ls -la /tmp/playwright_cache # Use workspace path
         continue-on-error: true # Don't fail the job if ls fails
+
+  merge_reports:
+    needs: ui_tests # Ensures this job runs only after all 'test' (sharded) jobs complete
+    if: always() && inputs.build-and-cache-only == false # Run this job if ui_tests ran (even if it failed), but not if ui_tests was skipped.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      # Download actual artifact in GitHub Actions
+      - name: Download node_modules (GitHub Actions)
+        uses: actions/download-artifact@v4
+        with:
+          name: ui-node-modules
+          path: node_modules # Specify path to download into
+
+      - name: Install dependencies # Install again to link binaries, etc.
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
+        working-directory: ./apps/laboratory/
+        run: pnpm playwright:install-deps
+
+      - name: Download all shard blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports # Directory to download all artifacts into (becomes ${{ github.workspace }}/all-blob-reports)
+          pattern: playwright-blob-artifact-shard-* # Matches all NEW shard blob artifacts
+          merge-multiple: true # Merges contents of all matching artifacts into the 'path' directory
+
+      - name: Verify downloaded blobs (optional debugging)
+        run: ls -R ${{ github.workspace }}/all-blob-reports
+
+      - name: Ensure merged report directory exists
+        run: mkdir -p ${{ github.workspace }}/apps/laboratory/playwright-report/
+
+      - name: Merge Playwright blob reports
+        # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
+        # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards
+        # and to define the output reporters (HTML and JSON).
+        # Output will be in './apps/laboratory/playwright-report/' (relative to working-directory)
+        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
+        working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
+
+      - name: Rename merged JSON report for clarity
+        run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
+        # This step makes the final JSON artifact name more explicit.
+
+      - name: Determine Build Context for S3 Path
+        id: build_context
+        if: inputs.build_trigger_type != ''
+        run: |
+          TRIGGER="${{ inputs.build_trigger_type }}"
+          CONTEXT="unknown-trigger"
+          if [ "$TRIGGER" == "merge_group" ]; then
+            CONTEXT="merge-queue"
+          elif [ "$TRIGGER" == "pull_request" ]; then
+            CONTEXT="pull-request"
+          elif [ "$TRIGGER" == "push" ]; then # Could be push to main or other branches
+            if [ "${{ github.ref_name }}" == "main" ]; then
+              CONTEXT="push-main"
+            else
+              CONTEXT="push-branch-${{ github.ref_name }}"
+            fi
+          fi
+          echo "BUILD_CONTEXT=$CONTEXT" >> $GITHUB_ENV
+          echo "Derived context: $CONTEXT"
+
+      # TODO: Migrate to OIDC
+      - name: Configure AWS Credentials
+        if: inputs.build_trigger_type != '' # Also skip if not uploading
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Upload Merged JSON Report to S3
+        if: inputs.build_trigger_type != '' && always()
+        run: |
+          S3_BUCKET="reown.appkit.e2e.reports"
+          S3_PREFIX="appkit/playwright-results"
+          FILE_NAME="merged-test-results.json"
+          year=$(date +%Y)
+          month=$(date +%m)
+          day=$(date +%d)
+          S3_KEY="${S3_PREFIX}/year=${year}/month=${month}/day=${day}/${{ env.BUILD_CONTEXT }}/${{ github.run_id }}-$(date +%s)-${FILE_NAME}"
+
+          echo "Uploading ${{ github.workspace }}/apps/laboratory/merged-test-results.json to s3://${S3_BUCKET}/${S3_KEY}"
+          aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}
+
+      - name: Upload Merged HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-merged-html-report
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
+          retention-days: 7
+
+      - name: Upload Merged JSON Report (for custom processing)
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-merged-json-report
+          path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
+          retention-days: 7

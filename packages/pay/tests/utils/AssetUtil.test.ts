@@ -35,10 +35,10 @@ describe('AssetUtil', () => {
     })
 
     it('should throw an error for unsupported chain namespace', () => {
-      const caipNetworkId = 'solana:101' as CaipNetworkId
+      const caipNetworkId = 'cosmos:101' as CaipNetworkId
       const asset = 'native'
       expect(() => formatCaip19Asset(caipNetworkId, asset)).toThrow(
-        'Unsupported chain namespace for CAIP-19 formatting: solana'
+        'Unsupported chain namespace for CAIP-19 formatting: cosmos'
       )
     })
   })

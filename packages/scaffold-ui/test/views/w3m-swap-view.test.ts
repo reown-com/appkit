@@ -70,7 +70,8 @@ const mockChainState: ChainControllerState = {
       grantPermissions: vi.fn(),
       revokePermissions: vi.fn(),
       getCapabilities: vi.fn(),
-      walletGetAssets: vi.fn()
+      walletGetAssets: vi.fn(),
+      updateBalance: vi.fn()
     }
   },
   noAdapters: false,

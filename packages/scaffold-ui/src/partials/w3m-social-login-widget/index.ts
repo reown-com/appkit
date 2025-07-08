@@ -6,6 +6,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ChainController,
+  ConnectionController,
   ConnectorController,
   ConstantsUtil,
   OptionsController,
@@ -40,7 +41,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
-  @state() private features = OptionsController.state.features
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
@@ -53,7 +54,7 @@ export class W3mSocialLoginWidget extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('features', val => (this.features = val))
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )
   }
 
@@ -83,10 +84,10 @@ export class W3mSocialLoginWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
     const isCreateWalletPage = this.walletGuide === 'explore'
-    let socials = this.features?.socials
+    let socials = this.remoteFeatures?.socials
 
     if (!socials && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+      socials = ConstantsUtil.DEFAULT_SOCIALS
 
       return this.renderTopViewContent(socials)
     }
@@ -110,7 +111,7 @@ export class W3mSocialLoginWidget extends LitElement {
               }}
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
-              ?disabled=${this.isPwaLoading}
+              ?disabled=${this.isPwaLoading || this.hasConnection()}
             ></wui-logo-select>`
         )}
       </wui-flex>`
@@ -125,17 +126,17 @@ export class W3mSocialLoginWidget extends LitElement {
       align="center"
       name=${`Continue with ${socials[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
-      ?disabled=${this.isPwaLoading}
+      ?disabled=${this.isPwaLoading || this.hasConnection()}
     ></wui-list-social>`
   }
 
   private bottomViewTemplate() {
-    let socials = this.features?.socials
+    let socials = this.remoteFeatures?.socials
     const isCreateWalletPage = this.walletGuide === 'explore'
-    const isSocialDisabled = !this.authConnector || !socials || !socials?.length
+    const isSocialDisabled = !this.authConnector || !socials || socials.length === 0
 
     if (isSocialDisabled && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+      socials = ConstantsUtil.DEFAULT_SOCIALS
     }
 
     if (!socials) {
@@ -158,14 +159,15 @@ export class W3mSocialLoginWidget extends LitElement {
               logo=${social}
               tabIdx=${ifDefined(this.tabIdx)}
               ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
-              ?disabled=${this.isPwaLoading}
+              ?disabled=${this.isPwaLoading || this.hasConnection()}
             ></wui-logo-select>`
         )}
         <wui-logo-select
           logo="more"
           tabIdx=${ifDefined(this.tabIdx)}
           @click=${this.onMoreSocialsClick.bind(this)}
-          ?disabled=${this.isPwaLoading}
+          ?disabled=${this.isPwaLoading || this.hasConnection()}
+          data-testid="social-selector-more"
         ></wui-logo-select>
       </wui-flex>`
     }
@@ -185,7 +187,7 @@ export class W3mSocialLoginWidget extends LitElement {
             logo=${social}
             tabIdx=${ifDefined(this.tabIdx)}
             ?focusable=${this.tabIdx !== undefined && this.tabIdx >= 0}
-            ?disabled=${this.isPwaLoading}
+            ?disabled=${this.isPwaLoading || this.hasConnection()}
           ></wui-logo-select>`
       )}
     </wui-flex>`
@@ -239,6 +241,10 @@ export class W3mSocialLoginWidget extends LitElement {
         this.isPwaLoading = false
       }
     }
+  }
+
+  private hasConnection() {
+    return ConnectionController.hasAnyConnection(CommonConstantsUtil.CONNECTOR_ID.AUTH)
   }
 }
 

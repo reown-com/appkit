@@ -61,11 +61,11 @@ export class W3mConnectingWidget extends LitElement {
 
   @state() private showRetry = false
 
+  @state() protected label?: string | undefined = undefined
+
   @state() protected secondaryBtnLabel? = 'Try again'
 
   @state() protected secondaryLabel = 'Accept connection request in the wallet'
-
-  @state() public buffering = false
 
   @state() protected isLoading = false
 
@@ -84,8 +84,7 @@ export class W3mConnectingWidget extends LitElement {
             this.onConnect?.()
           }
         }),
-        ConnectionController.subscribeKey('wcError', val => (this.error = val)),
-        ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
+        ConnectionController.subscribeKey('wcError', val => (this.error = val))
       ]
     )
     // The uri should be preloaded in the tg ios context so we can safely init as the subscribeKey won't trigger
@@ -105,6 +104,7 @@ export class W3mConnectingWidget extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    ConnectionController.setWcError(false)
     clearTimeout(this.timeout)
   }
 
@@ -117,14 +117,16 @@ export class W3mConnectingWidget extends LitElement {
       ? 'Connection can be declined if a previous request is still active'
       : this.secondaryLabel
 
-    let label = `Continue in ${this.name}`
+    let label = ''
 
-    if (this.buffering) {
-      label = 'Connecting...'
-    }
+    if (this.label) {
+      label = this.label
+    } else {
+      label = `Continue in ${this.name}`
 
-    if (this.error) {
-      label = 'Connection declined'
+      if (this.error) {
+        label = 'Connection declined'
+      }
     }
 
     return html`
@@ -153,7 +155,11 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+          <wui-text
+            align="center"
+            variant="paragraph-500"
+            color=${this.error ? 'error-100' : 'fg-100'}
+          >
             ${label}
           </wui-text>
           <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
@@ -164,7 +170,7 @@ export class W3mConnectingWidget extends LitElement {
               <wui-button
                 variant="accent"
                 size="md"
-                ?disabled=${this.isRetrying || (!this.error && this.buffering) || this.isLoading}
+                ?disabled=${this.isRetrying || this.isLoading}
                 @click=${this.onTryAgain.bind(this)}
                 data-testid="w3m-connecting-widget-secondary-button"
               >
@@ -203,14 +209,12 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   protected onTryAgain() {
-    if (!this.buffering) {
-      ConnectionController.setWcError(false)
-      if (this.onRetry) {
-        this.isRetrying = true
-        this.onRetry?.()
-      } else {
-        this.onConnect?.()
-      }
+    ConnectionController.setWcError(false)
+    if (this.onRetry) {
+      this.isRetrying = true
+      this.onRetry?.()
+    } else {
+      this.onConnect?.()
     }
   }
 

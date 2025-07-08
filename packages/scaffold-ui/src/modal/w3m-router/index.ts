@@ -109,16 +109,12 @@ export class W3mRouter extends LitElement {
         return html`<w3m-networks-view></w3m-networks-view>`
       case 'SwitchNetwork':
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
-      case 'Profile':
-        return html`<w3m-profile-view></w3m-profile-view>`
-      case 'SwitchAddress':
-        return html`<w3m-switch-address-view></w3m-switch-address-view>`
+      case 'ProfileWallets':
+        return html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
       case 'Transactions':
         return html`<w3m-transactions-view></w3m-transactions-view>`
       case 'OnRampProviders':
         return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
-      case 'OnRampActivity':
-        return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
       case 'OnRampTokenSelect':
         return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
       case 'OnRampFiatSelect':

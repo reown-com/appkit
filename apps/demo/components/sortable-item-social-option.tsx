@@ -1,18 +1,18 @@
+// eslint-disable @typescript-eslint/no-explicit-any
 import React from 'react'
 
-import { UniqueIdentifier } from '@dnd-kit/core'
-import { AnimateLayoutChanges, NewIndexGetter, useSortable } from '@dnd-kit/sortable'
+import { type UniqueIdentifier } from '@dnd-kit/core'
+import { type AnimateLayoutChanges, type NewIndexGetter, useSortable } from '@dnd-kit/sortable'
 
-import { SocialProvider } from '@reown/appkit-controllers'
+import { type SocialProvider } from '@reown/appkit-controllers'
 
 import { SocialOptionItem } from './social-option-item'
 
-const defaultInitializer = (index: number) => index
+function defaultInitializer(index: number) {
+  return index
+}
 
-export function createRange<T = number>(
-  length: number,
-  initializer: (index: number) => any = defaultInitializer
-): T[] {
+export function createRange(length: number, initializer = defaultInitializer): number[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
@@ -25,7 +25,9 @@ interface SortableSocialOptionItemProps {
   handle: boolean
   useDragOverlay?: boolean
   onRemove?(id: UniqueIdentifier): void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style(values: any): React.CSSProperties
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderItem?(args: any): React.ReactElement
   onToggleOption?(socialOption: SocialProvider): void
 }
@@ -42,7 +44,6 @@ export function SortableSocialOptionItem({
   onToggleOption
 }: SortableSocialOptionItemProps) {
   const {
-    active,
     attributes,
     isDragging,
     isSorting,

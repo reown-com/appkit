@@ -10,7 +10,9 @@ import { TestConstants } from '../util/TestConstants.js'
 export function mockW3mFrameProvider() {
   const w3mFrame = W3mFrameProviderSingleton.getInstance({
     projectId: 'projectId',
-    abortController: ErrorUtil.EmbeddedWalletAbortController
+    chainId: 1,
+    abortController: ErrorUtil.EmbeddedWalletAbortController,
+    getActiveCaipNetwork: () => TestConstants.chains[0]
   })
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))
@@ -44,7 +46,9 @@ export function mockW3mFrameProvider() {
         return Promise.reject(new Error('not implemented'))
     }
   })
-  w3mFrame.switchNetwork = vi.fn((chainId: string | number) => Promise.resolve({ chainId }))
+  w3mFrame.switchNetwork = vi.fn((args: { chainId: string | number }) =>
+    Promise.resolve({ chainId: args.chainId })
+  )
   w3mFrame.getUser = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.user = mockSession()
 

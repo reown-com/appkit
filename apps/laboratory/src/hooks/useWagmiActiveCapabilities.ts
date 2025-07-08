@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { type Address, type WalletCapabilities } from 'viem'
+import { type Address, type Hex, type WalletCapabilities, toHex } from 'viem'
 import { type Connector, useAccount } from 'wagmi'
 import { type Chain } from 'wagmi/chains'
 
@@ -30,7 +30,7 @@ export function useWagmiAvailableCapabilities({
   const [supported, setSupported] = useState<boolean>(false)
 
   const [availableCapabilities, setAvailableCapabilities] = useState<
-    Record<number, WalletCapabilities> | undefined
+    Record<Hex, WalletCapabilities> | undefined
   >()
 
   const { address, isConnected } = useAppKitAccount()
@@ -54,32 +54,35 @@ export function useWagmiAvailableCapabilities({
     [supportedChains, chain]
   )
 
-  useEffect(() => {
-    if (isConnected && connector && address && chain) {
-      fetchProviderAndAccountCapabilities(address as Address, connector, chain)
-    }
-  }, [connector, address, chain, isConnected])
-
   async function fetchProviderAndAccountCapabilities(
-    connectedAccount: `0x${string}`,
+    connectedAccount: Address,
     connectedConnector: Connector,
     connectedChain: Chain
   ) {
     const connectedProvider = (await connectedConnector.getProvider?.({
       chainId: connectedChain.id
     })) as Provider
+
+    if (!connectedProvider) {
+      return
+    }
+
+    setProvider(connectedProvider)
+
     if (connectedProvider instanceof W3mFrameProvider) {
       const walletCapabilities = await connectedProvider.getCapabilities()
-      setProvider(connectedProvider)
       setAvailableCapabilities(walletCapabilities)
-    } else if (connectedProvider) {
-      setProvider(connectedProvider)
+    } else {
       const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
       setAvailableCapabilities(walletCapabilities)
     }
   }
 
   function isMethodSupported(): boolean {
+    if (!provider) {
+      return false
+    }
+
     if (provider instanceof W3mFrameProvider) {
       const supportedMethods = Object.values(EIP_5792_RPC_METHODS).concat(
         Object.values(EIP_7715_RPC_METHODS)
@@ -92,9 +95,27 @@ export function useWagmiAvailableCapabilities({
   }
 
   useEffect(() => {
-    const isGetCapabilitiesSupported = isMethodSupported()
-    setSupported(isGetCapabilitiesSupported)
-  }, [provider])
+    async function checkConnectionAndFetch() {
+      if (isConnected && connector && address && chain) {
+        await fetchProviderAndAccountCapabilities(address as Address, connector, chain)
+      }
+    }
+
+    checkConnectionAndFetch()
+  }, [connector, address, chain, isConnected])
+
+  useEffect(() => {
+    if (!capability) {
+      setSupported(isMethodSupported())
+
+      return
+    }
+
+    if (chain && availableCapabilities) {
+      const capabilityOnConnectChain = availableCapabilities[toHex(chain.id)]
+      setSupported(Boolean(capabilityOnConnectChain?.[capability] && isMethodSupported()))
+    }
+  }, [chain, availableCapabilities, capability, provider])
 
   return {
     provider,

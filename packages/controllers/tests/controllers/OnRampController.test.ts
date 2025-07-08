@@ -3,8 +3,10 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   ApiController,
   BlockchainApiController,
+  ChainController,
   OnRampController,
   type OnRampProvider,
+  OptionsController,
   type PaymentCurrency,
   type PurchaseCurrency
 } from '../../exports/index.js'
@@ -12,7 +14,7 @@ import {
   USDC_CURRENCY_DEFAULT,
   USD_CURRENCY_DEFAULT
 } from '../../src/controllers/OnRampController.js'
-import { ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
+import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
 
 const purchaseCurrencies: [PurchaseCurrency, ...PurchaseCurrency[]] = [
   { id: 'test-coin', symbol: 'TEST', name: 'Test Coin', networks: [] },
@@ -145,5 +147,69 @@ describe('OnRampController', () => {
     expect(getOnrampQuote).toHaveBeenCalled()
     expect(OnRampController.state.error).toEqual(error.message)
     expect(OnRampController.state.quotesLoading).toEqual(false)
+  })
+
+  it('should set providers if valid names are provided', () => {
+    const validProviderNames = ['coinbase', 'moonpay']
+    OnRampController.setOnrampProviders(validProviderNames as any)
+    expect(OnRampController.state.providers).toEqual([])
+  })
+
+  it('should filter out invalid provider names', () => {
+    const mixedProviderNames = ['meld', 'coinbase', 'invalidProvider', 'moonpay']
+    OnRampController.setOnrampProviders(mixedProviderNames as any)
+    expect(OnRampController.state.providers).toEqual([
+      {
+        feeRange: '1-2%',
+        label: 'Meld.io',
+        name: 'meld',
+        supportedChains: ['eip155', 'solana'],
+        url: 'https://meldcrypto.com'
+      }
+    ])
+  })
+
+  it('should set an empty array if no valid provider names are provided', () => {
+    const invalidProviderNames = ['invalid1', 'invalid2']
+    OnRampController.setOnrampProviders(invalidProviderNames as any)
+    expect(OnRampController.state.providers).toEqual([])
+  })
+
+  it('should set an empty array if an empty array is provided', () => {
+    OnRampController.setOnrampProviders([])
+    expect(OnRampController.state.providers).toEqual([])
+  })
+
+  it('should set an empty array if the input is not an array of strings', () => {
+    OnRampController.setOnrampProviders(null as any)
+    expect(OnRampController.state.providers).toEqual([])
+
+    OnRampController.resetState()
+
+    OnRampController.setOnrampProviders({ provider: 'coinbase' } as any)
+    expect(OnRampController.state.providers).toEqual([])
+
+    OnRampController.resetState()
+
+    OnRampController.setOnrampProviders(['coinbase', 123] as any)
+    expect(OnRampController.state.providers).toEqual([])
+  })
+
+  it('should properly configure meld url', () => {
+    const mockGetAccountProp = vi.spyOn(ChainController, 'getAccountProp').mockReturnValue('0x123')
+    OptionsController.state.projectId = 'test'
+    OnRampController.resetState()
+    const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
+    OnRampController.setSelectedProvider(meldProvider)
+    const resultUrl = new URL(meldProvider.url)
+    resultUrl.searchParams.append('publicKey', MELD_PUBLIC_KEY)
+    resultUrl.searchParams.append('destinationCurrencyCode', 'USDC')
+    resultUrl.searchParams.append('walletAddress', '0x123')
+    resultUrl.searchParams.append('externalCustomerId', 'test')
+
+    expect(mockGetAccountProp).toHaveBeenCalledWith('address', ChainController.state.activeChain)
+    expect(OnRampController.state.selectedProvider?.url).toEqual(resultUrl.toString())
+
+    mockGetAccountProp.mockRestore()
   })
 })

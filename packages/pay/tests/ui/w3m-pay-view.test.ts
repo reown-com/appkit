@@ -13,12 +13,17 @@ import {
 
 import { PayController } from '../../src/controllers/PayController'
 import { W3mPayView } from '../../src/ui/w3m-pay-view'
+import { isPayWithWalletSupported } from '../../src/utils/AssetUtil.js'
 import {
   mockConnectionState,
   mockExchanges,
   mockPaymentAsset,
   mockRequestedCaipNetworks
 } from '../mocks/State'
+
+vi.mock('../../src/utils/AssetUtil.js', () => ({
+  isPayWithWalletSupported: vi.fn()
+}))
 
 describe('W3mPayView', () => {
   beforeAll(() => {
@@ -32,6 +37,8 @@ describe('W3mPayView', () => {
     PayController.state.isLoading = false
     PayController.state.exchanges = []
     PayController.state.paymentAsset = mockPaymentAsset
+    PayController.state.amount = 10
+    PayController.state.recipient = '0x1234567890123456789012345678901234567890'
 
     // Reset AccountController state
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
@@ -57,6 +64,8 @@ describe('W3mPayView', () => {
     vi.spyOn(ConnectionController, 'disconnect').mockImplementation(async () => {})
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
     vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
+
+    vi.mocked(isPayWithWalletSupported).mockReturnValue(true)
   })
 
   test('should render payment header with correct amount and token', async () => {
@@ -68,7 +77,7 @@ describe('W3mPayView', () => {
     const tokenText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-600"]')
     const networkText = element.shadowRoot?.querySelector('wui-text[variant="small-500"]')
 
-    expect(amountText?.textContent).toBe('10000000')
+    expect(amountText?.textContent).toBe('10')
     expect(tokenText?.textContent?.trim()).toBe('USDC')
     expect(networkText?.textContent?.trim()).toBe('on Ethereum')
   })
@@ -251,5 +260,33 @@ describe('W3mPayView', () => {
     await connectedView?.dispatchEvent(new Event('click'))
 
     expect(PayController.handlePayWithWallet).toHaveBeenCalledOnce()
+  })
+
+  test('should render pay with wallet section when network is supported', async () => {
+    vi.mocked(isPayWithWalletSupported).mockReturnValue(true)
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+    await elementUpdated(element)
+
+    const walletPaymentOption = element.shadowRoot?.querySelector(
+      '[data-testid="wallet-payment-option"]'
+    )
+    const separator = element.shadowRoot?.querySelector('wui-separator')
+
+    expect(walletPaymentOption).not.toBeNull()
+    expect(separator).not.toBeNull()
+  })
+
+  test('should not render pay with wallet section when network is not supported', async () => {
+    vi.mocked(isPayWithWalletSupported).mockReturnValue(false)
+    const element = await fixture<W3mPayView>(html`<w3m-pay-view></w3m-pay-view>`)
+    await elementUpdated(element)
+
+    const walletPaymentOption = element.shadowRoot?.querySelector(
+      '[data-testid="wallet-payment-option"]'
+    )
+    const separator = element.shadowRoot?.querySelector('wui-separator')
+
+    expect(walletPaymentOption).toBeNull()
+    expect(separator).toBeNull()
   })
 })

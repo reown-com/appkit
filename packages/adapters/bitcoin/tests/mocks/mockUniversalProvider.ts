@@ -2,9 +2,8 @@ import type { SessionTypes } from '@walletconnect/types'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { vi } from 'vitest'
 
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin } from '@reown/appkit/networks'
-
-import type { BitcoinConnector } from '../../src/utils/BitcoinConnector.js'
 
 export function mockUniversalProvider(
   replaces: Partial<UniversalProvider> = {}
@@ -78,6 +77,7 @@ mockUniversalProvider.mockSession = (
     }
   },
   optionalNamespaces: {},
+  requiredNamespaces: {},
   pairingTopic: '',
   peer: {
     metadata: {
@@ -94,7 +94,6 @@ mockUniversalProvider.mockSession = (
     protocol: '',
     data: undefined
   },
-  requiredNamespaces: {},
   self: {
     metadata: {
       description: '',

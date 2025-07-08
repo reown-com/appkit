@@ -5,7 +5,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   type CaipAddress,
   type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil
+  ConstantsUtil as CommonConstantsUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import {
   ApiController,
@@ -13,6 +14,7 @@ import {
   ConnectorController,
   CoreHelperUtil,
   ModalController,
+  ModalUtil,
   OptionsController,
   RouterController,
   SIWXUtil,
@@ -33,8 +35,7 @@ import styles from './styles.js'
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
 
-@customElement('w3m-modal')
-export class W3mModal extends LitElement {
+export class W3mModalBase extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
@@ -150,12 +151,7 @@ export class W3mModal extends LitElement {
   }
 
   private async handleClose() {
-    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
-    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
-      ModalController.shake()
-    } else {
-      ModalController.close()
-    }
+    await ModalUtil.safeClose()
   }
 
   private initializeTheming() {
@@ -229,18 +225,35 @@ export class W3mModal extends LitElement {
 
   private async onNewAddress(caipAddress?: CaipAddress) {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
+    const isPrevDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const isNextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
+    const sessions = await SIWXUtil.getAllSessions()
+    const isNextAuthenticated =
+      caipAddress && SIWXUtil.getSIWX()
+        ? sessions.some(
+            session =>
+              session.data.accountAddress === ParseUtil.parseCaipAddress(caipAddress)?.address
+          )
+        : true
 
     // When users decline SIWE signature, we should close the modal
-    const isDisconnectedInSameNamespace = !nextConnected && !isSwitchingNamespace
+    const isDisconnectedInSameNamespace = !isNextConnected && !isSwitchingNamespace
 
     // If user is switching to another namespace and connected in that namespace, we should go back
-    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
+    const isSwitchingNamespaceAndConnected =
+      isSwitchingNamespace && isNextConnected && isNextAuthenticated
 
-    if (isDisconnectedInSameNamespace) {
-      ModalController.close()
-    } else if (isSwitchingNamespaceAndConnected) {
-      RouterController.goBack()
+    // If user is in profile wallets view, we should not go back or close the modal
+    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
+
+    if (!isInProfileWalletsView) {
+      if (isDisconnectedInSameNamespace && !this.enableEmbedded) {
+        ModalController.close()
+      } else if (isSwitchingNamespaceAndConnected && !this.enableEmbedded) {
+        RouterController.goBack()
+      } else if (this.enableEmbedded && isPrevDisconnected && isNextConnected) {
+        ModalController.close()
+      }
     }
 
     await SIWXUtil.initializeIfEnabled()
@@ -270,13 +283,21 @@ export class W3mModal extends LitElement {
      * But we don't want to go back because we are already on the connecting external view.
      */
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
+    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
     // Check connection status based on the address state *before* this update cycle potentially finishes
-    const isNotConnected = !this.caipAddress
+    const isNotConnected = !ChainController.getAccountData(nextCaipNetwork?.chainNamespace)
+      ?.caipAddress
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
     const isModalOpen = ModalController.state.open
+
     let shouldGoBack = false
-    if (isModalOpen && !isConnectingExternal) {
+
+    if (this.enableEmbedded && RouterController.state.view === 'SwitchNetwork') {
+      shouldGoBack = true
+    }
+
+    if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {
       if (isNotConnected) {
         /*
          * If not connected at all, changing network doesn't necessarily warrant going back from all views.
@@ -324,8 +345,15 @@ export class W3mModal extends LitElement {
   }
 }
 
+@customElement('w3m-modal')
+export class W3mModal extends W3mModalBase {}
+
+@customElement('appkit-modal')
+export class AppKitModal extends W3mModalBase {}
+
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-modal': W3mModal
+    'appkit-modal': AppKitModal
   }
 }

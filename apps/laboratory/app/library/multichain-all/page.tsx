@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
@@ -12,6 +12,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChain'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
@@ -25,13 +26,13 @@ const queryClient = new QueryClient()
 const networks = ConstantsUtil.AllNetworks
 
 const wagmiAdapter = new WagmiAdapter({
-  ssr: false,
+  ssr: true,
   networks,
   projectId: ConstantsUtil.ProjectId
 })
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter()]
 })
 
 const bitcoinAdapter = new BitcoinAdapter()
@@ -41,10 +42,8 @@ const config = {
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true
-  },
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function Page() {
@@ -54,6 +53,9 @@ export default function Page() {
         <AppKitProvider config={config}>
           <AppKitButtonsMultiChain />
           <AppKitInfoMultiChain />
+          <AppKitConnections namespace="eip155" title="EVM Connections" />
+          <AppKitConnections namespace="solana" title="Solana Connections" />
+          <AppKitConnections namespace="bip122" title="Bitcoin Connections" />
           <AppKitInfo />
           <WagmiTests />
           <SolanaTests />

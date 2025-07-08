@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
@@ -33,17 +33,15 @@ const wagmiAdapter = new WagmiAdapter({
 })
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter()]
 })
 
 const config = {
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   networks,
   defaultNetwork: mainnet,
-  features: {
-    analytics: true
-  },
   metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets,
   siweConfig
 }
 

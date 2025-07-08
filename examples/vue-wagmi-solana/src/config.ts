@@ -52,9 +52,6 @@ export const modal = createAppKit({
   networks,
   projectId,
   themeMode: 'light',
-  features: {
-    analytics: false
-  },
   metadata: {
     name: 'AppKit Vue Example',
     description: 'AppKit Vue Example',

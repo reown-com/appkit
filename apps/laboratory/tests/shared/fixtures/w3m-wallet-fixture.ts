@@ -1,8 +1,8 @@
 /* eslint no-console: 0 */
-import { DEFAULT_SESSION_PARAMS } from '../constants'
-import { WalletPage } from '../pages/WalletPage'
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
+
 import { timeEnd, timeStart } from '../utils/logs'
-import { WalletValidator } from '../validators/WalletValidator'
 import { testM as base, testMultiChainM as multiChain, testMSiwe as siwe } from './w3m-fixture'
 
 // Declare the types of fixtures to use

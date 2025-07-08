@@ -19,6 +19,10 @@ export const colors = [
 export type SdkOption = {
   title: string
   link: string
+  links?: {
+    title: string
+    url: string
+  }[]
   description: string
   randomLinks?: string[]
 }
@@ -183,6 +187,12 @@ export const testingSdkOptions: SdkOption[] = [
     description:
       'All features enabled, with sample wallet links, and randomly using ethers or wagmi',
     randomLinks: ['/library/wagmi-all-internal', '/library/ethers-all-internal']
+  },
+  {
+    title: 'Demo w/ Universal Links',
+    link: '/library/universal-links',
+    description:
+      'All features enabled, and using universal links over deep links for mobile wallets'
   }
 ]
 
@@ -219,9 +229,9 @@ export const bitcoinSdkOptions: SdkOption[] = [
 
 export const siwxSdkOptions: SdkOption[] = [
   {
-    title: 'Cloud Auth SIWX',
-    link: '/library/siwx-cloud-auth',
-    description: 'SIWX configuration using Cloud Auth'
+    title: 'Reown Authentication',
+    link: '/library/reown-authentication',
+    description: 'SIWX configuration using Reown Authentication'
   },
   {
     title: 'Default SIWX',
@@ -236,5 +246,33 @@ export const paySdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/library/pay-default',
     description: 'AppKit Pay with default configuration'
+  }
+]
+
+export const customSdkOptions: SdkOption[] = [
+  {
+    title: 'Exclude Wallet IDs',
+    link: '/flag/exclude-wallet-ids',
+    description: 'AppKit configuration with excluded wallet IDs enabled for Backpack'
+  },
+  {
+    title: 'Enable Reconnect (disabled)',
+    link: '/flag/enable-reconnect/wagmi',
+    links: [
+      {
+        title: 'Wagmi',
+        url: '/flag/enable-reconnect/wagmi'
+      },
+      {
+        title: 'Ethers',
+        url: '/flag/enable-reconnect/ethers'
+      },
+      {
+        title: 'Ethers5',
+        url: '/flag/enable-reconnect/ethers5'
+      }
+    ],
+    description:
+      'AppKit configuration with `enableReconnect` flag set to false to disable reconnect on page load'
   }
 ]
