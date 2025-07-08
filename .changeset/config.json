@@ -4,6 +4,7 @@
   { "repo": "reown-com/appkit" }],
   "commit": false,
   "fixed": [[
+    "@reown/appkit",
     "@reown/appkit-*"
   ]],
   "linked": [],
