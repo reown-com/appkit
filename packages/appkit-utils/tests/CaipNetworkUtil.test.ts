@@ -220,6 +220,29 @@ describe('CaipNetworksUtil', () => {
     })
   })
 
+  describe('handle network without rpcUrls', () => {
+    it.only('should handle network without rpcUrls field gracefully', () => {
+      const networkWithoutRpcUrls: AppKitNetwork = {
+        id: 123,
+        name: 'No RPC Network',
+        nativeCurrency: {
+          name: 'NoRPC',
+          symbol: 'NRPC',
+          decimals: 18
+        }
+        // Note: rpcUrls field is intentionally omitted
+      }
+
+      const result = CaipNetworksUtil.extendCaipNetwork(networkWithoutRpcUrls, {
+        customNetworkImageUrls: undefined,
+        projectId: mockProjectId,
+        customRpcUrls: undefined
+      })
+
+      expect(result.rpcUrls.default.http).toEqual([])
+    })
+  })
+
   describe('extendCaipNetworks', () => {
     it('should extend multiple networks correctly', () => {
       const networks = [mainnet, { ...mainnet, id: 2 }]

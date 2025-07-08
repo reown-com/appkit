@@ -207,3 +207,18 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
     expect(closeSpy).toHaveBeenCalled()
   })
 })
+
+describe('AppKitBaseClient.getCaipNetwork', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('should call ChainController.getCaipNetworks when chainNamespace is provided', () => {
+    const getCaipNetworksSpy = vi.spyOn(ChainController, 'getCaipNetworks')
+    const chainNamespace = 'eip155'
+
+    baseClient.getCaipNetwork(chainNamespace)
+
+    expect(getCaipNetworksSpy).toHaveBeenCalledWith(chainNamespace)
+  })
+})
