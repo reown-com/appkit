@@ -115,7 +115,7 @@ describe('W3mFrameProvider', () => {
   it('should connect social', async () => {
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     provider['isInitialized'] = true
-    const payload = { chainId: 1, socialUri: '?auth=12345678' }
+    const payload = { uri: '?auth=12345678', chainId: 1 }
     const responsePayload = {
       address: '0xd34db33f',
       chainId: 1,
@@ -139,7 +139,7 @@ describe('W3mFrameProvider', () => {
         })
       })
 
-    const response = await provider.connect(payload)
+    const response = await provider.connectSocial(payload)
 
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
