@@ -3,10 +3,24 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import '../../composites/wui-icon-box/index.js'
+import '../../components/wui-text/index.js'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { SizeType, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+
+// -- Constants ------------------------------------------ //
+const TEXT_VARIANT_BY_SIZE = {
+  lg: 'lg-regular',
+  md: 'md-regular',
+  sm: 'sm-regular'
+}
+
+const ICON_SIZE_BY_SIZE = {
+  lg: 'mdl',
+  md: 'md',
+  sm: 'sm'
+}
 
 @customElement('wui-select')
 export class WuiSelect extends LitElement {
@@ -15,27 +29,45 @@ export class WuiSelect extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc = ''
 
+  @property() public text = ''
+
+  @property() public size: 'lg' | 'md' | 'sm' = 'md'
+
+  @property() public type: 'filled-dropdown' | 'text-dropdown' = 'filled-dropdown'
+
+  @property({ type: Boolean }) public disabled = false
+
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<button>
-      ${this.imageTemplate()}
-      <wui-icon size="xs" color="fg-200" name="chevronBottom"></wui-icon>
+    return html`<button ?disabled=${this.disabled} data-size=${this.size} data-type=${this.type}>
+      ${this.imageTemplate()} ${this.textTemplate()}
+      <wui-flex class="right-icon-container">
+        <wui-icon name="chevronBottom"></wui-icon>
+      </wui-flex>
     </button>`
   }
 
   // -- Private ------------------------------------------- //
+  private textTemplate() {
+    const textSize = TEXT_VARIANT_BY_SIZE[this.size]
+
+    if (this.text) {
+      return html`<wui-text variant=${textSize as TextType}>${this.text}</wui-text>`
+    }
+
+    return null
+  }
+
   private imageTemplate() {
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt="select visual"></wui-image>`
     }
 
-    return html`<wui-icon-box
-      size="xxs"
-      iconColor="fg-200"
-      backgroundColor="fg-100"
-      background="opaque"
-      icon="networkPlaceholder"
-    ></wui-icon-box>`
+    const iconSize = ICON_SIZE_BY_SIZE[this.size]
+
+    return html` <wui-flex class="left-icon-container">
+      <wui-icon size=${iconSize as SizeType} name="networkPlaceholder"></wui-icon>
+    </wui-flex>`
   }
 }
 
