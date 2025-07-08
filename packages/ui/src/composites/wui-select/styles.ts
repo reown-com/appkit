@@ -15,17 +15,33 @@ export default css`
     border-radius: 100%;
   }
 
-  /* -- Sizes --------------------------------------------------- */
-  button[data-size='sm'] {
+  wui-text {
+    padding-left: ${({ spacing }) => spacing[1]};
+  }
+
+  .left-icon-container,
+  .right-icon-container {
+    width: 24px;
     height: 24px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  wui-icon {
+    color: ${({ tokens }) => tokens.theme.iconDefault};
+  }
+
+  /* -- Sizes --------------------------------------------------- */
+  button[data-size='lg'] {
+    height: 32px;
   }
 
   button[data-size='md'] {
     height: 28px;
   }
 
-  button[data-size='l'] {
-    height: 32px;
+  button[data-size='sm'] {
+    height: 24px;
   }
 
   button[data-size='lg'] wui-image {
@@ -39,6 +55,21 @@ export default css`
   }
 
   button[data-size='sm'] wui-image {
+    width: 16px;
+    height: 16px;
+  }
+
+  button[data-size='lg'] .left-icon-container {
+    width: 24px;
+    height: 24px;
+  }
+
+  button[data-size='md'] .left-icon-container {
+    width: 20px;
+    height: 20px;
+  }
+
+  button[data-size='sm'] .left-icon-container {
     width: 16px;
     height: 16px;
   }
@@ -68,27 +99,5 @@ export default css`
   button:disabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     opacity: 0.5;
-  }
-
-  wui-text {
-    padding-left: ${({ spacing }) => spacing[1]};
-  }
-
-  .right-icon-container {
-    width: 24px;
-    height: 24px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .left-icon-container {
-    width: 24px;
-    height: 24px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  wui-icon {
-    color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 `

@@ -13,11 +13,35 @@ export default {
   title: 'Composites/wui-token-button',
   args: {
     text: 'ETH',
-    imageSrc: networkImageSrc
+    imageSrc: networkImageSrc,
+    size: 'md',
+    disabled: false
+  },
+  argTypes: {
+    size: {
+      options: ['lg', 'md', 'sm'],
+      control: { type: 'select' }
+    },
+    text: {
+      control: { type: 'text' }
+    },
+    imageSrc: {
+      control: { type: 'text' }
+    },
+    disabled: {
+      control: { type: 'boolean' }
+    }
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html`<wui-token-button text=${args.text} .imageSrc=${args.imageSrc}>Recent</wui-token-button>`
+    html`<wui-token-button
+      text=${args.text}
+      .imageSrc=${args.imageSrc}
+      size=${args.size}
+      ?disabled=${args.disabled}
+    >
+      Recent
+    </wui-token-button>`
 }
