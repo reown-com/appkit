@@ -10,7 +10,7 @@ import {
   ensureCorrectNetwork,
   processEvmErc20Payment,
   processEvmNativePayment,
-  processSolanaNativePayment
+  processSolanaPayment
 } from '../../src/utils/PaymentUtil'
 
 // --- Mocks -------------------------------------------------------------------
@@ -341,10 +341,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
-      const txHash = await processSolanaNativePayment(
-        ConstantsUtil.CHAIN.SOLANA,
-        solanaPaymentParams
-      )
+      const txHash = await processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
 
       expect(ProviderUtil.getProvider).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
       expect(ConnectionController.sendTransaction).toHaveBeenCalledWith({
@@ -362,7 +359,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
-      const txHash = await processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, {
+      const txHash = await processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, {
         ...solanaPaymentParams,
         amount: stringAmount
       })
@@ -377,7 +374,7 @@ describe('PaymentUtil', () => {
 
     test('should throw if chain namespace is not SOLANA', async () => {
       await expect(
-        processSolanaNativePayment(ConstantsUtil.CHAIN.EVM, solanaPaymentParams)
+        processSolanaPayment(ConstantsUtil.CHAIN.EVM, solanaPaymentParams)
       ).rejects.toThrow(new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE))
     })
 
@@ -385,7 +382,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ProviderUtil.getProvider).mockReturnValue(null)
 
       await expect(
-        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
+        processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
       ).rejects.toThrow(
         new AppKitPayError(
           AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
@@ -397,7 +394,7 @@ describe('PaymentUtil', () => {
     test('should throw if fromAddress is missing', async () => {
       const paramsWithoutFrom = { ...solanaPaymentParams, fromAddress: undefined }
       await expect(
-        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, paramsWithoutFrom)
+        processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, paramsWithoutFrom)
       ).rejects.toThrow(
         new AppKitPayError(
           AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG,
@@ -409,7 +406,7 @@ describe('PaymentUtil', () => {
     test('should throw if amount is invalid', async () => {
       const paramsWithInvalidAmount = { ...solanaPaymentParams, amount: 'invalid' }
       await expect(
-        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, paramsWithInvalidAmount)
+        processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, paramsWithInvalidAmount)
       ).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
       )
@@ -418,7 +415,7 @@ describe('PaymentUtil', () => {
     test('should throw if amount is negative', async () => {
       const paramsWithNegativeAmount = { ...solanaPaymentParams, amount: -1 }
       await expect(
-        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, paramsWithNegativeAmount)
+        processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, paramsWithNegativeAmount)
       ).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
       )
@@ -430,7 +427,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(undefined)
 
       await expect(
-        processSolanaNativePayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
+        processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
       ).rejects.toThrow(
         new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR, 'Transaction failed.')
       )

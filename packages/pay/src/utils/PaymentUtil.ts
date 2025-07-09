@@ -1,5 +1,3 @@
-import { Connection } from '@solana/web3.js'
-
 import {
   type Address,
   type CaipNetwork,
@@ -10,24 +8,10 @@ import {
 } from '@reown/appkit-common'
 import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit-utils'
-import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'
 import type { PaymentOptions } from '../types/options.js'
-import { createSPLTokenTransaction } from './SolanaUtil.js'
-
-// 1 second
-const CONFIRMATION_CHECK_INTERVAL_MS = 1000
-// 30 attempts = 30 seconds total
-const CONFIRMATION_MAX_ATTEMPTS = 30
-
-// Helper function to create a delay
-function delay(ms: number): Promise<void> {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms)
-  })
-}
 
 interface EnsureNetworkOptions {
   paymentAssetNetwork: string
@@ -155,9 +139,10 @@ interface SolanaPaymentParams {
   recipient: string
   amount: number | string
   fromAddress?: string
+  tokenMint?: string
 }
 
-export async function processSolanaNativePayment(
+export async function processSolanaPayment(
   chainNamespace: ChainNamespace,
   params: SolanaPaymentParams
 ): Promise<string | undefined> {
@@ -185,11 +170,11 @@ export async function processSolanaNativePayment(
         'No Solana provider available.'
       )
     }
-
     const txResponse = await ConnectionController.sendTransaction({
       chainNamespace: ConstantsUtil.CHAIN.SOLANA,
       to: params.recipient,
-      value: amountValue
+      value: amountValue,
+      tokenMint: params.tokenMint
     })
 
     if (!txResponse) {
@@ -206,102 +191,4 @@ export async function processSolanaNativePayment(
       `Solana payment failed: ${error}`
     )
   }
-}
-
-export async function processSolanaSPLPayment(
-  paymentAsset: PaymentOptions['paymentAsset'],
-  chainNamespace: ChainNamespace,
-  params: SolanaPaymentParams
-): Promise<string | undefined> {
-  if (chainNamespace !== ConstantsUtil.CHAIN.SOLANA) {
-    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
-  }
-
-  if (!params.fromAddress) {
-    throw new AppKitPayError(
-      AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG,
-      'fromAddress is required for SPL payments.'
-    )
-  }
-
-  const tokenMint = paymentAsset.asset
-  const amountValue = typeof params.amount === 'string' ? parseFloat(params.amount) : params.amount
-  if (isNaN(amountValue) || amountValue <= 0) {
-    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
-  }
-
-  const decimals = paymentAsset.metadata?.decimals ?? 9
-
-  try {
-    const provider = ProviderUtil.getProvider(chainNamespace) as SolanaProvider
-    if (!provider) {
-      throw new AppKitPayError(
-        AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
-        'No Solana provider available.'
-      )
-    }
-
-    const activeNetwork = ChainController.getActiveCaipNetwork()
-    const rpcUrl = activeNetwork?.rpcUrls?.default?.http?.[0]
-
-    if (!rpcUrl) {
-      throw new AppKitPayError(
-        AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
-        'No RPC URL available for active network.'
-      )
-    }
-
-    const connection = new Connection(rpcUrl, 'confirmed')
-
-    const transaction = await createSPLTokenTransaction({
-      provider,
-      connection,
-      to: params.recipient,
-      amount: amountValue,
-      tokenMint,
-      decimals
-    })
-
-    const signature = await provider.sendTransaction(transaction, connection)
-
-    await waitForConfirmation(connection, signature)
-
-    return signature
-  } catch (error) {
-    if (error instanceof AppKitPayError) {
-      throw error
-    }
-    throw new AppKitPayError(
-      AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
-      `Solana SPL payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-    )
-  }
-}
-
-async function waitForConfirmation(connection: Connection, signature: string): Promise<void> {
-  for (let attempts = 0; attempts < CONFIRMATION_MAX_ATTEMPTS; attempts += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    const status = await connection.getSignatureStatus(signature)
-
-    if (status?.value) {
-      if (status.value.err) {
-        throw new AppKitPayError(
-          AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
-          `Transaction failed: ${JSON.stringify(status.value.err)}`
-        )
-      }
-
-      return
-    }
-
-    if (attempts < CONFIRMATION_MAX_ATTEMPTS - 1) {
-      // eslint-disable-next-line no-await-in-loop
-      await delay(CONFIRMATION_CHECK_INTERVAL_MS)
-    }
-  }
-
-  throw new AppKitPayError(
-    AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
-    `Transaction confirmation timeout after ${CONFIRMATION_MAX_ATTEMPTS} attempts`
-  )
 }

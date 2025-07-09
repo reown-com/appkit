@@ -4,11 +4,12 @@ import {
   createAssociatedTokenAccountInstruction,
   createTransferInstruction,
   getAccount,
-  getAssociatedTokenAddressSync
+  getAssociatedTokenAddressSync,
+  getMint
 } from '@solana/spl-token'
 import {
   ComputeBudgetProgram,
-  type Connection,
+  Connection,
   PublicKey,
   Transaction,
   type TransactionInstruction
@@ -22,7 +23,6 @@ type SPLTokenTransactionArgs = {
   to: string
   amount: number
   tokenMint: string
-  decimals: number
 }
 
 const SPL_COMPUTE_BUDGET_CONSTANTS = {
@@ -36,7 +36,6 @@ export async function createSPLTokenTransaction({
   to,
   amount,
   tokenMint,
-  decimals,
   connection
 }: SPLTokenTransactionArgs): Promise<Transaction> {
   if (!provider.publicKey) {
@@ -47,14 +46,17 @@ export async function createSPLTokenTransaction({
     throw new Error('Amount must be greater than 0')
   }
 
-  if (decimals < 0) {
-    throw new Error('Invalid token decimals')
-  }
-
   try {
     const fromPubkey = provider.publicKey
     const toPubkey = new PublicKey(to)
     const mintPubkey = new PublicKey(tokenMint)
+
+    const mintInfo = await getMint(connection, mintPubkey)
+    const decimals = mintInfo.decimals
+
+    if (decimals < 0) {
+      throw new Error('Invalid token decimals')
+    }
 
     const tokenAmount = Math.floor(amount * 10 ** decimals)
 

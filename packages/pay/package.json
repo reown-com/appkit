@@ -34,8 +34,6 @@
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
-    "@solana/spl-token": "0.4.13",
-    "@solana/web3.js": "1.98.2",
     "lit": "3.3.0",
     "valtio": "2.1.5"
   },

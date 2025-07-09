@@ -1065,7 +1065,7 @@ export type SendTransactionArgs =
       gasPrice?: bigint
       address: Address
     }
-  | { chainNamespace: 'solana'; to: string; value: number }
+  | { chainNamespace: 'solana'; to: string; value: number; tokenMint?: string }
 
 export type EstimateGasTransactionArgs =
   | {

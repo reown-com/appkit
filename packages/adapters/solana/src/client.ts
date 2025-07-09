@@ -16,7 +16,7 @@ import {
 import { ErrorUtil } from '@reown/appkit-utils'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil, createSPLTokenTransaction } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 
@@ -197,12 +197,20 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const provider = params.provider as SolanaProvider
 
-    const transaction = await createSendTransaction({
-      provider,
-      connection,
-      to: params.to,
-      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
-    })
+    const transaction = params.tokenMint
+      ? await createSPLTokenTransaction({
+          provider,
+          connection,
+          to: params.to,
+          amount: Number(params.value),
+          tokenMint: params.tokenMint
+        })
+      : await createSendTransaction({
+          provider,
+          connection,
+          to: params.to,
+          value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
+        })
 
     const result = await provider.sendTransaction(transaction, connection)
 

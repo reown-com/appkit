@@ -853,6 +853,7 @@ export namespace AdapterBlueprint {
     gas?: bigint | number
     caipNetwork?: CaipNetwork
     provider?: AppKitConnector['provider']
+    tokenMint?: string
   }
 
   export type SendTransactionResult = {
