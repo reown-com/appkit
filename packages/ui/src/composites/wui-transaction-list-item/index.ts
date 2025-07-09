@@ -34,12 +34,6 @@ export class WuiTransactionListItem extends LitElement {
 
   @property({ type: Array }) public images: TransactionImage[] = []
 
-  @property({ type: Array }) public price: TransactionImage[] = []
-
-  @property({ type: Array }) public amount: TransactionImage[] = []
-
-  @property({ type: Array }) public symbol: TransactionImage[] = []
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html`

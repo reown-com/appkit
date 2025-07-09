@@ -31,9 +31,9 @@ export class WuiSelect extends LitElement {
 
   @property() public text = ''
 
-  @property() public size: 'lg' | 'md' | 'sm' = 'md'
+  @property() public size: 'lg' | 'md' | 'sm' = 'lg'
 
-  @property() public type: 'filled-dropdown' | 'text-dropdown' = 'filled-dropdown'
+  @property() public type: 'filled-dropdown' | 'text-dropdown' = 'text-dropdown'
 
   @property({ type: Boolean }) public disabled = false
 
