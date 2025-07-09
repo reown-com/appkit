@@ -173,7 +173,6 @@ export abstract class AppKitBaseClient {
     }
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
     OptionsController.setRemoteFeatures(this.remoteFeatures)
-    this.syncFeatures()
     if (this.remoteFeatures.onramp) {
       OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
     }
@@ -2330,15 +2329,5 @@ export abstract class AppKitBaseClient {
     }
 
     ChainController.removeNetwork(namespace, networkId)
-  }
-
-  private syncFeatures() {
-    if (OptionsController.state.features?.pay) {
-      OptionsController.setRemoteFeatures({
-        ...OptionsController.state.remoteFeatures,
-        email: false,
-        socials: false
-      } as RemoteFeatures)
-    }
   }
 }
