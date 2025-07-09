@@ -61,6 +61,19 @@ export class W3mFrame {
       }
     | undefined
 
+  // -- Private Methods ------------------------------------------------------
+  private getTrustedOrigin(): string {
+    // Use the current page's origin as the trusted origin
+    // This ensures messages only go to the same domain that initiated the connection
+    return window.location.origin
+  }
+
+  private validateMessageOrigin(event: MessageEvent): boolean {
+    // Validate that the message comes from a trusted origin
+    const trustedOrigin = this.getTrustedOrigin()
+    return event.origin === trustedOrigin
+  }
+
   public constructor({
     projectId,
     isAppClient = false,
@@ -166,10 +179,17 @@ export class W3mFrame {
       callback: (event: W3mFrameTypes.FrameEvent) => void,
       signal: AbortSignal
     ) => {
-      function eventHandler({ data }: MessageEvent) {
+      function eventHandler({ data, origin }: MessageEvent) {
         if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
           return
         }
+
+        // Validate the message origin
+        if (origin !== window.location.origin) {
+          console.warn('W3mFrame: Received message from untrusted origin:', origin)
+          return
+        }
+
         const frameEvent = W3mFrameSchema.frameEvent.parse(data)
         if (frameEvent.id === id) {
           callback(frameEvent)
@@ -186,8 +206,14 @@ export class W3mFrame {
     },
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
-        window.addEventListener('message', ({ data }) => {
+        window.addEventListener('message', ({ data, origin }) => {
           if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
+            return
+          }
+
+          // Validate the message origin
+          if (origin !== window.location.origin) {
+            console.warn('W3mFrame: Received message from untrusted origin:', origin)
             return
           }
 
@@ -199,10 +225,17 @@ export class W3mFrame {
 
     onAppEvent: (callback: (event: W3mFrameTypes.AppEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
-        window.addEventListener('message', ({ data }) => {
+        window.addEventListener('message', ({ data, origin }) => {
           if (!shouldHandleEvent(W3mFrameConstants.APP_EVENT_KEY, data)) {
             return
           }
+
+          // Validate the message origin
+          if (origin !== window.location.origin) {
+            console.warn('W3mFrame: Received message from untrusted origin:', origin)
+            return
+          }
+
           const appEvent = W3mFrameSchema.appEvent.parse(data)
           callback(appEvent)
         })
@@ -215,7 +248,7 @@ export class W3mFrame {
           throw new Error('W3mFrame: iframe is not set')
         }
         W3mFrameSchema.appEvent.parse(event)
-        this.iframe.contentWindow.postMessage(event, '*')
+        this.iframe.contentWindow.postMessage(event, this.getTrustedOrigin())
       }
     },
 
@@ -225,7 +258,7 @@ export class W3mFrame {
           throw new Error('W3mFrame: parent is not set')
         }
         W3mFrameSchema.frameEvent.parse(event)
-        parent.postMessage(event, '*')
+        parent.postMessage(event, this.getTrustedOrigin())
       }
     }
   }
