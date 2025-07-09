@@ -47,33 +47,33 @@ export default css`
 
   /* -- States --------------------------------------------------------------- */
   @media (hover: hover) and (pointer: fine) {
-    button[data-variant='main']:hover {
+    button[data-variant='main']:not(:disabled):hover {
       background-color: ${({ tokens }) => tokens.core.foregroundAccent060};
     }
 
-    button[data-variant='accent']:hover {
+    button[data-variant='accent']:not(:disabled):hover {
       box-shadow: 0 0 0 1px ${({ tokens }) => tokens.core.borderAccentPrimary};
     }
 
-    button[data-variant='primary']:hover {
+    button[data-variant='primary']:not(:disabled):hover {
       box-shadow: 0 0 0 1px ${({ tokens }) => tokens.theme.borderSecondary};
     }
   }
 
-  button[data-variant='main']:focus-visible,
-  button[data-variant='main']:active {
+  button[data-variant='main']:not(:disabled):focus-visible,
+  button[data-variant='main']:not(:disabled):active {
     box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
-  button[data-variant='accent']:focus-visible,
-  button[data-variant='accent']:active {
+  button[data-variant='accent']:not(:disabled):focus-visible,
+  button[data-variant='accent']:not(:disabled):active {
     box-shadow:
       0 0 0 1px ${({ tokens }) => tokens.core.borderAccentPrimary},
       0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
-  button[data-variant='primary']:focus-visible,
-  button[data-variant='primary']:active {
+  button[data-variant='primary']:not(:disabled):focus-visible,
+  button[data-variant='primary']:not(:disabled):active {
     box-shadow:
       0 0 0 1px ${({ tokens }) => tokens.theme.borderSecondary},
       0 0 0 4px ${({ tokens }) => tokens.theme.foregroundSecondary};

@@ -15,7 +15,7 @@ export default css`
   button[data-size='sm'] {
     border-radius: ${({ borderRadius }) => borderRadius[2]};
     padding: 0 ${({ spacing }) => spacing[2]};
-    height: 24px;
+    height: 28px;
   }
 
   button[data-size='md'] {
