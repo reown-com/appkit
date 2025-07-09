@@ -16,22 +16,12 @@ export default {
     address,
     text: '0.2 ETH',
     isAddress: false
-  },
-  argTypes: {
-    isAddress: {
-      control: { type: 'boolean' }
-    }
   }
 } as Component
 
 export const Default: Component = {
   render: args => html`
-    <wui-preview-item
-      text=${args.text}
-      ?isAddress=${args.isAddress}
-      .address=${args.address}
-      .imageSrc=${args.imageSrc}
-    >
+    <wui-preview-item text=${args.text} .address=${args.address} .imageSrc=${args.imageSrc}>
     </wui-preview-item>
   `
 }
