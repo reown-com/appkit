@@ -90,9 +90,11 @@ export default css`
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  button:hover:enabled,
-  button:active:enabled {
-    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled,
+    button:active:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
   }
 
   /* -- Disabled states --------------------------------------------------- */
