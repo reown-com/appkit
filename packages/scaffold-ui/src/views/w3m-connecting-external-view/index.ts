@@ -2,6 +2,7 @@ import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reow
 import type { Connection } from '@reown/appkit-common'
 import type { BaseError, Connector } from '@reown/appkit-controllers'
 import {
+  ChainController,
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
@@ -95,7 +96,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
-            properties: { method: 'browser', name: this.connector.name || 'Unknown' }
+            properties: {
+              method: 'browser',
+              name: this.connector.name || 'Unknown',
+              caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+            }
           })
         }
       }

@@ -320,7 +320,10 @@ export class AppKit extends AppKitBaseClient {
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
-          properties: { provider: socialProviderToConnect }
+          properties: {
+            provider: socialProviderToConnect,
+            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+          }
         })
       }
     } catch (error) {
