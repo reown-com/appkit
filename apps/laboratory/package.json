@@ -65,6 +65,7 @@
     "playwright:debug": "pnpm playwright:test --debug",
     "playwright:debug:mobile-wallet-features": "pnpm playwright:test:mobile-wallet-features --debug",
     "playwright:debug:basic": "pnpm playwright:test:basic --debug",
+    "playwright:debug:config": "pnpm playwright:test:config --debug",
     "playwright:debug:flag-enable-reconnect": "playwright test --grep flag-enable-reconnect.spec.ts --debug",
     "playwright:debug:extension": "playwright test --grep 'extension.spec.ts' --debug",
     "playwright:debug:siwe-extension": "playwright test --grep 'siwe-extension.spec.ts' --debug",
