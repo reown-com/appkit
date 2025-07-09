@@ -39,6 +39,11 @@ export default css`
     height: 40px;
   }
 
+  :host([data-size='lg']) {
+    width: 56px;
+    height: 56px;
+  }
+
   :host([name='Extension'])::after {
     border: 1px solid var(--wui-color-accent-glass-010);
   }
