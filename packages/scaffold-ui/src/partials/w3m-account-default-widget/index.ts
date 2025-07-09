@@ -225,8 +225,10 @@ export class W3mAccountDefaultWidget extends LitElement {
   private swapsTemplate() {
     const isSwapsEnabled = this.remoteFeatures?.swaps
     const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const isTestNet = ChainController.state.activeCaipNetwork?.testnet
 
-    if (!isSwapsEnabled || !isEvm) {
+
+    if (!isSwapsEnabled || !isEvm || isTestNet) {
       return null
     }
 
