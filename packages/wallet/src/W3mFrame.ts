@@ -170,10 +170,15 @@ export class W3mFrame {
         if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
           return
         }
-        const frameEvent = W3mFrameSchema.frameEvent.parse(data)
-        if (frameEvent.id === id) {
-          callback(frameEvent)
-          window.removeEventListener('message', eventHandler)
+        const frameEvent = W3mFrameSchema.frameEvent.safeParse(data)
+
+        if (frameEvent.success) {
+          if (frameEvent.data?.id === id) {
+            callback(frameEvent.data)
+            window.removeEventListener('message', eventHandler)
+          }
+        } else {
+          console.warn('W3mFrame: invalid frame event', frameEvent.error)
         }
       }
       if (W3mFrameHelpers.isClient) {
@@ -191,8 +196,12 @@ export class W3mFrame {
             return
           }
 
-          const frameEvent = W3mFrameSchema.frameEvent.parse(data)
-          callback(frameEvent)
+          const frameEvent = W3mFrameSchema.frameEvent.safeParse(data)
+          if (frameEvent.success) {
+            callback(frameEvent.data)
+          } else {
+            console.warn('W3mFrame: invalid frame event', frameEvent.error)
+          }
         })
       }
     },
@@ -203,8 +212,12 @@ export class W3mFrame {
           if (!shouldHandleEvent(W3mFrameConstants.APP_EVENT_KEY, data)) {
             return
           }
-          const appEvent = W3mFrameSchema.appEvent.parse(data)
-          callback(appEvent)
+          const appEvent = W3mFrameSchema.appEvent.safeParse(data)
+          if (appEvent.success) {
+            callback(appEvent.data)
+          } else {
+            console.warn('W3mFrame: invalid app event', appEvent.error)
+          }
         })
       }
     },
