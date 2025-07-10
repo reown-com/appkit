@@ -215,6 +215,52 @@ describe('Base', () => {
 
       expect(OptionsController.state.remoteFeatures).toEqual(mockRemoteFeaturesConfig)
     })
+
+    it('should disable email and social features when pay feature is enabled', async () => {
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          pay: true
+        }
+      })
+
+      await appKit.ready()
+
+      expect(OptionsController.state.remoteFeatures?.email).toBe(false)
+      expect(OptionsController.state.remoteFeatures?.socials).toBe(false)
+    })
+
+    it('should not disable email and social features when pay feature is disabled', async () => {
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          pay: false
+        }
+      })
+
+      await appKit.ready()
+
+      const remoteFeatures = OptionsController.state.remoteFeatures
+      expect(remoteFeatures?.email).toBe(mockRemoteFeaturesConfig.email)
+      expect(remoteFeatures?.socials).toEqual(mockRemoteFeaturesConfig.socials)
+    })
+
+    it('should not affect other features when pay feature is enabled', async () => {
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          pay: true
+        }
+      })
+
+      await appKit.ready()
+
+      const remoteFeatures = OptionsController.state.remoteFeatures
+
+      expect(remoteFeatures?.swaps).toEqual(mockRemoteFeaturesConfig.swaps)
+      expect(remoteFeatures?.onramp).toEqual(mockRemoteFeaturesConfig.onramp)
+      expect(remoteFeatures?.activity).toBe(mockRemoteFeaturesConfig.activity)
+    })
   })
 
   describe('Alert Errors', () => {

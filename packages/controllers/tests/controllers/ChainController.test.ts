@@ -12,7 +12,8 @@ import {
   AccountController,
   CoreHelperUtil,
   ModalController,
-  type NetworkControllerClient
+  type NetworkControllerClient,
+  OptionsController
 } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
@@ -312,6 +313,21 @@ describe('ChainController', () => {
     expect(AccountController.state.status).toEqual('disconnected')
     expect(AccountController.state.socialProvider).toEqual(undefined)
     expect(AccountController.state.socialWindow).toEqual(undefined)
+  })
+
+  it('should reset account and set preferredAccountType from OptionsController.state.defaultAccountTypes if defined', () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      defaultAccountTypes: {
+        eip155: 'eoa'
+      }
+    })
+
+    ChainController.resetAccount(chainNamespace)
+
+    expect(
+      ChainController.state.chains.get(chainNamespace)?.accountState?.preferredAccountType
+    ).toEqual('eoa')
   })
 
   it('Expect modal to close after switching from unsupported network to supported network', async () => {
