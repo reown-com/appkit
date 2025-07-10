@@ -385,6 +385,7 @@ export const PayController = {
             recipient: state.recipient,
             amount: state.amount,
             fromAddress: address,
+            // If the tokenMint is provided, provider will use it to create a SPL token transaction
             tokenMint: state.paymentAsset.asset === 'native' ? undefined : state.paymentAsset.asset
           })
           state.currentPayment.status = 'SUCCESS'
