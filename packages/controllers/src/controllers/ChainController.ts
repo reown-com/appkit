@@ -669,6 +669,7 @@ const controller = {
       throw new Error('Chain is required to set account prop')
     }
 
+    const optionsAccountType = OptionsController.state.defaultAccountTypes[chainToWrite]
     const currentAccountType = ChainController.getAccountProp('preferredAccountType', chainToWrite)
 
     state.activeCaipAddress = undefined
@@ -684,7 +685,7 @@ const controller = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountType: currentAccountType,
+      preferredAccountType: optionsAccountType || currentAccountType,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
