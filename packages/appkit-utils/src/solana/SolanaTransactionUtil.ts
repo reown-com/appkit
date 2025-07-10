@@ -9,27 +9,13 @@ import {
 } from '@solana/spl-token'
 import {
   ComputeBudgetProgram,
-  Connection,
   PublicKey,
   Transaction,
   type TransactionInstruction
 } from '@solana/web3.js'
 
-import type { Provider } from '@reown/appkit-utils/solana'
-
-type SPLTokenTransactionArgs = {
-  provider: Provider
-  connection: Connection
-  to: string
-  amount: number
-  tokenMint: string
-}
-
-const SPL_COMPUTE_BUDGET_CONSTANTS = {
-  UNIT_PRICE_MICRO_LAMPORTS: 20000000,
-  UNIT_LIMIT_TRANSFER_ONLY: 300000,
-  UNIT_LIMIT_WITH_ATA_CREATION: 400000
-}
+import { SPL_COMPUTE_BUDGET_CONSTANTS } from './SolanaConstantsUtil.js'
+import type { SPLTokenTransactionArgs } from './SolanaTypesUtil.js'
 
 export async function createSPLTokenTransaction({
   provider,
