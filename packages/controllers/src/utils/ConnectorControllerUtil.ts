@@ -150,11 +150,6 @@ export const ConnectorControllerUtil = {
                     properties: { provider: socialProvider }
                   })
                 }
-                const network = ChainController.state.activeCaipNetwork
-                await authConnector.provider.connectSocial({
-                  uri,
-                  chainId: network?.caipNetworkId
-                })
 
                 if (socialProvider) {
                   StorageUtil.setConnectedSocialProvider(socialProvider)
