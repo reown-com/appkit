@@ -24,4 +24,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updates error messages for non configured domains
+Improves error messages with better clarity and phrasing
