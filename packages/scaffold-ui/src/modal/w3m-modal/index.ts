@@ -230,14 +230,14 @@ export class W3mModalBase extends LitElement {
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
 
     if (caipAddress) {
-      await this.onActiveAddress({
+      await this.onConnected({
         caipAddress,
         wasPreviouslyDisconnected,
         isSwitchingNamespace,
         isInProfileView
       })
     } else {
-      this.onNoAddress(isSwitchingNamespace, isInProfileView)
+      this.onDisconnected(isSwitchingNamespace, isInProfileView)
     }
 
     await SIWXUtil.initializeIfEnabled()
@@ -245,7 +245,7 @@ export class W3mModalBase extends LitElement {
     ChainController.setIsSwitchingNamespace(false)
   }
 
-  private onNoAddress(isSwitchingNamespace: boolean, isInProfileView: boolean) {
+  private onDisconnected(isSwitchingNamespace: boolean, isInProfileView: boolean) {
     if (isInProfileView) {
       return
     }
@@ -258,7 +258,7 @@ export class W3mModalBase extends LitElement {
     }
   }
 
-  private async onActiveAddress({
+  private async onConnected({
     caipAddress,
     wasPreviouslyDisconnected,
     isSwitchingNamespace,
