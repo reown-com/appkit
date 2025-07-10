@@ -352,7 +352,8 @@ export class W3mFrameProvider {
         const response = await this.getUser({
           chainId,
           preferredAccountType: payload?.preferredAccountType,
-          siwxMessage: payload?.siwxMessage
+          siwxMessage: payload?.siwxMessage,
+          rpcUrl: this.getRpcUrl(chainId)
         })
 
         this.setLoginSuccess(response.email)
