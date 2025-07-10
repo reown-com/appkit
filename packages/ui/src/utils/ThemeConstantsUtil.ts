@@ -2,6 +2,7 @@ export const colors = {
   /* Main colors */
   black: '#202020',
   white: '#FFFFFF',
+  white010: 'rgba(255, 255, 255, 0.1)',
 
   /* Accent colors */
   accent010: 'rgba(9, 136, 240, 0.1)',
@@ -132,7 +133,9 @@ export const tokens = {
 
     iconSuccess: '#30A46B',
     iconError: '#DF4A34',
-    iconWarning: '#F3A13F'
+    iconWarning: '#F3A13F',
+
+    glass010: 'rgba(255, 255, 255, 0.1)'
   },
   dark: {
     /* Background colors */

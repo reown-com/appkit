@@ -9,13 +9,16 @@ export default css`
     width: var(--local-width);
     white-space: nowrap;
     column-gap: ${({ spacing }) => spacing[2]};
+    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    will-change: background-color;
+    cursor: pointer;
   }
 
   /* -- Sizes --------------------------------------------------- */
   button[data-size='sm'] {
     border-radius: ${({ borderRadius }) => borderRadius[2]};
     padding: 0 ${({ spacing }) => spacing[2]};
-    height: 24px;
+    height: 28px;
   }
 
   button[data-size='md'] {

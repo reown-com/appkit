@@ -14,11 +14,16 @@ export default {
   title: 'Composites/wui-banner',
   args: {
     text: 'You can only receive assets on these networks',
-    icon: 'warningCircle'
+    icon: 'warningCircle',
+    type: 'info'
   },
   argTypes: {
     icon: {
       options: iconOptions,
+      control: { type: 'select' }
+    },
+    type: {
+      options: ['info', 'success', 'error', 'warning'],
       control: { type: 'select' }
     }
   }
@@ -27,6 +32,6 @@ export default {
 export const Default: Component = {
   render: args =>
     html` <gallery-container width="336"
-      ><wui-banner icon=${args.icon} text=${args.text}></wui-banner
+      ><wui-banner icon=${args.icon} text=${args.text} type=${args.type}></wui-banner
     ></gallery-container>`
 }
