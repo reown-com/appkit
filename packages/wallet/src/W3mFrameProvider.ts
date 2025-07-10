@@ -374,7 +374,7 @@ export class W3mFrameProvider {
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
-        payload: { ...payload, chainId }
+        payload: { ...payload, chainId, rpcUrl: this.getRpcUrl(chainId) }
       } as W3mFrameTypes.AppEvent)
       this.user = response
 
