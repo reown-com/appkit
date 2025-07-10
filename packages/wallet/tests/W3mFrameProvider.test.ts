@@ -95,6 +95,7 @@ describe('W3mFrameProvider', () => {
     provider['isInitialized'] = true
     const payload = { chainId: 1 }
     const responsePayload = { address: '0xd34db33f', chainId: 1, email: 'test@walletconnect.com' }
+    const appEventSpy = vi.spyOn(provider as any, 'appEvent')
 
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
@@ -110,6 +111,15 @@ describe('W3mFrameProvider', () => {
 
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
+    expect(appEventSpy).toHaveBeenCalledWith({
+      type: '@w3m-app/GET_USER',
+      payload: {
+        chainId: 1,
+        rpcUrl: 'https://rpc.ankr.com/eth',
+        preferredAccountType: undefined,
+        siwxMessage: undefined
+      }
+    })
   })
 
   it('should connect social', async () => {
