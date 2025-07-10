@@ -780,6 +780,12 @@ export const W3mFrameSchema = {
         payload: zError
       })
     )
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_INIT_SMART_ACCOUNT_SUCCESS'),
+        payload: FrameInitSmartAccountResponse
+      })
+    )
     .or(EventSchema.extend({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
     .or(
       EventSchema.extend({

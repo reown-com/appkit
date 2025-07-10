@@ -24,6 +24,7 @@ import {
   FrameGetSmartAccountEnabledNetworksResponse,
   FrameGetSocialRedirectUriResponse,
   FrameGetUserResponse,
+  FrameInitSmartAccountResponse,
   FrameIsConnectedResponse,
   FrameReadyResponse,
   FrameSession,
@@ -85,6 +86,7 @@ import {
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
 
+  // @ts-expect-error - Complex union type causing excessive instantiation depth
   export type FrameEvent = z.infer<typeof W3mFrameSchema.frameEvent>
 
   export interface Requests {
@@ -121,6 +123,7 @@ export namespace W3mFrameTypes {
     FrameGetSmartAccountEnabledNetworksResponse: z.infer<
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
+    FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
     FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
