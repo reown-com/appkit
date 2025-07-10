@@ -226,13 +226,12 @@ export class W3mModalBase extends LitElement {
   private async onNewAddress(caipAddress?: CaipAddress) {
     // Capture current state
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const wasPreviouslyDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
+
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
 
     if (caipAddress) {
       await this.onConnected({
         caipAddress,
-        wasPreviouslyDisconnected,
         isSwitchingNamespace,
         isInProfileView
       })
@@ -245,28 +244,28 @@ export class W3mModalBase extends LitElement {
     ChainController.setIsSwitchingNamespace(false)
   }
 
-  private async onConnected({
-    caipAddress,
-    wasPreviouslyDisconnected,
-    isSwitchingNamespace,
-    isInProfileView
-  }: {
+  private async onConnected(args: {
     caipAddress: CaipAddress
-    wasPreviouslyDisconnected: boolean
+
     isSwitchingNamespace: boolean
     isInProfileView: boolean
   }) {
-    if (isInProfileView) {
+    if (args.isInProfileView) {
       return
     }
-    const { chainNamespace, chainId, address: newAddress } = ParseUtil.parseCaipAddress(caipAddress)
+    const {
+      chainNamespace,
+      chainId,
+      address: newAddress
+    } = ParseUtil.parseCaipAddress(args.caipAddress)
     const caipNetworkId = `${chainNamespace}:${chainId}` as const
+    const wasPreviouslyDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
     const sessions = await SIWXUtil.getSessions({ address: newAddress, caipNetworkId })
     const isAuthenticated = SIWXUtil.getSIWX()
       ? sessions.some(s => s.data.accountAddress === newAddress)
       : true
 
-    const shouldGoBack = isSwitchingNamespace && isAuthenticated && !this.enableEmbedded
+    const shouldGoBack = args.isSwitchingNamespace && isAuthenticated && !this.enableEmbedded
     const shouldCloseEmbeddedModal = this.enableEmbedded && wasPreviouslyDisconnected
 
     if (shouldGoBack) {
