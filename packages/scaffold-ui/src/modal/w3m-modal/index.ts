@@ -237,10 +237,7 @@ export class W3mModalBase extends LitElement {
         isInProfileView
       })
     } else {
-      this.onNoAddress({
-        isSwitchingNamespace,
-        isInProfileView
-      })
+      this.onNoAddress(isSwitchingNamespace, isInProfileView)
     }
 
     await SIWXUtil.initializeIfEnabled()
@@ -248,13 +245,7 @@ export class W3mModalBase extends LitElement {
     ChainController.setIsSwitchingNamespace(false)
   }
 
-  private onNoAddress({
-    isSwitchingNamespace,
-    isInProfileView
-  }: {
-    isSwitchingNamespace: boolean
-    isInProfileView: boolean
-  }) {
+  private onNoAddress(isSwitchingNamespace: boolean, isInProfileView: boolean) {
     if (isInProfileView) {
       return
     }
@@ -281,12 +272,11 @@ export class W3mModalBase extends LitElement {
     if (isInProfileView) {
       return
     }
-
-    const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
-    const sessions = await SIWXUtil.getSessions({ address: newAddress })
-    const parsed = ParseUtil.parseCaipAddress(caipAddress)?.address
+    const { chainNamespace, chainId, address: newAddress } = ParseUtil.parseCaipAddress(caipAddress)
+    const caipNetworkId = `${chainNamespace}:${chainId}` as const
+    const sessions = await SIWXUtil.getSessions({ address: newAddress, caipNetworkId })
     const isAuthenticated = SIWXUtil.getSIWX()
-      ? sessions.some(s => s.data.accountAddress === parsed)
+      ? sessions.some(s => s.data.accountAddress === newAddress)
       : true
 
     const isSwitchAndConnected = isSwitchingNamespace && Boolean(newAddress) && isAuthenticated
