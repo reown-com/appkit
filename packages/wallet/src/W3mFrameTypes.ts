@@ -85,7 +85,6 @@ import {
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
 
-  // @ts-expect-error - Complex union type causing excessive instantiation depth
   export type FrameEvent = z.infer<typeof W3mFrameSchema.frameEvent>
 
   export interface Requests {
