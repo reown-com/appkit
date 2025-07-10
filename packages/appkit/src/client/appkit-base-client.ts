@@ -204,7 +204,7 @@ export abstract class AppKitBaseClient {
       )
 
       if (!isOriginAllowed) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+        AlertController.open(ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED, 'error')
       }
     } catch (error) {
       if (!(error instanceof Error)) {
