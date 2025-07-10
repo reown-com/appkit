@@ -236,26 +236,13 @@ export class W3mModalBase extends LitElement {
         isSwitchingNamespace,
         isInProfileView
       })
-    } else {
-      this.onDisconnected(isSwitchingNamespace, isInProfileView)
+    } else if (!isSwitchingNamespace && !this.enableEmbedded && !isInProfileView) {
+      ModalController.close()
     }
 
     await SIWXUtil.initializeIfEnabled()
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
-  }
-
-  private onDisconnected(isSwitchingNamespace: boolean, isInProfileView: boolean) {
-    if (isInProfileView) {
-      return
-    }
-
-    const newAddress = null
-    const shouldCloseModal = !newAddress && !isSwitchingNamespace && !this.enableEmbedded
-
-    if (shouldCloseModal) {
-      ModalController.close()
-    }
   }
 
   private async onConnected({
