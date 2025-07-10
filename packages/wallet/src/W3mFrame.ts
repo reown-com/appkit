@@ -178,7 +178,7 @@ export class W3mFrame {
             window.removeEventListener('message', eventHandler)
           }
         } else {
-          console.warn('W3mFrame: invalid frame event', frameEvent.error)
+          console.warn('W3mFrame: invalid frame event', frameEvent.error.message)
         }
       }
       if (W3mFrameHelpers.isClient) {
@@ -200,7 +200,7 @@ export class W3mFrame {
           if (frameEvent.success) {
             callback(frameEvent.data)
           } else {
-            console.warn('W3mFrame: invalid frame event', frameEvent.error)
+            console.warn('W3mFrame: invalid frame event', frameEvent.error.message)
           }
         })
       }
@@ -215,7 +215,7 @@ export class W3mFrame {
           const appEvent = W3mFrameSchema.appEvent.safeParse(data)
           // Frame side, if the event is invalid, we allow it to go through anyways
           if (!appEvent.success) {
-            console.warn('W3mFrame: invalid app event', appEvent.error)
+            console.warn('W3mFrame: invalid app event', appEvent.error.message)
           }
 
           callback(data as W3mFrameTypes.AppEvent)
@@ -228,7 +228,6 @@ export class W3mFrame {
         if (!this.iframe?.contentWindow) {
           throw new Error('W3mFrame: iframe is not set')
         }
-        W3mFrameSchema.appEvent.parse(event)
         this.iframe.contentWindow.postMessage(event, '*')
       }
     },
@@ -238,7 +237,6 @@ export class W3mFrame {
         if (!parent) {
           throw new Error('W3mFrame: parent is not set')
         }
-        W3mFrameSchema.frameEvent.parse(event)
         parent.postMessage(event, '*')
       }
     }
