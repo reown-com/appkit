@@ -8,7 +8,7 @@ import type { WuiPromo } from '@reown/appkit-ui/wui-promo'
 type Component = Meta<WuiPromo>
 
 export default {
-  title: 'Composites/wui-promo',
+  title: 'Composites/appkit-wui-promo',
   args: {
     text: 'Activate your account'
   }

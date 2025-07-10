@@ -10,7 +10,7 @@ import { placementOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiTooltip>
 
 export default {
-  title: 'Composites/wui-tooltip',
+  title: 'Composites/appkit-wui-tooltip',
   args: {
     message: 'Tooltip',
     placement: 'top',

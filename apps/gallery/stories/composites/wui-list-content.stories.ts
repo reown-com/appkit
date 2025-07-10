@@ -11,7 +11,7 @@ import { networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiListContent>
 
 export default {
-  title: 'Composites/wui-list-content',
+  title: 'Composites/appkit-wui-list-content',
   args: {
     imageSrc: networkImageSrc,
     textTitle: 'Network',

@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -14,5 +14,26 @@ export default css`
     object-fit: cover;
     object-position: center center;
     border-radius: inherit;
+  }
+
+  :host([boxed]) {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+  }
+
+  :host([boxed]) img {
+    width: 20px;
+    height: 20px;
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
+  }
+
+  :host([boxed]) wui-icon {
+    width: 20px;
+    height: 20px;
   }
 `

@@ -8,7 +8,7 @@ import type { WuiBalance } from '@reown/appkit-ui/wui-balance'
 type Component = Meta<WuiBalance>
 
 export default {
-  title: 'Composites/wui-balance',
+  title: 'Composites/appkit-wui-balance',
   args: {
     dollars: '4,798',
     pennies: '75'

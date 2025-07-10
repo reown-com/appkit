@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiSelect>
 
 export default {
-  title: 'Composites/wui-select',
+  title: 'Composites/appkit-wui-select',
   args: {
     imageSrc: 'https://picsum.photos/200/300',
     text: 'Text',

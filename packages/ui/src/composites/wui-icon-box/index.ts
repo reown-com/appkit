@@ -7,7 +7,7 @@ import '../../components/wui-icon/index.js'
 import { ICON_COLOR } from '../../components/wui-icon/index.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconSizeType, IconType } from '../../utils/TypeUtil.js'
+import type { IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 

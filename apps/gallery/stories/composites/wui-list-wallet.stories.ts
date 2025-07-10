@@ -12,7 +12,7 @@ import { iconOptions, tagOptions, walletImageSrc } from '../../utils/PresetUtils
 type Component = Meta<WuiListWallet>
 
 export default {
-  title: 'Composites/wui-list-wallet',
+  title: 'Composites/appkit-wui-list-wallet',
   args: {
     name: 'MetaMask',
     imageSrc: walletImageSrc,

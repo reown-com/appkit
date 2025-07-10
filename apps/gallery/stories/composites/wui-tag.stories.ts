@@ -11,7 +11,7 @@ import { iconOptions, tagOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiTag>
 
 export default {
-  title: 'Composites/wui-tag',
+  title: 'Composites/appkit-wui-tag',
   args: {
     variant: 'accent',
     size: 'md',

@@ -6,19 +6,18 @@ import type { WuiListNetwork } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-network'
 
 import '../../components/gallery-container'
-import { networkImageSrc, walletImagesOptions } from '../../utils/PresetUtils'
+import { networkImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiListNetwork>
 
 export default {
-  title: 'Composites/wui-list-network',
+  title: 'Composites/appkit-wui-list-network',
   args: {
-    walletImages: walletImagesOptions,
     imageSrc: networkImageSrc,
     name: 'Ethereum',
-    transparent: false
+    disabled: false
   },
-  transparent: {
+  disabled: {
     control: { type: 'boolean' }
   }
 } as Component
@@ -30,7 +29,6 @@ export const Default: Component = {
         .imageSrc=${args.imageSrc}
         ?disabled=${args.disabled}
         name=${args.name}
-        ?transparent=${args.transparent}
       ></wui-list-network>
     </gallery-container>`
 }

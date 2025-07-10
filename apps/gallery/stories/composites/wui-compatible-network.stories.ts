@@ -10,7 +10,7 @@ import { networkImages } from '../../utils/PresetUtils'
 type Component = Meta<WuiCompatibleNetwork>
 
 export default {
-  title: 'Composites/wui-compatible-network',
+  title: 'Composites/appkit-wui-compatible-network',
   args: {
     text: 'Only receive assets on these networks"',
     networkImages

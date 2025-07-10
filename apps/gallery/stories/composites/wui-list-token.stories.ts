@@ -11,7 +11,7 @@ import { networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiListToken>
 
 export default {
-  title: 'Composites/wui-list-token',
+  title: 'Composites/appkit-wui-list-token',
   args: {
     tokenName: 'Ethereum',
     tokenImageUrl: networkImageSrc,

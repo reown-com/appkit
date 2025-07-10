@@ -1,11 +1,11 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: block;
     width: var(--local-width);
     height: var(--local-height);
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
     overflow: hidden;
     position: relative;
   }

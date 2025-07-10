@@ -10,7 +10,7 @@ import { address, avatarImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiAvatar>
 
 export default {
-  title: 'Composites/wui-avatar',
+  title: 'Composites/appkit-wui-avatar',
   args: {
     imageSrc: avatarImageSrc,
     alt: 'Avatar',

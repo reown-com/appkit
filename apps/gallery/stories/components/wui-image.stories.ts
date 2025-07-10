@@ -10,13 +10,20 @@ import { walletImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiImage>
 
 export default {
-  title: 'Components/wui-image',
+  title: 'Components/appkit-wui-image',
   args: {
     src: walletImageSrc,
-    alt: 'Image of Rainbow'
+    alt: 'Image of Rainbow',
+    boxed: false
+  },
+  argTypes: {
+    boxed: {
+      control: { type: 'boolean' }
+    }
   }
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-image src=${args.src} alt=${args.alt}></wui-image>`
+  render: args =>
+    html`<wui-image .src=${args.src} alt=${args.alt} ?boxed=${args.boxed}></wui-image>`
 }

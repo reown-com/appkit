@@ -10,16 +10,15 @@ import '../../components/gallery-container'
 type Component = Meta<WuiListSocial>
 
 export default {
-  title: 'Composites/wui-list-social',
+  title: 'Composites/appkit-wui-list-social',
   args: {
     name: 'google',
     logo: 'google',
-    align: 'left'
+    disabled: false
   },
   argTypes: {
-    align: {
-      options: ['left', 'center'],
-      control: { type: 'select' }
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -27,6 +26,10 @@ export default {
 export const Default: Component = {
   render: args =>
     html` <gallery-container width="336">
-      <wui-list-social align=${args.align} logo=${args.logo} name=${args.name}></wui-list-social>
+      <wui-list-social
+        ?disabled=${args.disabled}
+        logo=${args.logo}
+        name=${args.name}
+      ></wui-list-social>
     </gallery-container>`
 }

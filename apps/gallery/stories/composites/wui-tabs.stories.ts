@@ -8,7 +8,7 @@ import type { WuiTabs } from '@reown/appkit-ui/wui-tabs'
 type Component = Meta<WuiTabs>
 
 export default {
-  title: 'Composites/wui-tabs',
+  title: 'Composites/appkit-wui-tabs',
   args: {
     size: 'md',
     tabs: [

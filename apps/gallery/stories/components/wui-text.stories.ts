@@ -11,7 +11,7 @@ import { textAlignOptions, textColorOptions, textOptions } from '../../utils/Pre
 type Component = Meta<WuiText>
 
 export default {
-  title: 'Components/wui-text',
+  title: 'Components/appkit-wui-text',
   args: {
     variant: 'h2-regular-mono',
     align: 'left',

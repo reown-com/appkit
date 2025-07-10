@@ -11,7 +11,7 @@ import { cardSelectOptions, walletImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiCardSelect>
 
 export default {
-  title: 'Composites/wui-card-select',
+  title: 'Composites/appkit-wui-card-select',
   args: {
     imageSrc: walletImageSrc,
     name: 'Rainbow',

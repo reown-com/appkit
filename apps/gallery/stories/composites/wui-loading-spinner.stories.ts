@@ -10,7 +10,7 @@ import { textColorOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiLoadingSpinner>
 
 export default {
-  title: 'Composites/wui-loading-spinner',
+  title: 'Composites/appkit-wui-loading-spinner',
   args: {
     color: 'accent-primary',
     size: 'lg'
