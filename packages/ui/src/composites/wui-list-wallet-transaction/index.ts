@@ -1,13 +1,13 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-chip/index.js'
+import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
 @customElement('wui-list-wallet-transaction')
@@ -29,16 +29,16 @@ export class WuiListWalletTransaction extends LitElement {
   public override render() {
     return html`
       <wui-flex justifyContent="space-between" alignItems="center">
-        <wui-text variant="paragraph-500" color="fg-200">Sending</wui-text>
-        <wui-flex gap="xs" alignItems="center">
-          <wui-text variant="paragraph-400" color="fg-100">
+        <wui-text variant="md-regular" color="secondary">Sending</wui-text>
+        <wui-flex gap="1" alignItems="center">
+          <wui-text variant="md-medium" color="primary">
             ${this.amount} ${this.networkCurreny}
           </wui-text>
           ${this.templateNetworkVisual()}
         </wui-flex>
       </wui-flex>
       <wui-flex justifyContent="space-between" alignItems="center">
-        <wui-text variant="paragraph-500" color="fg-200">To</wui-text>
+        <wui-text variant="md-regular" color="secondary">To</wui-text>
         <wui-chip
           icon="externalLink"
           variant="shadeSmall"
@@ -55,7 +55,7 @@ export class WuiListWalletTransaction extends LitElement {
       return html`<wui-image src=${this.networkImageUrl} alt="Network Image"></wui-image>`
     }
 
-    return html`<wui-icon size="inherit" color="fg-200" name="networkPlaceholder"></wui-icon>`
+    return html`<wui-icon-box color="secondary" icon="networkPlaceholder"></wui-icon-box>`
   }
 }
 

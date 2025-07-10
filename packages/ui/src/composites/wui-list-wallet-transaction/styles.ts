@@ -1,25 +1,24 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: flex;
     flex-direction: column;
-    gap: var(--wui-spacing-l);
-    padding: 17px 18px 17px var(--wui-spacing-m);
+    gap: ${({ spacing }) => spacing[4]};
+    padding: ${({ spacing }) => spacing[4]} ${({ spacing }) => spacing[3]};
     width: 100%;
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-250);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
   wui-image {
-    width: var(--wui-icon-size-lg);
-    height: var(--wui-icon-size-lg);
-    border-radius: var(--wui-border-radius-3xl);
+    width: 16px;
+    height: 16px;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
-  wui-icon {
-    width: var(--wui-icon-size-lg);
-    height: var(--wui-icon-size-lg);
+  wui-icon-box {
+    width: 16px;
+    height: 16px;
   }
 `
