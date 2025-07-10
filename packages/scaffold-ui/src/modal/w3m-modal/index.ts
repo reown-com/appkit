@@ -266,9 +266,9 @@ export class W3mModalBase extends LitElement {
       ? sessions.some(s => s.data.accountAddress === newAddress)
       : true
 
-    const isSwitchAndAuthenticated = isSwitchingNamespace && isAuthenticated
+    const shouldGoBack = isSwitchingNamespace && isAuthenticated && !this.enableEmbedded
     const shouldCloseEmbeddedModal = this.enableEmbedded && wasPreviouslyDisconnected
-    const shouldGoBack = isSwitchAndAuthenticated && !this.enableEmbedded
+
     if (shouldGoBack) {
       RouterController.goBack()
     } else if (shouldCloseEmbeddedModal) {
