@@ -213,11 +213,12 @@ export class W3mFrame {
             return
           }
           const appEvent = W3mFrameSchema.appEvent.safeParse(data)
-          if (appEvent.success) {
-            callback(appEvent.data)
-          } else {
+          // Frame side, if the event is invalid, we allow it to go through anyways
+          if (!appEvent.success) {
             console.warn('W3mFrame: invalid app event', appEvent.error)
           }
+
+          callback(data as W3mFrameTypes.AppEvent)
         })
       }
     },
