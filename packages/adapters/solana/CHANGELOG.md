@@ -1,5 +1,35 @@
 # @reown/appkit-adapter-solana
 
+## 1.7.14
+
+### Patch Changes
+
+- [#4622](https://github.com/reown-com/appkit/pull/4622) [`b1555b2`](https://github.com/reown-com/appkit/commit/b1555b2e838f8b2a614ed048c28edc7298911917) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on network logics where some networks doesn't have required fields and causing issues
+
+- [#4609](https://github.com/reown-com/appkit/pull/4609) [`c3e42fa`](https://github.com/reown-com/appkit/commit/c3e42fae24b059711c5094ca8f327ca8b6857041) Thanks [@tomiir](https://github.com/tomiir)! - Adds chainId parameter to CONNECT_SUCCESS and CONNECT_SOCIAL_SUCCESS events
+
+- [#4560](https://github.com/reown-com/appkit/pull/4560) [`cfe8784`](https://github.com/reown-com/appkit/commit/cfe878474c8c58f856c117ca59ee702a5c1380c4) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Removes Coinbase OnRamp option as it's available under Meld's options
+
+- [#4615](https://github.com/reown-com/appkit/pull/4615) [`127c7fe`](https://github.com/reown-com/appkit/commit/127c7fec63c2e4590dc74c369861b5efdda9cec4) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades `@solana/web3.js` to latest for high severity dependency issue
+
+- [#4610](https://github.com/reown-com/appkit/pull/4610) [`9c73366`](https://github.com/reown-com/appkit/commit/9c73366f3650c1b368c4029f47e40163d14a83c3) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes unsyncing issue on initialization if enableReconnect is false
+
+- [#4609](https://github.com/reown-com/appkit/pull/4609) [`c3e42fa`](https://github.com/reown-com/appkit/commit/c3e42fae24b059711c5094ca8f327ca8b6857041) Thanks [@tomiir](https://github.com/tomiir)! - Always fires INITIALIZE event regardless of analytics config
+
+- [#4625](https://github.com/reown-com/appkit/pull/4625) [`a8212a7`](https://github.com/reown-com/appkit/commit/a8212a73ac3b323b4344a682133f87280b1ec4c2) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where approving ERC20 token spending with embedded wallet resulted in infinite spinner'
+
+- [#4642](https://github.com/reown-com/appkit/pull/4642) [`bbc8193`](https://github.com/reown-com/appkit/commit/bbc81937ff6721e9339f76504cff95065a5c3dbe) Thanks [@enesozturk](https://github.com/enesozturk)! - Improves error messages with better clarity and phrasing
+
+- [#4641](https://github.com/reown-com/appkit/pull/4641) [`9b7c7d0`](https://github.com/reown-com/appkit/commit/9b7c7d0cb812a9ccb9091fbb2c37604076c7f2bd) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on defaultAccountTypes where after disconnection it takes priority of whatever the last active account type is
+
+- Updated dependencies [[`b1555b2`](https://github.com/reown-com/appkit/commit/b1555b2e838f8b2a614ed048c28edc7298911917), [`c3e42fa`](https://github.com/reown-com/appkit/commit/c3e42fae24b059711c5094ca8f327ca8b6857041), [`cfe8784`](https://github.com/reown-com/appkit/commit/cfe878474c8c58f856c117ca59ee702a5c1380c4), [`127c7fe`](https://github.com/reown-com/appkit/commit/127c7fec63c2e4590dc74c369861b5efdda9cec4), [`9c73366`](https://github.com/reown-com/appkit/commit/9c73366f3650c1b368c4029f47e40163d14a83c3), [`c3e42fa`](https://github.com/reown-com/appkit/commit/c3e42fae24b059711c5094ca8f327ca8b6857041), [`a8212a7`](https://github.com/reown-com/appkit/commit/a8212a73ac3b323b4344a682133f87280b1ec4c2), [`a083a94`](https://github.com/reown-com/appkit/commit/a083a941a87ae0658c34cf68a4381284d5acb67b), [`bbc8193`](https://github.com/reown-com/appkit/commit/bbc81937ff6721e9339f76504cff95065a5c3dbe), [`9b7c7d0`](https://github.com/reown-com/appkit/commit/9b7c7d0cb812a9ccb9091fbb2c37604076c7f2bd)]:
+  - @reown/appkit-utils@1.7.14
+  - @reown/appkit-controllers@1.7.14
+  - @reown/appkit@1.7.14
+  - @reown/appkit-common@1.7.14
+  - @reown/appkit-polyfills@1.7.14
+  - @reown/appkit-wallet@1.7.14
+
 ## 1.7.13
 
 ### Patch Changes
