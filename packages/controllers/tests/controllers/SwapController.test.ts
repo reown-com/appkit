@@ -10,7 +10,9 @@ import {
   ChainController,
   ConnectionController,
   type ConnectionControllerClient,
+  ConnectorController,
   type NetworkControllerClient,
+  RouterController,
   SwapController
 } from '../../exports/index.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
@@ -137,5 +139,30 @@ describe('SwapController', () => {
     SwapController.setSourceTokenAmount('')
     await SwapController.swapTokens()
     expect(SwapController.state.toTokenAmount).toEqual('')
+  })
+
+  it('should replace SwapPreview view when approval transaction is approved', async () => {
+    const connectionControllerClientSpy = vi
+      .spyOn(ConnectionController, 'sendTransaction')
+      .mockImplementationOnce(() => Promise.resolve(null))
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(RouterController, 'pushTransactionStack').mockImplementationOnce(() =>
+      Promise.resolve()
+    )
+    const onEmbeddedWalletApprovalSuccessSpy = vi.spyOn(
+      SwapController,
+      'onEmbeddedWalletApprovalSuccess'
+    )
+    SwapController.state.approvalTransaction = {
+      to: '0x123',
+      data: '0x123',
+      value: 10000n,
+      toAmount: '1'
+    }
+    await SwapController.sendTransactionForApproval(SwapController.state.approvalTransaction)
+    expect(connectionControllerClientSpy).toHaveBeenCalled()
+    expect(RouterController.pushTransactionStack).toHaveBeenCalledWith({
+      onSuccess: onEmbeddedWalletApprovalSuccessSpy
+    })
   })
 })

@@ -54,7 +54,6 @@ export interface RouterControllerState {
     | 'EmailVerifyDevice'
     | 'GetWallet'
     | 'Networks'
-    | 'OnRampActivity'
     | 'OnRampFiatSelect'
     | 'OnRampProviders'
     | 'OnRampTokenSelect'

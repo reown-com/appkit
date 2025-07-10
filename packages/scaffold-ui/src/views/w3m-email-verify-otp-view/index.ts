@@ -37,7 +37,11 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
-          properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
+          properties: {
+            method: 'email',
+            name: this.authConnector.name || 'Unknown',
+            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+          }
         })
 
         if (OptionsController.state.siwx) {
