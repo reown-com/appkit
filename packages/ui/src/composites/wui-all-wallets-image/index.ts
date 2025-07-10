@@ -23,31 +23,21 @@ export class WuiAllWalletsImage extends LitElement {
     const isPlaceholders = this.walletImages.length < TOTAL_IMAGES
 
     return html`${this.walletImages
-        .slice(0, TOTAL_IMAGES)
-        .map(
-          ({ src, walletName }) => html`
-            <wui-wallet-image
-              size="inherit"
-              imageSrc=${src}
-              name=${ifDefined(walletName)}
-            ></wui-wallet-image>
-          `
-        )}
-      ${isPlaceholders
-        ? [...Array(TOTAL_IMAGES - this.walletImages.length)].map(
-            () => html` <wui-wallet-image size="inherit" name=""></wui-wallet-image>`
-          )
-        : null}
-      <wui-flex>
-        <wui-icon-box
-          size="xxs"
-          iconSize="xxs"
-          iconcolor="success-100"
-          backgroundcolor="success-100"
-          icon="checkmark"
-          background="opaque"
-        ></wui-icon-box>
-      </wui-flex>`
+      .slice(0, TOTAL_IMAGES)
+      .map(
+        ({ src, walletName }) => html`
+          <wui-wallet-image
+            size="inherit"
+            imageSrc=${src}
+            name=${ifDefined(walletName)}
+          ></wui-wallet-image>
+        `
+      )}
+    ${isPlaceholders
+      ? [...Array(TOTAL_IMAGES - this.walletImages.length)].map(
+          () => html` <wui-wallet-image size="sm" name=""></wui-wallet-image>`
+        )
+      : null} `
   }
 }
 

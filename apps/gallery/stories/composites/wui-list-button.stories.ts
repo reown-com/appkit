@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import type { WuiListButton } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-button'
+import type { WuiListButton } from '@reown/appkit-ui/wui-list-button'
 
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'
@@ -11,11 +11,11 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiListButton>
 
 export default {
-  title: 'Composites/wui-list-button',
+  title: 'Composites/appkit-wui-list-button',
   args: {
     text: 'Continue with a wallet',
     size: 'lg',
-    icon: 'checkMarkVerified'
+    icon: 'checkmarkVerified'
   },
   argTypes: {
     size: {

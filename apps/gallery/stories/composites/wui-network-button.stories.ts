@@ -10,13 +10,22 @@ import { networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiNetworkButton>
 
 export default {
-  title: 'Composites/wui-network-button',
+  title: 'Composites/appkit-wui-network-button',
   args: {
     imageSrc: networkImageSrc,
-    disabled: false
+    disabled: false,
+    size: 'lg',
+    isUnsupportedChain: false
   },
   argTypes: {
     disabled: {
+      control: { type: 'boolean' }
+    },
+    size: {
+      options: ['sm', 'md', 'lg'],
+      control: { type: 'select' }
+    },
+    isUnsupportedChain: {
       control: { type: 'boolean' }
     }
   }
@@ -24,7 +33,11 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-network-button ?disabled=${args.disabled} .imageSrc=${args.imageSrc}
+    html`<wui-network-button
+      ?disabled=${args.disabled}
+      .imageSrc=${args.imageSrc}
+      .size=${args.size}
+      .isUnsupportedChain=${args.isUnsupportedChain}
       >Ethereum</wui-network-button
     >`
 }

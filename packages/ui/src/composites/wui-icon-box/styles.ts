@@ -10,6 +10,10 @@ export default css`
     padding: ${({ spacing }) => spacing[1]} !important;
   }
 
+  :host([data-padding='2']) {
+    padding: ${({ spacing }) => spacing[2]} !important;
+  }
+
   :host > wui-icon {
     color: var(--local-icon-color);
   }

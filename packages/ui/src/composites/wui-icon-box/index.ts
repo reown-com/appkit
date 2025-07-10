@@ -18,8 +18,9 @@ const BACKGROUND_COLOR = {
   default: vars.tokens.theme.foregroundPrimary,
   error: vars.tokens.core.backgroundError,
   warning: vars.tokens.core.backgroundWarning,
-  success: vars.tokens.core.backgroundSuccess
-}
+  success: vars.tokens.core.backgroundSuccess,
+  secondary: vars.tokens.theme.foregroundSecondary
+} as const
 
 @customElement('wui-icon-box')
 export class WuiIconBox extends LitElement {
@@ -30,19 +31,25 @@ export class WuiIconBox extends LitElement {
 
   @property() public size: 'sm' | 'md' | 'lg' | 'xl' = 'md'
 
-  @property() public color: 'error' | 'default' | 'accent-primary' | 'warning' | 'success' =
-    'default'
+  @property() public padding?: '1' | '2' = '1'
+
+  @property() public color:
+    | 'error'
+    | 'default'
+    | 'accent-primary'
+    | 'warning'
+    | 'success'
+    | 'secondary' = 'default'
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['padding'] = this.padding
     this.style.cssText = `
        --local-bg-color: ${BACKGROUND_COLOR[this.color]};
-       --local-icon-color: ${ICON_COLOR[this.color]};
+       --local-icon-color: ${this.color === 'secondary' ? ICON_COLOR['default'] : ICON_COLOR[this.color]};
    `
 
-    return html`
-      <wui-icon color=${this.color} size=${ifDefined(this.size)} name=${this.icon}></wui-icon>
-    `
+    return html` <wui-icon size=${ifDefined(this.size)} name=${this.icon}></wui-icon> `
   }
 }
 

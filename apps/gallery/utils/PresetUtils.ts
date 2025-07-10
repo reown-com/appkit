@@ -143,7 +143,7 @@ export const gridContentOptions: GridContentType[] = [
 
 export const walletImagesOptions = [
   {
-    src: 'https://explorer-api.walletconnect.org/v3/logo/md/018b2d52-10e9-4158-1fde-a5d5bac5aa00?projectId=c1781fc385454899a2b1385a2b83df3b',
+    src: 'https://walletguide.walletconnect.network/_next/image?url=https%3A%2F%2Fapi.web3modal.com%2Fv2%2Fwallet-image%2F200x200%2Feebe4a7f-7166-402f-92e0-1f64ca2aa800%3FprojectId%3Dad53ae497ee922ad9beb2ef78b1a7a6e%26st%3Dwallet-guide%26sv%3D1.0.0&w=384&q=75',
     walletName: 'MetaMask'
   },
   {
@@ -151,7 +151,7 @@ export const walletImagesOptions = [
     walletName: 'Rainbow'
   },
   {
-    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/f216b371-96cf-409a-9d88-296392b85800?projectId=c1781fc385454899a2b1385a2b83df3b',
+    src: 'https://walletguide.walletconnect.network/_next/image?url=https%3A%2F%2Fapi.web3modal.com%2Fv2%2Fwallet-image%2F200x200%2F7677b54f-3486-46e2-4e37-bf8747814f00%3FprojectId%3Dad53ae497ee922ad9beb2ef78b1a7a6e%26st%3Dwallet-guide%26sv%3D1.0.0&w=384&q=75',
     walletName: 'Zerion'
   },
   {
@@ -215,6 +215,7 @@ export const iconOptions: IconType[] = [
   'arrowRight',
   'arrowTop',
   'browser',
+  'card',
   'checkmark',
   'checkmarkVerified',
   'chevronBottom',

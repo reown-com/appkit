@@ -6,31 +6,21 @@ import '@reown/appkit-ui/wui-list-description'
 import type { WuiListDescription } from '@reown/appkit-ui/wui-list-description'
 
 import '../../components/gallery-container'
-import { colorOptions, iconOptions } from '../../utils/PresetUtils'
+import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiListDescription>
 
 export default {
-  title: 'Composites/wui-list-description',
+  title: 'Composites/appkit-wui-list-description',
   args: {
     icon: 'card',
     text: 'Buy Crypto',
     tag: 'Popular',
-    description: 'Easy with card or bank account',
-    iconBackgroundColor: 'success-100',
-    iconColor: 'success-100'
+    description: 'Easy with card or bank account'
   },
   argTypes: {
     icon: {
       options: iconOptions,
-      control: { type: 'select' }
-    },
-    iconBackgroundColor: {
-      options: colorOptions,
-      control: { type: 'select' }
-    },
-    iconColor: {
-      options: colorOptions,
       control: { type: 'select' }
     }
   }
@@ -44,8 +34,6 @@ export const Default: Component = {
         text=${args.text}
         .tag=${args.tag}
         description=${args.description}
-        iconBackgroundColor=${args.iconBackgroundColor}
-        iconColor=${args.iconColor}
       ></wui-list-description>
     </gallery-container>`
 }
