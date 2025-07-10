@@ -172,13 +172,15 @@ export class W3mFrame {
         }
         const frameEvent = W3mFrameSchema.frameEvent.safeParse(data)
 
-        if (frameEvent.success) {
-          if (frameEvent.data?.id === id) {
-            callback(frameEvent.data)
-            window.removeEventListener('message', eventHandler)
-          }
-        } else {
+        if (!frameEvent.success) {
           console.warn('W3mFrame: invalid frame event', frameEvent.error.message)
+
+          return
+        }
+
+        if (frameEvent.data?.id === id) {
+          callback(frameEvent.data)
+          window.removeEventListener('message', eventHandler)
         }
       }
       if (W3mFrameHelpers.isClient) {
