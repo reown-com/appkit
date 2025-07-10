@@ -7,7 +7,7 @@ export default css`
     align-items: center;
     background-color: var(--local-bg-color);
     border-radius: ${({ borderRadius }) => borderRadius[2]};
-    padding: ${({ spacing }) => spacing[2]} !important;
+    padding: ${({ spacing }) => spacing[1]} !important;
   }
 
   :host > wui-icon {

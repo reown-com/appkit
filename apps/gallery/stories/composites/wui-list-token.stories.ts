@@ -15,9 +15,10 @@ export default {
   args: {
     tokenName: 'Ethereum',
     tokenImageUrl: networkImageSrc,
-    tokenValue: '$1,740.72',
-    tokenAmount: 0.867,
-    tokenCurrency: 'ETH'
+    tokenValue: 1740.72,
+    tokenAmount: '0.867',
+    tokenCurrency: 'ETH',
+    clickable: false
   }
 } as Component
 
@@ -30,6 +31,7 @@ export const Default: Component = {
         tokenValue=${args.tokenValue}
         tokenAmount=${args.tokenAmount}
         tokenCurrency=${args.tokenCurrency}
+        clickable=${args.clickable}
       ></wui-list-token>
     </gallery-container>`
 }

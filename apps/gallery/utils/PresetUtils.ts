@@ -168,7 +168,7 @@ export const walletImageSrc =
   'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=c1781fc385454899a2b1385a2b83df3b'
 
 export const networkImageSrc =
-  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b'
+  'https://api.web3modal.org/public/getAssetImage/ba0ba0cd-17c6-4806-ad93-f9d174f17900?projectId=702e2d45d9debca66795614cddb5c1ca&st=appkit&sv=react-wagmi-1.7.13'
 
 export const networkImages = [
   'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b',

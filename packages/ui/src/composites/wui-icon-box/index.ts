@@ -7,20 +7,18 @@ import '../../components/wui-icon/index.js'
 import { ICON_COLOR } from '../../components/wui-icon/index.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type {
-  BackgroundColorType,
-  IconColorType,
-  IconSizeType,
-  IconType
-} from '../../utils/TypeUtil.js'
+import type { IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Constants ------------------------------------------ //
 
 const BACKGROUND_COLOR = {
-  foregroundSecondary: vars.tokens.theme.foregroundSecondary,
-  foregroundAccent010: vars.tokens.core.foregroundAccent010
+  'accent-primary': vars.tokens.core.foregroundAccent010,
+  default: vars.tokens.theme.foregroundPrimary,
+  error: vars.tokens.core.backgroundError,
+  warning: vars.tokens.core.backgroundWarning,
+  success: vars.tokens.core.backgroundSuccess
 }
 
 @customElement('wui-icon-box')
@@ -30,25 +28,20 @@ export class WuiIconBox extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public icon: IconType = 'copy'
 
-  @property() public iconColor: IconColorType = 'inherit'
+  @property() public size: 'sm' | 'md' | 'lg' | 'xl' = 'md'
 
-  @property() public iconSize?: Exclude<IconSizeType, 'inherit'>
-
-  @property() public backgroundColor: BackgroundColorType = 'foregroundSecondary'
+  @property() public color: 'error' | 'default' | 'accent-primary' | 'warning' | 'success' =
+    'default'
 
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
-       --local-bg-color: ${BACKGROUND_COLOR[this.backgroundColor]};
-       --local-icon-color: ${this.iconColor === 'inherit' ? 'inherit' : ICON_COLOR[this.iconColor]};
+       --local-bg-color: ${BACKGROUND_COLOR[this.color]};
+       --local-icon-color: ${ICON_COLOR[this.color]};
    `
 
     return html`
-      <wui-icon
-        color=${this.iconColor}
-        size=${ifDefined(this.iconSize)}
-        name=${this.icon}
-      ></wui-icon>
+      <wui-icon color=${this.color} size=${ifDefined(this.size)} name=${this.icon}></wui-icon>
     `
   }
 }

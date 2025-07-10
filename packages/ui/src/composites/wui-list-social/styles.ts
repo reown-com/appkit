@@ -1,6 +1,10 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
+  :host {
+    width: 100%;
+  }
+
   button {
     column-gap: var(--wui-spacing-s);
     padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
