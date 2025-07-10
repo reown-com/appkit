@@ -45,6 +45,7 @@ import {
   usePay,
   usePayUrlActions
 } from '@reown/appkit-pay/react'
+import { solana, solanaDevnet } from '@reown/appkit/networks'
 
 import { useChakraToast } from './Toast'
 
@@ -71,7 +72,7 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   },
   USDC_SOLANA: {
     asset: {
-      network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipNetworkId,
+      network: solana.caipNetworkId,
       asset: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
       metadata: {
         name: 'USD Coin',
@@ -83,7 +84,7 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   },
   SOL_DEV: {
     asset: {
-      network: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1' as CaipNetworkId,
+      network: solanaDevnet.caipNetworkId,
       asset: 'native',
       metadata: { name: 'Solana', symbol: 'SOL', decimals: 9 }
     },
