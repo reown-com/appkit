@@ -7,6 +7,7 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
+import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
@@ -56,6 +57,8 @@ export const EventsController = {
         return
       }
 
+      const caipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
+
       await api.post({
         path: '/e',
         params: EventsController.getSdkProperties(),
@@ -64,7 +67,7 @@ export const EventsController = {
           url: window.location.href,
           domain: window.location.hostname,
           timestamp: payload.timestamp,
-          props: { ...payload.data, address }
+          props: { ...payload.data, address, caipNetworkId }
         }
       })
 
