@@ -269,7 +269,7 @@ describe('Base', () => {
 
       const errors = [
         {
-          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          alert: ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED,
           message:
             'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
         },
