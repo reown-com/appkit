@@ -226,8 +226,8 @@ export class W3mModalBase extends LitElement {
   private async onNewAddress(caipAddress?: CaipAddress) {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const isPrevDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
-    const isNextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
-    const sessions = await SIWXUtil.getAllSessions()
+    const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
+    const sessions = await SIWXUtil.getSessions({ address: newAddress })
     const isNextAuthenticated =
       caipAddress && SIWXUtil.getSIWX()
         ? sessions.some(
@@ -237,11 +237,11 @@ export class W3mModalBase extends LitElement {
         : true
 
     // When users decline SIWE signature, we should close the modal
-    const isDisconnectedInSameNamespace = !isNextConnected && !isSwitchingNamespace
+    const isDisconnectedInSameNamespace = !newAddress && !isSwitchingNamespace
 
     // If user is switching to another namespace and connected in that namespace, we should go back
     const isSwitchingNamespaceAndConnected =
-      isSwitchingNamespace && isNextConnected && isNextAuthenticated
+      isSwitchingNamespace && newAddress && isNextAuthenticated
 
     // If user is in profile wallets view, we should not go back or close the modal
     const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
@@ -251,7 +251,7 @@ export class W3mModalBase extends LitElement {
         ModalController.close()
       } else if (isSwitchingNamespaceAndConnected && !this.enableEmbedded) {
         RouterController.goBack()
-      } else if (this.enableEmbedded && isPrevDisconnected && isNextConnected) {
+      } else if (this.enableEmbedded && isPrevDisconnected && newAddress) {
         ModalController.close()
       }
     }
