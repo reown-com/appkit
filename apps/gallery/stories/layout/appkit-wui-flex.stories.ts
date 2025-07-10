@@ -20,7 +20,7 @@ import {
 type Component = Meta<WuiFlex>
 
 export default {
-  title: 'Layout/wui-flex',
+  title: 'Layout/appkit-wui-flex',
   args: {
     gap: 'm'
   },

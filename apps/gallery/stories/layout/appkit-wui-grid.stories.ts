@@ -11,7 +11,7 @@ import { gridContentOptions, gridItemsOptions, spacingOptions } from '../../util
 type Component = Meta<WuiGrid>
 
 export default {
-  title: 'Layout/wui-grid',
+  title: 'Layout/appkit-wui-grid',
   args: {
     gridTemplateColumns: 'repeat(3, 1fr)',
     gap: 'm'
