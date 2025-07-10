@@ -24,7 +24,6 @@ import {
   FrameGetSmartAccountEnabledNetworksResponse,
   FrameGetSocialRedirectUriResponse,
   FrameGetUserResponse,
-  FrameInitSmartAccountResponse,
   FrameIsConnectedResponse,
   FrameReadyResponse,
   FrameSession,
@@ -123,7 +122,6 @@ export namespace W3mFrameTypes {
     FrameGetSmartAccountEnabledNetworksResponse: z.infer<
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
-    FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
     FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
