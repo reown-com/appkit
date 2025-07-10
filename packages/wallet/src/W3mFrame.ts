@@ -68,12 +68,6 @@ export class W3mFrame {
     return window.location.origin
   }
 
-  private validateMessageOrigin(event: MessageEvent): boolean {
-    // Validate that the message comes from a trusted origin
-    const trustedOrigin = this.getTrustedOrigin()
-    return event.origin === trustedOrigin
-  }
-
   public constructor({
     projectId,
     isAppClient = false,
