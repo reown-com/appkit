@@ -16,13 +16,24 @@ vi.useFakeTimers({
 })
 
 const mocks = {
-  mockFetchResponse: (response: unknown) => {
+  mockFetchResponse: (response: unknown, ok: boolean = true) => {
     return {
+      ok,
       json: async () => response,
+      text: async () => (typeof response === 'string' ? response : JSON.stringify(response)),
       headers: {
         get: () => 'application/json'
       }
     } as any
+  },
+  createMockJWT: (payload: any) => {
+    // Create a mock JWT token with proper format (header.payload.signature)
+    const header = { alg: 'HS256', typ: 'JWT' }
+    const encodedHeader = btoa(JSON.stringify(header))
+    const encodedPayload = btoa(JSON.stringify(payload))
+    const signature = 'mock_signature'
+
+    return `${encodedHeader}.${encodedPayload}.${signature}`
   }
 }
 
@@ -35,15 +46,43 @@ describe.each([
   }
 ] as const)('ReownAuthentication - $namespace', ({ namespace, id, address }) => {
   let siwx: ReownAuthentication
+  let mockJWT: string
 
   beforeAll(() => {
     global.fetch = vi.fn()
-    document.location.host = 'mocked.com'
-    document.location.href = 'http://mocked.com/'
+
+    // Mock document.location properly
+    Object.defineProperty(global, 'document', {
+      value: {
+        location: {
+          host: 'mocked.com',
+          href: 'http://mocked.com/'
+        }
+      },
+      writable: true
+    })
   })
 
   beforeEach(() => {
     siwx = new ReownAuthentication()
+
+    // Create a shared mock JWT for all tests
+    mockJWT = mocks.createMockJWT({
+      aud: 'test-audience',
+      iss: 'test-issuer',
+      exp: Math.floor(Date.now() / 1000) + 3600,
+      projectIdKey: 'test-project-id',
+      sub: 'test-subject',
+      address: address,
+      chainId: namespace === 'eip155' ? id : id.toString(),
+      chainNamespace: namespace,
+      caip2Network: `${namespace}:${id}`,
+      uri: 'http://mocked.com/',
+      domain: 'mocked.com',
+      projectUuid: 'test-project-uuid',
+      profileUuid: 'test-profile-uuid',
+      nonce: 'mock_nonce'
+    })
   })
 
   describe('createMessage', () => {
@@ -124,6 +163,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
     it('should throw an text error if response is not json', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch')
       fetchSpy.mockResolvedValueOnce({
+        ok: false,
         headers: {
           get: () => 'text/plain'
         },
@@ -168,7 +208,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
 
-      fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: 'mock_authenticate_token' }))
+      fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 
       const session = mockSession({
         data: { accountAddress: address, chainId: `${namespace}:${id}` }
@@ -187,7 +227,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
           method: 'POST'
         }
       )
-      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token', 'mock_authenticate_token')
+      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token', mockJWT)
     })
 
     it('should use correct client id', async () => {
@@ -198,7 +238,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         'mock_client_id'
       )
 
-      fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: 'mock_authenticate_token' }))
+      fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 
       const session = mockSession({
         data: { accountAddress: address, chainId: `${namespace}:${id}` }
@@ -261,7 +301,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         walletInfo
       )
 
-      fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: 'mock_authenticate_token' }))
+      fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 
       const session = mockSession({
         data: { accountAddress: address, chainId: `${namespace}:${id}` }
@@ -463,9 +503,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       siwx.on('sessionChanged', callback)
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
-        mocks.mockFetchResponse({ token: 'mock_authenticate_token' })
-      )
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 
       const session = mockSession()
       await siwx.addSession(session)
@@ -523,9 +561,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       unsubscribe()
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
-        mocks.mockFetchResponse({ token: 'mock_authenticate_token' })
-      )
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 
       await siwx.addSession(mockSession())
 
@@ -542,9 +578,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       siwx.removeAllListeners()
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
-        mocks.mockFetchResponse({ token: 'mock_authenticate_token' })
-      )
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 
       await siwx.addSession(mockSession())
 
@@ -605,7 +639,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: undefined,
           headers: {
-            Authorization: 'Bearer mock_authenticate_token'
+            Authorization: `Bearer ${mockJWT}`
           },
           method: 'GET'
         }
@@ -658,7 +692,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: JSON.stringify({ metadata }),
           headers: {
-            Authorization: 'Bearer mock_authenticate_token'
+            Authorization: `Bearer ${mockJWT}`
           },
           method: 'PUT'
         }
@@ -697,7 +731,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: JSON.stringify({ metadata: null }),
           headers: {
-            Authorization: 'Bearer mock_authenticate_token'
+            Authorization: `Bearer ${mockJWT}`
           },
           method: 'PUT'
         }
