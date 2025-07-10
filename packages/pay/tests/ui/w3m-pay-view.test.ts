@@ -192,7 +192,7 @@ describe('W3mPayView', () => {
     await disconnectButton?.dispatchEvent(new Event('click'))
 
     expect(ConnectionController.disconnect).toHaveBeenCalledOnce()
-    expect(ModalController.close).toHaveBeenCalledOnce()
+    expect(ModalController.close).not.toHaveBeenCalled()
   })
 
   test('should show error snackbar if disconnection fails', async () => {

@@ -520,6 +520,7 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
+
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
     })

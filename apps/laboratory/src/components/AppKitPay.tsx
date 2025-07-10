@@ -45,6 +45,7 @@ import {
   usePay,
   usePayUrlActions
 } from '@reown/appkit-pay/react'
+import { solana, solanaDevnet } from '@reown/appkit/networks'
 
 import { useChakraToast } from './Toast'
 
@@ -54,7 +55,7 @@ interface AppKitPaymentAssetState {
   asset: PaymentAsset
 }
 
-type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE' | 'USDC_SOLANA'
+type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE' | 'USDC_SOLANA' | 'SOL_DEV'
 
 const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   NATIVE_BASE: {
@@ -71,7 +72,7 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   },
   USDC_SOLANA: {
     asset: {
-      network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipNetworkId,
+      network: solana.caipNetworkId,
       asset: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
       metadata: {
         name: 'USD Coin',
@@ -80,6 +81,14 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
       }
     },
     amount: 1
+  },
+  SOL_DEV: {
+    asset: {
+      network: solanaDevnet.caipNetworkId,
+      asset: 'native',
+      metadata: { name: 'Solana', symbol: 'SOL', decimals: 9 }
+    },
+    amount: 0.00001
   }
 }
 
@@ -377,12 +386,13 @@ export function AppKitPay() {
 
             <FormControl>
               <FormLabel>Presets</FormLabel>
-              <ButtonGroup spacing="4" width="full">
+              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing="3" width="full">
                 <Button
                   onClick={() => handlePresetClick(PRESETS['NATIVE_BASE'])}
                   isActive={isPresetActive(PRESETS['NATIVE_BASE'])}
                   variant={isPresetActive(PRESETS['NATIVE_BASE']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   Native Base
                 </Button>
@@ -390,7 +400,8 @@ export function AppKitPay() {
                   onClick={() => handlePresetClick(PRESETS['NATIVE_BASE_SEPOLIA'])}
                   isActive={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA'])}
                   variant={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   Native Base Sepolia
                 </Button>
@@ -398,7 +409,8 @@ export function AppKitPay() {
                   onClick={() => handlePresetClick(PRESETS['USDC_BASE'])}
                   isActive={isPresetActive(PRESETS['USDC_BASE'])}
                   variant={isPresetActive(PRESETS['USDC_BASE']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   USDC Base
                 </Button>
@@ -406,11 +418,21 @@ export function AppKitPay() {
                   onClick={() => handlePresetClick(PRESETS['USDC_SOLANA'])}
                   isActive={isPresetActive(PRESETS['USDC_SOLANA'])}
                   variant={isPresetActive(PRESETS['USDC_SOLANA']) ? 'solid' : 'outline'}
-                  flex="1"
+                  width="full"
+                  minH="44px"
                 >
                   USDC Solana
                 </Button>
-              </ButtonGroup>
+                <Button
+                  onClick={() => handlePresetClick(PRESETS['SOL_DEV'])}
+                  isActive={isPresetActive(PRESETS['SOL_DEV'])}
+                  variant={isPresetActive(PRESETS['SOL_DEV']) ? 'solid' : 'outline'}
+                  width="full"
+                  minH="44px"
+                >
+                  SOL Dev
+                </Button>
+              </SimpleGrid>
             </FormControl>
 
             <Button onClick={onToggle} variant="outline" width="full">
@@ -496,11 +518,7 @@ export function AppKitPay() {
         </CardHeader>
         <CardBody>
           <Stack spacing="4">
-            <Button
-              onClick={handleOpenPay}
-              isDisabled={!paymentDetails.recipient || isPending}
-              width="full"
-            >
+            <Button onClick={handleOpenPay} isDisabled={isPending} width="full">
               {isPending ? <Spinner /> : 'Open Pay Modal'}
             </Button>
 
