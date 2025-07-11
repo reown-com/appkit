@@ -4,7 +4,6 @@ import { ChainController, OptionsController, RouterController } from '@reown/app
 
 import { ReownAuthentication } from '../../src/configs/index'
 import { W3mDataCaptureOtpConfirmView } from '../../src/ui/w3m-data-capture-otp-confirm-view/index'
-import { HelpersUtil } from './utils/HelpersUtil'
 
 // Mock ReownAuthentication class
 const mockConfirmEmailOtp = vi.fn().mockResolvedValue(true)
