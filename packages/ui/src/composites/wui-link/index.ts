@@ -13,17 +13,17 @@ import styles from './styles.js'
 const TEXT_VARIANT_BY_SIZE = {
   sm: 'sm-medium',
   md: 'md-medium'
-}
+} as const
 
 const TEXT_COLOR_BY_VARIANT = {
   accent: 'accent-primary',
   secondary: 'secondary'
-}
+} as const
 
 const ICON_SIZE = {
   sm: '3xs',
   md: 'xxs'
-}
+} as const
 
 @customElement('wui-link')
 export class WuiLink extends LitElement {
@@ -46,7 +46,7 @@ export class WuiLink extends LitElement {
         >
           <slot></slot>
         </wui-text>
-        <wui-icon size=${ICON_SIZE[this.size]} name="arrowTopRight"></wui-icon>
+        <wui-icon name="arrowTopRight" size="md"></wui-icon>
       </button>
     `
   }

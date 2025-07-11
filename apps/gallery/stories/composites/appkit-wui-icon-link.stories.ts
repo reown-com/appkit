@@ -10,16 +10,20 @@ import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiIconLink>
 
 export default {
-  title: 'Composites/wui-icon-link',
+  title: 'Composites/appkit-wui-icon-link',
   args: {
     size: 'md',
     disabled: false,
     icon: 'copy',
-    iconColor: 'inherit'
+    variant: 'accent'
   },
   argTypes: {
     size: {
-      options: ['sm', 'md', 'lg'],
+      options: ['xs', 'sm', 'md', 'lg'],
+      control: { type: 'select' }
+    },
+    variant: {
+      options: ['accent', 'primary', 'secondary'],
       control: { type: 'select' }
     },
     disabled: {
@@ -27,10 +31,6 @@ export default {
     },
     icon: {
       options: iconOptions,
-      control: { type: 'select' }
-    },
-    iconColor: {
-      options: colorOptions,
       control: { type: 'select' }
     }
   }
@@ -42,6 +42,6 @@ export const Default: Component = {
       ?disabled=${args.disabled}
       size=${args.size}
       icon=${args.icon}
-      iconColor=${args.iconColor}
+      variant=${args.variant}
     ></wui-icon-link>`
 }

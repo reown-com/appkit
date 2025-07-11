@@ -11,11 +11,11 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiIconButton>
 
 export default {
-  title: 'Composites/wui-icon-button',
+  title: 'Composites/appkit-wui-icon-button',
   args: {
     icon: 'card',
     size: 'md',
-    variant: 'neutral-primary',
+    variant: 'accent',
     disabled: false
   },
   argTypes: {
@@ -24,11 +24,11 @@ export default {
       control: { type: 'select' }
     },
     size: {
-      options: ['xs', 'sm', 'md', 'lg'],
+      options: ['sm', 'md', 'lg'],
       control: { type: 'select' }
     },
     variant: {
-      options: ['neutral-primary', 'neutral-secondary', 'accent-primary'],
+      options: ['accent', 'secondary'],
       control: { type: 'select' }
     },
     disabled: {

@@ -22,8 +22,7 @@ export default css`
   }
 
   /* -- Focus states --------------------------------------------------- */
-  button:focus-visible:enabled,
-  button:active:enabled {
+  button:focus-visible:enabled {
     box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
   }
 
@@ -44,20 +43,17 @@ export default css`
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
-  button[data-variant='accent']:active:enabled {
+  button[data-variant='accent']:focus-visible {
     background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
-  button[data-variant='secondary']:active:enabled {
+  button[data-variant='secondary']:focus-visible {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
   }
 
-  button[data-variant='accent']:disabled {
-    background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
-  }
-
-  button[data-variant='secondary']:disabled {
-    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `

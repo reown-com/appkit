@@ -12,27 +12,24 @@ export class WuiIconLink extends LitElement {
   public static override styles = [resetStyles, elementStyles, colorStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: SizeType = 'md'
+  @property() public size: Exclude<SizeType, 'xxs' | 'mdl' | 'xl' | 'xxl'> = 'md'
 
   @property({ type: Boolean }) public disabled = false
 
   @property() public icon: IconType = 'copy'
 
-  @property() public iconColor: ColorType = 'inherit'
-
+  @property() public variant: 'accent' | 'primary' | 'secondary' = 'accent'
   // -- Render -------------------------------------------- //
   public override render() {
-    const borderRadius = this.size === 'lg' ? '--wui-border-radius-xs' : '--wui-border-radius-xxs'
-    const padding = this.size === 'lg' ? '--wui-spacing-1xs' : '--wui-spacing-2xs'
-
-    this.style.cssText = `
-    --local-border-radius: var(${borderRadius});
-    --local-padding: var(${padding});
-`
+    const iconColors = {
+      accent: 'accent-primary',
+      primary: 'inverse',
+      secondary: 'default'
+    } as const
 
     return html`
-      <button ?disabled=${this.disabled}>
-        <wui-icon color=${this.iconColor} size=${this.size} name=${this.icon}></wui-icon>
+      <button data-variant=${this.variant} ?disabled=${this.disabled} data-size=${this.size}>
+        <wui-icon color=${iconColors[this.variant]} size=${this.size} name=${this.icon}></wui-icon>
       </button>
     `
   }

@@ -3,9 +3,8 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconButtonSize, IconButtonVariant, IconType } from '../../utils/TypeUtil.js'
+import type { IconButtonSize, IconButtonVariant, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
-import '../wui-tooltip/index.js'
 import styles from './styles.js'
 
 @customElement('wui-icon-button')
@@ -15,23 +14,25 @@ export class WuiIconButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() icon: IconType = 'card'
 
-  @property() variant: IconButtonVariant = 'neutral-primary'
+  @property() variant: 'accent' | 'secondary' = 'accent'
 
-  @property() size: IconButtonSize = 'md'
+  @property() public size: Exclude<SizeType, 'xxs' | 'mdl' | 'xl' | 'xs' | 'xxl'> = 'md'
 
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.dataset['variant'] = this.variant
-    this.dataset['size'] = this.size
+    const iconColors = {
+      accent: 'accent-primary',
+      secondary: 'inverse'
+    } as const
 
     return html`<button
       data-variant=${this.variant}
       data-size=${this.size}
       ?disabled=${this.disabled}
     >
-      <wui-icon color="inherit" name=${this.icon}></wui-icon>
+      <wui-icon color=${iconColors[this.variant]} name=${this.icon}></wui-icon>
     </button>`
   }
 }
