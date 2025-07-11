@@ -67,7 +67,7 @@ export default css`
     height: 16px;
     min-width: 16px;
     min-height: 16px;
-    border-radius: ${({ borderRadius }) => borderRadius[6]};
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 
   /* -- Focus states --------------------------------------------------- */

@@ -189,13 +189,12 @@ export const tokens = {
 
 export const borderRadius = {
   '1': '4px',
-  // @TOOD: 6px doesn't exist in design system. Remove this.
-  '6': '6px',
   '2': '8px',
   // @TOOD: 10px doesn't exist in design system. Remove this.
   '10': '10px',
   '3': '12px',
   '4': '16px',
+  '6': '24px',
   '5': '20px',
   '8': '32px',
   '16': '64px',
