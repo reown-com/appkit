@@ -92,7 +92,7 @@ export class W3mAllWalletsListItem extends LitElement {
   }
 
   private shimmerTemplate() {
-    return html`<wui-shimmer width="56px" height="56px" borderRadius="xs"></wui-shimmer>`
+    return html`<wui-shimmer width="56px" height="56px"></wui-shimmer>`
   }
 
   private async fetchImageSrc() {

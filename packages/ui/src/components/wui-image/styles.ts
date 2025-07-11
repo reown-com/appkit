@@ -14,6 +14,12 @@ export default css`
     object-fit: cover;
     object-position: center center;
     border-radius: inherit;
+    user-select: none;
+    user-drag: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
   }
 
   :host([boxed]) {

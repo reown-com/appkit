@@ -17,17 +17,17 @@ export class WuiShimmer extends LitElement {
 
   @property() public height = ''
 
-  @property() public borderRadius: BorderRadiusType = '2'
-
   @property() public variant: Variant = 'default'
+
+  @property({ type: Boolean }) public rounded: boolean = false
 
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
       width: ${this.width};
       height: ${this.height};
-      border-radius: ${`clamp(0px,var(--wui-border-radius-${this.borderRadius}), 40px)`};
     `
+    this.dataset['rounded'] = this.rounded ? 'true' : 'false'
 
     return html`<slot></slot>`
   }

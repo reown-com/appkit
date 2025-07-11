@@ -112,7 +112,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       .padding=${['0', 'xl', 'xl', 'xl']}
       gap="xl"
     >
-      <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
+      <wui-shimmer rounded width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
       <wui-text variant="paragraph-500" color="fg-100">
         Scan this QR Code with your phone
