@@ -27,7 +27,7 @@ export class W3mSwapInputSkeleton extends LitElement {
           class="swap-input"
           gap="xxs"
         >
-          <wui-shimmer width="80px" height="40px" borderRadius="xxs" variant="light"></wui-shimmer>
+          <wui-shimmer width="80px" height="40px" rounded variant="light"></wui-shimmer>
         </wui-flex>
         ${this.templateTokenSelectButton()}
       </wui-flex>
@@ -44,7 +44,7 @@ export class W3mSwapInputSkeleton extends LitElement {
         justifyContent="center"
         gap="xxs"
       >
-        <wui-shimmer width="80px" height="40px" borderRadius="3xl" variant="light"></wui-shimmer>
+        <wui-shimmer width="80px" height="40px" rounded variant="light"></wui-shimmer>
       </wui-flex>
     `
   }
