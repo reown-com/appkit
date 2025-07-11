@@ -90,6 +90,7 @@ const ICONS = {
   twitch: async () => (await import('../../assets/svg/twitch.js')).twitchSvg,
   twitter: async () => (await import('../../assets/svg/x.js')).xSvg,
   twitterIcon: async () => (await import('../../assets/svg/twitterIcon.js')).twitterIconSvg,
+  user: async () => (await import('../../assets/svg/user.js')).userSvg,
   verify: async () => (await import('../../assets/svg/verify.js')).verifySvg,
   verifyFilled: async () => (await import('../../assets/svg/verify-filled.js')).verifyFilledSvg,
   wallet: async () => (await import('../../assets/svg/wallet.js')).walletSvg,
