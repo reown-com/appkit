@@ -10,8 +10,9 @@ import {
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
-import { CloudAuthSIWX } from '../../configs/index.js'
+import { ReownAuthentication } from '../../configs/index.js'
 import './email-suffixes-widget.js'
+import './recent-emails-widget.js'
 import styles from './styles.js'
 
 @customElement('w3m-data-capture-view')
@@ -27,7 +28,7 @@ export class W3mDataCaptureView extends LitElement {
 
   @state() private appName = OptionsController.state.metadata?.name ?? 'AppKit'
 
-  @state() private siwx = OptionsController.state.siwx as CloudAuthSIWX
+  @state() private siwx = OptionsController.state.siwx as ReownAuthentication
 
   @state() private isRequired =
     Array.isArray(OptionsController.state.remoteFeatures?.emailCapture) &&
@@ -35,10 +36,16 @@ export class W3mDataCaptureView extends LitElement {
 
   @state() private recentEmails = this.getRecentEmails()
 
-  public override firstUpdated() {
-    if (!this.siwx || !(this.siwx instanceof CloudAuthSIWX)) {
-      throw new Error('CloudAuthSIWX is not initialized')
+  public override connectedCallback() {
+    if (!this.siwx || !(this.siwx instanceof ReownAuthentication)) {
+      throw new Error('ReownAuthentication is not initialized')
     }
+
+    super.connectedCallback()
+  }
+
+  public override firstUpdated() {
+    this.recentEmails = this.getRecentEmails()
 
     if (this.email) {
       this.onSubmit()
@@ -48,7 +55,8 @@ export class W3mDataCaptureView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" .padding=${['3xs', 'm', 'm', 'm'] as const} gap="l">
-        ${this.hero()} ${this.paragraph()} ${this.emailInput()} ${this.footerActions()}
+        ${this.hero()} ${this.paragraph()} ${this.emailInput()} ${this.recentEmailsWidget()}
+        ${this.footerActions()}
       </wui-flex>
     `
   }
@@ -156,11 +164,6 @@ export class W3mDataCaptureView extends LitElement {
       this.email = event.detail
     }
 
-    const recentEmailSelectHandler = (event: CustomEvent<string>) => {
-      this.email = event.detail
-      this.onSubmit()
-    }
-
     return html`
       <wui-flex flexDirection="column">
         <wui-email-input
@@ -175,13 +178,24 @@ export class W3mDataCaptureView extends LitElement {
           @change=${changeHandler}
         ></w3m-email-suffixes-widget>
       </wui-flex>
+    `
+  }
 
-      ${this.recentEmails.length > 0
-        ? html`<w3m-recent-emails-widget
-            .emails=${this.recentEmails}
-            @select=${recentEmailSelectHandler}
-          ></w3m-recent-emails-widget>`
-        : null}
+  private recentEmailsWidget() {
+    if (this.recentEmails.length === 0 || this.loading) {
+      return null
+    }
+
+    const recentEmailSelectHandler = (event: CustomEvent<string>) => {
+      this.email = event.detail
+      this.onSubmit()
+    }
+
+    return html`
+      <w3m-recent-emails-widget
+        .emails=${this.recentEmails}
+        @select=${recentEmailSelectHandler}
+      ></w3m-recent-emails-widget>
     `
   }
 

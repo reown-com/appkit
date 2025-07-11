@@ -8,16 +8,18 @@ import {
 } from '@reown/appkit-scaffold-ui/email'
 import { customElement } from '@reown/appkit-ui'
 
-import { CloudAuthSIWX } from '../../configs/index.js'
+import { ReownAuthentication } from '../../configs/index.js'
 
 @customElement('w3m-data-capture-otp-confirm-view')
 export class W3mDataCaptureOtpConfirmView extends W3mEmailOtpWidget {
-  @state() private siwx = OptionsController.state.siwx as CloudAuthSIWX
+  @state() private siwx = OptionsController.state.siwx as ReownAuthentication
 
-  public override firstUpdated() {
-    if (!this.siwx || !(this.siwx instanceof CloudAuthSIWX)) {
-      throw new Error('CloudAuthSIWX is not initialized')
+  public override connectedCallback() {
+    if (!this.siwx || !(this.siwx instanceof ReownAuthentication)) {
+      throw new Error('ReownAuthentication is not initialized')
     }
+
+    super.connectedCallback()
   }
 
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
