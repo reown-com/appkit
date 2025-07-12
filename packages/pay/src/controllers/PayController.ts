@@ -26,7 +26,8 @@ import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
   ensureCorrectNetwork,
   processEvmErc20Payment,
-  processEvmNativePayment
+  processEvmNativePayment,
+  processSolanaPayment
 } from '../utils/PaymentUtil.js'
 
 const DEFAULT_PAGE = 0
@@ -377,6 +378,16 @@ export const PayController = {
               fromAddress: address as Address
             })
           }
+          state.currentPayment.status = 'SUCCESS'
+          break
+        case ConstantsUtil.CHAIN.SOLANA:
+          state.currentPayment.result = await processSolanaPayment(chainNamespace, {
+            recipient: state.recipient,
+            amount: state.amount,
+            fromAddress: address,
+            // If the tokenMint is provided, provider will use it to create a SPL token transaction
+            tokenMint: state.paymentAsset.asset === 'native' ? undefined : state.paymentAsset.asset
+          })
           state.currentPayment.status = 'SUCCESS'
           break
         default:

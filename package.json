@@ -91,7 +91,7 @@
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
     "overrides": {
-      "@solana/web3.js": "1.98.0",
+      "@solana/web3.js": "1.98.2",
       "esbuild": ">=0.25.1",
       "@babel/runtime": ">=7.26.10",
       "cookie": ">=0.7.0",
@@ -103,13 +103,13 @@
     }
   },
   "overrides": {
-    "@solana/web3.js": "1.98.0",
+    "@solana/web3.js": "1.98.2",
     "elliptic": ">=6.6.1",
     "axios": ">=1.8.2",
     "ws": ">=7.5.10"
   },
   "resolutions": {
-    "@solana/web3.js": "1.98.0",
+    "@solana/web3.js": "1.98.2",
     "elliptic": ">=6.6.1",
     "axios": ">=1.8.2",
     "ws": ">=7.5.10"
