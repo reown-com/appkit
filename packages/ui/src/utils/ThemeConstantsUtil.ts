@@ -207,6 +207,7 @@ export const borderRadius = {
 
 // @TODO: Provide proper values to something sm, md, lg, xl, etc.
 export const spacing = {
+  '0': '0px',
   '01': '2px',
   '1': '4px',
   '2': '8px',
