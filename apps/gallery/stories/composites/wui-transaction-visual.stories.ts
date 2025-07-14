@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-transaction-visual'
-import type { WuiTransactionVisual } from '@reown/appkit-ui/src/composites/wui-transaction-visual'
+import '@reown/appkit-ui/wui-transaction-visual'
+import type { WuiTransactionVisual } from '@reown/appkit-ui/wui-transaction-visual'
 
 import {
   transactionDirectionOptions,
