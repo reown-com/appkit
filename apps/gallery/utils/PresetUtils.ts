@@ -8,7 +8,8 @@ import type {
   ButtonShortcutVariant,
   ButtonVariant,
   CardSelectType,
-  ChipButtonVariant,
+  ChipButtonSize,
+  ChipButtonType,
   ChipType,
   DomainChipVariant,
   FlexAlignItemsType,
@@ -246,6 +247,7 @@ export const iconOptions: IconType[] = [
   'nftPlaceholder',
   'off',
   'qrCode',
+  'plus',
   'refresh',
   'search',
   'swapHorizontal',
@@ -295,7 +297,9 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'primary']
+export const chipButtonTypes: ChipButtonType[] = ['accent', 'neutral']
+
+export const chipButtonSizes: ChipButtonSize[] = ['sm', 'md', 'lg']
 
 export const domainChipVariants: DomainChipVariant[] = ['success', 'warning', 'error']
 

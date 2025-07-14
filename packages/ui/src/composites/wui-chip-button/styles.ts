@@ -7,76 +7,90 @@ export default css`
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: ${({ spacing }) => spacing[1]};
-    padding: ${({ spacing }) => spacing[2]};
+    padding: ${({ spacing }) => spacing[1]};
+    transition:
+      background-color 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out;
+    will-change: background-color, box-shadow;
   }
 
   /* -- Variants --------------------------------------------------------------- */
-  button[data-variant='main'] {
+  button[data-type='accent'] {
     background-color: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
     color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
-  button[data-variant='accent'] {
-    background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
-    color: ${({ tokens }) => tokens.core.textAccentPrimary};
-  }
-
-  button[data-variant='primary'] {
+  button[data-type='neutral'] {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
-  /* -- Icons and Images --------------------------------------------------------------- */
-  button[data-size='sm'] > wui-image,
-  button[data-size='sm'] > wui-icon {
-    width: 12px;
-    height: 12px;
+  /* -- Sizes --------------------------------------------------------------- */
+  button[data-size='sm'] {
+    height: 24px;
   }
 
-  button[data-size='md'] > wui-image,
-  button[data-size='md'] > wui-icon {
+  button[data-size='md'] {
+    height: 28px;
+  }
+
+  button[data-size='lg'] {
+    height: 32px;
+  }
+
+  button[data-size='sm'] > wui-image,
+  button[data-size='sm'] > wui-icon {
     width: 16px;
     height: 16px;
   }
 
+  button[data-size='md'] > wui-image,
+  button[data-size='md'] > wui-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  button[data-size='lg'] > wui-image,
+  button[data-size='lg'] > wui-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  wui-text {
+    padding-left: ${({ spacing }) => spacing[1]};
+    padding-right: ${({ spacing }) => spacing[1]};
+  }
+
   wui-image {
-    border-radius: 8px;
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
     overflow: hidden;
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
   }
 
   /* -- States --------------------------------------------------------------- */
   @media (hover: hover) and (pointer: fine) {
-    button[data-variant='main']:not(:disabled):hover {
+    button[data-type='accent']:not(:disabled):hover {
       background-color: ${({ tokens }) => tokens.core.foregroundAccent060};
     }
 
-    button[data-variant='accent']:not(:disabled):hover {
-      box-shadow: 0 0 0 1px ${({ tokens }) => tokens.core.borderAccentPrimary};
-    }
-
-    button[data-variant='primary']:not(:disabled):hover {
-      box-shadow: 0 0 0 1px ${({ tokens }) => tokens.theme.borderSecondary};
+    button[data-type='neutral']:not(:disabled):hover {
+      background-color: ${({ tokens }) => tokens.theme.foregroundTertiary};
     }
   }
 
-  button[data-variant='main']:not(:disabled):focus-visible,
-  button[data-variant='main']:not(:disabled):active {
+  button[data-type='accent']:not(:disabled):focus-visible,
+  button[data-type='accent']:not(:disabled):active {
     box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
-  button[data-variant='accent']:not(:disabled):focus-visible,
-  button[data-variant='accent']:not(:disabled):active {
-    box-shadow:
-      0 0 0 1px ${({ tokens }) => tokens.core.borderAccentPrimary},
-      0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
-  }
-
-  button[data-variant='primary']:not(:disabled):focus-visible,
-  button[data-variant='primary']:not(:disabled):active {
-    box-shadow:
-      0 0 0 1px ${({ tokens }) => tokens.theme.borderSecondary},
-      0 0 0 4px ${({ tokens }) => tokens.theme.foregroundSecondary};
+  button[data-type='neutral']:not(:disabled):focus-visible,
+  button[data-type='neutral']:not(:disabled):active {
+    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
   button:disabled {
