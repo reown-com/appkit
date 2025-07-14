@@ -16,7 +16,7 @@ import {
 import { ErrorUtil } from '@reown/appkit-utils'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { SolConstantsUtil, createSPLTokenTransaction } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 
@@ -27,6 +27,7 @@ import {
 } from './providers/CoinbaseWalletProvider.js'
 import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProvider.js'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import { createSPLTokenTransaction } from './utils/createSPLTokenTransaction.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { watchStandard } from './utils/watchStandard.js'
 
