@@ -5,7 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WuiAlertBar } from '@reown/appkit-ui/wui-alertbar'
 import '@reown/appkit-ui/wui-alertbar'
-import '@reown/appkit-ui/wui-chip'
+import '@reown/appkit-ui/wui-semantic-chip'
 
 import '../../components/gallery-container'
 
