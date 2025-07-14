@@ -42,7 +42,7 @@ describe('W3mDataCaptureOtpConfirmView', () => {
   let mockSiwx: ReownAuthentication
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
 
     // Reset the global mock functions
     mockConfirmEmailOtp.mockResolvedValue(true)

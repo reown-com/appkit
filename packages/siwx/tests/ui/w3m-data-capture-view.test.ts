@@ -61,7 +61,7 @@ describe('W3mDataCaptureView', () => {
   let mockSiwx: ReownAuthentication
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
 
     // Setup mock SIWX instance using the mocked class
     mockSiwx = new ReownAuthentication()

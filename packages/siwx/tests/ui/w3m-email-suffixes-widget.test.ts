@@ -7,7 +7,7 @@ describe('W3mEmailSuffixesWidget', () => {
   let element: W3mEmailSuffixesWidget
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
     // Define custom element if not already defined
     if (!customElements.get('w3m-email-suffixes-widget')) {
       customElements.define('w3m-email-suffixes-widget', W3mEmailSuffixesWidget)

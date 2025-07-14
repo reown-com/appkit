@@ -7,7 +7,7 @@ describe('W3mRecentEmailsWidget', () => {
   let element: W3mRecentEmailsWidget
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
     // Define custom element if not already defined
     if (!customElements.get('w3m-recent-emails-widget')) {
       customElements.define('w3m-recent-emails-widget', W3mRecentEmailsWidget)
