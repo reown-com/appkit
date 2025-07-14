@@ -197,16 +197,25 @@ export const SIWXUtil = {
 
     return sessions
   },
-  async getSessions() {
+  async getSessions(args?: { address?: string; caipNetworkId?: CaipNetworkId }) {
     const siwx = OptionsController.state.siwx
-    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-    const network = ChainController.getActiveCaipNetwork()
+    let address = args?.address
+    if (!address) {
+      const activeCaipAddress = ChainController.getActiveCaipAddress()
+      address = CoreHelperUtil.getPlainAddress(activeCaipAddress)
+    }
+
+    let network = args?.caipNetworkId
+    if (!network) {
+      const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+      network = activeCaipNetwork?.caipNetworkId
+    }
 
     if (!(siwx && address && network)) {
       return []
     }
 
-    return siwx.getSessions(network.caipNetworkId, address)
+    return siwx.getSessions(network, address)
   },
   async isSIWXCloseDisabled() {
     const siwx = this.getSIWX()
