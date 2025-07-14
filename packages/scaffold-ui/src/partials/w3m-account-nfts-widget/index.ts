@@ -25,15 +25,9 @@ export class W3mAccountNftsWidget extends LitElement {
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
-      gap="l"
+      gap="5"
     >
-      <wui-icon-box
-        icon="wallet"
-        size="inherit"
-        iconColor="secondary"
-        backgroundColor="secondary"
-        iconSize="lg"
-      ></wui-icon-box>
+      <wui-icon-box icon="wallet" size="lg" color="secondary"></wui-icon-box>
       <wui-flex
         class="textContent"
         gap="2"

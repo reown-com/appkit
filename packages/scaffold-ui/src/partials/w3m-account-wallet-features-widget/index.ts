@@ -190,6 +190,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           data-testid="wallet-features-onramp-button"
           @click=${this.onBuyClick.bind(this)}
           icon="card"
+          variant="accent"
         ></wui-icon-button>
       </w3m-tooltip-trigger>
     `
@@ -209,6 +210,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
           icon="recycleHorizontal"
+          variant="accent"
         >
         </wui-icon-button>
       </w3m-tooltip-trigger>
@@ -228,6 +230,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           data-testid="wallet-features-receive-button"
           @click=${this.onReceiveClick.bind(this)}
           icon="arrowBottomCircle"
+          variant="accent"
         >
         </wui-icon-button>
       </w3m-tooltip-trigger>
@@ -249,6 +252,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           data-testid="wallet-features-send-button"
           @click=${this.onSendClick.bind(this)}
           icon="send"
+          variant="accent"
         ></wui-icon-button>
       </w3m-tooltip-trigger>
     `

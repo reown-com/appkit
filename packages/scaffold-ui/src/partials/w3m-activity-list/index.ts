@@ -228,15 +228,7 @@ export class W3mActivityList extends LitElement {
       gap="5"
       data-testid="empty-activity-state"
     >
-      <wui-icon-box
-        backgroundColor="gray-glass-005"
-        background="gray"
-        iconColor="secondary"
-        icon="wallet"
-        size="lg"
-        ?border=${true}
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
+      <wui-icon-box color="secondary" icon="wallet" size="lg"></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="2">
         <wui-text align="center" variant="md-regular" color="primary">No Transactions yet</wui-text>
         <wui-text align="center" variant="sm-regular" color="secondary"
@@ -256,13 +248,7 @@ export class W3mActivityList extends LitElement {
       gap="l"
       data-testid="empty-account-state"
     >
-      <wui-icon-box
-        icon="swapHorizontal"
-        size="inherit"
-        iconColor="secondary"
-        backgroundColor="secondary"
-        iconSize="lg"
-      ></wui-icon-box>
+      <wui-icon-box icon="swapHorizontal" size="lg" color="secondary"></wui-icon-box>
       <wui-flex
         class="textContent"
         gap="2"

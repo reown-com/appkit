@@ -83,14 +83,7 @@ export class W3mOnRampActivityItem extends LitElement {
   }
 
   private errorIconTemplate() {
-    return html`<wui-icon-box
-      size="xxs"
-      iconColor="error-100"
-      backgroundColor="error-100"
-      background="opaque"
-      icon="close"
-      borderColor="wui-color-bg-125"
-    ></wui-icon-box>`
+    return html`<wui-icon-box size="sm" color="error" icon="close"></wui-icon-box>`
   }
 
   private imageTemplate() {
@@ -102,14 +95,7 @@ export class W3mOnRampActivityItem extends LitElement {
   }
 
   private boughtIconTemplate() {
-    return html`<wui-icon-box
-      size="xxs"
-      iconColor="success-100"
-      backgroundColor="success-100"
-      background="opaque"
-      icon="arrowBottom"
-      borderColor="wui-color-bg-125"
-    ></wui-icon-box>`
+    return html`<wui-icon-box size="sm" color="success" icon="arrowBottom"></wui-icon-box>`
   }
 }
 

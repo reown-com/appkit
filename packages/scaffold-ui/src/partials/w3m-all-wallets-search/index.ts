@@ -35,7 +35,7 @@ export class W3mAllWalletsSearch extends LitElement {
     this.onSearch()
 
     return this.loading
-      ? html`<wui-loading-spinner color="accent-100"></wui-loading-spinner>`
+      ? html`<wui-loading-spinner color="accent-primary"></wui-loading-spinner>`
       : this.walletsTemplate()
   }
 
@@ -63,14 +63,8 @@ export class W3mAllWalletsSearch extends LitElement {
           gap="3"
           flexDirection="column"
         >
-          <wui-icon-box
-            size="lg"
-            iconColor="secondary"
-            backgroundColor="fg-300"
-            icon="wallet"
-            background="transparent"
-          ></wui-icon-box>
-          <wui-text data-testid="no-wallet-found-text" color="secondary" variant="paragraph-500">
+          <wui-icon-box size="lg" color="secondary" icon="wallet"></wui-icon-box>
+          <wui-text data-testid="no-wallet-found-text" color="secondary" variant="md-medium">
             No Wallet found
           </wui-text>
         </wui-flex>
