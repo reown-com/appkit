@@ -14,7 +14,7 @@ export function Footer() {
           GitHub
         </a>{' '}
         •{' '}
-        <a href="https://cloud.reown.com" target="_blank" rel="noreferrer">
+        <a href="https://dashboard.reown.com" target="_blank" rel="noreferrer">
           Cloud
         </a>
       </div>

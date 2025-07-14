@@ -69,7 +69,7 @@ export function SidebarContent() {
           <BookIcon />
         </Link>
         <Link
-          href="https://cloud.reown.com/"
+          href="https://dashboard.reown.com/"
           target="_blank"
           rel="noopener noreferrer"
           className={cn(buttonVariants({ variant: 'neutral', size: 'lg' }), 'w-full')}
