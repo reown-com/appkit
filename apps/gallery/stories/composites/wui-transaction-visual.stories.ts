@@ -50,9 +50,9 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<wui-transaction-visual
-      type=${args.type}
-      images=${args.images}
-      status=${args.status}
-      direction=${args.direction}
+      .type=${args.type}
+      .images=${args.images}
+      .status=${args.status}
+      .direction=${args.direction}
     ></wui-transaction-visual>`
 }
