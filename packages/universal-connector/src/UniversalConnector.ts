@@ -58,6 +58,7 @@ export class UniversalConnector {
   private appKit: AppKit
   private provider: Awaited<ReturnType<typeof UniversalProvider.init>>
   private config: Config
+  public session?: SessionTypes.Struct
 
   constructor({
     appKit,
@@ -72,10 +73,12 @@ export class UniversalConnector {
     this.provider = provider
     this.config = config
 
+    this.session = provider.session
     provider.on('display_uri', this.onDisplayUri.bind(this))
     provider.on('session_update', this.onSessionUpdate.bind(this))
     provider.on('session_delete', this.onSessionDelete.bind(this))
     provider.on('connect', this.onConnect.bind(this))
+    provider.on('disconnect', this.onDisconnect.bind(this))
   }
 
   private onDisplayUri(uri: string) {
@@ -93,6 +96,11 @@ export class UniversalConnector {
 
   private onConnect(session: SessionTypes.Struct) {
     console.log('connect', session)
+  }
+
+  private onDisconnect() {
+    this.session = undefined
+    console.log('disconnect')
   }
 
   public static async init(config: Config) {
@@ -136,6 +144,8 @@ export class UniversalConnector {
     const session = await this.provider.connect({
       optionalNamespaces: namespaces as ConnectParams['optionalNamespaces']
     })
+
+    this.session = session as SessionTypes.Struct
 
     console.log('session', session)
 
