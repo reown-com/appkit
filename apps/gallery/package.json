@@ -13,15 +13,18 @@
     "@reown/appkit-ui": "workspace:*",
     "lit": "3.3.0",
     "react": "19.1.0",
-    "storybook": "7.6.20"
+    "storybook": "8.6.14"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.6.7",
-    "@storybook/addon-links": "7.6.7",
-    "@storybook/blocks": "7.6.7",
-    "@storybook/theming": "7.6.7",
-    "@storybook/web-components": "7.6.7",
-    "@storybook/web-components-vite": "7.6.7",
+    "@chromatic-com/storybook": "3.2.7",
+    "@storybook/addon-essentials": "8.6.14",
+    "@storybook/addon-links": "8.6.14",
+    "@storybook/blocks": "8.6.14",
+    "@storybook/core-events": "8.6.14",
+    "@storybook/preview-api": "8.6.14",
+    "@storybook/theming": "8.6.14",
+    "@storybook/web-components": "8.6.14",
+    "@storybook/web-components-vite": "8.6.14",
     "file-system-cache": "2.4.4"
   }
 }
