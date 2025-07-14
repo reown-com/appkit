@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -10,15 +10,10 @@ export default css`
     width: var(--local-size);
   }
 
-  :host([data-theme='dark']) {
-    border-radius: clamp(0px, var(--wui-border-radius-l), 40px);
-    background-color: var(--wui-color-inverse-100);
-    padding: var(--wui-spacing-l);
-  }
-
-  :host([data-theme='light']) {
-    box-shadow: 0 0 0 1px var(--wui-color-bg-125);
-    background-color: var(--wui-color-bg-125);
+  :host {
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    padding: ${({ spacing }) => spacing[2]};
   }
 
   :host([data-clear='true']) > wui-icon {
@@ -37,7 +32,7 @@ export default css`
   wui-image {
     width: 25%;
     height: 25%;
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   wui-icon {
