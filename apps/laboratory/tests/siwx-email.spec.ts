@@ -1,4 +1,4 @@
-import { extensionFixture } from './shared/fixtures/extension-fixture'
+import { timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import {
@@ -13,35 +13,33 @@ let modalPage: ModalWalletPage
 let modalValidator: ModalValidator
 
 // -- Setup --------------------------------------------------------------------
-const extensionTest = extensionFixture.extend<{ library: string }>({
+const siwxEmailTest = timingFixture.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })
 
-extensionTest.describe.configure({ mode: 'serial' })
+siwxEmailTest.describe.configure({ mode: 'serial' })
 
-extensionTest.beforeAll(async ({ library, context }) => {
+siwxEmailTest.beforeAll(async ({ library, browser }) => {
+  siwxEmailTest.setTimeout(300000)
+  const context = await browser.newContext()
   const browserPage = await context.newPage()
 
   modalPage = new ModalWalletPage(browserPage, library, 'siwx')
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
-  // Force extension to load the inpage script
-  await modalPage.page.reload()
-})
-
-extensionTest.afterAll(async () => {
-  await modalPage.page.close()
 })
 
 // -- Tests --------------------------------------------------------------------
-extensionTest('it should connect', async ({ browser }) => {
+siwxEmailTest('it should connect', async ({ context, library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
-  const context = await browser.newContext()
 
   const emailAddress = await email.getEmailAddressToUse()
   await modalPage.emailFlow({
@@ -49,11 +47,15 @@ extensionTest('it should connect', async ({ browser }) => {
     context,
     mailsacApiKey
   })
-  await modalPage.promptSiwe()
+
+  // Should do 1CA, so no need to approve prompt siwe
   await modalValidator.expectConnected()
+  await modalValidator.expectAuthenticated()
+
+  await modalPage.closeModal()
 })
 
-extensionTest(
+siwxEmailTest(
   'it should require request signature when switching networks',
   async ({ library }) => {
     const network = getTestnetByLibrary(library)
@@ -66,13 +68,9 @@ extensionTest(
   }
 )
 
-extensionTest(
+siwxEmailTest(
   'it should fallback to the last session when cancel siwe from AppKit',
   async ({ library }) => {
-    if (library === 'bitcoin') {
-      return
-    }
-
     const newNetwork = getTestnet2ByLibrary(library)
     const prevNetwork = getTestnetByLibrary(library)
 
@@ -83,18 +81,19 @@ extensionTest(
   }
 )
 
-extensionTest('it should be connected after connecting and refreshing the page', async () => {
-  await modalValidator.expectConnected()
+siwxEmailTest('it should be connected after connecting and refreshing the page', async () => {
   await modalPage.page.reload()
   await modalValidator.expectConnected()
+  await modalValidator.expectAuthenticated()
 })
 
-extensionTest('it should disconnect', async () => {
+siwxEmailTest('it should disconnect', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
+  await modalValidator.expectAuthenticated()
 })
 
-extensionTest(
+siwxEmailTest(
   'it should be disconnected when there is no previous session',
   async ({ library }) => {
     const namespace = getNamespaceByLibrary(library)
