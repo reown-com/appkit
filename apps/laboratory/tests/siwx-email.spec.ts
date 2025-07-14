@@ -76,6 +76,6 @@ siwxEmailTest('it should be connected after connecting and refreshing the page',
 })
 
 siwxEmailTest('it should disconnect', async () => {
-  await modalPage.disconnect()
+  await modalPage.disconnectWithHook()
   await modalValidator.expectDisconnected()
 })
