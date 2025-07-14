@@ -8,19 +8,6 @@ import '@reown/appkit-ui/wui-snackbar'
 import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
-const presets = {
-  loading: undefined,
-  success: {
-    backgroundColor: 'success-100',
-    iconColor: 'success-100',
-    icon: 'checkmark'
-  },
-  error: {
-    backgroundColor: 'error-100',
-    iconColor: 'error-100',
-    icon: 'close'
-  }
-} as const
 
 @customElement('w3m-snackbar')
 export class W3mSnackBar extends LitElement {
