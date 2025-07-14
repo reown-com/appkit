@@ -53,7 +53,6 @@ siwxEmailTest(
     await modalPage.switchNetwork(network)
     await modalPage.promptSiwe()
     await modalPage.approveSign()
-    await modalPage.closeModal()
     await modalValidator.expectConnected()
   }
 )
@@ -62,7 +61,7 @@ siwxEmailTest(
   'it should fallback to the last session when cancel siwe from AppKit',
   async ({ library }) => {
     const newNetwork = getTestnet2ByLibrary(library)
-    const prevNetwork = getTestnetByLibrary(library)
+    const prevNetwork = 'Ethereum'
 
     await modalPage.switchNetwork(newNetwork)
     await modalPage.cancelSiwe()
