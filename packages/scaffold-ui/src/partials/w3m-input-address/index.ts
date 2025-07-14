@@ -46,20 +46,20 @@ export class W3mInputAddress extends LitElement {
       @click=${this.onBoxClick.bind(this)}
       flexDirection="column"
       justifyContent="center"
-      gap="4xs"
-      .padding=${['2xl', 'l', 'xl', 'l'] as const}
+      gap="01"
+      .padding=${['8', '4', '5', '4'] as const}
     >
       <wui-text
         ${ref(this.instructionElementRef)}
         class="instruction"
-        color="fg-300"
-        variant="medium-400"
+        color="secondary"
+        variant="md-medium"
       >
         Type or
         <wui-button
           class="paste"
           size="md"
-          variant="neutral"
+          variant="neutral-primary"
           iconLeft="copy"
           @click=${this.onPasteClick.bind(this)}
         >

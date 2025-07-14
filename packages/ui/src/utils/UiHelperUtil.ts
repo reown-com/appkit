@@ -4,9 +4,9 @@ import type { SpacingType, ThemeType, TruncateOptions } from './TypeUtil.js'
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
     if (Array.isArray(spacing)) {
-      return spacing[index] ? `var(--wui-spacing-${spacing[index]})` : undefined
+      return spacing[index] ? `var(--apkt-spacing-${spacing[index]})` : undefined
     } else if (typeof spacing === 'string') {
-      return `var(--wui-spacing-${spacing})`
+      return `var(--apkt-spacing-${spacing})`
     }
 
     return undefined

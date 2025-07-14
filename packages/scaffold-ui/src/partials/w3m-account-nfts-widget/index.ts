@@ -30,28 +30,28 @@ export class W3mAccountNftsWidget extends LitElement {
       <wui-icon-box
         icon="wallet"
         size="inherit"
-        iconColor="fg-200"
-        backgroundColor="fg-200"
+        iconColor="secondary"
+        backgroundColor="secondary"
         iconSize="lg"
       ></wui-icon-box>
       <wui-flex
         class="textContent"
-        gap="xs"
+        gap="2"
         flexDirection="column"
         justifyContent="center"
         flexDirection="column"
       >
         <wui-text
-          variant="paragraph-500"
+          variant="md-regular"
           align="center"
-          color="fg-100"
+          color="primary"
           data-testid="nft-template-title"
           >Coming soon</wui-text
         >
         <wui-text
-          variant="small-400"
+          variant="sm-regular"
           align="center"
-          color="fg-200"
+          color="secondary"
           data-testid="nft-template-description"
           >Stay tuned for our upcoming NFT feature</wui-text
         >

@@ -73,7 +73,7 @@ export class W3mSocialLoginWidget extends LitElement {
       <wui-flex
         class="container"
         flexDirection="column"
-        gap="xs"
+        gap="2"
         data-testid="w3m-social-login-widget"
       >
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
@@ -101,7 +101,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   private renderTopViewContent(socials: SocialProvider[]) {
     if (socials.length === 2) {
-      return html` <wui-flex gap="xs">
+      return html` <wui-flex gap="2">
         ${socials.slice(0, MAX_TOP_VIEW).map(
           social =>
             html`<wui-logo-select
@@ -148,7 +148,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     if (socials && socials.length > MAXIMUM_LENGTH) {
-      return html`<wui-flex gap="xs">
+      return html`<wui-flex gap="2">
         ${socials.slice(1, MAXIMUM_LENGTH - 1).map(
           social =>
             html`<wui-logo-select
@@ -176,7 +176,7 @@ export class W3mSocialLoginWidget extends LitElement {
       return null
     }
 
-    return html`<wui-flex gap="xs">
+    return html`<wui-flex gap="2">
       ${socials.slice(1, socials.length).map(
         social =>
           html`<wui-logo-select

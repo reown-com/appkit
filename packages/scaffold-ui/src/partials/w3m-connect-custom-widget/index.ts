@@ -62,7 +62,7 @@ export class W3mConnectCustomWidget extends LitElement {
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
 
-    return html`<wui-flex flexDirection="column" gap="xs">
+    return html`<wui-flex flexDirection="column" gap="2">
       ${wallets.map(
         wallet => html`
           <wui-list-wallet

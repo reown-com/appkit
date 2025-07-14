@@ -68,7 +68,7 @@ export class W3mAccountAuthButton extends LitElement {
           this.onGoToUpdateEmail(email, this.socialProvider)
         }}
       >
-        <wui-text variant="paragraph-500" color="fg-100">${this.getAuthName(email)}</wui-text>
+        <wui-text variant="md-regular" color="primary">${this.getAuthName(email)}</wui-text>
       </wui-list-item>
     `
   }

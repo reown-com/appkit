@@ -22,7 +22,7 @@ export default css`
   }
 
   button > wui-flex > wui-text {
-    color: var(--wui-color-fg-100);
+    color: var(--wui-color-primary);
     max-width: 86px;
     white-space: nowrap;
     overflow: hidden;

@@ -71,7 +71,7 @@ export class W3mSwapInput extends LitElement {
             type="text"
             inputmode="decimal"
           />
-          <wui-text class="market-value" variant="small-400" color="fg-200">
+          <wui-text class="market-value" variant="sm-regular" color="secondary">
             ${isMarketValueGreaterThanZero
               ? `$${UiHelperUtil.formatNumberToLocalString(this.marketValue, 2)}`
               : null}
@@ -150,7 +150,7 @@ export class W3mSwapInput extends LitElement {
 
     return html`
       ${haveBalance
-        ? html`<wui-text variant="small-400" color="fg-200">
+        ? html`<wui-text variant="sm-regular" color="secondary">
             ${UiHelperUtil.formatNumberToLocalString(this.balance, 2)}
           </wui-text>`
         : null}
@@ -161,12 +161,12 @@ export class W3mSwapInput extends LitElement {
   private tokenActionButtonTemplate(haveBalance: boolean) {
     if (haveBalance) {
       return html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
-        <wui-text color="accent-100" variant="small-600">Max</wui-text>
+        <wui-text color="accent-primary" variant="sm-medium">Max</wui-text>
       </button>`
     }
 
     return html` <button class="max-value-button" @click=${this.onBuyToken.bind(this)}>
-      <wui-text color="accent-100" variant="small-600">Buy</wui-text>
+      <wui-text color="accent-primary" variant="sm-medium">Buy</wui-text>
     </button>`
   }
 

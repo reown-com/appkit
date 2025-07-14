@@ -61,7 +61,7 @@ export default css`
     letter-spacing: -1.28px;
     outline: none;
     caret-color: var(--wui-color-accent-100);
-    color: var(--wui-color-fg-100);
+    color: var(--wui-color-primary);
     padding: 0px;
   }
 

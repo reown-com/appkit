@@ -203,12 +203,12 @@ export class W3mHeader extends LitElement {
         view-direction="${this.viewDirection}"
         class="w3m-header-title"
         alignItems="center"
-        gap="xs"
+        gap="2"
       >
-        <wui-text variant="paragraph-700" color="fg-100" data-testid="w3m-header-text"
+        <wui-text variant="lg-medium" color="primary" data-testid="w3m-header-text"
           >${this.headerText}</wui-text
         >
-        ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
+        ${isBeta ? html`<wui-tag variant="accent">Beta</wui-tag>` : null}
       </wui-flex>
     `
   }
@@ -269,10 +269,10 @@ export class W3mHeader extends LitElement {
 
   private getPadding() {
     if (this.heading) {
-      return ['l', '2l', 'l', '2l'] as const
+      return ['4', '5', '4', '5'] as const
     }
 
-    return ['0', '2l', '0', '2l'] as const
+    return ['0', '5', '0', '5'] as const
   }
 
   private onViewChange() {

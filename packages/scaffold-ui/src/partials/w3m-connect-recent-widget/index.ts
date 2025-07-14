@@ -65,7 +65,7 @@ export class W3mConnectRecentWidget extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${filteredRecentWallets.map(
           wallet => html`
             <wui-list-wallet

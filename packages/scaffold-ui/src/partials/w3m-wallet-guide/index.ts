@@ -28,10 +28,10 @@ export class W3mWalletGuide extends LitElement {
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          rowGap="xs"
+          rowgap="2"
           data-testid="w3m-wallet-guide-explore"
         >
-          <wui-text variant="small-400" color="fg-200" align="center">
+          <wui-text variant="sm-regular" color="secondary" align="center">
             Looking for a self-custody wallet?
           </wui-text>
 
@@ -46,13 +46,13 @@ export class W3mWalletGuide extends LitElement {
           </wui-flex>
         </wui-flex>`
       : html`<wui-flex
-          columnGap="4xs"
+          columnGap="1"
           flexDirection="row"
           alignItems="center"
           justifyContent="center"
-          .padding=${['s', '0', 's', '0']}
+          .padding=${['3', '0', '3', '0'] as const}
         >
-          <wui-text variant="small-400" class="title" color="fg-200"
+          <wui-text variant="sm-regular" class="title" color="secondary"
             >Haven't got a wallet?</wui-text
           >
           <wui-link

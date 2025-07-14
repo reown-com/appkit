@@ -11,7 +11,7 @@ export default css`
   }
   a {
     text-decoration: none;
-    color: var(--wui-color-fg-150);
+    color: var(--wui-color-secondary);
     font-weight: 500;
   }
 `

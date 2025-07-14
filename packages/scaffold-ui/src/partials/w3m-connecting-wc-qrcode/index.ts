@@ -46,15 +46,10 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     this.onRenderProxy()
 
     return html`
-      <wui-flex
-        flexDirection="column"
-        alignItems="center"
-        .padding=${['0', 'xl', 'xl', 'xl']}
-        gap="xl"
-      >
+      <wui-flex flexDirection="column" alignItems="center" .padding=${['0', '5', '5', '5']} gap="5">
         <wui-shimmer rounded width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
-        <wui-text variant="paragraph-500" color="fg-100">
+        <wui-text variant="md-regular" color="primary">
           Scan this QR Code with your phone
         </wui-text>
         ${this.copyTemplate()}
@@ -100,10 +95,10 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     return html`<wui-link
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      color="fg-200"
+      color="secondary"
       data-testid="copy-wc2-uri"
     >
-      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+      <wui-icon size="xs" color="secondary" slot="iconLeft" name="copy"></wui-icon>
       Copy link
     </wui-link>`
   }

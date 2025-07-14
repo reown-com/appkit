@@ -56,7 +56,7 @@ export class W3mConnectExternalWidget extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${filteredOutCoinbaseConnectors.map(
           connector => html`
             <wui-list-wallet

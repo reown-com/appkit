@@ -42,7 +42,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${multiChainConnectors.map(
           connector => html`
             <wui-list-wallet

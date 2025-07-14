@@ -143,13 +143,13 @@ export class W3mActivityList extends LitElement {
             <wui-flex
               alignItems="center"
               flexDirection="row"
-              .padding=${['xs', 's', 's', 's'] as const}
+              .padding=${['2', '3', '3', '3'] as const}
             >
-              <wui-text variant="paragraph-500" color="fg-200" data-testid="group-title"
+              <wui-text variant="md-regular" color="secondary" data-testid="group-title"
                 >${groupTitle}</wui-text
               >
             </wui-flex>
-            <wui-flex flexDirection="column" gap="xs">
+            <wui-flex flexDirection="column" gap="2">
               ${this.templateTransactions(transactions, isLastGroup)}
             </wui-flex>
           </wui-flex>
@@ -224,24 +224,22 @@ export class W3mActivityList extends LitElement {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
-      gap="xl"
+      .padding=${['10', '5', '10', '5'] as const}
+      gap="5"
       data-testid="empty-activity-state"
     >
       <wui-icon-box
         backgroundColor="gray-glass-005"
         background="gray"
-        iconColor="fg-200"
+        iconColor="secondary"
         icon="wallet"
         size="lg"
         ?border=${true}
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
-      <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        <wui-text align="center" variant="paragraph-500" color="fg-100"
-          >No Transactions yet</wui-text
-        >
-        <wui-text align="center" variant="small-500" color="fg-200"
+      <wui-flex flexDirection="column" alignItems="center" gap="2">
+        <wui-text align="center" variant="md-regular" color="primary">No Transactions yet</wui-text>
+        <wui-text align="center" variant="sm-regular" color="secondary"
           >Start trading on dApps <br />
           to grow your wallet!</wui-text
         >
@@ -261,19 +259,19 @@ export class W3mActivityList extends LitElement {
       <wui-icon-box
         icon="swapHorizontal"
         size="inherit"
-        iconColor="fg-200"
-        backgroundColor="fg-200"
+        iconColor="secondary"
+        backgroundColor="secondary"
         iconSize="lg"
       ></wui-icon-box>
       <wui-flex
         class="textContent"
-        gap="xs"
+        gap="2"
         flexDirection="column"
         justifyContent="center"
         flexDirection="column"
       >
-        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
-        <wui-text variant="small-400" align="center" color="fg-200"
+        <wui-text variant="md-regular" align="center" color="primary">No activity yet</wui-text>
+        <wui-text variant="sm-regular" align="center" color="secondary"
           >Your next transactions will appear here</wui-text
         >
       </wui-flex>

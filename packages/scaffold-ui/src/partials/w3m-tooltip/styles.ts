@@ -26,11 +26,11 @@ export default css`
   }
 
   :host([data-variant='shade']) > wui-flex > wui-text {
-    color: var(--wui-color-fg-150);
+    color: var(--wui-color-secondary);
   }
 
   :host([data-variant='fill']) > wui-flex {
-    background-color: var(--wui-color-fg-100);
+    background-color: var(--wui-color-primary);
     border: none;
   }
 

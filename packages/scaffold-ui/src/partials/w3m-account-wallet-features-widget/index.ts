@@ -118,12 +118,12 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`<wui-flex
       flexDirection="column"
-      .padding=${['0', 'xl', 'm', 'xl'] as const}
+      .padding=${['0', '5', '4', '5'] as const}
       alignItems="center"
-      gap="m"
+      gap="4"
       data-testid="w3m-account-wallet-features-widget"
     >
-      <wui-flex flexDirection="column" justifyContent="center" alignItems="center" gap="xs">
+      <wui-flex flexDirection="column" justifyContent="center" alignItems="center" gap="2">
         <wui-wallet-switch
           profileName=${this.profileName}
           address=${this.address}
@@ -159,7 +159,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return null
     }
 
-    return html`<wui-flex gap="s">
+    return html`<wui-flex gap="3">
       ${walletFeaturesOrder.map(feature => {
         switch (feature) {
           case 'onramp':

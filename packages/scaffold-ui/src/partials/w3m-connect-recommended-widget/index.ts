@@ -79,7 +79,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${wallets.map(
           wallet => html`
             <wui-list-wallet

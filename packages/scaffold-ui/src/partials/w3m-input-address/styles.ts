@@ -23,7 +23,7 @@ export default css`
 
   wui-button {
     display: ruby;
-    color: var(--wui-color-fg-100);
+    color: var(--wui-color-primary);
     margin: 0 var(--wui-spacing-xs);
   }
 
@@ -47,7 +47,7 @@ export default css`
     font-weight: var(--wui-font-weight-light);
     line-height: 130%;
     letter-spacing: var(--wui-letter-spacing-medium);
-    color: var(--wui-color-fg-100);
+    color: var(--wui-color-primary);
     caret-color: var(--wui-color-accent-100);
     box-sizing: border-box;
     -webkit-appearance: none;
