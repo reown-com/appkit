@@ -36,13 +36,13 @@ export class W3mWalletGuide extends LitElement {
           </wui-text>
 
           <wui-flex class="chip-box">
-            <wui-chip
+            <wui-semantic-chip
               imageIcon="walletConnectLightBrown"
               icon="externalLink"
-              variant="transparent"
+              type="success"
               href="https://walletguide.walletconnect.network"
               title="Find one on WalletGuide"
-            ></wui-chip>
+            ></wui-semantic-chip>
           </wui-flex>
         </wui-flex>`
       : html`<wui-flex

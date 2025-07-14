@@ -98,10 +98,10 @@
       "import": "./dist/esm/exports/wui-card-select.js",
       "default": "./dist/esm/exports/wui-card-select.js"
     },
-    "./wui-chip": {
-      "types": "./dist/types/exports/wui-chip.d.ts",
-      "import": "./dist/esm/exports/wui-chip.js",
-      "default": "./dist/esm/exports/wui-chip.js"
+    "./wui-semantic-chip": {
+      "types": "./dist/types/exports/wui-semantic-chip.d.ts",
+      "import": "./dist/esm/exports/wui-semantic-chip.js",
+      "default": "./dist/esm/exports/wui-semantic-chip.js"
     },
     "./wui-connect-button": {
       "types": "./dist/types/exports/wui-connect-button.d.ts",
@@ -297,11 +297,6 @@
       "types": "./dist/types/exports/wui-list-network.d.ts",
       "import": "./dist/esm/exports/wui-list-network.js",
       "default": "./dist/esm/exports/wui-list-network.js"
-    },
-    "./wui-list-wallet-transaction": {
-      "types": "./dist/types/exports/wui-list-wallet-transaction.d.ts",
-      "import": "./dist/esm/exports/wui-list-wallet-transaction.js",
-      "default": "./dist/esm/exports/wui-list-wallet-transaction.js"
     },
     "./wui-promo": {
       "types": "./dist/types/exports/wui-promo.d.ts",

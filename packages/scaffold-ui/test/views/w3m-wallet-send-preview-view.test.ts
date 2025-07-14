@@ -148,7 +148,6 @@ describe('W3mWalletSendPreviewView', () => {
     const addressPreview = element.shadowRoot?.querySelectorAll('wui-preview-item')?.[1]
     expect(addressPreview?.text).to.contain('0x45')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should display profile name when available', async () => {
@@ -168,7 +167,6 @@ describe('W3mWalletSendPreviewView', () => {
     expect(addressPreview?.text).to.equal('Test User')
     expect(addressPreview?.imageSrc).to.equal('https://example.com/profile.jpg')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should handle send action', async () => {

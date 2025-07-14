@@ -20,11 +20,6 @@ const TEXT_COLOR_BY_VARIANT = {
   secondary: 'secondary'
 } as const
 
-const ICON_SIZE = {
-  sm: '3xs',
-  md: 'xxs'
-} as const
-
 @customElement('wui-link')
 export class WuiLink extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
