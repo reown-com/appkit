@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.7.13",
+  "version": "1.7.14",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
