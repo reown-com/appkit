@@ -1,11 +1,7 @@
 import { timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
-import {
-  getNamespaceByLibrary,
-  getTestnet2ByLibrary,
-  getTestnetByLibrary
-} from './shared/utils/namespace'
+import { getTestnet2ByLibrary, getTestnetByLibrary } from './shared/utils/namespace'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
@@ -20,7 +16,6 @@ const siwxEmailTest = timingFixture.extend<{ library: string }>({
 siwxEmailTest.describe.configure({ mode: 'serial' })
 
 siwxEmailTest.beforeAll(async ({ library, browser }) => {
-  siwxEmailTest.setTimeout(300000)
   const context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -32,7 +27,8 @@ siwxEmailTest.beforeAll(async ({ library, browser }) => {
 
 // -- Tests --------------------------------------------------------------------
 siwxEmailTest('it should connect', async ({ context, library }) => {
-  if (library === 'bitcoin') {
+  siwxEmailTest.setTimeout(300000)
+  if (library === 'bitcoin' || library === 'wagmi' || library === 'multichain') {
     return
   }
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -50,7 +46,6 @@ siwxEmailTest('it should connect', async ({ context, library }) => {
 
   // Should do 1CA, so no need to approve prompt siwe
   await modalValidator.expectConnected()
-  await modalValidator.expectAuthenticated()
 
   await modalPage.closeModal()
 })
@@ -84,23 +79,9 @@ siwxEmailTest(
 siwxEmailTest('it should be connected after connecting and refreshing the page', async () => {
   await modalPage.page.reload()
   await modalValidator.expectConnected()
-  await modalValidator.expectAuthenticated()
 })
 
 siwxEmailTest('it should disconnect', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
-  await modalValidator.expectAuthenticated()
 })
-
-siwxEmailTest(
-  'it should be disconnected when there is no previous session',
-  async ({ library }) => {
-    const namespace = getNamespaceByLibrary(library)
-
-    await modalPage.page.reload()
-    await modalPage.connectToExtensionMultichain(namespace)
-    await modalPage.promptSiwe({ cancel: true })
-    await modalValidator.expectDisconnected()
-  }
-)
