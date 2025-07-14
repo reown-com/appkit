@@ -10,7 +10,6 @@ import type {
   CardSelectType,
   ChipButtonSize,
   ChipButtonType,
-  ChipType,
   DomainChipVariant,
   FlexAlignItemsType,
   FlexBasisType,
@@ -26,6 +25,8 @@ import type {
   IconType,
   LogoType,
   PlacementType,
+  SemanticChipSize,
+  SemanticChipType,
   SpacingType,
   TagVariant,
   TextAlign,
@@ -303,14 +304,9 @@ export const chipButtonSizes: ChipButtonSize[] = ['sm', 'md', 'lg']
 
 export const domainChipVariants: DomainChipVariant[] = ['success', 'warning', 'error']
 
-export const chipVariants: ChipType[] = [
-  'fill',
-  'transparent',
-  'shade',
-  'success',
-  'shadeSmall',
-  'error'
-]
+export const semanticChipTypes: SemanticChipType[] = ['success', 'error', 'warning']
+
+export const semanticChipSizes: SemanticChipSize[] = ['sm', 'md', 'lg']
 
 export const buttonOptions: ButtonVariant[] = [
   'accent-primary',
@@ -342,10 +338,7 @@ export const transactionThumbnailOptions: TransactionType[] = [
   'stake',
   'trade',
   'unstake',
-  'withdraw',
-  'fiat',
-  'unknown',
-  'nft'
+  'withdraw'
 ]
 
 export const transactionStatusOptions: TransactionStatus[] = ['confirmed', 'pending', 'failed']

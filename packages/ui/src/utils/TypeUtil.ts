@@ -219,6 +219,7 @@ export type VisualType =
   | 'paypal'
   | 'pencil'
   | 'solana'
+  | 'bitcoin'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
@@ -236,7 +237,9 @@ export type LogoType =
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
-export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
+export type SemanticChipType = 'success' | 'error' | 'warning'
+
+export type SemanticChipSize = 'sm' | 'md' | 'lg'
 
 export type ChipButtonType = 'accent' | 'neutral'
 

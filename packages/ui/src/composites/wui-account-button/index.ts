@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import '../../components/wui-image/index.js'
+import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
@@ -26,6 +27,8 @@ export class WuiAccountButton extends LitElement {
   @property({ type: Boolean }) public isUnsupportedChain?: boolean = undefined
 
   @property({ type: Boolean }) public disabled = false
+
+  @property({ type: Boolean }) public loading = false
 
   @property() public address = ''
 
@@ -72,8 +75,9 @@ export class WuiAccountButton extends LitElement {
           iconColor="error-100"
           backgroundColor="error-100"
           icon="warningCircle"
+          data-testid="wui-account-button-unsupported-chain"
         ></wui-icon-box>
-        <wui-text variant="paragraph-600" color="inherit"> Switch Network</wui-text>`
+        <wui-text variant="md-regular" color="inherit"> Switch Network</wui-text>`
     }
     if (this.balance) {
       const networkElement = this.networkSrc
@@ -87,10 +91,11 @@ export class WuiAccountButton extends LitElement {
             ></wui-icon-box>
           `
 
-      return html`
-        ${networkElement}
-        <wui-text variant="paragraph-600" color="inherit"> ${this.balance}</wui-text>
-      `
+      const balanceTemplate = this.loading
+        ? html`<wui-loading-spinner size="md" color="inherit"></wui-loading-spinner>`
+        : html`<wui-text variant="md-regular" color="inherit"> ${this.balance}</wui-text>`
+
+      return html`${networkElement} ${balanceTemplate}`
     }
 
     return null

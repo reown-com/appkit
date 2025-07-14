@@ -21,7 +21,6 @@ import type { WuiCardSelect } from '../composites/wui-card-select/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
 import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiChipButton } from '../composites/wui-chip-button/index.js'
-import type { WuiChip } from '../composites/wui-chip/index.js'
 import type { WuiCompatibleNetwork } from '../composites/wui-compatible-network/index.js'
 import type { WuiConnectButton } from '../composites/wui-connect-button/index.js'
 import type { WuiCtaButton } from '../composites/wui-cta-button/index.js'
@@ -46,7 +45,6 @@ import type { WuiListItem } from '../composites/wui-list-item/index.js'
 import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 import type { WuiListSocial } from '../composites/wui-list-social/index.js'
 import type { WuiListToken } from '../composites/wui-list-token/index.js'
-import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 import type { WuiListWallet } from '../composites/wui-list-wallet/index.js'
 import type { WuiLogoSelect } from '../composites/wui-logo-select/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
@@ -61,6 +59,7 @@ import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiQrCode } from '../composites/wui-qr-code/index.js'
 import type { WuiSearchBar } from '../composites/wui-search-bar/index.js'
 import type { WuiSelect } from '../composites/wui-select/index.js'
+import type { WuiSemanticChip } from '../composites/wui-semantic-chip/index.js'
 import type { WuiSnackbar } from '../composites/wui-snackbar/index.js'
 import type { WuiSwitch } from '../composites/wui-switch/index.js'
 import type { WuiTabs } from '../composites/wui-tabs/index.js'
@@ -103,7 +102,7 @@ interface AppKitElements {
   'wui-card-select-loader': CustomElement<WuiCardSelectLoader>
   'wui-card-select': CustomElement<WuiCardSelect>
   'wui-chip-button': CustomElement<WuiChipButton>
-  'wui-chip': CustomElement<WuiChip>
+  'wui-semantic-chip': CustomElement<WuiSemanticChip>
   'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
   'wui-connect-button': CustomElement<WuiConnectButton>
   'wui-cta-button': CustomElement<WuiCtaButton>
@@ -125,7 +124,6 @@ interface AppKitElements {
   'wui-list-network': CustomElement<WuiListNetwork>
   'wui-list-social': CustomElement<WuiListSocial>
   'wui-list-token': CustomElement<WuiListToken>
-  'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
   'wui-list-wallet': CustomElement<WuiListWallet>
   'wui-logo-select': CustomElement<WuiLogoSelect>
   'wui-logo': CustomElement<WuiLogo>
