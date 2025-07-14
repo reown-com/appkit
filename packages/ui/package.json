@@ -123,11 +123,6 @@
       "import": "./dist/esm/exports/wui-details-group-item.js",
       "default": "./dist/esm/exports/wui-details-group-item.js"
     },
-    "./wui-dropdown-menu": {
-      "types": "./dist/types/exports/wui-dropdown-menu.d.ts",
-      "import": "./dist/esm/exports/wui-dropdown-menu.js",
-      "default": "./dist/esm/exports/wui-dropdown-menu.js"
-    },
     "./wui-email-input": {
       "types": "./dist/types/exports/wui-email-input.d.ts",
       "import": "./dist/esm/exports/wui-email-input.js",
@@ -318,11 +313,6 @@
       "import": "./dist/esm/exports/wui-profile-button.js",
       "default": "./dist/esm/exports/wui-profile-button.js"
     },
-    "./wui-profile-button-v2": {
-      "types": "./dist/types/exports/wui-profile-button-v2.d.ts",
-      "import": "./dist/esm/exports/wui-profile-button-v2.js",
-      "default": "./dist/esm/exports/wui-profile-button-v2.js"
-    },
     "./wui-chip-button": {
       "types": "./dist/types/exports/wui-chip-button.d.ts",
       "import": "./dist/esm/exports/wui-chip-button.js",
@@ -337,11 +327,6 @@
       "types": "./dist/types/exports/wui-banner.d.ts",
       "import": "./dist/esm/exports/wui-banner.js",
       "default": "./dist/esm/exports/wui-banner.js"
-    },
-    "./wui-banner-img": {
-      "types": "./dist/types/exports/wui-banner-img.d.ts",
-      "import": "./dist/esm/exports/wui-banner-img.js",
-      "default": "./dist/esm/exports/wui-banner-img.js"
     },
     "./wui-list-token": {
       "types": "./dist/types/exports/wui-list-token.d.ts",
