@@ -36,7 +36,7 @@ export const SIWXUtil = {
     }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
 
-    if (!ChainController.checkIfSupportedNetwork(namespace)) {
+    if (!ChainController.checkIfSupportedNetwork(namespace, `${namespace}:${chainId}`)) {
       return
     }
 
@@ -259,7 +259,7 @@ export const SIWXUtil = {
       }
     }
 
-    const caipNetwork = `${chainNamespace}:${chainId}` as const
+    const caipNetwork = `${chainNamespace}:${chainId}` as CaipNetworkId
 
     const siwxMessage = await siwx.createMessage({
       chainId: caipNetwork,

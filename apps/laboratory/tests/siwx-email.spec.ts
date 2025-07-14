@@ -23,10 +23,7 @@ siwxEmailTest.beforeAll(async ({ library, browser }) => {
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
-})
 
-// -- Tests --------------------------------------------------------------------
-siwxEmailTest('it should connect', async ({ context, library }) => {
   siwxEmailTest.setTimeout(300000)
   if (library === 'bitcoin' || library === 'wagmi' || library === 'multichain') {
     return
@@ -46,8 +43,6 @@ siwxEmailTest('it should connect', async ({ context, library }) => {
 
   // Should do 1CA, so no need to approve prompt siwe
   await modalValidator.expectConnected()
-
-  await modalPage.closeModal()
 })
 
 siwxEmailTest(
