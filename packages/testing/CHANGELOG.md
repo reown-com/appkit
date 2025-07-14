@@ -1,5 +1,12 @@
 # @reown/appkit
 
+## 1.7.15
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit@1.7.15
+
 ## 1.7.14
 
 ### Patch Changes
