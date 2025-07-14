@@ -111,6 +111,7 @@ export type GridContentType =
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
+  | 'account'
   | 'add'
   | 'allWallets'
   | 'arrowBottomCircle'

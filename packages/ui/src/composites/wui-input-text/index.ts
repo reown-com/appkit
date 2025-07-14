@@ -37,12 +37,14 @@ export class WuiInputText extends LitElement {
 
   @property() public onSubmit?: () => void
 
-  @property() public size: 'sm' | 'md' = 'md'
+  @property() public size: 'sm' | 'md' | 'lg' = 'md'
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <div class="wui-input-text-container">
         ${this.templateLeftIcon()}
         <input
+          data-size=${this.size}
           ${ref(this.inputElementRef)}
           data-testid="wui-input-text"
           type=${this.type}
@@ -64,6 +66,7 @@ export class WuiInputText extends LitElement {
       return html`<wui-icon
         class="wui-input-text-left-icon"
         size="md"
+        data-size=${this.size}
         color="inherit"
         name=${this.icon}
       ></wui-icon>`

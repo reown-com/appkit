@@ -24,42 +24,30 @@ export class WuiEnsInput extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
+  @property() public tabIdx?: number
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <wui-input-text
-        value=${ifDefined(this.value)}
-        ?disabled=${this.disabled}
-        .value=${this.value || ''}
-        data-testid="wui-ens-input"
-        inputRightPadding="5xl"
+        type="email"
+        placeholder="Email"
+        icon="account"
+        size="lg"
+        .disabled=${this.disabled}
+        .value=${this.value}
+        data-testid="wui-email-input"
+        tabIdx=${ifDefined(this.tabIdx)}
+        >${this.baseNameTemplate()}</wui-input-text
       >
-        ${this.baseNameTemplate()} ${this.errorTemplate()}${this.loadingTemplate()}
-      </wui-input-text>
     `
   }
 
   // -- Private ------------------------------------------- //
   private baseNameTemplate() {
-    return html`<wui-text variant="paragraph-400" color="fg-200" class="base-name">
+    return html`<wui-text variant="sm-medium" color="secondary" class="base-name">
       ${ConstantsUtil.WC_NAME_SUFFIX}
     </wui-text>`
-  }
-
-  private loadingTemplate() {
-    return this.loading
-      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
-      : null
-  }
-
-  private errorTemplate() {
-    if (this.errorMessage) {
-      return html`<wui-text variant="tiny-500" color="error-100" class="error"
-        >${this.errorMessage}</wui-text
-      >`
-    }
-
-    return null
   }
 }
 

@@ -42,7 +42,7 @@ export class WuiEmailInput extends LitElement {
   // -- Private ------------------------------------------- //
   private templateError() {
     if (this.errorMessage) {
-      return html`<wui-text variant="tiny-500" color="error-100">${this.errorMessage}</wui-text>`
+      return html`<wui-text variant="sm-regular" color="error">${this.errorMessage}</wui-text>`
     }
 
     return null

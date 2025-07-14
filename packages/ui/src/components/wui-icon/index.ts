@@ -3,6 +3,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 // -- Svg's-------------------------------- //
+import { accountSvg } from '../../assets/svg/account.js'
 import { addSvg } from '../../assets/svg/add.js'
 import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
 import { appStoreSvg } from '../../assets/svg/app-store.js'
@@ -94,6 +95,7 @@ import styles from './styles.js'
 
 // -- Constants ------------------------------------------ //
 const svgOptions: Record<IconType, TemplateResult<2>> = {
+  account: accountSvg,
   add: addSvg,
   allWallets: allWalletsSvg,
   arrowBottomCircle: arrowBottomCircleSvg,

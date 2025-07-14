@@ -16,7 +16,7 @@ export default css`
   }
 
   input {
-    width: 100%;
+    width: -webkit-fill-available;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     color: inherit;
     background: transparent;
@@ -29,6 +29,11 @@ export default css`
     letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+  }
+
+  input[data-size='lg'] {
+    padding: ${({ spacing }) => spacing[5]} ${({ spacing }) => spacing[3]}
+      ${({ spacing }) => spacing[5]} ${({ spacing }) => spacing[10]};
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -65,6 +70,10 @@ export default css`
     pointer-events: none;
     left: ${({ spacing }) => spacing[2]};
     color: ${({ tokens }) => tokens.theme.iconDefault};
+  }
+
+  wui-icon[data-size='lg'].wui-input-text-left-icon {
+    left: ${({ spacing }) => spacing[4]};
   }
 
   button.wui-input-text-submit-button {

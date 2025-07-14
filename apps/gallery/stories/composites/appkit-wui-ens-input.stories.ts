@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import type { WuiEnsInput } from '@reown/appkit-ui'
+import type { WuiEnsInput } from '@reown/appkit-ui/wui-ens-input'
 import '@reown/appkit-ui/wui-ens-input'
 
 import '../../components/gallery-container'
@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiEnsInput>
 
 export default {
-  title: 'Composites/wui-ens-input',
+  title: 'Composites/appkit-wui-ens-input',
   args: {
     errorMessage: '',
     disabled: false
