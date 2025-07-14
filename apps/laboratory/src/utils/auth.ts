@@ -30,6 +30,7 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
         }
       },
       async authorize(credentials) {
+        console.log('>> authorize', credentials)
         try {
           if (!credentials?.message) {
             throw new Error('SiweMessage is undefined')
@@ -37,6 +38,7 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
           const { message, signature } = credentials
           const address = getAddressFromMessage(message)
           const chainId = getChainIdFromMessage(message)
+          console.log('>> verifySignature', address, message, signature, chainId)
           const isValid = await verifySignature({
             address,
             message,
@@ -45,6 +47,7 @@ export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOp
             projectId
           })
 
+          console.log('>> verifySignature isValid', isValid)
           if (isValid) {
             return {
               id: `${chainId}:${address}`

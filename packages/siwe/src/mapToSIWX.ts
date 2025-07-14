@@ -129,6 +129,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return Promise.resolve()
       }
 
+      console.log('>> Adding session', session)
       if (await siwe.methods.verifyMessage(session)) {
         siwe.methods.onSignIn?.({
           address: session.data.accountAddress,

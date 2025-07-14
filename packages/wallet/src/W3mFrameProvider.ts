@@ -21,6 +21,7 @@ interface W3mFrameProviderConfig {
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
   getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
+  getCaipNetworks: () => CaipNetwork[]
 }
 
 // -- Provider --------------------------------------------------------
@@ -29,6 +30,7 @@ export class W3mFrameProvider {
   private w3mFrame: W3mFrame
   private abortController: AbortController
   private getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
+  private getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
@@ -50,13 +52,15 @@ export class W3mFrameProvider {
     enableLogger = true,
     onTimeout,
     abortController,
-    getActiveCaipNetwork
+    getActiveCaipNetwork,
+    getCaipNetworks
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
     }
     this.abortController = abortController
     this.getActiveCaipNetwork = getActiveCaipNetwork
+    this.getCaipNetworks = getCaipNetworks
     const rpcUrl = this.getRpcUrl(chainId)
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger, rpcUrl })
     this.onTimeout = onTimeout
@@ -781,7 +785,10 @@ export class W3mFrameProvider {
       }
     }
 
-    const activeNetwork = this.getActiveCaipNetwork(namespace)
+    const caipNetworks = this.getCaipNetworks(namespace)
+    const activeNetwork = caipNetworks.find(
+      network => network.id === chainId || network.caipNetworkId === chainId
+    )
 
     return activeNetwork?.rpcUrls.default.http?.[0]
   }

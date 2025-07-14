@@ -48,6 +48,7 @@ export const siweConfig = createSIWEConfig({
       if (cacao) {
         // Do something
       }
+      console.log('>> verifyMessage', message, signature)
       const success = await signIn('credentials', {
         message,
         redirect: false,
@@ -55,8 +56,12 @@ export const siweConfig = createSIWEConfig({
         callbackUrl: '/protected'
       })
 
+      console.log('>> verifyMessage response', success)
+
       return Boolean(success?.ok)
     } catch (error) {
+      console.warn('@@siweConfig: verifyMessage error', error)
+
       return false
     }
   },
