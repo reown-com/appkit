@@ -66,4 +66,4 @@ export default {
   },
 
   tags: ['autodocs']
-};
+}

@@ -16,7 +16,7 @@
     "storybook": "8.6.14"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^3",
+    "@chromatic-com/storybook": "3.2.7",
     "@storybook/addon-essentials": "8.6.14",
     "@storybook/addon-links": "8.6.14",
     "@storybook/blocks": "8.6.14",
