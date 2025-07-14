@@ -16,7 +16,6 @@ import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-compatible-network'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-qr-code'
-import '@reown/appkit-ui/wui-semantic-chip-button'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 

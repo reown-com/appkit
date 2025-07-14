@@ -4,7 +4,6 @@ import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
-import '../wui-input-element/index.js'
 import '../wui-input-text/index.js'
 import type { WuiInputText } from '../wui-input-text/index.js'
 import styles from './styles.js'
