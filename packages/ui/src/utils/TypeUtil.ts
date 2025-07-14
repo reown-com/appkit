@@ -237,9 +237,9 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
-export type ChipButtonVariant = 'main' | 'accent' | 'primary'
+export type ChipButtonType = 'accent' | 'neutral'
 
-export type ChipButtonSize = 'sm' | 'md'
+export type ChipButtonSize = 'sm' | 'md' | 'lg'
 
 export type DomainChipVariant = 'success' | 'warning' | 'error'
 
