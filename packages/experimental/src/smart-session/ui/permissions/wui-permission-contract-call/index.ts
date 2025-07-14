@@ -29,10 +29,10 @@ export class WuiPermissionContractCall extends LitElement {
       <wui-flex flexDirection="column" alignItems="center">
         <wui-details-group>
           <wui-details-group-item name="Type">
-            <wui-text variant="small-400" color="fg-100"> Contract Call </wui-text>
+            <wui-text variant="md-medium" color="primary"> Contract Call </wui-text>
           </wui-details-group-item>
           <wui-details-group-item name="Contract">
-            <wui-text variant="small-400" color="fg-100">
+            <wui-text variant="md-medium" color="primary">
               ${UiHelperUtil.getTruncateString({
                 string: this.contractAddress,
                 truncate: 'middle',
@@ -42,7 +42,7 @@ export class WuiPermissionContractCall extends LitElement {
             </wui-text>
           </wui-details-group-item>
           <wui-details-group-item name="Functions">
-            <wui-text variant="small-400" color="fg-100">
+            <wui-text variant="md-medium" color="primary">
               ${this.functions?.map(f => f.functionName).join(', ')}
             </wui-text>
           </wui-details-group-item>

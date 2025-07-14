@@ -4,6 +4,8 @@ export type ColorType = string
 
 export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
 
+export type AlertType = 'success' | 'error' | 'warning' | 'info'
+
 export type IconColorType =
   | 'inherit'
   | 'accent-primary'
