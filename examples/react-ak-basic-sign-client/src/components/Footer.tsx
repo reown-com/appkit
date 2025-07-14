@@ -15,7 +15,7 @@ export function Footer() {
         </a>{' '}
         •{' '}
         <a href="https://dashboard.reown.com" target="_blank" rel="noreferrer">
-          Cloud
+Dashboard
         </a>
       </div>
       <p className="warning">
