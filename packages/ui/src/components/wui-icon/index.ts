@@ -64,6 +64,7 @@ import { qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { questionMarkSvg } from '../../assets/svg/question-mark.js'
 import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
+import { reownSvg } from '../../assets/svg/reown-logo.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { sendSvg } from '../../assets/svg/send.js'
 import { spinnerSvg } from '../../assets/svg/spinner.js'
@@ -154,6 +155,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   qrCode: qrCodeIcon,
   questionMark: questionMarkSvg,
   recycleHorizontal: recycleHorizontalSvg,
+  reown: reownSvg,
   refresh: refreshSvg,
   search: searchSvg,
   send: sendSvg,

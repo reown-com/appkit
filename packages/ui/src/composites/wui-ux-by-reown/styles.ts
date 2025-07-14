@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   .reown-logo {
@@ -8,6 +8,7 @@ export default css`
   a {
     text-decoration: none;
     cursor: pointer;
+    color: ${({ tokens }) => tokens.theme.textSecondary};
   }
 
   a:hover {

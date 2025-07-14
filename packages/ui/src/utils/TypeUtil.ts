@@ -171,6 +171,7 @@ export type IconType =
   | 'questionMark'
   | 'recycleHorizontal'
   | 'refresh'
+  | 'reown'
   | 'search'
   | 'send'
   | 'spinner'
