@@ -10,12 +10,15 @@ let modalValidator: ModalValidator
 
 // -- Setup --------------------------------------------------------------------
 const siwxEmailTest = timingFixture.extend<{ library: string }>({
-  library: ['wagmi', { option: true }]
+  library: ['ethers', { option: true }]
 })
 
 siwxEmailTest.describe.configure({ mode: 'serial' })
 
 siwxEmailTest.beforeAll(async ({ library, browser }) => {
+  if (library !== 'ethers' && library !== 'solana') {
+    return
+  }
   const context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -25,9 +28,7 @@ siwxEmailTest.beforeAll(async ({ library, browser }) => {
   await modalPage.load()
 
   siwxEmailTest.setTimeout(300000)
-  if (library === 'bitcoin' || library === 'wagmi' || library === 'multichain') {
-    return
-  }
+
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
