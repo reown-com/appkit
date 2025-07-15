@@ -2,8 +2,12 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { WcWallet } from '@reown/appkit-controllers'
-import { ApiController, ConnectorController, CoreHelperUtil } from '@reown/appkit-controllers'
+import {
+  ApiController,
+  ConnectorController,
+  CoreHelperUtil,
+  type WcWallet
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card-select-loader'
 import '@reown/appkit-ui/wui-grid'
@@ -101,17 +105,24 @@ export class W3mAllWalletsList extends LitElement {
     )
   }
 
-  private walletsTemplate() {
-    const wallets =
-      this.filteredWallets?.length > 0
-        ? CoreHelperUtil.uniqueBy(
-            [...this.featured, ...this.recommended, ...this.filteredWallets],
-            'id'
-          )
-        : CoreHelperUtil.uniqueBy([...this.featured, ...this.recommended, ...this.wallets], 'id')
-    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(wallets)
+  private getWallets() {
+    const wallets = [...this.featured, ...this.recommended]
+    if (this.filteredWallets?.length > 0) {
+      wallets.push(...this.filteredWallets)
+    } else {
+      wallets.push(...this.wallets)
+    }
 
-    return walletsWithInstalled.map(
+    const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
+    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
+
+    return WalletUtil.markWalletsWithDisplayIndex(walletsWithInstalled)
+  }
+
+  private walletsTemplate() {
+    const wallets = this.getWallets()
+
+    return wallets.map(
       wallet => html`
         <w3m-all-wallets-list-item
           @click=${() => this.onConnectWallet(wallet)}
