@@ -126,10 +126,6 @@ export class W3mSwapView extends LitElement {
           }
         }),
         SwapController.subscribe(newState => {
-          if (newState.sourceToken && newState.toToken) {
-            this.watchTokensAndValues()
-          }
-
           this.initialized = newState.initialized
           this.loadingQuote = newState.loadingQuote
           this.loadingPrices = newState.loadingPrices
@@ -142,6 +138,10 @@ export class W3mSwapView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
           this.fetchError = newState.fetchError
+
+          if (newState.sourceToken && newState.toToken) {
+            this.watchTokensAndValues()
+          }
         })
       ]
     )
