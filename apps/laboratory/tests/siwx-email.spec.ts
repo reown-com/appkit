@@ -8,7 +8,7 @@ import { ModalValidator } from './shared/validators/ModalValidator'
 let modalPage: ModalWalletPage
 let modalValidator: ModalValidator
 
-const supportedLibraries = ['ethers', 'solana']
+const targetLibraries = ['ethers', 'solana']
 
 // -- Setup --------------------------------------------------------------------
 const siwxEmailTest = timingFixture.extend<{ library: string }>({
@@ -18,7 +18,7 @@ const siwxEmailTest = timingFixture.extend<{ library: string }>({
 siwxEmailTest.describe.configure({ mode: 'serial' })
 
 siwxEmailTest.beforeAll(async ({ library, browser }) => {
-  if (!supportedLibraries.includes(library)) {
+  if (!targetLibraries.includes(library)) {
     return
   }
   const context = await browser.newContext()
@@ -51,7 +51,7 @@ siwxEmailTest.beforeAll(async ({ library, browser }) => {
 siwxEmailTest(
   'it should require request signature when switching networks',
   async ({ library }) => {
-    if (!supportedLibraries.includes(library)) {
+    if (!targetLibraries.includes(library)) {
       return
     }
     const network = getTestnetByLibrary(library)
@@ -66,7 +66,7 @@ siwxEmailTest(
 siwxEmailTest(
   'it should fallback to the last session when cancel siwe from AppKit',
   async ({ library }) => {
-    if (!supportedLibraries.includes(library)) {
+    if (!targetLibraries.includes(library)) {
       return
     }
     const newNetwork = getTestnet2ByLibrary(library)
@@ -82,7 +82,7 @@ siwxEmailTest(
 siwxEmailTest(
   'it should be connected after connecting and refreshing the page',
   async ({ library }) => {
-    if (!supportedLibraries.includes(library)) {
+    if (!targetLibraries.includes(library)) {
       return
     }
     await modalPage.page.reload()
@@ -91,7 +91,7 @@ siwxEmailTest(
 )
 
 siwxEmailTest('it should disconnect', async ({ library }) => {
-  if (!supportedLibraries.includes(library)) {
+  if (!targetLibraries.includes(library)) {
     return
   }
   await modalPage.disconnectWithHook()
