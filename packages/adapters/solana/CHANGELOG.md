@@ -1,5 +1,19 @@
 # @reown/appkit-adapter-solana
 
+## 1.7.15
+
+### Patch Changes
+
+- [#4654](https://github.com/reown-com/appkit/pull/4654) [`d0b25bf`](https://github.com/reown-com/appkit/commit/d0b25bf2715d31ccc150580e20cb7556b8a06462) Thanks [@lukaisailovic](https://github.com/lukaisailovic)! - Fixes spl-token dependency issues for appkit-util Solana clients
+
+- Updated dependencies [[`4182dd8`](https://github.com/reown-com/appkit/commit/4182dd842453f4241b87b2aef96f647f206d2058), [`d0b25bf`](https://github.com/reown-com/appkit/commit/d0b25bf2715d31ccc150580e20cb7556b8a06462)]:
+  - @reown/appkit-controllers@1.7.15
+  - @reown/appkit-utils@1.7.15
+  - @reown/appkit@1.7.15
+  - @reown/appkit-common@1.7.15
+  - @reown/appkit-polyfills@1.7.15
+  - @reown/appkit-wallet@1.7.15
+
 ## 1.7.14
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @reown/appkit-core
 
+## 1.7.15
+
+### Patch Changes
+
+- [#4639](https://github.com/reown-com/appkit/pull/4639) [`4182dd8`](https://github.com/reown-com/appkit/commit/4182dd842453f4241b87b2aef96f647f206d2058) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where getSession would be called for every network in config.
+
+- Updated dependencies []:
+  - @reown/appkit-common@1.7.15
+  - @reown/appkit-wallet@1.7.15
+
 ## 1.7.14
 
 ### Patch Changes

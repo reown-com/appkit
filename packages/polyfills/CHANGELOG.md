@@ -1,5 +1,7 @@
 # @reown/appkit-polyfills
 
+## 1.7.15
+
 ## 1.7.14
 
 ### Patch Changes
