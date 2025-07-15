@@ -2,7 +2,7 @@ import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   .reown-logo {
-    height: var(--wui-spacing-xxl);
+    height: 24px;
   }
 
   a {

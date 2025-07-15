@@ -11,7 +11,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiDetailsGroupItem>
 
 export default {
-  title: 'Composites/wui-details-group-item',
+  title: 'Composites/appkit-wui-details-group-item',
   args: {
     name: 'Sending'
   },

@@ -60,7 +60,6 @@ import type { WuiSearchBar } from '../composites/wui-search-bar/index.js'
 import type { WuiSelect } from '../composites/wui-select/index.js'
 import type { WuiSemanticChip } from '../composites/wui-semantic-chip/index.js'
 import type { WuiSnackbar } from '../composites/wui-snackbar/index.js'
-import type { WuiSwitch } from '../composites/wui-switch/index.js'
 import type { WuiTabs } from '../composites/wui-tabs/index.js'
 import type { WuiTag } from '../composites/wui-tag/index.js'
 import type { WuiTokenButton } from '../composites/wui-token-button/index.js'
@@ -153,7 +152,6 @@ interface AppKitElements {
   'wui-banner': CustomElement<WuiBanner>
   'wui-list-account': CustomElement<WuiListAccount>
   'wui-checkbox': CustomElement<WuiCheckBox>
-  'wui-switch': CustomElement<WuiSwitch>
   'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
   'wui-active-profile-wallet-item': CustomElement<WuiActiveProfileWalletItem>
   'wui-inactive-profile-wallet-item': CustomElement<WuiInactiveProfileWalletItem>

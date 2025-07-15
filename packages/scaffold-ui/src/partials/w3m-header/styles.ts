@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    height: 64px;
+    height: 32px;
   }
 
   wui-text {

@@ -117,17 +117,17 @@ export class W3mSocialLoginWidget extends LitElement {
       </wui-flex>`
     }
 
-    return html` <wui-list-social
+    return html` <wui-list-button
       data-testid=${`social-selector-${socials[0]}`}
       @click=${() => {
         this.onSocialClick(socials[0])
       }}
-      logo=${ifDefined(socials[0])}
-      align="center"
-      name=${`Continue with ${socials[0]}`}
+      size="lg"
+      icon=${ifDefined(socials[0])}
+      text=${`Continue with ${socials[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
       ?disabled=${this.isPwaLoading || this.hasConnection()}
-    ></wui-list-social>`
+    ></wui-list-button>`
   }
 
   private bottomViewTemplate() {

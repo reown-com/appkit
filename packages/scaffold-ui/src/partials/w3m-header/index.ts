@@ -178,6 +178,7 @@ export class W3mHeader extends LitElement {
     return html`<wui-flex>
       <wui-icon-link
         icon="clock"
+        variant="primary"
         @click=${() => RouterController.push('SmartSessionList')}
         data-testid="w3m-header-smart-sessions"
       ></wui-icon-link>
@@ -189,6 +190,7 @@ export class W3mHeader extends LitElement {
     return html`
       <wui-icon-link
         icon="close"
+        variant="primary"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
       ></wui-icon-link>
@@ -205,10 +207,10 @@ export class W3mHeader extends LitElement {
         alignItems="center"
         gap="2"
       >
-        <wui-text variant="lg-medium" color="primary" data-testid="w3m-header-text"
+        <wui-text variant="md-regular" color="primary" data-testid="w3m-header-text"
           >${this.headerText}</wui-text
         >
-        ${isBeta ? html`<wui-tag variant="accent">Beta</wui-tag>` : null}
+        ${isBeta ? html`<wui-tag variant="default">Beta</wui-tag>` : null}
       </wui-flex>
     `
   }
@@ -240,6 +242,7 @@ export class W3mHeader extends LitElement {
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
+        variant="primary"
         @click=${this.onGoBack.bind(this)}
       ></wui-icon-link>`
     }
@@ -248,6 +251,7 @@ export class W3mHeader extends LitElement {
       data-hidden=${!isConnectHelp}
       id="dynamic"
       icon="helpCircle"
+      variant="primary"
       @click=${this.onWalletHelp.bind(this)}
     ></wui-icon-link>`
   }

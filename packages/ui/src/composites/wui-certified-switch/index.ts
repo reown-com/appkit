@@ -1,10 +1,10 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import '@reown/appkit-ui/wui-toggle'
 
 @customElement('wui-certified-switch')
 export class WuiCertifiedSwitch extends LitElement {
@@ -18,7 +18,7 @@ export class WuiCertifiedSwitch extends LitElement {
     return html`
       <button>
         <wui-icon size="xl" name="walletConnectBrown"></wui-icon>
-        <wui-switch ?checked=${ifDefined(this.checked)}></wui-switch>
+        <wui-toggle .checked=${this.checked} size="sm"></wui-toggle>
       </button>
     `
   }

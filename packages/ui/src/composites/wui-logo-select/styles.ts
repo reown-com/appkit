@@ -9,7 +9,6 @@ export default css`
   button {
     width: 100%;
     height: 52px;
-    width: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

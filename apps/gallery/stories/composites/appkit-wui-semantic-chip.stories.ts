@@ -10,7 +10,7 @@ import { semanticChipSizes, semanticChipTypes } from '../../utils/PresetUtils'
 type Component = Meta<WuiSemanticChip>
 
 export default {
-  title: 'Composites/wui-semantic-chip',
+  title: 'Composites/appkit-wui-semantic-chip',
   args: {
     type: 'success',
     text: 'app.uniswap.org',

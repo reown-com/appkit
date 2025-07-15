@@ -10,7 +10,7 @@ import { iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiWalletButton>
 
 export default {
-  title: 'Composites/wui-wallet-button',
+  title: 'Composites/appkit-wui-wallet-button',
   component: 'wui-wallet-button',
   args: {
     name: 'Rainbow',

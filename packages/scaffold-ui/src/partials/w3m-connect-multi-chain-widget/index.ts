@@ -49,7 +49,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
-              tagVariant="shade"
+              tagVariant="success"
               tagLabel="multichain"
               data-testid=${`wallet-selector-${connector.id}`}
               @click=${() => this.onConnector(connector)}

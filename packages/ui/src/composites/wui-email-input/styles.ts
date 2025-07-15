@@ -6,8 +6,4 @@ export default css`
     display: inline-block;
     width: 100%;
   }
-
-  wui-text {
-    margin: var(--wui-spacing-xxs) var(--wui-spacing-m) var(--wui-spacing-0) var(--wui-spacing-m);
-  }
 `

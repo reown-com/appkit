@@ -43,7 +43,7 @@ export class W3mGetWalletView extends LitElement {
       wallet => html`
         <wui-list-wallet
           name=${wallet.name ?? 'Unknown'}
-          tagVariant="main"
+          tagVariant="accent"
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           @click=${() => {
             CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')

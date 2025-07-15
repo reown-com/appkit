@@ -373,11 +373,6 @@
       "import": "./dist/esm/exports/wui-checkbox.js",
       "default": "./dist/esm/exports/wui-checkbox.js"
     },
-    "./wui-switch": {
-      "types": "./dist/types/exports/wui-switch.d.ts",
-      "import": "./dist/esm/exports/wui-switch.js",
-      "default": "./dist/esm/exports/wui-switch.js"
-    },
     "./wui-certified-switch": {
       "types": "./dist/types/exports/wui-certified-switch.d.ts",
       "import": "./dist/esm/exports/wui-certified-switch.js",

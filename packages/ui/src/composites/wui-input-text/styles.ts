@@ -32,8 +32,8 @@ export default css`
   }
 
   input[data-size='lg'] {
-    padding: ${({ spacing }) => spacing[5]} ${({ spacing }) => spacing[3]}
-      ${({ spacing }) => spacing[5]} ${({ spacing }) => spacing[10]};
+    padding: ${({ spacing }) => spacing[4]} ${({ spacing }) => spacing[3]}
+      ${({ spacing }) => spacing[4]} ${({ spacing }) => spacing[10]};
   }
 
   @media (hover: hover) and (pointer: fine) {

@@ -15,7 +15,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiDetailsGroup>
 
 export default {
-  title: 'Composites/wui-details-group',
+  title: 'Composites/appkit-wui-details-group',
   args: {}
 } as Component
 

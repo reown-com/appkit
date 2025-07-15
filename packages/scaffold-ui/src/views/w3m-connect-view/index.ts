@@ -150,13 +150,13 @@ export class W3mConnectView extends LitElement {
           <wui-flex
             class="connect-methods"
             flexDirection="column"
-            gap="s"
+            gap="2"
             .padding=${socialOrEmailLoginEnabled &&
             isEnableWallets &&
             isEnableWalletGuide &&
             this.walletGuide === 'get-started'
-              ? ['3xs', 's', '0', 's']
-              : ['3xs', 's', 's', 's']}
+              ? ['1', '3', '0', '3']
+              : ['1', '3', '3', '3']}
           >
             ${this.renderConnectMethod(tabIndex)}
           </wui-flex>

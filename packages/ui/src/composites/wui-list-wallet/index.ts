@@ -60,7 +60,7 @@ export class WuiListWallet extends LitElement {
     if (this.showAllWallets && this.imageSrc) {
       return html` <wui-all-wallets-image .imageeSrc=${this.imageSrc}> </wui-all-wallets-image> `
     } else if (this.showAllWallets && this.walletIcon) {
-      return html` <wui-wallet-image .walletIcon=${this.walletIcon} size="sm"> </wui-wallet-image> `
+      return html` <wui-wallet-image .walletIcon=${this.walletIcon} size="md"> </wui-wallet-image> `
     }
 
     return null

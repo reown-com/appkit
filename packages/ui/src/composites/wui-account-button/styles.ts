@@ -14,7 +14,7 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textSecondary};
     border-radius: ${({ borderRadius }) => borderRadius[16]};
     height: 32px;
-    transition: box-shadow 0.2s ease-in-out;
+    transition: box-shadow 0.2s cubic-bezier(0.29, 0.12, 0.08, 1.13);
     will-change: box-shadow;
   }
 

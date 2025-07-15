@@ -23,7 +23,7 @@ export default css`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: ${({ colors }) => colors.neutrals700};
+    background-color: ${({ colors }) => colors.neutrals400};
     border-radius: ${({ borderRadius }) => borderRadius.round};
     border: 1px solid transparent;
     will-change: border;
