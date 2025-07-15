@@ -320,7 +320,10 @@ export class AppKit extends AppKitBaseClient {
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
-          properties: { provider: socialProviderToConnect }
+          properties: {
+            provider: socialProviderToConnect,
+            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+          }
         })
       }
     } catch (error) {
@@ -517,6 +520,7 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
+
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
     })

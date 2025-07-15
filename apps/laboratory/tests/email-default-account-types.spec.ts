@@ -64,6 +64,20 @@ emailTest('it should make the default account type as smart account', async () =
   await validator.expectDisconnected()
 })
 
+emailTest('it should connect again and should be sa', async () => {
+  // @ts-expect-error - mailsacApiKey is defined
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+  await validator.expectConnected()
+
+  // Verify the active account type is smart account
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
+  await validator.expectChangePreferredAccountToShow(EOA)
+
+  await page.disconnect()
+  await validator.expectDisconnected()
+})
+
 emailTest('it should show make the default account type as EOA', async () => {
   page = new ModalWalletPage(browserPage, 'default-account-types-eoa', 'default')
   await page.load()
@@ -88,6 +102,20 @@ emailTest('it should show make the default account type as EOA', async () => {
   await page.goToProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+  await page.disconnect()
+  await validator.expectDisconnected()
+})
+
+emailTest('it should connect again and should be eoa', async () => {
+  // @ts-expect-error - mailsacApiKey is defined
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+  await validator.expectConnected()
+
+  // Verify the active account type is smart account
+  await page.goToProfileWalletsView()
+  await page.clickProfileWalletsMoreButton()
+  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+
   await page.disconnect()
   await validator.expectDisconnected()
 })

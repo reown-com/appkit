@@ -115,8 +115,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-transactions-view></w3m-transactions-view>`
       case 'OnRampProviders':
         return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
-      case 'OnRampActivity':
-        return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
       case 'OnRampTokenSelect':
         return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
       case 'OnRampFiatSelect':

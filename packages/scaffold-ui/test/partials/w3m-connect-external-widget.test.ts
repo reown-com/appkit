@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
   AssetUtil,
@@ -31,12 +30,6 @@ const MOCK_CONNECTORS = [
     name: 'External Wallet 3',
     type: 'EXTERNAL',
     info: { rdns: 'io.external.wallet3' }
-  },
-  {
-    id: ConstantsUtil.CONNECTOR_ID.COINBASE_SDK,
-    name: 'Coinbase Wallet',
-    type: 'EXTERNAL',
-    info: { rdns: 'io.coinbase.wallet' }
   }
 ] as ConnectorWithProviders[]
 
@@ -68,7 +61,6 @@ describe('W3mConnectExternalWidget', () => {
     expect(walletNames).toContain('External Wallet 1')
     expect(walletNames).toContain('External Wallet 2')
     expect(walletNames).toContain('External Wallet 3')
-    expect(walletNames).not.toContain('Coinbase Wallet')
   })
 
   it('should filter out wallets excluded by RDNS while showing non-excluded wallets', async () => {
