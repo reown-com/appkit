@@ -8,6 +8,8 @@ import { ModalValidator } from './shared/validators/ModalValidator'
 let modalPage: ModalWalletPage
 let modalValidator: ModalValidator
 
+const supportedLibraries = ['ethers', 'solana']
+
 // -- Setup --------------------------------------------------------------------
 const siwxEmailTest = timingFixture.extend<{ library: string }>({
   library: ['ethers', { option: true }]
@@ -16,9 +18,6 @@ const siwxEmailTest = timingFixture.extend<{ library: string }>({
 siwxEmailTest.describe.configure({ mode: 'serial' })
 
 siwxEmailTest.beforeAll(async ({ library, browser }) => {
-  if (library !== 'ethers' && library !== 'solana') {
-    return
-  }
   const context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -49,6 +48,9 @@ siwxEmailTest.beforeAll(async ({ library, browser }) => {
 siwxEmailTest(
   'it should require request signature when switching networks',
   async ({ library }) => {
+    if (!supportedLibraries.includes(library)) {
+      return
+    }
     const network = getTestnetByLibrary(library)
 
     await modalPage.switchNetwork(network)
@@ -61,6 +63,9 @@ siwxEmailTest(
 siwxEmailTest(
   'it should fallback to the last session when cancel siwe from AppKit',
   async ({ library }) => {
+    if (!supportedLibraries.includes(library)) {
+      return
+    }
     const newNetwork = getTestnet2ByLibrary(library)
     const prevNetwork = getTestnetByLibrary(library)
 
@@ -71,12 +76,21 @@ siwxEmailTest(
   }
 )
 
-siwxEmailTest('it should be connected after connecting and refreshing the page', async () => {
-  await modalPage.page.reload()
-  await modalValidator.expectConnected()
-})
+siwxEmailTest(
+  'it should be connected after connecting and refreshing the page',
+  async ({ library }) => {
+    if (!supportedLibraries.includes(library)) {
+      return
+    }
+    await modalPage.page.reload()
+    await modalValidator.expectConnected()
+  }
+)
 
-siwxEmailTest('it should disconnect', async () => {
+siwxEmailTest('it should disconnect', async ({ library }) => {
+  if (!supportedLibraries.includes(library)) {
+    return
+  }
   await modalPage.disconnectWithHook()
   await modalValidator.expectDisconnected()
 })
