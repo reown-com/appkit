@@ -18,6 +18,9 @@ const siwxEmailTest = timingFixture.extend<{ library: string }>({
 siwxEmailTest.describe.configure({ mode: 'serial' })
 
 siwxEmailTest.beforeAll(async ({ library, browser }) => {
+  if (!supportedLibraries.includes(library)) {
+    return
+  }
   const context = await browser.newContext()
   const browserPage = await context.newPage()
 
