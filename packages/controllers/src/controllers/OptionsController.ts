@@ -244,6 +244,11 @@ export const OptionsController = {
         state.remoteFeatures.socials
       )
     }
+
+    if (state.features?.pay) {
+      state.remoteFeatures.email = false
+      state.remoteFeatures.socials = false
+    }
   },
 
   setFeatures(features: OptionsControllerState['features'] | undefined) {
@@ -257,6 +262,11 @@ export const OptionsController = {
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
+
+    if (state.features?.pay && state.remoteFeatures) {
+      state.remoteFeatures.email = false
+      state.remoteFeatures.socials = false
+    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {

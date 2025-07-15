@@ -329,6 +329,168 @@ async function checkWallet() {
 
 checkWallet()
 
+// -- Check wallet schema breaking changes -------------------------------------
+async function checkWalletSchema() {
+  const wallet_schema_files = modified_files.filter(
+    f =>
+      f.includes('wallet/') && (f.includes('W3mFrameSchema.ts') || f.includes('W3mFrameTypes.ts'))
+  )
+
+  for (const f of wallet_schema_files) {
+    const diff = await diffForFile(f)
+    if (!diff) {
+      // eslint-disable-next-line no-continue
+      continue
+    }
+
+    const addedLines = diff.added.split('\n')
+    const removedLines = diff.removed.split('\n')
+
+    const fieldPattern = /^[+-]?\s*(?<fieldName>[a-zA-Z_][a-zA-Z0-9_]*)\s*:\s*z\./u
+
+    // Check for new required fields
+    for (const line of addedLines) {
+      const fieldMatch = line.match(fieldPattern)
+      if (!fieldMatch) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const fieldName = fieldMatch.groups?.['fieldName']
+      const isOptional = line.includes('.optional()') || line.includes('z.optional(')
+
+      if (isOptional) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      if (
+        fieldName &&
+        !line.trim().startsWith('//') &&
+        !line.includes('*') &&
+        !line.includes('export')
+      ) {
+        fail(
+          `Breaking change in ${f}: New required field '${fieldName}' added. Make it optional with .optional() for backwards compatibility.`
+        )
+      }
+    }
+
+    // Check for removed required fields
+    for (const removedLine of removedLines) {
+      const fieldMatch = removedLine.match(fieldPattern)
+      const isOptional = removedLine.includes('.optional()') || removedLine.includes('z.optional(')
+      if (!fieldMatch || isOptional) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const fieldName = fieldMatch.groups?.['fieldName']
+      if (!fieldName) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const isMovedOrMadeOptional = addedLines.some(addedLine => {
+        const addedFieldMatch = addedLine.match(fieldPattern)
+        if (!addedFieldMatch) {
+          return false
+        }
+
+        const addedFieldName = addedFieldMatch.groups?.['fieldName']
+        if (addedFieldName !== fieldName) {
+          return false
+        }
+
+        const addedIsOptional =
+          addedLine.includes('.optional()') || addedLine.includes('z.optional(')
+
+        const normalizedRemoved = removedLine.replace(/^[+-]\s*/u, '').trim()
+        const normalizedAdded = addedLine.replace(/^[+-]\s*/u, '').trim()
+        const isSameDefinition = normalizedAdded === normalizedRemoved
+
+        return addedIsOptional || isSameDefinition
+      })
+
+      if (
+        !isMovedOrMadeOptional &&
+        !removedLine.trim().startsWith('//') &&
+        !removedLine.includes('*') &&
+        !removedLine.includes('export')
+      ) {
+        fail(
+          `Breaking change in ${f}: Required field '${fieldName}' was removed. This breaks backwards compatibility.`
+        )
+      }
+    }
+
+    // Check for fields changed from optional to required
+    for (const removedLine of removedLines) {
+      const wasOptional = removedLine.includes('.optional()') || removedLine.includes('z.optional(')
+      if (!wasOptional) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const fieldMatch = removedLine.match(fieldPattern)
+      if (!fieldMatch) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const fieldName = fieldMatch.groups?.['fieldName']
+      if (!fieldName) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const madeRequired = addedLines.some(addedLine => {
+        const addedFieldMatch = addedLine.match(fieldPattern)
+        const addedIsOptional =
+          addedLine.includes('.optional()') || addedLine.includes('z.optional(')
+
+        return (
+          addedFieldMatch && addedFieldMatch.groups?.['fieldName'] === fieldName && !addedIsOptional
+        )
+      })
+
+      if (madeRequired) {
+        fail(
+          `Breaking change in ${f}: Field '${fieldName}' changed from optional to required. This breaks backwards compatibility.`
+        )
+      }
+    }
+
+    // Warn about type changes that might be breaking
+    if (diff.added.includes('z.enum(') || diff.removed.includes('z.enum(')) {
+      warn(
+        `Enum changes detected in ${f}. Please verify that enum modifications maintain backwards compatibility.`
+      )
+    }
+
+    // Check interface changes in types file
+    if (f.includes('W3mFrameTypes.ts')) {
+      const removedInterfaceProps = removedLines.filter(
+        line =>
+          line.includes(':') &&
+          !line.trim().startsWith('//') &&
+          !line.includes('export') &&
+          !line.includes('interface') &&
+          !line.includes('.optional()') &&
+          !line.includes('z.optional(')
+      )
+
+      if (removedInterfaceProps.length > 0) {
+        warn(
+          `Type interface changes detected in ${f}. Please verify that removed properties maintain backwards compatibility.`
+        )
+      }
+    }
+  }
+}
+
+checkWalletSchema()
+
 // -- Check laboratory ------------------------------------------------------------
 
 async function checkLaboratory() {

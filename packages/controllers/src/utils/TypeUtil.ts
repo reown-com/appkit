@@ -22,7 +22,6 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
-import type { ConstantsUtil } from './ConstantsUtil.js'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -219,7 +218,6 @@ export interface BlockchainApiIdentityResponse {
 export interface BlockchainApiTransactionsRequest {
   account: string
   cursor?: string
-  onramp?: 'coinbase'
   signal?: AbortSignal
   cache?: RequestCache
   chainId?: string
@@ -458,6 +456,7 @@ export type Event =
       properties: {
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -757,6 +756,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_SUCCESS'
       properties: {
         provider: SocialProvider
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -1010,7 +1010,6 @@ export type OnrampQuote = {
   paymentTotal: QuoteAmount
   paymentSubtotal: QuoteAmount
   purchaseAmount: QuoteAmount
-  coinbaseFee: QuoteAmount
   networkFee: QuoteAmount
   quoteId: string
 }
@@ -1066,7 +1065,7 @@ export type SendTransactionArgs =
       gasPrice?: bigint
       address: Address
     }
-  | { chainNamespace: 'solana'; to: string; value: number }
+  | { chainNamespace: 'solana'; to: string; value: number; tokenMint?: string }
 
 export type EstimateGasTransactionArgs =
   | {
@@ -1143,9 +1142,6 @@ export interface Provider {
 }
 
 export type CombinedProvider = W3mFrameProvider & Provider
-
-export type CoinbasePaySDKChainNameValues =
-  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
 
 export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
 

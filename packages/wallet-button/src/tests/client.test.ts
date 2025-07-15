@@ -80,7 +80,19 @@ describe('AppKitWalletButton', () => {
     expect(subscribeIsReady).toHaveBeenCalled()
   })
 
-  test('it should connect to google (social)', () => {
+  test('it should connect to google (social) and not call provider methods', () => {
+    const mockProvider = {
+      connectSocial: vi.fn()
+    }
+
+    const mockAuthConnector = {
+      id: 'auth',
+      type: 'AUTH',
+      chain: 'eip155',
+      provider: mockProvider
+    }
+
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(mockAuthConnector as any)
     // Initialize wallet button
     const appKitWalletButton = new AppKitWalletButton()
 
@@ -90,6 +102,8 @@ describe('AppKitWalletButton', () => {
       onConnect: expect.any(Function),
       onOpenFarcaster: expect.any(Function)
     })
+
+    expect(mockProvider.connectSocial).not.toHaveBeenCalled()
   })
 
   test('it should connect to metamask (external)', () => {

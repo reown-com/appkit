@@ -4,7 +4,8 @@ import { addons } from 'storybook/preview-api'
 import { initializeTheming, setColorTheme } from '@reown/appkit-ui'
 
 // -- Utilities ------------------------------------------------------------
-initializeTheming({})
+setColorTheme('dark')
+initializeTheming({}, 'dark')
 
 const backgroundChangeListener = args => {
   const bgColor = args.globals.backgrounds?.value
