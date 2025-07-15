@@ -18,7 +18,6 @@ type TransactionByYearMap = Record<number, TransactionByMonthMap>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
-  coinbaseTransactions: TransactionByYearMap
   transactionsByYear: TransactionByYearMap
   lastNetworkInView: CaipNetworkId | undefined
   loading: boolean
@@ -29,7 +28,6 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
-  coinbaseTransactions: {},
   transactionsByYear: {},
   lastNetworkInView: undefined,
   loading: false,
@@ -49,7 +47,7 @@ const controller = {
     state.lastNetworkInView = lastNetworkInView
   },
 
-  async fetchTransactions(accountAddress?: string, onramp?: 'coinbase') {
+  async fetchTransactions(accountAddress?: string) {
     if (!accountAddress) {
       throw new Error("Transactions can't be fetched without an accountAddress")
     }
@@ -60,9 +58,6 @@ const controller = {
       const response = await BlockchainApiController.fetchTransactions({
         account: accountAddress,
         cursor: state.next,
-        onramp,
-        // Coinbase transaction history state updates require the latest data
-        cache: onramp === 'coinbase' ? 'no-cache' : undefined,
         chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
       })
 
@@ -73,18 +68,11 @@ const controller = {
 
       state.loading = false
 
-      if (onramp === 'coinbase') {
-        state.coinbaseTransactions = TransactionsController.groupTransactionsByYearAndMonth(
-          state.coinbaseTransactions,
-          response.data
-        )
-      } else {
-        state.transactions = filteredTransactions
-        state.transactionsByYear = TransactionsController.groupTransactionsByYearAndMonth(
-          state.transactionsByYear,
-          sameChainTransactions
-        )
-      }
+      state.transactions = filteredTransactions
+      state.transactionsByYear = TransactionsController.groupTransactionsByYearAndMonth(
+        state.transactionsByYear,
+        sameChainTransactions
+      )
 
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined

@@ -1,7 +1,7 @@
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ParseUtil } from '@reown/appkit-common'
 
-const SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES = ['eip155']
+const SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES = ['eip155', 'solana']
 
 const CHAIN_ASSET_INFO_MAP: Partial<
   Record<

@@ -92,6 +92,29 @@ describe('W3mFrame', () => {
       )
     })
 
+    it('should not throw error when posting app event with invalid event', () => {
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID })
+
+      // Mock iframe and its contentWindow
+      w3mFrame['iframe'] = {
+        contentWindow: {
+          postMessage: vi.fn()
+        }
+      } as any
+
+      const testEvent = {
+        id: 'test-id',
+        type: W3mFrameConstants.APP_CONNECT_SOCIAL
+      }
+
+      w3mFrame.events.postAppEvent(testEvent as any)
+
+      expect(w3mFrame['iframe']?.contentWindow?.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining(testEvent),
+        '*'
+      )
+    })
+
     it('should throw error when posting app event without iframe', () => {
       w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
 

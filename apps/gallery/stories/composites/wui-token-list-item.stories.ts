@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-list-item'
-import type { WuiTokenListItem } from '@reown/appkit-ui/src/composites/wui-token-list-item'
+import '@reown/appkit-ui/wui-list-item'
+import type { WuiTokenListItem } from '@reown/appkit-ui/wui-token-list-item'
 
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'

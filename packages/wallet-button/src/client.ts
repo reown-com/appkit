@@ -70,7 +70,7 @@ export class AppKitWalletButton {
       ? ConnectorController.getConnector(walletButton.id, walletButton.rdns)
       : undefined
 
-    if (connector) {
+    if (connector && connector.type !== 'AUTH') {
       return ConnectorControllerUtil.connectExternal(connector)
     }
 

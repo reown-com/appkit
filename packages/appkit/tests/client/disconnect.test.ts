@@ -414,7 +414,7 @@ describe('AppKit - disconnect - functional scenarios', () => {
     // EVM assertions
     expect(evmAdapterDisconnectSpy).toHaveBeenCalledOnce()
     expect(evmAdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: undefined
+      id: 'mockConnector'
     })
     expect(setLoadingSpy).toHaveBeenCalledWith(true, eip155Namespace)
     expect(setLoadingSpy).toHaveBeenCalledWith(false, eip155Namespace)
@@ -422,7 +422,7 @@ describe('AppKit - disconnect - functional scenarios', () => {
     // Solana assertions
     expect(solanaAdapterDisconnectSpy).toHaveBeenCalledOnce()
     expect(solanaAdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: undefined
+      id: 'mockConnector'
     })
     expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace)
     expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace)
@@ -572,7 +572,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     // --- Assertions for eip155 (successful disconnect) ---
     expect(eip155AdapterDisconnectSpy).toHaveBeenCalledOnce()
     expect(eip155AdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: undefined
+      id: 'mockConnector'
     })
 
     expect(setLoadingSpy).toHaveBeenCalledWith(true, eip155Namespace)
@@ -582,7 +582,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     // --- Assertions for solana (failed disconnect where main adapter.disconnect errors) ---
     expect(solanaAdapterDisconnectSpy).toHaveBeenCalledOnce() // Both conditional and main calls attempted
     expect(solanaAdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: undefined
+      id: 'mockConnector'
     })
 
     expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace) // setLoading(true) is before the failing adapter.disconnect
