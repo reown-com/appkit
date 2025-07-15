@@ -19,7 +19,7 @@ export function Footer() {
         </a>
       </div>
       <p className="warning">
-        This project ID only works on localhost. Go to Cloud to get your own.
+        This project ID only works on localhost. Visit our Dashboard to get your own.
       </p>
     </div>
   )
