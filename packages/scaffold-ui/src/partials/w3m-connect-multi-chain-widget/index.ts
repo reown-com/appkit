@@ -52,6 +52,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
               tagVariant="success"
               tagLabel="multichain"
               data-testid=${`wallet-selector-${connector.id}`}
+              size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
             >

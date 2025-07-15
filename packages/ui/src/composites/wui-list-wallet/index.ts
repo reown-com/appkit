@@ -47,7 +47,11 @@ export class WuiListWallet extends LitElement {
     this.dataset['size'] = this.size
 
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
+      <button
+        ?disabled=${this.disabled}
+        data-all-wallets=${this.showAllWallets}
+        tabindex=${ifDefined(this.tabIdx)}
+      >
         ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="lg-regular" color="inherit">${this.name}</wui-text>
         ${this.templateStatus()}
@@ -60,7 +64,7 @@ export class WuiListWallet extends LitElement {
     if (this.showAllWallets && this.imageSrc) {
       return html` <wui-all-wallets-image .imageeSrc=${this.imageSrc}> </wui-all-wallets-image> `
     } else if (this.showAllWallets && this.walletIcon) {
-      return html` <wui-wallet-image .walletIcon=${this.walletIcon} size="md"> </wui-wallet-image> `
+      return html` <wui-wallet-image .walletIcon=${this.walletIcon} size="sm"> </wui-wallet-image> `
     }
 
     return null
@@ -82,10 +86,7 @@ export class WuiListWallet extends LitElement {
 
   private templateStatus() {
     if (this.loading) {
-      return html`<wui-loading-spinner
-        size="lg"
-        color=${this.loadingSpinnerColor}
-      ></wui-loading-spinner>`
+      return html`<wui-loading-spinner size="lg" color="accent-primary"></wui-loading-spinner>`
     } else if (this.tagLabel && this.tagVariant) {
       return html`<wui-tag size="sm" variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
     }

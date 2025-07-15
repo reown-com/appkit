@@ -64,6 +64,7 @@ export class W3mConnectExternalWidget extends LitElement {
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
               data-testid=${`wallet-selector-external-${connector.id}`}
+              size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
               ?disabled=${hasWcConnection}

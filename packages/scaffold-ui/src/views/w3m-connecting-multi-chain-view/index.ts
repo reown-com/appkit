@@ -90,6 +90,7 @@ export class W3mConnectingMultiChainView extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
               name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
               @click=${() => this.onConnector(connector)}
+              size="sm"
               data-testid="wui-list-chain-${connector.chain}"
             ></wui-list-wallet>
           `

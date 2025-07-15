@@ -23,6 +23,14 @@ export default css`
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
+  button[data-all-wallets='true'] {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  button[data-all-wallets='true']:hover:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
   button:focus-visible:enabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};

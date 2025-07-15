@@ -38,6 +38,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
               name=${wallet.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
               tabIdx=${ifDefined(this.tabIdx)}
+              size="sm"
               ?disabled=${hasWcConnection}
             >
             </wui-list-wallet>

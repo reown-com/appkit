@@ -86,6 +86,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet?.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
+              size="sm"
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}

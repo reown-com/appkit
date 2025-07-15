@@ -68,6 +68,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
         tagVariant="accent"
         tabIdx=${ifDefined(this.tabIdx)}
         data-testid="wallet-selector-walletconnect"
+        size="sm"
         ?disabled=${hasWcConnection}
       >
       </wui-list-wallet>

@@ -74,6 +74,7 @@ export class W3mConnectRecentWidget extends LitElement {
               @click=${() => this.onConnectWallet(wallet)}
               tagLabel="recent"
               tagVariant="info"
+              size="sm"
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}

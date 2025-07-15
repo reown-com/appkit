@@ -58,9 +58,10 @@ export class W3mConnectInjectedWidget extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
-              tagVariant=${isAlreadyConnected ? 'shade' : 'success'}
+              tagVariant=${isAlreadyConnected ? 'info' : 'success'}
               tagLabel=${isAlreadyConnected ? 'connected' : 'installed'}
               data-testid=${`wallet-selector-${connector.id}`}
+              size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
             >

@@ -3,7 +3,7 @@ import { css } from '../../utils/ThemeHelperUtil.js'
 export default css`
   :host {
     position: relative;
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: ${({ tokens }) => tokens.theme.foregroundTertiary};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,18 +15,6 @@ export default css`
     overflow: hidden;
     border-radius: inherit;
     border-radius: ${({ borderRadius }) => borderRadius[3]};
-  }
-
-  :host::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: inherit;
-    border: 1px solid var(--wui-color-gray-glass-010);
-    pointer-events: none;
   }
 
   :host([data-size='sm']) {

@@ -69,6 +69,7 @@ export class W3mConnectCustomWidget extends LitElement {
             imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
             name=${wallet.name ?? 'Unknown'}
             @click=${() => this.onConnectWallet(wallet)}
+            size="sm"
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
             ?loading=${this.loading}

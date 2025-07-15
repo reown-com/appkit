@@ -79,8 +79,8 @@ export class W3mAllWalletsWidget extends LitElement {
 
     return html`
       <wui-list-wallet
-        name="All Wallets"
-        walletIcon="allWallets"
+        name="Search Wallet"
+        walletIcon="search"
         showAllWallets
         @click=${this.onAllWallets.bind(this)}
         tagLabel=${tagLabel}
@@ -88,9 +88,8 @@ export class W3mAllWalletsWidget extends LitElement {
         data-testid="all-wallets"
         tabIdx=${ifDefined(this.tabIdx)}
         .loading=${this.isFetchingRecommendedWallets}
-        loadingSpinnerColor=${this.isFetchingRecommendedWallets ? 'fg-300' : 'accent-100'}
         ?disabled=${hasWcConnection}
-        size="md"
+        size="sm"
       ></wui-list-wallet>
     `
   }
