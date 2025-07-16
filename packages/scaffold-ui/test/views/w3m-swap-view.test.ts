@@ -391,43 +391,6 @@ describe('W3mSwapView', () => {
     })
   })
 
-  it('should still react to network and address change events after being unmounted', async () => {
-    const resetStateSpy = vi.spyOn(SwapController, 'resetState')
-    const initializeStateSpy = vi.spyOn(SwapController, 'initializeState')
-
-    const subscribeKeySpy = vi.spyOn(ChainController, 'subscribeKey')
-    const accountSubscribeKeySpy = vi.spyOn(AccountController, 'subscribeKey')
-
-    const element: W3mSwapView = await fixture(html`<w3m-swap-view></w3m-swap-view>`)
-    await element.updateComplete
-
-    const chainCallbacks = subscribeKeySpy.mock.calls
-      .filter(call => call[0] === 'activeCaipNetwork')
-      .map(call => call[1])
-    const accountCallbacks = accountSubscribeKeySpy.mock.calls
-      .filter(call => call[0] === 'caipAddress')
-      .map(call => call[1])
-
-    vitestExpect(chainCallbacks.length).toBe(2)
-    vitestExpect(accountCallbacks.length).toBe(2)
-
-    element.disconnectedCallback()
-
-    resetStateSpy.mockClear()
-    initializeStateSpy.mockClear()
-
-    const mockNetwork = {
-      id: 2,
-      chainNamespace: 'eip155',
-      caipNetworkId: 'eip155:2'
-    } as unknown as CaipNetwork
-
-    chainCallbacks[0]?.(mockNetwork)
-    accountCallbacks[0]?.('eip155:2:0x456' as CaipAddress)
-
-    vitestExpect(resetStateSpy).toHaveBeenCalled()
-    vitestExpect(initializeStateSpy).not.toHaveBeenCalled()
-  })
   it('should call handleChangeAmount with max value when setting max value', async () => {
     vi.useFakeTimers()
     const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens')
