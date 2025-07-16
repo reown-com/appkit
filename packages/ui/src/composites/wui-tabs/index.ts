@@ -22,6 +22,8 @@ export class WuiTabs extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['size'] = this.size
+
     return this.tabs.map((tab, index) => {
       const active = index === this.activeTab
 

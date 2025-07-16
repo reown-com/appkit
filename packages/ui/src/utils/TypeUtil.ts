@@ -96,7 +96,7 @@ export interface IWalletImage {
   walletName?: string
 }
 
-export type TabSize = 'sm' | 'md' | 'lg'
+export type TabSize = 'sm' | 'md'
 
 export type ToastMessageVariant = 'info' | 'success' | 'warning' | 'error'
 
@@ -194,6 +194,9 @@ export type IconType =
   | 'warningCircle'
   | 'x'
   | 'info'
+  | 'ethereum'
+  | 'solana'
+  | 'bitcoin'
 
 export type VisualType =
   | 'browser'

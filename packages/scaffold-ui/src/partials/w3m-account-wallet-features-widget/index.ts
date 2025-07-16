@@ -187,6 +187,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Buy">
         <wui-icon-button
+          fullWidth
           data-testid="wallet-features-onramp-button"
           @click=${this.onBuyClick.bind(this)}
           icon="card"
@@ -207,6 +208,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Swap">
         <wui-icon-button
+          fullWidth
           data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
           icon="recycleHorizontal"
@@ -227,6 +229,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Receive">
         <wui-icon-button
+          fullWidth
           data-testid="wallet-features-receive-button"
           @click=${this.onReceiveClick.bind(this)}
           icon="arrowBottomCircle"
@@ -249,6 +252,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Send">
         <wui-icon-button
+          fullWidth
           data-testid="wallet-features-send-button"
           @click=${this.onSendClick.bind(this)}
           icon="send"
@@ -307,21 +311,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return null
     }
 
-    const isMobileAndSmall = CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-    let localTabWidth = '104px'
-
-    if (isMobileAndSmall) {
-      localTabWidth = `${(window.innerWidth - TABS_PADDING) / tabsByNamespace.length}px`
-    } else if (tabsByNamespace.length === 2) {
-      localTabWidth = '156px'
-    } else {
-      localTabWidth = '104px'
-    }
-
     return html`<wui-tabs
       .onTabChange=${this.onTabChange.bind(this)}
       .activeTab=${this.currentTab}
-      localTabWidth=${localTabWidth}
       .tabs=${tabsByNamespace}
     ></wui-tabs>`
   }

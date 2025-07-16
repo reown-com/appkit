@@ -96,7 +96,6 @@ export class W3mProfileWalletsView extends LitElement {
   private unsubscribers: (() => void)[] = []
   private resizeObserver?: ResizeObserver
   private chainListener?: () => void
-  private tabsResizeObserver?: ResizeObserver
 
   // -- State & Properties -------------------------------- //
   @state() private currentTab = 0
@@ -111,7 +110,6 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
   @state() private user = AccountController.state.user
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
-  @state() private tabWidth = ''
 
   constructor() {
     super()
@@ -146,14 +144,12 @@ export class W3mProfileWalletsView extends LitElement {
   override disconnectedCallback() {
     this.unsubscribers.forEach(unsubscribe => unsubscribe())
     this.resizeObserver?.disconnect()
-    this.tabsResizeObserver?.disconnect()
     this.removeScrollListener()
     this.chainListener?.()
   }
 
   override firstUpdated() {
     const walletListEl = this.shadowRoot?.querySelector('.wallet-list')
-    const tabsEl = this.shadowRoot?.querySelector('wui-tabs')
 
     if (!walletListEl) {
       return
@@ -167,27 +163,6 @@ export class W3mProfileWalletsView extends LitElement {
     this.resizeObserver = new ResizeObserver(handleScroll)
     this.resizeObserver.observe(walletListEl)
     handleScroll()
-
-    if (tabsEl) {
-      const handleTabsResize = () => {
-        const availableTabs = NAMESPACE_TABS.filter(tab => this.namespaces.includes(tab.namespace))
-        const tabCount = availableTabs.length
-
-        if (tabCount > 1) {
-          const containerWidth = this.getBoundingClientRect()?.width
-          const totalInnerTabsPadding = TABS_INNER_PADDING * 2
-          const totalTabsPadding = TABS_PADDING * 2
-          const availableWidth = containerWidth - totalTabsPadding - totalInnerTabsPadding
-          const tabWidth = availableWidth / tabCount
-          this.tabWidth = `${tabWidth}px`
-          this.requestUpdate()
-        }
-      }
-
-      this.tabsResizeObserver = new ResizeObserver(handleTabsResize)
-      this.tabsResizeObserver.observe(this)
-      handleTabsResize()
-    }
   }
 
   override render() {
@@ -215,7 +190,6 @@ export class W3mProfileWalletsView extends LitElement {
         <wui-tabs
           .onTabChange=${(index: number) => this.handleTabChange(index)}
           .activeTab=${this.currentTab}
-          localTabWidth=${this.tabWidth}
           .tabs=${availableTabs}
         ></wui-tabs>
       `

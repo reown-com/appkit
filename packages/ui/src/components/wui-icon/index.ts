@@ -14,6 +14,7 @@ import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
 import { arrowTopSvg } from '../../assets/svg/arrow-top.js'
 import { arrowClockWiseSvg } from '../../assets/svg/arrows-clock-wise.js'
 import { bankSvg } from '../../assets/svg/bank.js'
+import { bitcoinSvg } from '../../assets/svg/bitcoin.js'
 import { browserSvg } from '../../assets/svg/browser.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
@@ -32,6 +33,7 @@ import { cursorSvg } from '../../assets/svg/cursor.js'
 import { desktopSvg } from '../../assets/svg/desktop.js'
 import { discordSvg } from '../../assets/svg/discord.js'
 import { dollarSvg } from '../../assets/svg/dollar.js'
+import { ethereumSvg } from '../../assets/svg/ethereum.js'
 import { etherscanSvg } from '../../assets/svg/etherscan.js'
 import { exclamationCircleSvg } from '../../assets/svg/exclamation-circle.js'
 import { extensionSvg } from '../../assets/svg/extension.js'
@@ -63,6 +65,7 @@ import { sealCheckSvg } from '../../assets/svg/sealcheck.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { sendSvg } from '../../assets/svg/send.js'
 import { signOutSvg } from '../../assets/svg/sign-out.js'
+import { solanaSvg } from '../../assets/svg/solana.js'
 import { spinnerSvg } from '../../assets/svg/spinner.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
@@ -174,7 +177,10 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   walletConnectBrown: walletConnectBrownSvg,
   warningCircle: warningCircleSvg,
   x: xSvg,
-  info: infoSvg
+  info: infoSvg,
+  ethereum: ethereumSvg,
+  solana: solanaSvg,
+  bitcoin: bitcoinSvg
 }
 
 // -- Constants ------------------------------------------ //

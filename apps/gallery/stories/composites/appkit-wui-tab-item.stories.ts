@@ -23,7 +23,7 @@ export default {
       control: { type: 'select' }
     },
     size: {
-      options: ['sm', 'md', 'lg'],
+      options: ['sm', 'md'],
       control: { type: 'select' }
     },
     label: {
