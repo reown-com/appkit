@@ -80,27 +80,27 @@ export class W3mSwapView extends LitElement {
 
   @state() private fetchError = SwapController.state.fetchError
 
-  @state() private lastTokenPriceUpdate = Date.now()
+  @state() private lastTokenPriceUpdate = 0
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
-      this.onCaipNetworkChange({
-        newCaipNetwork,
-        resetSwapState: true,
-        initializeSwapState: false
-      })
-    )
-    AccountController.subscribeKey('caipAddress', newCaipAddress =>
-      this.onCaipAddressChange({
-        newCaipAddress,
-        resetSwapState: true,
-        initializeSwapState: false
-      })
-    )
     this.unsubscribe.push(
       ...[
+        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+          this.onCaipNetworkChange({
+            newCaipNetwork,
+            resetSwapState: true,
+            initializeSwapState: false
+          })
+        ),
+        AccountController.subscribeKey('caipAddress', newCaipAddress =>
+          this.onCaipAddressChange({
+            newCaipAddress,
+            resetSwapState: true,
+            initializeSwapState: false
+          })
+        ),
         ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
           this.onCaipNetworkChange({
             newCaipNetwork,
