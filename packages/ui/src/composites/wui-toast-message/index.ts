@@ -15,7 +15,7 @@ const ICON_BY_VARIANT = {
   info: 'info',
   success: 'checkmark',
   warning: 'warningCircle',
-  error: 'exclamationTriangle'
+  error: 'warning'
 } as Record<ToastMessageVariant, IconType>
 
 @customElement('wui-toast-message')

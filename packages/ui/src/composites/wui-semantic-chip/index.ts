@@ -22,8 +22,8 @@ const TEXT_BY_SIZE = {
 } as Record<SizeType, TextType>
 
 const ICON_BY_TYPE = {
-  success: 'checkmarkVerified',
-  error: 'exclamationTriangle',
+  success: 'sealCheck',
+  error: 'warning',
   warning: 'exclamationCircle'
 } as Record<SemanticChipType, IconType>
 

@@ -35,7 +35,7 @@ export class WuiVisualThumbnail extends LitElement {
       data-parent-size="md"
       size="inherit"
       color="inherit"
-      name="walletPlaceholder"
+      name="wallet"
     ></wui-icon>`
   }
 }

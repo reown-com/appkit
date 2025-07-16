@@ -15,7 +15,7 @@ export default {
   args: {
     text: 'Continue with a wallet',
     size: 'lg',
-    icon: 'checkmarkVerified'
+    icon: 'sealCheck'
   },
   argTypes: {
     size: {

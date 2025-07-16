@@ -155,7 +155,7 @@ export class W3mPayView extends LitElement {
       <wui-list-item
         variant="icon"
         iconVariant="overlay"
-        icon="disconnect"
+        icon="signOut"
         @click=${this.onDisconnect}
         data-testid="disconnect-button"
         ?chevron=${false}
@@ -169,7 +169,7 @@ export class W3mPayView extends LitElement {
     return html`<wui-list-item
       variant="icon"
       iconVariant="overlay"
-      icon="walletPlaceholder"
+      icon="wallet"
       @click=${this.onWalletPayment}
       ?chevron=${true}
       data-testid="wallet-payment-option"

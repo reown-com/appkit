@@ -5,8 +5,6 @@ import { html } from 'lit'
 import '@reown/appkit-ui/wui-snackbar'
 import type { WuiSnackbar } from '@reown/appkit-ui/wui-snackbar'
 
-import { colorOptions, iconOptions } from '../../utils/PresetUtils'
-
 type Component = Meta<WuiSnackbar>
 
 export default {

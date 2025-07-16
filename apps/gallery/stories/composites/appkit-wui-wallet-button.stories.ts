@@ -34,19 +34,16 @@ export default {
   }
 } as Component
 
-const Template = (args: WuiWalletButton) => html`
-  <wui-wallet-button
-    .imageSrc=${args.imageSrc}
-    .name=${args.name}
-    .size=${args.size}
-    .walletConnect=${args.walletConnect}
-    .icon=${args.icon}
-    .loading=${args.loading}
-    .error=${args.error}
-    .disabled=${args.disabled}
-  ></wui-wallet-button>
-`
-
 export const Default: Component = {
-  render: args => Template(args)
+  render: args =>
+    html` <wui-wallet-button
+      .imageSrc=${args.imageSrc}
+      .name=${args.name}
+      .size=${args.size}
+      .walletConnect=${args.walletConnect}
+      .icon=${args.icon}
+      .loading=${args.loading}
+      .error=${args.error}
+      .disabled=${args.disabled}
+    ></wui-wallet-button>`
 }

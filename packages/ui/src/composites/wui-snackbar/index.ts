@@ -39,9 +39,9 @@ export class WuiSnackbar extends LitElement {
 
     const ICON = {
       success: 'checkmark',
-      error: 'warningCircle',
+      error: 'warning',
       warning: 'warningCircle',
-      info: 'infoCircle'
+      info: 'info'
     } as const
 
     if (this.variant === 'loading') {

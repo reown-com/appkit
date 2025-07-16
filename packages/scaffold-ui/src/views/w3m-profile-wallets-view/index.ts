@@ -416,7 +416,7 @@ export class W3mProfileWalletsView extends LitElement {
                 alt=${connection.connectorId}
                 buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
                 buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
-                rightIcon=${isRecentConnections ? 'bin' : 'off'}
+                rightIcon=${isRecentConnections ? 'bin' : 'power'}
                 rightIconSize="sm"
                 class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
                 data-testid=${isRecentConnections ? 'recent-connection' : 'active-connection'}

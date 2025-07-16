@@ -11,9 +11,9 @@ import styles from './styles.js'
 
 // -- Constants --------------------------------------------------------------- //
 const ICON_BY_VARIANT = {
-  success: 'checkmarkVerified',
+  success: 'sealCheck',
   warning: 'exclamationCircle',
-  error: 'exclamationTriangle'
+  error: 'warning'
 } as Record<DomainChipVariant, IconType>
 
 const FONT_BY_SIZE = {

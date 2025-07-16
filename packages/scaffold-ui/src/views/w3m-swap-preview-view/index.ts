@@ -186,7 +186,7 @@ export class W3mSwapPreviewView extends LitElement {
         ${this.templateDetails()}
 
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="2">
-          <wui-icon size="sm" color="default" name="infoCircle"></wui-icon>
+          <wui-icon size="sm" color="default" name="info"></wui-icon>
           <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
 
