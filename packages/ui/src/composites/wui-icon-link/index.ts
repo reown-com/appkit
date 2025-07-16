@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconSizeType, IconType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -18,7 +18,10 @@ export class WuiIconLink extends LitElement {
 
   @property() public icon: IconType = 'copy'
 
+  @property() public iconColor: IconColorType = 'default'
+
   @property() public variant: 'accent' | 'primary' | 'secondary' = 'accent'
+
   // -- Render -------------------------------------------- //
   public override render() {
     const iconColors = {
@@ -29,7 +32,11 @@ export class WuiIconLink extends LitElement {
 
     return html`
       <button data-variant=${this.variant} ?disabled=${this.disabled} data-size=${this.size}>
-        <wui-icon color=${iconColors[this.variant]} size=${this.size} name=${this.icon}></wui-icon>
+        <wui-icon
+          color=${this.iconColor || iconColors[this.variant]}
+          size=${this.size}
+          name=${this.icon}
+        ></wui-icon>
       </button>
     `
   }

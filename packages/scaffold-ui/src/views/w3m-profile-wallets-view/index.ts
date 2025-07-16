@@ -38,10 +38,6 @@ import { HelpersUtil } from '@reown/appkit-utils'
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'
 
-// -- Constants ----------------------------------------- //
-const TABS_PADDING = 16
-const TABS_INNER_PADDING = 4
-
 // -- Types -------------------------------- //
 interface Account {
   address: string

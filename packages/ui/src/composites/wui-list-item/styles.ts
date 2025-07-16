@@ -13,6 +13,8 @@ export default css`
     width: 100%;
     background-color: transparent;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
+    transition: background-color 0.2s linear;
+    will-change: background-color;
   }
 
   wui-text {

@@ -34,9 +34,6 @@ import '../w3m-tooltip-trigger/index.js'
 import '../w3m-tooltip/index.js'
 import styles from './styles.js'
 
-const TABS_PADDING = 48
-const MODAL_MOBILE_VIEW_PX = 430
-
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles

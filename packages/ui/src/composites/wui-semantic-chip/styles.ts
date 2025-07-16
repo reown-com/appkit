@@ -11,7 +11,7 @@ export default css`
     transition:
       background-color 0.2s ease-in-out,
       box-shadow 0.2s ease-in-out,
-      border 0.2s ease-in-out;
+      border 0.2s linear;
     will-change: background-color, box-shadow, border;
   }
 

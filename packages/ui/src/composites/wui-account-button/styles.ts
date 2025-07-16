@@ -59,7 +59,7 @@ export default css`
     padding-right: ${({ spacing }) => spacing[1]};
     background: ${({ tokens }) => tokens.theme.foregroundSecondary};
     color: ${({ tokens }) => tokens.theme.textPrimary};
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.2s linear;
     will-change: background-color;
   }
 

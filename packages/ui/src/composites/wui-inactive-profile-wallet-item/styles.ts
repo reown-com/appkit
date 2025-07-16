@@ -1,11 +1,11 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   wui-image,
   .icon-box {
-    width: var(--apkt-spacing-4);
-    height: var(--apkt-spacing-4);
-    border-radius: var(--wui-border-radius-3xs);
+    width: 32px;
+    height: 32px;
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 
   .right-icon {
@@ -14,7 +14,7 @@ export default css`
 
   .icon-box {
     position: relative;
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .icon-badge {
@@ -22,9 +22,14 @@ export default css`
     top: 18px;
     left: 23px;
     z-index: 3;
-    background-color: var(--wui-color-gray-glass-005);
-    border: 2px solid var(--wui-color-modal-bg);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
     border-radius: 50%;
-    padding: var(--apkt-spacing-01);
+    padding: ${({ spacing }) => spacing['01']};
+  }
+
+  .icon-badge {
+    width: 8px;
+    height: 8px;
   }
 `

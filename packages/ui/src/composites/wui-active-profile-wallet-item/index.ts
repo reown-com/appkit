@@ -8,7 +8,7 @@ import '../../components/wui-text/index.js'
 import '../../composites/wui-icon-link/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonVariant, IconType, SizeType, TagType } from '../../utils/TypeUtil.js'
+import type { ButtonVariant, IconSizeType, IconType, TagType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-button/index.js'
@@ -48,11 +48,11 @@ export class WuiActiveProfileWalletItem extends LitElement {
 
   @property() public icon?: IconType = undefined
 
-  @property() public iconSize?: SizeType = 'md'
+  @property() public iconSize?: IconSizeType = 'md'
 
   @property() public iconBadge?: IconType | undefined = undefined
 
-  @property() public iconBadgeSize?: SizeType = 'md'
+  @property() public iconBadgeSize?: IconSizeType = 'md'
 
   @property() public buttonVariant: ButtonVariant = 'neutral-primary'
 
@@ -77,21 +77,21 @@ export class WuiActiveProfileWalletItem extends LitElement {
       <wui-flex alignItems="flex-start" justifyContent="space-between">
         ${this.imageOrIconTemplate()}
         <wui-icon-link
-          iconColor="fg-200"
-          size="sm"
+          iconColor="default"
+          size="md"
           icon="copy"
           @click=${this.dispatchCopyEvent}
         ></wui-icon-link>
         <wui-icon-link
-          iconColor="fg-200"
-          size="sm"
+          iconColor="default"
+          size="md"
           icon="externalLink"
           @click=${this.dispatchExternalLinkEvent}
         ></wui-icon-link>
         ${this.enableMoreButton
           ? html`<wui-icon-link
-              iconColor="fg-200"
-              size="sm"
+              iconColor="default"
+              size="md"
               icon="threeDots"
               @click=${this.dispatchMoreButtonEvent}
               data-testid="wui-active-profile-wallet-item-more-button"
@@ -110,17 +110,12 @@ export class WuiActiveProfileWalletItem extends LitElement {
       return html`
         <wui-flex flexGrow="1" alignItems="center">
           <wui-flex alignItems="center" justifyContent="center" class="icon-box">
-            <wui-icon
-              size=${this.iconSize}
-              color="fg-200"
-              name=${this.icon}
-              class="custom-icon"
-            ></wui-icon>
+            <wui-icon size="lg" color="default" name=${this.icon} class="custom-icon"></wui-icon>
 
             ${this.iconBadge
               ? html`<wui-icon
-                  color="fg-175"
-                  size=${this.iconBadgeSize}
+                  color="accent-primary"
+                  size="inherit"
                   name=${this.iconBadge}
                   class="icon-badge"
                 ></wui-icon>`
@@ -170,7 +165,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
             : null}
 
           <wui-flex alignItems="center" columngap="1">
-            <wui-text variant="sm-medium" color="primary">
+            <wui-text variant="md-regular" color="primary">
               ${UiHelperUtil.getTruncateString({
                 string: profileName || address,
                 charsStart: profileName ? 16 : this.charsStart,
@@ -180,12 +175,12 @@ export class WuiActiveProfileWalletItem extends LitElement {
             </wui-text>
 
             ${tagVariant && tagLabel
-              ? html`<wui-tag variant=${tagVariant} size="xs">${tagLabel}</wui-tag>`
+              ? html`<wui-tag variant=${tagVariant} size="sm">${tagLabel}</wui-tag>`
               : null}
           </wui-flex>
 
           ${description
-            ? html`<wui-text variant="sm-medium" color="secondary">${description}</wui-text>`
+            ? html`<wui-text variant="sm-regular" color="secondary">${description}</wui-text>`
             : null}
         </wui-flex>
 
@@ -201,7 +196,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
   }: Pick<ContentItem, 'buttonType' | 'buttonLabel' | 'buttonVariant'>) {
     return html`
       <wui-button
-        size="xs"
+        size="sm"
         variant=${buttonVariant}
         @click=${buttonType === 'disconnect'
           ? this.dispatchDisconnectEvent.bind(this)

@@ -10,7 +10,7 @@ export default css`
     padding: ${({ spacing }) => spacing[1]};
     transition:
       background-color 0.2s ease-in-out,
-      box-shadow 0.2s ease-in-out;
+      box-shadow 0.2s linear;
     will-change: background-color, box-shadow;
   }
 
