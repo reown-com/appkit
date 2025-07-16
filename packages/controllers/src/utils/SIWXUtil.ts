@@ -28,16 +28,15 @@ export const SIWXUtil = {
     return OptionsController.state.siwx
   },
 
-  async initializeIfEnabled() {
+  async initializeIfEnabled(caipAddress = ChainController.getActiveCaipAddress()) {
     const siwx = OptionsController.state.siwx
-    const caipAddress = ChainController.getActiveCaipAddress()
 
     if (!(siwx && caipAddress)) {
       return
     }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
 
-    if (!ChainController.checkIfSupportedNetwork(namespace)) {
+    if (!ChainController.checkIfSupportedNetwork(namespace, `${namespace}:${chainId}`)) {
       return
     }
 
@@ -260,8 +259,10 @@ export const SIWXUtil = {
       }
     }
 
+    const caipNetwork = `${chainNamespace}:${chainId}` as CaipNetworkId
+
     const siwxMessage = await siwx.createMessage({
-      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
+      chainId: caipNetwork,
       accountAddress: '<<AccountAddress>>'
     })
 
