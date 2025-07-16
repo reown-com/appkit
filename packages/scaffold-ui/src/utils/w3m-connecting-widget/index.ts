@@ -155,14 +155,10 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text
-            align="center"
-            variant="paragraph-500"
-            color=${this.error ? 'error-100' : 'fg-100'}
-          >
+          <wui-text align="center" variant="md-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text align="center" variant="sm-medium" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         ${this.secondaryBtnLabel
@@ -184,7 +180,7 @@ export class W3mConnectingWidget extends LitElement {
       ${this.isWalletConnect
         ? html`
             <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
-              <wui-link @click=${this.onCopyUri} color="fg-200" data-testid="wui-link-copy">
+              <wui-link @click=${this.onCopyUri} color="secondary" data-testid="wui-link-copy">
                 <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
                 Copy link
               </wui-link>

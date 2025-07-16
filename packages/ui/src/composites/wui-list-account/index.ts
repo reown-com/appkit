@@ -96,7 +96,7 @@ export class WuiListAccount extends LitElement {
               ></wui-icon-box>`
             : html`<wui-flex .padding="${['0', '0', '0', 's'] as const}"></wui-flex>`}
           <wui-flex flexDirection="column">
-            <wui-text class="address" variant="paragraph-500" color="fg-100"
+            <wui-text class="address" variant="md-medium" color="primary"
               >${UiHelperUtil.getTruncateString({
                 string: this.accountAddress,
                 charsStart: 4,
@@ -104,14 +104,14 @@ export class WuiListAccount extends LitElement {
                 truncate: 'middle'
               })}</wui-text
             >
-            <wui-text class="address-description" variant="small-400">${label}</wui-text></wui-flex
+            <wui-text class="address-description" variant="sm-regular">${label}</wui-text></wui-flex
           >
         </wui-flex>
         <wui-flex gap="3" alignItems="center">
           <slot name="action"></slot>
           ${this.fetchingBalance
             ? html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`
-            : html` <wui-text variant="small-400">$${this.balance.toFixed(2)}</wui-text>`}
+            : html` <wui-text variant="sm-regular">$${this.balance.toFixed(2)}</wui-text>`}
         </wui-flex>
       </wui-flex>
     `

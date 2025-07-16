@@ -165,10 +165,12 @@ export class WuiActiveProfileWalletItem extends LitElement {
     return html`
       <wui-flex justifyContent="space-between" alignItems=${alignItems} columngap="1">
         <wui-flex flexDirection="column" rowgap="01">
-          ${label ? html`<wui-text variant="micro-600" color="fg-200">${label}</wui-text>` : null}
+          ${label
+            ? html`<wui-text variant="sm-medium" color="secondary">${label}</wui-text>`
+            : null}
 
           <wui-flex alignItems="center" columngap="1">
-            <wui-text variant="small-500" color="fg-100">
+            <wui-text variant="sm-medium" color="primary">
               ${UiHelperUtil.getTruncateString({
                 string: profileName || address,
                 charsStart: profileName ? 16 : this.charsStart,
@@ -183,7 +185,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
           </wui-flex>
 
           ${description
-            ? html`<wui-text variant="tiny-500" color="fg-200">${description}</wui-text>`
+            ? html`<wui-text variant="sm-medium" color="secondary">${description}</wui-text>`
             : null}
         </wui-flex>
 

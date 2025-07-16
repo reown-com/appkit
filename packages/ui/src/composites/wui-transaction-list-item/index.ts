@@ -46,14 +46,14 @@ export class WuiTransactionListItem extends LitElement {
           .images=${this.images}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="1">
-          <wui-text variant="paragraph-600" color="fg-100">
+          <wui-text variant="sm-medium" color="primary">
             ${TransactionTypePastTense[this.type] || this.type}
           </wui-text>
           <wui-flex class="description-container">
             ${this.templateDescription()} ${this.templateSecondDescription()}
           </wui-flex>
         </wui-flex>
-        <wui-text variant="micro-700" color="fg-300"><span>${this.date}</span></wui-text>
+        <wui-text variant="sm-medium" color="secondary"><span>${this.date}</span></wui-text>
       </wui-flex>
     `
   }
@@ -64,7 +64,7 @@ export class WuiTransactionListItem extends LitElement {
 
     return description
       ? html`
-          <wui-text variant="small-500" color="fg-200">
+          <wui-text variant="sm-medium" color="secondary">
             <span>${description}</span>
           </wui-text>
         `
@@ -77,7 +77,7 @@ export class WuiTransactionListItem extends LitElement {
     return description
       ? html`
           <wui-icon class="description-separator-icon" size="xxs" name="arrowRight"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">
+          <wui-text variant="sm-regular" color="secondary">
             <span>${description}</span>
           </wui-text>
         `

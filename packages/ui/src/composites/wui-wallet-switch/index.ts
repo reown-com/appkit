@@ -68,7 +68,7 @@ export class WuiWalletSwitch extends LitElement {
   }
   public textTemplate() {
     return html`
-      <wui-text variant="paragraph-500" color="fg-100">
+      <wui-text variant="md-medium" color="primary">
         ${UiHelperUtil.getTruncateString({
           string: this.profileName || this.address,
           charsStart: this.profileName ? 16 : this.charsStart,

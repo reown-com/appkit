@@ -32,12 +32,12 @@ export class W3mConnectingSiweView extends LitElement {
         <w3m-connecting-siwe></w3m-connecting-siwe>
       </wui-flex>
       <wui-flex .padding=${['0', '20', '4', '20'] as const} gap="3" justifyContent="space-between">
-        <wui-text variant="paragraph-500" align="center" color="fg-100"
+        <wui-text variant="md-medium" align="center" color="primary"
           >${this.dappName ?? 'Dapp'} needs to connect to your wallet</wui-text
         >
       </wui-flex>
       <wui-flex .padding=${['0', '20', '4', '20'] as const} gap="3" justifyContent="space-between">
-        <wui-text variant="small-400" align="center" color="fg-200"
+        <wui-text variant="sm-regular" align="center" color="secondary"
           >Sign this message to prove you own this wallet and proceed. Canceling will disconnect
           you.</wui-text
         >

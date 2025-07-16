@@ -71,19 +71,19 @@ export class WuiTokenListItem extends LitElement {
         ${this.visualTemplate()}
         <wui-flex flexDirection="column" gap="1">
           <wui-flex justifyContent="space-between">
-            <wui-text variant="paragraph-500" color="fg-100" lineClamp="1">${this.name}</wui-text>
+            <wui-text variant="md-medium" color="primary" lineClamp="1">${this.name}</wui-text>
             ${value
               ? html`
-                  <wui-text variant="paragraph-500" color="fg-100">
+                  <wui-text variant="md-medium" color="primary">
                     $${UiHelperUtil.formatNumberToLocalString(value, 3)}
                   </wui-text>
                 `
               : null}
           </wui-flex>
           <wui-flex justifyContent="space-between">
-            <wui-text variant="small-400" color="fg-200" lineClamp="1">${this.symbol}</wui-text>
+            <wui-text variant="sm-regular" color="secondary" lineClamp="1">${this.symbol}</wui-text>
             ${this.amount
-              ? html`<wui-text variant="small-400" color="fg-200">
+              ? html`<wui-text variant="sm-regular" color="secondary">
                   ${UiHelperUtil.formatNumberToLocalString(this.amount, 4)}
                 </wui-text>`
               : null}

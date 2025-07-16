@@ -495,16 +495,11 @@ export class W3mProfileWalletsView extends LitElement {
             backgroundColor="glass-002"
           ></wui-icon-box>
 
-<<<<<<< HEAD
           <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="1">
-            <wui-text color="fg-100" variant="paragraph-500" data-testid="empty-state-text"
-=======
-          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
             <wui-text color="primary" variant="md-medium" data-testid="empty-state-text"
->>>>>>> d1c96ca74da7123afcad9a635e020757a7fe1773
               >No wallet connected</wui-text
             >
-            <wui-text color="secondary" variant="tiny-500" data-testid="empty-state-description"
+            <wui-text color="secondary" variant="sm-medium" data-testid="empty-state-description"
               >${description}</wui-text
             >
           </wui-flex>
