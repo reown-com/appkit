@@ -5,7 +5,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   type CaipAddress,
   type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil
+  ConstantsUtil as CommonConstantsUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import {
   ApiController,
@@ -223,33 +224,55 @@ export class W3mModalBase extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
+    // Capture current state
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const isPrevDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
-    const isNextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
 
-    // When users decline SIWE signature, we should close the modal
-    const isDisconnectedInSameNamespace = !isNextConnected && !isSwitchingNamespace
+    const isInProfileView = RouterController.state.view === 'ProfileWallets'
 
-    // If user is switching to another namespace and connected in that namespace, we should go back
-    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && isNextConnected
-
-    // If user is in profile wallets view, we should not go back or close the modal
-    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
-
-    if (!isInProfileWalletsView) {
-      if (isDisconnectedInSameNamespace && !this.enableEmbedded) {
-        ModalController.close()
-      } else if (isSwitchingNamespaceAndConnected && !this.enableEmbedded) {
-        RouterController.goBack()
-      } else if (this.enableEmbedded && isPrevDisconnected && isNextConnected) {
-        ModalController.close()
-      }
+    if (caipAddress) {
+      await this.onConnected({
+        caipAddress,
+        isSwitchingNamespace,
+        isInProfileView
+      })
+    } else if (!isSwitchingNamespace && !this.enableEmbedded && !isInProfileView) {
+      ModalController.close()
     }
 
-    await SIWXUtil.initializeIfEnabled()
-
+    await SIWXUtil.initializeIfEnabled(caipAddress)
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
+  }
+
+  private async onConnected(args: {
+    caipAddress: CaipAddress
+
+    isSwitchingNamespace: boolean
+    isInProfileView: boolean
+  }) {
+    if (args.isInProfileView) {
+      return
+    }
+    const {
+      chainNamespace,
+      chainId,
+      address: newAddress
+    } = ParseUtil.parseCaipAddress(args.caipAddress)
+    const caipNetworkId = `${chainNamespace}:${chainId}` as const
+    const wasPreviouslyDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const sessions = await SIWXUtil.getSessions({ address: newAddress, caipNetworkId })
+    const isAuthenticated = SIWXUtil.getSIWX()
+      ? sessions.some(s => s.data.accountAddress === newAddress)
+      : true
+
+    const shouldGoBack = args.isSwitchingNamespace && isAuthenticated && !this.enableEmbedded
+    const shouldCloseEmbeddedModal = this.enableEmbedded && wasPreviouslyDisconnected
+
+    if (shouldGoBack) {
+      RouterController.goBack()
+    } else if (shouldCloseEmbeddedModal) {
+      ModalController.close()
+    }
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {

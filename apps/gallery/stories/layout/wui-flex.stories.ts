@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/layout/wui-flex'
-import type { WuiFlex } from '@reown/appkit-ui/src/layout/wui-flex'
+import '@reown/appkit-ui/wui-flex'
+import type { WuiFlex } from '@reown/appkit-ui/wui-flex'
 
 import '../../components/gallery-placeholder'
 import {

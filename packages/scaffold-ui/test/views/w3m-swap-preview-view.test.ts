@@ -1,6 +1,7 @@
 import { expect as expectChai, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { Address, Hex } from '@reown/appkit-common'
 import {
   AccountController,
   type AccountControllerState,
@@ -199,8 +200,8 @@ describe('W3mSwapPreviewView', () => {
 
   it('should handle approval transaction', async () => {
     const approvalTransaction = {
-      data: '0x789',
-      to: '0xabc',
+      data: '0x789' as Hex,
+      to: '0xabc' as Address,
       gas: BigInt(21000),
       gasPrice: BigInt(1000000000),
       value: BigInt(0),

@@ -84,7 +84,7 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
   await walletFeatureButton.click()
-  await expect(page.page.getByText('Coinbase')).toBeVisible()
+  await expect(page.page.getByText('Meld.io')).toBeVisible()
   await page.closeModal()
 })
 

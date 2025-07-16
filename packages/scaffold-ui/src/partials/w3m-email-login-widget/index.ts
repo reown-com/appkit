@@ -4,7 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -159,10 +159,7 @@ export class W3mEmailLoginWidget extends LitElement {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-        await ConnectionController.connectExternal(
-          authConnector,
-          ChainController.state.activeChain as ChainNamespace
-        )
+        await ConnectionController.connectExternal(authConnector, ChainController.state.activeChain)
 
         if (isMultiWalletEnabled) {
           RouterController.replace('ProfileWallets')

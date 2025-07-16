@@ -3,7 +3,7 @@ import * as React from 'react'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { type Hex } from 'viem'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type Address, ConstantsUtil } from '@reown/appkit-common'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import type { GetCapabilitiesResult } from '../types/EIP5792'
@@ -184,7 +184,7 @@ export function useWalletGetAssets() {
       }
 
       // If we get here, either asset discovery isn't supported or returned no results
-      return await fetchFallbackBalances(address as `0x${string}`, chainIdAsHex)
+      return await fetchFallbackBalances(address as Address, chainIdAsHex)
     } catch (error) {
       throw new Error(
         `Error fetching assets: ${error instanceof Error ? error.message : String(error)}`

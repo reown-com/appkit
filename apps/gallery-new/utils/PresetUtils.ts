@@ -274,11 +274,7 @@ export const visualOptions: VisualType[] = [
   'nft',
   'noun',
   'profile',
-  'system',
-  'coinbase',
-  'stripe',
-  'moonpay',
-  'paypal'
+  'system'
 ]
 
 export const logoOptions: LogoType[] = [

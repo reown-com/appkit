@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetworkId, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { type Address, type CaipNetworkId, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -330,9 +330,9 @@ describe('PayController', () => {
         PayController.state.paymentAsset,
         ConstantsUtil.CHAIN.EVM,
         {
-          recipient: mockPaymentOptions.recipient as `0x${string}`,
+          recipient: mockPaymentOptions.recipient as Address,
           amount: mockPaymentOptions.amount,
-          fromAddress: expectedFromAddress as `0x${string}`
+          fromAddress: expectedFromAddress as Address
         }
       )
       expect(ModalController.open).toHaveBeenCalledWith({ view: 'PayLoading' })
@@ -402,9 +402,9 @@ describe('PayController', () => {
       expect(PaymentUtil.processEvmErc20Payment).toHaveBeenCalledWith(
         PayController.state.paymentAsset,
         {
-          recipient: mockPaymentOptions.recipient as `0x${string}`,
+          recipient: mockPaymentOptions.recipient as Address,
           amount: mockPaymentOptions.amount,
-          fromAddress: expectedFromAddress as `0x${string}`
+          fromAddress: expectedFromAddress as Address
         }
       )
       expect(eventsControllerSpy).toHaveBeenCalledWith(

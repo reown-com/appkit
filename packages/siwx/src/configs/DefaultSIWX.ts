@@ -9,7 +9,12 @@ const DEFAULTS = {
     new InformalMessenger({
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
       uri: typeof document === 'undefined' ? 'Unknown URI' : document.location.href,
-      getNonce: async () => Promise.resolve(Math.round(Math.random() * 10000).toString())
+      getNonce: async () =>
+        Promise.resolve(
+          Math.round(Math.random() * 100000000)
+            .toString()
+            .padStart(8, '0')
+        )
     }),
 
   getDefaultVerifiers: () => [new EIP155Verifier(), new SolanaVerifier(), new BIP122Verifier()],

@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 
 import { W3mOnRampProviderItem } from '../../src/partials/w3m-onramp-provider-item'
@@ -14,7 +14,7 @@ describe('W3mOnRampProviderItem', () => {
       {
         id: '1',
         name: 'Ethereum',
-        chainNamespace: 'eip155' as ChainNamespace,
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
         caipNetworkId: 'eip155:1',
         nativeCurrency: {
           name: 'Ether',
@@ -29,7 +29,7 @@ describe('W3mOnRampProviderItem', () => {
       {
         id: '137',
         name: 'Polygon',
-        chainNamespace: 'eip155' as ChainNamespace,
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
         caipNetworkId: 'eip155:137',
         nativeCurrency: {
           name: 'MATIC',
@@ -68,8 +68,8 @@ describe('W3mOnRampProviderItem', () => {
   it('should render with custom properties', async () => {
     const element: W3mOnRampProviderItem = await fixture(
       html`<w3m-onramp-provider-item
-        name="coinbase"
-        label="Coinbase"
+        name="meld"
+        label="Meld.io"
         feeRange="1-2%"
       ></w3m-onramp-provider-item>`
     )
@@ -78,10 +78,10 @@ describe('W3mOnRampProviderItem', () => {
     await elementUpdated(element)
 
     const visual = element.shadowRoot?.querySelector('wui-visual')
-    expect(visual?.getAttribute('name')).toBe('coinbase')
+    expect(visual?.getAttribute('name')).toBe('meld')
 
     const labelText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-500"]')
-    expect(labelText?.textContent?.trim()).toBe('Coinbase')
+    expect(labelText?.textContent?.trim()).toBe('Meld.io')
 
     const feeText = element.shadowRoot?.querySelector('wui-text[variant="tiny-500"]')
     expect(feeText?.textContent?.trim()).toContain('1-2%')

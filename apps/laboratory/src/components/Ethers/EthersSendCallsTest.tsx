@@ -14,8 +14,9 @@ import {
 import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
-import { type Address, parseGwei } from 'viem'
+import { parseGwei } from 'viem'
 
+import type { Address, Hex } from '@reown/appkit-common'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
@@ -47,8 +48,8 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
     setTransactionsToBatch(prev => [
       ...prev,
       {
-        to: args.to as `0x${string}`,
-        data: '0x' as `0x${string}`,
+        to: args.to as Address,
+        data: '0x' as Hex,
         value: `0x${parseGwei(args.eth).toString(16)}`
       }
     ])
@@ -103,8 +104,8 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
       const provider = new BrowserProvider(walletProvider, chainId)
       const calls = [
         {
-          to: vitalikEthAddress as `0x${string}`,
-          data: '0x' as `0x${string}`,
+          to: vitalikEthAddress as Address,
+          data: '0x' as Hex,
           value: `0x0`
         },
         {

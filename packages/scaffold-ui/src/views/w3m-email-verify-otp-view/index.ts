@@ -1,4 +1,3 @@
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -20,19 +19,17 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.authConnector) {
-        await this.authConnector.provider.connectOtp({ otp })
-        EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-
-        const connectionsByNamespace = ConnectionController.getConnections(
-          ChainController.state.activeChain as ChainNamespace
-        )
+        const namespace = ChainController.state.activeChain
+        const connectionsByNamespace = ConnectionController.getConnections(namespace)
+        const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0
 
-        if (ChainController.state.activeChain) {
-          await ConnectionController.connectExternal(
-            this.authConnector,
-            ChainController.state.activeChain
-          )
+        await this.authConnector.provider.connectOtp({ otp })
+
+        EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
+
+        if (namespace) {
+          await ConnectionController.connectExternal(this.authConnector, namespace)
         } else {
           throw new Error('Active chain is not set on ChainControll')
         }
@@ -40,18 +37,20 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
-          properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
+          properties: {
+            method: 'email',
+            name: this.authConnector.name || 'Unknown',
+            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+          }
         })
 
-        const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
-
-        if (!OptionsController.state.siwx) {
-          if (hasConnections && isMultiWalletEnabled) {
-            RouterController.replace('ProfileWallets')
-            SnackController.showSuccess('New Wallet Added')
-          } else {
-            ModalController.close()
-          }
+        if (OptionsController.state.siwx) {
+          ModalController.close()
+        } else if (hasConnections && isMultiWalletEnabled) {
+          RouterController.replace('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
+        } else {
+          ModalController.close()
         }
       }
     } catch (error) {

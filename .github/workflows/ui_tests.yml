@@ -68,6 +68,8 @@ on:
         required: false
       SOLANA_PRIVATE_KEY:
         required: false
+      BIP122_PRIVATE_KEY:
+        required: false
       PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID:
         required: false
       PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
@@ -130,6 +132,7 @@ jobs:
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+          BIP122_PRIVATE_KEY: ${{ secrets.BIP122_PRIVATE_KEY }}
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
         working-directory: ./apps/browser-extension/
         run: pnpm build
@@ -334,6 +337,14 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
 
+      - name: List blob reports directory before upload
+        if: always() # Run even if previous steps failed, to see state
+        working-directory: ${{ github.workspace }}/apps/laboratory/
+        run: |
+          echo "Listing contents of playwright-blob-reports in ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/"
+          ls -la playwright-blob-reports/
+        continue-on-error: true # Don't fail the job if ls fails or dir doesn't exist
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -346,7 +357,7 @@ jobs:
         if: always() # Ensure it runs even if tests fail to get all blob data
         with:
           name: playwright-blob-artifact-shard-${{ matrix.shard }} # New unique artifact name pattern for blobs
-          path: ./apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
+          path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
           retention-days: 7
 
       - name: Verify Cache Dir Exists Before Post Job
@@ -362,6 +373,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm

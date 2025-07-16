@@ -23,7 +23,6 @@ import { WcHelpersUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { ChainNamespace } from '@reown/appkit-common'
 import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
@@ -221,13 +220,12 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const accountsList = provider?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
-      const accounts = (accountsList?.map(account => account.split(':')[2]) ??
-        []) as `0x${string}`[]
+      const accounts = (accountsList?.map(account => account.split(':')[2]) ?? []) as Address[]
 
       const accountsAdded = new Set<`0x${string}`>()
 
       const deduplicatedAccounts = accounts.filter(account => {
-        const lowerCasedAccount = account?.toLowerCase() as `0x${string}`
+        const lowerCasedAccount = account?.toLowerCase() as Lowercase<Address>
 
         if (accountsAdded.has(lowerCasedAccount)) {
           return false
@@ -251,7 +249,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       if (chainId && currentChainId !== chainId && activeNamespace) {
         const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
-        const appKitCaipNetworks = appKit.getCaipNetworks(activeNamespace as ChainNamespace)
+        const appKitCaipNetworks = activeNamespace ? appKit.getCaipNetworks(activeNamespace) : []
         const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {

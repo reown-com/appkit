@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   type CaipNetwork,
   type CaipNetworkId,
-  type ChainNamespace,
   ConstantsUtil,
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
@@ -13,14 +12,15 @@ import {
   AccountController,
   CoreHelperUtil,
   ModalController,
-  type NetworkControllerClient
+  type NetworkControllerClient,
+  OptionsController
 } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUtil.js'
 
 // -- Setup --------------------------------------------------------------------
-const chainNamespace = 'eip155' as ChainNamespace
+const chainNamespace = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
 
@@ -262,6 +262,26 @@ describe('ChainController', () => {
     expect(requestedNetworks).toEqual(requestedCaipNetworks)
   })
 
+  it('should filter out networks without id values in getRequestedCaipNetworks', () => {
+    const chainNamespace = ConstantsUtil.CHAIN.EVM
+    const networksWithMissingId = [
+      ...requestedCaipNetworks,
+      {
+        caipNetworkId: 'eip155:999',
+        name: 'Test Network',
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
+        nativeCurrency: { name: 'Test', symbol: 'TST', decimals: 18 },
+        rpcUrls: { default: { http: ['https://rpc.test.com/v1/'] } },
+        blockExplorers: { default: { name: 'Test Explorer', url: 'https://explorer.test.io' } }
+      }
+    ]
+
+    ChainController.setRequestedCaipNetworks(networksWithMissingId as CaipNetwork[], chainNamespace)
+    const filteredNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
+    expect(filteredNetworks).toEqual(requestedCaipNetworks)
+  })
+
   it('should reset state correctly on resetNetwork()', () => {
     const namespace = 'eip155'
     ChainController.resetNetwork(namespace)
@@ -293,6 +313,21 @@ describe('ChainController', () => {
     expect(AccountController.state.status).toEqual('disconnected')
     expect(AccountController.state.socialProvider).toEqual(undefined)
     expect(AccountController.state.socialWindow).toEqual(undefined)
+  })
+
+  it('should reset account and set preferredAccountType from OptionsController.state.defaultAccountTypes if defined', () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      defaultAccountTypes: {
+        eip155: 'eoa'
+      }
+    })
+
+    ChainController.resetAccount(chainNamespace)
+
+    expect(
+      ChainController.state.chains.get(chainNamespace)?.accountState?.preferredAccountType
+    ).toEqual('eoa')
   })
 
   it('Expect modal to close after switching from unsupported network to supported network', async () => {

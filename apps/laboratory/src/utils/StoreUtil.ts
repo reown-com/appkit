@@ -1,4 +1,4 @@
-import { proxy } from 'valtio/vanilla'
+import { proxy, ref } from 'valtio/vanilla'
 
 interface ThemeVariables {
   '--w3m-font-family'?: string
@@ -77,6 +77,6 @@ export const ThemeStore = {
   },
 
   setModal(value: ThemeStoreState['modal']) {
-    state.modal = value
+    state.modal = ref(value)
   }
 }
