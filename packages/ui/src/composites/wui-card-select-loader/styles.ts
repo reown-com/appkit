@@ -5,7 +5,7 @@ export default css`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 104px;
+    height: 70px;
     row-gap: ${({ spacing }) => spacing[2]};
     padding: ${({ spacing }) => spacing[2]} 10px;
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
