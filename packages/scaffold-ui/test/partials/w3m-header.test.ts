@@ -146,6 +146,18 @@ describe('W3mHeader', () => {
       expect(closeSpy).toHaveBeenCalled()
     })
 
+    it('should call SIWXUtil.cancelSignMessage when close button is clicked in SIWXSignMessage view', async () => {
+      const cancelSignMessageSpy = vi.spyOn(SIWXUtil, 'cancelSignMessage').mockResolvedValue()
+      RouterController.state.view = 'SIWXSignMessage'
+      element.requestUpdate()
+      await element.updateComplete
+
+      const closeButton = HelpersUtil.getByTestId(element, 'w3m-header-close')
+      await closeButton?.click()
+
+      expect(cancelSignMessageSpy).toHaveBeenCalled()
+    })
+
     it('should shake modal when trying to close in UnsupportedChain view', async () => {
       const shakeSpy = vi.spyOn(ModalController, 'shake')
       RouterController.state.view = 'UnsupportedChain'
