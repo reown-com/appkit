@@ -11,9 +11,9 @@ export default css`
     justify-content: center;
     column-gap: var(--apkt-spacing-2);
     padding: var(--apkt-spacing-2) var(--apkt-spacing-3);
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--wui-border-radius-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
     transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
     will-change: background-color;
     cursor: pointer;

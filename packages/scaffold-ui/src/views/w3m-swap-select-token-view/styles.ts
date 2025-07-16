@@ -85,7 +85,7 @@ export default css`
   }
 
   .select-network-button:hover {
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .select-network-button > wui-image {

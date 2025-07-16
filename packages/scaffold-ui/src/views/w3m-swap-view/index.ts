@@ -18,6 +18,7 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -205,9 +206,12 @@ export class W3mSwapView extends LitElement {
   private templateReplaceTokensButton() {
     return html`
       <wui-flex class="replace-tokens-button-container">
-        <button @click=${this.onSwitchTokens.bind(this)}>
-          <wui-icon name="recycleHorizontal" color="default" size="lg"></wui-icon>
-        </button>
+        <wui-icon-box
+          @click=${this.onSwitchTokens.bind(this)}
+          icon="recycleHorizontal"
+          size="md"
+          variant="secondary"
+        ></wui-icon-box>
       </wui-flex>
     `
   }
@@ -282,9 +286,9 @@ export class W3mSwapView extends LitElement {
         fullWidth
         size="lg"
         borderRadius="xs"
-        variant=${haveNoTokenSelected ? 'neutral' : 'main'}
-        .loading=${loading}
-        .disabled=${disabled}
+        variant="accent-primary"
+        ?loading=${Boolean(loading)}
+        ?disabled=${Boolean(disabled)}
         @click=${this.onSwapPreview.bind(this)}
       >
         ${this.actionButtonLabel()}

@@ -6,7 +6,7 @@ export default css`
   }
 
   .suggestion {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--wui-border-radius-xs);
   }
 

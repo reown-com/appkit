@@ -21,8 +21,8 @@ export default css`
     padding: var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2);
     min-width: 95px;
     border-radius: var(--FULL, 1000px);
-    border: 1px solid var(--wui-color-gray-glass-002);
-    background: var(--wui-color-gray-glass-002);
+    border: 1px solid var(--apkt-tokens-theme-foregroundPrimary);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     cursor: pointer;
   }
 

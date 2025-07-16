@@ -76,10 +76,8 @@ export class W3mWalletSendView extends LitElement {
           .sendTokenAmount=${this.sendTokenAmount}
         ></w3m-input-token>
         <wui-icon-box
-          size="inherit"
-          backgroundColor="fg-300"
-          iconSize="lg"
-          iconColor="fg-250"
+          size="md"
+          variant="secondary"
           background="opaque"
           icon="arrowBottom"
         ></wui-icon-box>
@@ -87,7 +85,7 @@ export class W3mWalletSendView extends LitElement {
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>
       </wui-flex>
-      <wui-flex .margin=${['l', '0', '0', '0'] as const}>
+      <wui-flex .margin=${['4', '0', '0', '0'] as const}>
         <wui-button
           @click=${this.onButtonClick.bind(this)}
           ?disabled=${!this.message.startsWith('Preview Send')}

@@ -131,11 +131,11 @@ export class W3mSwapSelectTokenView extends LitElement {
 
     return html`
       <wui-flex class="tokens-container">
-        <wui-flex class="tokens" .padding=${['0', 's', 's', 's']} flexDirection="column">
+        <wui-flex class="tokens" .padding=${['0', '3', '3', '3']} flexDirection="column">
           ${filteredYourTokens?.length > 0
             ? html`
-                <wui-flex justifyContent="flex-start" padding="s">
-                  <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
+                <wui-flex justifyContent="flex-start" padding="3">
+                  <wui-text variant="md-medium" color="secondary">Your tokens</wui-text>
                 </wui-flex>
                 ${filteredYourTokens.map(token => {
                   const selected =

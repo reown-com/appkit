@@ -17,7 +17,7 @@ export default css`
   }
 
   :host > wui-flex:hover {
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .purchase-image-container {

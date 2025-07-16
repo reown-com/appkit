@@ -10,11 +10,11 @@ export default css`
   }
 
   wui-icon-box {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: var(--wui-border-radius-xs) !important;
-    border: 5px solid var(--wui-color-bg-125);
-    background: var(--wui-color-bg-175);
+    border: 4px solid var(--apkt-tokens-theme-backgroundPrimary);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     position: absolute;
     top: 50%;
     left: 50%;

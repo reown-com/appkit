@@ -7,7 +7,7 @@ export default css`
     flex-direction: column;
     gap: var(--wui-border-radius-1xs);
     border-radius: var(--wui-border-radius-s);
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     padding: var(--apkt-spacing-3) var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2);
   }
 

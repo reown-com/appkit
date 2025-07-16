@@ -28,6 +28,19 @@ export default css`
     position: relative;
   }
 
+  wui-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--wui-border-radius-xs) !important;
+    border: 4px solid var(--apkt-tokens-theme-backgroundPrimary);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+  }
+
   .replace-tokens-button-container {
     display: flex;
     justify-content: center;
@@ -42,27 +55,8 @@ export default css`
     padding: var(--apkt-spacing-2);
   }
 
-  .replace-tokens-button-container > button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    width: 40px;
-    padding: var(--apkt-spacing-2);
-    border: none;
-    border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
-    transition: background-color var(--wui-duration-md) var(--wui-ease-out-power-1);
-    will-change: background-color;
-    z-index: 20;
-  }
-
-  .replace-tokens-button-container > button:hover {
-    background: var(--wui-color-gray-glass-005);
-  }
-
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--wui-border-radius-xxs);
     width: 100%;
   }
@@ -76,7 +70,7 @@ export default css`
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .details-content-container {
@@ -94,6 +88,6 @@ export default css`
     width: 100%;
     padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 `

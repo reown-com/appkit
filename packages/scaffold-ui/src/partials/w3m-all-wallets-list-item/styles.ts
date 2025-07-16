@@ -10,7 +10,7 @@ export default css`
     width: 104px;
     row-gap: var(--apkt-spacing-2);
     padding: var(--apkt-spacing-3) var(--apkt-spacing-0);
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
     transition:
       color var(--wui-duration-lg) var(--wui-ease-out-power-1),

@@ -12,7 +12,7 @@ export default css`
   }
 
   :host([data-round='true']) {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: 100%;
     outline: 1px solid var(--wui-color-gray-glass-005);
   }
@@ -24,7 +24,7 @@ export default css`
     width: 100%;
     height: 100%;
     z-index: 1;
-    fill: var(--wui-color-gray-glass-002);
+    fill: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   svg > path {
@@ -36,7 +36,7 @@ export default css`
     height: 100%;
     -webkit-clip-path: var(--local-path);
     clip-path: var(--local-path);
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   wui-icon {

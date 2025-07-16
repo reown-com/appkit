@@ -28,7 +28,7 @@ export default css`
   }
 
   .active-wallets {
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--wui-border-radius-xs);
   }
 
@@ -43,7 +43,7 @@ export default css`
   .empty-box {
     width: 100%;
     padding: var(--apkt-spacing-4);
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--wui-border-radius-xs);
   }
 

@@ -60,7 +60,7 @@ export class W3mInputToken extends LitElement {
 
     return html`<wui-button
       size="md"
-      variant="accent"
+      variant="neutral-secondary"
       @click=${this.handleSelectButtonClick.bind(this)}
       >Select token</wui-button
     >`

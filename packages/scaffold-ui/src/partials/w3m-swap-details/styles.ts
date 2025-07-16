@@ -6,7 +6,7 @@ export default css`
   }
 
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--wui-border-radius-xxs);
     width: 100%;
   }
@@ -37,7 +37,7 @@ export default css`
     padding-left: var(--apkt-spacing-3);
     padding-right: var(--apkt-spacing-2);
     border-radius: calc(var(--wui-border-radius-5xs) + var(--wui-border-radius-4xs));
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .details-row-title {

@@ -7,7 +7,7 @@ export default css`
     justify-content: space-between;
     width: 100%;
     border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   button[data-clickable='false'] {

@@ -6,7 +6,7 @@ export default css`
     border-radius: var(--wui-border-radius-xs);
     border: none;
     outline: none;
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
     width: 100%;
     display: flex;
     align-items: center;
@@ -46,7 +46,7 @@ export default css`
     border-radius: calc(var(--apkt-spacing-3) / 2);
     overflow: hidden;
     box-shadow:
-      0 0 0 3px var(--wui-color-gray-glass-002),
+      0 0 0 3px var(--apkt-tokens-theme-foregroundPrimary),
       0 0 0 3px var(--wui-color-modal-bg);
     transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-md);
     will-change: box-shadow;

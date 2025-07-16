@@ -36,8 +36,8 @@ export default css`
     height: 40px;
     border: none;
     border-radius: 80px;
-    background: var(--wui-color-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
     cursor: pointer;
     transition: background 0.2s linear;
   }
@@ -54,7 +54,7 @@ export default css`
     width: 100%;
     padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .action-buttons-container {
@@ -100,7 +100,7 @@ export default css`
   }
 
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--wui-border-radius-xxs);
     width: 100%;
   }
@@ -114,7 +114,7 @@ export default css`
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .details-content-container {
@@ -132,6 +132,6 @@ export default css`
     width: 100%;
     padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 `

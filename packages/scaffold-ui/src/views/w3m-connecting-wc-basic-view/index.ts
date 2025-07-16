@@ -28,11 +28,7 @@ export class W3mConnectingWcBasicView extends LitElement {
       const showConnectors =
         featured.length || recommended.length || customWallets?.length || recent.length
 
-      return html`<wui-flex
-        flexDirection="column"
-        gap="2"
-        .margin=${['3xs', 's', 's', 's'] as const}
-      >
+      return html`<wui-flex flexDirection="column" gap="2" .margin=${['1', '3', '3', '3'] as const}>
         ${showConnectors ? html`<w3m-connector-list></w3m-connector-list>` : null}
         <w3m-all-wallets-widget></w3m-all-wallets-widget>
       </wui-flex>`

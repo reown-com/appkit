@@ -42,8 +42,8 @@ export default css`
     height: 48px;
     padding: var(--apkt-spacing-2);
     padding-right: var(--apkt-spacing-3);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
-    background-color: var(--wui-color-gray-glass-002);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: 24px;
     transition: background-color 0.2s linear;
   }

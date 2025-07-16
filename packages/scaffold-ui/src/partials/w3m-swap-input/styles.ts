@@ -7,13 +7,13 @@ export default css`
     justify-content: space-between;
     align-items: center;
     border-radius: var(--wui-border-radius-s);
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
     padding: var(--apkt-spacing-5);
     padding-right: var(--apkt-spacing-3);
     width: 100%;
     height: 100px;
     box-sizing: border-box;
-    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-002);
+    box-shadow: inset 0px 0px 0px 1px var(--apkt-tokens-theme-foregroundPrimary);
     position: relative;
     transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-lg);
     will-change: background-color;

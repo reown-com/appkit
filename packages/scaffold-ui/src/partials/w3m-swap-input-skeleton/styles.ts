@@ -13,8 +13,8 @@ export default css`
     border-radius: var(--wui-border-radius-s);
     padding: var(--apkt-spacing-5);
     padding-right: var(--apkt-spacing-3);
-    background-color: var(--wui-color-gray-glass-002);
-    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
+    box-shadow: inset 0px 0px 0px 1px var(--apkt-tokens-theme-foregroundPrimary);
     width: 100%;
     height: 100px;
     box-sizing: border-box;
@@ -42,6 +42,6 @@ export default css`
   }
 
   :host wui-flex .input_mask__background {
-    fill: var(--wui-color-gray-glass-002);
+    fill: var(--apkt-tokens-theme-foregroundPrimary);
   }
 `

@@ -59,7 +59,7 @@ export class W3mInputAddress extends LitElement {
         <wui-button
           class="paste"
           size="md"
-          variant="accent-primary"
+          variant="neutral-secondary"
           iconLeft="copy"
           @click=${this.onPasteClick.bind(this)}
         >

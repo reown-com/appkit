@@ -74,7 +74,7 @@ export class W3mSwapInput extends LitElement {
           <wui-text class="market-value" variant="sm-regular" color="secondary">
             ${isMarketValueGreaterThanZero
               ? `$${UiHelperUtil.formatNumberToLocalString(this.marketValue, 2)}`
-              : null}
+              : `$0,00`}
           </wui-text>
         </wui-flex>
         ${this.templateTokenSelectButton()}
@@ -115,7 +115,7 @@ export class W3mSwapInput extends LitElement {
         data-testid="swap-select-token-button-${this.target}"
         class="swap-token-button"
         size="md"
-        variant="accent"
+        variant="neutral-secondary"
         @click=${this.onSelectToken.bind(this)}
       >
         Select token

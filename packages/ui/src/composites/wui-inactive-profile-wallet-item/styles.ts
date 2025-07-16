@@ -14,7 +14,7 @@ export default css`
 
   .icon-box {
     position: relative;
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .icon-badge {
