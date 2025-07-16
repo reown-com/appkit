@@ -61,6 +61,9 @@ export async function sendCoSignerRequest<
     Object.entries(queryParams).forEach(([key, value]) => {
       fullUrl.searchParams.append(key, value)
     })
+
+    console.log('>> Full URL', fullUrl.toString())
+
     // Prepare fetch options
     const fetchOptions: RequestInit = {
       method: 'POST',
@@ -125,6 +128,7 @@ export class CosignerService {
   async addPermission(address: string, data: AddPermissionRequest): Promise<AddPermissionResponse> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}`
 
+    console.log('>> Add Permission', url, data)
     const response = await sendCoSignerRequest<
       AddPermissionRequest,
       AddPermissionResponse,
