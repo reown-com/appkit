@@ -61,6 +61,17 @@ export function AppKitHooks() {
     })
   }
 
+  function handleOpenSendWithArguments() {
+    open({
+      view: 'WalletSend',
+      arguments: {
+        amount: '300',
+        fromToken: 'USDC',
+        recipient: '0x1234567890123456789012345678901234567890'
+      }
+    })
+  }
+
   return (
     <Box>
       <Heading size="xs" textTransform="uppercase" pb="2">
@@ -97,6 +108,13 @@ export function AppKitHooks() {
           onClick={handleOpenSwapWithArguments}
         >
           Open Swap with Arguments
+        </Button>
+
+        <Button
+          data-testid="open-send-with-arguments-hook-button"
+          onClick={handleOpenSendWithArguments}
+        >
+          Open Send with Arguments
         </Button>
       </Box>
     </Box>

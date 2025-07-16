@@ -106,6 +106,7 @@ export type Views =
 
 type ViewArguments = {
   Swap: NonNullable<RouterControllerState['data']>['swap']
+  WalletSend: NonNullable<RouterControllerState['data']>['send']
 }
 
 export interface OpenOptions<View extends Views> {
@@ -1903,6 +1904,8 @@ export abstract class AppKitBaseClient {
       switch (options?.view) {
         case 'Swap':
           return ModalController.open({ ...options, data: { swap: options.arguments } })
+        case 'WalletSend':
+          return ModalController.open({ ...options, data: { send: options.arguments } })
         default:
       }
     }

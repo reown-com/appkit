@@ -29,6 +29,12 @@ import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 
+export type SendInputArguments = Partial<{
+  fromToken: string
+  amount: string
+  recipient: string
+}>
+
 export interface TxParams {
   receiverAddress: string
   sendTokenAmount: number

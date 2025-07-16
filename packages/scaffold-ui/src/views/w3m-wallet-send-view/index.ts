@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import {
   ChainController,
@@ -8,6 +8,7 @@ import {
   SendController,
   SwapController
 } from '@reown/appkit-controllers'
+import type { SendInputArguments } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -25,6 +26,8 @@ export class W3mWalletSendView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property({ type: Object }) initialParams = RouterController.state.data?.send
+
   @state() private token = SendController.state.token
 
   @state() private sendTokenAmount = SendController.state.sendTokenAmount
@@ -59,6 +62,12 @@ export class W3mWalletSendView extends LitElement {
         })
       ]
     )
+  }
+
+  public override async firstUpdated() {
+    await this.handleSendParameters()
+    this.fetchBalances()
+    this.fetchNetworkPrice()
   }
 
   public override disconnectedCallback() {
@@ -114,6 +123,56 @@ export class W3mWalletSendView extends LitElement {
 
   private onButtonClick() {
     RouterController.push('WalletSendPreview')
+  }
+
+  private async handleSendParameters() {
+    if (!this.initialParams) return
+
+    await this.waitForTokens()
+
+    await this.setSendParameters(this.initialParams)
+  }
+
+  private async waitForTokens() {
+    if (SendController.state.tokenBalances && SendController.state.tokenBalances.length > 0) {
+      return
+    }
+
+    const waitForTokens = new Promise<void>(resolve => {
+      const unsubscribe = SendController.subscribeKey('tokenBalances', tokens => {
+        if (tokens && tokens.length > 0) {
+          unsubscribe?.()
+          resolve()
+        }
+      })
+
+      setTimeout(() => {
+        unsubscribe?.()
+        resolve()
+      }, 5000)
+    })
+
+    await waitForTokens
+  }
+
+  private async setSendParameters({ amount, fromToken, recipient }: SendInputArguments) {
+    if (fromToken) {
+      const token = await this.findTokenBySymbol(fromToken)
+      if (token) SendController.setToken(token)
+    }
+
+    if (amount && !isNaN(Number(amount))) {
+      SendController.setTokenAmount(Number(amount))
+    }
+
+    if (recipient) {
+      SendController.setReceiverAddress(recipient)
+    }
+  }
+
+  private async findTokenBySymbol(symbol: string) {
+    const allTokens = SendController.state.tokenBalances || []
+    return allTokens.find(token => token.symbol.toLowerCase() === symbol.toLowerCase())
   }
 
   private getMessage() {
