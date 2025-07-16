@@ -47,6 +47,7 @@ declare module 'react' {
     interface IntrinsicElements extends __BuiltinIntrinsics, AppKitElements {}
   }
 }
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitwallet */
 export function useAppKitWallet(parameters?: {
   onSuccess?: (data: ParsedCaipAddress) => void
   onError?: (error: Error) => void
@@ -190,6 +191,7 @@ export function useAppKitWallet(parameters?: {
   }
 }
 
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitupdateemail */
 export function useAppKitUpdateEmail(parameters?: {
   onSuccess?: (data: { email: string }) => void
   onError?: (error: Error) => void

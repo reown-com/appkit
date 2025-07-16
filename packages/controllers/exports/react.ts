@@ -46,6 +46,7 @@ interface DeleteRecentConnectionProps {
 }
 
 // -- Hooks ------------------------------------------------------------
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitnetworkcore */
 export function useAppKitNetworkCore(): Pick<
   UseAppKitNetworkReturn,
   'caipNetwork' | 'chainId' | 'caipNetworkId'
@@ -59,6 +60,7 @@ export function useAppKitNetworkCore(): Pick<
   }
 }
 
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitaccount */
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
@@ -114,6 +116,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
   }
 }
 
+/** https://docs.reown.com/appkit/react/core/hooks#usedisconnect */
 export function useDisconnect() {
   async function disconnect(props?: DisconnectParams) {
     await ConnectionController.disconnect(props)
@@ -122,6 +125,7 @@ export function useDisconnect() {
   return { disconnect }
 }
 
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitconnections */
 export function useAppKitConnections(namespace?: ChainNamespace) {
   // Snapshots to trigger re-renders on state changes
   useSnapshot(ConnectionController.state)
@@ -175,6 +179,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   }
 }
 
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitconnection */
 export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKitConnectionProps) {
   const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)

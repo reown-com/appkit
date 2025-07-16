@@ -43,6 +43,7 @@ export type { AppKitOptions }
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
 
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitnetwork */
 export function useAppKitNetwork(): UseAppKitNetworkReturn {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
 
@@ -58,6 +59,7 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
+/** https://docs.reown.com/appkit/react/core/hooks#useappkitbalance */
 export function useAppKitBalance() {
   async function fetchBalance() {
     return await _internalFetchBalance(modal)

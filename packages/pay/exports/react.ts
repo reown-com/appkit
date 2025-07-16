@@ -80,6 +80,7 @@ interface UsePayParameters {
  * @param {UsePayParameters} [parameters] - Optional configuration for the hook, including success and error callbacks.
  * @returns {UsePayReturn} An object containing the payment state and actions.
  */
+/** https://docs.reown.com/appkit/react/core/hooks#usepay */
 export function usePay(parameters?: UsePayParameters): UsePayReturn {
   const { onSuccess, onError } = parameters ?? {}
 
@@ -169,6 +170,7 @@ interface UseAvailableExchangesReturn {
  * @param {CaipNetworkId} [options.network] - The network to fetch exchanges for.
  * @returns {UseAvailableExchangesReturn} An object containing the exchange data, loading state, error state, and a function to trigger fetching.
  */
+/** https://docs.reown.com/appkit/react/core/hooks#useavailableexchanges */
 export function useAvailableExchanges(
   options?: {
     shouldFetchOnInit?: boolean
@@ -218,6 +220,7 @@ export function useAvailableExchanges(
  *
  * @returns {{ getUrl: (exchangeId: string, params: PayUrlParams) => Promise<string>; openUrl: (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) => void; }} An object containing memoized functions `getUrl` and `openUrl`.
  */
+/** https://docs.reown.com/appkit/react/core/hooks#usepayurlactions */
 export function usePayUrlActions(): {
   getUrl: (exchangeId: string, params: PayUrlParams) => Promise<PayUrlResponse>
   openUrl: (
@@ -288,6 +291,7 @@ interface UseExchangeBuyStatusReturn {
  * @returns {UseExchangeBuyStatusReturn} An object containing the status data, loading state, error state, and a refetch function.
  *
  */
+/** https://docs.reown.com/appkit/react/core/hooks#useexchangebuystatus */
 export function useExchangeBuyStatus(
   params: UseExchangeBuyStatusParameters
 ): UseExchangeBuyStatusReturn {
