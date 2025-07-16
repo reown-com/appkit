@@ -43,6 +43,10 @@ export type { AppKitOptions }
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
 
+/**
+ * React hook to manage network switching and access current network information.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitnetwork
+ */
 export function useAppKitNetwork(): UseAppKitNetworkReturn {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
 
@@ -58,6 +62,10 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
+/**
+ * React hook to fetch account balance information for the connected wallet.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitbalance
+ */
 export function useAppKitBalance() {
   async function fetchBalance() {
     return await _internalFetchBalance(modal)
