@@ -1,20 +1,19 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { ConstantsUtil } from '@reown/appkit-common'
 import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
-export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
+export type OnRampProviderOption = 'meld'
 
 export type OnRampProvider = {
   label: string
@@ -103,9 +102,9 @@ const controller = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
-      const currency =
-        ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
-      const address = AccountController.state.address ?? ''
+      const activeChain = ChainController.state.activeChain
+      const currency = activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
+      const address = ChainController.getAccountProp('address', activeChain) ?? ''
       const url = new URL(provider.url)
       url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)

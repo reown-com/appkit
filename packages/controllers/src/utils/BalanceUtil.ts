@@ -1,4 +1,4 @@
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type Address, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
 import { AccountController } from '../controllers/AccountController.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
@@ -37,7 +37,7 @@ export const BalanceUtil = {
     }
 
     // Extract EIP-155 specific logic
-    if (caipNetwork.chainNamespace === 'eip155' && isAuthConnector) {
+    if (caipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM && isAuthConnector) {
       const eip155Balances = await this.getEIP155Balances(address, caipNetwork)
 
       if (eip155Balances) {
@@ -74,7 +74,7 @@ export const BalanceUtil = {
       }
 
       const walletGetAssetsResponse = await ConnectionController.walletGetAssets({
-        account: address as `0x${string}`,
+        account: address as Address,
         chainFilter: [chainIdHex]
       })
 

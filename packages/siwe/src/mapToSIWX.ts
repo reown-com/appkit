@@ -37,9 +37,23 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     }
   }
 
+  let signingOut: Promise<void> | undefined = undefined
+
   async function signOut() {
-    await siwe.methods.signOut()
-    siwe.methods.onSignOut?.()
+    if (signingOut) {
+      return signingOut
+    }
+
+    signingOut = (async () => {
+      try {
+        await siwe.methods.signOut()
+        siwe.methods.onSignOut?.()
+      } finally {
+        signingOut = undefined
+      }
+    })()
+
+    return signingOut
   }
 
   subscriptions.forEach(unsubscribe => unsubscribe())
@@ -54,17 +68,17 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return
       }
 
-      if (siwe.options.signOutOnAccountChange) {
+      if (activeCaipAddress) {
         const session = await getSession()
 
-        const lowercaseSessionAddress = session?.address?.toLowerCase()
-        const lowercaseCaipAddress =
-          CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
+        if (session && siwe.options.signOutOnAccountChange) {
+          const sessionAddress = session?.address
+          const caipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)
+          const isDifferentAddress = !HelpersUtil.isLowerCaseMatch(sessionAddress, caipAddress)
 
-        const isDifferentAddress = session && lowercaseSessionAddress !== lowercaseCaipAddress
-
-        if (isDifferentAddress) {
-          await signOut()
+          if (isDifferentAddress) {
+            await signOut()
+          }
         }
       }
     })
@@ -116,9 +130,11 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       }
 
       if (await siwe.methods.verifyMessage(session)) {
+        const address = session.data.accountAddress
+        const network = NetworkUtil.parseEvmChainId(session.data.chainId)
         siwe.methods.onSignIn?.({
-          address: session.data.accountAddress,
-          chainId: NetworkUtil.parseEvmChainId(session.data.chainId) as number
+          address,
+          chainId: network as number
         })
 
         return Promise.resolve()
@@ -210,6 +226,8 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
     getRequired() {
       return siwe.options.required ?? true
-    }
+    },
+
+    signOutOnDisconnect: siwe.options.signOutOnDisconnect
   }
 }

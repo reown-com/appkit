@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import {
-  AccountController,
   ApiController,
   BlockchainApiController,
+  ChainController,
   OnRampController,
   type OnRampProvider,
   OptionsController,
@@ -151,16 +151,22 @@ describe('OnRampController', () => {
 
   it('should set providers if valid names are provided', () => {
     const validProviderNames = ['coinbase', 'moonpay']
-    const expectedProviders = ONRAMP_PROVIDERS.filter(p => validProviderNames.includes(p.name))
     OnRampController.setOnrampProviders(validProviderNames as any)
-    expect(OnRampController.state.providers).toEqual(expectedProviders)
+    expect(OnRampController.state.providers).toEqual([])
   })
 
   it('should filter out invalid provider names', () => {
-    const mixedProviderNames = ['coinbase', 'invalidProvider', 'moonpay']
-    const expectedProviders = ONRAMP_PROVIDERS.filter(p => ['coinbase', 'moonpay'].includes(p.name))
+    const mixedProviderNames = ['meld', 'coinbase', 'invalidProvider', 'moonpay']
     OnRampController.setOnrampProviders(mixedProviderNames as any)
-    expect(OnRampController.state.providers).toEqual(expectedProviders)
+    expect(OnRampController.state.providers).toEqual([
+      {
+        feeRange: '1-2%',
+        label: 'Meld.io',
+        name: 'meld',
+        supportedChains: ['eip155', 'solana'],
+        url: 'https://meldcrypto.com'
+      }
+    ])
   })
 
   it('should set an empty array if no valid provider names are provided', () => {
@@ -190,7 +196,7 @@ describe('OnRampController', () => {
   })
 
   it('should properly configure meld url', () => {
-    AccountController.state.address = '0x123'
+    const mockGetAccountProp = vi.spyOn(ChainController, 'getAccountProp').mockReturnValue('0x123')
     OptionsController.state.projectId = 'test'
     OnRampController.resetState()
     const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
@@ -201,6 +207,9 @@ describe('OnRampController', () => {
     resultUrl.searchParams.append('walletAddress', '0x123')
     resultUrl.searchParams.append('externalCustomerId', 'test')
 
+    expect(mockGetAccountProp).toHaveBeenCalledWith('address', ChainController.state.activeChain)
     expect(OnRampController.state.selectedProvider?.url).toEqual(resultUrl.toString())
+
+    mockGetAccountProp.mockRestore()
   })
 })

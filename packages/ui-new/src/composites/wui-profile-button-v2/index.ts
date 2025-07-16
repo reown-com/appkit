@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { ChainController, ConnectorController } from '@reown/appkit-controllers'
 
 import '../../components/wui-icon/index.js'
@@ -35,8 +35,7 @@ export class WuiProfileButtonV2 extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
     const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
     return html`<button data-testid="wui-profile-button" @click=${this.handleClick}>

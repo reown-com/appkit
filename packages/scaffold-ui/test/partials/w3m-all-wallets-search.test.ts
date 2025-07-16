@@ -147,7 +147,8 @@ describe('W3mAllWalletsSearch', () => {
       mockExternalWallet.rdns
     )
     expect(routerPushSpy).toHaveBeenCalledWith('ConnectingExternal', {
-      connector: mockConnector
+      connector: mockConnector,
+      wallet: mockExternalWallet
     })
   })
 
