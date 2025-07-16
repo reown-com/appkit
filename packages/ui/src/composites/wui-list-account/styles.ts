@@ -16,14 +16,14 @@ export default css`
   }
 
   wui-image {
-    width: var(--wui-spacing-3xl);
-    height: var(--wui-spacing-3xl);
+    width: var(--apkt-spacing-10);
+    height: var(--apkt-spacing-10);
     border-radius: var(--wui-border-radius-3xl);
   }
 
   wui-avatar {
-    width: var(--wui-spacing-3xl);
-    height: var(--wui-spacing-3xl);
+    width: var(--apkt-spacing-10);
+    height: var(--apkt-spacing-10);
     box-shadow: 0 0 0 0;
   }
   .address {

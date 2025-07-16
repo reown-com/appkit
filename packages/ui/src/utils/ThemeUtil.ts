@@ -229,8 +229,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-spacing-2l: 18px;
         --wui-spacing-xl: 20px;
         --wui-spacing-xxl: 24px;
-        --wui-spacing-2xl: 32px;
-        --wui-spacing-3xl: 40px;
+        --apkt-spacing-4: 32px;
+        --apkt-spacing-10: 40px;
         --wui-spacing-4xl: 90px;
         --wui-spacing-5xl: 95px;
 

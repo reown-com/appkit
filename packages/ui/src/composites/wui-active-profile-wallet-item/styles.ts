@@ -2,15 +2,15 @@ import { css } from 'lit'
 
 export default css`
   wui-image {
-    width: var(--wui-spacing-2xl);
-    height: var(--wui-spacing-2xl);
+    width: var(--apkt-spacing-4);
+    height: var(--apkt-spacing-4);
     border-radius: var(--wui-border-radius-3xs);
   }
 
   wui-image,
   .icon-box {
-    width: var(--wui-spacing-2xl);
-    height: var(--wui-spacing-2xl);
+    width: var(--apkt-spacing-4);
+    height: var(--apkt-spacing-4);
     border-radius: var(--wui-border-radius-3xs);
   }
 

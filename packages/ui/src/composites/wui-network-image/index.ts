@@ -37,8 +37,8 @@ export class WuiNetworkImage extends LitElement {
     if (this.round) {
       this.dataset['round'] = 'true'
       this.style.cssText = `
-      --local-width: var(--wui-spacing-3xl);
-      --local-height: var(--wui-spacing-3xl);
+      --local-width: var(--apkt-spacing-10);
+      --local-height: var(--apkt-spacing-10);
       --local-icon-size: var(--apkt-spacing-4);
     `
     } else {

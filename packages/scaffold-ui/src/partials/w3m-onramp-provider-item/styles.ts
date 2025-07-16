@@ -21,9 +21,9 @@ export default css`
   }
 
   .provider-image {
-    width: var(--wui-spacing-3xl);
-    min-width: var(--wui-spacing-3xl);
-    height: var(--wui-spacing-3xl);
+    width: var(--apkt-spacing-10);
+    min-width: var(--apkt-spacing-10);
+    height: var(--apkt-spacing-10);
     border-radius: calc(var(--wui-border-radius-xs) - calc(var(--apkt-spacing-3) / 2));
     position: relative;
     overflow: hidden;
