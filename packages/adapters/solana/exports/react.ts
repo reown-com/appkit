@@ -11,7 +11,10 @@ export * from '@reown/appkit-utils/solana'
 export * from '../src/index.js'
 
 // -- Hooks -----------------------------------------------------------
-/** https://docs.reown.com/appkit/react/core/hooks#useappkitconnection */
+/**
+ * React hook to access Solana connection instance for blockchain interactions.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitconnection
+ */
 export function useAppKitConnection(): {
   connection: Connection | undefined
 } {

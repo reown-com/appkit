@@ -79,8 +79,8 @@ interface UsePayParameters {
  *
  * @param {UsePayParameters} [parameters] - Optional configuration for the hook, including success and error callbacks.
  * @returns {UsePayReturn} An object containing the payment state and actions.
+ * @see https://docs.reown.com/appkit/react/core/hooks#usepay
  */
-/** https://docs.reown.com/appkit/react/core/hooks#usepay */
 export function usePay(parameters?: UsePayParameters): UsePayReturn {
   const { onSuccess, onError } = parameters ?? {}
 
@@ -169,8 +169,8 @@ interface UseAvailableExchangesReturn {
  * @param {number | string} [options.amount] - The amount to fetch exchanges for.
  * @param {CaipNetworkId} [options.network] - The network to fetch exchanges for.
  * @returns {UseAvailableExchangesReturn} An object containing the exchange data, loading state, error state, and a function to trigger fetching.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useavailableexchanges
  */
-/** https://docs.reown.com/appkit/react/core/hooks#useavailableexchanges */
 export function useAvailableExchanges(
   options?: {
     shouldFetchOnInit?: boolean
@@ -219,8 +219,8 @@ export function useAvailableExchanges(
  * React hook providing memoized functions for generating and opening pay URLs.
  *
  * @returns {{ getUrl: (exchangeId: string, params: PayUrlParams) => Promise<string>; openUrl: (exchangeId: string, params: PayUrlParams, openInNewTab?: boolean) => void; }} An object containing memoized functions `getUrl` and `openUrl`.
+ * @see https://docs.reown.com/appkit/react/core/hooks#usepayurlactions
  */
-/** https://docs.reown.com/appkit/react/core/hooks#usepayurlactions */
 export function usePayUrlActions(): {
   getUrl: (exchangeId: string, params: PayUrlParams) => Promise<PayUrlResponse>
   openUrl: (
@@ -289,9 +289,8 @@ interface UseExchangeBuyStatusReturn {
  *
  * @param {UseExchangeBuyStatusParameters} params - Parameters including exchangeId, sessionId, and optional polling configuration.
  * @returns {UseExchangeBuyStatusReturn} An object containing the status data, loading state, error state, and a refetch function.
- *
+ * @see https://docs.reown.com/appkit/react/core/hooks#useexchangebuystatus
  */
-/** https://docs.reown.com/appkit/react/core/hooks#useexchangebuystatus */
 export function useExchangeBuyStatus(
   params: UseExchangeBuyStatusParameters
 ): UseExchangeBuyStatusReturn {

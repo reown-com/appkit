@@ -46,7 +46,10 @@ interface DeleteRecentConnectionProps {
 }
 
 // -- Hooks ------------------------------------------------------------
-/** https://docs.reown.com/appkit/react/core/hooks#useappkitnetworkcore */
+/**
+ * React hook to access core network information including CAIP network, chain ID, and network ID.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitnetworkcore
+ */
 export function useAppKitNetworkCore(): Pick<
   UseAppKitNetworkReturn,
   'caipNetwork' | 'chainId' | 'caipNetworkId'
@@ -60,7 +63,10 @@ export function useAppKitNetworkCore(): Pick<
   }
 }
 
-/** https://docs.reown.com/appkit/react/core/hooks#useappkitaccount */
+/**
+ * React hook to access account information including address, connection status, and embedded wallet details.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitaccount
+ */
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
@@ -116,7 +122,10 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
   }
 }
 
-/** https://docs.reown.com/appkit/react/core/hooks#usedisconnect */
+/**
+ * React hook to disconnect from the current wallet connection.
+ * @see https://docs.reown.com/appkit/react/core/hooks#usedisconnect
+ */
 export function useDisconnect() {
   async function disconnect(props?: DisconnectParams) {
     await ConnectionController.disconnect(props)
@@ -125,7 +134,10 @@ export function useDisconnect() {
   return { disconnect }
 }
 
-/** https://docs.reown.com/appkit/react/core/hooks#useappkitconnections */
+/**
+ * React hook to access and manage multiple wallet connections with formatted connection data.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitconnections
+ */
 export function useAppKitConnections(namespace?: ChainNamespace) {
   // Snapshots to trigger re-renders on state changes
   useSnapshot(ConnectionController.state)
@@ -179,7 +191,10 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   }
 }
 
-/** https://docs.reown.com/appkit/react/core/hooks#useappkitconnection */
+/**
+ * React hook to manage active wallet connection with switching and deletion capabilities.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitconnection
+ */
 export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKitConnectionProps) {
   const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
