@@ -91,27 +91,13 @@ export class W3mSwapView extends LitElement {
           this.onCaipNetworkChange({
             newCaipNetwork,
             resetSwapState: true,
-            initializeSwapState: false
-          })
-        ),
-        AccountController.subscribeKey('caipAddress', newCaipAddress =>
-          this.onCaipAddressChange({
-            newCaipAddress,
-            resetSwapState: true,
-            initializeSwapState: false
-          })
-        ),
-        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
-          this.onCaipNetworkChange({
-            newCaipNetwork,
-            resetSwapState: false,
             initializeSwapState: true
           })
         ),
         AccountController.subscribeKey('caipAddress', newCaipAddress =>
           this.onCaipAddressChange({
             newCaipAddress,
-            resetSwapState: false,
+            resetSwapState: true,
             initializeSwapState: true
           })
         ),
