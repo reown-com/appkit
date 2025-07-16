@@ -64,12 +64,12 @@ export class W3mSwitchActiveChainView extends LitElement {
           <wui-visual name=${ifDefined(chainIconNameMap[this.switchToChain])}></wui-visual>
           <wui-text
             data-testid=${`w3m-switch-active-chain-to-${nextChainName}`}
-            variant="paragraph-500"
-            color="fg-100"
+            variant="md-medium"
+            color="primary"
             align="center"
             >Switch to <span class="capitalize">${nextChainName}</span></wui-text
           >
-          <wui-text variant="small-400" color="fg-200" align="center">
+          <wui-text variant="sm-regular" color="secondary" align="center">
             Connected wallet doesn't support connecting to ${switchedChainNameString} chain. You
             need to connect with a different wallet.
           </wui-text>

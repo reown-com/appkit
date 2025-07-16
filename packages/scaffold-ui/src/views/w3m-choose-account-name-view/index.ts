@@ -67,10 +67,10 @@ export class W3mChooseAccountNameView extends LitElement {
         ></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="s">
-        <wui-text align="center" variant="medium-600" color="fg-100">
+        <wui-text align="center" variant="md-medium" color="primary">
           Choose your account name
         </wui-text>
-        <wui-text align="center" variant="paragraph-400" color="fg-100">
+        <wui-text align="center" variant="md-regular" color="primary">
           Finally say goodbye to 0x addresses, name your account to make it easier to exchange
           assets
         </wui-text>

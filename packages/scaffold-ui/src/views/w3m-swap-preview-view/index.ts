@@ -153,8 +153,8 @@ export class W3mSwapPreviewView extends LitElement {
             gap="l"
           >
             <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
-              <wui-text variant="small-400" color="fg-150">Send</wui-text>
-              <wui-text variant="paragraph-400" color="fg-100">$${sentPrice}</wui-text>
+              <wui-text variant="sm-regular" color="secondary">Send</wui-text>
+              <wui-text variant="md-regular" color="primary">$${sentPrice}</wui-text>
             </wui-flex>
             <wui-token-button
               flexDirection="row-reverse"
@@ -171,8 +171,8 @@ export class W3mSwapPreviewView extends LitElement {
             gap="l"
           >
             <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
-              <wui-text variant="small-400" color="fg-150">Receive</wui-text>
-              <wui-text variant="paragraph-400" color="fg-100">$${receivePrice}</wui-text>
+              <wui-text variant="sm-regular" color="secondary">Receive</wui-text>
+              <wui-text variant="md-regular" color="primary">$${receivePrice}</wui-text>
             </wui-flex>
             <wui-token-button
               flexDirection="row-reverse"
@@ -187,7 +187,7 @@ export class W3mSwapPreviewView extends LitElement {
 
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="xs">
           <wui-icon size="sm" color="fg-200" name="infoCircle"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
+          <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
 
         <wui-flex
@@ -205,7 +205,7 @@ export class W3mSwapPreviewView extends LitElement {
             variant="neutral"
             @click=${this.onCancelTransaction.bind(this)}
           >
-            <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
+            <wui-text variant="md-medium" color="secondary">Cancel</wui-text>
           </wui-button>
           <wui-button
             class="action-button"
@@ -217,9 +217,7 @@ export class W3mSwapPreviewView extends LitElement {
             ?disabled=${loading}
             @click=${this.onSendTransaction.bind(this)}
           >
-            <wui-text variant="paragraph-600" color="inverse-100">
-              ${this.actionButtonLabel()}
-            </wui-text>
+            <wui-text variant="md-medium" color="invert"> ${this.actionButtonLabel()} </wui-text>
           </wui-button>
         </wui-flex>
       </wui-flex>

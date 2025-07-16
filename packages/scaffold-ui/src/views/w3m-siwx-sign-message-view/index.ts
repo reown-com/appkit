@@ -29,7 +29,7 @@ export class W3mSIWXSignMessageView extends LitElement {
         gap="s"
         justifyContent="space-between"
       >
-        <wui-text variant="paragraph-500" align="center" color="fg-100"
+        <wui-text variant="md-medium" align="center" color="primary"
           >${this.dappName ?? 'Dapp'} needs to connect to your wallet</wui-text
         >
       </wui-flex>
@@ -38,7 +38,7 @@ export class W3mSIWXSignMessageView extends LitElement {
         gap="s"
         justifyContent="space-between"
       >
-        <wui-text variant="small-400" align="center" color="fg-200"
+        <wui-text variant="sm-regular" align="center" color="secondary"
           >Sign this message to prove you own this wallet and proceed. Canceling will disconnect
           you.</wui-text
         >

@@ -84,7 +84,7 @@ export class W3mUnsupportedChainView extends LitElement {
             @click=${this.onDisconnect.bind(this)}
             data-testid="disconnect-button"
           >
-            <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+            <wui-text variant="md-medium" color="secondary">Disconnect</wui-text>
           </wui-list-item>
         </wui-flex>
       </wui-flex>
@@ -95,7 +95,7 @@ export class W3mUnsupportedChainView extends LitElement {
   private descriptionTemplate() {
     if (this.swapUnsupportedChain) {
       return html`
-        <wui-text variant="small-400" color="fg-200" align="center">
+        <wui-text variant="sm-regular" color="secondary" align="center">
           The swap feature doesn’t support your current network. Switch to an available option to
           continue.
         </wui-text>
@@ -103,7 +103,7 @@ export class W3mUnsupportedChainView extends LitElement {
     }
 
     return html`
-      <wui-text variant="small-400" color="fg-200" align="center">
+      <wui-text variant="sm-regular" color="secondary" align="center">
         This app doesn’t support your current network. Switch to an available option to continue.
       </wui-text>
     `

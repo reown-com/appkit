@@ -84,8 +84,8 @@ export class W3mNetworkSwitchView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">${label}</wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text align="center" variant="md-medium" color="primary">${label}</wui-text>
+          <wui-text align="center" variant="sm-medium" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         <wui-button

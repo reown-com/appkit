@@ -236,19 +236,19 @@ export class W3mProfileWalletsView extends LitElement {
           NAMESPACE_ICONS.eip155}
           size="lg"
         ></wui-icon>
-        <wui-text color="fg-200" variant="small-400"
+        <wui-text color="secondary" variant="sm-regular"
           >${totalConnections > 1 ? 'Wallets' : 'Wallet'}</wui-text
         >
         <wui-text
-          color="fg-100"
-          variant="small-400"
+          color="primary"
+          variant="sm-regular"
           class="balance-amount"
           data-testid="balance-amount"
         >
           ${totalConnections}
         </wui-text>
         <wui-link
-          color="fg-200"
+          color="secondary"
           @click=${() => ConnectionController.disconnect({ namespace })}
           ?disabled=${!this.hasAnyConnections(namespace)}
           data-testid="disconnect-all-button"
@@ -382,7 +382,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
-        <wui-text color="fg-200" variant="micro-500" data-testid="recently-connected-text"
+        <wui-text color="secondary" variant="micro-500" data-testid="recently-connected-text"
           >RECENTLY CONNECTED</wui-text
         >
         <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
@@ -470,7 +470,7 @@ export class W3mProfileWalletsView extends LitElement {
         @click=${() => this.handleAddConnection(namespace)}
         data-testid="add-connection-button"
       >
-        <wui-text variant="paragraph-500" color="fg-200">${title}</wui-text>
+        <wui-text variant="md-medium" color="secondary">${title}</wui-text>
       </wui-list-item>
     `
   }
@@ -491,15 +491,15 @@ export class W3mProfileWalletsView extends LitElement {
             size="lg"
             icon="wallet"
             background="gray"
-            iconColor="fg-200"
+            iconColor="secondary"
             backgroundColor="glass-002"
           ></wui-icon-box>
 
           <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
-            <wui-text color="fg-100" variant="paragraph-500" data-testid="empty-state-text"
+            <wui-text color="primary" variant="md-medium" data-testid="empty-state-text"
               >No wallet connected</wui-text
             >
-            <wui-text color="fg-200" variant="tiny-500" data-testid="empty-state-description"
+            <wui-text color="secondary" variant="tiny-500" data-testid="empty-state-description"
               >${description}</wui-text
             >
           </wui-flex>

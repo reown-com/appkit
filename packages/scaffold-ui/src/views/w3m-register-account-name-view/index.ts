@@ -146,7 +146,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private nameSuggestionTagTemplate() {
     if (this.loading) {
-      return html`<wui-loading-spinner size="lg" color="fg-100"></wui-loading-spinner>`
+      return html`<wui-loading-spinner size="lg" color="primary"></wui-loading-spinner>`
     }
 
     return this.registered
@@ -169,7 +169,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         class="suggestion"
         @click=${this.onSubmitName.bind(this)}
       >
-        <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
+        <wui-text color="primary" variant="md-regular" class="suggested-name">
           ${this.name}</wui-text
         >${this.nameSuggestionTagTemplate()}
       </wui-flex>
@@ -185,7 +185,7 @@ export class W3mRegisterAccountNameView extends LitElement {
       class="suggestion"
       @click=${this.onSelectSuggestion(suggestion)}
     >
-      <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
+      <wui-text color="primary" variant="md-regular" class="suggested-name">
         ${suggestion}
       </wui-text>
       <wui-tag variant="success" size="lg">Available</wui-tag>

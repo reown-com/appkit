@@ -12,7 +12,7 @@ export class W3mUpgradeWalletView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="xl" padding="xl">
-        <wui-text variant="paragraph-400" color="fg-100">Follow the instructions on</wui-text>
+        <wui-text variant="md-regular" color="primary">Follow the instructions on</wui-text>
         <wui-semantic-chip
           icon="externalLink"
           variant="fill"
@@ -21,7 +21,7 @@ export class W3mUpgradeWalletView extends LitElement {
           data-testid="w3m-secure-website-button"
         >
         </wui-chip>
-        <wui-text variant="small-400" color="fg-200">
+        <wui-text variant="sm-regular" color="secondary">
           You will have to reconnect for security reasons
         </wui-text>
       </wui-flex>
