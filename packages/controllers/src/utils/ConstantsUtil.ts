@@ -218,7 +218,8 @@ export const ConstantsUtil = {
     ] as SocialProvider[],
     activity: true,
     reownBranding: true,
-    multiWallet: false
+    multiWallet: false,
+    emailCapture: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -226,7 +227,8 @@ export const ConstantsUtil = {
     swaps: false,
     onramp: false,
     activity: false,
-    reownBranding: false
+    reownBranding: false,
+    emailCapture: false
   } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,

@@ -94,7 +94,9 @@ function headings() {
     SmartSessionCreated: undefined,
     SmartSessionList: 'Smart Sessions',
     SIWXSignMessage: 'Sign In',
-    PayLoading: 'Payment in progress'
+    PayLoading: 'Payment in progress',
+    DataCapture: 'Profile',
+    DataCaptureOtpConfirm: 'Confirm Email'
   }
 }
 
