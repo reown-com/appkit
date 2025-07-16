@@ -1,7 +1,6 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 'vitest'
 
-import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
