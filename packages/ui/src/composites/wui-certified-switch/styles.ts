@@ -9,8 +9,8 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: var(--wui-spacing-1xs);
-    padding: var(--wui-spacing-xs) var(--wui-spacing-s);
+    column-gap: var(--apkt-spacing-2);
+    padding: var(--apkt-spacing-2) var(--apkt-spacing-3);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xs);
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);

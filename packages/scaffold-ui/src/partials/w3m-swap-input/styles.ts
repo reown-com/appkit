@@ -8,8 +8,8 @@ export default css`
     align-items: center;
     border-radius: var(--wui-border-radius-s);
     background-color: var(--wui-color-gray-glass-002);
-    padding: var(--wui-spacing-xl);
-    padding-right: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-5);
+    padding-right: var(--apkt-spacing-3);
     width: 100%;
     height: 100px;
     box-sizing: border-box;

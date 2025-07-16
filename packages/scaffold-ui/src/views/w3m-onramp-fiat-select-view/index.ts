@@ -67,8 +67,8 @@ export class W3mOnrampFiatSelectView extends LitElement {
       <w3m-legal-checkbox></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
-        .padding=${['0', 's', 's', 's']}
-        gap="xs"
+        .padding=${['0', '3', '3', '3']}
+        gap="2"
         class=${ifDefined(disabled ? 'disabled' : undefined)}
       >
         ${this.currenciesTemplate(disabled)}

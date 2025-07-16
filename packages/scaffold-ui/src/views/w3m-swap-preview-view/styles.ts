@@ -31,8 +31,8 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-xxs);
-    padding: var(--wui-spacing-xs);
+    gap: var(--apkt-spacing-2);
+    padding: var(--apkt-spacing-2);
     height: 40px;
     border: none;
     border-radius: 80px;
@@ -52,14 +52,14 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-color-gray-glass-002);
   }
 
   .action-buttons-container {
     width: 100%;
-    gap: var(--wui-spacing-xs);
+    gap: var(--apkt-spacing-2);
   }
 
   .action-buttons-container > button {
@@ -108,7 +108,7 @@ export default css`
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-3);
     border-radius: var(--wui-border-radius-xxs);
     transition: background 0.2s linear;
   }
@@ -118,7 +118,7 @@ export default css`
   }
 
   .details-content-container {
-    padding: var(--wui-spacing-1xs);
+    padding: var(--apkt-spacing-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,7 +130,7 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-color-gray-glass-002);
   }

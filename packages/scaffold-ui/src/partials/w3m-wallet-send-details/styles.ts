@@ -8,16 +8,15 @@ export default css`
     gap: var(--wui-border-radius-1xs);
     border-radius: var(--wui-border-radius-s);
     background: var(--wui-color-gray-glass-002);
-    padding: var(--wui-spacing-s) var(--wui-spacing-1xs) var(--wui-spacing-1xs)
-      var(--wui-spacing-1xs);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2);
   }
 
   wui-text {
-    padding: 0 var(--wui-spacing-1xs);
+    padding: 0 var(--apkt-spacing-2);
   }
 
   wui-flex {
-    margin-top: var(--wui-spacing-1xs);
+    margin-top: var(--apkt-spacing-2);
   }
 
   .network {

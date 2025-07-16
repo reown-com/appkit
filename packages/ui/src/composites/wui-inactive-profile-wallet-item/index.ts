@@ -53,7 +53,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex alignItems="center" columnGap="xs">
+      <wui-flex alignItems="center" columngap="2">
         ${this.imageOrIconTemplate()} ${this.labelAndDescriptionTemplate()}
         ${this.buttonActionTemplate()}
       </wui-flex>
@@ -110,7 +110,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   public buttonActionTemplate() {
     return html`
-      <wui-flex columnGap="3xs" alignItems="center" justifyContent="center">
+      <wui-flex columngap="1" alignItems="center" justifyContent="center">
         <wui-button
           size="xs"
           variant=${this.buttonVariant}

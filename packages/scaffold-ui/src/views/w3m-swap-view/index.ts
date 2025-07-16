@@ -155,7 +155,7 @@ export class W3mSwapView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4']} gap="3">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -172,8 +172,8 @@ export class W3mSwapView extends LitElement {
 
   private templateSwap() {
     return html`
-      <wui-flex flexDirection="column" gap="s">
-        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
+      <wui-flex flexDirection="column" gap="3">
+        <wui-flex flexDirection="column" alignItems="center" gap="2" class="swap-inputs-container">
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
@@ -214,8 +214,8 @@ export class W3mSwapView extends LitElement {
 
   private templateLoading() {
     return html`
-      <wui-flex flexDirection="column" gap="l">
-        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
+      <wui-flex flexDirection="column" gap="4">
+        <wui-flex flexDirection="column" alignItems="center" gap="2" class="swap-inputs-container">
           <w3m-swap-input-skeleton target="sourceToken"></w3m-swap-input-skeleton>
           <w3m-swap-input-skeleton target="toToken"></w3m-swap-input-skeleton>
           ${this.templateReplaceTokensButton()}
@@ -275,7 +275,7 @@ export class W3mSwapView extends LitElement {
     const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
     const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
 
-    return html` <wui-flex gap="xs">
+    return html` <wui-flex gap="2">
       <wui-button
         data-testid="swap-action-button"
         class="action-button"

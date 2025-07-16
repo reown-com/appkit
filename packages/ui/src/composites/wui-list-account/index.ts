@@ -80,9 +80,9 @@ export class WuiListAccount extends LitElement {
       <wui-flex
         flexDirection="row"
         justifyContent="space-between"
-        .padding=${['0', '0', 's', '1xs'] as const}
+        .padding=${['0', '0', '3', '2'] as const}
       >
-        <wui-flex gap="md" alignItems="center">
+        <wui-flex gap="l" alignItems="center">
           <wui-avatar address=${this.accountAddress}></wui-avatar>
           ${this.shouldShowIcon
             ? html`<wui-icon-box
@@ -107,7 +107,7 @@ export class WuiListAccount extends LitElement {
             <wui-text class="address-description" variant="small-400">${label}</wui-text></wui-flex
           >
         </wui-flex>
-        <wui-flex gap="s" alignItems="center">
+        <wui-flex gap="3" alignItems="center">
           <slot name="action"></slot>
           ${this.fetchingBalance
             ? html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`

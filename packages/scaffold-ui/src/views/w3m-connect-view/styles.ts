@@ -38,7 +38,7 @@ export default css`
   }
 
   wui-separator {
-    margin: var(--wui-spacing-s) calc(var(--wui-spacing-s) * -1);
-    width: calc(100% + var(--wui-spacing-s) * 2);
+    margin: var(--apkt-spacing-3) calc(var(--apkt-spacing-3) * -1);
+    width: calc(100% + var(--apkt-spacing-3) * 2);
   }
 `

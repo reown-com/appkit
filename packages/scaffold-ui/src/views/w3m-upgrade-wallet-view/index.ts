@@ -11,7 +11,7 @@ export class W3mUpgradeWalletView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" alignItems="center" gap="xl" padding="xl">
+      <wui-flex flexDirection="column" alignItems="center" gap="5" padding="5">
         <wui-text variant="paragraph-400" color="fg-100">Follow the instructions on</wui-text>
         <wui-semantic-chip
           icon="externalLink"

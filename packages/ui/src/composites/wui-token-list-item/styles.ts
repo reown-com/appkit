@@ -10,9 +10,9 @@ export default css`
     cursor: pointer;
     height: 100%;
     display: flex;
-    column-gap: var(--wui-spacing-s);
-    padding: var(--wui-spacing-xs);
-    padding-right: var(--wui-spacing-l);
+    column-gap: var(--apkt-spacing-3);
+    padding: var(--apkt-spacing-2);
+    padding-right: var(--apkt-spacing-4);
     width: 100%;
     background-color: transparent;
     border-radius: var(--wui-border-radius-xs);

@@ -11,8 +11,8 @@ export default css`
     justify-content: space-between;
     align-items: center;
     border-radius: var(--wui-border-radius-s);
-    padding: var(--wui-spacing-xl);
-    padding-right: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-5);
+    padding-right: var(--apkt-spacing-3);
     background-color: var(--wui-color-gray-glass-002);
     box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-002);
     width: 100%;

@@ -110,8 +110,8 @@ export class W3mConnectingFarcasterView extends LitElement {
     return html` <wui-flex
       flexDirection="column"
       alignItems="center"
-      .padding=${['0', 'xl', 'xl', 'xl']}
-      gap="xl"
+      .padding=${['0', '5', '5', '5']}
+      gap="5"
     >
       <wui-shimmer rounded width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
@@ -127,8 +127,8 @@ export class W3mConnectingFarcasterView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['5', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-logo logo="farcaster"></wui-logo>
@@ -143,7 +143,7 @@ export class W3mConnectingFarcasterView extends LitElement {
             borderColor="wui-color-bg-125"
           ></wui-icon-box>
         </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
           <wui-text align="center" variant="paragraph-500" color="fg-100">
             Loading user data
           </wui-text>
@@ -159,8 +159,8 @@ export class W3mConnectingFarcasterView extends LitElement {
     return html` <wui-flex
       flexDirection="column"
       alignItems="center"
-      .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-      gap="xl"
+      .padding=${['10', '5', '5', '5'] as const}
+      gap="5"
     >
       <wui-flex justifyContent="center" alignItems="center">
         <wui-logo logo="farcaster"></wui-logo>
@@ -175,7 +175,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           borderColor="wui-color-bg-125"
         ></wui-icon-box>
       </wui-flex>
-      <wui-flex flexDirection="column" alignItems="center" gap="xs">
+      <wui-flex flexDirection="column" alignItems="center" gap="2">
         <wui-text align="center" variant="paragraph-500" color="fg-100"
           >Continue in Farcaster</span></wui-text
         >

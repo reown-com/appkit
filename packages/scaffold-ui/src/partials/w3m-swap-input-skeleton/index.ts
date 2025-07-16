@@ -25,7 +25,7 @@ export class W3mSwapInputSkeleton extends LitElement {
           alignItems="flex-start"
           justifyContent="center"
           class="swap-input"
-          gap="xxs"
+          gap="1"
         >
           <wui-shimmer width="80px" height="40px" rounded variant="light"></wui-shimmer>
         </wui-flex>
@@ -42,7 +42,7 @@ export class W3mSwapInputSkeleton extends LitElement {
         flexDirection="column"
         alignItems="flex-end"
         justifyContent="center"
-        gap="xxs"
+        gap="1"
       >
         <wui-shimmer width="80px" height="40px" rounded variant="light"></wui-shimmer>
       </wui-flex>

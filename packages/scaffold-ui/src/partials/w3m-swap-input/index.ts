@@ -128,7 +128,7 @@ export class W3mSwapInput extends LitElement {
         flexDirection="column"
         alignItems="flex-end"
         justifyContent="center"
-        gap="xxs"
+        gap="1"
       >
         <wui-token-button
           data-testid="swap-input-token-${this.target}"
@@ -137,7 +137,7 @@ export class W3mSwapInput extends LitElement {
           @click=${this.onSelectToken.bind(this)}
         >
         </wui-token-button>
-        <wui-flex alignItems="center" gap="xxs"> ${this.tokenBalanceTemplate()} </wui-flex>
+        <wui-flex alignItems="center" gap="1"> ${this.tokenBalanceTemplate()} </wui-flex>
       </wui-flex>
     `
   }

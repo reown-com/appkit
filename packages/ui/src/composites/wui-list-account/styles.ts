@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   button {
-    padding: 6.5px var(--wui-spacing-l) 6.5px var(--wui-spacing-xs);
+    padding: 6.5px var(--apkt-spacing-4) 6.5px var(--apkt-spacing-2);
     display: flex;
     justify-content: space-between;
     width: 100%;

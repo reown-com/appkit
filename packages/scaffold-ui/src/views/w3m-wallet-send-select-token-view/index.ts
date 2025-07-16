@@ -65,7 +65,7 @@ export class W3mSendSelectTokenView extends LitElement {
 
   private templateSearchInput() {
     return html`
-      <wui-flex gap="xs" padding="s">
+      <wui-flex gap="2" padding="3">
         <wui-input-text
           @inputChange=${this.onInputChange.bind(this)}
           class="network-search-input"
@@ -93,12 +93,12 @@ export class W3mSendSelectTokenView extends LitElement {
       <wui-flex
         class="contentContainer"
         flexDirection="column"
-        .padding=${['0', 's', '0', 's'] as const}
+        .padding=${['0', '3', '0', '3'] as const}
       >
-        <wui-flex justifyContent="flex-start" .padding=${['m', 's', 's', 's'] as const}>
+        <wui-flex justifyContent="flex-start" .padding=${['4', '3', '3', '3'] as const}>
           <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
         </wui-flex>
-        <wui-flex flexDirection="column" gap="xs">
+        <wui-flex flexDirection="column" gap="2">
           ${this.filteredTokens && this.filteredTokens.length > 0
             ? this.filteredTokens.map(
                 token =>
@@ -113,10 +113,10 @@ export class W3mSendSelectTokenView extends LitElement {
                   ></wui-list-token>`
               )
             : html`<wui-flex
-                .padding=${['4xl', '0', '0', '0'] as const}
+                .padding=${['20', '0', '0', '0'] as const}
                 alignItems="center"
                 flexDirection="column"
-                gap="l"
+                gap="4"
               >
                 <wui-icon-box
                   icon="coinPlaceholder"
@@ -127,7 +127,7 @@ export class W3mSendSelectTokenView extends LitElement {
                 ></wui-icon-box>
                 <wui-flex
                   class="textContent"
-                  gap="xs"
+                  gap="2"
                   flexDirection="column"
                   justifyContent="center"
                   flexDirection="column"

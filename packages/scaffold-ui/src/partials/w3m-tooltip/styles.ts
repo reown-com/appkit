@@ -8,14 +8,14 @@ export default css`
   :host > wui-flex {
     display: var(--w3m-tooltip-display);
     opacity: var(--w3m-tooltip-opacity);
-    padding: 9px var(--wui-spacing-s) 10px var(--wui-spacing-s);
+    padding: 9px var(--apkt-spacing-3) 10px var(--apkt-spacing-3);
     border-radius: var(--wui-border-radius-xxs);
     color: var(--wui-color-bg-100);
     position: fixed;
     top: var(--w3m-tooltip-top);
     left: var(--w3m-tooltip-left);
     transform: translate(calc(-50% + var(--w3m-tooltip-parent-width)), calc(-100% - 8px));
-    max-width: calc(var(--w3m-modal-width) - var(--wui-spacing-xl));
+    max-width: calc(var(--w3m-modal-width) - var(--apkt-spacing-5));
     transition: opacity 0.2s var(--wui-ease-out-power-2);
     will-change: opacity;
   }

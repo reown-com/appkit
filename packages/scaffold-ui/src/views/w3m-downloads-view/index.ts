@@ -18,7 +18,7 @@ export class W3mDownloadsView extends LitElement {
     }
 
     return html`
-      <wui-flex gap="xs" flexDirection="column" .padding=${['s', 's', 'l', 's'] as const}>
+      <wui-flex gap="2" flexDirection="column" .padding=${['3', '3', '4', '3'] as const}>
         ${this.chromeTemplate()} ${this.iosTemplate()} ${this.androidTemplate()}
         ${this.homepageTemplate()}
       </wui-flex>

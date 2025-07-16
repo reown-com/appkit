@@ -72,10 +72,10 @@ export class W3mPayView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column">
-        <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="s">
+        <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const} gap="3">
           ${this.renderPaymentHeader()}
 
-          <wui-flex flexDirection="column" gap="s">
+          <wui-flex flexDirection="column" gap="3">
             ${this.renderPayWithWallet()} ${this.renderExchangeOptions()}
           </wui-flex>
         </wui-flex>
@@ -96,7 +96,7 @@ export class W3mPayView extends LitElement {
       return html``
     }
 
-    return html`<wui-flex flexDirection="column" gap="s">
+    return html`<wui-flex flexDirection="column" gap="3">
         ${this.isWalletConnected ? this.renderConnectedView() : this.renderDisconnectedView()}
       </wui-flex>
       <wui-separator text="or"></wui-separator>`
@@ -114,9 +114,9 @@ export class W3mPayView extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" alignItems="center">
-        <wui-flex alignItems="center" gap="xs">
+        <wui-flex alignItems="center" gap="2">
           <wui-text variant="large-700" color="fg-100">${this.amount || '0.0000'}</wui-text>
-          <wui-flex class="token-display" alignItems="center" gap="xxs">
+          <wui-flex class="token-display" alignItems="center" gap="1">
             <wui-text variant="paragraph-600" color="fg-100">
               ${this.tokenSymbol || 'Unknown Asset'}
             </wui-text>
@@ -140,7 +140,7 @@ export class W3mPayView extends LitElement {
         ?chevron=${true}
         data-testid="wallet-payment-option"
       >
-        <wui-flex alignItems="center" gap="s">
+        <wui-flex alignItems="center" gap="3">
           <wui-wallet-image
             size="sm"
             imageSrc=${ifDefined(this.connectedWalletInfo?.icon)}
@@ -196,7 +196,7 @@ export class W3mPayView extends LitElement {
           ?chevron=${true}
           ?disabled=${this.loadingExchangeId !== null}
         >
-          <wui-flex alignItems="center" gap="s">
+          <wui-flex alignItems="center" gap="3">
             ${this.loadingExchangeId === exchange.id
               ? html`<wui-loading-spinner color="accent-100" size="md"></wui-loading-spinner>`
               : html`<wui-wallet-image

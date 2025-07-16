@@ -36,10 +36,10 @@ export default css`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    gap: var(--wui-spacing-1xs);
+    gap: var(--apkt-spacing-2);
     border-radius: var(--wui-border-radius-xs);
     background-color: var(--wui-color-modal-bg-base);
-    padding: var(--wui-spacing-xxs);
+    padding: var(--apkt-spacing-2);
   }
 
   .replace-tokens-button-container > button {
@@ -48,7 +48,7 @@ export default css`
     align-items: center;
     height: 40px;
     width: 40px;
-    padding: var(--wui-spacing-xs);
+    padding: var(--apkt-spacing-2);
     border: none;
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-color-gray-glass-002);
@@ -70,7 +70,7 @@ export default css`
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-3);
     border-radius: var(--wui-border-radius-xxs);
     transition: background 0.2s linear;
   }
@@ -80,7 +80,7 @@ export default css`
   }
 
   .details-content-container {
-    padding: var(--wui-spacing-1xs);
+    padding: var(--apkt-spacing-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -92,7 +92,7 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-color-gray-glass-002);
   }

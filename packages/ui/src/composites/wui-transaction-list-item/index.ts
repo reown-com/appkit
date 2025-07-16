@@ -45,7 +45,7 @@ export class WuiTransactionListItem extends LitElement {
           onlyDirectionIcon=${ifDefined(this.onlyDirectionIcon)}
           .images=${this.images}
         ></wui-transaction-visual>
-        <wui-flex flexDirection="column" gap="3xs">
+        <wui-flex flexDirection="column" gap="1">
           <wui-text variant="paragraph-600" color="fg-100">
             ${TransactionTypePastTense[this.type] || this.type}
           </wui-text>

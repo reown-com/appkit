@@ -65,10 +65,10 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
-      <wui-flex gap="xs" flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+    return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
+      <wui-flex gap="2" flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-flex flexDirection="column" gap="4xs">
+          <wui-flex flexDirection="column" gap="01">
             <wui-text variant="small-400" color="fg-150">Send</wui-text>
             ${this.sendValueTemplate()}
           </wui-flex>
@@ -104,16 +104,16 @@ export class W3mWalletSendPreviewView extends LitElement {
           ></wui-preview-item>
         </wui-flex>
       </wui-flex>
-      <wui-flex flexDirection="column" .padding=${['xxl', '0', '0', '0'] as const}>
+      <wui-flex flexDirection="column" .padding=${['6', '0', '0', '0'] as const}>
         <w3m-wallet-send-details
           .caipNetwork=${this.caipNetwork}
           .receiverAddress=${this.receiverAddress}
         ></w3m-wallet-send-details>
-        <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
+        <wui-flex justifyContent="center" gap="1" .padding=${['3', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
           <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
         </wui-flex>
-        <wui-flex justifyContent="center" gap="s" .padding=${['l', '0', '0', '0'] as const}>
+        <wui-flex justifyContent="center" gap="3" .padding=${['4', '0', '0', '0'] as const}>
           <wui-button
             class="cancelButton"
             @click=${this.onCancelClick.bind(this)}

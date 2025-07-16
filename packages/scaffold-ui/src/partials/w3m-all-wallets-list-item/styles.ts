@@ -8,8 +8,8 @@ export default css`
     align-items: center;
     cursor: pointer;
     width: 104px;
-    row-gap: var(--wui-spacing-xs);
-    padding: var(--wui-spacing-s) var(--wui-spacing-0);
+    row-gap: var(--apkt-spacing-2);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-0);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
     transition:

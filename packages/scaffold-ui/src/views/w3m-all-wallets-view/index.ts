@@ -29,7 +29,7 @@ export class W3mAllWalletsView extends LitElement {
     const isSearch = this.search.length >= 2
 
     return html`
-      <wui-flex .padding=${['0', 's', 's', 's']} gap="xs">
+      <wui-flex .padding=${['0', '3', '3', '3']} gap="2">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
         <wui-certified-switch
           ?checked=${this.badge}

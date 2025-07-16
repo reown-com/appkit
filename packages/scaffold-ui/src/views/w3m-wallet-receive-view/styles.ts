@@ -2,6 +2,6 @@ import { css } from 'lit'
 
 export default css`
   wui-compatible-network {
-    margin-top: var(--wui-spacing-l);
+    margin-top: var(--apkt-spacing-4);
   }
 `

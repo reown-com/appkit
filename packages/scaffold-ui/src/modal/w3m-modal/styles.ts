@@ -69,7 +69,7 @@ export default css`
     }
 
     wui-card {
-      margin: var(--wui-spacing-xxl) 0px;
+      margin: var(--apkt-spacing-6) 0px;
     }
   }
 

@@ -45,8 +45,8 @@ export class W3mEmailVerifyDeviceView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['xxl', 's', 'xxl', 's'] as const}
-        gap="l"
+        .padding=${['6', '3', '6', '3'] as const}
+        gap="4"
       >
         <wui-icon-box
           size="xl"
@@ -56,7 +56,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
           background="opaque"
         ></wui-icon-box>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="s">
+        <wui-flex flexDirection="column" alignItems="center" gap="3">
           <wui-flex flexDirection="column" alignItems="center">
             <wui-text variant="paragraph-400" color="fg-100">
               Approve the login link we sent to
@@ -68,7 +68,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
             The code expires in 20 minutes
           </wui-text>
 
-          <wui-flex alignItems="center" id="w3m-resend-section" gap="xs">
+          <wui-flex alignItems="center" id="w3m-resend-section" gap="2">
             <wui-text variant="small-400" color="fg-100" align="center">
               Didn't receive it?
             </wui-text>

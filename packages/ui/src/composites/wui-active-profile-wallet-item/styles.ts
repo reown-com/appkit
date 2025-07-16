@@ -31,6 +31,6 @@ export default css`
     background-color: var(--wui-color-gray-glass-005);
     border: 2px solid var(--wui-color-modal-bg);
     border-radius: 50%;
-    padding: var(--wui-spacing-4xs);
+    padding: var(--apkt-spacing-01);
   }
 `

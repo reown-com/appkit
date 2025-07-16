@@ -12,6 +12,6 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-3xs);
+    gap: var(--apkt-spacing-1);
   }
 `

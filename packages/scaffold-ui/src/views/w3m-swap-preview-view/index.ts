@@ -109,7 +109,7 @@ export class W3mSwapPreviewView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4']} gap="3">
         ${this.templateSwap()}
       </wui-flex>
     `
@@ -144,15 +144,15 @@ export class W3mSwapPreviewView extends LitElement {
       this.loadingApprovalTransaction
 
     return html`
-      <wui-flex flexDirection="column" alignItems="center" gap="l">
-        <wui-flex class="preview-container" flexDirection="column" alignItems="flex-start" gap="l">
+      <wui-flex flexDirection="column" alignItems="center" gap="4">
+        <wui-flex class="preview-container" flexDirection="column" alignItems="flex-start" gap="4">
           <wui-flex
             class="preview-token-details-container"
             alignItems="center"
             justifyContent="space-between"
-            gap="l"
+            gap="4"
           >
-            <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
+            <wui-flex flexDirection="column" alignItems="flex-start" gap="01">
               <wui-text variant="small-400" color="fg-150">Send</wui-text>
               <wui-text variant="paragraph-400" color="fg-100">$${sentPrice}</wui-text>
             </wui-flex>
@@ -168,9 +168,9 @@ export class W3mSwapPreviewView extends LitElement {
             class="preview-token-details-container"
             alignItems="center"
             justifyContent="space-between"
-            gap="l"
+            gap="4"
           >
-            <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
+            <wui-flex flexDirection="column" alignItems="flex-start" gap="01">
               <wui-text variant="small-400" color="fg-150">Receive</wui-text>
               <wui-text variant="paragraph-400" color="fg-100">$${receivePrice}</wui-text>
             </wui-flex>
@@ -185,7 +185,7 @@ export class W3mSwapPreviewView extends LitElement {
 
         ${this.templateDetails()}
 
-        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="xs">
+        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="2">
           <wui-icon size="sm" color="fg-200" name="infoCircle"></wui-icon>
           <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
         </wui-flex>
@@ -195,7 +195,7 @@ export class W3mSwapPreviewView extends LitElement {
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
-          gap="xs"
+          gap="2"
         >
           <wui-button
             class="cancel-button"

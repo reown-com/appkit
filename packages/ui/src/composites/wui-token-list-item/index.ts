@@ -69,7 +69,7 @@ export class WuiTokenListItem extends LitElement {
     return html`
       <wui-flex alignItems="center">
         ${this.visualTemplate()}
-        <wui-flex flexDirection="column" gap="3xs">
+        <wui-flex flexDirection="column" gap="1">
           <wui-flex justifyContent="space-between">
             <wui-text variant="paragraph-500" color="fg-100" lineClamp="1">${this.name}</wui-text>
             ${value

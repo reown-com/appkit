@@ -51,9 +51,9 @@ export class W3mSmartSessionListView extends LitElement {
   public override render() {
     return html`<wui-flex
       flexDirection="column"
-      .padding=${['0', 'xl', 'm', 'xl'] as const}
+      .padding=${['0', '5', '3', '5'] as const}
       alignItems="center"
-      gap="m"
+      gap="4"
     >
       <wui-tabs
         .onTabChange=${this.onTabChange.bind(this)}
@@ -147,11 +147,11 @@ export class W3mSmartSessionListView extends LitElement {
             <wui-flex
               alignItems="center"
               flexDirection="row"
-              .padding=${['xs', 's', 's', 's'] as const}
+              .padding=${['2', '3', '3', '3'] as const}
             >
               <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
             </wui-flex>
-            <wui-flex flexDirection="column" gap="m">
+            <wui-flex flexDirection="column" gap="4">
               ${this.templateSessions(monthSessions)}
             </wui-flex>
           </wui-flex>
@@ -166,7 +166,7 @@ export class W3mSmartSessionListView extends LitElement {
     return html`<wui-flex
       alignItems="center"
       justifyContent="center"
-      .padding=${['l', 'l', 'l', 'l'] as const}
+      .padding=${['4', '4', '4', '4'] as const}
     >
       <wui-text variant="title-400" color="fg-200">No ${type.toLowerCase()} sessions</wui-text>
     </wui-flex>`
@@ -178,13 +178,13 @@ export class W3mSmartSessionListView extends LitElement {
 
       return html` <wui-flex
         class="session-container"
-        gap="s"
+        gap="3"
         flexDirection="column"
-        .padding=${['s', 's', 's', 's'] as const}
+        .padding=${['3', '3', '3', '3'] as const}
         @click=${this.onSessionClick.bind(this, session)}
       >
-        <wui-flex gap="s" alignItems="center" justifyContent="space-between">
-          <wui-flex gap="xs">
+        <wui-flex gap="3" alignItems="center" justifyContent="space-between">
+          <wui-flex gap="2">
             ${project.iconUrl
               ? html`<img
                   class="session-project-image"
@@ -219,7 +219,7 @@ export class W3mSmartSessionListView extends LitElement {
                 }
                 const { data } = permission
 
-                return html` <wui-flex flexDirection="column" gap="s">
+                return html` <wui-flex flexDirection="column" gap="3">
                   <wui-permission-contract-call
                     .contractAddress=${data.address}
                     .expiry=${session.expiry / 1000}

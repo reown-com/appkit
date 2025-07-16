@@ -2,8 +2,8 @@ import { css } from 'lit'
 
 export default css`
   wui-separator {
-    margin: var(--wui-spacing-s) calc(var(--wui-spacing-s) * -1);
-    width: calc(100% + var(--wui-spacing-s) * 2);
+    margin: var(--apkt-spacing-3) calc(var(--apkt-spacing-3) * -1);
+    width: calc(100% + var(--apkt-spacing-3) * 2);
   }
 
   wui-email-input {
@@ -24,14 +24,14 @@ export default css`
   }
 
   wui-icon-link {
-    right: var(--wui-spacing-xs);
+    right: var(--apkt-spacing-2);
   }
 
   wui-loading-spinner {
-    right: var(--wui-spacing-m);
+    right: var(--apkt-spacing-3);
   }
 
   wui-text {
-    margin: var(--wui-spacing-xxs) var(--wui-spacing-m) var(--wui-spacing-0) var(--wui-spacing-m);
+    margin: var(--apkt-spacing-2) var(--apkt-spacing-3) var(--apkt-spacing-0) var(--apkt-spacing-3);
   }
 `

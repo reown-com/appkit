@@ -75,11 +75,11 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-xs);
+    gap: var(--apkt-spacing-2);
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
     background-color: transparent;
     border-radius: var(--wui-border-radius-xxs);
-    padding: var(--wui-spacing-xs);
+    padding: var(--apkt-spacing-2);
     align-items: center;
     transition: background-color 0.2s linear;
   }

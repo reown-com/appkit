@@ -113,8 +113,8 @@ export class W3mConnectingSocialView extends LitElement {
         data-error=${ifDefined(this.error)}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-logo logo=${ifDefined(this.socialProvider)}></wui-logo>
@@ -129,7 +129,7 @@ export class W3mConnectingSocialView extends LitElement {
             borderColor="wui-color-bg-125"
           ></wui-icon-box>
         </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
           <wui-text align="center" variant="paragraph-500" color="fg-100"
             >Log in with
             <span class="capitalize">${this.socialProvider ?? 'Social'}</span></wui-text

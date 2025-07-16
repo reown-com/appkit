@@ -21,7 +21,7 @@ export default css`
   }
 
   .group-container[last-group='true'] {
-    padding-bottom: var(--wui-spacing-m);
+    padding-bottom: var(--apkt-spacing-3);
   }
 
   .session-container {

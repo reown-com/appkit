@@ -198,7 +198,7 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="l">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const} gap="4">
         ${this.renderTabs()} ${this.renderHeader(namespace)} ${this.renderConnections(namespace)}
         ${this.renderAddConnectionButton(namespace)}
       </wui-flex>
@@ -230,7 +230,7 @@ export class W3mProfileWalletsView extends LitElement {
       connections.flatMap(({ accounts }) => accounts).length + (this.caipAddress ? 1 : 0)
 
     return html`
-      <wui-flex alignItems="center" columnGap="3xs">
+      <wui-flex alignItems="center" columngap="1">
         <wui-icon
           name=${NAMESPACE_ICONS[namespace as keyof typeof NAMESPACE_ICONS] ??
           NAMESPACE_ICONS.eip155}
@@ -269,7 +269,7 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" class=${classMap(classes)} rowGap="s">
+      <wui-flex flexDirection="column" class=${classMap(classes)} rowgap="3">
         ${hasConnections
           ? this.renderActiveConnections(namespace)
           : this.renderEmptyState(namespace)}
@@ -286,7 +286,7 @@ export class W3mProfileWalletsView extends LitElement {
       ${plainAddress || connectorId || connections.length > 0
         ? html`<wui-flex
             flexDirection="column"
-            .padding=${['l', '0', 'xs', '0'] as const}
+            .padding=${['4', '0', '2', '0'] as const}
             class="active-wallets"
           >
             ${this.renderActiveProfile(namespace)} ${this.renderActiveConnectionsList(namespace)}
@@ -323,7 +323,7 @@ export class W3mProfileWalletsView extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', '0', 'l'] as const}>
+      <wui-flex flexDirection="column" .padding=${['0', '4', '0', '4'] as const}>
         <wui-active-profile-wallet-item
           address=${plainAddress}
           alt=${connector?.name}
@@ -365,7 +365,7 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+      <wui-flex flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
         ${this.renderConnectionList(connections, false, namespace)}
       </wui-flex>
     `
@@ -381,11 +381,11 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
+      <wui-flex flexDirection="column" .padding=${['0', '2', '0', '2'] as const} rowgap="2">
         <wui-text color="fg-200" variant="micro-500" data-testid="recently-connected-text"
           >RECENTLY CONNECTED</wui-text
         >
-        <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+        <wui-flex flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
           ${this.renderConnectionList(recentConnections, true, namespace)}
         </wui-flex>
       </wui-flex>
@@ -484,7 +484,7 @@ export class W3mProfileWalletsView extends LitElement {
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          rowGap="s"
+          rowgap="3"
           class="empty-box"
         >
           <wui-icon-box
@@ -495,7 +495,7 @@ export class W3mProfileWalletsView extends LitElement {
             backgroundColor="glass-002"
           ></wui-icon-box>
 
-          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
+          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="1">
             <wui-text color="fg-100" variant="paragraph-500" data-testid="empty-state-text"
               >No wallet connected</wui-text
             >

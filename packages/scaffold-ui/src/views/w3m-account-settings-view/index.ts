@@ -94,8 +94,8 @@ export class W3mAccountSettingsView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="l"
-        .padding=${['0', 'xl', 'm', 'xl'] as const}
+        gap="4"
+        .padding=${['0', '5', '3', '5'] as const}
       >
         <wui-avatar
           alt=${this.address}
@@ -104,7 +104,7 @@ export class W3mAccountSettingsView extends LitElement {
           size="2lg"
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
-          <wui-flex gap="3xs" alignItems="center" justifyContent="center">
+          <wui-flex gap="1" alignItems="center" justifyContent="center">
             <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
               ${UiHelperUtil.getTruncateString({
                 string: this.address,
@@ -122,8 +122,8 @@ export class W3mAccountSettingsView extends LitElement {
           </wui-flex>
         </wui-flex>
       </wui-flex>
-      <wui-flex flexDirection="column" gap="m">
-        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'l', 'm', 'l'] as const}>
+      <wui-flex flexDirection="column" gap="4">
+        <wui-flex flexDirection="column" gap="2" .padding=${['0', '4', '3', '4'] as const}>
           ${this.authCardTemplate()}
           <w3m-account-auth-button></w3m-account-auth-button>
           <wui-list-item

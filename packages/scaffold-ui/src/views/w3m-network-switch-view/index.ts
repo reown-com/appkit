@@ -61,8 +61,8 @@ export class W3mNetworkSwitchView extends LitElement {
         data-error=${this.error}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '10', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-network-image
@@ -83,7 +83,7 @@ export class W3mNetworkSwitchView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
           <wui-text align="center" variant="paragraph-500" color="fg-100">${label}</wui-text>
           <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
         </wui-flex>

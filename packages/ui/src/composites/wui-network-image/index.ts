@@ -39,7 +39,7 @@ export class WuiNetworkImage extends LitElement {
       this.style.cssText = `
       --local-width: var(--wui-spacing-3xl);
       --local-height: var(--wui-spacing-3xl);
-      --local-icon-size: var(--wui-spacing-l);
+      --local-icon-size: var(--apkt-spacing-4);
     `
     } else {
       this.style.cssText = `

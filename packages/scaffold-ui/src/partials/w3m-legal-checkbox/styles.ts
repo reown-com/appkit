@@ -7,7 +7,7 @@ export default css`
     justify-content: center;
   }
   wui-checkbox {
-    padding: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-3);
   }
   a {
     text-decoration: none;

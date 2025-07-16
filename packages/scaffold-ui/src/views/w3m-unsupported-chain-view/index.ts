@@ -62,19 +62,17 @@ export class W3mUnsupportedChainView extends LitElement {
         <wui-flex
           class="container"
           flexDirection="column"
-          .padding=${['m', 'xl', 'xs', 'xl'] as const}
+          .padding=${['3', '5', '2', '5'] as const}
           alignItems="center"
-          gap="xl"
+          gap="5"
         >
           ${this.descriptionTemplate()}
         </wui-flex>
 
-        <wui-flex flexDirection="column" padding="s" gap="xs">
-          ${this.networksTemplate()}
-        </wui-flex>
+        <wui-flex flexDirection="column" padding="3" gap="2"> ${this.networksTemplate()} </wui-flex>
 
         <wui-separator text="or"></wui-separator>
-        <wui-flex flexDirection="column" padding="s" gap="xs">
+        <wui-flex flexDirection="column" padding="3" gap="2">
           <wui-list-item
             variant="icon"
             iconVariant="overlay"

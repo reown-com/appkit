@@ -16,10 +16,9 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: var(--wui-spacing-1xs);
+    right: var(--apkt-spacing-2);
     height: 40px;
-    padding: var(--wui-spacing-xs) var(--wui-spacing-1xs) var(--wui-spacing-xs)
-      var(--wui-spacing-xs);
+    padding: var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2);
     min-width: 95px;
     border-radius: var(--FULL, 1000px);
     border: 1px solid var(--wui-color-gray-glass-002);

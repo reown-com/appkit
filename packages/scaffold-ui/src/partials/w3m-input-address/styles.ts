@@ -24,7 +24,7 @@ export default css`
   wui-button {
     display: ruby;
     color: var(--wui-color-primary);
-    margin: 0 var(--wui-spacing-xs);
+    margin: 0 var(--apkt-spacing-2);
   }
 
   .instruction {

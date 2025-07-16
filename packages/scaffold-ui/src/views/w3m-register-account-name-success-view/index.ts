@@ -22,8 +22,8 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="xxl"
-        .padding=${['0', '0', 'l', '0'] as const}
+        gap="6"
+        .padding=${['0', '0', '4', '0'] as const}
       >
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
         <wui-link
@@ -42,11 +42,11 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
   private onboardingTemplate() {
     return html` <wui-flex
       flexDirection="column"
-      gap="xxl"
+      gap="6"
       alignItems="center"
-      .padding=${['0', 'xxl', '0', 'xxl'] as const}
+      .padding=${['0', '6', '0', '6'] as const}
     >
-      <wui-flex gap="s" alignItems="center" justifyContent="center">
+      <wui-flex gap="3" alignItems="center" justifyContent="center">
         <wui-icon-box
           size="xl"
           iconcolor="success-100"
@@ -55,7 +55,7 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
           background="opaque"
         ></wui-icon-box>
       </wui-flex>
-      <wui-flex flexDirection="column" alignItems="center" gap="s">
+      <wui-flex flexDirection="column" alignItems="center" gap="3">
         <wui-text align="center" variant="medium-600" color="fg-100">
           Account name chosen successfully
         </wui-text>
@@ -68,8 +68,8 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
 
   private buttonsTemplate() {
     return html`<wui-flex
-      .padding=${['0', '2l', '0', '2l'] as const}
-      gap="s"
+      .padding=${['0', '4', '0', '4'] as const}
+      gap="3"
       class="continue-button-container"
     >
       <wui-button fullWidth size="lg" borderRadius="xs" @click=${this.redirectToAccount.bind(this)}

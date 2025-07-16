@@ -7,13 +7,13 @@ export default css`
 
   :host > wui-flex {
     width: 100%;
-    padding: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-3);
     border-radius: var(--wui-border-radius-xs);
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: var(--wui-spacing-s);
+    gap: var(--apkt-spacing-3);
   }
 
   :host > wui-flex:hover {

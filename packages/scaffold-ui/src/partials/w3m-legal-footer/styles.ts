@@ -10,7 +10,7 @@ export default css`
   }
 
   :host wui-ux-by-reown.branding-only {
-    padding-top: var(--wui-spacing-m);
+    padding-top: var(--apkt-spacing-3);
   }
 
   a {

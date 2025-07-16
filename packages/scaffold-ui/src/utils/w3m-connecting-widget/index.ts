@@ -135,8 +135,8 @@ export class W3mConnectingWidget extends LitElement {
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
@@ -154,7 +154,7 @@ export class W3mConnectingWidget extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
           <wui-text
             align="center"
             variant="paragraph-500"
@@ -183,7 +183,7 @@ export class W3mConnectingWidget extends LitElement {
 
       ${this.isWalletConnect
         ? html`
-            <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const} justifyContent="center">
+            <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
               <wui-link @click=${this.onCopyUri} color="fg-200" data-testid="wui-link-copy">
                 <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
                 Copy link

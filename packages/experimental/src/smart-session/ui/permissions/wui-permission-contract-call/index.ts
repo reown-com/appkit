@@ -48,7 +48,7 @@ export class WuiPermissionContractCall extends LitElement {
           </wui-details-group-item>
           <wui-flex justifyContent="space-between">
             <wui-text color="fg-200">Duration</wui-text>
-            <wui-flex flexDirection="column" alignItems="flex-end" gap="s">
+            <wui-flex flexDirection="column" alignItems="flex-end" gap="3">
               <wui-text variant="small-400" color="fg-100">
                 ~ ${Math.round((1000 * this.expiry - Date.now()) / 1000 / 3600)} hours
               </wui-text>

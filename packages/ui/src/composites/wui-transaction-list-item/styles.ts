@@ -3,8 +3,8 @@ import { css } from 'lit'
 export default css`
   :host > wui-flex:first-child {
     align-items: center;
-    column-gap: var(--wui-spacing-s);
-    padding: 6.5px var(--wui-spacing-xs) 6.5px var(--wui-spacing-xs);
+    column-gap: var(--apkt-spacing-3);
+    padding: 6.5px var(--apkt-spacing-2) 6.5px var(--apkt-spacing-2);
     width: 100%;
   }
 

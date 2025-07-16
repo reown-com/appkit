@@ -46,8 +46,8 @@ export class W3mConnectingMultiChainView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['m', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['3', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image
@@ -58,8 +58,8 @@ export class W3mConnectingMultiChainView extends LitElement {
         <wui-flex
           flexDirection="column"
           alignItems="center"
-          gap="xs"
-          .padding=${['0', 's', '0', 's'] as const}
+          gap="2"
+          .padding=${['0', '3', '0', '3'] as const}
         >
           <wui-text variant="paragraph-500" color="fg-100">
             Select Chain for ${this.activeConnector?.name}
@@ -72,8 +72,8 @@ export class W3mConnectingMultiChainView extends LitElement {
           flexGrow="1"
           flexDirection="column"
           alignItems="center"
-          gap="xs"
-          .padding=${['xs', '0', 'xs', '0'] as const}
+          gap="2"
+          .padding=${['2', '0', '2', '0'] as const}
         >
           ${this.networksTemplate()}
         </wui-flex>

@@ -42,21 +42,21 @@ export default css`
 
   .empty-box {
     width: 100%;
-    padding: var(--wui-spacing-l);
+    padding: var(--apkt-spacing-4);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xs);
   }
 
   wui-separator {
-    margin: var(--wui-spacing-xs) 0 var(--wui-spacing-xs) 0;
+    margin: var(--apkt-spacing-2) 0 var(--apkt-spacing-2) 0;
   }
 
   .active-connection {
-    padding: var(--wui-spacing-xs);
+    padding: var(--apkt-spacing-2);
   }
 
   .recent-connection {
-    padding: var(--wui-spacing-xs) 0 var(--wui-spacing-xs) 0;
+    padding: var(--apkt-spacing-2) 0 var(--apkt-spacing-2) 0;
   }
 
   @media (max-width: 430px) {

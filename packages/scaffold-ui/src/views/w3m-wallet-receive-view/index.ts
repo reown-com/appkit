@@ -70,7 +70,7 @@ export class W3mWalletReceiveView extends LitElement {
 
     return html` <wui-flex
       flexDirection="column"
-      .padding=${['0', 'l', 'l', 'l'] as const}
+      .padding=${['0', '4', '4', '4'] as const}
       alignItems="center"
     >
       <wui-chip-button
@@ -89,9 +89,9 @@ export class W3mWalletReceiveView extends LitElement {
       ></wui-chip-button>
       <wui-flex
         flexDirection="column"
-        .padding=${['l', '0', '0', '0'] as const}
+        .padding=${['4', '0', '0', '0'] as const}
         alignItems="center"
-        gap="s"
+        gap="3"
       >
         <wui-qr-code
           size=${232}

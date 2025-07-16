@@ -82,8 +82,8 @@ export class W3mRegisterAccountNameView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="m"
-        .padding=${['0', 's', 'm', 's'] as const}
+        gap="4"
+        .padding=${['0', '3', '4', '3'] as const}
       >
         <form ${ref(this.formRef)} @submit=${this.onSubmitName.bind(this)}>
           <wui-ens-input
@@ -161,10 +161,10 @@ export class W3mRegisterAccountNameView extends LitElement {
 
     const suggestions = this.registered ? this.suggestions.filter(s => s.name !== this.name) : []
 
-    return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
+    return html`<wui-flex flexDirection="column" gap="1" alignItems="center">
       <wui-flex
         data-testid="account-name-suggestion"
-        .padding=${['m', 'm', 'm', 'm'] as const}
+        .padding=${['3', '3', '3', '3'] as const}
         justifyContent="space-between"
         class="suggestion"
         @click=${this.onSubmitName.bind(this)}
@@ -180,7 +180,7 @@ export class W3mRegisterAccountNameView extends LitElement {
   private availableNameTemplate(suggestion: string) {
     return html` <wui-flex
       data-testid="account-name-suggestion"
-      .padding=${['m', 'm', 'm', 'm'] as const}
+      .padding=${['3', '3', '3', '3'] as const}
       justifyContent="space-between"
       class="suggestion"
       @click=${this.onSelectSuggestion(suggestion)}

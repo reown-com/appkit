@@ -38,8 +38,8 @@ export default css`
   }
   wui-icon-box {
     position: absolute;
-    right: calc(var(--wui-spacing-3xs) * -1);
-    bottom: calc(var(--wui-spacing-3xs) * -1);
+    right: calc(var(--apkt-spacing-1) * -1);
+    bottom: calc(var(--apkt-spacing-1) * -1);
     opacity: 0;
     transform: scale(0.5);
     transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);

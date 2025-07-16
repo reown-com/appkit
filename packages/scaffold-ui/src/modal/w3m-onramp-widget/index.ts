@@ -66,7 +66,7 @@ export class W3mOnrampWidget extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" justifyContent="center" alignItems="center">
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
           <w3m-onramp-input
             type="Fiat"
             @inputChange=${this.onPaymentAmountChange.bind(this)}
@@ -77,7 +77,7 @@ export class W3mOnrampWidget extends LitElement {
             .value=${this.purchaseAmount || 0}
             .loading=${this.quoteLoading}
           ></w3m-onramp-input>
-          <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
+          <wui-flex justifyContent="space-evenly" class="amounts-container" gap="2">
             ${BUY_PRESET_AMOUNTS.map(
               amount =>
                 html`<wui-button

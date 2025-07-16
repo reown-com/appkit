@@ -21,29 +21,21 @@ export class W3mSIWXSignMessageView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex justifyContent="center" .padding=${['2xl', '0', 'xxl', '0'] as const}>
+      <wui-flex justifyContent="center" .padding=${['8', '0', '6', '0'] as const}>
         <w3m-siwx-sign-message-thumbnails></w3m-siwx-sign-message-thumbnails>
       </wui-flex>
-      <wui-flex
-        .padding=${['0', '4xl', 'l', '4xl'] as const}
-        gap="s"
-        justifyContent="space-between"
-      >
+      <wui-flex .padding=${['0', '20', '4', '20'] as const} gap="3" justifyContent="space-between">
         <wui-text variant="paragraph-500" align="center" color="fg-100"
           >${this.dappName ?? 'Dapp'} needs to connect to your wallet</wui-text
         >
       </wui-flex>
-      <wui-flex
-        .padding=${['0', '3xl', 'l', '3xl'] as const}
-        gap="s"
-        justifyContent="space-between"
-      >
+      <wui-flex .padding=${['0', '10', '4', '10'] as const} gap="3" justifyContent="space-between">
         <wui-text variant="small-400" align="center" color="fg-200"
           >Sign this message to prove you own this wallet and proceed. Canceling will disconnect
           you.</wui-text
         >
       </wui-flex>
-      <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
+      <wui-flex .padding=${['4', '5', '5', '5'] as const} gap="3" justifyContent="space-between">
         <wui-button
           size="lg"
           borderRadius="xs"

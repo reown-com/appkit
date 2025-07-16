@@ -6,7 +6,7 @@ export default css`
   }
 
   :host > wui-flex:first-child {
-    transform: translateY(calc(var(--wui-spacing-xxs) * -1));
+    transform: translateY(calc(var(--apkt-spacing-2) * -1));
   }
 
   wui-icon-link {
@@ -14,7 +14,7 @@ export default css`
   }
 
   wui-notice-card {
-    margin-bottom: var(--wui-spacing-3xs);
+    margin-bottom: var(--apkt-spacing-1);
   }
 
   wui-list-item > wui-text {
@@ -42,10 +42,10 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-s);
+    gap: var(--apkt-spacing-3);
     height: 48px;
-    padding: var(--wui-spacing-xs);
-    padding-right: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-2);
+    padding-right: var(--apkt-spacing-3);
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: 24px;
@@ -67,7 +67,7 @@ export default css`
   }
 
   wui-wallet-switch {
-    margin-top: var(--wui-spacing-xs);
+    margin-top: var(--apkt-spacing-2);
   }
 
   wui-avatar.network-avatar {

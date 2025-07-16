@@ -65,7 +65,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" rowGap="xs">
+      <wui-flex flexDirection="column" rowgap="2">
         ${this.topTemplate()} ${this.bottomTemplate()}
       </wui-flex>
     `
@@ -143,7 +143,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" rowGap="s">
+      <wui-flex flexDirection="column" rowgap="3">
         ${this.content.map(item => this.labelAndTagTemplate(item))}
       </wui-flex>
     `
@@ -163,11 +163,11 @@ export class WuiActiveProfileWalletItem extends LitElement {
     alignItems = 'flex-end'
   }: ContentItem) {
     return html`
-      <wui-flex justifyContent="space-between" alignItems=${alignItems} columnGap="3xs">
-        <wui-flex flexDirection="column" rowGap="4xs">
+      <wui-flex justifyContent="space-between" alignItems=${alignItems} columngap="1">
+        <wui-flex flexDirection="column" rowgap="01">
           ${label ? html`<wui-text variant="micro-600" color="fg-200">${label}</wui-text>` : null}
 
-          <wui-flex alignItems="center" columnGap="3xs">
+          <wui-flex alignItems="center" columngap="1">
             <wui-text variant="small-500" color="fg-100">
               ${UiHelperUtil.getTruncateString({
                 string: profileName || address,

@@ -85,8 +85,8 @@ export class W3mBuyInProgressView extends LitElement {
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-visual
@@ -109,7 +109,7 @@ export class W3mBuyInProgressView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
           <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
             ${label}
           </wui-text>
@@ -119,7 +119,7 @@ export class W3mBuyInProgressView extends LitElement {
         ${this.error ? this.tryAgainTemplate() : null}
       </wui-flex>
 
-      <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const} justifyContent="center">
+      <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
         <wui-link @click=${this.onCopyUri} color="fg-200">
           <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
           Copy link

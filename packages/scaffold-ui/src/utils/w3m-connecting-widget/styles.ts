@@ -29,8 +29,8 @@ export default css`
 
   wui-icon-box {
     position: absolute;
-    right: calc(var(--wui-spacing-3xs) * -1);
-    bottom: calc(var(--wui-spacing-3xs) * -1);
+    right: calc(var(--apkt-spacing-1) * -1);
+    bottom: calc(var(--apkt-spacing-1) * -1);
     opacity: 0;
     transform: scale(0.5);
     transition-property: opacity, transform;
@@ -41,7 +41,7 @@ export default css`
 
   wui-text[align='center'] {
     width: 100%;
-    padding: 0px var(--wui-spacing-l);
+    padding: 0px var(--apkt-spacing-4);
   }
 
   [data-error='true'] wui-icon-box {

@@ -135,7 +135,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         ${this.explorerBtnTemplate()}
       </wui-flex>
 
-      <wui-flex flexDirection="column" gap="2" .padding=${['0', 's', 's', 's'] as const}>
+      <wui-flex flexDirection="column" gap="2" .padding=${['0', '3', '3', '3'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
         ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
