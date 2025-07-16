@@ -126,11 +126,13 @@ export class W3mWalletSendView extends LitElement {
   }
 
   private async handleSendParameters() {
-    if (!this.initialParams) return
+    if (!this.initialParams) {
+      return
+    }
 
     await this.waitForTokens()
 
-    await this.setSendParameters(this.initialParams)
+    this.setSendParameters(this.initialParams)
   }
 
   private async waitForTokens() {
@@ -155,10 +157,12 @@ export class W3mWalletSendView extends LitElement {
     await waitForTokens
   }
 
-  private async setSendParameters({ amount, fromToken, recipient }: SendInputArguments) {
+  private setSendParameters({ amount, fromToken, recipient }: SendInputArguments) {
     if (fromToken) {
-      const token = await this.findTokenBySymbol(fromToken)
-      if (token) SendController.setToken(token)
+      const token = this.findTokenBySymbol(fromToken)
+      if (token) {
+        SendController.setToken(token)
+      }
     }
 
     if (amount && !isNaN(Number(amount))) {
@@ -170,8 +174,9 @@ export class W3mWalletSendView extends LitElement {
     }
   }
 
-  private async findTokenBySymbol(symbol: string) {
+  private findTokenBySymbol(symbol: string) {
     const allTokens = SendController.state.tokenBalances || []
+
     return allTokens.find(token => token.symbol.toLowerCase() === symbol.toLowerCase())
   }
 
