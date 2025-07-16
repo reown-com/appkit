@@ -24,7 +24,7 @@ export class WuiTag extends LitElement {
     this.dataset['variant'] = this.variant
     this.dataset['size'] = this.size
     const textVariant = this.size === 'md' ? 'md-medium' : 'sm-medium'
-    const iconSize = this.size === 'md' ? 'sm' : 'xs'
+    const iconSize = this.size === 'md' ? 'md' : 'sm'
 
     return html`
       ${this.icon ? html`<wui-icon size=${iconSize} name=${this.icon}></wui-icon>` : null}

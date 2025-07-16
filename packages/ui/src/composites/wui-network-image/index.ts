@@ -68,7 +68,7 @@ export class WuiNetworkImage extends LitElement {
       return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     }
 
-    return html`<wui-icon size="inherit" color="fg-200" name="networkPlaceholder"></wui-icon>`
+    return html`<wui-icon size="inherit" color="default" name="networkPlaceholder"></wui-icon>`
   }
 }
 

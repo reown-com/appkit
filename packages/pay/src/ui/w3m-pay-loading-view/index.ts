@@ -214,11 +214,11 @@ export class W3mPayLoadingView extends LitElement {
   }
 
   private successTemplate() {
-    return html`<wui-icon size="xl" color="success-100" name="checkmark"></wui-icon>`
+    return html`<wui-icon size="xl" color="success" name="checkmark"></wui-icon>`
   }
 
   private errorTemplate() {
-    return html`<wui-icon size="xl" color="error-100" name="close"></wui-icon>`
+    return html`<wui-icon size="xl" color="error" name="close"></wui-icon>`
   }
 }
 

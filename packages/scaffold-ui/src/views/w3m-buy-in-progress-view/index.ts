@@ -121,7 +121,7 @@ export class W3mBuyInProgressView extends LitElement {
 
       <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
         <wui-link @click=${this.onCopyUri} color="secondary">
-          <wui-icon size="xs" color="secondary" slot="iconLeft" name="copy"></wui-icon>
+          <wui-icon size="xs" color="default" slot="iconLeft" name="copy"></wui-icon>
           Copy link
         </wui-link>
       </wui-flex>

@@ -5,7 +5,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonSize, IconType } from '../../utils/TypeUtil.js'
+import type { ButtonSize, IconSizeType, IconType, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -15,19 +15,19 @@ const TEXT_VARIANT_BY_SIZE = {
   sm: 'sm-medium',
   md: 'lg-regular',
   lg: 'lg-regular'
-}
+} as Record<ButtonSize, TextType>
 
 const LEFT_ICON_SIZE = {
   sm: 'md',
   md: 'lg',
   lg: 'xl'
-}
+} as Record<ButtonSize, IconSizeType>
 
 const RIGHT_ICON_SIZE = {
-  sm: 'xxs',
-  md: 'xxs',
-  lg: 'xs'
-}
+  sm: 'sm',
+  md: 'sm',
+  lg: 'md'
+} as Record<ButtonSize, IconSizeType>
 
 @customElement('wui-network-switch')
 export class WuiNetworkSwitch extends LitElement {

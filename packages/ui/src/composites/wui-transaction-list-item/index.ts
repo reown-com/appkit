@@ -76,7 +76,7 @@ export class WuiTransactionListItem extends LitElement {
 
     return description
       ? html`
-          <wui-icon class="description-separator-icon" size="xxs" name="arrowRight"></wui-icon>
+          <wui-icon class="description-separator-icon" size="sm" name="arrowRight"></wui-icon>
           <wui-text variant="sm-regular" color="secondary">
             <span>${description}</span>
           </wui-text>

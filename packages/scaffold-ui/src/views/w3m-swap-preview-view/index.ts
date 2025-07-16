@@ -153,8 +153,8 @@ export class W3mSwapPreviewView extends LitElement {
             gap="4"
           >
             <wui-flex flexDirection="column" alignItems="flex-start" gap="01">
-              <wui-text variant="small-400" color="fg-150">Send</wui-text>
-              <wui-text variant="paragraph-400" color="fg-100">$${sentPrice}</wui-text>
+              <wui-text variant="sm-regular" color="secondary">Send</wui-text>
+              <wui-text variant="md-regular" color="primary">$${sentPrice}</wui-text>
             </wui-flex>
             <wui-token-button
               flexDirection="row-reverse"
@@ -163,7 +163,7 @@ export class W3mSwapPreviewView extends LitElement {
             >
             </wui-token-button>
           </wui-flex>
-          <wui-icon name="recycleHorizontal" color="fg-200" size="md"></wui-icon>
+          <wui-icon name="recycleHorizontal" color="default" size="md"></wui-icon>
           <wui-flex
             class="preview-token-details-container"
             alignItems="center"
@@ -186,7 +186,7 @@ export class W3mSwapPreviewView extends LitElement {
         ${this.templateDetails()}
 
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="2">
-          <wui-icon size="sm" color="secondary" name="infoCircle"></wui-icon>
+          <wui-icon size="sm" color="default" name="infoCircle"></wui-icon>
           <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
 

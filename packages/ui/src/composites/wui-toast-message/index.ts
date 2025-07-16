@@ -6,7 +6,7 @@ import { AlertController } from '@reown/appkit-controllers'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { ToastMessageVariant } from '../../utils/TypeUtil.js'
+import type { IconType, ToastMessageVariant } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -16,9 +16,8 @@ const ICON_BY_VARIANT = {
   success: 'checkmark',
   warning: 'warningCircle',
   error: 'exclamationTriangle'
-}
+} as Record<ToastMessageVariant, IconType>
 
-// @TODO: Replace <wui-icon> with <wui-icon-box>
 @customElement('wui-toast-message')
 export class WuiToastMessage extends LitElement {
   public static override styles = [resetStyles, styles]

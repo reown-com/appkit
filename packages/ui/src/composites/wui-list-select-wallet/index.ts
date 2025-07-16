@@ -41,18 +41,18 @@ export class WuiListSelectWallet extends LitElement {
   private leftImageTemplate() {
     if (this.allWallets) {
       return html`<wui-icon-box
-        iconcolor="accent"
-        iconsize="xl"
-        backgroundcolor="foregroundAccent010"
+        iconColor="accent"
+        iconSize="xl"
+        backgroundColor="foregroundAccent010"
         icon="allWallets"
       ></wui-icon-box>`
     }
 
     if (this.qrCode) {
       return html`<wui-icon-box
-        iconcolor="inverse"
-        iconsize="xl"
-        backgroundcolor="foregroundSecondary"
+        iconColor="inverse"
+        iconSize="xl"
+        backgroundColor="foregroundSecondary"
         icon="qrCode"
       ></wui-icon-box>`
     }

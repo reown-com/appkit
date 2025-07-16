@@ -206,7 +206,7 @@ export class W3mSwapView extends LitElement {
     return html`
       <wui-flex class="replace-tokens-button-container">
         <button @click=${this.onSwitchTokens.bind(this)}>
-          <wui-icon name="recycleHorizontal" color="fg-250" size="lg"></wui-icon>
+          <wui-icon name="recycleHorizontal" color="default" size="lg"></wui-icon>
         </button>
       </wui-flex>
     `

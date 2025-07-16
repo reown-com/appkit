@@ -90,7 +90,7 @@ import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 import { xSvg } from '../../assets/svg/x.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconSizeType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -198,7 +198,7 @@ export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, colorStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: SizeType = 'md'
+  @property() public size: IconSizeType = 'md'
 
   @property() public name: IconType = 'copy'
 

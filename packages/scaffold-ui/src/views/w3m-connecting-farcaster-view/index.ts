@@ -292,7 +292,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       color="secondary"
       data-testid="copy-wc2-uri"
     >
-      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+      <wui-icon size="xs" color="default" slot="iconLeft" name="copy"></wui-icon>
       Copy link
     </wui-link>`
   }

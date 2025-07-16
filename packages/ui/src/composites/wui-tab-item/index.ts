@@ -4,7 +4,7 @@ import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, TabSize } from '../../utils/TypeUtil.js'
+import type { IconSizeType, IconType, TabSize, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -14,13 +14,13 @@ const TEXT_VARIANT_BY_SIZE = {
   lg: 'lg-regular',
   md: 'md-regular',
   sm: 'sm-regular'
-}
+} as Record<TabSize, TextType>
 
 const ICON_SIZE = {
-  lg: 'sm',
-  md: 'xs',
-  sm: 'xxs'
-}
+  lg: 'md',
+  md: 'sm',
+  sm: 'sm'
+} as Record<TabSize, IconSizeType>
 
 // -- Component ------------------------------------------ //
 @customElement('wui-tab-item')

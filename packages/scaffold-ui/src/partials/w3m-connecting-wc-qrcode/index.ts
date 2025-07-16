@@ -98,7 +98,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       color="secondary"
       data-testid="copy-wc2-uri"
     >
-      <wui-icon size="xs" color="secondary" slot="iconLeft" name="copy"></wui-icon>
+      <wui-icon size="xs" color="default" slot="iconLeft" name="copy"></wui-icon>
       Copy link
     </wui-link>`
   }

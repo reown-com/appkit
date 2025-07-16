@@ -36,7 +36,7 @@ export class WuiListSelectAccount extends LitElement {
 
         <wui-flex
           flexDirection="column"
-          alignItems="start"
+          alignItems="flex-start"
           justifyContent="center"
           flexGrow="1"
           flexShrink="0"

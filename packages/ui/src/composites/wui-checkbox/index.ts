@@ -6,7 +6,7 @@ import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { CheckboxSize } from '../../utils/TypeUtil.js'
+import type { CheckboxSize, IconSizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import './index.js'
 import styles from './styles.js'
@@ -14,10 +14,10 @@ import styles from './styles.js'
 // -- Constants ------------------------------------------ //
 
 const ICON_SIZE = {
-  lg: 'sm',
-  md: 'xs',
-  sm: 'xxs'
-}
+  lg: 'md',
+  md: 'sm',
+  sm: 'sm'
+} as Record<CheckboxSize, IconSizeType>
 
 @customElement('wui-checkbox')
 export class WuiCheckBox extends LitElement {

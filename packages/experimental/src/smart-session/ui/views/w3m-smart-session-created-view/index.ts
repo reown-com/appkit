@@ -48,8 +48,8 @@ export class W3mSmartSessionCreatedView extends LitElement {
       <wui-flex gap="3" alignItems="center" justifyContent="center">
         <wui-icon-box
           size="xl"
-          iconcolor="fg-100"
-          backgroundcolor="inverse-100"
+          iconColor="primary"
+          backgroundColor="inverse"
           icon="clock"
           background="opaque"
         ></wui-icon-box>

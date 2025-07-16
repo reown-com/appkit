@@ -80,7 +80,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           ></wui-preview-item>
         </wui-flex>
         <wui-flex>
-          <wui-icon color="fg-200" size="md" name="arrowBottom"></wui-icon>
+          <wui-icon color="default" size="md" name="arrowBottom"></wui-icon>
         </wui-flex>
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-text variant="sm-regular" color="secondary">To</wui-text>
@@ -110,7 +110,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           .receiverAddress=${this.receiverAddress}
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="1" .padding=${['3', '0', '0', '0'] as const}>
-          <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
+          <wui-icon size="sm" color="default" name="warningCircle"></wui-icon>
           <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
         <wui-flex justifyContent="center" gap="3" .padding=${['4', '0', '0', '0'] as const}>

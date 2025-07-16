@@ -5,7 +5,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { SizeType, TextType } from '../../utils/TypeUtil.js'
+import type { IconSizeType, SelectSize, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -17,10 +17,10 @@ const TEXT_VARIANT_BY_SIZE = {
 }
 
 const ICON_SIZE_BY_SIZE = {
-  lg: 'mdl',
+  lg: 'lg',
   md: 'md',
   sm: 'sm'
-}
+} as Record<SelectSize, IconSizeType>
 
 @customElement('wui-select')
 export class WuiSelect extends LitElement {
@@ -31,7 +31,7 @@ export class WuiSelect extends LitElement {
 
   @property() public text = ''
 
-  @property() public size: 'lg' | 'md' | 'sm' = 'lg'
+  @property() public size: SelectSize = 'lg'
 
   @property() public type: 'filled-dropdown' | 'text-dropdown' = 'text-dropdown'
 
@@ -66,7 +66,7 @@ export class WuiSelect extends LitElement {
     const iconSize = ICON_SIZE_BY_SIZE[this.size]
 
     return html` <wui-flex class="left-icon-container">
-      <wui-icon size=${iconSize as SizeType} name="networkPlaceholder"></wui-icon>
+      <wui-icon size=${iconSize} name="networkPlaceholder"></wui-icon>
     </wui-flex>`
   }
 }

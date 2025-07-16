@@ -164,7 +164,7 @@ export class W3mConnectingWidget extends LitElement {
         ${this.secondaryBtnLabel
           ? html`
               <wui-button
-                variant="accent"
+                variant="accent-secondary"
                 size="md"
                 ?disabled=${this.isRetrying || this.isLoading}
                 @click=${this.onTryAgain.bind(this)}
@@ -181,7 +181,7 @@ export class W3mConnectingWidget extends LitElement {
         ? html`
             <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
               <wui-link @click=${this.onCopyUri} color="secondary" data-testid="wui-link-copy">
-                <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+                <wui-icon size="xs" color="default" slot="iconLeft" name="copy"></wui-icon>
                 Copy link
               </wui-link>
             </wui-flex>

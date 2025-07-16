@@ -68,10 +68,10 @@ export class WuiTransactionVisual extends LitElement {
     } else if (firstImage?.url) {
       return html`<wui-image src=${firstImage.url} alt="Transaction image"></wui-image>`
     } else if (firstImageType === 'NFT') {
-      return html`<wui-icon size="inherit" color="fg-200" name="nftPlaceholder"></wui-icon>`
+      return html`<wui-icon size="inherit" color="default" name="nftPlaceholder"></wui-icon>`
     }
 
-    return html`<wui-icon size="inherit" color="fg-200" name="coinPlaceholder"></wui-icon>`
+    return html`<wui-icon size="inherit" color="default" name="coinPlaceholder"></wui-icon>`
   }
 
   private templateIcon() {
@@ -90,7 +90,7 @@ export class WuiTransactionVisual extends LitElement {
 
     return html`
       <wui-icon-box
-        size="xxs"
+        size="sm"
         iconColor=${color}
         backgroundColor=${color}
         background="opaque"

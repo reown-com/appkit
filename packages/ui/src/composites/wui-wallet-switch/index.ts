@@ -80,7 +80,7 @@ export class WuiWalletSwitch extends LitElement {
   }
 
   public rightImageTemplate() {
-    return html`<wui-icon name="chevronBottom" size="xs" color="fg-200"></wui-icon>`
+    return html`<wui-icon name="chevronBottom" size="sm" color="default"></wui-icon>`
   }
 }
 

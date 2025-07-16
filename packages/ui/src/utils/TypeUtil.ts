@@ -63,10 +63,11 @@ export type LineClamp = '1' | '2'
 
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
+export type SelectSize = 'lg' | 'md' | 'sm'
+
 export type SpacingType = keyof typeof vars.spacing
 
-// @TODO: Remove these sizes after completing <wui-icon> component
-export type IconSizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
+export type IconSizeType = 'sm' | 'md' | 'lg' | 'xl' | 'inherit'
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
