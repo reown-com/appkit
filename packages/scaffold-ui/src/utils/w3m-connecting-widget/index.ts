@@ -138,7 +138,7 @@ export class W3mConnectingWidget extends LitElement {
         .padding=${['10', '5', '5', '5'] as const}
         gap="5"
       >
-        <wui-flex justifyContent="center" alignItems="center">
+        <wui-flex gap="2" justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
 
           ${this.error ? null : this.loaderTemplate()}

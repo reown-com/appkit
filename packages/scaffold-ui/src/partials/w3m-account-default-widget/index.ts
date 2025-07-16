@@ -144,8 +144,8 @@ export class W3mAccountDefaultWidget extends LitElement {
           .loading=${this.disconnecting}
           @click=${this.onDisconnect.bind(this)}
           data-testid="disconnect-button"
-          text="Disconnect"
         >
+          <wui-text variant="lg-medium" color="primary">Disconnect</wui-text>
         </wui-list-item>
       </wui-flex>`
   }
@@ -171,8 +171,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="card"
         ?chevron=${true}
         @click=${this.handleClickPay.bind(this)}
-        text="Buy crypto"
       >
+        <wui-text variant="lg-medium" color="primary">Buy crypto</wui-text>
       </wui-list-item>
     `
   }
@@ -210,8 +210,8 @@ export class W3mAccountDefaultWidget extends LitElement {
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
           data-testid="w3m-account-default-activity-button"
-          text="Activity"
         >
+          <wui-text variant="lg-medium" color="primary">Activity</wui-text>
         </wui-list-item>`
       : null
   }
@@ -230,8 +230,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         ?chevron=${true}
         @click=${this.handleClickSwap.bind(this)}
         data-testid="w3m-account-default-swaps-button"
-        text="Swap"
       >
+        <wui-text variant="lg-medium" color="primary">Swap</wui-text>
       </wui-list-item>
     `
   }
@@ -256,8 +256,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         ?chevron=${true}
         @click=${this.handleClickSend.bind(this)}
         data-testid="w3m-account-default-send-button"
-        text="Send"
       >
+        <wui-text variant="lg-medium" color="primary">Send</wui-text>
       </wui-list-item>
     `
   }
