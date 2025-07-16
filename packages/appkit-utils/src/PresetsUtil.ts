@@ -15,6 +15,8 @@ export const PresetsUtil = {
       '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
     [CommonConstantsUtil.CONNECTOR_ID.OKX]:
       '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
+    [CommonConstantsUtil.CONNECTOR_ID.ASIGNA]:
+      '0000000000000000000000000000000000000000000000000000000000000000',
 
     /* Connector names */
     [ConstantsUtil.METMASK_CONNECTOR_NAME]:
@@ -117,7 +119,8 @@ export const PresetsUtil = {
     [CommonConstantsUtil.CONNECTOR_ID.SAFE]: '461db637-8616-43ce-035a-d89b8a1d5800',
     [CommonConstantsUtil.CONNECTOR_ID.LEDGER]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
-    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00'
+    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00',
+    [CommonConstantsUtil.CONNECTOR_ID.ASIGNA]: '00000000-0000-0000-0000-000000000000'
   } as Record<string, string>,
 
   ConnectorNamesMap: {
@@ -126,7 +129,8 @@ export const PresetsUtil = {
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: 'Coinbase',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'Coinbase',
     [CommonConstantsUtil.CONNECTOR_ID.LEDGER]: 'Ledger',
-    [CommonConstantsUtil.CONNECTOR_ID.SAFE]: 'Safe'
+    [CommonConstantsUtil.CONNECTOR_ID.SAFE]: 'Safe',
+    [CommonConstantsUtil.CONNECTOR_ID.ASIGNA]: 'Asigna'
   } as Record<string, string>,
 
   ConnectorTypesMap: {

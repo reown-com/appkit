@@ -20,7 +20,7 @@ export default css`
     width: 24px;
     height: 24px;
     box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
-    border-radius: 12px;
+    border-radius: 24px;
   }
 
   wui-loading-hexagon {
