@@ -83,7 +83,7 @@ export class W3mOnrampWidget extends LitElement {
                 html`<wui-button
                   variant=${this.paymentAmount === amount ? 'accent' : 'neutral'}
                   size="md"
-                  textVariant="paragraph-600"
+                  textVariant="md-medium"
                   fullWidth
                   @click=${() => this.selectPresetAmount(amount)}
                   >${`${

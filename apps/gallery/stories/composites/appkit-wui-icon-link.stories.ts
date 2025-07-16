@@ -5,7 +5,7 @@ import { html } from 'lit'
 import '@reown/appkit-ui/wui-icon-link'
 import type { WuiIconLink } from '@reown/appkit-ui/wui-icon-link'
 
-import { colorOptions, iconOptions } from '../../utils/PresetUtils'
+import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIconLink>
 

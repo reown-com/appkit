@@ -2,8 +2,6 @@ import type { TemplateResult } from 'lit'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-// -- Svg's-------------------------------- //
-import { accountSvg } from '../../assets/svg/account.js'
 import { addSvg } from '../../assets/svg/add.js'
 import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
 import { appStoreSvg } from '../../assets/svg/app-store.js'
@@ -19,7 +17,6 @@ import { bankSvg } from '../../assets/svg/bank.js'
 import { browserSvg } from '../../assets/svg/browser.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
-import { checkmarkVerifiedSvg } from '../../assets/svg/checkmark-verified.js'
 import { checkmarkSvg } from '../../assets/svg/checkmark.js'
 import { chevronBottomSvg } from '../../assets/svg/chevron-bottom.js'
 import { chevronLeftSvg } from '../../assets/svg/chevron-left.js'
@@ -33,12 +30,10 @@ import { compassSvg } from '../../assets/svg/compass.js'
 import { copySvg } from '../../assets/svg/copy.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
 import { desktopSvg } from '../../assets/svg/desktop.js'
-import { disconnectSvg } from '../../assets/svg/disconnect.js'
 import { discordSvg } from '../../assets/svg/discord.js'
 import { dollarSvg } from '../../assets/svg/dollar.js'
 import { etherscanSvg } from '../../assets/svg/etherscan.js'
 import { exclamationCircleSvg } from '../../assets/svg/exclamation-circle.js'
-import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
 import { extensionSvg } from '../../assets/svg/extension.js'
 import { externalLinkSvg } from '../../assets/svg/external-link.js'
 import { facebookSvg } from '../../assets/svg/facebook.js'
@@ -49,7 +44,6 @@ import { googleSvg } from '../../assets/svg/google.js'
 import { helpCircleSvg } from '../../assets/svg/help-circle.js'
 import { idSvg } from '../../assets/svg/id.js'
 import { imageSvg } from '../../assets/svg/image.js'
-import { infoCircleSvg } from '../../assets/svg/info-circle.js'
 import { infoSvg } from '../../assets/svg/info.js'
 import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
 import { mailSvg } from '../../assets/svg/mail.js'
@@ -57,16 +51,18 @@ import { mobileSvg } from '../../assets/svg/mobile.js'
 import { moreSvg } from '../../assets/svg/more.js'
 import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder.js'
 import { nftPlaceholderSvg } from '../../assets/svg/nftPlaceholder.js'
-import { offSvg } from '../../assets/svg/off.js'
 import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { plusSvg } from '../../assets/svg/plus.js'
+import { powerSvg } from '../../assets/svg/power.js'
 import { qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { questionMarkSvg } from '../../assets/svg/question-mark.js'
 import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { reownSvg } from '../../assets/svg/reown-logo.js'
+import { sealCheckSvg } from '../../assets/svg/sealcheck.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { sendSvg } from '../../assets/svg/send.js'
+import { signOutSvg } from '../../assets/svg/sign-out.js'
 import { spinnerSvg } from '../../assets/svg/spinner.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
@@ -77,9 +73,9 @@ import { telegramSvg } from '../../assets/svg/telegram.js'
 import { threeDotsSvg } from '../../assets/svg/three-dots.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
+import { userSvg } from '../../assets/svg/user.js'
 import { verifyFilledSvg } from '../../assets/svg/verify-filled.js'
 import { verifySvg } from '../../assets/svg/verify.js'
-import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import {
   walletConnectBrownSvg,
@@ -87,16 +83,17 @@ import {
   walletConnectSvg
 } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
+import { warningSvg } from '../../assets/svg/warning.js'
 import { xSvg } from '../../assets/svg/x.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Constants ------------------------------------------ //
 const svgOptions: Record<IconType, TemplateResult<2>> = {
-  account: accountSvg,
+  user: userSvg,
   add: addSvg,
   allWallets: allWalletsSvg,
   arrowBottomCircle: arrowBottomCircleSvg,
@@ -113,7 +110,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   card: cardSvg,
   checkmark: checkmarkSvg,
   checkmarkBold: checkmarkBoldSvg,
-  checkmarkVerified: checkmarkVerifiedSvg,
+  sealCheck: sealCheckSvg,
   chevronBottom: chevronBottomSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,
@@ -126,11 +123,11 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   copy: copySvg,
   cursor: cursorSvg,
   desktop: desktopSvg,
-  disconnect: disconnectSvg,
+  signOut: signOutSvg,
   discord: discordSvg,
   dollar: dollarSvg,
   etherscan: etherscanSvg,
-  exclamationTriangle: exclamationTriangleSvg,
+  warning: warningSvg,
   exclamationCircle: exclamationCircleSvg,
   extension: extensionSvg,
   externalLink: externalLinkSvg,
@@ -142,14 +139,13 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   helpCircle: helpCircleSvg,
   image: imageSvg,
   id: idSvg,
-  infoCircle: infoCircleSvg,
   lightbulb: lightbulbSvg,
   mail: mailSvg,
   mobile: mobileSvg,
   more: moreSvg,
   networkPlaceholder: networkPlaceholderSvg,
   nftPlaceholder: nftPlaceholderSvg,
-  off: offSvg,
+  power: powerSvg,
   playStore: playStoreSvg,
   plus: plusSvg,
   qrCode: qrCodeIcon,
@@ -176,7 +172,6 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   walletConnect: walletConnectSvg,
   walletConnectLightBrown: walletConnectLightBrownSvg,
   walletConnectBrown: walletConnectBrownSvg,
-  walletPlaceholder: walletPlaceholderSvg,
   warningCircle: warningCircleSvg,
   x: xSvg,
   info: infoSvg
@@ -198,7 +193,7 @@ export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, colorStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: SizeType = 'md'
+  @property() public size: IconSizeType = 'md'
 
   @property() public name: IconType = 'copy'
 

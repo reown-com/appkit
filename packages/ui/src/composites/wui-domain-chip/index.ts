@@ -5,20 +5,21 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { DomainChipSize, DomainChipVariant } from '../../utils/TypeUtil.js'
+import type { DomainChipSize, DomainChipVariant, IconType, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Constants --------------------------------------------------------------- //
 const ICON_BY_VARIANT = {
-  success: 'checkmarkVerified',
+  success: 'sealCheck',
   warning: 'exclamationCircle',
-  error: 'exclamationTriangle'
-}
+  error: 'warning'
+} as Record<DomainChipVariant, IconType>
+
 const FONT_BY_SIZE = {
   sm: 'sm-regular',
   md: 'md-regular'
-}
+} as Record<DomainChipSize, TextType>
 
 @customElement('wui-domain-chip')
 export class WuiDomainChip extends LitElement {

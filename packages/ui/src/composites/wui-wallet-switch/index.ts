@@ -68,7 +68,7 @@ export class WuiWalletSwitch extends LitElement {
   }
   public textTemplate() {
     return html`
-      <wui-text variant="paragraph-500" color="fg-100">
+      <wui-text variant="md-medium" color="primary">
         ${UiHelperUtil.getTruncateString({
           string: this.profileName || this.address,
           charsStart: this.profileName ? 16 : this.charsStart,
@@ -80,7 +80,7 @@ export class WuiWalletSwitch extends LitElement {
   }
 
   public rightImageTemplate() {
-    return html`<wui-icon name="chevronBottom" size="xs" color="fg-200"></wui-icon>`
+    return html`<wui-icon name="chevronBottom" size="sm" color="default"></wui-icon>`
   }
 }
 

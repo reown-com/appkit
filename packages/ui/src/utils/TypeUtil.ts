@@ -63,10 +63,11 @@ export type LineClamp = '1' | '2'
 
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
+export type SelectSize = 'lg' | 'md' | 'sm'
+
 export type SpacingType = keyof typeof vars.spacing
 
-// @TODO: Remove these sizes after completing <wui-icon> component
-export type IconSizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
+export type IconSizeType = 'sm' | 'md' | 'lg' | 'xl' | 'inherit'
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
@@ -111,7 +112,7 @@ export type GridContentType =
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
-  | 'account'
+  | 'user'
   | 'add'
   | 'allWallets'
   | 'arrowBottomCircle'
@@ -129,7 +130,7 @@ export type IconType =
   | 'card'
   | 'checkmark'
   | 'checkmarkBold'
-  | 'checkmarkVerified'
+  | 'sealCheck'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -141,14 +142,13 @@ export type IconType =
   | 'copy'
   | 'cursor'
   | 'desktop'
-  | 'disconnect'
+  | 'signOut'
   | 'discord'
   | 'dollar'
   | 'etherscan'
   | 'extension'
   | 'externalLink'
   | 'exclamationCircle'
-  | 'exclamationTriangle'
   | 'facebook'
   | 'farcaster'
   | 'filters'
@@ -157,14 +157,13 @@ export type IconType =
   | 'helpCircle'
   | 'image'
   | 'id'
-  | 'infoCircle'
   | 'lightbulb'
   | 'mail'
   | 'mobile'
   | 'more'
   | 'networkPlaceholder'
   | 'nftPlaceholder'
-  | 'off'
+  | 'power'
   | 'playStore'
   | 'plus'
   | 'qrCode'
@@ -191,7 +190,7 @@ export type IconType =
   | 'walletConnect'
   | 'walletConnectLightBrown'
   | 'walletConnectBrown'
-  | 'walletPlaceholder'
+  | 'warning'
   | 'warningCircle'
   | 'x'
   | 'info'

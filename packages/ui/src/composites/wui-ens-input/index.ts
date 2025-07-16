@@ -32,7 +32,7 @@ export class WuiEnsInput extends LitElement {
       <wui-input-text
         type="email"
         placeholder="Email"
-        icon="account"
+        icon="user"
         size="lg"
         .disabled=${this.disabled}
         .value=${this.value}

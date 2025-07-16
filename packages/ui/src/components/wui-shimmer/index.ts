@@ -18,7 +18,7 @@ export class WuiShimmer extends LitElement {
 
   @property() public variant: Variant = 'default'
 
-  @property({ type: Boolean }) public rounded: boolean = false
+  @property({ type: Boolean }) public rounded = false
 
   // -- Render -------------------------------------------- //
   public override render() {

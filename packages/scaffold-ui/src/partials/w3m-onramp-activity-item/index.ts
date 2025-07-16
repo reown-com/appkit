@@ -62,7 +62,7 @@ export class W3mOnRampActivityItem extends LitElement {
         </wui-flex>
         ${this.inProgress
           ? html`<wui-loading-spinner color="secondary" size="md"></wui-loading-spinner>`
-          : html`<wui-text variant="sm-medium" color="secondary"
+          : html`<wui-text variant="sm-medium" color="tertiary"
               ><span>${this.date}</span></wui-text
             >`}
       </wui-flex>

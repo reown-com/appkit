@@ -60,7 +60,7 @@ export class WuiListToken extends LitElement {
       return html`<wui-image alt=${this.tokenName} src=${this.tokenImageUrl}></wui-image>`
     }
 
-    return html`<wui-icon name="coinPlaceholder" color="fg-100"></wui-icon>`
+    return html`<wui-icon name="coinPlaceholder" color="default"></wui-icon>`
   }
 }
 

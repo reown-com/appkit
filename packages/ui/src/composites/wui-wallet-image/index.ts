@@ -55,14 +55,14 @@ export class WuiWalletImage extends LitElement {
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     } else if (this.walletIcon) {
-      return html`<wui-icon size="mdl" color="default" name=${this.walletIcon}></wui-icon>`
+      return html`<wui-icon size="md" color="default" name=${this.walletIcon}></wui-icon>`
     }
 
     return html`<wui-icon
       data-parent-size=${this.size}
       size="inherit"
       color="inherit"
-      name="walletPlaceholder"
+      name="wallet"
     ></wui-icon>`
   }
 }

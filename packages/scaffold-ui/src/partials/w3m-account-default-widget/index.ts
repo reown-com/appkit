@@ -141,7 +141,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
-          icon="disconnect"
+          icon="signOut"
           ?chevron=${false}
           .loading=${this.disconnecting}
           @click=${this.onDisconnect.bind(this)}

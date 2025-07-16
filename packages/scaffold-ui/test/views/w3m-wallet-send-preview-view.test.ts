@@ -134,7 +134,7 @@ describe('W3mWalletSendPreviewView', () => {
     expect(tokenPreview?.text).to.equal('5 TEST')
     expect(tokenPreview?.imageSrc).to.equal(mockToken.iconUrl)
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$50.00')
   })
 
@@ -240,7 +240,7 @@ describe('W3mWalletSendPreviewView', () => {
     element['token'] = newToken
     await element.updateComplete
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$100.00')
   })
 

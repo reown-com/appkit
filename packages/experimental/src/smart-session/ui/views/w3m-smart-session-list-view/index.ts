@@ -149,7 +149,7 @@ export class W3mSmartSessionListView extends LitElement {
               flexDirection="row"
               .padding=${['2', '3', '3', '3'] as const}
             >
-              <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
+              <wui-text variant="md-medium" color="secondary">${groupTitle}</wui-text>
             </wui-flex>
             <wui-flex flexDirection="column" gap="4">
               ${this.templateSessions(monthSessions)}
@@ -168,7 +168,7 @@ export class W3mSmartSessionListView extends LitElement {
       justifyContent="center"
       .padding=${['4', '4', '4', '4'] as const}
     >
-      <wui-text variant="title-400" color="fg-200">No ${type.toLowerCase()} sessions</wui-text>
+      <wui-text variant="h5-regular" color="secondary">No ${type.toLowerCase()} sessions</wui-text>
     </wui-flex>`
   }
 
@@ -200,7 +200,7 @@ export class W3mSmartSessionListView extends LitElement {
                   backgroundColor="inverse-100"
                 ></wui-icon-box>`}
             <wui-flex flexDirection="column">
-              <wui-text variant="small-400" color="fg-100"
+              <wui-text variant="sm-regular" color="primary"
                 >${project?.name || 'Unknown Dapp'}</wui-text
               >
               ${project.url ? html`<wui-link>${project?.url}</wui-link>` : null}

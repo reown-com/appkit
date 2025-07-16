@@ -50,9 +50,9 @@ export class W3mEmailVerifyDeviceView extends LitElement {
       >
         <wui-icon-box
           size="xl"
-          iconcolor="accent-100"
-          backgroundcolor="accent-100"
-          icon="verify"
+          iconColor="accent-100"
+          backgroundColor="accent-100"
+          icon="sealCheck"
           background="opaque"
         ></wui-icon-box>
 

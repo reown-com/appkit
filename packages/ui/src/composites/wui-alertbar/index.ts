@@ -16,7 +16,7 @@ const TYPE_ICON_NAME = {
   info: 'info',
   success: 'checkmark',
   warning: 'warningCircle',
-  error: 'exclamationTriangle'
+  error: 'warning'
 } as Record<AlertType, IconType>
 
 @customElement('wui-alertbar')

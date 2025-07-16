@@ -4,7 +4,7 @@ import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { PlacementType, TooltipSize } from '../../utils/TypeUtil.js'
+import type { PlacementType, TextType, TooltipSize } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -13,7 +13,7 @@ import styles from './styles.js'
 const TEXT_SIZE = {
   sm: 'sm-regular',
   md: 'md-regular'
-}
+} as Record<TooltipSize, TextType>
 
 @customElement('wui-tooltip')
 export class WuiTooltip extends LitElement {

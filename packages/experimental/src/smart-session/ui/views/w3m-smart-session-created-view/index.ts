@@ -48,17 +48,17 @@ export class W3mSmartSessionCreatedView extends LitElement {
       <wui-flex gap="3" alignItems="center" justifyContent="center">
         <wui-icon-box
           size="xl"
-          iconcolor="fg-100"
-          backgroundcolor="inverse-100"
+          iconColor="primary"
+          backgroundColor="inverse"
           icon="clock"
           background="opaque"
         ></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="3">
-        <wui-text align="center" variant="medium-600" color="fg-100">
+        <wui-text align="center" variant="md-medium" color="primary">
           Smart Session created successfully
         </wui-text>
-        <wui-text align="center" variant="paragraph-400" color="fg-100">
+        <wui-text align="center" variant="md-regular" color="primary">
           You can manage your session from your account settings.
         </wui-text>
       </wui-flex>

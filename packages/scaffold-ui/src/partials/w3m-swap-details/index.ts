@@ -119,7 +119,7 @@ export class WuiSwapDetails extends LitElement {
                             <w3m-tooltip-trigger
                               text="Price impact reflects the change in market price due to your trade"
                             >
-                              <wui-icon size="xs" color="secondary" name="infoCircle"></wui-icon>
+                              <wui-icon size="xs" color="default" name="info"></wui-icon>
                             </w3m-tooltip-trigger>
                           </wui-flex>
                           <wui-flex>
@@ -155,7 +155,7 @@ export class WuiSwapDetails extends LitElement {
                                   : ''
                               }`}
                             >
-                              <wui-icon size="xs" color="secondary" name="infoCircle"></wui-icon>
+                              <wui-icon size="xs" color="default" name="info"></wui-icon>
                             </w3m-tooltip-trigger>
                           </wui-flex>
                           <wui-flex>

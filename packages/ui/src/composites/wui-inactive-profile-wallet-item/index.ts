@@ -40,7 +40,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public iconBadgeSize?: SizeType = 'md'
 
-  @property() public rightIcon?: IconType = 'off'
+  @property() public rightIcon?: IconType = 'power'
 
   @property() public rightIconSize?: SizeType = 'md'
 
@@ -96,7 +96,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
         justifyContent="flex-start"
         alignItems="flex-start"
       >
-        <wui-text variant="small-500" color="fg-100">
+        <wui-text variant="sm-medium" color="primary">
           ${UiHelperUtil.getTruncateString({
             string: this.profileName || this.address,
             charsStart: this.profileName ? 16 : this.charsStart,

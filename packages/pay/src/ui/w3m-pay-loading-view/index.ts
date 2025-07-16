@@ -58,10 +58,10 @@ export class W3mPayLoadingView extends LitElement {
       >
         <wui-flex justifyContent="center" alignItems="center"> ${this.getStateIcon()} </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">
+          <wui-text align="center" variant="md-medium" color="primary">
             ${this.loadingMessage}
           </wui-text>
-          <wui-text align="center" variant="small-400" color="fg-200">
+          <wui-text align="center" variant="sm-regular" color="secondary">
             ${this.subMessage}
           </wui-text>
         </wui-flex>
@@ -214,11 +214,11 @@ export class W3mPayLoadingView extends LitElement {
   }
 
   private successTemplate() {
-    return html`<wui-icon size="xl" color="success-100" name="checkmark"></wui-icon>`
+    return html`<wui-icon size="xl" color="success" name="checkmark"></wui-icon>`
   }
 
   private errorTemplate() {
-    return html`<wui-icon size="xl" color="error-100" name="close"></wui-icon>`
+    return html`<wui-icon size="xl" color="error" name="close"></wui-icon>`
   }
 }
 
