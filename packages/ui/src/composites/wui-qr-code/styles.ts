@@ -10,10 +10,19 @@ export default css`
     width: var(--local-size);
   }
 
+  :host([data-theme='light']) {
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+  }
+
+  :host([data-theme='dark']) {
+    background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
+  }
+
   :host {
     border-radius: ${({ borderRadius }) => borderRadius[4]};
-    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
-    padding: ${({ spacing }) => spacing[2]};
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   :host([data-clear='true']) > wui-icon {

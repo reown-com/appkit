@@ -50,7 +50,6 @@ export default css`
   }
 
   button[data-variant='neutral-secondary'] {
-    background-color: transparent;
     border: 1px solid ${({ tokens }) => tokens.theme.borderSecondary};
     color: ${({ tokens }) => tokens.theme.textPrimary};
   }

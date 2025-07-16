@@ -6,7 +6,7 @@ import type { IconType } from '@reown/appkit-ui/src/utils/TypeUtil'
 import '@reown/appkit-ui/wui-link'
 import type { WuiLink } from '@reown/appkit-ui/wui-link'
 
-import { buttonLinkOptions } from '../../utils/PresetUtils'
+import { buttonLinkOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLink & { iconLeft?: IconType; iconRight?: IconType }>
 
@@ -15,7 +15,8 @@ export default {
   args: {
     disabled: false,
     variant: 'accent',
-    size: 'md'
+    size: 'md',
+    icon: 'arrowTopRight'
   },
   argTypes: {
     size: {
@@ -29,12 +30,23 @@ export default {
     variant: {
       options: buttonLinkOptions,
       control: { type: 'select' }
+    },
+    icon: {
+      options: iconOptions,
+      control: { type: 'select' }
     }
   }
 } as Component
 
 export const Default: Component = {
   render: args => html`
-    <wui-link ?disabled=${args.disabled} size=${args.size} variant=${args.variant}>Link</wui-link>
+    <wui-link
+      ?disabled=${args.disabled}
+      size=${args.size}
+      variant=${args.variant}
+      icon=${args.icon}
+    >
+      Link</wui-link
+    >
   `
 }

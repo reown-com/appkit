@@ -51,8 +51,8 @@ export class W3mConnectSocialsView extends LitElement {
       <w3m-legal-checkbox></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
-        .padding=${showLegalCheckbox ? ['0', '3', '3', '3'] : '3'}
-        gap="2"
+        .padding=${['0', '3', '3', '3'] as const}
+        gap="01"
         class=${ifDefined(disabled ? 'disabled' : undefined)}
       >
         <w3m-social-login-list tabIdx=${ifDefined(tabIndex)}></w3m-social-login-list>

@@ -36,13 +36,23 @@ export class W3mWalletGuide extends LitElement {
           </wui-text>
 
           <wui-flex class="chip-box">
-            <wui-semantic-chip
-              imageIcon="walletConnectLightBrown"
-              icon="externalLink"
-              type="success"
-              href="https://walletguide.walletconnect.network"
-              title="Find one on WalletGuide"
-            ></wui-semantic-chip>
+            <wui-button
+              @click=${() => {
+                window.open('https://walletguide.walletconnect.network', '_blank')
+              }}
+              size="sm"
+              variant="neutral-secondary"
+              icon="walletConnectLightBrown"
+              text="Find one on WalletGuide"
+              ><wui-icon
+                size="sm"
+                color="inherit"
+                name="walletConnectLightBrown"
+                slot="iconLeft"
+              ></wui-icon>
+              Find one on WalletGuide
+              <wui-icon size="sm" color="inherit" name="externalLink" slot="iconRight"></wui-icon>
+            </wui-button>
           </wui-flex>
         </wui-flex>`
       : html`<wui-flex
@@ -52,7 +62,7 @@ export class W3mWalletGuide extends LitElement {
           justifyContent="center"
           .padding=${['3', '0', '3', '0'] as const}
         >
-          <wui-text variant="sm-regular" class="title" color="secondary"
+          <wui-text variant="md-medium" class="title" color="secondary"
             >Haven't got a wallet?</wui-text
           >
           <wui-link

@@ -46,7 +46,12 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     this.onRenderProxy()
 
     return html`
-      <wui-flex flexDirection="column" alignItems="center" .padding=${['0', '5', '5', '5']} gap="5">
+      <wui-flex
+        flexDirection="column"
+        alignItems="center"
+        .padding=${['0', '5', '5', '5'] as const}
+        gap="5"
+      >
         <wui-shimmer rounded width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
         <wui-text variant="md-regular" color="primary">
@@ -95,10 +100,10 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     return html`<wui-link
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      color="secondary"
+      variant="secondary"
       data-testid="copy-wc2-uri"
+      icon="copy"
     >
-      <wui-icon size="xs" color="secondary" slot="iconLeft" name="copy"></wui-icon>
       Copy link
     </wui-link>`
   }

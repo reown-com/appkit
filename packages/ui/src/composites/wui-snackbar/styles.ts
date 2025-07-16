@@ -9,6 +9,7 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
     box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 
   wui-icon-box {
