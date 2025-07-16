@@ -2,7 +2,11 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    height: 32px;
+    height: 60px;
+  }
+
+  :host > wui-flex {
+    box-sizing: border-box;
   }
 
   wui-text {
