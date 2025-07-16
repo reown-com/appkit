@@ -110,7 +110,7 @@
     "@bitcoinerlab/secp256k1": "1.2.0",
     "@chakra-ui/icons": "2.2.6",
     "@chakra-ui/react": "2.10.7",
-    "@coinbase/wallet-sdk": "4.3.0",
+    "@coinbase/wallet-sdk": "4.3.6",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
