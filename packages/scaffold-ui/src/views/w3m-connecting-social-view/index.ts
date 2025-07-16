@@ -130,11 +130,11 @@ export class W3mConnectingSocialView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text align="center" variant="paragraph-500" color="fg-100"
+          <wui-text align="center" variant="md-medium" color="primary"
             >Log in with
             <span class="capitalize">${this.socialProvider ?? 'Social'}</span></wui-text
           >
-          <wui-text align="center" variant="small-400" color=${this.error ? 'error-100' : 'fg-200'}
+          <wui-text align="center" variant="sm-regular" color=${this.error ? 'error' : 'primary'}
             >${this.message}</wui-text
           ></wui-flex
         >

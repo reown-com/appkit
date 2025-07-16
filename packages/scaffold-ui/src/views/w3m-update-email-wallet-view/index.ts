@@ -102,7 +102,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
       return html`
         <wui-button
           size="md"
-          variant="main"
+          variant="accent-primary"
           fullWidth
           @click=${this.onSubmitEmail.bind(this)}
           .disabled=${!showSubmit}
@@ -121,7 +121,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
         <wui-button
           size="md"
-          variant="main"
+          variant="accent-primary"
           fullWidth
           @click=${this.onSubmitEmail.bind(this)}
           .disabled=${!showSubmit}

@@ -101,7 +101,7 @@ export class W3mWalletReceiveView extends LitElement {
           color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
           data-testid="wui-qr-code"
         ></wui-qr-code>
-        <wui-text variant="paragraph-500" color="fg-100" align="center">
+        <wui-text variant="md-medium" color="primary" align="center">
           Copy your address or scan this QR code
         </wui-text>
       </wui-flex>

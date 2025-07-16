@@ -24,13 +24,13 @@ export class W3mSIWXSignMessageView extends LitElement {
       <wui-flex justifyContent="center" .padding=${['8', '0', '6', '0'] as const}>
         <w3m-siwx-sign-message-thumbnails></w3m-siwx-sign-message-thumbnails>
       </wui-flex>
-      <wui-flex .padding=${['0', '20', '4', '20'] as const} gap="3" justifyContent="space-between">
-        <wui-text variant="paragraph-500" align="center" color="fg-100"
+      <wui-flex .padding=${['0', '20', '5', '20'] as const} gap="3" justifyContent="space-between">
+        <wui-text variant="md-medium" align="center" color="primary"
           >${this.dappName ?? 'Dapp'} needs to connect to your wallet</wui-text
         >
       </wui-flex>
       <wui-flex .padding=${['0', '10', '4', '10'] as const} gap="3" justifyContent="space-between">
-        <wui-text variant="small-400" align="center" color="fg-200"
+        <wui-text variant="sm-regular" align="center" color="secondary"
           >Sign this message to prove you own this wallet and proceed. Canceling will disconnect
           you.</wui-text
         >
@@ -51,7 +51,7 @@ export class W3mSIWXSignMessageView extends LitElement {
           size="lg"
           borderRadius="xs"
           fullWidth
-          variant="main"
+          variant="accent-primary"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}
           data-testid="w3m-connecting-siwe-sign"

@@ -105,7 +105,7 @@ export class W3mAccountSettingsView extends LitElement {
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="1" alignItems="center" justifyContent="center">
-            <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
+            <wui-text variant="h5-medium" color="primary" data-testid="account-settings-address">
               ${UiHelperUtil.getTruncateString({
                 string: this.address,
                 charsStart: 4,
@@ -116,7 +116,7 @@ export class W3mAccountSettingsView extends LitElement {
             <wui-icon-link
               size="md"
               icon="copy"
-              iconColor="fg-200"
+              iconColor="secondary"
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
@@ -135,7 +135,7 @@ export class W3mAccountSettingsView extends LitElement {
             @click=${this.onNetworks.bind(this)}
             data-testid="account-switch-network-button"
           >
-            <wui-text variant="paragraph-500" color="fg-100">
+            <wui-text variant="md-medium" color="primary">
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
@@ -149,7 +149,7 @@ export class W3mAccountSettingsView extends LitElement {
             @click=${this.onDisconnect.bind(this)}
             data-testid="disconnect-button"
           >
-            <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+            <wui-text variant="md-medium" color="secondary">Disconnect</wui-text>
           </wui-list-item>
         </wui-flex>
       </wui-flex>
@@ -182,7 +182,7 @@ export class W3mAccountSettingsView extends LitElement {
         @click=${this.onChooseName.bind(this)}
         data-testid="account-choose-name-button"
       >
-        <wui-text variant="paragraph-500" color="fg-100">Choose account name </wui-text>
+        <wui-text variant="md-medium" color="primary">Choose account name </wui-text>
       </wui-list-item>
     `
   }
@@ -262,7 +262,7 @@ export class W3mAccountSettingsView extends LitElement {
         @click=${this.changePreferredAccountType.bind(this)}
         data-testid="account-toggle-preferred-account-type"
       >
-        <wui-text variant="paragraph-500" color="fg-100">${this.text}</wui-text>
+        <wui-text variant="md-medium" color="primary">${this.text}</wui-text>
       </wui-list-item>
     `
   }

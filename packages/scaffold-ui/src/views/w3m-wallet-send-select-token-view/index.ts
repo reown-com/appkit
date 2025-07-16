@@ -96,7 +96,7 @@ export class W3mSendSelectTokenView extends LitElement {
         .padding=${['0', '3', '0', '3'] as const}
       >
         <wui-flex justifyContent="flex-start" .padding=${['4', '3', '3', '3'] as const}>
-          <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
+          <wui-text variant="md-medium" color="secondary">Your tokens</wui-text>
         </wui-flex>
         <wui-flex flexDirection="column" gap="2">
           ${this.filteredTokens && this.filteredTokens.length > 0
@@ -121,8 +121,8 @@ export class W3mSendSelectTokenView extends LitElement {
                 <wui-icon-box
                   icon="coinPlaceholder"
                   size="inherit"
-                  iconColor="fg-200"
-                  backgroundColor="fg-200"
+                  iconColor="secondary"
+                  backgroundColor="secondary"
                   iconSize="lg"
                 ></wui-icon-box>
                 <wui-flex
@@ -132,10 +132,10 @@ export class W3mSendSelectTokenView extends LitElement {
                   justifyContent="center"
                   flexDirection="column"
                 >
-                  <wui-text variant="paragraph-500" align="center" color="fg-100"
+                  <wui-text variant="md-medium" align="center" color="primary"
                     >No tokens found</wui-text
                   >
-                  <wui-text variant="small-400" align="center" color="fg-200"
+                  <wui-text variant="sm-regular" align="center" color="secondary"
                     >Your tokens will appear here</wui-text
                   >
                 </wui-flex>

@@ -171,8 +171,8 @@ export class W3mSwapPreviewView extends LitElement {
             gap="4"
           >
             <wui-flex flexDirection="column" alignItems="flex-start" gap="01">
-              <wui-text variant="small-400" color="fg-150">Receive</wui-text>
-              <wui-text variant="paragraph-400" color="fg-100">$${receivePrice}</wui-text>
+              <wui-text variant="sm-regular" color="secondary">Receive</wui-text>
+              <wui-text variant="md-regular" color="primary">$${receivePrice}</wui-text>
             </wui-flex>
             <wui-token-button
               flexDirection="row-reverse"
@@ -186,8 +186,8 @@ export class W3mSwapPreviewView extends LitElement {
         ${this.templateDetails()}
 
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="2">
-          <wui-icon size="sm" color="fg-200" name="infoCircle"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
+          <wui-icon size="sm" color="secondary" name="infoCircle"></wui-icon>
+          <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
 
         <wui-flex
@@ -202,24 +202,22 @@ export class W3mSwapPreviewView extends LitElement {
             fullWidth
             size="lg"
             borderRadius="xs"
-            variant="neutral"
+            variant="primary"
             @click=${this.onCancelTransaction.bind(this)}
           >
-            <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
+            <wui-text variant="md-medium" color="secondary">Cancel</wui-text>
           </wui-button>
           <wui-button
             class="action-button"
             fullWidth
             size="lg"
             borderRadius="xs"
-            variant="main"
+            variant="accent-primary"
             ?loading=${loading}
             ?disabled=${loading}
             @click=${this.onSendTransaction.bind(this)}
           >
-            <wui-text variant="paragraph-600" color="inverse-100">
-              ${this.actionButtonLabel()}
-            </wui-text>
+            <wui-text variant="md-medium" color="invert"> ${this.actionButtonLabel()} </wui-text>
           </wui-button>
         </wui-flex>
       </wui-flex>

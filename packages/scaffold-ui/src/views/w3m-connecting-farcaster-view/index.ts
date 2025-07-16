@@ -115,9 +115,7 @@ export class W3mConnectingFarcasterView extends LitElement {
     >
       <wui-shimmer rounded width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
-      <wui-text variant="paragraph-500" color="fg-100">
-        Scan this QR Code with your phone
-      </wui-text>
+      <wui-text variant="md-medium" color="primary"> Scan this QR Code with your phone </wui-text>
       ${this.copyTemplate()}
     </wui-flex>`
   }
@@ -144,10 +142,10 @@ export class W3mConnectingFarcasterView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">
+          <wui-text align="center" variant="md-medium" color="primary">
             Loading user data
           </wui-text>
-          <wui-text align="center" variant="small-400" color="fg-200">
+          <wui-text align="center" variant="sm-regular" color="secondary">
             Please wait a moment while we load your data.
           </wui-text>
         </wui-flex>
@@ -176,10 +174,10 @@ export class W3mConnectingFarcasterView extends LitElement {
         ></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="2">
-        <wui-text align="center" variant="paragraph-500" color="fg-100"
+        <wui-text align="center" variant="md-medium" color="primary"
           >Continue in Farcaster</span></wui-text
         >
-        <wui-text align="center" variant="small-400" color="fg-200"
+        <wui-text align="center" variant="sm-regular" color="secondary"
           >Accept connection request in the app</wui-text
         ></wui-flex
       >
@@ -291,7 +289,7 @@ export class W3mConnectingFarcasterView extends LitElement {
     return html`<wui-link
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      color="fg-200"
+      color="secondary"
       data-testid="copy-wc2-uri"
     >
       <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>

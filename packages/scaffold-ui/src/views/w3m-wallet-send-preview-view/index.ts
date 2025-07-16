@@ -69,7 +69,7 @@ export class W3mWalletSendPreviewView extends LitElement {
       <wui-flex gap="2" flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-flex flexDirection="column" gap="01">
-            <wui-text variant="small-400" color="fg-150">Send</wui-text>
+            <wui-text variant="sm-regular" color="secondary">Send</wui-text>
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
@@ -83,7 +83,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           <wui-icon color="fg-200" size="md" name="arrowBottom"></wui-icon>
         </wui-flex>
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="small-400" color="fg-150">To</wui-text>
+          <wui-text variant="sm-regular" color="secondary">To</wui-text>
           <wui-preview-item
             text="${this.receiverProfileName
               ? UiHelperUtil.getTruncateString({
@@ -111,7 +111,7 @@ export class W3mWalletSendPreviewView extends LitElement {
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="1" .padding=${['3', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
+          <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
         <wui-flex justifyContent="center" gap="3" .padding=${['4', '0', '0', '0'] as const}>
           <wui-button
@@ -126,7 +126,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="sendButton"
             @click=${this.onSendClick.bind(this)}
             size="lg"
-            variant="main"
+            variant="accent-primary"
             .loading=${this.loading}
           >
             Send
@@ -142,7 +142,7 @@ export class W3mWalletSendPreviewView extends LitElement {
       const price = this.token.price
       const totalValue = price * this.sendTokenAmount
 
-      return html`<wui-text variant="paragraph-400" color="fg-100"
+      return html`<wui-text variant="md-regular" color="primary"
         >$${totalValue.toFixed(2)}</wui-text
       >`
     }

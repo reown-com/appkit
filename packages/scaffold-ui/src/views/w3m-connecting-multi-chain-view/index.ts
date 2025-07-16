@@ -61,10 +61,10 @@ export class W3mConnectingMultiChainView extends LitElement {
           gap="2"
           .padding=${['0', '3', '0', '3'] as const}
         >
-          <wui-text variant="paragraph-500" color="fg-100">
+          <wui-text variant="md-medium" color="primary">
             Select Chain for ${this.activeConnector?.name}
           </wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200"
+          <wui-text align="center" variant="sm-medium" color="secondary"
             >Select which chain to connect to your multi chain wallet</wui-text
           >
         </wui-flex>

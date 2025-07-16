@@ -102,7 +102,7 @@ export class W3mOnrampWidget extends LitElement {
     return this.caipAddress
       ? html`<wui-button
           @click=${this.getQuotes.bind(this)}
-          variant="main"
+          variant="accent-primary"
           fullWidth
           size="lg"
           borderRadius="xs"

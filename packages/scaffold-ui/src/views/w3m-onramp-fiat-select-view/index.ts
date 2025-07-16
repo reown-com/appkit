@@ -87,7 +87,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
           variant="image"
           tabIdx=${ifDefined(disabled ? -1 : undefined)}
         >
-          <wui-text variant="paragraph-500" color="fg-100">${currency.id}</wui-text>
+          <wui-text variant="md-medium" color="primary">${currency.id}</wui-text>
         </wui-list-item>
       `
     )

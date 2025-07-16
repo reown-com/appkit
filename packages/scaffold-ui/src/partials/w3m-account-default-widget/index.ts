@@ -319,7 +319,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     return html`
-      <wui-button size="md" variant="neutral-primary" @click=${this.onExplorer.bind(this)}>
+      <wui-button size="md" variant="accent-primary" @click=${this.onExplorer.bind(this)}>
         <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
         Block Explorer
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>

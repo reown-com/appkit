@@ -56,10 +56,10 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
         ></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="3">
-        <wui-text align="center" variant="medium-600" color="fg-100">
+        <wui-text align="center" variant="md-medium" color="primary">
           Account name chosen successfully
         </wui-text>
-        <wui-text align="center" variant="paragraph-400" color="fg-100">
+        <wui-text align="center" variant="md-regular" color="primary">
           You can now fund your account and trade crypto
         </wui-text>
       </wui-flex>

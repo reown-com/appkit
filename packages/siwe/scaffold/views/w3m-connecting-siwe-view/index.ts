@@ -58,7 +58,7 @@ export class W3mConnectingSiweView extends LitElement {
           size="lg"
           borderRadius="xs"
           fullWidth
-          variant="main"
+          variant="accent-primary"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}
           data-testid="w3m-connecting-siwe-sign"

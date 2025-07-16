@@ -110,18 +110,18 @@ export class W3mBuyInProgressView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+          <wui-text variant="md-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text align="center" variant="sm-medium" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         ${this.error ? this.tryAgainTemplate() : null}
       </wui-flex>
 
       <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
-        <wui-link @click=${this.onCopyUri} color="fg-200">
-          <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+        <wui-link @click=${this.onCopyUri} color="secondary">
+          <wui-icon size="xs" color="secondary" slot="iconLeft" name="copy"></wui-icon>
           Copy link
         </wui-link>
       </wui-flex>

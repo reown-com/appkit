@@ -92,7 +92,7 @@ export class W3mWalletSendView extends LitElement {
           @click=${this.onButtonClick.bind(this)}
           ?disabled=${!this.message.startsWith('Preview Send')}
           size="lg"
-          variant="main"
+          variant="accent-primary"
           ?loading=${this.loading}
           fullWidth
         >
