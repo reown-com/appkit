@@ -18,6 +18,8 @@ export class WuiIconButton extends LitElement {
 
   @property() public size: Exclude<SizeType, 'xxs' | 'mdl' | 'xl' | 'xs' | 'xxl'> = 'md'
 
+  @property({ type: Boolean }) public fullWidth = false
+
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
@@ -30,6 +32,7 @@ export class WuiIconButton extends LitElement {
     return html`<button
       data-variant=${this.variant}
       data-size=${this.size}
+      data-full-width=${this.fullWidth}
       ?disabled=${this.disabled}
     >
       <wui-icon color=${iconColors[this.variant]} name=${this.icon}></wui-icon>

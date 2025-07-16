@@ -50,9 +50,14 @@ export default css`
   button[data-size='md'] wui-icon {
     width: 16px;
   }
+
   button[data-size='lg'] wui-icon {
     width: 24px;
     height: 24px;
+  }
+
+  button[data-full-width] {
+    width: 100%;
   }
 
   button[disabled] {

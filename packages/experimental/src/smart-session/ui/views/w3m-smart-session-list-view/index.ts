@@ -58,9 +58,6 @@ export class W3mSmartSessionListView extends LitElement {
       <wui-tabs
         .onTabChange=${this.onTabChange.bind(this)}
         .activeTab=${this.currentTab}
-        localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-          ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
-          : '104px'}
         .tabs=${SMART_SESSION_TABS}
       ></wui-tabs>
       ${this.listContentTemplate()}
