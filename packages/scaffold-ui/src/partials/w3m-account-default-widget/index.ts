@@ -139,15 +139,13 @@ export class W3mAccountDefaultWidget extends LitElement {
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
         ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
-          variant="icon"
-          iconVariant="overlay"
-          icon="signOut"
+          icon="power"
           ?chevron=${false}
           .loading=${this.disconnecting}
           @click=${this.onDisconnect.bind(this)}
           data-testid="disconnect-button"
+          text="Disconnect"
         >
-          <wui-text variant="md-regular" color="secondary">Disconnect</wui-text>
         </wui-list-item>
       </wui-flex>`
   }
@@ -170,12 +168,11 @@ export class W3mAccountDefaultWidget extends LitElement {
     return html`
       <wui-list-item
         data-testid="w3m-account-default-onramp-button"
-        iconVariant="blue"
         icon="card"
         ?chevron=${true}
         @click=${this.handleClickPay.bind(this)}
+        text="Buy crypto"
       >
-        <wui-text variant="md-regular" color="primary">Buy crypto</wui-text>
       </wui-list-item>
     `
   }
@@ -209,14 +206,12 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return isEnabled
       ? html` <wui-list-item
-          iconVariant="blue"
           icon="clock"
-          iconSize="sm"
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
           data-testid="w3m-account-default-activity-button"
+          text="Activity"
         >
-          <wui-text variant="md-regular" color="primary">Activity</wui-text>
         </wui-list-item>`
       : null
   }
@@ -231,13 +226,12 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
-        iconVariant="blue"
         icon="recycleHorizontal"
         ?chevron=${true}
         @click=${this.handleClickSwap.bind(this)}
         data-testid="w3m-account-default-swaps-button"
+        text="Swap"
       >
-        <wui-text variant="md-regular" color="primary">Swap</wui-text>
       </wui-list-item>
     `
   }
@@ -258,13 +252,12 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
-        iconVariant="blue"
         icon="send"
         ?chevron=${true}
         @click=${this.handleClickSend.bind(this)}
         data-testid="w3m-account-default-send-button"
+        text="Send"
       >
-        <wui-text variant="md-regular" color="primary">Send</wui-text>
       </wui-list-item>
     `
   }

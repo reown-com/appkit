@@ -1,10 +1,6 @@
 import { css } from 'lit'
 
 export default css`
-  wui-flex {
-    width: 100%;
-  }
-
   :host > wui-flex:first-child {
     transform: translateY(calc(var(--apkt-spacing-2) * -1));
   }
