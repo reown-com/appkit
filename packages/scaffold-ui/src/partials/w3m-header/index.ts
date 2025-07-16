@@ -120,8 +120,6 @@ export class W3mHeader extends LitElement {
 
   @state() private viewDirection = ''
 
-  @state() private headerText = headings()[RouterController.state.view]
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -131,7 +129,7 @@ export class W3mHeader extends LitElement {
       RouterController.subscribeKey('view', val => {
         setTimeout(() => {
           this.view = val
-          this.headerText = headings()[val]
+          this.heading = headings()[val]
         }, ConstantsUtil.ANIMATION_DURATIONS.HeaderText)
         this.onViewChange()
         this.onHistoryChange()
@@ -150,7 +148,11 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+      <wui-flex
+        .padding=${['0', '5', '0', '5'] as const}
+        justifyContent="space-between"
+        alignItems="center"
+      >
         ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
@@ -207,10 +209,10 @@ export class W3mHeader extends LitElement {
         alignItems="center"
         gap="2"
       >
-        <wui-text variant="md-regular" color="primary" data-testid="w3m-header-text"
-          >${this.headerText}</wui-text
-        >
-        ${isBeta ? html`<wui-tag variant="default">Beta</wui-tag>` : null}
+        <wui-text variant="lg-regular" color="primary" data-testid="w3m-header-text">
+          ${this.heading}
+        </wui-text>
+        ${isBeta ? html`<wui-tag variant="accent" size="md">Beta</wui-tag>` : null}
       </wui-flex>
     `
   }
@@ -269,14 +271,6 @@ export class W3mHeader extends LitElement {
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
     return isMultiNetwork || !isValidNetwork
-  }
-
-  private getPadding() {
-    if (this.heading) {
-      return ['4', '5', '4', '5'] as const
-    }
-
-    return ['0', '5', '0', '5'] as const
   }
 
   private onViewChange() {
