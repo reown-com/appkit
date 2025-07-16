@@ -31,13 +31,16 @@ export class WuiListItem extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
+      <button
+        ?disabled=${this.loading ? true : Boolean(this.disabled)}
+        data-loading=${this.loading}
+        tabindex=${ifDefined(this.tabIdx)}
+      >
         <wui-flex gap="2" alignItems="center">
-          ${this.imageTemplate()}
+          ${this.loadingTemplate()} ${this.imageTemplate()}
 
-          <wui-flex direction="column" gap="1" alignItems="center">
-            <wui-text variant="lg-medium" color="primary">${this.text}</wui-text>
-            <wui-text variant="lg-regular" color="secondary">${this.subtext}</wui-text>
+          <wui-flex gap="3xs">
+            <slot></slot>
           </wui-flex>
         </wui-flex>
         ${this.iconTemplate()}
@@ -52,6 +55,14 @@ export class WuiListItem extends LitElement {
     }
 
     return html`<wui-image ?boxed=${true} src=${this.imageSrc}></wui-image>`
+  }
+
+  public loadingTemplate() {
+    if (this.loading) {
+      return html`<wui-loading-spinner color="tertiary"></wui-loading-spinner>`
+    }
+
+    return html``
   }
 
   private iconTemplate() {

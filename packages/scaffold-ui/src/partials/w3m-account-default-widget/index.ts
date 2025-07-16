@@ -147,7 +147,7 @@ export class W3mAccountDefaultWidget extends LitElement {
           @click=${this.onDisconnect.bind(this)}
           data-testid="disconnect-button"
         >
-          <wui-text variant="md-regular" color="secondary">Disconnect</wui-text>
+          <wui-text variant="lg-regular" color="primary">Disconnect</wui-text>
         </wui-list-item>
       </wui-flex>`
   }
@@ -175,7 +175,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         ?chevron=${true}
         @click=${this.handleClickPay.bind(this)}
       >
-        <wui-text variant="md-regular" color="primary">Buy crypto</wui-text>
+        <wui-text variant="lg-regular" color="primary">Buy crypto</wui-text>
       </wui-list-item>
     `
   }
