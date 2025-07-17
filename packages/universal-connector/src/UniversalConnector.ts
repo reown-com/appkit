@@ -9,7 +9,7 @@ import type { CreateAppKit } from '@reown/appkit'
 import type { CaipNetwork, CustomCaipNetwork } from '@reown/appkit-common'
 import { AppKit, type Metadata, createAppKit } from '@reown/appkit/core'
 
-type ExtendedNamespaces = Omit<SessionTypes.Namespace, 'chains'> & {
+type ExtendedNamespaces = Omit<SessionTypes.Namespace, 'chains' | 'accounts'> & {
   chains: CustomCaipNetwork[]
   namespace: string
 }
