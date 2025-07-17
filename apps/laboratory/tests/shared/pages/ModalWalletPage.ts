@@ -6,12 +6,14 @@ import { setupNetworkListener } from '@/src/utils/NetworkUtil'
 
 import { ModalPage } from './ModalPage'
 
+type ModalWalletFlavor = 'default' | 'all' | 'siwe' | 'siwx'
+
 export class ModalWalletPage extends ModalPage {
   public override readonly page: Page
   public override readonly library: string
-  public override readonly flavor: 'default' | 'all' | 'siwe'
+  public override readonly flavor: ModalWalletFlavor
 
-  constructor(page: Page, library: string, flavor: 'default' | 'all' | 'siwe') {
+  constructor(page: Page, library: string, flavor: ModalWalletFlavor) {
     super(page, library, flavor)
     setupNetworkListener(page)
     this.page = page
