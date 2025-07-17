@@ -167,6 +167,7 @@ export interface WcWallet {
         injected_id?: string
       }[]
     | null
+  display_index?: number
 }
 
 export interface ApiGetWalletsRequest {
@@ -455,6 +456,7 @@ export type Event =
       properties: {
         name: string
         platform: Platform
+        displayIndex?: number
         caipNetworkId?: CaipNetworkId
       }
     }

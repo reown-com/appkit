@@ -141,7 +141,8 @@ describe('W3mAllWalletsList', () => {
     await walletItem?.click()
 
     expect(RouterController.push).toHaveBeenCalledWith('ConnectingExternal', {
-      connector: mockConnector
+      connector: mockConnector,
+      wallet: { ...mockWallets[0], display_index: 0, installed: false }
     })
   })
 
@@ -153,7 +154,7 @@ describe('W3mAllWalletsList', () => {
     await walletItem?.click()
 
     expect(RouterController.push).toHaveBeenCalledWith('ConnectingWalletConnect', {
-      wallet: { ...mockWallets[0], installed: false }
+      wallet: { ...mockWallets[0], installed: false, display_index: 0 }
     })
   })
 

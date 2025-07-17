@@ -52,7 +52,11 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: this.wallet.name, platform: 'mobile' }
+      properties: {
+        name: this.wallet.name,
+        platform: 'mobile',
+        displayIndex: this.wallet?.display_index
+      }
     })
   }
 
