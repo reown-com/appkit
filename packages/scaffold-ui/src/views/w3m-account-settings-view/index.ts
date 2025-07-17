@@ -101,7 +101,7 @@ export class W3mAccountSettingsView extends LitElement {
           alt=${this.address}
           address=${this.address}
           imageSrc=${ifDefined(this.profileImage)}
-          size="2lg"
+          size="lg"
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="1" alignItems="center" justifyContent="center">
@@ -116,7 +116,7 @@ export class W3mAccountSettingsView extends LitElement {
             <wui-icon-link
               size="md"
               icon="copy"
-              iconColor="secondary"
+              iconColor="default"
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
@@ -127,29 +127,25 @@ export class W3mAccountSettingsView extends LitElement {
           ${this.authCardTemplate()}
           <w3m-account-auth-button></w3m-account-auth-button>
           <wui-list-item
-            .variant=${networkImage ? 'image' : 'icon'}
-            iconVariant="overlay"
             icon="networkPlaceholder"
             imageSrc=${ifDefined(networkImage)}
             ?chevron=${this.isAllowedNetworkSwitch()}
             @click=${this.onNetworks.bind(this)}
             data-testid="account-switch-network-button"
           >
-            <wui-text variant="md-medium" color="primary">
+            <wui-text variant="lg-regular" color="primary">
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
           ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
-            variant="icon"
-            iconVariant="overlay"
-            icon="signOut"
+            icon="power"
             ?chevron=${false}
             .loading=${this.disconnecting}
             @click=${this.onDisconnect.bind(this)}
             data-testid="disconnect-button"
           >
-            <wui-text variant="md-medium" color="secondary">Disconnect</wui-text>
+            <wui-text variant="lg-regular" color="primary">Disconnect</wui-text>
           </wui-list-item>
         </wui-flex>
       </wui-flex>
@@ -174,15 +170,12 @@ export class W3mAccountSettingsView extends LitElement {
 
     return html`
       <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
         icon="id"
-        iconSize="sm"
         ?chevron=${true}
         @click=${this.onChooseName.bind(this)}
         data-testid="account-choose-name-button"
       >
-        <wui-text variant="md-medium" color="primary">Choose account name </wui-text>
+        <wui-text variant="lg-regular" color="primary">Choose account name </wui-text>
       </wui-list-item>
     `
   }
@@ -253,16 +246,13 @@ export class W3mAccountSettingsView extends LitElement {
 
     return html`
       <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
         icon="swapHorizontalBold"
-        iconSize="sm"
         ?chevron=${true}
         ?loading=${this.loading}
         @click=${this.changePreferredAccountType.bind(this)}
         data-testid="account-toggle-preferred-account-type"
       >
-        <wui-text variant="md-medium" color="primary">${this.text}</wui-text>
+        <wui-text variant="lg-regular" color="primary">${this.text}</wui-text>
       </wui-list-item>
     `
   }

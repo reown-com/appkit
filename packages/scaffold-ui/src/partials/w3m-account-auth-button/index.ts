@@ -58,17 +58,14 @@ export class W3mAccountAuthButton extends LitElement {
 
     return html`
       <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
         icon=${this.socialProvider ?? 'mail'}
-        iconSize=${this.socialProvider ? 'xxl' : 'sm'}
         data-testid="w3m-account-email-update"
         ?chevron=${!this.socialProvider}
         @click=${() => {
           this.onGoToUpdateEmail(email, this.socialProvider)
         }}
       >
-        <wui-text variant="md-regular" color="primary">${this.getAuthName(email)}</wui-text>
+        <wui-text variant="lg-regular" color="primary">${this.getAuthName(email)}</wui-text>
       </wui-list-item>
     `
   }
