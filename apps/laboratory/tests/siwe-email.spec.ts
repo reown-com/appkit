@@ -129,7 +129,7 @@ emailSiweTest('it should reject sign', async ({ library }) => {
   await validator.expectRejectedSign()
 })
 
-emailSiweTest.only('it should switch network and sign', async ({ library }) => {
+emailSiweTest('it should switch network and sign', async ({ library }) => {
   let targetChain = 'Polygon'
   const namespace = library === 'solana' ? 'solana' : 'eip155'
 
