@@ -19,10 +19,12 @@ const getActiveCaipNetwork = () => ({
   name: 'Ethereum',
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: { default: { http: ['https://rpc.ankr.com/eth'] } },
-  id: 'eip155:1',
+  id: '1',
   chainNamespace: ConstantsUtil.CHAIN.EVM,
   caipNetworkId: 'eip155:1' as CaipNetworkId
 })
+
+const getCaipNetworks = () => [getActiveCaipNetwork()]
 
 describe('W3mFrameProvider', () => {
   const mockTimeout = vi.fn<(reason: EmbeddedWalletTimeoutReason) => void>()
@@ -37,7 +39,8 @@ describe('W3mFrameProvider', () => {
       projectId,
       abortController,
       onTimeout: mockTimeout,
-      getActiveCaipNetwork
+      getActiveCaipNetwork,
+      getCaipNetworks
     })
     window.postMessage = vi.fn()
     mockTimeout.mockClear()
@@ -185,7 +188,8 @@ describe('W3mFrameProvider', () => {
       projectId,
       onTimeout: onTimeoutMock,
       abortController: testAbortController,
-      getActiveCaipNetwork
+      getActiveCaipNetwork,
+      getCaipNetworks
     })
 
     vi.spyOn(testProvider['w3mFrame'].events, 'postAppEvent').mockImplementation(() => {})
@@ -215,7 +219,8 @@ describe('W3mFrameProvider', () => {
       projectId,
       enableLogger: true,
       abortController,
-      getActiveCaipNetwork
+      getActiveCaipNetwork,
+      getCaipNetworks
     })
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     expect(generateChildLoggerSpy).toHaveBeenCalled()
@@ -228,7 +233,8 @@ describe('W3mFrameProvider', () => {
       projectId,
       enableLogger: true,
       abortController,
-      getActiveCaipNetwork
+      getActiveCaipNetwork,
+      getCaipNetworks
     })
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     expect(generatePlatformLoggerSpy).toHaveBeenCalled()
@@ -241,7 +247,8 @@ describe('W3mFrameProvider', () => {
       projectId,
       enableLogger: false,
       abortController,
-      getActiveCaipNetwork
+      getActiveCaipNetwork,
+      getCaipNetworks
     })
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     expect(generatePlatformLoggerSpy).not.toHaveBeenCalled()
@@ -256,7 +263,8 @@ describe('W3mFrameProvider', () => {
       projectId,
       onTimeout: onTimeoutMock,
       abortController: testAbortController,
-      getActiveCaipNetwork
+      getActiveCaipNetwork,
+      getCaipNetworks
     })
 
     testProvider['isInitialized'] = true
@@ -280,33 +288,37 @@ describe('W3mFrameProvider', () => {
     const eip155RpcUrl = 'https://rpc.ankr.com/eth'
     const solanaRpcUrl = 'https://api.mainnet-beta.solana.com'
 
+    const customEip155 = {
+      name: 'Ethereum',
+      nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+      rpcUrls: { default: { http: [eip155RpcUrl] } },
+      id: '1',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworkId: 'eip155:1' as CaipNetworkId
+    }
+    const customSolana = {
+      name: 'Solana',
+      nativeCurrency: { name: 'Sol', symbol: 'SOL', decimals: 9 },
+      rpcUrls: { default: { http: [solanaRpcUrl] } },
+      id: 'AzDjsjkalwnalsdnj2kh',
+      chainNamespace: ConstantsUtil.CHAIN.SOLANA,
+      caipNetworkId: 'solana:1' as CaipNetworkId
+    }
+
     const customGetActiveCaipNetwork = (namespace?: ChainNamespace) => {
       if (namespace === 'solana') {
-        return {
-          name: 'Solana',
-          nativeCurrency: { name: 'Sol', symbol: 'SOL', decimals: 9 },
-          rpcUrls: { default: { http: [solanaRpcUrl] } },
-          id: 'solana:1',
-          chainNamespace: ConstantsUtil.CHAIN.SOLANA,
-          caipNetworkId: 'solana:1' as CaipNetworkId
-        }
+        return customSolana
       }
 
-      return {
-        name: 'Ethereum',
-        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-        rpcUrls: { default: { http: [eip155RpcUrl] } },
-        id: 'eip155:1',
-        chainNamespace: ConstantsUtil.CHAIN.EVM,
-        caipNetworkId: 'eip155:1' as CaipNetworkId
-      }
+      return customEip155
     }
 
     const rpcProvider = new W3mFrameProvider({
       projectId,
       enableLogger: false,
       abortController: new AbortController(),
-      getActiveCaipNetwork: customGetActiveCaipNetwork
+      getActiveCaipNetwork: customGetActiveCaipNetwork,
+      getCaipNetworks: namespace => [customGetActiveCaipNetwork(namespace)]
     })
 
     expect(rpcProvider['getRpcUrl']()).toBe(eip155RpcUrl)

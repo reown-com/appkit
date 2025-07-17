@@ -21,7 +21,7 @@ interface W3mFrameProviderConfig {
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
   getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
-  getCaipNetworks: () => CaipNetwork[]
+  getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
 }
 
 // -- Provider --------------------------------------------------------
@@ -786,9 +786,13 @@ export class W3mFrameProvider {
     }
 
     const caipNetworks = this.getCaipNetworks(namespace)
-    const activeNetwork = caipNetworks.find(
-      network => network.id === chainId || network.caipNetworkId === chainId
-    )
+    const activeNetwork = chainId
+      ? caipNetworks.find(
+          network => String(network.id) === String(chainId) || network.caipNetworkId === chainId
+        )
+      : caipNetworks[0]
+
+    console.log('activeNetwork', activeNetwork?.rpcUrls)
 
     return activeNetwork?.rpcUrls.default.http?.[0]
   }
