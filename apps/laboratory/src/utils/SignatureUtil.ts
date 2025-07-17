@@ -19,7 +19,6 @@ export async function verifySignature({
   signature: string
   chainId: number
 }) {
-  console.log('>> verifySignature - lab', chainId)
   const publicClient = createPublicClient({
     transport: getTransport({ chainId })
   })
