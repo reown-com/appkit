@@ -45,7 +45,6 @@
     "@reown/appkit-ui": "1.7.12-ethers-balance-calls.0",
     "@sentry/core": "8.55.0",
     "@sentry/nextjs": "8.55.0",
-    "@solana/wallet-adapter-wallets": "0.19.36",
     "@solana/web3.js": "1.98.2",
     "@tanstack/react-query": "5.75.5",
     "@wagmi/core": "2.17.3",

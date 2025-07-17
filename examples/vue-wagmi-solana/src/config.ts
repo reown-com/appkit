@@ -1,9 +1,4 @@
-import {
-  HuobiWalletAdapter,
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-  TrustWalletAdapter
-} from '@solana/wallet-adapter-wallets'
+
 
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -31,14 +26,7 @@ export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
   solanaDevnet
 ]
 
-export const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [
-    new HuobiWalletAdapter(),
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new TrustWalletAdapter()
-  ]
-})
+export const solanaWeb3JsAdapter = new SolanaAdapter()
 
 export const wagmiAdapter = new WagmiAdapter({
   networks,

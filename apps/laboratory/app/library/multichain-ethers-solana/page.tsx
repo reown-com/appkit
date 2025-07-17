@@ -1,6 +1,5 @@
 'use client'
 
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
@@ -21,9 +20,7 @@ const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
 
 const etherAdapter = new EthersAdapter()
 
-const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
-})
+const solanaWeb3JsAdapter = new SolanaAdapter()
 
 const config = {
   adapters: [etherAdapter, solanaWeb3JsAdapter],
