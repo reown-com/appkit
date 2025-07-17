@@ -792,8 +792,6 @@ export class W3mFrameProvider {
         )
       : caipNetworks[0]
 
-    console.log('activeNetwork', activeNetwork?.rpcUrls)
-
     return activeNetwork?.rpcUrls.default.http?.[0]
   }
 }
