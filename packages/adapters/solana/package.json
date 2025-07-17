@@ -46,7 +46,7 @@
     }
   },
   "dependencies": {
-    "@walletconnect/types": "2.21.3",
+    "@walletconnect/types": "2.21.5",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",

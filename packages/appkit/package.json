@@ -138,7 +138,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@reown/appkit-pay": "workspace:*",
-    "@walletconnect/types": "2.21.3",
+    "@walletconnect/types": "2.21.5",
     "@walletconnect/universal-provider": "2.21.5",
     "bs58": "6.0.0",
     "semver": "7.7.2",
