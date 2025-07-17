@@ -9,40 +9,6 @@ import type { CreateAppKit } from '@reown/appkit'
 import type { CaipNetwork, CustomCaipNetwork } from '@reown/appkit-common'
 import { AppKit, type Metadata, createAppKit } from '@reown/appkit/core'
 
-/*
- * Example network config:
- * const suiMainnet = {
- *   id: 784,
- *   chainNamespace: 'sui' as const,
- *   caipNetworkId: 'sui:mainnet',
- *   name: 'Sui',
- *   nativeCurrency: { name: 'SUI', symbol: 'SUI', decimals: 9 },
- *   rpcUrls: { default: { http: ['https://fullnode.mainnet.sui.io:443'] } },
- *   connectParams: {
- *     methods: ['sui_signPersonalMessage'],
- *     chains: ['sui:mainnet'],
- *     events: []
- *   }
- * }
- */
-
-/*
- * Example network config:
- * const suiTestnet = {
- *   id: 784,
- *   chainNamespace: 'sui' as const,
- *   caipNetworkId: 'sui:testnet',
- *   name: 'Sui',
- *   nativeCurrency: { name: 'SUI', symbol: 'SUI', decimals: 9 },
- *   rpcUrls: { default: { http: ['https://fullnode.testnet.sui.io:443'] } },
- *   connectParams: {
- *     methods: ['sui_signPersonalMessage'],
- *     chains: ['sui:testnet'],
- *     events: []
- *   }
- * }
- */
-
 type ExtendedNamespaces = Omit<SessionTypes.Namespace, 'chains'> & {
   chains: CustomCaipNetwork[]
   namespace: string
@@ -56,8 +22,8 @@ export type Config = {
 
 export class UniversalConnector {
   private appKit: AppKit
-  private provider: Awaited<ReturnType<typeof UniversalProvider.init>>
   private config: Config
+  public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
   public session?: SessionTypes.Struct
 
   constructor({
@@ -75,32 +41,15 @@ export class UniversalConnector {
 
     this.session = provider.session
     provider.on('display_uri', this.onDisplayUri.bind(this))
-    provider.on('session_update', this.onSessionUpdate.bind(this))
-    provider.on('session_delete', this.onSessionDelete.bind(this))
-    provider.on('connect', this.onConnect.bind(this))
     provider.on('disconnect', this.onDisconnect.bind(this))
   }
 
   private onDisplayUri(uri: string) {
-    console.log('display_uri', uri)
     this.appKit.open({ uri })
-  }
-
-  private onSessionUpdate(session: SessionTypes.Struct) {
-    console.log('session_update', session)
-  }
-
-  private onSessionDelete(session: SessionTypes.Struct) {
-    console.log('session_delete', session)
-  }
-
-  private onConnect(session: SessionTypes.Struct) {
-    console.log('connect', session)
   }
 
   private onDisconnect() {
     this.session = undefined
-    console.log('disconnect')
   }
 
   public static async init(config: Config) {
@@ -140,14 +89,11 @@ export class UniversalConnector {
         return acc
       }, {})
 
-    console.log('>> Connecting...', namespaces)
     const session = await this.provider.connect({
       optionalNamespaces: namespaces as ConnectParams['optionalNamespaces']
     })
 
-    this.session = session as SessionTypes.Struct
-
-    console.log('session', session)
+    this.session = session
 
     await this.appKit.close()
 
