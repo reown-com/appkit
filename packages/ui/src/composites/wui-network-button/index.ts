@@ -48,7 +48,7 @@ export class WuiNetworkButton extends LitElement {
       return html`<wui-image src=${this.imageSrc}></wui-image>`
     }
 
-    return html` <wui-icon-box color="secondary" icon="networkPlaceholder"></wui-icon-box> `
+    return html` <wui-icon-box color="default" icon="networkPlaceholder"></wui-icon-box> `
   }
 }
 

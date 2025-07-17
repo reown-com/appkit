@@ -48,13 +48,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
         .padding=${['6', '3', '6', '3'] as const}
         gap="4"
       >
-        <wui-icon-box
-          size="xl"
-          iconColor="accent-100"
-          backgroundColor="accent-100"
-          icon="sealCheck"
-          background="opaque"
-        ></wui-icon-box>
+        <wui-icon-box size="xl" color="accent-primary" icon="sealCheck"></wui-icon-box>
 
         <wui-flex flexDirection="column" alignItems="center" gap="3">
           <wui-flex flexDirection="column" alignItems="center">

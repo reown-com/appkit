@@ -26,7 +26,7 @@ export default {
       control: { type: 'select' }
     },
     color: {
-      options: ['default', 'error', 'accent-primary', 'warning', 'success'],
+      options: ['accent-primary', 'success', 'error', 'warning', 'default', 'inverse'],
       control: { type: 'select' }
     }
   }

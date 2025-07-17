@@ -228,7 +228,7 @@ export class W3mActivityList extends LitElement {
       gap="5"
       data-testid="empty-activity-state"
     >
-      <wui-icon-box color="secondary" icon="wallet" size="lg"></wui-icon-box>
+      <wui-icon-box color="default" icon="wallet" size="lg"></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="2">
         <wui-text align="center" variant="md-regular" color="primary">No Transactions yet</wui-text>
         <wui-text align="center" variant="sm-regular" color="secondary"

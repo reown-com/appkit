@@ -75,12 +75,7 @@ export class W3mWalletSendView extends LitElement {
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
         ></w3m-input-token>
-        <wui-icon-box
-          size="md"
-          variant="secondary"
-          background="opaque"
-          icon="arrowBottom"
-        ></wui-icon-box>
+        <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
         <w3m-input-address
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>

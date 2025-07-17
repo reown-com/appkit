@@ -46,13 +46,7 @@ export class W3mSmartSessionCreatedView extends LitElement {
       .padding=${['0', '6', '0', '6'] as const}
     >
       <wui-flex gap="3" alignItems="center" justifyContent="center">
-        <wui-icon-box
-          size="xl"
-          iconColor="primary"
-          backgroundColor="inverse"
-          icon="clock"
-          background="opaque"
-        ></wui-icon-box>
+        <wui-icon-box size="xl" color="accent-primary" icon="clock"></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="3">
         <wui-text align="center" variant="md-medium" color="primary">

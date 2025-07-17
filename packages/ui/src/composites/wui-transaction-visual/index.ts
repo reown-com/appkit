@@ -90,13 +90,7 @@ export class WuiTransactionVisual extends LitElement {
 
     return html`
       <wui-flex alignItems="center" justifyContent="center" class="status-box">
-        <wui-icon-box
-          size="sm"
-          color=${color}
-          icon=${icon}
-          ?border=${true}
-          borderColor="wui-color-bg-125"
-        ></wui-icon-box>
+        <wui-icon-box size="sm" color=${color} icon=${icon}></wui-icon-box>
       </wui-flex>
     `
   }

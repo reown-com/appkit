@@ -457,13 +457,7 @@ export class W3mProfileWalletsView extends LitElement {
           rowgap="3"
           class="empty-box"
         >
-          <wui-icon-box
-            size="lg"
-            icon="wallet"
-            background="gray"
-            iconColor="secondary"
-            backgroundColor="glass-002"
-          ></wui-icon-box>
+          <wui-icon-box size="lg" icon="wallet" color="default"></wui-icon-box>
 
           <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="1">
             <wui-text color="primary" variant="md-medium" data-testid="empty-state-text"

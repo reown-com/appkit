@@ -118,13 +118,7 @@ export class W3mSendSelectTokenView extends LitElement {
                 flexDirection="column"
                 gap="4"
               >
-                <wui-icon-box
-                  icon="coinPlaceholder"
-                  size="inherit"
-                  iconColor="secondary"
-                  backgroundColor="secondary"
-                  iconSize="lg"
-                ></wui-icon-box>
+                <wui-icon-box icon="coinPlaceholder" color="default" size="lg"></wui-icon-box>
                 <wui-flex
                   class="textContent"
                   gap="2"
