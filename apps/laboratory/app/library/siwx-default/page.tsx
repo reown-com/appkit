@@ -1,6 +1,5 @@
 'use client'
 
-
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'

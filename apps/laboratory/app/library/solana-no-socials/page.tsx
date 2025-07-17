@@ -1,6 +1,5 @@
 'use client'
 
-
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana } from '@reown/appkit/networks'
 

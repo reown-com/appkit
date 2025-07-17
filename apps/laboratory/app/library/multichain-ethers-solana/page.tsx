@@ -1,6 +1,5 @@
 'use client'
 
-
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
