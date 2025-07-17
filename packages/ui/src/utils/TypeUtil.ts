@@ -164,7 +164,6 @@ export type IconType =
   | 'more'
   | 'networkPlaceholder'
   | 'nftPlaceholder'
-  | 'power'
   | 'playStore'
   | 'plus'
   | 'qrCode'

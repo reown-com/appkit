@@ -6,7 +6,7 @@ import '@reown/appkit-ui/wui-transaction-visual'
 import type { WuiTransactionVisual } from '@reown/appkit-ui/wui-transaction-visual'
 
 import '../../components/gallery-container'
-import { walletImageSrc, walletImagesOptions } from '../../utils/PresetUtils'
+import { walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiTransactionVisual>
 
