@@ -5,6 +5,7 @@ import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -296,19 +297,20 @@ export const PayController = {
     if (state.isConfigured) {
       return
     }
-    ProviderUtil.subscribeProviders(async _ => {
-      const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
-      if (!provider) {
-        return
+
+    ConnectionController.subscribeKey('connections', connections => {
+      if (connections.size > 0) {
+        this.handlePayment()
       }
-      await this.handlePayment()
     })
 
-    AccountController.subscribeKey('caipAddress', async caipAddress => {
-      if (!caipAddress) {
-        return
+    AccountController.subscribeKey('caipAddress', caipAddress => {
+      if (caipAddress) {
+        // WalletConnect connections sometimes fail down the line due to state not being updated atomically
+        setTimeout(() => {
+          this.handlePayment()
+        }, 100)
       }
-      await this.handlePayment()
     })
   },
   async handlePayment() {
@@ -323,16 +325,19 @@ export const PayController = {
 
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
     const chainNamespace = ChainController.state.activeChain
+
     if (!address || !chainId || !chainNamespace) {
       return
     }
 
     const provider = ProviderUtil.getProvider(chainNamespace)
+
     if (!provider) {
       return
     }
 
     const caipNetwork = ChainController.state.activeCaipNetwork
+
     if (!caipNetwork) {
       return
     }
