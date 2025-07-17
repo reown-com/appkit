@@ -1,7 +1,5 @@
 'use client'
 
-import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
-
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
@@ -22,9 +20,7 @@ const networks = ConstantsUtil.AllNetworks
 
 const etherAdapter = new EthersAdapter()
 
-const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter()]
-})
+const solanaWeb3JsAdapter = new SolanaAdapter()
 
 const bitcoinAdapter = new BitcoinAdapter({})
 

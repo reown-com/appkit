@@ -1403,7 +1403,8 @@ export abstract class AppKitBaseClient {
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
     ) {
       if (connectorId) {
-        const connector = this.getConnectors().find(c => {
+        const connectors = this.getConnectors()
+        const connector = connectors.find(c => {
           const isConnectorId = c.id === connectorId
           const isRdns = c.info?.rdns === connectorId
 
@@ -1433,13 +1434,21 @@ export abstract class AppKitBaseClient {
         )
       }
     } else if (connectorId) {
-      if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {
-        const connector = this.getConnectors().find(
-          c => c.id === ConstantsUtil.CONNECTOR_ID.COINBASE
-        )
+      if (
+        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
+        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE
+      ) {
+        const connector = this.getConnectors().find(c => c.id === connectorId)
+        const name = connector?.name || 'Coinbase Wallet'
+        const icon = connector?.imageUrl || this.getConnectorImage(connector)
+        const info = connector?.info
 
         this.setConnectedWalletInfo(
-          { name: 'Coinbase Wallet', icon: this.getConnectorImage(connector) },
+          {
+            ...info,
+            name,
+            icon
+          },
           chainNamespace
         )
       }
