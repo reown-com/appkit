@@ -600,15 +600,15 @@ const controller = {
     })
   },
 
-  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetwork?: CaipNetwork) {
-    const activeCaipNetwork = caipNetwork || state.activeCaipNetwork
+  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetworkId?: CaipNetworkId) {
+    const activeCaipNetworkId = caipNetworkId || state.activeCaipNetwork?.caipNetworkId
     const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(namespace)
 
     if (!requestedCaipNetworks.length) {
       return true
     }
 
-    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
+    return requestedCaipNetworks?.some(network => network.caipNetworkId === activeCaipNetworkId)
   },
 
   checkIfSupportedChainId(chainId: number | string) {

@@ -351,10 +351,16 @@ describe('ConnectorController', () => {
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
     vi.spyOn(RouterController, 'push')
 
-    ConnectorController.selectWalletConnector({ name: 'Connector', id: 'connector' })
+    const wallet = {
+      name: 'Connector',
+      id: 'connector',
+      display_index: 0
+    }
+    ConnectorController.selectWalletConnector(wallet)
 
     expect(RouterController.push).toHaveBeenCalledWith('ConnectingExternal', {
-      connector: mockConnector
+      connector: mockConnector,
+      wallet
     })
   })
 
