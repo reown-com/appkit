@@ -305,11 +305,18 @@ export const PayController = {
     })
 
     AccountController.subscribeKey('caipAddress', caipAddress => {
+      const hasWcConnection = ConnectionController.hasAnyConnection(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
       if (caipAddress) {
         // WalletConnect connections sometimes fail down the line due to state not being updated atomically
-        setTimeout(() => {
+        if (hasWcConnection) {
+          setTimeout(() => {
+            this.handlePayment()
+          }, 100)
+        } else {
           this.handlePayment()
-        }, 100)
+        }
       }
     })
   },
