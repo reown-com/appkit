@@ -1,7 +1,5 @@
-export type PaymentResultStatus = 'SUCCESS' | 'FAILED'
-
 export type PaymentResult = {
-  status: PaymentResultStatus
+  success: boolean
   result?: string
   error?: string
 }

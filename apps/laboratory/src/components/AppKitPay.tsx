@@ -193,7 +193,7 @@ export function AppKitPay() {
       paymentAsset: paymentDetails.asset
     })
 
-    if (result.status === 'SUCCESS') {
+    if (result.success) {
       toast({ title: 'Payment Succeeded', description: `Tx: ${result.result}`, type: 'success' })
     } else {
       toast({
