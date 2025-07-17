@@ -129,7 +129,6 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return Promise.resolve()
       }
 
-      console.log('>> Adding session', session)
       if (await siwe.methods.verifyMessage(session)) {
         const address = session.data.accountAddress
         const network = NetworkUtil.parseEvmChainId(session.data.chainId)

@@ -29,7 +29,6 @@ export async function verifySignature({
 }) {
   try {
     const caipNetworkId = chainId.includes('eip155:') ? chainId : `eip155:${chainId}`
-    console.log('>> SIWE verifySignature caipNetworkId', caipNetworkId)
     const client = createPublicClient({
       transport: http(getBlockchainApiRpcUrl(caipNetworkId as CaipNetworkId, projectId))
     })
