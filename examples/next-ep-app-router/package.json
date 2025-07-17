@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/ethereum-provider": "2.21.3",
+    "@walletconnect/ethereum-provider": "2.21.5",
     "next": "14.2.30",
     "next-themes": "0.4.6",
     "react": "19.1.0",
