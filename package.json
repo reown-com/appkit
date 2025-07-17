@@ -59,8 +59,8 @@
     "prepare": "husky",
     "cli": "node packages/cli/index.js",
     "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
-    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/*",
-    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/*"
+    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install && pnpm prettier:format",
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install && pnpm prettier:format"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
