@@ -98,10 +98,10 @@
       "import": "./dist/esm/exports/wui-card-select.js",
       "default": "./dist/esm/exports/wui-card-select.js"
     },
-    "./wui-chip": {
-      "types": "./dist/types/exports/wui-chip.d.ts",
-      "import": "./dist/esm/exports/wui-chip.js",
-      "default": "./dist/esm/exports/wui-chip.js"
+    "./wui-semantic-chip": {
+      "types": "./dist/types/exports/wui-semantic-chip.d.ts",
+      "import": "./dist/esm/exports/wui-semantic-chip.js",
+      "default": "./dist/esm/exports/wui-semantic-chip.js"
     },
     "./wui-connect-button": {
       "types": "./dist/types/exports/wui-connect-button.d.ts",
@@ -293,11 +293,6 @@
       "import": "./dist/esm/exports/wui-list-network.js",
       "default": "./dist/esm/exports/wui-list-network.js"
     },
-    "./wui-list-wallet-transaction": {
-      "types": "./dist/types/exports/wui-list-wallet-transaction.d.ts",
-      "import": "./dist/esm/exports/wui-list-wallet-transaction.js",
-      "default": "./dist/esm/exports/wui-list-wallet-transaction.js"
-    },
     "./wui-promo": {
       "types": "./dist/types/exports/wui-promo.d.ts",
       "import": "./dist/esm/exports/wui-promo.js",
@@ -378,11 +373,6 @@
       "import": "./dist/esm/exports/wui-checkbox.js",
       "default": "./dist/esm/exports/wui-checkbox.js"
     },
-    "./wui-switch": {
-      "types": "./dist/types/exports/wui-switch.d.ts",
-      "import": "./dist/esm/exports/wui-switch.js",
-      "default": "./dist/esm/exports/wui-switch.js"
-    },
     "./wui-certified-switch": {
       "types": "./dist/types/exports/wui-certified-switch.d.ts",
       "import": "./dist/esm/exports/wui-certified-switch.js",
@@ -408,6 +398,16 @@
       "import": "./dist/esm/exports/wui-ux-by-reown.js",
       "default": "./dist/esm/exports/wui-ux-by-reown.js"
     },
+    "./wui-tab-item": {
+      "types": "./dist/types/exports/wui-tab-item.d.ts",
+      "import": "./dist/esm/exports/wui-tab-item.js",
+      "default": "./dist/esm/exports/wui-tab-item.js"
+    },
+    "./wui-toggle": {
+      "types": "./dist/types/exports/wui-toggle.d.ts",
+      "import": "./dist/esm/exports/wui-toggle.js",
+      "default": "./dist/esm/exports/wui-toggle.js"
+    },
     "./wui-inactive-profile-wallet-item": {
       "types": "./dist/types/exports/wui-inactive-profile-wallet-item.d.ts",
       "import": "./dist/esm/exports/wui-inactive-profile-wallet-item.js",
@@ -422,6 +422,26 @@
       "types": "./dist/types/exports/wui-wallet-switch.d.ts",
       "import": "./dist/esm/exports/wui-wallet-switch.js",
       "default": "./dist/esm/exports/wui-wallet-switch.js"
+    },
+    "./wui-network-switch": {
+      "types": "./dist/types/exports/wui-network-switch.d.ts",
+      "import": "./dist/esm/exports/wui-network-switch.js",
+      "default": "./dist/esm/exports/wui-network-switch.js"
+    },
+    "./wui-shortcut": {
+      "types": "./dist/types/exports/wui-shortcut.d.ts",
+      "import": "./dist/esm/exports/wui-shortcut.js",
+      "default": "./dist/esm/exports/wui-shortcut.js"
+    },
+    "./wui-transaction-thumbnail": {
+      "types": "./dist/types/exports/wui-transaction-thumbnail.d.ts",
+      "import": "./dist/esm/exports/wui-transaction-thumbnail.js",
+      "default": "./dist/esm/exports/wui-transaction-thumbnail.js"
+    },
+    "./wui-toast-message": {
+      "types": "./dist/types/exports/wui-toast-message.d.ts",
+      "import": "./dist/esm/exports/wui-toast-message.js",
+      "default": "./dist/esm/exports/wui-toast-message.js"
     },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",

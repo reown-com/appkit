@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import '../../components/wui-icon/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
@@ -13,30 +14,55 @@ export class WuiConnectButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<
+    SizeType,
+    'inherit' | 'xxl' | 'mdl' | 'xl' | 'xs' | 'm' | 'xxs'
+  > = 'md'
+
+  @property() public variant: 'primary' | 'secondary' = 'primary'
 
   @property({ type: Boolean }) public loading = false
 
+  @property() public text = 'Connect Wallet'
+
   // -- Render -------------------------------------------- //
   public override render() {
-    const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
-
     return html`
-      <button data-size=${this.size} ?disabled=${this.loading}>
-        ${this.loadingTemplate()}
-        <wui-text variant=${textVariant} color=${this.loading ? 'accent-100' : 'inherit'}>
-          <slot></slot>
-        </wui-text>
+      <button
+        data-loading=${this.loading}
+        data-variant=${this.variant}
+        data-size=${this.size}
+        ?disabled=${this.loading}
+      >
+        ${this.contentTemplate()}
       </button>
     `
   }
 
-  public loadingTemplate() {
+  // -- Private ------------------------------------------- //
+
+  private contentTemplate() {
+    const textVariants = {
+      lg: 'lg-regular',
+      md: 'md-regular',
+      sm: 'sm-regular'
+    } as const
+
+    const colors = {
+      primary: 'invert',
+      secondary: 'accent-primary'
+    } as const
+
     if (!this.loading) {
-      return null
+      return html` <wui-text variant=${textVariants[this.size]} color=${colors[this.variant]}>
+        ${this.text}
+      </wui-text>`
     }
 
-    return html`<wui-loading-spinner size=${this.size} color="accent-100"></wui-loading-spinner>`
+    return html`<wui-loading-spinner
+      color=${colors[this.variant]}
+      size=${this.size}
+    ></wui-loading-spinner>`
   }
 }
 

@@ -89,11 +89,11 @@ export class W3mInputCurrency extends LitElement {
             class="currency-container"
             justifyContent="space-between"
             alignItems="center"
-            gap="xxs"
+            gap="1"
             @click=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
           >
             <wui-image src=${ifDefined(image)}></wui-image>
-            <wui-text color="fg-100">${this.selectedCurrency.symbol}</wui-text>
+            <wui-text color="primary">${this.selectedCurrency.symbol}</wui-text>
           </wui-flex>`
         : html`<wui-loading-spinner></wui-loading-spinner>`}
     </wui-input-text>`

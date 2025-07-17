@@ -7,7 +7,7 @@ export default css`
   }
 
   :host > wui-flex > wui-flex {
-    border-radius: var(--wui-border-radius-l);
+    border-radius: var(--apkt-borderRadius-8);
     width: 100%;
   }
 

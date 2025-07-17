@@ -6,12 +6,12 @@ export default css`
   }
 
   .suggestion {
-    background: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    border-radius: var(--apkt-borderRadius-4);
   }
 
   .suggestion:hover {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: var(--apkt-tokens-core-glass010);
     cursor: pointer;
   }
 

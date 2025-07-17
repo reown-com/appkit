@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -7,93 +7,53 @@ export default css`
   }
 
   button {
-    background: var(--wui-color-accent-100);
-    border: 1px solid var(--wui-color-gray-glass-010);
-    border-radius: var(--wui-border-radius-m);
-    gap: var(--wui-spacing-xs);
-  }
-
-  button.loading {
-    background: var(--wui-color-gray-glass-010);
-    border: 1px solid var(--wui-color-gray-glass-010);
-    pointer-events: none;
-  }
-
-  button:disabled {
-    background-color: var(--wui-color-gray-glass-015);
-    border: 1px solid var(--wui-color-gray-glass-010);
-  }
-
-  button:disabled > wui-text {
-    color: var(--wui-color-gray-glass-015);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled {
-      background-color: var(--wui-color-accent-090);
-    }
-
-    button:active:enabled {
-      background-color: var(--wui-color-accent-080);
-    }
-  }
-
-  button:focus-visible {
-    border: 1px solid var(--wui-color-gray-glass-010);
-    background-color: var(--wui-color-accent-090);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   button[data-size='sm'] {
-    padding: 6.75px 10px 7.25px;
-  }
-
-  ::slotted(*) {
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
-    will-change: opacity;
-    opacity: var(--local-opacity-100);
-  }
-
-  button > wui-text {
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
-    will-change: opacity;
-    opacity: var(--local-opacity-100);
-    color: var(--wui-color-inverse-100);
+    padding: ${({ spacing }) => spacing[2]};
   }
 
   button[data-size='md'] {
-    padding: 9px var(--wui-spacing-l) 9px var(--wui-spacing-l);
+    padding: ${({ spacing }) => spacing[3]};
   }
 
-  button[data-size='md'] + wui-text {
-    padding-left: var(--wui-spacing-3xs);
+  button[data-size='lg'] {
+    padding: ${({ spacing }) => spacing[4]};
   }
 
-  @media (max-width: 500px) {
-    button[data-size='md'] {
-      height: 32px;
-      padding: 5px 12px;
-    }
-
-    button[data-size='md'] > wui-text > slot {
-      font-size: 14px !important;
-    }
+  button[data-variant='primary'] {
+    background: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
   }
 
-  wui-loading-spinner {
-    width: 14px;
-    height: 14px;
+  button[data-variant='secondary'] {
+    background: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
-  wui-loading-spinner::slotted(svg) {
-    width: 10px !important;
-    height: 10px !important;
+  button:hover:enabled {
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
   }
 
-  button[data-size='sm'] > wui-loading-spinner {
-    width: 12px;
-    height: 12px;
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  button[data-loading='true'] {
+    cursor: not-allowed;
+  }
+
+  button[data-loading='true'][data-size='sm'] {
+    border-radius: ${({ borderRadius }) => borderRadius[32]};
+    padding: ${({ spacing }) => spacing[2]} ${({ spacing }) => spacing[3]};
+  }
+
+  button[data-loading='true'][data-size='md'] {
+    border-radius: ${({ borderRadius }) => borderRadius[20]};
+    padding: ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[4]};
+  }
+
+  button[data-loading='true'][data-size='lg'] {
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
+    padding: ${({ spacing }) => spacing[4]} ${({ spacing }) => spacing[5]};
   }
 `

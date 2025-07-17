@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host > wui-flex {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: var(--apkt-tokens-core-glass010);
   }
 
   :host wui-ux-by-reown {
@@ -10,12 +10,12 @@ export default css`
   }
 
   :host wui-ux-by-reown.branding-only {
-    padding-top: var(--wui-spacing-m);
+    padding-top: var(--apkt-spacing-3);
   }
 
   a {
     text-decoration: none;
-    color: var(--wui-color-fg-175);
+    color: var(--apkt-tokens-theme-foregroundSecondary);
     font-weight: 500;
   }
 `

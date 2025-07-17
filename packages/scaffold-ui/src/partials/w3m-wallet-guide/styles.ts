@@ -11,7 +11,7 @@ export default css`
 
   .chip-box {
     width: fit-content;
-    background-color: var(--wui-color-gray-glass-005);
-    border-radius: var(--wui-border-radius-3xl);
+    background-color: var(--apkt-tokens-core-glass010);
+    border-radius: var(--apkt-borderRadius-20);
   }
 `

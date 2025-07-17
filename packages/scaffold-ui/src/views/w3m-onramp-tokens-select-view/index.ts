@@ -67,8 +67,8 @@ export class W3mOnrampTokensView extends LitElement {
       <w3m-legal-checkbox></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
-        .padding=${['0', 's', 's', 's']}
-        gap="xs"
+        .padding=${['0', '3', '3', '3']}
+        gap="2"
         class=${ifDefined(disabled ? 'disabled' : undefined)}
       >
         ${this.currenciesTemplate(disabled)}
@@ -87,9 +87,9 @@ export class W3mOnrampTokensView extends LitElement {
           variant="image"
           tabIdx=${ifDefined(disabled ? -1 : undefined)}
         >
-          <wui-flex gap="3xs" alignItems="center">
-            <wui-text variant="paragraph-500" color="fg-100">${token.name}</wui-text>
-            <wui-text variant="small-400" color="fg-200">${token.symbol}</wui-text>
+          <wui-flex gap="1" alignItems="center">
+            <wui-text variant="md-medium" color="primary">${token.name}</wui-text>
+            <wui-text variant="sm-regular" color="secondary">${token.symbol}</wui-text>
           </wui-flex>
         </wui-list-item>
       `

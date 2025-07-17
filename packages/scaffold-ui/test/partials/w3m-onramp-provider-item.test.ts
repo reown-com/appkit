@@ -80,7 +80,7 @@ describe('W3mOnRampProviderItem', () => {
     const visual = element.shadowRoot?.querySelector('wui-visual')
     expect(visual?.getAttribute('name')).toBe('meld')
 
-    const labelText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-500"]')
+    const labelText = element.shadowRoot?.querySelector('wui-text[variant="md-medium"]')
     expect(labelText?.textContent?.trim()).toBe('Meld.io')
 
     const feeText = element.shadowRoot?.querySelector('wui-text[variant="tiny-500"]')

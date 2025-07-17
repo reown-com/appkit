@@ -61,8 +61,8 @@ export class W3mTooltip extends LitElement {
     `
 
     return html`<wui-flex>
-      <wui-icon data-placement="top" color="fg-100" size="inherit" name="cursor"></wui-icon>
-      <wui-text color="inherit" variant="small-500">${this.message}</wui-text>
+      <wui-icon data-placement="top" color="default" size="inherit" name="cursor"></wui-icon>
+      <wui-text color="primary" variant="sm-regular">${this.message}</wui-text>
     </wui-flex>`
   }
 }

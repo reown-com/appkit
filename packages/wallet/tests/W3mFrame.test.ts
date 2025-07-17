@@ -217,10 +217,10 @@ describe('W3mFrame', () => {
       expect(mockStyle['border']).toBe('none')
       expect(mockStyle['animationDelay']).toBe('0s, 50ms')
       expect(mockStyle['borderBottomLeftRadius']).toBe(
-        'clamp(0px, var(--wui-border-radius-l), 44px)'
+        'clamp(0px, var(--apkt-borderRadius-8), 44px)'
       )
       expect(mockStyle['borderBottomRightRadius']).toBe(
-        'clamp(0px, var(--wui-border-radius-l), 44px)'
+        'clamp(0px, var(--apkt-borderRadius-8), 44px)'
       )
     })
   })

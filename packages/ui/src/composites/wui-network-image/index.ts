@@ -34,20 +34,26 @@ export class WuiNetworkImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const getSize = {
+      sm: '4',
+      md: '6',
+      lg: '10'
+    } as const
+
     if (this.round) {
       this.dataset['round'] = 'true'
       this.style.cssText = `
-      --local-width: var(--wui-spacing-3xl);
-      --local-height: var(--wui-spacing-3xl);
-      --local-icon-size: var(--wui-spacing-l);
+      --local-width: var(--apkt-spacing-10);
+      --local-height: var(--apkt-spacing-10);
+      --local-icon-size: var(--apkt-spacing-4);
     `
     } else {
       this.style.cssText = `
 
-      --local-path: var(--wui-path-network-${this.size});
-      --local-width:  var(--wui-width-network-${this.size});
-      --local-height:  var(--wui-height-network-${this.size});
-      --local-icon-size:  var(--wui-icon-size-network-${this.size});
+      --local-path: var(--apkt-path-network-${this.size});
+      --local-width:  var(--apkt-width-network-${this.size});
+      --local-height:  var(--apkt-height-network-${this.size});
+      --local-icon-size:  var(--apkt-spacing-${getSize[this.size]});
     `
     }
 
@@ -68,7 +74,7 @@ export class WuiNetworkImage extends LitElement {
       return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     }
 
-    return html`<wui-icon size="inherit" color="fg-200" name="networkPlaceholder"></wui-icon>`
+    return html`<wui-icon size="inherit" color="default" name="networkPlaceholder"></wui-icon>`
   }
 }
 

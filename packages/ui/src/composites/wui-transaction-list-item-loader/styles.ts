@@ -1,9 +1,9 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host > wui-flex:first-child {
-    column-gap: var(--wui-spacing-s);
-    padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
+    gap: ${({ spacing }) => spacing[2]};
+    padding: ${({ spacing }) => spacing[3]};
     width: 100%;
   }
 

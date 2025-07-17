@@ -4,9 +4,9 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { RouterController, type WalletGuideType } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-chip'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-semantic-chip'
 import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
@@ -28,31 +28,41 @@ export class W3mWalletGuide extends LitElement {
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          rowGap="xs"
+          rowgap="2"
           data-testid="w3m-wallet-guide-explore"
         >
-          <wui-text variant="small-400" color="fg-200" align="center">
+          <wui-text variant="sm-regular" color="secondary" align="center">
             Looking for a self-custody wallet?
           </wui-text>
 
           <wui-flex class="chip-box">
-            <wui-chip
-              imageIcon="walletConnectLightBrown"
-              icon="externalLink"
-              variant="transparent"
-              href="https://walletguide.walletconnect.network"
-              title="Find one on WalletGuide"
-            ></wui-chip>
+            <wui-button
+              @click=${() => {
+                window.open('https://walletguide.walletconnect.network', '_blank')
+              }}
+              size="sm"
+              variant="neutral-secondary"
+              icon="walletConnectLightBrown"
+              text="Find one on WalletGuide"
+              ><wui-icon
+                size="sm"
+                color="inherit"
+                name="walletConnectLightBrown"
+                slot="iconLeft"
+              ></wui-icon>
+              Find one on WalletGuide
+              <wui-icon size="sm" color="inherit" name="externalLink" slot="iconRight"></wui-icon>
+            </wui-button>
           </wui-flex>
         </wui-flex>`
       : html`<wui-flex
-          columnGap="4xs"
+          columnGap="1"
           flexDirection="row"
           alignItems="center"
           justifyContent="center"
-          .padding=${['s', '0', 's', '0']}
+          .padding=${['3', '0', '3', '0'] as const}
         >
-          <wui-text variant="small-400" class="title" color="fg-200"
+          <wui-text variant="md-medium" class="title" color="secondary"
             >Haven't got a wallet?</wui-text
           >
           <wui-link

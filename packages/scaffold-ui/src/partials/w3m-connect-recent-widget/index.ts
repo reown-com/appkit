@@ -65,7 +65,7 @@ export class W3mConnectRecentWidget extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${filteredRecentWallets.map(
           wallet => html`
             <wui-list-wallet
@@ -73,7 +73,8 @@ export class W3mConnectRecentWidget extends LitElement {
               name=${wallet.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
               tagLabel="recent"
-              tagVariant="shade"
+              tagVariant="info"
+              size="sm"
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}

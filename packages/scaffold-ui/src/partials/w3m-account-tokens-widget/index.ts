@@ -55,20 +55,20 @@ export class W3mAccountTokensWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private tokenTemplate() {
     if (this.tokenBalance && this.tokenBalance?.length > 0) {
-      return html`<wui-flex class="contentContainer" flexDirection="column" gap="xs">
+      return html`<wui-flex class="contentContainer" flexDirection="column" gap="2">
         ${this.tokenItemTemplate()}
       </wui-flex>`
     }
 
-    return html` <wui-flex flexDirection="column" gap="xs"
+    return html` <wui-flex flexDirection="column" gap="2"
       >${this.onRampTemplate()}
       <wui-list-description
         @click=${this.onReceiveClick.bind(this)}
         text="Receive funds"
         description="Transfer tokens on your wallet"
         icon="arrowBottomCircle"
-        iconColor="fg-200"
-        iconBackgroundColor="fg-200"
+        iconColor="secondary"
+        iconBackgroundColor="secondary"
         data-testid="receive-funds"
       ></wui-list-description
     ></wui-flex>`

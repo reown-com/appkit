@@ -39,7 +39,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="m" gap="m">
+      <wui-flex flexDirection="column" padding="4" gap="4">
         <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
           <wui-email-input
             value=${this.initialEmail}
@@ -102,7 +102,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
       return html`
         <wui-button
           size="md"
-          variant="main"
+          variant="accent-primary"
           fullWidth
           @click=${this.onSubmitEmail.bind(this)}
           .disabled=${!showSubmit}
@@ -114,14 +114,14 @@ export class W3mUpdateEmailWalletView extends LitElement {
     }
 
     return html`
-      <wui-flex gap="s">
+      <wui-flex gap="3">
         <wui-button size="md" variant="neutral" fullWidth @click=${RouterController.goBack}>
           Cancel
         </wui-button>
 
         <wui-button
           size="md"
-          variant="main"
+          variant="accent-primary"
           fullWidth
           @click=${this.onSubmitEmail.bind(this)}
           .disabled=${!showSubmit}
