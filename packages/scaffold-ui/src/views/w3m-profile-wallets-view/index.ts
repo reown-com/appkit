@@ -38,10 +38,6 @@ import { HelpersUtil } from '@reown/appkit-utils'
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'
 
-// -- Constants ----------------------------------------- //
-const TABS_PADDING = 16
-const TABS_INNER_PADDING = 4
-
 // -- Types -------------------------------- //
 interface Account {
   address: string
@@ -389,7 +385,7 @@ export class W3mProfileWalletsView extends LitElement {
                 address=${account.address}
                 alt=${connection.connectorId}
                 buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
-                buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
+                buttonVariant=${isRecentConnections ? 'neutral-secondary' : 'accent-secondary'}
                 rightIcon=${isRecentConnections ? 'bin' : 'power'}
                 rightIconSize="sm"
                 class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
@@ -685,7 +681,7 @@ export class W3mProfileWalletsView extends LitElement {
         profileName: this.profileName,
         buttonType: 'disconnect',
         buttonLabel: 'Disconnect',
-        buttonVariant: 'neutral',
+        buttonVariant: 'neutral-secondary',
         ...(authData.isAuth
           ? { description: this.isSmartAccount(address) ? 'Smart Account' : 'EOA Account' }
           : {})
@@ -717,13 +713,13 @@ export class W3mProfileWalletsView extends LitElement {
               alignItems: 'flex-end',
               buttonType: isConnected ? 'disconnect' : 'switch',
               buttonLabel: isConnected ? 'Disconnect' : 'Switch',
-              buttonVariant: isConnected ? 'neutral' : 'accent'
+              buttonVariant: isConnected ? 'neutral-secondary' : 'accent-secondary'
             }
           : {
               alignItems: 'center',
               buttonType: 'disconnect',
               buttonLabel: 'Disconnect',
-              buttonVariant: 'neutral'
+              buttonVariant: 'neutral-secondary'
             })
       }
     })

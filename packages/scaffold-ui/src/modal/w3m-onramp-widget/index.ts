@@ -81,7 +81,9 @@ export class W3mOnrampWidget extends LitElement {
             ${BUY_PRESET_AMOUNTS.map(
               amount =>
                 html`<wui-button
-                  variant=${this.paymentAmount === amount ? 'accent' : 'neutral'}
+                  variant=${this.paymentAmount === amount
+                    ? 'accent-secondary'
+                    : 'neutral-secondary'}
                   size="md"
                   textVariant="md-medium"
                   fullWidth

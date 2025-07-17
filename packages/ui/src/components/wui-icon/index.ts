@@ -14,6 +14,7 @@ import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
 import { arrowTopSvg } from '../../assets/svg/arrow-top.js'
 import { arrowClockWiseSvg } from '../../assets/svg/arrows-clock-wise.js'
 import { bankSvg } from '../../assets/svg/bank.js'
+import { binSvg } from '../../assets/svg/bin.js'
 import { bitcoinSvg } from '../../assets/svg/bitcoin.js'
 import { browserSvg } from '../../assets/svg/browser.js'
 import { cardSvg } from '../../assets/svg/card.js'
@@ -142,6 +143,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   helpCircle: helpCircleSvg,
   image: imageSvg,
   id: idSvg,
+  bin: binSvg,
   lightbulb: lightbulbSvg,
   mail: mailSvg,
   mobile: mobileSvg,

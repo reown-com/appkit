@@ -9,7 +9,7 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     column-gap: ${({ spacing }) => spacing[1]};
     background-color: transparent;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.2s linear;
     will-change: background-color;
   }
 

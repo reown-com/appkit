@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
@@ -8,7 +9,7 @@ import '../../components/wui-text/index.js'
 import '../../composites/wui-icon-link/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonVariant, IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { ButtonVariant, IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-button/index.js'
@@ -34,15 +35,15 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public icon?: IconType = undefined
 
-  @property() public iconSize?: SizeType = 'md'
+  @property() public iconSize?: IconSizeType = 'md'
 
   @property() public iconBadge?: IconType | undefined
 
-  @property() public iconBadgeSize?: SizeType = 'md'
+  @property() public iconBadgeSize?: IconSizeType = 'md'
 
   @property() public rightIcon?: IconType = 'power'
 
-  @property() public rightIconSize?: SizeType = 'md'
+  @property() public rightIconSize?: IconSizeType = 'md'
 
   @property({ type: Boolean }) public loading = false
 
@@ -66,16 +67,12 @@ export class WuiInactiveProfileWalletItem extends LitElement {
       return html`
         <wui-flex alignItems="center" justifyContent="center" class="icon-box">
           <wui-flex alignItems="center" justifyContent="center" class="icon-box">
-            <wui-icon
-              size=${this.iconSize}
-              color="fg-200"
-              name=${this.icon}
-              class="custom-icon"
-            ></wui-icon>
+            <wui-icon size="lg" color="default" name=${this.icon} class="custom-icon"></wui-icon>
+
             ${this.iconBadge
               ? html`<wui-icon
-                  color="fg-175"
-                  size=${this.iconBadgeSize}
+                  color="default"
+                  size=${ifDefined(this.iconBadgeSize)}
                   name=${this.iconBadge}
                   class="icon-badge"
                 ></wui-icon>`
@@ -96,7 +93,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
         justifyContent="flex-start"
         alignItems="flex-start"
       >
-        <wui-text variant="sm-medium" color="primary">
+        <wui-text variant="lg-regular" color="primary">
           ${UiHelperUtil.getTruncateString({
             string: this.profileName || this.address,
             charsStart: this.profileName ? 16 : this.charsStart,
@@ -112,7 +109,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
     return html`
       <wui-flex columngap="1" alignItems="center" justifyContent="center">
         <wui-button
-          size="xs"
+          size="sm"
           variant=${this.buttonVariant}
           .loading=${this.loading}
           @click=${this.handleButtonClick}
@@ -122,9 +119,9 @@ export class WuiInactiveProfileWalletItem extends LitElement {
         </wui-button>
 
         <wui-icon-link
-          iconColor="fg-200"
-          size=${this.rightIconSize}
-          icon=${this.rightIcon}
+          iconColor="default"
+          size=${ifDefined(this.rightIconSize)}
+          icon=${ifDefined(this.rightIcon)}
           class="right-icon"
           @click=${this.handleIconClick}
         ></wui-icon-link>
