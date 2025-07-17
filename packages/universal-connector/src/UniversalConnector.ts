@@ -40,16 +40,12 @@ export class UniversalConnector {
     this.config = config
 
     this.session = provider.session
-    provider.on('display_uri', this.onDisplayUri.bind(this))
     provider.on('disconnect', this.onDisconnect.bind(this))
-  }
-
-  private onDisplayUri(uri: string) {
-    this.appKit.open({ uri })
   }
 
   private onDisconnect() {
     this.session = undefined
+    this.appKit.disconnect()
   }
 
   public static async init(config: Config) {
@@ -89,6 +85,7 @@ export class UniversalConnector {
         return acc
       }, {})
 
+    this.appKit.open()
     const session = await this.provider.connect({
       optionalNamespaces: namespaces as ConnectParams['optionalNamespaces']
     })
