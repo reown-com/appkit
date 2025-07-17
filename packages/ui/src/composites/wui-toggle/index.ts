@@ -2,14 +2,14 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
-import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ToggleSize } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-toggle')
 export class WuiToggle extends LitElement {
-  public static override styles = [resetStyles, elementStyles, colorStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- Members ------------------------------------------- //
   public inputElementRef: Ref<HTMLInputElement> = createRef<HTMLInputElement>()

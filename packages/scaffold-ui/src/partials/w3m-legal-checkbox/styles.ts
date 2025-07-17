@@ -11,7 +11,7 @@ export default css`
   }
   a {
     text-decoration: none;
-    color: var(--wui-color-secondary);
+    color: var(--apkt-tokens-theme-textSecondary);
     font-weight: 500;
   }
 `

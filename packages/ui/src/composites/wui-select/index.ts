@@ -4,7 +4,7 @@ import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
-import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconSizeType, SelectSize, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
@@ -24,7 +24,7 @@ const ICON_SIZE_BY_SIZE = {
 
 @customElement('wui-select')
 export class WuiSelect extends LitElement {
-  public static override styles = [resetStyles, elementStyles, colorStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public imageSrc = ''

@@ -4,15 +4,15 @@ export default css`
   :host {
     width: 100%;
     height: 100px;
-    border-radius: var(--wui-border-radius-s);
+    border-radius: var(--apkt-borderRadius-5);
     border: 1px solid var(--apkt-tokens-theme-foregroundPrimary);
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
     will-change: background-color;
   }
 
   :host(:hover) {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: var(--apkt-tokens-core-glass010);
   }
 
   wui-flex {

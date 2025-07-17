@@ -109,7 +109,7 @@ export class W3mModalBase extends LitElement {
   public override render() {
     this.style.cssText = `
       --local-border-bottom-mobile-radius: ${
-        this.enableEmbedded ? 'clamp(0px, var(--wui-border-radius-l), 44px)' : '0px'
+        this.enableEmbedded ? 'clamp(0px, var(--apkt-borderRadius-8), 44px)' : '0px'
       };
     `
 

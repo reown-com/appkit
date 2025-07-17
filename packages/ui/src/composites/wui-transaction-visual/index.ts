@@ -40,8 +40,8 @@ export class WuiTransactionVisual extends LitElement {
     const isLeftNFT = firstImage?.type === 'NFT'
     const isRightNFT = secondImage?.url ? secondImage.type === 'NFT' : isLeftNFT
 
-    const leftRadius = isLeftNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
-    const rightRadius = isRightNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
+    const leftRadius = isLeftNFT ? 'var(--apkt-borderRadius-3)' : 'var(--apkt-borderRadius-5)'
+    const rightRadius = isRightNFT ? 'var(--apkt-borderRadius-3)' : 'var(--apkt-borderRadius-5)'
 
     this.style.cssText = `
     --local-left-border-radius: ${leftRadius};

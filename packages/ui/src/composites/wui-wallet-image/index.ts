@@ -37,7 +37,7 @@ export class WuiWalletImage extends LitElement {
       borderRadius = '1'
     }
     this.style.cssText = `
-       --local-border-radius: var(--wui-border-radius-${borderRadius});
+       --local-border-radius: var(--apkt-borderRadius-${borderRadius});
    `
 
     this.dataset['size'] = this.size

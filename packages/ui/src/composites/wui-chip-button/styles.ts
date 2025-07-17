@@ -3,7 +3,7 @@ import { css } from '../../utils/ThemeHelperUtil.js'
 export default css`
   button {
     border: none;
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: var(--apkt-borderRadius-20);
     display: flex;
     flex-direction: row;
     align-items: center;

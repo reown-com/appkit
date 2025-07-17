@@ -13,8 +13,8 @@ export default css`
     bottom: 0;
     pointer-events: none;
     opacity: 0;
-    background-color: var(--wui-cover);
-    transition: opacity 0.2s var(--wui-ease-out-power-2);
+    background-color: var(--apkt-cover);
+    transition: opacity 0.2s var(--apkt-ease-out-power-2);
     will-change: opacity;
   }
 
@@ -31,15 +31,15 @@ export default css`
   }
 
   wui-card {
-    max-width: var(--w3m-modal-width);
+    max-width: var(--apkt-modal-width);
     width: 100%;
     position: relative;
-    animation: zoom-in 0.2s var(--wui-ease-out-power-2);
+    animation: zoom-in 0.2s var(--apkt-ease-out-power-2);
     animation-fill-mode: backwards;
     outline: none;
     transition:
-      border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1);
+      border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
+      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
     will-change: border-radius, background-color;
   }
 
@@ -49,8 +49,8 @@ export default css`
 
   wui-card[shake='true'] {
     animation:
-      zoom-in 0.2s var(--wui-ease-out-power-2),
-      w3m-shake 0.5s var(--wui-ease-out-power-2);
+      zoom-in 0.2s var(--apkt-ease-out-power-2),
+      w3m-shake 0.5s var(--apkt-ease-out-power-2);
   }
 
   wui-flex {
@@ -83,13 +83,13 @@ export default css`
       border-bottom-left-radius: var(--local-border-bottom-mobile-radius);
       border-bottom-right-radius: var(--local-border-bottom-mobile-radius);
       border-bottom: none;
-      animation: slide-in 0.2s var(--wui-ease-out-power-2);
+      animation: slide-in 0.2s var(--apkt-ease-out-power-2);
     }
 
     wui-card[shake='true'] {
       animation:
-        slide-in 0.2s var(--wui-ease-out-power-2),
-        w3m-shake 0.5s var(--wui-ease-out-power-2);
+        slide-in 0.2s var(--apkt-ease-out-power-2),
+        w3m-shake 0.5s var(--apkt-ease-out-power-2);
     }
   }
 

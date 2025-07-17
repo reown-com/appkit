@@ -15,8 +15,8 @@ export default css`
 
   wui-shimmer[data-type='network'] {
     border: none;
-    -webkit-clip-path: var(--wui-path-network);
-    clip-path: var(--wui-path-network);
+    -webkit-clip-path: var(--apkt-path-network);
+    clip-path: var(--apkt-path-network);
   }
 
   svg {

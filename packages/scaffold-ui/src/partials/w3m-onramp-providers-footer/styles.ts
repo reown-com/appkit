@@ -2,12 +2,12 @@ import { css } from 'lit'
 
 export default css`
   wui-flex {
-    border-top: 1px solid var(--wui-color-gray-glass-005);
+    border-top: 1px solid var(--apkt-tokens-core-glass010);
   }
 
   a {
     text-decoration: none;
-    color: var(--wui-color-fg-175);
+    color: var(--apkt-tokens-theme-foregroundSecondary);
     font-weight: 500;
     display: flex;
     align-items: center;

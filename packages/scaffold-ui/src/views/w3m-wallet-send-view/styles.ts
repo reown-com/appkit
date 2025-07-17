@@ -12,7 +12,7 @@ export default css`
   wui-icon-box {
     width: 32px;
     height: 32px;
-    border-radius: var(--wui-border-radius-xs) !important;
+    border-radius: var(--apkt-borderRadius-4) !important;
     border: 4px solid var(--apkt-tokens-theme-backgroundPrimary);
     background: var(--apkt-tokens-theme-foregroundPrimary);
     position: absolute;
@@ -23,7 +23,7 @@ export default css`
   }
 
   wui-button {
-    --local-border-radius: var(--wui-border-radius-xs) !important;
+    --local-border-radius: var(--apkt-borderRadius-4) !important;
   }
 
   .inputContainer {

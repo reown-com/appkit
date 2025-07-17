@@ -17,11 +17,11 @@ export default css`
 
   .action-button {
     width: 100%;
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
   }
 
   .action-button:disabled {
-    border-color: 1px solid var(--wui-color-gray-glass-005);
+    border-color: 1px solid var(--apkt-tokens-core-glass010);
   }
 
   .swap-inputs-container {
@@ -31,7 +31,7 @@ export default css`
   wui-icon-box {
     width: 32px;
     height: 32px;
-    border-radius: var(--wui-border-radius-xs) !important;
+    border-radius: var(--apkt-borderRadius-4) !important;
     border: 4px solid var(--apkt-tokens-theme-backgroundPrimary);
     background: var(--apkt-tokens-theme-foregroundPrimary);
     position: absolute;
@@ -50,14 +50,14 @@ export default css`
     left: 50%;
     transform: translate(-50%, -50%);
     gap: var(--apkt-spacing-2);
-    border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-color-modal-bg-base);
+    border-radius: var(--apkt-borderRadius-4);
+    background-color: var(--apkt-tokens-theme-backgroundPrimary);
     padding: var(--apkt-spacing-2);
   }
 
   .details-container > wui-flex {
     background: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--apkt-borderRadius-3);
     width: 100%;
   }
 
@@ -65,7 +65,7 @@ export default css`
     border: none;
     background: none;
     padding: var(--apkt-spacing-3);
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--apkt-borderRadius-3);
     transition: background 0.2s linear;
   }
 
@@ -87,7 +87,7 @@ export default css`
   .details-row {
     width: 100%;
     padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--apkt-borderRadius-3);
     background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 `

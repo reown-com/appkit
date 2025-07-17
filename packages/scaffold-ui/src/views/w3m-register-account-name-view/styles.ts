@@ -7,11 +7,11 @@ export default css`
 
   .suggestion {
     background: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
   }
 
   .suggestion:hover {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: var(--apkt-tokens-core-glass010);
     cursor: pointer;
   }
 

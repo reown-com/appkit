@@ -13,7 +13,7 @@ export default css`
   wui-shimmer {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: clamp(0px, var(--wui-border-radius-l), 40px) !important;
+    border-radius: clamp(0px, var(--apkt-borderRadius-8), 40px) !important;
   }
 
   wui-qr-code {
@@ -27,7 +27,7 @@ export default css`
   wui-logo {
     width: 80px;
     height: 80px;
-    border-radius: var(--wui-border-radius-m);
+    border-radius: var(--apkt-borderRadius-7);
   }
 
   wui-flex:first-child:not(:only-child) {
@@ -42,6 +42,6 @@ export default css`
     bottom: calc(var(--apkt-spacing-1) * -1);
     opacity: 0;
     transform: scale(0.5);
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: all var(--apkt-ease-out-power-2) var(--apkt-duration-lg);
   }
 `

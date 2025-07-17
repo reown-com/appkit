@@ -9,7 +9,7 @@ export default css`
     width: var(--local-width);
     white-space: nowrap;
     column-gap: ${({ spacing }) => spacing[2]};
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
     will-change: background-color;
     cursor: pointer;
   }

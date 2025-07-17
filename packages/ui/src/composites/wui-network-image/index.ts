@@ -34,6 +34,12 @@ export class WuiNetworkImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const getSize = {
+      sm: '4',
+      md: '6',
+      lg: '10'
+    } as const
+
     if (this.round) {
       this.dataset['round'] = 'true'
       this.style.cssText = `
@@ -44,10 +50,10 @@ export class WuiNetworkImage extends LitElement {
     } else {
       this.style.cssText = `
 
-      --local-path: var(--wui-path-network-${this.size});
-      --local-width:  var(--wui-width-network-${this.size});
-      --local-height:  var(--wui-height-network-${this.size});
-      --local-icon-size:  var(--wui-icon-size-network-${this.size});
+      --local-path: var(--apkt-path-network-${this.size});
+      --local-width:  var(--apkt-width-network-${this.size});
+      --local-height:  var(--apkt-height-network-${this.size});
+      --local-icon-size:  var(--apkt-spacing-${getSize[this.size]});
     `
     }
 

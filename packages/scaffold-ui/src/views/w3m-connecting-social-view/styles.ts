@@ -4,7 +4,7 @@ export default css`
   wui-logo {
     width: 80px;
     height: 80px;
-    border-radius: var(--wui-border-radius-m);
+    border-radius: var(--apkt-borderRadius-7);
   }
   @keyframes shake {
     0% {
@@ -35,7 +35,7 @@ export default css`
     bottom: calc(var(--apkt-spacing-1) * -1);
     opacity: 0;
     transform: scale(0.5);
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: all var(--apkt-ease-out-power-2) var(--apkt-duration-lg);
   }
   wui-text[align='center'] {
     width: 100%;

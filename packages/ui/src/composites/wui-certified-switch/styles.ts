@@ -12,9 +12,9 @@ export default css`
     column-gap: var(--apkt-spacing-2);
     padding: var(--apkt-spacing-2) var(--apkt-spacing-3);
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
     box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-md);
     will-change: background-color;
     cursor: pointer;
   }

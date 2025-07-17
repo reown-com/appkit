@@ -9,28 +9,28 @@ export default css`
     display: var(--w3m-tooltip-display);
     opacity: var(--w3m-tooltip-opacity);
     padding: 9px var(--apkt-spacing-3) 10px var(--apkt-spacing-3);
-    border-radius: var(--wui-border-radius-xxs);
-    color: var(--wui-color-bg-100);
+    border-radius: var(--apkt-borderRadius-3);
+    color: var(--apkt-tokens-theme-backgroundPrimary);
     position: fixed;
     top: var(--w3m-tooltip-top);
     left: var(--w3m-tooltip-left);
     transform: translate(calc(-50% + var(--w3m-tooltip-parent-width)), calc(-100% - 8px));
-    max-width: calc(var(--w3m-modal-width) - var(--apkt-spacing-5));
-    transition: opacity 0.2s var(--wui-ease-out-power-2);
+    max-width: calc(var(--apkt-modal-width) - var(--apkt-spacing-5));
+    transition: opacity 0.2s var(--apkt-ease-out-power-2);
     will-change: opacity;
   }
 
   :host([data-variant='shade']) > wui-flex {
-    background-color: var(--wui-color-bg-150);
-    border: 1px solid var(--wui-color-gray-glass-005);
+    background-color: var(--apkt-tokens-theme-backgroundPrimary);
+    border: 1px solid var(--apkt-tokens-core-glass010);
   }
 
   :host([data-variant='shade']) > wui-flex > wui-text {
-    color: var(--wui-color-secondary);
+    color: var(--apkt-tokens-theme-textSecondary);
   }
 
   :host([data-variant='fill']) > wui-flex {
-    background-color: var(--wui-color-primary);
+    background-color: var(--apkt-tokens-theme-textPrimary);
     border: none;
   }
 
@@ -38,7 +38,7 @@ export default css`
     position: absolute;
     width: 12px !important;
     height: 4px !important;
-    color: var(--wui-color-bg-150);
+    color: var(--apkt-tokens-theme-backgroundPrimary);
   }
 
   wui-icon[data-placement='top'] {

@@ -14,7 +14,7 @@ export default css`
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    transition: opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
     will-change: opacity;
     mask-image: linear-gradient(
       to bottom,
@@ -29,7 +29,7 @@ export default css`
 
   .active-wallets {
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
   }
 
   .active-wallets-box {
@@ -44,7 +44,7 @@ export default css`
     width: 100%;
     padding: var(--apkt-spacing-4);
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
   }
 
   wui-separator {

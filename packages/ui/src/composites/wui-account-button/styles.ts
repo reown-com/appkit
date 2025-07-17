@@ -6,7 +6,7 @@ export default css`
   }
 
   button {
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: var(--apkt-borderRadius-20);
     background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     display: flex;
     gap: ${({ spacing }) => spacing[1]};

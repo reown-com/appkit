@@ -14,7 +14,7 @@ export default css`
   :host([data-round='true']) {
     background: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: 100%;
-    outline: 1px solid var(--wui-color-gray-glass-005);
+    outline: 1px solid var(--apkt-tokens-core-glass010);
   }
 
   svg {

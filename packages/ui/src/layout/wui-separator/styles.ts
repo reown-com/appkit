@@ -14,8 +14,8 @@ export default css`
   :host > wui-text {
     position: absolute;
     padding: 0px 8px;
-    background-color: var(--wui-color-modal-bg);
-    transition: background-color var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    background-color: var(--apkt-tokens-theme-backgroundPrimary);
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
     will-change: background-color;
   }
 `

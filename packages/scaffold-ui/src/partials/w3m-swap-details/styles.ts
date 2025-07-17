@@ -7,7 +7,7 @@ export default css`
 
   .details-container > wui-flex {
     background: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--apkt-borderRadius-3);
     width: 100%;
   }
 
@@ -15,7 +15,7 @@ export default css`
     border: none;
     background: none;
     padding: var(--apkt-spacing-3);
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--apkt-borderRadius-3);
     cursor: pointer;
   }
 
@@ -36,7 +36,7 @@ export default css`
     padding: var(--apkt-spacing-3);
     padding-left: var(--apkt-spacing-3);
     padding-right: var(--apkt-spacing-2);
-    border-radius: calc(var(--wui-border-radius-5xs) + var(--wui-border-radius-4xs));
+    border-radius: calc(var(--apkt-borderRadius-1) + var(--apkt-borderRadius-1));
     background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 

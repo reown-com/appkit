@@ -16,7 +16,7 @@ export default css`
   .contentContainer > wui-icon-box {
     width: 40px;
     height: 40px;
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--apkt-borderRadius-3);
   }
 
   .contentContainer > .textContent {

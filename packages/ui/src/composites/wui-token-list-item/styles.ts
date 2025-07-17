@@ -15,11 +15,11 @@ export default css`
     padding-right: var(--apkt-spacing-4);
     width: 100%;
     background-color: transparent;
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-250);
+    border-radius: var(--apkt-borderRadius-4);
+    color: var(--apkt-tokens-theme-foregroundSecondary);
     transition:
-      background-color var(--wui-ease-out-power-1) var(--wui-duration-lg),
-      opacity var(--wui-ease-out-power-1) var(--wui-duration-lg);
+      background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg),
+      opacity var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
     will-change: background-color, opacity;
   }
 
@@ -29,7 +29,7 @@ export default css`
     }
 
     :host > wui-flex:active {
-      background-color: var(--wui-color-gray-glass-005);
+      background-color: var(--apkt-tokens-core-glass010);
     }
   }
 
@@ -50,7 +50,7 @@ export default css`
     width: 40px;
     max-width: 40px;
     height: 40px;
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: var(--apkt-borderRadius-20);
     position: relative;
   }
 
@@ -65,12 +65,12 @@ export default css`
     position: absolute;
     content: '';
     inset: 0;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
-    border-radius: var(--wui-border-radius-l);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
+    border-radius: var(--apkt-borderRadius-8);
   }
 
   button > wui-icon-box[data-variant='square-blue'] {
-    border-radius: var(--wui-border-radius-3xs);
+    border-radius: var(--apkt-borderRadius-2);
     position: relative;
     border: none;
     width: 36px;

@@ -15,8 +15,8 @@ export default css`
 
   .group-container {
     max-height: 400px;
-    border-bottom-left-radius: var(--wui-border-radius-xs);
-    border-bottom-right-radius: var(--wui-border-radius-xs);
+    border-bottom-left-radius: var(--apkt-borderRadius-4);
+    border-bottom-right-radius: var(--apkt-borderRadius-4);
     overflow: scroll;
   }
 
@@ -25,13 +25,13 @@ export default css`
   }
 
   .session-container {
-    background-color: var(--wui-color-bg-125);
-    border-radius: var(--wui-border-radius-xs);
+    background-color: var(--apkt-tokens-theme-backgroundPrimary);
+    border-radius: var(--apkt-borderRadius-4);
     cursor: pointer;
   }
 
   .session-project-image {
-    border-radius: var(--wui-border-radius-3xs);
+    border-radius: var(--apkt-borderRadius-2);
     width: 40px;
     height: 40px;
   }

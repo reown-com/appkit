@@ -6,7 +6,7 @@ export default css`
   }
 
   wui-icon-link {
-    margin-right: calc(var(--wui-icon-box-size-md) * -1);
+    margin-right: calc(var(--apkt-spacing-8) * -1);
   }
 
   wui-notice-card {
@@ -49,7 +49,7 @@ export default css`
   }
 
   .account-button:hover {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: var(--apkt-tokens-core-glass010);
   }
 
   .avatar-container {
@@ -59,7 +59,7 @@ export default css`
   wui-avatar.avatar {
     width: 32px;
     height: 32px;
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--apkt-tokens-core-glass010);
   }
 
   wui-wallet-switch {
@@ -73,7 +73,7 @@ export default css`
     left: 100%;
     top: 100%;
     transform: translate(-75%, -75%);
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--apkt-tokens-core-glass010);
   }
 
   .account-links {
@@ -98,8 +98,8 @@ export default css`
     border: 1px solid var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     background: var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     transition:
-      background-color var(--wui-ease-out-power-1) var(--wui-duration-md),
-      opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+      background-color var(--apkt-ease-out-power-1) var(--apkt-duration-md),
+      opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
     will-change: background-color, opacity;
   }
 

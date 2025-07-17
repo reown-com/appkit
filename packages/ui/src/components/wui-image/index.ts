@@ -2,14 +2,14 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType, LogoType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-image')
 export class WuiImage extends LitElement {
-  public static override styles = [resetStyles, colorStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public src?: string = './path/to/image.jpg'
@@ -26,9 +26,21 @@ export class WuiImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const getSize = {
+      inherit: 'inherit',
+      xxs: '2',
+      xs: '3',
+      sm: '4',
+      md: '4',
+      mdl: '5',
+      lg: '5',
+      xl: '6',
+      xxl: '7'
+    } as const
+
     this.style.cssText = `
-      --local-width: ${this.size ? `var(--wui-icon-size-${this.size});` : '100%'};
-      --local-height: ${this.size ? `var(--wui-icon-size-${this.size});` : '100%'};
+      --local-width: ${this.size ? `var(--apkt-spacing-${getSize[this.size]});` : '100%'};
+      --local-height: ${this.size ? `var(--apkt-spacing-${getSize[this.size]});` : '100%'};
       `
 
     if (this.boxed) {

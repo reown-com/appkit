@@ -33,15 +33,11 @@ export default css`
   }
 
   :host([name='Extension'])::after {
-    border: 1px solid var(--wui-color-accent-glass-010);
-  }
-
-  :host([data-wallet-icon='allWallets']) {
-    background-color: var(--wui-all-wallets-bg-100);
+    border: 1px solid var(--apkt-colors-accent010);
   }
 
   :host([data-wallet-icon='allWallets'])::after {
-    border: 1px solid var(--wui-color-accent-glass-010);
+    border: 1px solid var(--apkt-colors-accent010);
   }
 
   wui-icon[data-parent-size='inherit'] {
@@ -66,7 +62,7 @@ export default css`
     right: -1px;
     bottom: -2px;
     z-index: 1;
-    border: 2px solid var(--wui-color-bg-150, #1e1f1f);
+    border: 2px solid var(--apkt-tokens-theme-backgroundPrimary, #1e1f1f);
     padding: 1px;
   }
 `

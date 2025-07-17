@@ -9,8 +9,8 @@ export default css`
 
   .token-display {
     padding: var(--apkt-spacing-3) var(--apkt-spacing-3);
-    border-radius: var(--wui-border-radius-s);
-    background-color: var(--wui-color-bg-125);
+    border-radius: var(--apkt-borderRadius-5);
+    background-color: var(--apkt-tokens-theme-backgroundPrimary);
     margin-top: var(--apkt-spacing-3);
     margin-bottom: var(--apkt-spacing-3);
   }

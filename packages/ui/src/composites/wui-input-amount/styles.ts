@@ -10,13 +10,13 @@ export default css`
     background: transparent;
     width: 100%;
     height: auto;
-    font-family: var(--wui-font-family);
-    color: var(--wui-color-fg-100);
+
+    color: var(--apkt-tokens-theme-foregroundPrimary);
 
     font-feature-settings: 'case' on;
     font-size: 32px;
-    font-weight: var(--wui-font-weight-light);
-    caret-color: var(--wui-color-accent-100);
+
+    caret-color: var(--apkt-colors-accent100);
     line-height: 130%;
     letter-spacing: -1.28px;
     box-sizing: border-box;
@@ -32,6 +32,6 @@ export default css`
   }
 
   input::placeholder {
-    color: var(--wui-color-fg-275);
+    color: var(--apkt-tokens-theme-foregroundTertiary);
   }
 `

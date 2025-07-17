@@ -8,7 +8,7 @@ export default css`
   :host > wui-flex {
     width: 100%;
     padding: var(--apkt-spacing-3);
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
     width: 100%;
     display: flex;
     align-items: center;
@@ -25,15 +25,15 @@ export default css`
     justify-content: center;
     align-items: center;
     position: relative;
-    width: var(--wui-icon-box-size-lg);
-    height: var(--wui-icon-box-size-lg);
+    width: var(--apkt-spacing-10);
+    height: var(--apkt-spacing-10);
   }
 
   .purchase-image-container wui-image {
     width: 100%;
     height: 100%;
     position: relative;
-    border-radius: calc(var(--wui-icon-box-size-lg) / 2);
+    border-radius: calc(var(--apkt-spacing-10) / 2);
   }
 
   .purchase-image-container wui-image::after {
@@ -43,8 +43,8 @@ export default css`
     height: 100%;
     position: absolute;
     inset: 0;
-    border-radius: calc(var(--wui-icon-box-size-lg) / 2);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+    border-radius: calc(var(--apkt-spacing-10) / 2);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
   }
 
   .purchase-image-container wui-icon-box {

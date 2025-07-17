@@ -2,14 +2,14 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
-import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconColorType, IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-icon-link')
 export class WuiIconLink extends LitElement {
-  public static override styles = [resetStyles, elementStyles, colorStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: IconSizeType = 'md'

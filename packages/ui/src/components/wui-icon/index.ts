@@ -90,7 +90,7 @@ import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 import { warningSvg } from '../../assets/svg/warning.js'
 import { xSvg } from '../../assets/svg/x.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
-import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconColorType, IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
@@ -198,7 +198,7 @@ export const ICON_COLOR = {
 
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
-  public static override styles = [resetStyles, colorStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: IconSizeType = 'md'
@@ -209,8 +209,20 @@ export class WuiIcon extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const getSize = {
+      xxs: '2',
+      xs: '3',
+      sm: '3',
+      md: '4',
+      mdl: '5',
+      lg: '5',
+      xl: '6',
+      xxl: '7',
+      inherit: 'inherit'
+    } as const
+
     this.style.cssText = `
-      --local-width: ${`var(--wui-icon-size-${this.size});`}
+      --local-width: ${`var(--apkt-spacing-${getSize[this.size]});`}
       --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]}
     `
 

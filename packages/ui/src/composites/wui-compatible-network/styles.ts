@@ -11,7 +11,7 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[3]};
     border: none;
     padding: ${({ spacing }) => spacing[3]};
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
     will-change: background-color;
   }
 

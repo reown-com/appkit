@@ -28,9 +28,9 @@ export default css`
   }
 
   wui-visual {
-    width: var(--wui-wallet-image-size-lg);
-    height: var(--wui-wallet-image-size-lg);
-    border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
+    width: var(--apkt-spacing-4);
+    height: var(--apkt-spacing-4);
+    border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
     position: relative;
     overflow: hidden;
   }
@@ -42,8 +42,8 @@ export default css`
     height: 100%;
     position: absolute;
     inset: 0;
-    border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+    border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
   }
 
   wui-icon-box {
@@ -53,8 +53,8 @@ export default css`
     opacity: 0;
     transform: scale(0.5);
     transition:
-      opacity var(--wui-ease-out-power-2) var(--wui-duration-lg),
-      transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
+      opacity var(--apkt-ease-out-power-2) var(--apkt-duration-lg),
+      transform var(--apkt-ease-out-power-2) var(--apkt-duration-lg);
     will-change: opacity, transform;
   }
 

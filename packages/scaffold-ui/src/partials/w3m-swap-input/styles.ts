@@ -6,7 +6,7 @@ export default css`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: var(--wui-border-radius-s);
+    border-radius: var(--apkt-borderRadius-5);
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
     padding: var(--apkt-spacing-5);
     padding-right: var(--apkt-spacing-3);
@@ -15,12 +15,12 @@ export default css`
     box-sizing: border-box;
     box-shadow: inset 0px 0px 0px 1px var(--apkt-tokens-theme-foregroundPrimary);
     position: relative;
-    transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: box-shadow var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
     will-change: background-color;
   }
 
   :host wui-flex.focus {
-    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-005);
+    box-shadow: inset 0px 0px 0px 1px var(--apkt-tokens-core-glass010);
   }
 
   :host > wui-flex .swap-input,
@@ -60,8 +60,8 @@ export default css`
     line-height: 130%;
     letter-spacing: -1.28px;
     outline: none;
-    caret-color: var(--wui-color-accent-100);
-    color: var(--wui-color-primary);
+    caret-color: var(--apkt-colors-accent100);
+    color: var(--apkt-tokens-theme-textPrimary);
     padding: 0px;
   }
 
@@ -79,7 +79,7 @@ export default css`
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: var(--wui-color-gray-glass-020);
+    color: var(--apkt-tokens-core-glass010);
     padding-left: 0px;
   }
 

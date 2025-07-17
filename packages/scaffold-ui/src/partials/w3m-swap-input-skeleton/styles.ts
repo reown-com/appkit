@@ -10,7 +10,7 @@ export default css`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: var(--wui-border-radius-s);
+    border-radius: var(--apkt-borderRadius-5);
     padding: var(--apkt-spacing-5);
     padding-right: var(--apkt-spacing-3);
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
@@ -33,12 +33,12 @@ export default css`
 
   :host wui-flex .input_mask__border,
   :host wui-flex .input_mask__background {
-    transition: fill var(--wui-duration-md) var(--wui-ease-out-power-1);
+    transition: fill var(--apkt-duration-md) var(--apkt-ease-out-power-1);
     will-change: fill;
   }
 
   :host wui-flex .input_mask__border {
-    fill: var(--wui-color-gray-glass-020);
+    fill: var(--apkt-tokens-core-glass010);
   }
 
   :host wui-flex .input_mask__background {

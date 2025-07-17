@@ -43,7 +43,7 @@ export default css`
   }
 
   button:disabled > wui-tag {
-    background-color: var(--wui-color-gray-glass-010);
-    color: var(--wui-color-fg-300);
+    background-color: var(--apkt-tokens-core-glass010);
+    color: var(--apkt-tokens-theme-foregroundTertiary);
   }
 `

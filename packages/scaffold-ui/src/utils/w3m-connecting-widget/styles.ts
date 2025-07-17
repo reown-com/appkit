@@ -34,8 +34,8 @@ export default css`
     opacity: 0;
     transform: scale(0.5);
     transition-property: opacity, transform;
-    transition-duration: var(--wui-duration-lg);
-    transition-timing-function: var(--wui-ease-out-power-2);
+    transition-duration: var(--apkt-duration-lg);
+    transition-timing-function: var(--apkt-ease-out-power-2);
     will-change: opacity, transform;
   }
 
