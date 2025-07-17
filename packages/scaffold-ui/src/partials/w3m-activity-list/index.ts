@@ -145,9 +145,9 @@ export class W3mActivityList extends LitElement {
               flexDirection="row"
               .padding=${['2', '3', '3', '3'] as const}
             >
-              <wui-text variant="md-regular" color="secondary" data-testid="group-title"
-                >${groupTitle}</wui-text
-              >
+              <wui-text variant="md-medium" color="secondary" data-testid="group-title">
+                ${groupTitle}
+              </wui-text>
             </wui-flex>
             <wui-flex flexDirection="column" gap="2">
               ${this.templateTransactions(transactions, isLastGroup)}
