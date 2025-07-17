@@ -490,7 +490,7 @@ describe('W3mProfileWalletsView - Connections List', () => {
         accounts: [{ address: '0x9876543210987654321098765432109876543210', type: 'eoa' }]
       },
       {
-        connectorId: 'coinbase',
+        connectorId: 'meld',
         accounts: [{ address: '0x1111111111111111111111111111111111111111', type: 'eoa' }]
       }
     ]

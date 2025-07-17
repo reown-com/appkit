@@ -1,4 +1,4 @@
-name: Trigger Devin for Docs Update
+name: Trigger Devin for appkit-cdn Update in Unity
 
 on:
   push:
@@ -9,34 +9,46 @@ permissions:
   contents: read # Required to read github.event.head_commit.message
 
 jobs:
-  trigger-devin-docs-analysis:
+  trigger-devin-appkit-cdn-unity:
     # This job runs only if the head commit message on the push to main contains 'chore: version packages'
     if: |
       contains(github.event.head_commit.message, 'chore: version packages')
     runs-on: ubuntu-latest
     steps:
-      - name: Send Slack Notification for Docs Analysis
+      - name: Send Slack Notification for Unity Update
         env:
           DEVIN_SLACK_WEBHOOK_URL: ${{ secrets.DEVIN_SLACK_WEBHOOK_URL }}
           DEVIN_SLACK_USER_ID: U08M9DKD4MC
           PROMPT_TEXT: |
             ## Context
+            A commit titled **"chore: version packages"** (SHA: ${{ github.sha }}) just landed on **${{ github.repository }}**'s `main` branch.  
+            This commit bumps the published AppKit packages and updates one or more `CHANGELOG.md` files.
 
-            A commit titled "chore: version packages" (SHA: ${{ github.sha }}) was just pushed to the main branch of the ${{ github.repository }} repository. This commit is typically the result of a merged Pull Request.
-            Your task is to analyze the impact of this specific commit on the reown-com/reown-docs repository.
+            ## Task - Update Unity binding
+            1. Detect the new AppKit version introduced by this commit.
+            2. In repo **reown-com/reown-dotnet**:
+               • Create a branch off `develop`.  
+               • Edit `src/Reown.AppKit.Unity/Plugins/AppKit.jslib`, replacing the import line  
+                 ```js
+                 import("https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@OLD_VER/dist/appkit.js").then(async (AppKit) => {
+                 ```  
+                 with  
+                 ```js
+                 import("https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@<NEW_VER>/dist/appkit.js").then(async (AppKit) => {
+                 ```
+               • If the import line already uses the latest version, **do not create a PR** and instead respond **"No Unity AppKit update needed."**  
+               • Otherwise, commit and open a PR.
 
-            Please examine the changes introduced by commit ${{ github.sha }} in the ${{ github.repository }} repository. Focus your examination on the content of any `CHANGELOG.md` files modified in this commit. (Note: if multiple CHANGELOG.md files were part of this commit and are identical, examining one is sufficient, as per repository conventions).
+            ## PR requirements
+            * **Title:** `chore: bump appkit-cdn to <NEW_VER>`
+            * **Body must include:**  
+              - A bullet list of features / fixes from the AppKit web changelog for `<NEW_VER>` (copy from the same CHANGELOG).  
+              - A link to the triggering commit: `${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}`  
 
-            Determine if any of the changes in the `CHANGELOG.md`(s) from this commit necessitate updates to the documentation in the reown-com/reown-docs repository.
-
-            ## Advice
-            * If documentation updates are required, create a pull request in the reown-com/reown-docs repository. The pull request should:
-                * Include the necessary documentation updates reflecting the changes from the appkit changelog.
-                * Contain a clear description of why the updates are needed, referencing the specific changes from the appkit repository.
-                * Include a link back to the original "chore: version packages" commit in the ${{ github.repository }} repository (Commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}).
-                * Assign the following Github teams as reviewers in the pull request: @reown-com/appkit-web-team, @reown-com/devrel-team
-            * If no documentation updates are needed, clearly state this conclusion. You do not need to open a pull request in this case. Simply report that no updates are necessary based on your analysis of the changelog.
-            * You will need to operate within the following repositories: ${{ github.repository }} (for reading the changelog of the commit) and reown-com/reown-docs (for potentially creating a PR with documentation updates).
+            ## Reminders
+            • Treat duplicated CHANGELOG entries as one source of truth.  
+            • Fail fast and report clear errors if anything blocks you (permissions, missing file, etc.).  
+            • Keep messages concise—no boilerplate.
         run: |
           # Exit on error
           set -e
@@ -66,7 +78,7 @@ jobs:
             exit 1
           fi
 
-          echo "Sending Slack notification for Docs Analysis."
+          echo "Sending Slack notification for Unity Update."
           # Echo context information using direct GitHub context expressions for clarity and consistency.
           echo "AppKit Repo: ${{ github.repository }}"
           echo "Commit SHA: ${{ github.sha }}"

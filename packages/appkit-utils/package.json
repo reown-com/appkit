@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.7.12",
+  "version": "1.7.15",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "bs58": "6.0.0",
-    "@solana/web3.js": "1.98.0",
+    "@solana/web3.js": "1.98.2",
     "@wallet-standard/features": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@solana/wallet-standard-features": "1.3.0",

@@ -56,7 +56,6 @@ import type { WuiNetworkImage } from '../composites/wui-network-image/index.js'
 import type { WuiNoticeCard } from '../composites/wui-notice-card/index.js'
 import type { WuiOtp } from '../composites/wui-otp/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
-import type { WuiProfileButtonV2 } from '../composites/wui-profile-button-v2/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
 import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiQrCode } from '../composites/wui-qr-code/index.js'
@@ -137,7 +136,6 @@ interface AppKitElements {
   'wui-otp': CustomElement<WuiOtp>
   'wui-preview-item': CustomElement<WuiPreviewItem>
   'wui-profile-button': CustomElement<WuiProfileButton>
-  'wui-profile-button-v2': CustomElement<WuiProfileButtonV2>
   'wui-promo': CustomElement<WuiPromo>
   'wui-qr-code': CustomElement<WuiQrCode>
   'wui-search-bar': CustomElement<WuiSearchBar>
