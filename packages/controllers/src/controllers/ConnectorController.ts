@@ -345,7 +345,7 @@ const controller = {
     )
 
     if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
+      RouterController.push('ConnectingExternal', { connector, wallet })
     } else {
       RouterController.push('ConnectingWalletConnect', { wallet })
     }

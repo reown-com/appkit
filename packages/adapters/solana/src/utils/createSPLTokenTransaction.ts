@@ -14,8 +14,8 @@ import {
   type TransactionInstruction
 } from '@solana/web3.js'
 
-import { SPL_COMPUTE_BUDGET_CONSTANTS } from './SolanaConstantsUtil.js'
-import type { SPLTokenTransactionArgs } from './SolanaTypesUtil.js'
+import { SPL_COMPUTE_BUDGET_CONSTANTS } from '@reown/appkit-utils/solana'
+import type { SPLTokenTransactionArgs } from '@reown/appkit-utils/solana'
 
 export async function createSPLTokenTransaction({
   provider,
