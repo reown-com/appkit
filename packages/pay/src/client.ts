@@ -27,7 +27,10 @@ export async function pay(
     if (error instanceof AppKitPayError) {
       throw error
     }
-    throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT, error)
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT,
+      (error as Error).message
+    )
   }
 
   return new Promise<PaymentResult>((resolve, reject) => {
