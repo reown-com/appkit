@@ -3,8 +3,8 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/src/composites/wui-qr-code'
-import type { WuiQrCode } from '@reown/appkit-ui/src/composites/wui-qr-code'
+import '@reown/appkit-ui/wui-qr-code'
+import type { WuiQrCode } from '@reown/appkit-ui/wui-qr-code'
 
 import { themeOptions, walletImageSrc } from '../../utils/PresetUtils'
 

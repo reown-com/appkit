@@ -19,10 +19,15 @@ export class W3mConnectingWcUnsupported extends LitElement {
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-unsupported: No wallet provided')
     }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: this.wallet.name, platform: 'browser' }
+      properties: {
+        name: this.wallet.name,
+        platform: 'browser',
+        displayIndex: this.wallet?.display_index
+      }
     })
   }
 
