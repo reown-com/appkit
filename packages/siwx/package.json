@@ -42,7 +42,7 @@
     "bip322-js": "2.0.0",
     "bs58": "6.0.0",
     "tweetnacl": "1.0.3",
-    "viem": "2.31.3"
+    "viem": "2.32.0"
   },
   "devDependencies": {
     "@types/react": "19.1.3",

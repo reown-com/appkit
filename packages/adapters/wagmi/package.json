@@ -34,8 +34,8 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=2.16.7",
-    "viem": ">=2.31.3",
-    "wagmi": ">=2.15.6"
+    "viem": ">=2.32.0",
+    "wagmi": ">=2.15.7"
   },
   "devDependencies": {
     "@types/react": "19.1.3",

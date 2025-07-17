@@ -17,10 +17,10 @@
     "@tanstack/vue-query": "5.75.5",
     "@vue/devtools-api": "7.7.2",
     "@wagmi/core": "2.17.3",
-    "@wagmi/vue": "0.1.22",
+    "@wagmi/vue": "0.1.23",
     "@walletconnect/logger": "2.1.2",
     "nuxt": "3.16.0",
-    "viem": "2.31.3",
+    "viem": "2.32.0",
     "vue": "3.5.13",
     "vue-router": "latest"
   }
