@@ -405,7 +405,7 @@ jobs:
       - name: Download node_modules (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-node-modules
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules # Specify path to download into
 
       - name: Install dependencies # Install again to link binaries, etc.
