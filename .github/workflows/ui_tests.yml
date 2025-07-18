@@ -151,7 +151,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ui-build-output
+          name: ui-build-output-${{ inputs.branch }}
           path: |
             dist/
             .next/
@@ -168,7 +168,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ui-node-modules
+          name: ui-node-modules-${{ inputs.branch }}
           path: node_modules
           retention-days: 1
 
@@ -242,14 +242,14 @@ jobs:
       - name: Download build artifacts (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-build-output
+          name: ui-build-output-${{ inputs.branch }}
           # Note: download-artifact downloads into the workspace root by default
 
       # Download actual artifact in GitHub Actions
       - name: Download node_modules (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-node-modules
+          name: ui-node-modules-${{ inputs.branch }}
           path: node_modules # Specify path to download into
 
       # Restore executable permissions for binaries (keep this after potential copy)
