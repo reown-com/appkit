@@ -82,7 +82,7 @@ export const EventsController = {
             shortMessage: 'Invalid App Configuration',
             longMessage: `Origin ${
               isSafe() ? window.origin : 'uknown'
-            } not found on Allowlist - update configuration on cloud.reown.com`
+            } not found on Allowlist - update configuration on dashboard.reown.com`
           },
           'error'
         )
