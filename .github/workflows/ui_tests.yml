@@ -75,6 +75,9 @@ on:
       PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
         required: false
 
+env:
+  BRANCH_NAME: ${{ inputs.branch }}
+
 jobs:
   build_lab_and_extension:
     name: 'Build Lab and Extension'
@@ -88,9 +91,9 @@ jobs:
 
       - name: Set Branch Name with Underscores
         run: |
-          BRANCH_NAME="${{ inputs.branch }}"
           BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
