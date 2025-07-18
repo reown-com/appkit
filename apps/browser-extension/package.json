@@ -55,9 +55,9 @@
     "stream-browserify": "3.0.0",
     "tweetnacl": "1.0.3",
     "uuid": "10.0.0",
-    "viem": "2.31.3",
+    "viem": "2.32.0",
     "vm-browserify": "1.1.2",
-    "wagmi": "2.15.6",
+    "wagmi": "2.15.7",
     "wasm-loader": "1.3.0",
     "webpack": "5.94.0"
   },

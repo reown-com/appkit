@@ -143,7 +143,7 @@
     "bs58": "6.0.0",
     "semver": "7.7.2",
     "valtio": "2.1.5",
-    "viem": ">=2.31.3"
+    "viem": ">=2.32.0"
   },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",
