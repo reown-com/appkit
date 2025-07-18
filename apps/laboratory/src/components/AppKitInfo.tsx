@@ -5,7 +5,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Collapse,
   Heading,
   Stack,
   StackDivider,
