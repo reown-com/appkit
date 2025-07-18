@@ -86,6 +86,12 @@ jobs:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
 
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME="${{ inputs.branch }}"
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
@@ -151,7 +157,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ 'ui-build-output-' }}${{ inputs.branch.replace('/', '_') }}
+          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
           path: |
             dist/
             .next/
@@ -168,7 +174,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ 'ui-node-modules-' }}${{ inputs.branch.replace('/', '_') }}
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules
           retention-days: 1
 
@@ -242,14 +248,14 @@ jobs:
       - name: Download build artifacts (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ${{ 'ui-build-output-' }}${{ inputs.branch.replace('/', '_') }}
+          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
           # Note: download-artifact downloads into the workspace root by default
 
       # Download actual artifact in GitHub Actions
       - name: Download node_modules (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ${{ 'ui-node-modules-' }}${{ inputs.branch.replace('/', '_') }}
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules # Specify path to download into
 
       # Restore executable permissions for binaries (keep this after potential copy)
