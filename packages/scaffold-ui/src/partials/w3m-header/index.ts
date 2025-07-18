@@ -170,29 +170,35 @@ export class W3mHeader extends LitElement {
 
   private rightHeaderTemplate() {
     const isSmartSessionsEnabled = OptionsController?.state?.features?.smartSessions
-
-    if (RouterController.state.view !== 'Account' || !isSmartSessionsEnabled) {
-      return this.closeButtonTemplate()
+    if (RouterController.state.view === 'Account' && isSmartSessionsEnabled) {
+      return html`<wui-flex>
+        ${this.smartSessionButtonTemplate()} ${this.closeButtonTemplate()}
+      </wui-flex> `
     }
 
-    return html`<wui-flex>
-      <wui-icon-link
-        icon="clock"
-        @click=${() => RouterController.push('SmartSessionList')}
-        data-testid="w3m-header-smart-sessions"
-      ></wui-icon-link>
-      ${this.closeButtonTemplate()}
-    </wui-flex> `
+    return this.closeButtonTemplate()
+  }
+
+  private smartSessionButtonTemplate() {
+    return html`<wui-icon-link
+      icon="clock"
+      @click=${() => RouterController.push('SmartSessionList')}
+      data-testid="w3m-header-smart-sessions"
+    ></wui-icon-link>`
   }
 
   private closeButtonTemplate() {
-    return html`
-      <wui-icon-link
-        icon="close"
-        @click=${this.onClose.bind(this)}
-        data-testid="w3m-header-close"
-      ></wui-icon-link>
-    `
+    if (RouterController.state.view !== 'SIWXSignMessage') {
+      return html`
+        <wui-icon-link
+          icon="close"
+          @click=${this.onClose.bind(this)}
+          data-testid="w3m-header-close"
+        ></wui-icon-link>
+      `
+    }
+
+    return null
   }
 
   private titleTemplate() {
