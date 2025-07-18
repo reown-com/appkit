@@ -41,7 +41,7 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
   }
 }
 
-function createRootStyles(themeVariables?: ThemeVariables) {
+export function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
       ${themeVariables?.['--w3m-font-family']
