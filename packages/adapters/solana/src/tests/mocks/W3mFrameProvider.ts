@@ -12,7 +12,8 @@ export function mockW3mFrameProvider() {
     projectId: 'projectId',
     chainId: 1,
     abortController: ErrorUtil.EmbeddedWalletAbortController,
-    getActiveCaipNetwork: () => TestConstants.chains[0]
+    getActiveCaipNetwork: () => TestConstants.chains[0],
+    getCaipNetworks: () => TestConstants.chains
   })
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))

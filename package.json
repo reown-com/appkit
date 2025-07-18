@@ -94,9 +94,7 @@
       "@solana/web3.js": "1.98.2",
       "esbuild": ">=0.25.1",
       "@babel/runtime": ">=7.26.10",
-      "cookie": ">=0.7.0",
-      "brace-expansion@1": ">=1.1.12",
-      "brace-expansion@2": ">=2.0.2"
+      "cookie": ">=0.7.0"
     },
     "patchedDependencies": {
       "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"

@@ -21,6 +21,7 @@ interface W3mFrameProviderConfig {
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
   getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
+  getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
 }
 
 // -- Provider --------------------------------------------------------
@@ -29,6 +30,7 @@ export class W3mFrameProvider {
   private w3mFrame: W3mFrame
   private abortController: AbortController
   private getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
+  private getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
@@ -50,13 +52,15 @@ export class W3mFrameProvider {
     enableLogger = true,
     onTimeout,
     abortController,
-    getActiveCaipNetwork
+    getActiveCaipNetwork,
+    getCaipNetworks
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
     }
     this.abortController = abortController
     this.getActiveCaipNetwork = getActiveCaipNetwork
+    this.getCaipNetworks = getCaipNetworks
     const rpcUrl = this.getRpcUrl(chainId)
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger, rpcUrl })
     this.onTimeout = onTimeout
@@ -374,7 +378,7 @@ export class W3mFrameProvider {
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
-        payload: { ...payload, chainId }
+        payload: { ...payload, chainId, rpcUrl: this.getRpcUrl(chainId) }
       } as W3mFrameTypes.AppEvent)
       this.user = response
 
@@ -781,7 +785,12 @@ export class W3mFrameProvider {
       }
     }
 
-    const activeNetwork = this.getActiveCaipNetwork(namespace)
+    const caipNetworks = this.getCaipNetworks(namespace)
+    const activeNetwork = chainId
+      ? caipNetworks.find(
+          network => String(network.id) === String(chainId) || network.caipNetworkId === chainId
+        )
+      : caipNetworks[0]
 
     return activeNetwork?.rpcUrls.default.http?.[0]
   }

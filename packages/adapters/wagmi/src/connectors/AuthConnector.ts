@@ -71,7 +71,8 @@ export function authConnector(parameters: AuthParameters) {
         },
         abortController: ErrorUtil.EmbeddedWalletAbortController,
         getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-          ChainController.getActiveCaipNetwork(namespace)
+          ChainController.getActiveCaipNetwork(namespace),
+        getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
       })
     }
 
@@ -188,7 +189,9 @@ export function authConnector(parameters: AuthParameters) {
             }
           },
           getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-            ChainController.getActiveCaipNetwork(namespace)
+            ChainController.getActiveCaipNetwork(namespace),
+          getCaipNetworks: (namespace?: ChainNamespace) =>
+            ChainController.getCaipNetworks(namespace)
         })
       }
 
