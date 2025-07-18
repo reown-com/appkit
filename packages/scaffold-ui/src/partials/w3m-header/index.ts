@@ -11,7 +11,8 @@ import {
   EventsController,
   ModalUtil,
   OptionsController,
-  RouterController
+  RouterController,
+  SIWXUtil
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -165,7 +166,11 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    await ModalUtil.safeClose()
+    if (RouterController.state.view === 'SIWXSignMessage') {
+      await SIWXUtil.cancelSignMessage()
+    } else {
+      await ModalUtil.safeClose()
+    }
   }
 
   private rightHeaderTemplate() {
