@@ -392,6 +392,12 @@ jobs:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
 
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
