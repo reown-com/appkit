@@ -56,6 +56,8 @@ const networkTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 // AVAX
 const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 
+const sourceTokenAmount = '1'
+
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
   const mockAdapter = {
@@ -70,7 +72,6 @@ beforeAll(async () => {
 
   ChainController.setActiveCaipNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress, chain)
-
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)
   vi.spyOn(BlockchainApiController, 'fetchSwapQuote').mockResolvedValue(swapQuoteResponse)
@@ -98,6 +99,8 @@ describe('SwapController', () => {
   })
 
   it('should calculate swap values as expected', async () => {
+    SwapController.setSourceTokenAmount(sourceTokenAmount)
+
     await SwapController.swapTokens()
 
     expect(SwapController.state.gasPriceInUSD).toEqual(0.00648630001383744)

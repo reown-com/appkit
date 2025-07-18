@@ -1,7 +1,7 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 'vitest'
 
-import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -428,6 +428,7 @@ describe('W3mSwapView', () => {
     vitestExpect(resetStateSpy).toHaveBeenCalled()
     vitestExpect(initializeStateSpy).not.toHaveBeenCalled()
   })
+
   it('should call handleChangeAmount with max value when setting max value', async () => {
     vi.useFakeTimers()
     const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens')
