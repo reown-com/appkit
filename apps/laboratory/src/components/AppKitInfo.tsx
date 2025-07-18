@@ -10,6 +10,7 @@ import {
   StackDivider,
   Text
 } from '@chakra-ui/react'
+import Image from 'next/image'
 
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@reown/appkit/react'
@@ -94,9 +95,25 @@ export function AppKitInfo() {
           {walletInfo && (
             <Box>
               <Heading size="xs" textTransform="uppercase" pb="2">
-                Wallet Type
+                Wallet Info
               </Heading>
-              <Text data-testid="w3m-wallet-type">{walletInfo.type}</Text>
+              <Box>
+                <Text fontWeight="bold" color="gray.500">
+                  Type
+                </Text>
+                <Text data-testid="w3m-wallet-type">{walletInfo.type}</Text>
+              </Box>
+              <Box>
+                <Text fontWeight="bold" color="gray.500">
+                  Name
+                </Text>
+                <Box display="flex" alignItems="center" gap={2}>
+                  {walletInfo?.icon ? (
+                    <Image src={walletInfo.icon} alt={walletInfo.name} width={24} height={24} />
+                  ) : null}
+                  <Text data-testid="w3m-wallet-name">{walletInfo.name}</Text>
+                </Box>
+              </Box>
             </Box>
           )}
 
