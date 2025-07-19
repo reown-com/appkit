@@ -1,7 +1,7 @@
-import dayjs from 'dayjs'
-import englishLocale from 'dayjs/locale/en.js'
-import relativeTime from 'dayjs/plugin/relativeTime.js'
-import updateLocale from 'dayjs/plugin/updateLocale.js'
+import dayjs from 'dayjs/esm/index.js'
+import englishLocale from 'dayjs/esm/locale/en.js'
+import relativeTime from 'dayjs/esm/plugin/relativeTime/index.js'
+import updateLocale from 'dayjs/esm/plugin/updateLocale/index.js'
 
 dayjs.extend(relativeTime)
 dayjs.extend(updateLocale)
