@@ -77,7 +77,10 @@ class W3mAccountButtonBase extends LitElement {
           'networkState',
           val => {
             this.setNetworkData(val)
-            this.isSupported = ChainController.checkIfSupportedNetwork(namespace, val?.caipNetwork)
+            this.isSupported = ChainController.checkIfSupportedNetwork(
+              namespace,
+              val?.caipNetwork?.caipNetworkId
+            )
           },
           namespace
         )
