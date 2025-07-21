@@ -4,10 +4,10 @@ import type { Transaction } from '@reown/appkit-common'
 
 import {
   BlockchainApiController,
+  ChainController,
   OptionsController,
   TransactionsController
 } from '../../exports/index.js'
-import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
 import {
   ONRAMP_TRANSACTIONS_RESPONSES_FEB,
   ONRAMP_TRANSACTIONS_RESPONSES_JAN
