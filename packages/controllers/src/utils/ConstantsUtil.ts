@@ -22,13 +22,6 @@ export const ONRAMP_PROVIDERS = [
     feeRange: '1-2%',
     url: 'https://meldcrypto.com',
     supportedChains: ['eip155', 'solana']
-  },
-  {
-    label: 'Coinbase',
-    name: 'coinbase',
-    feeRange: '1-2%',
-    url: '',
-    supportedChains: ['eip155']
   }
 ]
 
@@ -63,36 +56,6 @@ export const ConstantsUtil = {
     'ASIA/BEIJING',
     'ASIA/HARBIN'
   ],
-
-  /**
-   * Network name to Coinbase Pay SDK chain name map object
-   * @see supported chain names on Coinbase for Pay SDK: https://github.com/coinbase/cbpay-js/blob/d4bda2c05c4d5917c8db6a05476b603546046394/src/types/onramp.ts
-   */
-  WC_COINBASE_PAY_SDK_CHAINS: [
-    'ethereum',
-    'arbitrum',
-    'polygon',
-    'berachain',
-    'avalanche-c-chain',
-    'optimism',
-    'celo',
-    'base'
-  ],
-
-  WC_COINBASE_PAY_SDK_FALLBACK_CHAIN: 'ethereum',
-
-  WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP: {
-    Ethereum: 'ethereum',
-    'Arbitrum One': 'arbitrum',
-    Polygon: 'polygon',
-    Berachain: 'berachain',
-    Avalanche: 'avalanche-c-chain',
-    'OP Mainnet': 'optimism',
-    Celo: 'celo',
-    Base: 'base'
-  },
-
-  WC_COINBASE_ONRAMP_APP_ID: 'bf18c88d-495a-463b-b249-0b9d3656cf5e',
 
   SWAP_SUGGESTED_TOKENS: [
     'ETH',
@@ -242,7 +205,7 @@ export const ConstantsUtil = {
   ] as ChainNamespace[],
   DEFAULT_REMOTE_FEATURES: {
     swaps: ['1inch'] as SwapProvider[],
-    onramp: ['meld', 'coinbase'] as OnRampProvider[],
+    onramp: ['meld'] as OnRampProvider[],
     email: true,
     socials: [
       'google',

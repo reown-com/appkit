@@ -204,7 +204,7 @@ export abstract class AppKitBaseClient {
       )
 
       if (!isOriginAllowed) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+        AlertController.open(ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED, 'error')
       }
     } catch (error) {
       if (!(error instanceof Error)) {
@@ -554,20 +554,20 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async params => {
-        const { id: connectorId, chainNamespace, initialDisconnect } = params || {}
+        const { id: connectorIdParam, chainNamespace, initialDisconnect } = params || {}
 
         const namespace = chainNamespace || ChainController.state.activeChain
-        const namespaces = Array.from(ChainController.state.chains.keys())
-        const currentConnectorId = ConnectorController.getConnectorId(namespace)
+        const namespaceConnectorId = ConnectorController.getConnectorId(namespace)
 
         const isAuth =
-          connectorId === ConstantsUtil.CONNECTOR_ID.AUTH ||
-          currentConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+          connectorIdParam === ConstantsUtil.CONNECTOR_ID.AUTH ||
+          namespaceConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
         const isWalletConnect =
-          connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT ||
-          currentConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+          connectorIdParam === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT ||
+          namespaceConnectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
         try {
+          const namespaces = Array.from(ChainController.state.chains.keys())
           let namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
 
           /*
@@ -579,27 +579,18 @@ export abstract class AppKitBaseClient {
           }
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
-            let connectorIdToUse = connectorId
-
-            if ((isWalletConnect || isAuth) && !connectorId) {
-              connectorIdToUse = currentConnectorId
-            }
-
-            if (initialDisconnect && isAuth) {
-              StorageUtil.deleteConnectedSocialProvider()
-              namespacesToDisconnect.forEach(ns => {
-                StorageUtil.addDisconnectedConnectorId(connectorIdToUse || '', ns)
-              })
-            }
-
-            const disconnectData = await this.disconnectNamespace(ns, connectorIdToUse)
+            const connectorIdToDisconnect = ConnectorController.getConnectorId(ns)
+            const disconnectData = await this.disconnectNamespace(
+              ns,
+              connectorIdParam || connectorIdToDisconnect
+            )
 
             if (disconnectData) {
-              disconnectData.connections.forEach(connection => {
-                if (connection.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
-                  StorageUtil.deleteConnectedSocialProvider()
-                }
+              if (isAuth) {
+                StorageUtil.deleteConnectedSocialProvider()
+              }
 
+              disconnectData.connections.forEach(connection => {
                 StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
               })
             }
@@ -1117,9 +1108,15 @@ export abstract class AppKitBaseClient {
     ChainController.resetAccount(chainNamespace)
     ChainController.resetNetwork(chainNamespace)
 
+    StorageUtil.removeConnectedNamespace(chainNamespace)
+
+    const namespaces = Array.from(ChainController.state.chains.keys())
+    const namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
+    namespacesToDisconnect.forEach(ns =>
+      StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
+    )
     ConnectorController.removeConnectorId(chainNamespace)
 
-    StorageUtil.removeConnectedNamespace(chainNamespace)
     ProviderUtil.resetChain(chainNamespace)
 
     this.setUser(undefined, chainNamespace)
@@ -1405,7 +1402,8 @@ export abstract class AppKitBaseClient {
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
     ) {
       if (connectorId) {
-        const connector = this.getConnectors().find(c => {
+        const connectors = this.getConnectors()
+        const connector = connectors.find(c => {
           const isConnectorId = c.id === connectorId
           const isRdns = c.info?.rdns === connectorId
 
@@ -1435,13 +1433,21 @@ export abstract class AppKitBaseClient {
         )
       }
     } else if (connectorId) {
-      if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {
-        const connector = this.getConnectors().find(
-          c => c.id === ConstantsUtil.CONNECTOR_ID.COINBASE
-        )
+      if (
+        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
+        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE
+      ) {
+        const connector = this.getConnectors().find(c => c.id === connectorId)
+        const name = connector?.name || 'Coinbase Wallet'
+        const icon = connector?.imageUrl || this.getConnectorImage(connector)
+        const info = connector?.info
 
         this.setConnectedWalletInfo(
-          { name: 'Coinbase Wallet', icon: this.getConnectorImage(connector) },
+          {
+            ...info,
+            name,
+            icon
+          },
           chainNamespace
         )
       }
@@ -1696,9 +1702,9 @@ export abstract class AppKitBaseClient {
   // -- Public Internal ---------------------------------------------------
   public getCaipNetwork = (chainNamespace?: ChainNamespace, id?: string | number) => {
     if (chainNamespace) {
-      const caipNetworkWithId = ChainController.getNetworkData(
-        chainNamespace
-      )?.requestedCaipNetworks?.find(c => c.id === id)
+      const caipNetworkWithId = ChainController.getCaipNetworks(chainNamespace)?.find(
+        c => c.id === id
+      )
 
       if (caipNetworkWithId) {
         return caipNetworkWithId

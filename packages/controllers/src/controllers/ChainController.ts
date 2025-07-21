@@ -501,8 +501,9 @@ const controller = {
       approvedCaipNetworkIds,
       requestedCaipNetworks
     )
+    const filteredNetworks = sortedNetworks.filter(network => network?.id)
 
-    return sortedNetworks
+    return filteredNetworks
   },
 
   getAllRequestedCaipNetworks(): CaipNetwork[] {
@@ -576,15 +577,15 @@ const controller = {
     })
   },
 
-  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetwork?: CaipNetwork) {
-    const activeCaipNetwork = caipNetwork || state.activeCaipNetwork
+  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetworkId?: CaipNetworkId) {
+    const activeCaipNetworkId = caipNetworkId || state.activeCaipNetwork?.caipNetworkId
     const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(namespace)
 
     if (!requestedCaipNetworks.length) {
       return true
     }
 
-    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
+    return requestedCaipNetworks?.some(network => network.caipNetworkId === activeCaipNetworkId)
   },
 
   checkIfSupportedChainId(chainId: number | string) {
@@ -647,6 +648,7 @@ const controller = {
 
     const currentAccountType =
       ChainController.state.chains.get(chainToWrite)?.accountState?.preferredAccountType
+    const optionsAccountType = OptionsController.state.defaultAccountTypes[chainToWrite]
 
     state.activeCaipAddress = undefined
     ChainController.setChainAccountData(chainToWrite, {
@@ -661,7 +663,7 @@ const controller = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountType: currentAccountType,
+      preferredAccountType: optionsAccountType || currentAccountType,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,

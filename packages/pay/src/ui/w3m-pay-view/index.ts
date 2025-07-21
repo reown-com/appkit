@@ -108,7 +108,7 @@ export class W3mPayView extends LitElement {
       const allNetworks = ChainController.getAllRequestedCaipNetworks()
       const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.networkName)
       if (targetNetwork) {
-        displayNetworkName = targetNetwork.name
+        displayNetworkName = targetNetwork['name']
       }
     }
 
@@ -239,7 +239,6 @@ export class W3mPayView extends LitElement {
     e.stopPropagation()
     try {
       await ConnectionController.disconnect()
-      ModalController.close()
     } catch {
       console.error('Failed to disconnect')
       SnackController.showError('Failed to disconnect')

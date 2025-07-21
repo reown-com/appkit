@@ -5,6 +5,7 @@ import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -26,7 +27,8 @@ import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
   ensureCorrectNetwork,
   processEvmErc20Payment,
-  processEvmNativePayment
+  processEvmNativePayment,
+  processSolanaPayment
 } from '../utils/PaymentUtil.js'
 
 const DEFAULT_PAGE = 0
@@ -295,19 +297,27 @@ export const PayController = {
     if (state.isConfigured) {
       return
     }
-    ProviderUtil.subscribeProviders(async _ => {
-      const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
-      if (!provider) {
-        return
+
+    ConnectionController.subscribeKey('connections', connections => {
+      if (connections.size > 0) {
+        this.handlePayment()
       }
-      await this.handlePayment()
     })
 
-    AccountController.subscribeKey('caipAddress', async caipAddress => {
-      if (!caipAddress) {
-        return
+    AccountController.subscribeKey('caipAddress', caipAddress => {
+      const hasWcConnection = ConnectionController.hasAnyConnection(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
+      if (caipAddress) {
+        // WalletConnect connections sometimes fail down the line due to state not being updated atomically
+        if (hasWcConnection) {
+          setTimeout(() => {
+            this.handlePayment()
+          }, 100)
+        } else {
+          this.handlePayment()
+        }
       }
-      await this.handlePayment()
     })
   },
   async handlePayment() {
@@ -322,16 +332,19 @@ export const PayController = {
 
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
     const chainNamespace = ChainController.state.activeChain
+
     if (!address || !chainId || !chainNamespace) {
       return
     }
 
     const provider = ProviderUtil.getProvider(chainNamespace)
+
     if (!provider) {
       return
     }
 
     const caipNetwork = ChainController.state.activeCaipNetwork
+
     if (!caipNetwork) {
       return
     }
@@ -377,6 +390,16 @@ export const PayController = {
               fromAddress: address as Address
             })
           }
+          state.currentPayment.status = 'SUCCESS'
+          break
+        case ConstantsUtil.CHAIN.SOLANA:
+          state.currentPayment.result = await processSolanaPayment(chainNamespace, {
+            recipient: state.recipient,
+            amount: state.amount,
+            fromAddress: address,
+            // If the tokenMint is provided, provider will use it to create a SPL token transaction
+            tokenMint: state.paymentAsset.asset === 'native' ? undefined : state.paymentAsset.asset
+          })
           state.currentPayment.status = 'SUCCESS'
           break
         default:

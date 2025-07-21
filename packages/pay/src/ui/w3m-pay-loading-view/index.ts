@@ -1,12 +1,21 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConnectionController, ModalController, ThemeController } from '@reown/appkit-controllers'
+import {
+  AccountController,
+  AssetUtil,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  ModalController,
+  ThemeController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-loading-thumbnail'
 import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
 import styles from './styles.js'
@@ -148,7 +157,60 @@ export class W3mPayLoadingView extends LitElement {
     const borderRadiusMaster = ThemeController.state.themeVariables['--w3m-border-radius-master']
     const radius = borderRadiusMaster ? parseInt(borderRadiusMaster.replace('px', ''), 10) : 4
 
-    return html`<wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>`
+    const iconSrc = this.getPaymentIcon()
+
+    return html`
+      <wui-flex justifyContent="center" alignItems="center" style="position: relative;">
+        ${iconSrc
+          ? html`<wui-wallet-image size="lg" imageSrc=${iconSrc}></wui-wallet-image>`
+          : null}
+        <wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>
+      </wui-flex>
+    `
+  }
+
+  private getPaymentIcon(): string | undefined {
+    const currentPayment = PayController.state.currentPayment
+
+    if (!currentPayment) {
+      return undefined
+    }
+
+    if (currentPayment.type === 'exchange') {
+      const exchangeId = currentPayment.exchangeId
+      if (exchangeId) {
+        const exchange = PayController.getExchangeById(exchangeId)
+
+        return exchange?.imageUrl
+      }
+    }
+
+    if (currentPayment.type === 'wallet') {
+      const walletIcon = AccountController.state.connectedWalletInfo?.icon
+      if (walletIcon) {
+        return walletIcon
+      }
+
+      // Fallback
+      const chainNamespace = ChainController.state.activeChain
+      if (!chainNamespace) {
+        return undefined
+      }
+
+      const connectorId = ConnectorController.getConnectorId(chainNamespace)
+      if (!connectorId) {
+        return undefined
+      }
+
+      const connector = ConnectorController.getConnectorById(connectorId)
+      if (!connector) {
+        return undefined
+      }
+
+      return AssetUtil.getConnectorImage(connector)
+    }
+
+    return undefined
   }
 
   private successTemplate() {
