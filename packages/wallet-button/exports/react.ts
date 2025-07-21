@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
-import type { ParsedCaipAddress } from '@reown/appkit-common'
+import type { ChainNamespace, ParsedCaipAddress } from '@reown/appkit-common'
 import {
   ChainController,
   type Connector,
@@ -24,7 +24,7 @@ import type { AppKitWalletButton, Wallet } from './index.js'
 export * from './index.js'
 
 interface AppKitElements {
-  'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
+  'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet' | 'namespace'>
 }
 /* ------------------------------------------------------------------ */
 /* Declare global namespace for React 18     */
@@ -48,6 +48,7 @@ declare module 'react' {
   }
 }
 export function useAppKitWallet(parameters?: {
+  namespace?: ChainNamespace
   onSuccess?: (data: ParsedCaipAddress) => void
   onError?: (error: Error) => void
 }) {
@@ -59,7 +60,7 @@ export function useAppKitWallet(parameters?: {
     data: walletButtonData
   } = useSnapshot(WalletButtonController.state)
 
-  const { onSuccess, onError } = parameters ?? {}
+  const { namespace, onSuccess, onError } = parameters ?? {}
 
   // Prefetch wallet buttons
   useEffect(() => {
@@ -118,8 +119,9 @@ export function useAppKitWallet(parameters?: {
 
         if (wallet === ConstantsUtil.Email) {
           await ConnectorControllerUtil.connectEmail({
+            namespace,
             onOpen() {
-              ModalController.open().then(() => RouterController.push('EmailLogin'))
+              ModalController.open({ namespace }).then(() => RouterController.push('EmailLogin'))
             }
           }).then(handleSuccess)
 
@@ -129,6 +131,7 @@ export function useAppKitWallet(parameters?: {
         if (ConstantsUtil.Socials.some(social => social === wallet)) {
           await ConnectorControllerUtil.connectSocial({
             social: wallet as SocialProvider,
+            namespace,
             onOpenFarcaster() {
               ModalController.open({ view: 'ConnectingFarcaster' })
             },
@@ -143,7 +146,11 @@ export function useAppKitWallet(parameters?: {
         const walletButton = WalletUtil.getWalletButton(wallet)
 
         const connector = walletButton
-          ? ConnectorController.getConnector(walletButton.id, walletButton.rdns)
+          ? ConnectorController.getConnector({
+              id: walletButton.id,
+              rdns: walletButton.rdns,
+              namespace
+            })
           : undefined
 
         if (connector) {
@@ -176,7 +183,7 @@ export function useAppKitWallet(parameters?: {
         WalletButtonController.setPending(false)
       }
     },
-    [connectors, handleSuccess, handleError]
+    [namespace, connectors, handleSuccess, handleError]
   )
 
   return {

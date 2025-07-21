@@ -3,6 +3,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -27,6 +28,8 @@ export class AppKitWalletButton extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() wallet: Wallet = 'metamask'
+
+  @property() namespace: ChainNamespace | undefined = undefined
 
   @state() private connectors = ConnectorController.state.connectors
 
@@ -84,7 +87,11 @@ export class AppKitWalletButton extends LitElement {
     const walletButton = WalletUtil.getWalletButton(this.wallet)
 
     const connector = walletButton
-      ? ConnectorController.getConnector(walletButton.id, walletButton.rdns)
+      ? ConnectorController.getConnector({
+          id: walletButton.id,
+          rdns: walletButton.rdns,
+          namespace: this.namespace
+        })
       : undefined
 
     if (connector) {
@@ -180,6 +187,7 @@ export class AppKitWalletButton extends LitElement {
 
         return ConnectorControllerUtil.connectSocial({
           social: this.wallet as SocialProvider,
+          namespace: this.namespace,
           onOpenFarcaster() {
             ModalController.open({ view: 'ConnectingFarcaster' })
           },
@@ -206,7 +214,9 @@ export class AppKitWalletButton extends LitElement {
         this.error = false
         await ConnectorControllerUtil.connectEmail({
           onOpen() {
-            ModalController.open().then(() => RouterController.push('EmailLogin'))
+            ModalController.open({ namespace: this.namespace }).then(() =>
+              RouterController.push('EmailLogin')
+            )
           },
           onConnect() {
             RouterController.push('Connect')
