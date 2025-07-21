@@ -8,7 +8,8 @@ export {
   getExchanges,
   getPayResult,
   getPayError,
-  getIsPaymentInProgress
+  getIsPaymentInProgress,
+  pay
 } from '../src/client.js'
 
 // -- Types ----------------------------------------- //

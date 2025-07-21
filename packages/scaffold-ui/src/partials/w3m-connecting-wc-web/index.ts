@@ -36,7 +36,11 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: this.wallet.name, platform: 'web' }
+      properties: {
+        name: this.wallet.name,
+        platform: 'web',
+        displayIndex: this.wallet?.display_index
+      }
     })
   }
 

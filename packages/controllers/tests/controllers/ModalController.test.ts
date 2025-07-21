@@ -10,6 +10,7 @@ import {
   ModalController,
   NetworkUtil,
   OptionsController,
+  PublicStateController,
   RouterController
 } from '../../exports/index.js'
 
@@ -211,5 +212,62 @@ describe('ModalController', () => {
     await ModalController.open()
 
     expect(resetSpy).toHaveBeenCalledWith('ConnectingWalletConnectBasic')
+  })
+
+  describe('clearLoading', () => {
+    it('should clear internal loading state', () => {
+      ModalController.state.loading = true
+      ModalController.state.loadingNamespaceMap.set('eip155', true)
+      ModalController.state.loadingNamespaceMap.set('bip122', true)
+
+      ModalController.clearLoading()
+
+      expect(ModalController.state.loading).toBe(false)
+      expect(ModalController.state.loadingNamespaceMap.size).toBe(0)
+    })
+
+    it('should update PublicStateController when clearing loading state', () => {
+      const publicStateSetSpy = vi.spyOn(PublicStateController, 'set')
+      ModalController.state.loading = true
+
+      ModalController.clearLoading()
+
+      expect(publicStateSetSpy).toHaveBeenCalledWith({ loading: false })
+    })
+
+    it('should clear both internal state and PublicStateController consistently', () => {
+      const publicStateSetSpy = vi.spyOn(PublicStateController, 'set')
+      ModalController.state.loading = true
+      ModalController.state.loadingNamespaceMap.set('eip155', true)
+
+      ModalController.clearLoading()
+
+      expect(ModalController.state.loading).toBe(false)
+      expect(ModalController.state.loadingNamespaceMap.size).toBe(0)
+      expect(publicStateSetSpy).toHaveBeenCalledWith({ loading: false })
+    })
+  })
+
+  describe('close method loading state handling', () => {
+    it('should clear loading state when modal is closed', () => {
+      const clearLoadingSpy = vi.spyOn(ModalController, 'clearLoading')
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+      ModalController.state.open = true
+
+      ModalController.close()
+
+      expect(clearLoadingSpy).toHaveBeenCalled()
+    })
+
+    it('should sync PublicStateController loading state when modal is closed', () => {
+      const publicStateSetSpy = vi.spyOn(PublicStateController, 'set')
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+      ModalController.state.open = true
+      ModalController.state.loading = true
+
+      ModalController.close()
+
+      expect(publicStateSetSpy).toHaveBeenCalledWith({ loading: false })
+    })
   })
 })
