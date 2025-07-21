@@ -54,16 +54,18 @@ describe('AppKit - disconnect', () => {
 
   describe('when chainNamespace is provided', () => {
     it('should disconnect from the specified namespace', async () => {
-      const chainNamespace = CommonConstantsUtil.CHAIN.SOLANA
       const mockProvider = { disconnect: vi.fn(), id: 'walletConnect' }
 
       mockChainControllerState({
-        activeChain: chainNamespace,
-        chains: new Map([[chainNamespace, { accountState: { caipAddress: 'solana:1:0xyz' } }]])
+        activeChain: CommonConstantsUtil.CHAIN.SOLANA,
+        chains: new Map([
+          [CommonConstantsUtil.CHAIN.SOLANA, { accountState: { caipAddress: 'solana:1:0xyz' } }],
+          [CommonConstantsUtil.CHAIN.EVM, { accountState: { caipAddress: 'eip155:1:0xyz' } }]
+        ])
       })
       await (appKit as any).connectionControllerClient.disconnect({
         id: mockProvider.id,
-        chainNamespace
+        chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
       })
 
       expect(mockSolanaAdapter.disconnect).toHaveBeenCalledOnce()
@@ -73,7 +75,6 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should perform all disconnect operations in correct order', async () => {
-      const chainNamespace = CommonConstantsUtil.CHAIN.EVM
       const mockProvider = { disconnect: vi.fn() }
 
       vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
@@ -81,18 +82,27 @@ describe('AppKit - disconnect', () => {
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
       mockChainControllerState({
-        activeChain: chainNamespace,
+        activeChain: CommonConstantsUtil.CHAIN.EVM,
         chains: new Map([
-          [chainNamespace, { accountState: { caipAddress: 'eip155:1:0xyz' } as any }]
+          [
+            CommonConstantsUtil.CHAIN.EVM,
+            { accountState: { caipAddress: 'eip155:1:0xyz' } as any }
+          ],
+          [
+            CommonConstantsUtil.CHAIN.SOLANA,
+            { accountState: { caipAddress: 'solana:1:0xyz' } as any }
+          ]
         ])
       })
 
-      await (appKit as any).connectionControllerClient.disconnect({ chainNamespace })
+      await (appKit as any).connectionControllerClient.disconnect({
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM
+      })
 
       // Verify operations are called in correct order
-      expect(setLoadingSpy).toHaveBeenCalledWith(true, chainNamespace)
+      expect(setLoadingSpy).toHaveBeenCalledWith(true, CommonConstantsUtil.CHAIN.EVM)
       expect(SIWXUtil.clearSessions).toHaveBeenCalled()
-      expect(setLoadingSpy).toHaveBeenCalledWith(false, chainNamespace)
+      expect(setLoadingSpy).toHaveBeenCalledWith(false, CommonConstantsUtil.CHAIN.EVM)
       expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(undefined)
       expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
         id: undefined
@@ -378,12 +388,6 @@ describe('AppKit - disconnect - functional scenarios', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
-    mockChainControllerState({
-      activeChain: CommonConstantsUtil.CHAIN.EVM,
-      chains: new Map([
-        [CommonConstantsUtil.CHAIN.EVM, { accountState: { caipAddress: 'eip155:1:0x123' } }]
-      ])
-    })
 
     vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockProvider)
 
@@ -408,6 +412,20 @@ describe('AppKit - disconnect - functional scenarios', () => {
     vi.spyOn(ProviderUtil, 'resetChain').mockImplementation(() => {})
     vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(ConstantsUtil.SIWX_DEFAULTS as SIWXConfig)
 
+    vi.spyOn(ConnectorController, 'getConnectorId').mockImplementation(ns => {
+      if (ns === 'eip155' || ns === 'solana') return 'mockConnector' as any
+      return undefined
+    })
+    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({ disconnect: vi.fn() } as any) // Generic mock for provider
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+    )
+  })
+
+  it('should properly handle disconnect of all connected chains', async () => {
+    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
+    const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
+
     mockChainControllerState({
       activeChain: CommonConstantsUtil.CHAIN.EVM,
       chains: new Map([
@@ -425,26 +443,6 @@ describe('AppKit - disconnect - functional scenarios', () => {
             accountState: { caipAddress: 'solana:mainnet:0xabc' }
           }
         ]
-      ])
-    })
-    vi.spyOn(ConnectorController, 'getConnectorId').mockImplementation(ns => {
-      if (ns === 'eip155' || ns === 'solana') return 'mockConnector' as any
-      return undefined
-    })
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({ disconnect: vi.fn() } as any) // Generic mock for provider
-    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
-      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
-    )
-  })
-
-  it('should properly handle disconnect of all connected chains', async () => {
-    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
-    const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
-
-    mockChainControllerState({
-      chains: new Map([
-        [eip155Namespace, { accountState: { caipAddress: 'eip155:1:0x123' } }],
-        [solanaNamespace, { accountState: { caipAddress: 'solana:1:0xyz' } }]
       ])
     })
 
@@ -528,6 +526,17 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(ConstantsUtil.SIWX_DEFAULTS as SIWXConfig)
 
     // Simulate two connected chains for getChainsToDisconnect (utility)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockImplementation(ns => {
+      if (ns === 'eip155' || ns === 'solana') return 'mockConnector' as any
+      return undefined
+    })
+    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({ disconnect: vi.fn() } as any) // Generic mock for provider
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+    )
+  })
+
+  it('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
     mockChainControllerState({
       activeChain: CommonConstantsUtil.CHAIN.EVM,
       chains: new Map([
@@ -547,17 +556,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
         ]
       ])
     })
-    vi.spyOn(ConnectorController, 'getConnectorId').mockImplementation(ns => {
-      if (ns === 'eip155' || ns === 'solana') return 'mockConnector' as any
-      return undefined
-    })
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({ disconnect: vi.fn() } as any) // Generic mock for provider
-    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
-      UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
-    )
-  })
 
-  it('should handle errors when the main adapter.disconnect fails for one chain during full disconnect', async () => {
     const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
     const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
     const solanaAdapterError = new Error('Solana adapter failed') // Corrected error message for clarity
@@ -642,6 +641,26 @@ describe('AppKit - disconnect - error handling scenarios', () => {
   })
 
   it('should not clear SIWX sessions if signOutOnDisconnect is false', async () => {
+    mockChainControllerState({
+      activeChain: CommonConstantsUtil.CHAIN.EVM,
+      chains: new Map([
+        [
+          CommonConstantsUtil.CHAIN.EVM,
+          {
+            caipNetwork: mainnetCaipNetwork,
+            accountState: { caipAddress: 'eip155:1:0x123' }
+          }
+        ],
+        [
+          CommonConstantsUtil.CHAIN.SOLANA,
+          {
+            caipNetwork: solanaCaipNetwork,
+            accountState: { caipAddress: 'solana:mainnet:0xabc' }
+          }
+        ]
+      ])
+    })
+
     const siwx = { ...ConstantsUtil.SIWX_DEFAULTS, signOutOnDisconnect: false } as SIWXConfig
     vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(siwx)
 
