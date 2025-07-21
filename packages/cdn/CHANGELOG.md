@@ -1,5 +1,19 @@
 # @reown/appkit-cdn
 
+## 1.7.16
+
+### Patch Changes
+
+- [#4497](https://github.com/reown-com/appkit/pull/4497) [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c) Thanks [@venturars](https://github.com/venturars)! - Exports type definitions of Base class for better TS support when using hooks
+
+- Updated dependencies [[`7788000`](https://github.com/reown-com/appkit/commit/7788000628211880cf982f9b94b076ac90144114), [`dfc583c`](https://github.com/reown-com/appkit/commit/dfc583cf5c2b2ca2f402d1525242b973b6fb6e9d), [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c), [`541318b`](https://github.com/reown-com/appkit/commit/541318bff54891503cfef10e194aaf22931fc01e)]:
+  - @reown/appkit@1.7.16
+  - @reown/appkit-adapter-solana@1.7.16
+  - @reown/appkit-adapter-ethers@1.7.16
+  - @reown/appkit-adapter-ethers5@1.7.16
+  - @reown/appkit-adapter-wagmi@1.7.16
+  - @reown/appkit-polyfills@1.7.16
+
 ## 1.7.15
 
 ### Patch Changes
