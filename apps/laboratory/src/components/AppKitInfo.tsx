@@ -5,6 +5,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Code,
   Heading,
   Stack,
   StackDivider,
@@ -13,7 +14,12 @@ import {
 import Image from 'next/image'
 
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
-import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@reown/appkit/react'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitState,
+  useWalletInfo
+} from '@reown/appkit/react'
 
 import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 
@@ -23,6 +29,7 @@ export function AppKitInfo() {
   const { caipAddress, address, embeddedWalletInfo } = useAppKitAccount()
   const { walletInfo } = useWalletInfo()
   const { chainId } = useAppKitNetwork()
+  const appkitState = useAppKitState()
   const appKitAccount = useAppKitAccount()
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
@@ -123,6 +130,25 @@ export function AppKitInfo() {
                 Status
               </Heading>
               <Text data-testid="apkt-account-status">{appKitAccount.status}</Text>
+            </Box>
+          )}
+
+          {appkitState && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                useAppKitState()
+              </Heading>
+              <Code
+                padding={4}
+                whiteSpace="pre-wrap"
+                borderRadius={4}
+                border="1px solid"
+                borderColor="gray.200"
+                maxHeight={300}
+                overflow="scroll"
+              >
+                {JSON.stringify(appkitState, null, 2)}
+              </Code>
             </Box>
           )}
 
