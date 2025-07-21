@@ -70,3 +70,19 @@ export function useAppKitBalance() {
 }
 
 export { useAppKitAccount } from '@reown/appkit-controllers/react'
+
+// React wrapper components
+export {
+  AppKitButtonReact,
+  AppKitNetworkButtonReact,
+  AppKitConnectButtonReact,
+  AppKitAccountButtonReact
+} from '../src/library/react/components.js'
+
+// React wrapper components with user-friendly names
+export {
+  AppKitButtonReact as AppKitButton,
+  AppKitNetworkButtonReact as AppKitNetworkButton,
+  AppKitConnectButtonReact as AppKitConnectButton,
+  AppKitAccountButtonReact as AppKitAccountButton
+} from '../src/library/react/components.js'
