@@ -70,3 +70,10 @@ export function useAppKitBalance() {
 }
 
 export { useAppKitAccount } from '@reown/appkit-controllers/react'
+
+export {
+  AppKitButton,
+  AppKitNetworkButton,
+  AppKitConnectButton,
+  AppKitAccountButton
+} from '../src/library/react/components.js'

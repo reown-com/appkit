@@ -14,7 +14,11 @@ import {
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import type { Wallet } from '@reown/appkit-wallet-button'
-import { useAppKitUpdateEmail, useAppKitWallet } from '@reown/appkit-wallet-button/react'
+import {
+  AppKitWalletButton,
+  useAppKitUpdateEmail,
+  useAppKitWallet
+} from '@reown/appkit-wallet-button/react'
 import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -109,7 +113,7 @@ function WalletButtonComponents({ namespace, wallets }: WalletButtonComponentsPr
 
     return (
       <Fragment key={key}>
-        <appkit-wallet-button wallet={wallet} namespace={namespace} data-testid={key} />
+        <AppKitWalletButton wallet={wallet} namespace={namespace} data-testid={key} />
       </Fragment>
     )
   })
