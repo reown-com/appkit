@@ -145,6 +145,9 @@
     "valtio": "2.1.5",
     "viem": ">=2.32.0"
   },
+  "optionalDependencies": {
+    "@lit/react": "1.0.8"
+  },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",
     "@types/react": "19.1.3",
