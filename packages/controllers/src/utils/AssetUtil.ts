@@ -21,7 +21,11 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   // Bitcoin
   bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
   // Cosmos
-  cosmos: ''
+  cosmos: '',
+  // Sui
+  sui: '',
+  // Stacks
+  stacks: ''
 }
 
 // -- State --------------------------------------------- //

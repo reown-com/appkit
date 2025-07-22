@@ -1029,6 +1029,8 @@ export type NamespaceTypeMap = {
   bip122: 'payment' | 'ordinal' | 'stx'
   polkadot: 'eoa'
   cosmos: 'eoa'
+  sui: 'eoa'
+  stacks: 'eoa'
 }
 
 export type AccountTypeMap = {
