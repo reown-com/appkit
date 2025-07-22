@@ -75,6 +75,9 @@ on:
       PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
         required: false
 
+env:
+  BRANCH_NAME: ${{ inputs.branch }}
+
 jobs:
   build_lab_and_extension:
     name: 'Build Lab and Extension'
@@ -85,6 +88,12 @@ jobs:
         with:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
+
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -151,7 +160,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ui-build-output
+          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
           path: |
             dist/
             .next/
@@ -168,7 +177,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ui-node-modules
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules
           retention-days: 1
 
@@ -193,6 +202,12 @@ jobs:
         with:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
+
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
 
       - name: Get Playwright version
         id: playwright-version
@@ -242,14 +257,14 @@ jobs:
       - name: Download build artifacts (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-build-output
+          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
           # Note: download-artifact downloads into the workspace root by default
 
       # Download actual artifact in GitHub Actions
       - name: Download node_modules (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-node-modules
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules # Specify path to download into
 
       # Restore executable permissions for binaries (keep this after potential copy)
@@ -377,6 +392,12 @@ jobs:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
 
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
@@ -390,7 +411,7 @@ jobs:
       - name: Download node_modules (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-node-modules
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules # Specify path to download into
 
       - name: Install dependencies # Install again to link binaries, etc.

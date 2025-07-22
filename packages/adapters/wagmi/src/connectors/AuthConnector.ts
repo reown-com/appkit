@@ -14,6 +14,7 @@ import {
   ChainController,
   ConnectorController,
   SIWXUtil,
+  getActiveCaipNetwork,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
@@ -58,7 +59,7 @@ export function authConnector(parameters: AuthParameters) {
     if (!socialProvider) {
       socialProvider = W3mFrameProviderSingleton.getInstance({
         projectId: parameters.options.projectId,
-        chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId,
+        chainId: getActiveCaipNetwork()?.caipNetworkId,
         enableLogger: parameters.options.enableAuthLogger,
         onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
           if (reason === 'iframe_load_failed') {
@@ -70,8 +71,7 @@ export function authConnector(parameters: AuthParameters) {
           }
         },
         abortController: ErrorUtil.EmbeddedWalletAbortController,
-        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-          ChainController.getActiveCaipNetwork(namespace),
+        getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
         getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
       })
     }
@@ -176,7 +176,7 @@ export function authConnector(parameters: AuthParameters) {
       if (!this.provider) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
-          chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId,
+          chainId: getActiveCaipNetwork()?.caipNetworkId,
           enableLogger: parameters.options.enableAuthLogger,
           abortController: ErrorUtil.EmbeddedWalletAbortController,
           onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
@@ -188,8 +188,7 @@ export function authConnector(parameters: AuthParameters) {
               AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
             }
           },
-          getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-            ChainController.getActiveCaipNetwork(namespace),
+          getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
           getCaipNetworks: (namespace?: ChainNamespace) =>
             ChainController.getCaipNetworks(namespace)
         })

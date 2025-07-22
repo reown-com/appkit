@@ -1,4 +1,5 @@
 ---
+'@reown/appkit-wallet-button': patch
 '@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -21,7 +22,26 @@
 '@reown/appkit-testing': patch
 '@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
-'@reown/appkit-wallet-button': patch
 ---
 
-Exports type definitions of Base class for better TS support when using hooks
+Introduces AppKit React components. React users can now use the new components instead of HTML elements.
+
+### Example
+
+```jsx
+import { AppKitButton, AppKitNetworkButton } from '@reown/appkit/react'
+import { AppKitWalletButton } from '@reown/appkit-wallet-button/react'
+
+export function AppKitButtons() {
+  return (
+    <div>
+      {/* Default */}
+      <AppkitButton />
+      <AppKitNetworkButton />
+      <AppKitWalletButton wallet="metamask" />
+      {/* With parameters */}
+      <AppkitButton namespace="eip155" />
+    </div>
+  )
+}
+```

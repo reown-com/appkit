@@ -6,6 +6,7 @@ import {
   BlockchainApiController,
   ChainController
 } from '@reown/appkit-controllers'
+import { extendedMainnet, mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ConstantsUtil } from '@reown/appkit-utils'
 
 import { CloudAuthSIWX, ReownAuthentication } from '../../src/configs/ReownAuthenticationSIWX'
@@ -425,9 +426,13 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       const addSessionSpy = vi.spyOn(siwx, 'addSession')
       addSessionSpy.mockResolvedValueOnce()
 
-      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
-        caipNetworkId: 'eip155:2'
-      } as any)
+      mockChainControllerState({
+        activeCaipNetwork: {
+          ...extendedMainnet,
+          id: 2,
+          caipNetworkId: 'eip155:2'
+        }
+      })
 
       const session = mockSession({
         data: { accountAddress: address, chainId: `${namespace}:${id}` }
