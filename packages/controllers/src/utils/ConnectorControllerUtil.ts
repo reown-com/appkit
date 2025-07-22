@@ -137,7 +137,7 @@ export const ConnectorControllerUtil = {
           if (event.origin === CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN) {
             window.removeEventListener('message', handleSocialConnection, false)
             try {
-              const authConnector = ConnectorController.getAuthConnector(namespace)
+              const authConnector = ConnectorController.getAuthConnector(namespaceToUse)
 
               if (authConnector && !connectingSocial) {
                 if (socialWindow) {
