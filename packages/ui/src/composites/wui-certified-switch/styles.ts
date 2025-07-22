@@ -2,10 +2,11 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    height: 100%;
+    height: auto;
   }
 
   button {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;

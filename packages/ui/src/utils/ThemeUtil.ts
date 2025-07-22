@@ -184,14 +184,14 @@ function createRootStyles(_themeVariables?: ThemeVariables) {
         --apkt-width-network-md: 48px;
         --apkt-width-network-lg: 86px;
 
-        --apkt-ease-out-power-2: cubic-bezier(0, 0, 0.22, 1);
-        --apkt-ease-out-power-1: cubic-bezier(0, 0, 0.55, 1);
+        --apkt-ease-out-power-2: cubic-bezier(0.23, 0.09, 0.08, 1.13);
+        --apkt-ease-out-power-1: cubic-bezier(0.12, 0.04, 0.2, 1.06);
 
-        --apkt-ease-in-power-3: cubic-bezier(0.66, 0, 1, 1);
-        --apkt-ease-in-power-2: cubic-bezier(0.45, 0, 1, 1);
-        --apkt-ease-in-power-1: cubic-bezier(0.3, 0, 1, 1);
+        --apkt-ease-in-power-2: cubic-bezier(0.92, -0.13, 0.77, 0.91);
+        --apkt-ease-in-power-1: cubic-bezier(0.88, -0.06, 0.8, 0.96);
 
-        --apkt-ease-inout-power-1: cubic-bezier(0.45, 0, 0.55, 1);
+        --apkt-ease-inout-power-2: cubic-bezier(0.77, 0.09, 0.23, 1.13);
+        --apkt-ease-inout-power-1: cubic-bezier(0.88, 0.04, 0.12, 1.06);
 
         --apkt-duration-lg: 200ms;
         --apkt-duration-md: 125ms;
@@ -254,11 +254,20 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    will-change: background-color, color, border, box-shadow;
+    will-change: background-color, color, border, box-shadow, width, height, transform, opacity;
     outline: none;
     border: none;
     text-decoration: none;
-    transition: all var(--apkt-duration-sm) var(--apkt-ease-out-power-1);
+    transition:
+      background-color,
+      color,
+      border,
+      box-shadow,
+      width,
+      height,
+      transform,
+      opacity,
+      var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
   }
 
   button:disabled {

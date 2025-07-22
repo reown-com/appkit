@@ -37,7 +37,7 @@ export class W3mRouter extends LitElement {
       if (this.prevHeight !== '0px') {
         this.style.setProperty('--prev-height', this.prevHeight)
         this.style.setProperty('--new-height', height)
-        this.style.animation = 'w3m-view-height 150ms forwards ease'
+        this.style.animation = 'w3m-view-height 150ms forwards var(--apkt-ease-inout-power-2)'
         this.style.height = 'auto'
       }
       setTimeout(() => {

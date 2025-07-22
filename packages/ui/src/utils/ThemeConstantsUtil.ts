@@ -205,7 +205,7 @@ export const borderRadius = {
   round: '9999px'
 }
 
-// @TODO: Provide proper values to something sm, md, lg, xl, etc.
+// @TODO: Provide proper values to something sm, md, lg, http://localhost:6006/?path=/docs/theme-spacing--docsxl, etc.
 export const spacing = {
   '0': '0px',
   '01': '2px',

@@ -171,15 +171,11 @@ export type IconType =
   | 'questionMark'
   | 'recycleHorizontal'
   | 'refresh'
-  | 'power'
   | 'reown'
   | 'search'
   | 'send'
   | 'spinner'
   | 'swapHorizontal'
-  | 'swapHorizontalBold'
-  | 'swapHorizontalMedium'
-  | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
   | 'threeDots'
@@ -199,6 +195,8 @@ export type IconType =
   | 'ethereum'
   | 'solana'
   | 'bitcoin'
+
+export type IconWeightType = 'regular' | 'bold' | 'fill'
 
 export type VisualType =
   | 'browser'

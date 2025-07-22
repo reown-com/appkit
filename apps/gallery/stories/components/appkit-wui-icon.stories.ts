@@ -14,7 +14,8 @@ export default {
   args: {
     size: 'md',
     name: 'copy',
-    color: 'default'
+    color: 'default',
+    weight: 'bold'
   },
   argTypes: {
     size: {
@@ -28,11 +29,20 @@ export default {
     color: {
       options: colorOptions,
       control: { type: 'select' }
+    },
+    weight: {
+      options: ['regular', 'bold', 'fill'],
+      control: { type: 'select' }
     }
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html`<wui-icon color=${args.color} size=${args.size} name=${args.name}></wui-icon>`
+    html`<wui-icon
+      color=${args.color}
+      size=${args.size}
+      name=${args.name}
+      weight=${args.weight}
+    ></wui-icon>`
 }
