@@ -121,7 +121,11 @@ describe('W3mDataCaptureView', () => {
     it('should throw error if ReownAuthentication is not initialized', async () => {
       OptionsController.state.siwx = undefined
 
-      await expect(() => createView()).rejects.toThrow('ReownAuthentication is not initialized')
+      await createView()
+
+      expect(SnackController.showError).toHaveBeenCalledWith(
+        'ReownAuthentication is not initialized.'
+      )
     })
 
     it('should initialize with correct default values', async () => {
@@ -443,7 +447,8 @@ describe('W3mDataCaptureView', () => {
       mockSiwx.requestEmailOtp = vi
         .fn()
         .mockImplementation(
-          () => new Promise(resolve => setTimeout(() => resolve({ uuid: 'test-uuid' }), 100))
+          () =>
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Network error')), 100))
         )
 
       element = await createView()
@@ -478,7 +483,8 @@ describe('W3mDataCaptureView', () => {
       mockSiwx.requestEmailOtp = vi
         .fn()
         .mockImplementation(
-          () => new Promise(resolve => setTimeout(() => resolve({ uuid: 'test-uuid' }), 100))
+          () =>
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Network error')), 100))
         )
 
       element = await createView()
@@ -519,7 +525,8 @@ describe('W3mDataCaptureView', () => {
       mockSiwx.requestEmailOtp = vi
         .fn()
         .mockImplementation(
-          () => new Promise(resolve => setTimeout(() => resolve({ uuid: 'test-uuid' }), 100))
+          () =>
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Network error')), 100))
         )
 
       element = await createView()

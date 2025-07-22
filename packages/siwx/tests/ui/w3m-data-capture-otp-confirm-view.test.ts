@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, OptionsController, RouterController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  OptionsController,
+  RouterController,
+  SnackController
+} from '@reown/appkit-controllers'
 
 import { ReownAuthentication } from '../../src/configs/index'
 import { W3mDataCaptureOtpConfirmView } from '../../src/ui/w3m-data-capture-otp-confirm-view/index'
@@ -34,6 +39,9 @@ vi.mock('@reown/appkit-controllers', () => ({
   },
   ConnectorController: {
     getAuthConnector: vi.fn()
+  },
+  SnackController: {
+    showError: vi.fn()
   }
 }))
 
@@ -94,7 +102,11 @@ describe('W3mDataCaptureOtpConfirmView', () => {
     it('should throw error if ReownAuthentication is not initialized', async () => {
       OptionsController.state.siwx = undefined
 
-      await expect(createView()).rejects.toThrow('ReownAuthentication is not initialized')
+      await createView()
+
+      expect(SnackController.showError).toHaveBeenCalledWith(
+        'ReownAuthentication is not initialized.'
+      )
     })
 
     it('should initialize correctly with valid SIWX instance', async () => {
@@ -108,7 +120,11 @@ describe('W3mDataCaptureOtpConfirmView', () => {
     it('should throw error if SIWX is not instance of ReownAuthentication', async () => {
       OptionsController.state.siwx = {} as any
 
-      await expect(createView()).rejects.toThrow('ReownAuthentication is not initialized')
+      await createView()
+
+      expect(SnackController.showError).toHaveBeenCalledWith(
+        'ReownAuthentication is not initialized.'
+      )
     })
   })
 
