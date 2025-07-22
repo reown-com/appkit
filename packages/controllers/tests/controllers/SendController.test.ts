@@ -1,15 +1,9 @@
-import { mainnet } from 'viem/chains'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Balance, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type Balance } from '@reown/appkit-common'
 
-import {
-  ChainController,
-  type ChainControllerState,
-  CoreHelperUtil,
-  SendController,
-  SnackController
-} from '../../exports/index.js'
+import { CoreHelperUtil, SendController, SnackController } from '../../exports/index.js'
+import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
 import { BalanceUtil } from '../../src/utils/BalanceUtil.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -30,11 +24,6 @@ const sendTokenAmount = 0.1
 const receiverAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 const receiverProfileName = 'john.eth'
 const receiverProfileImageUrl = 'https://ipfs.com/0x123.png'
-const extendedMainnet = {
-  ...mainnet,
-  chainNamespace: ConstantsUtil.CHAIN.EVM,
-  caipNetworkId: 'eip155:1' as const
-}
 
 // -- Tests --------------------------------------------------------------------
 describe('SendController', () => {
@@ -74,10 +63,10 @@ describe('SendController', () => {
 
   describe('fetchTokenBalance()', () => {
     beforeEach(() => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      mockChainControllerState({
         activeCaipNetwork: extendedMainnet,
         activeCaipAddress: 'eip155:1:0x123'
-      } as unknown as ChainControllerState)
+      })
       vi.spyOn(BalanceUtil, 'getMyTokensWithBalance').mockResolvedValue([])
       vi.spyOn(CoreHelperUtil, 'isAllowedRetry').mockReturnValue(true)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
@@ -95,12 +84,13 @@ describe('SendController', () => {
     })
 
     it('should not fetch balance if chainId is not defined', async () => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      mockChainControllerState({
         activeCaipNetwork: {
-          chainNamespace: 'eip155'
-        } as unknown as CaipNetwork,
-        activeCaipAddress: 'eip155:1:0x123'
-      } as unknown as ChainControllerState)
+          ...extendedMainnet,
+          // @ts-expect-error - edge case
+          caipNetworkId: undefined
+        }
+      })
 
       const result = await SendController.fetchTokenBalance()
 
@@ -109,10 +99,11 @@ describe('SendController', () => {
     })
 
     it('should not fetch balance if namespace is not defined', async () => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      mockChainControllerState({
+        // @ts-expect-error - edge case
         activeCaipNetwork: { ...extendedMainnet, chainNamespace: undefined },
         activeCaipAddress: 'eip155:1:0x123'
-      } as unknown as ChainControllerState)
+      })
 
       const result = await SendController.fetchTokenBalance()
 
@@ -121,10 +112,10 @@ describe('SendController', () => {
     })
 
     it('should not fetch balance if address is not defined', async () => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      mockChainControllerState({
         activeCaipNetwork: extendedMainnet,
         activeCaipAddress: undefined
-      } as unknown as ChainControllerState)
+      })
 
       const result = await SendController.fetchTokenBalance()
 
