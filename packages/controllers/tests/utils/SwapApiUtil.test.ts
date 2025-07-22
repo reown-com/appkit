@@ -217,10 +217,6 @@ describe('SwapApiUtil', () => {
   })
 
   describe('mapBalancesToSwapTokens', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should map balances to swap tokens correctly', () => {
       const mockBalances = [
         {
