@@ -55,7 +55,14 @@ export type InternalChainNamespace =
 
 export type ChainNamespace<T extends string = InternalChainNamespace> = T | InternalChainNamespace
 
-export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5' | 'universal' | 'bip122'
+export type AdapterType =
+  | 'solana'
+  | 'wagmi'
+  | 'ethers'
+  | 'ethers5'
+  | 'universal'
+  | 'bip122'
+  | 'polkadot'
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
