@@ -15,8 +15,8 @@ import { HelpersUtil } from './utils/HelpersUtil'
 // Mock controllers
 vi.mock('@reown/appkit-controllers', () => ({
   ChainController: {
-    getAccountProp: vi.fn(),
-    getActiveCaipAddress: vi.fn()
+    getActiveCaipAddress: vi.fn(),
+    getAccountData: vi.fn()
   },
   OptionsController: {
     state: {
@@ -70,12 +70,10 @@ describe('W3mDataCaptureView', () => {
     document.body.innerHTML = ''
 
     // Reset mocks
-    vi.spyOn(ChainController, 'getAccountProp').mockImplementation((param: string) => {
-      if (param === 'address') {
-        return '0x1234567890abcdef1234567890abcdef12345678'
-      }
-
-      return undefined
+    vi.spyOn(ChainController, 'getAccountData').mockImplementation(() => {
+      return {
+        address: '0x1234567890abcdef1234567890abcdef12345678'
+      } as any
     })
     vi.spyOn(ChainController, 'getActiveCaipAddress').mockReturnValue(
       'eip155:1:0x1234567890abcdef1234567890abcdef12345678'
@@ -145,12 +143,11 @@ describe('W3mDataCaptureView', () => {
     })
 
     it('should initialize with email from user account', async () => {
-      vi.spyOn(ChainController, 'getAccountProp').mockImplementation((param: string) => {
-        if (param === 'address') {
-          return '0x1234567890abcdef1234567890abcdef12345678'
-        }
-
-        return { email: 'user@test.com' }
+      vi.spyOn(ChainController, 'getAccountData').mockImplementation(() => {
+        return {
+          address: '0x1234567890abcdef1234567890abcdef12345678',
+          user: { email: 'user@test.com' }
+        } as any
       })
 
       element = await createView()

@@ -20,9 +20,9 @@ export class W3mDataCaptureView extends LitElement {
   public static override styles = [styles]
 
   @state() private email =
-    RouterController.state.data?.email ?? ChainController.getAccountProp('user')?.email ?? ''
+    RouterController.state.data?.email ?? ChainController.getAccountData()?.user?.email ?? ''
 
-  @state() private address = ChainController.getAccountProp('address') ?? ''
+  @state() private address = ChainController.getAccountData()?.address ?? ''
 
   @state() private loading = false
 

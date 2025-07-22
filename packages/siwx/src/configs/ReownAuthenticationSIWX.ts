@@ -10,6 +10,7 @@ import {
   AccountController,
   ApiController,
   BlockchainApiController,
+  ChainController,
   type SIWXConfig,
   type SIWXMessage,
   type SIWXSession,
@@ -358,13 +359,7 @@ export class ReownAuthentication implements SIWXConfig {
 
     if (email) {
       Object.values(ConstantsUtil.CHAIN).forEach(chainNamespace => {
-        ChainController.setAccountProp(
-          'user',
-          {
-            email
-          },
-          chainNamespace
-        )
+        ChainController.setAccountProp('user', { email }, chainNamespace)
       })
     }
   }

@@ -52,7 +52,7 @@ export const SIWXUtil = {
       }
 
       if (OptionsController.state.remoteFeatures?.emailCapture) {
-        const user = ChainController.getAccountProp('user', namespace)
+        const user = ChainController.getAccountData(namespace)?.user
 
         await ModalController.open({
           view: 'DataCapture',
