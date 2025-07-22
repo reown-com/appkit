@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
 
@@ -56,12 +56,8 @@ const mockEthChainIdAsHex = '0x1'
 
 describe('BalanceUtil', () => {
   beforeEach(() => {
-    vi.resetAllMocks()
+    vi.restoreAllMocks()
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(ConstantsUtil.CONNECTOR_ID.AUTH)
-  })
-
-  afterEach(() => {
-    vi.resetAllMocks()
   })
 
   describe('getMyTokensWithBalance', () => {
@@ -79,10 +75,6 @@ describe('BalanceUtil', () => {
         stacks: undefined
       }
       vi.mocked(StorageUtil.getBalanceCacheForCaipAddress).mockReturnValue(undefined)
-    })
-
-    afterEach(() => {
-      vi.clearAllMocks()
     })
 
     it('should return empty array when address is missing', async () => {
@@ -284,6 +276,7 @@ describe('BalanceUtil', () => {
 
   describe('getEIP155Balances', () => {
     beforeEach(() => {
+      vi.restoreAllMocks()
       AccountController.state.address = mockEthereumAddress
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       ConnectorController.state.activeConnectorIds = {
@@ -296,10 +289,6 @@ describe('BalanceUtil', () => {
         stacks: undefined
       }
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
-    })
-
-    afterEach(() => {
-      vi.clearAllMocks()
     })
 
     it('should return null when walletGetAssetsResponse is invalid', async () => {
