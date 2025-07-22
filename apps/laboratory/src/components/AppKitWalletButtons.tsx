@@ -101,7 +101,11 @@ export function AppKitWalletButtons({
 
 function WalletButtonComponents({ namespace, wallets }: WalletButtonComponentsProps) {
   return wallets.map(wallet => {
-    const key = `wallet-button-${wallet}${namespace ? `-${namespace}` : ''}`
+    let key = `wallet-button-${wallet}`
+
+    if (namespace) {
+      key = `${key}-${namespace}`
+    }
 
     return (
       <Fragment key={key}>
@@ -139,7 +143,11 @@ function WalletButtonHooks({ namespace, wallets }: WalletButtonHooksProps) {
     const isWalletButtonDisabled = !isWalletConnect && !isSocial && !isReady && !isEmail
     const shouldCapitlize = wallet === 'okx'
 
-    const key = `wallet-button-hook-${wallet}${namespace ? `-${namespace}` : ''}`
+    let key = `wallet-button-hook-${wallet}`
+
+    if (namespace) {
+      key = `${key}-${namespace}`
+    }
 
     return (
       <Button
