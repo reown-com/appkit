@@ -14,6 +14,7 @@ export interface AlertControllerState {
 type StateKey = keyof AlertControllerState
 
 interface OpenMessageParameters {
+  code?: string
   shortMessage: string
   longMessage?: string | (() => void)
 }
@@ -36,7 +37,7 @@ const controller = {
   open(message: OpenMessageParameters, variant: AlertControllerState['variant']) {
     const { debug } = OptionsController.state
 
-    const { shortMessage, longMessage } = message
+    const { code, shortMessage, longMessage } = message
 
     if (debug) {
       state.message = shortMessage
@@ -46,7 +47,10 @@ const controller = {
 
     if (longMessage) {
       // eslint-disable-next-line no-console
-      console.error(typeof longMessage === 'function' ? longMessage() : longMessage)
+      console.error(
+        typeof longMessage === 'function' ? longMessage() : longMessage,
+        code ? { code } : undefined
+      )
     }
   },
 

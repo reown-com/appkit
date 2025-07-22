@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { AlertController, OptionsController } from '../../exports/index.js'
 
@@ -7,6 +7,10 @@ OptionsController.state.debug = true
 
 // -- Tests --------------------------------------------------------------------
 describe('AlertController', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should show info state', () => {
     AlertController.open({ shortMessage: 'Info message' }, 'info')
     expect(AlertController.state).toStrictEqual({
@@ -50,5 +54,22 @@ describe('AlertController', () => {
       variant: 'info',
       open: false
     })
+  })
+
+  it('should show error code', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    AlertController.open(
+      {
+        code: 'APKT005',
+        shortMessage: 'Unverified Domain',
+        longMessage:
+          'Embedded wallet load failed. Ensure your domain is verified in https://dashboard.reown.com.'
+      },
+      'error'
+    )
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Embedded wallet load failed. Ensure your domain is verified in https://dashboard.reown.com.',
+      { code: 'APKT005' }
+    )
   })
 })

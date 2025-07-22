@@ -1,7 +1,13 @@
+import { isSafe } from '@reown/appkit-common'
+
 const abortController = new AbortController()
 
 export const ErrorUtil = {
   EmbeddedWalletAbortController: abortController,
+  /**
+   * Universal Provider errors. Make sure the `message` is matching with the errors thrown by the Universal Provider.
+   * We use the `alertErrorKey` to map the error to the correct AppKit alert error.
+   */
   UniversalProviderErrors: {
     UNAUTHORIZED_DOMAIN_NOT_ALLOWED: {
       message: 'Unauthorized: origin not allowed',
@@ -18,58 +24,62 @@ export const ErrorUtil = {
   },
   ALERT_ERRORS: {
     SWITCH_NETWORK_NOT_FOUND: {
+      code: 'APKT001',
       shortMessage: 'Network Not Found',
       longMessage:
-        "Network not found. Please make sure it is included in 'networks' array in createAppKit function."
+        "The specified network is not recognized. Ensure it is included in the 'networks' array of your `createAppKit` configuration."
     },
     ORIGIN_NOT_ALLOWED: {
-      shortMessage: 'Origin Not Allowed',
+      code: 'APKT002',
+      shortMessage: 'Invalid App Configuration',
       longMessage: () =>
-        `🔧 Origin ${
-          isSafe() ? window.origin : 'unknown'
-        } not found on allow list. Please update your project configurations on dashboard.reown.com.`
+        `Origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com.`
     },
     IFRAME_LOAD_FAILED: {
-      shortMessage: 'Network Error - Could not load embedded wallet',
-      longMessage: () => 'There was an issue loading the embedded wallet. Please try again later.'
+      code: 'APKT003',
+      shortMessage: 'Network Error: Wallet Load Failed',
+      longMessage: () =>
+        'Failed to load the embedded wallet. This may be due to network issues. Please try again later.'
     },
     IFRAME_REQUEST_TIMEOUT: {
-      shortMessage: 'Embedded Wallet Request Timed Out',
-      longMessage: () =>
-        'There was an issue doing the request to the embedded wallet. Please try again later.'
+      code: 'APKT004',
+      shortMessage: 'Wallet Request Timeout',
+      longMessage: () => 'The request to the embedded wallet timed out. Please try again shortly.'
     },
     UNVERIFIED_DOMAIN: {
+      code: 'APKT005',
       shortMessage: 'Unverified Domain',
       longMessage: () =>
-        'There was an issue loading the embedded wallet. Please verify that your domain is allowed at dashboard.reown.com.'
+        'Embedded wallet load failed. Ensure your domain is verified in https://dashboard.reown.com.'
     },
-
     JWT_TOKEN_NOT_VALID: {
+      code: 'APKT006',
       shortMessage: 'Session Expired',
-      longMessage:
-        'Invalid session found on UniversalProvider. Please check your time settings and connect again.'
+      longMessage: 'Your session is invalid or expired. Check your system’s time and reconnect.'
     },
     INVALID_PROJECT_ID: {
+      code: 'APKT007',
       shortMessage: 'Invalid Project ID',
-      longMessage: 'The project ID is invalid. Visit dashboard.reown.com to get a new one.'
+      longMessage:
+        'The specified project ID is invalid. Please visit https://dashboard.reown.com to retrieve a valid one.'
     },
     PROJECT_ID_NOT_CONFIGURED: {
-      shortMessage: 'Project ID Not Configured',
+      code: 'APKT008',
+      shortMessage: 'Project ID Missing',
       longMessage:
-        'Project ID Not Configured. Please update your project configurations on dashboard.reown.com.'
+        'Project ID is not configured. You can create a project ID at https://dashboard.reown.com.'
     },
     SERVER_ERROR_APP_CONFIGURATION: {
+      code: 'APKT009',
       shortMessage: 'Server Error',
       longMessage: (errorMessage?: string) =>
-        `Failed to get App Configuration ${errorMessage || ''}`
+        `Unable to fetch App Configuration. ${errorMessage || 'Please try again later.'}`
     },
     RATE_LIMITED_APP_CONFIGURATION: {
+      code: 'APKT010',
       shortMessage: 'Rate Limited',
-      longMessage: 'Rate limited when trying to get the App Configuration'
+      longMessage:
+        'You have been rate limited while retrieving App Configuration. Please wait and retry.'
     }
   }
-}
-
-function isSafe() {
-  return typeof window !== 'undefined'
 }
