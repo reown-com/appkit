@@ -51,6 +51,19 @@ export const SIWXUtil = {
         return
       }
 
+      if (OptionsController.state.remoteFeatures?.emailCapture) {
+        const user = ChainController.getAccountData(namespace)?.user
+
+        await ModalController.open({
+          view: 'DataCapture',
+          data: {
+            email: user?.email ?? undefined
+          }
+        })
+
+        return
+      }
+
       await ModalController.open({
         view: 'SIWXSignMessage'
       })
