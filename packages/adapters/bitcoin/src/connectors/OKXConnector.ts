@@ -3,14 +3,17 @@ import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/a
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoin } from '@reown/appkit/networks'
+import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
-const TESTNET_CAIP_NETWORK_ID = 'bip122:000000000933ea01ad0ee984209779ba'
+const OKX_NETWORK_KEYS = {
+  [bitcoin.caipNetworkId]: 'bitcoin',
+  [bitcoinTestnet.caipNetworkId]: 'bitcoinTestnet'
+} as const
 
 export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'OKX'
@@ -118,7 +121,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     }
   }
 
-  public async switchNetwork(_caipNetworkId: string): Promise<void> {
+  public async switchNetwork(_caipNetworkId: CaipNetwork['caipNetworkId']): Promise<void> {
     const connector = OKXConnector.getWallet({
       requestedChains: this.requestedChains,
       getActiveNetwork: this.getActiveNetwork,
@@ -170,12 +173,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const okxwallet = (window as any)?.okxwallet
 
-    // Bitcoin Testnet
-    if (params.requestedCaipNetworkId === TESTNET_CAIP_NETWORK_ID) {
-      wallet = okxwallet?.bitcoinTestnet
-    } else {
-      wallet = okxwallet?.bitcoin
-    }
+    const networkKey =
+      OKX_NETWORK_KEYS[params.requestedCaipNetworkId as keyof typeof OKX_NETWORK_KEYS]
+
+    wallet = okxwallet?.[networkKey] || okxwallet?.bitcoin
 
     /**
      * OKX doesn't provide a way to get the image URL specifally for bitcoin
@@ -201,7 +202,7 @@ export namespace OKXConnector {
     requestedChains: CaipNetwork[]
     getActiveNetwork: () => CaipNetwork | undefined
     imageUrl: string
-    requestedCaipNetworkId?: string
+    requestedCaipNetworkId?: CaipNetwork['caipNetworkId']
   }
 
   export type Wallet = {
