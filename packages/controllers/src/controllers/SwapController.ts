@@ -49,12 +49,12 @@ type TransactionParams = {
 }
 
 class TransactionError extends Error {
-  shortMessage?: string
+  displayMessage?: string
 
-  constructor(message?: string, shortMessage?: string) {
+  constructor(message?: string, displayMessage?: string) {
     super(message)
     this.name = 'TransactionError'
-    this.shortMessage = shortMessage
+    this.displayMessage = displayMessage
   }
 }
 
@@ -534,8 +534,8 @@ const controller = {
       if (!quoteToAmount) {
         AlertController.open(
           {
-            shortMessage: 'Incorrect amount',
-            longMessage: 'Please enter a valid amount'
+            displayMessage: 'Incorrect amount',
+            debugMessage: 'Please enter a valid amount'
           },
           'error'
         )
@@ -760,14 +760,14 @@ const controller = {
       state.loadingApprovalTransaction = false
     } catch (err) {
       const error = err as TransactionError
-      state.transactionError = error?.shortMessage as unknown as string
+      state.transactionError = error?.displayMessage as unknown as string
       state.loadingApprovalTransaction = false
-      SnackController.showError(error?.shortMessage || 'Transaction error')
+      SnackController.showError(error?.displayMessage || 'Transaction error')
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_APPROVAL_ERROR',
         properties: {
-          message: error?.shortMessage || error?.message || 'Unknown',
+          message: error?.displayMessage || error?.message || 'Unknown',
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: SwapController.state.sourceToken?.symbol || '',
           swapToToken: SwapController.state.toToken?.symbol || '',
@@ -844,14 +844,14 @@ const controller = {
       return transactionHash
     } catch (err) {
       const error = err as TransactionError
-      state.transactionError = error?.shortMessage
+      state.transactionError = error?.displayMessage
       state.loadingTransaction = false
-      SnackController.showError(error?.shortMessage || 'Transaction error')
+      SnackController.showError(error?.displayMessage || 'Transaction error')
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          message: error?.shortMessage || error?.message || 'Unknown',
+          message: error?.displayMessage || error?.message || 'Unknown',
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: SwapController.state.sourceToken?.symbol || '',
           swapToToken: SwapController.state.toToken?.symbol || '',
