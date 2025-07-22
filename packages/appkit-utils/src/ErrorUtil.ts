@@ -25,68 +25,68 @@ export const ErrorUtil = {
   ALERT_ERRORS: {
     SWITCH_NETWORK_NOT_FOUND: {
       code: 'APKT001',
-      shortMessage: 'Network Not Found',
-      longMessage:
+      displayMessage: 'Network Not Found',
+      debugMessage:
         'The specified network is not recognized. Please ensure it is included in the `networks` array of your `createAppKit` configuration.'
     },
     ORIGIN_NOT_ALLOWED: {
       code: 'APKT002',
-      shortMessage: 'Invalid App Configuration',
-      longMessage: () =>
+      displayMessage: 'Invalid App Configuration',
+      debugMessage: () =>
         `The origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com.`
     },
     IFRAME_LOAD_FAILED: {
       code: 'APKT003',
-      shortMessage: 'Network Error: Wallet Load Failed',
-      longMessage: () =>
+      displayMessage: 'Network Error: Wallet Load Failed',
+      debugMessage: () =>
         'Failed to load the embedded wallet. This may be due to network issues or server downtime. Please check your network connection and try again shortly. Contact support if the issue persists.'
     },
     IFRAME_REQUEST_TIMEOUT: {
       code: 'APKT004',
-      shortMessage: 'Wallet Request Timeout',
-      longMessage: () =>
+      displayMessage: 'Wallet Request Timeout',
+      debugMessage: () =>
         'The request to the embedded wallet timed out. Please check your network connection and try again shortly. Contact support if the issue persists.'
     },
     UNVERIFIED_DOMAIN: {
       code: 'APKT005',
-      shortMessage: 'Unverified Domain',
-      longMessage: () =>
+      displayMessage: 'Unverified Domain',
+      debugMessage: () =>
         'Embedded wallet load failed. Ensure your domain is verified in https://dashboard.reown.com.'
     },
     JWT_TOKEN_NOT_VALID: {
       code: 'APKT006',
-      shortMessage: 'Session Expired',
-      longMessage:
+      displayMessage: 'Session Expired',
+      debugMessage:
         'Your session is invalid or expired. Please check your system’s date and time settings, then reconnect.'
     },
     INVALID_PROJECT_ID: {
       code: 'APKT007',
-      shortMessage: 'Invalid Project ID',
-      longMessage:
+      displayMessage: 'Invalid Project ID',
+      debugMessage:
         'The specified project ID is invalid. Please visit https://dashboard.reown.com to obtain a valid project ID.'
     },
     PROJECT_ID_NOT_CONFIGURED: {
       code: 'APKT008',
-      shortMessage: 'Project ID Missing',
-      longMessage:
+      displayMessage: 'Project ID Missing',
+      debugMessage:
         'No project ID is configured. You can create and configure a project ID at https://dashboard.reown.com.'
     },
     SERVER_ERROR_APP_CONFIGURATION: {
       code: 'APKT009',
-      shortMessage: 'Server Error',
-      longMessage: (errorMessage?: string) =>
+      displayMessage: 'Server Error',
+      debugMessage: (errorMessage?: string) =>
         `Unable to fetch App Configuration. ${errorMessage}. Please check your network connection and try again shortly. Contact support if the issue persists.`
     },
     RATE_LIMITED_APP_CONFIGURATION: {
       code: 'APKT010',
-      shortMessage: 'Rate Limited',
-      longMessage:
+      displayMessage: 'Rate Limited',
+      debugMessage:
         'You have been rate limited while retrieving App Configuration. Please wait a few minutes and try again. Contact support if the issue persists.'
     }
   },
   ALERT_WARNINGS: {
     LOCAL_CONFIGURATION_IGNORED: {
-      longMessage: (warningMessage: string) => `[Reown Config Notice] ${warningMessage}`
+      debugMessage: (warningMessage: string) => `[Reown Config Notice] ${warningMessage}`
     }
   }
 }

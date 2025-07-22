@@ -279,8 +279,8 @@ export const ConfigUtil = {
       const warningMessage = `Your local configuration for ${Array.from(this.localSettingsOverridden).join(', ')} was ignored because a remote configuration was successfully fetched. Please manage these features via your project dashboard on dashboard.reown.com.`
       AlertController.open(
         {
-          longMessage:
-            ErrorUtil.ALERT_WARNINGS.LOCAL_CONFIGURATION_IGNORED.longMessage(warningMessage)
+          debugMessage:
+            ErrorUtil.ALERT_WARNINGS.LOCAL_CONFIGURATION_IGNORED.debugMessage(warningMessage)
         },
         'warning'
       )
