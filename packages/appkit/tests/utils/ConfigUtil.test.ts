@@ -149,7 +149,6 @@ describe('ConfigUtil', () => {
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
         expect.objectContaining({
-          shortMessage: 'Local configuration ignored',
           longMessage: expect.stringContaining(
             'Your local configuration for "features.socials" was ignored because a remote configuration was successfully fetched'
           )
@@ -207,7 +206,6 @@ describe('ConfigUtil', () => {
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
         expect.objectContaining({
-          shortMessage: 'Local configuration ignored',
           longMessage: expect.stringContaining(
             'Your local configuration for "features.email", "features.socials", "features.swaps", "features.onramp", "features.history" (now "activity") was ignored because a remote configuration was successfully fetched'
           )
