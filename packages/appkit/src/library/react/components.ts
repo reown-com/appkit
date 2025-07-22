@@ -1,56 +1,34 @@
-import { createComponent } from '@lit/react'
 import React from 'react'
+
+import { createComponent } from '@lit/react'
+
 import {
-  AppKitButton,
-  AppKitNetworkButton,
-  AppKitConnectButton,
-  AppKitAccountButton
+  AppKitAccountButton as AppKitAccountButtonComponent,
+  AppKitButton as AppKitButtonComponent,
+  AppKitConnectButton as AppKitConnectButtonComponent,
+  AppKitNetworkButton as AppKitNetworkButtonComponent
 } from '@reown/appkit-scaffold-ui'
 
-// React wrapper for AppKitButton
-export const AppKitButtonReact = createComponent({
+export const AppKitButton = createComponent({
   tagName: 'appkit-button',
-  elementClass: AppKitButton,
-  react: React,
-  events: {
-    onClick: 'click',
-    onFocus: 'focus',
-    onBlur: 'blur'
-  }
+  elementClass: AppKitButtonComponent,
+  react: React
 })
 
-// React wrapper for AppKitNetworkButton  
-export const AppKitNetworkButtonReact = createComponent({
+export const AppKitNetworkButton = createComponent({
   tagName: 'appkit-network-button',
-  elementClass: AppKitNetworkButton,
-  react: React,
-  events: {
-    onClick: 'click',
-    onFocus: 'focus',
-    onBlur: 'blur'
-  }
+  elementClass: AppKitNetworkButtonComponent,
+  react: React
 })
 
-// React wrapper for AppKitConnectButton
-export const AppKitConnectButtonReact = createComponent({
+export const AppKitConnectButton = createComponent({
   tagName: 'appkit-connect-button',
-  elementClass: AppKitConnectButton,
-  react: React,
-  events: {
-    onClick: 'click',
-    onFocus: 'focus',
-    onBlur: 'blur'
-  }
+  elementClass: AppKitConnectButtonComponent,
+  react: React
 })
 
-// React wrapper for AppKitAccountButton
-export const AppKitAccountButtonReact = createComponent({
+export const AppKitAccountButton = createComponent({
   tagName: 'appkit-account-button',
-  elementClass: AppKitAccountButton,
-  react: React,
-  events: {
-    onClick: 'click',
-    onFocus: 'focus',
-    onBlur: 'blur'
-  }
+  elementClass: AppKitAccountButtonComponent,
+  react: React
 })
