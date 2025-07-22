@@ -50,7 +50,9 @@ export class AppKitWalletButton {
       return ConnectorControllerUtil.connectEmail({
         namespace: this.namespace,
         onOpen() {
-          ModalController.open().then(() => RouterController.push('EmailLogin'))
+          ModalController.open({ namespace: this.namespace }).then(() =>
+            RouterController.push('EmailLogin')
+          )
         },
         onConnect() {
           RouterController.push('Connect')

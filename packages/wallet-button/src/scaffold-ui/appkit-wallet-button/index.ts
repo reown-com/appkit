@@ -231,6 +231,7 @@ export class AppKitWalletButton extends LitElement {
         this.loading = true
         this.error = false
         await ConnectorControllerUtil.connectEmail({
+          namespace: this.namespace,
           onOpen() {
             ModalController.open({ namespace: this.namespace }).then(() =>
               RouterController.push('EmailLogin')
