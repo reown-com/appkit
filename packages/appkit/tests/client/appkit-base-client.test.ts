@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
@@ -8,6 +9,7 @@ import {
   ChainController,
   ConnectionController
 } from '@reown/appkit-controllers'
+import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
@@ -132,7 +134,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
   let closeSpy: any
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
 
     baseClient = new (class extends AppKitBaseClient {
       constructor() {
@@ -157,14 +159,13 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
 
     vi.spyOn(baseClient as any, 'getAdapter').mockReturnValue(mockAdapter as any)
     vi.spyOn(baseClient, 'getCaipNetwork').mockReturnValue({ id: 1 } as any)
+    mockChainControllerState({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      chains: new Map([[ConstantsUtil.CHAIN.EVM, {}]])
+    })
   })
 
   it('should not call close when hasConnections is true and multiWallet is enabled', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155',
-      chains: new Map([['eip155', {}]])
-    })
     vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([
       { connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }
     ])
@@ -176,11 +177,6 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
   })
 
   it('should call close when hasConnections is false', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155',
-      chains: new Map([['eip155', {}]])
-    })
     vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
 
     const connectionControllerClient = (baseClient as any).connectionControllerClient
@@ -190,11 +186,6 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
   })
 
   it('should call close when multiWallet is disabled even with existing connections', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155',
-      chains: new Map([['eip155', {}]])
-    })
     vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
       ...ConnectionController.state,
       connections: new Map([
