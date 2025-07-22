@@ -13,7 +13,11 @@ import {
 } from '@chakra-ui/react'
 
 import type { Wallet } from '@reown/appkit-wallet-button'
-import { useAppKitUpdateEmail, useAppKitWallet } from '@reown/appkit-wallet-button/react'
+import {
+  AppKitWalletButton,
+  useAppKitUpdateEmail,
+  useAppKitWallet
+} from '@reown/appkit-wallet-button/react'
 import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -92,7 +96,7 @@ export function AppKitWalletButtons({ wallets, showActions = true }: AppKitWalle
 function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
   return wallets.map(wallet => (
     <Fragment key={`wallet-button-${wallet}`}>
-      <appkit-wallet-button wallet={wallet} data-testid={`wallet-button-${wallet}`} />
+      <AppKitWalletButton wallet={wallet} data-testid={`wallet-button-${wallet}`} />
     </Fragment>
   ))
 }

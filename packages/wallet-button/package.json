@@ -44,6 +44,9 @@
     "lit": "3.3.0",
     "valtio": "2.1.5"
   },
+  "optionalDependencies": {
+    "@lit/react": "1.0.8"
+  },
   "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
