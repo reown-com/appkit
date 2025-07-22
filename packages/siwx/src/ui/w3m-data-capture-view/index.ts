@@ -38,7 +38,7 @@ export class W3mDataCaptureView extends LitElement {
 
   public override connectedCallback() {
     if (!this.siwx || !(this.siwx instanceof ReownAuthentication)) {
-      throw new Error('ReownAuthentication is not initialized')
+      SnackController.showError('ReownAuthentication is not initialized.')
     }
 
     super.connectedCallback()

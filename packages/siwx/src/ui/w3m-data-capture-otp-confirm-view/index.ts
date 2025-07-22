@@ -1,6 +1,11 @@
 import { state } from 'lit/decorators.js'
 
-import { ChainController, OptionsController, RouterController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  OptionsController,
+  RouterController,
+  SnackController
+} from '@reown/appkit-controllers'
 import {
   type OnOtpResendFn,
   type OnOtpSubmitFn,
@@ -16,7 +21,7 @@ export class W3mDataCaptureOtpConfirmView extends W3mEmailOtpWidget {
 
   public override connectedCallback() {
     if (!this.siwx || !(this.siwx instanceof ReownAuthentication)) {
-      throw new Error('ReownAuthentication is not initialized')
+      SnackController.showError('ReownAuthentication is not initialized.')
     }
 
     super.connectedCallback()
