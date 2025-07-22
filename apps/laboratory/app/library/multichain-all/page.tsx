@@ -59,9 +59,22 @@ export default function Page() {
           <WagmiTests />
           <SolanaTests />
           <BitcoinTests />
-          <AppKitWalletButtons wallets={[...embeddedWalletOptions, ConstantsUtil.Email]} />
-          <AppKitWalletButtons wallets={[...embeddedWalletOptions, ConstantsUtil.Email]} />
-          <AppKitWalletButtons wallets={ConstantsUtil.BitcoinWalletButtons} showActions={false} />
+          <AppKitWalletButtons
+            title="EVM Wallet Buttons"
+            namespace="eip155"
+            wallets={[...ConstantsUtil.EvmWalletButtons, ...embeddedWalletOptions]}
+          />
+          <AppKitWalletButtons
+            title="Solana Wallet Buttons"
+            namespace="solana"
+            wallets={[...ConstantsUtil.SolanaWalletButtons, ...embeddedWalletOptions]}
+          />
+          <AppKitWalletButtons
+            title="Bitcoin Wallet Buttons"
+            namespace="bip122"
+            wallets={ConstantsUtil.BitcoinWalletButtons}
+            showActions={false}
+          />
         </AppKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

@@ -3,7 +3,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -29,11 +29,11 @@ export class AppKitWalletButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() wallet: Wallet = 'metamask'
 
-  @property() namespace: ChainNamespace | undefined = undefined
+  @property() namespace?: ChainNamespace
 
   @state() private connectors = ConnectorController.state.connectors
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private caipAddress: CaipAddress | undefined
 
   @state() private loading = false
 
@@ -49,12 +49,6 @@ export class AppKitWalletButton extends LitElement {
       ...[
         ModalController.subscribeKey('loading', val => (this.modalLoading = val)),
         ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-        ChainController.subscribeKey('activeCaipAddress', val => {
-          if (val) {
-            this.error = false
-          }
-          this.caipAddress = val
-        }),
         ApiController.subscribeKey('walletButtons', () => {
           this.ready = WalletUtil.isWalletButtonReady(this.wallet)
         })
@@ -67,10 +61,34 @@ export class AppKitWalletButton extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
+  // -- Lifecycle ----------------------------------------- //
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.caipAddress = this.namespace
+      ? ChainController.state.chains.get(this.namespace)?.accountState?.caipAddress
+      : ChainController.state.activeCaipAddress
+  }
+
   public override firstUpdated() {
     if (!WalletUtil.isWalletButtonReady(this.wallet)) {
       // Prefetch wallet buttons
       ApiController.fetchWalletButtons()
+    }
+
+    if (this.namespace) {
+      this.unsubscribe.push(
+        ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            this.caipAddress = val?.caipAddress
+          },
+          this.namespace
+        )
+      )
+    } else {
+      this.unsubscribe.push(
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val))
+      )
     }
   }
 
