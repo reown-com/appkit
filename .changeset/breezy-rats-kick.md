@@ -29,7 +29,7 @@ Upgraded wallet button to support multichain via the `namespace` prop
 **Example usage with Components**
 
 ```tsx
-import '@reown/appkit-wallet-button'
+import { AppKitWalletButton } from '@reown/appkit-wallet-button/react'
 
 const wallets = [
   { wallet: 'metamask', namespace: 'eip155', label: 'MetaMask EVM' },
@@ -41,7 +41,7 @@ export function WalletButtons() {
   return (
     <>
       {wallets.map(({ wallet, namespace, label }) => (
-        <appkit-wallet-button
+        <AppKitWalletButton
           key={`${wallet}-${namespace}`}
           wallet={wallet}
           namespace={namespace}
@@ -79,7 +79,6 @@ export function YourApp() {
 
 **Example usage with Vanilla JS**
 ```html
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -89,27 +88,17 @@ export function YourApp() {
 
       const wallet = createAppKitWalletButton({ namespace: 'eip155' })
 
-      async function setup() {
-        if (!(await wallet.isReady())) {
-          wallet.subscribeIsReady(state => {
-            if (state.isReady) enableButtons()
-          })
-        } else {
-          enableButtons()
-        }
-      }
+      wallet.subscribeIsReady(({ isReady }) => {
+        if (!isReady) return
 
-      function enableButtons() {
         document.querySelectorAll('button[data-wallet]').forEach(button => {
           button.disabled = false
-          button.addEventListener('click', () => {
-            const walletId = button.getAttribute('data-wallet')
-            wallet.connect(walletId)
-          })
+          button.onclick = () => {
+            const id = button.getAttribute('data-wallet')
+            wallet.connect(id)
+          }
         })
-      }
-
-      setup()
+      })
     </script>
   </head>
   <body>

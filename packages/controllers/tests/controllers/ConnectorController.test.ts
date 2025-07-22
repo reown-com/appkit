@@ -161,13 +161,17 @@ describe('ConnectorController', () => {
     ConnectorController.setConnectors([evmConnector, solanaConnector])
     ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
 
-    expect(ConnectorController.getConnector({ id: EVM_EXPLORER_ID })).toEqual(evmConnector)
-    expect(ConnectorController.getConnector({ id: SOLANA_EXPLORER_ID })).toBeUndefined()
+    expect(ConnectorController.getConnector({ id: EVM_EXPLORER_ID, rdns: '' })).toEqual(
+      evmConnector
+    )
+    expect(ConnectorController.getConnector({ id: SOLANA_EXPLORER_ID, rdns: '' })).toBeUndefined()
 
     ChainController.setActiveNamespace(ConstantsUtil.CHAIN.SOLANA)
 
-    expect(ConnectorController.getConnector({ id: SOLANA_EXPLORER_ID })).toEqual(solanaConnector)
-    expect(ConnectorController.getConnector({ id: EVM_EXPLORER_ID })).toBeUndefined()
+    expect(ConnectorController.getConnector({ id: SOLANA_EXPLORER_ID, rdns: '' })).toEqual(
+      solanaConnector
+    )
+    expect(ConnectorController.getConnector({ id: EVM_EXPLORER_ID, rdns: '' })).toBeUndefined()
   })
 
   it('should update state correctly on setConnectors()', () => {
@@ -193,14 +197,14 @@ describe('ConnectorController', () => {
 
   it('should return the correct connector on getConnector', () => {
     ConnectorController.addConnector(zerionConnector)
-    expect(ConnectorController.getConnector({ id: 'walletConnectId' })).toStrictEqual(
+    expect(ConnectorController.getConnector({ id: 'walletConnectId', rdns: '' })).toStrictEqual(
       walletConnectConnector
     )
-    expect(ConnectorController.getConnector({ rdns: 'io.metamask.com' })).toStrictEqual(
+    expect(ConnectorController.getConnector({ id: '', rdns: 'io.metamask.com' })).toStrictEqual(
       metamaskConnector
     )
-    expect(ConnectorController.getConnector({ id: zerionConnector.id })).toBeUndefined()
-    expect(ConnectorController.getConnector({ id: 'unknown' })).toBeUndefined()
+    expect(ConnectorController.getConnector({ id: zerionConnector.id, rdns: '' })).toBeUndefined()
+    expect(ConnectorController.getConnector({ id: 'unknown', rdns: '' })).toBeUndefined()
   })
 
   it('getAuthConnector() should not throw when auth connector is not set', () => {
