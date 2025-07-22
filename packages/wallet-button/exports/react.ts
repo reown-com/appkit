@@ -128,7 +128,7 @@ export function useAppKitWallet(parameters?: {
           await ConnectorControllerUtil.connectEmail({
             namespace,
             onOpen() {
-              ModalController.open({ namespace }).then(() => RouterController.push('EmailLogin'))
+              ModalController.open().then(() => RouterController.push('EmailLogin'))
             }
           }).then(handleSuccess)
 
