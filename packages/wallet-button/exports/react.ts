@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable consistent-return */
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
+import { createComponent } from '@lit/react'
 import { useSnapshot } from 'valtio'
 
 import type { ParsedCaipAddress } from '@reown/appkit-common'
@@ -19,12 +20,18 @@ import { WalletButtonController } from '../src/controllers/WalletButtonControlle
 import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
 import type { SocialProvider } from '../src/utils/TypeUtil.js'
 import { WalletUtil } from '../src/utils/WalletUtil.js'
-import type { AppKitWalletButton, Wallet } from './index.js'
+import { AppKitWalletButton as AppKitWalletButtonComponent, type Wallet } from './index.js'
 
 export * from './index.js'
 
+export const AppKitWalletButton = createComponent({
+  tagName: 'appkit-wallet-button',
+  elementClass: AppKitWalletButtonComponent,
+  react: React
+})
+
 interface AppKitElements {
-  'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
+  'appkit-wallet-button': Pick<AppKitWalletButtonComponent, 'wallet'>
 }
 /* ------------------------------------------------------------------ */
 /* Declare global namespace for React 18     */
