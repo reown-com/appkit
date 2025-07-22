@@ -132,6 +132,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       throw new Error(`${this.name} wallet does not support network switching`)
     }
 
+    this.unbindEvents()
     this.wallet = connector.wallet
 
     try {
