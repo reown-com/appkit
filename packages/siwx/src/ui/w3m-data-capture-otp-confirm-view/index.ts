@@ -32,6 +32,10 @@ export class W3mDataCaptureOtpConfirmView extends W3mEmailOtpWidget {
     RouterController.replace('SIWXSignMessage')
   }
 
+  override shouldSubmitOnOtpChange() {
+    return this.otp.length === W3mEmailOtpWidget.OTP_LENGTH
+  }
+
   override onOtpResend: OnOtpResendFn = async email => {
     const accountData = ChainController.getAccountData()
 
