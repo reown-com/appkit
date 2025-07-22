@@ -10,6 +10,8 @@ import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
+const TESTNET_CAIP_NETWORK_ID = 'bip122:000000000933ea01ad0ee984209779ba'
+
 export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'OKX'
   public readonly name = 'OKX Wallet'
@@ -21,7 +23,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
   public readonly provider = this
 
-  private readonly wallet: OKXConnector.Wallet
+  private wallet: OKXConnector.Wallet
   private readonly requestedChains: CaipNetwork[] = []
   private readonly getActiveNetwork: () => CaipNetwork | undefined
 
@@ -117,7 +119,23 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public async switchNetwork(_caipNetworkId: string): Promise<void> {
-    throw new Error(`${this.name} wallet does not support network switching`)
+    const connector = OKXConnector.getWallet({
+      requestedChains: this.requestedChains,
+      getActiveNetwork: this.getActiveNetwork,
+      requestedCaipNetworkId: _caipNetworkId
+    })
+
+    if (!connector) {
+      throw new Error(`${this.name} wallet does not support network switching`)
+    }
+
+    this.wallet = connector.wallet
+
+    try {
+      await this.connect()
+    } catch (error) {
+      throw new Error(`${this.name} wallet does not support network switching`)
+    }
   }
 
   public request<T>(_args: RequestArguments): Promise<T> {
@@ -147,8 +165,18 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let wallet: any = undefined
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const okxwallet = (window as any)?.okxwallet
-    const wallet = okxwallet?.bitcoin
+
+    // Bitcoin Testnet
+    if (params.requestedCaipNetworkId === TESTNET_CAIP_NETWORK_ID) {
+      wallet = okxwallet?.bitcoinTestnet
+    } else {
+      wallet = okxwallet?.bitcoin
+    }
+
     /**
      * OKX doesn't provide a way to get the image URL specifally for bitcoin
      * so we use the icon for cardano as a fallback
@@ -173,6 +201,7 @@ export namespace OKXConnector {
     requestedChains: CaipNetwork[]
     getActiveNetwork: () => CaipNetwork | undefined
     imageUrl: string
+    requestedCaipNetworkId?: string
   }
 
   export type Wallet = {

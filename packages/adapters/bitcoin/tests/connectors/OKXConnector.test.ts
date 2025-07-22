@@ -245,10 +245,33 @@ describe('OKXConnector', () => {
   })
 
   describe('switchNetwork', () => {
-    it('should throw error saying network switching is not supported', async () => {
-      await expect(
-        connector.switchNetwork('bip122:000000000019d6689c085ae165831e93')
-      ).rejects.toThrow('OKX Wallet wallet does not support network switching')
+    it('should switch to testnet network and connect', async () => {
+      const testnetWallet = mockOKXWallet()
+      const testnetConnector = new OKXConnector({
+        wallet: testnetWallet,
+        requestedChains,
+        getActiveNetwork,
+        imageUrl: 'mock_image'
+      })
+
+      vi.spyOn(OKXConnector, 'getWallet').mockReturnValue(testnetConnector)
+
+      const accountsChangedListener = vi.fn()
+      connector.on('accountsChanged', accountsChangedListener)
+
+      // Switch to testnet bitcoin
+      await connector.switchNetwork('bip122:000000000933ea01ad0ee984209779ba')
+
+      expect(testnetWallet.connect).toHaveBeenCalled()
+      expect(accountsChangedListener).toHaveBeenCalledWith(['mock_address'])
+    })
+
+    it('should throw error when wallet is not available', async () => {
+      vi.spyOn(OKXConnector, 'getWallet').mockReturnValue(undefined)
+
+      await expect(connector.switchNetwork('bip122:fake-network')).rejects.toThrow(
+        'OKX Wallet wallet does not support network switching'
+      )
     })
   })
 })
