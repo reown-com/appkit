@@ -210,7 +210,7 @@ export class W3mSwapView extends LitElement {
           @click=${this.onSwitchTokens.bind(this)}
           icon="recycleHorizontal"
           size="md"
-          variant="secondary"
+          variant="default"
         ></wui-icon-box>
       </wui-flex>
     `

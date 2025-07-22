@@ -8,7 +8,7 @@ import type {
 } from '@reown/appkit-common'
 
 import '../../components/wui-image/index.js'
-import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
+import type { IconColorType, TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
@@ -75,7 +75,7 @@ export class WuiTransactionVisual extends LitElement {
   }
 
   private templateIcon() {
-    let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
+    let color: IconColorType = 'accent-primary'
     let icon: TransactionIconType | undefined = undefined
 
     icon = this.getIcon()
@@ -89,15 +89,9 @@ export class WuiTransactionVisual extends LitElement {
     }
 
     return html`
-      <wui-icon-box
-        size="sm"
-        iconColor=${color}
-        backgroundColor=${color}
-        background="opaque"
-        icon=${icon}
-        ?border=${true}
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
+      <wui-flex alignItems="center" justifyContent="center" class="status-box">
+        <wui-icon-box size="sm" color=${color} icon=${icon}></wui-icon-box>
+      </wui-flex>
     `
   }
 
@@ -128,16 +122,16 @@ export class WuiTransactionVisual extends LitElement {
     return this.getDirectionIcon()
   }
 
-  private getStatusColor() {
+  private getStatusColor(): IconColorType {
     switch (this.status) {
       case 'confirmed':
-        return 'success-100'
+        return 'success'
       case 'failed':
-        return 'error-100'
+        return 'error'
       case 'pending':
-        return 'inverse-100'
+        return 'inverse'
       default:
-        return 'accent-100'
+        return 'accent-primary'
     }
   }
 }

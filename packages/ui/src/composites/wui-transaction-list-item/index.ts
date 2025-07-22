@@ -12,7 +12,7 @@ import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
-import '../wui-transaction-thumbnail/index.js'
+import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 
 @customElement('wui-transaction-list-item')
@@ -42,11 +42,11 @@ export class WuiTransactionListItem extends LitElement {
           .status=${this.status}
           direction=${ifDefined(this.direction)}
           type=${this.type}
-          onlyDirectionIcon=${ifDefined(this.onlyDirectionIcon)}
+          .onlyDirectionIcon=${this.onlyDirectionIcon}
           .images=${this.images}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="1">
-          <wui-text variant="sm-medium" color="primary">
+          <wui-text variant="lg-medium" color="primary">
             ${TransactionTypePastTense[this.type] || this.type}
           </wui-text>
           <wui-flex class="description-container">
@@ -64,7 +64,7 @@ export class WuiTransactionListItem extends LitElement {
 
     return description
       ? html`
-          <wui-text variant="sm-medium" color="secondary">
+          <wui-text variant="md-regular" color="secondary">
             <span>${description}</span>
           </wui-text>
         `
@@ -77,7 +77,7 @@ export class WuiTransactionListItem extends LitElement {
     return description
       ? html`
           <wui-icon class="description-separator-icon" size="sm" name="arrowRight"></wui-icon>
-          <wui-text variant="sm-regular" color="secondary">
+          <wui-text variant="md-regular" color="secondary">
             <span>${description}</span>
           </wui-text>
         `

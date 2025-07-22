@@ -60,12 +60,7 @@ export class WuiProfileButton extends LitElement {
     }
 
     return html`
-      <wui-icon-box
-        size="lg"
-        iconColor="default"
-        backgroundColor="bg-250"
-        icon="networkPlaceholder"
-      ></wui-icon-box>
+      <wui-icon-box size="lg" iconColor="default" icon="networkPlaceholder"></wui-icon-box>
     `
   }
 }

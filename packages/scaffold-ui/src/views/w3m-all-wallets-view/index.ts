@@ -22,7 +22,7 @@ export class W3mAllWalletsView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private search = ''
 
-  @state() private badge?: BadgeType
+  @state() private badge?: BadgeType = undefined
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -32,7 +32,7 @@ export class W3mAllWalletsView extends LitElement {
       <wui-flex .padding=${['0', '3', '3', '3'] as const} gap="2">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
         <wui-certified-switch
-          ?checked=${this.badge ? true : false}
+          ?checked=${this.badge === 'certified'}
           @click=${this.onClick.bind(this)}
           data-testid="wui-certified-switch"
         ></wui-certified-switch>
@@ -76,10 +76,8 @@ export class W3mAllWalletsView extends LitElement {
         <wui-icon-box
           size="lg"
           iconSize="xl"
-          iconColor="accent-100"
-          backgroundColor="accent-100"
+          color="accent-primary"
           icon="qrCode"
-          background="transparent"
           border
           borderColor="wui-accent-glass-010"
           @click=${this.onWalletConnectQr.bind(this)}

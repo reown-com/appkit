@@ -131,15 +131,7 @@ export class W3mConnectingFarcasterView extends LitElement {
         <wui-flex justifyContent="center" alignItems="center">
           <wui-logo logo="farcaster"></wui-logo>
           ${this.loaderTemplate()}
-          <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
-            icon="close"
-            size="sm"
-            border
-            borderColor="wui-color-bg-125"
-          ></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" gap="2">
           <wui-text align="center" variant="md-medium" color="primary">
@@ -164,13 +156,9 @@ export class W3mConnectingFarcasterView extends LitElement {
         <wui-logo logo="farcaster"></wui-logo>
         ${this.loaderTemplate()}
         <wui-icon-box
-          backgroundColor="error-100"
-          background="opaque"
-          iconColor="error-100"
+          color="error"
           icon="close"
           size="sm"
-          border
-          borderColor="wui-color-bg-125"
         ></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="2">

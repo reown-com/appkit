@@ -185,13 +185,7 @@ export class W3mSmartSessionListView extends LitElement {
                   width="40px"
                   height="40px"
                 />`
-              : html`<wui-icon-box
-                  size="lg"
-                  icon="helpCircle"
-                  background="opaque"
-                  iconColor="fg-100"
-                  backgroundColor="inverse-100"
-                ></wui-icon-box>`}
+              : html`<wui-icon-box size="lg" icon="helpCircle" color="default"></wui-icon-box>`}
             <wui-flex flexDirection="column">
               <wui-text variant="sm-regular" color="primary"
                 >${project?.name || 'Unknown Dapp'}</wui-text

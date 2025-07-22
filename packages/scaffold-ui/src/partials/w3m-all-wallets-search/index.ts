@@ -63,7 +63,7 @@ export class W3mAllWalletsSearch extends LitElement {
           gap="3"
           flexDirection="column"
         >
-          <wui-icon-box size="lg" color="secondary" icon="wallet"></wui-icon-box>
+          <wui-icon-box size="lg" color="default" icon="wallet"></wui-icon-box>
           <wui-text data-testid="no-wallet-found-text" color="secondary" variant="md-medium">
             No Wallet found
           </wui-text>

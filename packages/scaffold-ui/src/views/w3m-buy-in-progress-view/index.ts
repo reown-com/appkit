@@ -99,9 +99,7 @@ export class W3mBuyInProgressView extends LitElement {
           ${this.error ? null : this.loaderTemplate()}
 
           <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
+            color="error"
             icon="close"
             size="sm"
             border

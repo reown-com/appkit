@@ -47,13 +47,7 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
       .padding=${['0', '6', '0', '6'] as const}
     >
       <wui-flex gap="3" alignItems="center" justifyContent="center">
-        <wui-icon-box
-          size="xl"
-          iconcolor="success-100"
-          backgroundcolor="success-100"
-          icon="checkmark"
-          background="opaque"
-        ></wui-icon-box>
+        <wui-icon-box size="xl" color="success" icon="checkmark"></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="3">
         <wui-text align="center" variant="md-medium" color="primary">

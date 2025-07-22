@@ -4,24 +4,12 @@ import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import '../../components/wui-icon/index.js'
-import { ICON_COLOR } from '../../components/wui-icon/index.js'
-import { vars } from '../../utils/ThemeHelperUtil.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Constants ------------------------------------------ //
-
-const BACKGROUND_COLOR = {
-  'accent-primary': vars.tokens.core.foregroundAccent010,
-  default: vars.tokens.theme.foregroundPrimary,
-  error: vars.tokens.core.backgroundError,
-  warning: vars.tokens.core.backgroundWarning,
-  success: vars.tokens.core.backgroundSuccess,
-  secondary: vars.tokens.theme.foregroundSecondary
-} as const
-
 @customElement('wui-icon-box')
 export class WuiIconBox extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
@@ -33,23 +21,16 @@ export class WuiIconBox extends LitElement {
 
   @property() public padding?: '1' | '2' = '1'
 
-  @property() public color:
-    | 'error'
-    | 'default'
-    | 'accent-primary'
-    | 'warning'
-    | 'success'
-    | 'secondary' = 'default'
+  @property() public color: IconColorType = 'default'
 
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['padding'] = this.padding
-    this.style.cssText = `
-       --local-bg-color: ${BACKGROUND_COLOR[this.color]};
-       --local-icon-color: ${this.color === 'secondary' ? ICON_COLOR['default'] : ICON_COLOR[this.color]};
-   `
+    this.dataset['color'] = this.color
 
-    return html` <wui-icon size=${ifDefined(this.size)} name=${this.icon}></wui-icon> `
+    return html`
+      <wui-icon size=${ifDefined(this.size)} name=${this.icon} color="inherit"></wui-icon>
+    `
   }
 }
 

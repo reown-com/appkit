@@ -145,9 +145,9 @@ export class W3mActivityList extends LitElement {
               flexDirection="row"
               .padding=${['2', '3', '3', '3'] as const}
             >
-              <wui-text variant="md-regular" color="secondary" data-testid="group-title"
-                >${groupTitle}</wui-text
-              >
+              <wui-text variant="md-medium" color="secondary" data-testid="group-title">
+                ${groupTitle}
+              </wui-text>
             </wui-flex>
             <wui-flex flexDirection="column" gap="2">
               ${this.templateTransactions(transactions, isLastGroup)}
@@ -228,7 +228,7 @@ export class W3mActivityList extends LitElement {
       gap="5"
       data-testid="empty-activity-state"
     >
-      <wui-icon-box color="secondary" icon="wallet" size="lg"></wui-icon-box>
+      <wui-icon-box color="default" icon="wallet" size="lg"></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="2">
         <wui-text align="center" variant="md-regular" color="primary">No Transactions yet</wui-text>
         <wui-text align="center" variant="sm-regular" color="secondary"

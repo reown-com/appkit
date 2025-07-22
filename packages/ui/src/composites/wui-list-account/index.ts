@@ -87,14 +87,12 @@ export class WuiListAccount extends LitElement {
           ${this.shouldShowIcon
             ? html`<wui-icon-box
                 size="sm"
-                iconcolor="fg-200"
-                backgroundcolor="fg-300"
+                color="default"
                 icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
                   ? (this.socialProvider ?? 'mail')
                   : 'lightbulb'}
-                background="fg-300"
               ></wui-icon-box>`
-            : html`<wui-flex .padding="${['0', '0', '0', 's'] as const}"></wui-flex>`}
+            : html`<wui-flex .padding="${['0', '0', '0', '2'] as const}"></wui-flex>`}
           <wui-flex flexDirection="column">
             <wui-text class="address" variant="md-medium" color="primary"
               >${UiHelperUtil.getTruncateString({

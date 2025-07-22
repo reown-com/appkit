@@ -49,12 +49,7 @@ export class WuiListSelectWallet extends LitElement {
     }
 
     if (this.qrCode) {
-      return html`<wui-icon-box
-        iconColor="inverse"
-        iconSize="xl"
-        backgroundColor="foregroundSecondary"
-        icon="qrCode"
-      ></wui-icon-box>`
+      return html`<wui-icon-box color="default" iconSize="xl" icon="qrCode"></wui-icon-box>`
     }
 
     if (this.imageSrc) {
