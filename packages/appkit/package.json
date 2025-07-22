@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.7.15",
+  "version": "1.7.16",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -99,6 +99,11 @@
       "types": "./dist/types/exports/react-core.d.ts",
       "import": "./dist/esm/exports/react-core.js",
       "default": "./dist/esm/exports/react-core.js"
+    },
+    "./testing": {
+      "types": "./dist/types/exports/testing.d.ts",
+      "import": "./dist/esm/exports/testing.js",
+      "default": "./dist/esm/exports/testing.js"
     }
   },
   "typesVersions": {
@@ -144,6 +149,9 @@
     "semver": "7.7.2",
     "valtio": "2.1.5",
     "viem": ">=2.32.0"
+  },
+  "optionalDependencies": {
+    "@lit/react": "1.0.8"
   },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",

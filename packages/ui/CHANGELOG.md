@@ -1,5 +1,16 @@
 # @reown/appkit-ui
 
+## 1.7.16
+
+### Patch Changes
+
+- [#4497](https://github.com/reown-com/appkit/pull/4497) [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c) Thanks [@venturars](https://github.com/venturars)! - Exports type definitions of Base class for better TS support when using hooks
+
+- Updated dependencies [[`7788000`](https://github.com/reown-com/appkit/commit/7788000628211880cf982f9b94b076ac90144114), [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c), [`541318b`](https://github.com/reown-com/appkit/commit/541318bff54891503cfef10e194aaf22931fc01e), [`3e2bd0a`](https://github.com/reown-com/appkit/commit/3e2bd0a60e92565ed128aa8643ccfdd6127ac65b)]:
+  - @reown/appkit-controllers@1.7.16
+  - @reown/appkit-common@1.7.16
+  - @reown/appkit-wallet@1.7.16
+
 ## 1.7.15
 
 ### Patch Changes
