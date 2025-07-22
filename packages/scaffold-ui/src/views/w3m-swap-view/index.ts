@@ -82,6 +82,8 @@ export class W3mSwapView extends LitElement {
 
   @state() private lastTokenPriceUpdate = 0
 
+  private minTokenPriceUpdateInterval = 10_000
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -190,7 +192,10 @@ export class W3mSwapView extends LitElement {
     }
 
     // Quick fetch tokens and values if last update is more than 10 seconds ago
-    if (this.lastTokenPriceUpdate && Date.now() - this.lastTokenPriceUpdate > 10_000) {
+    if (
+      this.lastTokenPriceUpdate &&
+      Date.now() - this.lastTokenPriceUpdate > this.minTokenPriceUpdateInterval
+    ) {
       this.fetchTokensAndValues()
     }
     clearInterval(this.interval)
