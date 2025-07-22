@@ -15,7 +15,7 @@ type StateKey = keyof AlertControllerState
 
 interface OpenMessageParameters {
   code?: string
-  shortMessage: string
+  shortMessage?: string
   longMessage?: string | (() => void)
 }
 
@@ -39,7 +39,7 @@ const controller = {
 
     const { code, shortMessage, longMessage } = message
 
-    if (debug) {
+    if (shortMessage && debug) {
       state.message = shortMessage
       state.variant = variant
       state.open = true

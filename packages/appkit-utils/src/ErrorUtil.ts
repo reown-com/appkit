@@ -83,5 +83,10 @@ export const ErrorUtil = {
       longMessage:
         'You have been rate limited while retrieving App Configuration. Please wait a few minutes and try again. Contact support if the issue persists.'
     }
+  },
+  ALERT_WARNINGS: {
+    LOCAL_CONFIGURATION_IGNORED: {
+      longMessage: (warningMessage: string) => `[Reown Config Notice] ${warningMessage}`
+    }
   }
 }
