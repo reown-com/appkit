@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwe",
-  "version": "1.7.13",
+  "version": "1.7.16",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -24,10 +24,10 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/utils": "2.21.3",
+    "@walletconnect/utils": "2.21.5",
     "lit": "3.1.0",
     "valtio": "2.1.5",
-    "viem": "2.31.3"
+    "viem": "2.32.0"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",

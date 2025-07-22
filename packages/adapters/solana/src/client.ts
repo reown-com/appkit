@@ -27,11 +27,15 @@ import {
 } from './providers/CoinbaseWalletProvider.js'
 import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProvider.js'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import { createSPLTokenTransaction } from './utils/createSPLTokenTransaction.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { watchStandard } from './utils/watchStandard.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
+  /**
+   * @deprecated Wallets are automatically recognized from the browser.
+   */
   wallets?: BaseWalletAdapter[]
   /**
    * Enable or disable registering WalletConnect as a Wallet Standard wallet.
@@ -197,12 +201,20 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const provider = params.provider as SolanaProvider
 
-    const transaction = await createSendTransaction({
-      provider,
-      connection,
-      to: params.to,
-      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
-    })
+    const transaction = params.tokenMint
+      ? await createSPLTokenTransaction({
+          provider,
+          connection,
+          to: params.to,
+          amount: Number(params.value),
+          tokenMint: params.tokenMint
+        })
+      : await createSendTransaction({
+          provider,
+          connection,
+          to: params.to,
+          value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
+        })
 
     const result = await provider.sendTransaction(transaction, connection)
 

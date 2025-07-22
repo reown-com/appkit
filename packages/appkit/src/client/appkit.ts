@@ -20,6 +20,7 @@ import {
   PublicStateController,
   type RemoteFeatures,
   SIWXUtil,
+  getActiveCaipNetwork,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
@@ -374,8 +375,7 @@ export class AppKit extends AppKitBaseClient {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
         },
-        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-          ChainController.getActiveCaipNetwork(namespace)
+        getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace)
       })
       PublicStateController.subscribeOpen(isOpen => {
         if (!isOpen && this.isTransactionStackEmpty()) {
@@ -520,6 +520,7 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
+
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
     })

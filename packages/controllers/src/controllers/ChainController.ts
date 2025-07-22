@@ -481,29 +481,6 @@ const controller = {
     return chainAdapter.connectionControllerClient
   },
 
-  getAccountProp<K extends keyof AccountControllerState>(
-    key: K,
-    _chain?: ChainNamespace
-  ): AccountControllerState[K] | undefined {
-    let chain = state.activeChain
-
-    if (_chain) {
-      chain = _chain
-    }
-
-    if (!chain) {
-      return undefined
-    }
-
-    const chainAccountState = state.chains.get(chain)?.accountState
-
-    if (!chainAccountState) {
-      return undefined
-    }
-
-    return chainAccountState[key]
-  },
-
   getNetworkProp<K extends keyof AdapterNetworkState>(
     key: K,
     namespace: ChainNamespace
@@ -600,15 +577,15 @@ const controller = {
     })
   },
 
-  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetwork?: CaipNetwork) {
-    const activeCaipNetwork = caipNetwork || state.activeCaipNetwork
+  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetworkId?: CaipNetworkId) {
+    const activeCaipNetworkId = caipNetworkId || state.activeCaipNetwork?.caipNetworkId
     const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(namespace)
 
     if (!requestedCaipNetworks.length) {
       return true
     }
 
-    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
+    return requestedCaipNetworks?.some(network => network.caipNetworkId === activeCaipNetworkId)
   },
 
   checkIfSupportedChainId(chainId: number | string) {
@@ -669,7 +646,9 @@ const controller = {
       throw new Error('Chain is required to set account prop')
     }
 
-    const currentAccountType = ChainController.getAccountProp('preferredAccountType', chainToWrite)
+    const currentAccountType =
+      ChainController.state.chains.get(chainToWrite)?.accountState?.preferredAccountType
+    const optionsAccountType = OptionsController.state.defaultAccountTypes[chainToWrite]
 
     state.activeCaipAddress = undefined
     ChainController.setChainAccountData(chainToWrite, {
@@ -684,7 +663,7 @@ const controller = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountType: currentAccountType,
+      preferredAccountType: optionsAccountType || currentAccountType,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
@@ -723,11 +702,13 @@ const controller = {
   },
 
   getAccountData(chainNamespace?: ChainNamespace) {
-    if (!chainNamespace) {
-      return AccountController.state
+    const namespace = chainNamespace || state.activeChain
+
+    if (!namespace) {
+      return undefined
     }
 
-    return ChainController.state.chains.get(chainNamespace)?.accountState
+    return ChainController.state.chains.get(namespace)?.accountState
   },
 
   getNetworkData(chainNamespace?: ChainNamespace) {

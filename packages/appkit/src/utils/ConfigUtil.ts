@@ -8,6 +8,7 @@ import type {
   TypedFeatureConfig
 } from '@reown/appkit-controllers'
 import type {} from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import type { AppKitOptionsWithSdk } from '../client/appkit-base-client.js'
 
@@ -278,8 +279,8 @@ export const ConfigUtil = {
       const warningMessage = `Your local configuration for ${Array.from(this.localSettingsOverridden).join(', ')} was ignored because a remote configuration was successfully fetched. Please manage these features via your project dashboard on dashboard.reown.com.`
       AlertController.open(
         {
-          shortMessage: 'Local configuration ignored',
-          longMessage: `[Reown Config Notice] ${warningMessage}`
+          debugMessage:
+            ErrorUtil.ALERT_WARNINGS.LOCAL_CONFIGURATION_IGNORED.debugMessage(warningMessage)
         },
         'warning'
       )

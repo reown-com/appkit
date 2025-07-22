@@ -167,6 +167,7 @@ export interface WcWallet {
         injected_id?: string
       }[]
     | null
+  display_index?: number
 }
 
 export interface ApiGetWalletsRequest {
@@ -447,6 +448,7 @@ export type Event =
       properties: {
         name: string
         platform: Platform
+        displayIndex?: number
       }
     }
   | {
@@ -1065,7 +1067,7 @@ export type SendTransactionArgs =
       gasPrice?: bigint
       address: Address
     }
-  | { chainNamespace: 'solana'; to: string; value: number }
+  | { chainNamespace: 'solana'; to: string; value: number; tokenMint?: string }
 
 export type EstimateGasTransactionArgs =
   | {
