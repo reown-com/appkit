@@ -142,10 +142,10 @@ describe('W3mAllWalletsSearch', () => {
     // @ts-ignore - Accessing private method for testing
     element.onConnectWallet(mockExternalWallet)
 
-    expect(ConnectorController.getConnector).toHaveBeenCalledWith(
-      mockExternalWallet.id,
-      mockExternalWallet.rdns
-    )
+    expect(ConnectorController.getConnector).toHaveBeenCalledWith({
+      id: mockExternalWallet.id,
+      rdns: mockExternalWallet.rdns
+    })
     expect(routerPushSpy).toHaveBeenCalledWith('ConnectingExternal', {
       connector: mockConnector,
       wallet: mockExternalWallet
@@ -159,7 +159,10 @@ describe('W3mAllWalletsSearch', () => {
     // @ts-ignore - Accessing private method for testing
     element.onConnectWallet(mockWallet)
 
-    expect(ConnectorController.getConnector).toHaveBeenCalledWith(mockWallet.id, mockWallet.rdns)
+    expect(ConnectorController.getConnector).toHaveBeenCalledWith({
+      id: mockWallet.id,
+      rdns: mockWallet.rdns
+    })
     expect(routerPushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', { wallet: mockWallet })
   })
 

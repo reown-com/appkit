@@ -14,6 +14,7 @@ import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChai
 import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
+import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
@@ -23,6 +24,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 const queryClient = new QueryClient()
 
 const networks = ConstantsUtil.AllNetworks
+const embeddedWalletOptions = [...ConstantsUtil.Socials, ConstantsUtil.Email]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
@@ -57,6 +59,22 @@ export default function Page() {
           <WagmiTests />
           <SolanaTests />
           <BitcoinTests />
+          <AppKitWalletButtons
+            title="EVM Wallet Buttons"
+            namespace="eip155"
+            wallets={[...ConstantsUtil.EvmWalletButtons, ...embeddedWalletOptions]}
+          />
+          <AppKitWalletButtons
+            title="Solana Wallet Buttons"
+            namespace="solana"
+            wallets={[...ConstantsUtil.SolanaWalletButtons, ...embeddedWalletOptions]}
+          />
+          <AppKitWalletButtons
+            title="Bitcoin Wallet Buttons"
+            namespace="bip122"
+            wallets={ConstantsUtil.BitcoinWalletButtons}
+            showActions={false}
+          />
         </AppKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
