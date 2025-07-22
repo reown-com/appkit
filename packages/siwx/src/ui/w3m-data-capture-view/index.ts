@@ -45,6 +45,7 @@ export class W3mDataCaptureView extends LitElement {
   }
 
   public override firstUpdated() {
+    this.loading = false
     this.recentEmails = this.getRecentEmails()
 
     if (this.email) {
@@ -255,14 +256,9 @@ export class W3mDataCaptureView extends LitElement {
       } else {
         RouterController.replace('DataCaptureOtpConfirm', { email: this.email })
       }
-
-      await new Promise(resolve => {
-        // Wait for view transition
-        setTimeout(resolve, 300)
-      })
     } catch (error) {
       SnackController.showError('Failed to send email OTP')
-    } finally {
+
       this.loading = false
     }
   }
