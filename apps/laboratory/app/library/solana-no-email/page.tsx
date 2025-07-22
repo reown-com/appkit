@@ -1,7 +1,5 @@
 'use client'
 
-import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
-
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana } from '@reown/appkit/networks'
 
@@ -13,9 +11,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 const networks = ConstantsUtil.SolanaNetworks
 
-const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter()]
-})
+const solanaWeb3JsAdapter = new SolanaAdapter()
 
 const config = {
   adapters: [solanaWeb3JsAdapter],

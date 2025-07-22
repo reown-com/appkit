@@ -33,6 +33,9 @@ import { watchStandard } from './utils/watchStandard.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
+  /**
+   * @deprecated Wallets are automatically recognized from the browser.
+   */
   wallets?: BaseWalletAdapter[]
   /**
    * Enable or disable registering WalletConnect as a Wallet Standard wallet.
