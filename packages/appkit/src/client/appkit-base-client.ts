@@ -431,7 +431,7 @@ export abstract class AppKitBaseClient {
       }
 
       const adapter = this.getAdapter(namespace)
-      const { caipAddress } = ChainController.getAccountData(namespace) || {}
+      const caipAddress = ChainController.state.chains.get(namespace)?.accountState?.caipAddress
 
       /**
        * When the page loaded, the controller doesn't have address yet.
@@ -972,7 +972,7 @@ export abstract class AppKitBaseClient {
           n.caipNetworkId.toString() === chainId.toString()
       )
       const isSameNamespace = ChainController.state.activeChain === chainNamespace
-      const accountAddress = ChainController.getAccountProp('address', chainNamespace)
+      const accountAddress = ChainController.state.chains.get(chainNamespace)?.accountState?.address
 
       if (caipNetwork) {
         const account = isSameNamespace && address ? address : accountAddress
@@ -1754,7 +1754,7 @@ export abstract class AppKitBaseClient {
       return ChainController.state.activeCaipAddress
     }
 
-    return ChainController.getAccountProp('caipAddress', chainNamespace)
+    return ChainController.state.chains.get(chainNamespace)?.accountState?.caipAddress
   }
 
   public setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
@@ -1811,7 +1811,7 @@ export abstract class AppKitBaseClient {
   }
 
   public getAddressByChainNamespace = (chainNamespace: ChainNamespace) =>
-    ChainController.getAccountProp('address', chainNamespace)
+    ChainController.state.chains.get(chainNamespace)?.accountState?.address
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
@@ -2014,7 +2014,7 @@ export abstract class AppKitBaseClient {
 
   public getWalletInfo(namespace?: ChainNamespace) {
     if (namespace) {
-      return ChainController.getAccountProp('connectedWalletInfo', namespace)
+      return ChainController.state.chains.get(namespace)?.accountState?.connectedWalletInfo
     }
 
     return AccountController.state.connectedWalletInfo
@@ -2207,7 +2207,7 @@ export abstract class AppKitBaseClient {
       return AccountController.state.address
     }
 
-    return ChainController.getAccountProp('address', chainNamespace)
+    return ChainController.state.chains.get(chainNamespace)?.accountState?.address
   }
 
   public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =

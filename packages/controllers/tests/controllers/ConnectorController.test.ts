@@ -5,7 +5,6 @@ import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 import {
   type AuthConnector,
   ChainController,
-  type ChainControllerState,
   ConnectorController,
   type Metadata,
   OptionsController,
@@ -14,6 +13,7 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../exports/index.js'
+import { mockChainControllerState } from '../../exports/testing.js'
 import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -107,16 +107,13 @@ const zerionConnector = {
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
     vi.stubGlobal('window', {
       location: {
         href: ORIGINAL_HREF
       }
     })
-  })
-
-  beforeEach(() => {
-    vi.clearAllMocks()
   })
 
   it('should have valid default state', () => {
@@ -212,6 +209,7 @@ describe('ConnectorController', () => {
     OptionsController.setProjectId(mockDappData.projectId)
 
     ConnectorController.addConnector(evmAuthConnector as unknown as AuthConnector)
+
     expect(ConnectorController.state.connectors).toEqual([
       walletConnectConnector,
       externalConnector,
@@ -398,9 +396,7 @@ describe('ConnectorController', () => {
       type: 'INJECTED' as const,
       chain: ConstantsUtil.CHAIN.EVM
     }
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeChain: ConstantsUtil.CHAIN.SOLANA
-    } as unknown as ChainControllerState)
+    mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.SOLANA })
     const handleMobileDeeplinkRedirectSpy = vi.spyOn(
       MobileWalletUtil,
       'handleMobileDeeplinkRedirect'
@@ -427,9 +423,7 @@ describe('ConnectorController', () => {
       type: 'INJECTED' as const,
       chain: ConstantsUtil.CHAIN.EVM
     }
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeChain: ConstantsUtil.CHAIN.EVM
-    } as unknown as ChainControllerState)
+    mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.EVM })
     const handleMobileDeeplinkRedirectSpy = vi.spyOn(
       MobileWalletUtil,
       'handleMobileDeeplinkRedirect'

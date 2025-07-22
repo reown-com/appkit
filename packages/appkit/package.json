@@ -99,6 +99,11 @@
       "types": "./dist/types/exports/react-core.d.ts",
       "import": "./dist/esm/exports/react-core.js",
       "default": "./dist/esm/exports/react-core.js"
+    },
+    "./testing": {
+      "types": "./dist/types/exports/testing.d.ts",
+      "import": "./dist/esm/exports/testing.js",
+      "default": "./dist/esm/exports/testing.js"
     }
   },
   "typesVersions": {
