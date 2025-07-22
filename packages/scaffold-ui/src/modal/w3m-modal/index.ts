@@ -240,7 +240,7 @@ export class W3mModalBase extends LitElement {
       ModalController.close()
     }
 
-    await SIWXUtil.initializeIfEnabled()
+    await SIWXUtil.initializeIfEnabled(caipAddress)
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
   }

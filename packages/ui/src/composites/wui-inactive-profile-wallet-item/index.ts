@@ -41,7 +41,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property() public iconBadgeSize?: IconSizeType = 'md'
 
-  @property() public rightIcon?: IconType = 'power'
+  @property() public rightIcon?: IconType = 'signOut'
 
   @property() public rightIconSize?: IconSizeType = 'md'
 
