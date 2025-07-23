@@ -5,11 +5,11 @@ export default function ErrorActionPage() {
   const description = (
     <>
       <p>
-        Unfortunately, your payment could not be processed. The session has been updated to reflect the error state.
+       The session has been updated to reflect the error state.
       </p>
       <br />
       <p> 
-        This test exchange has simulated a payment failure. Please try again or contact support if you continue to experience issues.
+        This test exchange has simulated a payment failure. 
       </p>
     </>
   );
