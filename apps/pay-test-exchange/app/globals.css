@@ -8,12 +8,34 @@ body {
   -webkit-tap-highlight-color: transparent;
 
   ::selection {
-    background-color: hsl(var(--primary) / 0.1);
+    background-color: hsl(var(--apkt-background-accent-primary) / 0.1);
   }
 }
 
 @layer base {
   :root {
+    --apkt-background-primary: 0 0% 100%;
+    --apkt-background-invert: 0 0% 13%;
+    --apkt-background-accent-primary: 207 93% 49%;
+
+    --apkt-foreground-primary: 0 0% 95%;
+    --apkt-foreground-secondary: 0 0% 91%;
+    --apkt-foreground-tertiary: 0 0% 82%;
+    --apkt-foreground-accent: 231 100% 70%;
+
+    --apkt-border: 0 0% 91%;
+    --apkt-border-secondary: 0 0% 82%;
+    --apkt-border-accent: 207 93% 49%;
+    --apkt-border-accent-certified: 44 31% 68%;
+    --apkt-border-success: 0.42 55% 42%;
+    --apkt-border-error: 0.02 73% 54%;
+    --apkt-border-warning: 0.09 88% 60%;
+
+    --apkt-text-primary: 0 0% 13%;
+    --apkt-text-secondary: 0 0% 60%;
+    --apkt-text-tertiary: 0 0% 42%;
+    --apkt-text-invert: 0 0% 100%;
+
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -34,9 +56,39 @@ body {
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
-  }
 
+    --apkt-border-sm: 8px;
+    --apkt-border-md: 12px;
+    --apkt-border-lg: 16px;
+
+    --box-shadow-picked-up: 0px 2px 8px 2px hsl(var(--apkt-background-primary) / 0.5);
+
+    /* Page Background */
+    --page-background-image-color: hsl(0, 0%, 87%);
+  }
   .dark {
+    --apkt-background-primary: 0 0% 13%;
+    --apkt-background-invert: 0 0% 100%;
+    --apkt-background-accent-primary: 207 93% 49%;
+
+    --apkt-foreground-primary: 0 0% 15%;
+    --apkt-foreground-secondary: 0 0% 16%;
+    --apkt-foreground-tertiary: 0 0% 21%;
+    --apkt-foreground-accent: 207 92.8% 48.8%;
+
+    --apkt-border: 0 0% 16%;
+    --apkt-border-secondary: 0 0% 31%;
+    --apkt-border-accent: 207 93% 49%;
+    --apkt-border-accent-certified: 0.12 31% 68%;
+    --apkt-border-success: 0.42 55% 42%;
+    --apkt-border-error: 0.02 73% 54%;
+    --apkt-border-warning: 0.09 88% 60%;
+
+    --apkt-text-primary: 0 0% 100%;
+    --apkt-text-secondary: 0 0% 60%;
+    --apkt-text-tertiary: 0 0% 73%;
+    --apkt-text-invert: 0 0% 13%;
+
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
@@ -56,6 +108,9 @@ body {
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+
+    /* Page Background */
+    --page-background-image-color: hsl(0deg 0% 17.25%);
   }
 }
 
@@ -64,6 +119,20 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground h-[100svh];
+  }
+  .inset-shadow {
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+  }
+  wui-card {
+    box-shadow: 0 0 24px 0px rgba(0, 0, 0, 0.15);
+  }
+  .ease {
+    transition-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  .page-container {
+    background-image: radial-gradient(var(--page-background-image-color) 1px, #ffffff00 1px);
+    background-size: 16px 16px;
+    background-position: -16px -8px;
   }
 }
