@@ -70,7 +70,9 @@ describe('BalanceUtil', () => {
         solana: undefined,
         polkadot: undefined,
         bip122: undefined,
-        cosmos: undefined
+        cosmos: undefined,
+        sui: undefined,
+        stacks: undefined
       }
       vi.mocked(StorageUtil.getBalanceCacheForCaipAddress).mockReturnValue(undefined)
     })
@@ -282,7 +284,9 @@ describe('BalanceUtil', () => {
         solana: undefined,
         polkadot: undefined,
         bip122: undefined,
-        cosmos: undefined
+        cosmos: undefined,
+        sui: undefined,
+        stacks: undefined
       }
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
     })
