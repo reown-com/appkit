@@ -15,26 +15,26 @@ export default function ExchangeActions({ sessionId }: { sessionId: string }) {
   const router = useRouter()
 
   useEffect(() => {
-    createPendingSession(sessionId).catch(error => {
-      console.error('Failed to create pending session:', error)
+    createPendingSession(sessionId).catch(() => {
+      // Silently handle session creation failure
     })
   }, [sessionId])
 
-  const handleSuccess = async () => {
+  async function handleSuccess() {
     try {
       await markSessionSuccess(sessionId)
       router.push('/success')
-    } catch (error) {
-      console.error('Failed to mark session as success:', error)
+    } catch {
+      // Silently handle success marking failure
     }
   }
 
-  const handleError = async () => {
+  async function handleError() {
     try {
       await markSessionError(sessionId)
       router.push('/error')
-    } catch (error) {
-      console.error('Failed to mark session as error:', error)
+    } catch {
+      // Silently handle error marking failure
     }
   }
 

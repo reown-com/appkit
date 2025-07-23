@@ -22,8 +22,10 @@ export default function PaymentInfo({ className }: PaymentInfoProps) {
   const amount = searchParams.get('amount')
   const recipient = searchParams.get('recipient')
 
-  const parseAsset = (assetString: string | null) => {
-    if (!assetString) return { chain: 'Unknown', standard: 'Unknown' }
+  function parseAsset(assetString: string | null) {
+    if (!assetString) {
+      return { chain: 'Unknown', standard: 'Unknown' }
+    }
 
     const parts = assetString.split('/')
     const chainPart = parts[0]

@@ -1,7 +1,7 @@
 import { Session } from './types'
 
 interface UpdateSessionOptions {
-  checkResponse?: boolean
+  shouldCheckResponse?: boolean
 }
 
 export async function updateSessionStatus(
@@ -9,29 +9,24 @@ export async function updateSessionStatus(
   status: Session['status'],
   options: UpdateSessionOptions = {}
 ): Promise<void> {
-  const { checkResponse = true } = options
+  const { shouldCheckResponse = true } = options
 
-  try {
-    const response = await fetch(`/api/update?sessionId=${sessionId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ status })
-    })
+  const response = await fetch(`/api/update?sessionId=${sessionId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ status })
+  })
 
-    if (checkResponse && !response.ok) {
-      throw new Error(`Failed to update session status to ${status}: ${response.statusText}`)
-    }
-  } catch (error) {
-    console.error(`Error updating session status to ${status}:`, error)
-    throw error
+  if (shouldCheckResponse && !response.ok) {
+    throw new Error(`Failed to update session status to ${status}: ${response.statusText}`)
   }
 }
 
 export async function createPendingSession(sessionId: string): Promise<void> {
   return updateSessionStatus(sessionId, 'pending', {
-    checkResponse: false
+    shouldCheckResponse: false
   })
 }
 
