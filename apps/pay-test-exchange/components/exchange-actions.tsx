@@ -1,11 +1,34 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 
 export default function ExchangeActions({ sessionId }: { sessionId: string }) {
+  
+  // Create pending session on component load
+  useEffect(() => {
+    const createPendingSession = async () => {
+      try {
+        await fetch(`/api/update?sessionId=${sessionId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'pending'
+          }),
+        });
+
+      } catch (error) {
+        console.error('Error creating pending session:', error);
+      }
+    };
+
+    createPendingSession();
+  }, [sessionId]);
+
   const handleSuccess = () => {
     console.log("Payment completed successfully!");
     // Add your success logic here
