@@ -38,14 +38,8 @@ export class UniversalConnector {
     this.appKit = appKit
     this.provider = provider
     this.config = config
-
     this.session = provider.session
-    provider.on('disconnect', this.onDisconnect.bind(this))
-  }
-
-  private onDisconnect() {
-    this.session = undefined
-    this.appKit.disconnect()
+    provider.on('disconnect', this.disconnect.bind(this))
   }
 
   public static async init(config: Config) {
@@ -97,8 +91,14 @@ export class UniversalConnector {
   }
 
   async disconnect() {
-    await this.provider.disconnect()
-    await this.appKit.close()
+    try {
+      await this.appKit.disconnect()
+      await this.provider.disconnect()
+    } catch {
+      // Pass
+    } finally {
+      this.session = undefined
+    }
   }
 
   async request(params: RequestArguments, chain: string) {
