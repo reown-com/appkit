@@ -5,10 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { createPendingSession, markSessionSuccess, markSessionError } from "@/lib/session-actions";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function ExchangeActions({ sessionId }: { sessionId: string }) {
+  const router = useRouter();
   
-  // Create pending session on component load
   useEffect(() => {
     createPendingSession(sessionId).catch((error) => {
       console.error('Failed to create pending session:', error);
@@ -18,6 +19,7 @@ export default function ExchangeActions({ sessionId }: { sessionId: string }) {
   const handleSuccess = async () => {
     try {
       await markSessionSuccess(sessionId);
+      router.push('/success');
     } catch (error) {
       console.error('Failed to mark session as success:', error);
     }
@@ -26,8 +28,10 @@ export default function ExchangeActions({ sessionId }: { sessionId: string }) {
   const handleError = async () => {
     try {
       await markSessionError(sessionId);
+      router.push('/error');
     } catch (error) {
       console.error('Failed to mark session as error:', error);
+
     }
   };
 
