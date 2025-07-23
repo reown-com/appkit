@@ -163,8 +163,10 @@ export default function UniversalConnectorPage() {
         'sui:mainnet'
       )
 
+      // eslint-disable-next-line no-console
       console.log('>> Sui Sign Message result', result)
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('>> Sui Sign Message error', error)
     }
   }
@@ -190,8 +192,10 @@ export default function UniversalConnectorPage() {
         },
         'stacks:1'
       )
+      // eslint-disable-next-line no-console
       console.log('>> Stacks Sign Message result', result)
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('>> Stacks Sign Message error', error)
     }
   }
