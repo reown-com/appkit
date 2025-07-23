@@ -187,7 +187,10 @@ export class W3mSwapView extends LitElement {
   }
 
   private startTokenPriceInterval = () => {
-    if (this.interval && Date.now() - this.lastTokenPriceUpdate < 10_000) {
+    if (
+      this.interval &&
+      Date.now() - this.lastTokenPriceUpdate < this.minTokenPriceUpdateInterval
+    ) {
       return
     }
 
@@ -201,7 +204,7 @@ export class W3mSwapView extends LitElement {
     clearInterval(this.interval)
     this.interval = setInterval(() => {
       this.fetchTokensAndValues()
-    }, 10_000)
+    }, this.minTokenPriceUpdateInterval)
   }
 
   private watchTokensAndValues = () => {
