@@ -369,11 +369,21 @@ jobs:
 
       - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
         uses: actions/upload-artifact@v4
-        if: always() # Ensure it runs even if tests fail to get all blob data
+        # When we run this workflow from AppKit, PW does separate reports by shard. We should upload the shard-specific report.zip.
+        if: always() && contains(github.workspace, 'appkit')
         with:
           # Upload every blob in the directory so the step succeeds regardless of the exact filename
           name: playwright-blob-artifact-shard-${{ matrix.shard }}
           path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/*.zip
+          retention-days: 7
+
+      - name: Upload Playwright Blob Report for Secure Site tests
+        uses: actions/upload-artifact@v4
+        # When we run this workflow from Secure AppKit, PW doesn't separate reports by shard. Instead we should upload `report.zip`.
+        if: always() && contains(github.workspace, 'secure-appkit')
+        with:
+          name: playwright-blob-artifact-shard-all
+          path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/report.zip
           retention-days: 7
 
       - name: Verify Cache Dir Exists Before Post Job
