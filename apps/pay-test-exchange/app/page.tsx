@@ -1,10 +1,11 @@
-"use client"
-import ExchangeActions from "@/components/exchange-actions";
-import ErrorScreen from "@/components/error-screen";
-import { useSearchParams } from "next/navigation";
+'use client'
+
+import { useSearchParams } from 'next/navigation'
+
+import ErrorScreen from '@/components/error-screen'
+import ExchangeActions from '@/components/exchange-actions'
 
 export default function Home() {
-
   const searchParams = useSearchParams()
 
   const sessionId = searchParams.get('sessionId')
@@ -12,11 +13,9 @@ export default function Home() {
     return <ErrorScreen />
   }
 
-
-  
   return (
     <div>
-        <ExchangeActions sessionId={sessionId} />
+      <ExchangeActions sessionId={sessionId} />
     </div>
   )
 }

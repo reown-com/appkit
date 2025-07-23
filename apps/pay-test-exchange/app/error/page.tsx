@@ -1,18 +1,15 @@
-import ActionResult from "@/components/action-result";
-import { XCircle } from 'lucide-react';
+import { XCircle } from 'lucide-react'
+
+import ActionResult from '@/components/action-result'
 
 export default function ErrorActionPage() {
   const description = (
     <>
-      <p>
-       The session has been updated to reflect the error state.
-      </p>
+      <p>The session has been updated to reflect the error state.</p>
       <br />
-      <p> 
-        This test exchange has simulated a payment failure. 
-      </p>
+      <p>This test exchange has simulated a payment failure.</p>
     </>
-  );
+  )
 
   return (
     <ActionResult
@@ -21,5 +18,5 @@ export default function ErrorActionPage() {
       description={description}
       iconClassName="text-red-500"
     />
-  );
-} 
+  )
+}
