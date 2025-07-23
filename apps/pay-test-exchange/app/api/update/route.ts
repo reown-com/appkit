@@ -36,7 +36,8 @@ export async function POST(request: NextRequest) {
 
   session.status = status
   if (status === 'success') {
-    session.txid = '1234567890'
+    // mock txid
+    session.txid = '0x9b629147b75dc0b275d478fa34d97c5d4a26926457540b15a5ce871df36c23fd'
   }
 
   await env.SESSIONID_STORAGE.put(sessionId, JSON.stringify(session))
