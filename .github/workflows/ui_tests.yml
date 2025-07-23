@@ -356,15 +356,15 @@ jobs:
         if: always() # Run even if previous steps failed, to see state
         working-directory: ${{ github.workspace }}/apps/laboratory/
         run: |
-          echo "Listing contents of playwright-blob-reports in ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/"
-          ls -la playwright-blob-reports/
+          echo "Listing contents of playwright-blob-reports in ${{ github.workspace }}/apps/laboratory/playwright-blob-reports-${{ env.BRANCH_NAME }}/"
+          ls -la playwright-blob-reports-${{ env.BRANCH_NAME }}/
         continue-on-error: true # Don't fail the job if ls fails or dir doesn't exist
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report-${{ matrix.shard }}
-          path: ${{ github.workspace }}/apps/laboratory/playwright-report/
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report-${{ env.BRANCH_NAME }}/
           retention-days: 7
 
       - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
@@ -372,7 +372,7 @@ jobs:
         if: always() # Ensure it runs even if tests fail to get all blob data
         with:
           name: playwright-blob-artifact-shard-${{ matrix.shard }} # New unique artifact name pattern for blobs
-          path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
+          path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports-${{ env.BRANCH_NAME }}/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
           retention-days: 7
 
       - name: Verify Cache Dir Exists Before Post Job
@@ -425,22 +425,22 @@ jobs:
       - name: Download all shard blob reports
         uses: actions/download-artifact@v4
         with:
-          path: all-blob-reports # Directory to download all artifacts into (becomes ${{ github.workspace }}/all-blob-reports)
+          path: all-blob-reports-${{ env.BRANCH_NAME }} # Directory to download all artifacts into (becomes ${{ github.workspace }}/all-blob-reports-${{ env.BRANCH_NAME }})
           pattern: playwright-blob-artifact-shard-* # Matches all NEW shard blob artifacts
           merge-multiple: true # Merges contents of all matching artifacts into the 'path' directory
 
       - name: Verify downloaded blobs (optional debugging)
-        run: ls -R ${{ github.workspace }}/all-blob-reports
+        run: ls -R ${{ github.workspace }}/all-blob-reports-${{ env.BRANCH_NAME }}
 
       - name: Ensure merged report directory exists
-        run: mkdir -p ${{ github.workspace }}/apps/laboratory/playwright-report/
+        run: mkdir -p ${{ github.workspace }}/apps/laboratory/playwright-report-${{ env.BRANCH_NAME }}/
 
       - name: Merge Playwright blob reports
-        # This command merges blobs from '${{ github.workspace }}/all-blob-reports' and creates new reports.
+        # This command merges blobs from '${{ github.workspace }}/all-blob-reports-${{ env.BRANCH_NAME }}' and creates new reports.
         # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards
         # and to define the output reporters (HTML and JSON).
-        # Output will be in './apps/laboratory/playwright-report/' (relative to working-directory)
-        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
+        # Output will be in './apps/laboratory/playwright-report-${{ env.BRANCH_NAME }}/' (relative to working-directory)
+        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports-${{ env.BRANCH_NAME }}
         working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
 
       - name: Rename merged JSON report for clarity
@@ -494,7 +494,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-merged-html-report
-          path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
+          path: ${{ github.workspace }}/apps/laboratory/playwright-report-${{ env.BRANCH_NAME }}/ # Contains the merged HTML report
           retention-days: 7
 
       - name: Upload Merged JSON Report (for custom processing)
