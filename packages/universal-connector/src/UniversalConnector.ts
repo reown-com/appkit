@@ -66,10 +66,10 @@ export class UniversalConnector {
     const namespaces: NamespaceConfig = this.config?.networks.reduce<NamespaceConfig>(
       (acc, namespace) => {
         acc[namespace.namespace] = {
-          ...namespace,
-          methods: namespace.methods || [],
-          events: namespace.events || [],
-          chains: namespace.chains.map((chain: CustomCaipNetwork) => chain.caipNetworkId) || []
+          ...(namespace || {}),
+          methods: namespace?.methods || [],
+          events: namespace?.events || [],
+          chains: namespace?.chains?.map((chain: CustomCaipNetwork) => chain.caipNetworkId) || []
         }
 
         return acc
