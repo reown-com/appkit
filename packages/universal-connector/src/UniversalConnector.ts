@@ -1,6 +1,6 @@
-import type { ProposalTypes, SessionTypes } from '@walletconnect/types'
+import type { SessionTypes } from '@walletconnect/types'
 import {
-  type ConnectParams,
+  type NamespaceConfig,
   type RequestArguments,
   UniversalProvider
 } from '@walletconnect/universal-provider'
@@ -46,7 +46,7 @@ export class UniversalConnector {
     })
 
     const appKitConfig: CreateAppKit = {
-      networks: Object.values(config.networks).flatMap(network => network.chains) as [
+      networks: config.networks.flatMap(network => network.chains) as [
         CaipNetwork,
         ...CaipNetwork[]
       ],
@@ -63,8 +63,8 @@ export class UniversalConnector {
   async connect(): Promise<{
     session: SessionTypes.Struct
   }> {
-    const namespaces: ProposalTypes.OptionalNamespaces =
-      this.config?.networks.reduce<ProposalTypes.OptionalNamespaces>((acc, namespace) => {
+    const namespaces: NamespaceConfig = this.config?.networks.reduce<NamespaceConfig>(
+      (acc, namespace) => {
         acc[namespace.namespace] = {
           ...namespace,
           methods: namespace.methods || [],
@@ -73,21 +73,34 @@ export class UniversalConnector {
         }
 
         return acc
-      }, {})
+      },
+      {}
+    )
 
-    this.appKit.open()
-    const session = await this.provider.connect({
-      optionalNamespaces: namespaces as ConnectParams['optionalNamespaces']
-    })
+    try {
+      this.appKit.open()
+      const session = await this.provider.connect({
+        optionalNamespaces: namespaces
+      })
 
-    await this.appKit.close()
+      if (!session) {
+        throw new Error('Error connecting to wallet: No session found')
+      }
 
-    return { session: session as SessionTypes.Struct }
+      await this.appKit.close()
+
+      return { session }
+    } catch (error) {
+      await this.appKit.close()
+      throw new Error(
+        `Error connecting to wallet: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
+    }
   }
 
   async disconnect() {
-    // This will trigger the disconnect event on the provider
     await this.appKit.disconnect()
+    await this.provider.disconnect()
   }
 
   async request(params: RequestArguments, chain: string) {
