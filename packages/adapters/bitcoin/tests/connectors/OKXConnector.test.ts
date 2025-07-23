@@ -45,7 +45,7 @@ describe('OKXConnector', () => {
     expect(connector.imageUrl).toBe('mock_image_url')
   })
 
-  it('should return only mainnet chain', () => {
+  it('should return chain that is active', () => {
     expect(connector.chains).toEqual([bitcoin])
   })
 
@@ -70,6 +70,23 @@ describe('OKXConnector', () => {
       expect(wallet.removeAllListeners).toHaveBeenCalled()
       expect(wallet.on).toHaveBeenNthCalledWith(1, 'accountChanged', expect.any(Function))
       expect(wallet.on).toHaveBeenNthCalledWith(2, 'disconnect', expect.any(Function))
+    })
+
+    it('should connect with testnet', async () => {
+      const testnetWallet = mockOKXWallet()
+      const testnetConnector = new OKXConnector({
+        wallet: testnetWallet,
+        requestedChains: [bitcoin, bitcoinTestnet],
+        getActiveNetwork: vi.fn(() => bitcoinTestnet),
+        imageUrl: 'mock_image_url',
+        requestedCaipNetworkId: bitcoinTestnet.caipNetworkId
+      })
+
+      const address = await testnetConnector.connect()
+
+      expect(address).toBe('mock_address')
+      expect(testnetWallet.connect).toHaveBeenCalled()
+      expect(testnetConnector.chains).toEqual([bitcoinTestnet])
     })
   })
 
