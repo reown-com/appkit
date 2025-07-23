@@ -57,6 +57,8 @@ export const siweConfig = createSIWEConfig({
 
       return Boolean(success?.ok)
     } catch (error) {
+      console.warn('@@siweConfig: verifyMessage error', error)
+
       return false
     }
   },
