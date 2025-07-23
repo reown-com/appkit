@@ -44,7 +44,14 @@ export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
 
 export type ChainId = string | number
 
-export type InternalChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122' | 'cosmos'
+export type InternalChainNamespace =
+  | 'eip155'
+  | 'solana'
+  | 'polkadot'
+  | 'bip122'
+  | 'cosmos'
+  | 'sui'
+  | 'stacks'
 
 export type ChainNamespace<T extends string = InternalChainNamespace> = T | InternalChainNamespace
 
@@ -54,8 +61,8 @@ export type AdapterType =
   | 'ethers'
   | 'ethers5'
   | 'universal'
-  | 'polkadot'
   | 'bip122'
+  | 'polkadot'
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
