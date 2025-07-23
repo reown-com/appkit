@@ -23,6 +23,8 @@ export type SafeLocalStorageItems = {
   '@appkit/preferred_account_types': string
   '@appkit/connections': string
   '@appkit/disconnected_connector_ids': string
+  '@appkit/history_transactions_cache': string
+  '@appkit/token_price_cache': string
   '@appkit/recent_emails': string
   /*
    * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
@@ -54,6 +56,8 @@ export const SafeLocalStorageKeys = {
   PREFERRED_ACCOUNT_TYPES: '@appkit/preferred_account_types',
   CONNECTIONS: '@appkit/connections',
   DISCONNECTED_CONNECTOR_IDS: '@appkit/disconnected_connector_ids',
+  HISTORY_TRANSACTIONS_CACHE: '@appkit/history_transactions_cache',
+  TOKEN_PRICE_CACHE: '@appkit/token_price_cache',
   RECENT_EMAILS: '@appkit/recent_emails'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
