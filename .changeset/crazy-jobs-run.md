@@ -24,7 +24,7 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Introduced `AppKitProvider` React component for easy AppKit setup in React apps
+Introduced `AppKitProvider` React component for easy AppKit integration in React apps
 
 **Example usage**
 
