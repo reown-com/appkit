@@ -78,7 +78,7 @@ export class UniversalConnector {
     )
 
     try {
-      this.appKit.open()
+      await this.appKit.open()
       const session = await this.provider.connect({
         optionalNamespaces: namespaces
       })
