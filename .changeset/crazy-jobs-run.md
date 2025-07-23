@@ -33,7 +33,7 @@ import { AppKitProvider } from '@reown/appkit/react';
 
 function App() {
   return (
-    <AppKitProvider projectId="your-project-id" networks={[/* Your Networks */]}>
+    <AppKitProvider projectId="YOUR_PROJECT_ID" networks={[/* Your Networks */]}>
       {/* Your App */}
     </AppKitProvider>
   );
