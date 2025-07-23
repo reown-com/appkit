@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     return new Response('Session created', { status: 200 })
   }
 
-  let session = JSON.parse(sessionData) as Session
+  const session = JSON.parse(sessionData) as Session
 
   const { status } = (await request.json()) as Pick<Session, 'status'>
 
