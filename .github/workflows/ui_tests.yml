@@ -381,7 +381,7 @@ jobs:
         # When we run this workflow from Secure AppKit, PW doesn't separate reports by shard. Instead we should upload `report.zip`.
         if: always() && contains(github.workspace, 'secure-appkit')
         with:
-          name: playwright-blob-artifact-shard
+          name: playwright-blob-artifact-shard-all
           path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/report.zip
           retention-days: 7
 
