@@ -28,7 +28,7 @@ Introduced `AppKitProvider` React component for easy AppKit integration in React
 
 **Example usage**
 
-```jsx
+```tsx
 import { AppKitProvider } from '@reown/appkit/react';
 
 function App() {
