@@ -99,6 +99,11 @@
       "types": "./dist/types/exports/react-core.d.ts",
       "import": "./dist/esm/exports/react-core.js",
       "default": "./dist/esm/exports/react-core.js"
+    },
+    "./testing": {
+      "types": "./dist/types/exports/testing.d.ts",
+      "import": "./dist/esm/exports/testing.js",
+      "default": "./dist/esm/exports/testing.js"
     }
   },
   "typesVersions": {
@@ -156,6 +161,10 @@
     "react-dom": "19.1.0",
     "vitest": "3.1.3",
     "vue": "3.x"
+  },
+  "optionalDependencies": {
+    "@reown/appkit-siwx": "workspace:*",
+    "@lit/react": "1.0.8"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",

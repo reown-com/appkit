@@ -4,7 +4,8 @@ import {
   CoreHelperUtil,
   type SIWXConfig,
   type SIWXMessage,
-  type SIWXSession
+  type SIWXSession,
+  getActiveCaipNetwork
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 
@@ -164,7 +165,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
          * So we only add the first session to keep backwards compatibility
          */
         const session = (sessions.find(
-          s => s.data.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
+          s => s.data.chainId === getActiveCaipNetwork()?.caipNetworkId
         ) || sessions[0]) as SIWXSession
         await this.addSession(session)
       }

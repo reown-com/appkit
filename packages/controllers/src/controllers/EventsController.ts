@@ -79,8 +79,8 @@ export const EventsController = {
       if (isForbiddenError) {
         AlertController.open(
           {
-            shortMessage: 'Invalid App Configuration',
-            longMessage: `Origin ${
+            displayMessage: 'Invalid App Configuration',
+            debugMessage: `Origin ${
               isSafe() ? window.origin : 'uknown'
             } not found on Allowlist - update configuration on cloud.reown.com`
           },

@@ -102,7 +102,10 @@ export class W3mConnectRecommendedWidget extends LitElement {
     if (this.loading) {
       return
     }
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    const connector = ConnectorController.getConnector({
+      id: wallet.id,
+      rdns: wallet.rdns
+    })
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })
     } else {
