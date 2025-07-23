@@ -500,13 +500,13 @@ jobs:
       - name: Upload Merged HTML Report
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-merged-html-report
+          name: playwright-merged-html-report-${{ env.BRANCH_NAME }}
           path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
           retention-days: 7
 
       - name: Upload Merged JSON Report (for custom processing)
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-merged-json-report
+          name: playwright-merged-json-report-${{ env.BRANCH_NAME }}
           path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
           retention-days: 7
