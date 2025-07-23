@@ -70,7 +70,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   // -- Private ------------------------------------------- //
   private onRenderProxy() {
     if (!this.ready && this.uri) {
-      console.log('onRenderProxy', this.uri)
       // This setTimeout needed to avoid the beginning of the animation from not starting to resize immediately and some weird svg errors
       this.timeout = setTimeout(() => {
         this.ready = true

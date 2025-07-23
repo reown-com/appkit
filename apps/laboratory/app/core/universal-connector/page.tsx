@@ -109,7 +109,6 @@ export default function UniversalConnectorPage() {
       return
     }
 
-    console.log('>> Signing message in SUI...', message, universalConnector)
     await universalConnector.request(
       {
         method: 'sui_signPersonalMessage',
@@ -124,11 +123,6 @@ export default function UniversalConnectorPage() {
       return
     }
 
-    console.log(
-      '>> Signing message in Stacks...',
-      message,
-      session?.namespaces['stacks']?.accounts[0]
-    )
     await universalConnector.request(
       {
         method: 'stx_signMessage',
