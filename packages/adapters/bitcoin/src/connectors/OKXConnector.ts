@@ -23,6 +23,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   public readonly explorerId =
     PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.OKX]
   public readonly imageUrl: string
+  public readonly requestedCaipNetworkId?: CaipNetwork['caipNetworkId']
 
   public readonly provider = this
 
@@ -34,17 +35,21 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     wallet,
     requestedChains,
     getActiveNetwork,
-    imageUrl
+    imageUrl,
+    requestedCaipNetworkId
   }: OKXConnector.ConstructorParams) {
     super()
     this.wallet = wallet
     this.requestedChains = requestedChains
     this.getActiveNetwork = getActiveNetwork
     this.imageUrl = imageUrl
+    this.requestedCaipNetworkId = requestedCaipNetworkId
   }
 
   public get chains() {
-    return this.requestedChains.filter(chain => chain.caipNetworkId === bitcoin.caipNetworkId)
+    return this.requestedChains.filter(
+      chain => chain.caipNetworkId === this.getActiveNetwork()?.caipNetworkId
+    )
   }
 
   public async connect(): Promise<string> {
