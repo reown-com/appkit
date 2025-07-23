@@ -21,9 +21,9 @@ export type Config = {
 }
 
 export class UniversalConnector {
-  public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
   private appKit: AppKit
   private config: Config
+  public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
 
   constructor({
     appKit,

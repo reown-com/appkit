@@ -27,23 +27,6 @@ const suiMainnet: CustomCaipNetwork<'sui'> = {
   rpcUrls: { default: { http: ['https://fullnode.mainnet.sui.io:443'] } }
 }
 
-/*
- * Example network config:
- * const suiTestnet = {
- *   id: 784,
- *   chainNamespace: 'sui' as const,
- *   caipNetworkId: 'sui:testnet',
- *   name: 'Sui',
- *   nativeCurrency: { name: 'SUI', symbol: 'SUI', decimals: 9 },
- *   rpcUrls: { default: { http: ['https://fullnode.testnet.sui.io:443'] } },
- *   connectParams: {
- *     methods: ['sui_signPersonalMessage'],
- *     chains: ['sui:testnet'],
- *     events: []
- *   }
- * }
- */
-
 const stacksMainnet: CustomCaipNetwork<'stacks'> = {
   id: 1,
   chainNamespace: 'stacks' as const,
@@ -55,7 +38,7 @@ const stacksMainnet: CustomCaipNetwork<'stacks'> = {
 
 async function getUniversalConnector() {
   const universalConnector = await UniversalConnector.init({
-    projectId: process.env['NEXT_PUBLIC_PROJECT_ID']!,
+    projectId: process.env['NEXT_PUBLIC_PROJECT_ID'] ?? '',
     metadata: {
       name: 'Universal Connector',
       description: 'Universal Connector',
@@ -67,14 +50,12 @@ async function getUniversalConnector() {
         methods: ['sui_signPersonalMessage'],
         chains: [suiMainnet as CustomCaipNetwork],
         events: [],
-        accounts: [],
         namespace: 'sui'
       },
       {
         methods: ['stx_signMessage'],
         chains: [stacksMainnet as CustomCaipNetwork],
         events: ['stx_chainChanged'],
-        accounts: [],
         namespace: 'stacks'
       }
     ]
@@ -83,9 +64,69 @@ async function getUniversalConnector() {
   return universalConnector
 }
 
+// Helper component to render a readable view of the WalletConnect session
+function SessionDetails({ session }: { session: SessionTypes.Struct }) {
+  return (
+    <Stack spacing="3">
+      <Box>
+        <Heading size="sm">General</Heading>
+        <Text>
+          <strong>Topic:</strong> {session.topic}
+        </Text>
+        <Text>
+          <strong>Relay protocol:</strong> {session.relay.protocol}
+        </Text>
+        <Text>
+          <strong>Expiry:</strong> {new Date(session.expiry * 1000).toLocaleString()}
+        </Text>
+      </Box>
+
+      <Box>
+        <Heading size="sm">Namespaces</Heading>
+        <Stack spacing="3" pl="4" borderLeftWidth="1px" borderColor="gray.200">
+          {Object.entries(session.namespaces).map(([key, ns]) => (
+            <Box key={key}>
+              <Heading size="xs" textTransform="uppercase">
+                {key}
+              </Heading>
+              <Text>
+                <strong>Chains:</strong> {ns.chains?.join(', ') || '-'}
+              </Text>
+              <Text>
+                <strong>Methods:</strong> {ns.methods.join(', ') || '-'}
+              </Text>
+              {ns.events.length > 0 && (
+                <Text>
+                  <strong>Events:</strong> {ns.events.join(', ')}
+                </Text>
+              )}
+              <Text>
+                <strong>Accounts:</strong> {ns.accounts.join(', ')}
+              </Text>
+            </Box>
+          ))}
+        </Stack>
+      </Box>
+
+      <Box>
+        <Heading size="sm">Peer</Heading>
+        <Text>
+          <strong>Name:</strong> {session.peer.metadata.name}
+        </Text>
+        <Text>
+          <strong>Description:</strong> {session.peer.metadata.description}
+        </Text>
+        <Text>
+          <strong>URL:</strong> {session.peer.metadata.url}
+        </Text>
+      </Box>
+    </Stack>
+  )
+}
+
 export default function UniversalConnectorPage() {
-  const [universalConnector, setUniversalConnector] = useState<UniversalConnector | null>(null)
-  const [session, setSession] = useState<SessionTypes.Struct | null>(null)
+  const [universalConnector, setUniversalConnector] = useState<UniversalConnector>()
+  const [session, setSession] = useState<SessionTypes.Struct>()
 
   async function connect() {
     if (!universalConnector) {
@@ -93,7 +134,7 @@ export default function UniversalConnectorPage() {
     }
 
     const { session: providerSession } = await universalConnector.connect()
-    setSession(providerSession ?? null)
+    setSession(providerSession)
   }
 
   async function disconnect() {
@@ -101,7 +142,6 @@ export default function UniversalConnectorPage() {
       return
     }
     await universalConnector.disconnect()
-    setSession(null)
   }
 
   async function signSuiMessage(message: string) {
@@ -109,13 +149,24 @@ export default function UniversalConnectorPage() {
       return
     }
 
-    await universalConnector.request(
-      {
-        method: 'sui_signPersonalMessage',
-        params: [message]
-      },
-      'sui:mainnet'
-    )
+    try {
+      const account = session?.namespaces['sui']?.accounts[0]
+      if (!account) {
+        throw new Error('No account found')
+      }
+
+      const result = await universalConnector.request(
+        {
+          method: 'sui_signPersonalMessage',
+          params: [message]
+        },
+        'sui:mainnet'
+      )
+
+      console.log('>> Sui Sign Message result', result)
+    } catch (error) {
+      console.error('>> Sui Sign Message error', error)
+    }
   }
 
   async function signStacksMessage(message: string) {
@@ -123,17 +174,31 @@ export default function UniversalConnectorPage() {
       return
     }
 
-    await universalConnector.request(
-      {
-        method: 'stx_signMessage',
-        params: {
-          message,
-          address: session?.namespaces['stacks']?.accounts[0]
-        }
-      },
-      'stacks:1'
-    )
+    try {
+      const account = session?.namespaces['stacks']?.accounts[0]
+      if (!account) {
+        throw new Error('No account found')
+      }
+
+      const result = await universalConnector.request(
+        {
+          method: 'stx_signMessage',
+          params: {
+            message,
+            address: account
+          }
+        },
+        'stacks:1'
+      )
+      console.log('>> Stacks Sign Message result', result)
+    } catch (error) {
+      console.error('>> Stacks Sign Message error', error)
+    }
   }
+
+  useEffect(() => {
+    setSession(universalConnector?.provider.session)
+  }, [universalConnector?.provider.session])
 
   useEffect(() => {
     getUniversalConnector().then(setUniversalConnector)
@@ -152,13 +217,13 @@ export default function UniversalConnectorPage() {
             </Heading>
 
             {session ? (
-              <>
+              <Stack direction="row" spacing={4}>
                 <Button onClick={disconnect}>Disconnect</Button>
                 <Button onClick={() => signSuiMessage('Hello, world!')}>Sign SUI Message</Button>
                 <Button onClick={() => signStacksMessage('Hello, world!')}>
                   Sign Stacks Message
                 </Button>
-              </>
+              </Stack>
             ) : (
               <Button onClick={connect}>Connect</Button>
             )}
@@ -169,7 +234,7 @@ export default function UniversalConnectorPage() {
               <Heading size="xs" textTransform="uppercase" pb="2">
                 Session
               </Heading>
-              <Text>{JSON.stringify(session, null, 2)}</Text>
+              <SessionDetails session={session} />
             </Box>
           )}
         </Stack>
