@@ -492,6 +492,11 @@ jobs:
           echo "Uploading ${{ github.workspace }}/apps/laboratory/merged-test-results.json to s3://${S3_BUCKET}/${S3_KEY}"
           aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}
 
+      - name: List Contents of Playwright Report Directory
+        run: |
+          echo "Listing contents of the playwright-report directory for debugging:"
+          ls -l ${{ github.workspace }}/apps/laboratory/playwright-report/
+
       - name: Upload Merged HTML Report
         uses: actions/upload-artifact@v4
         with:
