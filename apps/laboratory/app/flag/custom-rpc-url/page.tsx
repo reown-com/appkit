@@ -15,7 +15,12 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 const queryClient = new QueryClient()
 
 const customRpcUrls = {
-  'eip155:1': [{ url: 'https://ethereum-rpc.publicnode.com' }]
+  'eip155:1': [{ url: 'https://ethereum-rpc.publicnode.com' }],
+  'eip155:137': [{ url: 'https://polygon-bor-rpc.publicnode.com' }],
+  'eip155:42161': [{ url: 'https://arbitrum-rpc.publicnode.com' }],
+  'eip155:10': [{ url: 'https://optimism-rpc.publicnode.com' }],
+  'eip155:100': [{ url: 'https://gnosis-rpc.publicnode.com' }],
+  'eip155:8453': [{ url: 'https://base-rpc.publicnode.com' }]
 }
 
 const wagmiAdapter = new WagmiAdapter({
