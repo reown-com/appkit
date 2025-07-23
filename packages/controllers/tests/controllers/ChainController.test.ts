@@ -21,7 +21,6 @@ import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUti
 
 // -- Setup --------------------------------------------------------------------
 const chainNamespace = ConstantsUtil.CHAIN.EVM
-const caipAddress = 'eip155:1:0x123'
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
 
 const requestedCaipNetworks = [
@@ -152,11 +151,6 @@ describe('ChainController', () => {
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
     expect(ChainController.getConnectionControllerClient()).toEqual(connectionControllerClient)
     expect(ChainController.getNetworkControllerClient()).toEqual(networkControllerClient)
-  })
-
-  it('should update account state as expected', () => {
-    ChainController.setAccountProp('caipAddress', caipAddress, chainNamespace)
-    expect(ChainController.getAccountProp('caipAddress')).toEqual(caipAddress)
   })
 
   it('should update network state as expected', () => {

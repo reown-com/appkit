@@ -148,6 +148,7 @@ const controller = {
   clearLoading() {
     state.loadingNamespaceMap.clear()
     state.loading = false
+    PublicStateController.set({ loading: false })
   },
 
   shake() {
