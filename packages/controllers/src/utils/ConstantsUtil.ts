@@ -189,7 +189,9 @@ export const ConstantsUtil = {
     solana: 'So11111111111111111111111111111111111111111',
     polkadot: '0x',
     bip122: '0x',
-    cosmos: '0x'
+    cosmos: '0x',
+    sui: '0x',
+    stacks: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
