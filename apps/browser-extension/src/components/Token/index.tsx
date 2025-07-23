@@ -29,6 +29,16 @@ const tokens: Record<ChainNamespace, { title: string; symbol: string; src: strin
     title: 'Cosmos',
     symbol: 'ATOM',
     src: '/assets/images/atom.png'
+  },
+  sui: {
+    title: 'Sui',
+    symbol: 'SUI',
+    src: '/assets/images/sui.png'
+  },
+  stacks: {
+    title: 'Stacks',
+    symbol: 'STX',
+    src: '/assets/images/stx.png'
   }
 }
 

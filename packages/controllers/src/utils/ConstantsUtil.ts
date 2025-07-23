@@ -189,7 +189,9 @@ export const ConstantsUtil = {
     solana: 'So11111111111111111111111111111111111111111',
     polkadot: '0x',
     bip122: '0x',
-    cosmos: '0x'
+    cosmos: '0x',
+    sui: '0x',
+    stacks: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
@@ -218,7 +220,8 @@ export const ConstantsUtil = {
     ] as SocialProvider[],
     activity: true,
     reownBranding: true,
-    multiWallet: false
+    multiWallet: false,
+    emailCapture: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -226,7 +229,8 @@ export const ConstantsUtil = {
     swaps: false,
     onramp: false,
     activity: false,
-    reownBranding: false
+    reownBranding: false,
+    emailCapture: false
   } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,

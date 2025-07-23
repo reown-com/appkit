@@ -374,7 +374,7 @@ describe('W3mModal', () => {
       const alertbar = HelpersUtil.querySelect(element, 'w3m-alertbar')
       expect(alertbar).toBeTruthy()
       expect(AlertController.state.open).toBe(true)
-      expect(AlertController.state.message).toBe('Project ID Not Configured')
+      expect(AlertController.state.message).toBe('Project ID Missing')
       expect(AlertController.state.variant).toBe('error')
     })
 
