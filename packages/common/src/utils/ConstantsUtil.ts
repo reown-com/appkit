@@ -77,18 +77,18 @@ export const ConstantsUtil = {
   REMOTE_FEATURES_ALERTS: {
     MULTI_WALLET_NOT_ENABLED: {
       DEFAULT: {
-        shortMessage: 'Multi-Wallet Not Enabled',
-        longMessage:
+        displayMessage: 'Multi-Wallet Not Enabled',
+        debugMessage:
           'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com.'
       },
       CONNECTIONS_HOOK: {
-        shortMessage: 'Multi-Wallet Not Enabled',
-        longMessage:
+        displayMessage: 'Multi-Wallet Not Enabled',
+        debugMessage:
           'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnections hook.'
       },
       CONNECTION_HOOK: {
-        shortMessage: 'Multi-Wallet Not Enabled',
-        longMessage:
+        displayMessage: 'Multi-Wallet Not Enabled',
+        debugMessage:
           'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnection hook.'
       }
     }

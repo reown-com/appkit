@@ -31,6 +31,7 @@ interface ConnectWalletConnectParameters {
 
 interface ConnectSocialParameters {
   social: SocialProvider
+  namespace?: ChainNamespace
   closeModalOnConnect?: boolean
   redirectViewOnModalClose?: RouterControllerState['view']
   onOpenFarcaster?: () => void
@@ -39,6 +40,7 @@ interface ConnectSocialParameters {
 
 interface ConnectEmailParameters {
   closeModalOnConnect?: boolean
+  namespace?: ChainNamespace
   redirectViewOnModalClose?: RouterControllerState['view']
   onOpen?: () => void
   onConnect?: () => void
@@ -108,6 +110,7 @@ export const ConnectorControllerUtil = {
   },
   connectSocial({
     social,
+    namespace,
     closeModalOnConnect = true,
     onOpenFarcaster,
     onConnect
@@ -116,6 +119,8 @@ export const ConnectorControllerUtil = {
     let socialProvider = AccountController.state.socialProvider
     let connectingSocial = false
     let popupWindow: Window | null = null
+
+    const namespaceToUse = namespace || ChainController.state.activeChain
 
     const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
       if (val) {
@@ -132,12 +137,12 @@ export const ConnectorControllerUtil = {
           if (event.origin === CommonConstantsUtil.SECURE_SITE_SDK_ORIGIN) {
             window.removeEventListener('message', handleSocialConnection, false)
             try {
-              const authConnector = ConnectorController.getAuthConnector()
+              const authConnector = ConnectorController.getAuthConnector(namespaceToUse)
 
               if (authConnector && !connectingSocial) {
                 if (socialWindow) {
                   socialWindow.close()
-                  AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+                  AccountController.setSocialWindow(undefined, namespaceToUse)
                   socialWindow = AccountController.state.socialWindow
                 }
                 connectingSocial = true
@@ -204,7 +209,7 @@ export const ConnectorControllerUtil = {
 
       async function connectSocial() {
         if (social) {
-          AccountController.setSocialProvider(social, ChainController.state.activeChain)
+          AccountController.setSocialProvider(social, namespaceToUse)
           socialProvider = AccountController.state.socialProvider
           EventsController.sendEvent({
             type: 'track',
@@ -230,7 +235,7 @@ export const ConnectorControllerUtil = {
               try {
                 const { url } = await authConnector.provider.getFarcasterUri()
 
-                AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
+                AccountController.setFarcasterUrl(url, namespaceToUse)
               } catch {
                 reject(new Error('Failed to connect to farcaster'))
               }
@@ -252,7 +257,7 @@ export const ConnectorControllerUtil = {
               })
 
               if (popupWindow && uri) {
-                AccountController.setSocialWindow(popupWindow, ChainController.state.activeChain)
+                AccountController.setSocialWindow(popupWindow, namespaceToUse)
                 socialWindow = AccountController.state.socialWindow
                 popupWindow.location.href = uri
 
