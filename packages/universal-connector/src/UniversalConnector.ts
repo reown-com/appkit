@@ -71,7 +71,6 @@ export class UniversalConnector {
 
   async connect(): Promise<{
     session: SessionTypes.Struct
-    provider: Awaited<ReturnType<typeof UniversalProvider.init>>
   }> {
     const namespaces: ProposalTypes.OptionalNamespaces =
       this.config?.networks.reduce<ProposalTypes.OptionalNamespaces>((acc, namespace) => {
@@ -94,7 +93,7 @@ export class UniversalConnector {
 
     await this.appKit.close()
 
-    return { session: session as SessionTypes.Struct, provider: this.provider }
+    return { session: session as SessionTypes.Struct }
   }
 
   async disconnect() {
