@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 
-import { type CreateAppKit, createAppKit } from '../../../exports/index.js'
+import { type CreateAppKit, createAppKit } from '../../../exports/react.js'
 
 // -- Types --------------------------------------------------------------------------------
 export type AppKitProviderProps = CreateAppKit & {

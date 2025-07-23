@@ -6,12 +6,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AppKitProvider, type AppKitProviderProps } from '../../src/library/react/providers'
 
-let mod: typeof import('../../exports/index')
+let mod: typeof import('../../exports/react')
 
 describe('AppKitProvider', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
-    mod = await import('../../exports/index')
+    mod = await import('../../exports/react')
     vi.spyOn(mod, 'createAppKit')
   })
 
