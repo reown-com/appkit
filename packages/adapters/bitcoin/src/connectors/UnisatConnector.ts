@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
@@ -161,21 +160,17 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
       return undefined
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, init-declarations
-    let wallet: any
+    let wallet: UnisatConnector.Wallet | undefined = undefined
 
     switch (params.id) {
       case 'unisat':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        wallet = (window as any)?.unisat
+        wallet = window?.unisat
         break
       case 'bitget':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        wallet = (window as any)?.bitkeep?.unisat
+        wallet = window?.bitkeep?.unisat
         break
       case 'binancew3w':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        wallet = (window as any)?.binancew3w?.bitcoin
+        wallet = window?.binancew3w?.bitcoin
         break
       default:
         throw new Error(`Unsupported wallet id: ${params.id}`)
@@ -208,15 +203,6 @@ export namespace UnisatConnector {
   export type Chain = 'BITCOIN_MAINNET' | 'BITCOIN_TESTNET' | 'FRACTAL_BITCOIN_MAINNET'
   export type Network = 'livenet' | 'testnet'
   export type Id = 'unisat' | 'bitget' | 'binancew3w'
-
-  export type ConstructorParams = {
-    id: Id
-    name: string
-    wallet: Wallet
-    requestedChains: CaipNetwork[]
-    getActiveNetwork: () => CaipNetwork | undefined
-    imageUrl: string
-  }
 
   export type Wallet = {
     /*
@@ -259,6 +245,25 @@ export namespace UnisatConnector {
     pushPsbt(psbtHex: string): Promise<string>
     on(event: string, listener: (param?: unknown) => void): void
     removeListener(event: string, listener: (param?: unknown) => void): void
+  }
+
+  export interface Window {
+    unisat?: Wallet
+    bitkeep?: {
+      unisat?: Wallet
+    }
+    binancew3w?: {
+      bitcoin?: Wallet
+    }
+  }
+
+  export type ConstructorParams = {
+    id: Id
+    name: string
+    wallet: Wallet
+    requestedChains: CaipNetwork[]
+    getActiveNetwork: () => CaipNetwork | undefined
+    imageUrl: string
   }
 
   export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
