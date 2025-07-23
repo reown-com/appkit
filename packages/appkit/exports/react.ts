@@ -78,4 +78,4 @@ export {
   AppKitAccountButton
 } from '../src/library/react/components.js'
 
-export { AppKitProvider } from '../src/library/react/providers.js'
+export { AppKitProvider, type AppKitProviderProps } from '../src/library/react/providers.js'
