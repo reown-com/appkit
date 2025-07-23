@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     return new Response("Session created", { status: 200 });
   }
 
-  const session = JSON.parse(sessionData) as Session;
+  let session = JSON.parse(sessionData) as Session;
 
   const { status } = await request.json() as Pick<Session, "status">;
 
@@ -30,10 +30,12 @@ export async function POST(request: NextRequest) {
     return new Response("Invalid status provided", { status: 400 });
   }
 
-  await env.SESSIONID_STORAGE.put(sessionId, JSON.stringify({
-    ...session,
-    status,
-  } as Session));
+  session.status = status;
+  if (status === "success") {
+    session.txid = "1234567890";
+  }
+
+  await env.SESSIONID_STORAGE.put(sessionId, JSON.stringify(session));
 
   return new Response("Session updated", { status: 200 });
 } 

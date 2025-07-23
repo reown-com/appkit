@@ -1,7 +1,6 @@
 "use client"
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import Image from 'next/image'
 import { ReactNode } from 'react'
 
@@ -13,13 +12,6 @@ interface ActionResultProps {
 }
 
 export default function ActionResult({ icon, title, description, iconClassName = "" }: ActionResultProps) {
-  const handleGoBack = () => {
-    window.history.back()
-  }
-
-  const handleCloseTab = () => {
-    window.close()
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -40,20 +32,9 @@ export default function ActionResult({ icon, title, description, iconClassName =
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col gap-3">
-            <Button 
-              onClick={handleGoBack}
-              className="w-full"
-              variant="default"
-            >
-              Go Back
-            </Button>
-            <Button 
-              onClick={handleCloseTab}
-              className="w-full"
-              variant="default"
-            >
-              Close Tab
-            </Button>
+            <p>
+              You can now close this tab and go back to your dapp to see the result.
+            </p>
           </div>
         </CardContent>
       </Card>
