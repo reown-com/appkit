@@ -109,7 +109,13 @@ export function AppKitInfo() {
                 </Text>
                 <Box display="flex" alignItems="center" gap={2}>
                   {walletInfo?.icon ? (
-                    <Image src={walletInfo.icon} alt={walletInfo.name} width={24} height={24} />
+                    <Image
+                      src={walletInfo.icon}
+                      alt={walletInfo.name}
+                      width={24}
+                      height={24}
+                      unoptimized
+                    />
                   ) : null}
                   <Text data-testid="w3m-wallet-name">{walletInfo.name}</Text>
                 </Box>

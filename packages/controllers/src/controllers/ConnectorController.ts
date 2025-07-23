@@ -282,10 +282,18 @@ const controller = {
     return state.allConnectors.find(c => c.id === id)
   },
 
-  getConnector(id: string, rdns?: string | null) {
-    const connectorsByNamespace = state.allConnectors.filter(
-      c => c.chain === ChainController.state.activeChain
-    )
+  getConnector({
+    id,
+    rdns,
+    namespace
+  }: {
+    id?: string
+    rdns?: string | null
+    namespace?: ChainNamespace
+  }) {
+    const namespaceToUse = namespace || ChainController.state.activeChain
+
+    const connectorsByNamespace = state.allConnectors.filter(c => c.chain === namespaceToUse)
 
     return connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
   },
@@ -337,7 +345,10 @@ const controller = {
   },
 
   selectWalletConnector(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    const connector = ConnectorController.getConnector({
+      id: wallet.id,
+      rdns: wallet.rdns
+    })
 
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       connector?.explorerId || wallet.id,
