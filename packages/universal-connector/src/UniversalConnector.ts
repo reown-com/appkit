@@ -21,10 +21,9 @@ export type Config = {
 }
 
 export class UniversalConnector {
+  public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
   private appKit: AppKit
   private config: Config
-  public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
-  public session?: SessionTypes.Struct
 
   constructor({
     appKit,
@@ -38,8 +37,6 @@ export class UniversalConnector {
     this.appKit = appKit
     this.provider = provider
     this.config = config
-    this.session = provider.session
-    provider.on('disconnect', this.disconnect.bind(this))
   }
 
   public static async init(config: Config) {
@@ -83,22 +80,14 @@ export class UniversalConnector {
       optionalNamespaces: namespaces as ConnectParams['optionalNamespaces']
     })
 
-    this.session = session
-
     await this.appKit.close()
 
     return { session: session as SessionTypes.Struct }
   }
 
   async disconnect() {
-    try {
-      await this.appKit.disconnect()
-      await this.provider.disconnect()
-    } catch {
-      // Pass
-    } finally {
-      this.session = undefined
-    }
+    // This will trigger the disconnect event on the provider
+    await this.appKit.disconnect()
   }
 
   async request(params: RequestArguments, chain: string) {
