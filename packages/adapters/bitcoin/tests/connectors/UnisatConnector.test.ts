@@ -220,7 +220,8 @@ describe('UnisatConnector', () => {
             getActiveNetwork,
             requestedChains: [],
             id,
-            name: `${id} wallet`
+            name: `${id} wallet`,
+            imageUrl: ''
           })
         ).toBeUndefined()
       }
@@ -232,7 +233,8 @@ describe('UnisatConnector', () => {
         getActiveNetwork,
         id: 'unisat',
         name: 'Unisat Wallet',
-        requestedChains
+        requestedChains,
+        imageUrl: ''
       })
       expect(connector).toBeInstanceOf(UnisatConnector)
       expect(connector?.id).toBe('unisat')
@@ -244,7 +246,8 @@ describe('UnisatConnector', () => {
         getActiveNetwork,
         id: 'bitget',
         name: 'Bitget Wallet',
-        requestedChains
+        requestedChains,
+        imageUrl: ''
       })
       expect(connector).toBeInstanceOf(UnisatConnector)
       expect(connector?.id).toBe('bitget')
@@ -256,7 +259,8 @@ describe('UnisatConnector', () => {
         getActiveNetwork,
         id: 'binancew3w',
         name: 'Binance Web3 Wallet',
-        requestedChains
+        requestedChains,
+        imageUrl: ''
       })
       expect(connector).toBeInstanceOf(UnisatConnector)
       expect(connector?.id).toBe('binancew3w')
@@ -270,7 +274,8 @@ describe('UnisatConnector', () => {
           getActiveNetwork,
           requestedChains: [],
           id: 'unisat',
-          name: 'Unisat Wallet'
+          name: 'Unisat Wallet',
+          imageUrl: ''
         })
       ).toBeUndefined()
     })
