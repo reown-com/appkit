@@ -52,7 +52,7 @@ export class WuiSelect extends LitElement {
     const textSize = TEXT_VARIANT_BY_SIZE[this.size]
 
     if (this.text) {
-      return html`<wui-text variant=${textSize as TextType}>${this.text}</wui-text>`
+      return html`<wui-text color="primary" variant=${textSize as TextType}>${this.text}</wui-text>`
     }
 
     return null

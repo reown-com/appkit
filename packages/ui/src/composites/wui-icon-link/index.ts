@@ -33,7 +33,7 @@ export class WuiIconLink extends LitElement {
     return html`
       <button data-variant=${this.variant} ?disabled=${this.disabled} data-size=${this.size}>
         <wui-icon
-          color=${this.iconColor || iconColors[this.variant]}
+          color=${iconColors[this.variant] || this.iconColor}
           size=${this.size}
           name=${this.icon}
         ></wui-icon>

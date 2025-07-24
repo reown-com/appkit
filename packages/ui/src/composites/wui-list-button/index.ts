@@ -32,7 +32,7 @@ export class WuiListButton extends LitElement {
     return html`
       <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         <wui-icon name=${this.icon} size=${this.size} color="default"></wui-icon>
-        <wui-text align="center" variant=${textVariant} color="inherit">${this.text}</wui-text>
+        <wui-text align="center" variant=${textVariant} color="primary">${this.text}</wui-text>
       </button>
     `
   }

@@ -23,7 +23,7 @@ export default css`
     background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
-  button[data-variant='primary'] {
+  button[data-variant='secondary'] {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
@@ -34,12 +34,12 @@ export default css`
 
   button[data-size='md'] {
     padding: ${({ spacing }) => spacing[3]};
-    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
   }
 
   button[data-size='lg'] {
     padding: ${({ spacing }) => spacing[3]};
-    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
   button[data-size='sm'] wui-icon {

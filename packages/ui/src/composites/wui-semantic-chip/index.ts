@@ -69,6 +69,7 @@ export class WuiSemanticChip extends LitElement {
 
     return html`<wui-icon
       name=${ICON_BY_TYPE[this.type]}
+      weight="fill"
       color="inherit"
       size="inherit"
       class="image-icon"

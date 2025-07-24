@@ -8,7 +8,6 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[2]};
     padding: ${({ spacing }) => spacing[1]} !important;
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
-    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.theme.backgroundPrimary};
     position: relative;
   }
 

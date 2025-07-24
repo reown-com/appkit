@@ -5,7 +5,7 @@ export default css`
   .icon-box {
     width: 32px;
     height: 32px;
-    border-radius: ${({ borderRadius }) => borderRadius[1]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   .right-icon {

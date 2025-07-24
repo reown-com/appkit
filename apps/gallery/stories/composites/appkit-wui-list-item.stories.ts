@@ -44,6 +44,8 @@ export const Default: Component = {
         ?disabled=${args.disabled}
         ?loading=${args.loading}
       >
+        <wui-text variant="md-medium" color="primary">${args.text}</wui-text>
+        <wui-text variant="md-regular" color="secondary">${args.subtext}</wui-text>
       </wui-list-item>
     </gallery-container>`
 }

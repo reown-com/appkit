@@ -4,14 +4,14 @@ export default css`
   wui-image {
     width: 24px;
     height: 24px;
-    border-radius: ${({ borderRadius }) => borderRadius[1]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   wui-image,
   .icon-box {
     width: 32px;
     height: 32px;
-    border-radius: ${({ borderRadius }) => borderRadius[1]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   wui-icon:not(.custom-icon, .icon-badge) {
@@ -20,7 +20,8 @@ export default css`
 
   .icon-box {
     position: relative;
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   .icon-badge {

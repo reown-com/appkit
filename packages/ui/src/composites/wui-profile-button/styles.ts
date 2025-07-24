@@ -3,7 +3,7 @@ import { css } from '../../utils/ThemeHelperUtil.js'
 export default css`
   button {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
-    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    border-radius: ${({ borderRadius }) => borderRadius[20]};
     padding: ${({ spacing }) => spacing[2]} ${({ spacing }) => spacing[3]}
       ${({ spacing }) => spacing[2]} ${({ spacing }) => spacing[2]};
     position: relative;

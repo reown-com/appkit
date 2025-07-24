@@ -54,7 +54,7 @@ export class WuiLink extends LitElement {
       return null
     }
 
-    return html`<wui-icon name=${this.icon} size="md"></wui-icon>`
+    return html`<wui-icon name=${this.icon} size="sm"></wui-icon>`
   }
 }
 

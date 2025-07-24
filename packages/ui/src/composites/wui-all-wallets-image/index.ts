@@ -27,7 +27,7 @@ export class WuiAllWalletsImage extends LitElement {
       .map(
         ({ src, walletName }) => html`
           <wui-wallet-image
-            size="inherit"
+            size="sm"
             imageSrc=${src}
             name=${ifDefined(walletName)}
           ></wui-wallet-image>

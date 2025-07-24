@@ -13,6 +13,10 @@ export default css`
     color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
+  button > wui-image {
+    border-radius: ${({ borderRadius }) => borderRadius[20]};
+  }
+
   /* -- Focus states --------------------------------------------------- */
   button:focus-visible:enabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};

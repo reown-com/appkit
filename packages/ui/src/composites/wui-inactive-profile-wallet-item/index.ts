@@ -72,7 +72,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
             ${this.iconBadge
               ? html`<wui-icon
                   color="default"
-                  size=${ifDefined(this.iconBadgeSize)}
+                  size="inherit"
                   name=${this.iconBadge}
                   class="icon-badge"
                 ></wui-icon>`
@@ -120,7 +120,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
         <wui-icon-link
           iconColor="default"
-          size=${ifDefined(this.rightIconSize)}
+          size="lg"
           icon=${ifDefined(this.rightIcon)}
           class="right-icon"
           @click=${this.handleIconClick}

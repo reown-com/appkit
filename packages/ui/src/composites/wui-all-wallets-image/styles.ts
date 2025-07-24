@@ -19,6 +19,6 @@ export default css`
   :host > wui-wallet-image {
     width: 14px;
     height: 14px;
-    border-radius: var(--apkt-borderRadius-1);
+    border-radius: 2px
   }
 `

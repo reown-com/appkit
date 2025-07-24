@@ -24,6 +24,8 @@ export default css`
     right: 0;
     bottom: 0;
     border-radius: ${({ borderRadius }) => borderRadius[128]};
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    color: ${({ tokens }) => tokens.theme.textSucces};
     border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 

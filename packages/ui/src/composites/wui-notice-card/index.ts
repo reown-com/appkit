@@ -26,7 +26,7 @@ export class WuiNoticeCard extends LitElement {
     return html`
       <button>
         <wui-flex gap="2" alignItems="center" justifyContent="space-between">
-          <wui-icon size="md" name=${this.icon} color="inherit"></wui-icon>
+          <wui-icon weight="fill" size="md" name=${this.icon} color="inherit"></wui-icon>
           <wui-flex flexDirection="column" gap="1">
             <wui-text variant="md-medium" color="primary">${this.label}</wui-text>
             <wui-text variant="md-regular" color="tertiary">${this.description}</wui-text>

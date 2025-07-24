@@ -38,7 +38,6 @@ export class WuiListItem extends LitElement {
       >
         <wui-flex gap="2" alignItems="center">
           ${this.loadingTemplate()} ${this.imageTemplate()}
-
           <wui-flex gap="1">
             <slot></slot>
           </wui-flex>

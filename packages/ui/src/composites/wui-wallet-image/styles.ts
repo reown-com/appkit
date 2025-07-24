@@ -8,13 +8,13 @@ export default css`
     justify-content: center;
     align-items: center;
     border-radius: inherit;
-    border-radius: ${({ borderRadius }) => borderRadius[3]};
+    border-radius: var(--local-border-radius);
   }
 
   :host > wui-flex {
     overflow: hidden;
     border-radius: inherit;
-    border-radius: ${({ borderRadius }) => borderRadius[3]};
+    border-radius: var(--local-border-radius);
   }
 
   :host([data-size='sm']) {

@@ -13,7 +13,7 @@ export default css`
 
   /* -- Types --------------------------------------------------------- */
   wui-flex[data-type='info'] {
-    color: ${({ tokens }) => tokens.theme.textPrimary};
+    color: ${({ tokens }) => tokens.theme.textSecondary};
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
@@ -33,7 +33,7 @@ export default css`
   }
 
   wui-flex[data-type='info'] wui-icon-box {
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   wui-flex[data-type='success'] wui-icon-box {

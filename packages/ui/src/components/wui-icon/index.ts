@@ -137,6 +137,7 @@ const phosphorImports: Record<string, () => Promise<any>> = {
   'ph-arrows-left-right': () => import('@phosphor-icons/webcomponents/PhArrowsLeftRight'),
   'ph-arrow-up': () => import('@phosphor-icons/webcomponents/PhArrowUp'),
   'ph-arrow-up-right': () => import('@phosphor-icons/webcomponents/PhArrowUpRight'),
+  'ph-arrows-clockwise': () => import('@phosphor-icons/webcomponents/PhArrowsClockwise'),
   'ph-bank': () => import('@phosphor-icons/webcomponents/PhBank'),
   'ph-browser': () => import('@phosphor-icons/webcomponents/PhBrowser'),
   'ph-caret-down': () => import('@phosphor-icons/webcomponents/PhCaretDown'),

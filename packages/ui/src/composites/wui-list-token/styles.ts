@@ -6,7 +6,7 @@ export default css`
   }
 
   button {
-    padding: ${({ spacing }) => spacing[2]};
+    padding: ${({ spacing }) => spacing[3]};
     display: flex;
     justify-content: space-between;
     width: 100%;
