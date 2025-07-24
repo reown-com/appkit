@@ -138,22 +138,20 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
     return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
   }
 
+  private onAccountsChanged(account: unknown): void {
+    if (typeof account === 'object' && account && 'address' in account) {
+      this.emit('accountsChanged', [account.address])
+    }
+  }
+
   private bindEvents(): void {
     this.unbindEvents()
 
-    this.wallet.on('accountsChanged', account => {
-      if (typeof account === 'object' && account && 'address' in account) {
-        this.emit('accountsChanged', [account.address])
-      }
-    })
+    this.wallet.on('accountsChanged', this.onAccountsChanged)
   }
 
   private unbindEvents(): void {
-    this.wallet.removeListener('accountsChanged', account => {
-      if (typeof account === 'object' && account && 'address' in account) {
-        this.emit('accountsChanged', [account.address])
-      }
-    })
+    this.wallet.removeListener('accountsChanged', this.onAccountsChanged)
   }
 
   public static getWallet(
