@@ -44,16 +44,18 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           }
         })
 
-        if (OptionsController.state.siwx) {
-          if (!OptionsController.state.remoteFeatures?.emailCapture) {
-            ModalController.close()
-          }
-        } else if (hasConnections && isMultiWalletEnabled) {
+        if (OptionsController.state.remoteFeatures?.emailCapture) {
+          return
+        }
+
+        if (hasConnections && isMultiWalletEnabled) {
           RouterController.replace('ProfileWallets')
           SnackController.showSuccess('New Wallet Added')
-        } else {
-          ModalController.close()
+
+          return
         }
+
+        ModalController.close()
       }
     } catch (error) {
       EventsController.sendEvent({
