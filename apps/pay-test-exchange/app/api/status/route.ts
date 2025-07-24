@@ -14,10 +14,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No sessionId provided' }, { status: 400 })
   }
 
-  const session = await env.SESSIONID_STORAGE.get(sessionId, {
-    // Default cache ttl is 60s, we put 0 to get latest data on request
-    cacheTtl: 0
-  })
+  const session = await env.SESSIONID_STORAGE.get(sessionId)
 
   if (!session) {
     return NextResponse.json({ error: 'Session not found' }, { status: 404 })
