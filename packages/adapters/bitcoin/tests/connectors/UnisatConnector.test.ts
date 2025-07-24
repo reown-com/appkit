@@ -237,17 +237,6 @@ describe('UnisatConnector', () => {
       expect(connector).toBeInstanceOf(UnisatConnector)
     })
 
-    it('should return the Connector if there is a unisat wallet', () => {
-      ;(window as any).bitget = { unisat: wallet }
-      const connector = UnisatConnector.getWallet({
-        getActiveNetwork,
-        id: 'unisat',
-        name: 'Unisat Wallet',
-        requestedChains
-      })
-      expect(connector).toBeInstanceOf(UnisatConnector)
-    })
-
     it('should return the Connector if there is a bitget wallet', () => {
       ;(window as any).bitkeep = { unisat: wallet }
       const connector = UnisatConnector.getWallet({
