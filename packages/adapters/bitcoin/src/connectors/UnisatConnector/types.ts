@@ -70,5 +70,5 @@ export namespace UnisatConnector {
     imageUrl: string
   }
 
-  export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
+  export type GetWalletParams = Omit<ConstructorParams, 'wallet'>
 }
