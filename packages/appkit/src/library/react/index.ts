@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 import { useEffect, useState, useSyncExternalStore } from 'react'
 
 import { useSnapshot } from 'valtio'
@@ -26,27 +27,44 @@ type ThemeModeOptions = AppKitOptions['themeMode']
 
 type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'appkit-modal': {
-        class?: string
-      }
-      'appkit-button': Pick<
-        AppKitButton,
-        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
-      >
-      'appkit-connect-button': Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
-      'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
-      'appkit-network-button': Pick<AppKitNetworkButton, 'disabled'>
-      'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-      'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
-      'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
-      'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
-    }
+interface AppKitElements {
+  'appkit-modal': {
+    class?: string
   }
+  'appkit-button': Pick<
+    AppKitButton,
+    'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
+  >
+  'appkit-connect-button': Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
+  'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
+  'appkit-network-button': Pick<AppKitNetworkButton, 'disabled'>
+  'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+  'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
+  'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+  'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
 }
 
+/* ------------------------------------------------------------------ */
+/* Declare global namespace for React 18     */
+/* ------------------------------------------------------------------ */
+declare global {
+  namespace JSX {
+    interface IntrinsicElements extends AppKitElements {}
+  }
+}
+/* ------------------------------------------------------------------ */
+/* Helper alias with the built‑ins that React already supplied     */
+/* ------------------------------------------------------------------ */
+type __BuiltinIntrinsics = JSX.IntrinsicElements
+
+/* ------------------------------------------------------------------ */
+/* Declare react namespace for React 19 and extend with JSX built-ins (div, button, etc.) and extend with AppKitElements */
+/* ------------------------------------------------------------------ */
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements extends __BuiltinIntrinsics, AppKitElements {}
+  }
+}
 let modal: AppKit | undefined = undefined
 
 export function getAppKit(appKit: AppKit) {
@@ -125,15 +143,18 @@ export function useAppKit() {
   return { open, close }
 }
 
-export function useWalletInfo() {
+export function useWalletInfo(namespace?: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useWalletInfo" hook')
   }
-
   const walletInfo = useSyncExternalStore(
-    modal.subscribeWalletInfo,
-    modal.getWalletInfo,
-    modal.getWalletInfo
+    callback => {
+      const unsubscribe = modal?.subscribeWalletInfo(callback, namespace)
+
+      return () => unsubscribe?.()
+    },
+    () => modal?.getWalletInfo(namespace),
+    () => modal?.getWalletInfo(namespace)
   )
 
   return { walletInfo }
@@ -145,23 +166,29 @@ export function useAppKitState() {
   }
 
   const [state, setState] = useState({ ...modal.getState(), initialized: false })
+  const [remoteFeatures, setRemoteFeatures] = useState(modal.getRemoteFeatures())
 
   useEffect(() => {
     if (modal) {
       setState({ ...modal.getState() })
+      setRemoteFeatures(modal.getRemoteFeatures())
       const unsubscribe = modal?.subscribeState(newState => {
         setState({ ...newState })
+      })
+      const unsubscribeRemoteFeatures = modal?.subscribeRemoteFeatures(newState => {
+        setRemoteFeatures(newState)
       })
 
       return () => {
         unsubscribe?.()
+        unsubscribeRemoteFeatures?.()
       }
     }
 
     return () => null
   }, [])
 
-  return state
+  return { ...state, ...(remoteFeatures ?? {}) }
 }
 
 export function useAppKitEvents() {

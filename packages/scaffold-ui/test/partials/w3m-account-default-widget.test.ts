@@ -28,7 +28,6 @@ describe('W3mAccountDefaultWidget', () => {
     beforeEach(() => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
         ...AccountController.state,
-        allAccounts: [],
         caipAddress: 'eip155:1:0x123'
       })
     })
@@ -106,7 +105,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: true
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })
@@ -156,7 +155,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: true
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: false
           }
         })
@@ -181,7 +180,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: false
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })
@@ -215,7 +214,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: true
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })
@@ -265,7 +264,7 @@ describe('W3mAccountDefaultWidget', () => {
             send: false
           },
           remoteFeatures: {
-            onramp: ['coinbase'],
+            onramp: ['meld'],
             swaps: ['1inch']
           }
         })

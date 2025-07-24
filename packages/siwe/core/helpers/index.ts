@@ -1,6 +1,6 @@
 import { createPublicClient, http } from 'viem'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId, Hex } from '@reown/appkit-common'
 import { getBlockchainApiRpcUrl } from '@reown/appkit-utils'
 
 const ETH_ADDRESS_PATTERN = /0x[a-fA-F0-9]{40}/u
@@ -28,14 +28,15 @@ export async function verifySignature({
   projectId: string
 }) {
   try {
+    const caipNetworkId = chainId.includes('eip155:') ? chainId : `eip155:${chainId}`
     const client = createPublicClient({
-      transport: http(getBlockchainApiRpcUrl(chainId as CaipNetworkId, projectId))
+      transport: http(getBlockchainApiRpcUrl(caipNetworkId as CaipNetworkId, projectId))
     })
 
     return await client.verifyMessage({
       message: message.toString(),
-      signature: signature as `0x${string}`,
-      address: address as `0x${string}`
+      signature: signature as Hex,
+      address: address as Hex
     })
   } catch (error) {
     return false

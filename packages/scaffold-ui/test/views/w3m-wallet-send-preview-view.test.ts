@@ -1,7 +1,12 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
-import type { Balance, CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  type Balance,
+  type CaipAddress,
+  type CaipNetwork,
+  ConstantsUtil
+} from '@reown/appkit-common'
 import {
   type ChainAdapter,
   ChainController,
@@ -83,16 +88,16 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
 }
 
 const mockChainAdapter: ChainAdapter = {
-  namespace: 'eip155' as ChainNamespace,
+  namespace: ConstantsUtil.CHAIN.EVM,
   networkControllerClient: mockNetworkControllerClient,
   connectionControllerClient: mockConnectionControllerClient
 }
 
 const mockChainControllerState = {
-  activeChain: 'eip155' as ChainNamespace,
+  activeChain: ConstantsUtil.CHAIN.EVM,
   activeCaipNetwork: mockNetwork,
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a' as CaipAddress,
-  chains: new Map([['eip155' as ChainNamespace, mockChainAdapter]]),
+  chains: new Map([[ConstantsUtil.CHAIN.EVM, mockChainAdapter]]),
   universalAdapter: {
     networkControllerClient: mockNetworkControllerClient,
     connectionControllerClient: mockConnectionControllerClient

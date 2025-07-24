@@ -64,7 +64,9 @@ describe('ConfigUtil', () => {
         swaps: false,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
         activity: true,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false,
+        emailCapture: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -84,7 +86,9 @@ describe('ConfigUtil', () => {
         swaps: ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps,
         onramp: ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp,
         activity: ConstantsUtil.DEFAULT_REMOTE_FEATURES.activity,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false,
+        emailCapture: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -121,9 +125,11 @@ describe('ConfigUtil', () => {
         email: true,
         socials: ['google'],
         swaps: ['1inch'],
-        onramp: ['coinbase', 'meld'],
+        onramp: ['meld'],
         activity: true,
-        reownBranding: true
+        reownBranding: true,
+        multiWallet: false,
+        emailCapture: false
       })
     })
 
@@ -139,14 +145,15 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: false,
         onramp: false,
+        multiWallet: false,
         activity: false,
-        reownBranding: false
+        reownBranding: false,
+        emailCapture: false
       })
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
         expect.objectContaining({
-          shortMessage: 'Local configuration ignored',
-          longMessage: expect.stringContaining(
+          debugMessage: expect.stringContaining(
             'Your local configuration for "features.socials" was ignored because a remote configuration was successfully fetched'
           )
         }),
@@ -170,7 +177,9 @@ describe('ConfigUtil', () => {
         swaps: false,
         onramp: false,
         activity: false,
-        reownBranding: false
+        multiWallet: false,
+        reownBranding: false,
+        emailCapture: false
       })
     })
 
@@ -195,14 +204,15 @@ describe('ConfigUtil', () => {
         socials: ['discord'],
         swaps: ['1inch'],
         onramp: false,
+        multiWallet: false,
         activity: false,
-        reownBranding: false
+        reownBranding: false,
+        emailCapture: false
       })
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
         expect.objectContaining({
-          shortMessage: 'Local configuration ignored',
-          longMessage: expect.stringContaining(
+          debugMessage: expect.stringContaining(
             'Your local configuration for "features.email", "features.socials", "features.swaps", "features.onramp", "features.history" (now "activity") was ignored because a remote configuration was successfully fetched'
           )
         }),
@@ -223,8 +233,10 @@ describe('ConfigUtil', () => {
         socials: [],
         swaps: ['1inch'],
         onramp: false,
+        multiWallet: false,
         activity: false,
-        reownBranding: false
+        reownBranding: false,
+        emailCapture: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -240,9 +252,11 @@ describe('ConfigUtil', () => {
         email: true,
         socials: [],
         swaps: false,
+        multiWallet: false,
         onramp: false,
         activity: false,
-        reownBranding: false
+        reownBranding: false,
+        emailCapture: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -262,8 +276,10 @@ describe('ConfigUtil', () => {
         socials: false,
         swaps: false,
         onramp: false,
+        multiWallet: false,
         activity: false,
-        reownBranding: false
+        reownBranding: false,
+        emailCapture: false
       })
       expect(AlertController.open).not.toHaveBeenCalled()
     })

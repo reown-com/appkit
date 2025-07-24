@@ -1,5 +1,127 @@
 # @reown/appkit-experimental
 
+## 1.7.16
+
+### Patch Changes
+
+- [#4497](https://github.com/reown-com/appkit/pull/4497) [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c) Thanks [@venturars](https://github.com/venturars)! - Exports type definitions of Base class for better TS support when using hooks
+
+## 1.7.15
+
+## 1.7.14
+
+### Patch Changes
+
+- [#4622](https://github.com/reown-com/appkit/pull/4622) [`b1555b2`](https://github.com/reown-com/appkit/commit/b1555b2e838f8b2a614ed048c28edc7298911917) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on network logics where some networks doesn't have required fields and causing issues
+
+- [#4609](https://github.com/reown-com/appkit/pull/4609) [`c3e42fa`](https://github.com/reown-com/appkit/commit/c3e42fae24b059711c5094ca8f327ca8b6857041) Thanks [@tomiir](https://github.com/tomiir)! - Adds chainId parameter to CONNECT_SUCCESS and CONNECT_SOCIAL_SUCCESS events
+
+- [#4560](https://github.com/reown-com/appkit/pull/4560) [`cfe8784`](https://github.com/reown-com/appkit/commit/cfe878474c8c58f856c117ca59ee702a5c1380c4) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Removes Coinbase OnRamp option as it's available under Meld's options
+
+- [#4615](https://github.com/reown-com/appkit/pull/4615) [`127c7fe`](https://github.com/reown-com/appkit/commit/127c7fec63c2e4590dc74c369861b5efdda9cec4) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades `@solana/web3.js` to latest for high severity dependency issue
+
+- [#4610](https://github.com/reown-com/appkit/pull/4610) [`9c73366`](https://github.com/reown-com/appkit/commit/9c73366f3650c1b368c4029f47e40163d14a83c3) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes unsyncing issue on initialization if enableReconnect is false
+
+- [#4609](https://github.com/reown-com/appkit/pull/4609) [`c3e42fa`](https://github.com/reown-com/appkit/commit/c3e42fae24b059711c5094ca8f327ca8b6857041) Thanks [@tomiir](https://github.com/tomiir)! - Always fires INITIALIZE event regardless of analytics config
+
+- [#4625](https://github.com/reown-com/appkit/pull/4625) [`a8212a7`](https://github.com/reown-com/appkit/commit/a8212a73ac3b323b4344a682133f87280b1ec4c2) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where approving ERC20 token spending with embedded wallet resulted in infinite spinner'
+
+- [#4642](https://github.com/reown-com/appkit/pull/4642) [`bbc8193`](https://github.com/reown-com/appkit/commit/bbc81937ff6721e9339f76504cff95065a5c3dbe) Thanks [@enesozturk](https://github.com/enesozturk)! - Improves error messages with better clarity and phrasing
+
+- [#4641](https://github.com/reown-com/appkit/pull/4641) [`9b7c7d0`](https://github.com/reown-com/appkit/commit/9b7c7d0cb812a9ccb9091fbb2c37604076c7f2bd) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on defaultAccountTypes where after disconnection it takes priority of whatever the last active account type is
+
+## 1.7.9
+
+### Patch Changes
+
+- [#4581](https://github.com/reown-com/appkit/pull/4581) [`37aa39c`](https://github.com/reown-com/appkit/commit/37aa39c03f4a67253ff9cf7517408293a512c941) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Add 127.0.0.1 to the allowlist for localhost IP address support
+
+- [#4600](https://github.com/reown-com/appkit/pull/4600) [`2d96652`](https://github.com/reown-com/appkit/commit/2d966523bb7d08218df00b9f333f00460f4c15a9) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes type castings and handles errors instead
+
+- [#4358](https://github.com/reown-com/appkit/pull/4358) [`f76135f`](https://github.com/reown-com/appkit/commit/f76135fe25588faf610def5f0c5a2a9af9c25b45) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades Valtio to v2
+
+- [#4602](https://github.com/reown-com/appkit/pull/4602) [`ac76c05`](https://github.com/reown-com/appkit/commit/ac76c0545bab7ab2457e5d27889abfe7472115e2) Thanks [@tomiir](https://github.com/tomiir)! - Updates Smart Sessions validator with audited OwnableValidator contract by Rhinestone
+
+- [#4492](https://github.com/reown-com/appkit/pull/4492) [`19d986f`](https://github.com/reown-com/appkit/commit/19d986fb0dbd15b14c5402c1e7aefdf364a3c908) Thanks [@zoruka](https://github.com/zoruka)! - Rename CloudAuthSIWX to ReownAuthentication keeping backwards compatibility.
+
+## 1.7.8
+
+### Patch Changes
+
+- [#4525](https://github.com/reown-com/appkit/pull/4525) [`f17c13a`](https://github.com/reown-com/appkit/commit/f17c13a584ca121416d73eb65f8e02bf6f2a34b1) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates Bitcoin adapter's WalletStandardConnector to have switch network functionality from wallet's features
+
+- [#4595](https://github.com/reown-com/appkit/pull/4595) [`6ff6759`](https://github.com/reown-com/appkit/commit/6ff675996c52a46280370227165c532047f0fd63) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates balance fetch on Ethers and Ethers5 adapters to make sure to resolve promise to not block initialization
+
+- [#4551](https://github.com/reown-com/appkit/pull/4551) [`6c0a28b`](https://github.com/reown-com/appkit/commit/6c0a28b5c548d4524cba06e2048233d8d96982c3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where declining a SIWX signature showed an incorrect error message
+
+- [#4575](https://github.com/reown-com/appkit/pull/4575) [`3eae9b3`](https://github.com/reown-com/appkit/commit/3eae9b34dbe58760ee5d0bf585743f2f880e4392) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Adds supports for 1CA in Embedded Wallet flows
+
+- [#4570](https://github.com/reown-com/appkit/pull/4570) [`df78462`](https://github.com/reown-com/appkit/commit/df78462e0e72ca23459b8fdaa31406906a99d153) Thanks [@tomiir](https://github.com/tomiir)! - Add forwarding of custom RPC urls to be used in embedded wallet requests
+
+- [#4569](https://github.com/reown-com/appkit/pull/4569) [`a5870fa`](https://github.com/reown-com/appkit/commit/a5870fa6c87c9ce76bf1683543ddc325b04f0331) Thanks [@zoruka](https://github.com/zoruka)! - Introduce signOutOnDisconnect SIWXConfig flag and fix the same flag on SIWE that was not working properly.
+
+- [#4577](https://github.com/reown-com/appkit/pull/4577) [`2b5c17c`](https://github.com/reown-com/appkit/commit/2b5c17cc4dc938543371208994acba56e15dba6a) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where switching network using wagmi used the walletconnect rpc instead of wagmi rpc
+
+## 1.7.7
+
+### Patch Changes
+
+- [#4509](https://github.com/reown-com/appkit/pull/4509) [`c0e7b37`](https://github.com/reown-com/appkit/commit/c0e7b370f6eaa7503a4e9eb68b3677084e5e7483) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on Bitcoin adapter where getActiveNetwork function get's network of other namespaces
+
+- [#4518](https://github.com/reown-com/appkit/pull/4518) [`4c517ac`](https://github.com/reown-com/appkit/commit/4c517ac9ee245fa299db5c8f3956148e0d87fdd6) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where if a wallet doesnt have rdns it could show up as a duplicate connector in connect screen
+
+- [#4530](https://github.com/reown-com/appkit/pull/4530) [`269f621`](https://github.com/reown-com/appkit/commit/269f621b08d9cedd9176796df39499f196f8a23f) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where closing modal instead of cancelling the request would cause desync with embedded wallet modal state
+
+- [#4523](https://github.com/reown-com/appkit/pull/4523) [`7272728`](https://github.com/reown-com/appkit/commit/72727285c398cae29d3848c937a1c5c9d9ec5496) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue for the embedded wallet use case where switching network doesn't redirect AppKit back to previous screen
+
+- [#4526](https://github.com/reown-com/appkit/pull/4526) [`1bef587`](https://github.com/reown-com/appkit/commit/1bef5871476467662d499747fa828583c3d0b52c) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where AppKit would open sign message screen after it falls back to previous SIWE session
+
+- [#4529](https://github.com/reown-com/appkit/pull/4529) [`96d8b3f`](https://github.com/reown-com/appkit/commit/96d8b3f6bc30380e350f4e2c62cd6b3504ca753b) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on swap transaction order on UI for image and descriptions
+
+- [#4537](https://github.com/reown-com/appkit/pull/4537) [`e82d88b`](https://github.com/reown-com/appkit/commit/e82d88b88d5a5212c792d07063fad10dd5435c1b) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades Viem and Wagmi dependencies
+
+- [#4471](https://github.com/reown-com/appkit/pull/4471) [`ab4b093`](https://github.com/reown-com/appkit/commit/ab4b093d226aca7c5053001f1fdd3e13f7d68cc0) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue on the embedded wallet where rpc requests didn't target the correct chainId
+
+- [#4501](https://github.com/reown-com/appkit/pull/4501) [`c7d293b`](https://github.com/reown-com/appkit/commit/c7d293b41c18a40c76e9cff793138e5adf53ff7e) Thanks [@tomiir](https://github.com/tomiir)! - Adds registerWalletStandard flag to allow automatic registration of WalletConnect relay connector as a Wallet Standard wallet
+
+- [#4547](https://github.com/reown-com/appkit/pull/4547) [`52677fb`](https://github.com/reown-com/appkit/commit/52677fb5784c4f0da6454c2b4f0be6bc20330276) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where enableEIP6963 didn't result into the expected behaviour on wagmi adapter
+
+- [#4553](https://github.com/reown-com/appkit/pull/4553) [`7b64297`](https://github.com/reown-com/appkit/commit/7b64297a47e1d8c9fa86490e01ba800825987512) Thanks [@enesozturk](https://github.com/enesozturk)! - Adds `enableReconnect` flag to prevent automatic reconnection on initialization and page load.
+
+  ### Example usage:
+
+  ```jsx
+  createAppKit({
+    networks: [...],
+    metadata: {...},
+    enableReconnect: false // disables reconnection
+  })
+  ```
+
+- [#4544](https://github.com/reown-com/appkit/pull/4544) [`47663ce`](https://github.com/reown-com/appkit/commit/47663ce7e7f7b1fcd26ba52b1d21f73b7048a27c) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes a case where AppKit would stay in the wrong network when enableNetworkSwitch is disabled
+
+- [#4552](https://github.com/reown-com/appkit/pull/4552) [`c5e0650`](https://github.com/reown-com/appkit/commit/c5e065028ce8ca3e88b3cd66962c5a19cf1808e9) Thanks [@magiziz](https://github.com/magiziz)! - Fixes issue where appkit.disconnect would not disconnect all namespaces when no parameter was provided
+
+- [#4519](https://github.com/reown-com/appkit/pull/4519) [`4416586`](https://github.com/reown-com/appkit/commit/4416586acc1439ebdfdc29ff24c2426627dca5ed) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add version check script so devs get a warning if there is a mismatch between used appkit version
+
+- [#4545](https://github.com/reown-com/appkit/pull/4545) [`b9fd168`](https://github.com/reown-com/appkit/commit/b9fd168a16733fbe5434e8aa8ab815430a45aff6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where Sats Connect connectors (e.g Leather and Xverse) didn't appear in the connect modal after page load
+
+- [#4554](https://github.com/reown-com/appkit/pull/4554) [`f3717ce`](https://github.com/reown-com/appkit/commit/f3717ce9d8acef53dba3794e386cb3f7695d2a72) Thanks [@tomiir](https://github.com/tomiir)! - Makes `chainId` optional in RPC requests
+
+## 1.7.6
+
+### Patch Changes
+
+- [#4510](https://github.com/reown-com/appkit/pull/4510) [`7227468`](https://github.com/reown-com/appkit/commit/7227468e72acff12fcfb281c83941bec4ec06b03) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the universal provider would hang forever if JWT verification failed during initialization
+
+- [#4498](https://github.com/reown-com/appkit/pull/4498) [`0dfe08b`](https://github.com/reown-com/appkit/commit/0dfe08b3d4b9addb675445d22adb350fb5d18fc3) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where Global JSX namespace gets polluted, instead extend it
+
+## 1.7.5
+
+### Patch Changes
+
+- [#4494](https://github.com/reown-com/appkit/pull/4494) [`352f41b`](https://github.com/reown-com/appkit/commit/352f41bfc53c257362efbe6067ac03dc8dd92ec4) Thanks [@zoruka](https://github.com/zoruka)! - Cloud Auth SIWX skip get sessions if token is not set
+
 ## 1.7.4
 
 ### Patch Changes

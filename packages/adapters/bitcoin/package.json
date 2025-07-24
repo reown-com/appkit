@@ -1,13 +1,14 @@
 {
   "name": "@reown/appkit-adapter-bitcoin",
-  "version": "1.7.8",
+  "version": "1.7.16",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -33,7 +34,7 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
-    "@walletconnect/universal-provider": "2.21.0",
+    "@walletconnect/universal-provider": "2.21.5",
     "bitcoinjs-lib": "6.1.7",
     "sats-connect": "3.5.0"
   },
@@ -41,10 +42,10 @@
     "@leather.io/rpc": "2.1.21",
     "@vitest/coverage-v8": "2.1.9",
     "@wallet-standard/features": "1.0.3",
-    "@walletconnect/types": "2.21.0",
+    "@walletconnect/types": "2.21.5",
     "vitest": "2.1.9"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {

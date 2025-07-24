@@ -18,12 +18,11 @@ async function switchNetworkAndMaybeSignSiwe(network: string, siwe = true) {
   await modalPage.switchNetwork(network)
   if (network === 'Solana') {
     await modalPage.switchActiveChain()
+    await modalValidator.expectOnSignOutEventCalled(true)
     modalPage.closeModal()
   }
-  await modalValidator.expectOnSignOutEventCalled(true)
   if (siwe) {
     await modalPage.promptSiwe()
-    await modalValidator.expectOnSignOutEventCalled(true)
   }
 
   await modalValidator.expectNetworkButton(network)
@@ -79,12 +78,14 @@ extensionTest('it should switch networks and sign siwe', async () => {
   network = 'Solana'
   await switchNetworkAndMaybeSignSiwe(network, false)
   // Solana doesn't prompt siwe on network switch
-  await modalValidator.expectDisconnected()
+  await modalValidator.expectNetworkButton('Solana')
+  await modalValidator.expectUnauthenticated()
+
+  network = 'Ethereum'
+  await modalPage.switchNetworkWithNetworkButton(network)
 })
 
 extensionTest('it should reload the page and sign siwe if not authenticated', async () => {
-  await modalPage.connectToExtensionMultichain('eip155', false, true)
-  await modalValidator.expectConnected()
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalPage.promptSiwe()

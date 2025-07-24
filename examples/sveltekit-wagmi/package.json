@@ -14,13 +14,13 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@walletconnect/logger": "2.1.2",
-    "viem": "2.29.0",
-    "wagmi": "2.15.2"
+    "viem": "2.32.0",
+    "wagmi": "2.15.7"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.7",
     "@sveltejs/adapter-auto": "3.0.0",
-    "@sveltejs/kit": "2.19.0",
+    "@sveltejs/kit": "2.22.2",
     "@sveltejs/vite-plugin-svelte": "5.0.3",
     "eslint-plugin-svelte": "2.36.0",
     "globals": "15.0.0",

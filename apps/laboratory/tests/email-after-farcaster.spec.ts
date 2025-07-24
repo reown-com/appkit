@@ -1,9 +1,9 @@
 import { type BrowserContext, type Page, expect, test } from '@playwright/test'
 
 import type { CaipNetworkId } from '@reown/appkit'
+import { SECURE_WEBSITE_URL } from '@reown/appkit-testing'
 import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
 
-import { SECURE_WEBSITE_URL } from './shared/constants'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
@@ -33,7 +33,7 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
   await page.page.context().setOffline(false)
   await page.load()
 
-  const mailsacApiKey = process.env.MAILSAC_API_KEY
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
@@ -103,7 +103,8 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should show names feature only for EVM networks after abort login with farcaster',
   async ({ library }) => {
-    await page.goToSettings()
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
     await validator.expectNamesFeatureVisible(library !== 'solana')
     await page.closeModal()
   }
@@ -125,19 +126,21 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should disconnect correctly after abort login with farcaster',
   async () => {
-    await page.goToSettings()
+    await page.openProfileWalletsView()
+    await page.clickProfileWalletsMoreButton()
     await page.disconnect()
     await validator.expectDisconnected()
   }
 )
 
 emailTestAfterFarcaster(
-  'it should abort embedded wallet flow if it takes more than 20 seconds after abort login with farcaster',
+  'it should abort embedded wallet flow if it takes more than 2 minutes after abort login with farcaster',
   async () => {
+    await page.page.clock.install()
     await page.page.context().setOffline(true)
     await page.loginWithEmail(tempEmail, false)
-    await page.page.waitForTimeout(20_000)
-    await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
+    await page.page.clock.runFor(120_000)
+    await validator.expectAlertBarText('Wallet Request Timeout')
     await page.page.context().setOffline(false)
   }
 )

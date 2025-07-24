@@ -2,14 +2,15 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   CoreHelperUtil,
   EnsController,
   EventsController,
-  SnackController
+  SnackController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-ens-input'
@@ -202,7 +203,6 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private async onSubmitName() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     try {
       if (!this.isAllowedToSubmit()) {
         return
@@ -213,7 +213,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName
         }
@@ -224,7 +224,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName
         }
@@ -236,7 +236,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_ERROR',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+            getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}`,
           error: (error as Error)?.message || 'Unknown error'

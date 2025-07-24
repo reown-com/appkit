@@ -5,7 +5,7 @@ import { GLOBALS_UPDATED, SET_GLOBALS } from '@storybook/core-events'
 import { addons } from '@storybook/preview-api'
 import { themes } from '@storybook/theming'
 
-import { initializeTheming, setColorTheme } from '@reown/appkit-ui/src/utils/ThemeUtil'
+import { initializeTheming, setColorTheme } from '@reown/appkit-ui'
 
 // -- Utilities ------------------------------------------------------------
 initializeTheming({})
@@ -63,5 +63,7 @@ export default {
         </>
       )
     }
-  }
+  },
+
+  tags: ['autodocs']
 }

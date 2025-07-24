@@ -2,16 +2,20 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
+  type Address,
   type Balance,
   type CaipAddress,
-  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
   NumberUtil
 } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
-import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import {
+  getActiveNetworkTokenAddress,
+  getPreferredAccountType
+} from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
@@ -122,8 +126,13 @@ const controller = {
   },
 
   async sendEvmToken() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-    const activeAccountType = AccountController.state.preferredAccountTypes?.[activeChainNamespace]
+    const activeChainNamespace = ChainController.state.activeChain
+
+    if (!activeChainNamespace) {
+      throw new Error('SendController:sendEvmToken - activeChainNamespace is required')
+    }
+
+    const activeAccountType = getPreferredAccountType(activeChainNamespace)
 
     if (!SendController.state.sendTokenAmount || !SendController.state.receiverAddress) {
       throw new Error('An amount and receiver address are required')
@@ -231,8 +240,8 @@ const controller = {
   async sendNativeToken(params: TxParams) {
     RouterController.pushTransactionStack({})
 
-    const to = params.receiverAddress as `0x${string}`
-    const address = AccountController.state.address as `0x${string}`
+    const to = params.receiverAddress as Address
+    const address = AccountController.state.address as Address
     const value = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
@@ -240,7 +249,7 @@ const controller = {
     const data = '0x'
 
     await ConnectionController.sendTransaction({
-      chainNamespace: 'eip155',
+      chainNamespace: CommonConstantsUtil.CHAIN.EVM,
       to,
       address,
       data,
@@ -252,8 +261,7 @@ const controller = {
       event: 'SEND_SUCCESS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.['eip155'] ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
         token: SendController.state.token?.symbol || '',
         amount: params.sendTokenAmount,
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
@@ -282,17 +290,19 @@ const controller = {
       params.receiverAddress &&
       params.tokenAddress
     ) {
-      const tokenAddress = CoreHelperUtil.getPlainAddress(
-        params.tokenAddress as CaipAddress
-      ) as `0x${string}`
+      const tokenAddress = CoreHelperUtil.getPlainAddress(params.tokenAddress as CaipAddress)
+
+      if (!tokenAddress) {
+        throw new Error('SendController:sendERC20Token - tokenAddress is required')
+      }
 
       await ConnectionController.writeContract({
-        fromAddress: AccountController.state.address as `0x${string}`,
+        fromAddress: AccountController.state.address as Address,
         tokenAddress,
-        args: [params.receiverAddress as `0x${string}`, amount ?? BigInt(0)],
+        args: [params.receiverAddress as Address, amount ?? BigInt(0)],
         method: 'transfer',
         abi: ContractUtil.getERC20Abi(tokenAddress),
-        chainNamespace: 'eip155'
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
 
       SendController.resetSend()

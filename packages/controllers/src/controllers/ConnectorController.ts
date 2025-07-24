@@ -1,8 +1,15 @@
 import { proxy, ref, snapshot, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+import {
+  AVAILABLE_NAMESPACES,
+  type ChainNamespace,
+  ConstantsUtil,
+  getW3mThemeVariables
+} from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
@@ -28,13 +35,13 @@ export interface ConnectorControllerState {
 
 type StateKey = keyof ConnectorControllerState
 
-const defaultActiveConnectors = {
-  eip155: undefined,
-  solana: undefined,
-  polkadot: undefined,
-  bip122: undefined,
-  cosmos: undefined
-}
+const defaultActiveConnectors = Object.fromEntries(
+  AVAILABLE_NAMESPACES.map(namespace => [namespace, undefined])
+) as Record<ChainNamespace, string | undefined>
+
+const defaultFilterByNamespaceMap = Object.fromEntries(
+  AVAILABLE_NAMESPACES.map(namespace => [namespace, true])
+) as Record<ChainNamespace, boolean>
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectorControllerState>({
@@ -42,14 +49,8 @@ const state = proxy<ConnectorControllerState>({
   connectors: [],
   activeConnector: undefined,
   filterByNamespace: undefined,
-  activeConnectorIds: { ...defaultActiveConnectors },
-  filterByNamespaceMap: {
-    eip155: true,
-    solana: true,
-    polkadot: true,
-    bip122: true,
-    cosmos: true
-  }
+  activeConnectorIds: defaultActiveConnectors,
+  filterByNamespaceMap: defaultFilterByNamespaceMap
 })
 
 // -- Controller ---------------------------------------- //
@@ -150,9 +151,7 @@ const controller = {
   },
 
   getEnabledConnectors(enabledNamespaces: ChainNamespace[]): Connector[] {
-    return state.allConnectors.filter(connector =>
-      enabledNamespaces.includes(connector.chain as ChainNamespace)
-    )
+    return state.allConnectors.filter(connector => enabledNamespaces.includes(connector.chain))
   },
 
   areAllNamespacesEnabled(): boolean {
@@ -282,10 +281,18 @@ const controller = {
     return state.allConnectors.find(c => c.id === id)
   },
 
-  getConnector(id: string, rdns?: string | null) {
-    const connectorsByNamespace = state.allConnectors.filter(
-      c => c.chain === ChainController.state.activeChain
-    )
+  getConnector({
+    id,
+    rdns,
+    namespace
+  }: {
+    id?: string
+    rdns?: string | null
+    namespace?: ChainNamespace
+  }) {
+    const namespaceToUse = namespace || ChainController.state.activeChain
+
+    const connectorsByNamespace = state.allConnectors.filter(c => c.chain === namespaceToUse)
 
     return connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
   },
@@ -327,13 +334,28 @@ const controller = {
     return ConnectorController.mergeMultiChainConnectors(namespaceConnectors)
   },
 
+  canSwitchToSmartAccount(namespace: ChainNamespace) {
+    const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+
+    return (
+      isSmartAccountEnabled &&
+      getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+    )
+  },
+
   selectWalletConnector(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    MobileWalletUtil.handleMobileDeeplinkRedirect(connector?.explorerId || wallet.id, namespace)
+    const connector = ConnectorController.getConnector({
+      id: wallet.id,
+      rdns: wallet.rdns
+    })
+
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      connector?.explorerId || wallet.id,
+      ChainController.state.activeChain
+    )
 
     if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
+      RouterController.push('ConnectingExternal', { connector, wallet })
     } else {
       RouterController.push('ConnectingWalletConnect', { wallet })
     }

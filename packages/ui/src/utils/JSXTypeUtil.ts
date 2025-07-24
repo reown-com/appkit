@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 import type { WuiCard } from '../components/wui-card/index.js'
 import type { WuiIcon } from '../components/wui-icon/index.js'
 import type { WuiImage } from '../components/wui-image/index.js'
@@ -55,7 +56,6 @@ import type { WuiNetworkImage } from '../composites/wui-network-image/index.js'
 import type { WuiNoticeCard } from '../composites/wui-notice-card/index.js'
 import type { WuiOtp } from '../composites/wui-otp/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
-import type { WuiProfileButtonV2 } from '../composites/wui-profile-button-v2/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
 import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiQrCode } from '../composites/wui-qr-code/index.js'
@@ -83,93 +83,110 @@ import type { WuiSeparator } from '../layout/wui-separator/index.js'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
 
+interface AppKitElements {
+  // -- Components ------------------------------------------- //
+  'wui-card': CustomElement<WuiCard>
+  'wui-icon': CustomElement<WuiIcon>
+  'wui-image': CustomElement<WuiImage>
+  'wui-loading-hexagon': CustomElement<WuiLoadingHexagon>
+  'wui-loading-spinner': CustomElement<WuiLoadingSpinner>
+  'wui-loading-thumbnail': CustomElement<WuiLoadingThumbnail>
+  'wui-shimmer': CustomElement<WuiShimmer>
+  'wui-text': CustomElement<WuiText>
+  'wui-visual': CustomElement<WuiVisual>
+  // -- Composites ------------------------------------------- //
+  'wui-account-button': CustomElement<WuiAccountButton>
+  'wui-all-wallets-image': CustomElement<WuiAllWalletsImage>
+  'wui-avatar': CustomElement<WuiAvatar>
+  'wui-balance': CustomElement<WuiBalance>
+  'wui-button': CustomElement<WuiButton>
+  'wui-card-select-loader': CustomElement<WuiCardSelectLoader>
+  'wui-card-select': CustomElement<WuiCardSelect>
+  'wui-chip-button': CustomElement<WuiChipButton>
+  'wui-chip': CustomElement<WuiChip>
+  'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
+  'wui-connect-button': CustomElement<WuiConnectButton>
+  'wui-cta-button': CustomElement<WuiCtaButton>
+  'wui-details-group-item': CustomElement<WuiDetailsGroupItem>
+  'wui-details-group': CustomElement<WuiDetailsGroup>
+  'wui-email-input': CustomElement<WuiEmailInput>
+  'wui-ens-input': CustomElement<WuiEnsInput>
+  'wui-icon-box': CustomElement<WuiIconBox>
+  'wui-icon-link': CustomElement<WuiIconLink>
+  'wui-input-amount': CustomElement<WuiInputAmount>
+  'wui-input-element': CustomElement<WuiInputElement>
+  'wui-input-numeric': CustomElement<WuiInputNumeric>
+  'wui-input-text': CustomElement<WuiInputText>
+  'wui-link': CustomElement<WuiLink>
+  'wui-list-accordion': CustomElement<WuiListAccordion>
+  'wui-list-button': CustomElement<WuiListButton>
+  'wui-list-content': CustomElement<WuiListContent>
+  'wui-list-description': CustomElement<WuiListDescription>
+  'wui-list-item': CustomElement<WuiListItem>
+  'wui-list-network': CustomElement<WuiListNetwork>
+  'wui-list-social': CustomElement<WuiListSocial>
+  'wui-list-token': CustomElement<WuiListToken>
+  'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
+  'wui-list-wallet': CustomElement<WuiListWallet>
+  'wui-logo-select': CustomElement<WuiLogoSelect>
+  'wui-logo': CustomElement<WuiLogo>
+  'wui-network-button': CustomElement<WuiNetworkButton>
+  'wui-network-image': CustomElement<WuiNetworkImage>
+  'wui-notice-card': CustomElement<WuiNoticeCard>
+  'wui-otp': CustomElement<WuiOtp>
+  'wui-preview-item': CustomElement<WuiPreviewItem>
+  'wui-profile-button': CustomElement<WuiProfileButton>
+  'wui-promo': CustomElement<WuiPromo>
+  'wui-qr-code': CustomElement<WuiQrCode>
+  'wui-search-bar': CustomElement<WuiSearchBar>
+  'wui-select': CustomElement<WuiSelect>
+  'wui-snackbar': CustomElement<WuiSnackbar>
+  'wui-alertbar': CustomElement<WuiAlertBar>
+  'wui-tabs': CustomElement<WuiTabs>
+  'wui-tag': CustomElement<WuiTag>
+  'wui-token-button': CustomElement<WuiTokenButton>
+  'wui-token-list-item': CustomElement<WuiTokenListItem>
+  'wui-icon-button': CustomElement<WuiIconButton>
+  'wui-tooltip': CustomElement<WuiTooltip>
+  'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
+  'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
+  'wui-transaction-visual': CustomElement<WuiTransactionVisual>
+  'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
+  'wui-wallet-image': CustomElement<WuiWalletImage>
+  'wui-wallet-button': CustomElement<WuiWalletButton>
+  'wui-banner': CustomElement<WuiBanner>
+  'wui-list-account': CustomElement<WuiListAccount>
+  'wui-checkbox': CustomElement<WuiCheckBox>
+  'wui-switch': CustomElement<WuiSwitch>
+  'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
+  'wui-active-profile-wallet-item': CustomElement<WuiActiveProfileWalletItem>
+  'wui-inactive-profile-wallet-item': CustomElement<WuiInactiveProfileWalletItem>
+  'wui-wallet-switch': CustomElement<WuiWalletSwitch>
+  // -- Layout ------------------------------------------- //
+  'wui-flex': CustomElement<WuiFlex>
+  'wui-grid': CustomElement<WuiGrid>
+  'wui-separator': CustomElement<WuiSeparator>
+  'wui-ux-by-reown': CustomElement<WuiUxByReown>
+}
+
+/* ------------------------------------------------------------------ */
+/* Declare global namespace for React 18     */
+/* ------------------------------------------------------------------ */
+declare global {
+  namespace JSX {
+    interface IntrinsicElements extends AppKitElements {}
+  }
+}
+/* ------------------------------------------------------------------ */
+/* Helper alias with the built‑ins that React already supplied     */
+/* ------------------------------------------------------------------ */
+type __BuiltinIntrinsics = JSX.IntrinsicElements
+
+/* ------------------------------------------------------------------ */
+/* Declare react namespace for React 19 and extend with JSX built-ins (div, button, etc.) and extend with AppKitElements */
+/* ------------------------------------------------------------------ */
 declare module 'react' {
   namespace JSX {
-    interface IntrinsicElements {
-      // -- Components ------------------------------------------- //
-      'wui-card': CustomElement<WuiCard>
-      'wui-icon': CustomElement<WuiIcon>
-      'wui-image': CustomElement<WuiImage>
-      'wui-loading-hexagon': CustomElement<WuiLoadingHexagon>
-      'wui-loading-spinner': CustomElement<WuiLoadingSpinner>
-      'wui-loading-thumbnail': CustomElement<WuiLoadingThumbnail>
-      'wui-shimmer': CustomElement<WuiShimmer>
-      'wui-text': CustomElement<WuiText>
-      'wui-visual': CustomElement<WuiVisual>
-      // -- Composites ------------------------------------------- //
-      'wui-account-button': CustomElement<WuiAccountButton>
-      'wui-all-wallets-image': CustomElement<WuiAllWalletsImage>
-      'wui-avatar': CustomElement<WuiAvatar>
-      'wui-balance': CustomElement<WuiBalance>
-      'wui-button': CustomElement<WuiButton>
-      'wui-card-select-loader': CustomElement<WuiCardSelectLoader>
-      'wui-card-select': CustomElement<WuiCardSelect>
-      'wui-chip-button': CustomElement<WuiChipButton>
-      'wui-chip': CustomElement<WuiChip>
-      'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
-      'wui-connect-button': CustomElement<WuiConnectButton>
-      'wui-cta-button': CustomElement<WuiCtaButton>
-      'wui-details-group-item': CustomElement<WuiDetailsGroupItem>
-      'wui-details-group': CustomElement<WuiDetailsGroup>
-      'wui-email-input': CustomElement<WuiEmailInput>
-      'wui-ens-input': CustomElement<WuiEnsInput>
-      'wui-icon-box': CustomElement<WuiIconBox>
-      'wui-icon-link': CustomElement<WuiIconLink>
-      'wui-input-amount': CustomElement<WuiInputAmount>
-      'wui-input-element': CustomElement<WuiInputElement>
-      'wui-input-numeric': CustomElement<WuiInputNumeric>
-      'wui-input-text': CustomElement<WuiInputText>
-      'wui-link': CustomElement<WuiLink>
-      'wui-list-accordion': CustomElement<WuiListAccordion>
-      'wui-list-button': CustomElement<WuiListButton>
-      'wui-list-content': CustomElement<WuiListContent>
-      'wui-list-description': CustomElement<WuiListDescription>
-      'wui-list-item': CustomElement<WuiListItem>
-      'wui-list-network': CustomElement<WuiListNetwork>
-      'wui-list-social': CustomElement<WuiListSocial>
-      'wui-list-token': CustomElement<WuiListToken>
-      'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
-      'wui-list-wallet': CustomElement<WuiListWallet>
-      'wui-logo-select': CustomElement<WuiLogoSelect>
-      'wui-logo': CustomElement<WuiLogo>
-      'wui-network-button': CustomElement<WuiNetworkButton>
-      'wui-network-image': CustomElement<WuiNetworkImage>
-      'wui-notice-card': CustomElement<WuiNoticeCard>
-      'wui-otp': CustomElement<WuiOtp>
-      'wui-preview-item': CustomElement<WuiPreviewItem>
-      'wui-profile-button': CustomElement<WuiProfileButton>
-      'wui-profile-button-v2': CustomElement<WuiProfileButtonV2>
-      'wui-promo': CustomElement<WuiPromo>
-      'wui-qr-code': CustomElement<WuiQrCode>
-      'wui-search-bar': CustomElement<WuiSearchBar>
-      'wui-select': CustomElement<WuiSelect>
-      'wui-snackbar': CustomElement<WuiSnackbar>
-      'wui-alertbar': CustomElement<WuiAlertBar>
-      'wui-tabs': CustomElement<WuiTabs>
-      'wui-tag': CustomElement<WuiTag>
-      'wui-token-button': CustomElement<WuiTokenButton>
-      'wui-token-list-item': CustomElement<WuiTokenListItem>
-      'wui-icon-button': CustomElement<WuiIconButton>
-      'wui-tooltip': CustomElement<WuiTooltip>
-      'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
-      'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
-      'wui-transaction-visual': CustomElement<WuiTransactionVisual>
-      'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
-      'wui-wallet-image': CustomElement<WuiWalletImage>
-      'wui-wallet-button': CustomElement<WuiWalletButton>
-      'wui-banner': CustomElement<WuiBanner>
-      'wui-list-account': CustomElement<WuiListAccount>
-      'wui-checkbox': CustomElement<WuiCheckBox>
-      'wui-switch': CustomElement<WuiSwitch>
-      'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
-      'wui-active-profile-wallet-item': CustomElement<WuiActiveProfileWalletItem>
-      'wui-inactive-profile-wallet-item': CustomElement<WuiInactiveProfileWalletItem>
-      'wui-wallet-switch': CustomElement<WuiWalletSwitch>
-      // -- Layout ------------------------------------------- //
-      'wui-flex': CustomElement<WuiFlex>
-      'wui-grid': CustomElement<WuiGrid>
-      'wui-separator': CustomElement<WuiSeparator>
-      'wui-ux-by-reown': CustomElement<WuiUxByReown>
-    }
+    interface IntrinsicElements extends __BuiltinIntrinsics, AppKitElements {}
   }
 }

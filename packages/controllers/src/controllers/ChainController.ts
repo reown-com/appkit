@@ -35,8 +35,8 @@ const accountState: AccountControllerState = {
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: [],
-  user: undefined
+  user: undefined,
+  preferredAccountType: undefined
 }
 
 const networkState: AdapterNetworkState = {
@@ -58,6 +58,7 @@ export interface ChainControllerState {
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
   isSwitchingNamespace: boolean
+  lastConnectedSIWECaipNetwork?: CaipNetwork
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -159,13 +160,14 @@ const controller = {
       const namespaceNetworks = caipNetworks?.filter(
         network => network.chainNamespace === namespace
       )
-      ChainController.state.chains.set(namespace as ChainNamespace, {
+
+      const storedAccountTypes = StorageUtil.getPreferredAccountTypes() || {}
+      const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
+
+      ChainController.state.chains.set(namespace, {
         namespace,
-        networkState: proxy({
-          ...networkState,
-          caipNetwork: namespaceNetworks?.[0]
-        }),
-        accountState: proxy(accountState),
+        networkState: proxy({ ...networkState, caipNetwork: namespaceNetworks?.[0] }),
+        accountState: proxy({ ...accountState, preferredAccountType: defaultTypes[namespace] }),
         caipNetworks: namespaceNetworks ?? [],
         ...clients
       })
@@ -193,12 +195,13 @@ const controller = {
     { networkControllerClient, connectionControllerClient }: ChainControllerClients,
     caipNetworks: [CaipNetwork, ...CaipNetwork[]]
   ) {
-    state.chains.set(adapter.namespace as ChainNamespace, {
+    if (!adapter.namespace) {
+      throw new Error('ChainController:addAdapter - adapter must have a namespace')
+    }
+
+    state.chains.set(adapter.namespace, {
       namespace: adapter.namespace,
-      networkState: {
-        ...networkState,
-        caipNetwork: caipNetworks[0]
-      },
+      networkState: { ...networkState, caipNetwork: caipNetworks[0] },
       accountState,
       caipNetworks,
       connectionControllerClient,
@@ -206,7 +209,7 @@ const controller = {
     })
     ChainController.setRequestedCaipNetworks(
       caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter.namespace) ?? [],
-      adapter.namespace as ChainNamespace
+      adapter.namespace
     )
   },
 
@@ -308,9 +311,6 @@ const controller = {
     replaceState = true
   ) {
     ChainController.setChainAccountData(chain, { [prop]: value }, replaceState)
-    if (prop === 'status' && value === 'disconnected' && chain) {
-      ConnectorController.removeConnectorId(chain)
-    }
   },
 
   setActiveNamespace(chain: ChainNamespace | undefined) {
@@ -411,9 +411,13 @@ const controller = {
   },
 
   async switchActiveNetwork(network: CaipNetwork) {
-    const activeAdapter = ChainController.state.chains.get(
-      ChainController.state.activeChain as ChainNamespace
-    )
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('ChainController:switchActiveNetwork - namespace is required')
+    }
+
+    const activeAdapter = ChainController.state.chains.get(namespace)
 
     const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
@@ -444,7 +448,11 @@ const controller = {
   getNetworkControllerClient(chainNamespace?: ChainNamespace) {
     const chain = chainNamespace || state.activeChain
 
-    const chainAdapter = state.chains.get(chain as ChainNamespace)
+    if (!chain) {
+      throw new Error('ChainController:getNetworkControllerClient - chain is required')
+    }
+
+    const chainAdapter = state.chains.get(chain)
 
     if (!chainAdapter) {
       throw new Error('Chain adapter not found')
@@ -473,29 +481,6 @@ const controller = {
     return chainAdapter.connectionControllerClient
   },
 
-  getAccountProp<K extends keyof AccountControllerState>(
-    key: K,
-    _chain?: ChainNamespace
-  ): AccountControllerState[K] | undefined {
-    let chain = state.activeChain
-
-    if (_chain) {
-      chain = _chain
-    }
-
-    if (!chain) {
-      return undefined
-    }
-
-    const chainAccountState = state.chains.get(chain)?.accountState
-
-    if (!chainAccountState) {
-      return undefined
-    }
-
-    return chainAccountState[key]
-  },
-
   getNetworkProp<K extends keyof AdapterNetworkState>(
     key: K,
     namespace: ChainNamespace
@@ -516,17 +501,22 @@ const controller = {
       approvedCaipNetworkIds,
       requestedCaipNetworks
     )
+    const filteredNetworks = sortedNetworks.filter(network => network?.id)
 
-    return sortedNetworks
+    return filteredNetworks
   },
 
   getAllRequestedCaipNetworks(): CaipNetwork[] {
     const requestedCaipNetworks: CaipNetwork[] = []
 
     state.chains.forEach(chainAdapter => {
-      const caipNetworks = ChainController.getRequestedCaipNetworks(
-        chainAdapter.namespace as ChainNamespace
-      )
+      if (!chainAdapter.namespace) {
+        throw new Error(
+          'ChainController:getAllRequestedCaipNetworks - chainAdapter must have a namespace'
+        )
+      }
+
+      const caipNetworks = ChainController.getRequestedCaipNetworks(chainAdapter.namespace)
       requestedCaipNetworks.push(...caipNetworks)
     })
 
@@ -545,16 +535,24 @@ const controller = {
     const approvedCaipNetworkIds: CaipNetworkId[] = []
 
     state.chains.forEach(chainAdapter => {
-      const approvedIds = ChainController.getApprovedCaipNetworkIds(
-        chainAdapter.namespace as ChainNamespace
-      )
+      if (!chainAdapter.namespace) {
+        throw new Error(
+          'ChainController:getAllApprovedCaipNetworkIds - chainAdapter must have a namespace'
+        )
+      }
+
+      const approvedIds = ChainController.getApprovedCaipNetworkIds(chainAdapter.namespace)
       approvedCaipNetworkIds.push(...approvedIds)
     })
 
     return approvedCaipNetworkIds
   },
 
-  getActiveCaipNetwork() {
+  getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
+    if (chainNamespace) {
+      return state.chains.get(chainNamespace)?.networkState?.caipNetwork
+    }
+
     return state.activeCaipNetwork
   },
 
@@ -579,15 +577,15 @@ const controller = {
     })
   },
 
-  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetwork?: CaipNetwork) {
-    const activeCaipNetwork = caipNetwork || state.activeCaipNetwork
+  checkIfSupportedNetwork(namespace: ChainNamespace, caipNetworkId?: CaipNetworkId) {
+    const activeCaipNetworkId = caipNetworkId || state.activeCaipNetwork?.caipNetworkId
     const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(namespace)
 
     if (!requestedCaipNetworks.length) {
       return true
     }
 
-    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
+    return requestedCaipNetworks?.some(network => network.caipNetworkId === activeCaipNetworkId)
   },
 
   checkIfSupportedChainId(chainId: number | string) {
@@ -637,8 +635,7 @@ const controller = {
   resetNetwork(namespace: ChainNamespace) {
     ChainController.setAdapterNetworkState(namespace, {
       approvedCaipNetworkIds: undefined,
-      supportsAllNetworks: true,
-      smartAccountEnabledNetworks: []
+      supportsAllNetworks: true
     })
   },
 
@@ -648,6 +645,10 @@ const controller = {
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')
     }
+
+    const currentAccountType =
+      ChainController.state.chains.get(chainToWrite)?.accountState?.preferredAccountType
+    const optionsAccountType = OptionsController.state.defaultAccountTypes[chainToWrite]
 
     state.activeCaipAddress = undefined
     ChainController.setChainAccountData(chainToWrite, {
@@ -662,11 +663,10 @@ const controller = {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       connectedWalletInfo: undefined,
-      preferredAccountTypes: undefined,
+      preferredAccountType: optionsAccountType || currentAccountType,
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
-      allAccounts: [],
       user: undefined,
       status: 'disconnected'
     })
@@ -702,11 +702,13 @@ const controller = {
   },
 
   getAccountData(chainNamespace?: ChainNamespace) {
-    if (!chainNamespace) {
-      return AccountController.state
+    const namespace = chainNamespace || state.activeChain
+
+    if (!namespace) {
+      return undefined
     }
 
-    return ChainController.state.chains.get(chainNamespace)?.accountState
+    return ChainController.state.chains.get(namespace)?.accountState
   },
 
   getNetworkData(chainNamespace?: ChainNamespace) {
@@ -757,6 +759,14 @@ const controller = {
     }
 
     return ChainController.getAllRequestedCaipNetworks()
+  },
+
+  setLastConnectedSIWECaipNetwork(network: CaipNetwork | undefined) {
+    state.lastConnectedSIWECaipNetwork = network
+  },
+
+  getLastConnectedSIWECaipNetwork(): CaipNetwork | undefined {
+    return state.lastConnectedSIWECaipNetwork
   }
 }
 

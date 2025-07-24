@@ -5,6 +5,7 @@ import { encodeFunctionData, parseEther } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi'
 
+import type { Address } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -24,7 +25,7 @@ const purchaseDonutCallData = encodeFunctionData({
 })
 
 const TEST_TX = {
-  to: donutContractaddress as `0x${string}`,
+  to: donutContractaddress as Address,
   value: parseEther('0.00001'),
   data: purchaseDonutCallData
 }
@@ -162,10 +163,8 @@ function AvailableTestContent() {
       calls: [TEST_TX],
       capabilities: {
         paymasterService: {
-          1: {
-            url: paymasterServiceUrl,
-            context
-          }
+          url: paymasterServiceUrl,
+          context
         }
       }
     })

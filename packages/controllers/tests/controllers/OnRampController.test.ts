@@ -1,7 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
-  AccountController,
   ApiController,
   BlockchainApiController,
   OnRampController,
@@ -10,6 +11,7 @@ import {
   type PaymentCurrency,
   type PurchaseCurrency
 } from '../../exports/index.js'
+import { mockChainControllerState } from '../../exports/testing.js'
 import {
   USDC_CURRENCY_DEFAULT,
   USD_CURRENCY_DEFAULT
@@ -62,6 +64,10 @@ const defaultState = {
 
 // -- Tests --------------------------------------------------------------------
 describe('OnRampController', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should have valid default state', () => {
     expect(OnRampController.state).toEqual(defaultState)
   })
@@ -151,16 +157,22 @@ describe('OnRampController', () => {
 
   it('should set providers if valid names are provided', () => {
     const validProviderNames = ['coinbase', 'moonpay']
-    const expectedProviders = ONRAMP_PROVIDERS.filter(p => validProviderNames.includes(p.name))
     OnRampController.setOnrampProviders(validProviderNames as any)
-    expect(OnRampController.state.providers).toEqual(expectedProviders)
+    expect(OnRampController.state.providers).toEqual([])
   })
 
   it('should filter out invalid provider names', () => {
-    const mixedProviderNames = ['coinbase', 'invalidProvider', 'moonpay']
-    const expectedProviders = ONRAMP_PROVIDERS.filter(p => ['coinbase', 'moonpay'].includes(p.name))
+    const mixedProviderNames = ['meld', 'coinbase', 'invalidProvider', 'moonpay']
     OnRampController.setOnrampProviders(mixedProviderNames as any)
-    expect(OnRampController.state.providers).toEqual(expectedProviders)
+    expect(OnRampController.state.providers).toEqual([
+      {
+        feeRange: '1-2%',
+        label: 'Meld.io',
+        name: 'meld',
+        supportedChains: ['eip155', 'solana'],
+        url: 'https://meldcrypto.com'
+      }
+    ])
   })
 
   it('should set an empty array if no valid provider names are provided', () => {
@@ -190,10 +202,18 @@ describe('OnRampController', () => {
   })
 
   it('should properly configure meld url', () => {
-    AccountController.state.address = '0x123'
+    mockChainControllerState({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { accountState: { address: '0x123', caipAddress: 'eip155:1:0x123' } }
+        ]
+      ])
+    })
     OptionsController.state.projectId = 'test'
     OnRampController.resetState()
-    const meldProvider = ONRAMP_PROVIDERS[1] as OnRampProvider
+    const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
     OnRampController.setSelectedProvider(meldProvider)
     const resultUrl = new URL(meldProvider.url)
     resultUrl.searchParams.append('publicKey', MELD_PUBLIC_KEY)

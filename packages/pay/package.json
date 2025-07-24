@@ -1,12 +1,13 @@
 {
   "name": "@reown/appkit-pay",
-  "version": "1.7.8",
+  "version": "1.7.16",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "exports": {
     ".": {
@@ -34,9 +35,9 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "lit": "3.3.0",
-    "valtio": "1.13.2"
+    "valtio": "2.1.5"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {

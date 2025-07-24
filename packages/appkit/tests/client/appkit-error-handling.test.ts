@@ -31,8 +31,8 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
           const originalError = (error as any).cause instanceof Error ? (error as any).cause : error
           AlertController.open(
             {
-              shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-              longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
+              displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+              debugMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
                 originalError.message
               )
             },
@@ -70,9 +70,11 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
 
     expect(alertSpy).toHaveBeenCalledWith(
       {
-        shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage:
-          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('Internal Server Error')
+        displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+        debugMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
+            'Internal Server Error'
+          )
       },
       'error'
     )
@@ -85,9 +87,9 @@ describe('AppKit error handling for api.web3modal.org/origins', () => {
 
     expect(alertSpy).toHaveBeenCalledWith(
       {
-        shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage:
-          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('SERVER_ERROR')
+        displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+        debugMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage('SERVER_ERROR')
       },
       'error'
     )

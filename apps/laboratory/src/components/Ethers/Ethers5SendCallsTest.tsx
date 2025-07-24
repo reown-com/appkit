@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { ethers } from 'ethers5'
-import type { Address } from 'viem'
 
 import type { Provider as RawProvider } from '@reown/appkit'
+import type { Address, Hex } from '@reown/appkit-common'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
@@ -65,8 +65,8 @@ export function Ethers5SendCallsTest() {
       const provider = new ethers.providers.Web3Provider(walletProvider, chainId)
       const calls = [
         {
-          to: vitalikEthAddress as `0x${string}`,
-          data: '0x' as `0x${string}`,
+          to: vitalikEthAddress as Address,
+          data: '0x' as Hex,
           value: `0x0`
         },
         {
@@ -93,7 +93,7 @@ export function Ethers5SendCallsTest() {
       })
     } catch {
       toast({
-        title: 'Error',
+        title: 'SendCalls Error',
         description: 'Failed to send calls',
         type: 'error'
       })

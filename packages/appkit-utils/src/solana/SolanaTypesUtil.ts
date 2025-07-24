@@ -114,3 +114,11 @@ export type Metadata = {
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
 
 export type GetActiveChain = () => CaipNetwork | undefined
+
+export type SPLTokenTransactionArgs = {
+  provider: Provider
+  connection: Connection
+  to: string
+  amount: number
+  tokenMint: string
+}

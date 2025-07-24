@@ -1,3 +1,4 @@
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   type ChainNamespace,
   type OnRampProvider,
@@ -5,6 +6,7 @@ import {
   type SwapProvider
 } from '@reown/appkit-common'
 
+import type { SIWXConfig } from './SIWXUtil.js'
 import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
 const SECURE_SITE =
@@ -14,13 +16,6 @@ const SECURE_SITE =
     : undefined) || 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
-  {
-    label: 'Coinbase',
-    name: 'coinbase',
-    feeRange: '1-2%',
-    url: '',
-    supportedChains: ['eip155']
-  },
   {
     label: 'Meld.io',
     name: 'meld',
@@ -61,36 +56,6 @@ export const ConstantsUtil = {
     'ASIA/BEIJING',
     'ASIA/HARBIN'
   ],
-
-  /**
-   * Network name to Coinbase Pay SDK chain name map object
-   * @see supported chain names on Coinbase for Pay SDK: https://github.com/coinbase/cbpay-js/blob/d4bda2c05c4d5917c8db6a05476b603546046394/src/types/onramp.ts
-   */
-  WC_COINBASE_PAY_SDK_CHAINS: [
-    'ethereum',
-    'arbitrum',
-    'polygon',
-    'berachain',
-    'avalanche-c-chain',
-    'optimism',
-    'celo',
-    'base'
-  ],
-
-  WC_COINBASE_PAY_SDK_FALLBACK_CHAIN: 'ethereum',
-
-  WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP: {
-    Ethereum: 'ethereum',
-    'Arbitrum One': 'arbitrum',
-    Polygon: 'polygon',
-    Berachain: 'berachain',
-    Avalanche: 'avalanche-c-chain',
-    'OP Mainnet': 'optimism',
-    Celo: 'celo',
-    Base: 'base'
-  },
-
-  WC_COINBASE_ONRAMP_APP_ID: 'bf18c88d-495a-463b-b249-0b9d3656cf5e',
 
   SWAP_SUGGESTED_TOKENS: [
     'ETH',
@@ -182,7 +147,10 @@ export const ConstantsUtil = {
     'DE',
     'WNT'
   ],
-  BALANCE_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
+  BALANCE_SUPPORTED_CHAINS: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',
@@ -210,15 +178,20 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
-  NAMES_SUPPORTED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
-  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
-  ACTIVITY_ENABLED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
+  NAMES_SUPPORTED_CHAIN_NAMESPACES: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
+  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
+  ACTIVITY_ENABLED_CHAIN_NAMESPACES: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
     polkadot: '0x',
     bip122: '0x',
-    cosmos: '0x'
+    cosmos: '0x',
+    sui: '0x',
+    stacks: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
@@ -228,10 +201,13 @@ export const ConstantsUtil = {
     WEB: 'Open and continue in the wallet app'
   },
 
-  SEND_SUPPORTED_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
+  SEND_SUPPORTED_NAMESPACES: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
   DEFAULT_REMOTE_FEATURES: {
     swaps: ['1inch'] as SwapProvider[],
-    onramp: ['coinbase', 'meld'] as OnRampProvider[],
+    onramp: ['meld'] as OnRampProvider[],
     email: true,
     socials: [
       'google',
@@ -243,7 +219,9 @@ export const ConstantsUtil = {
       'facebook'
     ] as SocialProvider[],
     activity: true,
-    reownBranding: true
+    reownBranding: true,
+    multiWallet: false,
+    emailCapture: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -251,7 +229,8 @@ export const ConstantsUtil = {
     swaps: false,
     onramp: false,
     activity: false,
-    reownBranding: false
+    reownBranding: false,
+    emailCapture: false
   } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,
@@ -299,5 +278,9 @@ export const ConstantsUtil = {
     ETHERS: 'ethers',
     ETHERS5: 'ethers5',
     BITCOIN: 'bitcoin'
-  }
+  },
+
+  SIWX_DEFAULTS: {
+    signOutOnDisconnect: true
+  } as const satisfies Pick<SIWXConfig, 'signOutOnDisconnect'>
 }

@@ -1,7 +1,7 @@
-import type { ChainFormatters, HttpTransportConfig } from 'viem'
+import type { Address, ChainFormatters, Hex, HttpTransportConfig } from 'viem'
 import type { Chain as BaseChain } from 'viem/chains'
 
-export type { BaseChain }
+export type { BaseChain, Address, Hex }
 
 export type BaseNetwork<
   formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
@@ -44,7 +44,14 @@ export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
 
 export type ChainId = string | number
 
-export type InternalChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122' | 'cosmos'
+export type InternalChainNamespace =
+  | 'eip155'
+  | 'solana'
+  | 'polkadot'
+  | 'bip122'
+  | 'cosmos'
+  | 'sui'
+  | 'stacks'
 
 export type ChainNamespace<T extends string = InternalChainNamespace> = T | InternalChainNamespace
 
@@ -54,13 +61,8 @@ export type AdapterType =
   | 'ethers'
   | 'ethers5'
   | 'universal'
-  | 'polkadot'
   | 'bip122'
-
-export type CoinbaseTransactionStatus =
-  | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
-  | 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
-  | 'ONRAMP_TRANSACTION_STATUS_FAILED'
+  | 'polkadot'
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
@@ -84,7 +86,7 @@ export interface TransactionMetadata {
   minedAt: string
   sentFrom: string
   sentTo: string
-  status: TransactionStatus | CoinbaseTransactionStatus
+  status: TransactionStatus
   nonce: number
 }
 
@@ -206,7 +208,7 @@ export type SocialProvider =
 
 export type SwapProvider = '1inch'
 
-export type OnRampProvider = 'coinbase' | 'meld'
+export type OnRampProvider = 'meld'
 
 /**
  * Helper type to create a CaipNetwork with proper type inference from the chainNamespace field
@@ -218,7 +220,6 @@ export type InferredCaipNetwork<T extends { chainNamespace: string } = { chainNa
 export type Connection = {
   name?: string
   icon?: string
-  recent?: boolean
   networkIcon?: string
   accounts: { type?: string; address: string }[]
   caipNetwork?: CaipNetwork

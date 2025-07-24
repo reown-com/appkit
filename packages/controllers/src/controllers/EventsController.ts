@@ -79,8 +79,8 @@ export const EventsController = {
       if (isForbiddenError) {
         AlertController.open(
           {
-            shortMessage: 'Invalid App Configuration',
-            longMessage: `Origin ${
+            displayMessage: 'Invalid App Configuration',
+            debugMessage: `Origin ${
               isSafe() ? window.origin : 'uknown'
             } not found on Allowlist - update configuration on cloud.reown.com`
           },
@@ -95,7 +95,7 @@ export const EventsController = {
   sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now()
     state.data = data
-    if (OptionsController.state.features?.analytics) {
+    if (OptionsController.state.features?.analytics || data.event === 'INITIALIZE') {
       EventsController._sendAnalyticsEvent(state)
     }
   }

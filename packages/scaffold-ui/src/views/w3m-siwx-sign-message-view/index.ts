@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { OptionsController, SIWXUtil } from '@reown/appkit-controllers'
+import {
+  OptionsController,
+  RouterController,
+  SIWXUtil,
+  SnackController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -73,7 +78,22 @@ export class W3mSIWXSignMessageView extends LitElement {
   // -- Private ------------------------------------------- //
   private async onSign() {
     this.isSigning = true
-    await SIWXUtil.requestSignMessage().finally(() => (this.isSigning = false))
+    try {
+      await SIWXUtil.requestSignMessage()
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('OTP is required')) {
+        SnackController.showError({
+          message: 'Something went wrong. We need to verify your account again.'
+        })
+        RouterController.replace('DataCapture')
+
+        return
+      }
+
+      throw error
+    } finally {
+      this.isSigning = false
+    }
   }
 
   private async onCancel() {

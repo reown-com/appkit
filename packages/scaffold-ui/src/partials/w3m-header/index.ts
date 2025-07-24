@@ -62,10 +62,8 @@ function headings() {
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
     Pay: 'How you pay',
-    Profile: undefined,
     ProfileWallets: 'Wallets',
     SwitchNetwork: networkName ?? 'Switch Network',
-    SwitchAddress: 'Switch Address',
     Transactions: 'Activity',
     UnsupportedChain: 'Switch Network',
     UpgradeEmailWallet: 'Upgrade your Wallet',
@@ -96,7 +94,9 @@ function headings() {
     SmartSessionCreated: undefined,
     SmartSessionList: 'Smart Sessions',
     SIWXSignMessage: 'Sign In',
-    PayLoading: 'Payment in progress'
+    PayLoading: 'Payment in progress',
+    DataCapture: 'Profile',
+    DataCaptureOtpConfirm: 'Confirm Email'
   }
 }
 

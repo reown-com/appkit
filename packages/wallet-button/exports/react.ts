@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable consistent-return */
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
+import { createComponent } from '@lit/react'
 import { useSnapshot } from 'valtio'
 
-import type { ParsedCaipAddress } from '@reown/appkit-common'
+import type { ChainNamespace, ParsedCaipAddress } from '@reown/appkit-common'
 import {
   ChainController,
   type Connector,
@@ -18,19 +20,42 @@ import { WalletButtonController } from '../src/controllers/WalletButtonControlle
 import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
 import type { SocialProvider } from '../src/utils/TypeUtil.js'
 import { WalletUtil } from '../src/utils/WalletUtil.js'
-import type { AppKitWalletButton, Wallet } from './index.js'
+import { AppKitWalletButton as AppKitWalletButtonComponent, type Wallet } from './index.js'
 
 export * from './index.js'
 
-declare module 'react' {
+export const AppKitWalletButton = createComponent({
+  tagName: 'appkit-wallet-button',
+  elementClass: AppKitWalletButtonComponent,
+  react: React
+})
+
+interface AppKitElements {
+  'appkit-wallet-button': Pick<AppKitWalletButtonComponent, 'wallet' | 'namespace'>
+}
+/* ------------------------------------------------------------------ */
+/* Declare global namespace for React 18     */
+/* ------------------------------------------------------------------ */
+declare global {
   namespace JSX {
-    interface IntrinsicElements {
-      'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
-    }
+    interface IntrinsicElements extends AppKitElements {}
   }
 }
+/* ------------------------------------------------------------------ */
+/* Helper alias with the built‑ins that React already supplied     */
+/* ------------------------------------------------------------------ */
+type __BuiltinIntrinsics = JSX.IntrinsicElements
 
+/* ------------------------------------------------------------------ */
+/* Declare react namespace for React 19 and extend with JSX built-ins (div, button, etc.) and extend with AppKitElements */
+/* ------------------------------------------------------------------ */
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements extends __BuiltinIntrinsics, AppKitElements {}
+  }
+}
 export function useAppKitWallet(parameters?: {
+  namespace?: ChainNamespace
   onSuccess?: (data: ParsedCaipAddress) => void
   onError?: (error: Error) => void
 }) {
@@ -42,7 +67,7 @@ export function useAppKitWallet(parameters?: {
     data: walletButtonData
   } = useSnapshot(WalletButtonController.state)
 
-  const { onSuccess, onError } = parameters ?? {}
+  const { namespace, onSuccess, onError } = parameters ?? {}
 
   // Prefetch wallet buttons
   useEffect(() => {
@@ -101,6 +126,7 @@ export function useAppKitWallet(parameters?: {
 
         if (wallet === ConstantsUtil.Email) {
           await ConnectorControllerUtil.connectEmail({
+            namespace,
             onOpen() {
               ModalController.open().then(() => RouterController.push('EmailLogin'))
             }
@@ -112,6 +138,7 @@ export function useAppKitWallet(parameters?: {
         if (ConstantsUtil.Socials.some(social => social === wallet)) {
           await ConnectorControllerUtil.connectSocial({
             social: wallet as SocialProvider,
+            namespace,
             onOpenFarcaster() {
               ModalController.open({ view: 'ConnectingFarcaster' })
             },
@@ -126,7 +153,11 @@ export function useAppKitWallet(parameters?: {
         const walletButton = WalletUtil.getWalletButton(wallet)
 
         const connector = walletButton
-          ? ConnectorController.getConnector(walletButton.id, walletButton.rdns)
+          ? ConnectorController.getConnector({
+              id: walletButton.id,
+              rdns: walletButton.rdns,
+              namespace
+            })
           : undefined
 
         if (connector) {
@@ -159,7 +190,7 @@ export function useAppKitWallet(parameters?: {
         WalletButtonController.setPending(false)
       }
     },
-    [connectors, handleSuccess, handleError]
+    [namespace, connectors, handleSuccess, handleError]
   )
 
   return {

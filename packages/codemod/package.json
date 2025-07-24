@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-codemod",
-  "version": "1.7.4",
+  "version": "1.7.16",
   "sideEffects": false,
   "description": "Reown AppKit Codemod",
   "main": "index.js",
@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "chalk": "5.4.1",
-    "latest-version": "5.1.0"
+    "latest-version": "9.0.0"
   },
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {

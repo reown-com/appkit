@@ -1,19 +1,15 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
-  BlockchainApiController,
   ChainController,
-  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OnRampController,
   type OnRampProvider,
-  RouterController
+  RouterController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
-import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -36,23 +32,6 @@ export class W3mOnRampProvidersView extends LitElement {
         })
       ]
     )
-  }
-
-  public override firstUpdated(): void {
-    const urlPromises = this.providers.map(async provider => {
-      if (provider.name === 'coinbase') {
-        return await this.getCoinbaseOnRampURL()
-      }
-
-      return Promise.resolve(provider?.url)
-    })
-
-    Promise.all(urlPromises).then(urls => {
-      this.providers = this.providers.map((provider, index) => ({
-        ...provider,
-        url: urls[index] || ''
-      }))
-    })
   }
 
   // -- Render -------------------------------------------- //
@@ -88,52 +67,22 @@ export class W3mOnRampProvidersView extends LitElement {
   }
 
   private onClickProvider(provider: OnRampProvider) {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
-    CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    CoreHelperUtil.openHref(
+      OnRampController.state.selectedProvider?.url || provider.url,
+      'popupWindow',
+      'width=600,height=800,scrollbars=yes'
+    )
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_BUY_PROVIDER',
       properties: {
         provider: provider.name,
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
-    })
-  }
-
-  private async getCoinbaseOnRampURL() {
-    const address = AccountController.state.address
-    const network = ChainController.state.activeCaipNetwork
-
-    if (!address) {
-      throw new Error('No address found')
-    }
-
-    if (!network?.name) {
-      throw new Error('No network found')
-    }
-
-    const defaultNetwork =
-      ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP[
-        network.name as CoinbasePaySDKChainNameValues
-      ] ?? ConstantsUtil.WC_COINBASE_PAY_SDK_FALLBACK_CHAIN
-
-    const purchaseCurrency = OnRampController.state.purchaseCurrency
-    const assets = purchaseCurrency
-      ? [purchaseCurrency.symbol]
-      : OnRampController.state.purchaseCurrencies.map(currency => currency.symbol)
-
-    return await BlockchainApiController.generateOnRampURL({
-      defaultNetwork,
-      destinationWallets: [
-        { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets }
-      ],
-      partnerUserId: address,
-      purchaseAmount: OnRampController.state.purchaseAmount
     })
   }
 }

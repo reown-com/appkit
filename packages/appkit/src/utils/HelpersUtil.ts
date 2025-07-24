@@ -1,10 +1,32 @@
 import type { SessionTypes } from '@walletconnect/types'
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
-import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  ParseUtil,
+  type ParsedCaipAddress
+} from '@reown/appkit-common'
+import {
+  CoreHelperUtil,
+  EnsController,
+  type OptionsControllerState
+} from '@reown/appkit-controllers'
 
 import { solana, solanaDevnet } from '../networks/index.js'
+
+interface ListenWcProviderParams {
+  universalProvider: UniversalProvider
+  namespace: ChainNamespace
+  onConnect?: (parsedData: ParsedCaipAddress[]) => void
+  onDisconnect?: () => void
+  onAccountsChanged?: (parsedData: ParsedCaipAddress[]) => void
+  onChainChanged?: (chainId: number | string) => void
+  onDisplayUri?: (uri: string) => void
+}
 
 export const DEFAULT_METHODS = {
   solana: [
@@ -70,32 +92,32 @@ export const WcHelpersUtil = {
 
     const result = { ...baseNamespaces }
 
-    const namespacesToOverride = new Set<string>()
+    const namespacesToOverride = new Set<ChainNamespace>()
 
     if (overrides.methods) {
-      Object.keys(overrides.methods).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.methods).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.chains) {
-      Object.keys(overrides.chains).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.chains).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.events) {
-      Object.keys(overrides.events).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.events).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.rpcMap) {
       Object.keys(overrides.rpcMap).forEach(chainId => {
         const [ns] = chainId.split(':')
         if (ns) {
-          namespacesToOverride.add(ns)
+          namespacesToOverride.add(ns as ChainNamespace)
         }
       })
     }
 
     namespacesToOverride.forEach(ns => {
       if (!result[ns]) {
-        result[ns] = this.createDefaultNamespace(ns as ChainNamespace)
+        result[ns] = this.createDefaultNamespace(ns)
       }
     })
 
@@ -258,6 +280,81 @@ export const WcHelpersUtil = {
 
     // No match found
     return false
+  },
+
+  listenWcProvider({
+    universalProvider,
+    namespace,
+    onConnect,
+    onDisconnect,
+    onAccountsChanged,
+    onChainChanged,
+    onDisplayUri
+  }: ListenWcProviderParams) {
+    if (onConnect) {
+      universalProvider.on('connect', () => {
+        const accounts = WcHelpersUtil.getWalletConnectAccounts(universalProvider, namespace)
+
+        onConnect(accounts)
+      })
+    }
+
+    if (onDisconnect) {
+      universalProvider.on('disconnect', () => {
+        onDisconnect()
+      })
+    }
+
+    if (onAccountsChanged) {
+      universalProvider.on('session_event', (callbackData: unknown) => {
+        if (WcHelpersUtil.isSessionEventData(callbackData)) {
+          const { name, data } = callbackData.params.event
+
+          if (name === 'accountsChanged' && Array.isArray(data)) {
+            const parsedCaipAddresses = data
+              .filter(account => CoreHelperUtil.isCaipAddress(account))
+              .map(account => ParseUtil.parseCaipAddress(account))
+              .filter(caipAddress => caipAddress.chainNamespace === namespace)
+
+            onAccountsChanged(parsedCaipAddresses)
+          }
+        }
+      })
+    }
+
+    if (onChainChanged) {
+      universalProvider.on('chainChanged', (chainId: number | string) => {
+        onChainChanged(chainId)
+      })
+    }
+
+    if (onDisplayUri) {
+      universalProvider.on('display_uri', (uri: string) => {
+        onDisplayUri(uri)
+      })
+    }
+  },
+
+  getWalletConnectAccounts(universalProvider: UniversalProvider, namespace: ChainNamespace) {
+    const accountsAdded = new Set<string>()
+
+    const accounts = universalProvider?.session?.namespaces?.[namespace]?.accounts
+      ?.map(account => ParseUtil.parseCaipAddress(account as CaipAddress))
+      .filter(({ address }) => {
+        if (accountsAdded.has(address.toLowerCase())) {
+          return false
+        }
+
+        accountsAdded.add(address.toLowerCase())
+
+        return true
+      })
+
+    if (accounts && accounts.length > 0) {
+      return accounts
+    }
+
+    return []
   }
 }
 

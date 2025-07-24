@@ -3,10 +3,11 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 import { html } from 'lit'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
   OptionsController,
   RouterController
@@ -17,8 +18,8 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const WALLET_FEATURE_WIDGET_TEST_ID = 'w3m-account-wallet-features-widget'
+const WALLET_SWITCH_TEST_ID = 'wui-wallet-switch'
 const MOCK_ADDRESS = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
-const PROFILE_BUTTON = 'w3m-profile-button'
 
 const SERVICE_UNAVAILABLE_MESSAGE = 'Service Unavailable'
 
@@ -33,8 +34,8 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
+  beforeEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('it should not return any components if address is not provided in AccountController', () => {
@@ -52,6 +53,16 @@ describe('W3mAccountWalletFeaturesWidget', () => {
       ...AccountController.state,
       address: MOCK_ADDRESS
     })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        eip155: 'metamask.io'
+      } as Record<ChainNamespace, string | undefined>
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
+    })
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -63,15 +74,20 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     expect(HelpersUtil.getByTestId(element, WALLET_FEATURE_WIDGET_TEST_ID)).not.toBeNull()
   })
 
-  it('should redirect to AccountSettings view if has one account', async () => {
+  it('should redirect to ProfileWallets view', async () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      address: ACCOUNT.address
+      address: MOCK_ADDRESS
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address,
-      allAccounts: [ACCOUNT]
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        eip155: 'metamask.io'
+      } as Record<ChainNamespace, string | undefined>
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
     })
 
     const pushSpy = vi.spyOn(RouterController, 'push')
@@ -80,15 +96,15 @@ describe('W3mAccountWalletFeaturesWidget', () => {
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
     )
 
-    const profileButton = HelpersUtil.getByTestId(element, PROFILE_BUTTON)
+    const walletSwitch = HelpersUtil.getByTestId(element, WALLET_SWITCH_TEST_ID)
 
-    expect(profileButton).not.toBeNull()
+    expect(walletSwitch).not.toBeNull()
 
-    const button = HelpersUtil.querySelect(profileButton, 'button')
+    const button = HelpersUtil.querySelect(walletSwitch, 'button')
 
     button.click()
 
-    expect(pushSpy).toHaveBeenCalledWith('AccountSettings')
+    expect(pushSpy).toHaveBeenCalledWith('ProfileWallets')
   })
 
   it('should show tabs for eip155 namespace', async () => {
@@ -127,34 +143,6 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     await elementUpdated(element)
     const tabs = HelpersUtil.querySelect(element, 'wui-tabs')
     expect(tabs).toBeNull()
-  })
-
-  it('should redirect to Profile view if has more than one account', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address
-    })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address,
-      allAccounts: [ACCOUNT, ACCOUNT]
-    })
-
-    const pushSpy = vi.spyOn(RouterController, 'push')
-
-    const element: W3mAccountWalletFeaturesWidget = await fixture(
-      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
-    )
-
-    const profileButton = HelpersUtil.getByTestId(element, PROFILE_BUTTON)
-
-    expect(profileButton).not.toBeNull()
-
-    const button = HelpersUtil.querySelect(profileButton, 'button')
-
-    button.click()
-
-    expect(pushSpy).toHaveBeenCalledWith('Profile')
   })
 
   it('should clearInterval when fetchTokenBalance fails after 10 seconds', async () => {
@@ -219,7 +207,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -269,7 +257,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: false
         }
       })
@@ -294,7 +282,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -319,7 +307,7 @@ describe('wallet features visibility', () => {
           send: false
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -357,7 +345,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -407,7 +395,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -432,7 +420,7 @@ describe('wallet features visibility', () => {
           send: false
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -470,7 +458,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -520,7 +508,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })

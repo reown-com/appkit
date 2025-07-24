@@ -1,12 +1,19 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { BaseError } from '@reown/appkit-controllers'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { Connection } from '@reown/appkit-common'
+import type { BaseError, Connector } from '@reown/appkit-controllers'
 import {
   ChainController,
   ConnectionController,
+  ConnectionControllerUtil,
+  ConnectorController,
   EventsController,
-  ModalController
+  ModalController,
+  OptionsController,
+  RouterController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
@@ -14,11 +21,25 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 export class W3mConnectingExternalView extends W3mConnectingWidget {
   // -- Members ------------------------------------------- //
   private externalViewUnsubscribe: (() => void)[] = []
+  private connectionsByNamespace = ConnectionController.getConnections(this.connector?.chain)
+  private hasMultipleConnections = this.connectionsByNamespace.length > 0
+  private remoteFeatures = OptionsController.state.remoteFeatures
+  private currentActiveConnectorId =
+    ConnectorController.state.activeConnectorIds[this.connector?.chain as ChainNamespace]
 
   public constructor() {
     super()
+
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
+    }
+
+    const namespace = this.connector?.chain as ChainNamespace
+
+    if (this.isAlreadyConnected(this.connector)) {
+      this.secondaryBtnLabel = undefined
+      this.label = `This account is already linked, change your account in ${this.connector.name}`
+      this.secondaryLabel = `To link a new account, open ${this.connector.name} and switch to the account you want to link`
     }
 
     EventsController.sendEvent({
@@ -26,18 +47,28 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       event: 'SELECT_WALLET',
       properties: {
         name: this.connector.name ?? 'Unknown',
-        platform: 'browser'
+        platform: 'browser',
+        displayIndex: this.wallet?.display_index
       }
     })
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     this.isWalletConnect = false
     this.externalViewUnsubscribe.push(
-      ChainController.subscribeKey('activeCaipAddress', val => {
-        if (val) {
-          ModalController.close()
+      ConnectorController.subscribeKey('activeConnectorIds', val => {
+        const newActiveConnectorId = val[namespace]
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+
+        if (newActiveConnectorId !== this.currentActiveConnectorId) {
+          if (this.hasMultipleConnections && isMultiWalletEnabled) {
+            RouterController.replace('ProfileWallets')
+            SnackController.showSuccess('New Wallet Added')
+          } else {
+            ModalController.close()
+          }
         }
-      })
+      }),
+      ConnectionController.subscribeKey('connections', this.onConnectionsChange.bind(this))
     )
   }
 
@@ -50,6 +81,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     try {
       this.error = false
       if (this.connector) {
+        // No need to connect again if already connected
+        if (this.isAlreadyConnected(this.connector)) {
+          return
+        }
+
         /**
          * Coinbase SDK works with popups and popups requires user interaction to be opened since modern browsers block popups which triggered programmatically.
          * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase connector specifically when users select it.
@@ -61,7 +97,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
-            properties: { method: 'browser', name: this.connector.name || 'Unknown' }
+            properties: {
+              method: 'browser',
+              name: this.connector.name || 'Unknown',
+              caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+            }
           })
         }
       }
@@ -73,6 +113,57 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       })
       this.error = true
     }
+  }
+
+  private onConnectionsChange(connections: Map<ChainNamespace, Connection[]>) {
+    if (
+      this.connector?.chain &&
+      connections.get(this.connector.chain) &&
+      this.isAlreadyConnected(this.connector)
+    ) {
+      const newConnections = connections.get(this.connector.chain) ?? []
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+
+      if (newConnections.length === 0) {
+        RouterController.replace('Connect')
+      } else {
+        const accounts = ConnectionControllerUtil.getConnectionsByConnectorId(
+          this.connectionsByNamespace,
+          this.connector.id
+        ).flatMap(c => c.accounts)
+
+        const newAccounts = ConnectionControllerUtil.getConnectionsByConnectorId(
+          newConnections,
+          this.connector.id
+        ).flatMap(c => c.accounts)
+
+        if (newAccounts.length === 0) {
+          if (this.hasMultipleConnections && isMultiWalletEnabled) {
+            RouterController.replace('ProfileWallets')
+            SnackController.showSuccess('Wallet deleted')
+          } else {
+            ModalController.close()
+          }
+        } else {
+          const isAllAccountsSame = accounts.every(a =>
+            newAccounts.some(b => HelpersUtil.isLowerCaseMatch(a.address, b.address))
+          )
+
+          if (!isAllAccountsSame && isMultiWalletEnabled) {
+            RouterController.replace('ProfileWallets')
+          }
+        }
+      }
+    }
+  }
+
+  private isAlreadyConnected(connector: Connector) {
+    return (
+      Boolean(connector) &&
+      this.connectionsByNamespace.some(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
+      )
+    )
   }
 }
 

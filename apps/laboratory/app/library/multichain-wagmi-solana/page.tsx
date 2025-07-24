@@ -1,6 +1,5 @@
 'use client'
 
-import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
@@ -9,6 +8,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
@@ -28,16 +28,14 @@ const wagmiAdapter = new WagmiAdapter({
   projectId: ConstantsUtil.ProjectId
 })
 
-const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter()]
-})
+const solanaWeb3JsAdapter = new SolanaAdapter()
 
 const config = {
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   networks,
   defaultNetwork: mainnet,
-
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  customWallets: ConstantsUtil.CustomWallets
 }
 
 export default function MultiChainWagmiSolana() {
@@ -47,6 +45,8 @@ export default function MultiChainWagmiSolana() {
         <AppKitProvider config={config}>
           <AppKitButtons />
           <AppKitInfo />
+          <AppKitConnections namespace="eip155" title="EVM Connections" />
+          <AppKitConnections namespace="solana" title="Solana Connections" />
           <WagmiTests />
           <SolanaTests />
         </AppKitProvider>

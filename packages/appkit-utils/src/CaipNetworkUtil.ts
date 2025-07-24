@@ -148,14 +148,14 @@ export const CaipNetworksUtil = {
     const chainNamespace = this.getChainNamespace(caipNetwork)
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
 
-    const networkDefaultRpcUrl = caipNetwork.rpcUrls.default.http?.[0]
+    const networkDefaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
     const reownRpcUrl = this.getDefaultRpcUrl(caipNetwork, caipNetworkId, projectId)
 
     const chainDefaultRpcUrl =
       caipNetwork?.rpcUrls?.['chainDefault']?.http?.[0] || networkDefaultRpcUrl
     const customRpcUrlsOfNetwork = customRpcUrls?.[caipNetworkId]?.map(i => i.url) || []
 
-    const rpcUrls = [...customRpcUrlsOfNetwork, reownRpcUrl]
+    const rpcUrls = [...customRpcUrlsOfNetwork, ...(reownRpcUrl ? [reownRpcUrl] : [])]
     const rpcUrlsWithoutReown = [...customRpcUrlsOfNetwork]
 
     if (chainDefaultRpcUrl && !rpcUrlsWithoutReown.includes(chainDefaultRpcUrl)) {
