@@ -122,7 +122,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     this.unsubscribers.push(
       ...[
-        ConnectionController.subscribeKey('connections', () => this.requestUpdate()),
+        ConnectionController.subscribeKey('connections', () => this.onConnectionsChange()),
         ConnectionController.subscribeKey('recentConnections', () => this.requestUpdate()),
         ConnectorController.subscribeKey('activeConnectorIds', ids => {
           this.activeConnectorIds = ids
@@ -792,6 +792,24 @@ export class W3mProfileWalletsView extends LitElement {
         element.scrollHeight - element.scrollTop - element.offsetHeight
       ).toString()
     )
+  }
+
+  private onConnectionsChange() {
+    if (this.isMultiWalletEnabled()) {
+      if (this.namespace) {
+        const { connections } = ConnectionControllerUtil.getConnectionsData(this.namespace)
+
+        /*
+         * If no connections are available then prevent the user from navigating
+         * back to the profile screen to avoid showing a blank view
+         */
+        if (connections.length === 0) {
+          RouterController.reset('ProfileWallets')
+        }
+      }
+    }
+
+    this.requestUpdate()
   }
 }
 
