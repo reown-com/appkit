@@ -8,7 +8,7 @@ interface StatusRequest {
 export async function POST(request: NextRequest) {
   const { env } = getCloudflareContext()
 
-  const { sessionId } = (await request.json()) as StatusRequest
+  const { sessionId } = await request.json<StatusRequest>()
 
   if (!sessionId) {
     return NextResponse.json({ error: 'No sessionId provided' }, { status: 400 })
