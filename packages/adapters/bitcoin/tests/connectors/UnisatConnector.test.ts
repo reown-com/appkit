@@ -5,10 +5,11 @@ import { CoreHelperUtil } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { UnisatConnector } from '../../src/connectors/UnisatConnector'
+import type { UnisatConnector as UnisatConnectorTypes } from '../../src/connectors/UnisatConnector/types'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
 
 function mockUnisatWallet(): {
-  [K in keyof UnisatConnector.Wallet]: Mock<UnisatConnector.Wallet[K]>
+  [K in keyof UnisatConnectorTypes.Wallet]: Mock<UnisatConnectorTypes.Wallet[K]>
 } {
   return {
     requestAccounts: vi.fn(() => Promise.resolve(['mock_address'])),
@@ -211,7 +212,7 @@ describe('UnisatConnector', () => {
   })
 
   describe('getWallet', () => {
-    it.each(['binancew3w', 'bitget', 'unisat'] as UnisatConnector.Id[])(
+    it.each(['binancew3w', 'bitget', 'unisat'] as UnisatConnectorTypes.Id[])(
       'should return undefined if there is no %s wallet',
       id => {
         expect(
