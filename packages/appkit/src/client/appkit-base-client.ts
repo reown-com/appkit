@@ -991,7 +991,7 @@ export abstract class AppKitBaseClient {
 
       this.onDisconnectNamespace({
         chainNamespace,
-        closeModal: !isMultiWallet || (isMultiWallet && allConnections.length === 0)
+        closeModal: !isMultiWallet || allConnections.length === 0
       })
     })
 
