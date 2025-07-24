@@ -3,14 +3,17 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
+  type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
+  type Hex,
   ParseUtil
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
+import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -27,7 +30,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
-import { ChainController } from './ChainController.js'
+import { ChainController, type ChainControllerState } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
@@ -64,6 +67,7 @@ interface HandleActiveConnectionParams {
 interface DisconnectParams {
   id?: string
   namespace?: ChainNamespace
+  initialDisconnect?: boolean
 }
 
 export interface ConnectExternalOptions {
@@ -76,6 +80,7 @@ export interface ConnectExternalOptions {
   chainId?: number | string
   caipNetwork?: CaipNetwork
   socialUri?: string
+  preferredAccountType?: 'eoa' | 'smartAccount'
 }
 
 interface HandleAuthAccountSwitchParams {
@@ -86,6 +91,7 @@ interface HandleAuthAccountSwitchParams {
 export interface DisconnectParameters {
   id?: string
   chainNamespace?: ChainNamespace
+  initialDisconnect?: boolean
 }
 
 export interface ConnectionControllerClient {
@@ -107,8 +113,8 @@ export interface ConnectionControllerClient {
     pci: string
     permissions: unknown[]
     expiry: number
-    address: `0x${string}`
-  }) => Promise<`0x${string}`>
+    address: CaipAddress
+  }) => Promise<Hex>
   getCapabilities: (params: string) => Promise<unknown>
   walletGetAssets: (params: WalletGetAssetsParams) => Promise<WalletGetAssetsResponse>
   updateBalance: (chainNamespace: ChainNamespace) => void
@@ -172,7 +178,9 @@ const controller = {
   },
 
   initialize(adapters: ChainAdapter[]) {
-    const namespaces = adapters.map(a => a.namespace).filter(Boolean) as ChainNamespace[]
+    const namespaces = adapters
+      .filter((a): a is ChainAdapter & { namespace: ChainNamespace } => Boolean(a.namespace))
+      .map(a => a.namespace)
 
     ConnectionController.syncStorageConnections(namespaces)
   },
@@ -231,7 +239,11 @@ const controller = {
     }
   },
 
-  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
+  async connectExternal(
+    options: ConnectExternalOptions,
+    chain: ChainControllerState['activeChain'],
+    setChain = true
+  ) {
     const connectData = await ConnectionController._getClient()?.connectExternal?.(options)
 
     if (setChain) {
@@ -249,7 +261,14 @@ const controller = {
     }
   },
 
-  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType, namespace: ChainNamespace) {
+  async setPreferredAccountType(
+    accountType: W3mFrameTypes.AccountType,
+    namespace: ChainControllerState['activeChain']
+  ) {
+    if (!namespace) {
+      return
+    }
+
     ModalController.setLoading(true, ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (!authConnector) {
@@ -258,7 +277,15 @@ const controller = {
     AccountController.setPreferredAccountType(accountType, namespace)
     await authConnector.provider.setPreferredAccount(accountType)
     StorageUtil.setPreferredAccountTypes(
-      AccountController.state.preferredAccountTypes ?? { [namespace]: accountType }
+      Object.entries(ChainController.state.chains).reduce((acc, [key, _]) => {
+        const namespace = key as ChainNamespace
+        const accountType = getPreferredAccountType(namespace)
+        if (accountType !== undefined) {
+          ;(acc as Record<ChainNamespace, string>)[namespace] = accountType
+        }
+
+        return acc
+      }, {})
     )
     await ConnectionController.reconnectExternal(authConnector)
     ModalController.setLoading(false, ChainController.state.activeChain)
@@ -352,7 +379,8 @@ const controller = {
       event: 'CONNECT_SUCCESS',
       properties: {
         method: wcLinking ? 'mobile' : 'qrcode',
-        name: RouterController.state.data?.wallet?.name || 'Unknown'
+        name: RouterController.state.data?.wallet?.name || 'Unknown',
+        caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
       }
     })
   },
@@ -393,11 +421,12 @@ const controller = {
     state.isSwitchingConnection = isSwitchingConnection
   },
 
-  async disconnect({ id, namespace }: DisconnectParams = {}) {
+  async disconnect({ id, namespace, initialDisconnect }: DisconnectParams = {}) {
     try {
       await ConnectionController._getClient()?.disconnect({
         id,
-        chainNamespace: namespace
+        chainNamespace: namespace,
+        initialDisconnect
       })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
@@ -433,22 +462,24 @@ const controller = {
       throw new Error(`No connector found for connection: ${connection.connectorId}`)
     }
 
-    const connectData = await ConnectionController.connectExternal(
-      {
-        id: connector.id,
-        type: connector.type,
-        provider: connector.provider,
-        address,
-        chain: namespace
-      },
-      namespace
-    )
+    if (!isAuthConnector) {
+      const connectData = await ConnectionController.connectExternal(
+        {
+          id: connector.id,
+          type: connector.type,
+          provider: connector.provider,
+          address,
+          chain: namespace
+        },
+        namespace
+      )
 
-    if (isAuthConnector && address) {
+      return connectData?.address
+    } else if (isAuthConnector && address) {
       await ConnectionController.handleAuthAccountSwitch({ address, namespace })
     }
 
-    return connectData?.address
+    return address
   },
 
   async handleDisconnectedConnection({

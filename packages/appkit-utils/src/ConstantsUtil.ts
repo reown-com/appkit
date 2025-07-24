@@ -1,4 +1,4 @@
-import type { ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 export const ConstantsUtil = {
   /* Connector names */
@@ -14,7 +14,7 @@ export const ConstantsUtil = {
   XVERSE_CONNECTOR_NAME: 'Xverse Wallet',
   LEATHER_CONNECTOR_NAME: 'Leather',
 
-  EIP155: 'eip155' as ChainNamespace,
+  EIP155: CommonConstantsUtil.CHAIN.EVM,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',
   EIP6963_REQUEST_EVENT: 'eip6963:requestProvider',

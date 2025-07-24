@@ -1,11 +1,13 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import {
+  type Address,
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
+  type Hex,
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 import {
@@ -17,12 +19,13 @@ import {
   ConnectorController,
   CoreHelperUtil,
   type Tokens,
-  type WriteContractArgs
+  type WriteContractArgs,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { type CombinedProvider, type Provider } from '@reown/appkit-controllers'
 import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil } from '@reown/appkit-utils/ethers'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AppKitBaseClient } from '../client/appkit-base-client.js'
 import { ConnectionManager } from '../connections/ConnectionManager.js'
@@ -142,10 +145,31 @@ export abstract class AdapterBlueprint<
   public abstract setUniversalProvider(universalProvider: UniversalProvider): Promise<void>
 
   /**
+   * Handles the auth connected event.
+   * @param {W3mFrameTypes.Responses['FrameGetUserResponse']} user - The user response
+   */
+  private onAuthConnected({ accounts, chainId }: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+    const caipNetwork = this.getCaipNetworks()
+      .filter(n => n.chainNamespace === this.namespace)
+      .find(n => n.id.toString() === chainId?.toString())
+
+    if (accounts && caipNetwork) {
+      this.addConnection({
+        connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+        accounts,
+        caipNetwork
+      })
+    }
+  }
+
+  /**
    * Sets the auth provider.
    * @param {W3mFrameProvider} authProvider - The auth provider instance
    */
   public setAuthProvider(authProvider: W3mFrameProvider): void {
+    authProvider.onConnect(this.onAuthConnected.bind(this))
+    authProvider.onSocialConnected(this.onAuthConnected.bind(this))
+
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
@@ -328,9 +352,8 @@ export abstract class AdapterBlueprint<
 
     if (provider && providerType === 'AUTH') {
       const authProvider = provider as W3mFrameProvider
-      const preferredAccountType =
-        AccountController.state.preferredAccountTypes?.[caipNetwork.chainNamespace]
-      await authProvider.switchNetwork(caipNetwork.caipNetworkId)
+      const preferredAccountType = getPreferredAccountType(caipNetwork.chainNamespace)
+      await authProvider.switchNetwork({ chainId: caipNetwork.caipNetworkId })
       const user = await authProvider.getUser({
         chainId: caipNetwork.caipNetworkId,
         preferredAccountType
@@ -461,9 +484,7 @@ export abstract class AdapterBlueprint<
     params: AdapterBlueprint.GrantPermissionsParams
   ): Promise<unknown>
 
-  public abstract revokePermissions(
-    params: AdapterBlueprint.RevokePermissionsParams
-  ): Promise<`0x${string}`>
+  public abstract revokePermissions(params: AdapterBlueprint.RevokePermissionsParams): Promise<Hex>
 
   public abstract walletGetAssets(
     params: AdapterBlueprint.WalletGetAssetsParams
@@ -804,21 +825,21 @@ export namespace AdapterBlueprint {
     pci: string
     permissions: unknown[]
     expiry: number
-    address: `0x${string}`
+    address: CaipAddress
   }
 
   export type WalletGetAssetsParams = {
-    account: `0x${string}`
-    assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+    account: Address
+    assetFilter?: Record<Address, (Address | 'native')[]>
     assetTypeFilter?: ('NATIVE' | 'ERC20')[]
-    chainFilter?: `0x${string}`[]
+    chainFilter?: Address[]
   }
 
   export type WalletGetAssetsResponse = Record<
-    `0x${string}`,
+    Address,
     {
-      address: `0x${string}` | 'native'
-      balance: `0x${string}`
+      address: Address | 'native'
+      balance: Hex
       type: 'NATIVE' | 'ERC20'
       metadata: Record<string, unknown>
     }[]
@@ -832,6 +853,7 @@ export namespace AdapterBlueprint {
     gas?: bigint | number
     caipNetwork?: CaipNetwork
     provider?: AppKitConnector['provider']
+    tokenMint?: string
   }
 
   export type SendTransactionResult = {

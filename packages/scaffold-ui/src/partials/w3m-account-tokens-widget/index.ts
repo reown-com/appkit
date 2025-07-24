@@ -1,13 +1,13 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   EventsController,
   OptionsController,
-  RouterController
+  RouterController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -109,14 +109,12 @@ export class W3mAccountTokensWidget extends LitElement {
   }
 
   private onBuyClick() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_BUY_CRYPTO',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

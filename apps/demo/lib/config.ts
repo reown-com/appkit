@@ -1,5 +1,3 @@
-import { HuobiWalletAdapter } from '@solana/wallet-adapter-wallets'
-
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
@@ -63,9 +61,7 @@ export const networks = [
 
 // Adapters
 export const evmAdapter = new EthersAdapter()
-export const solanaAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter()]
-})
+export const solanaAdapter = new SolanaAdapter()
 export const bitcoinAdapter = new BitcoinAdapter({})
 export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
 

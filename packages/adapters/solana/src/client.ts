@@ -27,11 +27,15 @@ import {
 } from './providers/CoinbaseWalletProvider.js'
 import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProvider.js'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import { createSPLTokenTransaction } from './utils/createSPLTokenTransaction.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { watchStandard } from './utils/watchStandard.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
+  /**
+   * @deprecated Wallets are automatically recognized from the browser.
+   */
   wallets?: BaseWalletAdapter[]
   /**
    * Enable or disable registering WalletConnect as a Wallet Standard wallet.
@@ -197,12 +201,20 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const provider = params.provider as SolanaProvider
 
-    const transaction = await createSendTransaction({
-      provider,
-      connection,
-      to: params.to,
-      value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
-    })
+    const transaction = params.tokenMint
+      ? await createSPLTokenTransaction({
+          provider,
+          connection,
+          to: params.to,
+          amount: Number(params.value),
+          tokenMint: params.tokenMint
+        })
+      : await createSendTransaction({
+          provider,
+          connection,
+          to: params.to,
+          value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
+        })
 
     const result = await provider.sendTransaction(transaction, connection)
 
@@ -239,6 +251,20 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error('Provider not found')
     }
 
+    const connectorWithProvider = {
+      ...connector,
+      ...(params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+        ? {
+            /*
+             * For AuthProvider, we need to pass connector as the provider
+             * so the useAppKitProvider hook works properly when signing
+             * messages and transactions
+             */
+            provider: connector as CoreProvider
+          }
+        : {})
+    }
+
     const rpcUrl =
       params.rpcUrl ||
       this.getCaipNetworks()?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
@@ -258,7 +284,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.emit('accountChanged', {
         address: connection.account.address,
         chainId: connection.caipNetwork?.id,
-        connector
+        connector: connectorWithProvider
       })
 
       return {
@@ -280,7 +306,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     this.emit('accountChanged', {
       address,
       chainId: params.chainId as string,
-      connector
+      connector: connectorWithProvider
     })
 
     const isAuth = connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH

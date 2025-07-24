@@ -80,7 +80,6 @@ describe('OptionsController', () => {
   })
 
   it('should set remoteFeatures and call OptionsUtil.filterSocialsByPlatform if socials data exists', () => {
-    vi.clearAllMocks()
     const socialProviders = ['google' as SocialProvider]
     const filteredSocialProviders = ['google' as SocialProvider]
     vi.mocked(OptionsUtil.filterSocialsByPlatform).mockReturnValue(filteredSocialProviders)
@@ -93,5 +92,19 @@ describe('OptionsController', () => {
     expect(OptionsController.state.remoteFeatures?.socials).toEqual(filteredSocialProviders)
     expect(OptionsController.state.remoteFeatures?.activity).toBe(true)
     expect(OptionsUtil.filterSocialsByPlatform).toHaveBeenCalledWith(socialProviders)
+  })
+
+  it('should correctly set SIWX defaults for provided SIWX config', () => {
+    OptionsController.setSIWX({} as any)
+    const keys = Object.keys(
+      ConstantsUtil.SIWX_DEFAULTS
+    ) as (keyof typeof ConstantsUtil.SIWX_DEFAULTS)[]
+    keys.forEach(key => {
+      expect(OptionsController.state.siwx![key]).toEqual(ConstantsUtil.SIWX_DEFAULTS[key])
+    })
+
+    // Test setting signOutOnDisconnect to false
+    OptionsController.setSIWX({ signOutOnDisconnect: false } as any)
+    expect(OptionsController.state.siwx!.signOutOnDisconnect).toEqual(false)
   })
 })

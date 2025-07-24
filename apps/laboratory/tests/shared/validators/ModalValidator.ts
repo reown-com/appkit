@@ -96,6 +96,11 @@ export class ModalValidator {
     )
   }
 
+  async expectStatus(status: 'connecting' | 'connected' | 'disconnected') {
+    const connectButton = this.page.getByTestId('apkt-account-status')
+    await expect(connectButton, `Account status should be ${status}`).toHaveText(status)
+  }
+
   async expectActiveProfileWalletItemToExist() {
     const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
     await expect(activeProfileWalletItem).toBeVisible({
@@ -413,6 +418,15 @@ export class ModalValidator {
       timeout: 10000
     })
     await this.page.waitForTimeout(500)
+  }
+
+  async expectFrameTextToContain(text: string) {
+    await expect(
+      this.page.frameLocator('#w3m-iframe').getByText(text),
+      'AppKit iframe should be visible'
+    ).toBeVisible({
+      timeout: 10000
+    })
   }
 
   async expectAccountNameApproveTransaction(name: string) {

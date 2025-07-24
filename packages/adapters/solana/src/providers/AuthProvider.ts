@@ -5,9 +5,10 @@ import base58 from 'bs58'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
-  type RequestArguments
+  type RequestArguments,
+  SIWXUtil,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import type {
   AnyTransaction,
@@ -56,12 +57,14 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   public async connect(params: { chainId?: string; socialUri?: string } = {}) {
     const chainId = params.chainId || this.getActiveChain()?.id
 
-    const preferredAccountType = AccountController.state.preferredAccountTypes?.solana
+    const preferredAccountType = getPreferredAccountType('solana')
 
-    await this.provider.connect({
+    await SIWXUtil.authConnectorAuthenticate({
+      authConnector: this.provider,
       chainId: withSolanaNamespace(chainId),
       socialUri: params.socialUri,
-      preferredAccountType
+      preferredAccountType,
+      chainNamespace: ConstantsUtil.CHAIN.SOLANA
     })
 
     if (!this.publicKey) {

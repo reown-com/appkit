@@ -18,14 +18,13 @@ import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   type ConnectionControllerClient,
   CoreHelperUtil,
   type NetworkControllerClient,
-  type PreferredAccountTypes,
   type SocialProvider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -87,6 +86,7 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   customNetworkImageUrls: {}
 })
 const mockWagmiConfig = {
+  chains: mockCaipNetworks,
   connectors: [
     {
       id: 'test-connector',
@@ -153,6 +153,7 @@ describe('WagmiAdapter', () => {
       networks: mockNetworks,
       projectId: mockProjectId
     })
+    adapter.wagmiConfig = mockWagmiConfig
     ChainController.initialize([adapter], mockCaipNetworks, {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient
@@ -391,7 +392,9 @@ describe('WagmiAdapter', () => {
         }
       } as unknown as wagmiCore.Connector
 
-      await (adapter as any).addWagmiConnector(mockConnector)
+      await (adapter as any).addWagmiConnector(mockConnector, {
+        enableEIP6963: true
+      })
 
       expect(adapter.connectors).toStrictEqual([
         {
@@ -852,8 +855,7 @@ describe('WagmiAdapter', () => {
               decimals: mockCaipNetworks[0].nativeCurrency.decimals
             },
             rpcUrls: [mockCaipNetworks[0].rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
-            blockExplorerUrls: [mockCaipNetworks[0].blockExplorers?.default.url ?? ''],
-            iconUrls: [mockCaipNetworks[0].assets?.imageUrl ?? '']
+            blockExplorerUrls: [mockCaipNetworks[0].blockExplorers?.default.url ?? '']
           }
         })
       )
@@ -862,9 +864,7 @@ describe('WagmiAdapter', () => {
     it('should respect preferred account type when switching network with AUTH provider', async () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
         ...AccountController.state,
-        preferredAccountTypes: {
-          eip155: 'smartAccount'
-        } as PreferredAccountTypes
+        preferredAccountType: 'smartAccount'
       })
 
       await adapter.switchNetwork({
@@ -877,7 +877,7 @@ describe('WagmiAdapter', () => {
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
       })
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
     })
   })
 
@@ -962,7 +962,7 @@ describe('WagmiAdapter', () => {
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123',
+        address: 'eip155:1:0x123' as CaipAddress,
         permissions: ['eth_accounts']
       }
 
@@ -983,7 +983,7 @@ describe('WagmiAdapter', () => {
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123' as `0x${string}`,
+        address: 'eip155:1:0x123' as CaipAddress,
         permissions: ['eth_accounts']
       }
 

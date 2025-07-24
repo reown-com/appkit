@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-tag'
-import type { WuiTag } from '@reown/appkit-ui/src/composites/wui-tag'
+import '@reown/appkit-ui/wui-tag'
+import type { WuiTag } from '@reown/appkit-ui/wui-tag'
 
 import { tagOptions } from '../../utils/PresetUtils'
 

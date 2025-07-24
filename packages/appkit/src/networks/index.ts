@@ -7,4 +7,5 @@ export * from './bitcoin.js'
 export * from './utils.js'
 
 // -- Types ---------------------------------------------------------------
-export type { AppKitNetwork } from '@reown/appkit-common'
+export type { AppKitNetwork, ChainNamespace } from '@reown/appkit-common'
+export { AVAILABLE_NAMESPACES } from '@reown/appkit-common'

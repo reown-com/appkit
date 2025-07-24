@@ -207,7 +207,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -257,7 +257,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: false
         }
       })
@@ -282,7 +282,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -307,7 +307,7 @@ describe('wallet features visibility', () => {
           send: false
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -345,7 +345,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -395,7 +395,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -420,7 +420,7 @@ describe('wallet features visibility', () => {
           send: false
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -458,7 +458,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })
@@ -508,7 +508,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['coinbase'],
+          onramp: ['meld'],
           swaps: ['1inch']
         }
       })

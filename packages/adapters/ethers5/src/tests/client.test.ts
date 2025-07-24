@@ -3,13 +3,18 @@ import { providers } from 'ethers'
 import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcHelpersUtil } from '@reown/appkit'
-import { ConstantsUtil as CommonConstantsUtil, Emitter } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  ConstantsUtil as CommonConstantsUtil,
+  Emitter
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  type Provider
+  type Provider,
+  SIWXUtil
 } from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -57,7 +62,7 @@ const mockWalletConnectProvider = {
 } as unknown as UniversalProvider
 
 const mockAuthProvider = {
-  connect: vi.fn(),
+  connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
   getUser: vi.fn()
@@ -267,9 +272,7 @@ describe('Ethers5Adapter', () => {
     it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
         ...AccountController.state,
-        preferredAccountTypes: {
-          eip155: 'smartAccount'
-        }
+        preferredAccountType: 'smartAccount'
       })
 
       const ethers5Adapter = new Ethers5Adapter()
@@ -457,6 +460,36 @@ describe('Ethers5Adapter', () => {
         'Disconnect failed'
       )
       expect(revokePermissionsSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('Ethers5Adapter -reconnect', () => {
+    it('should call SIWXUtil.authConnectorAuthenticate when reconnecting with AUTH provider', async () => {
+      const ethers5Adapter = new Ethers5Adapter()
+      const authConnectorAuthenticateSpy = vi.spyOn(SIWXUtil, 'authConnectorAuthenticate')
+
+      Object.defineProperty(ethers5Adapter, 'connectors', {
+        value: [
+          {
+            id: 'ID_AUTH',
+            type: 'AUTH',
+            provider: mockAuthProvider
+          }
+        ]
+      })
+
+      await ethers5Adapter.reconnect({
+        id: 'ID_AUTH',
+        type: 'AUTH',
+        chainId: 1
+      })
+
+      expect(authConnectorAuthenticateSpy).toHaveBeenCalledWith({
+        authConnector: mockAuthProvider,
+        chainId: 1,
+        preferredAccountType: 'smartAccount',
+        chainNamespace: 'eip155'
+      })
     })
   })
 
@@ -784,6 +817,25 @@ describe('Ethers5Adapter', () => {
     })
   })
 
+  it('should set balance to zero if balance call fails', async () => {
+    vi.mocked(providers.JsonRpcProvider).mockImplementation(
+      () =>
+        ({
+          getBalance: vi.fn().mockRejectedValue(new Error('Failed to get balance'))
+        }) as any
+    )
+
+    const result = await adapter.getBalance({
+      address: '0x123',
+      chainId: 1
+    })
+
+    expect(result).toEqual({
+      balance: '0.00',
+      symbol: 'ETH'
+    })
+  })
+
   it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
     const mockBalance = BigInt(1500000000000000000)
     // delay the response to simulate http request latency
@@ -833,7 +885,7 @@ describe('Ethers5Adapter', () => {
         providerType: 'AUTH'
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
@@ -954,14 +1006,12 @@ describe('Ethers5Adapter', () => {
     })
 
     it('should call wallet_revokePermissions', async () => {
-      vi.mocked(mockProvider.request).mockImplementation(() =>
-        Promise.resolve('0x123' as `0x${string}`)
-      )
+      vi.mocked(mockProvider.request).mockImplementation(() => Promise.resolve('0x123'))
 
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
-        address: '0x123' as `0x${string}`,
+        address: 'eip155:1:0x123' as CaipAddress,
         permissions: ['eth_accounts']
       }
 

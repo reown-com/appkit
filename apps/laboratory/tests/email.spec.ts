@@ -128,6 +128,51 @@ emailTest('it should show loading on page refresh', async () => {
   await validator.expectAccountButtonReady()
 })
 
+emailTest(
+  'it should still be able to request transactions after aborting request',
+  async ({ library }) => {
+    // Only run on evm
+    if (['bitcoin', 'solana'].includes(library)) {
+      test.skip()
+    }
+
+    await page.sign()
+    await page.closeModal()
+    await validator.expectRejectedSign()
+
+    await page.sendCalls()
+    await validator.expectFrameTextToContain('AppKit Lab requests multiple transactions')
+    await page.closeModal()
+  }
+)
+
+emailTest('it should switch account and network correctly', async ({ library }) => {
+  // Only run on evm and solana
+  if (library === 'bitcoin') {
+    test.skip()
+  } else if (library === 'solana') {
+    await page.switchNetwork('Solana Testnet')
+    await validator.expectSwitchedNetworkOnNetworksView('Solana Testnet')
+    await page.closeModal()
+    await validator.expectNetworkButton('Solana Testnet')
+  } else {
+    const currentAddress = await page.getAddress()
+
+    await page.switchNetwork('Base')
+    await validator.expectSwitchedNetworkOnNetworksView('Base')
+    await page.closeModal()
+    await validator.expectNetworkButton('Base')
+    await page.openProfileWalletsView()
+
+    await validator.expectActiveConnectionsFromProfileWalletsCount(1)
+    const [secondAddress] = await page.getActiveConnectionsAddresses()
+    await page.switchAccountByAddress(secondAddress as string)
+    await page.closeModal()
+    await validator.expectAccountSwitched(currentAddress)
+    await validator.expectNetworkButton('Base')
+  }
+})
+
 emailTest('it should disconnect correctly', async () => {
   await page.goToProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
@@ -140,6 +185,6 @@ emailTest('it should abort embedded wallet flow if it takes more than 2 minutes'
   await page.page.context().setOffline(true)
   await page.loginWithEmail(tempEmail, false)
   await page.page.clock.runFor(120_000)
-  await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
+  await validator.expectAlertBarText('Wallet Request Timeout')
   await page.page.context().setOffline(false)
 })

@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
+import type { Address, Hex } from '@reown/appkit-common'
+
 import type { SmartSessionGrantPermissionsRequest } from '../../../exports/smart-session/index.js'
 import { validateRequest } from '../../../src/smart-session/helper/index.js'
 import { ERROR_MESSAGES } from '../../../src/smart-session/schema/index.js'
@@ -41,7 +43,7 @@ describe('Common field validation', () => {
 
   describe('ChainIdSchema Validation', () => {
     it('should pass for valid chainId', () => {
-      const request = { ...testRequest, chainId: '0x1' as `0x${string}` }
+      const request = { ...testRequest, chainId: '0x1' as Hex }
       expect(() => validateRequest(request)).not.toThrow()
     })
 
@@ -66,13 +68,13 @@ describe('Common field validation', () => {
     })
 
     it('should handle chainIds with leading zeros', () => {
-      const request = { ...testRequest, chainId: '0x01' as `0x${string}` }
+      const request = { ...testRequest, chainId: '0x01' as Hex }
       expect(() => validateRequest(request)).not.toThrow()
     })
 
     it('should be case insensitive for hex characters', () => {
-      const request1 = { ...testRequest, chainId: '0xaB1' as `0x${string}` }
-      const request2 = { ...testRequest, chainId: '0xAb1' as `0x${string}` }
+      const request1 = { ...testRequest, chainId: '0xaB1' as Hex }
+      const request2 = { ...testRequest, chainId: '0xAb1' as Hex }
       expect(() => validateRequest(request1)).not.toThrow()
       expect(() => validateRequest(request2)).not.toThrow()
     })
@@ -82,7 +84,7 @@ describe('Common field validation', () => {
     it('should pass for valid Ethereum address', () => {
       const request = {
         ...testRequest,
-        address: '0x1234567890123456789012345678901234567890' as `0x${string}`
+        address: '0x1234567890123456789012345678901234567890' as Address
       }
       expect(() => validateRequest(request)).not.toThrow()
     })
@@ -95,7 +97,7 @@ describe('Common field validation', () => {
     it('should fail for address not starting with 0x', () => {
       const request = {
         ...testRequest,
-        address: '1234567890123456789012345678901234567890' as `0x${string}`
+        address: '1234567890123456789012345678901234567890' as Address
       }
       expect(() => validateRequest(request)).toThrow(ERROR_MESSAGES.INVALID_ADDRESS)
     })
@@ -121,7 +123,7 @@ describe('Common field validation', () => {
     })
 
     it('should be case insensitive for hex characters', () => {
-      const request = { ...testRequest, address: ('0xAbCd' + '0'.repeat(36)) as `0x${string}` }
+      const request = { ...testRequest, address: ('0xAbCd' + '0'.repeat(36)) as Address }
       expect(() => validateRequest(request)).not.toThrow()
     })
 
@@ -190,7 +192,7 @@ describe('Common field validation', () => {
         ...testRequest,
         signer: {
           type: 'key',
-          data: { type: 'secp256k1', publicKey: '0x1234567890abcdef' as `0x${string}` }
+          data: { type: 'secp256k1', publicKey: '0x1234567890abcdef' as Address }
         } as any
       }
       expect(() => validateRequest(request)).toThrow()
@@ -262,7 +264,7 @@ describe('Common field validation', () => {
         signer: {
           type: 'keys',
           data: {
-            keys: [{ type: 'invalid', publicKey: '0x1234567890abcdef' as `0x${string}` }]
+            keys: [{ type: 'invalid', publicKey: '0x1234567890abcdef' as Address }]
           }
         } as any
       }
@@ -275,7 +277,7 @@ describe('Common field validation', () => {
         signer: {
           type: 'keys',
           data: {
-            keys: [{ type: 'secp256k1', publicKey: 'invalid' as `0x${string}` }]
+            keys: [{ type: 'secp256k1', publicKey: 'invalid' as Hex }]
           }
         } as MultiKeySigner
       }

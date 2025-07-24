@@ -1,4 +1,5 @@
 import {
+  type Address,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace,
@@ -6,6 +7,7 @@ import {
   ContractUtil
 } from '@reown/appkit-common'
 import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
+import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'
@@ -59,9 +61,9 @@ export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promi
 }
 
 interface EvmPaymentParams {
-  recipient: `0x${string}`
+  recipient: Address
   amount: number | string
-  fromAddress?: `0x${string}`
+  fromAddress?: Address
 }
 
 export async function processEvmNativePayment(
@@ -112,7 +114,7 @@ export async function processEvmErc20Payment(
       'fromAddress is required for ERC20 EVM payments.'
     )
   }
-  const tokenAddress = paymentAsset.asset as `0x${string}`
+  const tokenAddress = paymentAsset.asset as Address
   const recipientAddress = params.recipient
   const decimals = Number(paymentAsset.metadata.decimals)
   const amountBigInt = ConnectionController.parseUnits(params.amount.toString(), decimals)
@@ -131,4 +133,62 @@ export async function processEvmErc20Payment(
   })
 
   return txResponse ?? undefined
+}
+
+interface SolanaPaymentParams {
+  recipient: string
+  amount: number | string
+  fromAddress?: string
+  tokenMint?: string
+}
+
+export async function processSolanaPayment(
+  chainNamespace: ChainNamespace,
+  params: SolanaPaymentParams
+): Promise<string | undefined> {
+  if (chainNamespace !== ConstantsUtil.CHAIN.SOLANA) {
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
+  }
+
+  if (!params.fromAddress) {
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG,
+      'fromAddress is required for Solana payments.'
+    )
+  }
+
+  const amountValue = typeof params.amount === 'string' ? parseFloat(params.amount) : params.amount
+  if (isNaN(amountValue) || amountValue <= 0) {
+    throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, 'Invalid payment amount.')
+  }
+
+  try {
+    const provider = ProviderUtil.getProvider(chainNamespace)
+    if (!provider) {
+      throw new AppKitPayError(
+        AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
+        'No Solana provider available.'
+      )
+    }
+    const txResponse = await ConnectionController.sendTransaction({
+      chainNamespace: ConstantsUtil.CHAIN.SOLANA,
+      to: params.recipient,
+      value: amountValue,
+      tokenMint: params.tokenMint
+    })
+
+    if (!txResponse) {
+      throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR, 'Transaction failed.')
+    }
+
+    return txResponse
+  } catch (error) {
+    if (error instanceof AppKitPayError) {
+      throw error
+    }
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
+      `Solana payment failed: ${error}`
+    )
+  }
 }

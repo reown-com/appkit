@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   type AccountControllerState,
@@ -97,7 +97,7 @@ describe('AppKitCore', () => {
     const mockParams = {
       address: '0x123',
       chainId: '1',
-      chainNamespace: 'eip155' as ChainNamespace
+      chainNamespace: ConstantsUtil.CHAIN.EVM
     }
 
     beforeEach(() => {

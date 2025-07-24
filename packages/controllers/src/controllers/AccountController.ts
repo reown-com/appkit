@@ -8,6 +8,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
   ConnectedWalletInfo,
+  NamespaceTypeMap,
   PreferredAccountTypes,
   SocialProvider,
   User
@@ -34,7 +35,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   shouldUpdateToAddress?: string
   connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountTypes?: PreferredAccountTypes
+  preferredAccountType?: NamespaceTypeMap[keyof NamespaceTypeMap]
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
@@ -100,7 +101,11 @@ const controller = {
   },
 
   getCaipAddress(chain: ChainNamespace | undefined) {
-    return ChainController.getAccountProp('caipAddress', chain)
+    if (!chain) {
+      return undefined
+    }
+
+    return ChainController.state.chains.get(chain)?.accountState?.caipAddress
   },
 
   setCaipAddress(
@@ -166,13 +171,21 @@ const controller = {
   },
 
   addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.set(address, label)
     ChainController.setAccountProp('addressLabels', map, chain)
   },
 
   removeAddressLabel(address: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.delete(address)
     ChainController.setAccountProp('addressLabels', map, chain)
   },
@@ -188,18 +201,7 @@ const controller = {
     preferredAccountType: PreferredAccountTypes[ChainNamespace],
     chain: ChainNamespace
   ) {
-    ChainController.setAccountProp(
-      'preferredAccountTypes',
-      {
-        ...state.preferredAccountTypes,
-        [chain]: preferredAccountType
-      },
-      chain
-    )
-  },
-
-  setPreferredAccountTypes(preferredAccountTypes: PreferredAccountTypes) {
-    state.preferredAccountTypes = preferredAccountTypes
+    ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   },
 
   setSocialProvider(
