@@ -1,15 +1,16 @@
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
-import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
-import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
-import { AddressPurpose } from '../utils/BitcoinConnector.js'
-import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-import { UnitsUtil } from '../utils/UnitsUtil.js'
+import { MethodNotSupportedError } from '../../errors/MethodNotSupportedError.js'
+import { AddressPurpose } from '../../utils/BitcoinConnector.js'
+import { ProviderEventEmitter } from '../../utils/ProviderEventEmitter.js'
+import { UnitsUtil } from '../../utils/UnitsUtil.js'
+import type { UnisatConnector as UnisatConnectorTypes } from './types.js'
 
 export class UnisatConnector extends ProviderEventEmitter implements BitcoinConnector {
-  public id: UnisatConnector.Id
+  public id: UnisatConnectorTypes.Id
   public name
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
@@ -17,7 +18,7 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
 
   public readonly provider = this
 
-  private readonly wallet: UnisatConnector.Wallet
+  private readonly wallet: UnisatConnectorTypes.Wallet
   private readonly requestedChains: CaipNetwork[] = []
   private readonly getActiveNetwork: () => CaipNetwork | undefined
 
@@ -28,7 +29,7 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
     requestedChains,
     getActiveNetwork,
     imageUrl
-  }: UnisatConnector.ConstructorParams) {
+  }: UnisatConnectorTypes.ConstructorParams) {
     super()
     this.id = id
     this.name = name
@@ -155,22 +156,25 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
     })
   }
 
-  public static getWallet(params: UnisatConnector.GetWalletParams): UnisatConnector | undefined {
+  public static getWallet(
+    params: UnisatConnectorTypes.GetWalletParams
+  ): UnisatConnector | undefined {
     if (!CoreHelperUtil.isClient()) {
       return undefined
     }
 
-    let wallet: UnisatConnector.Wallet | undefined = undefined
+    let wallet: UnisatConnectorTypes.Wallet | undefined = undefined
+    const unisatWindow = window as UnisatConnectorTypes.UnisatWindow
 
     switch (params.id) {
       case 'unisat':
-        wallet = window?.unisat
+        wallet = unisatWindow?.unisat
         break
       case 'bitget':
-        wallet = window?.bitkeep?.unisat
+        wallet = unisatWindow?.bitget?.unisat
         break
       case 'binancew3w':
-        wallet = window?.binancew3w?.bitcoin
+        wallet = unisatWindow?.binancew3w?.bitcoin
         break
       default:
         throw new Error(`Unsupported wallet id: ${params.id}`)
@@ -187,7 +191,7 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
     return this.wallet.getPublicKey()
   }
 
-  private getNetwork(caipNetwork: string): UnisatConnector.Chain {
+  private getNetwork(caipNetwork: string): UnisatConnectorTypes.Chain {
     switch (caipNetwork) {
       case bitcoin.caipNetworkId:
         return 'BITCOIN_MAINNET'
@@ -197,74 +201,4 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
         throw new Error('UnisatConnector: unsupported network')
     }
   }
-}
-
-export namespace UnisatConnector {
-  export type Chain = 'BITCOIN_MAINNET' | 'BITCOIN_TESTNET' | 'FRACTAL_BITCOIN_MAINNET'
-  export type Network = 'livenet' | 'testnet'
-  export type Id = 'unisat' | 'bitget' | 'binancew3w'
-
-  export type Wallet = {
-    /*
-     * This interface doesn't include all available methods
-     * Reference: https://www.okx.com/web3/build/docs/sdks/chains/bitcoin/provider
-     */
-
-    requestAccounts: () => Promise<string[]>
-    getPublicKey: () => Promise<string>
-    sendBitcoin: (
-      to: string,
-      value: number,
-      options?: { feeRate: number; memo?: string; memos?: string[] }
-    ) => Promise<string>
-    signPsbt: (
-      psbtHex: string,
-      options?: {
-        autoFinalized?: boolean
-        toSignInputs: Array<
-          | {
-              index: number
-              address: string
-              sighashTypes?: number[]
-              disableTweakSigner?: boolean
-              useTweakedSigner?: boolean
-            }
-          | {
-              index: number
-              publicKey: string
-              sighashTypes?: number[]
-              disableTweakSigner?: boolean
-              useTweakedSigner?: boolean
-            }
-        >
-      }
-    ) => Promise<string>
-    switchChain(chain: Chain): Promise<{ enum: Chain; name: string; network: Network }>
-    getAccounts(): Promise<string[]>
-    signMessage(signStr: string, type?: 'ecdsa' | 'bip322-simple'): Promise<string>
-    pushPsbt(psbtHex: string): Promise<string>
-    on(event: string, listener: (param?: unknown) => void): void
-    removeListener(event: string, listener: (param?: unknown) => void): void
-  }
-
-  export interface Window {
-    unisat?: Wallet
-    bitkeep?: {
-      unisat?: Wallet
-    }
-    binancew3w?: {
-      bitcoin?: Wallet
-    }
-  }
-
-  export type ConstructorParams = {
-    id: Id
-    name: string
-    wallet: Wallet
-    requestedChains: CaipNetwork[]
-    getActiveNetwork: () => CaipNetwork | undefined
-    imageUrl: string
-  }
-
-  export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
 }
