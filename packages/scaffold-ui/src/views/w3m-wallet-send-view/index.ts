@@ -46,8 +46,12 @@ export class W3mWalletSendView extends LitElement {
 
   public constructor() {
     super()
-    this.fetchNetworkPrice()
-    this.fetchBalances()
+    // Only load balances and network price if a token is set, else they will be loaded in the select token view
+    if (this.token) {
+      this.fetchBalances()
+      this.fetchNetworkPrice()
+    }
+
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {

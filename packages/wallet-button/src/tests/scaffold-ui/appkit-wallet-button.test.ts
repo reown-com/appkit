@@ -6,6 +6,7 @@ import { html } from 'lit'
 import { ParseUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  type Connector,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
@@ -30,6 +31,8 @@ const MetaMask = {
 const WALLET_BUTTON_SOCIAL = 'apkt-wallet-button-social'
 const WALLET_BUTTON = 'apkt-wallet-button'
 const WALLET_BUTTON_EXTERNAL = 'apkt-wallet-button-external'
+
+const NAMESPACES = ['eip155', 'solana', 'bip122'] as const
 
 describe('AppKitWalletButton', () => {
   beforeAll(() => {
@@ -266,5 +269,107 @@ describe('AppKitWalletButton', () => {
     expect(walletButtonExternal.getAttribute('error')).toBeNull()
     expect(walletButtonExternal.getAttribute('loading')).toBeNull()
     expect(walletButtonExternal.getAttribute('disabled')).not.toBeNull()
+  })
+
+  test('should call connectSocial with correct namespace (eip155, solana and bip122)', async () => {
+    for (const namespace of NAMESPACES) {
+      const connectSocialSpy = vi
+        .spyOn(ConnectorControllerUtil, 'connectSocial')
+        .mockResolvedValueOnce({
+          chainNamespace: namespace,
+          chainId: 1,
+          address: 'dummy-address'
+        })
+
+      const element: AppKitWalletButton = await fixture(
+        html`<appkit-wallet-button wallet="google" namespace="${namespace}"></appkit-wallet-button>`
+      )
+      const walletButtonSocial = HelpersUtil.getByTestId(element, WALLET_BUTTON_SOCIAL)
+      await walletButtonSocial.click()
+
+      expect(connectSocialSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          social: 'google',
+          namespace
+        })
+      )
+    }
+  })
+
+  test('should call connectExternal with connector having correct namespace (eip155, solana and bip122)', async () => {
+    for (const namespace of NAMESPACES) {
+      vi.spyOn(ConnectorController, 'getConnector').mockReturnValue({
+        id: 'metamask',
+        type: 'ANNOUNCED' as const,
+        name: 'MetaMask',
+        explorerId: MetaMask.id,
+        imageUrl: 'data:image/png;base64,mocked...',
+        chain: namespace
+      })
+      const connectExternalSpy = vi
+        .spyOn(ConnectorControllerUtil, 'connectExternal')
+        .mockResolvedValueOnce({
+          chainNamespace: namespace,
+          chainId: 1,
+          address: 'dummy-address'
+        })
+
+      const element: AppKitWalletButton = await fixture(
+        html`<appkit-wallet-button
+          wallet="metamask"
+          namespace="${namespace}"
+        ></appkit-wallet-button>`
+      )
+      const walletButtonExternal = HelpersUtil.getByTestId(element, WALLET_BUTTON_EXTERNAL)
+      await walletButtonExternal.click()
+
+      expect(connectExternalSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'metamask',
+          chain: namespace
+        })
+      )
+    }
+  })
+
+  test('should call connectWalletConnect with connector having correct namespace (eip155, solana and bip122)', async () => {
+    for (const namespace of NAMESPACES) {
+      const walletConnectConnector = {
+        id: 'walletConnect',
+        type: 'WALLET_CONNECT' as const,
+        name: 'WalletConnect',
+        chain: namespace
+      } as Connector
+
+      vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(walletConnectConnector)
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([
+        walletConnectConnector
+      ])
+      const connectWalletConnectSpy = vi
+        .spyOn(ConnectorControllerUtil, 'connectWalletConnect')
+        .mockResolvedValueOnce({
+          chainNamespace: namespace,
+          chainId: 1,
+          address: 'dummy-address'
+        })
+
+      const element: AppKitWalletButton = await fixture(
+        html`<appkit-wallet-button
+          wallet="walletConnect"
+          namespace="${namespace}"
+        ></appkit-wallet-button>`
+      )
+      const walletButton = HelpersUtil.getByTestId(element, WALLET_BUTTON)
+      await walletButton.click()
+
+      expect(connectWalletConnectSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          connector: expect.objectContaining({
+            id: 'walletConnect',
+            chain: namespace
+          })
+        })
+      )
+    }
   })
 })

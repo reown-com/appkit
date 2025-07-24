@@ -179,8 +179,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     const okxConnector = OKXConnector.getWallet({
       requestedChains: this.networks,
-      getActiveNetwork
+      getActiveNetwork,
+      requestedCaipNetworkId: getActiveNetwork()?.caipNetworkId
     })
+
     if (okxConnector) {
       this.addConnector(okxConnector)
     }

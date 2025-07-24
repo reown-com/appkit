@@ -22,11 +22,10 @@ export type OnOtpSubmitFn = (otp: string) => Promise<void>
 export type OnOtpResendFn = (email: string) => Promise<void>
 export type OnStartOverFn = () => void
 
-// -- Helpers ------------------------------------------- //
-const OTP_LENGTH = 6
-
 @customElement('w3m-email-otp-widget')
 export class W3mEmailOtpWidget extends LitElement {
+  public static readonly OTP_LENGTH = 6
+
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
@@ -38,7 +37,7 @@ export class W3mEmailOtpWidget extends LitElement {
 
   @state() private error = ''
 
-  private otp = ''
+  protected otp = ''
 
   public email = RouterController.state.data?.email
 
@@ -137,7 +136,7 @@ export class W3mEmailOtpWidget extends LitElement {
     try {
       if (!this.loading) {
         this.otp = event.detail
-        if (this.authConnector && this.otp.length === OTP_LENGTH) {
+        if (this.shouldSubmitOnOtpChange()) {
           this.loading = true
           await this.onOtpSubmit?.(this.otp)
         }
@@ -185,6 +184,10 @@ export class W3mEmailOtpWidget extends LitElement {
       title: `Didn't receive it?`,
       action: `Resend ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : 'Code'}`
     }
+  }
+
+  protected shouldSubmitOnOtpChange() {
+    return this.authConnector && this.otp.length === W3mEmailOtpWidget.OTP_LENGTH
   }
 }
 
