@@ -1,5 +1,5 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare'
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { Session } from '@/lib/types'
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       } as Session)
     )
 
-    return new Response('Session created', { status: 200 })
+    return NextResponse.json({ message: 'Session created' }, { status: 200 })
   }
 
   const session = JSON.parse(sessionData) as Session
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   const { status } = (await request.json()) as UpdateSessionRequest
 
   if (status !== 'success' && status !== 'error') {
-    return new Response('Invalid status provided', { status: 400 })
+    return NextResponse.json({ error: 'Invalid status provided' }, { status: 400 })
   }
 
   session.status = status
@@ -47,5 +47,5 @@ export async function POST(request: NextRequest) {
 
   await env.SESSIONID_STORAGE.put(sessionId, JSON.stringify(session))
 
-  return new Response('Session updated', { status: 200 })
+  return NextResponse.json({ message: 'Session updated' }, { status: 200 })
 }
