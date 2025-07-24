@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ChainController } from '@reown/appkit-controllers'
 import { mainnet } from '@reown/appkit/networks'
 
-import { walletConnect } from '../connectors/UniversalConnector'
+import { walletConnect } from '../connectors/WalletConnectConnector'
 import {
   mockAddress,
   mockAppKit,
@@ -37,7 +37,7 @@ const mockEmitter = {
   removeListener: vi.fn()
 }
 
-describe('UniversalConnector', () => {
+describe('WalletConnectConnector', () => {
   let connectorInstance: any
 
   beforeEach(() => {

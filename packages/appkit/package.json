@@ -143,7 +143,6 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/types": "2.21.5",
     "@walletconnect/universal-provider": "2.21.5",
     "bs58": "6.0.0",
     "semver": "7.7.2",
@@ -151,6 +150,7 @@
     "viem": ">=2.32.0"
   },
   "devDependencies": {
+    "@walletconnect/types": "2.21.5",
     "@reown/appkit-siwe": "workspace:*",
     "@testing-library/react": "16.3.0",
     "@types/react": "19.1.3",
