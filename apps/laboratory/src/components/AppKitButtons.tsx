@@ -1,5 +1,7 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
 
+import { AppKitButton, AppKitNetworkButton } from '@reown/appkit/react'
+
 import { useProjectId } from '../hooks/useProjectId'
 import { AppKitHooks } from './AppKitHooks'
 
@@ -25,13 +27,13 @@ export function AppKitButtons() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Connect / Account Button
             </Heading>
-            <appkit-button />
+            <AppKitButton />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Network Button
             </Heading>
-            <appkit-network-button />
+            <AppKitNetworkButton />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

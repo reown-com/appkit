@@ -14,7 +14,7 @@ import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
-import { getPreferredAccountType } from './ChainControllerUtil.js'
+import { getActiveCaipNetwork, getPreferredAccountType } from './ChainControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 
 /**
@@ -28,16 +28,15 @@ export const SIWXUtil = {
     return OptionsController.state.siwx
   },
 
-  async initializeIfEnabled() {
+  async initializeIfEnabled(caipAddress = ChainController.getActiveCaipAddress()) {
     const siwx = OptionsController.state.siwx
-    const caipAddress = ChainController.getActiveCaipAddress()
 
     if (!(siwx && caipAddress)) {
       return
     }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
 
-    if (!ChainController.checkIfSupportedNetwork(namespace)) {
+    if (!ChainController.checkIfSupportedNetwork(namespace, `${namespace}:${chainId}`)) {
       return
     }
 
@@ -49,6 +48,19 @@ export const SIWXUtil = {
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
 
       if (sessions.length) {
+        return
+      }
+
+      if (OptionsController.state.remoteFeatures?.emailCapture) {
+        const user = ChainController.getAccountData(namespace)?.user
+
+        await ModalController.open({
+          view: 'DataCapture',
+          data: {
+            email: user?.email ?? undefined
+          }
+        })
+
         return
       }
 
@@ -74,7 +86,7 @@ export const SIWXUtil = {
   async requestSignMessage() {
     const siwx = OptionsController.state.siwx
     const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-    const network = ChainController.getActiveCaipNetwork()
+    const network = getActiveCaipNetwork()
     const client = ConnectionController._getClient()
 
     if (!siwx) {
@@ -260,8 +272,10 @@ export const SIWXUtil = {
       }
     }
 
+    const caipNetwork = `${chainNamespace}:${chainId}` as CaipNetworkId
+
     const siwxMessage = await siwx.createMessage({
-      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
+      chainId: caipNetwork,
       accountAddress: '<<AccountAddress>>'
     })
 
@@ -355,7 +369,7 @@ export const SIWXUtil = {
 
     // Ignores chainId and account address to get other message data
     const siwxMessage = await siwx.createMessage({
-      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
+      chainId: getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
       accountAddress: ''
     })
 

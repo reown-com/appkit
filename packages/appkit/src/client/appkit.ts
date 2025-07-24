@@ -20,6 +20,7 @@ import {
   PublicStateController,
   type RemoteFeatures,
   SIWXUtil,
+  getActiveCaipNetwork,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
@@ -374,8 +375,8 @@ export class AppKit extends AppKitBaseClient {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
         },
-        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-          ChainController.getActiveCaipNetwork(namespace)
+        getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
+        getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
       })
       PublicStateController.subscribeOpen(isOpen => {
         if (!isOpen && this.isTransactionStackEmpty()) {
@@ -654,6 +655,10 @@ export class AppKit extends AppKitBaseClient {
 
     if (features.pay) {
       featureImportPromises.push(import('@reown/appkit-pay'))
+    }
+
+    if (remoteFeatures.emailCapture) {
+      featureImportPromises.push(import('@reown/appkit-siwx/ui'))
     }
 
     await Promise.all([

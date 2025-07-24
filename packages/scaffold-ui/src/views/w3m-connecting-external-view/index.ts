@@ -47,7 +47,8 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       event: 'SELECT_WALLET',
       properties: {
         name: this.connector.name ?? 'Unknown',
-        platform: 'browser'
+        platform: 'browser',
+        displayIndex: this.wallet?.display_index
       }
     })
     this.onConnect = this.onConnectProxy.bind(this)
