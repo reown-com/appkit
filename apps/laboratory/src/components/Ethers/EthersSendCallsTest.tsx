@@ -123,15 +123,15 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
-
-      setLastCallsBatchId(batchCallHash)
+      const id = batchCallHash?.id
+      setLastCallsBatchId(id)
       toast({
         title: 'Success',
-        description: batchCallHash,
+        description: id,
         type: 'success'
       })
       setTransactionsToBatch([])
-      onCallsHash(batchCallHash)
+      onCallsHash(id)
     } catch {
       toast({
         title: 'SendCalls Error',
