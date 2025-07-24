@@ -17,7 +17,6 @@ import {
   ConnectionControllerUtil,
   ConnectorController,
   CoreHelperUtil,
-  ModalController,
   OptionsController,
   RouterController,
   SnackController,
@@ -123,9 +122,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     this.unsubscribers.push(
       ...[
-        ConnectionController.subscribeKey('connections', connections =>
-          this.onConnectionsChange(connections)
-        ),
+        ConnectionController.subscribeKey('connections', () => this.onConnectionsChange()),
         ConnectionController.subscribeKey('recentConnections', () => this.requestUpdate()),
         ConnectorController.subscribeKey('activeConnectorIds', ids => {
           this.activeConnectorIds = ids
@@ -797,9 +794,7 @@ export class W3mProfileWalletsView extends LitElement {
     )
   }
 
-  private onConnectionsChange(connections: Map<ChainNamespace, Connection[]>) {
-    const allConnections = Array.from(connections.values()).flat()
-
+  private onConnectionsChange() {
     if (this.isMultiWalletEnabled()) {
       if (this.namespace) {
         const { connections } = ConnectionControllerUtil.getConnectionsData(this.namespace)
@@ -811,10 +806,6 @@ export class W3mProfileWalletsView extends LitElement {
         if (connections.length === 0) {
           RouterController.reset('ProfileWallets')
         }
-      }
-
-      if (allConnections.length === 0) {
-        ModalController.close()
       }
     }
 

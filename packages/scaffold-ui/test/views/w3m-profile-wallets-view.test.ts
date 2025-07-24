@@ -983,21 +983,13 @@ describe('W3mProfileWalletsView - onConnectionsChange', () => {
       connections: [],
       recentConnections: []
     })
-    const connections = new Map([['eip155', []]]) as Map<ChainNamespace, Connection[]>
-    element['onConnectionsChange'](connections)
+    element['onConnectionsChange']()
     expect(RouterController.reset).toHaveBeenCalledWith('ProfileWallets')
-  })
-
-  it('should call ModalController.close when all connections are removed', () => {
-    const connections = new Map()
-    element['onConnectionsChange'](connections)
-    expect(ModalController.close).toHaveBeenCalled()
   })
 
   it('should call requestUpdate after handling connections', () => {
     const requestUpdateSpy = vi.spyOn(element, 'requestUpdate')
-    const connections = new Map([['eip155', []]]) as Map<ChainNamespace, Connection[]>
-    element['onConnectionsChange'](connections)
+    element['onConnectionsChange']()
     expect(requestUpdateSpy).toHaveBeenCalled()
   })
 })

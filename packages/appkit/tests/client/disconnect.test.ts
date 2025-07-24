@@ -709,42 +709,4 @@ describe('AppKit - disconnect - error handling scenarios', () => {
 
     expect(ModalController.close).toHaveBeenCalled()
   })
-
-  it('should close modal if not in profile wallets view', async () => {
-    mockChainControllerState({
-      activeChain: CommonConstantsUtil.CHAIN.EVM,
-      chains: new Map([
-        [
-          CommonConstantsUtil.CHAIN.EVM,
-          {
-            caipNetwork: mainnetCaipNetwork,
-            accountState: { caipAddress: 'eip155:1:0x123' }
-          }
-        ]
-      ])
-    })
-
-    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
-    const mockEip155Provider = new EventEmitter() as unknown as AdapterBlueprint
-    mockEip155Provider.disconnect = vi.fn().mockResolvedValue(undefined)
-
-    vi.spyOn(ProviderUtil, 'getProvider').mockImplementation(ns => {
-      if (ns === eip155Namespace) return mockEip155Provider
-      return { disconnect: vi.fn() }
-    })
-
-    appKit['remoteFeatures'] = { multiWallet: true }
-    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-      ...RouterController.state,
-      view: 'Account'
-    })
-    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
-
-    await (appKit as any).onDisconnectNamespace({
-      chainNamespace: eip155Namespace,
-      closeModal: true
-    })
-
-    expect(ModalController.close).toHaveBeenCalled()
-  })
 })
