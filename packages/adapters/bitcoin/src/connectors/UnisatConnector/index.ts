@@ -161,14 +161,20 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
       return undefined
     }
 
-    let wallet: UnisatConnectorTypes.Wallet | undefined = undefined
     const unisatWindow = window as UnisatConnectorTypes.UnisatWindow
+    let wallet: UnisatConnectorTypes.Wallet | undefined = undefined
+    let imageUrl = ''
     switch (params.id) {
       case 'unisat':
         wallet = unisatWindow?.unisat
+        imageUrl =
+          // Cloudflare Image URL
+          'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/530e8a71-f014-46e5-1302-26d1eff60200/sm'
         break
       case 'bitget':
+        // Bitget Sui has an appropiate icon
         wallet = unisatWindow?.bitkeep?.unisat
+        imageUrl = unisatWindow?.bitkeep?.suiWallet?.icon ?? ''
         break
       case 'binancew3w':
         wallet = unisatWindow?.binancew3w?.bitcoin
@@ -178,7 +184,7 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
     }
 
     if (wallet) {
-      return new UnisatConnector({ wallet, imageUrl: '', ...params })
+      return new UnisatConnector({ wallet, imageUrl, ...params })
     }
 
     return undefined

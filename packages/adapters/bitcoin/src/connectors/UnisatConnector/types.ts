@@ -52,6 +52,9 @@ export namespace UnisatConnector {
     unisat?: Wallet
     bitkeep?: {
       unisat?: Wallet
+      suiWallet?: {
+        icon: string
+      }
     }
     binancew3w?: {
       bitcoin?: Wallet
