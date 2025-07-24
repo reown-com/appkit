@@ -235,6 +235,7 @@ describe('UnisatConnector', () => {
         requestedChains
       })
       expect(connector).toBeInstanceOf(UnisatConnector)
+      expect(connector?.id).toBe('unisat')
     })
 
     it('should return the Connector if there is a bitget wallet', () => {
@@ -246,6 +247,7 @@ describe('UnisatConnector', () => {
         requestedChains
       })
       expect(connector).toBeInstanceOf(UnisatConnector)
+      expect(connector?.id).toBe('bitget')
     })
 
     it('should return the Connector if there is a binance web3 wallet', () => {
@@ -257,6 +259,7 @@ describe('UnisatConnector', () => {
         requestedChains
       })
       expect(connector).toBeInstanceOf(UnisatConnector)
+      expect(connector?.id).toBe('binancew3w')
     })
 
     it('should return undefined if window is undefined (server-side)', () => {
