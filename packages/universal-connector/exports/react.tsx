@@ -10,9 +10,6 @@ export type UniversalConnectorProviderProps = UniversalConnectorConfig & {
   children: ReactNode
 }
 
-// -- State --------------------------------------------------------------------------------
-let universalConnector: Awaited<ReturnType<typeof UniversalConnector.init>> | null = null
-
 // -- Context ------------------------------------------------------------------------------
 export const UniversalConnectorContext = createContext<{
   connector: Awaited<ReturnType<typeof UniversalConnector.init>> | null
@@ -29,13 +26,6 @@ export function useUniversalConnector() {
 }
 
 // -- Utils & Others -----------------------------------------------------------------------
-export async function memoizeCreateUniversalConnector(config: UniversalConnectorConfig) {
-  if (!universalConnector) {
-    universalConnector = await UniversalConnector.init(config)
-  }
-
-  return universalConnector
-}
 
 // -- Providers ----------------------------------------------------------------------------
 export function UniversalConnectorProvider({
@@ -48,10 +38,22 @@ export function UniversalConnectorProvider({
 
   const [isReady, setIsReady] = useState(false)
 
+  async function initConnector(config: UniversalConnectorConfig) {
+    try {
+      if (!connector) {
+        const universalConnector = await UniversalConnector.init(config)
+        setConnector(universalConnector)
+        setIsReady(true)
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Failed to initialize UniversalConnector', error)
+      setIsReady(true)
+    }
+  }
+
   useEffect(() => {
-    memoizeCreateUniversalConnector(props)
-      .then(setConnector)
-      .then(() => setIsReady(true))
+    initConnector(props)
   }, [props])
 
   return (
