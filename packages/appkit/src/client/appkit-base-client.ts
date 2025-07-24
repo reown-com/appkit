@@ -986,7 +986,13 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('disconnect', () => {
-      this.onDisconnectNamespace({ chainNamespace })
+      const isMultiWallet = this.remoteFeatures.multiWallet
+      const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
+
+      this.onDisconnectNamespace({
+        chainNamespace,
+        closeModal: !isMultiWallet || !isInProfileWalletsView
+      })
     })
 
     adapter.on('connections', connections => {

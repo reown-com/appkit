@@ -1,5 +1,5 @@
 import { fixture } from '@open-wc/testing'
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -20,6 +20,7 @@ import {
   ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
+  ModalController,
   OptionsController,
   RouterController,
   SnackController,
@@ -107,6 +108,14 @@ beforeAll(() => {
   }
 })
 
+// Ensure OptionsController.state is always mocked before any component construction
+beforeAll(() => {
+  vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+    ...OptionsController.state,
+    remoteFeatures: { multiWallet: true }
+  })
+})
+
 describe('W3mProfileWalletsView - Basic Rendering', () => {
   beforeEach(() => {
     vi.resetAllMocks()
@@ -139,8 +148,14 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       activeConnectorIds: {
-        [ConstantsUtil.CHAIN.EVM]: 'metamask'
-      } as unknown as Record<ChainNamespace, string | undefined>,
+        eip155: 'metamask',
+        solana: undefined,
+        bip122: undefined,
+        polkadot: undefined,
+        cosmos: undefined,
+        sui: undefined,
+        stacks: undefined
+      } as any,
       connectors: [mockMetaMaskConnector, mockWalletConnectConnector, mockAuthConnector]
     })
 
@@ -917,5 +932,79 @@ describe('W3mProfileWalletsView - Loading States', () => {
     )
 
     expect(addConnectionButton).toBeNull()
+  })
+})
+
+describe('W3mProfileWalletsView - onConnectionsChange', () => {
+  let element: W3mProfileWalletsView
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      activeCaipNetwork: mockEthereumNetwork,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mockEthereumNetwork] }
+        ]
+      ])
+    })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        [ConstantsUtil.CHAIN.EVM]: 'metamask'
+      } as unknown as Record<ChainNamespace, string | undefined>,
+      connectors: [mockMetaMaskConnector, mockWalletConnectConnector, mockAuthConnector]
+    })
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      user: {}
+    })
+    vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
+    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+
+    element = await fixture<W3mProfileWalletsView>(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+    element['remoteFeatures'] = { multiWallet: true }
+    element['namespace'] = ConstantsUtil.CHAIN.EVM
+  })
+
+  afterAll(() => {
+    vi.resetAllMocks()
+  })
+
+  it('should call RouterController.reset when no connections found for current namespace', () => {
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+    const connections = new Map([['eip155', []]]) as any
+    element['onConnectionsChange'](connections)
+    expect(RouterController.reset).toHaveBeenCalledWith('ProfileWallets')
+  })
+
+  it('should call ModalController.close when all connections are removed', () => {
+    const connections = new Map()
+    element['onConnectionsChange'](connections)
+    expect(ModalController.close).toHaveBeenCalled()
+  })
+
+  it('should call requestUpdate after handling connections', () => {
+    const requestUpdateSpy = vi.spyOn(element, 'requestUpdate')
+    const connections = new Map([['eip155', []]]) as any
+    element['onConnectionsChange'](connections)
+    expect(requestUpdateSpy).toHaveBeenCalled()
   })
 })
