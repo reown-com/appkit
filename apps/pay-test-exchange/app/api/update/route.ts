@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { Session } from '@/lib/types'
 
-const EXPIRY_SECONDS = 60 * 60 * 72 // 72 hours
+// 72 hours
+const EXPIRY_SECONDS = 60 * 60 * 72
 
 interface UpdateSessionRequest {
   status: Session['status']
