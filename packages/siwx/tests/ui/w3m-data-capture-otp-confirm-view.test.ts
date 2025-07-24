@@ -384,7 +384,7 @@ describe('W3mDataCaptureOtpConfirmView', () => {
       mockSiwx.confirmEmailOtp = vi
         .fn()
         .mockImplementation(
-          () => new Promise(resolve => setTimeout(() => resolve(true as any), 1000))
+          () => new Promise(resolve => setTimeout(() => resolve(true as any), 1100))
         )
 
       element = await createView()
