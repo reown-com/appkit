@@ -147,11 +147,11 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   private bindEvents(): void {
     this.unbindEvents()
 
-    this.wallet.on('accountsChanged', this.onAccountsChanged)
+    this.wallet.on('accountsChanged', this.onAccountsChanged.bind(this))
   }
 
   private unbindEvents(): void {
-    this.wallet.removeListener('accountsChanged', this.onAccountsChanged)
+    this.wallet.removeListener('accountsChanged', this.onAccountsChanged.bind(this))
   }
 
   public static getWallet(
