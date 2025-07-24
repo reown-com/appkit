@@ -49,7 +49,7 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import { authConnector } from './connectors/AuthConnector.js'
-import { walletConnect } from './connectors/UniversalConnector.js'
+import { walletConnect } from './connectors/WalletConnectConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
 import { getCoinbaseConnector, getSafeConnector, parseWalletCapabilities } from './utils/helpers.js'
 
