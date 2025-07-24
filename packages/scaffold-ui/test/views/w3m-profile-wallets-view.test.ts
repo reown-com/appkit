@@ -108,7 +108,6 @@ beforeAll(() => {
   }
 })
 
-// Ensure OptionsController.state is always mocked before any component construction
 beforeAll(() => {
   vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
     ...OptionsController.state,
@@ -148,14 +147,8 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       activeConnectorIds: {
-        eip155: 'metamask',
-        solana: undefined,
-        bip122: undefined,
-        polkadot: undefined,
-        cosmos: undefined,
-        sui: undefined,
-        stacks: undefined
-      } as any,
+        eip155: 'metamask'
+      } as unknown as Record<ChainNamespace, string | undefined>,
       connectors: [mockMetaMaskConnector, mockWalletConnectConnector, mockAuthConnector]
     })
 
@@ -990,7 +983,7 @@ describe('W3mProfileWalletsView - onConnectionsChange', () => {
       connections: [],
       recentConnections: []
     })
-    const connections = new Map([['eip155', []]]) as any
+    const connections = new Map([['eip155', []]]) as Map<ChainNamespace, Connection[]>
     element['onConnectionsChange'](connections)
     expect(RouterController.reset).toHaveBeenCalledWith('ProfileWallets')
   })
@@ -1003,7 +996,7 @@ describe('W3mProfileWalletsView - onConnectionsChange', () => {
 
   it('should call requestUpdate after handling connections', () => {
     const requestUpdateSpy = vi.spyOn(element, 'requestUpdate')
-    const connections = new Map([['eip155', []]]) as any
+    const connections = new Map([['eip155', []]]) as Map<ChainNamespace, Connection[]>
     element['onConnectionsChange'](connections)
     expect(requestUpdateSpy).toHaveBeenCalled()
   })
