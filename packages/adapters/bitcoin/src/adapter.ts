@@ -19,7 +19,7 @@ import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnect
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
-import { UnisatConnector } from './connectors/UnisatConnector.js'
+import { UnisatConnector } from './connectors/UnisatConnector/index.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
