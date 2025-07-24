@@ -97,6 +97,9 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
+
+export type EmailCaptureOptions = 'required'
+
 export type Connector = {
   id: string
   type: ConnectorType
@@ -1029,6 +1032,8 @@ export type NamespaceTypeMap = {
   bip122: 'payment' | 'ordinal' | 'stx'
   polkadot: 'eoa'
   cosmos: 'eoa'
+  sui: 'eoa'
+  stacks: 'eoa'
 }
 
 export type AccountTypeMap = {
@@ -1166,6 +1171,7 @@ export type RemoteFeatures = {
   activity?: boolean
   reownBranding?: boolean
   multiWallet?: boolean
+  emailCapture?: EmailCaptureOptions[] | boolean
 }
 
 export type Features = {
@@ -1312,6 +1318,7 @@ export type FeatureID =
   | 'swap'
   | 'social_login'
   | 'reown_branding'
+  | 'email_capture'
 
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
@@ -1326,6 +1333,7 @@ export type TypedFeatureConfig =
   | BaseFeature<'social_login', (SocialProvider | 'email')[]>
   | BaseFeature<'reown_branding', null | []>
   | BaseFeature<'multi_wallet', null | []>
+  | BaseFeature<'email_capture', EmailCaptureOptions[]>
 
 export type ApiGetProjectConfigResponse = {
   features: TypedFeatureConfig[]
@@ -1366,6 +1374,12 @@ export type FeatureConfigMap = {
     apiFeatureName: 'reown_branding'
     localFeatureName: 'reownBranding'
     returnType: boolean
+    isLegacy: false
+  }
+  emailCapture: {
+    apiFeatureName: 'email_capture'
+    localFeatureName: 'emailCapture'
+    returnType: EmailCaptureOptions[] | boolean
     isLegacy: false
   }
   multiWallet: {

@@ -1,5 +1,15 @@
 # @reown/appkit-wallet
 
+## 1.7.16
+
+### Patch Changes
+
+- [#4497](https://github.com/reown-com/appkit/pull/4497) [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c) Thanks [@venturars](https://github.com/venturars)! - Exports type definitions of Base class for better TS support when using hooks
+
+- Updated dependencies [[`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c)]:
+  - @reown/appkit-common@1.7.16
+  - @reown/appkit-polyfills@1.7.16
+
 ## 1.7.15
 
 ### Patch Changes

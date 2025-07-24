@@ -24,4 +24,18 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Exports type definitions of Base class for better TS support when using hooks
+Introduced `AppKitProvider` React component for easy AppKit integration in React apps
+
+**Example usage**
+
+```tsx
+import { AppKitProvider } from '@reown/appkit/react';
+
+function App() {
+  return (
+    <AppKitProvider projectId="YOUR_PROJECT_ID" networks={[/* Your Networks */]}>
+      {/* Your App */}
+    </AppKitProvider>
+  );
+}
+```

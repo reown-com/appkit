@@ -1,7 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'valtio/vanilla'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type SIWXConfig, SIWXUtil } from '../../exports/index.js'
-import { ChainController } from '../../src/controllers/ChainController.js'
+import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
 import { OptionsController } from '../../src/controllers/OptionsController.js'
@@ -10,15 +11,15 @@ import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
 describe('SIWXUtil', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  afterEach(() => {
     vi.restoreAllMocks()
   })
 
   describe('requestSignMessage', () => {
     it('should show signature declined error and send SIWX_AUTH_ERROR event when error occurs', async () => {
+      mockChainControllerState({
+        activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+        activeCaipNetwork: ref(extendedMainnet)
+      })
       const showErrorSpy = vi.spyOn(SnackController, 'showError')
       const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
       const getSIWXEventPropertiesSpy = vi
@@ -36,29 +37,10 @@ describe('SIWXUtil', () => {
         ...OptionsController.state,
         siwx: mockSIWX as unknown as SIWXConfig
       })
-      vi.spyOn(ChainController, 'getActiveCaipAddress').mockReturnValue(
-        'eip155:1:0x1234567890123456789012345678901234567890'
-      )
+
       vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue(
         '0x1234567890123456789012345678901234567890'
       )
-      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
-        caipNetworkId: 'eip155:1',
-        chainNamespace: 'eip155',
-        name: 'Ethereum Mainnet',
-        nativeCurrency: {
-          decimals: 18,
-          name: 'Ether',
-          symbol: 'ETH'
-        },
-        rpcUrls: {
-          default: {
-            http: [],
-            webSocket: undefined
-          }
-        },
-        id: ''
-      })
       vi.spyOn(ConnectionController, '_getClient').mockReturnValue({
         signMessage: vi.fn()
       } as any)
@@ -156,22 +138,11 @@ describe('SIWXUtil', () => {
         ...OptionsController.state,
         siwx: mockSIWX as unknown as SIWXConfig
       })
-      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
-        caipNetworkId: 'eip155:1',
-        chainNamespace: 'eip155',
-        name: 'Ethereum Mainnet',
-        nativeCurrency: {
-          decimals: 18,
-          name: 'Ether',
-          symbol: 'ETH'
-        },
-        rpcUrls: {
-          default: {
-            http: [],
-            webSocket: undefined
-          }
-        },
-        id: ''
+      mockChainControllerState({
+        activeCaipNetwork: extendedMainnet,
+        chains: new Map([
+          [extendedMainnet.chainNamespace, { networkState: { caipNetwork: extendedMainnet } }]
+        ])
       })
 
       const result = await SIWXUtil.authConnectorAuthenticate({
