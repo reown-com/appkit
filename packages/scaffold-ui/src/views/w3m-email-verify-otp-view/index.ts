@@ -45,6 +45,13 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         })
 
         if (OptionsController.state.remoteFeatures?.emailCapture) {
+          // Email capture is enabled, SIWXUtil will handle the data capture
+          return
+        }
+
+        if (OptionsController.state.siwx) {
+          ModalController.close()
+
           return
         }
 

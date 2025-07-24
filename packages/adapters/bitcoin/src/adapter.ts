@@ -19,8 +19,10 @@ import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnect
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
+import { UnisatConnector } from './connectors/UnisatConnector/index.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
+import { UNISAT_CONNECTORS } from './utils/UnisatUtil.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
@@ -186,6 +188,17 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     if (okxConnector) {
       this.addConnector(okxConnector)
     }
+
+    UNISAT_CONNECTORS.forEach(connectorParams => {
+      const connector = UnisatConnector.getWallet({
+        ...connectorParams,
+        requestedChains: this.networks,
+        getActiveNetwork
+      })
+      if (connector) {
+        this.addConnector(connector)
+      }
+    })
   }
 
   override syncConnection(
