@@ -45,7 +45,9 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         })
 
         if (OptionsController.state.siwx) {
-          ModalController.close()
+          if (!OptionsController.state.remoteFeatures?.emailCapture) {
+            ModalController.close()
+          }
         } else if (hasConnections && isMultiWalletEnabled) {
           RouterController.replace('ProfileWallets')
           SnackController.showSuccess('New Wallet Added')
