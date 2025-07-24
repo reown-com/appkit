@@ -147,7 +147,7 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       activeConnectorIds: {
-        eip155: 'metamask'
+        [ConstantsUtil.CHAIN.EVM]: 'metamask'
       } as unknown as Record<ChainNamespace, string | undefined>,
       connectors: [mockMetaMaskConnector, mockWalletConnectConnector, mockAuthConnector]
     })
