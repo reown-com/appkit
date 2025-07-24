@@ -41,16 +41,6 @@ export const SIWXUtil = {
     }
 
     try {
-      if (addEmbeddedWalletSessionPromise) {
-        await addEmbeddedWalletSessionPromise
-      }
-
-      const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
-
-      if (sessions.length) {
-        return
-      }
-
       if (OptionsController.state.remoteFeatures?.emailCapture) {
         const user = ChainController.getAccountData(namespace)?.user
 
@@ -61,6 +51,16 @@ export const SIWXUtil = {
           }
         })
 
+        return
+      }
+
+      if (addEmbeddedWalletSessionPromise) {
+        await addEmbeddedWalletSessionPromise
+      }
+
+      const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
+
+      if (sessions.length) {
         return
       }
 
@@ -258,7 +258,12 @@ export const SIWXUtil = {
   }) {
     const siwx = SIWXUtil.getSIWX()
 
-    if (!siwx || !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM)) {
+    if (
+      !siwx ||
+      !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM) ||
+      // Request to input email and sign message when email capture is enabled
+      OptionsController.state.remoteFeatures?.emailCapture
+    ) {
       const result = await authConnector.connect({
         chainId,
         socialUri,
