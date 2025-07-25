@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type Address, type Hex, NumberUtil } from '@reown/appkit-common'
+import { type Address, type CaipNetworkId, type Hex, NumberUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -92,7 +92,9 @@ export interface SwapControllerState {
   slippage: number
 
   // Tokens
+  caipNetworkId?: CaipNetworkId
   tokens?: SwapTokenWithBalance[]
+  tokensLoading?: boolean
   suggestedTokens?: SwapTokenWithBalance[]
   popularTokens?: SwapTokenWithBalance[]
   foundTokens?: SwapTokenWithBalance[]
@@ -171,7 +173,7 @@ const initialState: SwapControllerState = {
   providerFee: undefined
 }
 
-const state = proxy<SwapControllerState>(initialState)
+const state = proxy<SwapControllerState>({ ...initialState })
 
 // -- Controller ---------------------------------------- //
 const controller = {
@@ -302,6 +304,7 @@ const controller = {
     state.myTokensWithBalance = initialState.myTokensWithBalance
     state.tokensPriceMap = initialState.tokensPriceMap
     state.initialized = initialState.initialized
+    state.initializing = initialState.initializing
     state.sourceToken = initialState.sourceToken
     state.sourceTokenAmount = initialState.sourceTokenAmount
     state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD
@@ -353,11 +356,10 @@ const controller = {
   async fetchTokens() {
     const { networkAddress } = SwapController.getParams()
 
-    await SwapController.getTokenList()
     await SwapController.getNetworkTokenPrice()
     await SwapController.getMyTokensWithBalance()
 
-    const networkToken = state.tokens?.find(token => token.address === networkAddress)
+    const networkToken = state.myTokensWithBalance?.find(token => token.address === networkAddress)
 
     if (networkToken) {
       state.networkTokenSymbol = networkToken.symbol
@@ -367,8 +369,17 @@ const controller = {
   },
 
   async getTokenList() {
-    const tokens = await SwapApiUtil.getTokenList()
+    const activeCaipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
 
+    if (state.caipNetworkId === activeCaipNetworkId && state.tokens) {
+      return
+    }
+
+    state.tokensLoading = true
+
+    const tokens = await SwapApiUtil.getTokenList(activeCaipNetworkId)
+
+    state.caipNetworkId = activeCaipNetworkId
     state.tokens = tokens
     state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
       if (aTokenInfo.symbol < bTokenInfo.symbol) {
@@ -387,6 +398,7 @@ const controller = {
 
       return false
     }, {})
+    state.tokensLoading = false
   },
 
   async getAddressPrice(address: string) {
