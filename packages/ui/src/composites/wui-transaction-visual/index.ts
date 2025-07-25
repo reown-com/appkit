@@ -37,6 +37,10 @@ export class WuiTransactionVisual extends LitElement {
   public override render() {
     const [firstImage, secondImage] = this.images
 
+    if (!this.images.length) {
+      this.dataset['noImages'] = 'true'
+    }
+
     const isLeftNFT = firstImage?.type === 'NFT'
     const isRightNFT = secondImage?.url ? secondImage.type === 'NFT' : isLeftNFT
 

@@ -10,6 +10,16 @@ export default css`
     position: relative;
     display: inline-block;
     user-select: none;
+    transition:
+      background-color,
+      color,
+      border,
+      box-shadow,
+      width,
+      height,
+      transform,
+      opacity,
+      var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
   }
   input {
     width: 0;
@@ -23,10 +33,20 @@ export default css`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: ${({ colors }) => colors.neutrals400};
+    background-color: ${({ colors }) => colors.neutrals300};
     border-radius: ${({ borderRadius }) => borderRadius.round};
     border: 1px solid transparent;
     will-change: border;
+    transition:
+      background-color,
+      color,
+      border,
+      box-shadow,
+      width,
+      height,
+      transform,
+      opacity,
+      var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
   }
   span:before {
     content: '';
@@ -92,7 +112,7 @@ export default css`
   }
   /* -- Hover states ------------------------------------------------------- */
   label:hover > input:not(:checked):not(:disabled) + span {
-    background-color: ${({ tokens }) => tokens.theme.textTertiary};
+    background-color: ${({ colors }) => colors.neutrals400};
   }
   label:hover > input:checked:not(:disabled) + span {
     background-color: ${({ colors }) => colors.accent080};

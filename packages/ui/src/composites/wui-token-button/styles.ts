@@ -8,6 +8,7 @@ export default css`
     padding: ${({ spacing }) => spacing[1]};
     transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-md);
     will-change: background-color;
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[32]};
   }
 

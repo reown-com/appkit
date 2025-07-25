@@ -1,5 +1,13 @@
 import { css } from '../../utils/ThemeHelperUtil.js'
 
+function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
 export default css`
   wui-flex {
     position: relative;
@@ -13,9 +21,9 @@ export default css`
   }
 
   .fallback-icon {
-    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     color: ${({ tokens }) => tokens.theme.iconInverse};
-    border-radius: ${({ borderRadius }) => borderRadius[128]};
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .direction-icon,
@@ -30,7 +38,12 @@ export default css`
   .direction-icon {
     padding: ${({ spacing }) => spacing['01']};
     color: ${({ tokens }) => tokens.core.iconSuccess};
-    background-color: ${({ tokens }) => tokens.core.backgroundSuccess};
+
+    background-color: color-mix(
+      in srgb,
+      ${({ tokens }) => tokens.core.textSuccess} 30%,
+      ${({ tokens }) => tokens.theme.backgroundPrimary} 70%
+    );
   }
 
   /* -- Sizes --------------------------------------------------- */

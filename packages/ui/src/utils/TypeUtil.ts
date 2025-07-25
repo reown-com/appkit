@@ -270,6 +270,7 @@ export type ButtonVariant =
   | 'neutral-secondary'
   | 'error-primary'
   | 'error-secondary'
+  | 'neutral-tertiary'
 
 export type ButtonShortcutVariant = 'accent' | 'secondary'
 export type ButtonLinkVariant = 'accent' | 'secondary'

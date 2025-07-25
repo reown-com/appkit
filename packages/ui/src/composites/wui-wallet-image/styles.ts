@@ -11,6 +11,10 @@ export default css`
     border-radius: var(--local-border-radius);
   }
 
+  :host([data-image='true']) {
+    background-color: transparent;
+  }
+
   :host > wui-flex {
     overflow: hidden;
     border-radius: inherit;

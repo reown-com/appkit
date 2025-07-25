@@ -145,6 +145,7 @@ export class W3mConnectView extends LitElement {
         <wui-flex
           data-testid="w3m-connect-scroll-view"
           flexDirection="column"
+          .padding=${['0', '0', '4', '0'] as const}
           class=${classMap(classes)}
         >
           <wui-flex
@@ -323,8 +324,6 @@ export class W3mConnectView extends LitElement {
 
     return html`<w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>`
   }
-
-
 
   private legalCheckboxTemplate() {
     if (this.walletGuide === 'explore') {

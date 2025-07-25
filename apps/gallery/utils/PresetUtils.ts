@@ -312,7 +312,8 @@ export const buttonOptions: ButtonVariant[] = [
   'neutral-primary',
   'neutral-secondary',
   'error-primary',
-  'error-secondary'
+  'error-secondary',
+  'neutral-tertiary'
 ]
 
 export const buttonShortcutOptions: ButtonShortcutVariant[] = ['accent', 'secondary']

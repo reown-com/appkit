@@ -41,6 +41,9 @@ export class WuiWalletImage extends LitElement {
    `
 
     this.dataset['size'] = this.size
+    if (this.imageSrc) {
+      this.dataset['image'] = 'true'
+    }
     if (this.walletIcon) {
       this.dataset['walletIcon'] = this.walletIcon
     }

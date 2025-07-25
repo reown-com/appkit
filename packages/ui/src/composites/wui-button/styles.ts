@@ -55,6 +55,11 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
+  button[data-variant='neutral-tertiary'] {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+  }
+
   button[data-variant='error-primary'] {
     background-color: ${({ tokens }) => tokens.core.textError};
     color: ${({ tokens }) => tokens.theme.textInvert};

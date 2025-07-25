@@ -59,7 +59,9 @@ export class WuiTokenButton extends LitElement {
   private textTemplate() {
     const textVariant = TEXT_VARIANT_BY_SIZE[this.size]
 
-    return html`<wui-text variant=${textVariant as TextType}>${this.text}</wui-text>`
+    return html`<wui-text color="primary" variant=${textVariant as TextType}
+      >${this.text}</wui-text
+    >`
   }
 }
 

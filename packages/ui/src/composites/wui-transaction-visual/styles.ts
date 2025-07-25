@@ -12,6 +12,11 @@ export default css`
     background-color: ${({ tokens }) => tokens.core.glass010};
   }
 
+  :host([data-no-images='true']) > wui-flex {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[3]} !important;
+  }
+
   :host > wui-flex wui-image {
     display: block;
   }
