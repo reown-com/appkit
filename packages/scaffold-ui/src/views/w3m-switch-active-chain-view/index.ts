@@ -61,7 +61,10 @@ export class W3mSwitchActiveChainView extends LitElement {
         gap="2"
       >
         <wui-flex justifyContent="center" flexDirection="column" alignItems="center" gap="2">
-          <wui-visual name=${ifDefined(chainIconNameMap[this.switchToChain])}></wui-visual>
+          <wui-visual
+            size="md"
+            name=${ifDefined(chainIconNameMap[this.switchToChain])}
+          ></wui-visual>
           <wui-text
             data-testid=${`w3m-switch-active-chain-to-${nextChainName}`}
             variant="md-medium"
