@@ -24,4 +24,15 @@ export default css`
   button:disabled {
     background-color: transparent;
   }
+
+  button:hover:not(:disabled) {
+    background-color: var(--wui-color-accent-glass-015);
+  }
+
+  button:focus-visible:not(:disabled) {
+    background-color: var(--wui-color-accent-glass-015);
+    box-shadow:
+      inset 0 0 0 1px var(--wui-color-accent-100),
+      0 0 0 4px var(--wui-color-accent-glass-020);
+  }
 `

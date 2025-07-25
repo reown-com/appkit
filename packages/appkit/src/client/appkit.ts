@@ -545,16 +545,22 @@ export class AppKit extends AppKitBaseClient {
       return
     }
 
+    const isAuthConnector =
+      ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         address,
         caipNetworkId
       })
 
-      this.setProfileName(name, chainNamespace)
-      this.setProfileImage(avatar, chainNamespace)
+      if (!name && isAuthConnector) {
+        await this.syncReownName(address, chainNamespace)
+      } else {
+        this.setProfileName(name, chainNamespace)
+        this.setProfileImage(avatar, chainNamespace)
+      }
     } catch {
-      await this.syncReownName(address, chainNamespace)
       if (chainId !== 1) {
         this.setProfileImage(null, chainNamespace)
       }
