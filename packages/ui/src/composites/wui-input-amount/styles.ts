@@ -10,12 +10,9 @@ export default css`
     background: transparent;
     width: 100%;
     height: auto;
-
-    color: var(--apkt-tokens-theme-foregroundPrimary);
-
+    color: var(--apkt-tokens-theme-textPrimary);
     font-feature-settings: 'case' on;
     font-size: 32px;
-
     caret-color: var(--apkt-colors-accent100);
     line-height: 130%;
     letter-spacing: -1.28px;

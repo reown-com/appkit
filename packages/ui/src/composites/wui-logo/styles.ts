@@ -8,7 +8,6 @@ export default css`
     width: 40px;
     height: 40px;
     border-radius: var(--apkt-borderRadius-20);
-    border: 1px solid var(--apkt-tokens-core-glass010);
     overflow: hidden;
   }
 

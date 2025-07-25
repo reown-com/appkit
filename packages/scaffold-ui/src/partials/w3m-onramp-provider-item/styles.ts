@@ -29,17 +29,6 @@ export default css`
     overflow: hidden;
   }
 
-  .provider-image::after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    inset: 0;
-    border-radius: calc(var(--apkt-borderRadius-4) - calc(var(--apkt-spacing-3) / 2));
-    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
-  }
-
   .network-icon {
     width: var(--apkt-spacing-3);
     height: var(--apkt-spacing-3);

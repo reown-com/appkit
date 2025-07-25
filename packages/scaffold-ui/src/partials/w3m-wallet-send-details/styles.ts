@@ -11,6 +11,10 @@ export default css`
     padding: var(--apkt-spacing-3) var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2);
   }
 
+  wui-list-content {
+    width: -webkit-fill-available !important;
+  }
+
   wui-text {
     padding: 0 var(--apkt-spacing-2);
   }

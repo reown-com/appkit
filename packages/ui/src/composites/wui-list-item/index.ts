@@ -37,7 +37,7 @@ export class WuiListItem extends LitElement {
         tabindex=${ifDefined(this.tabIdx)}
       >
         <wui-flex gap="2" alignItems="center">
-          ${this.loadingTemplate()} ${this.imageTemplate()}
+          ${this.imageTemplate()}
           <wui-flex gap="1">
             <slot></slot>
           </wui-flex>
@@ -54,14 +54,6 @@ export class WuiListItem extends LitElement {
     }
 
     return html`<wui-image ?boxed=${true} src=${this.imageSrc}></wui-image>`
-  }
-
-  public loadingTemplate() {
-    if (this.loading) {
-      return html`<wui-loading-spinner color="tertiary"></wui-loading-spinner>`
-    }
-
-    return html``
   }
 
   private iconTemplate() {

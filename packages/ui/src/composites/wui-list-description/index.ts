@@ -32,7 +32,7 @@ export class WuiListDescription extends LitElement {
       <button ?disabled=${this.disabled}>
         <wui-flex justifyContent="space-between" alignItems="flex-start">
           <wui-icon-box padding="2" color="default" icon=${this.icon} size="lg"></wui-icon-box>
-          <wui-tag tagType="main" size="sm">${this.tag}</wui-tag>
+          ${this.tag ? html`<wui-tag tagType="main" size="sm">${this.tag}</wui-tag>` : null}
         </wui-flex>
 
         <wui-flex alignItems="center" justifyContent="space-between">

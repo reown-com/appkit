@@ -20,7 +20,7 @@ export class W3mUpgradeWalletView extends LitElement {
           imageSrc=${ConstantsUtil.SECURE_SITE_FAVICON}
           data-testid="w3m-secure-website-button"
         >
-        </wui-chip>
+        </wui-semantic-chip>
         <wui-text variant="sm-regular" color="secondary">
           You will have to reconnect for security reasons
         </wui-text>

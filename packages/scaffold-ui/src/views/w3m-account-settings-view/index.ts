@@ -139,7 +139,7 @@ export class W3mAccountSettingsView extends LitElement {
           </wui-list-item>
           ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
-            icon="power"
+            icon="swapHorizontal"
             ?chevron=${false}
             .loading=${this.disconnecting}
             @click=${this.onDisconnect.bind(this)}
@@ -246,7 +246,7 @@ export class W3mAccountSettingsView extends LitElement {
 
     return html`
       <wui-list-item
-        icon="swapHorizontalBold"
+        icon="swapHorizontal"
         ?chevron=${true}
         ?loading=${this.loading}
         @click=${this.changePreferredAccountType.bind(this)}

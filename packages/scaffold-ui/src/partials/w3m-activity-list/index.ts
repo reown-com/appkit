@@ -248,7 +248,7 @@ export class W3mActivityList extends LitElement {
       gap="4"
       data-testid="empty-account-state"
     >
-      <wui-icon-box icon="swapHorizontal" size="lg" color="secondary"></wui-icon-box>
+      <wui-icon-box icon="swapHorizontal" size="lg" color="default"></wui-icon-box>
       <wui-flex
         class="textContent"
         gap="2"

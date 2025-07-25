@@ -66,7 +66,7 @@ export class WuiButton extends LitElement {
     if (this.loading) {
       const size = SPINNER_SIZE_BY_SIZE[this.size]
 
-      return html`<wui-loading-spinner size=${size}></wui-loading-spinner>`
+      return html`<wui-loading-spinner color="primary" size=${size}></wui-loading-spinner>`
     }
 
     return null

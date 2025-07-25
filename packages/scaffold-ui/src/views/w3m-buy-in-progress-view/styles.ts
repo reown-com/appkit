@@ -28,22 +28,9 @@ export default css`
   }
 
   wui-visual {
-    width: var(--apkt-spacing-4);
-    height: var(--apkt-spacing-4);
     border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
     position: relative;
     overflow: hidden;
-  }
-
-  wui-visual::after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    inset: 0;
-    border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
-    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
   }
 
   wui-icon-box {

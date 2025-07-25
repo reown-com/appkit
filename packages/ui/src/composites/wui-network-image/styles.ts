@@ -24,7 +24,6 @@ export default css`
     width: 100%;
     height: 100%;
     z-index: 1;
-    fill: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   svg > path {

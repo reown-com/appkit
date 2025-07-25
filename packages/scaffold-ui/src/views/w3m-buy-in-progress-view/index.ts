@@ -107,7 +107,12 @@ export class W3mBuyInProgressView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="2">
+        <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          gap="2"
+          .padding=${['4', '0', '0', '0'] as const}
+        >
           <wui-text variant="md-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>
@@ -119,7 +124,7 @@ export class W3mBuyInProgressView extends LitElement {
 
       <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
         <wui-link @click=${this.onCopyUri} color="secondary">
-          <wui-icon size="xs" color="default" slot="iconLeft" name="copy"></wui-icon>
+          <wui-icon size="sm" color="default" slot="iconLeft" name="copy"></wui-icon>
           Copy link
         </wui-link>
       </wui-flex>
