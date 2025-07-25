@@ -545,9 +545,10 @@ export class AppKit extends AppKitBaseClient {
       return
     }
 
-    const isAuthConnector = ProviderUtil.getProviderId(chainNamespace) === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
+    const isAuthConnector =
+      ProviderUtil.getProviderId(chainNamespace) === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
 
-    if(isAuthConnector) {
+    if (isAuthConnector) {
       await this.syncReownName(address, chainNamespace)
     } else {
       try {
@@ -555,7 +556,7 @@ export class AppKit extends AppKitBaseClient {
           address,
           caipNetworkId
         })
-  
+
         this.setProfileName(name, chainNamespace)
         this.setProfileImage(avatar, chainNamespace)
       } catch {

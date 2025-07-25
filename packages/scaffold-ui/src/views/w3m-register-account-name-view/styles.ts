@@ -42,7 +42,8 @@ export default css`
     position: relative;
   }
 
-  .input-submit-button, .input-loading-spinner {
+  .input-submit-button,
+  .input-loading-spinner {
     position: absolute;
     top: 26px;
     transform: translateY(-50%);
