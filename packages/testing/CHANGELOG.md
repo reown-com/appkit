@@ -1,5 +1,161 @@
 # @reown/appkit
 
+## 1.7.17
+
+### Patch Changes
+
+- [#4688](https://github.com/reown-com/appkit/pull/4688) [`a457e61`](https://github.com/reown-com/appkit/commit/a457e61611a04fc19da8e09ece7fe7a11f04a2f4) Thanks [@magiziz](https://github.com/magiziz)! - Upgraded wallet button to support multichain via the `namespace` prop
+
+  **Example usage with Components**
+
+  ```tsx
+  import { AppKitWalletButton } from '@reown/appkit-wallet-button/react'
+
+  const wallets = [
+    { wallet: 'metamask', namespace: 'eip155', label: 'MetaMask EVM' },
+    { wallet: 'metamask', namespace: 'solana', label: 'MetaMask Solana' },
+    { wallet: 'phantom', namespace: 'bip122', label: 'Phantom Bitcoin' }
+  ]
+
+  export function WalletButtons() {
+    return (
+      <>
+        {wallets.map(({ wallet, namespace, label }) => (
+          <AppKitWalletButton
+            key={`${wallet}-${namespace}`}
+            wallet={wallet}
+            namespace={namespace}
+          />
+        ))}
+      </>
+    )
+  }
+  ```
+
+  **Example usage with Hooks**
+
+  ```tsx
+  import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
+
+  export function YourApp() {
+    const { data, error, isPending, isSuccess, isError, connect } = useAppKitWallet({
+      namespace: 'eip155', // Use 'solana' or 'bip122' for other chains
+      onError: err => {
+        // ...
+      },
+      onSuccess: data => {
+        // ...
+      }
+    })
+
+    return (
+      <>
+        <button onClick={() => connect('walletConnect')}>Open QR modal</button>
+        <button onClick={() => connect('metamask')}>Connect to MetaMask</button>
+        <button onClick={() => connect('google')}>Connect to Google</button>
+      </>
+    )
+  }
+  ```
+
+  **Example usage with Vanilla JS**
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <script type="module">
+        import '@reown/appkit-wallet-button'
+        import { createAppKitWalletButton } from '@reown/appkit-wallet-button'
+
+        const wallet = createAppKitWalletButton({ namespace: 'eip155' })
+
+        wallet.subscribeIsReady(({ isReady }) => {
+          if (!isReady) return
+
+          document.querySelectorAll('button[data-wallet]').forEach(button => {
+            button.disabled = false
+            button.onclick = () => {
+              const id = button.getAttribute('data-wallet')
+              wallet.connect(id)
+            }
+          })
+        })
+      </script>
+    </head>
+    <body>
+      <appkit-wallet-button wallet="metamask" namespace="eip155"></appkit-wallet-button>
+
+      <button data-wallet="walletConnect" disabled>Open QR modal</button>
+      <button data-wallet="metamask" disabled>Connect to MetaMask</button>
+      <button data-wallet="google" disabled>Connect to Google</button>
+    </body>
+  </html>
+  ```
+
+- [#4696](https://github.com/reown-com/appkit/pull/4696) [`2863286`](https://github.com/reown-com/appkit/commit/286328604c7d0a7dc16b5a23766831cf551f6dca) Thanks [@magiziz](https://github.com/magiziz)! - Introduced `AppKitProvider` React component for easy AppKit integration in React apps
+
+  **Example usage**
+
+  ```tsx
+  import { AppKitProvider } from '@reown/appkit/react'
+
+  function App() {
+    return (
+      <AppKitProvider
+        projectId="YOUR_PROJECT_ID"
+        networks={
+          [
+            /* Your Networks */
+          ]
+        }
+      >
+        {/* Your App */}
+      </AppKitProvider>
+    )
+  }
+  ```
+
+- [#4690](https://github.com/reown-com/appkit/pull/4690) [`974c73f`](https://github.com/reown-com/appkit/commit/974c73f5532a1313bc89880997873169d70f7588) Thanks [@tomiir](https://github.com/tomiir)! - Adds sui and stacks as predefined networks.
+  Exports `AVAILABLE_NAMESPACES` constant from `networks` and `common` packages.
+
+- [#4704](https://github.com/reown-com/appkit/pull/4704) [`5391a12`](https://github.com/reown-com/appkit/commit/5391a12d952d561ad509ef7ffcdea280a31c0cb5) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the update email view would not open when using the `useAppKitUpdateEmail` hook
+
+- [#4687](https://github.com/reown-com/appkit/pull/4687) [`43e56fc`](https://github.com/reown-com/appkit/commit/43e56fcfe68005d963447f126277f422eb9bb3e1) Thanks [@enesozturk](https://github.com/enesozturk)! - Introduces AppKit React components. React users can now use the new components instead of HTML elements.
+
+  ### Example
+
+  ```jsx
+  import { AppKitWalletButton } from '@reown/appkit-wallet-button/react'
+  import { AppKitButton, AppKitNetworkButton } from '@reown/appkit/react'
+
+  export function AppKitButtons() {
+    return (
+      <div>
+        {/* Default */}
+        <AppkitButton />
+        <AppKitNetworkButton />
+        <AppKitWalletButton wallet="metamask" />
+        {/* With parameters */}
+        <AppkitButton namespace="eip155" />
+      </div>
+    )
+  }
+  ```
+
+- [#4449](https://github.com/reown-com/appkit/pull/4449) [`fde2340`](https://github.com/reown-com/appkit/commit/fde23403503105798f728c7c3ec86e2fb3925194) Thanks [@zoruka](https://github.com/zoruka)! - Add DataCapture views enabling integrating email collection for ReownAuthentication.
+
+- [#4605](https://github.com/reown-com/appkit/pull/4605) [`e845518`](https://github.com/reown-com/appkit/commit/e845518e84a88d2b05d4e8a0af98787684ef0711) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates ChainController and AccountController utils, adds testing utils for controllers
+
+- [#4686](https://github.com/reown-com/appkit/pull/4686) [`2a953de`](https://github.com/reown-com/appkit/commit/2a953deda4f6ad3333a45b1b0d074c5d8b8c8c65) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates error messages and adds error codes
+
+- [#4708](https://github.com/reown-com/appkit/pull/4708) [`a5410b9`](https://github.com/reown-com/appkit/commit/a5410b94f4ec63cb901b3841c3fc0fdb67a08db6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the modal would close automatically after disconnecting a wallet from the profile view
+
+- [#4709](https://github.com/reown-com/appkit/pull/4709) [`7d41aa6`](https://github.com/reown-com/appkit/commit/7d41aa6a9e647150c08caa65995339effbc5497d) Thanks [@zoruka](https://github.com/zoruka)! - Fix email capture flow for embedded wallet that was skiping due to one click auth
+
+- Updated dependencies [[`a457e61`](https://github.com/reown-com/appkit/commit/a457e61611a04fc19da8e09ece7fe7a11f04a2f4), [`2863286`](https://github.com/reown-com/appkit/commit/286328604c7d0a7dc16b5a23766831cf551f6dca), [`974c73f`](https://github.com/reown-com/appkit/commit/974c73f5532a1313bc89880997873169d70f7588), [`f9e9842`](https://github.com/reown-com/appkit/commit/f9e98423ea3e2798e5d743af2c5cda45376a5ba9), [`5391a12`](https://github.com/reown-com/appkit/commit/5391a12d952d561ad509ef7ffcdea280a31c0cb5), [`43e56fc`](https://github.com/reown-com/appkit/commit/43e56fcfe68005d963447f126277f422eb9bb3e1), [`fde2340`](https://github.com/reown-com/appkit/commit/fde23403503105798f728c7c3ec86e2fb3925194), [`e845518`](https://github.com/reown-com/appkit/commit/e845518e84a88d2b05d4e8a0af98787684ef0711), [`2a953de`](https://github.com/reown-com/appkit/commit/2a953deda4f6ad3333a45b1b0d074c5d8b8c8c65), [`a5410b9`](https://github.com/reown-com/appkit/commit/a5410b94f4ec63cb901b3841c3fc0fdb67a08db6), [`7d41aa6`](https://github.com/reown-com/appkit/commit/7d41aa6a9e647150c08caa65995339effbc5497d)]:
+  - @reown/appkit@1.7.17
+
 ## 1.7.16
 
 ### Patch Changes
