@@ -1354,6 +1354,12 @@ export abstract class AppKitBaseClient {
       } else {
         await this.syncBalance({ address, chainId: networkOfChain?.id, chainNamespace })
       }
+
+      this.syncIdentity({
+        address,
+        chainId,
+        chainNamespace
+      })
     }
   }
 

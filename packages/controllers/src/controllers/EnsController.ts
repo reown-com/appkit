@@ -71,11 +71,7 @@ const controller = {
       state.loading = true
       state.suggestions = []
       const response = await BlockchainApiController.getEnsNameSuggestions(value)
-      state.suggestions =
-        response.suggestions.map(suggestion => ({
-          ...suggestion,
-          name: suggestion.name
-        })) || []
+      state.suggestions = response.suggestions || []
 
       return state.suggestions
     } catch (e) {
