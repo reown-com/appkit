@@ -986,7 +986,13 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('disconnect', () => {
-      this.onDisconnectNamespace({ chainNamespace })
+      const isMultiWallet = this.remoteFeatures.multiWallet
+      const allConnections = Array.from(ConnectionController.state.connections.values()).flat()
+
+      this.onDisconnectNamespace({
+        chainNamespace,
+        closeModal: !isMultiWallet || allConnections.length === 0
+      })
     })
 
     adapter.on('connections', connections => {
