@@ -1,7 +1,12 @@
 import { proxy, ref, snapshot, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+import {
+  AVAILABLE_NAMESPACES,
+  type ChainNamespace,
+  ConstantsUtil,
+  getW3mThemeVariables
+} from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
@@ -30,13 +35,13 @@ export interface ConnectorControllerState {
 
 type StateKey = keyof ConnectorControllerState
 
-const defaultActiveConnectors = {
-  eip155: undefined,
-  solana: undefined,
-  polkadot: undefined,
-  bip122: undefined,
-  cosmos: undefined
-}
+const defaultActiveConnectors = Object.fromEntries(
+  AVAILABLE_NAMESPACES.map(namespace => [namespace, undefined])
+) as Record<ChainNamespace, string | undefined>
+
+const defaultFilterByNamespaceMap = Object.fromEntries(
+  AVAILABLE_NAMESPACES.map(namespace => [namespace, true])
+) as Record<ChainNamespace, boolean>
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectorControllerState>({
@@ -44,14 +49,8 @@ const state = proxy<ConnectorControllerState>({
   connectors: [],
   activeConnector: undefined,
   filterByNamespace: undefined,
-  activeConnectorIds: { ...defaultActiveConnectors },
-  filterByNamespaceMap: {
-    eip155: true,
-    solana: true,
-    polkadot: true,
-    bip122: true,
-    cosmos: true
-  }
+  activeConnectorIds: defaultActiveConnectors,
+  filterByNamespaceMap: defaultFilterByNamespaceMap
 })
 
 // -- Controller ---------------------------------------- //

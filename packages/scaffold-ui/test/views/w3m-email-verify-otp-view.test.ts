@@ -11,6 +11,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  type SIWXConfig,
   SnackController
 } from '@reown/appkit-controllers'
 
@@ -87,6 +88,21 @@ describe('W3mEmailVerifyOtpView', () => {
       expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
       expect(SnackController.showSuccess).toHaveBeenCalledWith('New Wallet Added')
       expect(ModalController.close).not.toHaveBeenCalled()
+    })
+
+    it('should not close modal when siwx is enabled and email capture is enabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        remoteFeatures: { multiWallet: true, emailCapture: true },
+        siwx: {} as SIWXConfig
+      })
+
+      await element.onOtpSubmit('123456')
+
+      expect(ModalController.close).not.toHaveBeenCalled()
+      expect(RouterController.reset).not.toHaveBeenCalled()
+      expect(RouterController.push).not.toHaveBeenCalled()
+      expect(SnackController.showSuccess).not.toHaveBeenCalled()
     })
 
     it('should close modal when has no connections and multiWallet is enabled', async () => {

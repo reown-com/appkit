@@ -41,6 +41,19 @@ export const SIWXUtil = {
     }
 
     try {
+      if (OptionsController.state.remoteFeatures?.emailCapture) {
+        const user = ChainController.getAccountData(namespace)?.user
+
+        await ModalController.open({
+          view: 'DataCapture',
+          data: {
+            email: user?.email ?? undefined
+          }
+        })
+
+        return
+      }
+
       if (addEmbeddedWalletSessionPromise) {
         await addEmbeddedWalletSessionPromise
       }
@@ -245,7 +258,12 @@ export const SIWXUtil = {
   }) {
     const siwx = SIWXUtil.getSIWX()
 
-    if (!siwx || !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM)) {
+    if (
+      !siwx ||
+      !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM) ||
+      // Request to input email and sign message when email capture is enabled
+      OptionsController.state.remoteFeatures?.emailCapture
+    ) {
       const result = await authConnector.connect({
         chainId,
         socialUri,
