@@ -23,9 +23,20 @@ export class WuiAvatar extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const getSize = {
+      inherit: 'inherit',
+      xxs: '3',
+      xs: '5',
+      sm: '6',
+      md: '8',
+      mdl: '8',
+      lg: '10',
+      xl: '16',
+      xxl: '20'
+    } as const
     this.style.cssText = `
-    --local-width: var(--wui-icon-box-size-${this.size});
-    --local-height: var(--wui-icon-box-size-${this.size});
+    --local-width: var(--apkt-spacing-${getSize[this.size ?? 'xl']});
+    --local-height: var(--apkt-spacing-${getSize[this.size ?? 'xl']});
     `
 
     return html`${this.visualTemplate()}`

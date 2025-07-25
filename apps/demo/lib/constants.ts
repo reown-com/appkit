@@ -47,5 +47,7 @@ export const NAMESPACE_NETWORK_IDS_MAP: Record<ChainNamespace, (string | number)
   solana: ['5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
   bip122: ['000000000019d6689c085ae165831e93', '000000000933ea01ad0ee984209779ba'],
   polkadot: [],
-  cosmos: []
+  cosmos: [],
+  sui: [],
+  stacks: []
 }

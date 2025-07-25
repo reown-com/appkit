@@ -18,8 +18,6 @@ export class WuiListSocial extends LitElement {
 
   @property() public name = 'Continue with google'
 
-  @property() public align: 'left' | 'center' = 'left'
-
   @property() public tabIdx?: boolean
 
   @property({ type: Boolean }) public disabled = false
@@ -28,26 +26,13 @@ export class WuiListSocial extends LitElement {
   public override render() {
     return html`
       <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
-        <wui-logo logo=${this.logo}></wui-logo>
-        <wui-text
-          data-align=${this.align}
-          variant="paragraph-500"
-          color="inherit"
-          align=${this.align}
-          >${this.name}</wui-text
-        >
-        ${this.templatePlacement()}
+        <wui-flex gap="2" alignItems="center">
+          <wui-image ?boxed=${true} logo=${this.logo}></wui-image>
+          <wui-text variant="lg-regular" color="primary">${this.name}</wui-text>
+        </wui-flex>
+        <wui-icon name="chevronRight" size="lg" color="default"></wui-icon>
       </button>
     `
-  }
-
-  // -- Private ------------------------------------------- //
-  private templatePlacement() {
-    if (this.align === 'center') {
-      return html` <wui-logo class="invisible" logo=${this.logo}></wui-logo>`
-    }
-
-    return null
   }
 }
 

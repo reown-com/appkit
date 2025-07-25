@@ -103,13 +103,13 @@ export class W3mEmailLoginWidget extends LitElement {
 
   private loadingTemplate() {
     return this.loading
-      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+      ? html`<wui-loading-spinner size="md" color="accent-primary"></wui-loading-spinner>`
       : null
   }
 
   private templateError() {
     if (this.error) {
-      return html`<wui-text variant="tiny-500" color="error-100">${this.error}</wui-text>`
+      return html`<wui-text variant="sm-medium" color="error">${this.error}</wui-text>`
     }
 
     return null

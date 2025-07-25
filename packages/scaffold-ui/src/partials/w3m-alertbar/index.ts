@@ -27,7 +27,7 @@ export const presets = {
   error: {
     backgroundColor: 'error-glass-reown-020',
     iconColor: 'error-125',
-    icon: 'exclamationTriangle'
+    icon: 'warning'
   }
 } as const
 

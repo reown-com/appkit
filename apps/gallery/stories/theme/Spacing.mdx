@@ -1,19 +1,138 @@
-import { Meta, Title } from '@storybook/blocks'
+import { Meta, Title } from '@storybook/addon-docs/blocks'
+
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-grid'
+import '@reown/appkit-ui/wui-text'
 
 <Meta title="theme/Spacing" />
 
 <Title>Spacing</Title>
 
+<wui-text variant="lg-regular" color="primary" style={{ marginBottom: '24px' }}>
+Visual demonstration of all spacing values in the design system:
+</wui-text>
+
+<wui-flex flexDirection="column" gap="8">
+  {[
+    { key: '0', value: '0px' },
+    { key: '01', value: '2px' },
+    { key: '1', value: '4px' },
+    { key: '2', value: '8px' },
+    { key: '3', value: '12px' },
+    { key: '4', value: '16px' },
+    { key: '5', value: '20px' },
+    { key: '6', value: '24px' },
+    { key: '7', value: '28px' },
+    { key: '8', value: '32px' },
+    { key: '9', value: '36px' },
+    { key: '10', value: '40px' },
+    { key: '12', value: '48px' },
+    { key: '14', value: '56px' },
+    { key: '16', value: '64px' },
+    { key: '20', value: '80px' },
+    { key: '32', value: '128px' },
+    { key: '64', value: '256px' }
+  ].map(({ key, value }) => (
+    <wui-flex
+      key={key}
+      flexDirection="column"
+      alignItems="center"
+      gap="3"
+      style={{ padding: '16px', minHeight: '140px' }}
+    >
+      <wui-text variant="sm-medium" color="inverse" align="center">
+        --apkt-spacing-{key}
+      </wui-text>
+
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: value,
+        minHeight: '60px',
+        width: '100%'
+      }}>
+        {/* First div */}
+        <div style={{
+          width: '20px',
+          height: '40px',
+          backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)',
+    				border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)',
+          borderRadius: '4px'
+        }} />
+
+        {/* Dotted line with spacing */}
+        {parseInt(value) > 0 && (
+          <div style={{
+            width: value,
+            height: '2px',
+            borderTop: '2px dotted var(--apkt-tokens-core-foregroundAccent060)',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '14px',
+              backgroundColor: 'var(--apkt-tokens-theme-foregroundAccent010)',
+              padding: '2px 4px',
+              borderRadius: '2px'
+            }}>
+              <wui-text variant="xs-regular" color="fg-300" align="center">
+                {value}
+              </wui-text>
+            </div>
+          </div>
+        )}
+
+        {/* Second div */}
+        <div style={{
+          width: '20px',
+          height: '40px',
+    				border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)',
+          backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)',
+          borderRadius: '4px'
+        }} />
+      </div>
+
+      {/* Show value for 0px case */}
+      {parseInt(value) === 0 && (
+        <wui-text variant="xs-regular" color="fg-300" align="center">
+          {value}
+        </wui-text>
+      )}
+    </wui-flex>
+
+))}
+</wui-flex>
+
+<wui-text variant="md-regular" color="fg-200" style={{ marginTop: '32px', lineHeight: '1.5' }}>
+**Usage:** Use these spacing tokens with CSS custom properties:<br/>
+`margin: var(--apkt-spacing-4);` → 16px<br/>
+`padding: var(--apkt-spacing-6);` → 24px<br/>
+`gap: var(--apkt-spacing-2);` → 8px
+</wui-text>
+
+## Spacing Tokens
+
 ```css
---wui-spacing-0: 0px;
---wui-spacing-4xs: 2px;
---wui-spacing-3xs: 4px;
---wui-spacing-xxs: 6px;
---wui-spacing-xs: 8px;
---wui-spacing-s: 12px;
---wui-spacing-m: 14px;
---wui-spacing-l: 16px;
---wui-spacing-xl: 20px;
---wui-spacing-xxl: 24px;
---wui-spacing-3xl: 40px;
+--apkt-spacing-0: 0px;
+--apkt-spacing-01: 2px;
+--apkt-spacing-1: 4px;
+--apkt-spacing-2: 8px;
+--apkt-spacing-3: 12px;
+--apkt-spacing-4: 16px;
+--apkt-spacing-5: 20px;
+--apkt-spacing-6: 24px;
+--apkt-spacing-7: 28px;
+--apkt-spacing-8: 32px;
+--apkt-spacing-9: 36px;
+--apkt-spacing-10: 40px;
+--apkt-spacing-12: 48px;
+--apkt-spacing-14: 56px;
+--apkt-spacing-16: 64px;
+--apkt-spacing-20: 80px;
+--apkt-spacing-32: 128px;
+--apkt-spacing-64: 256px;
 ```

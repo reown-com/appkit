@@ -28,13 +28,13 @@ export class W3mWhatIsANetworkView extends LitElement {
     return html`
       <wui-flex
         flexDirection="column"
-        .padding=${['xxl', 'xl', 'xl', 'xl'] as const}
+        .padding=${['6', '5', '5', '5'] as const}
         alignItems="center"
-        gap="xl"
+        gap="5"
       >
         <w3m-help-widget .data=${data}></w3m-help-widget>
         <wui-button
-          variant="main"
+          variant="accent-primary"
           size="md"
           @click=${() => {
             CoreHelperUtil.openHref('https://ethereum.org/en/developers/docs/networks/', '_blank')

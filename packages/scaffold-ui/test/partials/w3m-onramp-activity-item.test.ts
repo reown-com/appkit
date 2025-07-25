@@ -51,10 +51,10 @@ describe('W3mOnRampActivityItem', () => {
     const labelText = element.shadowRoot?.querySelector('wui-text')
     expect(labelText?.textContent?.trim()).toBe('Test Purchase')
 
-    const purchaseText = element.shadowRoot?.querySelector('wui-text[color="fg-200"]')
+    const purchaseText = element.shadowRoot?.querySelector('wui-text[color="secondary"]')
     expect(purchaseText?.textContent?.trim()).toBe('+ 100 ETH')
 
-    const dateText = element.shadowRoot?.querySelector('wui-text[color="fg-300"]')
+    const dateText = element.shadowRoot?.querySelector('wui-text[color="tertiary"]')
     expect(dateText?.textContent?.trim()).toBe('2024-03-20')
   })
 

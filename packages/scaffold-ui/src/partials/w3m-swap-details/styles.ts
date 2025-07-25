@@ -6,21 +6,21 @@ export default css`
   }
 
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xxs);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    border-radius: var(--apkt-borderRadius-3);
     width: 100%;
   }
 
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xxs);
+    padding: var(--apkt-spacing-3);
+    border-radius: var(--apkt-borderRadius-3);
     cursor: pointer;
   }
 
   .details-content-container {
-    padding: var(--wui-spacing-1xs);
+    padding: var(--apkt-spacing-2);
     padding-top: 0px;
     display: flex;
     align-items: center;
@@ -33,11 +33,11 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s);
-    padding-left: var(--wui-spacing-s);
-    padding-right: var(--wui-spacing-1xs);
-    border-radius: calc(var(--wui-border-radius-5xs) + var(--wui-border-radius-4xs));
-    background: var(--wui-color-gray-glass-002);
+    padding: var(--apkt-spacing-3);
+    padding-left: var(--apkt-spacing-3);
+    padding-right: var(--apkt-spacing-2);
+    border-radius: calc(var(--apkt-borderRadius-1) + var(--apkt-borderRadius-1));
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .details-row-title {
@@ -45,6 +45,6 @@ export default css`
   }
 
   .details-row.provider-free-row {
-    padding-right: var(--wui-spacing-xs);
+    padding-right: var(--apkt-spacing-2);
   }
 `

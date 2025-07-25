@@ -19,7 +19,7 @@ export default css`
   .token-image {
     width: 24px;
     height: 24px;
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--apkt-tokens-core-glass010);
     border-radius: 12px;
   }
 
@@ -31,19 +31,19 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-xxs);
-    padding: var(--wui-spacing-xs);
+    gap: var(--apkt-spacing-2);
+    padding: var(--apkt-spacing-2);
     height: 40px;
     border: none;
     border-radius: 80px;
-    background: var(--wui-color-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
     cursor: pointer;
     transition: background 0.2s linear;
   }
 
   .token-item:hover {
-    background: var(--wui-color-gray-glass-005);
+    background: var(--apkt-tokens-core-glass010);
   }
 
   .preview-token-details-container {
@@ -52,14 +52,14 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
-    border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
+    border-radius: var(--apkt-borderRadius-3);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .action-buttons-container {
     width: 100%;
-    gap: var(--wui-spacing-xs);
+    gap: var(--apkt-spacing-2);
   }
 
   .action-buttons-container > button {
@@ -68,9 +68,9 @@ export default css`
     justify-content: center;
     background: transparent;
     height: 48px;
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
     border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
   }
 
   .action-buttons-container > button:disabled {
@@ -100,25 +100,25 @@ export default css`
   }
 
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xxs);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    border-radius: var(--apkt-borderRadius-3);
     width: 100%;
   }
 
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xxs);
+    padding: var(--apkt-spacing-3);
+    border-radius: var(--apkt-borderRadius-3);
     transition: background 0.2s linear;
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .details-content-container {
-    padding: var(--wui-spacing-1xs);
+    padding: var(--apkt-spacing-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,8 +130,8 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
-    border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
+    border-radius: var(--apkt-borderRadius-3);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 `

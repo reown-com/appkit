@@ -6,18 +6,18 @@ export default css`
     display: ruby;
     width: 32px;
     height: 32px;
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: var(--apkt-borderRadius-20);
   }
 
   .sendButton {
     width: 70%;
     --local-width: 100% !important;
-    --local-border-radius: var(--wui-border-radius-xs) !important;
+    --local-border-radius: var(--apkt-borderRadius-4) !important;
   }
 
   .cancelButton {
     width: 30%;
     --local-width: 100% !important;
-    --local-border-radius: var(--wui-border-radius-xs) !important;
+    --local-border-radius: var(--apkt-borderRadius-4) !important;
   }
 `

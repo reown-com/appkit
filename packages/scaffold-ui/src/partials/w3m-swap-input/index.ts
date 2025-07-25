@@ -71,10 +71,10 @@ export class W3mSwapInput extends LitElement {
             type="text"
             inputmode="decimal"
           />
-          <wui-text class="market-value" variant="small-400" color="fg-200">
+          <wui-text class="market-value" variant="sm-regular" color="secondary">
             ${isMarketValueGreaterThanZero
               ? `$${UiHelperUtil.formatNumberToLocalString(this.marketValue, 2)}`
-              : null}
+              : `$0,00`}
           </wui-text>
         </wui-flex>
         ${this.templateTokenSelectButton()}
@@ -115,7 +115,7 @@ export class W3mSwapInput extends LitElement {
         data-testid="swap-select-token-button-${this.target}"
         class="swap-token-button"
         size="md"
-        variant="accent"
+        variant="neutral-secondary"
         @click=${this.onSelectToken.bind(this)}
       >
         Select token
@@ -128,7 +128,7 @@ export class W3mSwapInput extends LitElement {
         flexDirection="column"
         alignItems="flex-end"
         justifyContent="center"
-        gap="xxs"
+        gap="1"
       >
         <wui-token-button
           data-testid="swap-input-token-${this.target}"
@@ -137,7 +137,7 @@ export class W3mSwapInput extends LitElement {
           @click=${this.onSelectToken.bind(this)}
         >
         </wui-token-button>
-        <wui-flex alignItems="center" gap="xxs"> ${this.tokenBalanceTemplate()} </wui-flex>
+        <wui-flex alignItems="center" gap="1"> ${this.tokenBalanceTemplate()} </wui-flex>
       </wui-flex>
     `
   }
@@ -150,7 +150,7 @@ export class W3mSwapInput extends LitElement {
 
     return html`
       ${haveBalance
-        ? html`<wui-text variant="small-400" color="fg-200">
+        ? html`<wui-text variant="sm-regular" color="secondary">
             ${UiHelperUtil.formatNumberToLocalString(this.balance, 2)}
           </wui-text>`
         : null}
@@ -161,12 +161,12 @@ export class W3mSwapInput extends LitElement {
   private tokenActionButtonTemplate(haveBalance: boolean) {
     if (haveBalance) {
       return html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
-        <wui-text color="accent-100" variant="small-600">Max</wui-text>
+        <wui-text color="accent-primary" variant="sm-medium">Max</wui-text>
       </button>`
     }
 
     return html` <button class="max-value-button" @click=${this.onBuyToken.bind(this)}>
-      <wui-text color="accent-100" variant="small-600">Buy</wui-text>
+      <wui-text color="accent-primary" variant="sm-medium">Buy</wui-text>
     </button>`
   }
 

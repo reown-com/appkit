@@ -29,7 +29,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${this.wallets.map(
           wallet => html`
             <wui-list-wallet
@@ -38,6 +38,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
               name=${wallet.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
               tabIdx=${ifDefined(this.tabIdx)}
+              size="sm"
               ?disabled=${hasWcConnection}
             >
             </wui-list-wallet>

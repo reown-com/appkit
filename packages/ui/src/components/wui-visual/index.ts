@@ -63,7 +63,7 @@ export class WuiVisual extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
-       --local-size: var(--wui-visual-size-${this.size});
+       --local-size: var(--apkt-visual-size-${this.size});
    `
 
     return html`${svgOptions[this.name]}`

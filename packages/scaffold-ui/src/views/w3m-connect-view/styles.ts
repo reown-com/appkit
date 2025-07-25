@@ -12,13 +12,13 @@ export default css`
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    transition: opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
     will-change: opacity;
     mask-image: var(--connect-mask-image);
   }
 
   .guide {
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    transition: opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
     will-change: opacity;
   }
 
@@ -38,7 +38,12 @@ export default css`
   }
 
   wui-separator {
-    margin: var(--wui-spacing-s) calc(var(--wui-spacing-s) * -1);
-    width: calc(100% + var(--wui-spacing-s) * 2);
+    margin: var(--apkt-spacing-3) calc(var(--apkt-spacing-3) * -1);
+    width: calc(100% + var(--apkt-spacing-3) * 2);
+  }
+
+  wui-separator + w3m-wallet-guide {
+    padding-top: var(--apkt-spacing-1);
+    padding-bottom: var(--apkt-spacing-3);
   }
 `

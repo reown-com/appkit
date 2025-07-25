@@ -17,8 +17,9 @@ export class WuiPromo extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`<button>
-      <wui-text variant="small-600" color="bg-100">${this.text}</wui-text>
-      <wui-icon color="bg-100" size="xs" name="arrowRight"></wui-icon>
+      <wui-icon color="accent-primary" size="sm" name="arrowRight"></wui-icon>
+      <wui-text variant="sm-regular" color="accent-primary">${this.text}</wui-text>
+      <wui-icon color="accent-primary" size="sm" name="arrowTopRight"></wui-icon>
     </button>`
   }
 }

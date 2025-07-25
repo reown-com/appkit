@@ -145,23 +145,23 @@ export class W3mConnectView extends LitElement {
         <wui-flex
           data-testid="w3m-connect-scroll-view"
           flexDirection="column"
+          .padding=${['0', '0', '4', '0'] as const}
           class=${classMap(classes)}
         >
           <wui-flex
             class="connect-methods"
             flexDirection="column"
-            gap="s"
+            gap="2"
             .padding=${socialOrEmailLoginEnabled &&
             isEnableWallets &&
             isEnableWalletGuide &&
             this.walletGuide === 'get-started'
-              ? ['3xs', 's', '0', 's']
-              : ['3xs', 's', 's', 's']}
+              ? ['1', '3', '0', '3']
+              : ['1', '3', '3', '3']}
           >
             ${this.renderConnectMethod(tabIndex)}
           </wui-flex>
         </wui-flex>
-        ${this.guideTemplate(isDisabled)}
         <w3m-legal-footer></w3m-legal-footer>
       </wui-flex>
     `
@@ -323,36 +323,6 @@ export class W3mConnectView extends LitElement {
     }
 
     return html`<w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>`
-  }
-
-  private guideTemplate(disabled = false) {
-    const isEnableWalletGuide = OptionsController.state.enableWalletGuide
-
-    if (!isEnableWalletGuide) {
-      return null
-    }
-
-    const classes = {
-      guide: true,
-      disabled
-    }
-
-    const tabIndex = disabled ? -1 : undefined
-
-    if (!this.authConnector && !this.isSocialEnabled) {
-      return null
-    }
-
-    return html`
-      ${this.walletGuide === 'explore' && !ChainController.state.noAdapters
-        ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
-        : null}
-      <w3m-wallet-guide
-        class=${classMap(classes)}
-        tabIdx=${ifDefined(tabIndex)}
-        walletGuide=${this.walletGuide}
-      ></w3m-wallet-guide>
-    `
   }
 
   private legalCheckboxTemplate() {

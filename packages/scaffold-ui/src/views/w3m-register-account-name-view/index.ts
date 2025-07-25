@@ -82,8 +82,8 @@ export class W3mRegisterAccountNameView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="m"
-        .padding=${['0', 's', 'm', 's'] as const}
+        gap="4"
+        .padding=${['0', '3', '4', '3'] as const}
       >
         <form ${ref(this.formRef)} @submit=${this.onSubmitName.bind(this)}>
           <wui-ens-input
@@ -146,7 +146,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private nameSuggestionTagTemplate() {
     if (this.loading) {
-      return html`<wui-loading-spinner size="lg" color="fg-100"></wui-loading-spinner>`
+      return html`<wui-loading-spinner size="lg" color="primary"></wui-loading-spinner>`
     }
 
     return this.registered
@@ -161,15 +161,15 @@ export class W3mRegisterAccountNameView extends LitElement {
 
     const suggestions = this.registered ? this.suggestions.filter(s => s.name !== this.name) : []
 
-    return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
+    return html`<wui-flex flexDirection="column" gap="1" alignItems="center">
       <wui-flex
         data-testid="account-name-suggestion"
-        .padding=${['m', 'm', 'm', 'm'] as const}
+        .padding=${['3', '3', '3', '3'] as const}
         justifyContent="space-between"
         class="suggestion"
         @click=${this.onSubmitName.bind(this)}
       >
-        <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
+        <wui-text color="primary" variant="md-regular" class="suggested-name">
           ${this.name}</wui-text
         >${this.nameSuggestionTagTemplate()}
       </wui-flex>
@@ -180,12 +180,12 @@ export class W3mRegisterAccountNameView extends LitElement {
   private availableNameTemplate(suggestion: string) {
     return html` <wui-flex
       data-testid="account-name-suggestion"
-      .padding=${['m', 'm', 'm', 'm'] as const}
+      .padding=${['3', '3', '3', '3'] as const}
       justifyContent="space-between"
       class="suggestion"
       @click=${this.onSelectSuggestion(suggestion)}
     >
-      <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
+      <wui-text color="primary" variant="md-regular" class="suggested-name">
         ${suggestion}
       </wui-text>
       <wui-tag variant="success" size="lg">Available</wui-tag>

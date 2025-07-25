@@ -24,8 +24,8 @@ export default css`
   }
 
   wui-loading-spinner {
-    padding-top: var(--wui-spacing-l);
-    padding-bottom: var(--wui-spacing-l);
+    padding-top: var(--apkt-spacing-4);
+    padding-bottom: var(--apkt-spacing-4);
     justify-content: center;
     grid-column: 1 / span 4;
   }
