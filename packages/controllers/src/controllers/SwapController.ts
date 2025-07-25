@@ -516,6 +516,7 @@ const controller = {
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
 
+    console.log('>>> swapTokens', sourceToken, toToken, haveSourceTokenAmount)
     if (!haveSourceTokenAmount) {
       SwapController.setToTokenAmount('')
     }
