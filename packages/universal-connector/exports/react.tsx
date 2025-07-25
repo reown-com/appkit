@@ -25,8 +25,6 @@ export function useUniversalConnector() {
   return context
 }
 
-// -- Utils & Others -----------------------------------------------------------------------
-
 // -- Providers ----------------------------------------------------------------------------
 export function UniversalConnectorProvider({
   children,
