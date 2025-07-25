@@ -365,7 +365,7 @@ export const SIWXUtil = {
     methods: string[]
   }) {
     const siwx = SIWXUtil.getSIWX()
-
+    const network = getActiveCaipNetwork()
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
@@ -433,7 +433,7 @@ export const SIWXUtil = {
 
       try {
         await siwx.setSessions(sessions)
-
+        ChainController.setLastConnectedSIWECaipNetwork(network)
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_SUCCESS',
