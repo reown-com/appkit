@@ -50,16 +50,14 @@ export class W3mSwapSelectTokenView extends LitElement {
     super()
 
     this.unsubscribe.push(
-      ...[
-        SwapController.subscribe(newState => {
-          this.sourceToken = newState.sourceToken
-          this.toToken = newState.toToken
-          this.myTokensWithBalance = newState.myTokensWithBalance
-          this.popularTokens = newState.popularTokens
-          this.suggestedTokens = newState.suggestedTokens
-          this.tokensLoading = newState.tokensLoading
-        })
-      ]
+      SwapController.subscribe(newState => {
+        this.sourceToken = newState.sourceToken
+        this.toToken = newState.toToken
+        this.myTokensWithBalance = newState.myTokensWithBalance
+        this.popularTokens = newState.popularTokens
+        this.suggestedTokens = newState.suggestedTokens
+        this.tokensLoading = newState.tokensLoading
+      })
     )
   }
 
