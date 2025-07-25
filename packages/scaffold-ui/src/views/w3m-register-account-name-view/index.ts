@@ -2,15 +2,16 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   CoreHelperUtil,
   EnsController,
   EventsController,
+  type ReownName,
   SnackController,
-  getPreferredAccountType,
-  type ReownName
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-ens-input'
@@ -23,7 +24,6 @@ import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
-import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-register-account-name-view')
 export class W3mRegisterAccountNameView extends LitElement {
@@ -113,7 +113,7 @@ export class W3mRegisterAccountNameView extends LitElement {
     }
 
     const reownName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}` as ReownName
-    
+
     return html`
       <wui-icon-link
         .disabled=${isRegistered}
