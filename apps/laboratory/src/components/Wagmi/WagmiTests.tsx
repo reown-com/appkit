@@ -12,6 +12,7 @@ import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
 import { WagmiTransactionTest } from './WagmiTransactionTest'
+import { WagmiWalletCapabilitiesDebug } from './WagmiWalletCapabilitiesDebug'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 
 interface IProps {
@@ -100,6 +101,8 @@ export function WagmiTests({ config }: IProps) {
             </Heading>
             <WagmiDisconnectTest />
           </Box>
+
+          <WagmiWalletCapabilitiesDebug />
         </Stack>
       </CardBody>
     </Card>

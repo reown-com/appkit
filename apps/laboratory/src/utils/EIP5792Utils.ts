@@ -18,7 +18,7 @@ export const EIP_7715_RPC_METHODS = {
 }
 
 export const WALLET_CAPABILITIES = {
-  ATOMIC_BATCH: 'atomicBatch',
+  ATOMIC_BATCH: 'atomic',
   PAYMASTER_SERVICE: 'paymasterService',
   PERMISSIONS: 'permissions'
 }
