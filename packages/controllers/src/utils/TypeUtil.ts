@@ -423,12 +423,16 @@ export type Event =
       type: 'track'
       address?: string
       event: 'MODAL_CREATED'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       event: 'MODAL_OPEN'
       properties: {
         connected: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -437,12 +441,16 @@ export type Event =
       event: 'MODAL_CLOSE'
       properties: {
         connected: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'CLICK_ALL_WALLETS'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
@@ -452,6 +460,7 @@ export type Event =
         name: string
         platform: Platform
         displayIndex?: number
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -470,22 +479,25 @@ export type Event =
       event: 'CONNECT_ERROR'
       properties: {
         message: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'DISCONNECT_SUCCESS'
-      properties?: {
-        namespace: ChainNamespace | 'all'
+      properties: {
+        namespace?: ChainNamespace | 'all'
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'DISCONNECT_ERROR'
-      properties?: {
-        message: string
+      properties: {
+        message?: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -502,16 +514,25 @@ export type Event =
       type: 'track'
       address?: string
       event: 'CLICK_WALLET_HELP'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'CLICK_NETWORK_HELP'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'CLICK_GET_WALLET'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
@@ -519,6 +540,7 @@ export type Event =
       event: 'CLICK_TRANSACTIONS'
       properties: {
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -530,6 +552,7 @@ export type Event =
         projectId: string
         cursor: string | undefined
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -541,6 +564,7 @@ export type Event =
         projectId: string
         cursor: string | undefined
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -550,6 +574,7 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -559,12 +584,16 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'CLICK_NETWORKS'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
@@ -573,6 +602,7 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -582,32 +612,48 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'EMAIL_LOGIN_SELECTED'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'EMAIL_SUBMITTED'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'DEVICE_REGISTERED_FOR_EMAIL'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'EMAIL_VERIFICATION_CODE_SENT'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'EMAIL_VERIFICATION_CODE_PASS'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
@@ -615,17 +661,24 @@ export type Event =
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
       properties: {
         message: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'EMAIL_EDIT'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'EMAIL_UPGRADE_FROM_MODAL'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
@@ -633,22 +686,32 @@ export type Event =
       event: 'SWITCH_NETWORK'
       properties: {
         network: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'CLICK_CONVERT'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'CLICK_SELECT_TOKEN_TO_SWAP'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
       address?: string
       event: 'CLICK_SELECT_NETWORK_TO_SWAP'
+      properties: {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | {
       type: 'track'
@@ -656,6 +719,7 @@ export type Event =
       event: 'SELECT_BUY_CRYPTO'
       properties: {
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -665,6 +729,7 @@ export type Event =
       properties: {
         provider: OnRampProviderOption
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -673,6 +738,7 @@ export type Event =
       event: 'SELECT_WHAT_IS_A_BUY'
       properties: {
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -682,6 +748,7 @@ export type Event =
       properties: {
         accountType: W3mFrameTypes.AccountType
         network: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -691,6 +758,7 @@ export type Event =
       properties: {
         isSmartAccount: boolean
         network: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -704,6 +772,7 @@ export type Event =
         swapToToken: string
         swapFromAmount: string
         swapToAmount: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -717,6 +786,7 @@ export type Event =
         swapToToken: string
         swapFromAmount: string
         swapToAmount: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -731,6 +801,7 @@ export type Event =
         swapFromAmount: string
         swapToAmount: string
         message: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -745,6 +816,7 @@ export type Event =
         swapFromAmount: string
         swapToAmount: string
         message: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -753,6 +825,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_STARTED'
       properties: {
         provider: SocialProvider
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -770,6 +843,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_ERROR'
       properties: {
         provider: SocialProvider
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -778,6 +852,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_REQUEST_USER_DATA'
       properties: {
         provider: SocialProvider
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -786,6 +861,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_CANCELED'
       properties: {
         provider: SocialProvider
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -794,6 +870,7 @@ export type Event =
       event: 'OPEN_ENS_FLOW'
       properties: {
         isSmartAccount: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -803,6 +880,7 @@ export type Event =
       properties: {
         isSmartAccount: boolean
         ensName: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -812,6 +890,7 @@ export type Event =
       properties: {
         isSmartAccount: boolean
         ensName: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -822,6 +901,7 @@ export type Event =
         isSmartAccount: boolean
         ensName: string
         error: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -831,6 +911,7 @@ export type Event =
       properties: {
         isSmartAccount: boolean
         network: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -842,6 +923,7 @@ export type Event =
         network: string
         token: string
         amount: number
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -853,6 +935,7 @@ export type Event =
         network: string
         token: string
         amount: number
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -865,6 +948,7 @@ export type Event =
         network: string
         token: string
         amount: number
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -876,6 +960,7 @@ export type Event =
         uri: string
         mobile_link: string
         name: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -885,13 +970,16 @@ export type Event =
       properties: {
         badge: string
         search: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'INITIALIZE'
-      properties: InitializeAppKitConfigs
+      properties: InitializeAppKitConfigs & {
+        caipNetworkId?: CaipNetworkId
+      }
     }
   | PayEvent
 
@@ -923,6 +1011,7 @@ type PayEvent =
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -933,6 +1022,7 @@ type PayEvent =
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -943,6 +1033,7 @@ type PayEvent =
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -952,6 +1043,7 @@ type PayEvent =
       properties: {
         exchanges: PayExchange[]
         configuration: PayConfiguration
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -963,6 +1055,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         headless: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
 
