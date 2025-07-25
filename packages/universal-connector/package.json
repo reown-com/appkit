@@ -1,0 +1,54 @@
+{
+  "name": "@reown/appkit-universal-connector",
+  "version": "1.7.13",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo",
+    "README.md"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@walletconnect/universal-provider": "2.21.5",
+    "@walletconnect/types": "2.21.5",
+    "bs58": "6.0.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "2.1.9",
+    "vitest": "3.1.3"
+  },
+  "author": "Reown (https://discord.gg/reown)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/reown-com/appkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
+}

@@ -179,5 +179,68 @@ describe('SIWXUtil', () => {
         accounts: ['0x1234567890123456789012345678901234567890']
       })
     })
+
+    it('should call authConnector.connect without siwxMessage if email capture is enabled', async () => {
+      const mockSIWX = {
+        createMessage: vi.fn().mockResolvedValue({
+          accountAddress: '',
+          chainId: 'eip155:1',
+          domain: 'example.com',
+          uri: 'https://example.com',
+          version: '1',
+          nonce: 'test-nonce',
+          notBefore: '2023-01-01T00:00:00Z',
+          statement: 'Sign in with Ethereum',
+          resources: ['https://example.com'],
+          requestId: 'test-request-id',
+          issuedAt: '2023-01-01T00:00:00Z',
+          expirationTime: '2023-01-02T00:00:00Z'
+        })
+      }
+
+      const mockAuthConnector = {
+        connect: vi.fn().mockResolvedValue({
+          address: '0x1234567890123456789012345678901234567890',
+          chainId: 1,
+          accounts: ['0x1234567890123456789012345678901234567890']
+        })
+      }
+
+      // Mock OptionsController state with SIWX enabled and email capture enabled
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        siwx: mockSIWX as unknown as SIWXConfig,
+        remoteFeatures: {
+          emailCapture: true
+        }
+      })
+
+      const result = await SIWXUtil.authConnectorAuthenticate({
+        authConnector: mockAuthConnector as any,
+        chainId: 1,
+        socialUri: 'test-uri',
+        preferredAccountType: 'eoa',
+        chainNamespace: 'eip155'
+      })
+
+      // Should call connect without siwxMessage even though SIWX is enabled
+      expect(mockAuthConnector.connect).toHaveBeenCalledWith({
+        chainId: 1,
+        socialUri: 'test-uri',
+        preferredAccountType: 'eoa'
+      })
+      expect(mockAuthConnector.connect).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          siwxMessage: expect.any(Object)
+        })
+      )
+      // Should not call createMessage since email capture bypasses SIWX flow
+      expect(mockSIWX.createMessage).not.toHaveBeenCalled()
+      expect(result).toEqual({
+        address: '0x1234567890123456789012345678901234567890',
+        chainId: 1,
+        accounts: ['0x1234567890123456789012345678901234567890']
+      })
+    })
   })
 })
