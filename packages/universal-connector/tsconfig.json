@@ -2,8 +2,9 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "./dist/esm",
-    "declarationDir": "./dist/types"
+    "declarationDir": "./dist/types",
+    "jsx": "react-jsx"
   },
   "extends": "../../tsconfig.json",
-  "include": ["index.ts", "src", "tests", "src/**/*.json"]
+  "include": ["index.ts", "exports", "src", "tests", "src/**/*.json"]
 }

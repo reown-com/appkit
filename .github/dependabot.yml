@@ -18,6 +18,18 @@ updates:
         patterns:
           - 'viem'
           - '@wagmi/*'
+  - package-ecosystem: 'npm'
+    directory: '/apps/demo'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - 'chore: update `@reown/*` dependencies for AppKit Demo'
+    groups:
+      # All @reown/* dependencies in any package.json in the repo
+      'reown-appkit':
+        dependency-type: 'production'
+        patterns:
+          - '@reown/*'
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
