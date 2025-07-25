@@ -5,7 +5,8 @@ export default css`
     display: block;
   }
 
-  :host > button {
+  :host > button,
+  :host > wui-flex {
     gap: var(--wui-spacing-xxs);
     padding: var(--wui-spacing-xs);
     padding-right: var(--wui-spacing-1xs);

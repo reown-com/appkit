@@ -13,11 +13,14 @@ export default {
   title: 'Composites/wui-token-button',
   args: {
     text: 'ETH',
-    imageSrc: networkImageSrc
+    imageSrc: networkImageSrc,
+    loading: false
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html`<wui-token-button text=${args.text} .imageSrc=${args.imageSrc}>Recent</wui-token-button>`
+    html`<wui-token-button text=${args.text} .imageSrc=${args.imageSrc} ?loading=${args.loading}
+      >Recent</wui-token-button
+    >`
 }

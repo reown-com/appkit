@@ -82,6 +82,7 @@ beforeAll(async () => {
   vi.spyOn(ConnectionController, 'parseUnits').mockResolvedValue(parseUnits('1', 18))
 
   await SwapController.initializeState()
+  await SwapController.getTokenList()
 
   const toToken = SwapController.state.myTokensWithBalance?.[1]
   SwapController.setToToken(toToken)

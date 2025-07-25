@@ -253,6 +253,11 @@
       "import": "./dist/esm/exports/wui-token-list-item.js",
       "default": "./dist/esm/exports/wui-token-list-item.js"
     },
+    "./wui-token-list-item-loader": {
+      "types": "./dist/types/exports/wui-token-list-item-loader.d.ts",
+      "import": "./dist/esm/exports/wui-token-list-item-loader.js",
+      "default": "./dist/esm/exports/wui-token-list-item-loader.js"
+    },
     "./wui-transaction-visual": {
       "types": "./dist/types/exports/wui-transaction-visual.d.ts",
       "import": "./dist/esm/exports/wui-transaction-visual.js",

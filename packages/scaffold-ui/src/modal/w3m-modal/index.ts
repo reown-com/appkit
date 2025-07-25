@@ -19,6 +19,7 @@ import {
   RouterController,
   SIWXUtil,
   SnackController,
+  SwapController,
   ThemeController
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
@@ -308,6 +309,10 @@ export class W3mModalBase extends LitElement {
 
     if (this.enableEmbedded && RouterController.state.view === 'SwitchNetwork') {
       shouldGoBack = true
+    }
+
+    if (networkIdChanged) {
+      SwapController.resetState()
     }
 
     if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {

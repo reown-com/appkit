@@ -2,7 +2,9 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import '../../components/wui-image/index.js'
+import '../../components/wui-shimmer/index.js'
 import '../../components/wui-text/index.js'
+import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
@@ -17,8 +19,17 @@ export class WuiTokenButton extends LitElement {
 
   @property() public text = ''
 
+  @property({ type: Boolean }) public loading = false
+
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.loading) {
+      return html` <wui-flex alignItems="center" gap="xxs" padding="xs">
+        <wui-shimmer width="24px" height="24px"></wui-shimmer>
+        <wui-shimmer width="40px" height="20px" borderRadius="4xs"></wui-shimmer>
+      </wui-flex>`
+    }
+
     return html`
       <button>
         ${this.tokenTemplate()}
