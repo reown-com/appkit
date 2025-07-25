@@ -546,23 +546,23 @@ export class AppKit extends AppKitBaseClient {
     }
 
     const isAuthConnector =
-      ProviderUtil.getProviderId(chainNamespace) === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
+      ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
 
-    if (isAuthConnector) {
-      await this.syncReownName(address, chainNamespace)
-    } else {
-      try {
-        const { name, avatar } = await this.fetchIdentity({
-          address,
-          caipNetworkId
-        })
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        address,
+        caipNetworkId
+      })
 
+      if (!name && isAuthConnector) {
+        await this.syncReownName(address, chainNamespace)
+      } else {
         this.setProfileName(name, chainNamespace)
         this.setProfileImage(avatar, chainNamespace)
-      } catch {
-        if (chainId !== 1) {
-          this.setProfileImage(null, chainNamespace)
-        }
+      }
+    } catch {
+      if (chainId !== 1) {
+        this.setProfileImage(null, chainNamespace)
       }
     }
   }
