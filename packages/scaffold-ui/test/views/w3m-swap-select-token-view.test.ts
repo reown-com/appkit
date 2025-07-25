@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 import type { CaipAddress } from '@reown/appkit-common'
 import {
   BlockchainApiController,
-  ChainController,
   RouterController,
   type RouterControllerState,
   SwapController,
