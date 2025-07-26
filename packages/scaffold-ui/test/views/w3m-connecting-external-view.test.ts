@@ -87,7 +87,9 @@ describe('W3mConnectingExternalView', () => {
           solana: undefined,
           polkadot: undefined,
           bip122: undefined,
-          cosmos: undefined
+          cosmos: undefined,
+          sui: undefined,
+          stacks: undefined
         }
       })
       vi.spyOn(RouterController, 'replace').mockImplementation(() => {})

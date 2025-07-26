@@ -15,6 +15,7 @@ export * from '../src/library/react/index.js'
 export * from '../src/utils/index.js'
 export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
+export type { AppKitBaseClient, OpenOptions, Views } from '../src/client/appkit-base-client.js'
 export { CoreHelperUtil, AccountController } from '@reown/appkit-controllers'
 
 export let modal: AppKit | undefined = undefined
@@ -69,3 +70,13 @@ export function useAppKitBalance() {
 }
 
 export { useAppKitAccount } from '@reown/appkit-controllers/react'
+
+export {
+  AppKitButton,
+  AppKitNetworkButton,
+  AppKitConnectButton,
+  AppKitAccountButton
+} from '../src/library/react/components.js'
+
+export { AppKitProvider } from '../src/library/react/providers.js'
+export type { AppKitProviderProps } from '../src/library/react/providers.js'

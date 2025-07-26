@@ -38,8 +38,8 @@ describe('EventsController', () => {
 
     expect(AlertController.open).toHaveBeenCalledWith(
       {
-        shortMessage: 'Invalid App Configuration',
-        longMessage: expect.stringContaining('not found on Allowlist')
+        displayMessage: 'Invalid App Configuration',
+        debugMessage: expect.stringContaining('not found on Allowlist')
       },
       'error'
     )

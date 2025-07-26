@@ -2,10 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 
-import {
-  ChainController,
-  type ChainControllerState
-} from '../../src/controllers/ChainController.js'
+import { mockChainControllerState } from '../../exports/testing.js'
 import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 const ORIGINAL_HREF = 'https://example.com/path'
@@ -17,16 +14,10 @@ const mockWindow = {
 
 describe('MobileWalletUtil', () => {
   beforeEach(() => {
-    // Clean up window mock after each test
-    vi.stubGlobal('window', {
-      location: {
-        href: ORIGINAL_HREF
-      }
-    })
+    vi.restoreAllMocks()
+    vi.stubGlobal('window', { location: { href: ORIGINAL_HREF } })
 
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeChain: 'solana'
-    } as unknown as ChainControllerState)
+    mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.SOLANA })
   })
 
   it('should redirect to Phantom app when Phantom is not installed', () => {
@@ -58,9 +49,6 @@ describe('MobileWalletUtil', () => {
   })
 
   it('should redirect to Coinbase Wallet when it is not installed', () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
-      activeChain: ConstantsUtil.CHAIN.SOLANA
-    } as unknown as ChainControllerState)
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
       ConstantsUtil.CHAIN.SOLANA

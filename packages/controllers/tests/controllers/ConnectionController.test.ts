@@ -249,7 +249,7 @@ describe('ConnectionController', () => {
     } as Connector
 
     beforeEach(() => {
-      vi.clearAllMocks()
+      vi.restoreAllMocks()
     })
 
     it('should call parseCaipAddress when caipAddress is available', async () => {

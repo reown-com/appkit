@@ -75,6 +75,9 @@ on:
       PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
         required: false
 
+env:
+  BRANCH_NAME: ${{ inputs.branch }}
+
 jobs:
   build_lab_and_extension:
     name: 'Build Lab and Extension'
@@ -85,6 +88,12 @@ jobs:
         with:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
+
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -151,7 +160,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ui-build-output
+          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
           path: |
             dist/
             .next/
@@ -168,7 +177,7 @@ jobs:
         if: inputs.build-and-cache-only == false
         uses: actions/upload-artifact@v4
         with:
-          name: ui-node-modules
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules
           retention-days: 1
 
@@ -193,6 +202,12 @@ jobs:
         with:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
+
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
 
       - name: Get Playwright version
         id: playwright-version
@@ -242,14 +257,14 @@ jobs:
       - name: Download build artifacts (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-build-output
+          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
           # Note: download-artifact downloads into the workspace root by default
 
       # Download actual artifact in GitHub Actions
       - name: Download node_modules (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-node-modules
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules # Specify path to download into
 
       # Restore executable permissions for binaries (keep this after potential copy)
@@ -354,10 +369,12 @@ jobs:
 
       - name: Upload Playwright Blob Report for Shard ${{ matrix.shard }}
         uses: actions/upload-artifact@v4
-        if: always() # Ensure it runs even if tests fail to get all blob data
+        # When we run this workflow from AppKit, PW does separate reports by shard. We should upload the shard-specific report.zip.
+        if: always() && contains(github.workspace, 'appkit')
         with:
-          name: playwright-blob-artifact-shard-${{ matrix.shard }} # New unique artifact name pattern for blobs
-          path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/report-${{ matrix.shard }}.zip # Path to the uniquely named blob file
+          # Upload every blob in the directory so the step succeeds regardless of the exact filename
+          name: playwright-blob-artifact-shard-${{ env.BRANCH_NAME }}-${{ matrix.shard }}
+          path: ${{ github.workspace }}/apps/laboratory/playwright-blob-reports/*.zip
           retention-days: 7
 
       - name: Verify Cache Dir Exists Before Post Job
@@ -377,6 +394,12 @@ jobs:
           repository: reown-com/appkit
           ref: ${{ inputs.branch }}
 
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
@@ -390,7 +413,7 @@ jobs:
       - name: Download node_modules (GitHub Actions)
         uses: actions/download-artifact@v4
         with:
-          name: ui-node-modules
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules # Specify path to download into
 
       - name: Install dependencies # Install again to link binaries, etc.
@@ -405,7 +428,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: all-blob-reports # Directory to download all artifacts into (becomes ${{ github.workspace }}/all-blob-reports)
-          pattern: playwright-blob-artifact-shard-* # Matches all NEW shard blob artifacts
+          pattern: playwright-blob-artifact-shard-${{ env.BRANCH_NAME }}* # Matches all NEW shard blob artifacts
           merge-multiple: true # Merges contents of all matching artifacts into the 'path' directory
 
       - name: Verify downloaded blobs (optional debugging)
@@ -469,16 +492,21 @@ jobs:
           echo "Uploading ${{ github.workspace }}/apps/laboratory/merged-test-results.json to s3://${S3_BUCKET}/${S3_KEY}"
           aws s3 cp ${{ github.workspace }}/apps/laboratory/merged-test-results.json s3://${S3_BUCKET}/${S3_KEY}
 
+      - name: List Contents of Playwright Report Directory
+        run: |
+          echo "Listing contents of the playwright-report directory for debugging:"
+          ls -l ${{ github.workspace }}/apps/laboratory/playwright-report/
+
       - name: Upload Merged HTML Report
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-merged-html-report
+          name: playwright-merged-html-report-${{ env.BRANCH_NAME }}
           path: ${{ github.workspace }}/apps/laboratory/playwright-report/ # Contains the merged HTML report
           retention-days: 7
 
       - name: Upload Merged JSON Report (for custom processing)
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-merged-json-report
+          name: playwright-merged-json-report-${{ env.BRANCH_NAME }}
           path: ${{ github.workspace }}/apps/laboratory/merged-test-results.json # The consolidated JSON report
           retention-days: 7

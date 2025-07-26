@@ -173,5 +173,8 @@ export const WalletUtil = {
       )
 
     return isRDNSExcluded || isNameExcluded
+  },
+  markWalletsWithDisplayIndex(wallets: WcWallet[]) {
+    return wallets.map((w, index) => ({ ...w, display_index: index }))
   }
 }
