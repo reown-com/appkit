@@ -62,7 +62,7 @@ jobs:
           MESSAGE_TEXT="<@${DEVIN_SLACK_USER_ID}> ${PROMPT_TEXT}"
 
           # Create the JSON payload for Slack.
-          # jq 's --arg option handles escaping special characters in MESSAGE_TEXT for valid JSON.
+          # jq's --arg option handles escaping special characters in MESSAGE_TEXT for valid JSON.
           echo "Attempting to create JSON payload..."
           JSON_PAYLOAD=$(jq -n --arg text "$MESSAGE_TEXT" '{text: $text}')
           JQ_EXIT_CODE=$?
