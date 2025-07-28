@@ -48,7 +48,7 @@ export class WuiButton extends LitElement {
     --local-width: ${this.fullWidth ? '100%' : 'auto'};
      `
 
-    const textVariant = this.textVariant ?? TEXT_VARIANT_BY_SIZE[this.size]
+    const textVariant = this.textVariant ?? (TEXT_VARIANT_BY_SIZE[this.size] as TextType)
 
     return html`
       <button data-variant=${this.variant} data-size=${this.size} ?disabled=${this.disabled}>
@@ -65,8 +65,9 @@ export class WuiButton extends LitElement {
   public loadingTemplate() {
     if (this.loading) {
       const size = SPINNER_SIZE_BY_SIZE[this.size]
+      const color = this.variant === 'neutral-primary' ? 'invert' : 'primary'
 
-      return html`<wui-loading-spinner color="primary" size=${size}></wui-loading-spinner>`
+      return html`<wui-loading-spinner color=${color} size=${size}></wui-loading-spinner>`
     }
 
     return null

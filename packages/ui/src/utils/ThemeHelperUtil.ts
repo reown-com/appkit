@@ -3,6 +3,7 @@ import { type CSSResultGroup, css as litCSS, unsafeCSS } from 'lit'
 import type { ThemeType } from '@reown/appkit-common'
 
 import { styles as allStyles, tokens } from './ThemeConstantsUtil.js'
+import type { ThemeVariables } from './TypeUtil.js'
 
 const PREFIX_VAR = '--apkt'
 
@@ -91,23 +92,214 @@ export const ThemeHelperUtil = {
   },
   /**
    * Creates a string of CSS variables for the root element.
-   * @param variables - The CSS variables object.
+   * @param theme - The theme type (light/dark)
+   * @param themeVariables - Optional theme variables for customization
    */
-  createRootStyles(theme: ThemeType) {
+  createRootStyles(theme: ThemeType, themeVariables?: ThemeVariables) {
     const styles = {
       ...allStyles,
       tokens: { ...allStyles.tokens, theme: theme === 'light' ? tokens.light : tokens.dark }
     }
 
     const { cssVariables } = ThemeHelperUtil.createCSSVariables(styles)
-
     const assignedCSSVariables = ThemeHelperUtil.assignCSSVariables(cssVariables, styles)
 
-    const rootStyles = Object.entries(assignedCSSVariables)
+    const w3mVariables = ThemeHelperUtil.generateW3MVariables(themeVariables)
+    const w3mOverrides = ThemeHelperUtil.generateW3MOverrides(themeVariables)
+    const scaledVariables = ThemeHelperUtil.generateScaledVariables(themeVariables)
+
+    const allVariables = {
+      ...assignedCSSVariables,
+      ...w3mVariables,
+      ...w3mOverrides,
+      ...scaledVariables
+    }
+
+    const rootStyles = Object.entries(allVariables)
       .map(([key, style]) => `${key}:${style.replace('/[:;{}</>]/g', '')};`)
       .join('')
 
-    return `:root {${rootStyles}}`
+    // Generate color-mix CSS if needed
+    const colorMixCSS = ThemeHelperUtil.generateColorMixCSS(themeVariables, allVariables)
+
+    return `:root {${rootStyles}}${colorMixCSS}`
+  },
+
+  /**
+   * Generates the --w3m-* variables from ThemeVariables
+   */
+  generateW3MVariables(themeVariables?: ThemeVariables): Record<string, string> {
+    if (!themeVariables) {
+      return {}
+    }
+
+    const variables: Record<string, string> = {}
+
+    // Set default values and user overrides
+    variables['--w3m-font-family'] = themeVariables['--w3m-font-family'] || 'KHTeka'
+    variables['--w3m-accent'] = themeVariables['--w3m-accent'] || '#0988F0'
+    variables['--w3m-color-mix'] = themeVariables['--w3m-color-mix'] || '#000'
+    variables['--w3m-color-mix-strength'] = `${themeVariables['--w3m-color-mix-strength'] || 0}%`
+    variables['--w3m-font-size-master'] = themeVariables['--w3m-font-size-master'] || '10px'
+    variables['--w3m-border-radius-master'] = themeVariables['--w3m-border-radius-master'] || '4px'
+
+    if (themeVariables['--w3m-z-index']) {
+      variables['--apkt-z-index'] = `${themeVariables['--w3m-z-index']}`
+    }
+
+    return variables
+  },
+
+  /**
+   * Generates overrides for --apkt-* variables based on --w3m-* values
+   */
+  generateW3MOverrides(themeVariables?: ThemeVariables): Record<string, string> {
+    if (!themeVariables) {
+      return {}
+    }
+
+    const overrides: Record<string, string> = {}
+
+    // Map --w3m-accent to accent-related --apkt variables
+    if (themeVariables['--w3m-accent']) {
+      const accentColor = themeVariables['--w3m-accent']
+      overrides['--apkt-tokens-core-iconAccentPrimary'] = accentColor
+      overrides['--apkt-tokens-core-borderAccentPrimary'] = accentColor
+      overrides['--apkt-tokens-core-textAccentPrimary'] = accentColor
+      overrides['--apkt-tokens-core-backgroundAccentPrimary'] = accentColor
+    }
+
+    if (themeVariables['--w3m-font-family']) {
+      overrides['--apkt-fontFamily-regular'] = themeVariables['--w3m-font-family']
+    }
+
+    return overrides
+  },
+
+  /**
+   * Generates scaled variables for typography and border radius
+   */
+  generateScaledVariables(themeVariables?: ThemeVariables): Record<string, string> {
+    if (!themeVariables) {
+      return {}
+    }
+
+    const scaledVars: Record<string, string> = {}
+
+    if (themeVariables['--w3m-font-size-master']) {
+      const masterSize = parseFloat(themeVariables['--w3m-font-size-master'].replace('px', ''))
+
+      scaledVars['--apkt-textSize-h1'] = `${Number(masterSize) * 5}px` // 50px default
+      scaledVars['--apkt-textSize-h2'] = `${Number(masterSize) * 4.4}px` // 44px default
+      scaledVars['--apkt-textSize-h3'] = `${Number(masterSize) * 3.8}px` // 38px default
+      scaledVars['--apkt-textSize-h4'] = `${Number(masterSize) * 3.2}px` // 32px default
+      scaledVars['--apkt-textSize-h5'] = `${Number(masterSize) * 2.6}px` // 26px default
+      scaledVars['--apkt-textSize-h6'] = `${Number(masterSize) * 2}px` // 20px default
+      scaledVars['--apkt-textSize-large'] = `${Number(masterSize) * 1.6}px` // 16px default
+      scaledVars['--apkt-textSize-medium'] = `${Number(masterSize) * 1.4}px` // 14px default
+      scaledVars['--apkt-textSize-small'] = `${Number(masterSize) * 1.2}px` // 12px default
+    }
+
+    // Scale border radius based on --w3m-border-radius-master
+    if (themeVariables['--w3m-border-radius-master']) {
+      const masterRadius = parseFloat(
+        themeVariables['--w3m-border-radius-master'].replace('px', '')
+      )
+
+      scaledVars['--apkt-borderRadius-1'] = `${Number(masterRadius)}px` // 4px default
+      scaledVars['--apkt-borderRadius-2'] = `${Number(masterRadius) * 2}px` // 8px default
+      scaledVars['--apkt-borderRadius-3'] = `${Number(masterRadius) * 3}px` // 12px default
+      scaledVars['--apkt-borderRadius-4'] = `${Number(masterRadius) * 4}px` // 16px default
+      scaledVars['--apkt-borderRadius-5'] = `${Number(masterRadius) * 5}px` // 20px default
+      scaledVars['--apkt-borderRadius-6'] = `${Number(masterRadius) * 6}px` // 24px default
+      scaledVars['--apkt-borderRadius-8'] = `${Number(masterRadius) * 8}px` // 32px default
+      scaledVars['--apkt-borderRadius-16'] = `${Number(masterRadius) * 16}px` // 64px default
+      scaledVars['--apkt-borderRadius-20'] = `${Number(masterRadius) * 20}px` // 80px default
+      scaledVars['--apkt-borderRadius-32'] = `${Number(masterRadius) * 32}px` // 128px default
+      scaledVars['--apkt-borderRadius-64'] = `${Number(masterRadius) * 64}px` // 256px default
+      scaledVars['--apkt-borderRadius-128'] = `${Number(masterRadius) * 128}px` // 512px default
+    }
+
+    return scaledVars
+  },
+
+  /**
+   * Generates CSS with color-mix functionality and @supports fallbacks
+   */
+  generateColorMixCSS(
+    themeVariables?: ThemeVariables,
+    allVariables?: Record<string, string>
+  ): string {
+    if (!themeVariables?.['--w3m-color-mix'] || !themeVariables['--w3m-color-mix-strength']) {
+      return ''
+    }
+
+    const colorMix = themeVariables['--w3m-color-mix']
+    const strength = themeVariables['--w3m-color-mix-strength']
+
+    if (!strength || strength === 0) {
+      return ''
+    }
+
+    const colorVariables = Object.keys(allVariables || {}).filter(key => {
+      const isColorToken =
+        key.includes('-tokens-core-background') ||
+        key.includes('-tokens-core-text') ||
+        key.includes('-tokens-core-border') ||
+        key.includes('-tokens-core-foreground') ||
+        key.includes('-tokens-core-icon') ||
+        key.includes('-tokens-theme-background') ||
+        key.includes('-tokens-theme-text') ||
+        key.includes('-tokens-theme-border') ||
+        key.includes('-tokens-theme-foreground') ||
+        key.includes('-tokens-theme-icon')
+
+      // Skip spacing, fontFamily, fontWeight, typography, duration, ease, path, width, height, etc
+      const isDimensional =
+        key.includes('-borderRadius-') ||
+        key.includes('-spacing-') ||
+        key.includes('-textSize-') ||
+        key.includes('-fontFamily-') ||
+        key.includes('-fontWeight-') ||
+        key.includes('-typography-') ||
+        key.includes('-duration-') ||
+        key.includes('-ease-') ||
+        key.includes('-path-') ||
+        key.includes('-width-') ||
+        key.includes('-height-') ||
+        key.includes('-visual-size-') ||
+        key.includes('-modal-width') ||
+        key.includes('-cover')
+
+      return isColorToken && !isDimensional
+    })
+
+    if (colorVariables.length === 0) {
+      return ''
+    }
+
+    // Generate the @supports rule with color-mix
+    const colorMixVariables = colorVariables
+      .map(key => {
+        const originalValue = allVariables?.[key] || ''
+
+        if (
+          originalValue.includes('color-mix') ||
+          originalValue.startsWith('#') ||
+          originalValue.startsWith('rgb')
+        ) {
+          return `${key}: color-mix(in srgb, ${colorMix} ${strength}%, ${originalValue});`
+        }
+
+        return `${key}: color-mix(in srgb, ${colorMix} ${strength}%, var(${key}-base, ${originalValue}));`
+      })
+      .join('')
+
+    return ` @supports (background: color-mix(in srgb, white 50%, black)) {
+      :root {
+        ${colorMixVariables}
+      }
+    }`
   }
 }
 

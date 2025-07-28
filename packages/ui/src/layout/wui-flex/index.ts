@@ -45,6 +45,8 @@ export class WuiFlex extends LitElement {
 
   @property() public margin?: SpacingType | SpacingType[]
 
+  @property() public width?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
@@ -66,6 +68,7 @@ export class WuiFlex extends LitElement {
       margin-right: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 1)};
       margin-bottom: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 2)};
       margin-left: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 3)};
+      width: ${this.width};
     `
 
     return html`<slot></slot>`

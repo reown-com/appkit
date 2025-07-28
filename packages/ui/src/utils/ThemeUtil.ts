@@ -10,6 +10,9 @@ let themeTag: HTMLStyleElement | undefined = undefined
 let darkModeTag: HTMLStyleElement | undefined = undefined
 let lightModeTag: HTMLStyleElement | undefined = undefined
 
+// Store current theme variables for reuse
+let currentThemeVariables: ThemeVariables | undefined = undefined
+
 /* @TODO: Replace fonts */
 const fonts = {
   'KHTeka-500':
@@ -22,17 +25,19 @@ const fonts = {
     'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTekaMono-Regular_nytitk.woff'
 }
 
-function createAppKitTheme(theme: ThemeType = 'dark') {
+function createAppKitTheme(themeVariables?: ThemeVariables, theme: ThemeType = 'dark') {
   if (apktTag) {
     document.head.removeChild(apktTag)
   }
 
   apktTag = document.createElement('style')
-  apktTag.textContent = ThemeHelperUtil.createRootStyles(theme)
+  apktTag.textContent = ThemeHelperUtil.createRootStyles(theme, themeVariables)
   document.head.appendChild(apktTag)
 }
 
 export function initializeTheming(themeVariables?: ThemeVariables, themeMode: ThemeType = 'dark') {
+  currentThemeVariables = themeVariables
+
   themeTag = document.createElement('style')
   darkModeTag = document.createElement('style')
   lightModeTag = document.createElement('style')
@@ -42,7 +47,7 @@ export function initializeTheming(themeVariables?: ThemeVariables, themeMode: Th
   document.head.appendChild(themeTag)
   document.head.appendChild(darkModeTag)
   document.head.appendChild(lightModeTag)
-  createAppKitTheme(themeMode)
+  createAppKitTheme(themeVariables, themeMode)
   setColorTheme(themeMode)
 
   // Preload fonts
@@ -61,11 +66,11 @@ export function initializeTheming(themeVariables?: ThemeVariables, themeMode: Th
 export function setColorTheme(themeMode: ThemeType = 'dark') {
   if (darkModeTag && lightModeTag && apktTag) {
     if (themeMode === 'light') {
-      createAppKitTheme(themeMode)
+      createAppKitTheme(currentThemeVariables, themeMode)
       darkModeTag.removeAttribute('media')
       lightModeTag.media = 'enabled'
     } else {
-      createAppKitTheme(themeMode)
+      createAppKitTheme(currentThemeVariables, themeMode)
       lightModeTag.removeAttribute('media')
       darkModeTag.media = 'enabled'
     }
@@ -73,10 +78,17 @@ export function setColorTheme(themeMode: ThemeType = 'dark') {
 }
 
 export function setThemeVariables(_themeVariables?: ThemeVariables) {
+  currentThemeVariables = _themeVariables
+
   if (themeTag && darkModeTag && lightModeTag) {
     themeTag.textContent = createRootStyles(_themeVariables).core.cssText
     darkModeTag.textContent = createRootStyles(_themeVariables).dark.cssText
     lightModeTag.textContent = createRootStyles(_themeVariables).light.cssText
+  }
+
+  if (apktTag) {
+    const currentMode = lightModeTag?.media === 'enabled' ? 'light' : 'dark'
+    createAppKitTheme(_themeVariables, currentMode)
   }
 }
 
