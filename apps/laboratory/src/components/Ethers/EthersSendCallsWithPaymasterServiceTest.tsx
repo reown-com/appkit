@@ -29,7 +29,7 @@ export function EthersSendCallsWithPaymasterServiceTest({
   const { isMethodSupported } = useEthersActiveCapabilities()
   const { currentChainsInfo, supportedChains, supportedChainsName } = useCapabilities({
     capabilities,
-    capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
+    capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
     chainId: toHex(chainId ?? 1)
   })
 
