@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
@@ -31,16 +30,26 @@ export class WuiListToken extends LitElement {
   public override render() {
     return html`
       <button data-clickable=${String(this.clickable)}>
-        <wui-flex gap="s" alignItems="center">
+        <wui-flex gap="2" alignItems="center">
           ${this.visualTemplate()}
-          <wui-flex flexDirection="column" justifyContent="spaceBetween">
-            <wui-text variant="paragraph-500" color="fg-100">${this.tokenName}</wui-text>
-            <wui-text variant="small-400" color="fg-200">
-              ${UiHelperUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
-            </wui-text>
+          <wui-flex flexDirection="column" justifyContent="space-between" gap="1">
+            <wui-text variant="md-regular" color="primary">${this.tokenName}</wui-text>
+            <wui-text variant="sm-regular-mono" color="secondary"> ${this.tokenCurrency} </wui-text>
           </wui-flex>
         </wui-flex>
-        <wui-text variant="paragraph-500" color="fg-100">$${this.tokenValue.toFixed(2)}</wui-text>
+        <wui-flex
+          flexDirection="column"
+          justifyContent="space-between"
+          gap="1"
+          alignItems="flex-end"
+        >
+          <wui-text variant="md-regular-mono" color="primary"
+            >$${this.tokenValue.toFixed(2)}</wui-text
+          >
+          <wui-text variant="sm-regular-mono" color="secondary">
+            ${UiHelperUtil.formatNumberToLocalString(this.tokenAmount, 4)}
+          </wui-text>
+        </wui-flex>
       </button>
     `
   }
@@ -51,7 +60,7 @@ export class WuiListToken extends LitElement {
       return html`<wui-image alt=${this.tokenName} src=${this.tokenImageUrl}></wui-image>`
     }
 
-    return html`<wui-icon name="coinPlaceholder" color="fg-100"></wui-icon>`
+    return html`<wui-icon name="coinPlaceholder" color="default"></wui-icon>`
   }
 }
 

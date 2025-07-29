@@ -27,7 +27,7 @@ export class W3mConnectingHeader extends LitElement {
     const tabs = this.generateTabs()
 
     return html`
-      <wui-flex justifyContent="center" .padding=${['0', '0', 'l', '0'] as const}>
+      <wui-flex justifyContent="center" .padding=${['0', '0', '4', '0'] as const}>
         <wui-tabs .tabs=${tabs} .onTabChange=${this.onTabChange.bind(this)}></wui-tabs>
       </wui-flex>
     `

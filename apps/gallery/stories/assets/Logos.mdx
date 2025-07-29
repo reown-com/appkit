@@ -1,0 +1,57 @@
+import { Meta, Title } from '@storybook/addon-docs/blocks'
+
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-grid'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
+
+<Meta title="assets/Logos" />
+
+<Title>Logos</Title>
+
+## Logos
+
+<wui-grid gridTemplateColumns="repeat(6, 1fr)" gap="4">
+  {[
+    'appStore',
+    'apple',
+    'bitcoin',
+    'chromeStore',
+    'discord',
+    'ethereum',
+    'etherscan',
+    'facebook',
+    'farcaster',
+    'github',
+    'google',
+    'playStore',
+    'reown',
+    'solana',
+    'telegram',
+    'twitch',
+    'twitter',
+    'twitterIcon',
+    'walletConnect',
+    'walletConnectBrown',
+    'walletConnectLightBrown',
+    'x'
+
+].map(value => (
+<wui-flex
+key={value}
+flexDirection="column"
+alignItems="center"
+justifyContent="space-between"
+gap="2"
+style={{
+        padding: '8px',
+        backgroundColor: 'var(--wui-color-gray-glass-002)',
+        borderRadius: '8px'
+      }} >
+<wui-icon color="default" size="lg" name={value}></wui-icon>
+<wui-text variant="sm-regular" color="inverse" align="center">
+{value}
+</wui-text>
+</wui-flex>
+))}
+</wui-grid>

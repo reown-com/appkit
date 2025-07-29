@@ -45,6 +45,8 @@ export class WuiFlex extends LitElement {
 
   @property() public margin?: SpacingType | SpacingType[]
 
+  @property() public width?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
@@ -55,9 +57,9 @@ export class WuiFlex extends LitElement {
       flex-shrink: ${this.flexShrink};
       align-items: ${this.alignItems};
       justify-content: ${this.justifyContent};
-      column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
-      row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
-      gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
+      column-gap: ${this.columnGap && `var(--apkt-spacing-${this.columnGap})`};
+      row-gap: ${this.rowGap && `var(--apkt-spacing-${this.rowGap})`};
+      gap: ${this.gap && `var(--apkt-spacing-${this.gap})`};
       padding-top: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 0)};
       padding-right: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 1)};
       padding-bottom: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 2)};
@@ -66,6 +68,7 @@ export class WuiFlex extends LitElement {
       margin-right: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 1)};
       margin-bottom: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 2)};
       margin-left: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 3)};
+      width: ${this.width};
     `
 
     return html`<slot></slot>`

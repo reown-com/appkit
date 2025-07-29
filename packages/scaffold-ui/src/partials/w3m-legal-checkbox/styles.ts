@@ -7,11 +7,11 @@ export default css`
     justify-content: center;
   }
   wui-checkbox {
-    padding: var(--wui-spacing-s);
+    padding: var(--apkt-spacing-3);
   }
   a {
     text-decoration: none;
-    color: var(--wui-color-fg-150);
+    color: var(--apkt-tokens-theme-textSecondary);
     font-weight: 500;
   }
 `

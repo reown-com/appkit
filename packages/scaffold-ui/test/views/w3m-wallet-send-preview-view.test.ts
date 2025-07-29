@@ -134,7 +134,7 @@ describe('W3mWalletSendPreviewView', () => {
     expect(tokenPreview?.text).to.equal('5 TEST')
     expect(tokenPreview?.imageSrc).to.equal(mockToken.iconUrl)
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$50.00')
   })
 
@@ -148,7 +148,6 @@ describe('W3mWalletSendPreviewView', () => {
     const addressPreview = element.shadowRoot?.querySelectorAll('wui-preview-item')?.[1]
     expect(addressPreview?.text).to.contain('0x45')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should display profile name when available', async () => {
@@ -168,7 +167,6 @@ describe('W3mWalletSendPreviewView', () => {
     expect(addressPreview?.text).to.equal('Test User')
     expect(addressPreview?.imageSrc).to.equal('https://example.com/profile.jpg')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should handle send action', async () => {
@@ -242,7 +240,7 @@ describe('W3mWalletSendPreviewView', () => {
     element['token'] = newToken
     await element.updateComplete
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$100.00')
   })
 

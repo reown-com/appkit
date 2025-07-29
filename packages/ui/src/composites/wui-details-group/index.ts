@@ -12,7 +12,7 @@ export class WuiDetailsGroup extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex gap="xl" flexDirection="column" justifyContent="space-between" alignItems="center">
+      <wui-flex gap="4" flexDirection="column" justifyContent="space-between" alignItems="center">
         <slot></slot>
       </wui-flex>
     `

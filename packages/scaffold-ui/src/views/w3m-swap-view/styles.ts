@@ -17,15 +17,28 @@ export default css`
 
   .action-button {
     width: 100%;
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: var(--apkt-borderRadius-4);
   }
 
   .action-button:disabled {
-    border-color: 1px solid var(--wui-color-gray-glass-005);
+    border-color: 1px solid var(--apkt-tokens-core-glass010);
   }
 
   .swap-inputs-container {
     position: relative;
+  }
+
+  wui-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--apkt-borderRadius-4) !important;
+    border: 4px solid var(--apkt-tokens-theme-backgroundPrimary);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
   }
 
   .replace-tokens-button-container {
@@ -36,51 +49,32 @@ export default css`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    gap: var(--wui-spacing-1xs);
-    border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-color-modal-bg-base);
-    padding: var(--wui-spacing-xxs);
-  }
-
-  .replace-tokens-button-container > button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    width: 40px;
-    padding: var(--wui-spacing-xs);
-    border: none;
-    border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
-    transition: background-color var(--wui-duration-md) var(--wui-ease-out-power-1);
-    will-change: background-color;
-    z-index: 20;
-  }
-
-  .replace-tokens-button-container > button:hover {
-    background: var(--wui-color-gray-glass-005);
+    gap: var(--apkt-spacing-2);
+    border-radius: var(--apkt-borderRadius-4);
+    background-color: var(--apkt-tokens-theme-backgroundPrimary);
+    padding: var(--apkt-spacing-2);
   }
 
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xxs);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
+    border-radius: var(--apkt-borderRadius-3);
     width: 100%;
   }
 
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xxs);
+    padding: var(--apkt-spacing-3);
+    border-radius: var(--apkt-borderRadius-3);
     transition: background 0.2s linear;
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--wui-color-gray-glass-002);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .details-content-container {
-    padding: var(--wui-spacing-1xs);
+    padding: var(--apkt-spacing-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -92,8 +86,8 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
-    border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
+    border-radius: var(--apkt-borderRadius-3);
+    background: var(--apkt-tokens-theme-foregroundPrimary);
   }
 `

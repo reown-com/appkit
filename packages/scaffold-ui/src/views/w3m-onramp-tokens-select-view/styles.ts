@@ -7,7 +7,7 @@ export default css`
   }
 
   wui-flex {
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    transition: opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
     will-change: opacity;
   }
 

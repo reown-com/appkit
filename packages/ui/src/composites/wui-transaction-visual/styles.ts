@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host > wui-flex {
@@ -8,8 +8,13 @@ export default css`
     position: relative;
     width: 40px;
     height: 40px;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
-    background-color: var(--wui-color-gray-glass-005);
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
+    background-color: ${({ tokens }) => tokens.core.glass010};
+  }
+
+  :host([data-no-images='true']) > wui-flex {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[3]} !important;
   }
 
   :host > wui-flex wui-image {
@@ -32,13 +37,6 @@ export default css`
     height: 20px;
   }
 
-  wui-icon-box {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    transform: translate(20%, 20%);
-  }
-
   .swap-images-container {
     position: relative;
     width: 40px;
@@ -57,5 +55,18 @@ export default css`
 
   .swap-images-container wui-image:last-child {
     clip-path: inset(0px 0px 0px calc(50% + 2px));
+  }
+
+  wui-flex.status-box {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(20%, 20%);
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.theme.backgroundPrimary};
+    overflow: hidden;
+    width: 16px;
+    height: 16px;
   }
 `
