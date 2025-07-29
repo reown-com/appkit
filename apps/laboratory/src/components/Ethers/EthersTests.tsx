@@ -43,49 +43,6 @@ export function EthersTests() {
     }
   }, [isConnected])
 
-  /*
-   * Const [capabilities, setCapabilities] = React.useState<
-   *   Record<number, WalletCapabilities> | undefined
-   * >()
-   * const [hasFetchedCapabilities, setHasFetchedCapabilities] = React.useState(false)
-   */
-
-  /*
-   * Const fetchCapabilities = React.useCallback(async () => {
-   *   if (!address || !walletProvider) {
-   *     return
-   *   }
-   */
-
-  /*
-   *   Const allCapabilities = await getCapabilities({
-   *     provider: walletProvider,
-   *     chainIds: [Number(chainId)],
-   *     address
-   *   })
-   *   setCapabilities(allCapabilities)
-   *   setHasFetchedCapabilities(true)
-   * }, [address, walletProvider])
-   */
-
-  /*
-   * Const capabilitiesToRender = React.useMemo(() => {
-   *   if (!hasFetchedCapabilities) {
-   *     return undefined
-   *   }
-   */
-
-  /*
-   *   If (hasFetchedCapabilities && !capabilities) {
-   *     return 'No capabilities found'
-   *   }
-   */
-
-  /*
-   *   Return JSON.stringify(capabilities, null, 2)
-   * }, [hasFetchedCapabilities, capabilities])
-   */
-
   React.useEffect(() => {
     setReady(true)
   }, [])
