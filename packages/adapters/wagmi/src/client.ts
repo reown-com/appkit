@@ -74,7 +74,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   constructor(
     configParams: Partial<CreateConfigParameters> & {
-      networks: AppKitNetwork[]
+      networks: readonly AppKitNetwork[]
       pendingTransactionsFilter?: PendingTransactionsFilter
       projectId: string
       customRpcUrls?: CustomRpcUrlMap
