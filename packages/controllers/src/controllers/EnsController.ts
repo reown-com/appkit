@@ -154,6 +154,19 @@ const controller = {
       })
 
       AccountController.setProfileName(name, network.chainNamespace)
+      StorageUtil.updateEnsCache({
+        address,
+        ens: [
+          {
+            name,
+            registered_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            addresses: {},
+            attributes: []
+          }
+        ],
+        timestamp: Date.now()
+      })
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = EnsController.parseEnsApiError(e, `Error registering name ${name}`)
