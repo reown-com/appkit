@@ -85,7 +85,7 @@ export function WagmiTests({ config }: IProps) {
             <Heading size="xs" textTransform="uppercase" pb="2">
               EIP-5792 Capabilities
             </Heading>
-            <Button onClick={fetchCapabilities}>
+            <Button onClick={fetchCapabilities} data-testid="fetch-capabilities-button">
               {hasFetchedCapabilities ? 'Re-fetch' : 'Fetch'} Capabilities
             </Button>
             <br />

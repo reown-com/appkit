@@ -74,7 +74,7 @@ export function Ethers5Tests() {
             <EthersWriteContractTest />
           </Box>
           <Box>
-            <Button onClick={fetchCapabilities}>
+            <Button onClick={fetchCapabilities} data-testid="fetch-capabilities-button">
               {hasFetchedCapabilities ? 'Re-fetch' : 'Fetch'} Capabilities
             </Button>
             <br />
