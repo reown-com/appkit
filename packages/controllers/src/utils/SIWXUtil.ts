@@ -126,7 +126,9 @@ export const SIWXUtil = {
         signature
       })
 
-      ChainController.setLastConnectedSIWECaipNetwork(network)
+      if (network) {
+        ChainController.setLastConnectedSIWECaipNetwork(network)
+      }
 
       ModalController.close()
 
