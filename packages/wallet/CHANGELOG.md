@@ -1,5 +1,15 @@
 # @reown/appkit-wallet
 
+## 1.7.18
+
+### Patch Changes
+
+- [#4717](https://github.com/reown-com/appkit/pull/4717) [`46c064d`](https://github.com/reown-com/appkit/commit/46c064d5f66e5d75754096507c77f31d083479d5) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where cancelling a SIWX message on mobile would reset the network state and log the user out
+
+- Updated dependencies [[`46c064d`](https://github.com/reown-com/appkit/commit/46c064d5f66e5d75754096507c77f31d083479d5)]:
+  - @reown/appkit-common@1.7.18
+  - @reown/appkit-polyfills@1.7.18
+
 ## 1.7.17
 
 ### Patch Changes
