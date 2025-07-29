@@ -126,7 +126,9 @@ export function isCapabilitySupported(
     case WALLET_CAPABILITIES.ATOMIC_BATCH:
       return (
         chainCapabilities?.atomic?.status === 'supported' ||
-        chainCapabilities?.atomic?.status === 'ready'
+        chainCapabilities?.atomic?.status === 'ready' ||
+        // For backward compatibility
+        chainCapabilities?.atomicBatch?.supported === true
       )
     case WALLET_CAPABILITIES.PAYMASTER_SERVICE:
       return chainCapabilities?.paymasterService?.supported === true
