@@ -157,7 +157,6 @@ describe('W3mSwapSelectTokenView', () => {
 
     // Mock controller states and methods
     vi.spyOn(SwapController, 'state', 'get').mockReturnValue(mockSwapState)
-    vi.spyOn(SwapController, 'state', 'get').mockReturnValue(mockSwapState)
     vi.spyOn(RouterController, 'state', 'get').mockReturnValue(mockRouterState)
     vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
 
