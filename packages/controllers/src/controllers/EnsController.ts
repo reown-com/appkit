@@ -160,7 +160,7 @@ const controller = {
           {
             name,
             registered_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
+            updated_at: undefined,
             addresses: {},
             attributes: []
           }
