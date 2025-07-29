@@ -374,30 +374,36 @@ const controller = {
       return
     }
 
-    state.tokensLoading = true
+    try {
+      state.tokensLoading = true
+      const tokens = await SwapApiUtil.getTokenList(activeCaipNetworkId)
 
-    const tokens = await SwapApiUtil.getTokenList(activeCaipNetworkId)
+      state.tokens = tokens
+      state.caipNetworkId = activeCaipNetworkId
+      state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
+        if (aTokenInfo.symbol < bTokenInfo.symbol) {
+          return -1
+        }
+        if (aTokenInfo.symbol > bTokenInfo.symbol) {
+          return 1
+        }
 
-    state.caipNetworkId = activeCaipNetworkId
-    state.tokens = tokens
-    state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
-      if (aTokenInfo.symbol < bTokenInfo.symbol) {
-        return -1
-      }
-      if (aTokenInfo.symbol > bTokenInfo.symbol) {
-        return 1
-      }
+        return 0
+      })
+      state.suggestedTokens = tokens.filter(token => {
+        if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
+          return true
+        }
 
-      return 0
-    })
-    state.suggestedTokens = tokens.filter(token => {
-      if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
-        return true
-      }
-
-      return false
-    }, {})
-    state.tokensLoading = false
+        return false
+      })
+    } catch (error) {
+      state.tokens = []
+      state.popularTokens = []
+      state.suggestedTokens = []
+    } finally {
+      state.tokensLoading = false
+    }
   },
 
   async getAddressPrice(address: string) {
