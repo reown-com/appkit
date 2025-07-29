@@ -126,9 +126,7 @@ export const SIWXUtil = {
         signature
       })
 
-      if (network) {
-        ChainController.setLastConnectedSIWECaipNetwork(network)
-      }
+      ChainController.setLastConnectedSIWECaipNetwork(network)
 
       ModalController.close()
 
@@ -435,7 +433,11 @@ export const SIWXUtil = {
 
       try {
         await siwx.setSessions(sessions)
-        ChainController.setLastConnectedSIWECaipNetwork(network)
+
+        if (network) {
+          ChainController.setLastConnectedSIWECaipNetwork(network)
+        }
+
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_SUCCESS',
