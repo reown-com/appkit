@@ -301,9 +301,18 @@ export class W3mSwapSelectTokenView extends LitElement {
   }
 
   private filterTokensWithText<T>(tokens: SwapTokenWithBalance[], text: string) {
-    return tokens.filter(token =>
-      `${token.symbol} ${token.name} ${token.address}`.toLowerCase().includes(text.toLowerCase())
-    ) as T
+    return tokens
+      .filter(token =>
+        `${token.symbol} ${token.name} ${token.address}`.toLowerCase().includes(text.toLowerCase())
+      )
+      .sort((a, b) => {
+        const aText = `${a.symbol} ${a.name} ${a.address}`.toLowerCase()
+        const bText = `${b.symbol} ${b.name} ${b.address}`.toLowerCase()
+        const aIndex = aText.indexOf(text.toLowerCase())
+        const bIndex = bText.indexOf(text.toLowerCase())
+
+        return aIndex - bIndex
+      }) as T
   }
 }
 
