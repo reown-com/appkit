@@ -8,7 +8,13 @@ on:
 
 jobs:
   release:
+    name: Publish release & PR back to main
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     concurrency:
       group: release-${{ github.ref }}
       cancel-in-progress: true
@@ -29,7 +35,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          baseBranch: ${{ github.ref_name }}
+          branch: ${{ github.ref_name }}
           title: 'chore: version packages'
           commit: 'chore: version packages'
           publish: pnpm changeset:publish
