@@ -16,7 +16,7 @@ export function useEthersActiveCapabilities() {
   >('eip155')
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
-  const [capabilities, setCapabilities] = useState<Record<number, WalletCapabilities> | undefined>()
+  const [capabilities, setCapabilities] = useState<WalletCapabilities | undefined>()
   const [hasFetchedCapabilities, setHasFetchedCapabilities] = useState(false)
 
   const fetchCapabilities = useCallback(async () => {

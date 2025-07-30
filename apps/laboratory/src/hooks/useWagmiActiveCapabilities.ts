@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { type Address, type Hex, type WalletCapabilities } from 'viem'
+import { type Address, type WalletCapabilities } from 'viem'
 import { type Connector, useAccount } from 'wagmi'
 import { type Chain } from 'wagmi/chains'
 
@@ -19,7 +19,7 @@ export function useWagmiAvailableCapabilities() {
   const [hasFetchedCapabilities, setHasFetchedCapabilities] = useState(false)
 
   const [availableCapabilities, setAvailableCapabilities] = useState<
-    Record<Hex, WalletCapabilities> | undefined
+    WalletCapabilities | undefined
   >()
 
   useEffect(() => {
