@@ -39,7 +39,7 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest({
   const { isSupported, currentChainsInfo, supportedChains } = useCapabilities({
     capabilities,
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-    chainId: toHex(chain?.id || 1)
+    chainId: chain?.id ? toHex(chain.id) : undefined
   })
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()

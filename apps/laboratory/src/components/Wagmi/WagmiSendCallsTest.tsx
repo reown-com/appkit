@@ -28,7 +28,7 @@ export function WagmiSendCallsTest({ capabilities }: { capabilities: WalletCapab
   const { isSupported, supportedChains, supportedChainsName } = useCapabilities({
     capabilities,
     capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
-    chainId: toHex(chain?.id || 1)
+    chainId: chain?.id ? toHex(chain.id) : undefined
   })
 
   const { isMethodSupported } = useWagmiAvailableCapabilities()

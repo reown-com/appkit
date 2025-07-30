@@ -27,7 +27,7 @@ export function Ethers5SendCallsTest({ capabilities }: { capabilities: WalletCap
   const { currentChainsInfo, supportedChains, supportedChainsName } = useCapabilities({
     capabilities,
     capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
-    chainId: toHex(chainId ?? 1)
+    chainId: chainId ? toHex(chainId) : undefined
   })
   async function onSendCalls() {
     try {

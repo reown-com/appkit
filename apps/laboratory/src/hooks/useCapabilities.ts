@@ -13,7 +13,7 @@ import {
 type UseCapabilitiesParams = {
   capabilities?: Record<Hex, WalletCapabilities>
   capability: string
-  chainId: Hex
+  chainId?: Hex
 }
 
 export type Provider = UniversalProvider | W3mFrameProvider
@@ -22,12 +22,13 @@ export function useCapabilities({ capabilities, capability, chainId }: UseCapabi
   const [isSupported, setIsSupported] = useState<boolean>(false)
 
   const supportedChains = useMemo(() => {
-    if (capabilities && capability) {
+    if (capabilities && capability && chainId) {
       return getFilteredCapabilitySupportedChainInfo(capability, capabilities)
     }
 
     return []
   }, [capabilities, capability, chainId])
+
   const supportedChainsName = useMemo(
     () => supportedChains.map(ci => ci.chainName).join(', '),
     [supportedChains]

@@ -35,7 +35,7 @@ export function Ethers5SendCallsWithPaymasterServiceTest({
   const { currentChainsInfo, supportedChains, supportedChainsName } = useCapabilities({
     capabilities,
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-    chainId: toHex(chainId ?? 1)
+    chainId: chainId ? toHex(chainId) : undefined
   })
 
   async function onSendCalls(donut?: boolean) {

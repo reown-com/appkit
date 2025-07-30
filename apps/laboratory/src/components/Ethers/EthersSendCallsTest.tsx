@@ -44,7 +44,7 @@ export function EthersSendCallsTest({
   const { isSupported, currentChainsInfo, supportedChains, supportedChainsName } = useCapabilities({
     capabilities,
     capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
-    chainId: toHex(chainId || 1)
+    chainId: chainId ? toHex(chainId) : undefined
   })
   const toast = useChakraToast()
 
