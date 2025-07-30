@@ -1,0 +1,53 @@
+name: Canary (main)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: canary-${{ github.sha }} # 1 run per commit
+      cancel-in-progress: true
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+        shell: bash
+
+      - name: Changesets (PR or publish)
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          title: 'chore: version packages'
+          commit: 'chore: version packages'
+          createGithubReleases: false # no real release notes on canary
+          publish: pnpm changeset:publish
+          version: pnpm changeset:version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: 'test token' #TODO use real token ${{ secrets.NPM_TOKEN }}
+
+      # fall‑back canary publish if nothing was released
+      - name: Publish prerelease (canary)
+        if: steps.changesets.outputs.published != 'true'
+        run: pnpm publish:canary
+        env:
+          NPM_TOKEN: 'test token' #TODO use real token ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
