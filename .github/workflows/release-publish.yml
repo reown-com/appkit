@@ -47,7 +47,7 @@ jobs:
 
       # Automatically open a PR to sync back to main after a publish
       - name: Open PR → main
-        if: steps.changesets.outputs.published == 'true'
+        #if: steps.changesets.outputs.published == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
