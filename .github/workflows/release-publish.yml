@@ -38,7 +38,7 @@ jobs:
           branch: ${{ github.ref_name }}
           title: 'chore: version packages'
           commit: 'chore: version packages'
-          publish: pnpm publish:canary
+          publish: echo "⏭  Skipping real publish in test run"
           version: pnpm changeset:version
           createGithubReleases: false # TODO: true
         env:

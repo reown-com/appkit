@@ -37,8 +37,8 @@ jobs:
         with:
           title: 'chore: version packages'
           commit: 'chore: version packages'
-          createGithubReleases: false # no real release notes on canary
-          publish: pnpm changeset:publish
+          createGithubReleases: false
+          publish: echo "⏭  Skipping real publish in this test run"
           version: pnpm changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
       # fall‑back canary publish if nothing was released
       - name: Publish prerelease (canary)
         if: steps.changesets.outputs.published != 'true'
-        run: pnpm publish:canary
+        run: echo "⏭  Skipping real canary publish in this test run"
         env:
           NPM_TOKEN: 'test token' #TODO use real token ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
