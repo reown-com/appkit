@@ -30,7 +30,7 @@ export function EthersSendCallsTest({
   capabilities
 }: {
   onCallsHash: (hash: string) => void
-  capabilities: Record<number, WalletCapabilities>
+  capabilities: WalletCapabilities
 }) {
   const [loading, setLoading] = useState(false)
 

@@ -16,7 +16,7 @@ import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Ut
 export function EthersSendCallsWithPaymasterServiceTest({
   capabilities
 }: {
-  capabilities: Record<number, WalletCapabilities>
+  capabilities: WalletCapabilities
 }) {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
