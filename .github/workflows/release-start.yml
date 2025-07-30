@@ -1,6 +1,9 @@
 name: Start release
 on:
   workflow_dispatch: # manual trigger
+  push:
+    branches:
+      - 'chore/release-branch' # temp for testing
 
 jobs:
   create-release-branch:
@@ -51,3 +54,11 @@ jobs:
           git switch -c "$BRANCH"
           git push --set-upstream origin "$BRANCH"
           echo "✅ Created and pushed $BRANCH"
+
+      - name: Start Slack Notify Workflow
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_RELEASE_NOTIFY }}
+          webhook-type: webhook-trigger
+          payload: |
+            version: "${{ steps.next.outputs.next_version }}"
