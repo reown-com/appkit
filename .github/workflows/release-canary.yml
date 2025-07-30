@@ -38,7 +38,7 @@ jobs:
           title: 'chore: version packages'
           commit: 'chore: version packages'
           createGithubReleases: false
-          publish: echo "⏭  Skipping real publish in this test run"
+          publish: pnpm changeset:publish
           version: pnpm changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

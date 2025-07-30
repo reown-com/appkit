@@ -4,7 +4,6 @@ on:
   create:
     branches:
       - 'release/**'
-      - 'chore/release-branch' # temp for testing
 
 jobs:
   prepare:

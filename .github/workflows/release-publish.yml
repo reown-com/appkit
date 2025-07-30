@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'release/**'
-      - 'chore/release-branch' # temp for testing
 
 jobs:
   release:
@@ -38,7 +37,7 @@ jobs:
           branch: ${{ github.ref_name }}
           title: 'chore: version packages'
           commit: 'chore: version packages'
-          publish: echo "⏭  Skipping real publish in test run"
+          publish: pnpm changeset:publish
           version: pnpm changeset:version
           createGithubReleases: false # TODO: true
         env:
@@ -47,7 +46,7 @@ jobs:
 
       # Automatically open a PR to sync back to main after a publish
       - name: Open PR → main
-        #if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs.published == 'true'
         run: |
           gh pr create \
             --head "${{ github.ref_name }}" \
