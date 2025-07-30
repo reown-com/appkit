@@ -7,6 +7,7 @@ on:
 
 jobs:
   prepare:
+    name: Prepare release branch
     runs-on: ubuntu-latest
     concurrency: release-${{ github.ref }}
     steps:

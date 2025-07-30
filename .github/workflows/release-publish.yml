@@ -39,10 +39,10 @@ jobs:
           commit: 'chore: version packages'
           publish: pnpm changeset:publish
           version: pnpm changeset:version
-          createGithubReleases: false # TODO: true
+          createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: 'test token' #TODO use real token ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Automatically open a PR to sync back to main after a publish
       - name: Open PR → main

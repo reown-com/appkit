@@ -6,6 +6,7 @@ on:
 
 jobs:
   canary:
+    name: Publish canary from main
     runs-on: ubuntu-latest
     concurrency:
       group: canary-${{ github.sha }} # 1 run per commit
@@ -42,12 +43,12 @@ jobs:
           version: pnpm changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: 'test token' #TODO use real token ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # fall‑back canary publish if nothing was released
       - name: Publish prerelease (canary)
         if: steps.changesets.outputs.published != 'true'
-        run: echo "⏭  Skipping real canary publish in this test run"
+        run: pnpm publish:canary
         env:
-          NPM_TOKEN: 'test token' #TODO use real token ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
