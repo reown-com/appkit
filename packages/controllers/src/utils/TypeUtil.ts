@@ -361,8 +361,8 @@ export interface BlockchainApiBalanceResponse {
 
 export interface BlockchainApiLookupEnsName {
   name: ReownName
-  registered: number
-  updated: number
+  registered_at: string
+  updated_at: string | undefined
   addresses: Record<
     string,
     {
