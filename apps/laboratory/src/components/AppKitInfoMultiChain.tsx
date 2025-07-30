@@ -76,6 +76,7 @@ export function AppKitInfoMultiChain() {
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
+  const suiAccount = useAppKitAccount({ namespace: 'sui' })
 
   return (
     <Grid
@@ -87,6 +88,7 @@ export function AppKitInfoMultiChain() {
       <AccountCard account={evmAccount} />
       <AccountCard account={solanaAccount} />
       <AccountCard account={bitcoinAccount} />
+      <AccountCard account={suiAccount} />
     </Grid>
   )
 }

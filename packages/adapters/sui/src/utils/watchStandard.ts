@@ -30,10 +30,11 @@ export function watchSuiStandard(
   ]
 
   standardAdapters = wrapWalletsWithAdapters(get(), requestedChains, getActiveChain)
+  console.log('>>> standardAdapters', standardAdapters)
 
   callback(...standardAdapters)
 
-  return () => listeners.forEach(off => off())
+  return () => listeners.forEach((off: () => void) => off())
 }
 
 function wrapWalletsWithAdapters(
@@ -42,7 +43,7 @@ function wrapWalletsWithAdapters(
   getActiveChain: () => CaipNetwork | undefined
 ): WalletStandardProvider[] {
   return wallets
-    .filter(wallet => 'sui:connect' in wallet.features && wallet.name !== 'WalletConnect')
+    .filter(wallet => 'standard:connect' in wallet.features && wallet.name !== 'WalletConnect')
     .map(
       wallet =>
         new WalletStandardProvider({

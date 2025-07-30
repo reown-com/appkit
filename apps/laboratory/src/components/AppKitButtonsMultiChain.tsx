@@ -39,6 +39,10 @@ export function AppKitButtonsMultiChain() {
     open({ namespace: 'bip122' })
   }
 
+  function handleConnectToSui() {
+    open({ namespace: 'sui' })
+  }
+
   return (
     <Card marginTop={10}>
       <CardHeader>
@@ -73,6 +77,12 @@ export function AppKitButtonsMultiChain() {
                 </Text>
                 <AppKitButton namespace="solana" />
               </Stack>
+              <Stack pb="2">
+                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                  Sui Button
+                </Text>
+                <AppKitButton namespace="sui" />
+              </Stack>
             </Stack>
           </Box>
           <Box>
@@ -103,6 +113,9 @@ export function AppKitButtonsMultiChain() {
                   </Button>
                   <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
                     Open Bitcoin Modal
+                  </Button>
+                  <Button data-testid="sui-connect-button" onClick={handleConnectToSui}>
+                    Open Sui Modal
                   </Button>
                 </Box>
               </Box>

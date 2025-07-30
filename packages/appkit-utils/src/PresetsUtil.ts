@@ -108,7 +108,11 @@ export const PresetsUtil = {
     // Bitcoin
     '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
     // Bitcoin Testnet
-    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
+    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200',
+    // Sui Networks
+    'sui:mainnet': '5d299d62-d4da-4155-db4e-3d7d8595c800',
+    'sui:testnet': '5d299d62-d4da-4155-db4e-3d7d8595c800',
+    'sui:devnet': '5d299d62-d4da-4155-db4e-3d7d8595c800'
   } as Record<string, string>,
 
   ConnectorImageIds: {

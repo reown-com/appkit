@@ -119,6 +119,7 @@
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-adapter-sui": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-experimental": "workspace:*",
     "@reown/appkit-pay": "workspace:*",

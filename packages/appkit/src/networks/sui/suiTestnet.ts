@@ -1,6 +1,6 @@
 import { defineChain } from '../utils.js'
 
-export const suiDestnet = defineChain({
+export const suiTestnet = defineChain({
   id: 'testnet',
   name: 'Sui Testnet',
   network: 'sui-testnet',

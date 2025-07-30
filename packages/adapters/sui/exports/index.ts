@@ -1,1 +1,1 @@
-export { SuiAdapter } from '../src/adapter.js'
+export * from '../src/index.js'

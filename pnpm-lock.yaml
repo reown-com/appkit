@@ -529,6 +529,9 @@ importers:
       '@reown/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
+      '@reown/appkit-adapter-sui':
+        specifier: workspace:*
+        version: link:../../packages/adapters/sui
       '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi

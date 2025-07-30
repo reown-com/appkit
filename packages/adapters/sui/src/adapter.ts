@@ -1,35 +1,31 @@
-import { type SuiClient, getSuiProvider } from '@mysten/sui/client'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 // Add for balance/tx
 
-import { type AppKit, type AppKitOptions } from '@reown/appkit'
-import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
-import {
-  AlertController,
-  ChainController,
-  type Provider as CoreProvider,
-  StorageUtil
-} from '@reown/appkit-controllers'
+import { type AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
-import { SuiConstantsUtil } from './utils/SuiConstantsUtil.js'
 import { watchSuiStandard } from './utils/watchStandard.js'
 
 export class SuiAdapter extends AdapterBlueprint<WalletStandardConnector> {
+  private universalProvider: UniversalProvider | undefined = undefined
+
   constructor(params: AdapterBlueprint.Params = {}) {
     super({
       namespace: ConstantsUtil.CHAIN.SUI,
-      adapterType: CommonConstantsUtil.ADAPTER_TYPES.SUI, // If exists, else define
+      adapterType: ConstantsUtil.ADAPTER_TYPES.SUI, // If exists, else define
       ...params
     })
   }
 
   override syncConnectors(_options?: AppKitOptions, appKit?: AppKit) {
     const getActiveChain = () => appKit?.getCaipNetwork(ConstantsUtil.CHAIN.SUI)
+    console.log('>>> getActiveChain', getActiveChain())
 
+    // @ts-expect-error - TODO: Fix this
     watchSuiStandard(this.getCaipNetworks(), getActiveChain, this.addConnector.bind(this))
   }
 
@@ -104,12 +100,13 @@ export class SuiAdapter extends AdapterBlueprint<WalletStandardConnector> {
     const addresses = await connector.getAccountAddresses()
 
     const accounts = addresses.map(a => ({
-      namespace: SuiConstantsUtil.CHAIN,
+      namespace: ConstantsUtil.CHAIN.SUI,
       address: a.address,
       type: 'eoa',
       publicKey: a.publicKey
     }))
 
+    // @ts-expect-error - TODO: Fix this
     return { accounts }
   }
 
@@ -127,25 +124,28 @@ export class SuiAdapter extends AdapterBlueprint<WalletStandardConnector> {
     return { connections: [] }
   }
 
-  override async getBalance(
-    params: AdapterBlueprint.GetBalanceParams
-  ): Promise<AdapterBlueprint.GetBalanceResult> {
-    const client = getSuiProvider(params.caipNetwork.rpcUrls.default.http[0])
-    const balance = await client.getBalance({ owner: params.address })
-    return { balance: balance.totalBalance, symbol: 'SUI' }
+  override async getBalance(): Promise<AdapterBlueprint.GetBalanceResult> {
+    return Promise.resolve({ balance: '0.00', symbol: 'SUI' })
   }
 
-  override async syncConnections(params: AdapterBlueprint.SyncConnectionsParams) {
+  public async syncConnections({
+    connectToFirstConnector,
+    caipNetwork,
+    getConnectorStorageInfo
+  }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
-      caipNetwork: params.caipNetwork,
+      caipNetwork,
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: (id, provider) => this.listenProviderEvents(id, provider as CoreProvider),
-      getConnectionStatusInfo: params.getConnectorStorageInfo
+      onListenProvider: this.listenProviderEvents.bind(this),
+      getConnectionStatusInfo: getConnectorStorageInfo
     })
-    if (params.connectToFirstConnector) this.emitFirstAvailableConnection()
+
+    if (connectToFirstConnector) {
+      this.emitFirstAvailableConnection()
+    }
   }
 
   override async syncConnection(
@@ -154,35 +154,90 @@ export class SuiAdapter extends AdapterBlueprint<WalletStandardConnector> {
     return this.connect({ id: params.id, chainId: params.chainId, type: '' })
   }
 
-  // Implement other required methods (placeholders)
-  override async estimateGas(
-    _params: AdapterBlueprint.EstimateGasTransactionArgs
-  ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
-    return { gas: BigInt(0) }
-  }
-
-  override async sendTransaction(
-    _params: AdapterBlueprint.SendTransactionParams
-  ): Promise<AdapterBlueprint.SendTransactionResult> {
-    return { hash: '' }
-  }
-
-  override async signMessage(
-    params: AdapterBlueprint.SignMessageParams
-  ): Promise<AdapterBlueprint.SignMessageResult> {
-    const connector = this.connectors.find(c => c.id === params.id)
-    if (!connector) throw new Error('Connector not found')
-    const signature = await connector.signPersonalMessage(new TextEncoder().encode(params.message))
-    return { signature }
+  override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
+    return { signature: 'tbd' }
   }
 
   // Add similarly for writeContract, parseUnits, formatUnits, grantPermissions, getCapabilities, revokePermissions, walletGetAssets
 
+  public override setAuthProvider() {
+    return undefined
+  }
+
   public override async setUniversalProvider(universalProvider: UniversalProvider) {
     this.universalProvider = universalProvider
 
-    // Implement WalletConnect for Sui if needed
+    const wcConnectorId = ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+
+    WcHelpersUtil.listenWcProvider({
+      universalProvider,
+      namespace: ConstantsUtil.CHAIN.SUI,
+      onConnect: accounts => this.onConnect(accounts, wcConnectorId),
+      onDisconnect: () => this.onDisconnect(wcConnectorId),
+      onAccountsChanged: accounts => this.onAccountsChanged(accounts, wcConnectorId, false)
+    })
+
+    // TODO: Implement WalletConnect for Sui if needed
 
     return Promise.resolve()
+  }
+
+  public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
+    return undefined
+  }
+
+  // -- Unused => Refactor ------------------------------------------- //
+  override estimateGas(
+    _params: AdapterBlueprint.EstimateGasTransactionArgs
+  ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
+    // Estimate gas
+    return Promise.resolve({} as unknown as AdapterBlueprint.EstimateGasTransactionResult)
+  }
+
+  override sendTransaction(
+    _params: AdapterBlueprint.SendTransactionParams
+  ): Promise<AdapterBlueprint.SendTransactionResult> {
+    // Send transaction
+    return Promise.resolve({} as unknown as AdapterBlueprint.SendTransactionResult)
+  }
+
+  override writeContract(
+    _params: AdapterBlueprint.WriteContractParams
+  ): Promise<AdapterBlueprint.WriteContractResult> {
+    // Write contract
+    return Promise.resolve({} as unknown as AdapterBlueprint.WriteContractResult)
+  }
+
+  override parseUnits(_params: AdapterBlueprint.ParseUnitsParams): bigint {
+    // Parse units
+    return BigInt(0)
+  }
+
+  override formatUnits(_params: AdapterBlueprint.FormatUnitsParams): string {
+    // Format units
+    return ''
+  }
+
+  override grantPermissions(_params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
+    // Grant permissions
+    return Promise.resolve({})
+  }
+
+  override getCapabilities(_params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown> {
+    // Revoke permissions
+    return Promise.resolve({})
+  }
+
+  override revokePermissions(
+    _params: AdapterBlueprint.RevokePermissionsParams
+  ): Promise<`0x${string}`> {
+    // Get capabilities
+    return Promise.resolve('0x')
+  }
+
+  public override async walletGetAssets(
+    _params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    return Promise.resolve({})
   }
 }

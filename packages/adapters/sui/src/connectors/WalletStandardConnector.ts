@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
+import { type SuiFeatures, getWallets } from '@mysten/wallet-standard'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
 import type { CaipNetwork } from '@reown/appkit-common'
@@ -6,13 +7,8 @@ import type { Provider, RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import { sui, suiDevnet, suiTestnet } from '@reown/appkit/networks'
 
-// Assuming sui networks are defined in @reown/appkit/networks or import from SuiConstantsUtil
-
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
-import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-import type { SuiFeatures } from '../utils/wallet-standard/WalletFeatures.js'
-
-// Define if needed
+import { ProviderEventEmitter } from '../shared/ProviderEventEmitter.js'
 
 export class WalletStandardConnector extends ProviderEventEmitter {
   public readonly chain = 'sui'
@@ -66,7 +62,8 @@ export class WalletStandardConnector extends ProviderEventEmitter {
   }
 
   async connect() {
-    const connectFeature = this.getWalletFeature('standard:connect')
+    const connectFeature = this.wallet.features['standard:connect']
+    // @ts-expect-error - Bad typed Wallet from core package
     const { accounts } = await connectFeature.connect()
     const account = accounts[0]
 
@@ -124,7 +121,8 @@ export class WalletStandardConnector extends ProviderEventEmitter {
     const response = await feature.signTransaction({
       transaction,
       account,
-      chain: this.chains[0].id
+      // @ts-expect-error - Bad typed Wallet from core package
+      chain: this.chains[0]?.caipNetworkId
     })
 
     if (!response) {
@@ -159,6 +157,7 @@ export class WalletStandardConnector extends ProviderEventEmitter {
     requestedChains
   }: WalletStandardConnector.WatchWalletsParams) {
     const { get, on } = getWallets()
+    console.log('>>> getWallets', get())
 
     function wrapWallets(wallets: readonly Wallet[]) {
       return wallets
@@ -171,7 +170,7 @@ export class WalletStandardConnector extends ProviderEventEmitter {
     return on('register', (...wallets) => callback(...wrapWallets(wallets)))
   }
 
-  public async switchNetwork(caipNetworkId: string): Promise<void> {
+  public async switchNetwork(): Promise<void> {
     // Implement if supported by Sui standard
     throw new Error(`${this.name} wallet does not support network switching`)
   }

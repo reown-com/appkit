@@ -7,8 +7,9 @@ import { WagmiProvider } from 'wagmi'
 
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import { SuiAdapter } from '@reown/appkit-adapter-sui'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet } from '@reown/appkit/networks'
+import { mainnet, sui, suiDevnet, suiTestnet } from '@reown/appkit/networks'
 
 import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChain'
 import { AppKitConnections } from '@/src/components/AppKitConnections'
@@ -23,7 +24,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 const queryClient = new QueryClient()
 
-const networks = ConstantsUtil.AllNetworks
+const networks = [...ConstantsUtil.AllNetworks, sui, suiDevnet, suiTestnet]
 const embeddedWalletOptions = [...ConstantsUtil.Socials, ConstantsUtil.Email]
 
 const wagmiAdapter = new WagmiAdapter({
@@ -36,8 +37,10 @@ const solanaWeb3JsAdapter = new SolanaAdapter()
 
 const bitcoinAdapter = new BitcoinAdapter()
 
+const suiAdapter = new SuiAdapter()
+
 const config = {
-  adapters: [wagmiAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
+  adapters: [wagmiAdapter, solanaWeb3JsAdapter, bitcoinAdapter, suiAdapter],
   networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
@@ -55,6 +58,7 @@ export default function Page() {
           <AppKitConnections namespace="eip155" title="EVM Connections" />
           <AppKitConnections namespace="solana" title="Solana Connections" />
           <AppKitConnections namespace="bip122" title="Bitcoin Connections" />
+          <AppKitConnections namespace="sui" title="Sui Connections" />
           <AppKitInfo />
           <WagmiTests />
           <SolanaTests />

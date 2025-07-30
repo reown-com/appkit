@@ -1,4 +1,3 @@
-import { getWalletAddressFromAccount, getWalletChainsFromAccounts } from '@mysten/wallet-standard'
 import type {
   SuiSignAndExecuteTransactionFeature,
   SuiSignMessageFeature,
@@ -18,14 +17,14 @@ import {
 import { type CaipNetwork } from '@reown/appkit-common'
 import type { Provider as CoreProvider, RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
-import type { GetActiveChain, Provider as SuiProvider } from '@reown/appkit-utils/sui'
+import { sui, suiDevnet, suiTestnet } from '@reown/appkit/networks'
 
-import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
-import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
+import { WalletStandardFeatureNotSupportedError } from '../shared/Errors.js'
+import { ProviderEventEmitter } from '../shared/ProviderEventEmitter.js'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet
-  getActiveChain: GetActiveChain
+  getActiveChain: () => CaipNetwork | undefined
   requestedChains: CaipNetwork[]
 }
 
@@ -37,7 +36,7 @@ type AvailableFeatures = StandardConnectFeature &
   SuiSignMessageFeature &
   StandardEventsFeature
 
-export class WalletStandardProvider extends ProviderEventEmitter implements SuiProvider {
+export class WalletStandardProvider extends ProviderEventEmitter {
   readonly wallet: Wallet
   readonly getActiveChain: WalletStandardProviderConfig['getActiveChain']
   readonly chain = 'sui'
@@ -79,7 +78,22 @@ export class WalletStandardProvider extends ProviderEventEmitter implements SuiP
   }
 
   public get chains() {
-    return getWalletChainsFromAccounts(this.wallet.accounts, this.requestedChains)
+    return this.wallet.chains
+      .map(chainId =>
+        this.requestedChains.find(chain => {
+          switch (chainId) {
+            case 'sui:mainnet':
+              return chain.caipNetworkId === sui.caipNetworkId
+            case 'sui:testnet':
+              return chain.caipNetworkId === suiTestnet.caipNetworkId
+            case 'sui:devnet':
+              return chain.caipNetworkId === suiDevnet.caipNetworkId
+            default:
+              return chain.caipNetworkId === chainId
+          }
+        })
+      )
+      .filter(Boolean) as CaipNetwork[]
   }
 
   public async connect(): Promise<string> {

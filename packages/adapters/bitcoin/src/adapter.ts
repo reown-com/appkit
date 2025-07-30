@@ -389,7 +389,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   // -- Unused => Refactor ------------------------------------------- //
-
   override estimateGas(
     _params: AdapterBlueprint.EstimateGasTransactionArgs
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
