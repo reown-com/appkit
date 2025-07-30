@@ -429,6 +429,7 @@ const controller = {
         initialDisconnect
       })
     } catch (error) {
+      console.log('INTERNAL_SDK_ERROR', error)
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
   },

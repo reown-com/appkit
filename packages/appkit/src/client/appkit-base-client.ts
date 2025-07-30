@@ -1636,6 +1636,8 @@ export abstract class AppKitBaseClient {
       try {
         await this.createUniversalProvider()
       } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log('INTERNAL_SDK_ERROR', err)
         EventsController.sendEvent({
           type: 'error',
           event: 'INTERNAL_SDK_ERROR',

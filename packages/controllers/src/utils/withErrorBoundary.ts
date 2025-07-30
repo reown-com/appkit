@@ -86,6 +86,9 @@ export function withErrorBoundary<T extends Controller>(
           try {
             return await original(...args)
           } catch (err) {
+            // eslint-disable-next-line no-console
+            console.log(defaultCategory, err)
+
             return errorHandler(err, defaultCategory)
           }
         }
@@ -94,6 +97,9 @@ export function withErrorBoundary<T extends Controller>(
           try {
             return original(...args)
           } catch (err) {
+            // eslint-disable-next-line no-console
+            console.log(defaultCategory, err)
+
             return errorHandler(err, defaultCategory)
           }
         }
