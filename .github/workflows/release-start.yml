@@ -1,9 +1,6 @@
 name: Start release
 on:
   workflow_dispatch: # manual trigger
-  push:
-    branches:
-      - 'chore/release-branch' # temp for testing
 
 jobs:
   create-release-branch:
