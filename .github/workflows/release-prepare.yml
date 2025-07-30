@@ -1,0 +1,35 @@
+name: Prepare release branch
+
+on:
+  create:
+    branches:
+      - 'release/**'
+
+jobs:
+  prepare:
+    name: Prepare release branch
+    runs-on: ubuntu-latest
+    concurrency: release-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Open “version packages” PR
+        uses: changesets/action@v1
+        with:
+          baseBranch: ${{ github.ref_name }}
+          title: 'chore: version packages'
+          commit: 'chore: version packages'
+          version: pnpm changeset:version
+          # publish is **omitted** – we only want the PR now
+          createGithubReleases: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
