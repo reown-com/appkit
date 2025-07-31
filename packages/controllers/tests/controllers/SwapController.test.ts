@@ -106,7 +106,7 @@ describe('SwapController', () => {
 
     expect(SwapController.state.gasPriceInUSD).toEqual(0.00648630001383744)
     expect(SwapController.state.priceImpact).toEqual(3.952736601951709)
-    expect(SwapController.state.maxSlippage).toEqual(0.000172599)
+    expect(SwapController.state.maxSlippage).toEqual(0.0001726)
   })
 
   it('should handle fetchSwapQuote error correctly', async () => {
