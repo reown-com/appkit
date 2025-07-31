@@ -46,7 +46,7 @@ export const NumberUtil = {
    * @returns
    */
   parseLocalStringToNumber(value: string | undefined) {
-    if (value === undefined) {
+    if (value === undefined || value === '') {
       return 0
     }
 

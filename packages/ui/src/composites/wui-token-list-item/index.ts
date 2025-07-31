@@ -84,7 +84,7 @@ export class WuiTokenListItem extends LitElement {
             <wui-text variant="small-400" color="fg-200" lineClamp="1">${this.symbol}</wui-text>
             ${this.amount
               ? html`<wui-text variant="small-400" color="fg-200">
-                  ${NumberUtil.formatNumberToLocalString(this.amount, 3)}
+                  ${NumberUtil.formatNumberToLocalString(this.amount, 5)}
                 </wui-text>`
               : null}
           </wui-flex>
