@@ -51,7 +51,7 @@ export const NumberUtil = {
     }
 
     // Remove commas from the string to handle formatted numbers
-    const sanitizedValue = value.replace(/,/g, '')
+    const sanitizedValue = value.replace(/,/gu, '')
 
     return new Big(sanitizedValue).toNumber()
   }
