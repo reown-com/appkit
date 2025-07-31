@@ -86,7 +86,7 @@ describe('W3mSwapInput', () => {
     )
 
     const marketValue = HelpersUtil.querySelect(element, '.market-value')
-    expect(marketValue?.textContent?.trim()).toBe('$1.5')
+    expect(marketValue?.textContent?.trim()).toBe('$1.50')
   })
 
   it('should not display market value when zero', async () => {
