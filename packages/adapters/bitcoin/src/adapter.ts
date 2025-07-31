@@ -91,7 +91,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnection({
       connectorId: connector.id,
-      accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
+      accounts: accounts.accounts.map(a => ({
+        address: a.address,
+        type: a.type,
+        publicKey: a.publicKey
+      })),
       caipNetwork: chain
     })
 
@@ -472,7 +476,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnection({
       connectorId: connector.id,
-      accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
+      accounts: accounts.accounts.map(a => ({
+        address: a.address,
+        type: a.type,
+        publicKey: a.publicKey
+      })),
       caipNetwork: chain
     })
   }
