@@ -2046,11 +2046,12 @@ export abstract class AppKitBaseClient {
     }
 
     const allAccounts = connections.flatMap(connection =>
-      connection.accounts.map(({ address, type }) =>
+      connection.accounts.map(({ address, type, publicKey }) =>
         CoreHelperUtil.createAccount(
           namespace,
           address,
-          (type || 'eoa') as NamespaceTypeMap[ChainNamespace]
+          (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
+          publicKey
         )
       )
     )
