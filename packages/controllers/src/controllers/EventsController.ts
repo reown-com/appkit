@@ -51,8 +51,12 @@ export const EventsController = {
 
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
-      const address =
-        'address' in payload.data ? payload.data.address : AccountController.state.address
+      let address = AccountController.state.address
+
+      if ('address' in payload.data && payload.data.address) {
+        address = payload.data.address
+      }
+
       if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
         return
       }
