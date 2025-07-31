@@ -38,7 +38,7 @@ export const NumberUtil = {
       return '0.00'
     }
 
-    return new Big(value).toPrecision(decimals, 0)
+    return new Big(value).toFixed(decimals)
   },
   /**
    * Parse a formatted local string back to a number
