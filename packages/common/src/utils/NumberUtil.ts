@@ -36,7 +36,7 @@ export const NumberUtil = {
    */
   toFixed(value: string | number | undefined, decimals = 2) {
     if (value === undefined || value === '') {
-      return '0.00'
+      return new Big(0).toFixed(decimals)
     }
 
     return new Big(value).toFixed(decimals)
@@ -56,13 +56,15 @@ export const NumberUtil = {
     if (typeof value === 'number') {
       return value.toLocaleString('en-US', {
         maximumFractionDigits: decimals,
-        minimumFractionDigits: decimals
+        minimumFractionDigits: decimals,
+        roundingMode: 'floor'
       })
     }
 
     return parseFloat(value).toLocaleString('en-US', {
       maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
+      minimumFractionDigits: decimals,
+      roundingMode: 'floor'
     })
   },
   /**
