@@ -1,11 +1,12 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import { NumberUtil } from '@reown/appkit-common'
+
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -35,7 +36,7 @@ export class WuiListToken extends LitElement {
           <wui-flex flexDirection="column" justifyContent="spaceBetween">
             <wui-text variant="paragraph-500" color="fg-100">${this.tokenName}</wui-text>
             <wui-text variant="small-400" color="fg-200">
-              ${UiHelperUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
+              ${NumberUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
             </wui-text>
           </wui-flex>
         </wui-flex>

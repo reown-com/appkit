@@ -37,9 +37,6 @@ const MOCK_NATIVE_TOKEN: Balance = {
 
 describe('W3mInputToken', () => {
   beforeAll(() => {
-    vi.spyOn(UiHelperUtil, 'formatNumberToLocalString').mockImplementation(
-      num => num?.toString() ?? ''
-    )
     vi.spyOn(UiHelperUtil, 'roundNumber').mockImplementation(num => num?.toString() ?? '')
   })
 

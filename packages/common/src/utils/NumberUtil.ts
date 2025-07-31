@@ -38,17 +38,7 @@ export const NumberUtil = {
       return '0.00'
     }
 
-    if (typeof value === 'number') {
-      return value.toLocaleString('en-US', {
-        maximumFractionDigits: decimals,
-        minimumFractionDigits: decimals
-      })
-    }
-
-    return parseFloat(value).toLocaleString('en-US', {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
-    })
+    return new Big(value).toPrecision(decimals, 0)
   },
   /**
    * Parse a formatted local string back to a number
@@ -60,7 +50,9 @@ export const NumberUtil = {
       return 0
     }
 
-    // Remove any commas used as thousand separators and parse the float
-    return parseFloat(value.replace(/,/gu, ''))
+    // Remove commas from the string to handle formatted numbers
+    const sanitizedValue = value.replace(/,/g, '')
+
+    return new Big(sanitizedValue).toNumber()
   }
 }
