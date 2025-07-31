@@ -17,8 +17,6 @@ const tokensWithBalance = SwapApiUtil.mapBalancesToSwapTokens(balanceResponse.ba
 // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
 const sourceToken = tokensWithBalance[0] as SwapTokenWithBalance
 const sourceTokenAmount = '1'
-// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-const toToken = tokensWithBalance[1] as SwapTokenWithBalance
 
 const networkPrice = networkTokenPriceResponse.fungibles[0]?.price.toString() || '0'
 
