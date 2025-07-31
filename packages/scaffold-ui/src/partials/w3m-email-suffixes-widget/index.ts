@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import { customElement } from '@reown/appkit-ui'
 
-import styles from './styles.js'
+import styles from '../../views/w3m-data-capture-view/styles.js'
 
 const options = [
   '@gmail.com',

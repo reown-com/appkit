@@ -8,11 +8,9 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
-import { ReownAuthentication } from '../../configs/index.js'
-import './email-suffixes-widget.js'
-import './recent-emails-widget.js'
 import styles from './styles.js'
 
 @customElement('w3m-data-capture-view')

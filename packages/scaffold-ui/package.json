@@ -79,6 +79,11 @@
       "types": "./dist/types/exports/pay.d.ts",
       "import": "./dist/esm/exports/pay.js",
       "default": "./dist/esm/exports/pay.js"
+    },
+    "./reown-authentication/*": {
+      "types": "./dist/types/exports/reown-authentication/*.d.ts",
+      "import": "./dist/esm/exports/reown-authentication/*.js",
+      "default": "./dist/esm/exports/reown-authentication/*.js"
     }
   },
   "scripts": {

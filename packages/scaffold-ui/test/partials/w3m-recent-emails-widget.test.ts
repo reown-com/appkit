@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { W3mRecentEmailsWidget } from '../../src/ui/w3m-data-capture-view/recent-emails-widget'
-import { HelpersUtil } from './utils/HelpersUtil'
+import { W3mRecentEmailsWidget } from '../../src/partials/w3m-recent-emails-widget.ts/index.js'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mRecentEmailsWidget', () => {
   let element: W3mRecentEmailsWidget
@@ -38,7 +38,7 @@ describe('W3mRecentEmailsWidget', () => {
     it('should render nothing when emails array is empty', async () => {
       element = await createWidget([])
 
-      const container = HelpersUtil.querySelector(element, '.recent-emails')
+      const container = HelpersUtil.querySelect(element, '.recent-emails')
       expect(container).toBeNull()
     })
 
@@ -46,14 +46,14 @@ describe('W3mRecentEmailsWidget', () => {
       const emails = ['test@example.com', 'user@domain.com']
       element = await createWidget(emails)
 
-      const container = HelpersUtil.querySelector(element, '.recent-emails')
+      const container = HelpersUtil.querySelect(element, '.recent-emails')
       expect(container).toBeTruthy()
 
-      const heading = HelpersUtil.querySelector(element, '.recent-emails-heading')
+      const heading = HelpersUtil.querySelect(element, '.recent-emails-heading')
       expect(heading).toBeTruthy()
       expect(heading?.textContent).toBe('Recently used emails')
 
-      const listItems = HelpersUtil.querySelectorAll(element, 'wui-list-item')
+      const listItems = HelpersUtil.querySelectAll(element, 'wui-list-item')
       expect(listItems.length).toBe(2)
     })
 
@@ -61,7 +61,7 @@ describe('W3mRecentEmailsWidget', () => {
       const emails = ['john@example.com', 'jane@test.com', 'admin@company.org']
       element = await createWidget(emails)
 
-      const listItems = HelpersUtil.querySelectorAll(element, 'wui-list-item')
+      const listItems = HelpersUtil.querySelectAll(element, 'wui-list-item')
       expect(listItems.length).toBe(3)
 
       // Check that each email is displayed - the text content should be directly accessible
@@ -77,7 +77,7 @@ describe('W3mRecentEmailsWidget', () => {
       const emails = ['test@example.com']
       element = await createWidget(emails)
 
-      const listItem = HelpersUtil.querySelector(element, 'wui-list-item')
+      const listItem = HelpersUtil.querySelect(element, 'wui-list-item')
       expect(listItem).toBeTruthy()
 
       // Check that icon is set
@@ -94,7 +94,7 @@ describe('W3mRecentEmailsWidget', () => {
       const eventSpy = vi.fn()
       element.addEventListener('select', eventSpy)
 
-      const listItems = HelpersUtil.querySelectorAll(element, 'wui-list-item')
+      const listItems = HelpersUtil.querySelectAll(element, 'wui-list-item')
       const firstItem = listItems[0]
 
       expect(firstItem).toBeTruthy()
@@ -117,7 +117,7 @@ describe('W3mRecentEmailsWidget', () => {
       const eventSpy = vi.fn()
       element.addEventListener('select', eventSpy)
 
-      const listItems = HelpersUtil.querySelectorAll(element, 'wui-list-item')
+      const listItems = HelpersUtil.querySelectAll(element, 'wui-list-item')
 
       // Click second item
       listItems[1]?.click()
@@ -151,7 +151,7 @@ describe('W3mRecentEmailsWidget', () => {
       const eventSpy = vi.fn()
       element.addEventListener('select', eventSpy)
 
-      const listItems = HelpersUtil.querySelectorAll(element, 'wui-list-item')
+      const listItems = HelpersUtil.querySelectAll(element, 'wui-list-item')
 
       // Click both items
       listItems[0]?.click()
@@ -178,7 +178,7 @@ describe('W3mRecentEmailsWidget', () => {
       element = await createWidget([])
 
       // Initially no emails
-      let container = HelpersUtil.querySelector(element, '.recent-emails')
+      let container = HelpersUtil.querySelect(element, '.recent-emails')
       expect(container).toBeNull()
 
       // Update emails property
@@ -186,10 +186,10 @@ describe('W3mRecentEmailsWidget', () => {
       await element.updateComplete
 
       // Should now render
-      container = HelpersUtil.querySelector(element, '.recent-emails')
+      container = HelpersUtil.querySelect(element, '.recent-emails')
       expect(container).toBeTruthy()
 
-      const listItems = HelpersUtil.querySelectorAll(element, 'wui-list-item')
+      const listItems = HelpersUtil.querySelectAll(element, 'wui-list-item')
       expect(listItems.length).toBe(1)
     })
 
@@ -197,7 +197,7 @@ describe('W3mRecentEmailsWidget', () => {
       element = await createWidget(['test@example.com'])
 
       // Initially has emails
-      let container = HelpersUtil.querySelector(element, '.recent-emails')
+      let container = HelpersUtil.querySelect(element, '.recent-emails')
       expect(container).toBeTruthy()
 
       // Clear emails
@@ -205,7 +205,7 @@ describe('W3mRecentEmailsWidget', () => {
       await element.updateComplete
 
       // Should not render anything
-      container = HelpersUtil.querySelector(element, '.recent-emails')
+      container = HelpersUtil.querySelect(element, '.recent-emails')
       expect(container).toBeNull()
     })
   })
@@ -215,13 +215,13 @@ describe('W3mRecentEmailsWidget', () => {
       const emails = ['test@example.com']
       element = await createWidget(emails)
 
-      const container = HelpersUtil.querySelector(element, '.recent-emails')
+      const container = HelpersUtil.querySelect(element, '.recent-emails')
       expect(container).toBeTruthy()
 
-      const heading = HelpersUtil.querySelector(element, '.recent-emails-heading')
+      const heading = HelpersUtil.querySelect(element, '.recent-emails-heading')
       expect(heading).toBeTruthy()
 
-      const listItem = HelpersUtil.querySelector(element, '.recent-emails-list-item')
+      const listItem = HelpersUtil.querySelect(element, '.recent-emails-list-item')
       expect(listItem).toBeTruthy()
     })
 
@@ -229,13 +229,13 @@ describe('W3mRecentEmailsWidget', () => {
       const emails = ['test@example.com']
       element = await createWidget(emails)
 
-      const heading = HelpersUtil.querySelector(element, '.recent-emails-heading')
+      const heading = HelpersUtil.querySelect(element, '.recent-emails-heading')
       expect(heading?.getAttribute('variant')).toBe('micro-600')
       expect(heading?.getAttribute('color')).toBe('fg-200')
 
       // Get all text elements and find the one that's not the heading
-      const textElements = HelpersUtil.querySelectorAll(element, 'wui-text')
-      const emailTextElement = textElements.find(el => el !== heading)
+      const textElements = HelpersUtil.querySelectAll(element, 'wui-text')
+      const emailTextElement = Array.from(textElements).find((el: HTMLElement) => el !== heading)
       expect(emailTextElement?.getAttribute('variant')).toBe('paragraph-500')
       expect(emailTextElement?.getAttribute('color')).toBe('fg-100')
     })

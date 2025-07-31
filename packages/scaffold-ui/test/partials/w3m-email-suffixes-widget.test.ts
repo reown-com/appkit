@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { W3mEmailSuffixesWidget } from '../../src/ui/w3m-data-capture-view/email-suffixes-widget'
-import { HelpersUtil } from './utils/HelpersUtil'
+import { W3mEmailSuffixesWidget } from '../../src/partials/w3m-email-suffixes-widget/index.js'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mEmailSuffixesWidget', () => {
   let element: W3mEmailSuffixesWidget
@@ -38,52 +38,58 @@ describe('W3mEmailSuffixesWidget', () => {
     it('should render nothing when email is empty', async () => {
       element = await createWidget('')
 
-      const container = HelpersUtil.querySelector(element, '.email-sufixes')
+      const container = HelpersUtil.querySelect(element, '.email-sufixes')
       expect(container).toBeNull()
     })
 
     it('should render all suggestions when email has no @ symbol', async () => {
       element = await createWidget('test')
 
-      const container = HelpersUtil.querySelector(element, '.email-sufixes')
+      const container = HelpersUtil.querySelect(element, '.email-sufixes')
       expect(container).toBeTruthy()
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
       expect(buttons).toHaveLength(7) // All 7 email suffixes should be shown
     })
 
     it('should render suffix suggestions when email has incomplete domain', async () => {
       element = await createWidget('test@g')
 
-      const container = HelpersUtil.querySelector(element, '.email-sufixes')
+      const container = HelpersUtil.querySelect(element, '.email-sufixes')
       expect(container).toBeTruthy()
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
       expect(buttons.length).toBeGreaterThan(0)
 
       // Should include @gmail.com since it matches "g"
-      const gmailButton = buttons.find(btn => btn.textContent?.includes('@gmail.com'))
+      const gmailButton = Array.from(buttons).find((btn: HTMLElement) =>
+        btn.textContent?.includes('@gmail.com')
+      )
       expect(gmailButton).toBeTruthy()
     })
 
     it('should filter suggestions based on partial domain match', async () => {
       element = await createWidget('test@out')
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
 
       // Should include @outlook.com
-      const outlookButton = buttons.find(btn => btn.textContent?.includes('@outlook.com'))
+      const outlookButton = Array.from(buttons).find((btn: HTMLElement) =>
+        btn.textContent?.includes('@outlook.com')
+      )
       expect(outlookButton).toBeTruthy()
 
       // Should not include @gmail.com
-      const gmailButton = buttons.find(btn => btn.textContent?.includes('@gmail.com'))
+      const gmailButton = Array.from(buttons).find((btn: HTMLElement) =>
+        btn.textContent?.includes('@gmail.com')
+      )
       expect(gmailButton).toBeFalsy()
     })
 
     it('should not render already complete domain', async () => {
       element = await createWidget('test@gmail.com')
 
-      const container = HelpersUtil.querySelector(element, '.email-sufixes')
+      const container = HelpersUtil.querySelect(element, '.email-sufixes')
       expect(container).toBeNull()
     })
   })
@@ -95,8 +101,10 @@ describe('W3mEmailSuffixesWidget', () => {
       const eventSpy = vi.fn()
       element.addEventListener('change', eventSpy)
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
-      const gmailButton = buttons.find(btn => btn.textContent?.includes('@gmail.com'))
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
+      const gmailButton = Array.from(buttons).find((btn: HTMLElement) =>
+        btn.textContent?.includes('@gmail.com')
+      )
 
       expect(gmailButton).toBeTruthy()
 
@@ -117,8 +125,10 @@ describe('W3mEmailSuffixesWidget', () => {
       const eventSpy = vi.fn()
       element.addEventListener('change', eventSpy)
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
-      const outlookButton = buttons.find(btn => btn.textContent?.includes('@outlook.com'))
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
+      const outlookButton = Array.from(buttons).find((btn: HTMLElement) =>
+        btn.textContent?.includes('@outlook.com')
+      )
 
       outlookButton?.click()
 
@@ -135,8 +145,10 @@ describe('W3mEmailSuffixesWidget', () => {
       const eventSpy = vi.fn()
       element.addEventListener('change', eventSpy)
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
-      const gmailButton = buttons.find(btn => btn.textContent?.includes('@gmail.com'))
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
+      const gmailButton = Array.from(buttons).find((btn: HTMLElement) =>
+        btn.textContent?.includes('@gmail.com')
+      )
 
       gmailButton?.click()
 
@@ -152,7 +164,7 @@ describe('W3mEmailSuffixesWidget', () => {
     it('should show all suggestions when email has just @', async () => {
       element = await createWidget('test@')
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
 
       // Should show all 7 default options
       expect(buttons.length).toBe(7)
@@ -168,7 +180,9 @@ describe('W3mEmailSuffixesWidget', () => {
       ]
 
       expectedSuffixes.forEach(suffix => {
-        const button = buttons.find(btn => btn.textContent?.includes(suffix))
+        const button = Array.from(buttons).find((btn: HTMLElement) =>
+          btn.textContent?.includes(suffix)
+        )
         expect(button).toBeTruthy()
       })
     })
@@ -176,8 +190,10 @@ describe('W3mEmailSuffixesWidget', () => {
     it('should filter case-sensitively', async () => {
       element = await createWidget('test@G')
 
-      const buttons = HelpersUtil.querySelectorAll(element, 'wui-button')
-      const gmailButton = buttons.find(btn => btn.textContent?.includes('@gmail.com'))
+      const buttons = HelpersUtil.querySelectAll(element, 'wui-button')
+      const gmailButton = Array.from(buttons).find((btn: HTMLElement) =>
+        btn.textContent?.includes('@gmail.com')
+      )
 
       // Since filtering is case-sensitive, 'G' won't match 'gmail.com' which contains 'g'
       expect(gmailButton).toBeFalsy()
