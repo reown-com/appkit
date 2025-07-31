@@ -1172,6 +1172,7 @@ export type RemoteFeatures = {
   reownBranding?: boolean
   multiWallet?: boolean
   emailCapture?: EmailCaptureOptions[] | boolean
+  reownAuthentication?: boolean
 }
 
 export type Features = {
@@ -1267,6 +1268,12 @@ export type Features = {
    * @type {boolean}
    */
   pay?: boolean
+
+  /**
+   * @description Enable or disable the ReownAuthentication SIWX feature. Disabled by default.
+   * @type {boolean}
+   */
+  reownAuthentication?: boolean
 }
 
 export type FeaturesKeys = Exclude<
