@@ -10,7 +10,13 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { useAppKit, useAppKitAccount, useDisconnect } from '@reown/appkit/react'
+import {
+  AppKitButton,
+  AppKitNetworkButton,
+  useAppKit,
+  useAppKitAccount,
+  useDisconnect
+} from '@reown/appkit/react'
 
 export function AppKitButtonsMultiChain() {
   const { open } = useAppKit()
@@ -47,25 +53,25 @@ export function AppKitButtonsMultiChain() {
                 <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
                   Default Button
                 </Text>
-                <appkit-button />
+                <AppKitButton />
               </Stack>
               <Stack pb="2">
                 <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
                   EVM Button
                 </Text>
-                <appkit-button namespace="eip155" />
+                <AppKitButton namespace="eip155" />
               </Stack>
               <Stack pb="2">
                 <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
                   Bitcoin Button
                 </Text>
-                <appkit-button namespace="bip122" />
+                <AppKitButton namespace="bip122" />
               </Stack>
               <Stack pb="2">
                 <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
                   Solana Button
                 </Text>
-                <appkit-button namespace="solana" />
+                <AppKitButton namespace="solana" />
               </Stack>
             </Stack>
           </Box>
@@ -73,7 +79,7 @@ export function AppKitButtonsMultiChain() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Network Button
             </Heading>
-            <appkit-network-button />
+            <AppKitNetworkButton />
           </Box>
 
           <Box>

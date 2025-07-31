@@ -14,7 +14,7 @@ import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
-import { getPreferredAccountType } from './ChainControllerUtil.js'
+import { getActiveCaipNetwork, getPreferredAccountType } from './ChainControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 
 /**
@@ -41,6 +41,19 @@ export const SIWXUtil = {
     }
 
     try {
+      if (OptionsController.state.remoteFeatures?.emailCapture) {
+        const user = ChainController.getAccountData(namespace)?.user
+
+        await ModalController.open({
+          view: 'DataCapture',
+          data: {
+            email: user?.email ?? undefined
+          }
+        })
+
+        return
+      }
+
       if (addEmbeddedWalletSessionPromise) {
         await addEmbeddedWalletSessionPromise
       }
@@ -73,7 +86,7 @@ export const SIWXUtil = {
   async requestSignMessage() {
     const siwx = OptionsController.state.siwx
     const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-    const network = ChainController.getActiveCaipNetwork()
+    const network = getActiveCaipNetwork()
     const client = ConnectionController._getClient()
 
     if (!siwx) {
@@ -245,7 +258,12 @@ export const SIWXUtil = {
   }) {
     const siwx = SIWXUtil.getSIWX()
 
-    if (!siwx || !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM)) {
+    if (
+      !siwx ||
+      !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM) ||
+      // Request to input email and sign message when email capture is enabled
+      OptionsController.state.remoteFeatures?.emailCapture
+    ) {
       const result = await authConnector.connect({
         chainId,
         socialUri,
@@ -347,7 +365,7 @@ export const SIWXUtil = {
     methods: string[]
   }) {
     const siwx = SIWXUtil.getSIWX()
-
+    const network = getActiveCaipNetwork()
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
@@ -356,7 +374,7 @@ export const SIWXUtil = {
 
     // Ignores chainId and account address to get other message data
     const siwxMessage = await siwx.createMessage({
-      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
+      chainId: getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
       accountAddress: ''
     })
 
@@ -415,6 +433,10 @@ export const SIWXUtil = {
 
       try {
         await siwx.setSessions(sessions)
+
+        if (network) {
+          ChainController.setLastConnectedSIWECaipNetwork(network)
+        }
 
         EventsController.sendEvent({
           type: 'track',

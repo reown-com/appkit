@@ -1,58 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
-import { UniversalProvider } from '@walletconnect/universal-provider'
 import { ethers } from 'ethers5'
+import { type WalletCapabilities, toHex } from 'viem'
 
 import type { Provider as RawProvider } from '@reown/appkit'
 import type { Address, Hex } from '@reown/appkit-common'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
+import { useCapabilities } from '@/src/hooks/useCapabilities'
+import { useEthersActiveCapabilities } from '@/src/hooks/useEthersActiveCapabilities'
 import { vitalikEthAddress } from '@/src/utils/DataUtil'
-import {
-  EIP_5792_RPC_METHODS,
-  WALLET_CAPABILITIES,
-  getCapabilitySupportedChainInfo
-} from '@/src/utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
-type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
-
-export function Ethers5SendCallsTest() {
+export function Ethers5SendCallsTest({ capabilities }: { capabilities: WalletCapabilities }) {
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
   const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<RawProvider>('eip155')
-
   const toast = useChakraToast()
-
-  const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
-    Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
-  >([])
-
   const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (address && walletProvider) {
-      getCapabilitySupportedChainInfo(
-        WALLET_CAPABILITIES.ATOMIC_BATCH,
-        walletProvider as unknown as Provider,
-        address
-      ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
-    } else {
-      setAtomicBatchSupportedChains([])
-    }
-  }, [address, walletProvider, isConnected])
-
-  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
-    .map(ci => ci.chainName)
-    .join(', ')
-  const currentChainsInfo = atomicBatchSupportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chainId)
-  )
-
+  const { isMethodSupported } = useEthersActiveCapabilities()
+  const { currentChainsInfo, supportedChains, supportedChainsName } = useCapabilities({
+    capabilities,
+    capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
+    chainId: chainId ? toHex(chainId) : undefined
+  })
   async function onSendCalls() {
     try {
       setLoading(true)
@@ -101,20 +77,6 @@ export function Ethers5SendCallsTest() {
       setLoading(false)
     }
   }
-  function isSendCallsSupported(): boolean {
-    if (walletProvider instanceof W3mFrameProvider) {
-      return true
-    }
-    if (walletProvider instanceof UniversalProvider) {
-      return Boolean(
-        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
-          EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-        )
-      )
-    }
-
-    return false
-  }
 
   if (!isConnected || !walletProvider || !address) {
     return (
@@ -123,14 +85,14 @@ export function Ethers5SendCallsTest() {
       </Text>
     )
   }
-  if (!isSendCallsSupported()) {
+  if (!isMethodSupported(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support wallet_sendCalls rpc
       </Text>
     )
   }
-  if (atomicBatchSupportedChains.length === 0) {
+  if (supportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
         Account does not support atomic batch feature
@@ -158,7 +120,7 @@ export function Ethers5SendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainsNames} to test atomic batch feature
+      Switch to {supportedChainsName} to test atomic batch feature
     </Text>
   )
 }

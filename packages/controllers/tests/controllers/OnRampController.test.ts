@@ -1,15 +1,17 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
   ApiController,
   BlockchainApiController,
-  ChainController,
   OnRampController,
   type OnRampProvider,
   OptionsController,
   type PaymentCurrency,
   type PurchaseCurrency
 } from '../../exports/index.js'
+import { mockChainControllerState } from '../../exports/testing.js'
 import {
   USDC_CURRENCY_DEFAULT,
   USD_CURRENCY_DEFAULT
@@ -62,6 +64,10 @@ const defaultState = {
 
 // -- Tests --------------------------------------------------------------------
 describe('OnRampController', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should have valid default state', () => {
     expect(OnRampController.state).toEqual(defaultState)
   })
@@ -196,7 +202,15 @@ describe('OnRampController', () => {
   })
 
   it('should properly configure meld url', () => {
-    const mockGetAccountProp = vi.spyOn(ChainController, 'getAccountProp').mockReturnValue('0x123')
+    mockChainControllerState({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { accountState: { address: '0x123', caipAddress: 'eip155:1:0x123' } }
+        ]
+      ])
+    })
     OptionsController.state.projectId = 'test'
     OnRampController.resetState()
     const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
@@ -207,9 +221,6 @@ describe('OnRampController', () => {
     resultUrl.searchParams.append('walletAddress', '0x123')
     resultUrl.searchParams.append('externalCustomerId', 'test')
 
-    expect(mockGetAccountProp).toHaveBeenCalledWith('address', ChainController.state.activeChain)
     expect(OnRampController.state.selectedProvider?.url).toEqual(resultUrl.toString())
-
-    mockGetAccountProp.mockRestore()
   })
 })

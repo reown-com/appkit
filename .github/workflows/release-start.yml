@@ -1,0 +1,61 @@
+name: Start release
+on:
+  workflow_dispatch: # manual trigger
+
+jobs:
+  create-release-branch:
+    name: Create release branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to push the new branch
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0 # full history lets status work out the diff
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Compute next version
+        id: next
+        run: |
+          npx changeset status --output status.json
+          VERSION=$(jq -r '.releases[] |
+                           select(.name=="@reown/appkit") |
+                           .newVersion' status.json)
+
+          if [[ -z "$VERSION" || "$VERSION" == "null" ]]; then
+            echo "No unreleased changesets for @reown/appkit – aborting."
+            exit 1
+          fi
+
+          echo "next_version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create release branch
+        run: |
+          BRANCH="release/${{ steps.next.outputs.next_version }}"
+
+          # stop if the branch name already exists on origin
+          if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null; then
+            echo "🔴 Branch $BRANCH already exists on remote – aborting."
+            exit 1
+          fi
+
+          git switch -c "$BRANCH"
+          git push --set-upstream origin "$BRANCH"
+          echo "✅ Created and pushed $BRANCH"
+
+      - name: Start Slack Notify Workflow
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_RELEASE_NOTIFY }}
+          webhook-type: webhook-trigger
+          payload: |
+            version: "${{ steps.next.outputs.next_version }}"

@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-controllers",
-  "version": "1.7.15",
+  "version": "1.7.17",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -38,6 +38,11 @@
       "types": "./dist/types/exports/vue.d.ts",
       "import": "./dist/esm/exports/vue.js",
       "default": "./dist/esm/exports/vue.js"
+    },
+    "./testing": {
+      "types": "./dist/types/exports/testing.d.ts",
+      "import": "./dist/esm/exports/testing.js",
+      "default": "./dist/esm/exports/testing.js"
     }
   },
   "typesVersions": {

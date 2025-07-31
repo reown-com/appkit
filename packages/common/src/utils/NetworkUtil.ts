@@ -39,3 +39,13 @@ export const NetworkUtil = {
     return ConstantsUtil.CHAIN_NAME_MAP?.[namespace] || undefined
   }
 }
+
+export const AVAILABLE_NAMESPACES: ChainNamespace[] = [
+  'eip155',
+  'solana',
+  'polkadot',
+  'bip122',
+  'cosmos',
+  'sui',
+  'stacks'
+] as const

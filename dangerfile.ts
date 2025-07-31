@@ -584,10 +584,6 @@ const secretPatterns = [
     description: 'API key with common prefix'
   },
   {
-    pattern: /\b(?=[A-Za-z0-9+/]{32,}=*)(?=.*[0-9+/=])[A-Za-z0-9+/]+=*\b/gu,
-    description: 'High‑entropy string'
-  },
-  {
     pattern: /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/giu,
     description: 'UUID'
   },
