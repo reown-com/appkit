@@ -1,9 +1,20 @@
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { vi } from 'vitest'
 
 import { UiHelperUtil } from '../src/utils/UiHelperUtil.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('UiHelperUtil', () => {
+  beforeAll(() => {
+    vi.stubGlobal('document', { documentElement: {} })
+    vi.stubGlobal(
+      'getComputedStyle',
+      vi.fn().mockReturnValue({
+        getPropertyValue: vi.fn().mockReturnValue('4px')
+      })
+    )
+  })
+
   describe('getSpacingStyles', () => {
     it('handles array of spacings', () => {
       expect(UiHelperUtil.getSpacingStyles(['xs', 'm', 'l'], 0)).toBe('var(--wui-spacing-xs)')
@@ -108,6 +119,15 @@ describe('UiHelperUtil', () => {
   })
 
   describe('generateAvatarColors', () => {
+    beforeAll(() => {
+      vi.stubGlobal(
+        'getComputedStyle',
+        vi.fn().mockReturnValue({
+          getPropertyValue: vi.fn().mockReturnValue('4px')
+        })
+      )
+    })
+
     it('generates CSS variables for avatar colors', () => {
       const result = UiHelperUtil.generateAvatarColors('0xdeadbeef1234567890abcdef12345678')
       expect(result).toContain('--local-color-1:')
