@@ -28,17 +28,42 @@ export const NumberUtil = {
     return aBigNumber.times(bBigNumber)
   },
   /**
-   * Format the given number or string to human readable numbers with the given number of decimals
+   * Format the given number or string to a string with the given number of decimals
+   * @example NumberUtil.toFixedNumber('12345.6789', 2) => '12345.68'
+   * @param value - The value to format. It could be a number or string. If it's a string, it will be parsed to a float then formatted.
+   * @param decimals - number of decimals after dot
+   * @returns
+   */
+  toFixed(value: string | number | undefined, decimals = 2) {
+    if (value === undefined || value === '') {
+      return '0.00'
+    }
+
+    return new Big(value).toFixed(decimals)
+  },
+  /**
+   * Format the given number or string to human readable numbers with commas with the given number of decimals
+   * @example NumberUtil.formatNumberToLocalString('12345.6789', 2) => '12,345.68'
    * @param value - The value to format. It could be a number or string. If it's a string, it will be parsed to a float then formatted.
    * @param decimals - number of decimals after dot
    * @returns
    */
   formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
-    if (value === undefined) {
+    if (value === undefined || value === '') {
       return '0.00'
     }
 
-    return new Big(value).toFixed(decimals)
+    if (typeof value === 'number') {
+      return value.toLocaleString('en-US', {
+        maximumFractionDigits: decimals,
+        minimumFractionDigits: decimals
+      })
+    }
+
+    return parseFloat(value).toLocaleString('en-US', {
+      maximumFractionDigits: decimals,
+      minimumFractionDigits: decimals
+    })
   },
   /**
    * Parse a formatted local string back to a number
