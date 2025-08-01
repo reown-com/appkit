@@ -7,12 +7,13 @@ import {
   SnackController
 } from '@reown/appkit-controllers'
 import { ReownAuthentication } from '@reown/appkit-controllers/features'
+import { customElement } from '@reown/appkit-ui'
+
 import {
   type OnOtpResendFn,
   type OnOtpSubmitFn,
   W3mEmailOtpWidget
-} from '@reown/appkit-scaffold-ui/email'
-import { customElement } from '@reown/appkit-ui'
+} from '../../utils/w3m-email-otp-widget/index.js'
 
 @customElement('w3m-data-capture-otp-confirm-view')
 export class W3mDataCaptureOtpConfirmView extends W3mEmailOtpWidget {

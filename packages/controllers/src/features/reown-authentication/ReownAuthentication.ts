@@ -7,17 +7,13 @@ import {
   type SafeLocalStorageItems,
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
-import {
-  AccountController,
-  ApiController,
-  BlockchainApiController,
-  ChainController,
-  type SIWXConfig,
-  type SIWXMessage,
-  type SIWXSession,
-  getActiveCaipNetwork
-} from '@reown/appkit-controllers'
 
+import { AccountController } from '../../controllers/AccountController.js'
+import { ApiController } from '../../controllers/ApiController.js'
+import { BlockchainApiController } from '../../controllers/BlockchainApiController.js'
+import { ChainController } from '../../controllers/ChainController.js'
+import { getActiveCaipNetwork } from '../../utils/ChainControllerUtil.js'
+import type { SIWXConfig, SIWXMessage, SIWXSession } from '../../utils/SIWXUtil.js'
 import { ReownAuthenticationMessenger } from './ReownAuthenticationMessenger.js'
 
 /**
