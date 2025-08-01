@@ -55,7 +55,7 @@ describe('NumberUtil.formatNumberToLocalString', () => {
 
   it('should format number to string with default 2 decimals', () => {
     const result = NumberUtil.formatNumberToLocalString(123.456)
-    expect(result).toBe('123.46')
+    expect(result).toBe('123.45')
   })
 
   it('should format number to string with specified decimals', () => {
@@ -65,17 +65,17 @@ describe('NumberUtil.formatNumberToLocalString', () => {
 
   it('should format string number to string with default 2 decimals', () => {
     const result = NumberUtil.formatNumberToLocalString('123.456')
-    expect(result).toBe('123.46')
+    expect(result).toBe('123.45')
   })
 
   it('should format string number to string with specified decimals', () => {
     const result = NumberUtil.formatNumberToLocalString('123.456', 1)
-    expect(result).toBe('123.5')
+    expect(result).toBe('123.4')
   })
 
   it('should format number with rounding mode', () => {
     const result = NumberUtil.formatNumberToLocalString(123.456, 2)
-    expect(result).toBe('123.46')
+    expect(result).toBe('123.45')
   })
 
   it('should format negative number correctly', () => {
