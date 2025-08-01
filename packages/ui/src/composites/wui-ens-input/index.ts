@@ -24,6 +24,8 @@ export class WuiEnsInput extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
+  @property({ attribute: false }) public onKeyDown?: (event: KeyboardEvent) => void
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -33,6 +35,7 @@ export class WuiEnsInput extends LitElement {
         .value=${this.value || ''}
         data-testid="wui-ens-input"
         inputRightPadding="5xl"
+        .onKeyDown=${this.onKeyDown}
       >
         ${this.baseNameTemplate()} ${this.errorTemplate()}${this.loadingTemplate()}
       </wui-input-text>
