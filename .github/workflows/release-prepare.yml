@@ -10,6 +10,10 @@ jobs:
     name: Prepare release branch
     runs-on: ubuntu-latest
     concurrency: release-${{ github.ref }}
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
