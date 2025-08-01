@@ -232,8 +232,8 @@ export class W3mSocialLoginWidget extends LitElement {
       } catch (error) {
         AlertController.open(
           {
-            shortMessage: 'Error loading embedded wallet in PWA',
-            longMessage: (error as Error).message
+            displayMessage: 'Error loading embedded wallet in PWA',
+            debugMessage: (error as Error).message
           },
           'error'
         )

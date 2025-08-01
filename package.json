@@ -59,8 +59,8 @@
     "prepare": "husky",
     "cli": "node packages/cli/index.js",
     "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
-    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/*",
-    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/*"
+    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install && pnpm prettier:format",
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install && pnpm prettier:format"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
@@ -94,9 +94,7 @@
       "@solana/web3.js": "1.98.2",
       "esbuild": ">=0.25.1",
       "@babel/runtime": ">=7.26.10",
-      "cookie": ">=0.7.0",
-      "brace-expansion@1": ">=1.1.12",
-      "brace-expansion@2": ">=2.0.2"
+      "cookie": ">=0.7.0"
     },
     "patchedDependencies": {
       "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"

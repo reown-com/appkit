@@ -30,19 +30,12 @@ import {
 import { Card } from '@chakra-ui/react'
 
 import type { CaipNetworkId } from '@reown/appkit-common'
-import type {
-  AppKitPayErrorMessage,
-  Exchange,
-  PayResult,
-  PayUrlParams,
-  PaymentAsset
-} from '@reown/appkit-pay'
-import { baseETH, baseSepoliaETH, baseUSDC } from '@reown/appkit-pay'
+import type { Exchange, PayUrlParams, PaymentAsset } from '@reown/appkit-pay'
+import { baseETH, baseSepoliaETH, baseUSDC, pay } from '@reown/appkit-pay'
 import {
   type ExchangeBuyStatus,
   useAvailableExchanges,
   useExchangeBuyStatus,
-  usePay,
   usePayUrlActions
 } from '@reown/appkit-pay/react'
 import { solana, solanaDevnet } from '@reown/appkit/networks'
@@ -101,27 +94,6 @@ interface ActiveStatusCheck {
 export function AppKitPay() {
   const { isOpen, onToggle } = useDisclosure()
   const toast = useChakraToast()
-
-  function handleSuccess(resultData: PayResult) {
-    toast({
-      title: 'Transaction successful',
-      description: resultData,
-      type: 'success'
-    })
-  }
-
-  function handleError(errorData: AppKitPayErrorMessage) {
-    toast({
-      title: 'Transaction failed',
-      description: errorData,
-      type: 'error'
-    })
-  }
-
-  const { open, isPending } = usePay({
-    onSuccess: handleSuccess,
-    onError: handleError
-  })
 
   const {
     data: fetchedExchangesData,
@@ -215,12 +187,21 @@ export function AppKitPay() {
 
       return
     }
-
-    await open({
+    const result = await pay({
       recipient: paymentDetails.recipient,
       amount: paymentDetails.amount,
       paymentAsset: paymentDetails.asset
     })
+
+    if (result.success) {
+      toast({ title: 'Payment Succeeded', description: `Tx: ${result.result}`, type: 'success' })
+    } else {
+      toast({
+        title: 'Payment Failed',
+        description: result.error ?? 'Unknown error',
+        type: 'error'
+      })
+    }
   }
 
   const handleInputChange = useCallback(
@@ -518,8 +499,8 @@ export function AppKitPay() {
         </CardHeader>
         <CardBody>
           <Stack spacing="4">
-            <Button onClick={handleOpenPay} isDisabled={isPending} width="full">
-              {isPending ? <Spinner /> : 'Open Pay Modal'}
+            <Button onClick={handleOpenPay} width="full">
+              Open Pay Modal
             </Button>
 
             <Text fontSize="sm" color="gray.500">

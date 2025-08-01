@@ -140,7 +140,7 @@ emailTestAfterFarcaster(
     await page.page.context().setOffline(true)
     await page.loginWithEmail(tempEmail, false)
     await page.page.clock.runFor(120_000)
-    await validator.expectAlertBarText('Embedded Wallet Request Timed Out')
+    await validator.expectAlertBarText('Wallet Request Timeout')
     await page.page.context().setOffline(false)
   }
 )

@@ -34,7 +34,7 @@ jobs:
                 * Include the necessary documentation updates reflecting the changes from the appkit changelog.
                 * Contain a clear description of why the updates are needed, referencing the specific changes from the appkit repository.
                 * Include a link back to the original "chore: version packages" commit in the ${{ github.repository }} repository (Commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}).
-                * Tag the following Github teams in the pull request: @reown-com/appkit-web-team, @reown-com/devrel-team
+                * Assign the following Github teams as reviewers in the pull request: @reown-com/appkit-web-team, @reown-com/devrel-team
             * If no documentation updates are needed, clearly state this conclusion. You do not need to open a pull request in this case. Simply report that no updates are necessary based on your analysis of the changelog.
             * You will need to operate within the following repositories: ${{ github.repository }} (for reading the changelog of the commit) and reown-com/reown-docs (for potentially creating a PR with documentation updates).
         run: |

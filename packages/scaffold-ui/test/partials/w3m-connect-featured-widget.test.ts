@@ -107,7 +107,10 @@ describe('W3mConnectFeaturedWidget', () => {
     )
     walletSelector.click()
 
-    expect(pushSpy).toHaveBeenCalledWith('ConnectingExternal', { connector: MOCK_CONNECTOR })
+    expect(pushSpy).toHaveBeenCalledWith('ConnectingExternal', {
+      connector: MOCK_CONNECTOR,
+      wallet: MOCK_WALLET
+    })
   })
 
   it('should route to ConnectingWalletConnect when wallet has no connector', async () => {

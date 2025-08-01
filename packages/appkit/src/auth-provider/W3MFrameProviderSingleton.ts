@@ -4,6 +4,7 @@ import type {
   ChainNamespace,
   EmbeddedWalletTimeoutReason
 } from '@reown/appkit-common'
+import { OptionsController } from '@reown/appkit-controllers'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface W3mFrameProviderConfig {
@@ -13,6 +14,7 @@ interface W3mFrameProviderConfig {
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
   getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
+  getCaipNetworks: () => CaipNetwork[]
 }
 
 export class W3mFrameProviderSingleton {
@@ -27,7 +29,8 @@ export class W3mFrameProviderSingleton {
     enableLogger,
     onTimeout,
     abortController,
-    getActiveCaipNetwork
+    getActiveCaipNetwork,
+    getCaipNetworks
   }: W3mFrameProviderConfig): W3mFrameProvider {
     if (!W3mFrameProviderSingleton.instance) {
       W3mFrameProviderSingleton.instance = new W3mFrameProvider({
@@ -36,7 +39,9 @@ export class W3mFrameProviderSingleton {
         enableLogger,
         onTimeout,
         abortController,
-        getActiveCaipNetwork
+        getActiveCaipNetwork,
+        getCaipNetworks,
+        enableCloudAuthAccount: Boolean(OptionsController.state.remoteFeatures?.emailCapture)
       })
     }
 

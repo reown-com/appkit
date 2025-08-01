@@ -38,7 +38,9 @@ export const ConstantsUtil = {
     solana: 'Solana',
     polkadot: 'Polkadot',
     bip122: 'Bitcoin',
-    cosmos: 'Cosmos'
+    cosmos: 'Cosmos',
+    sui: 'Sui',
+    stacks: 'Stacks'
   } as const satisfies Record<ChainNamespace, string>,
   ADAPTER_TYPES: {
     BITCOIN: 'bitcoin',
