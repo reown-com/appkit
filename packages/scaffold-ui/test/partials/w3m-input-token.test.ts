@@ -37,9 +37,6 @@ const MOCK_NATIVE_TOKEN: Balance = {
 
 describe('W3mInputToken', () => {
   beforeAll(() => {
-    vi.spyOn(UiHelperUtil, 'formatNumberToLocalString').mockImplementation(
-      num => num?.toString() ?? ''
-    )
     vi.spyOn(UiHelperUtil, 'roundNumber').mockImplementation(num => num?.toString() ?? '')
   })
 
@@ -85,7 +82,7 @@ describe('W3mInputToken', () => {
     )
 
     const totalValue = element.shadowRoot?.querySelector('.totalValue')
-    expect(totalValue?.textContent).toBe('$50')
+    expect(totalValue?.textContent).toBe('$50.00')
   })
 
   it('should handle max amount click for non-native token', async () => {
