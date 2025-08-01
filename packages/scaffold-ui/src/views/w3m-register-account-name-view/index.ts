@@ -142,7 +142,7 @@ export class W3mRegisterAccountNameView extends LitElement {
   })
 
   private onNameInputChange(event: CustomEvent<string>) {
-    const value = HelpersUtil.validateReownName(event.detail || '').toLowerCase()
+    const value = HelpersUtil.validateReownName(event.detail || '')
     this.name = value
     this.onDebouncedNameInputChange(value)
   }

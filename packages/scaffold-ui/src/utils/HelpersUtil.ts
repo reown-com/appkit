@@ -21,7 +21,7 @@ export const HelpersUtil = {
     return /^[a-zA-Z0-9]+$/gu.test(name)
   },
   validateReownName(name: string) {
-    const sanitizedName = name.replace(/\^/gu, '')
+    const sanitizedName = name.replace(/\^/gu, '').toLowerCase()
 
     return sanitizedName.replace(/[^a-zA-Z0-9]/gu, '')
   }
