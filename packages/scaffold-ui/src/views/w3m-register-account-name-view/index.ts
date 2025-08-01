@@ -23,6 +23,7 @@ import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-register-account-name-view')
@@ -131,7 +132,8 @@ export class W3mRegisterAccountNameView extends LitElement {
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
     if (value.length < 4) {
       this.error = 'Name must be at least 4 characters long'
-    } else if (/[^a-zA-Z0-9]/gu.test(value)) {
+      // eslint-disable-next-line no-negated-condition
+    } else if (!HelpersUtil.isValidReownName(value)) {
       this.error = 'The value is not a valid username'
     } else {
       this.error = ''
@@ -140,14 +142,14 @@ export class W3mRegisterAccountNameView extends LitElement {
   })
 
   private onNameInputChange(event: CustomEvent<string>) {
-    let value = event.detail || ''
-    value = value.replace(/[^a-zA-Z0-9]/gu, '').toLowerCase()
+    const value = HelpersUtil.validateReownName(event.detail || '')
     this.name = value
     this.onDebouncedNameInputChange(value)
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    if (event.key.length === 1 && !/^[a-zA-Z0-9]$/gu.test(event.key)) {
+    // eslint-disable-next-line no-negated-condition
+    if (event.key.length === 1 && !HelpersUtil.isValidReownName(event.key)) {
       event.preventDefault()
     }
   }
