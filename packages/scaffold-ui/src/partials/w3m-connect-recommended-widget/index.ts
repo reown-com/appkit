@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-controllers'
 import {
   AssetUtil,
@@ -32,6 +33,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
 
   public constructor() {
     super()
+
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       this.loading = !ConnectionController.state.wcUri
       this.unsubscribe.push(
@@ -72,6 +74,10 @@ export class W3mConnectRecommendedWidget extends LitElement {
       return null
     }
 
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${wallets.map(
@@ -82,6 +88,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
               @click=${() => this.onConnectWallet(wallet)}
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
+              ?disabled=${hasWcConnection}
             >
             </wui-list-wallet>
           `
@@ -95,7 +102,10 @@ export class W3mConnectRecommendedWidget extends LitElement {
     if (this.loading) {
       return
     }
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    const connector = ConnectorController.getConnector({
+      id: wallet.id,
+      rdns: wallet.rdns
+    })
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })
     } else {

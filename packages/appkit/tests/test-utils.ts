@@ -11,7 +11,7 @@ import { mockRemoteFeaturesConfig } from './mocks/Options.js'
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
   vi.stubGlobal('window', {
-    location: { origin: '' },
+    location: { origin: 'http://localhost:3000' },
     matchMedia: vi.fn().mockImplementation(query => ({
       matches: false,
       media: query,

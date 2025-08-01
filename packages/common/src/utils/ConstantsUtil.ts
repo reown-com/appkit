@@ -38,7 +38,9 @@ export const ConstantsUtil = {
     solana: 'Solana',
     polkadot: 'Polkadot',
     bip122: 'Bitcoin',
-    cosmos: 'Cosmos'
+    cosmos: 'Cosmos',
+    sui: 'Sui',
+    stacks: 'Stacks'
   } as const satisfies Record<ChainNamespace, string>,
   ADAPTER_TYPES: {
     BITCOIN: 'bitcoin',
@@ -73,5 +75,24 @@ export const ConstantsUtil = {
   SECURE_SITE_SDK_ORIGIN:
     (typeof process !== 'undefined' && typeof process.env !== 'undefined'
       ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
-      : undefined) || 'https://secure.walletconnect.org'
+      : undefined) || 'https://secure.walletconnect.org',
+  REMOTE_FEATURES_ALERTS: {
+    MULTI_WALLET_NOT_ENABLED: {
+      DEFAULT: {
+        displayMessage: 'Multi-Wallet Not Enabled',
+        debugMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com.'
+      },
+      CONNECTIONS_HOOK: {
+        displayMessage: 'Multi-Wallet Not Enabled',
+        debugMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnections hook.'
+      },
+      CONNECTION_HOOK: {
+        displayMessage: 'Multi-Wallet Not Enabled',
+        debugMessage:
+          'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnection hook.'
+      }
+    }
+  }
 } as const

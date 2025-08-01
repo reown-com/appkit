@@ -3,7 +3,7 @@
   "version": "1.7.1",
   "private": true,
   "type": "module",
-  "author": "Reown <support@reown.com> (https://reown.com)",
+  "author": "Reown (https://discord.gg/reown)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
   "bugs": {
@@ -59,8 +59,8 @@
     "prepare": "husky",
     "cli": "node packages/cli/index.js",
     "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
-    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/*",
-    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade wagmi @wagmi/*"
+    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install && pnpm prettier:format",
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install && pnpm prettier:format"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
@@ -72,7 +72,7 @@
     "@vitest/coverage-v8": "2.1.9",
     "@vitest/ui": "2.1.8",
     "buffer": "5.5.0||6.0.0",
-    "danger": "12.3.4",
+    "danger": "13.0.2",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.3",
@@ -84,30 +84,30 @@
     "process": "0.11.10",
     "turbo": "2.0.6-canary.0",
     "typescript": "5.8.3",
-    "vite": "5.4.12",
+    "vite": "5.4.19",
     "vite-plugin-node-polyfills": "0.23.0",
     "vitest": "2.1.9"
   },
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
     "overrides": {
-      "@solana/web3.js": "1.98.0",
-      "elliptic": ">=6.6.1",
-      "axios": ">=1.8.2",
-      "ws": ">=7.5.10"
+      "@solana/web3.js": "1.98.2",
+      "esbuild": ">=0.25.1",
+      "@babel/runtime": ">=7.26.10",
+      "cookie": ">=0.7.0"
     },
     "patchedDependencies": {
       "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
     }
   },
   "overrides": {
-    "@solana/web3.js": "1.98.0",
+    "@solana/web3.js": "1.98.2",
     "elliptic": ">=6.6.1",
     "axios": ">=1.8.2",
     "ws": ">=7.5.10"
   },
   "resolutions": {
-    "@solana/web3.js": "1.98.0",
+    "@solana/web3.js": "1.98.2",
     "elliptic": ">=6.6.1",
     "axios": ">=1.8.2",
     "ws": ">=7.5.10"

@@ -1,16 +1,16 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { type ChainNamespace, DateUtil } from '@reown/appkit-common'
+import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  TransactionsController
+  TransactionsController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import type { TransactionType } from '@reown/appkit-ui'
@@ -100,16 +100,10 @@ export class W3mActivityList extends LitElement {
 
   // -- Private ------------------------------------------- //
   private updateTransactionView() {
-    const currentNetwork = ChainController.state.activeCaipNetwork?.caipNetworkId
-    const lastNetworkInView = TransactionsController.state.lastNetworkInView
-
-    if (lastNetworkInView !== currentNetwork) {
-      TransactionsController.resetTransactions()
-      if (this.caipAddress) {
-        TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
-      }
+    TransactionsController.resetTransactions()
+    if (this.caipAddress) {
+      TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
     }
-    TransactionsController.setLastNetworkInView(currentNetwork)
   }
 
   private templateTransactionsByYear() {
@@ -310,7 +304,6 @@ export class W3mActivityList extends LitElement {
   }
 
   private createPaginationObserver() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     const { projectId } = OptionsController.state
 
     this.paginationObserver = new IntersectionObserver(([element]) => {
@@ -324,7 +317,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+              getPreferredAccountType(ChainController.state.activeChain) ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })

@@ -1,16 +1,22 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 
 import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
 
+import { AlertController } from '../src/controllers/AlertController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
+import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
-import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
+import type {
+  NamespaceTypeMap,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn
+} from '../src/utils/TypeUtil.js'
 import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
@@ -59,6 +65,7 @@ export function useAppKitNetworkCore(): Pick<
 
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
+  const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const chainNamespace = options?.namespace || state.activeChain
 
   if (!chainNamespace) {
@@ -74,10 +81,21 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
 
   const chainAccountState = state.chains.get(chainNamespace)?.accountState
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
-  const activeConnectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
+  const activeConnectorId = activeConnectorIds[chainNamespace]
+  const connections = ConnectionController.getConnections(chainNamespace)
+  const allAccounts = connections.flatMap(connection =>
+    connection.accounts.map(({ address, type, publicKey }) =>
+      CoreHelperUtil.createAccount(
+        chainNamespace,
+        address,
+        (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
+        publicKey
+      )
+    )
+  )
 
   return {
-    allAccounts: chainAccountState?.allAccounts || [],
+    allAccounts,
     caipAddress: chainAccountState?.caipAddress,
     address: CoreHelperUtil.getPlainAddress(chainAccountState?.caipAddress),
     isConnected: Boolean(chainAccountState?.caipAddress),
@@ -98,7 +116,7 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
                 }
               : undefined,
             authProvider: chainAccountState?.socialProvider || 'email',
-            accountType: chainAccountState?.preferredAccountTypes?.[chainNamespace],
+            accountType: chainAccountState?.preferredAccountType,
             isSmartAccountDeployed: Boolean(chainAccountState?.smartAccountDeployed)
           }
         : undefined
@@ -120,11 +138,26 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   useSnapshot(AssetController.state)
 
   const { activeChain } = useSnapshot(ChainController.state)
+  const { remoteFeatures } = useSnapshot(OptionsController.state)
 
   const chainNamespace = namespace ?? activeChain
 
+  const isMultiWalletEnabled = Boolean(remoteFeatures?.multiWallet)
+
   if (!chainNamespace) {
     throw new Error('No namespace found')
+  }
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
+      'info'
+    )
+
+    return {
+      connections: [],
+      recentConnections: []
+    }
   }
 
   const { connections, recentConnections } =
@@ -152,16 +185,31 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
 }
 
 export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKitConnectionProps) {
-  const [, forceUpdate] = useState(0)
-
   const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const { activeChain } = useSnapshot(ChainController.state)
+  const { remoteFeatures } = useSnapshot(OptionsController.state)
 
   const chainNamespace = namespace ?? activeChain
 
   if (!chainNamespace) {
     throw new Error('No namespace found')
+  }
+
+  const isMultiWalletEnabled = Boolean(remoteFeatures?.multiWallet)
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTION_HOOK,
+      'info'
+    )
+
+    return {
+      connection: undefined,
+      isPending: false,
+      switchConnection: () => Promise.resolve(undefined),
+      deleteConnection: () => ({})
+    }
   }
 
   const connectorId = activeConnectorIds[chainNamespace]
@@ -205,6 +253,7 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   const deleteConnection = useCallback(
     ({ address, connectorId }: DeleteRecentConnectionProps) => {
       StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace: chainNamespace })
+      ConnectionController.syncStorageConnections()
       onSuccess?.({
         address,
         namespace: chainNamespace,
@@ -212,7 +261,6 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
         hasSwitchedWallet: false,
         hasDeletedWallet: true
       })
-      forceUpdate(prev => prev + 1)
     },
     [chainNamespace]
   )

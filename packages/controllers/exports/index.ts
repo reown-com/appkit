@@ -70,7 +70,7 @@ export { TooltipController } from '../src/controllers/TooltipController.js'
 export type { TooltipControllerState } from '../src/controllers/TooltipController.js'
 
 export { EnsController } from '../src/controllers/EnsController.js'
-export type { EnsControllerState } from '../src/controllers/EnsController.js'
+export type { EnsControllerState, ReownName } from '../src/controllers/EnsController.js'
 
 export { AlertController } from '../src/controllers/AlertController.js'
 export type { AlertControllerState } from '../src/controllers/AlertController.js'
@@ -100,3 +100,4 @@ export { FetchUtil } from '../src/utils/FetchUtil.js'
 
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'
+export * from '../src/utils/ChainControllerUtil.js'

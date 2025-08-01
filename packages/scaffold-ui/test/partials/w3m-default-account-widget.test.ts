@@ -41,7 +41,6 @@ describe('W3mAccountDefaultWidget', () => {
       profileImage: mockProfileImage,
       balance: '100',
       balanceSymbol: 'ETH',
-      allAccounts: [{ address: mockAddress, type: 'eoa' }],
       addressExplorerUrl: 'https://etherscan.io',
       addressLabels: new Map(),
       preferredAccountType: 'eoa'
@@ -62,7 +61,7 @@ describe('W3mAccountDefaultWidget', () => {
         walletFeaturesOrder: ['onramp', 'swaps', 'send']
       },
       remoteFeatures: {
-        onramp: ['coinbase'],
+        onramp: ['meld'],
         swaps: ['1inch'],
         send: true
       }
@@ -108,39 +107,11 @@ describe('W3mAccountDefaultWidget', () => {
       expect(HelpersUtil.querySelect(element, '[data-testid="single-account-avatar"]')).toBeTruthy()
     })
 
-    it('renders multi account view for EVM with multiple accounts', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        allAccounts: [
-          { address: '0x123', type: 'eoa' },
-          { address: '0x456', type: 'eoa' }
-        ]
-      } as AccountControllerState)
-
+    it('renders wallet switch button', async () => {
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
-      expect(HelpersUtil.querySelect(element, 'wui-profile-button-v2')).toBeTruthy()
-    })
-
-    it('renders BTC accounts template for bip122 namespace with multiple accounts', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        allAccounts: [
-          { address: '0x123', type: 'eoa' },
-          { address: '0x456', type: 'eoa' }
-        ]
-      } as AccountControllerState)
-
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        activeChain: 'bip122',
-        activeCaipNetwork: { id: '1', caipNetworkId: 'bip122:1' }
-      } as unknown as ChainControllerState)
-
-      const element: W3mAccountDefaultWidget = await fixture(
-        html`<w3m-account-default-widget></w3m-account-default-widget>`
-      )
-      expect(HelpersUtil.querySelect(element, 'wui-tabs')).toBeTruthy()
+      expect(HelpersUtil.querySelect(element, 'wui-wallet-switch')).toBeTruthy()
     })
   })
 
@@ -236,17 +207,6 @@ describe('W3mAccountDefaultWidget', () => {
   })
 
   describe('Interactions', () => {
-    it('copies address and shows success message', async () => {
-      const element: W3mAccountDefaultWidget = await fixture(
-        html`<w3m-account-default-widget></w3m-account-default-widget>`
-      )
-      const copyButton = HelpersUtil.querySelect(element, 'wui-icon-link')
-      await copyButton?.click()
-
-      expect(CoreHelperUtil.copyToClopboard).toHaveBeenCalledWith(mockAddress)
-      expect(SnackController.showSuccess).toHaveBeenCalledWith('Address copied')
-    })
-
     it('disconnects wallet successfully', async () => {
       vi.spyOn(ConnectionController, 'disconnect').mockResolvedValue()
 
@@ -257,7 +217,6 @@ describe('W3mAccountDefaultWidget', () => {
       await disconnectButton?.click()
 
       expect(ConnectionController.disconnect).toHaveBeenCalled()
-      expect(ModalController.close).toHaveBeenCalled()
     })
 
     it('handles disconnect failure', async () => {

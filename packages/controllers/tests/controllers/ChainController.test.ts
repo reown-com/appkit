@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   type CaipNetwork,
   type CaipNetworkId,
-  type ChainNamespace,
   ConstantsUtil,
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
@@ -13,15 +12,15 @@ import {
   AccountController,
   CoreHelperUtil,
   ModalController,
-  type NetworkControllerClient
+  type NetworkControllerClient,
+  OptionsController
 } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUtil.js'
 
 // -- Setup --------------------------------------------------------------------
-const chainNamespace = 'eip155' as ChainNamespace
-const caipAddress = 'eip155:1:0x123'
+const chainNamespace = ConstantsUtil.CHAIN.EVM
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
 
 const requestedCaipNetworks = [
@@ -147,15 +146,11 @@ describe('ChainController', () => {
       networkControllerClient
     })
   })
+
   it('should be initialized as expected', () => {
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
     expect(ChainController.getConnectionControllerClient()).toEqual(connectionControllerClient)
     expect(ChainController.getNetworkControllerClient()).toEqual(networkControllerClient)
-  })
-
-  it('should update account state as expected', () => {
-    ChainController.setAccountProp('caipAddress', caipAddress, chainNamespace)
-    expect(ChainController.getAccountProp('caipAddress')).toEqual(caipAddress)
   })
 
   it('should update network state as expected', () => {
@@ -261,6 +256,26 @@ describe('ChainController', () => {
     expect(requestedNetworks).toEqual(requestedCaipNetworks)
   })
 
+  it('should filter out networks without id values in getRequestedCaipNetworks', () => {
+    const chainNamespace = ConstantsUtil.CHAIN.EVM
+    const networksWithMissingId = [
+      ...requestedCaipNetworks,
+      {
+        caipNetworkId: 'eip155:999',
+        name: 'Test Network',
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
+        nativeCurrency: { name: 'Test', symbol: 'TST', decimals: 18 },
+        rpcUrls: { default: { http: ['https://rpc.test.com/v1/'] } },
+        blockExplorers: { default: { name: 'Test Explorer', url: 'https://explorer.test.io' } }
+      }
+    ]
+
+    ChainController.setRequestedCaipNetworks(networksWithMissingId as CaipNetwork[], chainNamespace)
+    const filteredNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+
+    expect(filteredNetworks).toEqual(requestedCaipNetworks)
+  })
+
   it('should reset state correctly on resetNetwork()', () => {
     const namespace = 'eip155'
     ChainController.resetNetwork(namespace)
@@ -288,10 +303,25 @@ describe('ChainController', () => {
     expect(AccountController.state.addressExplorerUrl).toEqual(undefined)
     expect(AccountController.state.tokenBalance).toEqual([])
     expect(AccountController.state.connectedWalletInfo).toEqual(undefined)
-    expect(AccountController.state.preferredAccountTypes).toEqual(undefined)
+    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
     expect(AccountController.state.status).toEqual('disconnected')
     expect(AccountController.state.socialProvider).toEqual(undefined)
     expect(AccountController.state.socialWindow).toEqual(undefined)
+  })
+
+  it('should reset account and set preferredAccountType from OptionsController.state.defaultAccountTypes if defined', () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      defaultAccountTypes: {
+        eip155: 'eoa'
+      }
+    })
+
+    ChainController.resetAccount(chainNamespace)
+
+    expect(
+      ChainController.state.chains.get(chainNamespace)?.accountState?.preferredAccountType
+    ).toEqual('eoa')
   })
 
   it('Expect modal to close after switching from unsupported network to supported network', async () => {

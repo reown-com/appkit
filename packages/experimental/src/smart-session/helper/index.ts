@@ -1,5 +1,7 @@
 import { ZodError } from 'zod'
 
+import { type Address } from '@reown/appkit-common'
+
 import { ERROR_MESSAGES, SmartSessionGrantPermissionsRequestSchema } from '../schema/index.js'
 import {
   type AddPermissionResponse,
@@ -52,9 +54,7 @@ export function extractChainAndAddress(caipAddress: unknown) {
   }
   const [, chain, address] = caipAddress.split(':')
 
-  return chain && address?.startsWith('0x')
-    ? { chain, address: address as `0x${string}` }
-    : undefined
+  return chain && address?.startsWith('0x') ? { chain, address: address as Address } : undefined
 }
 
 /**

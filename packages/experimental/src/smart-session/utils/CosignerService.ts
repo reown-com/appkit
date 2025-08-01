@@ -128,11 +128,11 @@ export class CosignerService {
     const response = await sendCoSignerRequest<
       AddPermissionRequest,
       AddPermissionResponse,
-      { projectId: string }
+      { projectId: string; v: string }
     >({
       url,
       request: data,
-      queryParams: { projectId: this.projectId },
+      queryParams: { projectId: this.projectId, v: '2' },
       headers: { 'Content-Type': 'application/json' }
     })
     assertAddPermissionResponse(response)

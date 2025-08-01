@@ -45,14 +45,29 @@ const mockCoinbaseconnector = {
   type: 'EXTERNAL' as const
 }
 
+const mockBitGetConnector = {
+  info: { rdns: 'io.bitget' },
+  name: 'BitGet Wallet',
+  id: '6',
+  explorerId: '6',
+  chain: 'eip155' as const,
+  type: 'ANNOUNCED' as const
+}
+
 // Wallets
 const mockMetamaskWallet: WcWallet = { id: '1', name: 'Wallet 1', rdns: 'io.metamask' }
 const mockRainbowWallet: WcWallet = { id: '2', name: 'Wallet 2', rdns: 'io.rainbow' }
 const mockTrustWallet: WcWallet = { id: '3', name: 'Wallet 3', rdns: 'io.trustwallet' }
 const mockCoinbaseWallet: WcWallet = { id: '5', name: 'Wallet 5', rdns: 'io.coinbase' }
+const mockBitGetWallet: WcWallet = { id: '6', name: 'BitGet Wallet', rdns: null }
 
 describe('WalletUtil', () => {
-  const mockWallets: WcWallet[] = [mockMetamaskWallet, mockRainbowWallet, mockTrustWallet]
+  const mockWallets: WcWallet[] = [
+    mockMetamaskWallet,
+    mockRainbowWallet,
+    mockTrustWallet,
+    mockBitGetWallet
+  ]
 
   beforeEach(() => {
     // Reset all mocks before each test
@@ -62,8 +77,13 @@ describe('WalletUtil', () => {
   })
 
   describe('filterOutDuplicatesByRDNS', () => {
-    it('should filter out wallets with RDNS from connectors and recent wallets', () => {
-      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector, mockCoinbaseconnector]
+    it("should filter out wallets with RDNS or wallets that exactly match a connector name when they don't have RDNS from connectors and recent wallets", () => {
+      const mockConnectors = [
+        mockMetamaskConnector,
+        mockRainbowConnector,
+        mockCoinbaseconnector,
+        mockBitGetConnector
+      ]
       const mockRecentWallets = [mockTrustWallet]
 
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
@@ -100,7 +120,7 @@ describe('WalletUtil', () => {
 
   describe('filterOutDuplicatesByIds', () => {
     it('should filter out wallets with IDs from connectors and recent wallets', () => {
-      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector]
+      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector, mockBitGetConnector]
       const mockRecentWallets = [mockTrustWallet]
 
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
@@ -112,7 +132,7 @@ describe('WalletUtil', () => {
     })
 
     it('should not filter if connector is not Injected or Announced', () => {
-      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector]
+      const mockConnectors = [mockMetamaskConnector, mockRainbowConnector, mockBitGetConnector]
       const mockRecentWallets = [mockTrustWallet]
 
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
@@ -138,7 +158,7 @@ describe('WalletUtil', () => {
 
   describe('filterOutDuplicateWallets', () => {
     it('should filter out wallets with duplicate RDNS and IDs', () => {
-      const mockConnectors = [mockMetamaskConnector]
+      const mockConnectors = [mockMetamaskConnector, mockBitGetConnector]
       const mockRecentWallets = [mockTrustWallet]
 
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)

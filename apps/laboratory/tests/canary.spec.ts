@@ -1,10 +1,11 @@
 /* eslint no-console: 0 */
+import { WalletValidator } from '@reown/appkit-testing'
+
 import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
 import { timeEnd, timeStart } from './shared/utils/logs'
 import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { expectConnection } from './shared/utils/validation'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletValidator } from './shared/validators/WalletValidator'
 
 testConnectedMW.beforeEach(async ({ modalPage, walletPage }) => {
   const modalValidator = new ModalValidator(modalPage.page)

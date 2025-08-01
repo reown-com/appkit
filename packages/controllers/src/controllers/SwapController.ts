@@ -1,12 +1,15 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, NumberUtil } from '@reown/appkit-common'
+import { type Address, type CaipNetworkId, type Hex, NumberUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
-import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import {
+  getActiveNetworkTokenAddress,
+  getPreferredAccountType
+} from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
@@ -37,8 +40,8 @@ export type SwapInputArguments = Partial<{
 }>
 
 type TransactionParams = {
-  data: string
-  to: string
+  data: Hex
+  to: Address
   gas?: bigint
   gasPrice?: bigint
   value: bigint
@@ -46,12 +49,12 @@ type TransactionParams = {
 }
 
 class TransactionError extends Error {
-  shortMessage?: string
+  displayMessage?: string
 
-  constructor(message?: string, shortMessage?: string) {
+  constructor(message?: string, displayMessage?: string) {
     super(message)
     this.name = 'TransactionError'
-    this.shortMessage = shortMessage
+    this.displayMessage = displayMessage
   }
 }
 
@@ -89,7 +92,9 @@ export interface SwapControllerState {
   slippage: number
 
   // Tokens
+  caipNetworkId?: CaipNetworkId
   tokens?: SwapTokenWithBalance[]
+  tokensLoading?: boolean
   suggestedTokens?: SwapTokenWithBalance[]
   popularTokens?: SwapTokenWithBalance[]
   foundTokens?: SwapTokenWithBalance[]
@@ -168,7 +173,7 @@ const initialState: SwapControllerState = {
   providerFee: undefined
 }
 
-const state = proxy<SwapControllerState>(initialState)
+const state = proxy<SwapControllerState>({ ...initialState })
 
 // -- Controller ---------------------------------------- //
 const controller = {
@@ -184,10 +189,9 @@ const controller = {
 
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
-    const namespace = ChainController.state.activeChain as ChainNamespace
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = getActiveNetworkTokenAddress()
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -250,9 +254,7 @@ const controller = {
   },
 
   setToTokenAmount(amount: string) {
-    state.toTokenAmount = amount
-      ? NumberUtil.formatNumberToLocalString(amount, TO_AMOUNT_DECIMALS)
-      : ''
+    state.toTokenAmount = amount ? NumberUtil.toFixed(amount, TO_AMOUNT_DECIMALS) : ''
   },
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
@@ -300,6 +302,7 @@ const controller = {
     state.myTokensWithBalance = initialState.myTokensWithBalance
     state.tokensPriceMap = initialState.tokensPriceMap
     state.initialized = initialState.initialized
+    state.initializing = initialState.initializing
     state.sourceToken = initialState.sourceToken
     state.sourceTokenAmount = initialState.sourceTokenAmount
     state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD
@@ -310,7 +313,6 @@ const controller = {
     state.networkTokenSymbol = initialState.networkTokenSymbol
     state.networkBalanceInUSD = initialState.networkBalanceInUSD
     state.inputError = initialState.inputError
-    state.myTokensWithBalance = initialState.myTokensWithBalance
   },
 
   resetValues() {
@@ -351,40 +353,55 @@ const controller = {
   async fetchTokens() {
     const { networkAddress } = SwapController.getParams()
 
-    await SwapController.getTokenList()
     await SwapController.getNetworkTokenPrice()
     await SwapController.getMyTokensWithBalance()
 
-    const networkToken = state.tokens?.find(token => token.address === networkAddress)
+    const networkToken = state.myTokensWithBalance?.find(token => token.address === networkAddress)
 
     if (networkToken) {
       state.networkTokenSymbol = networkToken.symbol
       SwapController.setSourceToken(networkToken)
-      SwapController.setSourceTokenAmount('1')
+      SwapController.setSourceTokenAmount('0')
     }
   },
 
   async getTokenList() {
-    const tokens = await SwapApiUtil.getTokenList()
+    const activeCaipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
 
-    state.tokens = tokens
-    state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
-      if (aTokenInfo.symbol < bTokenInfo.symbol) {
-        return -1
-      }
-      if (aTokenInfo.symbol > bTokenInfo.symbol) {
-        return 1
-      }
+    if (state.caipNetworkId === activeCaipNetworkId && state.tokens) {
+      return
+    }
 
-      return 0
-    })
-    state.suggestedTokens = tokens.filter(token => {
-      if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
-        return true
-      }
+    try {
+      state.tokensLoading = true
+      const tokens = await SwapApiUtil.getTokenList(activeCaipNetworkId)
 
-      return false
-    }, {})
+      state.tokens = tokens
+      state.caipNetworkId = activeCaipNetworkId
+      state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
+        if (aTokenInfo.symbol < bTokenInfo.symbol) {
+          return -1
+        }
+        if (aTokenInfo.symbol > bTokenInfo.symbol) {
+          return 1
+        }
+
+        return 0
+      })
+      state.suggestedTokens = tokens.filter(token => {
+        if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
+          return true
+        }
+
+        return false
+      })
+    } catch (error) {
+      state.tokens = []
+      state.popularTokens = []
+      state.suggestedTokens = []
+    } finally {
+      state.tokensLoading = false
+    }
   },
 
   async getAddressPrice(address: string) {
@@ -466,7 +483,7 @@ const controller = {
     }
 
     switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
-      case 'solana':
+      case CommonConstantsUtil.CHAIN.SOLANA:
         state.gasFee = res.standard ?? '0'
         state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
           .div(1e9)
@@ -477,7 +494,7 @@ const controller = {
           gasPriceInUSD: Number(state.gasPriceInUSD)
         }
 
-      case 'eip155':
+      case CommonConstantsUtil.CHAIN.EVM:
       default:
         // eslint-disable-next-line no-case-declarations
         const value = res.standard ?? '0'
@@ -532,8 +549,8 @@ const controller = {
       if (!quoteToAmount) {
         AlertController.open(
           {
-            shortMessage: 'Incorrect amount',
-            longMessage: 'Please enter a valid amount'
+            displayMessage: 'Incorrect amount',
+            debugMessage: 'Please enter a valid amount'
           },
           'error'
         )
@@ -624,13 +641,20 @@ const controller = {
         to: toTokenAddress,
         userAddress: fromCaipAddress
       })
+      const address = CoreHelperUtil.getPlainAddress(response.tx.from)
+
+      if (!address) {
+        throw new Error('SwapController:createAllowanceTransaction - address is required')
+      }
+
       const transaction = {
         data: response.tx.data,
-        to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
+        to: address,
         gasPrice: BigInt(response.tx.eip155.gasPrice),
         value: BigInt(response.tx.value),
         toAmount: state.toTokenAmount
       }
+
       state.swapTransaction = undefined
       state.approvalTransaction = {
         data: transaction.data,
@@ -685,10 +709,15 @@ const controller = {
 
       const gas = BigInt(response.tx.eip155.gas)
       const gasPrice = BigInt(response.tx.eip155.gasPrice)
+      const address = CoreHelperUtil.getPlainAddress(response.tx.to)
+
+      if (!address) {
+        throw new Error('SwapController:createSwapTransaction - address is required')
+      }
 
       const transaction = {
         data: response.tx.data,
-        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
+        to: address,
         gas,
         gasPrice,
         value: isSourceTokenIsNetworkToken ? BigInt(amount ?? '0') : BigInt('0'),
@@ -711,6 +740,11 @@ const controller = {
     }
   },
 
+  onEmbeddedWalletApprovalSuccess() {
+    SnackController.showLoading('Approve limit increase in your wallet')
+    RouterController.replace('SwapPreview')
+  },
+
   // -- Send Transactions --------------------------------- //
   async sendTransactionForApproval(data: TransactionParams) {
     const { fromAddress, isAuthConnector } = SwapController.getParams()
@@ -720,9 +754,7 @@ const controller = {
 
     if (isAuthConnector) {
       RouterController.pushTransactionStack({
-        onSuccess() {
-          SnackController.showLoading(approveLimitMessage)
-        }
+        onSuccess: SwapController.onEmbeddedWalletApprovalSuccess
       })
     } else {
       SnackController.showLoading(approveLimitMessage)
@@ -730,11 +762,11 @@ const controller = {
 
     try {
       await ConnectionController.sendTransaction({
-        address: fromAddress as `0x${string}`,
-        to: data.to as `0x${string}`,
-        data: data.data as `0x${string}`,
+        address: fromAddress,
+        to: data.to,
+        data: data.data,
         value: data.value,
-        chainNamespace: 'eip155'
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
 
       await SwapController.swapTokens()
@@ -743,21 +775,21 @@ const controller = {
       state.loadingApprovalTransaction = false
     } catch (err) {
       const error = err as TransactionError
-      state.transactionError = error?.shortMessage as unknown as string
+      state.transactionError = error?.displayMessage as unknown as string
       state.loadingApprovalTransaction = false
-      SnackController.showError(error?.shortMessage || 'Transaction error')
+      SnackController.showError(error?.displayMessage || 'Transaction error')
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_APPROVAL_ERROR',
         properties: {
-          message: error?.shortMessage || error?.message || 'Unknown',
+          message: error?.displayMessage || error?.message || 'Unknown',
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: SwapController.state.sourceToken?.symbol || '',
           swapToToken: SwapController.state.toToken?.symbol || '',
           swapFromAmount: SwapController.state.sourceTokenAmount || '',
           swapToAmount: SwapController.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.eip155 ===
+            getPreferredAccountType(CommonConstantsUtil.CHAIN.EVM) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -795,11 +827,11 @@ const controller = {
     try {
       const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',')
       const transactionHash = await ConnectionController.sendTransaction({
-        address: fromAddress as `0x${string}`,
-        to: data.to as `0x${string}`,
-        data: data.data as `0x${string}`,
+        address: fromAddress,
+        to: data.to,
+        data: data.data,
         value: data.value,
-        chainNamespace: 'eip155'
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
 
       state.loadingTransaction = false
@@ -814,7 +846,7 @@ const controller = {
           swapFromAmount: SwapController.state.sourceTokenAmount || '',
           swapToAmount: SwapController.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.eip155 ===
+            getPreferredAccountType(CommonConstantsUtil.CHAIN.EVM) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -827,21 +859,21 @@ const controller = {
       return transactionHash
     } catch (err) {
       const error = err as TransactionError
-      state.transactionError = error?.shortMessage
+      state.transactionError = error?.displayMessage
       state.loadingTransaction = false
-      SnackController.showError(error?.shortMessage || 'Transaction error')
+      SnackController.showError(error?.displayMessage || 'Transaction error')
       EventsController.sendEvent({
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          message: error?.shortMessage || error?.message || 'Unknown',
+          message: error?.displayMessage || error?.message || 'Unknown',
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: SwapController.state.sourceToken?.symbol || '',
           swapToToken: SwapController.state.toToken?.symbol || '',
           swapFromAmount: SwapController.state.sourceTokenAmount || '',
           swapToAmount: SwapController.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountTypes?.eip155 ===
+            getPreferredAccountType(CommonConstantsUtil.CHAIN.EVM) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })

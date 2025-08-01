@@ -15,6 +15,23 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
 type SdkType = 'w3m' | 'appkit'
 type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion | undefined
 
+// -- SIWX Message Schema ----------------------------------------------------
+export const SIWXMessage = z.object({
+  serializedMessage: z.string().optional(),
+  accountAddress: z.string(),
+  chainId: z.string(),
+  notBefore: z.string().optional(),
+  domain: z.string(),
+  uri: z.string(),
+  version: z.string(),
+  nonce: z.string(),
+  statement: z.string().optional(),
+  resources: z.array(z.string()).optional(),
+  requestId: z.string().optional(),
+  issuedAt: z.string().optional(),
+  expirationTime: z.string().optional()
+})
+
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({
   accessList: z.array(z.string()),
@@ -36,18 +53,25 @@ export const GetTransactionByHashResponse = z.object({
   v: z.string(),
   value: z.string()
 })
-export const AppSwitchNetworkRequest = z.object({ chainId: z.string().or(z.number()) })
+export const AppSwitchNetworkRequest = z.object({
+  chainId: z.string().or(z.number()),
+  rpcUrl: z.optional(z.string())
+})
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({
   uri: z.string(),
   preferredAccountType: z.optional(z.string()),
-  chainId: z.optional(z.string().or(z.number()))
+  chainId: z.optional(z.string().or(z.number())),
+  siwxMessage: z.optional(SIWXMessage),
+  rpcUrl: z.optional(z.string())
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.string().or(z.number())),
   preferredAccountType: z.optional(z.string()),
-  socialUri: z.optional(z.string())
+  socialUri: z.optional(z.string()),
+  siwxMessage: z.optional(SIWXMessage),
+  rpcUrl: z.optional(z.string())
 })
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
@@ -103,7 +127,10 @@ export const FrameConnectSocialResponse = z.object({
     )
     .optional(),
   userName: z.string().optional().nullable(),
-  preferredAccountType: z.optional(z.string())
+  preferredAccountType: z.optional(z.string()),
+  signature: z.string().optional(),
+  message: z.string().optional(),
+  siwxMessage: z.optional(SIWXMessage)
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
@@ -124,7 +151,10 @@ export const FrameGetUserResponse = z.object({
       })
     )
     .optional(),
-  preferredAccountType: z.optional(z.string())
+  preferredAccountType: z.optional(z.string()),
+  signature: z.string().optional(),
+  message: z.string().optional(),
+  siwxMessage: z.optional(SIWXMessage)
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
@@ -399,7 +429,8 @@ export const WalletGetCallsReceiptRequest = z.object({
 })
 
 export const WalletGetCapabilitiesRequest = z.object({
-  method: z.literal('wallet_getCapabilities')
+  method: z.literal('wallet_getCapabilities'),
+  params: z.array(z.string().or(z.number()).optional()).optional()
 })
 export const WalletGrantPermissionsRequest = z.object({
   method: z.literal('wallet_grantPermissions'),
@@ -538,6 +569,15 @@ export const W3mFrameSchema = {
           .or(WalletGetCapabilitiesRequest)
           .or(WalletGrantPermissionsRequest)
           .or(WalletRevokePermissionsRequest)
+          .and(
+            z.object({
+              chainId: z.string().or(z.number()).optional(),
+              chainNamespace: z
+                .enum(['eip155', 'solana', 'polkadot', 'bip122', 'cosmos'])
+                .optional(),
+              rpcUrl: z.string().optional()
+            })
+          )
       })
     )
 
@@ -569,6 +609,12 @@ export const W3mFrameSchema = {
     .or(
       EventSchema.extend({
         type: zType('APP_RELOAD')
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_RPC_ABORT')
       })
     ),
 

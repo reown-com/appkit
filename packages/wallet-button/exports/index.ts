@@ -1,3 +1,5 @@
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { AppKitWalletButton } from '../src/client.js'
 
 // -- Components ------------------------------------------------------------
@@ -9,9 +11,9 @@ export type { Wallet } from '../src/utils/TypeUtil.js'
 // -- Utils & Other -----------------------------------------------------
 let walletButton: AppKitWalletButton | undefined = undefined
 
-export function createAppKitWalletButton() {
+export function createAppKitWalletButton({ namespace }: { namespace?: ChainNamespace } = {}) {
   if (!walletButton) {
-    walletButton = new AppKitWalletButton()
+    walletButton = new AppKitWalletButton({ namespace })
   }
 
   return walletButton

@@ -1,8 +1,9 @@
 import { fixture } from '@open-wc/testing'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import type { ChainNamespace, Connection } from '@reown/appkit-common'
 import {
   AccountController,
   type AuthConnector,
@@ -60,7 +61,10 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
 })
 
 describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
-  it('should close modal when address is set and enableEmbedded is true', async () => {
+  beforeAll(() => {
+    ConnectionController.state.connections = ConnectionController.state.connections
+  })
+  it('closes the modal if no connections exist, an address is set and embedded mode is enabled', async () => {
     const mockSocialWindow = {
       close: vi.fn(),
       closed: false
@@ -68,6 +72,66 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
 
     let subscriptionCallback: ((val: any) => void) | undefined
 
+    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+    vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
+    vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+    vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      enableEmbedded: true
+    })
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
+      ...AccountController.state,
+      socialWindow: mockSocialWindow
+    })
+    vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
+      ...ModalController.state,
+      open: true
+    })
+    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(() => {
+      return () => {}
+    })
+    vi.spyOn(AccountController, 'subscribeKey').mockImplementationOnce((_property, callback) => {
+      subscriptionCallback = callback
+      return () => {}
+    })
+
+    await fixture(html`<w3m-connecting-social-view></w3m-connecting-social-view>`)
+
+    if (subscriptionCallback) {
+      subscriptionCallback({ address: '0x123' })
+    }
+
+    expect(ModalController.close).toHaveBeenCalled()
+    expect(RouterController.reset).not.toHaveBeenCalled()
+    expect(RouterController.push).not.toHaveBeenCalled()
+  })
+
+  it('redirects to the profile wallets page if connections exist, address is set and multiWallet is enabled', async () => {
+    const mockSocialWindow = {
+      close: vi.fn(),
+      closed: false
+    } as unknown as Window
+    const mockConnections = new Map<ChainNamespace, Connection[]>([
+      [
+        'eip155',
+        [
+          {
+            connectorId: 'auth'
+          }
+        ] as Connection[]
+      ]
+    ])
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
+
+    let subscriptionCallback: ((val: any) => void) | undefined
+
+    ConnectionController.state.connections = mockConnections
+    vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
+    vi.spyOn(RouterController, 'push').mockImplementation(() => {})
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
       ...OptionsController.state,
@@ -81,7 +145,10 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...ModalController.state,
       open: true
     })
-    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(callback => {
+    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(() => {
+      return () => {}
+    })
+    vi.spyOn(AccountController, 'subscribeKey').mockImplementationOnce((_property, callback) => {
       subscriptionCallback = callback
       return () => {}
     })
@@ -92,7 +159,8 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       subscriptionCallback({ address: '0x123' })
     }
 
-    expect(ModalController.close).toHaveBeenCalled()
+    expect(ModalController.close).not.toHaveBeenCalled()
+    expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
   })
 
   it('should not close modal when address is set but enableEmbedded is false', async () => {

@@ -1,4 +1,3 @@
-import { mainnet } from 'viem/chains'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type Balance, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
@@ -7,7 +6,6 @@ import {
   AccountController,
   BlockchainApiController,
   ChainController,
-  type ChainControllerState,
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
@@ -16,6 +14,7 @@ import {
   StorageUtil,
   SwapController
 } from '../../exports/index.js'
+import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
@@ -25,11 +24,6 @@ const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
 const explorerUrl = 'https://some.explorer.com/explore'
 const chain = ConstantsUtil.CHAIN.EVM
-const extendedMainnet = {
-  ...mainnet,
-  chainNamespace: ConstantsUtil.CHAIN.EVM,
-  caipNetworkId: 'eip155:1' as const
-}
 const networks = [extendedMainnet] as CaipNetwork[]
 
 // -- Tests --------------------------------------------------------------------
@@ -59,7 +53,6 @@ describe('AccountController', () => {
       smartAccountDeployed: false,
       currentTab: 0,
       tokenBalance: [],
-      allAccounts: [],
       addressLabels: new Map<string, string>()
     })
   })
@@ -98,14 +91,10 @@ describe('AccountController', () => {
 
   it('should update state correctly on setPreferredAccountType()', () => {
     AccountController.setPreferredAccountType('eoa', chain)
-    expect(AccountController.state.preferredAccountTypes).toEqual({
-      eip155: 'eoa'
-    })
+    expect(AccountController.state.preferredAccountType).toEqual('eoa')
 
     AccountController.setPreferredAccountType('smartAccount', chain)
-    expect(AccountController.state.preferredAccountTypes).toEqual({
-      eip155: 'smartAccount'
-    })
+    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
   })
 
   it('should update state correctly on resetAccount()', () => {
@@ -121,11 +110,10 @@ describe('AccountController', () => {
       profileImage: undefined,
       addressExplorerUrl: undefined,
       tokenBalance: [],
-      allAccounts: [],
       addressLabels: new Map<string, string>(),
       connectedWalletInfo: undefined,
       farcasterUrl: undefined,
-      preferredAccountType: undefined,
+      preferredAccountType: 'smartAccount',
       socialProvider: undefined,
       status: 'disconnected',
       user: undefined
@@ -134,10 +122,13 @@ describe('AccountController', () => {
 
   describe('fetchTokenBalance()', () => {
     beforeEach(() => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      vi.restoreAllMocks()
+
+      mockChainControllerState({
         activeCaipNetwork: extendedMainnet,
         activeCaipAddress: 'eip155:1:0x123'
-      } as unknown as ChainControllerState)
+      })
+
       vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue({
         balances: []
       })
@@ -157,12 +148,10 @@ describe('AccountController', () => {
     })
 
     it('should not fetch balance if chainId is not defined', async () => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        activeCaipNetwork: {
-          chainNamespace: 'eip155'
-        } as unknown as CaipNetwork,
+      mockChainControllerState({
+        activeCaipNetwork: extendedMainnet,
         activeCaipAddress: 'eip155:1:0x123'
-      } as unknown as ChainControllerState)
+      })
 
       const result = await AccountController.fetchTokenBalance()
 
@@ -171,10 +160,11 @@ describe('AccountController', () => {
     })
 
     it('should not fetch balance if namespace is not defined', async () => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      mockChainControllerState({
+        // @ts-expect-error - edge case
         activeCaipNetwork: { ...extendedMainnet, chainNamespace: undefined },
         activeCaipAddress: 'eip155:1:0x123'
-      } as unknown as ChainControllerState)
+      })
 
       const result = await AccountController.fetchTokenBalance()
 
@@ -183,10 +173,10 @@ describe('AccountController', () => {
     })
 
     it('should not fetch balance if address is not defined', async () => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      mockChainControllerState({
         activeCaipNetwork: extendedMainnet,
         activeCaipAddress: undefined
-      } as unknown as ChainControllerState)
+      })
 
       const result = await AccountController.fetchTokenBalance()
 

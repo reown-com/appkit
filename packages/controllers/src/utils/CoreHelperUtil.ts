@@ -1,4 +1,11 @@
-import type { AdapterType, Balance, ChainNamespace, SdkVersion } from '@reown/appkit-common'
+import type {
+  AdapterType,
+  Address,
+  Balance,
+  ChainNamespace,
+  ParsedCaipAddress,
+  SdkVersion
+} from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 
@@ -109,7 +116,7 @@ export const CoreHelperUtil = {
   },
 
   getPlainAddress(caipAddress: CaipAddress | undefined) {
-    return caipAddress?.split(':')[2]
+    return caipAddress?.split(':')[2] as Address | undefined
   },
 
   async wait(milliseconds: number) {
@@ -276,25 +283,6 @@ export const CoreHelperUtil = {
     return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
   },
 
-  formatBalance2(balance: string | undefined, symbol: string | undefined) {
-    let formattedBalance = undefined
-
-    if (balance === '0') {
-      formattedBalance = '0'
-    } else if (typeof balance === 'string') {
-      const number = Number(balance)
-      if (number) {
-        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
-      }
-    }
-
-    return {
-      value: formattedBalance ?? '0',
-      rest: formattedBalance === '0' ? '000' : '',
-      symbol
-    }
-  },
-
   getApiUrl() {
     return CommonConstants.W3M_API_URL
   },
@@ -458,6 +446,26 @@ export const CoreHelperUtil = {
       sections.filter(Boolean).length === 3 &&
       (namespace as string) in CommonConstants.CHAIN_NAME_MAP
     )
+  },
+  getAccount(account?: ParsedCaipAddress | string) {
+    if (!account) {
+      return {
+        address: undefined,
+        chainId: undefined
+      }
+    }
+
+    if (typeof account === 'string') {
+      return {
+        address: account,
+        chainId: undefined
+      }
+    }
+
+    return {
+      address: account.address,
+      chainId: account.chainId
+    }
   },
   isMac() {
     const ua = window?.navigator.userAgent.toLowerCase()

@@ -1,9 +1,9 @@
 import { type BrowserContext, test } from '@playwright/test'
 
+import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+
 import { ModalPage } from '../shared/pages/ModalPage'
-import { WalletPage } from '../shared/pages/WalletPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
-import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -42,7 +42,6 @@ test.afterAll(async () => {
 test('it should switch networks and sign siwe', async () => {
   const chainName = 'Polygon'
   await modalPage.switchNetwork(chainName)
-  await modalValidator.expectUnauthenticated()
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()

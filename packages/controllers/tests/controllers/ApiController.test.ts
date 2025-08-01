@@ -6,7 +6,6 @@ import {
   ApiController,
   AssetController,
   ChainController,
-  type ChainControllerState,
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
@@ -14,6 +13,7 @@ import {
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
+import { mockChainControllerState } from '../../exports/testing.js'
 import { api } from '../../src/controllers/ApiController.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../../src/utils/MobileWallet.js'
 
@@ -980,9 +980,9 @@ describe('ApiController', () => {
 
   it('should filter out wallets without mobile_link in mobile environment but keep custom deeplink wallets', () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+    mockChainControllerState({
       activeChain: 'solana'
-    } as ChainControllerState)
+    })
     const mockWallets = [
       { id: '1', name: 'Wallet1', mobile_link: 'link1' },
       { id: '2', name: 'Wallet2' },

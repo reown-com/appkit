@@ -1,0 +1,60 @@
+name: Publish release & PR back to main
+
+on:
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  release:
+    name: Publish release & PR back to main
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Version or publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          branch: ${{ github.ref_name }}
+          title: 'chore: version packages'
+          commit: 'chore: version packages'
+          publish: pnpm changeset:publish
+          version: pnpm changeset:version
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Automatically open a PR to sync back to main after a publish
+      - name: Open PR → main
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          gh pr create \
+            --head "${{ github.ref_name }}" \
+            --base main \
+            --title "Merge ${{ github.ref_name }} back to main" \
+            --body  "Auto‑generated after publishing."
+            --verbose
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_DEBUG: 1
+          GH_TRACE: 1

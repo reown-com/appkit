@@ -1,5 +1,5 @@
 import { fixture } from '@open-wc/testing'
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -11,6 +11,7 @@ import {
   ConstantsUtil
 } from '@reown/appkit-common'
 import {
+  AccountController,
   type AccountControllerState,
   ChainController,
   type ChainControllerState,
@@ -19,6 +20,8 @@ import {
   ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
+  ModalController,
+  OptionsController,
   RouterController,
   SnackController,
   StorageUtil
@@ -105,6 +108,13 @@ beforeAll(() => {
   }
 })
 
+beforeAll(() => {
+  vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+    ...OptionsController.state,
+    remoteFeatures: { multiWallet: true }
+  })
+})
+
 describe('W3mProfileWalletsView - Basic Rendering', () => {
   beforeEach(() => {
     vi.resetAllMocks()
@@ -128,6 +138,11 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
         ]
       ])
     } as unknown as ChainControllerState)
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
 
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
@@ -315,7 +330,6 @@ describe('W3mProfileWalletsView - Tabs Rendering', () => {
 
     const tabs = element.shadowRoot?.querySelector(TABS_COMPONENT)
     expect(tabs).not.toBeNull()
-    expect(tabs?.getAttribute('localTabWidth')).toBe('180px') // (400 - 40) / 2
   })
 })
 
@@ -394,7 +408,7 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
     const mockConnections: Connection[] = [
       {
         connectorId: 'metamask',
-        accounts: [{ address: '0x1234567890123456789012345678901234567890', type: 'smart' }]
+        accounts: [{ address: '0x1234567890123456789012345678901234567890' }]
       }
     ]
 
@@ -402,7 +416,17 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
       connections: mockConnections,
       recentConnections: []
     })
-
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      user: {
+        accounts: [
+          {
+            type: 'smartAccount',
+            address: '0x1234567890123456789012345678901234567890'
+          }
+        ]
+      }
+    })
     vi.mocked(ConnectorController.state.activeConnectorIds).eip155 = 'metamask'
     vi.mocked(ChainController.getAccountData).mockReturnValue({
       caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
@@ -474,7 +498,7 @@ describe('W3mProfileWalletsView - Connections List', () => {
         accounts: [{ address: '0x9876543210987654321098765432109876543210', type: 'eoa' }]
       },
       {
-        connectorId: 'coinbase',
+        connectorId: 'meld',
         accounts: [{ address: '0x1111111111111111111111111111111111111111', type: 'eoa' }]
       }
     ]
@@ -556,26 +580,6 @@ describe('W3mProfileWalletsView - Bitcoin Specific Behavior', () => {
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockBitcoinAddress as CaipAddress
     } as unknown as AccountControllerState)
-  })
-
-  it('should filter recent connections to only payment accounts for Bitcoin', async () => {
-    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
-      connections: [],
-      recentConnections: [mockBitcoinConnection]
-    })
-
-    const element: W3mProfileWalletsView = await fixture(
-      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
-    )
-
-    const recentConnections = element.shadowRoot?.querySelectorAll(
-      '[data-testid="recent-connection"]'
-    )
-
-    expect(recentConnections?.length).toBe(1)
-    expect(recentConnections?.[0]?.getAttribute('address')).toBe(
-      'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
-    )
   })
 
   it('should render Bitcoin profile content with account types', async () => {
@@ -900,5 +904,92 @@ describe('W3mProfileWalletsView - Loading States', () => {
 
     resolveSwitchConnection!()
     await switchConnectionPromise
+  })
+
+  it('should not show add wallet button when multiWallet is disabled and caipAddress is set', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: false }
+    })
+
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      caipAddress: mockEthereumAddress as CaipAddress
+    } as unknown as AccountControllerState)
+
+    const element: W3mProfileWalletsView = await fixture(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+
+    const addConnectionButton = element.shadowRoot?.querySelector(
+      '[data-testid="add-connection-button"]'
+    )
+
+    expect(addConnectionButton).toBeNull()
+  })
+})
+
+describe('W3mProfileWalletsView - onConnectionsChange', () => {
+  let element: W3mProfileWalletsView
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      activeCaipNetwork: mockEthereumNetwork,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mockEthereumNetwork] }
+        ]
+      ])
+    })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        [ConstantsUtil.CHAIN.EVM]: 'metamask'
+      } as unknown as Record<ChainNamespace, string | undefined>,
+      connectors: [mockMetaMaskConnector, mockWalletConnectConnector, mockAuthConnector]
+    })
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      user: {}
+    })
+    vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
+    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+
+    element = await fixture<W3mProfileWalletsView>(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+    element['remoteFeatures'] = { multiWallet: true }
+    element['namespace'] = ConstantsUtil.CHAIN.EVM
+  })
+
+  afterAll(() => {
+    vi.resetAllMocks()
+  })
+
+  it('should call RouterController.reset when no connections found for current namespace', () => {
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+    element['onConnectionsChange']()
+    expect(RouterController.reset).toHaveBeenCalledWith('ProfileWallets')
+  })
+
+  it('should call requestUpdate after handling connections', () => {
+    const requestUpdateSpy = vi.spyOn(element, 'requestUpdate')
+    element['onConnectionsChange']()
+    expect(requestUpdateSpy).toHaveBeenCalled()
   })
 })

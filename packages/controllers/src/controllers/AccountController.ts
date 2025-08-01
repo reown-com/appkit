@@ -7,9 +7,8 @@ import { BalanceUtil } from '../utils/BalanceUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
-  AccountType,
-  AccountTypeMap,
   ConnectedWalletInfo,
+  NamespaceTypeMap,
   PreferredAccountTypes,
   SocialProvider,
   User
@@ -25,7 +24,6 @@ export interface AccountControllerState {
   user?: User
   address?: string
   addressLabels: Map<string, string>
-  allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
   balanceLoading?: boolean
@@ -37,7 +35,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   shouldUpdateToAddress?: string
   connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountTypes?: PreferredAccountTypes
+  preferredAccountType?: NamespaceTypeMap[keyof NamespaceTypeMap]
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
@@ -49,8 +47,7 @@ const state = proxy<AccountControllerState>({
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
-  addressLabels: new Map(),
-  allAccounts: []
+  addressLabels: new Map()
 })
 
 // -- Controller ---------------------------------------- //
@@ -104,7 +101,11 @@ const controller = {
   },
 
   getCaipAddress(chain: ChainNamespace | undefined) {
-    return ChainController.getAccountProp('caipAddress', chain)
+    if (!chain) {
+      return undefined
+    }
+
+    return ChainController.state.chains.get(chain)?.accountState?.caipAddress
   },
 
   setCaipAddress(
@@ -169,18 +170,22 @@ const controller = {
     ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 
-  setAllAccounts<N extends ChainNamespace>(accounts: AccountTypeMap[N][], namespace: N) {
-    ChainController.setAccountProp('allAccounts', accounts, namespace)
-  },
-
   addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.set(address, label)
     ChainController.setAccountProp('addressLabels', map, chain)
   },
 
   removeAddressLabel(address: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.delete(address)
     ChainController.setAccountProp('addressLabels', map, chain)
   },
@@ -196,18 +201,7 @@ const controller = {
     preferredAccountType: PreferredAccountTypes[ChainNamespace],
     chain: ChainNamespace
   ) {
-    ChainController.setAccountProp(
-      'preferredAccountTypes',
-      {
-        ...state.preferredAccountTypes,
-        [chain]: preferredAccountType
-      },
-      chain
-    )
-  },
-
-  setPreferredAccountTypes(preferredAccountTypes: PreferredAccountTypes) {
-    state.preferredAccountTypes = preferredAccountTypes
+    ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   },
 
   setSocialProvider(

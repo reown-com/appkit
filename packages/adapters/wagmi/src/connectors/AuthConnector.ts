@@ -3,16 +3,19 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
 import {
+  type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ConstantsUtil,
   type EmbeddedWalletTimeoutReason
 } from '@reown/appkit-common'
 import { NetworkUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AlertController,
   ChainController,
-  ConnectorController
+  ConnectorController,
+  SIWXUtil,
+  getActiveCaipNetwork,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -56,7 +59,7 @@ export function authConnector(parameters: AuthParameters) {
     if (!socialProvider) {
       socialProvider = W3mFrameProviderSingleton.getInstance({
         projectId: parameters.options.projectId,
-        chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId,
+        chainId: getActiveCaipNetwork()?.caipNetworkId,
         enableLogger: parameters.options.enableAuthLogger,
         onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
           if (reason === 'iframe_load_failed') {
@@ -67,7 +70,9 @@ export function authConnector(parameters: AuthParameters) {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
         },
-        abortController: ErrorUtil.EmbeddedWalletAbortController
+        abortController: ErrorUtil.EmbeddedWalletAbortController,
+        getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
+        getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
       })
     }
 
@@ -95,16 +100,18 @@ export function authConnector(parameters: AuthParameters) {
       }
     }
 
-    const preferredAccountType = AccountController.state.preferredAccountTypes?.eip155
+    const preferredAccountType = getPreferredAccountType('eip155')
 
     const {
       address,
       chainId: frameChainId,
       accounts
-    } = await provider.connect({
+    } = await SIWXUtil.authConnectorAuthenticate({
+      authConnector: provider,
       chainId,
       preferredAccountType,
-      socialUri: options.socialUri
+      socialUri: options.socialUri,
+      chainNamespace: CommonConstantsUtil.CHAIN.EVM
     })
 
     currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
@@ -128,7 +135,12 @@ export function authConnector(parameters: AuthParameters) {
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
     async connect(
-      options: { chainId?: number; isReconnecting?: boolean; socialUri?: string } = {}
+      options: {
+        chainId?: number
+        isReconnecting?: boolean
+        socialUri?: string
+        rpcUrl?: string
+      } = {}
     ) {
       if (connectSocialPromise) {
         return connectSocialPromise
@@ -164,7 +176,7 @@ export function authConnector(parameters: AuthParameters) {
       if (!this.provider) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
-          chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId,
+          chainId: getActiveCaipNetwork()?.caipNetworkId,
           enableLogger: parameters.options.enableAuthLogger,
           abortController: ErrorUtil.EmbeddedWalletAbortController,
           onTimeout: (reason: EmbeddedWalletTimeoutReason) => {
@@ -175,7 +187,10 @@ export function authConnector(parameters: AuthParameters) {
             } else if (reason === 'unverified_domain') {
               AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
             }
-          }
+          },
+          getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
+          getCaipNetworks: (namespace?: ChainNamespace) =>
+            ChainController.getCaipNetworks(namespace)
         })
       }
 
@@ -213,7 +228,7 @@ export function authConnector(parameters: AuthParameters) {
         }
         const provider = await this.getProvider()
 
-        const preferredAccountType = AccountController.state.preferredAccountTypes?.eip155
+        const preferredAccountType = getPreferredAccountType('eip155')
 
         // We connect instead, since changing the chain may cause the address to change as well
         const response = await provider.connect({

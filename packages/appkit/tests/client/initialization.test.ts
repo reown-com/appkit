@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   AlertController,
   ApiController,
   ChainController,
@@ -28,7 +27,7 @@ import {
 
 describe('Base', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
     vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider as any)
     mockWindowAndDocument()
     mockStorageUtil()
@@ -106,9 +105,21 @@ describe('Base', () => {
       expect(setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
 
+    it('should use default account types when no account types are set', async () => {
+      vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
+        ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+      )
+
+      const appKit = new AppKit(mockOptions)
+
+      await appKit.ready()
+
+      expect(
+        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
+      ).toEqual('smartAccount')
+    })
+
     it('should set default account types', async () => {
-      const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
       vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce({
         bip122: 'ordinal'
       })
@@ -122,26 +133,9 @@ describe('Base', () => {
 
       await appKit.ready()
 
-      expect(setDefaultAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa'
-      })
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa',
-        bip122: 'ordinal',
-        solana: 'eoa',
-        polkadot: 'eoa'
-      })
-    })
-
-    it('should use default account types when no account types are set', () => {
-      vi.spyOn(StorageUtil, 'getPreferredAccountTypes').mockReturnValueOnce(
-        ConstantsUtil.DEFAULT_ACCOUNT_TYPES
-      )
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
-
-      new AppKit(mockOptions)
-
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith(ConstantsUtil.DEFAULT_ACCOUNT_TYPES)
+      expect(
+        ChainController.state.chains.get('eip155')?.accountState?.preferredAccountType
+      ).toEqual('eoa')
     })
 
     it('should use stored account types', () => {
@@ -149,18 +143,11 @@ describe('Base', () => {
         eip155: 'eoa',
         bip122: 'ordinal'
       })
-      const setPreferredAccountTypes = vi.spyOn(AccountController, 'setPreferredAccountTypes')
       const setDefaultAccountTypes = vi.spyOn(OptionsController, 'setDefaultAccountTypes')
 
       new AppKit(mockOptions)
 
       expect(setDefaultAccountTypes).toHaveBeenCalledWith(undefined)
-      expect(setPreferredAccountTypes).toHaveBeenCalledWith({
-        eip155: 'eoa',
-        bip122: 'ordinal',
-        solana: 'eoa',
-        polkadot: 'eoa'
-      })
     })
 
     it('should use default network prop when defaultNetwork prop is not included in the networks array', async () => {
@@ -228,6 +215,52 @@ describe('Base', () => {
 
       expect(OptionsController.state.remoteFeatures).toEqual(mockRemoteFeaturesConfig)
     })
+
+    it('should disable email and social features when pay feature is enabled', async () => {
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          pay: true
+        }
+      })
+
+      await appKit.ready()
+
+      expect(OptionsController.state.remoteFeatures?.email).toBe(false)
+      expect(OptionsController.state.remoteFeatures?.socials).toBe(false)
+    })
+
+    it('should not disable email and social features when pay feature is disabled', async () => {
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          pay: false
+        }
+      })
+
+      await appKit.ready()
+
+      const remoteFeatures = OptionsController.state.remoteFeatures
+      expect(remoteFeatures?.email).toBe(mockRemoteFeaturesConfig.email)
+      expect(remoteFeatures?.socials).toEqual(mockRemoteFeaturesConfig.socials)
+    })
+
+    it('should not affect other features when pay feature is enabled', async () => {
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          pay: true
+        }
+      })
+
+      await appKit.ready()
+
+      const remoteFeatures = OptionsController.state.remoteFeatures
+
+      expect(remoteFeatures?.swaps).toEqual(mockRemoteFeaturesConfig.swaps)
+      expect(remoteFeatures?.onramp).toEqual(mockRemoteFeaturesConfig.onramp)
+      expect(remoteFeatures?.activity).toBe(mockRemoteFeaturesConfig.activity)
+    })
   })
 
   describe('Alert Errors', () => {
@@ -236,7 +269,7 @@ describe('Base', () => {
 
       const errors = [
         {
-          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          alert: ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED,
           message:
             'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
         },

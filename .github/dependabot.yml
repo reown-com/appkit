@@ -4,6 +4,52 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    labels:
+      - 'chore: update `@walletconnect/*`, `viem` and `@wagmi/*` dependencies'
+    groups:
+      # All @walletconnect/* that installed in any package.json in the repo
+      'walletconnect':
+        dependency-type: 'production'
+        patterns:
+          - '@walletconnect/*'
+      # All viem and @wagmi/* that installed in any package.json in the repo
+      'viem-wagmi':
+        dependency-type: 'production'
+        patterns:
+          - 'viem'
+          - '@wagmi/*'
+  - package-ecosystem: 'npm'
+    directory: '/apps/demo'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - 'chore: update `@reown/*` dependencies for AppKit Demo'
+    groups:
+      # All @reown/* dependencies in any package.json in the repo
+      'reown-appkit':
+        dependency-type: 'production'
+        patterns:
+          - '@reown/*'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: 'npm'
+    directory: '/packages/'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - 'chore: update dependencies'
+    groups:
+      # All "dependencies" that `packages/*` depends on
+      'all-production-dependencies':
+        dependency-type: 'production'
+        patterns:
+          - '*'
+      # All "devDependencies" that `packages/*` depends on
+      'all-development-dependencies':
+        dependency-type: 'development'
+        patterns:
+          - '*'
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']

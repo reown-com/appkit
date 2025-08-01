@@ -2,12 +2,14 @@
 import type { OnRampProvider, SocialProvider, SwapProvider } from '@reown/appkit-common'
 import { AlertController, ApiController, ConstantsUtil } from '@reown/appkit-controllers'
 import type {
+  EmailCaptureOptions,
   FeatureConfigMap,
   FeatureID,
   RemoteFeatures,
   TypedFeatureConfig
 } from '@reown/appkit-controllers'
 import type {} from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import type { AppKitOptionsWithSdk } from '../client/appkit-base-client.js'
 
@@ -19,7 +21,9 @@ const FEATURE_KEYS: FeatureKey[] = [
   'swaps',
   'onramp',
   'activity',
-  'reownBranding'
+  'reownBranding',
+  'multiWallet',
+  'emailCapture'
 ]
 
 const featureConfig = {
@@ -151,6 +155,25 @@ const featureConfig = {
 
       return Boolean(localValue)
     }
+  },
+  emailCapture: {
+    apiFeatureName: 'email_capture' as const,
+    localFeatureName: 'emailCapture',
+    returnType: false as EmailCaptureOptions[] | boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig): EmailCaptureOptions[] | false =>
+      apiConfig.isEnabled && ((apiConfig.config ?? []) as EmailCaptureOptions[]),
+    processFallback: (_localValue: unknown): EmailCaptureOptions[] | boolean => false
+  },
+  multiWallet: {
+    apiFeatureName: 'multi_wallet' as const,
+    localFeatureName: 'multiWallet',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.multiWallet
   }
 }
 
@@ -268,8 +291,8 @@ export const ConfigUtil = {
       const warningMessage = `Your local configuration for ${Array.from(this.localSettingsOverridden).join(', ')} was ignored because a remote configuration was successfully fetched. Please manage these features via your project dashboard on dashboard.reown.com.`
       AlertController.open(
         {
-          shortMessage: 'Local configuration ignored',
-          longMessage: `[Reown Config Notice] ${warningMessage}`
+          debugMessage:
+            ErrorUtil.ALERT_WARNINGS.LOCAL_CONFIGURATION_IGNORED.debugMessage(warningMessage)
         },
         'warning'
       )

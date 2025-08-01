@@ -1,0 +1,59 @@
+name: Publish Prerelease
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to release from'
+        required: true
+        default: 'main'
+      canaryName:
+        description: 'The name for the canary release tag'
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-prerelease:
+    name: Publish Prerelease
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.branch }}
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+        shell: bash
+
+      - name: Publish prerelease
+        continue-on-error: true
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
+          pnpm install
+          pnpm changeset:pre ${{ github.event.inputs.canaryName }}
+          pnpm changeset:version
+          pnpm changeset:pre:exit
+          pnpm publish:canary
