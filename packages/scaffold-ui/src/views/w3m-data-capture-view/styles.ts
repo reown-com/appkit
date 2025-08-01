@@ -85,39 +85,4 @@ export default css`
       opacity: 0;
     }
   }
-
-  .email-sufixes {
-    display: flex;
-    flex-direction: row;
-    gap: var(--wui-spacing-3xs);
-    overflow-x: auto;
-    max-width: 100%;
-    margin-top: var(--wui-spacing-s);
-    margin-bottom: calc(-1 * var(--wui-spacing-m));
-    padding-bottom: var(--wui-spacing-m);
-    margin-left: calc(-1 * var(--wui-spacing-m));
-    margin-right: calc(-1 * var(--wui-spacing-m));
-    padding-left: var(--wui-spacing-m);
-    padding-right: var(--wui-spacing-m);
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  .recent-emails {
-    display: flex;
-    flex-direction: column;
-    padding: var(--wui-spacing-s) 0;
-    border-top: 1px solid var(--wui-color-gray-glass-005);
-    border-bottom: 1px solid var(--wui-color-gray-glass-005);
-  }
-
-  .recent-emails-heading {
-    margin-bottom: var(--wui-spacing-s);
-  }
-
-  .recent-emails-list-item {
-    --wui-color-gray-glass-002: transparent;
-  }
 `

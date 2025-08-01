@@ -1,7 +1,8 @@
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
+import { mockSession } from '@reown/appkit-controllers/testing'
+
 import { LocalStorage } from '../../src'
-import { mockSession } from '../mocks/mockSession'
 
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window

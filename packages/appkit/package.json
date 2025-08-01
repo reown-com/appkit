@@ -164,7 +164,6 @@
     "vue": "3.x"
   },
   "optionalDependencies": {
-    "@reown/appkit-siwx": "workspace:*",
     "@lit/react": "1.0.8"
   },
   "author": "Reown (https://discord.gg/reown)",

@@ -6,15 +6,15 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 
-import { ReownAuthentication } from '../../src/configs/index'
-import { W3mDataCaptureOtpConfirmView } from '../../src/ui/w3m-data-capture-otp-confirm-view/index'
+import { W3mDataCaptureOtpConfirmView } from '../../src/views/w3m-data-capture-otp-confirm-view/index.js'
 
 // Mock ReownAuthentication class
 const mockConfirmEmailOtp = vi.fn().mockResolvedValue(true)
 const mockRequestEmailOtp = vi.fn().mockResolvedValue({ uuid: 'test-uuid' })
 
-vi.mock('../../src/configs/index', () => ({
+vi.mock('@reown/appkit-controllers/features', () => ({
   ReownAuthentication: vi.fn().mockImplementation(() => ({
     confirmEmailOtp: mockConfirmEmailOtp,
     requestEmailOtp: mockRequestEmailOtp

@@ -221,7 +221,8 @@ export const ConstantsUtil = {
     activity: true,
     reownBranding: true,
     multiWallet: false,
-    emailCapture: false
+    emailCapture: false,
+    reownAuthentication: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -230,7 +231,8 @@ export const ConstantsUtil = {
     onramp: false,
     activity: false,
     reownBranding: false,
-    emailCapture: false
+    emailCapture: false,
+    reownAuthentication: false
   } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,
@@ -252,7 +254,8 @@ export const ConstantsUtil = {
     collapseWallets: false,
     walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
     connectMethodsOrder: undefined,
-    pay: false
+    pay: false,
+    reownAuthentication: false
   } satisfies Features,
 
   DEFAULT_SOCIALS: [

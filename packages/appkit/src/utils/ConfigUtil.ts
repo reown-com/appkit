@@ -23,7 +23,8 @@ const FEATURE_KEYS: FeatureKey[] = [
   'activity',
   'reownBranding',
   'multiWallet',
-  'emailCapture'
+  'emailCapture',
+  'reownAuthentication'
 ]
 
 const featureConfig = {
@@ -174,6 +175,21 @@ const featureConfig = {
     isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
     processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.multiWallet
+  },
+  reownAuthentication: {
+    apiFeatureName: 'reown_authentication' as const,
+    localFeatureName: 'reownAuthentication',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: (localValue: unknown): boolean => {
+      if (typeof localValue === 'undefined') {
+        return ConstantsUtil.DEFAULT_REMOTE_FEATURES.reownAuthentication
+      }
+
+      return Boolean(localValue)
+    }
   }
 }
 
