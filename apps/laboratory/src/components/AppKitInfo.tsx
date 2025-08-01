@@ -138,17 +138,15 @@ export function AppKitInfo() {
               <Heading size="xs" textTransform="uppercase" pb="2">
                 useAppKitState()
               </Heading>
-              <Code
-                padding={4}
-                whiteSpace="pre-wrap"
-                borderRadius={4}
-                border="1px solid"
-                borderColor="gray.200"
-                maxHeight={300}
-                overflow="scroll"
+              <code
+                style={{
+                  padding: 4,
+                  maxHeight: 200,
+                  overflow: 'scroll'
+                }}
               >
                 {JSON.stringify(appkitState, null, 2)}
-              </Code>
+              </code>
             </Box>
           )}
 
