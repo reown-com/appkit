@@ -129,3 +129,13 @@ export const solanaUSDT: PaymentAsset = {
     decimals: 6
   }
 }
+
+export const solanaSOL: PaymentAsset = {
+  network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  asset: 'native',
+  metadata: {
+    name: 'Solana',
+    symbol: 'SOL',
+    decimals: 9
+  }
+}
