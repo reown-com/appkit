@@ -184,6 +184,23 @@ export abstract class AppKitBaseClient {
     ) {
       await this.checkAllowedOrigins()
     }
+
+    if (
+      OptionsController.state.features?.reownAuthentication ??
+      OptionsController.state.remoteFeatures?.reownAuthentication
+    ) {
+      const { ReownAuthentication } = await import('@reown/appkit-controllers/features')
+      const currentSIWX = OptionsController.state.siwx
+      if (!(currentSIWX instanceof ReownAuthentication)) {
+        if (currentSIWX) {
+          console.warn(
+            'ReownAuthentication option is enabled, SIWX configuration will be overridden.'
+          )
+        }
+        OptionsController.setSIWX(new ReownAuthentication())
+      }
+      // If siwx is already configured for ReownAuthentication we keep the current instance
+    }
   }
 
   private async checkAllowedOrigins() {

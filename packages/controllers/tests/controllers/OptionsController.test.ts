@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ReownAuthentication } from '../../exports/features.js'
 import { OptionsController } from '../../exports/index.js'
 import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 import { OptionsUtil } from '../../src/utils/OptionsUtil.js'
@@ -107,18 +106,5 @@ describe('OptionsController', () => {
     // Test setting signOutOnDisconnect to false
     OptionsController.setSIWX({ signOutOnDisconnect: false } as any)
     expect(OptionsController.state.siwx!.signOutOnDisconnect).toEqual(false)
-  })
-
-  it('should set reownAuthentication to true if features.reownAuthentication is true', () => {
-    OptionsController.setFeatures({ reownAuthentication: true })
-    expect(OptionsController.state.features?.reownAuthentication).toEqual(true)
-    expect(OptionsController.state.siwx).toBeInstanceOf(ReownAuthentication)
-  })
-
-  it('should set reownAuthentication to false if features.reownAuthentication is false', () => {
-    const previousSIWX = OptionsController.state.siwx
-    OptionsController.setFeatures({ reownAuthentication: false })
-    expect(OptionsController.state.features?.reownAuthentication).toEqual(false)
-    expect(OptionsController.state.siwx).toBe(previousSIWX)
   })
 })

@@ -3,7 +3,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
 
-import { ReownAuthentication } from '../features/reown-authentication/ReownAuthentication.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { OptionsUtil } from '../utils/OptionsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
@@ -250,16 +249,6 @@ export const OptionsController = {
       state.remoteFeatures.email = false
       state.remoteFeatures.socials = false
     }
-
-    if (state.features?.reownAuthentication) {
-      if (!(state.siwx instanceof ReownAuthentication)) {
-        if (state.siwx) {
-          console.warn('ReownAuthentication is enabled, SIWX configuration will be overridden.')
-        }
-        state.siwx = new ReownAuthentication()
-      }
-      // If siwx is already configured for ReownAuthentication we keep the current instance
-    }
   },
 
   setFeatures(features: OptionsControllerState['features'] | undefined) {
@@ -277,16 +266,6 @@ export const OptionsController = {
     if (state.features?.pay && state.remoteFeatures) {
       state.remoteFeatures.email = false
       state.remoteFeatures.socials = false
-    }
-
-    if (state.features?.reownAuthentication) {
-      if (!(state.siwx instanceof ReownAuthentication)) {
-        if (state.siwx) {
-          console.warn('ReownAuthentication is enabled, SIWX configuration will be overridden.')
-        }
-        state.siwx = new ReownAuthentication()
-      }
-      // If siwx is already configured for ReownAuthentication we keep the current instance
     }
   },
 
