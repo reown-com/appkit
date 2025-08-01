@@ -1326,6 +1326,7 @@ export type FeatureID =
   | 'social_login'
   | 'reown_branding'
   | 'email_capture'
+  | 'reown_authentication'
 
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
@@ -1392,6 +1393,12 @@ export type FeatureConfigMap = {
   multiWallet: {
     apiFeatureName: 'multi_wallet'
     localFeatureName: 'multiWallet'
+    returnType: boolean
+    isLegacy: false
+  }
+  reownAuthentication: {
+    apiFeatureName: 'reown_authentication'
+    localFeatureName: 'reownAuthentication'
     returnType: boolean
     isLegacy: false
   }
