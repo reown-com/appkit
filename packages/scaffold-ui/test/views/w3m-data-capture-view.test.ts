@@ -142,8 +142,12 @@ describe('W3mDataCaptureView', () => {
 
       element = await createView()
 
-      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
-      expect((emailInput as any)?.value).toBe('test@example.com')
+      const emailText = Array.from(HelpersUtil.querySelectAll(element, 'wui-text')).find(text =>
+        text.textContent?.includes('test@example.com')
+      )
+      expect(emailText).toBeTruthy()
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
+      expect((submitButton as any).loading).toBe(true)
     })
 
     it('should initialize with email from user account', async () => {
@@ -156,8 +160,12 @@ describe('W3mDataCaptureView', () => {
 
       element = await createView()
 
-      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
-      expect((emailInput as any)?.value).toBe('user@test.com')
+      const emailText = Array.from(HelpersUtil.querySelectAll(element, 'wui-text')).find(text =>
+        text.textContent?.includes('user@test.com')
+      )
+      expect(emailText).toBeTruthy()
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
+      expect((submitButton as any).loading).toBe(true)
     })
 
     it('should auto-submit if email is pre-filled', async () => {
