@@ -131,7 +131,7 @@ export class W3mRegisterAccountNameView extends LitElement {
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
     if (value.length < 4) {
       this.error = 'Name must be at least 4 characters long'
-    } else if (/[^a-zA-Z0-9]/u.test(value)) {
+    } else if (/[^a-zA-Z0-9]/gu.test(value)) {
       this.error = 'The value is not a valid username'
     } else {
       this.error = ''
@@ -141,13 +141,13 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private onNameInputChange(event: CustomEvent<string>) {
     let value = event.detail || ''
-    value = value.replace(/[^a-zA-Z0-9]/u, '').toLowerCase()
+    value = value.replace(/[^a-zA-Z0-9]/gu, '').toLowerCase()
     this.name = value
     this.onDebouncedNameInputChange(value)
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    if (event.key.length === 1 && !/^[a-zA-Z0-9]$/u.test(event.key)) {
+    if (event.key.length === 1 && !/^[a-zA-Z0-9]$/gu.test(event.key)) {
       event.preventDefault()
     }
   }
