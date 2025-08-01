@@ -51,7 +51,7 @@ import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/WalletConnectConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
-import { getCoinbaseConnector, getSafeConnector, parseWalletCapabilities } from './utils/helpers.js'
+import { getCoinbaseConnector, getSafeConnector } from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean
@@ -842,15 +842,6 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     if (!provider) {
       throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
-    }
-
-    const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
-    if (walletCapabilitiesString) {
-      const walletCapabilities = parseWalletCapabilities(walletCapabilitiesString)
-      const accountCapabilities = walletCapabilities[params]
-      if (accountCapabilities) {
-        return accountCapabilities
-      }
     }
 
     return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
