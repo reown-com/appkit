@@ -128,19 +128,19 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
-    if (EnsController.validateName(value)) {
-      this.error = ''
-      this.name = value
-      EnsController.getSuggestions(value)
-    } else if (value.length < 4) {
+    if (value.length < 4) {
       this.error = 'Name must be at least 4 characters long'
     } else {
-      this.error = 'Can only contain letters, numbers and - characters'
+      this.error = ''
+      EnsController.getSuggestions(value)
     }
   })
 
   private onNameInputChange(event: CustomEvent<string>) {
-    this.onDebouncedNameInputChange(event.detail)
+    let value = event.detail || ''
+    value = value.replace(/[^a-zA-Z]/g, '').toLowerCase()
+    this.name = value
+    this.onDebouncedNameInputChange(value)
   }
 
   private nameSuggestionTagTemplate(suggestion: { name: string; registered: boolean }) {
