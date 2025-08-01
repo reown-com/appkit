@@ -27,7 +27,7 @@ export const CUSTOM_DEEPLINK_WALLETS = {
    * https://developers.binance.com/docs/binance-w3w/evm-compatible-provider#getdeeplink
    */
   BINANCE: {
-    id: '8a0ee50d1f22f6651afcae7eb4253e52a3310b90af5daef78a8c4929a9bb99d4',
+    id: '2fafea35bb471d22889ccb49c08d99dd0a18a37982602c33f696a5723934ba25',
     appId: 'yFK5FCqYprrXDiVFbhyRx7',
     deeplink: 'bnc://app.binance.com/mp/app',
     url: 'https://app.binance.com/en/download'
