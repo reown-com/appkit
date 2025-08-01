@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-text'
@@ -88,11 +88,11 @@ export class WuiSwapDetails extends LitElement {
               <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
                 <wui-text variant="small-400" color="fg-100">
                   1 ${this.sourceToken.symbol} =
-                  ${UiHelperUtil.formatNumberToLocalString(toTokenSwappedAmount, 3)}
+                  ${NumberUtil.formatNumberToLocalString(toTokenSwappedAmount, 3)}
                   ${this.toToken.symbol}
                 </wui-text>
                 <wui-text variant="small-400" color="fg-200">
-                  $${UiHelperUtil.formatNumberToLocalString(this.sourceTokenPriceInUSD)}
+                  $${NumberUtil.formatNumberToLocalString(this.sourceTokenPriceInUSD)}
                 </wui-text>
               </wui-flex>
               <wui-icon name="chevronBottom"></wui-icon>
@@ -120,7 +120,7 @@ export class WuiSwapDetails extends LitElement {
                           </wui-flex>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
-                              ${UiHelperUtil.formatNumberToLocalString(this.priceImpact, 3)}%
+                              ${NumberUtil.formatNumberToLocalString(this.priceImpact, 3)}%
                             </wui-text>
                           </wui-flex>
                         </wui-flex>
@@ -140,7 +140,7 @@ export class WuiSwapDetails extends LitElement {
                             <w3m-tooltip-trigger
                               text=${`Max slippage sets the minimum amount you must receive for the transaction to proceed. ${
                                 minReceivedAmount
-                                  ? `Transaction will be reversed if you receive less than ${UiHelperUtil.formatNumberToLocalString(
+                                  ? `Transaction will be reversed if you receive less than ${NumberUtil.formatNumberToLocalString(
                                       minReceivedAmount,
                                       6
                                     )} ${this.toToken.symbol} due to price changes.`
@@ -152,7 +152,7 @@ export class WuiSwapDetails extends LitElement {
                           </wui-flex>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
-                              ${UiHelperUtil.formatNumberToLocalString(this.maxSlippage, 6)}
+                              ${NumberUtil.formatNumberToLocalString(this.maxSlippage, 6)}
                               ${this.toToken.symbol} ${slippageRate}%
                             </wui-text>
                           </wui-flex>

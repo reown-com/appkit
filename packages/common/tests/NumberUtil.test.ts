@@ -46,3 +46,40 @@ describe('NumberUtil.parseLocalStringToNumber', () => {
     expect(result).toBe(123456789.123456789)
   })
 })
+
+describe('NumberUtil.formatNumberToLocalString', () => {
+  it('should return "0.00" when value is undefined', () => {
+    const result = NumberUtil.formatNumberToLocalString(undefined)
+    expect(result).toBe('0.00')
+  })
+
+  it('should format number to string with default 2 decimals', () => {
+    const result = NumberUtil.formatNumberToLocalString(123.456)
+    expect(result).toBe('123.45')
+  })
+
+  it('should format number to string with specified decimals', () => {
+    const result = NumberUtil.formatNumberToLocalString(123.456, 3)
+    expect(result).toBe('123.456')
+  })
+
+  it('should format string number to string with default 2 decimals', () => {
+    const result = NumberUtil.formatNumberToLocalString('123.456')
+    expect(result).toBe('123.45')
+  })
+
+  it('should format string number to string with specified decimals', () => {
+    const result = NumberUtil.formatNumberToLocalString('123.456', 1)
+    expect(result).toBe('123.4')
+  })
+
+  it('should format number with rounding mode', () => {
+    const result = NumberUtil.formatNumberToLocalString(123.456, 2)
+    expect(result).toBe('123.45')
+  })
+
+  it('should format negative number correctly', () => {
+    const result = NumberUtil.formatNumberToLocalString(-123.456, 2)
+    expect(result).toBe('-123.46')
+  })
+})

@@ -70,7 +70,7 @@ export { TooltipController } from '../src/controllers/TooltipController.js'
 export type { TooltipControllerState } from '../src/controllers/TooltipController.js'
 
 export { EnsController } from '../src/controllers/EnsController.js'
-export type { EnsControllerState } from '../src/controllers/EnsController.js'
+export type { EnsControllerState, ReownName } from '../src/controllers/EnsController.js'
 
 export { AlertController } from '../src/controllers/AlertController.js'
 export type { AlertControllerState } from '../src/controllers/AlertController.js'

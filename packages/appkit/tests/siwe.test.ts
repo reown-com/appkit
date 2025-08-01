@@ -158,6 +158,10 @@ describe('SIWE mapped to SIWX', () => {
       const getNonceSpy = vi.spyOn(siweConfig.methods, 'getNonce')
       const verifyMessageSpy = vi.spyOn(siweConfig.methods, 'verifyMessage')
       const setConnectedWalletInfoSpy = vi.spyOn(AccountController, 'setConnectedWalletInfo')
+      const setLastConnectedSIWECaipNetworkSpy = vi.spyOn(
+        ChainController,
+        'setLastConnectedSIWECaipNetwork'
+      )
 
       const cacao = {
         h: {
@@ -206,6 +210,11 @@ describe('SIWE mapped to SIWX', () => {
         }),
         message: 'Formatted auth message',
         signature: 'mock-signature'
+      })
+      expect(setLastConnectedSIWECaipNetworkSpy).toHaveBeenCalledWith({
+        ...networks.mainnet,
+        caipNetworkId: 'eip155:1',
+        chainNamespace: 'eip155'
       })
       expect(authenticateSpy).toHaveBeenCalledWith({
         chainId: 'eip155:1',
