@@ -18,7 +18,7 @@ import '../w3m-connecting-wc-view/index.js'
 export class W3mConnectingWcBasicView extends LitElement {
   @state() private isMobile = CoreHelperUtil.isMobile()
 
-  private displayBranding = false
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -41,16 +41,25 @@ export class W3mConnectingWcBasicView extends LitElement {
     }
 
     return html`<wui-flex flexDirection="column" .padding=${['0', '0', 'l', '0'] as const}>
-        <w3m-connecting-wc-view .displayBranding=${this.displayBranding}></w3m-connecting-wc-view>
+        <w3m-connecting-wc-view .displayBranding=${false}></w3m-connecting-wc-view>
         <wui-flex flexDirection="column" .padding=${['0', 'm', '0', 'm'] as const}>
           <w3m-all-wallets-widget></w3m-all-wallets-widget>
         </wui-flex>
       </wui-flex>
-      <wui-flex flexDirection="column" .padding=${['3xs', '0', '3xs', '0'] as const}>
-        <wui-ux-by-reown></wui-ux-by-reown>
-      </wui-flex>`
+      ${this.reownBrandingTemplate()} `
+  }
+
+  private reownBrandingTemplate() {
+    if (!this.remoteFeatures?.reownBranding) {
+      return null
+    }
+
+    return html` <wui-flex flexDirection="column" .padding=${['3xs', '0', '3xs', '0'] as const}>
+      <wui-ux-by-reown></wui-ux-by-reown>
+    </wui-flex>`
   }
 }
+
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-connecting-wc-basic-view': W3mConnectingWcBasicView
