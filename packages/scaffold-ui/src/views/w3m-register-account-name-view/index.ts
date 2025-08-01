@@ -89,6 +89,7 @@ export class W3mRegisterAccountNameView extends LitElement {
             @inputChange=${this.onNameInputChange.bind(this)}
             .errorMessage=${this.error}
             .value=${this.name}
+            .onKeyDown=${this.onKeyDown.bind(this)}
           >
           </wui-ens-input>
           ${this.submitButtonTemplate()}
@@ -130,6 +131,8 @@ export class W3mRegisterAccountNameView extends LitElement {
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
     if (value.length < 4) {
       this.error = 'Name must be at least 4 characters long'
+    } else if (/[^a-zA-Z0-9]/.test(value)) {
+      this.error = 'The value is not a valid username'
     } else {
       this.error = ''
       EnsController.getSuggestions(value)
@@ -138,9 +141,15 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private onNameInputChange(event: CustomEvent<string>) {
     let value = event.detail || ''
-    value = value.replace(/[^a-zA-Z]/g, '').toLowerCase()
+    value = value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()
     this.name = value
     this.onDebouncedNameInputChange(value)
+  }
+
+  private onKeyDown(event: KeyboardEvent) {
+    if (event.key.length === 1 && !/^[a-zA-Z0-9]$/.test(event.key)) {
+      event.preventDefault()
+    }
   }
 
   private nameSuggestionTagTemplate(suggestion: { name: string; registered: boolean }) {
