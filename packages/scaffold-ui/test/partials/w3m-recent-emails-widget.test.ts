@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { W3mRecentEmailsWidget } from '../../src/partials/w3m-recent-emails-widget.ts/index.js'
+import { W3mRecentEmailsWidget } from '../../src/partials/w3m-recent-emails-widget/index.js'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mRecentEmailsWidget', () => {
