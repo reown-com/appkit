@@ -1550,8 +1550,10 @@ export abstract class AppKitBaseClient {
           onDisplayUri: uri => {
             ConnectionController.setUri(uri)
           },
-          onConnect: () => {
-            ConnectionController.finalizeWcConnection()
+          onConnect: accounts => {
+            const { address } = CoreHelperUtil.getAccount(accounts[0])
+
+            ConnectionController.finalizeWcConnection(address)
           },
           onDisconnect: () => {
             if (ChainController.state.noAdapters) {

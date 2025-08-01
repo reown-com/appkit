@@ -139,7 +139,10 @@ export const ApiController = {
             return true
           }
 
-          if (w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id) {
+          if (
+            w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id ||
+            w.id === CUSTOM_DEEPLINK_WALLETS.BINANCE.id
+          ) {
             return true
           }
           const isSolana = ChainController.state.activeChain === 'solana'

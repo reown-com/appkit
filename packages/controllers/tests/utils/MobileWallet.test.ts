@@ -12,10 +12,15 @@ const mockWindow = {
   }
 }
 
+const actualWindow = window
+
 describe('MobileWalletUtil', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
-    vi.stubGlobal('window', { location: { href: ORIGINAL_HREF } })
+    vi.stubGlobal('window', {
+      ...actualWindow,
+      location: { href: ORIGINAL_HREF }
+    })
 
     mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.SOLANA })
   })
@@ -33,6 +38,26 @@ describe('MobileWalletUtil', () => {
     expect(window.location.href).toBe(expectedUrl)
   })
 
+  it('should redirect to Binance Web3 Wallet when Binance is not installed', () => {
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.BINANCE.id,
+      ConstantsUtil.CHAIN.BITCOIN
+    )
+
+    const actualUrl = new URL(window.location.href)
+    const actualDpEncoded = actualUrl.searchParams.get('_dp')!
+    const actualDp = new URL(atob(actualDpEncoded))
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedStartPagePath = window.btoa('/pages/browser/index')
+    const expectedStartPageQuery = window.btoa(`url=${encodedHref}&defaultChainId=1`)
+
+    expect(actualUrl.origin + actualUrl.pathname).toBe(CUSTOM_DEEPLINK_WALLETS.BINANCE.url)
+    expect(actualDp.searchParams.get('appId')).toBe(CUSTOM_DEEPLINK_WALLETS.BINANCE.appId)
+    expect(actualDp.searchParams.get('startPagePath')).toBe(expectedStartPagePath)
+    expect(actualDp.searchParams.get('startPageQuery')).toBe(expectedStartPageQuery)
+  })
+
   it('should not redirect when Phantom is installed', () => {
     vi.stubGlobal('window', {
       ...mockWindow,
@@ -43,6 +68,21 @@ describe('MobileWalletUtil', () => {
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
       ConstantsUtil.CHAIN.SOLANA
+    )
+
+    expect(window.location.href).toBe(originalHref)
+  })
+
+  it('should not redirect when Binance Web3 Wallet is installed', () => {
+    vi.stubGlobal('window', {
+      ...mockWindow,
+      binancew3w: {}
+    })
+
+    const originalHref = window.location.href
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.BINANCE.id,
+      ConstantsUtil.CHAIN.BITCOIN
     )
 
     expect(window.location.href).toBe(originalHref)
