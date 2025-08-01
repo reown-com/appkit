@@ -363,7 +363,7 @@ const controller = {
     wcConnectionPromise = undefined
   },
 
-  finalizeWcConnection() {
+  finalizeWcConnection(address?: string) {
     const { wcLinking, recentWallet } = ConnectionController.state
 
     if (wcLinking) {
@@ -377,6 +377,7 @@ const controller = {
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',
+      address,
       properties: {
         method: wcLinking ? 'mobile' : 'qrcode',
         name: RouterController.state.data?.wallet?.name || 'Unknown',
