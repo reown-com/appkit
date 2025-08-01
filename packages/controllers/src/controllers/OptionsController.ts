@@ -278,6 +278,16 @@ export const OptionsController = {
       state.remoteFeatures.email = false
       state.remoteFeatures.socials = false
     }
+
+    if (state.features?.reownAuthentication) {
+      if (!(state.siwx instanceof ReownAuthentication)) {
+        if (state.siwx) {
+          console.warn('ReownAuthentication is enabled, SIWX configuration will be overridden.')
+        }
+        state.siwx = new ReownAuthentication()
+      }
+      // If siwx is already configured for ReownAuthentication we keep the current instance
+    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
