@@ -108,21 +108,30 @@ export const ThemeHelperUtil = {
     const w3mOverrides = ThemeHelperUtil.generateW3MOverrides(themeVariables)
     const scaledVariables = ThemeHelperUtil.generateScaledVariables(themeVariables)
 
+    // Generate base variants for specific tokens
+    const baseVariables = ThemeHelperUtil.generateBaseVariables(assignedCSSVariables)
+
     const allVariables = {
       ...assignedCSSVariables,
+      ...baseVariables,
       ...w3mVariables,
       ...w3mOverrides,
       ...scaledVariables
     }
 
-    const rootStyles = Object.entries(allVariables)
+    // Apply color-mix transformations to main variables
+    const colorMixVariables = ThemeHelperUtil.applyColorMixToVariables(themeVariables, allVariables)
+
+    const finalVariables = {
+      ...allVariables,
+      ...colorMixVariables
+    }
+
+    const rootStyles = Object.entries(finalVariables)
       .map(([key, style]) => `${key}:${style.replace('/[:;{}</>]/g', '')};`)
       .join('')
 
-    // Generate color-mix CSS if needed
-    const colorMixCSS = ThemeHelperUtil.generateColorMixCSS(themeVariables, allVariables)
-
-    return `:root {${rootStyles}}${colorMixCSS}`
+    return `:root {${rootStyles}}`
   },
 
   /**
@@ -189,15 +198,24 @@ export const ThemeHelperUtil = {
     if (themeVariables['--w3m-font-size-master']) {
       const masterSize = parseFloat(themeVariables['--w3m-font-size-master'].replace('px', ''))
 
-      scaledVars['--apkt-textSize-h1'] = `${Number(masterSize) * 5}px` // 50px default
-      scaledVars['--apkt-textSize-h2'] = `${Number(masterSize) * 4.4}px` // 44px default
-      scaledVars['--apkt-textSize-h3'] = `${Number(masterSize) * 3.8}px` // 38px default
-      scaledVars['--apkt-textSize-h4'] = `${Number(masterSize) * 3.2}px` // 32px default
-      scaledVars['--apkt-textSize-h5'] = `${Number(masterSize) * 2.6}px` // 26px default
-      scaledVars['--apkt-textSize-h6'] = `${Number(masterSize) * 2}px` // 20px default
-      scaledVars['--apkt-textSize-large'] = `${Number(masterSize) * 1.6}px` // 16px default
-      scaledVars['--apkt-textSize-medium'] = `${Number(masterSize) * 1.4}px` // 14px default
-      scaledVars['--apkt-textSize-small'] = `${Number(masterSize) * 1.2}px` // 12px default
+      // 50px default
+      scaledVars['--apkt-textSize-h1'] = `${Number(masterSize) * 5}px`
+      // 44px default
+      scaledVars['--apkt-textSize-h2'] = `${Number(masterSize) * 4.4}px`
+      // 38px default
+      scaledVars['--apkt-textSize-h3'] = `${Number(masterSize) * 3.8}px`
+      // 32px default
+      scaledVars['--apkt-textSize-h4'] = `${Number(masterSize) * 3.2}px`
+      // 26px default
+      scaledVars['--apkt-textSize-h5'] = `${Number(masterSize) * 2.6}px`
+      // 20px default
+      scaledVars['--apkt-textSize-h6'] = `${Number(masterSize) * 2}px`
+      // 16px default
+      scaledVars['--apkt-textSize-large'] = `${Number(masterSize) * 1.6}px`
+      // 14px default
+      scaledVars['--apkt-textSize-medium'] = `${Number(masterSize) * 1.4}px`
+      // 12px default
+      scaledVars['--apkt-textSize-small'] = `${Number(masterSize) * 1.2}px`
     }
 
     // Scale border radius based on --w3m-border-radius-master
@@ -206,18 +224,30 @@ export const ThemeHelperUtil = {
         themeVariables['--w3m-border-radius-master'].replace('px', '')
       )
 
-      scaledVars['--apkt-borderRadius-1'] = `${Number(masterRadius)}px` // 4px default
-      scaledVars['--apkt-borderRadius-2'] = `${Number(masterRadius) * 2}px` // 8px default
-      scaledVars['--apkt-borderRadius-3'] = `${Number(masterRadius) * 3}px` // 12px default
-      scaledVars['--apkt-borderRadius-4'] = `${Number(masterRadius) * 4}px` // 16px default
-      scaledVars['--apkt-borderRadius-5'] = `${Number(masterRadius) * 5}px` // 20px default
-      scaledVars['--apkt-borderRadius-6'] = `${Number(masterRadius) * 6}px` // 24px default
-      scaledVars['--apkt-borderRadius-8'] = `${Number(masterRadius) * 8}px` // 32px default
-      scaledVars['--apkt-borderRadius-16'] = `${Number(masterRadius) * 16}px` // 64px default
-      scaledVars['--apkt-borderRadius-20'] = `${Number(masterRadius) * 20}px` // 80px default
-      scaledVars['--apkt-borderRadius-32'] = `${Number(masterRadius) * 32}px` // 128px default
-      scaledVars['--apkt-borderRadius-64'] = `${Number(masterRadius) * 64}px` // 256px default
-      scaledVars['--apkt-borderRadius-128'] = `${Number(masterRadius) * 128}px` // 512px default
+      // 4px default
+      scaledVars['--apkt-borderRadius-1'] = `${Number(masterRadius)}px`
+      // 8px default
+      scaledVars['--apkt-borderRadius-2'] = `${Number(masterRadius) * 2}px`
+      // 12px default
+      scaledVars['--apkt-borderRadius-3'] = `${Number(masterRadius) * 3}px`
+      // 16px default
+      scaledVars['--apkt-borderRadius-4'] = `${Number(masterRadius) * 4}px`
+      // 20px default
+      scaledVars['--apkt-borderRadius-5'] = `${Number(masterRadius) * 5}px`
+      // 24px default
+      scaledVars['--apkt-borderRadius-6'] = `${Number(masterRadius) * 6}px`
+      // 32px default
+      scaledVars['--apkt-borderRadius-8'] = `${Number(masterRadius) * 8}px`
+      // 64px default
+      scaledVars['--apkt-borderRadius-16'] = `${Number(masterRadius) * 16}px`
+      // 80px default
+      scaledVars['--apkt-borderRadius-20'] = `${Number(masterRadius) * 20}px`
+      // 128px default
+      scaledVars['--apkt-borderRadius-32'] = `${Number(masterRadius) * 32}px`
+      // 256px default
+      scaledVars['--apkt-borderRadius-64'] = `${Number(masterRadius) * 64}px`
+      // 512px default
+      scaledVars['--apkt-borderRadius-128'] = `${Number(masterRadius) * 128}px`
     }
 
     return scaledVars
@@ -300,6 +330,119 @@ export const ThemeHelperUtil = {
         ${colorMixVariables}
       }
     }`
+  },
+
+  /**
+   * Generates base variants for specific tokens.
+   */
+  generateBaseVariables(assignedCSSVariables: Record<string, string>): Record<string, string> {
+    const baseVariables: Record<string, string> = {}
+
+    const themeBackgroundPrimary = assignedCSSVariables['--apkt-tokens-theme-backgroundPrimary']
+    if (themeBackgroundPrimary) {
+      baseVariables['--apkt-tokens-theme-backgroundPrimary-base'] = themeBackgroundPrimary
+    }
+
+    const coreBackgroundAccentPrimary =
+      assignedCSSVariables['--apkt-tokens-core-backgroundAccentPrimary']
+    if (coreBackgroundAccentPrimary) {
+      baseVariables['--apkt-tokens-core-backgroundAccentPrimary-base'] = coreBackgroundAccentPrimary
+    }
+
+    return baseVariables
+  },
+
+  /**
+   * Applies color-mix transformations to variables.
+   */
+  applyColorMixToVariables(
+    themeVariables?: ThemeVariables,
+    allVariables?: Record<string, string>
+  ): Record<string, string> {
+    const colorMixVariables: Record<string, string> = {}
+
+    if (allVariables?.['--apkt-tokens-theme-backgroundPrimary']) {
+      colorMixVariables['--apkt-tokens-theme-backgroundPrimary'] =
+        'var(--apkt-tokens-theme-backgroundPrimary-base)'
+    }
+
+    if (allVariables?.['--apkt-tokens-core-backgroundAccentPrimary']) {
+      colorMixVariables['--apkt-tokens-core-backgroundAccentPrimary'] =
+        'var(--apkt-tokens-core-backgroundAccentPrimary-base)'
+    }
+
+    if (!themeVariables?.['--w3m-color-mix'] || !themeVariables['--w3m-color-mix-strength']) {
+      return colorMixVariables
+    }
+
+    const colorMix = themeVariables['--w3m-color-mix']
+    const strength = themeVariables['--w3m-color-mix-strength']
+
+    if (!strength || strength === 0) {
+      return colorMixVariables
+    }
+
+    const colorVariables = Object.keys(allVariables || {}).filter(key => {
+      const isColorToken =
+        key.includes('-tokens-core-background') ||
+        key.includes('-tokens-core-text') ||
+        key.includes('-tokens-core-border') ||
+        key.includes('-tokens-core-foreground') ||
+        key.includes('-tokens-core-icon') ||
+        key.includes('-tokens-theme-background') ||
+        key.includes('-tokens-theme-text') ||
+        key.includes('-tokens-theme-border') ||
+        key.includes('-tokens-theme-foreground') ||
+        key.includes('-tokens-theme-icon')
+
+      const isDimensional =
+        key.includes('-borderRadius-') ||
+        key.includes('-spacing-') ||
+        key.includes('-textSize-') ||
+        key.includes('-fontFamily-') ||
+        key.includes('-fontWeight-') ||
+        key.includes('-typography-') ||
+        key.includes('-duration-') ||
+        key.includes('-ease-') ||
+        key.includes('-path-') ||
+        key.includes('-width-') ||
+        key.includes('-height-') ||
+        key.includes('-visual-size-') ||
+        key.includes('-modal-width') ||
+        key.includes('-cover')
+
+      return isColorToken && !isDimensional
+    })
+
+    if (colorVariables.length === 0) {
+      return colorMixVariables
+    }
+
+    colorVariables.forEach(key => {
+      const originalValue = allVariables?.[key] || ''
+
+      if (key.endsWith('-base')) {
+        return
+      }
+
+      if (
+        key === '--apkt-tokens-theme-backgroundPrimary' ||
+        key === '--apkt-tokens-core-backgroundAccentPrimary'
+      ) {
+        colorMixVariables[key] = `color-mix(in srgb, ${colorMix} ${strength}%, var(${key}-base))`
+      } else if (
+        originalValue.includes('color-mix') ||
+        originalValue.startsWith('#') ||
+        originalValue.startsWith('rgb')
+      ) {
+        colorMixVariables[key] = `color-mix(in srgb, ${colorMix} ${strength}%, ${originalValue})`
+      } else {
+        colorMixVariables[key] =
+          `color-mix(in srgb, ${colorMix} ${strength}%, var(${key}-base, ${originalValue}))`
+      }
+    })
+
+    return colorMixVariables
   }
 }
 
