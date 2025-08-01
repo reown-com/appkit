@@ -16,9 +16,23 @@ import '../w3m-connecting-wc-view/index.js'
 
 @customElement('w3m-connecting-wc-basic-view')
 export class W3mConnectingWcBasicView extends LitElement {
-  @state() private isMobile = CoreHelperUtil.isMobile()
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
 
+  // -- State & Properties -------------------------------- //
+  @state() private isMobile = CoreHelperUtil.isMobile()
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
