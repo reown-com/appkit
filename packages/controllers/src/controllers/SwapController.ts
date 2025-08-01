@@ -254,9 +254,7 @@ const controller = {
   },
 
   setToTokenAmount(amount: string) {
-    state.toTokenAmount = amount
-      ? NumberUtil.formatNumberToLocalString(amount, TO_AMOUNT_DECIMALS)
-      : ''
+    state.toTokenAmount = amount ? NumberUtil.toFixed(amount, TO_AMOUNT_DECIMALS) : ''
   },
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
