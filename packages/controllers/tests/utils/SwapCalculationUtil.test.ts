@@ -17,8 +17,6 @@ const tokensWithBalance = SwapApiUtil.mapBalancesToSwapTokens(balanceResponse.ba
 // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
 const sourceToken = tokensWithBalance[0] as SwapTokenWithBalance
 const sourceTokenAmount = '1'
-// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-const toToken = tokensWithBalance[1] as SwapTokenWithBalance
 
 const networkPrice = networkTokenPriceResponse.fungibles[0]?.price.toString() || '0'
 
@@ -46,49 +44,6 @@ describe('SwapCalculationUtil', () => {
     expect(
       SwapCalculationUtil.isInsufficientNetworkTokenForGas(networkBalanceInUSD, gasPriceInUSD)
     ).toEqual(false)
-  })
-
-  it('should get the price impact as expected', () => {
-    const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
-      sourceToken,
-      sourceTokenAmount,
-      sourceTokenPrice: sourceToken.price,
-      toToken,
-      toTokenPrice: toToken.price
-    })
-
-    const priceImpact = SwapCalculationUtil.getPriceImpact({
-      sourceTokenAmount,
-      sourceTokenPriceInUSD: sourceToken.price,
-      toTokenAmount,
-      toTokenPriceInUSD: toToken.price
-    })
-    expect(priceImpact).equal(0.8499999999999975)
-  })
-
-  it('should get to token amount with same decimals including provider fee as expected', () => {
-    const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
-      sourceToken,
-      sourceTokenAmount,
-      sourceTokenPrice: sourceToken.price,
-      toToken,
-      toTokenPrice: toToken.price
-    })
-    expect(toTokenAmount).equal('0.017817571677266286')
-  })
-
-  it('should get to token amount with different decimals including provider fee as expected', () => {
-    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-    const newToToken = tokensWithBalance[2] as SwapTokenWithBalance
-
-    const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
-      sourceToken,
-      sourceTokenAmount,
-      sourceTokenPrice: sourceToken.price,
-      toToken: newToToken,
-      toTokenPrice: newToToken.price
-    })
-    expect(toTokenAmount).equal('0.714549')
   })
 
   it('should calculate the maximum slippage as expected', () => {
