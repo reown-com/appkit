@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # needed to push the new branch
+      pull-requests: write # needed to create version PR
 
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +52,18 @@ jobs:
           git switch -c "$BRANCH"
           git push --set-upstream origin "$BRANCH"
           echo "✅ Created and pushed $BRANCH"
+
+      - name: Open "version packages" PR
+        uses: changesets/action@v1
+        with:
+          baseBranch: release/${{ steps.next.outputs.next_version }}
+          title: 'chore: version packages'
+          commit: 'chore: version packages'
+          version: pnpm changeset:version
+          # publish is **omitted** – we only want the PR now
+          createGithubReleases: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start Slack Notify Workflow
         uses: slackapi/slack-github-action@v2.1.1
