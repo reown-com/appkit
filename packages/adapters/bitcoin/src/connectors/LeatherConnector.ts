@@ -72,12 +72,13 @@ export class LeatherConnector extends SatsConnectConnector {
     broadcast = false,
     signInputs
   }: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse> {
+    const signInputObj = signInputs?.[0]
     const params: LeatherConnector.SignPSBTParams = {
       hex: Buffer.from(psbt, 'base64').toString('hex'),
       network: this.getNetwork(),
       broadcast,
-      signAtIndex: signInputs.map(input => input.index),
-      allowedSighash: signInputs.flatMap(input => input.sighashTypes)
+      signAtIndex: signInputObj?.index,
+      allowedSighash: signInputObj?.sighashTypes
     }
 
     // @ts-expect-error - expected LeatherWallet params don't match sats-connect
