@@ -2,6 +2,7 @@ packages:
   - 'packages/adapters/*'
   - 'packages/appkit'
   - 'packages/common'
+  - 'packages/universal-connector'
   - 'packages/ui'
   - 'packages/controllers'
   - 'packages/core-legacy'

@@ -67,7 +67,7 @@ describe('SwapApiUtil', () => {
       OptionsController.state.projectId = 'test-project-id'
       BlockchainApiController.fetchSwapTokens = vi.fn().mockResolvedValue({ tokens: mockTokens })
 
-      const result = await SwapApiUtil.getTokenList()
+      const result = await SwapApiUtil.getTokenList(mockEthereumNetwork.caipNetworkId)
 
       expect(BlockchainApiController.fetchSwapTokens).toHaveBeenCalledWith({
         chainId: 'eip155:1'
@@ -217,10 +217,6 @@ describe('SwapApiUtil', () => {
   })
 
   describe('mapBalancesToSwapTokens', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should map balances to swap tokens correctly', () => {
       const mockBalances = [
         {
