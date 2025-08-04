@@ -115,10 +115,25 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
 
-    const signedPsbtHex = await this.wallet.signPsbt(psbtHex)
+    let options
+    if (params.signInputs?.length > 0) {
+      options = {
+        autoFinalized: false,
+        toSignInputs: params.signInputs.map(input => ({
+          index: input.index,
+          address: input.address,
+          sighashTypes: input.sighashTypes
+        }))
+      }
+    }
+
+    const signedPsbtHex = await this.wallet.signPsbt(psbtHex, options)
 
     let txid: string | undefined = undefined
     if (params.broadcast) {
+      if (params.signInputs?.length > 0) {
+        throw new Error('Broadcast not supported for partial signing')
+      }
       txid = await this.wallet.pushPsbt(signedPsbtHex)
     }
 
