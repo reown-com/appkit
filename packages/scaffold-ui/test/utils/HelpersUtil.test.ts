@@ -31,19 +31,19 @@ describe('HelpersUtil', () => {
 
   describe('validateReownName', () => {
     it('should remove special characters and return a valid name', () => {
-      expect(HelpersUtil.validateReownName('Invalid@Name!')).toBe('InvalidName')
+      expect(HelpersUtil.validateReownName('Invalid@Name!')).toBe('invalidname')
     })
 
     it('should remove spaces and return a valid name', () => {
-      expect(HelpersUtil.validateReownName('Invalid Name')).toBe('InvalidName')
+      expect(HelpersUtil.validateReownName('Invalid Name')).toBe('invalidname')
     })
 
     it('should remove caret characters and return a valid name', () => {
-      expect(HelpersUtil.validateReownName('Invalid^Name')).toBe('InvalidName')
+      expect(HelpersUtil.validateReownName('Invalid^Name')).toBe('invalidname')
     })
 
     it('should return the same name if it is already valid', () => {
-      expect(HelpersUtil.validateReownName('ValidName123')).toBe('ValidName123')
+      expect(HelpersUtil.validateReownName('ValidName123')).toBe('validname123')
     })
 
     it('should return an empty string if the name only contains invalid characters', () => {
