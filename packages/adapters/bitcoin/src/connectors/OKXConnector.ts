@@ -15,6 +15,11 @@ const OKX_NETWORK_KEYS = {
   [bitcoinTestnet.caipNetworkId]: 'bitcoinTestnet'
 } as const
 
+type OKXSignPSBTOptions = {
+  toSignInputs: Omit<BitcoinConnector.SignPSBTParams['signInputs'][number], 'useTweakedSigner'>[]
+  autoFinalized?: boolean
+}
+
 export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'OKX'
   public readonly name = 'OKX Wallet'
@@ -113,14 +118,16 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
 
-    let options
+    let options: OKXSignPSBTOptions | undefined = undefined
     if (params.signInputs?.length > 0) {
       options = {
         autoFinalized: false,
         toSignInputs: params.signInputs.map(input => ({
           index: input.index,
           address: input.address,
-          sighashTypes: input.sighashTypes
+          sighashTypes: input.sighashTypes,
+          publicKey: input.publicKey,
+          disableTweakSigner: input.disableTweakSigner
         }))
       }
     }

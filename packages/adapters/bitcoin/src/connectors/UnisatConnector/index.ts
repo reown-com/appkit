@@ -9,6 +9,11 @@ import { ProviderEventEmitter } from '../../utils/ProviderEventEmitter.js'
 import { UnitsUtil } from '../../utils/UnitsUtil.js'
 import type { UnisatConnector as UnisatConnectorTypes } from './types.js'
 
+type UnisatSignPSBTOptions = {
+  toSignInputs: BitcoinConnector.SignPSBTParams['signInputs']
+  autoFinalized?: boolean
+}
+
 export class UnisatConnector extends ProviderEventEmitter implements BitcoinConnector {
   public id: UnisatConnectorTypes.Id
   public name
@@ -115,14 +120,17 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
 
-    let options
+    let options: UnisatSignPSBTOptions | undefined = undefined
     if (params.signInputs?.length > 0) {
       options = {
         autoFinalized: false,
         toSignInputs: params.signInputs.map(input => ({
           index: input.index,
           address: input.address,
-          sighashTypes: input.sighashTypes
+          sighashTypes: input.sighashTypes,
+          publicKey: input.publicKey,
+          disableTweakSigner: input.disableTweakSigner,
+          useTweakedSigner: input.useTweakedSigner
         }))
       }
     }
