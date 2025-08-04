@@ -73,6 +73,8 @@ export namespace BitcoinConnector {
    * Parameters for signing a PSBT. The names or types of these parameters may vary across different providers. Refer to the links below for more information:
    * @link https://docs.unisat.io/dev/open-api-documentation/unisat-wallet#signpsbt
    * @link https://web3.okx.com/build/dev-docs/sdks/chains/bitcoin/provider#signpsbt
+   * @link https://developer.onekey.so/connect-to-software/webapp-connect-onekey/btc/api-reference/signpsbt
+   * @link https://leather.gitbook.io/developers/bitcoin-methods/signpsbt
    */
   export type SignPSBTParams = {
     /**
