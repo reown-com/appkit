@@ -218,6 +218,34 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchers() {
+    watchConnections(this.wagmiConfig, {
+      onChange: connections => {
+        this.clearConnections()
+        this.addConnection(
+          ...connections.map(connection => {
+            const caipNetwork = this.getCaipNetworks().find(
+              network => network.id === connection.chainId
+            )
+
+            const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+            return {
+              accounts: connection.accounts.map(account => ({
+                address: account
+              })),
+              caipNetwork,
+              connectorId: connection.connector.id,
+              auth: isAuth
+                ? {
+                    name: StorageUtil.getConnectedSocialProvider(),
+                    username: StorageUtil.getConnectedSocialUsername()
+                  }
+                : undefined
+            }
+          })
+        )
+      }
+    })
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
         if (accountData.status === 'disconnected' && prevAccountData.address) {
@@ -245,35 +273,6 @@ export class WagmiAdapter extends AdapterBlueprint {
             })
           }
         }
-      }
-    })
-
-    watchConnections(this.wagmiConfig, {
-      onChange: connections => {
-        this.clearConnections()
-        this.addConnection(
-          ...connections.map(connection => {
-            const caipNetwork = this.getCaipNetworks().find(
-              network => network.id === connection.chainId
-            )
-
-            const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
-
-            return {
-              accounts: connection.accounts.map(account => ({
-                address: account
-              })),
-              caipNetwork,
-              connectorId: connection.connector.id,
-              auth: isAuth
-                ? {
-                    name: StorageUtil.getConnectedSocialProvider(),
-                    username: StorageUtil.getConnectedSocialUsername()
-                  }
-                : undefined
-            }
-          })
-        )
       }
     })
   }

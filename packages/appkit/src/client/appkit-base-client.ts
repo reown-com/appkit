@@ -986,7 +986,13 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('disconnect', () => {
-      this.onDisconnectNamespace({ chainNamespace })
+      const isMultiWallet = this.remoteFeatures.multiWallet
+      const allConnections = Array.from(ConnectionController.state.connections.values()).flat()
+
+      this.onDisconnectNamespace({
+        chainNamespace,
+        closeModal: !isMultiWallet || allConnections.length === 0
+      })
     })
 
     adapter.on('connections', connections => {
@@ -1354,6 +1360,12 @@ export abstract class AppKitBaseClient {
       } else {
         await this.syncBalance({ address, chainId: networkOfChain?.id, chainNamespace })
       }
+
+      this.syncIdentity({
+        address,
+        chainId,
+        chainNamespace
+      })
     }
   }
 
@@ -1538,8 +1550,10 @@ export abstract class AppKitBaseClient {
           onDisplayUri: uri => {
             ConnectionController.setUri(uri)
           },
-          onConnect: () => {
-            ConnectionController.finalizeWcConnection()
+          onConnect: accounts => {
+            const { address } = CoreHelperUtil.getAccount(accounts[0])
+
+            ConnectionController.finalizeWcConnection(address)
           },
           onDisconnect: () => {
             if (ChainController.state.noAdapters) {
@@ -2032,11 +2046,12 @@ export abstract class AppKitBaseClient {
     }
 
     const allAccounts = connections.flatMap(connection =>
-      connection.accounts.map(({ address, type }) =>
+      connection.accounts.map(({ address, type, publicKey }) =>
         CoreHelperUtil.createAccount(
           namespace,
           address,
-          (type || 'eoa') as NamespaceTypeMap[ChainNamespace]
+          (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
+          publicKey
         )
       )
     )

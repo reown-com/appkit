@@ -1,11 +1,11 @@
 ---
-'@reown/appkit-wallet-button': patch
-'@reown/appkit': patch
+'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -21,27 +21,9 @@
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
 '@reown/appkit-ui': patch
+'@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
+'@reown/appkit-wallet-button': patch
 ---
 
-Introduces AppKit React components. React users can now use the new components instead of HTML elements.
-
-### Example
-
-```jsx
-import { AppKitButton, AppKitNetworkButton } from '@reown/appkit/react'
-import { AppKitWalletButton } from '@reown/appkit-wallet-button/react'
-
-export function AppKitButtons() {
-  return (
-    <div>
-      {/* Default */}
-      <AppkitButton />
-      <AppKitNetworkButton />
-      <AppKitWalletButton wallet="metamask" />
-      {/* With parameters */}
-      <AppkitButton namespace="eip155" />
-    </div>
-  )
-}
-```
+Fixed an issue where WalletConnect connections didn't include the `address` value when sending the `CONNECT_SUCCESS` event

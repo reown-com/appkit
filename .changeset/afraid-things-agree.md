@@ -1,8 +1,9 @@
 ---
+'@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-controllers': patch
 '@reown/appkit': patch
 '@reown/appkit-common': patch
-'@reown/appkit-adapter-bitcoin': patch
+'pay-test-exchange': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
@@ -20,9 +21,9 @@
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
 '@reown/appkit-ui': patch
+'@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds sui and stacks as predefined networks.
-Exports `AVAILABLE_NAMESPACES` constant from `networks` and `common` packages.
+Fixed an issue where `allAccounts` didn't include the `publicKey` value

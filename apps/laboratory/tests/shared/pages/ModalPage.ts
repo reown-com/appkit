@@ -836,12 +836,16 @@ export class ModalPage {
   }
 
   async sendCalls() {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsButton = this.page.getByTestId('send-calls-button')
     await sendCallsButton.isVisible()
     await sendCallsButton.scrollIntoViewIfNeeded()
     await sendCallsButton.click()
   }
   async getCallsStatus(batchCallId: string) {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsInput = this.page.getByTestId('get-calls-id-input')
     const sendCallsButton = this.page.getByTestId('get-calls-status-button')
     await sendCallsButton.scrollIntoViewIfNeeded()

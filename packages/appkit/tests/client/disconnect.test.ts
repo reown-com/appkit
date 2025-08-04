@@ -1,4 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
+import { EventEmitter } from 'events'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
@@ -13,9 +14,11 @@ import {
   SIWXUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
+import { ModalController, RouterController } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ProviderUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
+import type { AdapterBlueprint } from '../../exports/adapters.js'
 import { mainnetCaipNetwork, solanaCaipNetwork } from '../../exports/testing.js'
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
@@ -667,5 +670,43 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     await (appKit as any).connectionControllerClient.disconnect()
 
     expect(SIWXUtil.clearSessions).not.toHaveBeenCalled()
+  })
+
+  it('should close modal if multi wallet is not enabled', async () => {
+    mockChainControllerState({
+      activeChain: CommonConstantsUtil.CHAIN.EVM,
+      chains: new Map([
+        [
+          CommonConstantsUtil.CHAIN.EVM,
+          {
+            caipNetwork: mainnetCaipNetwork,
+            accountState: { caipAddress: 'eip155:1:0x123' }
+          }
+        ]
+      ])
+    })
+
+    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
+    const mockEip155Provider = new EventEmitter() as unknown as AdapterBlueprint
+    mockEip155Provider.disconnect = vi.fn().mockResolvedValue(undefined)
+
+    vi.spyOn(ProviderUtil, 'getProvider').mockImplementation(ns => {
+      if (ns === eip155Namespace) return mockEip155Provider
+      return { disconnect: vi.fn() }
+    })
+
+    appKit['remoteFeatures'] = { multiWallet: false }
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      view: 'ProfileWallets'
+    })
+    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+
+    await (appKit as any).onDisconnectNamespace({
+      chainNamespace: eip155Namespace,
+      closeModal: true
+    })
+
+    expect(ModalController.close).toHaveBeenCalled()
   })
 })
