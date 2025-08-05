@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { getW3mThemeVariables } from '@reown/appkit-common'
-import { ConnectorController, ModalController, ThemeController } from '@reown/appkit-controllers'
+import {
+  ConnectorController,
+  ModalController,
+  OptionsController,
+  ThemeController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -10,6 +15,9 @@ import styles from './styles.js'
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 600
 const PAGE_WIDTH = 360
+const PAGE_WIDTH_EMBEDDED = 400
+const FIXED_LEFT_OFFSET = 22
+const FIXED_TOP_OFFSET = 287
 const HEADER_HEIGHT = 64
 
 @customElement('w3m-approve-transaction-view')
@@ -70,6 +78,11 @@ export class W3mApproveTransactionView extends LitElement {
         this.iframe.style.left = '0px'
         this.iframe.style.bottom = '0px'
         this.iframe.style.top = 'unset'
+      } else if (OptionsController.state.enableEmbedded) {
+        this.iframe.style.width = `${PAGE_WIDTH_EMBEDDED}px`
+        this.iframe.style.left = `calc(50% - ${FIXED_LEFT_OFFSET}px)`
+        this.iframe.style.top = `calc(50% - ${FIXED_TOP_OFFSET}px)`
+        this.iframe.style.bottom = 'unset'
       } else {
         this.iframe.style.width = `${PAGE_WIDTH}px`
         this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`

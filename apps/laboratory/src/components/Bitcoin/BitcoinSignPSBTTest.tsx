@@ -54,6 +54,8 @@ export function BitcoinSignPSBTTest() {
         utxos
       })
 
+ 
+
       params.broadcast = broadcast
 
       const signature = await walletProvider.signPSBT(params)
