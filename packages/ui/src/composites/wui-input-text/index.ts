@@ -36,6 +36,8 @@ export class WuiInputText extends LitElement {
 
   @property() public tabIdx?: number
 
+  @property({ attribute: false }) public onKeyDown?: (event: KeyboardEvent) => void
+
   // -- Render -------------------------------------------- //
   public override render() {
     const inputClass = `wui-padding-right-${this.inputRightPadding}`
@@ -55,6 +57,7 @@ export class WuiInputText extends LitElement {
         ?disabled=${this.disabled}
         placeholder=${this.placeholder}
         @input=${this.dispatchInputChangeEvent.bind(this)}
+        @keydown=${this.onKeyDown}
         .value=${this.value || ''}
         tabindex=${ifDefined(this.tabIdx)}
       />
