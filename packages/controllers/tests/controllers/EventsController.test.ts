@@ -18,8 +18,7 @@ describe('EventsController', () => {
   it('should have valid default state', () => {
     expect(EventsController.state.data).toEqual({
       type: 'track',
-      event: 'MODAL_CREATED',
-      properties: {}
+      event: 'MODAL_CREATED'
     })
   })
 
