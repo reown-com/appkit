@@ -2,8 +2,6 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
-
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
@@ -24,30 +22,20 @@ export class WuiEnsInput extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
-  @property() public tabIdx?: number
+  @property({ attribute: false }) public onKeyDown?: (event: KeyboardEvent) => void
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <wui-input-text
-        type="email"
-        placeholder="Email"
-        icon="user"
-        size="lg"
-        .disabled=${this.disabled}
-        .value=${this.value}
-        data-testid="wui-email-input"
-        tabIdx=${ifDefined(this.tabIdx)}
-        >${this.baseNameTemplate()}</wui-input-text
-      >
+        value=${ifDefined(this.value)}
+        ?disabled=${this.disabled}
+        .value=${this.value || ''}
+        data-testid="wui-ens-input"
+        inputRightPadding="5xl"
+        .onKeyDown=${this.onKeyDown}
+      ></wui-input-text>
     `
-  }
-
-  // -- Private ------------------------------------------- //
-  private baseNameTemplate() {
-    return html`<wui-text variant="sm-medium" color="secondary" class="base-name">
-      ${ConstantsUtil.WC_NAME_SUFFIX}
-    </wui-text>`
   }
 }
 
