@@ -65,8 +65,8 @@ export class W3mAccountTokensWidget extends LitElement {
       <wui-list-description
         @click=${this.onReceiveClick.bind(this)}
         text="Receive funds"
-        description="Transfer tokens on your wallet"
-        icon="arrowBottomCircle"
+        description="Scan the QR code and receive funds"
+        icon="qrCode"
         iconColor="fg-200"
         iconBackgroundColor="fg-200"
         data-testid="receive-funds"

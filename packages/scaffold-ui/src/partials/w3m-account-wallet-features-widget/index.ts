@@ -142,6 +142,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private orderedWalletFeatures() {
+    let isFundWalletFeatureRendered = false
+
     const walletFeaturesOrder =
       this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
     const isAllDisabled = walletFeaturesOrder.every(feature => {
@@ -162,12 +164,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`<wui-flex gap="s">
       ${walletFeaturesOrder.map(feature => {
         switch (feature) {
+          case 'receive':
           case 'onramp':
-            return this.onrampTemplate()
+            if (isFundWalletFeatureRendered) {
+              return null
+            }
+            isFundWalletFeatureRendered = true
+
+            return this.fundWalletTemplate()
           case 'swaps':
             return this.swapsTemplate()
-          case 'receive':
-            return this.receiveTemplate()
           case 'send':
             return this.sendTemplate()
           default:
@@ -177,19 +183,20 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     </wui-flex>`
   }
 
-  private onrampTemplate() {
+  private fundWalletTemplate() {
     const isOnrampEnabled = this.remoteFeatures?.onramp
+    const isReceiveEnabled = this.features?.receive
 
-    if (!isOnrampEnabled) {
+    if (!isOnrampEnabled && !isReceiveEnabled) {
       return null
     }
 
     return html`
-      <w3m-tooltip-trigger text="Buy">
+      <w3m-tooltip-trigger text="Fund wallet">
         <wui-icon-button
-          data-testid="wallet-features-onramp-button"
-          @click=${this.onBuyClick.bind(this)}
-          icon="card"
+          data-testid="wallet-fund-wallet-button"
+          @click=${this.onFundWalletClick.bind(this)}
+          icon="dollar"
         ></wui-icon-button>
       </w3m-tooltip-trigger>
     `
@@ -209,25 +216,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
           icon="recycleHorizontal"
-        >
-        </wui-icon-button>
-      </w3m-tooltip-trigger>
-    `
-  }
-
-  private receiveTemplate() {
-    const isReceiveEnabled = this.features?.receive
-
-    if (!isReceiveEnabled) {
-      return null
-    }
-
-    return html`
-      <w3m-tooltip-trigger text="Receive">
-        <wui-icon-button
-          data-testid="wallet-features-receive-button"
-          @click=${this.onReceiveClick.bind(this)}
-          icon="arrowBottomCircle"
         >
         </wui-icon-button>
       </w3m-tooltip-trigger>
@@ -326,8 +314,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     AccountController.setCurrentTab(index)
   }
 
-  private onBuyClick() {
-    RouterController.push('OnRampProviders')
+  private onFundWalletClick() {
+    RouterController.push('FundWallet')
   }
 
   private onSwapClick() {
@@ -369,10 +357,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       icon: socialProvider ?? 'mail',
       iconSize: socialProvider ? 'xl' : 'md'
     }
-  }
-
-  private onReceiveClick() {
-    RouterController.push('WalletReceive')
   }
 
   private onGoToProfileWalletsView() {
