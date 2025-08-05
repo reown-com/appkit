@@ -1,13 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
-import {
-  AlertController,
-  ChainController,
-  EventsController,
-  FetchUtil
-} from '../../exports/index.js'
+import { AlertController, EventsController, FetchUtil } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: true } } as const
@@ -64,32 +59,6 @@ describe('EventsController', () => {
       expect.objectContaining({
         path: '/e',
         params: EventsController.getSdkProperties()
-      })
-    )
-  })
-
-  it('should include caipNetworkId when sending an analytics event', async () => {
-    vi.spyOn(FetchUtil.prototype, 'post').mockResolvedValue({})
-    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
-      caipNetworkId: 'eip155:1'
-    } as unknown as CaipNetwork)
-
-    await EventsController._sendAnalyticsEvent({
-      ...EventsController.state,
-      data: { type: 'track', event: 'MODAL_CLOSE', properties: { connected: true } }
-    })
-
-    expect(FetchUtil.prototype.post).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: '/e',
-        params: EventsController.getSdkProperties(),
-        body: expect.objectContaining({
-          props: expect.objectContaining({
-            properties: expect.objectContaining({
-              caipNetworkId: 'eip155:1'
-            })
-          })
-        })
       })
     )
   })

@@ -380,7 +380,8 @@ const controller = {
       address,
       properties: {
         method: wcLinking ? 'mobile' : 'qrcode',
-        name: RouterController.state.data?.wallet?.name || 'Unknown'
+        name: RouterController.state.data?.wallet?.name || 'Unknown',
+        caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
       }
     })
   },

@@ -181,7 +181,8 @@ export const ConnectorControllerUtil = {
                     type: 'track',
                     event: 'SOCIAL_LOGIN_SUCCESS',
                     properties: {
-                      provider: socialProvider
+                      provider: socialProvider,
+                      caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
                     }
                   })
                 }
