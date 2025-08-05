@@ -186,10 +186,7 @@ export class W3mConnectingSocialView extends LitElement {
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',
-                properties: {
-                  provider: this.socialProvider,
-                  caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
-                }
+                properties: { provider: this.socialProvider }
               })
             }
           }
