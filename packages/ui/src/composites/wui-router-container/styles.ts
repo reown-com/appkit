@@ -7,8 +7,8 @@ export default css`
     overflow: hidden;
     position: relative;
     height: var(--new-height);
-    transition: height var(--wui-router-container-transition-duration)
-      var(--wui-router-container-transition-function);
+    transition: height var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
+      var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2));
     width: var(--apkt-modal-width);
   }
 
@@ -26,19 +26,19 @@ export default css`
 
   div.page[view-direction='prev'] {
     animation:
-      slide-left-out var(--wui-router-container-transition-duration) forwards
-        var(--wui-router-container-transition-function),
-      slide-left-in var(--wui-router-container-transition-duration) forwards
-        var(--wui-router-container-transition-function);
+      slide-left-out var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
+        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2)),
+      slide-left-in var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
+        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2));
     animation-delay: 0ms, 200ms;
   }
 
   div.page[view-direction='next'] {
     animation:
-      slide-right-out var(--wui-router-container-transition-duration) forwards
-        var(--wui-router-container-transition-function),
-      slide-right-in var(--wui-router-container-transition-duration) forwards
-        var(--wui-router-container-transition-function);
+      slide-right-out var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
+        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2)),
+      slide-right-in var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
+        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2));
     animation-delay: 0ms, 200ms;
   }
 

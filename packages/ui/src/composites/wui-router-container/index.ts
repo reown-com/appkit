@@ -10,21 +10,23 @@ export class WuiRouterContainer extends LitElement {
 
   private resizeObserver?: ResizeObserver = undefined
 
-  @property({ type: String }) view: string = ''
+  @property({ type: String }) view = ''
 
-  @property({ type: String }) transitionDuration: string = '0.2s'
+  @property({ type: String }) transitionDuration = '0.2s'
 
-  @property({ type: String }) transitionFunction: string = 'cubic-bezier(0.4, 0, 0.2, 1)'
+  @property({ type: String }) transitionFunction = 'cubic-bezier(0.4, 0, 0.2, 1)'
 
   @property({ type: Number }) history: string[] = []
 
-  @property({ attribute: false }) public onRenderPages: (view: string) => void = () => {}
+  @property({ attribute: false }) public onRenderPages: (view: string) => void = (view: string) => {
+    console.warn(`onRenderPages is not implemented for view: ${view}`)
+  }
 
-  @state() private viewState: string = this.view
+  @state() private viewState = this.view
 
-  @state() private viewDirection: string = ''
+  @state() private viewDirection = ''
 
-  @state() private prevHeight: string = '0px'
+  @state() private prevHeight = '0px'
 
   @state() private prevHistoryLength = 1
 
@@ -42,17 +44,18 @@ export class WuiRouterContainer extends LitElement {
       const newHeight = `${content?.contentRect.height}px`
       const prevHeight = this.prevHeight || newHeight
 
-      if (this.prevHeight !== '0px') {
+      if (this.prevHeight === '0px') {
+        this.viewDirection = ''
+        this.style.setProperty('--new-height', newHeight)
+        this.prevHeight = newHeight
+      } else {
         this.style.setProperty(
           '--wui-router-container-transition-duration',
           this.transitionDuration
         )
         this.style.setProperty('--prev-height', prevHeight)
+        // eslint-disable-next-line no-void
         void this.offsetHeight
-        this.style.setProperty('--new-height', newHeight)
-        this.prevHeight = newHeight
-      } else {
-        this.viewDirection = ''
         this.style.setProperty('--new-height', newHeight)
         this.prevHeight = newHeight
       }
