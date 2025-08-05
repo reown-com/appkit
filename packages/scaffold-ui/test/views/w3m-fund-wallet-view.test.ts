@@ -64,7 +64,10 @@ describe('W3mFundWalletView', () => {
     )
     await elementUpdated(element)
 
-    const buyCryptoButton = HelpersUtil.querySelect(element, '[data-testid="buy-crypto"]')
+    const buyCryptoButton = HelpersUtil.querySelect(
+      element,
+      '[data-testid="wallet-features-onramp-button"]'
+    )
     expect(buyCryptoButton).toBeTruthy()
   })
 
@@ -88,7 +91,10 @@ describe('W3mFundWalletView', () => {
     )
     await elementUpdated(element)
 
-    const receiveFundsButton = HelpersUtil.querySelect(element, '[data-testid="receive-funds"]')
+    const receiveFundsButton = HelpersUtil.querySelect(
+      element,
+      '[data-testid="wallet-features-receive-button"]'
+    )
     expect(receiveFundsButton).toBeTruthy()
   })
 
@@ -114,7 +120,10 @@ describe('W3mFundWalletView', () => {
     )
     await elementUpdated(element)
 
-    const buyCryptoButton = HelpersUtil.querySelect(element, '[data-testid="buy-crypto"]')
+    const buyCryptoButton = HelpersUtil.querySelect(
+      element,
+      '[data-testid="wallet-features-onramp-button"]'
+    )
     expect(buyCryptoButton).toBeTruthy()
 
     buyCryptoButton?.click()
@@ -145,7 +154,10 @@ describe('W3mFundWalletView', () => {
     )
     await elementUpdated(element)
 
-    const receiveFundsButton = HelpersUtil.querySelect(element, '[data-testid="receive-funds"]')
+    const receiveFundsButton = HelpersUtil.querySelect(
+      element,
+      '[data-testid="wallet-features-receive-button"]'
+    )
     expect(receiveFundsButton).toBeTruthy()
 
     receiveFundsButton?.click()
@@ -174,7 +186,10 @@ describe('W3mFundWalletView', () => {
     )
     await elementUpdated(element)
 
-    const buyCryptoButton = HelpersUtil.querySelect(element, '[data-testid="buy-crypto"]')
+    const buyCryptoButton = HelpersUtil.querySelect(
+      element,
+      '[data-testid="wallet-features-onramp-button"]'
+    )
     expect(buyCryptoButton).toBeFalsy()
   })
 
@@ -198,7 +213,10 @@ describe('W3mFundWalletView', () => {
     )
     await elementUpdated(element)
 
-    const receiveFundsButton = HelpersUtil.querySelect(element, '[data-testid="receive-funds"]')
+    const receiveFundsButton = HelpersUtil.querySelect(
+      element,
+      '[data-testid="wallet-features-receive-button"]'
+    )
     expect(receiveFundsButton).toBeFalsy()
   })
 })
