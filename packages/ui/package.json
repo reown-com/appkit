@@ -443,6 +443,11 @@
       "import": "./dist/esm/exports/wui-toast-message.js",
       "default": "./dist/esm/exports/wui-toast-message.js"
     },
+    "./wui-router-container": {
+      "types": "./dist/types/exports/wui-router-container.d.ts",
+      "import": "./dist/esm/exports/wui-router-container.js",
+      "default": "./dist/esm/exports/wui-router-container.js"
+    },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",
       "import": "./dist/esm/exports/jsx.js",
