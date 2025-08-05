@@ -194,7 +194,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Fund wallet">
         <wui-icon-button
-          data-testid="wallet-fund-wallet-button"
+          data-testid="wallet-features-fund-wallet-button"
           @click=${this.onFundWalletClick.bind(this)}
           icon="dollar"
         ></wui-icon-button>

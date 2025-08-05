@@ -171,7 +171,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
-        data-testid="w3m-account-fund-wallet-button"
+        data-testid="w3m-account-default-fund-wallet-button"
         iconVariant="blue"
         icon="dollar"
         ?chevron=${true}
