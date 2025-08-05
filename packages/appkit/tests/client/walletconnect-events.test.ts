@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, ConnectionController } from '@reown/appkit-controllers'
+import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'
@@ -92,6 +92,10 @@ describe('WalletConnect Events', () => {
 
   describe('connect', () => {
     it('should call finalizeWcConnection once connected', async () => {
+      vi.spyOn(CoreHelperUtil, 'getAccount').mockReturnValueOnce({
+        address: '0x123',
+        chainId: '1'
+      })
       const finalizeWcConnectionSpy = vi
         .spyOn(ConnectionController, 'finalizeWcConnection')
         .mockReturnValueOnce()
@@ -114,7 +118,7 @@ describe('WalletConnect Events', () => {
 
       connectCallback()
 
-      expect(finalizeWcConnectionSpy).toHaveBeenCalledOnce()
+      expect(finalizeWcConnectionSpy).toHaveBeenCalledWith('0x123')
     })
   })
 })

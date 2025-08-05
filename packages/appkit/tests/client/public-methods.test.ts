@@ -666,8 +666,8 @@ describe('Base Public methods', () => {
         name: 'john.reown.id',
         addresses: { eip155: { address: '0x123', created: '0' } },
         attributes: [],
-        registered: 0,
-        updated: 0
+        registered_at: '2025-07-29T13:03:36.672952Z',
+        updated_at: undefined
       }
     ])
 
@@ -680,8 +680,8 @@ describe('Base Public methods', () => {
         name: 'john.reown.id',
         addresses: { eip155: { address: '0x123', created: '0' } },
         attributes: [],
-        registered: 0,
-        updated: 0
+        registered_at: '2025-07-29T13:03:36.672952Z',
+        updated_at: undefined
       }
     ])
   })

@@ -1,13 +1,14 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import { NumberUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   RouterController,
   SwapController
 } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -125,17 +126,17 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   private templateSwap() {
-    const sourceTokenText = `${UiHelperUtil.formatNumberToLocalString(
+    const sourceTokenText = `${NumberUtil.formatNumberToLocalString(
       parseFloat(this.sourceTokenAmount)
     )} ${this.sourceToken?.symbol}`
-    const toTokenText = `${UiHelperUtil.formatNumberToLocalString(
+    const toTokenText = `${NumberUtil.formatNumberToLocalString(
       parseFloat(this.toTokenAmount)
     )} ${this.toToken?.symbol}`
 
     const sourceTokenValue = parseFloat(this.sourceTokenAmount) * this.sourceTokenPriceInUSD
     const toTokenValue = parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD
-    const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
-    const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
+    const sentPrice = NumberUtil.formatNumberToLocalString(sourceTokenValue)
+    const receivePrice = NumberUtil.formatNumberToLocalString(toTokenValue)
 
     const loading =
       this.loadingQuote ||

@@ -63,6 +63,7 @@ import type { WuiSnackbar } from '../composites/wui-snackbar/index.js'
 import type { WuiTabs } from '../composites/wui-tabs/index.js'
 import type { WuiTag } from '../composites/wui-tag/index.js'
 import type { WuiTokenButton } from '../composites/wui-token-button/index.js'
+import type { WuiTokenListItemLoader } from '../composites/wui-token-list-item-loader/index.js'
 import type { WuiTokenListItem } from '../composites/wui-token-list-item/index.js'
 import type { WuiTooltip } from '../composites/wui-tooltip/index.js'
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
@@ -141,6 +142,7 @@ interface AppKitElements {
   'wui-tag': CustomElement<WuiTag>
   'wui-token-button': CustomElement<WuiTokenButton>
   'wui-token-list-item': CustomElement<WuiTokenListItem>
+  'wui-token-list-item-loader': CustomElement<WuiTokenListItemLoader>
   'wui-icon-button': CustomElement<WuiIconButton>
   'wui-tooltip': CustomElement<WuiTooltip>
   'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
