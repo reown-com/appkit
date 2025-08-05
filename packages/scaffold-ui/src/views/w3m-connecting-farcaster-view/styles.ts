@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   @keyframes fadein {
@@ -13,7 +13,7 @@ export default css`
   wui-shimmer {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: clamp(0px, var(--apkt-borderRadius-8), 40px) !important;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
   wui-qr-code {

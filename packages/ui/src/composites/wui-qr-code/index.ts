@@ -39,15 +39,14 @@ export class WuiQrCode extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSvg() {
-    const size = this.theme === 'light' ? this.size : this.size - 8 * 2
+    const size = this.size
 
     return svg`
       <svg height=${size} width=${size}>
         ${QrCodeUtil.generate({
           uri: this.uri,
           size,
-          logoSize: this.arenaClear ? 0 : size / 4,
-          dotColor: '#141414'
+          logoSize: this.arenaClear ? 0 : size / 4
         })}
       </svg>
     `

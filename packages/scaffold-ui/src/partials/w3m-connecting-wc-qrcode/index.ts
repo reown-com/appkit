@@ -56,11 +56,8 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         .padding=${['0', '5', '5', '5'] as const}
         gap="5"
       >
-        <wui-shimmer rounded width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
-
-        <wui-text variant="md-regular" color="primary">
-          Scan this QR Code with your phone
-        </wui-text>
+        <wui-shimmer width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
+        <wui-text variant="lg-medium" color="primary"> Scan this QR Code with your phone </wui-text>
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
@@ -82,7 +79,8 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       return null
     }
 
-    const size = this.getBoundingClientRect().width - 40
+    const size = this.getBoundingClientRect().width - 56
+    console.log('>>> size', this.getBoundingClientRect().width, size)
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
@@ -101,15 +99,16 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   private copyTemplate() {
     const inactive = !this.uri || !this.ready
 
-    return html`<wui-link
+    return html`<wui-button
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      variant="secondary"
+      variant="neutral-secondary"
+      size="sm"
       data-testid="copy-wc2-uri"
-      icon="copy"
     >
       Copy link
-    </wui-link>`
+      <wui-icon size="sm" color="inherit" name="copy" slot="iconRight"></wui-icon>
+    </wui-button>`
   }
 
   private forceUpdate = () => {
