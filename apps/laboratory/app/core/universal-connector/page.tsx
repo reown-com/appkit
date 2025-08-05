@@ -177,7 +177,7 @@ export default function UniversalConnectorPage() {
     }
 
     try {
-      const account = session?.namespaces['stacks']?.accounts[0]
+      const account = session?.namespaces['stacks']?.accounts[0]?.split(':')[2]
       if (!account) {
         throw new Error('No account found')
       }

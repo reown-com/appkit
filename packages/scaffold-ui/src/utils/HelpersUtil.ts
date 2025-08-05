@@ -16,5 +16,13 @@ export const HelpersUtil = {
     }
 
     return ConstantsUtil.ACCOUNT_TABS
+  },
+  isValidReownName(name: string) {
+    return /^[a-zA-Z0-9]+$/gu.test(name)
+  },
+  validateReownName(name: string) {
+    const sanitizedName = name.replace(/\^/gu, '').toLowerCase()
+
+    return sanitizedName.replace(/[^a-zA-Z0-9]/gu, '')
   }
 }

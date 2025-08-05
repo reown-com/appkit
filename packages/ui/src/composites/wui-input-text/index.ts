@@ -39,6 +39,8 @@ export class WuiInputText extends LitElement {
 
   @property() public size: 'sm' | 'md' | 'lg' = 'md'
 
+  @property({ attribute: false }) public onKeyDown?: (event: KeyboardEvent) => void
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <div class="wui-input-text-container">
@@ -52,6 +54,7 @@ export class WuiInputText extends LitElement {
           ?disabled=${this.disabled}
           placeholder=${this.placeholder}
           @input=${this.dispatchInputChangeEvent.bind(this)}
+          @keydown=${this.onKeyDown}
           .value=${this.value || ''}
         />
         ${this.templateSubmitButton()}

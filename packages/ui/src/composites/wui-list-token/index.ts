@@ -1,11 +1,13 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import { NumberUtil } from '@reown/appkit-common'
+
+import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -34,7 +36,9 @@ export class WuiListToken extends LitElement {
           ${this.visualTemplate()}
           <wui-flex flexDirection="column" justifyContent="space-between" gap="1">
             <wui-text variant="md-regular" color="primary">${this.tokenName}</wui-text>
-            <wui-text variant="sm-regular-mono" color="secondary"> ${this.tokenCurrency} </wui-text>
+            <wui-text variant="sm-regular-mono" color="secondary">
+              ${NumberUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
+            </wui-text>
           </wui-flex>
         </wui-flex>
         <wui-flex
@@ -47,7 +51,7 @@ export class WuiListToken extends LitElement {
             >$${this.tokenValue.toFixed(2)}</wui-text
           >
           <wui-text variant="sm-regular-mono" color="secondary">
-            ${UiHelperUtil.formatNumberToLocalString(this.tokenAmount, 4)}
+            ${NumberUtil.formatNumberToLocalString(this.tokenAmount, 4)}
           </wui-text>
         </wui-flex>
       </button>

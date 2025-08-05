@@ -8,7 +8,7 @@ import {
   type SwapInputTarget,
   type SwapToken
 } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-text'
@@ -64,7 +64,7 @@ export class W3mSwapInput extends LitElement {
             @focusin=${() => this.onFocusChange(true)}
             @focusout=${() => this.onFocusChange(false)}
             ?disabled=${this.disabled}
-            .value=${this.value}
+            value=${this.value || ''}
             @input=${this.dispatchInputChangeEvent}
             @keydown=${this.handleKeydown}
             placeholder="0"
@@ -73,8 +73,8 @@ export class W3mSwapInput extends LitElement {
           />
           <wui-text class="market-value" variant="sm-regular" color="secondary">
             ${isMarketValueGreaterThanZero
-              ? `$${UiHelperUtil.formatNumberToLocalString(this.marketValue, 2)}`
-              : `$0,00`}
+              ? `$${NumberUtil.formatNumberToLocalString(this.marketValue, 2)}`
+              : null}
           </wui-text>
         </wui-flex>
         ${this.templateTokenSelectButton()}
@@ -151,7 +151,7 @@ export class W3mSwapInput extends LitElement {
     return html`
       ${haveBalance
         ? html`<wui-text variant="sm-regular" color="secondary">
-            ${UiHelperUtil.formatNumberToLocalString(this.balance, 2)}
+            ${NumberUtil.formatNumberToLocalString(this.balance, 2)}
           </wui-text>`
         : null}
       ${this.target === 'sourceToken' ? this.tokenActionButtonTemplate(haveBalance) : null}

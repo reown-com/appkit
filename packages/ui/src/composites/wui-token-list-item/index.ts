@@ -7,7 +7,6 @@ import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -75,7 +74,7 @@ export class WuiTokenListItem extends LitElement {
             ${value
               ? html`
                   <wui-text variant="md-medium" color="primary">
-                    $${UiHelperUtil.formatNumberToLocalString(value, 3)}
+                    $${NumberUtil.formatNumberToLocalString(value, 3)}
                   </wui-text>
                 `
               : null}
@@ -84,7 +83,7 @@ export class WuiTokenListItem extends LitElement {
             <wui-text variant="sm-regular" color="secondary" lineClamp="1">${this.symbol}</wui-text>
             ${this.amount
               ? html`<wui-text variant="sm-regular" color="secondary">
-                  ${UiHelperUtil.formatNumberToLocalString(this.amount, 4)}
+                  ${NumberUtil.formatNumberToLocalString(this.amount, 5)}
                 </wui-text>`
               : null}
           </wui-flex>

@@ -1,10 +1,11 @@
 ---
-'@reown/appkit': patch
-'@reown/appkit-adapter-bitcoin': patch
-'@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-solana': patch
+'@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
+'pay-test-exchange': patch
+'@reown/appkit-adapter-bitcoin': patch
+'@reown/appkit-adapter-solana': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -20,22 +21,9 @@
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
 '@reown/appkit-ui': patch
+'@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Introduced `AppKitProvider` React component for easy AppKit integration in React apps
-
-**Example usage**
-
-```tsx
-import { AppKitProvider } from '@reown/appkit/react';
-
-function App() {
-  return (
-    <AppKitProvider projectId="YOUR_PROJECT_ID" networks={[/* Your Networks */]}>
-      {/* Your App */}
-    </AppKitProvider>
-  );
-}
-```
+Removed custom logic from EVM adapters that gets `capabilities` from `sessionProperties` as this resposibility should be delegated to the providers
