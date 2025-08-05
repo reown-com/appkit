@@ -230,8 +230,7 @@ describe('W3mAccountDefaultWidget', () => {
 
       expect(EventsController.sendEvent).toHaveBeenCalledWith({
         type: 'track',
-        event: 'DISCONNECT_ERROR',
-        properties: { message: 'Failed to disconnect' }
+        event: 'DISCONNECT_ERROR'
       })
       expect(SnackController.showError).toHaveBeenCalledWith('Failed to disconnect')
     })
