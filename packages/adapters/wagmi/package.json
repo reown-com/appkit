@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-wagmi",
-  "version": "1.7.15",
+  "version": "1.7.18",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -26,7 +26,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.3",
+    "@walletconnect/universal-provider": "2.21.5",
     "valtio": "2.1.5"
   },
   "optionalDependencies": {
@@ -34,8 +34,8 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=2.16.7",
-    "viem": ">=2.31.3",
-    "wagmi": ">=2.15.6"
+    "viem": ">=2.32.0",
+    "wagmi": ">=2.15.7"
   },
   "devDependencies": {
     "@types/react": "19.1.3",

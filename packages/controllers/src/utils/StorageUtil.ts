@@ -13,6 +13,8 @@ import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
+  BlockchainApiTokenPriceResponse,
+  BlockchainApiTransactionsResponse,
   ConnectionStatus,
   PreferredAccountTypes,
   SocialProvider,
@@ -33,7 +35,9 @@ export const StorageUtil = {
     portfolio: 30000,
     nativeBalance: 30000,
     ens: 300000,
-    identity: 300000
+    identity: 300000,
+    transactionsHistory: 15000,
+    tokenPrice: 15000
   },
   isCacheExpired(timestamp: number, cacheExpiry: number) {
     return Date.now() - timestamp > cacheExpiry
@@ -567,6 +571,7 @@ export const StorageUtil = {
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.NATIVE_BALANCE_CACHE)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.ENS_CACHE)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.IDENTITY_CACHE)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.HISTORY_TRANSACTIONS_CACHE)
     } catch {
       console.info('Unable to clear address cache')
     }
@@ -765,5 +770,143 @@ export const StorageUtil = {
     }
 
     return false
+  },
+  getTransactionsCache() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.HISTORY_TRANSACTIONS_CACHE)
+
+      return result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get transactions cache')
+    }
+
+    return {}
+  },
+
+  getTransactionsCacheForAddress({ address, chainId = '' }: { address: string; chainId?: string }) {
+    try {
+      const cache = StorageUtil.getTransactionsCache()
+      const transactionsCache = cache[address]?.[chainId]
+
+      // We want to discard cache if it's older than the cache expiry
+      if (
+        transactionsCache &&
+        !this.isCacheExpired(transactionsCache.timestamp, this.cacheExpiry.transactionsHistory)
+      ) {
+        return transactionsCache.transactions
+      }
+      StorageUtil.removeTransactionsCache({ address, chainId })
+    } catch {
+      console.info('Unable to get transactions cache')
+    }
+
+    return undefined
+  },
+  updateTransactionsCache({
+    address,
+    chainId = '',
+    timestamp,
+    transactions
+  }: {
+    address: string
+    chainId?: string
+    timestamp: number
+    transactions: BlockchainApiTransactionsResponse
+  }) {
+    try {
+      const cache = StorageUtil.getTransactionsCache()
+      cache[address] = {
+        ...cache[address],
+        [chainId]: {
+          timestamp,
+          transactions
+        }
+      }
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.HISTORY_TRANSACTIONS_CACHE,
+        JSON.stringify(cache)
+      )
+    } catch {
+      console.info('Unable to update transactions cache', {
+        address,
+        chainId,
+        timestamp,
+        transactions
+      })
+    }
+  },
+  removeTransactionsCache({ address, chainId }: { address: string; chainId: string }) {
+    try {
+      const cache = StorageUtil.getTransactionsCache()
+      const addressCache = cache?.[address] || {}
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [chainId]: _removed, ...updatedChainData } = addressCache
+
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.HISTORY_TRANSACTIONS_CACHE,
+        JSON.stringify({
+          ...cache,
+          [address]: updatedChainData
+        })
+      )
+    } catch {
+      console.info('Unable to remove transactions cache', { address, chainId })
+    }
+  },
+  getTokenPriceCache() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.TOKEN_PRICE_CACHE)
+
+      return result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get token price cache')
+    }
+
+    return {}
+  },
+  getTokenPriceCacheForAddresses(addresses: string[]) {
+    try {
+      const cache = StorageUtil.getTokenPriceCache()
+      const tokenPriceCache = cache[addresses.join(',')]
+      if (
+        tokenPriceCache &&
+        !this.isCacheExpired(tokenPriceCache.timestamp, this.cacheExpiry.tokenPrice)
+      ) {
+        return tokenPriceCache.tokenPrice
+      }
+      StorageUtil.removeTokenPriceCache(addresses)
+    } catch {
+      console.info('Unable to get token price cache for addresses', addresses)
+    }
+
+    return undefined
+  },
+  updateTokenPriceCache(params: {
+    addresses: string[]
+    timestamp: number
+    tokenPrice: BlockchainApiTokenPriceResponse
+  }) {
+    try {
+      const cache = StorageUtil.getTokenPriceCache()
+      cache[params.addresses.join(',')] = {
+        timestamp: params.timestamp,
+        tokenPrice: params.tokenPrice
+      }
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.TOKEN_PRICE_CACHE, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update token price cache', params)
+    }
+  },
+  removeTokenPriceCache(addresses: string[]) {
+    try {
+      const cache = StorageUtil.getTokenPriceCache()
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.TOKEN_PRICE_CACHE,
+        JSON.stringify({ ...cache, [addresses.join(',')]: undefined })
+      )
+    } catch {
+      console.info('Unable to remove token price cache', addresses)
+    }
   }
 }

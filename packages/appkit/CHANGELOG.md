@@ -1,5 +1,216 @@
 # @reown/appkit
 
+## 1.7.18
+
+### Patch Changes
+
+- [#4737](https://github.com/reown-com/appkit/pull/4737) [`f397324`](https://github.com/reown-com/appkit/commit/f3973243b1036b1a51b00331f52983e304c1f1a5) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `allAccounts` didn't include the `publicKey` value
+
+- [#4744](https://github.com/reown-com/appkit/pull/4744) [`673829b`](https://github.com/reown-com/appkit/commit/673829bfeff9934ab2233d5a14fcf6e45a9fd52b) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where WalletConnect connections didn't include the `address` value when sending the `CONNECT_SUCCESS` event
+
+- [#4717](https://github.com/reown-com/appkit/pull/4717) [`46c064d`](https://github.com/reown-com/appkit/commit/46c064d5f66e5d75754096507c77f31d083479d5) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where cancelling a SIWX message on mobile would reset the network state and log the user out
+
+- [#4748](https://github.com/reown-com/appkit/pull/4748) [`9ae13b1`](https://github.com/reown-com/appkit/commit/9ae13b155dea440dddcbb3d8dd52e5fda84d8435) Thanks [@magiziz](https://github.com/magiziz)! - Added support for opening Binance Web3 Wallet via deeplink for Bitcoin
+
+- [#4723](https://github.com/reown-com/appkit/pull/4723) [`6d4363a`](https://github.com/reown-com/appkit/commit/6d4363a33a82562addc98f8f6abbd231095fbc8f) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors Reown name screen logics to list suggestions, improve UX, and fetch name on connection as expected
+
+- [#4749](https://github.com/reown-com/appkit/pull/4749) [`f948216`](https://github.com/reown-com/appkit/commit/f9482168cc64f6cdc4a2d9e7b491c38c68630c76) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates NumberUtil formatting using Big.js for enhanced precision for big numbers with strings
+
+- Updated dependencies [[`f397324`](https://github.com/reown-com/appkit/commit/f3973243b1036b1a51b00331f52983e304c1f1a5), [`673829b`](https://github.com/reown-com/appkit/commit/673829bfeff9934ab2233d5a14fcf6e45a9fd52b), [`46c064d`](https://github.com/reown-com/appkit/commit/46c064d5f66e5d75754096507c77f31d083479d5), [`6407ad8`](https://github.com/reown-com/appkit/commit/6407ad8197f43fa14e006dd724abb0e58fec95f7), [`9ae13b1`](https://github.com/reown-com/appkit/commit/9ae13b155dea440dddcbb3d8dd52e5fda84d8435), [`6d4363a`](https://github.com/reown-com/appkit/commit/6d4363a33a82562addc98f8f6abbd231095fbc8f), [`f948216`](https://github.com/reown-com/appkit/commit/f9482168cc64f6cdc4a2d9e7b491c38c68630c76)]:
+  - @reown/appkit-controllers@1.7.18
+  - @reown/appkit-common@1.7.18
+  - @reown/appkit-utils@1.7.18
+  - @reown/appkit-pay@1.7.18
+  - @reown/appkit-polyfills@1.7.18
+  - @reown/appkit-scaffold-ui@1.7.18
+  - @reown/appkit-ui@1.7.18
+  - @reown/appkit-wallet@1.7.18
+
+## 1.7.17
+
+### Patch Changes
+
+- [#4688](https://github.com/reown-com/appkit/pull/4688) [`a457e61`](https://github.com/reown-com/appkit/commit/a457e61611a04fc19da8e09ece7fe7a11f04a2f4) Thanks [@magiziz](https://github.com/magiziz)! - Upgraded wallet button to support multichain via the `namespace` prop
+
+  **Example usage with Components**
+
+  ```tsx
+  import { AppKitWalletButton } from '@reown/appkit-wallet-button/react'
+
+  const wallets = [
+    { wallet: 'metamask', namespace: 'eip155', label: 'MetaMask EVM' },
+    { wallet: 'metamask', namespace: 'solana', label: 'MetaMask Solana' },
+    { wallet: 'phantom', namespace: 'bip122', label: 'Phantom Bitcoin' }
+  ]
+
+  export function WalletButtons() {
+    return (
+      <>
+        {wallets.map(({ wallet, namespace, label }) => (
+          <AppKitWalletButton
+            key={`${wallet}-${namespace}`}
+            wallet={wallet}
+            namespace={namespace}
+          />
+        ))}
+      </>
+    )
+  }
+  ```
+
+  **Example usage with Hooks**
+
+  ```tsx
+  import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
+
+  export function YourApp() {
+    const { data, error, isPending, isSuccess, isError, connect } = useAppKitWallet({
+      namespace: 'eip155', // Use 'solana' or 'bip122' for other chains
+      onError: err => {
+        // ...
+      },
+      onSuccess: data => {
+        // ...
+      }
+    })
+
+    return (
+      <>
+        <button onClick={() => connect('walletConnect')}>Open QR modal</button>
+        <button onClick={() => connect('metamask')}>Connect to MetaMask</button>
+        <button onClick={() => connect('google')}>Connect to Google</button>
+      </>
+    )
+  }
+  ```
+
+  **Example usage with Vanilla JS**
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <script type="module">
+        import '@reown/appkit-wallet-button'
+        import { createAppKitWalletButton } from '@reown/appkit-wallet-button'
+
+        const wallet = createAppKitWalletButton({ namespace: 'eip155' })
+
+        wallet.subscribeIsReady(({ isReady }) => {
+          if (!isReady) return
+
+          document.querySelectorAll('button[data-wallet]').forEach(button => {
+            button.disabled = false
+            button.onclick = () => {
+              const id = button.getAttribute('data-wallet')
+              wallet.connect(id)
+            }
+          })
+        })
+      </script>
+    </head>
+    <body>
+      <appkit-wallet-button wallet="metamask" namespace="eip155"></appkit-wallet-button>
+
+      <button data-wallet="walletConnect" disabled>Open QR modal</button>
+      <button data-wallet="metamask" disabled>Connect to MetaMask</button>
+      <button data-wallet="google" disabled>Connect to Google</button>
+    </body>
+  </html>
+  ```
+
+- [#4696](https://github.com/reown-com/appkit/pull/4696) [`2863286`](https://github.com/reown-com/appkit/commit/286328604c7d0a7dc16b5a23766831cf551f6dca) Thanks [@magiziz](https://github.com/magiziz)! - Introduced `AppKitProvider` React component for easy AppKit integration in React apps
+
+  **Example usage**
+
+  ```tsx
+  import { AppKitProvider } from '@reown/appkit/react'
+
+  function App() {
+    return (
+      <AppKitProvider
+        projectId="YOUR_PROJECT_ID"
+        networks={
+          [
+            /* Your Networks */
+          ]
+        }
+      >
+        {/* Your App */}
+      </AppKitProvider>
+    )
+  }
+  ```
+
+- [#4690](https://github.com/reown-com/appkit/pull/4690) [`974c73f`](https://github.com/reown-com/appkit/commit/974c73f5532a1313bc89880997873169d70f7588) Thanks [@tomiir](https://github.com/tomiir)! - Adds sui and stacks as predefined networks.
+  Exports `AVAILABLE_NAMESPACES` constant from `networks` and `common` packages.
+
+- [#4646](https://github.com/reown-com/appkit/pull/4646) [`f9e9842`](https://github.com/reown-com/appkit/commit/f9e98423ea3e2798e5d743af2c5cda45376a5ba9) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where rpc url would not be overriden on secure site on some connections
+
+- [#4704](https://github.com/reown-com/appkit/pull/4704) [`5391a12`](https://github.com/reown-com/appkit/commit/5391a12d952d561ad509ef7ffcdea280a31c0cb5) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the update email view would not open when using the `useAppKitUpdateEmail` hook
+
+- [#4687](https://github.com/reown-com/appkit/pull/4687) [`43e56fc`](https://github.com/reown-com/appkit/commit/43e56fcfe68005d963447f126277f422eb9bb3e1) Thanks [@enesozturk](https://github.com/enesozturk)! - Introduces AppKit React components. React users can now use the new components instead of HTML elements.
+
+  ### Example
+
+  ```jsx
+  import { AppKitWalletButton } from '@reown/appkit-wallet-button/react'
+  import { AppKitButton, AppKitNetworkButton } from '@reown/appkit/react'
+
+  export function AppKitButtons() {
+    return (
+      <div>
+        {/* Default */}
+        <AppkitButton />
+        <AppKitNetworkButton />
+        <AppKitWalletButton wallet="metamask" />
+        {/* With parameters */}
+        <AppkitButton namespace="eip155" />
+      </div>
+    )
+  }
+  ```
+
+- [#4449](https://github.com/reown-com/appkit/pull/4449) [`fde2340`](https://github.com/reown-com/appkit/commit/fde23403503105798f728c7c3ec86e2fb3925194) Thanks [@zoruka](https://github.com/zoruka)! - Add DataCapture views enabling integrating email collection for ReownAuthentication.
+
+- [#4605](https://github.com/reown-com/appkit/pull/4605) [`e845518`](https://github.com/reown-com/appkit/commit/e845518e84a88d2b05d4e8a0af98787684ef0711) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates ChainController and AccountController utils, adds testing utils for controllers
+
+- [#4686](https://github.com/reown-com/appkit/pull/4686) [`2a953de`](https://github.com/reown-com/appkit/commit/2a953deda4f6ad3333a45b1b0d074c5d8b8c8c65) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates error messages and adds error codes
+
+- [#4708](https://github.com/reown-com/appkit/pull/4708) [`a5410b9`](https://github.com/reown-com/appkit/commit/a5410b94f4ec63cb901b3841c3fc0fdb67a08db6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the modal would close automatically after disconnecting a wallet from the profile view
+
+- [#4709](https://github.com/reown-com/appkit/pull/4709) [`7d41aa6`](https://github.com/reown-com/appkit/commit/7d41aa6a9e647150c08caa65995339effbc5497d) Thanks [@zoruka](https://github.com/zoruka)! - Fix email capture flow for embedded wallet that was skiping due to one click auth
+
+- Updated dependencies [[`a457e61`](https://github.com/reown-com/appkit/commit/a457e61611a04fc19da8e09ece7fe7a11f04a2f4), [`2863286`](https://github.com/reown-com/appkit/commit/286328604c7d0a7dc16b5a23766831cf551f6dca), [`974c73f`](https://github.com/reown-com/appkit/commit/974c73f5532a1313bc89880997873169d70f7588), [`f9e9842`](https://github.com/reown-com/appkit/commit/f9e98423ea3e2798e5d743af2c5cda45376a5ba9), [`5391a12`](https://github.com/reown-com/appkit/commit/5391a12d952d561ad509ef7ffcdea280a31c0cb5), [`43e56fc`](https://github.com/reown-com/appkit/commit/43e56fcfe68005d963447f126277f422eb9bb3e1), [`fde2340`](https://github.com/reown-com/appkit/commit/fde23403503105798f728c7c3ec86e2fb3925194), [`e845518`](https://github.com/reown-com/appkit/commit/e845518e84a88d2b05d4e8a0af98787684ef0711), [`da6d268`](https://github.com/reown-com/appkit/commit/da6d268eb5531c7fbd5c249237d8f246828dac90), [`2a953de`](https://github.com/reown-com/appkit/commit/2a953deda4f6ad3333a45b1b0d074c5d8b8c8c65), [`a5410b9`](https://github.com/reown-com/appkit/commit/a5410b94f4ec63cb901b3841c3fc0fdb67a08db6), [`7d41aa6`](https://github.com/reown-com/appkit/commit/7d41aa6a9e647150c08caa65995339effbc5497d)]:
+  - @reown/appkit-controllers@1.7.17
+  - @reown/appkit-scaffold-ui@1.7.17
+  - @reown/appkit-utils@1.7.17
+  - @reown/appkit-common@1.7.17
+  - @reown/appkit-pay@1.7.17
+  - @reown/appkit-polyfills@1.7.17
+  - @reown/appkit-ui@1.7.17
+  - @reown/appkit-wallet@1.7.17
+
+## 1.7.16
+
+### Patch Changes
+
+- [#4657](https://github.com/reown-com/appkit/pull/4657) [`7788000`](https://github.com/reown-com/appkit/commit/7788000628211880cf982f9b94b076ac90144114) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue causing infinite loading after switching from solana to evm using embedded wallet SIWX default
+
+- [#4497](https://github.com/reown-com/appkit/pull/4497) [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c) Thanks [@venturars](https://github.com/venturars)! - Exports type definitions of Base class for better TS support when using hooks
+
+- [#4666](https://github.com/reown-com/appkit/pull/4666) [`541318b`](https://github.com/reown-com/appkit/commit/541318bff54891503cfef10e194aaf22931fc01e) Thanks [@tomiir](https://github.com/tomiir)! - Updates @walletconnect/universal-provider to version 2.21.5
+
+- Updated dependencies [[`61292da`](https://github.com/reown-com/appkit/commit/61292da8c3ac1d94586a03d1d8b7bf1b8903e4e0), [`7788000`](https://github.com/reown-com/appkit/commit/7788000628211880cf982f9b94b076ac90144114), [`cce9775`](https://github.com/reown-com/appkit/commit/cce97754c2c13411df65826adf99550bc5ad0f8c), [`541318b`](https://github.com/reown-com/appkit/commit/541318bff54891503cfef10e194aaf22931fc01e), [`3e2bd0a`](https://github.com/reown-com/appkit/commit/3e2bd0a60e92565ed128aa8643ccfdd6127ac65b)]:
+  - @reown/appkit-pay@1.7.16
+  - @reown/appkit-controllers@1.7.16
+  - @reown/appkit-scaffold-ui@1.7.16
+  - @reown/appkit-utils@1.7.16
+  - @reown/appkit-common@1.7.16
+  - @reown/appkit-polyfills@1.7.16
+  - @reown/appkit-ui@1.7.16
+  - @reown/appkit-wallet@1.7.16
+
 ## 1.7.15
 
 ### Patch Changes

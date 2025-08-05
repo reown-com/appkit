@@ -1,11 +1,10 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { App } from 'vue'
 import { createApp, nextTick } from 'vue'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
-  AccountController,
   type AuthConnector,
   ChainController,
   ConnectionController,
@@ -22,14 +21,9 @@ import {
 } from '../../exports/vue.js'
 import { ConnectionControllerUtil } from '../../src/utils/ConnectionControllerUtil.js'
 import {
-  mockChainControllerState,
-  mockResetChainControllerState
-} from '../mocks/ChainController.js'
-import {
   connectedAccountState,
   connectedWithEmbeddedWalletState,
-  defaultAccountState,
-  disconnectedAccountState
+  defaultAccountState
 } from '../mocks/useAppKitAccount.js'
 
 export function withSetup<T>(composable: () => T): [T, App] {
@@ -47,12 +41,8 @@ export function withSetup<T>(composable: () => T): [T, App] {
 }
 
 describe('useAppKitAccount', () => {
-  beforeAll(() => {
-    mockChainControllerState()
-  })
-
-  afterAll(() => {
-    mockResetChainControllerState()
+  beforeEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('should have default state when initialized', () => {
@@ -64,8 +54,16 @@ describe('useAppKitAccount', () => {
   it('should return the correct account state when connected', async () => {
     const [state] = withSetup(() => useAppKitAccount())
 
-    AccountController.setCaipAddress('eip155:1:0x123...', 'eip155')
-    AccountController.setStatus('connected', 'eip155')
+    expect(state.value.address).toEqual(undefined)
+
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+    // @ts-expect-error ignore type error
+    ChainController.state.chains = new Map([
+      [
+        ConstantsUtil.CHAIN.EVM,
+        { accountState: { caipAddress: 'eip155:1:0x123...', status: 'connected' } }
+      ]
+    ])
 
     await nextTick()
 
@@ -73,24 +71,54 @@ describe('useAppKitAccount', () => {
   })
 
   it('should return the correct account state when disconnected', async () => {
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+    // @ts-expect-error ignore type error
+    ChainController.state.chains = new Map([
+      [
+        ConstantsUtil.CHAIN.EVM,
+        { accountState: { caipAddress: 'eip155:1:0x123...', status: 'connected' } }
+      ]
+    ])
+
     const [state] = withSetup(() => useAppKitAccount())
 
-    ChainController.resetAccount('eip155')
-    AccountController.setStatus('disconnected', 'eip155')
+    expect(state.value.address).toEqual('0x123...')
+
+    // @ts-expect-error ignore type error
+    ChainController.state.chains = new Map([
+      [
+        ConstantsUtil.CHAIN.EVM,
+        { accountState: { caipAddress: undefined, status: 'disconnected', address: undefined } }
+      ]
+    ])
 
     await nextTick()
 
-    expect(state.value).toEqual(disconnectedAccountState)
+    expect(state.value.address).toEqual(undefined)
   })
 
   it('should return correct embedded wallet info when connected with social provider', async () => {
     const [state] = withSetup(() => useAppKitAccount())
 
-    AccountController.setCaipAddress('eip155:1:0x123...', 'eip155')
-    AccountController.setStatus('connected', 'eip155')
-    AccountController.setUser({ username: 'test', email: 'testuser@example.com' }, 'eip155')
-    AccountController.setSmartAccountDeployed(true, 'eip155')
-    AccountController.setPreferredAccountType('smartAccount', 'eip155')
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+    // @ts-expect-error ignore type error
+    ChainController.state.chains = new Map([
+      [
+        ConstantsUtil.CHAIN.EVM,
+        {
+          accountState: {
+            caipAddress: 'eip155:1:0x123...',
+            status: 'connected',
+            user: {
+              username: 'test',
+              email: 'testuser@example.com'
+            },
+            preferredAccountType: 'smartAccount',
+            smartAccountDeployed: true
+          }
+        }
+      ]
+    ])
     const authConnector = {
       id: ConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'ID_AUTH'
@@ -104,17 +132,30 @@ describe('useAppKitAccount', () => {
   })
 
   it('should return account state with namespace parameter', async () => {
-    ConnectorController.state.connectors = []
-    const [state] = withSetup(() => useAppKitAccount({ namespace: 'solana' }))
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+    // @ts-expect-error ignore type error
+    ChainController.state.chains = new Map([
+      [
+        ConstantsUtil.CHAIN.SOLANA,
+        {
+          accountState: {
+            caipAddress: 'solana:mainnet:address',
+            status: 'connected',
+            address: 'address'
+          }
+        }
+      ]
+    ])
+    const [state] = withSetup(() => useAppKitAccount({ namespace: ConstantsUtil.CHAIN.SOLANA }))
 
     await nextTick()
 
     expect(state.value).toEqual({
       allAccounts: [],
-      address: undefined,
-      caipAddress: undefined,
-      isConnected: false,
-      status: undefined,
+      address: 'address',
+      caipAddress: 'solana:mainnet:address',
+      isConnected: true,
+      status: 'connected',
       embeddedWalletInfo: undefined
     })
   })
@@ -168,17 +209,8 @@ describe('useAppKitConnections', () => {
     chain: 'eip155' as const
   }
 
-  beforeAll(() => {
-    mockChainControllerState()
-  })
-
-  afterAll(() => {
-    mockResetChainControllerState()
-    vi.restoreAllMocks()
-  })
-
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
 
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
@@ -217,11 +249,13 @@ describe('useAppKitConnections', () => {
       recentConnections: []
     })
 
-    withSetup(() => useAppKitConnections('solana'))
+    withSetup(() => useAppKitConnections(ConstantsUtil.CHAIN.SOLANA))
 
     await nextTick()
 
-    expect(ConnectionControllerUtil.getConnectionsData).toHaveBeenCalledWith('solana')
+    expect(ConnectionControllerUtil.getConnectionsData).toHaveBeenCalledWith(
+      ConstantsUtil.CHAIN.SOLANA
+    )
   })
 
   it('should return empty state when no namespace is found', () => {
@@ -234,7 +268,7 @@ describe('useAppKitConnections', () => {
   })
 
   it('should handle empty connections', () => {
-    vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155' as any)
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [],
       recentConnections: []
@@ -249,7 +283,7 @@ describe('useAppKitConnections', () => {
   it('should update when controller states change', async () => {
     const mockConnections = [mockConnection]
 
-    vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155' as any)
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: mockConnections,
       recentConnections: []
@@ -297,17 +331,8 @@ describe('useAppKitConnection', () => {
   const mockOnSuccess = vi.fn()
   const mockOnError = vi.fn()
 
-  beforeAll(() => {
-    mockChainControllerState()
-  })
-
-  afterAll(() => {
-    mockResetChainControllerState()
-    vi.restoreAllMocks()
-  })
-
   beforeEach(() => {
-    vi.resetAllMocks()
+    vi.restoreAllMocks()
 
     vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
       new Map([['eip155', [mockConnection]]])

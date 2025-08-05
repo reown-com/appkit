@@ -20,6 +20,7 @@ import {
   PublicStateController,
   type RemoteFeatures,
   SIWXUtil,
+  getActiveCaipNetwork,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
@@ -104,19 +105,6 @@ export class AppKit extends AppKitBaseClient {
       (user.preferredAccountType as W3mFrameTypes.AccountType) ||
       currentAccountType ||
       defaultAccountType
-
-    /*
-     * This covers the case where user switches back from a smart account supported
-     *  network to a non-smart account supported network resulting in a different address
-     */
-
-    if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
-      this.syncIdentity({
-        address: user.address,
-        chainId: user.chainId,
-        chainNamespace: namespace
-      })
-    }
 
     this.setCaipAddress(caipAddress, namespace)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -374,8 +362,8 @@ export class AppKit extends AppKitBaseClient {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
         },
-        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-          ChainController.getActiveCaipNetwork(namespace)
+        getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
+        getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
       })
       PublicStateController.subscribeOpen(isOpen => {
         if (!isOpen && this.isTransactionStackEmpty()) {
@@ -527,6 +515,7 @@ export class AppKit extends AppKitBaseClient {
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })
   }
+
   public override async syncIdentity({
     address,
     chainId,
@@ -544,16 +533,22 @@ export class AppKit extends AppKitBaseClient {
       return
     }
 
+    const isAuthConnector =
+      ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         address,
         caipNetworkId
       })
 
-      this.setProfileName(name, chainNamespace)
-      this.setProfileImage(avatar, chainNamespace)
+      if (!name && isAuthConnector) {
+        await this.syncReownName(address, chainNamespace)
+      } else {
+        this.setProfileName(name, chainNamespace)
+        this.setProfileImage(avatar, chainNamespace)
+      }
     } catch {
-      await this.syncReownName(address, chainNamespace)
       if (chainId !== 1) {
         this.setProfileImage(null, chainNamespace)
       }
@@ -654,6 +649,10 @@ export class AppKit extends AppKitBaseClient {
 
     if (features.pay) {
       featureImportPromises.push(import('@reown/appkit-pay'))
+    }
+
+    if (remoteFeatures.emailCapture) {
+      featureImportPromises.push(import('@reown/appkit-siwx/ui'))
     }
 
     await Promise.all([

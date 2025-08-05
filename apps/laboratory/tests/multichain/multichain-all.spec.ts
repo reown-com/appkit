@@ -1,6 +1,7 @@
 import { type BrowserContext, test } from '@playwright/test'
 
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
 
 import { ModalPage } from '../shared/pages/ModalPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
@@ -12,6 +13,9 @@ let walletPage: WalletPage
 let walletValidator: WalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
+
+const WALLET_CONNECT_TEST_ID = 'walletConnect'
+const NAMESPACE = 'eip155'
 
 // -- Setup --------------------------------------------------------------------
 test.describe.configure({ mode: 'serial' })
@@ -140,4 +144,17 @@ test('should disconnect from all namespaces when try to disconnect only one when
   await modalValidator.expectDisconnected('eip155')
   await modalValidator.expectDisconnected('solana')
   await modalValidator.expectDisconnected('bip122')
+})
+
+test('it should connect to all namespaces with wallet buttons', async () => {
+  await modalValidator.expectWalletButtonHook(`${WALLET_CONNECT_TEST_ID}-${NAMESPACE}`, false)
+  await modalPage.clickWalletButton(`${WALLET_CONNECT_TEST_ID}-${NAMESPACE}`)
+  const uri = await modalPage.getConnectUriFromQRModal()
+  await walletPage.connectWithUri(uri)
+  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+
+  // It should be connected to all namespaces
+  await modalValidator.expectAccountButtonReady('eip155')
+  await modalValidator.expectAccountButtonReady('solana')
+  await modalValidator.expectAccountButtonReady('bip122')
 })

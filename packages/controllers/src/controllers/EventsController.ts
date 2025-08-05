@@ -53,7 +53,12 @@ export const EventsController = {
 
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
-      const address = AccountController.state.address
+      let address = AccountController.state.address
+
+      if ('address' in payload.data && payload.data.address) {
+        address = payload.data.address
+      }
+
       if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
         return
       }
@@ -90,8 +95,8 @@ export const EventsController = {
       if (isForbiddenError) {
         AlertController.open(
           {
-            shortMessage: 'Invalid App Configuration',
-            longMessage: `Origin ${
+            displayMessage: 'Invalid App Configuration',
+            debugMessage: `Origin ${
               isSafe() ? window.origin : 'uknown'
             } not found on Allowlist - update configuration on cloud.reown.com`
           },
