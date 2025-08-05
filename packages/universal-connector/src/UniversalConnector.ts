@@ -27,6 +27,8 @@ export type Config = {
 export class UniversalConnector {
   private appKit: AppKit
   private config: Config
+  public connecting = false
+  private abortConnector: ((reason?: string) => void) | null = null
   public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
 
   constructor({
@@ -41,6 +43,12 @@ export class UniversalConnector {
     this.appKit = appKit
     this.provider = provider
     this.config = config
+    this.appKit.subscribeState(state => {
+      if (!state.open && this.connecting) {
+        this.provider.abortPairingAttempt()
+        this.abortConnector?.('Connection aborted by user')
+      }
+    })
   }
 
   public static async init(config: Config) {
@@ -83,23 +91,31 @@ export class UniversalConnector {
     )
 
     try {
+      this.connecting = true
       await this.appKit.open()
-      const session = await this.provider.connect({
-        optionalNamespaces: namespaces
-      })
+
+      const session = await Promise.race([
+        this.provider.connect({
+          optionalNamespaces: namespaces
+        }),
+        new Promise<SessionTypes.Struct>((_, reject) => {
+          this.abortConnector = reject
+        })
+      ])
 
       if (!session) {
         throw new Error('Error connecting to wallet: No session found')
       }
 
-      await this.appKit.close()
-
       return { session }
     } catch (error) {
-      await this.appKit.close()
       throw new Error(
         `Error connecting to wallet: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
+    } finally {
+      this.connecting = false
+      this.abortConnector = null
+      await this.appKit.close()
     }
   }
 
