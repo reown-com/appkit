@@ -121,7 +121,7 @@ describe('W3mAccountDefaultWidget', () => {
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
       expect(
-        HelpersUtil.querySelect(element, '[data-testid="w3m-account-fund-wallet-button"]')
+        HelpersUtil.querySelect(element, '[data-testid="w3m-account-default-fund-wallet-button"]')
       ).toBeTruthy()
     })
 
