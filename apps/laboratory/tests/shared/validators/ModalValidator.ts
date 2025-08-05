@@ -607,4 +607,9 @@ export class ModalValidator {
       await expect(uxBrandingReown).not.toBeVisible()
     }
   }
+
+  async reownNameInput(name: string) {
+    const input = this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text')
+    await expect(input, 'Input should have value').toHaveValue(name)
+  }
 }
