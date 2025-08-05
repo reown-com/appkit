@@ -7,7 +7,8 @@ export default css`
     display: block;
     overflow: hidden;
     aspect-ratio: 1 / 1;
-    width: var(--local-size);
+    width: 100%;
+    height: 100%;
     background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
     color: ${({ tokens }) => tokens.theme.textInvert};
   }

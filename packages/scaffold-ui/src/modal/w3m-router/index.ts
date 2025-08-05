@@ -1,11 +1,10 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { RouterControllerState } from '@reown/appkit-controllers'
-import { RouterController, TooltipController } from '@reown/appkit-controllers'
+import { RouterController, type RouterControllerState } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-router-container'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-router')
@@ -13,57 +12,34 @@ export class W3mRouter extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
-  private resizeObserver?: ResizeObserver = undefined
-
-  private prevHeight = '0px'
-
-  private prevHistoryLength = 1
-
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
   @state() private view = RouterController.state.view
 
-  @state() private viewDirection = ''
-
   public constructor() {
     super()
-    this.unsubscribe.push(RouterController.subscribeKey('view', val => this.onViewChange(val)))
-  }
-
-  public override firstUpdated() {
-    this.resizeObserver = new ResizeObserver(([content]) => {
-      const height = `${content?.contentRect.height}px`
-      if (this.prevHeight !== '0px') {
-        this.style.setProperty('--prev-height', this.prevHeight)
-        this.style.setProperty('--new-height', height)
-        this.style.animation = 'w3m-view-height 150ms forwards var(--apkt-ease-inout-power-2)'
-        this.style.height = 'auto'
-      }
-      setTimeout(() => {
-        this.prevHeight = height
-        this.style.animation = 'unset'
-      }, ConstantsUtil.ANIMATION_DURATIONS.ModalHeight)
-    })
-    this.resizeObserver?.observe(this.getWrapper())
-  }
-
-  public override disconnectedCallback() {
-    this.resizeObserver?.unobserve(this.getWrapper())
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    this.unsubscribe.push(
+      RouterController.subscribeKey('view', val => {
+        this.view = val
+      })
+    )
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<div class="w3m-router-container" view-direction="${this.viewDirection}">
-      ${this.viewTemplate()}
-    </div>`
+    return html`<wui-router-container
+      .view=${this.view}
+      .history=${RouterController.state.history}
+      .onRenderPages=${this.viewTemplate}
+    >
+    </wui-router-container>`
   }
 
   // -- Private ------------------------------------------- //
-  private viewTemplate() {
+  private viewTemplate(view: string) {
     // - These components are imported from the scaffold exports according to the case. This would render empty if the component is not imported.
-    switch (this.view) {
+    switch (view as RouterControllerState['view']) {
       // Core Views
       case 'AccountSettings':
         return html`<w3m-account-settings-view></w3m-account-settings-view>`
@@ -178,27 +154,6 @@ export class W3mRouter extends LitElement {
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
-  }
-
-  private onViewChange(newView: RouterControllerState['view']) {
-    TooltipController.hide()
-
-    let direction = ConstantsUtil.VIEW_DIRECTION.Next
-    const { history } = RouterController.state
-    if (history.length < this.prevHistoryLength) {
-      direction = ConstantsUtil.VIEW_DIRECTION.Prev
-    }
-
-    this.prevHistoryLength = history.length
-    this.viewDirection = direction
-
-    setTimeout(() => {
-      this.view = newView
-    }, ConstantsUtil.ANIMATION_DURATIONS.ViewTransition)
-  }
-
-  private getWrapper() {
-    return this.shadowRoot?.querySelector('div') as HTMLElement
   }
 }
 

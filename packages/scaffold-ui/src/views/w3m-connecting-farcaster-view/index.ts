@@ -258,7 +258,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       return null
     }
 
-    const size = this.getBoundingClientRect().width - 56
+    const size = this.getBoundingClientRect().width - 40
 
     return html` <wui-qr-code
       size=${size}

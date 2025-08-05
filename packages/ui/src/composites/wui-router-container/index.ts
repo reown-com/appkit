@@ -36,25 +36,26 @@ export class WuiRouterContainer extends LitElement {
 
   public override firstUpdated() {
     this.viewState = this.view
+    this.style.setProperty('--wui-router-container-transition-function', this.transitionFunction)
+
     this.resizeObserver = new ResizeObserver(([content]) => {
       const newHeight = `${content?.contentRect.height}px`
       const prevHeight = this.prevHeight || newHeight
 
-      // Step 1: Set --prev-height to the previous height
-      this.style.setProperty('--prev-height', prevHeight)
-
-      // Step 2: Force a reflow so the browser registers the old height
-      // (This is a hack: reading offsetHeight forces reflow)
-      void this.offsetHeight
-
-      // Step 3: Set --new-height to the new height
-      this.style.setProperty('--new-height', newHeight)
-
-      // Step 4: Optionally, add a class to trigger the transition if your CSS needs it
-      // this.classList.add('animating')
-
-      // Step 5: Update prevHeight for next time
-      this.prevHeight = newHeight
+      if (this.prevHeight !== '0px') {
+        this.style.setProperty(
+          '--wui-router-container-transition-duration',
+          this.transitionDuration
+        )
+        this.style.setProperty('--prev-height', prevHeight)
+        void this.offsetHeight
+        this.style.setProperty('--new-height', newHeight)
+        this.prevHeight = newHeight
+      } else {
+        this.viewDirection = ''
+        this.style.setProperty('--new-height', newHeight)
+        this.prevHeight = newHeight
+      }
     })
     this.resizeObserver?.observe(this.getWrapper())
   }
@@ -64,10 +65,6 @@ export class WuiRouterContainer extends LitElement {
   }
 
   public override render() {
-    this.style.setProperty('--wui-router-container-transition-function', this.transitionFunction)
-    this.style.setProperty('--wui-router-container-transition-duration', this.transitionDuration)
-    console.log('>>> render', !!this.onRenderPages, this.onRenderPages(this.viewState))
-
     return html`
       <div class="container">
         <div

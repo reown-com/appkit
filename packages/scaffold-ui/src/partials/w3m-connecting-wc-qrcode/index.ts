@@ -79,8 +79,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       return null
     }
 
-    const size = this.getBoundingClientRect().width - 56
-    console.log('>>> size', this.getBoundingClientRect().width, size)
+    const size = this.getBoundingClientRect().width - 40
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)

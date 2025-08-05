@@ -35,11 +35,13 @@ function getMatrix(value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCo
 }
 
 export const QrCodeUtil = {
-  generate({ uri, size, logoSize }: { uri: string; size: number; logoSize: number }) {
-    const strokeWidth = 5
+  generate(params: { uri: string; size: number; logoSize: number; padding?: number }) {
+    const { uri, size, logoSize, padding = 8 } = params
+
+    const strokeWidth = 10
     const dots: TemplateResult[] = []
     const matrix = getMatrix(uri, 'Q')
-    const cellSize = size / matrix.length
+    const cellSize = (size - 2 * padding) / matrix.length
     const qrList = [
       { x: 0, y: 0 },
       { x: 1, y: 0 },
@@ -47,8 +49,8 @@ export const QrCodeUtil = {
     ]
 
     qrList.forEach(({ x, y }) => {
-      const x1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * x
-      const y1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * y
+      const x1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * x + padding
+      const y1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * y + padding
       const borderRadius = 0.45
       for (let i = 0; i < qrList.length; i += 1) {
         const dotSize = cellSize * (QRCODE_MATRIX_MARGIN - i * 2)
@@ -94,8 +96,8 @@ export const QrCodeUtil = {
                 j < matrixMiddleEnd
               )
             ) {
-              const cx = i * cellSize + cellSize / 2
-              const cy = j * cellSize + cellSize / 2
+              const cx = i * cellSize + cellSize / 2 + padding
+              const cy = j * cellSize + cellSize / 2 + padding
               circles.push([cx, cy])
             }
           }
