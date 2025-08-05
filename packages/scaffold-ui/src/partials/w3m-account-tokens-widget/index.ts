@@ -69,7 +69,7 @@ export class W3mAccountTokensWidget extends LitElement {
         icon="qrCode"
         iconColor="fg-200"
         iconBackgroundColor="fg-200"
-        data-testid="receive-funds"
+        data-testid="w3m-account-receive-button"
       ></wui-list-description
     ></wui-flex>`
   }
@@ -84,7 +84,7 @@ export class W3mAccountTokensWidget extends LitElement {
         iconColor="success-100"
         iconBackgroundColor="success-100"
         tag="popular"
-        data-testid="buy-crypto"
+        data-testid="w3m-account-onramp-button"
       ></wui-list-description>`
     }
 

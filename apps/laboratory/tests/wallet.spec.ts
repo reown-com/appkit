@@ -53,8 +53,9 @@ sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
 
 sampleWalletTest('it should show onramp button accordingly', async ({ library }) => {
   await modalPage.openModal()
-  const walletFeatureButton = await modalPage.getWalletFeaturesButton('fund-wallet')
-  await walletFeatureButton.click()
+
+  const accountButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
+  await accountButton.click()
 
   if (library === 'bitcoin') {
     await modalValidator.expectOnrampButton(false)
