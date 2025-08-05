@@ -23,6 +23,7 @@ import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-register-account-name-view')
@@ -89,6 +90,7 @@ export class W3mRegisterAccountNameView extends LitElement {
             @inputChange=${this.onNameInputChange.bind(this)}
             .errorMessage=${this.error}
             .value=${this.name}
+            .onKeyDown=${this.onKeyDown.bind(this)}
           >
           </wui-ens-input>
           ${this.submitButtonTemplate()}
@@ -128,19 +130,28 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
-    if (EnsController.validateName(value)) {
-      this.error = ''
-      this.name = value
-      EnsController.getSuggestions(value)
-    } else if (value.length < 4) {
+    if (value.length < 4) {
       this.error = 'Name must be at least 4 characters long'
+      // eslint-disable-next-line no-negated-condition
+    } else if (!HelpersUtil.isValidReownName(value)) {
+      this.error = 'The value is not a valid username'
     } else {
-      this.error = 'Can only contain letters, numbers and - characters'
+      this.error = ''
+      EnsController.getSuggestions(value)
     }
   })
 
   private onNameInputChange(event: CustomEvent<string>) {
-    this.onDebouncedNameInputChange(event.detail)
+    const value = HelpersUtil.validateReownName(event.detail || '')
+    this.name = value
+    this.onDebouncedNameInputChange(value)
+  }
+
+  private onKeyDown(event: KeyboardEvent) {
+    // eslint-disable-next-line no-negated-condition
+    if (event.key.length === 1 && !HelpersUtil.isValidReownName(event.key)) {
+      event.preventDefault()
+    }
   }
 
   private nameSuggestionTagTemplate(suggestion: { name: string; registered: boolean }) {
