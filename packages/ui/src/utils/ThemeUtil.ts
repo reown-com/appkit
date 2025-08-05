@@ -44,7 +44,7 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=optional');
       @keyframes w3m-shake {
         0% {
           transform: scale(1) rotate(0deg);
