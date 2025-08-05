@@ -9,13 +9,15 @@ import { UniversalConnector } from '../src/UniversalConnector'
 const provider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
-  request: vi.fn()
+  request: vi.fn(),
+  abortPairingAttempt: vi.fn()
 } as any
 
 const mockAppKit = {
   open: vi.fn(),
   close: vi.fn(),
-  disconnect: vi.fn()
+  disconnect: vi.fn(),
+  subscribeState: vi.fn()
 } as any
 
 const baseConfig = {
@@ -114,6 +116,27 @@ describe('UniversalConnector', () => {
       await expect(connector.connect()).rejects.toThrow(
         `Error connecting to wallet: ${error.message}`
       )
+      expect(mockAppKit.close).toHaveBeenCalled()
+    })
+
+    it('should throw and close AppKit when modal is closed during connection', async () => {
+      // Arrange
+      provider.connect.mockReturnValue(new Promise(() => {}))
+
+      // Act
+      const connectPromise = connector.connect()
+
+      // Wait for the promise race to be set up
+      await new Promise(resolve => setTimeout(resolve, 0))
+
+      const stateCallback = mockAppKit.subscribeState.mock.calls[0][0]
+      stateCallback({ open: false })
+
+      // Assert
+      await expect(connectPromise).rejects.toThrow(
+        'Error connecting to wallet: Connection aborted by user'
+      )
+      expect(provider.abortPairingAttempt).toHaveBeenCalled()
       expect(mockAppKit.close).toHaveBeenCalled()
     })
   })

@@ -28,7 +28,7 @@ export class UniversalConnector {
   private appKit: AppKit
   private config: Config
   public connecting = false
-  private abortConnector: ((reason?: string) => void) | null = null
+  private abortConnection: ((reason?: string) => void) | null = null
   public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
 
   constructor({
@@ -46,7 +46,7 @@ export class UniversalConnector {
     this.appKit.subscribeState(state => {
       if (!state.open && this.connecting) {
         this.provider.abortPairingAttempt()
-        this.abortConnector?.('Connection aborted by user')
+        this.abortConnection?.()
       }
     })
   }
@@ -99,7 +99,7 @@ export class UniversalConnector {
           optionalNamespaces: namespaces
         }),
         new Promise<SessionTypes.Struct>((_, reject) => {
-          this.abortConnector = reject
+          this.abortConnection = () => reject(new Error('Connection aborted by user'))
         })
       ])
 
@@ -114,7 +114,7 @@ export class UniversalConnector {
       )
     } finally {
       this.connecting = false
-      this.abortConnector = null
+      this.abortConnection = null
       await this.appKit.close()
     }
   }
