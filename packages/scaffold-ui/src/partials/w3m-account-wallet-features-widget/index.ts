@@ -142,8 +142,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private orderedWalletFeatures() {
-    let isFundWalletFeatureRendered = false
-
     const walletFeaturesOrder =
       this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
     const isAllDisabled = walletFeaturesOrder.every(feature => {
@@ -161,16 +159,20 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return null
     }
 
-    return html`<wui-flex gap="s">
-      ${walletFeaturesOrder.map(feature => {
-        switch (feature) {
-          case 'receive':
-          case 'onramp':
-            if (isFundWalletFeatureRendered) {
-              return null
-            }
-            isFundWalletFeatureRendered = true
+    // Merge receive and onramp into fund to maintain backward compatibility for walletFeaturesOrder
+    const mergedFeaturesOrder = walletFeaturesOrder.map(feature => {
+      if (feature === 'receive' || feature === 'onramp') {
+        return 'fund'
+      }
 
+      return feature
+    })
+    const deduplicatedFeaturesOrder = [...new Set(mergedFeaturesOrder)]
+
+    return html`<wui-flex gap="s">
+      ${deduplicatedFeaturesOrder.map(feature => {
+        switch (feature) {
+          case 'fund':
             return this.fundWalletTemplate()
           case 'swaps':
             return this.swapsTemplate()
