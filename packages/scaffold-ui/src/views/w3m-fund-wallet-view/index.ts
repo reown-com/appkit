@@ -74,7 +74,7 @@ export class W3mFundWalletView extends LitElement {
         icon="card"
         iconColor="success-100"
         iconBackgroundColor="success-100"
-        data-testid="buy-crypto"
+        data-testid="wallet-features-onramp-button"
       ></wui-list-description>
     `
   }
@@ -93,7 +93,7 @@ export class W3mFundWalletView extends LitElement {
         icon="qrCode"
         iconColor="fg-200"
         iconBackgroundColor="fg-200"
-        data-testid="receive-funds"
+        data-testid="wallet-features-receive-button"
       ></wui-list-description>
     `
   }
