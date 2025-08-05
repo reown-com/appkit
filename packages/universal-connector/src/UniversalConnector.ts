@@ -5,7 +5,7 @@ import {
   UniversalProvider
 } from '@walletconnect/universal-provider'
 
-import type { CreateAppKit } from '@reown/appkit'
+import type { AppKitOptions, CreateAppKit } from '@reown/appkit'
 import type { CaipNetwork, CustomCaipNetwork } from '@reown/appkit-common'
 import { AppKit, type Metadata, createAppKit } from '@reown/appkit/core'
 
@@ -18,6 +18,10 @@ export type Config = {
   projectId: string
   metadata: Metadata
   networks: ExtendedNamespaces[]
+  modalConfig?: Omit<
+    AppKitOptions,
+    'networks' | 'adapters' | 'manualWCControl' | 'projectId' | 'metadata' | 'universalProvider'
+  >
 }
 
 export class UniversalConnector {
@@ -46,6 +50,7 @@ export class UniversalConnector {
     })
 
     const appKitConfig: CreateAppKit = {
+      ...config.modalConfig,
       networks: config.networks.flatMap(network => network.chains) as [
         CaipNetwork,
         ...CaipNetwork[]
