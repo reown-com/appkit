@@ -17,14 +17,14 @@ describe('UiHelperUtil', () => {
 
   describe('getSpacingStyles', () => {
     it('handles array of spacings', () => {
-      expect(UiHelperUtil.getSpacingStyles(['xs', 'm', 'l'], 0)).toBe('var(--wui-spacing-xs)')
-      expect(UiHelperUtil.getSpacingStyles(['xs', 'm', 'l'], 1)).toBe('var(--wui-spacing-m)')
-      expect(UiHelperUtil.getSpacingStyles(['xs', 'm', 'l'], 3)).toBe(undefined)
+      expect(UiHelperUtil.getSpacingStyles(['0', '1', '2'], 0)).toBe('var(--apkt-spacing-0)')
+      expect(UiHelperUtil.getSpacingStyles(['0', '1', '2'], 1)).toBe('var(--apkt-spacing-1)')
+      expect(UiHelperUtil.getSpacingStyles(['0', '1', '2'], 3)).toBe(undefined)
     })
 
     it('handles single spacing string', () => {
-      expect(UiHelperUtil.getSpacingStyles('m', 0)).toBe('var(--wui-spacing-m)')
-      expect(UiHelperUtil.getSpacingStyles('l', 5)).toBe('var(--wui-spacing-l)')
+      expect(UiHelperUtil.getSpacingStyles('3', 0)).toBe('var(--apkt-spacing-3)')
+      expect(UiHelperUtil.getSpacingStyles('4', 5)).toBe('var(--apkt-spacing-4)')
     })
   })
 
