@@ -28,8 +28,7 @@ const state = proxy<EventsControllerState>({
   reportedErrors: {},
   data: {
     type: 'track',
-    event: 'MODAL_CREATED',
-    properties: {}
+    event: 'MODAL_CREATED'
   }
 })
 
@@ -77,7 +76,7 @@ export const EventsController = {
             ...payload.data,
             address,
             properties: {
-              ...(payload.data.properties || {}),
+              ...('properties' in payload.data ? payload.data.properties : {}),
               caipNetworkId
             }
           }
