@@ -1,18 +1,9 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-
-function cssDurationToNumber(duration: string) {
-  if (duration.endsWith('s')) {
-    return Number(duration.replace('s', '')) * 1000
-  } else if (duration.endsWith('ms')) {
-    return Number(duration.replace('ms', ''))
-  }
-
-  return 0
-}
 
 @customElement('wui-router-container')
 export class WuiRouterContainer extends LitElement {
@@ -20,7 +11,7 @@ export class WuiRouterContainer extends LitElement {
 
   private resizeObserver?: ResizeObserver = undefined
 
-  @property({ type: String }) transitionDuration = ''
+  @property({ type: String }) transitionDuration = '0.15s'
 
   @property({ type: String }) transitionFunction = ''
 
@@ -33,6 +24,8 @@ export class WuiRouterContainer extends LitElement {
   @state() private viewDirection = ''
 
   @state() private historyState = ''
+
+  @state() private previousHeight = '0px'
 
   public override updated(changedProps: Map<string, unknown>) {
     if (changedProps.has('history')) {
@@ -53,15 +46,23 @@ export class WuiRouterContainer extends LitElement {
   }
 
   public override firstUpdated() {
-    this.style.setProperty('--local-transition', this.transitionFunction)
+    if (this.transitionFunction) {
+      this.style.setProperty('--local-transition', this.transitionFunction)
+    }
     this.style.setProperty('--local-duration', this.transitionDuration)
+
     this.historyState = this.history
 
     this.resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         if (entry.target === this.getWrapper()) {
           const newHeight = `${entry.contentRect.height}px`
+
           this.style.setProperty('--new-height', newHeight)
+          if (this.previousHeight !== '0px') {
+            this.style.setProperty('--local-duration-height', this.transitionDuration)
+          }
+          this.previousHeight = newHeight
         }
       }
     })
@@ -93,6 +94,7 @@ export class WuiRouterContainer extends LitElement {
     const prevLength = prevArr.length
     const newLength = historyArr.length
     const newView = historyArr[historyArr.length - 1] || ''
+    const duration = UiHelperUtil.cssDurationToNumber(this.transitionDuration)
 
     let direction = ''
     if (newLength > prevLength) {
@@ -105,8 +107,6 @@ export class WuiRouterContainer extends LitElement {
     }
 
     this.viewDirection = `${direction}-${newView}`
-
-    const duration = cssDurationToNumber(this.transitionDuration)
 
     setTimeout(() => {
       this.historyState = history

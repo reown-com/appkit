@@ -1,13 +1,19 @@
 import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
+  :host {
+    --local-duration-height: 0s;
+    --local-duration: var(--apkt-duration-lg);
+    --local-transition: var(--apkt-ease-out-power-1);
+  }
+
   .container {
     display: block;
     overflow: hidden;
     overflow: hidden;
     position: relative;
     height: var(--new-height);
-    transition: height var(--local-duration, var(--apkt-duration-lg)) var(--apkt-ease-out-power-1);
+    transition: height var(--local-duration-height) var(--local-transition);
     width: var(--apkt-modal-width);
   }
 
@@ -25,19 +31,15 @@ export default css`
 
   div.page[view-direction^='prev-'] {
     animation:
-      slide-left-out var(--local-duration, var(--apkt-duration-lg)) forwards
-        var(--local-transition, var(--apkt-ease-out-power-2)),
-      slide-left-in var(--local-duration, var(--apkt-duration-lg)) forwards
-        var(--local-transition, var(--apkt-ease-out-power-2));
+      slide-left-out var(--local-duration) forwards var(--local-transition),
+      slide-left-in var(--local-duration) forwards var(--local-transition);
     animation-delay: 0ms, var(--local-duration, var(--apkt-duration-lg));
   }
 
   div.page[view-direction^='next-'] {
     animation:
-      slide-right-out var(--local-duration, var(--apkt-duration-lg)) forwards
-        var(--local-transition, var(--apkt-ease-out-power-2)),
-      slide-right-in var(--local-duration, var(--apkt-duration-lg)) forwards
-        var(--local-transition, var(--apkt-ease-out-power-2));
+      slide-right-out var(--local-duration) forwards var(--local-transition),
+      slide-right-in var(--local-duration) forwards var(--local-transition);
     animation-delay: 0ms, var(--local-duration, var(--apkt-duration-lg));
   }
 
