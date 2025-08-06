@@ -12,31 +12,40 @@ export default css`
     overflow: hidden;
     overflow: hidden;
     position: relative;
-    height: var(--new-height);
+    height: var(--local-container-height);
     transition: height var(--local-duration-height) var(--local-transition);
-    width: var(--apkt-modal-width);
+    will-change: height, padding-bottom;
   }
 
   .page {
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
     width: 100%;
     height: auto;
-    width: var(--apkt-modal-width);
+    width: inherit;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border-bottom-left-radius: var(--local-border-bottom-radius);
+    border-bottom-right-radius: var(--local-border-bottom-radius);
+    transition: border-bottom-left-radius var(--local-duration) var(--local-transition);
   }
 
-  div.page[view-direction^='prev-'] {
+  .footer {
+    height: var(--apkt-footer-height);
+  }
+
+  div.page[view-direction^='prev-'] .page-content {
     animation:
       slide-left-out var(--local-duration) forwards var(--local-transition),
       slide-left-in var(--local-duration) forwards var(--local-transition);
     animation-delay: 0ms, var(--local-duration, var(--apkt-duration-lg));
   }
 
-  div.page[view-direction^='next-'] {
+  div.page[view-direction^='next-'] .page-content {
     animation:
       slide-right-out var(--local-duration) forwards var(--local-transition),
       slide-right-in var(--local-duration) forwards var(--local-transition);

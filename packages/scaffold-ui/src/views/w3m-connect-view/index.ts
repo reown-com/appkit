@@ -21,14 +21,15 @@ import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-button'
 import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-ux-by-reown'
 import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-email-login-widget/index.js'
 import '../../partials/w3m-legal-checkbox/index.js'
-import '../../partials/w3m-legal-footer/index.js'
 import '../../partials/w3m-social-login-widget/index.js'
 import '../../partials/w3m-wallet-guide/index.js'
 import '../../partials/w3m-wallet-login-list/index.js'
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
 
@@ -162,12 +163,24 @@ export class W3mConnectView extends LitElement {
             ${this.renderConnectMethod(tabIndex)}
           </wui-flex>
         </wui-flex>
-        <w3m-legal-footer></w3m-legal-footer>
+        ${this.reownBrandingTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private reownBrandingTemplate() {
+    if (HelpersUtil.hasFooter()) {
+      return null
+    }
+
+    if (!this.remoteFeatures?.reownBranding) {
+      return null
+    }
+
+    return html`<wui-ux-by-reown></wui-ux-by-reown>`
+  }
+
   private setEmailAndSocialEnableCheck(noAdapters: boolean, remoteFeatures?: RemoteFeatures) {
     this.isEmailEnabled = remoteFeatures?.email && !noAdapters
     this.isSocialEnabled =

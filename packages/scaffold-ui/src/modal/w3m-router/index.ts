@@ -5,6 +5,7 @@ import { RouterController, type RouterControllerState } from '@reown/appkit-cont
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-router-container'
 
+import '../w3m-footer/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-router')
@@ -23,8 +24,17 @@ export class W3mRouter extends LitElement {
     this.unsubscribe.push(
       RouterController.subscribeKey('view', () => {
         this.history = RouterController.state.history.join(',')
+        document.documentElement.style.setProperty(
+          '--apkt-duration-dynamic',
+          'var(--apkt-duration-lg)'
+        )
       })
     )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    document.documentElement.style.setProperty('--apkt-duration-dynamic', '0s')
   }
 
   // -- Render -------------------------------------------- //

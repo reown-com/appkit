@@ -7,7 +7,6 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-legal-checkbox/index.js'
-import '../../partials/w3m-legal-footer/index.js'
 import '../../partials/w3m-wallet-login-list/index.js'
 import styles from './styles.js'
 
@@ -57,7 +56,6 @@ export class W3mConnectWalletsView extends LitElement {
       >
         <w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>
       </wui-flex>
-      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 }

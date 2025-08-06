@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -41,6 +41,42 @@ export default css`
       border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
       background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
     will-change: border-radius, background-color;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    box-shadow: none;
+    padding: 4px;
+    box-sizing: border-box;
+  }
+
+  wui-card::before {
+    z-index: 1;
+    pointer-events: none;
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0px 0px 0px 4px ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border-radius: clamp(0px, var(--apkt-borderRadius-8), 44px);
+    transition: box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change: box-shadow;
+  }
+
+  :host([data-border='true']) wui-card::before {
+    box-shadow: inset 0px 0px 0px 4px ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
+  :host([data-border='false']) wui-card::before {
+    box-shadow: inset 0px 0px 0px 4px ${({ tokens }) => tokens.theme.backgroundPrimary};
+  }
+
+  :host([data-border='true']) wui-card {
+    animation: card-background-border var(--apkt-duration-dynamic) var(--apkt-ease-out-power-2);
+    animation-fill-mode: both;
+    animation-delay: var(--apkt-duration-dynamic);
+  }
+
+  :host([data-border='false']) wui-card {
+    animation: card-background-default var(--apkt-duration-dynamic) var(--apkt-ease-out-power-2);
+    animation-fill-mode: both;
+    animation-delay: 0s;
   }
 
   :host(.appkit-modal) wui-card {
@@ -83,28 +119,16 @@ export default css`
       border-bottom-left-radius: var(--local-border-bottom-mobile-radius);
       border-bottom-right-radius: var(--local-border-bottom-mobile-radius);
       border-bottom: none;
-      animation: slide-in 0.2s var(--apkt-ease-out-power-2);
     }
 
     wui-card[shake='true'] {
-      animation:
-        slide-in 0.2s var(--apkt-ease-out-power-2),
-        w3m-shake 0.5s var(--apkt-ease-out-power-2);
+      animation: w3m-shake 0.5s var(--apkt-ease-out-power-2);
     }
   }
 
   @keyframes zoom-in {
     0% {
       transform: scale(0.95) translateY(0);
-    }
-    100% {
-      transform: scale(1) translateY(0);
-    }
-  }
-
-  @keyframes slide-in {
-    0% {
-      transform: scale(1) translateY(50px);
     }
     100% {
       transform: scale(1) translateY(0);
@@ -132,12 +156,21 @@ export default css`
     }
   }
 
-  @keyframes w3m-view-height {
+  @keyframes card-background-border {
     from {
-      height: var(--prev-height);
+      background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     }
     to {
-      height: var(--new-height);
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
+  }
+
+  @keyframes card-background-default {
+    from {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
+    to {
+      background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     }
   }
 `

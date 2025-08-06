@@ -102,12 +102,17 @@ export const Default: Component = {
 
     function setView(view: string) {
       setCurrentView(view)
+      if (view === 'ConnectingView') {
+        document.documentElement.style.setProperty('--apkt-footer-height', '80px')
+      } else {
+        document.documentElement.style.setProperty('--apkt-footer-height', '0px')
+      }
     }
 
     const transitionFunc =
       transitionFunctions.find(t => t.name === args.transitionFunction)?.value || DEFAULT_VALUE
-    const prevDisabled = history[history.length - 2] ? true : false
-    const nextDisabled = history.length === pages.length ? true : false
+    const prevDisabled = history.length < 2
+    const nextDisabled = history.length === pages.length
 
     return html`
       <div
@@ -166,7 +171,7 @@ export const Default: Component = {
             <wui-text variant="lg-medium" color="primary">Connect</wui-text>
             <wui-icon name="close" color="inverse"></wui-icon>
           </wui-flex>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 8px; width: 370px;">
             <wui-router-container
               transitionDuration="${args.transitionDuration}"
               transitionFunction="${transitionFunc}"

@@ -205,6 +205,7 @@ function createRootStyles(_themeVariables?: ThemeVariables) {
         --apkt-ease-inout-power-2: cubic-bezier(0.77, 0.09, 0.23, 1.13);
         --apkt-ease-inout-power-1: cubic-bezier(0.88, 0.04, 0.12, 1.06);
 
+        --apkt-duration-dynamic: 0ms;
         --apkt-duration-lg: 200ms;
         --apkt-duration-md: 125ms;
         --apkt-duration-sm: 75ms;

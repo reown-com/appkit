@@ -1,10 +1,6 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
-  :host > wui-flex {
-    background-color: var(--apkt-tokens-core-glass010);
-  }
-
   :host wui-ux-by-reown {
     padding-top: 0;
   }
@@ -15,7 +11,7 @@ export default css`
 
   a {
     text-decoration: none;
-    color: var(--apkt-tokens-theme-foregroundSecondary);
+    color: ${({ tokens }) => tokens.core.textAccentPrimary};
     font-weight: 500;
   }
 `

@@ -16,5 +16,7 @@ export const ConstantsUtil = {
     HeaderText: 120,
     ModalHeight: 150,
     ViewTransition: 150
-  }
+  },
+  VIEWS_WITH_LEGAL_FOOTER: ['Connect', 'ConnectWallets', 'OnRampTokenSelect', 'OnRampFiatSelect'],
+  VIEWS_WITH_DEFAULT_FOOTER: ['Networks', 'OnRampProviders']
 }

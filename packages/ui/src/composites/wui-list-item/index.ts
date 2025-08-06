@@ -62,7 +62,6 @@ export class WuiListItem extends LitElement {
   }
 
   private templateRightIcon() {
-    console.log('this.rightIcon', this.rightIcon)
     if (!this.rightIcon) {
       return null
     }
