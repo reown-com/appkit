@@ -19,7 +19,7 @@ interface ListenWcProviderParams {
   namespace: ChainNamespace
   onConnect?: (parsedData: ParsedCaipAddress[]) => void
   onDisconnect?: () => void
-  onAccountsChanged?: (parsedData: ParsedCaipAddress[]) => void
+  onAccountsChanged?: (parsedData: string[]) => void
   onChainChanged?: (chainId: number | string) => void
   onDisplayUri?: (uri: string) => void
 }
@@ -302,7 +302,7 @@ export const WcHelpersUtil = {
     }
 
     if (onAccountsChanged) {
-      universalProvider.on('accountsChanged', (accounts: ParsedCaipAddress[]) => {
+      universalProvider.on('accountsChanged', (accounts: string[]) => {
         onAccountsChanged(accounts)
       })
     }
