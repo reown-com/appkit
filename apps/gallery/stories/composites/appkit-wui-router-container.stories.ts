@@ -8,7 +8,7 @@ import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-router-container'
 import '@reown/appkit-ui/wui-shimmer'
 
-import { Page1, Page2 } from './appkit-wui-router-container.components'
+import { connectPage, connectingPage } from './appkit-wui-router-container.components'
 
 const DEFAULT_VALUE = 'cubic-bezier(0.4, 0, 0.2, 1)'
 const transitionFunctions = [
@@ -67,15 +67,15 @@ export default {
 
 export const Default: Component = {
   render: args => {
-    const [view, setView] = useState<string>('page1')
-    const [history, setHistory] = useState<string[]>(['page1'])
+    const [view, setView] = useState<string>('ConnectView')
+    const [history, setHistory] = useState<string[]>(['ConnectView'])
 
-    function onRenderPages(view: string) {
-      if (view === 'page1') {
-        return Page1()
-      } else {
-        return Page2()
+    function onRenderPages(page: string) {
+      if (page === 'ConnectView') {
+        return connectPage()
       }
+
+      return connectingPage()
     }
 
     const transitionFunc =
@@ -88,7 +88,7 @@ export const Default: Component = {
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <wui-button
             size="sm"
-            .disabled=${view === 'page1'}
+            .disabled=${view === 'ConnectView'}
             @click="${() => {
               const previousPage = history[history.length - 2]
               if (previousPage) {
@@ -102,10 +102,10 @@ export const Default: Component = {
           </wui-button>
           <wui-button
             size="sm"
-            .disabled=${view === 'page2'}
+            .disabled=${view === 'ConnectingView'}
             @click="${() => {
-              setView('page2')
-              setHistory([...history, 'page2'])
+              setView('ConnectingView')
+              setHistory([...history, 'ConnectingView'])
             }}"
           >
             Go next page
@@ -114,8 +114,8 @@ export const Default: Component = {
           <wui-button
             size="sm"
             @click="${() => {
-              setView('page1')
-              setHistory(['page1'])
+              setView('ConnectView')
+              setHistory(['ConnectView'])
             }}"
           >
             Reset History

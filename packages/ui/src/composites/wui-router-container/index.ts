@@ -46,6 +46,7 @@ export class WuiRouterContainer extends LitElement {
 
       if (this.prevHeight === '0px') {
         this.viewDirection = ''
+        this.style.setProperty('--wui-router-container-transition-duration', '0s')
         this.style.setProperty('--new-height', newHeight)
         this.prevHeight = newHeight
       } else {

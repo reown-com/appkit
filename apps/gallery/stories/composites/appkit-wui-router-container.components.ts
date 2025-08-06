@@ -5,7 +5,7 @@ import '@reown/appkit-ui/wui-list-wallet'
 import '@reown/appkit-ui/wui-shimmer'
 import '@reown/appkit-ui/wui-text'
 
-export function Page1() {
+export function connectPage() {
   return html`
     <wui-flex flexDirection="column" justifyContent="flex-start" gap="2" width="100%" height="100%">
       <wui-flex flexDirection="column" padding="4">
@@ -38,7 +38,7 @@ export function Page1() {
   `
 }
 
-export function Page2() {
+export function connectingPage() {
   return html`
     <wui-flex
       flexDirection="column"
