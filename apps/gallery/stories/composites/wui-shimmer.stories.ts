@@ -5,8 +5,6 @@ import { html } from 'lit'
 import '@reown/appkit-ui/wui-shimmer'
 import type { WuiShimmer } from '@reown/appkit-ui/wui-shimmer'
 
-import { borderRadiusOptions } from '../../utils/PresetUtils'
-
 type Component = Meta<WuiShimmer>
 
 export default {
@@ -14,14 +12,9 @@ export default {
   args: {
     width: '200px',
     height: '50px',
-    borderRadius: 's'
+    rounded: false
   },
-  argTypes: {
-    borderRadius: {
-      options: borderRadiusOptions,
-      control: { type: 'select' }
-    }
-  }
+  argTypes: {}
 } as Component
 
 export const Default: Component = {
@@ -29,6 +22,6 @@ export const Default: Component = {
     html`<wui-shimmer
       width=${args.width}
       height="${args.height}"
-      borderRadius=${args.borderRadius}
+      ?rounded=${args.rounded}
     ></wui-shimmer>`
 }

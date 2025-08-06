@@ -9,7 +9,8 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[32]};
     display: flex;
     gap: ${({ spacing }) => spacing[1]};
-    padding: ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[2]} ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[1]};
+    padding: ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[2]}
+      ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[1]};
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 

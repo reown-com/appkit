@@ -21,7 +21,6 @@ import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-link'
 import '@reown/appkit-ui/wui-loading-thumbnail'
 import '@reown/appkit-ui/wui-logo'
 import '@reown/appkit-ui/wui-qr-code'
@@ -113,9 +112,9 @@ export class W3mConnectingFarcasterView extends LitElement {
       .padding=${['0', '5', '5', '5']}
       gap="5"
     >
-      <wui-shimmer rounded width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
+      <wui-shimmer width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
-      <wui-text variant="md-medium" color="primary"> Scan this QR Code with your phone </wui-text>
+      <wui-text variant="lg-medium" color="primary"> Scan this QR Code with your phone </wui-text>
       ${this.copyTemplate()}
     </wui-flex>`
   }
@@ -274,15 +273,16 @@ export class W3mConnectingFarcasterView extends LitElement {
   private copyTemplate() {
     const inactive = !this.uri || !this.ready
 
-    return html`<wui-link
+    return html`<wui-button
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      color="secondary"
+      variant="neutral-secondary"
+      size="sm"
       data-testid="copy-wc2-uri"
     >
-      <wui-icon size="xs" color="default" slot="iconLeft" name="copy"></wui-icon>
+      <wui-icon size="sm" color="default" slot="iconRight" name="copy"></wui-icon>
       Copy link
-    </wui-link>`
+    </wui-button>`
   }
 
   private forceUpdate = () => {

@@ -246,7 +246,7 @@ export class WuiIcon extends LitElement {
     } as const
 
     this.style.cssText = `
-      --local-width: ${`var(--apkt-spacing-${getSize[this.size]});`}
+      --local-width: ${this.size === 'inherit' ? 'inherit' : `var(--apkt-spacing-${getSize[this.size]})`};
       --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]}
     `
 

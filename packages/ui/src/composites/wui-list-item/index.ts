@@ -5,7 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -16,17 +16,17 @@ export class WuiListItem extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc = 'google'
 
-  @property() public text = '0.527 ETH'
-
-  @property() public subtext?: string = undefined
-
   @property() public icon?: IconType
+
+  @property() public iconColor?: IconColorType
 
   @property({ type: Boolean }) public loading = false
 
   @property() public tabIdx?: boolean
 
   @property({ type: Boolean }) public disabled = false
+
+  @property({ type: Boolean }) public rightIcon = true
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -37,26 +37,36 @@ export class WuiListItem extends LitElement {
         tabindex=${ifDefined(this.tabIdx)}
       >
         <wui-flex gap="2" alignItems="center">
-          ${this.imageTemplate()}
+          ${this.templateLeftIcon()}
           <wui-flex gap="1">
             <slot></slot>
           </wui-flex>
         </wui-flex>
-        ${this.iconTemplate()}
+        ${this.templateRightIcon()}
       </button>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private imageTemplate() {
+  private templateLeftIcon() {
     if (this.icon) {
-      return html`<wui-image icon=${this.icon} ?boxed=${true}></wui-image>`
+      return html`<wui-image
+        icon=${this.icon}
+        iconColor=${ifDefined(this.iconColor)}
+        ?boxed=${true}
+        ?rounded=${true}
+      ></wui-image>`
     }
 
-    return html`<wui-image ?boxed=${true} src=${this.imageSrc}></wui-image>`
+    return html`<wui-image ?boxed=${true} ?rounded=${true} src=${this.imageSrc}></wui-image>`
   }
 
-  private iconTemplate() {
+  private templateRightIcon() {
+    console.log('this.rightIcon', this.rightIcon)
+    if (!this.rightIcon) {
+      return null
+    }
+
     if (this.loading) {
       return html`<wui-loading-spinner size="md" color="accent-primary"></wui-loading-spinner>`
     }

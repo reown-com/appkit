@@ -136,6 +136,7 @@ export const UiHelperUtil = {
 
     return 'dark'
   },
+
   splitBalance(input: string): [string, string] {
     const parts = input.split('.') as [string, string]
     if (parts.length === 2) {
@@ -144,10 +145,21 @@ export const UiHelperUtil = {
 
     return ['0', '00']
   },
+
   roundNumber(number: number, threshold: number, fixed: number) {
     const roundedNumber =
       number.toString().length >= threshold ? Number(number).toFixed(fixed) : number
 
     return roundedNumber
+  },
+
+  cssDurationToNumber(duration: string) {
+    if (duration.endsWith('s')) {
+      return Number(duration.replace('s', '')) * 1000
+    } else if (duration.endsWith('ms')) {
+      return Number(duration.replace('ms', ''))
+    }
+
+    return 0
   }
 }

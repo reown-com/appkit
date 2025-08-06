@@ -1,10 +1,6 @@
 import { css } from 'lit'
 
 export default css`
-  :host > wui-flex:first-child {
-    transform: translateY(calc(var(--apkt-spacing-2) * -1));
-  }
-
   wui-icon-link {
     margin-right: calc(var(--apkt-spacing-8) * -1);
   }

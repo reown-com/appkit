@@ -3,8 +3,8 @@ import { property } from 'lit/decorators.js'
 
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-toggle/index.js'
 import styles from './styles.js'
-import '@reown/appkit-ui/wui-toggle'
 
 @customElement('wui-certified-switch')
 export class WuiCertifiedSwitch extends LitElement {

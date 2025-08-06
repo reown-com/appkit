@@ -23,13 +23,17 @@ export default css`
   }
 
   :host([boxed]) {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[2]};
+  }
+
+  :host([rounded]) {
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
   }
 
   :host([boxed]) img {

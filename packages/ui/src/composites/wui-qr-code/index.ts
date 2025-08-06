@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
+import '../../layout/wui-flex/index.js'
 import { QrCodeUtil } from '../../utils/QrCode.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { ThemeType } from '../../utils/TypeUtil.js'
@@ -34,20 +35,25 @@ export class WuiQrCode extends LitElement {
     this.dataset['clear'] = String(this.arenaClear)
     this.style.cssText = `--local-size: ${this.size}px`
 
-    return html`${this.templateVisual()} ${this.templateSvg()}`
+    return html`<wui-flex
+      class="wui-qr-code"
+      direction="column"
+      gap="4"
+      width="100%"
+      style="height: 100%"
+    >
+      ${this.templateVisual()} ${this.templateSvg()}
+    </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
   private templateSvg() {
-    const size = this.theme === 'light' ? this.size : this.size - 8 * 2
-
     return svg`
-      <svg height=${size} width=${size}>
+      <svg height=${this.size} width=${this.size}>
         ${QrCodeUtil.generate({
           uri: this.uri,
-          size,
-          logoSize: this.arenaClear ? 0 : size / 4,
-          dotColor: '#141414'
+          size: this.size,
+          logoSize: this.arenaClear ? 0 : this.size / 4
         })}
       </svg>
     `

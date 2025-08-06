@@ -118,7 +118,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
     return html`
       <wui-icon-link
-        ?disabled=${isRegistered ? true : false}
+        ?disabled=${Boolean(isRegistered)}
         class="input-submit-button"
         size="sm"
         icon="chevronRight"

@@ -7,15 +7,10 @@ export default css`
     display: block;
     overflow: hidden;
     aspect-ratio: 1 / 1;
-    width: var(--local-size);
-  }
-
-  :host([data-theme='light']) {
-    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
-  }
-
-  :host([data-theme='dark']) {
+    width: 100%;
+    height: 100%;
     background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
+    color: ${({ tokens }) => tokens.theme.textInvert};
   }
 
   :host {
@@ -36,6 +31,9 @@ export default css`
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    box-shadow: inset 0 0 0 4px ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[6]};
   }
 
   wui-image {
