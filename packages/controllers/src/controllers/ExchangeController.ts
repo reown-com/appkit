@@ -12,8 +12,9 @@ import {
 import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
 import type { Exchange, GetExchangesParams, PayUrlParams } from '../utils/ExchangeUtil.js'
 
+// -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
-const DEFAULT_STATE: PayControllerState = {
+const DEFAULT_STATE: ExchangeControllerState = {
   paymentAsset: {
     network: 'eip155:1',
     asset: '0x0',
@@ -47,7 +48,7 @@ export type CurrentPayment = {
 }
 export type PayResult = CurrentPayment['result']
 
-export interface PayControllerState {
+export interface ExchangeControllerState {
   amount: number
   error: string | null
   isLoading: boolean
@@ -64,11 +65,11 @@ export interface PayControllerState {
   }
 }
 
-type StateKey = keyof PayControllerState
+type StateKey = keyof ExchangeControllerState
 type PaymentType = 'wallet' | 'exchange'
 
 // -- State --------------------------------------------- //
-const state = proxy<PayControllerState>({
+const state = proxy<ExchangeControllerState>({
   paymentAsset: {
     network: 'eip155:1',
     asset: '0x0',
@@ -90,11 +91,11 @@ export const ExchangeController = {
   state,
 
   // -- Subscriptions ----------------------------------- //
-  subscribe(callback: (newState: PayControllerState) => void) {
+  subscribe(callback: (newState: ExchangeControllerState) => void) {
     return sub(state, () => callback(state))
   },
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: PayControllerState[K]) => void) {
+  subscribeKey<K extends StateKey>(key: K, callback: (value: ExchangeControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
 
