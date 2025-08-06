@@ -1,6 +1,7 @@
 import { html } from 'lit'
 
 import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-list-wallet'
 import '@reown/appkit-ui/wui-shimmer'
 import '@reown/appkit-ui/wui-text'
@@ -50,12 +51,12 @@ export function connectingPage() {
       height="100%"
     >
       <wui-flex flexDirection="column" alignItems="center" gap="4">
-        <wui-icon-box
+        <wui-icon
           icon="wallet"
-          size="inherit"
+          size="xl"
           color="accent-primary"
           style="width: 48px; margin-bottom: 32px;"
-        ></wui-icon-box>
+        ></wui-icon>
         <wui-flex flexDirection="column" alignItems="center" gap="4">
           <wui-text variant="lg-medium" color="primary" align="center"
             >Connecting to MetaMask</wui-text
@@ -64,6 +65,33 @@ export function connectingPage() {
             >Please approve the request in your wallet</wui-text
           >
           <wui-button size="sm" variant="accent-primary">Cancel</wui-button>
+        </wui-flex>
+      </wui-flex>
+    </wui-flex>
+  `
+}
+
+export function settingsPage() {
+  return html`
+    <wui-flex
+      flexDirection="column"
+      justifyContent="flex-start"
+      alignItems="center"
+      padding="4"
+      gap="2"
+      width="100%"
+      height="100%"
+    >
+      <wui-flex flexDirection="column" alignItems="center" gap="4">
+        <wui-icon
+          icon="wallet"
+          size="xl"
+          color="accent-primary"
+          style="width: 48px; margin-bottom: 32px;"
+        ></wui-icon>
+        <wui-flex flexDirection="column" alignItems="center" gap="4">
+          <wui-text variant="lg-medium" color="primary" align="center">Settings</wui-text>
+          <wui-list-item text="Settings 1" subtext="Settings" icon="allWallets"></wui-list-item>
         </wui-flex>
       </wui-flex>
     </wui-flex>

@@ -9,37 +9,44 @@ import styles from './styles.js'
 
 @customElement('w3m-router')
 export class W3mRouter extends LitElement {
-  public static override styles = styles
+  public static override styles = [styles]
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private view = RouterController.state.view
+  @state() private viewState = RouterController.state.view
 
-  public constructor() {
-    super()
+  @state() private history = RouterController.state.history.join(',')
+
+  public override firstUpdated() {
     this.unsubscribe.push(
-      RouterController.subscribeKey('view', val => {
-        this.view = val
+      RouterController.subscribeKey('view', () => {
+        this.history = RouterController.state.history.join(',')
       })
     )
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<wui-router-container
-      .view=${this.view}
-      .history=${RouterController.state.history}
-      .onRenderPages=${this.viewTemplate}
-    >
-    </wui-router-container>`
+    return html`${this.templatePageContainer()}`
   }
 
   // -- Private ------------------------------------------- //
-  private viewTemplate(view: string) {
+  private templatePageContainer() {
+    return html`<wui-router-container
+      history=${this.history}
+      .setView=${() => {
+        this.viewState = RouterController.state.view
+      }}
+    >
+      ${this.viewTemplate(this.viewState)}
+    </wui-router-container>`
+  }
+
+  private viewTemplate(view: RouterControllerState['view']) {
     // - These components are imported from the scaffold exports according to the case. This would render empty if the component is not imported.
-    switch (view as RouterControllerState['view']) {
+    switch (view) {
       // Core Views
       case 'AccountSettings':
         return html`<w3m-account-settings-view></w3m-account-settings-view>`

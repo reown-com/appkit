@@ -152,7 +152,12 @@ export class W3mConnectingWidget extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="2"  .padding=${['2', '0', '0', '0'] as const}>
+        <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          gap="2"
+          .padding=${['2', '0', '0', '0'] as const}
+        >
           <wui-text align="center" variant="md-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>

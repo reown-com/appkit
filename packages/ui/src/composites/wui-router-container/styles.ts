@@ -7,8 +7,7 @@ export default css`
     overflow: hidden;
     position: relative;
     height: var(--new-height);
-    transition: height var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
-      var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2));
+    transition: height var(--local-duration, var(--apkt-duration-lg)) var(--apkt-ease-out-power-1);
     width: var(--apkt-modal-width);
   }
 
@@ -24,22 +23,22 @@ export default css`
     flex-direction: column;
   }
 
-  div.page[view-direction='prev'] {
+  div.page[view-direction^='prev-'] {
     animation:
-      slide-left-out var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
-        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2)),
-      slide-left-in var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
-        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2));
-    animation-delay: 0ms, 200ms;
+      slide-left-out var(--local-duration, var(--apkt-duration-lg)) forwards
+        var(--local-transition, var(--apkt-ease-out-power-2)),
+      slide-left-in var(--local-duration, var(--apkt-duration-lg)) forwards
+        var(--local-transition, var(--apkt-ease-out-power-2));
+    animation-delay: 0ms, var(--local-duration, var(--apkt-duration-lg));
   }
 
-  div.page[view-direction='next'] {
+  div.page[view-direction^='next-'] {
     animation:
-      slide-right-out var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
-        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2)),
-      slide-right-in var(--wui-router-container-transition-duration, var(--apkt-duration-lg))
-        forwards var(--wui-router-container-transition-function, var(--apkt-ease-out-power-2));
-    animation-delay: 0ms, 200ms;
+      slide-right-out var(--local-duration, var(--apkt-duration-lg)) forwards
+        var(--local-transition, var(--apkt-ease-out-power-2)),
+      slide-right-in var(--local-duration, var(--apkt-duration-lg)) forwards
+        var(--local-transition, var(--apkt-ease-out-power-2));
+    animation-delay: 0ms, var(--local-duration, var(--apkt-duration-lg));
   }
 
   @keyframes slide-left-out {
@@ -49,20 +48,20 @@ export default css`
       filter: blur(0px);
     }
     to {
-      transform: translateX(6px) scale(0.98);
+      transform: translateX(8px) scale(0.99);
       opacity: 0;
-      filter: blur(2px);
+      filter: blur(4px);
     }
   }
 
   @keyframes slide-left-in {
     from {
-      transform: translateX(-6px) scale(0.98);
+      transform: translateX(-8px) scale(0.99);
       opacity: 0;
-      filter: blur(2px);
+      filter: blur(4px);
     }
     to {
-      transform: translateX(0) scale(1);
+      transform: translateX(0) translateY(0) scale(1);
       opacity: 1;
       filter: blur(0px);
     }
@@ -75,20 +74,20 @@ export default css`
       filter: blur(0px);
     }
     to {
-      transform: translateX(-6px) scale(0.98);
+      transform: translateX(-8px) scale(0.99);
       opacity: 0;
-      filter: blur(2px);
+      filter: blur(4px);
     }
   }
 
   @keyframes slide-right-in {
     from {
-      transform: translateX(6px) scale(0.98);
+      transform: translateX(8px) scale(0.99);
       opacity: 0;
-      filter: blur(2px);
+      filter: blur(4px);
     }
     to {
-      transform: translateX(0) scale(1);
+      transform: translateX(0) translateY(0) scale(1);
       opacity: 1;
       filter: blur(0px);
     }

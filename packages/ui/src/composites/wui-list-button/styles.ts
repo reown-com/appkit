@@ -22,7 +22,6 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[3]};
   }
 
-
   button:hover {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }

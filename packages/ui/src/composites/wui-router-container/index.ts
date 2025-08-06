@@ -4,96 +4,118 @@ import { property, state } from 'lit/decorators.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
+function cssDurationToNumber(duration: string) {
+  if (duration.endsWith('s')) {
+    return Number(duration.replace('s', '')) * 1000
+  } else if (duration.endsWith('ms')) {
+    return Number(duration.replace('ms', ''))
+  }
+
+  return 0
+}
+
 @customElement('wui-router-container')
 export class WuiRouterContainer extends LitElement {
   static override styles = styles
 
   private resizeObserver?: ResizeObserver = undefined
 
-  @property({ type: String }) view = ''
+  @property({ type: String }) transitionDuration = ''
 
-  @property({ type: String }) transitionDuration = '0.2s'
+  @property({ type: String }) transitionFunction = ''
 
-  @property({ type: String }) transitionFunction = 'cubic-bezier(0.4, 0, 0.2, 1)'
+  @property({ type: String }) history = ''
 
-  @property({ type: Number }) history: string[] = []
+  @property({ type: String }) view: string | undefined = ''
 
-  @property({ attribute: false }) public onRenderPages: (view: string) => void = (view: string) => {
-    console.warn(`onRenderPages is not implemented for view: ${view}`)
-  }
-
-  @state() private viewState = this.view
+  @property({ attribute: false }) setView: ((view: string) => void) | undefined = undefined
 
   @state() private viewDirection = ''
 
-  @state() private prevHeight = '0px'
-
-  @state() private prevHistoryLength = 1
+  @state() private historyState = ''
 
   public override updated(changedProps: Map<string, unknown>) {
-    if (changedProps.has('view')) {
-      this.onViewChange(this.view)
+    if (changedProps.has('history')) {
+      const newHistory = this.history
+
+      if (this.historyState !== '' && this.historyState !== newHistory) {
+        this.onViewChange(newHistory)
+      }
+    }
+
+    if (changedProps.has('transitionDuration')) {
+      this.style.setProperty('--local-duration', this.transitionDuration)
+    }
+
+    if (changedProps.has('transitionFunction')) {
+      this.style.setProperty('--local-transition', this.transitionFunction)
     }
   }
 
   public override firstUpdated() {
-    this.viewState = this.view
-    this.style.setProperty('--wui-router-container-transition-function', this.transitionFunction)
+    this.style.setProperty('--local-transition', this.transitionFunction)
+    this.style.setProperty('--local-duration', this.transitionDuration)
+    this.historyState = this.history
 
-    this.resizeObserver = new ResizeObserver(([content]) => {
-      const newHeight = `${content?.contentRect.height}px`
-      const prevHeight = this.prevHeight || newHeight
-
-      if (this.prevHeight === '0px') {
-        this.viewDirection = ''
-        this.style.setProperty('--wui-router-container-transition-duration', '0s')
-        this.style.setProperty('--new-height', newHeight)
-        this.prevHeight = newHeight
-      } else {
-        this.style.setProperty(
-          '--wui-router-container-transition-duration',
-          this.transitionDuration
-        )
-        this.style.setProperty('--prev-height', prevHeight)
-        // eslint-disable-next-line no-void
-        void this.offsetHeight
-        this.style.setProperty('--new-height', newHeight)
-        this.prevHeight = newHeight
+    this.resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        if (entry.target === this.getWrapper()) {
+          const newHeight = `${entry.contentRect.height}px`
+          this.style.setProperty('--new-height', newHeight)
+        }
       }
     })
-    this.resizeObserver?.observe(this.getWrapper())
+
+    this.resizeObserver.observe(this.getWrapper())
   }
 
   public override disconnectedCallback() {
-    this.resizeObserver?.unobserve(this.getWrapper())
+    const wrapper = this.getWrapper()
+    if (wrapper && this.resizeObserver) {
+      this.resizeObserver.unobserve(wrapper)
+    }
   }
 
   public override render() {
     return html`
       <div class="container">
-        <div
-          class="page"
-          view-direction="${this.viewDirection}"
-          @slotchange=${() => this.requestUpdate()}
-        >
-          ${this.onRenderPages(this.viewState)}
+        <div class="page" view-direction="${this.viewDirection}">
+          <slot></slot>
         </div>
       </div>
     `
   }
 
-  private onViewChange(newView: string) {
-    let direction = 'next'
-    if (this.history.length < this.prevHistoryLength) {
+  private onViewChange(history: string) {
+    const historyArr = history.split(',').filter(Boolean)
+    const prevArr = this.historyState.split(',').filter(Boolean)
+
+    const prevLength = prevArr.length
+    const newLength = historyArr.length
+    const newView = historyArr[historyArr.length - 1] || ''
+
+    let direction = ''
+    if (newLength > prevLength) {
+      direction = 'next'
+    } else if (newLength < prevLength) {
       direction = 'prev'
+    } else if (newLength === prevLength && historyArr[newLength - 1] !== prevArr[prevLength - 1]) {
+      // If same length but last view changed, treat as next
+      direction = 'next'
     }
 
-    this.prevHistoryLength = this.history.length
-    this.viewDirection = direction
+    this.viewDirection = `${direction}-${newView}`
+
+    const duration = cssDurationToNumber(this.transitionDuration)
 
     setTimeout(() => {
-      this.viewState = newView
-    }, 200)
+      this.historyState = history
+      this.setView?.(newView)
+    }, duration)
+
+    setTimeout(() => {
+      this.viewDirection = ''
+    }, duration * 2)
   }
 
   private getWrapper() {

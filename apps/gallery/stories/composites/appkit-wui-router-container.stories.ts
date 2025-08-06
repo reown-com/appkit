@@ -8,7 +8,7 @@ import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-router-container'
 import '@reown/appkit-ui/wui-shimmer'
 
-import { connectPage, connectingPage } from './appkit-wui-router-container.components'
+import { connectPage, connectingPage, settingsPage } from './appkit-wui-router-container.components'
 
 const DEFAULT_VALUE = 'cubic-bezier(0.4, 0, 0.2, 1)'
 const transitionFunctions = [
@@ -65,17 +65,43 @@ export default {
   }
 } as Component
 
+const pages = [
+  {
+    name: 'ConnectView',
+    component: connectPage
+  },
+  {
+    name: 'ConnectingView',
+    component: connectingPage
+  },
+  {
+    name: 'SettingsView',
+    component: settingsPage
+  }
+]
+
+const intialPage = 'ConnectView'
+
 export const Default: Component = {
   render: args => {
-    const [view, setView] = useState<string>('ConnectView')
-    const [history, setHistory] = useState<string[]>(['ConnectView'])
+    const [history, setHistory] = useState<string[]>([intialPage])
+    const [currentView, setCurrentView] = useState<string | undefined>(intialPage)
 
-    function onRenderPages(page: string) {
-      if (page === 'ConnectView') {
-        return connectPage()
+    function onRenderPages() {
+      switch (currentView) {
+        case 'ConnectView':
+          return connectPage()
+        case 'ConnectingView':
+          return connectingPage()
+        case 'SettingsView':
+          return settingsPage()
+        default:
+          return html``
       }
+    }
 
-      return connectingPage()
+    function setView(view: string) {
+      setCurrentView(view)
     }
 
     const transitionFunc =
@@ -88,12 +114,13 @@ export const Default: Component = {
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <wui-button
             size="sm"
-            .disabled=${view === 'ConnectView'}
+            .disabled=${history[history.length - 2] ? false : true}
             @click="${() => {
-              const previousPage = history[history.length - 2]
-              if (previousPage) {
-                setView(previousPage)
-                setHistory(history.slice(0, -1))
+              if (history.length > 1) {
+                const previousPage = history[history.length - 2]
+                if (previousPage) {
+                  setHistory(history.slice(0, -1))
+                }
               }
             }}"
           >
@@ -102,10 +129,11 @@ export const Default: Component = {
           </wui-button>
           <wui-button
             size="sm"
-            .disabled=${view === 'ConnectingView'}
+            .disabled=${history.length === pages.length ? true : false}
             @click="${() => {
-              setView('ConnectingView')
-              setHistory([...history, 'ConnectingView'])
+              if (history.length < pages.length) {
+                setHistory([...history, pages[history.length]?.name || ''])
+              }
             }}"
           >
             Go next page
@@ -114,7 +142,6 @@ export const Default: Component = {
           <wui-button
             size="sm"
             @click="${() => {
-              setView('ConnectView')
               setHistory(['ConnectView'])
             }}"
           >
@@ -141,10 +168,11 @@ export const Default: Component = {
             <wui-router-container
               transitionDuration="${args.transitionDuration}"
               transitionFunction="${transitionFunc}"
-              .history=${history}
-              view="${view}"
-              .onRenderPages=${onRenderPages}
-            ></wui-router-container>
+              history=${history.join(',')}
+              .setView=${setView}
+            >
+              ${onRenderPages()}
+            </wui-router-container>
           </div>
         </wui-card>
       </div>
