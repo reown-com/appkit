@@ -652,7 +652,9 @@ export class AppKit extends AppKitBaseClient {
     }
 
     if (remoteFeatures.emailCapture) {
-      featureImportPromises.push(import('@reown/appkit-siwx/ui'))
+      featureImportPromises.push(
+        import('@reown/appkit-scaffold-ui/reown-authentication/data-capture')
+      )
     }
 
     await Promise.all([

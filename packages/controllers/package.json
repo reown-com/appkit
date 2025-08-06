@@ -43,6 +43,11 @@
       "types": "./dist/types/exports/testing.d.ts",
       "import": "./dist/esm/exports/testing.js",
       "default": "./dist/esm/exports/testing.js"
+    },
+    "./features": {
+      "types": "./dist/types/exports/features.d.ts",
+      "import": "./dist/esm/exports/features.js",
+      "default": "./dist/esm/exports/features.js"
     }
   },
   "typesVersions": {
