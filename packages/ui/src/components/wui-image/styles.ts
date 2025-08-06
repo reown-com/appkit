@@ -32,6 +32,10 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
+  :host([rounded]) {
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
+  }
+
   :host([boxed]) img {
     width: 20px;
     height: 20px;
