@@ -10,7 +10,6 @@ import type {
   CaipNetworkId,
   ChainNamespace,
   Hex,
-  ParsedCaipAddress,
   SdkVersion
 } from '@reown/appkit-common'
 import { ConstantsUtil, NetworkUtil, ParseUtil } from '@reown/appkit-common'
