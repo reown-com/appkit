@@ -28,8 +28,12 @@ export class WuiListItem extends LitElement {
 
   @property({ type: Boolean }) public rightIcon = true
 
+  @property({ type: Boolean }) public rounded = false
+
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['rounded'] = this.rounded ? 'true' : 'false'
+
     return html`
       <button
         ?disabled=${this.loading ? true : Boolean(this.disabled)}
@@ -54,11 +58,15 @@ export class WuiListItem extends LitElement {
         icon=${this.icon}
         iconColor=${ifDefined(this.iconColor)}
         ?boxed=${true}
-        ?rounded=${true}
+        ?rounded=${this.rounded}
       ></wui-image>`
     }
 
-    return html`<wui-image ?boxed=${true} ?rounded=${true} src=${this.imageSrc}></wui-image>`
+    return html`<wui-image
+      ?boxed=${true}
+      ?rounded=${this.rounded}
+      src=${this.imageSrc}
+    ></wui-image>`
   }
 
   private templateRightIcon() {

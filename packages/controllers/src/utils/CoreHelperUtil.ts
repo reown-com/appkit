@@ -280,7 +280,9 @@ export const CoreHelperUtil = {
       }
     }
 
-    return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
+    const [value, floating] = formattedBalance.split('.')
+
+    return { value, floating, symbol }
   },
 
   getApiUrl() {

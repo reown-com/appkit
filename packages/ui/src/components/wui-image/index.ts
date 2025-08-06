@@ -50,12 +50,8 @@ export class WuiImage extends LitElement {
       --local-height: ${this.size ? `var(--apkt-spacing-${getSize[this.size]});` : '100%'};
       `
 
-    if (this.boxed) {
-      this.dataset['boxed'] = 'true'
-    }
-    if (this.rounded) {
-      this.dataset['rounded'] = 'true'
-    }
+    this.dataset['boxed'] = this.boxed ? 'true' : 'false'
+    this.dataset['rounded'] = this.rounded ? 'true' : 'false'
 
     if (this.icon) {
       return html`<wui-icon
@@ -65,8 +61,8 @@ export class WuiImage extends LitElement {
       ></wui-icon> `
     }
 
-    if (this.icon) {
-      return html`<wui-icon color="inherit" size="inherit" name=${this.icon}></wui-icon> `
+    if (this.logo) {
+      return html`<wui-icon color="inherit" size="inherit" name=${this.logo}></wui-icon> `
     }
 
     return html`<img src=${ifDefined(this.src)} alt=${this.alt} @error=${this.handleImageError} />`

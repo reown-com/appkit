@@ -106,6 +106,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     const connector = connectorId ? ConnectorController.getConnectorById(connectorId) : undefined
     const connectorImage = AssetUtil.getConnectorImage(connector)
+    const { value, floating, symbol } = CoreHelperUtil.formatBalance(
+      this.balance,
+      this.balanceSymbol
+    )
 
     return html`<wui-flex
         flexDirection="column"
@@ -127,10 +131,10 @@ export class W3mAccountDefaultWidget extends LitElement {
           @click=${this.onGoToProfileWalletsView.bind(this)}
           data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
-        <wui-flex flexDirection="column" alignItems="center">
-          <wui-text variant="md-regular" color="secondary">
-            ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
-          </wui-text>
+        <wui-flex flexDirection="row" alignItems="flex-end" justifyContent="center" gap="1">
+          <wui-text variant="h3-regular" color="primary">${value}</wui-text>
+          <wui-text variant="h3-regular" color="secondary">.${floating}</wui-text>
+          <wui-text variant="h6-medium" color="primary">${symbol}</wui-text>
         </wui-flex>
         ${this.explorerBtnTemplate()}
       </wui-flex>
@@ -139,6 +143,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
         ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
+          .rounded=${true}
           icon="power"
           iconColor="error"
           ?chevron=${false}
@@ -171,6 +176,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
+        .rounded=${true}
         data-testid="w3m-account-default-fund-wallet-button"
         iconVariant="blue"
         icon="dollar"
@@ -211,6 +217,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return isEnabled
       ? html` <wui-list-item
+          .rounded=${true}
           icon="clock"
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
@@ -231,6 +238,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
+        .rounded=${true}
         icon="recycleHorizontal"
         ?chevron=${true}
         @click=${this.handleClickSwap.bind(this)}
@@ -257,6 +265,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
+        .rounded=${true}
         icon="send"
         ?chevron=${true}
         @click=${this.handleClickSend.bind(this)}
