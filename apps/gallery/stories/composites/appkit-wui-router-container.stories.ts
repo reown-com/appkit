@@ -106,6 +106,8 @@ export const Default: Component = {
 
     const transitionFunc =
       transitionFunctions.find(t => t.name === args.transitionFunction)?.value || DEFAULT_VALUE
+    const prevDisabled = history[history.length - 2] ? true : false
+    const nextDisabled = history.length === pages.length ? true : false
 
     return html`
       <div
@@ -114,7 +116,7 @@ export const Default: Component = {
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <wui-button
             size="sm"
-            .disabled=${history[history.length - 2] ? false : true}
+            .disabled=${prevDisabled}
             @click="${() => {
               if (history.length > 1) {
                 const previousPage = history[history.length - 2]
@@ -129,7 +131,7 @@ export const Default: Component = {
           </wui-button>
           <wui-button
             size="sm"
-            .disabled=${history.length === pages.length ? true : false}
+            .disabled=${nextDisabled}
             @click="${() => {
               if (history.length < pages.length) {
                 setHistory([...history, pages[history.length]?.name || ''])
