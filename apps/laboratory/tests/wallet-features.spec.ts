@@ -101,8 +101,10 @@ walletFeaturesTest('it should show swap view with preselected tokens', async () 
 
 walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.openAccount()
-  const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
+  const walletFeatureButton = await page.getWalletFeaturesButton('fund-wallet')
   await walletFeatureButton.click()
+  const onrampButton = await page.getWalletFeaturesButton('onramp')
+  await onrampButton.click()
   await expect(page.page.getByText('Meld.io')).toBeVisible()
   await page.closeModal()
 })

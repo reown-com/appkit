@@ -113,10 +113,27 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
 
-    const signedPsbtHex = await this.wallet.signPsbt(psbtHex)
+    let options: OKXConnector.SignPSBTParams | undefined = undefined
+    if (params.signInputs?.length > 0) {
+      options = {
+        autoFinalized: false,
+        toSignInputs: params.signInputs.map(input => ({
+          index: input.index,
+          address: input.address,
+          sighashTypes: input.sighashTypes,
+          publicKey: input.publicKey,
+          disableTweakSigner: input.disableTweakSigner
+        }))
+      }
+    }
+
+    const signedPsbtHex = await this.wallet.signPsbt(psbtHex, options)
 
     let txid: string | undefined = undefined
     if (params.broadcast) {
+      if (params.signInputs?.length > 0) {
+        throw new Error('Broadcast not supported for partial signing')
+      }
       txid = await this.wallet.pushPsbt(signedPsbtHex)
     }
 
@@ -220,7 +237,18 @@ export namespace OKXConnector {
     disconnect(): Promise<void>
     getAccounts(): Promise<string[]>
     signMessage(signStr: string, type?: 'ecdsa' | 'bip322-simple'): Promise<string>
-    signPsbt(psbtHex: string): Promise<string>
+    signPsbt(
+      psbtHex: string,
+      options?: {
+        autoFinalized?: boolean
+        toSignInputs?: Array<{
+          index: number
+          address?: string
+          publicKey?: string
+          sighashTypes?: number[]
+        }>
+      }
+    ): Promise<string>
     pushPsbt(psbtHex: string): Promise<string>
     send(params: {
       from: string
@@ -236,4 +264,9 @@ export namespace OKXConnector {
   }
 
   export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
+
+  export type SignPSBTParams = {
+    toSignInputs: Omit<BitcoinConnector.SignPSBTParams['signInputs'][number], 'useTweakedSigner'>[]
+    autoFinalized?: boolean
+  }
 }

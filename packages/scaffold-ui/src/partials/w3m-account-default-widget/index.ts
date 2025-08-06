@@ -153,28 +153,31 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onrampTemplate() {
+  private fundWalletTemplate() {
     if (!this.namespace) {
       return null
     }
 
-    const isOnrampEnabled = this.remoteFeatures?.onramp
     const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
       this.namespace
     )
 
-    if (!isOnrampEnabled || !hasNetworkSupport) {
+    const isOnrampEnabled = this.remoteFeatures?.onramp && hasNetworkSupport
+    const isReceiveEnabled = Boolean(this.features?.receive)
+
+    if (!isOnrampEnabled && !isReceiveEnabled) {
       return null
     }
 
     return html`
       <wui-list-item
-        data-testid="w3m-account-default-onramp-button"
-        icon="card"
+        data-testid="w3m-account-default-fund-wallet-button"
+        iconVariant="blue"
+        icon="dollar"
         ?chevron=${true}
-        @click=${this.handleClickPay.bind(this)}
+        @click=${this.handleClickFundWallet.bind(this)}
       >
-        <wui-text variant="lg-regular" color="primary">Buy crypto</wui-text>
+        <wui-text variant="lg-regular" color="primary">Fund wallet</wui-text>
       </wui-list-item>
     `
   }
@@ -186,7 +189,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     return featuresOrder.map(feature => {
       switch (feature) {
         case 'onramp':
-          return this.onrampTemplate()
+          return this.fundWalletTemplate()
         case 'swaps':
           return this.swapsTemplate()
         case 'send':
@@ -294,8 +297,8 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private handleClickPay() {
-    RouterController.push('OnRampProviders')
+  private handleClickFundWallet() {
+    RouterController.push('FundWallet')
   }
 
   private handleClickSwap() {

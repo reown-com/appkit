@@ -156,15 +156,23 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return null
     }
 
+    // Merge receive and onramp into fund to maintain backward compatibility for walletFeaturesOrder
+    const mergedFeaturesOrder = walletFeaturesOrder.map(feature => {
+      if (feature === 'receive' || feature === 'onramp') {
+        return 'fund'
+      }
+
+      return feature
+    })
+    const deduplicatedFeaturesOrder = [...new Set(mergedFeaturesOrder)]
+
     return html`<wui-flex gap="3">
-      ${walletFeaturesOrder.map(feature => {
+      ${deduplicatedFeaturesOrder.map(feature => {
         switch (feature) {
-          case 'onramp':
-            return this.onrampTemplate()
+          case 'fund':
+            return this.fundWalletTemplate()
           case 'swaps':
             return this.swapsTemplate()
-          case 'receive':
-            return this.receiveTemplate()
           case 'send':
             return this.sendTemplate()
           default:
@@ -174,21 +182,22 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     </wui-flex>`
   }
 
-  private onrampTemplate() {
+  private fundWalletTemplate() {
     const isOnrampEnabled = this.remoteFeatures?.onramp
+    const isReceiveEnabled = this.features?.receive
 
-    if (!isOnrampEnabled) {
+    if (!isOnrampEnabled && !isReceiveEnabled) {
       return null
     }
 
     return html`
-      <w3m-tooltip-trigger text="Buy">
+      <w3m-tooltip-trigger text="Fund wallet">
         <wui-icon-button
-          fullWidth
-          data-testid="wallet-features-onramp-button"
-          @click=${this.onBuyClick.bind(this)}
-          icon="card"
+          data-testid="wallet-features-fund-wallet-button"
+          @click=${this.onFundWalletClick.bind(this)}
+          icon="dollar"
           variant="accent"
+          fullWidth
         ></wui-icon-button>
       </w3m-tooltip-trigger>
     `
@@ -209,27 +218,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
           icon="recycleHorizontal"
-          variant="accent"
-        >
-        </wui-icon-button>
-      </w3m-tooltip-trigger>
-    `
-  }
-
-  private receiveTemplate() {
-    const isReceiveEnabled = this.features?.receive
-
-    if (!isReceiveEnabled) {
-      return null
-    }
-
-    return html`
-      <w3m-tooltip-trigger text="Receive">
-        <wui-icon-button
-          fullWidth
-          data-testid="wallet-features-receive-button"
-          @click=${this.onReceiveClick.bind(this)}
-          icon="arrowBottomCircle"
           variant="accent"
         >
         </wui-icon-button>
@@ -319,8 +307,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     AccountController.setCurrentTab(index)
   }
 
-  private onBuyClick() {
-    RouterController.push('OnRampProviders')
+  private onFundWalletClick() {
+    RouterController.push('FundWallet')
   }
 
   private onSwapClick() {
@@ -362,10 +350,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       icon: socialProvider ?? 'mail',
       iconSize: socialProvider ? 'xl' : 'md'
     }
-  }
-
-  private onReceiveClick() {
-    RouterController.push('WalletReceive')
   }
 
   private onGoToProfileWalletsView() {
