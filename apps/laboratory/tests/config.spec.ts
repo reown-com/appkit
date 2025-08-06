@@ -42,7 +42,8 @@ configTest.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 configTest('Should fetch correct config of projectId with all features enabled', async () => {
   await browserPage.getByTestId('project-id-button').click()
-  await browserPage.getByTestId('project-id-input').fill('2cc6a5b46203b4bc8350a6c434ad477f')
+  // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests
+  await browserPage.getByTestId('project-id-input').fill('5164c17d2d7091727aef80eeb55d7290')
   await browserPage.getByTestId('project-id-save-button').click()
   await browserPage.reload()
 
@@ -62,13 +63,14 @@ configTest('Should fetch correct config of projectId with all features enabled',
   await modalValidator.expectOnrampButton(true)
 
   await modalPage.openOnramp()
-  await modalValidator.expectOnrampProvider(['meld', 'coinbase'])
+  await modalValidator.expectOnrampProvider(['meld'])
   await modalPage.closeModal()
 })
 
 configTest('Should fetch correct config of projectId with specific features enabled', async () => {
   await browserPage.getByTestId('project-id-button').click()
-  await browserPage.getByTestId('project-id-input').fill('34543a363a1559d163355bc5e1572707')
+  // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 2
+  await browserPage.getByTestId('project-id-input').fill('f0d34629513aeb67746e0bb2a52e59fc')
   await browserPage.getByTestId('project-id-save-button').click()
   await browserPage.reload()
 
@@ -86,13 +88,14 @@ configTest('Should fetch correct config of projectId with specific features enab
   await modalValidator.expectActivityButton(true)
   await modalValidator.expectOnrampButton(true)
   await modalPage.openOnramp()
-  await modalValidator.expectOnrampProvider(['coinbase'])
+  await modalValidator.expectOnrampProvider(['meld'])
   await modalPage.closeModal()
 })
 
 configTest('Should fetch correct config of projectId with all features disabled', async () => {
   await browserPage.getByTestId('project-id-button').click()
-  await browserPage.getByTestId('project-id-input').fill('352fbde37f6c5b3cb7a30f2544fd9fdc')
+  // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 3
+  await browserPage.getByTestId('project-id-input').fill('8771bbe81fcf7903aabaf5f9f462cbc5')
   await browserPage.getByTestId('project-id-save-button').click()
   await browserPage.reload()
 

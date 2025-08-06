@@ -19,6 +19,8 @@ import {
   type Metadata,
   PublicStateController,
   type RemoteFeatures,
+  SIWXUtil,
+  getActiveCaipNetwork,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
@@ -64,8 +66,32 @@ export class AppKit extends AppKitBaseClient {
 
   // -- Private ------------------------------------------------------------------
 
-  private onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
-    const namespace = ChainController.state.activeChain as ChainNamespace
+  private async onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+    if (user.message && user.signature && user.siwxMessage) {
+      // OnAuthProviderConnected is getting triggered when we receive a success event on Social / Email login. At this moment, if SIWX is enabled, we are still adding the session to SIWX. Await this promise to make sure that the modal doesn't show the SIWX Sign Message UI
+      await SIWXUtil.addEmbeddedWalletSession(
+        {
+          chainId: user.siwxMessage.chainId as CaipNetworkId,
+          accountAddress: user.address,
+          notBefore: user.siwxMessage.notBefore,
+          statement: user.siwxMessage.statement,
+          resources: user.siwxMessage.resources,
+          requestId: user.siwxMessage.requestId,
+          issuedAt: user.siwxMessage.issuedAt,
+          domain: user.siwxMessage.domain,
+          uri: user.siwxMessage.uri,
+          version: user.siwxMessage.version,
+          nonce: user.siwxMessage.nonce
+        },
+        user.message,
+        user.signature
+      )
+    }
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('AppKit:onAuthProviderConnected - namespace is required')
+    }
 
     // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
     const caipAddress =
@@ -80,21 +106,10 @@ export class AppKit extends AppKitBaseClient {
       currentAccountType ||
       defaultAccountType
 
-    /*
-     * This covers the case where user switches back from a smart account supported
-     *  network to a non-smart account supported network resulting in a different address
-     */
-
-    if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
-      this.syncIdentity({
-        address: user.address,
-        chainId: user.chainId,
-        chainNamespace: namespace
-      })
-    }
-
     this.setCaipAddress(caipAddress, namespace)
-    this.setUser({ ...(AccountController.state.user || {}), ...user }, namespace)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { signature, siwxMessage, message, ...userWithOutSiwxData } = user
+    this.setUser({ ...(AccountController.state.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
 
@@ -148,7 +163,12 @@ export class AppKit extends AppKitBaseClient {
       }
     })
     provider.onNotConnected(() => {
-      const namespace = ChainController.state.activeChain as ChainNamespace
+      const namespace = ChainController.state.activeChain
+
+      if (!namespace) {
+        throw new Error('AppKit:onNotConnected - namespace is required')
+      }
+
       const connectorId = ConnectorController.getConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
@@ -160,14 +180,17 @@ export class AppKit extends AppKitBaseClient {
     provider.onConnect(this.onAuthProviderConnected.bind(this))
     provider.onSocialConnected(this.onAuthProviderConnected.bind(this))
     provider.onSetPreferredAccount(({ address, type }) => {
+      const namespace = ChainController.state.activeChain
+
+      if (!namespace) {
+        throw new Error('AppKit:onSetPreferredAccount - namespace is required')
+      }
+
       if (!address) {
         return
       }
 
-      this.setPreferredAccountType(
-        type as W3mFrameTypes.AccountType,
-        ChainController.state.activeChain as ChainNamespace
-      )
+      this.setPreferredAccountType(type as W3mFrameTypes.AccountType, namespace)
     })
   }
 
@@ -285,7 +308,10 @@ export class AppKit extends AppKitBaseClient {
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
-          properties: { provider: socialProviderToConnect }
+          properties: {
+            provider: socialProviderToConnect,
+            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+          }
         })
       }
     } catch (error) {
@@ -336,8 +362,8 @@ export class AppKit extends AppKitBaseClient {
             AlertController.open(ErrorUtil.ALERT_ERRORS.UNVERIFIED_DOMAIN, 'error')
           }
         },
-        getActiveCaipNetwork: (namespace?: ChainNamespace) =>
-          ChainController.getActiveCaipNetwork(namespace)
+        getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
+        getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
       })
       PublicStateController.subscribeOpen(isOpen => {
         if (!isOpen && this.isTransactionStackEmpty()) {
@@ -403,6 +429,10 @@ export class AppKit extends AppKitBaseClient {
       const isNewNamespaceSupportsAuthConnector =
         ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
 
+      if (!networkNamespace) {
+        throw new Error('AppKit:switchCaipNetwork - networkNamespace is required')
+      }
+
       /*
        * Only connect with the auth connector if:
        * 1. The current namespace is an auth connector AND
@@ -424,7 +454,7 @@ export class AppKit extends AppKitBaseClient {
           ChainController.state.activeChain = caipNetwork.chainNamespace
 
           if (namespaceAddress) {
-            const adapter = this.getAdapter(networkNamespace as ChainNamespace)
+            const adapter = this.getAdapter(networkNamespace)
             await adapter?.switchNetwork({
               caipNetwork,
               provider: this.authProvider,
@@ -442,7 +472,7 @@ export class AppKit extends AppKitBaseClient {
           }
           this.setCaipNetwork(caipNetwork)
         } catch (error) {
-          const adapter = this.getAdapter(networkNamespace as ChainNamespace)
+          const adapter = this.getAdapter(networkNamespace)
           await adapter?.switchNetwork({
             caipNetwork,
             provider: this.authProvider,
@@ -478,12 +508,14 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
+
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
     })
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })
   }
+
   public override async syncIdentity({
     address,
     chainId,
@@ -501,16 +533,22 @@ export class AppKit extends AppKitBaseClient {
       return
     }
 
+    const isAuthConnector =
+      ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         address,
         caipNetworkId
       })
 
-      this.setProfileName(name, chainNamespace)
-      this.setProfileImage(avatar, chainNamespace)
+      if (!name && isAuthConnector) {
+        await this.syncReownName(address, chainNamespace)
+      } else {
+        this.setProfileName(name, chainNamespace)
+        this.setProfileImage(avatar, chainNamespace)
+      }
     } catch {
-      await this.syncReownName(address, chainNamespace)
       if (chainId !== 1) {
         this.setProfileImage(null, chainNamespace)
       }
@@ -611,6 +649,10 @@ export class AppKit extends AppKitBaseClient {
 
     if (features.pay) {
       featureImportPromises.push(import('@reown/appkit-pay'))
+    }
+
+    if (remoteFeatures.emailCapture) {
+      featureImportPromises.push(import('@reown/appkit-siwx/ui'))
     }
 
     await Promise.all([

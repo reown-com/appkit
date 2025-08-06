@@ -1,21 +1,19 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { type Address, type Hex } from '@reown/appkit-common'
 
 import { ERC7811Utils, type WalletGetAssetsResponse } from '../../src/utils/ERC7811Util'
 
 describe('ERC7811Util', () => {
-  afterEach(() => {
-    vi.clearAllMocks()
+  beforeEach(() => {
+    vi.restoreAllMocks()
   })
 
   describe('createBalance', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should create a Balance object from an Asset object', () => {
       const asset = {
-        address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-        balance: '0x1000' as `0x${string}`,
+        address: '0x1234567890123456789012345678901234567890' as Address,
+        balance: '0x1000' as Hex,
         type: 'ERC20' as 'ERC20' | 'NATIVE',
         metadata: {
           name: 'Test Token',
@@ -48,7 +46,7 @@ describe('ERC7811Util', () => {
     it('should create a Balance object from a valid native asset object', () => {
       const asset = {
         address: 'native' as 'native',
-        balance: '0xDE0B6B3A7640000' as `0x${string}`,
+        balance: '0xDE0B6B3A7640000' as Hex,
         type: 'NATIVE' as 'ERC20' | 'NATIVE',
         metadata: {
           name: 'Ethereum',
@@ -81,7 +79,7 @@ describe('ERC7811Util', () => {
     it('should create a Balance object with complete metadata', () => {
       const asset = {
         address: 'native' as 'native',
-        balance: '0xDE0B6B3A7640000' as `0x${string}`,
+        balance: '0xDE0B6B3A7640000' as Hex,
         type: 'NATIVE' as 'ERC20' | 'NATIVE',
         metadata: {
           name: 'Ethereum',
@@ -114,7 +112,7 @@ describe('ERC7811Util', () => {
     it('should create a Balance object with default values for missing metadata', () => {
       const asset = {
         address: 'native' as 'native',
-        balance: '0xDE0B6B3A7640000' as `0x${string}`,
+        balance: '0xDE0B6B3A7640000' as Hex,
         type: 'NATIVE' as 'ERC20' | 'NATIVE',
         metadata: {
           // Missing fields
@@ -142,12 +140,8 @@ describe('ERC7811Util', () => {
   })
 
   describe('convertHexToBalance', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should convert a hex string to a Balance object', () => {
-      const hex = '0x1000' as `0x${string}`
+      const hex = '0x1000' as Hex
       const decimals = 18
 
       const balance = ERC7811Utils.convertHexToBalance({ hex, decimals })
@@ -157,12 +151,8 @@ describe('ERC7811Util', () => {
   })
 
   describe('convertAddressToCAIP10Address', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should convert an address to a CAIP-10 address', () => {
-      const address = '0x123' as `0x${string}`
+      const address = '0x123' as Address
       const chainId = 'eip155:1'
 
       const caip10Address = ERC7811Utils.convertAddressToCAIP10Address(address, chainId)
@@ -172,12 +162,8 @@ describe('ERC7811Util', () => {
   })
 
   describe('createCAIP2ChainId', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should create a CAIP-2 Chain ID from a chain ID and namespace', () => {
-      const chainId = '0x1' as `0x${string}`
+      const chainId = '0x1' as Hex
       const namespace = 'eip155'
 
       const caip2ChainId = ERC7811Utils.createCAIP2ChainId(chainId, namespace)
@@ -187,10 +173,6 @@ describe('ERC7811Util', () => {
   })
 
   describe('getChainIdHexFromCAIP2ChainId', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should get the chain ID in hex format from a CAIP-2 Chain ID', () => {
       const caip2ChainId = 'eip155:1'
 
@@ -216,16 +198,12 @@ describe('ERC7811Util', () => {
   })
 
   describe('isWalletGetAssetsResponse', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should return true for a valid WalletGetAssetsResponse', () => {
       const validResponse: WalletGetAssetsResponse = {
         '0x123': [
           {
-            address: '0x123' as `0x${string}`,
-            balance: '0x1000' as `0x${string}`,
+            address: '0x123' as Address,
+            balance: '0x1000' as Hex,
             type: 'ERC20' as 'ERC20' | 'NATIVE',
             metadata: {
               name: 'Test Token',
@@ -280,14 +258,10 @@ describe('ERC7811Util', () => {
   })
 
   describe('isValidAsset', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should return true for a valid asset', () => {
       const validAsset = {
-        address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-        balance: '0x1000' as `0x${string}`,
+        address: '0x1234567890123456789012345678901234567890' as Address,
+        balance: '0x1000' as Hex,
         type: 'NATIVE' as 'ERC20' | 'NATIVE',
         metadata: {
           name: 'Ethereum',
@@ -303,8 +277,8 @@ describe('ERC7811Util', () => {
 
     it('should return false for an invalid asset', () => {
       const invalidAsset = {
-        address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
-        balance: '0x1000' as `0x${string}`,
+        address: '0x1234567890123456789012345678901234567890' as Address,
+        balance: '0x1000' as Hex,
         type: 'NATIVE' as 'ERC20' | 'NATIVE',
         metadata: {
           name: 'Ethereum',

@@ -10,6 +10,7 @@ import {
   toUtf8Bytes
 } from 'ethers'
 
+import type { Hex } from '@reown/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   Provider,
@@ -28,7 +29,7 @@ export const EthersMethods = {
       params: [hexMessage, address]
     })
 
-    return signature as `0x${string}`
+    return signature as Hex
   },
 
   estimateGas: async (
@@ -87,7 +88,7 @@ export const EthersMethods = {
     const txResponse = await signer.sendTransaction(txParams)
     const txReceipt = await txResponse.wait()
 
-    return (txReceipt?.hash as `0x${string}`) || null
+    return (txReceipt?.hash as Hex) || null
   },
 
   writeContract: async (

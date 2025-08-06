@@ -95,6 +95,10 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connect-socials-view></w3m-connect-socials-view>`
       case 'ConnectingSocial':
         return html`<w3m-connecting-social-view></w3m-connecting-social-view>`
+      case 'DataCapture':
+        return html`<w3m-data-capture-view></w3m-data-capture-view>`
+      case 'DataCaptureOtpConfirm':
+        return html`<w3m-data-capture-otp-confirm-view></w3m-data-capture-otp-confirm-view>`
       case 'Downloads':
         return html`<w3m-downloads-view></w3m-downloads-view>`
       case 'EmailLogin':
@@ -115,8 +119,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-transactions-view></w3m-transactions-view>`
       case 'OnRampProviders':
         return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
-      case 'OnRampActivity':
-        return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
       case 'OnRampTokenSelect':
         return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
       case 'OnRampFiatSelect':

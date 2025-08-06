@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
+  type ChainAdapter,
   ChainController,
   ConnectionController
 } from '@reown/appkit-controllers'
+import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
@@ -28,8 +32,9 @@ class TestAppKitBaseClient {
             const originalError = error.cause instanceof Error ? error.cause : error
             AlertController.open(
               {
-                shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-                longMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage(
+                displayMessage:
+                  ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+                debugMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
                   originalError.message
                 )
               },
@@ -82,9 +87,11 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
 
     expect(alertSpy).toHaveBeenCalledWith(
       {
-        shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage:
-          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('Internal Server Error')
+        displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+        debugMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
+            'Internal Server Error'
+          )
       },
       'error'
     )
@@ -99,9 +106,9 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
 
     expect(alertSpy).toHaveBeenCalledWith(
       {
-        shortMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.shortMessage,
-        longMessage:
-          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.longMessage('SERVER_ERROR')
+        displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+        debugMessage:
+          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage('SERVER_ERROR')
       },
       'error'
     )
@@ -130,7 +137,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
   let closeSpy: any
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
 
     baseClient = new (class extends AppKitBaseClient {
       constructor() {
@@ -155,14 +162,13 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
 
     vi.spyOn(baseClient as any, 'getAdapter').mockReturnValue(mockAdapter as any)
     vi.spyOn(baseClient, 'getCaipNetwork').mockReturnValue({ id: 1 } as any)
+    mockChainControllerState({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      chains: new Map([[ConstantsUtil.CHAIN.EVM, {}]])
+    })
   })
 
   it('should not call close when hasConnections is true and multiWallet is enabled', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155',
-      chains: new Map([['eip155', {}]])
-    })
     vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([
       { connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }
     ])
@@ -174,11 +180,6 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
   })
 
   it('should call close when hasConnections is false', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155',
-      chains: new Map([['eip155', {}]])
-    })
     vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
 
     const connectionControllerClient = (baseClient as any).connectionControllerClient
@@ -188,11 +189,6 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
   })
 
   it('should call close when multiWallet is disabled even with existing connections', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155',
-      chains: new Map([['eip155', {}]])
-    })
     vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
       ...ConnectionController.state,
       connections: new Map([
@@ -205,5 +201,52 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
     await connectionControllerClient.connectWalletConnect()
 
     expect(closeSpy).toHaveBeenCalled()
+  })
+})
+
+describe('AppKitBaseClient.getCaipNetwork', () => {
+  let baseClient: AppKitBaseClient
+
+  beforeEach(() => {
+    vi.restoreAllMocks()
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            networkState: {
+              requestedCaipNetworks: [mainnet],
+              approvedCaipNetworkIds: [mainnet.id]
+            }
+          }
+        ]
+      ]) as Map<ChainNamespace, ChainAdapter>
+    })
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
+  })
+
+  it('should call ChainController.getCaipNetworks when chainNamespace is provided', () => {
+    const getCaipNetworksSpy = vi.spyOn(ChainController, 'getCaipNetworks')
+    const chainNamespace = 'eip155'
+
+    baseClient.getCaipNetwork(chainNamespace)
+
+    expect(getCaipNetworksSpy).toHaveBeenCalledWith(chainNamespace)
   })
 })

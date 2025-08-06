@@ -1,5 +1,9 @@
-import type { ChainNamespace, EmbeddedWalletTimeoutReason } from '@reown/appkit-common'
-import type { CaipNetwork } from '@reown/appkit-common'
+import {
+  type ChainNamespace,
+  type EmbeddedWalletTimeoutReason,
+  ParseUtil
+} from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 
 import { W3mFrame } from './W3mFrame.js'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
@@ -16,7 +20,9 @@ interface W3mFrameProviderConfig {
   enableLogger?: boolean
   onTimeout?: (reason: EmbeddedWalletTimeoutReason) => void
   abortController: AbortController
+  enableCloudAuthAccount?: boolean
   getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
+  getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
 }
 
 // -- Provider --------------------------------------------------------
@@ -25,6 +31,7 @@ export class W3mFrameProvider {
   private w3mFrame: W3mFrame
   private abortController: AbortController
   private getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
+  private getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
@@ -46,15 +53,25 @@ export class W3mFrameProvider {
     enableLogger = true,
     onTimeout,
     abortController,
-    getActiveCaipNetwork
+    getActiveCaipNetwork,
+    getCaipNetworks,
+    enableCloudAuthAccount
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
     }
     this.abortController = abortController
     this.getActiveCaipNetwork = getActiveCaipNetwork
-
-    this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
+    this.getCaipNetworks = getCaipNetworks
+    const rpcUrl = this.getRpcUrl(chainId)
+    this.w3mFrame = new W3mFrame({
+      projectId,
+      isAppClient: true,
+      chainId,
+      enableLogger,
+      rpcUrl,
+      enableCloudAuthAccount
+    })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
       this.createFrame()
@@ -315,12 +332,15 @@ export class W3mFrameProvider {
     if (payload?.socialUri) {
       try {
         await this.init()
+        const rpcUrl = this.getRpcUrl(payload.chainId)
         const response = await this.appEvent<'ConnectSocial'>({
           type: W3mFrameConstants.APP_CONNECT_SOCIAL,
           payload: {
             uri: payload.socialUri,
             preferredAccountType: payload.preferredAccountType,
-            chainId: payload.chainId
+            chainId: payload.chainId,
+            siwxMessage: payload.siwxMessage,
+            rpcUrl
           }
         } as W3mFrameTypes.AppEvent)
 
@@ -344,7 +364,9 @@ export class W3mFrameProvider {
 
         const response = await this.getUser({
           chainId,
-          preferredAccountType: payload?.preferredAccountType
+          preferredAccountType: payload?.preferredAccountType,
+          siwxMessage: payload?.siwxMessage,
+          rpcUrl: this.getRpcUrl(chainId)
         })
 
         this.setLoginSuccess(response.email)
@@ -365,7 +387,7 @@ export class W3mFrameProvider {
       const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
-        payload: { ...payload, chainId }
+        payload: { ...payload, chainId, rpcUrl: this.getRpcUrl(chainId) }
       } as W3mFrameTypes.AppEvent)
       this.user = response
 
@@ -376,12 +398,21 @@ export class W3mFrameProvider {
     }
   }
 
-  public async connectSocial(uri: string) {
+  public async connectSocial({
+    uri,
+    chainId,
+    preferredAccountType
+  }: {
+    uri: string
+    chainId?: number | string
+    preferredAccountType?: string
+  }) {
     try {
       await this.init()
+      const rpcUrl = this.getRpcUrl(chainId)
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
-        payload: { uri }
+        payload: { uri, chainId, rpcUrl, preferredAccountType }
       } as W3mFrameTypes.AppEvent)
 
       if (response.userName) {
@@ -426,11 +457,12 @@ export class W3mFrameProvider {
     }
   }
 
-  public async switchNetwork(chainId: number | string) {
+  public async switchNetwork({ chainId }: { chainId: number | string }) {
     try {
+      const rpcUrl = this.getRpcUrl(chainId)
       const response = await this.appEvent<'SwitchNetwork'>({
         type: W3mFrameConstants.APP_SWITCH_NETWORK,
-        payload: { chainId }
+        payload: { chainId, rpcUrl }
       } as W3mFrameTypes.AppEvent)
 
       this.setLastUsedChainId(response.chainId)
@@ -476,8 +508,8 @@ export class W3mFrameProvider {
       const namespace = req.chainNamespace || 'eip155'
       const chainId = this.getActiveCaipNetwork(namespace)?.id
       request.chainNamespace = namespace
-
       request.chainId = chainId
+      request.rpcUrl = this.getRpcUrl(chainId)
 
       this.rpcRequestHandler?.(req)
       const response = await this.appEvent<'Rpc'>({
@@ -747,6 +779,29 @@ export class W3mFrameProvider {
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {
     W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, networks.join(','))
+  }
+
+  private getRpcUrl(chainId?: number | string) {
+    let namespace: ChainNamespace | undefined = chainId === undefined ? undefined : 'eip155'
+
+    if (typeof chainId === 'string') {
+      if (chainId.includes(':')) {
+        namespace = ParseUtil.parseCaipNetworkId(chainId as CaipNetworkId)?.chainNamespace
+      } else if (Number.isInteger(Number(chainId))) {
+        namespace = 'eip155'
+      } else {
+        namespace = 'solana'
+      }
+    }
+
+    const caipNetworks = this.getCaipNetworks(namespace)
+    const activeNetwork = chainId
+      ? caipNetworks.find(
+          network => String(network.id) === String(chainId) || network.caipNetworkId === chainId
+        )
+      : caipNetworks[0]
+
+    return activeNetwork?.rpcUrls.default.http?.[0]
   }
 }
 

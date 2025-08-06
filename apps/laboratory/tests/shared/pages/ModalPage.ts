@@ -4,6 +4,7 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
+import type { Address, Hex } from '@reown/appkit-common'
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import {
   BASE_URL,
@@ -835,12 +836,16 @@ export class ModalPage {
   }
 
   async sendCalls() {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsButton = this.page.getByTestId('send-calls-button')
     await sendCallsButton.isVisible()
     await sendCallsButton.scrollIntoViewIfNeeded()
     await sendCallsButton.click()
   }
   async getCallsStatus(batchCallId: string) {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsInput = this.page.getByTestId('get-calls-id-input')
     const sendCallsButton = this.page.getByTestId('get-calls-status-button')
     await sendCallsButton.scrollIntoViewIfNeeded()
@@ -885,7 +890,7 @@ export class ModalPage {
       .textContent()
     expect(address, 'Address should be present').toBeTruthy()
 
-    return address as `0x${string}`
+    return address as Address
   }
 
   async getActiveConnectionsAddresses() {
@@ -917,7 +922,7 @@ export class ModalPage {
     const signature = await this.page.getByTestId('w3m-signature').textContent()
     expect(signature, 'Signature should be present').toBeTruthy()
 
-    return signature as `0x${string}`
+    return signature as Hex
   }
 
   async switchNetworkWithHook() {

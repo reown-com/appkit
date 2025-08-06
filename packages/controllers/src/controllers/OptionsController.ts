@@ -244,6 +244,11 @@ export const OptionsController = {
         state.remoteFeatures.socials
       )
     }
+
+    if (state.features?.pay) {
+      state.remoteFeatures.email = false
+      state.remoteFeatures.socials = false
+    }
   },
 
   setFeatures(features: OptionsControllerState['features'] | undefined) {
@@ -257,6 +262,11 @@ export const OptionsController = {
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
+
+    if (state.features?.pay && state.remoteFeatures) {
+      state.remoteFeatures.email = false
+      state.remoteFeatures.socials = false
+    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -350,6 +360,18 @@ export const OptionsController = {
   },
 
   setSIWX(siwx: OptionsControllerState['siwx']) {
+    if (siwx) {
+      for (const [key, isVal] of Object.entries(ConstantsUtil.SIWX_DEFAULTS) as [
+        keyof typeof ConstantsUtil.SIWX_DEFAULTS,
+        (typeof ConstantsUtil.SIWX_DEFAULTS)[keyof typeof ConstantsUtil.SIWX_DEFAULTS]
+      ][]) {
+        /*
+         * Only writes when siwx[key] is null or undefined
+         * (use ||= if you only want to check “falsy”, not recommended here)
+         */
+        siwx[key] ??= isVal
+      }
+    }
     state.siwx = siwx
   },
 

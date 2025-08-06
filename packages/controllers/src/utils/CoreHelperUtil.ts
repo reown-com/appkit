@@ -1,5 +1,6 @@
 import type {
   AdapterType,
+  Address,
   Balance,
   ChainNamespace,
   ParsedCaipAddress,
@@ -115,7 +116,7 @@ export const CoreHelperUtil = {
   },
 
   getPlainAddress(caipAddress: CaipAddress | undefined) {
-    return caipAddress?.split(':')[2]
+    return caipAddress?.split(':')[2] as Address | undefined
   },
 
   async wait(milliseconds: number) {
@@ -280,25 +281,6 @@ export const CoreHelperUtil = {
     }
 
     return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
-  },
-
-  formatBalance2(balance: string | undefined, symbol: string | undefined) {
-    let formattedBalance = undefined
-
-    if (balance === '0') {
-      formattedBalance = '0'
-    } else if (typeof balance === 'string') {
-      const number = Number(balance)
-      if (number) {
-        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
-      }
-    }
-
-    return {
-      value: formattedBalance ?? '0',
-      rest: formattedBalance === '0' ? '000' : '',
-      symbol
-    }
   },
 
   getApiUrl() {

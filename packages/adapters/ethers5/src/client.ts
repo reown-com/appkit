@@ -11,6 +11,7 @@ import {
   type ConnectorType,
   CoreHelperUtil,
   type Provider,
+  SIWXUtil,
   StorageUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
@@ -455,13 +456,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
     let requestChainId: string | undefined = undefined
 
     if (type === 'AUTH') {
-      const { address: _address, accounts: authAccounts } = await (
-        selectedProvider as unknown as W3mFrameProvider
-      ).connect({
-        chainId,
-        socialUri,
-        preferredAccountType: getPreferredAccountType('eip155')
-      })
+      const { address: _address, accounts: authAccounts } =
+        await SIWXUtil.authConnectorAuthenticate({
+          authConnector: selectedProvider as unknown as W3mFrameProvider,
+          chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+          chainId,
+          socialUri,
+          preferredAccountType: getPreferredAccountType('eip155')
+        })
 
       const caipNetwork = this.getCaipNetworks().find(n => n.id.toString() === chainId?.toString())
 
@@ -592,7 +594,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
     const connector = this.connectors.find(c => c.id === id)
 
     if (connector && connector.type === 'AUTH' && chainId) {
-      await (connector.provider as W3mFrameProvider).connect({
+      await SIWXUtil.authConnectorAuthenticate({
+        authConnector: connector.provider as unknown as W3mFrameProvider,
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
         chainId,
         preferredAccountType: getPreferredAccountType('eip155')
       })
@@ -684,17 +688,21 @@ export class Ethers5Adapter extends AdapterBlueprint {
         try {
           this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
             async resolve => {
-              const balance = await jsonRpcProvider.getBalance(address)
-              const formattedBalance = formatEther(balance)
+              try {
+                const balance = await jsonRpcProvider.getBalance(address)
+                const formattedBalance = formatEther(balance)
 
-              StorageUtil.updateNativeBalanceCache({
-                caipAddress,
-                balance: formattedBalance,
-                symbol: caipNetwork.nativeCurrency.symbol,
-                timestamp: Date.now()
-              })
+                StorageUtil.updateNativeBalanceCache({
+                  caipAddress,
+                  balance: formattedBalance,
+                  symbol: caipNetwork.nativeCurrency.symbol,
+                  timestamp: Date.now()
+                })
 
-              resolve({ balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol })
+                resolve({ balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol })
+              } catch (error) {
+                resolve({ balance: '0.00', symbol: 'ETH' })
+              }
             }
           ).finally(() => {
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -774,15 +782,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     if (!provider) {
       throw new Error('Provider is undefined')
-    }
-
-    const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
-    if (walletCapabilitiesString) {
-      const walletCapabilities = Ethers5Methods.parseWalletCapabilities(walletCapabilitiesString)
-      const accountCapabilities = walletCapabilities[params]
-      if (accountCapabilities) {
-        return accountCapabilities
-      }
     }
 
     return await provider.request({ method: 'wallet_getCapabilities', params: [params] })

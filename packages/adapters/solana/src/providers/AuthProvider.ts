@@ -7,6 +7,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type RequestArguments,
+  SIWXUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import type {
@@ -58,10 +59,12 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
     const preferredAccountType = getPreferredAccountType('solana')
 
-    await this.provider.connect({
+    await SIWXUtil.authConnectorAuthenticate({
+      authConnector: this.provider,
       chainId: withSolanaNamespace(chainId),
       socialUri: params.socialUri,
-      preferredAccountType
+      preferredAccountType,
+      chainNamespace: ConstantsUtil.CHAIN.SOLANA
     })
 
     if (!this.publicKey) {

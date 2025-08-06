@@ -80,7 +80,7 @@ const NAMESPACE_TABS = [
   { namespace: 'eip155', icon: NAMESPACE_ICONS.eip155, label: 'EVM' },
   { namespace: 'solana', icon: NAMESPACE_ICONS.solana, label: 'Solana' },
   { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' }
-] as const
+] as const satisfies { namespace: ChainNamespace; icon: string; label: string }[]
 
 const CHAIN_LABELS = {
   eip155: { title: 'Add EVM Wallet', description: 'Add your first EVM wallet' },
@@ -122,7 +122,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     this.unsubscribers.push(
       ...[
-        ConnectionController.subscribeKey('connections', () => this.requestUpdate()),
+        ConnectionController.subscribeKey('connections', () => this.onConnectionsChange()),
         ConnectionController.subscribeKey('recentConnections', () => this.requestUpdate()),
         ConnectorController.subscribeKey('activeConnectorIds', ids => {
           this.activeConnectorIds = ids
@@ -170,10 +170,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     if (tabsEl) {
       const handleTabsResize = () => {
-        const availableTabs = NAMESPACE_TABS.filter(tab =>
-          this.namespaces.includes(tab.namespace as ChainNamespace)
-        )
-
+        const availableTabs = NAMESPACE_TABS.filter(tab => this.namespaces.includes(tab.namespace))
         const tabCount = availableTabs.length
 
         if (tabCount > 1) {
@@ -210,9 +207,7 @@ export class W3mProfileWalletsView extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private renderTabs() {
-    const availableTabs = NAMESPACE_TABS.filter(tab =>
-      this.namespaces.includes(tab.namespace as ChainNamespace)
-    )
+    const availableTabs = NAMESPACE_TABS.filter(tab => this.namespaces.includes(tab.namespace))
 
     const tabCount = availableTabs.length
     if (tabCount > 1) {
@@ -797,6 +792,24 @@ export class W3mProfileWalletsView extends LitElement {
         element.scrollHeight - element.scrollTop - element.offsetHeight
       ).toString()
     )
+  }
+
+  private onConnectionsChange() {
+    if (this.isMultiWalletEnabled()) {
+      if (this.namespace) {
+        const { connections } = ConnectionControllerUtil.getConnectionsData(this.namespace)
+
+        /*
+         * If no connections are available then prevent the user from navigating
+         * back to the profile screen to avoid showing a blank view
+         */
+        if (connections.length === 0) {
+          RouterController.reset('ProfileWallets')
+        }
+      }
+    }
+
+    this.requestUpdate()
   }
 }
 

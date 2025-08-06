@@ -110,6 +110,44 @@ describe('LeatherConnector', () => {
     ).rejects.toThrowError('LeatherConnector: unsupported network')
   })
 
+  it('should sign a PSBT with signInputs without broadcast', async () => {
+    const psbt = 'psbt'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      // @ts-expect-error - mock response without txid for non-broadcast
+      mockSatsConnectProvider.mockRequestResolve({ hex: '70736274', txid: undefined })
+    )
+    const signInputs = [{ index: 0, address: 'mock_address', sighashTypes: [1, 3] }]
+    const res = await connector.signPSBT({ psbt, signInputs, broadcast: false })
+    expect(res).toEqual({ psbt: 'cHNidA==', txid: undefined })
+    expect(requestSpy).toHaveBeenCalledWith('signPsbt', {
+      hex: 'a6c6ed',
+      network: 'mainnet',
+      broadcast: false,
+      signAtIndex: 0,
+      allowedSighash: [1, 3]
+    })
+  })
+
+  it('should sign a PSBT with signInputs with broadcast', async () => {
+    const psbt = 'psbt'
+    const txid = 'txid'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({ hex: '70736274', txid })
+    )
+    const signInputs = [{ index: 0, address: 'mock_address', sighashTypes: [1, 3] }]
+    const res = await connector.signPSBT({ psbt, signInputs, broadcast: true })
+    expect(res).toEqual({ psbt: 'cHNidA==', txid })
+    expect(requestSpy).toHaveBeenCalledWith('signPsbt', {
+      hex: 'a6c6ed',
+      network: 'mainnet',
+      broadcast: true,
+      signAtIndex: 0,
+      allowedSighash: [1, 3]
+    })
+  })
+
   it('should disconnect', async () => {
     await expect(connector.disconnect()).resolves.not.toThrow()
   })

@@ -32,7 +32,6 @@ import type {
   AppKitNetwork,
   BaseNetwork,
   CaipNetwork,
-  ChainNamespace,
   Connection,
   CustomRpcUrlMap
 } from '@reown/appkit-common'
@@ -50,9 +49,9 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import { authConnector } from './connectors/AuthConnector.js'
-import { walletConnect } from './connectors/UniversalConnector.js'
+import { walletConnect } from './connectors/WalletConnectConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
-import { getCoinbaseConnector, getSafeConnector, parseWalletCapabilities } from './utils/helpers.js'
+import { getCoinbaseConnector, getSafeConnector } from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean
@@ -219,6 +218,34 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchers() {
+    watchConnections(this.wagmiConfig, {
+      onChange: connections => {
+        this.clearConnections()
+        this.addConnection(
+          ...connections.map(connection => {
+            const caipNetwork = this.getCaipNetworks().find(
+              network => network.id === connection.chainId
+            )
+
+            const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+            return {
+              accounts: connection.accounts.map(account => ({
+                address: account
+              })),
+              caipNetwork,
+              connectorId: connection.connector.id,
+              auth: isAuth
+                ? {
+                    name: StorageUtil.getConnectedSocialProvider(),
+                    username: StorageUtil.getConnectedSocialUsername()
+                  }
+                : undefined
+            }
+          })
+        )
+      }
+    })
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
         if (accountData.status === 'disconnected' && prevAccountData.address) {
@@ -246,35 +273,6 @@ export class WagmiAdapter extends AdapterBlueprint {
             })
           }
         }
-      }
-    })
-
-    watchConnections(this.wagmiConfig, {
-      onChange: connections => {
-        this.clearConnections()
-        this.addConnection(
-          ...connections.map(connection => {
-            const caipNetwork = this.getCaipNetworks().find(
-              network => network.id === connection.chainId
-            )
-
-            const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
-
-            return {
-              accounts: connection.accounts.map(account => ({
-                address: account
-              })),
-              caipNetwork,
-              connectorId: connection.connector.id,
-              auth: isAuth
-                ? {
-                    name: StorageUtil.getConnectedSocialProvider(),
-                    username: StorageUtil.getConnectedSocialUsername()
-                  }
-                : undefined
-            }
-          })
-        )
       }
     })
   }
@@ -343,6 +341,10 @@ export class WagmiAdapter extends AdapterBlueprint {
     chainId: number | string
     connector: Connector
   }) {
+    if (!this.namespace) {
+      throw new Error('WagmiAdapter:handleAccountChanged - namespace is required')
+    }
+
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
 
     this.emit('accountChanged', {
@@ -358,7 +360,7 @@ export class WagmiAdapter extends AdapterBlueprint {
             ? undefined
             : { rdns: connector.id },
         provider,
-        chain: this.namespace as ChainNamespace,
+        chain: this.namespace,
         chains: []
       }
     })
@@ -450,6 +452,10 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
+    if (!this.namespace) {
+      throw new Error('WagmiAdapter:addWagmiConnector - namespace is required')
+    }
+
     /*
      * We don't need to set auth connector or walletConnect connector
      * from wagmi since we already set it in chain adapter blueprint
@@ -483,7 +489,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           ? undefined
           : { rdns: connector.id },
       provider,
-      chain: this.namespace as ChainNamespace,
+      chain: this.namespace,
       chains: []
     })
   }
@@ -795,14 +801,24 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
+
+    const wagmiChain = this.wagmiConfig.chains.find(
+      chain => chain.id.toString() === caipNetwork.id.toString()
+    )
+
     await switchChain(this.wagmiConfig, {
       chainId: caipNetwork.id as number,
       addEthereumChainParameter: {
-        chainName: caipNetwork.name,
-        nativeCurrency: caipNetwork.nativeCurrency,
-        rpcUrls: [caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
-        blockExplorerUrls: [caipNetwork.blockExplorers?.default.url ?? ''],
-        iconUrls: [caipNetwork.assets?.imageUrl ?? '']
+        chainName: wagmiChain?.name ?? caipNetwork.name,
+        nativeCurrency: wagmiChain?.nativeCurrency ?? caipNetwork.nativeCurrency,
+        rpcUrls: [
+          caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ??
+            wagmiChain?.rpcUrls?.default?.http?.[0] ??
+            ''
+        ],
+        blockExplorerUrls: [
+          wagmiChain?.blockExplorers?.default?.url ?? caipNetwork.blockExplorers?.default?.url ?? ''
+        ]
       }
     })
     await super.switchNetwork(params)
@@ -826,15 +842,6 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     if (!provider) {
       throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
-    }
-
-    const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
-    if (walletCapabilitiesString) {
-      const walletCapabilities = parseWalletCapabilities(walletCapabilitiesString)
-      const accountCapabilities = walletCapabilities[params]
-      if (accountCapabilities) {
-        return accountCapabilities
-      }
     }
 
     return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
@@ -914,13 +921,17 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override setAuthProvider(authProvider: W3mFrameProvider) {
+    if (!this.namespace) {
+      throw new Error('WagmiAdapter:setAuthProvider - namespace is required')
+    }
+
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
       name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
       provider: authProvider,
       imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
-      chain: this.namespace as ChainNamespace,
+      chain: this.namespace,
       chains: []
     })
   }

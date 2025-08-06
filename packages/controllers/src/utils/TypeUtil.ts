@@ -2,6 +2,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type {
   AdapterType,
+  Address,
   AppKitNetwork,
   AppKitSdkVersion,
   Balance,
@@ -9,6 +10,7 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
+  Hex,
   OnRampProvider,
   SdkFramework,
   SwapProvider,
@@ -20,7 +22,6 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
-import type { ConstantsUtil } from './ConstantsUtil.js'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -96,6 +97,9 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
+
+export type EmailCaptureOptions = 'required'
+
 export type Connector = {
   id: string
   type: ConnectorType
@@ -166,6 +170,7 @@ export interface WcWallet {
         injected_id?: string
       }[]
     | null
+  display_index?: number
 }
 
 export interface ApiGetWalletsRequest {
@@ -217,7 +222,6 @@ export interface BlockchainApiIdentityResponse {
 export interface BlockchainApiTransactionsRequest {
   account: string
   cursor?: string
-  onramp?: 'coinbase'
   signal?: AbortSignal
   cache?: RequestCache
   chainId?: string
@@ -322,7 +326,7 @@ export interface BlockchainApiGenerateSwapCalldataResponse {
   tx: {
     from: CaipAddress
     to: CaipAddress
-    data: `0x${string}`
+    data: Address
     amount: string
     eip155: {
       gas: string
@@ -342,7 +346,7 @@ export interface BlockchainApiGenerateApproveCalldataResponse {
   tx: {
     from: CaipAddress
     to: CaipAddress
-    data: `0x${string}`
+    data: Address
     value: string
     eip155: {
       gas: number
@@ -357,8 +361,8 @@ export interface BlockchainApiBalanceResponse {
 
 export interface BlockchainApiLookupEnsName {
   name: ReownName
-  registered: number
-  updated: number
+  registered_at: string
+  updated_at: string | undefined
   addresses: Record<
     string,
     {
@@ -376,7 +380,7 @@ export interface BlockchainApiRegisterNameParams {
   coinType: number
   message: string
   signature: string
-  address: `0x${string}`
+  address: Address
 }
 
 export interface BlockchainApiSuggestionResponse {
@@ -447,6 +451,7 @@ export type Event =
       properties: {
         name: string
         platform: Platform
+        displayIndex?: number
       }
     }
   | {
@@ -456,6 +461,7 @@ export type Event =
       properties: {
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -755,6 +761,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_SUCCESS'
       properties: {
         provider: SocialProvider
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -1008,7 +1015,6 @@ export type OnrampQuote = {
   paymentTotal: QuoteAmount
   paymentSubtotal: QuoteAmount
   purchaseAmount: QuoteAmount
-  coinbaseFee: QuoteAmount
   networkFee: QuoteAmount
   quoteId: string
 }
@@ -1026,6 +1032,8 @@ export type NamespaceTypeMap = {
   bip122: 'payment' | 'ordinal' | 'stx'
   polkadot: 'eoa'
   cosmos: 'eoa'
+  sui: 'eoa'
+  stacks: 'eoa'
 }
 
 export type AccountTypeMap = {
@@ -1038,17 +1046,17 @@ export type AccountTypeMap = {
   }
 }
 export type WalletGetAssetsParams = {
-  account: `0x${string}`
-  assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+  account: Address
+  assetFilter?: Record<Address, (Address | 'native')[]>
   assetTypeFilter?: ('NATIVE' | 'ERC20')[]
-  chainFilter?: `0x${string}`[]
+  chainFilter?: Address[]
 }
 
 export type WalletGetAssetsResponse = Record<
-  `0x${string}`,
+  Address,
   {
-    address: `0x${string}` | 'native'
-    balance: `0x${string}`
+    address: Address | 'native'
+    balance: Hex
     type: 'NATIVE' | 'ERC20'
     metadata: Record<string, unknown>
   }[]
@@ -1057,29 +1065,29 @@ export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'
-      to: `0x${string}`
-      data: `0x${string}`
+      to: Address
+      data: Hex
       value: bigint
       gas?: bigint
       gasPrice?: bigint
-      address: `0x${string}`
+      address: Address
     }
-  | { chainNamespace: 'solana'; to: string; value: number }
+  | { chainNamespace: 'solana'; to: string; value: number; tokenMint?: string }
 
 export type EstimateGasTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'
-      address: `0x${string}`
-      to: `0x${string}`
-      data: `0x${string}`
+      address: Address
+      to: Address
+      data: Hex
     }
   | {
       chainNamespace: 'solana'
     }
 
 export interface WriteContractArgs {
-  tokenAddress: `0x${string}`
-  fromAddress: `0x${string}`
+  tokenAddress: Address
+  fromAddress: Address
   method: 'send' | 'transfer' | 'call' | 'approve'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
@@ -1142,9 +1150,6 @@ export interface Provider {
 
 export type CombinedProvider = W3mFrameProvider & Provider
 
-export type CoinbasePaySDKChainNameValues =
-  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
-
 export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
 
 export type ConnectMethod = 'email' | 'social' | 'wallet'
@@ -1166,6 +1171,7 @@ export type RemoteFeatures = {
   activity?: boolean
   reownBranding?: boolean
   multiWallet?: boolean
+  emailCapture?: EmailCaptureOptions[] | boolean
 }
 
 export type Features = {
@@ -1312,6 +1318,7 @@ export type FeatureID =
   | 'swap'
   | 'social_login'
   | 'reown_branding'
+  | 'email_capture'
 
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
@@ -1326,6 +1333,7 @@ export type TypedFeatureConfig =
   | BaseFeature<'social_login', (SocialProvider | 'email')[]>
   | BaseFeature<'reown_branding', null | []>
   | BaseFeature<'multi_wallet', null | []>
+  | BaseFeature<'email_capture', EmailCaptureOptions[]>
 
 export type ApiGetProjectConfigResponse = {
   features: TypedFeatureConfig[]
@@ -1366,6 +1374,12 @@ export type FeatureConfigMap = {
     apiFeatureName: 'reown_branding'
     localFeatureName: 'reownBranding'
     returnType: boolean
+    isLegacy: false
+  }
+  emailCapture: {
+    apiFeatureName: 'email_capture'
+    localFeatureName: 'emailCapture'
+    returnType: EmailCaptureOptions[] | boolean
     isLegacy: false
   }
   multiWallet: {
