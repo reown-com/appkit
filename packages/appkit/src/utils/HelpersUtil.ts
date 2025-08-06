@@ -10,11 +10,7 @@ import {
   ParseUtil,
   type ParsedCaipAddress
 } from '@reown/appkit-common'
-import {
-  CoreHelperUtil,
-  EnsController,
-  type OptionsControllerState
-} from '@reown/appkit-controllers'
+import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
 
 import { solana, solanaDevnet } from '../networks/index.js'
 
@@ -306,19 +302,8 @@ export const WcHelpersUtil = {
     }
 
     if (onAccountsChanged) {
-      universalProvider.on('session_event', (callbackData: unknown) => {
-        if (WcHelpersUtil.isSessionEventData(callbackData)) {
-          const { name, data } = callbackData.params.event
-
-          if (name === 'accountsChanged' && Array.isArray(data)) {
-            const parsedCaipAddresses = data
-              .filter(account => CoreHelperUtil.isCaipAddress(account))
-              .map(account => ParseUtil.parseCaipAddress(account))
-              .filter(caipAddress => caipAddress.chainNamespace === namespace)
-
-            onAccountsChanged(parsedCaipAddresses)
-          }
-        }
+      universalProvider.on('accountsChanged', (accounts: ParsedCaipAddress[]) => {
+        onAccountsChanged(accounts)
       })
     }
 
