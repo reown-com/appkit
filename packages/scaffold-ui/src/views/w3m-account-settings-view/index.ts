@@ -127,7 +127,6 @@ export class W3mAccountSettingsView extends LitElement {
           ${this.authCardTemplate()}
           <w3m-account-auth-button></w3m-account-auth-button>
           <wui-list-item
-            icon="networkPlaceholder"
             imageSrc=${ifDefined(networkImage)}
             ?chevron=${this.isAllowedNetworkSwitch()}
             @click=${this.onNetworks.bind(this)}
@@ -139,7 +138,7 @@ export class W3mAccountSettingsView extends LitElement {
           </wui-list-item>
           ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
-            icon="swapHorizontal"
+            icon="signOut"
             ?chevron=${false}
             .loading=${this.disconnecting}
             @click=${this.onDisconnect.bind(this)}

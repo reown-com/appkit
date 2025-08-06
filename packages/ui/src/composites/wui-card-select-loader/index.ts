@@ -19,7 +19,7 @@ export class WuiCardSelectLoader extends LitElement {
   public override render() {
     return html`
       ${this.shimmerTemplate()}
-      <wui-shimmer width="56px" height="20px"></wui-shimmer>
+      <wui-shimmer width="80px" height="20px"></wui-shimmer>
     `
   }
 

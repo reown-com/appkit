@@ -35,7 +35,7 @@ export default css`
   }
 
   button:hover:enabled {
-    background-color: var(--apkt-tokens-core-glass010);
+    background-color: var(--apkt-tokens-theme-foregroundSecondary);
   }
 
   button:disabled > wui-flex > wui-text {

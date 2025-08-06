@@ -119,8 +119,8 @@ export class WuiInactiveProfileWalletItem extends LitElement {
         </wui-button>
 
         <wui-icon-link
-          iconColor="default"
-          size="lg"
+          variant="secondary"
+          size="md"
           icon=${ifDefined(this.rightIcon)}
           class="right-icon"
           @click=${this.handleIconClick}

@@ -63,7 +63,7 @@ export class W3mAllWalletsListItem extends LitElement {
         ${this.imageTemplate()}
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="1">
           <wui-text
-            variant="sm-medium"
+            variant="md-regular"
             color="inherit"
             class=${ifDefined(certified ? 'certified' : undefined)}
             >${this.wallet?.name}</wui-text
@@ -81,7 +81,7 @@ export class W3mAllWalletsListItem extends LitElement {
 
     return html`
       <wui-wallet-image
-        size="md"
+        size="lg"
         imageSrc=${ifDefined(this.imageSrc)}
         name=${this.wallet?.name}
         .installed=${this.wallet?.installed}

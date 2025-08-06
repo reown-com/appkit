@@ -67,8 +67,7 @@ export class W3mAllWalletsList extends LitElement {
       <wui-grid
         data-scroll=${!this.loading}
         .padding=${['0', '3', '3', '3'] as const}
-        columnGap="2"
-        rowGap="3"
+        gap="2"
         justifyContent="space-between"
       >
         ${this.loading ? this.shimmerTemplate(16) : this.walletsTemplate()}

@@ -47,12 +47,12 @@ export class WuiImage extends LitElement {
       this.dataset['boxed'] = 'true'
     }
 
-    if (this.icon) {
-      return html`<wui-icon color="default" size="inherit" name=${this.icon}></wui-icon> `
+    if (this.logo) {
+      return html`<wui-icon color="inherit" size="inherit" name=${this.logo}></wui-icon> `
     }
 
-    if (this.logo) {
-      return html`<wui-icon color="default" size="inherit" name=${this.logo}></wui-icon> `
+    if (this.icon) {
+      return html`<wui-icon color="inherit" size="inherit" name=${this.icon}></wui-icon> `
     }
 
     return html`<img src=${ifDefined(this.src)} alt=${this.alt} @error=${this.handleImageError} />`

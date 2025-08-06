@@ -15,7 +15,7 @@ export default css`
   rect {
     fill: none;
     stroke: ${tokens => tokens.colors.accent100};
-    stroke-width: 4px;
+    stroke-width: 3px;
     stroke-linecap: round;
     animation: dash 1s linear infinite;
   }

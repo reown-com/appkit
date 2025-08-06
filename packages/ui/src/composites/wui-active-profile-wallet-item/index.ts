@@ -77,20 +77,20 @@ export class WuiActiveProfileWalletItem extends LitElement {
       <wui-flex alignItems="flex-start" justifyContent="space-between">
         ${this.imageOrIconTemplate()}
         <wui-icon-link
-          iconColor="default"
+          variant="secondary"
           size="md"
           icon="copy"
           @click=${this.dispatchCopyEvent}
         ></wui-icon-link>
         <wui-icon-link
-          iconColor="default"
+          variant="secondary"
           size="md"
           icon="externalLink"
           @click=${this.dispatchExternalLinkEvent}
         ></wui-icon-link>
         ${this.enableMoreButton
           ? html`<wui-icon-link
-              iconColor="default"
+              variant="secondary"
               size="md"
               icon="threeDots"
               @click=${this.dispatchMoreButtonEvent}

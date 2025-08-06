@@ -23,6 +23,11 @@ export default css`
     position: relative;
   }
 
+  wui-wallet-image {
+    padding: var(--apkt-spacing-2);
+    outline: 1px solid var(--apkt-tokens-theme-borderPrimary);
+  }
+
   wui-loading-thumbnail {
     position: absolute;
   }
@@ -60,5 +65,10 @@ export default css`
   [data-retry='true'] wui-link {
     display: block;
     opacity: 1;
+  }
+
+  w3m-mobile-download-links {
+    padding: 0px;
+    width: 100%;
   }
 `

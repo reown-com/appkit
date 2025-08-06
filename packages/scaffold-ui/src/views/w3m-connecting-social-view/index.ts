@@ -114,7 +114,7 @@ export class W3mConnectingSocialView extends LitElement {
         flexDirection="column"
         alignItems="center"
         .padding=${['10', '5', '5', '5'] as const}
-        gap="5"
+        gap="6"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-logo logo=${ifDefined(this.socialProvider)}></wui-logo>
@@ -122,11 +122,11 @@ export class W3mConnectingSocialView extends LitElement {
           <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text align="center" variant="md-medium" color="primary"
+          <wui-text align="center" variant="lg-medium" color="primary"
             >Log in with
             <span class="capitalize">${this.socialProvider ?? 'Social'}</span></wui-text
           >
-          <wui-text align="center" variant="sm-regular" color=${this.error ? 'error' : 'primary'}
+          <wui-text align="center" variant="lg-regular" color=${this.error ? 'error' : 'secondary'}
             >${this.message}</wui-text
           ></wui-flex
         >

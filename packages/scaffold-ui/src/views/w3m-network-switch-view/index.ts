@@ -62,7 +62,7 @@ export class W3mNetworkSwitchView extends LitElement {
         flexDirection="column"
         alignItems="center"
         .padding=${['10', '5', '10', '5'] as const}
-        gap="5"
+        gap="7"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-network-image
@@ -76,8 +76,8 @@ export class W3mNetworkSwitchView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text align="center" variant="md-medium" color="primary">${label}</wui-text>
-          <wui-text align="center" variant="sm-medium" color="secondary">${subLabel}</wui-text>
+          <wui-text align="center" variant="h6-regular" color="primary">${label}</wui-text>
+          <wui-text align="center" variant="md-regular" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         <wui-button

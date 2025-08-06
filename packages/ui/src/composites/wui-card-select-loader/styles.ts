@@ -4,10 +4,11 @@ export default css`
   :host {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    height: 70px;
+    height: 104px;
+    width: 104px;
     row-gap: ${({ spacing }) => spacing[2]};
-    padding: ${({ spacing }) => spacing[2]} 10px;
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[5]};
     position: relative;

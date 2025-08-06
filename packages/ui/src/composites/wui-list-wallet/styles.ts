@@ -14,6 +14,10 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
+  button > wui-wallet-image {
+    background: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
   button > wui-text:nth-child(2) {
     display: flex;
     flex: 1;

@@ -219,6 +219,7 @@ export class W3mProfileWalletsView extends LitElement {
         </wui-text>
         <wui-link
           color="secondary"
+          variant="secondary"
           @click=${() => ConnectionController.disconnect({ namespace })}
           ?disabled=${!this.hasAnyConnections(namespace)}
           data-testid="disconnect-all-button"

@@ -136,7 +136,7 @@ export class W3mConnectingWidget extends LitElement {
         flexDirection="column"
         alignItems="center"
         .padding=${['10', '5', '5', '5'] as const}
-        gap="5"
+        gap="6"
       >
         <wui-flex gap="2" justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
@@ -152,45 +152,59 @@ export class W3mConnectingWidget extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="2"  .padding=${['2', '0', '0', '0'] as const}>
-          <wui-text align="center" variant="md-medium" color=${this.error ? 'error' : 'primary'}>
+        <wui-flex flexDirection="column" alignItems="center" gap="6"> <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          gap="2"
+          .padding=${['2', '0', '0', '0'] as const}
+        >
+          <wui-text align="center" variant="lg-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>
-          <wui-text align="center" variant="sm-regular" color="secondary">${subLabel}</wui-text>
+          <wui-text align="center" variant="lg-regular" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
-        ${this.secondaryBtnLabel
-          ? html`
-              <wui-button
-                variant="neutral-secondary"
-                size="md"
-                ?disabled=${this.isRetrying || this.isLoading}
-                @click=${this.onTryAgain.bind(this)}
-                data-testid="w3m-connecting-widget-secondary-button"
-              >
-                <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
-                ${this.secondaryBtnLabel}
-              </wui-button>
-            `
-          : null}
+        ${
+          this.secondaryBtnLabel
+            ? html`
+                <wui-button
+                  variant="neutral-secondary"
+                  size="md"
+                  ?disabled=${this.isRetrying || this.isLoading}
+                  @click=${this.onTryAgain.bind(this)}
+                  data-testid="w3m-connecting-widget-secondary-button"
+                >
+                  <wui-icon
+                    color="inherit"
+                    slot="iconLeft"
+                    name=${this.secondaryBtnIcon}
+                  ></wui-icon>
+                  ${this.secondaryBtnLabel}
+                </wui-button>
+              `
+            : null
+        }
       </wui-flex>
 
-      ${this.isWalletConnect
-        ? html`
-            <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
-              <wui-link
-                @click=${this.onCopyUri}
-                variant="secondary"
-                icon="copy"
-                data-testid="wui-link-copy"
-              >
-                Copy link
-              </wui-link>
-            </wui-flex>
-          `
-        : null}
+      ${
+        this.isWalletConnect
+          ? html`
+              <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
+                <wui-link
+                  @click=${this.onCopyUri}
+                  variant="secondary"
+                  icon="copy"
+                  data-testid="wui-link-copy"
+                >
+                  Copy link
+                </wui-link>
+              </wui-flex>
+            `
+          : null
+      }
 
-      <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
+      <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links></wui-flex>
+      </wui-flex>
     `
   }
 
