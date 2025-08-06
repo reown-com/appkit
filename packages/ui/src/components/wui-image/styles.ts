@@ -23,8 +23,8 @@ export default css`
   }
 
   :host([boxed]) {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;

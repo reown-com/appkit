@@ -140,8 +140,10 @@ export class W3mAccountDefaultWidget extends LitElement {
         ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
           icon="power"
+          iconColor="error"
           ?chevron=${false}
           .loading=${this.disconnecting}
+          .rightIcon=${false}
           @click=${this.onDisconnect.bind(this)}
           data-testid="disconnect-button"
         >
