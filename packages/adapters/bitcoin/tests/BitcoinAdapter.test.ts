@@ -584,7 +584,8 @@ describe('BitcoinAdapter', () => {
       accountChanged: vi.fn(),
       disconnect: vi.fn(),
       switchNetwork: vi.fn(),
-      chainChanged: vi.fn()
+      chainChanged: vi.fn(),
+      connections: vi.fn()
     }
 
     beforeEach(async () => {
@@ -595,7 +596,13 @@ describe('BitcoinAdapter', () => {
 
       vi.spyOn(mocks.wallet, 'request').mockResolvedValue(
         mockSatsConnectProvider.mockRequestResolve({
-          addresses: [{ address: 'mock_address' } as Address],
+          addresses: [
+            {
+              address: 'mock_address',
+              type: 'mock_type',
+              publicKey: 'mock_public_key'
+            }
+          ] as unknown as Address[],
           id: 'mock_id',
           network: {
             name: 'Bitcoin',
@@ -611,6 +618,8 @@ describe('BitcoinAdapter', () => {
       adapter.on('disconnect', listeners.disconnect)
       listeners.switchNetwork = vi.fn()
       adapter.on('switchNetwork', listeners.switchNetwork)
+      listeners.connections = vi.fn()
+      adapter.on('connections', listeners.connections)
 
       await adapter.connect({
         id: mocks.provider.name,
@@ -643,6 +652,22 @@ describe('BitcoinAdapter', () => {
       callback({ type: 'disconnect' })
 
       expect(listeners.disconnect).toHaveBeenCalled()
+    })
+
+    it('should add connection when connect is called', async () => {
+      expect(listeners.connections).toHaveBeenCalledWith([
+        expect.objectContaining({
+          connectorId: mocks.provider.name,
+          accounts: [
+            {
+              address: 'mock_address',
+              type: 'payment',
+              publicKey: 'mock_public_key'
+            }
+          ],
+          caipNetwork: bitcoin
+        })
+      ])
     })
   })
 

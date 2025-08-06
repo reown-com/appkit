@@ -12,12 +12,10 @@ import { bigIntReplacer } from '@/src/utils/CommonUtils'
 import { EIP_5792_RPC_METHODS } from '@/src/utils/EIP5792Utils'
 
 export function WagmiGetCallsStatusTest() {
-  const { supported } = useWagmiAvailableCapabilities({
-    method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
-  })
-
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
+
+  const { isMethodSupported } = useWagmiAvailableCapabilities()
 
   const isConnected = status === 'connected'
 
@@ -29,7 +27,7 @@ export function WagmiGetCallsStatusTest() {
     )
   }
 
-  if (!supported) {
+  if (!isMethodSupported(EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS)) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support the "wallet_getCallsStatus" RPC method

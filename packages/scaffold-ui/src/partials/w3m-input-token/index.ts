@@ -77,7 +77,7 @@ export class W3mInputToken extends LitElement {
 
       return html`<wui-text class="totalValue" variant="small-400" color="fg-200"
         >${totalValue
-          ? `$${UiHelperUtil.formatNumberToLocalString(totalValue, 2)}`
+          ? `$${NumberUtil.formatNumberToLocalString(totalValue, 2)}`
           : 'Incorrect value'}</wui-text
       >`
     }

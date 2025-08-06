@@ -71,11 +71,7 @@ const controller = {
       state.loading = true
       state.suggestions = []
       const response = await BlockchainApiController.getEnsNameSuggestions(value)
-      state.suggestions =
-        response.suggestions.map(suggestion => ({
-          ...suggestion,
-          name: suggestion.name
-        })) || []
+      state.suggestions = response.suggestions || []
 
       return state.suggestions
     } catch (e) {
@@ -158,6 +154,19 @@ const controller = {
       })
 
       AccountController.setProfileName(name, network.chainNamespace)
+      StorageUtil.updateEnsCache({
+        address,
+        ens: [
+          {
+            name,
+            registered_at: new Date().toISOString(),
+            updated_at: undefined,
+            addresses: {},
+            attributes: []
+          }
+        ],
+        timestamp: Date.now()
+      })
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = EnsController.parseEnsApiError(e, `Error registering name ${name}`)
