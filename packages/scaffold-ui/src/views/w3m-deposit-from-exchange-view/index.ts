@@ -66,7 +66,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
   private amountInputTemplate() {
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="s">
         <wui-flex justifyContent="space-between">
           <wui-text variant="paragraph-500" color="fg-200">Asset</wui-text>
           <wui-chip-button
@@ -78,15 +78,17 @@ export class W3mDepositFromExchangeView extends LitElement {
             icon=${null}
           ></wui-chip-button>
         </wui-flex>
-        <wui-flex>
-          <wui-text variant="paragraph-500" color="fg-200"
-            >${ExchangeController.state.amount}</wui-text
-          >
-          <wui-text variant="paragraph-500" color="fg-200"
-            >${ExchangeController.state.tokenAmount}</wui-text
-          >
-          <wui-flex>
-            ${PRESET_AMOUNTS.map(amount => html`<wui-button>$${amount}</wui-button>`)}
+        <wui-flex flexDirection="column" alignItems="center" justifyContent="center">
+          <wui-flex alignItems="center" gap="4xs">
+            <wui-text variant="2xl-500" color="fg-200">${ExchangeController.state.amount}</wui-text>
+            <wui-text variant="paragraph-500" color="fg-200">USD</wui-text>
+          </wui-flex>
+          <wui-text variant="paragraph-500" color="fg-200">
+            ${ExchangeController.state.tokenAmount.toFixed(2)} ${this.network?.nativeCurrency.symbol}
+          </wui-text>
+          </wui-flex>
+          <wui-flex justifyContent="space-between" gap="xs">
+            ${PRESET_AMOUNTS.map(amount => html`<wui-button variant="shade" size="sm" fullWidth>$${amount}</wui-button>`)}
           </wui-flex>
         </wui-flex>
       </wui-flex>

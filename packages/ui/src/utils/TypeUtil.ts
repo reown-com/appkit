@@ -229,6 +229,7 @@ export type ButtonVariant =
   | 'accent-error'
   | 'accent-success'
   | 'neutral'
+  | 'shade'
 
 export type TransactionType =
   | 'approve'
