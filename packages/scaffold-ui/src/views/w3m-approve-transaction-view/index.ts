@@ -61,7 +61,7 @@ export class W3mApproveTransactionView extends LitElement {
 
     this.iframe.style.display = 'block'
     const container = this?.renderRoot?.querySelector('div') as HTMLDivElement
-    this.bodyObserver = new ResizeObserver(async entries => {
+    this.bodyObserver = new ResizeObserver(entries => {
       const contentBoxSize = entries?.[0]?.contentBoxSize
       const width = contentBoxSize?.[0]?.inlineSize
 
@@ -69,22 +69,7 @@ export class W3mApproveTransactionView extends LitElement {
 
       container.style.height = `${PAGE_HEIGHT}px`
       if (OptionsController.state.enableEmbedded) {
-        /*
-         * Wait for the resize to complete to avoid getting wrong rect sizes
-         * as its not updated yet when the animation is pending
-         */
-        await new Promise(resolve => {
-          setTimeout(resolve, 300)
-        })
-
-        const rect = this.getBoundingClientRect()
-
-        container.style.width = '100%'
-
-        this.iframe.style.left = `${rect.left}px`
-        this.iframe.style.top = `${rect.top}px`
-        this.iframe.style.width = `${rect.width}px`
-        this.iframe.style.height = `${rect.height}px`
+        this.updateFrameSizeForEmbeddedMode()
       } else if (width && width <= 430) {
         // Update container size to prevent the iframe from being cut off
         this.iframe.style.width = '100%'
@@ -133,6 +118,27 @@ export class W3mApproveTransactionView extends LitElement {
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
     }
+  }
+
+  private async updateFrameSizeForEmbeddedMode() {
+    const container = this?.renderRoot?.querySelector('div') as HTMLDivElement
+
+    /*
+     * Wait for the resize to complete to avoid getting wrong rect sizes
+     * as it is not updated yet when the animation is pending
+     */
+    await new Promise(resolve => {
+      setTimeout(resolve, 300)
+    })
+
+    const rect = this.getBoundingClientRect()
+
+    container.style.width = '100%'
+
+    this.iframe.style.left = `${rect.left}px`
+    this.iframe.style.top = `${rect.top}px`
+    this.iframe.style.width = `${rect.width}px`
+    this.iframe.style.height = `${rect.height}px`
   }
 }
 
