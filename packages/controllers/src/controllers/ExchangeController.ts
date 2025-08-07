@@ -10,7 +10,7 @@ import {
 } from '@reown/appkit-controllers'
 
 import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
-import type { Exchange, GetExchangesParams, PayUrlParams } from '../utils/ExchangeUtil.js'
+import type { Exchange, PayUrlParams } from '../utils/ExchangeUtil.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
@@ -35,11 +35,6 @@ const DEFAULT_STATE: ExchangeControllerState = {
 // -- Types --------------------------------------------- //
 type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
 
-type OpenPayUrlParams = {
-  exchangeId: string
-  openInNewTab?: boolean
-}
-
 export type CurrentPayment = {
   type: PaymentType
   exchangeId?: string
@@ -49,6 +44,16 @@ export type CurrentPayment = {
 }
 export type PayResult = CurrentPayment['result']
 
+export type PaymentAsset = {
+  network: CaipNetworkId
+  asset: string
+  metadata: {
+    name: string
+    symbol: string
+    decimals: number
+  }
+}
+
 export interface ExchangeControllerState {
   amount: number
   tokenAmount: number
@@ -56,15 +61,7 @@ export interface ExchangeControllerState {
   isLoading: boolean
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
-  paymentAsset: {
-    network: CaipNetworkId
-    asset: string
-    metadata: {
-      name: string
-      symbol: string
-      decimals: number
-    }
-  }
+  paymentAsset: PaymentAsset
 }
 
 type StateKey = keyof ExchangeControllerState
@@ -106,14 +103,19 @@ export const ExchangeController = {
     Object.assign(state, { ...DEFAULT_STATE })
   },
 
-  // -- Getters ----------------------------------------- //
-  getExchanges() {
-    return state.exchanges
+  setAmount(amount: number) {
+    state.amount = amount
+
+    // TODO: Calculate token amount
   },
 
+  setPaymentAsset(asset: PaymentAsset) {
+    state.paymentAsset = asset
+  },
+
+  // -- Getters ----------------------------------------- //
   async fetchExchanges() {
     try {
-      console.log('fetching exchanges')
       state.isLoading = true
       const response = await getExchanges({
         page: DEFAULT_PAGE,
@@ -127,25 +129,6 @@ export const ExchangeController = {
       throw new Error('Unable to get exchanges')
     } finally {
       state.isLoading = false
-    }
-  },
-
-  async getAvailableExchanges(params?: GetExchangesParams) {
-    try {
-      const asset =
-        params?.asset && params?.network
-          ? formatCaip19Asset(params.network, params.asset)
-          : undefined
-
-      const response = await getExchanges({
-        page: params?.page ?? DEFAULT_PAGE,
-        asset,
-        amount: params?.amount?.toString()
-      })
-
-      return response
-    } catch (error) {
-      throw new Error('Unable to get exchanges')
     }
   },
 
@@ -188,27 +171,6 @@ export const ExchangeController = {
       }
       throw new Error((error as Error).message)
     }
-  },
-
-  async openPayUrl(openParams: OpenPayUrlParams, params: PayUrlParams) {
-    try {
-      const payUrl = await this.getPayUrl(openParams.exchangeId, params)
-      if (!payUrl) {
-        throw new Error('Unable to get pay url')
-      }
-
-      const target = openParams.openInNewTab ? '_blank' : '_self'
-      CoreHelperUtil.openHref(payUrl.url, target)
-
-      return payUrl
-    } catch (error) {
-      state.error = 'Unable to get pay url'
-      throw new Error('Unable to get pay url')
-    }
-  },
-
-  getExchangeById(exchangeId: string) {
-    return state.exchanges.find(exchange => exchange.id === exchangeId)
   },
 
   async handlePayWithExchange(exchangeId: string) {

@@ -15,22 +15,30 @@ import '@reown/appkit-ui/wui-image'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-text'
 
+import styles from './styles.js'
+
 const PRESET_AMOUNTS = [10, 50, 100]
 
 @customElement('w3m-deposit-from-exchange-view')
 export class W3mDepositFromExchangeView extends LitElement {
+  public static override styles = styles
+
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
   @state() public network = ChainController.state.activeCaipNetwork
   @state() public exchanges = ExchangeController.state.exchanges
+  @state() public isLoading = ExchangeController.state.isLoading
+  @state() public amount = ExchangeController.state.amount
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ExchangeController.subscribeKey('exchanges', exchanges => {
-        this.exchanges = exchanges
+      ExchangeController.subscribe(exchangeState => {
+        this.exchanges = exchangeState.exchanges
+        this.isLoading = exchangeState.isLoading
+        this.amount = exchangeState.amount
       })
     )
   }
@@ -46,7 +54,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 's', 'xl', 's'] as const} gap="xs">
+      <wui-flex flexDirection="column" gap="xs" class="container">
         ${this.amountInputTemplate()} ${this.exchangesTemplate()}
       </wui-flex>
     `
@@ -55,7 +63,12 @@ export class W3mDepositFromExchangeView extends LitElement {
   // -- Private ------------------------------------------- //
   private exchangesTemplate() {
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex
+        flexDirection="column"
+        gap="xs"
+        .padding=${['xs', 's', 's', 's'] as const}
+        class="exchanges-container"
+      >
         ${this.exchanges.map(
           exchange =>
             html`<wui-list-item
@@ -63,6 +76,8 @@ export class W3mDepositFromExchangeView extends LitElement {
               chevron
               variant="image"
               imageSrc=${exchange.imageUrl}
+              ?loading=${this.isLoading}
+              ?disabled=${!this.amount}
             >
               <wui-text variant="paragraph-500" color="fg-200">
                 Deposit from ${exchange.name}
@@ -74,7 +89,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
   private amountInputTemplate() {
     return html`
-      <wui-flex flexDirection="column" gap="s">
+      <wui-flex flexDirection="column" gap="s" .padding=${['0', 's', 's', 's'] as const} class="amount-input-container">
         <wui-flex justifyContent="space-between">
           <wui-text variant="paragraph-500" color="fg-200">Asset</wui-text>
           <wui-chip-button
@@ -96,7 +111,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           </wui-text>
           </wui-flex>
           <wui-flex justifyContent="space-between" gap="xs">
-            ${PRESET_AMOUNTS.map(amount => html`<wui-button variant="shade" size="sm" fullWidth>$${amount}</wui-button>`)}
+            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => this.onPresetAmountClick(amount)} variant="shade" size="sm" fullWidth>$${amount}</wui-button>`)}
           </wui-flex>
         </wui-flex>
       </wui-flex>
@@ -104,9 +119,13 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   private onExchangeClick(exchange: Exchange) {
-    if (!ExchangeController.state.amount) {
+    if (this.amount) {
       ExchangeController.handlePayWithExchange(exchange.id)
     }
+  }
+
+  private onPresetAmountClick(amount: number) {
+    ExchangeController.setAmount(amount)
   }
 }
 
