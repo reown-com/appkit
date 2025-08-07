@@ -56,6 +56,7 @@ export class W3mApproveTransactionView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.bodyObserver?.unobserve(window.document.body)
   }
+  
   public override async firstUpdated() {
     await this.syncTheme()
 
