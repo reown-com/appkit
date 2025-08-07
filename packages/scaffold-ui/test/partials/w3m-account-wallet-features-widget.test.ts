@@ -218,34 +218,8 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
-    })
-
-    it('should not show onramp if disabled', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        features: {
-          receive: true,
-          send: true
-        },
-        remoteFeatures: {
-          onramp: false,
-          swaps: ['1inch']
-        }
-      })
-
-      const element: W3mAccountWalletFeaturesWidget = await fixture(
-        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
-      )
-
-      await elementUpdated(element)
-
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
     })
 
@@ -268,13 +242,12 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
     })
 
-    it('should not show receive if disabled', async () => {
+    it('should not show fund wallet if receive and onramp are disabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
@@ -282,7 +255,7 @@ describe('wallet features visibility', () => {
           send: true
         },
         remoteFeatures: {
-          onramp: ['meld'],
+          onramp: false,
           swaps: ['1inch']
         }
       })
@@ -293,9 +266,8 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
     })
 
@@ -318,9 +290,8 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
     })
   })
@@ -356,17 +327,16 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
     })
 
-    it('should not show onramp if disabled', async () => {
+    it('should not show fund wallet if onramp and receive are disabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          receive: true,
+          receive: false,
           send: true
         },
         remoteFeatures: {
@@ -381,9 +351,8 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
     })
 
@@ -406,9 +375,8 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
     })
 
@@ -431,9 +399,8 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
     })
   })
@@ -450,7 +417,7 @@ describe('wallet features visibility', () => {
       })
     })
 
-    it('should only show onramp and receive when enabled', async () => {
+    it('should only show fund wallet when receive and onramp are enabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
@@ -469,17 +436,16 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
     })
 
-    it('should not show onramp if disabled', async () => {
+    it('should not show fund wallet if onramp and receive are disabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         features: {
-          receive: true,
+          receive: false,
           send: true
         },
         remoteFeatures: {
@@ -494,34 +460,8 @@ describe('wallet features visibility', () => {
 
       await elementUpdated(element)
 
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).not.toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
-    })
-
-    it('should not show receive if disabled', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        features: {
-          receive: false,
-          send: true
-        },
-        remoteFeatures: {
-          onramp: ['meld'],
-          swaps: ['1inch']
-        }
-      })
-
-      const element: W3mAccountWalletFeaturesWidget = await fixture(
-        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
-      )
-
-      await elementUpdated(element)
-
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-onramp-button')).not.toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
-      expect(HelpersUtil.getByTestId(element, 'wallet-features-receive-button')).toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
     })
   })
