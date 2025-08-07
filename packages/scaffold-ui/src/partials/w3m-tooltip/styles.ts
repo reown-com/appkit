@@ -18,11 +18,15 @@ export default css`
     max-width: calc(var(--apkt-modal-width) - var(--apkt-spacing-5));
     transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity;
+    opacity: 0;
+    animation-duration: var(--apkt-duration-xl);
+    animation-timing-function: var(--apkt-ease-out-power-2);
+    animation-name: fade-in;
+    animation-fill-mode: forwards;
   }
 
   :host([data-variant='shade']) > wui-flex {
-    background-color: var(--apkt-tokens-theme-backgroundPrimary);
-    border: 1px solid var(--apkt-tokens-core-glass010);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   :host([data-variant='shade']) > wui-flex > wui-text {
@@ -38,7 +42,7 @@ export default css`
     position: absolute;
     width: 12px !important;
     height: 4px !important;
-    color: var(--apkt-tokens-theme-backgroundPrimary);
+    color: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   wui-icon[data-placement='top'] {
@@ -63,5 +67,14 @@ export default css`
     top: 50%;
     right: 0%;
     transform: translate(65%, -50%) rotate(270deg);
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `

@@ -16,7 +16,7 @@ export default css`
   }
 
   button:hover:enabled {
-    border-radius: ${({ borderRadius }) => borderRadius.round};
+    border-radius: ${({ borderRadius }) => borderRadius[32]};
   }
 
   button[data-variant='accent'] {
