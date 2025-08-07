@@ -138,6 +138,8 @@ export const tokens = {
     glass010: 'rgba(255, 255, 255, 0.1)'
   },
   dark: {
+    overlay: 'rgba(0, 0, 0, 0.50)',
+
     /* Background colors */
     backgroundPrimary: '#202020',
     backgroundInvert: '#FFFFFF',
@@ -150,6 +152,7 @@ export const tokens = {
 
     /* Border colors */
     borderPrimary: '#2A2A2A',
+    borderPrimaryDark: '#363636',
     borderSecondary: '#4F4F4F',
 
     /* Foreground colors */
@@ -162,8 +165,11 @@ export const tokens = {
     iconInverse: '#FFFFFF'
   },
   light: {
+    overlay: 'rgba(255, 255, 255, 0.50)',
+
     /* Background colors */
     backgroundPrimary: '#FFFFFF',
+    borderPrimaryDark: '#E9E9E9',
     backgroundInvert: '#202020',
 
     /* Text colors */

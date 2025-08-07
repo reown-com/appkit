@@ -393,7 +393,8 @@ export const ThemeHelperUtil = {
         key.includes('-tokens-theme-text') ||
         key.includes('-tokens-theme-border') ||
         key.includes('-tokens-theme-foreground') ||
-        key.includes('-tokens-theme-icon')
+        key.includes('-tokens-theme-icon') ||
+        key.includes('-tokens-theme-overlay')
 
       const isDimensional =
         key.includes('-borderRadius-') ||

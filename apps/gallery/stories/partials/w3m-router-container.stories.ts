@@ -3,12 +3,12 @@ import { useState } from 'storybook/preview-api'
 
 import { html } from 'lit'
 
+import '@reown/appkit-scaffold-ui/partials/w3m-router-container'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-card'
-import '@reown/appkit-ui/wui-router-container'
 import '@reown/appkit-ui/wui-shimmer'
 
-import { connectPage, connectingPage, settingsPage } from './appkit-wui-router-container.components'
+import { connectPage, connectingPage, settingsPage } from './w3m-router-container.components.js'
 
 const DEFAULT_VALUE = 'cubic-bezier(0.4, 0, 0.2, 1)'
 const transitionFunctions = [
@@ -48,7 +48,7 @@ type Component = Meta<{
 }>
 
 export default {
-  title: 'Composites/appkit-wui-router-container',
+  title: 'Partials/w3m-router-container',
   args: {
     transitionDuration: '0.2s',
     transitionFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
@@ -172,14 +172,14 @@ export const Default: Component = {
             <wui-icon name="close" color="inverse"></wui-icon>
           </wui-flex>
           <div style="display: flex; flex-direction: column; gap: 8px; width: 370px;">
-            <wui-router-container
+            <w3m-router-container
               transitionDuration="${args.transitionDuration}"
               transitionFunction="${transitionFunc}"
               history=${history.join(',')}
               .setView=${setView}
             >
               ${onRenderPages()}
-            </wui-router-container>
+            </w3m-router-container>
           </div>
         </wui-card>
       </div>

@@ -1,14 +1,15 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
 
-@customElement('wui-router-container')
-export class WuiRouterContainer extends LitElement {
-  static override styles = styles
+@customElement('w3m-router-container')
+export class W3mRouterContainer extends LitElement {
+  static override styles = [styles]
 
+  // -- State & Properties -------------------------------- //
   private resizeObserver?: ResizeObserver = undefined
 
   @property({ type: String }) transitionDuration = '0.15s'
@@ -86,6 +87,7 @@ export class WuiRouterContainer extends LitElement {
     }
   }
 
+  // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <div class="container">
@@ -98,6 +100,7 @@ export class WuiRouterContainer extends LitElement {
     `
   }
 
+  // -- Private ------------------------------------------- //
   private onViewChange(history: string) {
     const historyArr = history.split(',').filter(Boolean)
     const prevArr = this.historyState.split(',').filter(Boolean)
@@ -136,6 +139,6 @@ export class WuiRouterContainer extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-router-container': WuiRouterContainer
+    'w3m-router-container': W3mRouterContainer
   }
 }

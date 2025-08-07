@@ -173,7 +173,6 @@ function createRootStyles(_themeVariables?: ThemeVariables) {
       }
       :root {
         --apkt-modal-width: 370px;
-        --apkt-cover: rgba(20, 20, 20, 0.8);
 
         --apkt-visual-size-inherit: inherit;
         --apkt-visual-size-sm: 40px;

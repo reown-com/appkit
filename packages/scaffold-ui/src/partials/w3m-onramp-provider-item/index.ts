@@ -45,8 +45,8 @@ export class W3mOnRampProviderItem extends LitElement {
               ${this.feeRange}
             </wui-text>
             <wui-flex gap="2">
-              <wui-icon name="bank" size="xs" color="default"></wui-icon>
-              <wui-icon name="card" size="xs" color="default"></wui-icon>
+              <wui-icon name="bank" size="sm" color="default"></wui-icon>
+              <wui-icon name="card" size="sm" color="default"></wui-icon>
             </wui-flex>
             ${this.networksTemplate()}
           </wui-flex>

@@ -34,6 +34,8 @@ export class WuiTabs extends LitElement {
           size=${this.size}
           label=${tab.label}
           ?active=${active}
+          data-active=${active}
+          data-testid="tab-${tab.label?.toLowerCase()}"
         ></wui-tab-item>
       `
     })

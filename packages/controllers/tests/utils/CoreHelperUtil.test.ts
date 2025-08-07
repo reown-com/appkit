@@ -11,6 +11,11 @@ describe('CoreHelperUtil', () => {
       floating: '000',
       symbol: undefined
     })
+    expect(CoreHelperUtil.formatBalance('3', undefined)).toEqual({
+      value: '3',
+      floating: '000',
+      symbol: undefined
+    })
     expect(CoreHelperUtil.formatBalance('0', undefined)).toEqual({
       value: '0',
       floating: '000',

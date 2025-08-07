@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import { RouterController, type RouterControllerState } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-router-container'
 
 import '../w3m-footer/index.js'
 import styles from './styles.js'
@@ -44,14 +43,14 @@ export class W3mRouter extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templatePageContainer() {
-    return html`<wui-router-container
+    return html`<w3m-router-container
       history=${this.history}
       .setView=${() => {
         this.viewState = RouterController.state.view
       }}
     >
       ${this.viewTemplate(this.viewState)}
-    </wui-router-container>`
+    </w3m-router-container>`
   }
 
   private viewTemplate(view: RouterControllerState['view']) {

@@ -144,12 +144,12 @@ export class W3mSendSelectTokenView extends LitElement {
                   justifyContent="center"
                   flexDirection="column"
                 >
-                  <wui-text variant="md-medium" align="center" color="primary"
-                    >No tokens found</wui-text
-                  >
-                  <wui-text variant="sm-regular" align="center" color="secondary"
-                    >Your tokens will appear here</wui-text
-                  >
+                  <wui-text variant="lg-medium" align="center" color="primary">
+                    No tokens found
+                  </wui-text>
+                  <wui-text variant="lg-regular" align="center" color="secondary">
+                    Your tokens will appear here
+                  </wui-text>
                 </wui-flex>
                 <wui-link @click=${this.onBuyClick.bind(this)}>Buy</wui-link>
               </wui-flex>`}

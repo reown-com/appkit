@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import { EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-router-container'
 
 import '../../partials/w3m-legal-footer/index.js'
 import '../../partials/w3m-onramp-providers-footer/index.js'

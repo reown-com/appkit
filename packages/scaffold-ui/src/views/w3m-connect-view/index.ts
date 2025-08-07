@@ -27,7 +27,6 @@ import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 import '../../partials/w3m-email-login-widget/index.js'
 import '../../partials/w3m-legal-checkbox/index.js'
 import '../../partials/w3m-social-login-widget/index.js'
-import '../../partials/w3m-wallet-guide/index.js'
 import '../../partials/w3m-wallet-login-list/index.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -254,6 +253,7 @@ export class W3mConnectView extends LitElement {
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
     const nextEnabledMethod = this.checkIsThereNextMethod(index)
     const isExplore = this.walletGuide === 'explore'
+
     switch (type) {
       case 'wallet': {
         const isWalletEnable = this.enableWallets
@@ -289,10 +289,7 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    return html`<w3m-email-login-widget
-      walletGuide=${this.walletGuide}
-      tabIdx=${ifDefined(tabIndex)}
-    ></w3m-email-login-widget>`
+    return html`<w3m-email-login-widget tabIdx=${ifDefined(tabIndex)}></w3m-email-login-widget>`
   }
 
   private socialListTemplate(tabIndex?: number) {

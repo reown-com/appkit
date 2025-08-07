@@ -41,9 +41,4 @@ export default css`
     margin: var(--apkt-spacing-3) calc(var(--apkt-spacing-3) * -1);
     width: calc(100% + var(--apkt-spacing-3) * 2);
   }
-
-  wui-separator + w3m-wallet-guide {
-    padding-top: var(--apkt-spacing-1);
-    padding-bottom: var(--apkt-spacing-3);
-  }
 `

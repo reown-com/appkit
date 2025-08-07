@@ -80,7 +80,7 @@ describe('W3mOnRampActivityItem', () => {
 
     const successIcon = element.shadowRoot?.querySelector('wui-icon-box[icon="arrowBottom"]')
     expect(successIcon).not.toBeNull()
-    expect(successIcon?.getAttribute('iconColor')).toBe('success-100')
+    expect(successIcon?.getAttribute('color')).toBe('success')
   })
 
   it('should show error icon when failed', async () => {
@@ -93,7 +93,7 @@ describe('W3mOnRampActivityItem', () => {
 
     const errorIcon = element.shadowRoot?.querySelector('wui-icon-box[icon="close"]')
     expect(errorIcon).not.toBeNull()
-    expect(errorIcon?.getAttribute('iconColor')).toBe('error-100')
+    expect(errorIcon?.getAttribute('color')).toBe('error')
   })
 
   it('should fetch token image if icon is not provided', async () => {
