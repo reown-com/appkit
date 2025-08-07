@@ -272,14 +272,13 @@ export const CoreHelperUtil = {
 
     if (typeof balance === 'string') {
       const number = Number(balance)
-      if (number) {
-        const formattedValue = Math.floor(number * 1000) / 1000
+      if (!isNaN(number)) {
+        const formattedValue = (Math.floor(number * 1000) / 1000).toFixed(3)
         if (formattedValue) {
-          formattedBalance = formattedValue.toString()
+          formattedBalance = formattedValue
         }
       }
     }
-
     const [value, floating] = formattedBalance.split('.')
 
     return { value, floating, symbol }

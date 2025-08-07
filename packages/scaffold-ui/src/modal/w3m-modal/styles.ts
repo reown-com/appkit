@@ -13,13 +13,17 @@ export default css`
     bottom: 0;
     pointer-events: none;
     opacity: 0;
-    background-color: var(--apkt-cover);
-    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    background-color: ${({ tokens }) => tokens.theme.overlay};
+    backdrop-filter: blur(0px);
+    transition:
+      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      backdrop-filter var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity;
   }
 
   :host(.open) {
     opacity: 1;
+    backdrop-filter: blur(8px);
   }
 
   :host(.appkit-modal) {
@@ -36,13 +40,13 @@ export default css`
     position: relative;
     outline: none;
     transform: translateY(4px);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
     transition:
       transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
       border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
       background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
     will-change: border-radius, background-color, transform;
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
-    box-shadow: none;
     padding: ${({ spacing }) => spacing[1]};
     box-sizing: border-box;
   }
@@ -57,9 +61,9 @@ export default css`
     content: '';
     position: absolute;
     inset: 0;
-    box-shadow: inset 0px 0px 0px 4px ${({ tokens }) => tokens.theme.backgroundPrimary};
     border-radius: clamp(0px, var(--apkt-borderRadius-8), 44px);
     transition: box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition-delay: var(--apkt-duration-md);
     will-change: box-shadow;
   }
 
@@ -68,7 +72,7 @@ export default css`
   }
 
   :host([data-border='false']) wui-card::before {
-    box-shadow: inset 0px 0px 0px 4px ${({ tokens }) => tokens.theme.backgroundPrimary};
+    box-shadow: inset 0px 0px 0px 1px ${({ tokens }) => tokens.theme.borderPrimaryDark};
   }
 
   :host([data-border='true']) wui-card {
