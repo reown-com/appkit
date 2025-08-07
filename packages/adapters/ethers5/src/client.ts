@@ -784,15 +784,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
       throw new Error('Provider is undefined')
     }
 
-    const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
-    if (walletCapabilitiesString) {
-      const walletCapabilities = Ethers5Methods.parseWalletCapabilities(walletCapabilitiesString)
-      const accountCapabilities = walletCapabilities[params]
-      if (accountCapabilities) {
-        return accountCapabilities
-      }
-    }
-
     return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
   }
 
