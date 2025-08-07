@@ -18,8 +18,8 @@ export default css`
 
   wui-qr-code {
     opacity: 0;
-    animation-duration: 200ms;
-    animation-timing-function: ease;
+    animation-duration: 400ms;
+    animation-timing-function: 'ease-in-out';
     animation-name: fadein;
     animation-fill-mode: forwards;
   }

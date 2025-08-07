@@ -280,7 +280,14 @@ export const elementStyles = css`
       height,
       transform,
       opacity,
+      scale,
       var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+  }
+
+  a:active:not([disabled]),
+  button:active:not([disabled]) {
+    scale: 0.98;
+    transform-origin: center;
   }
 
   button:disabled {
