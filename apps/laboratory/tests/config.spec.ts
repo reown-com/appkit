@@ -60,6 +60,10 @@ configTest('Should fetch correct config of projectId with all features enabled',
   await modalPage.openModal()
   await modalValidator.expectSwapsButton(true)
   await modalValidator.expectActivityButton(true)
+
+  const fundWalletButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
+  await fundWalletButton.click()
+
   await modalValidator.expectOnrampButton(true)
 
   await modalPage.openOnramp()
@@ -86,6 +90,10 @@ configTest('Should fetch correct config of projectId with specific features enab
   await modalPage.openModal()
   await modalValidator.expectSwapsButton(false)
   await modalValidator.expectActivityButton(true)
+
+  const fundWalletButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
+  await fundWalletButton.click()
+
   await modalValidator.expectOnrampButton(true)
   await modalPage.openOnramp()
   await modalValidator.expectOnrampProvider(['meld'])
