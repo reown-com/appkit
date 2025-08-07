@@ -5,7 +5,7 @@ import {
   UniversalProvider
 } from '@walletconnect/universal-provider'
 
-import type { CreateAppKit } from '@reown/appkit'
+import type { AppKitOptions, CreateAppKit } from '@reown/appkit'
 import type { CaipNetwork, CustomCaipNetwork } from '@reown/appkit-common'
 import { AppKit, type Metadata, createAppKit } from '@reown/appkit/core'
 
@@ -18,11 +18,17 @@ export type Config = {
   projectId: string
   metadata: Metadata
   networks: ExtendedNamespaces[]
+  modalConfig?: Omit<
+    AppKitOptions,
+    'networks' | 'adapters' | 'manualWCControl' | 'projectId' | 'metadata' | 'universalProvider'
+  >
 }
 
 export class UniversalConnector {
   private appKit: AppKit
   private config: Config
+  public connecting = false
+  private abortConnection: ((reason?: string) => void) | null = null
   public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
 
   constructor({
@@ -37,6 +43,12 @@ export class UniversalConnector {
     this.appKit = appKit
     this.provider = provider
     this.config = config
+    this.appKit.subscribeState(state => {
+      if (!state.open && this.connecting) {
+        this.provider.abortPairingAttempt()
+        this.abortConnection?.()
+      }
+    })
   }
 
   public static async init(config: Config) {
@@ -46,6 +58,7 @@ export class UniversalConnector {
     })
 
     const appKitConfig: CreateAppKit = {
+      ...config.modalConfig,
       networks: config.networks.flatMap(network => network.chains) as [
         CaipNetwork,
         ...CaipNetwork[]
@@ -78,23 +91,31 @@ export class UniversalConnector {
     )
 
     try {
+      this.connecting = true
       await this.appKit.open()
-      const session = await this.provider.connect({
-        optionalNamespaces: namespaces
-      })
+
+      const session = await Promise.race([
+        this.provider.connect({
+          optionalNamespaces: namespaces
+        }),
+        new Promise<SessionTypes.Struct>((_, reject) => {
+          this.abortConnection = () => reject(new Error('Connection aborted by user'))
+        })
+      ])
 
       if (!session) {
         throw new Error('Error connecting to wallet: No session found')
       }
 
-      await this.appKit.close()
-
       return { session }
     } catch (error) {
-      await this.appKit.close()
       throw new Error(
         `Error connecting to wallet: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
+    } finally {
+      this.connecting = false
+      this.abortConnection = null
+      await this.appKit.close()
     }
   }
 
