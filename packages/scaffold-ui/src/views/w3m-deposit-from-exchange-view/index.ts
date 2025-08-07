@@ -8,8 +8,10 @@ import {
   ExchangeController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-chip-button'
+import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-image'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-text'
 
@@ -26,11 +28,19 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push()
+    this.unsubscribe.push(
+      ExchangeController.subscribeKey('exchanges', exchanges => {
+        this.exchanges = exchanges
+      })
+    )
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  public override firstUpdated() {
+    ExchangeController.fetchExchanges()
   }
 
   // -- Render -------------------------------------------- //
@@ -48,17 +58,15 @@ export class W3mDepositFromExchangeView extends LitElement {
       <wui-flex flexDirection="column" gap="xs">
         ${this.exchanges.map(
           exchange =>
-            html`<wui-list-item>
+            html`<wui-list-item
+              @click=${() => this.onExchangeClick(exchange)}
+              chevron
+              variant="image"
+              imageSrc=${exchange.imageUrl}
+            >
               <wui-text variant="paragraph-500" color="fg-200">
                 Deposit from ${exchange.name}
               </wui-text>
-              <wui-icon-link
-                size="sm"
-                icon="chevronRight"
-                iconColor="fg-200"
-                @click=${() => this.onExchangeClick(exchange)}
-              >
-              </wui-icon-link>
             </wui-list-item>`
         )}
       </wui-flex>

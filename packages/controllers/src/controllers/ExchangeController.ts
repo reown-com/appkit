@@ -74,11 +74,11 @@ type PaymentType = 'wallet' | 'exchange'
 const state = proxy<ExchangeControllerState>({
   paymentAsset: {
     network: 'eip155:1',
-    asset: '0x0',
+    asset: 'native',
     metadata: {
-      name: '0x0',
-      symbol: '0x0',
-      decimals: 0
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
     }
   },
   amount: 0,
@@ -113,6 +113,7 @@ export const ExchangeController = {
 
   async fetchExchanges() {
     try {
+      console.log('fetching exchanges')
       state.isLoading = true
       const response = await getExchanges({
         page: DEFAULT_PAGE,
@@ -212,7 +213,7 @@ export const ExchangeController = {
 
   async handlePayWithExchange(exchangeId: string) {
     try {
-      if (!AccountController.state.caipAddress) {
+      if (!AccountController.state.address) {
         throw new Error('No account connected')
       }
 
@@ -226,7 +227,7 @@ export const ExchangeController = {
         network,
         asset,
         amount: state.amount,
-        recipient: AccountController.state.caipAddress
+        recipient: AccountController.state.address
       }
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {

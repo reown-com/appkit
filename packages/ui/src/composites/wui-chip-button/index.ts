@@ -35,6 +35,7 @@ export class WuiChipButton extends LitElement {
         class=${this.disabled ? 'disabled' : ''}
         data-variant=${this.variant}
         data-size=${this.size}
+        ?disabled=${this.disabled}
       >
         ${this.imageSrc ? html`<wui-image src=${this.imageSrc}></wui-image>` : null}
         <wui-text variant=${textVariant} color="inherit"> ${this.text} </wui-text>
