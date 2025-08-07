@@ -76,14 +76,14 @@ export class W3mApproveTransactionView extends LitElement {
         this.iframe.style.left = '0px'
         this.iframe.style.bottom = '0px'
         this.iframe.style.top = 'unset'
+        this.onShowIframe()
       } else {
         this.iframe.style.width = `${PAGE_WIDTH}px`
         this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`
         this.iframe.style.top = `calc(50% - ${PAGE_HEIGHT / 2}px + ${HEADER_HEIGHT / 2}px)`
         this.iframe.style.bottom = 'unset'
+        this.onShowIframe()
       }
-      this.ready = true
-      this.onShowIframe()
     })
     this.bodyObserver.observe(window.document.body)
   }
@@ -96,6 +96,7 @@ export class W3mApproveTransactionView extends LitElement {
   // -- Private ------------------------------------------- //
   private onShowIframe() {
     const isMobile = window.innerWidth <= 430
+    this.ready = true
     this.iframe.style.animation = isMobile
       ? 'w3m-iframe-zoom-in-mobile 200ms var(--wui-ease-out-power-2)'
       : 'w3m-iframe-zoom-in 200ms var(--wui-ease-out-power-2)'
@@ -139,6 +140,7 @@ export class W3mApproveTransactionView extends LitElement {
     this.iframe.style.top = `${rect.top}px`
     this.iframe.style.width = `${rect.width}px`
     this.iframe.style.height = `${rect.height}px`
+    this.onShowIframe()
   }
 }
 
