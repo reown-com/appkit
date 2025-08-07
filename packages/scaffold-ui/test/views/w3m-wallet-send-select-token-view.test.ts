@@ -138,7 +138,6 @@ describe('W3mSendSelectTokenView', () => {
     await element.updateComplete
 
     const noTokensText = element.shadowRoot?.querySelector('wui-text[variant="lg-medium"]')
-    console.log('>>> noTokensText', noTokensText)
 
     expect(noTokensText?.textContent?.trim()).to.equal('No tokens found')
   })
