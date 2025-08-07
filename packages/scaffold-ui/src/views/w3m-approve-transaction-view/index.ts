@@ -15,9 +15,6 @@ import styles from './styles.js'
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 600
 const PAGE_WIDTH = 360
-const PAGE_WIDTH_EMBEDDED = 400
-const FIXED_LEFT_OFFSET = 22
-const FIXED_TOP_OFFSET = 287
 const HEADER_HEIGHT = 64
 
 @customElement('w3m-approve-transaction-view')
@@ -59,30 +56,41 @@ export class W3mApproveTransactionView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.bodyObserver?.unobserve(window.document.body)
   }
-
   public override async firstUpdated() {
     await this.syncTheme()
 
     this.iframe.style.display = 'block'
     const container = this?.renderRoot?.querySelector('div') as HTMLDivElement
-    this.bodyObserver = new ResizeObserver(entries => {
+    this.bodyObserver = new ResizeObserver(async entries => {
       const contentBoxSize = entries?.[0]?.contentBoxSize
       const width = contentBoxSize?.[0]?.inlineSize
 
       this.iframe.style.height = `${PAGE_HEIGHT}px`
 
-      // Update container size to prevent the iframe from being cut off
       container.style.height = `${PAGE_HEIGHT}px`
-      if (width && width <= 430) {
+      if (OptionsController.state.enableEmbedded) {
+        /*
+         * Wait for the resize to complete to avoid getting wrong rect sizes
+         * as its not updated yet when the animation is pending
+         */
+        await new Promise(resolve => {
+          setTimeout(resolve, 300)
+        })
+
+        const rect = this.getBoundingClientRect()
+
+        container.style.width = '100%'
+
+        this.iframe.style.left = `${rect.left}px`
+        this.iframe.style.top = `${rect.top}px`
+        this.iframe.style.width = `${rect.width}px`
+        this.iframe.style.height = `${rect.height}px`
+      } else if (width && width <= 430) {
+        // Update container size to prevent the iframe from being cut off
         this.iframe.style.width = '100%'
         this.iframe.style.left = '0px'
         this.iframe.style.bottom = '0px'
         this.iframe.style.top = 'unset'
-      } else if (OptionsController.state.enableEmbedded) {
-        this.iframe.style.width = `${PAGE_WIDTH_EMBEDDED}px`
-        this.iframe.style.left = `calc(50% - ${FIXED_LEFT_OFFSET}px)`
-        this.iframe.style.top = `calc(50% - ${FIXED_TOP_OFFSET}px)`
-        this.iframe.style.bottom = 'unset'
       } else {
         this.iframe.style.width = `${PAGE_WIDTH}px`
         this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`
