@@ -9,8 +9,11 @@ export default css`
     width: var(--local-width);
     white-space: nowrap;
     column-gap: ${({ spacing }) => spacing[2]};
-    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
-    will-change: background-color;
+    transition:
+      scale var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
+      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
+    will-change: scale, background-color, border-radius;
     cursor: pointer;
   }
 
@@ -71,14 +74,32 @@ export default css`
   }
 
   /* -- Focus states --------------------------------------------------- */
-  button:focus-visible:enabled {
-    border-radius: ${({ borderRadius }) => borderRadius[128]};
+  button[data-size='sm']:focus-visible:enabled {
+    border-radius: 28px;
+  }
+
+  button[data-size='md']:focus-visible:enabled {
+    border-radius: 38px;
+  }
+
+  button[data-size='lg']:focus-visible:enabled {
+    border-radius: 48px;
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  button:hover:enabled,
-  button:active:enabled {
-    border-radius: ${({ borderRadius }) => borderRadius[128]};
+  button[data-size='sm']:hover:enabled,
+  button[data-size='sm']:active:enabled {
+    border-radius: 28px;
+  }
+
+  button[data-size='md']:hover:enabled,
+  button[data-size='md']:active:enabled {
+    border-radius: 38px;
+  }
+
+  button[data-size='lg']:hover:enabled,
+  button[data-size='lg']:active:enabled {
+    border-radius: 48px;
   }
 
   /* -- Disabled states --------------------------------------------------- */

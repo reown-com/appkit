@@ -9,8 +9,8 @@ export default css`
     align-items: center;
     padding: ${({ spacing }) => spacing[1]};
     transition:
-      background-color 0.2s ease-in-out,
-      box-shadow 0.2s linear;
+      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color, box-shadow;
   }
 

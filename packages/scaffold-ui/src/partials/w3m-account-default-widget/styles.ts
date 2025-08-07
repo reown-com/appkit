@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-icon-link {
@@ -40,8 +40,8 @@ export default css`
     padding-right: var(--apkt-spacing-3);
     box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: 24px;
-    transition: background-color 0.2s linear;
+    border-radius: ${({ borderRadius }) => borderRadius[6]};
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
   }
 
   .account-button:hover {
@@ -94,8 +94,8 @@ export default css`
     border: 1px solid var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     background: var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     transition:
-      background-color var(--apkt-ease-out-power-1) var(--apkt-duration-md),
-      opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+      background-color var(--apkt-duration-md) var(--apkt-ease-out-power-1),
+      opacity var(--apkt-duration-md) var(--apkt-ease-out-power-1);
     will-change: background-color, opacity;
   }
 

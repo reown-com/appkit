@@ -4,7 +4,7 @@ export default css`
   :host {
     --local-duration-height: 0s;
     --local-duration: var(--apkt-duration-lg);
-    --local-transition: var(--apkt-ease-out-power-1);
+    --local-transition: var(--apkt-ease-out-power-2);
   }
 
   .container {

@@ -1,15 +1,6 @@
 import { css } from '@reown/appkit-ui'
 
 export default css`
-  @keyframes fadein {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
   wui-shimmer {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -18,9 +9,9 @@ export default css`
 
   wui-qr-code {
     opacity: 0;
-    animation-duration: 200ms;
-    animation-timing-function: ease;
-    animation-name: fadein;
+    animation-duration: var(--apkt-duration-lg);
+    animation-timing-function: var(--apkt-ease-out-power-2);
+    animation-name: fade-in;
     animation-fill-mode: forwards;
   }
 
@@ -33,15 +24,29 @@ export default css`
   wui-flex:first-child:not(:only-child) {
     position: relative;
   }
+
   wui-loading-thumbnail {
     position: absolute;
   }
+
   wui-icon-box {
     position: absolute;
     right: calc(var(--apkt-spacing-1) * -1);
     bottom: calc(var(--apkt-spacing-1) * -1);
     opacity: 0;
     transform: scale(0.5);
-    transition: all var(--apkt-ease-out-power-2) var(--apkt-duration-lg);
+    transition:
+      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change: opacity, transform;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `

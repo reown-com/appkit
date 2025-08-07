@@ -66,7 +66,8 @@ export default css`
     background: none;
     padding: var(--apkt-spacing-3);
     border-radius: var(--apkt-borderRadius-3);
-    transition: background 0.2s linear;
+    transition: background var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change: background;
   }
 
   .details-container > wui-flex > button:hover {

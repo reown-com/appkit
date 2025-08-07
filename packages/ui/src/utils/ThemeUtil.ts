@@ -206,6 +206,7 @@ function createRootStyles(_themeVariables?: ThemeVariables) {
         --apkt-ease-inout-power-1: cubic-bezier(0.88, 0.04, 0.12, 1.06);
 
         --apkt-duration-dynamic: 0ms;
+        --apkt-duration-xl: 400ms;
         --apkt-duration-lg: 200ms;
         --apkt-duration-md: 125ms;
         --apkt-duration-sm: 75ms;
@@ -272,21 +273,22 @@ export const elementStyles = css`
     border: none;
     text-decoration: none;
     transition:
-      background-color,
-      color,
-      border,
-      box-shadow,
-      width,
-      height,
-      transform,
-      opacity,
-      scale,
-      var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      border var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      width var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      height var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      scale var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change:
+      background-color, color, border, box-shadow, width, height, transform, opacity, scale;
   }
 
   a:active:not([disabled]),
   button:active:not([disabled]) {
-    scale: 0.98;
+    scale: 0.975;
     transform-origin: center;
   }
 

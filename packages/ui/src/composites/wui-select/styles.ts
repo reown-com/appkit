@@ -6,7 +6,7 @@ export default css`
     display: flex;
     align-items: center;
     padding: ${({ spacing }) => spacing[1]};
-    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color;
     border-radius: ${({ borderRadius }) => borderRadius[32]};
   }

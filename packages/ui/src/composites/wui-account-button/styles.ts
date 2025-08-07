@@ -14,7 +14,7 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textSecondary};
     border-radius: ${({ borderRadius }) => borderRadius[16]};
     height: 32px;
-    transition: box-shadow 0.2s cubic-bezier(0.29, 0.12, 0.08, 1.13);
+    transition: box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: box-shadow;
   }
 
@@ -59,7 +59,7 @@ export default css`
     padding-right: ${({ spacing }) => spacing[1]};
     background: ${({ tokens }) => tokens.theme.foregroundSecondary};
     color: ${({ tokens }) => tokens.theme.textPrimary};
-    transition: background-color 0.2s linear;
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color;
   }
 

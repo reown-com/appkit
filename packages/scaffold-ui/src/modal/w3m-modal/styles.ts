@@ -14,7 +14,7 @@ export default css`
     pointer-events: none;
     opacity: 0;
     background-color: var(--apkt-cover);
-    transition: opacity 0.2s var(--apkt-ease-out-power-2);
+    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity;
   }
 
@@ -34,7 +34,7 @@ export default css`
     max-width: var(--apkt-modal-width);
     width: 100%;
     position: relative;
-    animation: zoom-in 0.2s var(--apkt-ease-out-power-2);
+    animation: zoom-in var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     animation-fill-mode: backwards;
     outline: none;
     transition:
@@ -43,7 +43,7 @@ export default css`
     will-change: border-radius, background-color;
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     box-shadow: none;
-    padding: 4px;
+    padding: ${({ spacing }) => spacing[1]};
     box-sizing: border-box;
   }
 
@@ -85,8 +85,8 @@ export default css`
 
   wui-card[shake='true'] {
     animation:
-      zoom-in 0.2s var(--apkt-ease-out-power-2),
-      w3m-shake 0.5s var(--apkt-ease-out-power-2);
+      zoom-in var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      w3m-shake var(--apkt-duration-xl) var(--apkt-ease-out-power-2);
   }
 
   wui-flex {

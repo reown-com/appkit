@@ -81,7 +81,8 @@ export default css`
     border-radius: var(--apkt-borderRadius-3);
     padding: var(--apkt-spacing-2);
     align-items: center;
-    transition: background-color 0.2s linear;
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change: background-color;
   }
 
   .select-network-button:hover {

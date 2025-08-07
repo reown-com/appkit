@@ -16,7 +16,7 @@ export default css`
     left: var(--w3m-tooltip-left);
     transform: translate(calc(-50% + var(--w3m-tooltip-parent-width)), calc(-100% - 8px));
     max-width: calc(var(--apkt-modal-width) - var(--apkt-spacing-5));
-    transition: opacity 0.2s var(--apkt-ease-out-power-2);
+    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity;
   }
 

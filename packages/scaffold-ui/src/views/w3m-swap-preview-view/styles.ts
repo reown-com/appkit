@@ -39,7 +39,8 @@ export default css`
     background: var(--apkt-tokens-theme-foregroundPrimary);
     box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
     cursor: pointer;
-    transition: background 0.2s linear;
+    transition: background var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change: background;
   }
 
   .token-item:hover {
@@ -110,7 +111,8 @@ export default css`
     background: none;
     padding: var(--apkt-spacing-3);
     border-radius: var(--apkt-borderRadius-3);
-    transition: background 0.2s linear;
+    transition: background var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change: background;
   }
 
   .details-container > wui-flex > button:hover {
