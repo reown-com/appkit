@@ -175,6 +175,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-pay-view></w3m-pay-view>`
       case 'PayLoading':
         return html`<w3m-pay-loading-view></w3m-pay-loading-view>`
+      case 'FundWallet':
+        return html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

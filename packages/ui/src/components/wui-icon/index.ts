@@ -107,7 +107,8 @@ const ICONS = {
   exclamationTriangle: async () =>
     (await import('../../assets/svg/exclamation-triangle.js')).exclamationTriangleSvg,
   reown: async () => (await import('../../assets/svg/reown-logo.js')).reownSvg,
-  'x-mark': async () => (await import('../../assets/svg/x-mark.js')).xMarkSvg
+  'x-mark': async () => (await import('../../assets/svg/x-mark.js')).xMarkSvg,
+  dollar: async () => (await import('../../assets/svg/dollar.js')).dollarSvg
 } as const
 
 async function getSvg(name: IconType) {
