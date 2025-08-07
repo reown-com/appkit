@@ -12,13 +12,13 @@ export default css`
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity;
     mask-image: var(--connect-mask-image);
   }
 
   .guide {
-    transition: opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity;
   }
 

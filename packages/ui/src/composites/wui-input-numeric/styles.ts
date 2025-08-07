@@ -20,9 +20,9 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textPrimary};
     caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     transition:
-      background-color var(--apkt-ease-inout-power-1) var(--apkt-duration-md),
-      border-color var(--apkt-ease-inout-power-1) var(--apkt-duration-md),
-      box-shadow var(--apkt-ease-inout-power-1) var(--apkt-duration-md);
+      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      border-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color, border-color, box-shadow;
     box-sizing: border-box;
     -webkit-appearance: none;

@@ -18,8 +18,8 @@ export default css`
     border-radius: var(--apkt-borderRadius-4);
     color: var(--apkt-tokens-theme-foregroundSecondary);
     transition:
-      background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg),
-      opacity var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
+      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color, opacity;
   }
 

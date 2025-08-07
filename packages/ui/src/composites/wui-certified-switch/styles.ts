@@ -15,7 +15,7 @@ export default css`
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
     border-radius: var(--apkt-borderRadius-4);
     box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
-    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color;
     cursor: pointer;
   }

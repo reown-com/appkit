@@ -26,7 +26,7 @@ export default css`
     background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
     gap: ${({ spacing }) => spacing[1]};
     border: none;
-    transition: border-radius 0.3s cubic-bezier(0.45, 0, 0.55, 1);
+    transition: border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: border-radius;
     color: ${({ tokens }) => tokens.theme.textInvert};
   }

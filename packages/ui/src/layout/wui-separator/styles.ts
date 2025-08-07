@@ -15,7 +15,7 @@ export default css`
     position: absolute;
     padding: 0px 8px;
     background-color: var(--apkt-tokens-theme-backgroundPrimary);
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color;
   }
 `

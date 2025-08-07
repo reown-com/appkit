@@ -53,8 +53,8 @@ export default css`
     opacity: 0;
     transform: scale(0.5);
     transition:
-      opacity var(--apkt-ease-out-power-2) var(--apkt-duration-lg),
-      transform var(--apkt-ease-out-power-2) var(--apkt-duration-lg);
+      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity, transform;
   }
 

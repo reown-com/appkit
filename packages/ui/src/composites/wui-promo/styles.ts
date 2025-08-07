@@ -9,7 +9,7 @@ export default css`
     background-color: transparent;
     border-radius: ${({ borderRadius }) => borderRadius[1]};
     border: none;
-    transition: background-color var(--apkt-duration-md) var(--apkt-ease-inout-power-1);
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color;
   }
 

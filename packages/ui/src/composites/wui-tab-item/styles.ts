@@ -16,7 +16,7 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textSecondary};
     border-radius: ${({ borderRadius }) => borderRadius[20]};
     background-color: transparent;
-    transition: background-color 0.2s linear;
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color;
   }
 
