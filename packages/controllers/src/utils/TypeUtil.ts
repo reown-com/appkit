@@ -1149,13 +1149,16 @@ export type ConnectorTypeOrder =
 
 export type RemoteFeatures = {
   swaps?: SwapProvider[] | false
-  onramp?: OnRampProvider[] | false
   email?: boolean
   socials?: SocialProvider[] | false
   activity?: boolean
   reownBranding?: boolean
   multiWallet?: boolean
   emailCapture?: EmailCaptureOptions[] | boolean
+  // Fund Wallet
+  payWithExchange?: boolean
+  onramp?: OnRampProvider[] | false
+  receive?: boolean
 }
 
 export type Features = {

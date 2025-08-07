@@ -632,12 +632,16 @@ export class AppKit extends AppKitBaseClient {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/send'))
     }
 
-    if (features.receive) {
+    if (features.receive || remoteFeatures.receive) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
     }
 
     if (remoteFeatures.onramp && remoteFeatures.onramp.length > 0) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
+    }
+
+    if (remoteFeatures.payWithExchange) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/pay-with-exchange'))
     }
 
     if (remoteFeatures.activity) {

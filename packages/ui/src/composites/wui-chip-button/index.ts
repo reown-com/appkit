@@ -20,7 +20,7 @@ export class WuiChipButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @property() public icon: IconType = 'externalLink'
+  @property() public icon: IconType | null = 'externalLink'
 
   @property() public size: 'sm' | 'md' = 'md'
 
@@ -38,7 +38,9 @@ export class WuiChipButton extends LitElement {
       >
         ${this.imageSrc ? html`<wui-image src=${this.imageSrc}></wui-image>` : null}
         <wui-text variant=${textVariant} color="inherit"> ${this.text} </wui-text>
-        <wui-icon name=${this.icon} color="inherit" size="inherit"></wui-icon>
+        ${this.icon
+          ? html`<wui-icon name=${this.icon} color="inherit" size="inherit"></wui-icon>`
+          : null}
       </button>
     `
   }

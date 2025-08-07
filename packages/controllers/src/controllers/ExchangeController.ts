@@ -25,6 +25,7 @@ const DEFAULT_STATE: ExchangeControllerState = {
     }
   },
   amount: 0,
+  tokenAmount: 0,
   error: null,
   exchanges: [],
   isLoading: false,
@@ -50,6 +51,7 @@ export type PayResult = CurrentPayment['result']
 
 export interface ExchangeControllerState {
   amount: number
+  tokenAmount: number
   error: string | null
   isLoading: boolean
   exchanges: Exchange[]
@@ -80,6 +82,7 @@ const state = proxy<ExchangeControllerState>({
     }
   },
   amount: 0,
+  tokenAmount: 0,
   error: null,
   exchanges: [],
   isLoading: false,
@@ -234,15 +237,10 @@ export const ExchangeController = {
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
 
-      return {
-        url: payUrl.url,
-        openInNewTab: true
-      }
+      CoreHelperUtil.openHref(payUrl.url, '_blank')
     } catch (error) {
       state.error = 'Unable to initiate payment'
       SnackController.showError(state.error)
-
-      return null
     }
   }
 }
