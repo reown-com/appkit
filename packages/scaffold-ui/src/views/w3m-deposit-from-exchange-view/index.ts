@@ -111,7 +111,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           </wui-text>
           </wui-flex>
           <wui-flex justifyContent="space-between" gap="xs">
-            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => this.onPresetAmountClick(amount)} variant="shade" size="sm" fullWidth>$${amount}</wui-button>`)}
+            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => this.onPresetAmountClick(amount)} variant=${this.amount === amount ? 'accent' : 'shade'} size="sm" fullWidth>$${amount}</wui-button>`)}
           </wui-flex>
         </wui-flex>
       </wui-flex>
