@@ -9,10 +9,11 @@ export default css`
     background-color: var(--apkt-tokens-theme-foregroundPrimary);
     transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
     will-change: background-color;
+    transition: all var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
   }
 
   :host(:hover) {
-    background-color: var(--apkt-tokens-core-glass010);
+    background-color: var(--apkt-tokens-theme-foregroundSecondary);
   }
 
   wui-flex {

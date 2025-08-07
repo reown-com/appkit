@@ -13,7 +13,7 @@ export default css`
   }
 
   :host(:hover) {
-    background-color: var(--apkt-tokens-core-glass010);
+    background-color: var(--apkt-tokens-theme-foregroundSecondary);
   }
 
   wui-flex {

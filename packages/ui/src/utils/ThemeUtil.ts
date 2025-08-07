@@ -268,6 +268,7 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
+
     will-change: background-color, color, border, box-shadow, width, height, transform, opacity;
     outline: none;
     border: none;
@@ -281,9 +282,11 @@ export const elementStyles = css`
       height var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
       transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
       opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      scale var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      scale var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change:
-      background-color, color, border, box-shadow, width, height, transform, opacity, scale;
+      background-color, color, border, box-shadow, width, height, transform, opacity, scale,
+      border-radius;
   }
 
   a:active:not([disabled]),

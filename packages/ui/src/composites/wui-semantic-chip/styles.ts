@@ -96,22 +96,19 @@ export default css`
     }
   }
 
-  a[data-type='success']:not(:disabled):focus-visible,
-  a[data-type='success']:not(:disabled):active {
+  a[data-type='success']:not(:disabled):focus-visible {
     box-shadow:
       0px 0px 0px 1px ${({ tokens }) => tokens.core.backgroundAccentPrimary},
       0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
-  a[data-type='error']:not(:disabled):focus-visible,
-  a[data-type='error']:not(:disabled):active {
+  a[data-type='error']:not(:disabled):focus-visible {
     box-shadow:
       0px 0px 0px 1px ${({ tokens }) => tokens.core.backgroundAccentPrimary},
       0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
-  a[data-type='warning']:not(:disabled):focus-visible,
-  a[data-type='warning']:not(:disabled):active {
+  a[data-type='warning']:not(:disabled):focus-visible {
     box-shadow:
       0px 0px 0px 1px ${({ tokens }) => tokens.core.backgroundAccentPrimary},
       0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent020};
