@@ -11,7 +11,7 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ---------------------------------------------------------------
 const ACTIVITY_BUTTON_TEST_ID = 'w3m-account-default-activity-button'
-const ONRAMP_BUTTON_TEST_ID = 'w3m-account-default-onramp-button'
+const FUND_WALLET_BUTTON_TEST_ID = 'w3m-account-default-fund-wallet-button'
 const SWAPS_BUTTON_TEST_ID = 'w3m-account-default-swaps-button'
 const SEND_BUTTON_TEST_ID = 'w3m-account-default-send-button'
 
@@ -114,16 +114,16 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).not.toBeNull()
         expect(sendButton).not.toBeNull()
       })
 
-      it('should not show onramp if disabled', async () => {
+      it('should not show fund wallet if onramp is disabled', async () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
@@ -139,11 +139,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).toBeNull()
+        expect(fundWalletButton).toBeNull()
         expect(swapButton).not.toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -164,11 +164,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -189,11 +189,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).not.toBeNull()
         expect(sendButton).toBeNull()
       })
@@ -223,11 +223,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -248,11 +248,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).toBeNull()
+        expect(fundWalletButton).toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -273,11 +273,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).toBeNull()
       })
@@ -300,11 +300,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).toBeNull()
+        expect(fundWalletButton).toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).toBeNull()
       })

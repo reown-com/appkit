@@ -10,8 +10,8 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ----------------------------------------- //
 const LIST_TOKEN = 'wui-list-token'
-const BUY_CRYPTO = 'buy-crypto'
-const RECEIVE_CRYPTO = 'receive-funds'
+const BUY_CRYPTO = 'w3m-account-onramp-button'
+const RECEIVE_CRYPTO = 'w3m-account-receive-button'
 
 const BALANCE = {
   name: 'Ethereum',

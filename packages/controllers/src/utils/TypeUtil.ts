@@ -461,7 +461,6 @@ export type Event =
       properties: {
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
-        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -476,16 +475,16 @@ export type Event =
       type: 'track'
       address?: string
       event: 'DISCONNECT_SUCCESS'
-      properties?: {
-        namespace: ChainNamespace | 'all'
+      properties: {
+        namespace?: ChainNamespace | 'all'
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'DISCONNECT_ERROR'
-      properties?: {
-        message: string
+      properties: {
+        message?: string
       }
     }
   | {
@@ -517,9 +516,7 @@ export type Event =
       type: 'track'
       address?: string
       event: 'CLICK_TRANSACTIONS'
-      properties: {
-        isSmartAccount: boolean
-      }
+      properties: { isSmartAccount: boolean }
     }
   | {
       type: 'track'
@@ -613,9 +610,7 @@ export type Event =
       type: 'track'
       address?: string
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
-      properties: {
-        message: string
-      }
+      properties: { message: string }
     }
   | {
       type: 'track'
@@ -631,9 +626,7 @@ export type Event =
       type: 'track'
       address?: string
       event: 'SWITCH_NETWORK'
-      properties: {
-        network: string
-      }
+      properties: { network: string }
     }
   | {
       type: 'track'
@@ -654,44 +647,31 @@ export type Event =
       type: 'track'
       address?: string
       event: 'SELECT_BUY_CRYPTO'
-      properties: {
-        isSmartAccount: boolean
-      }
+      properties: { isSmartAccount: boolean }
     }
   | {
       type: 'track'
       address?: string
       event: 'SELECT_BUY_PROVIDER'
-      properties: {
-        provider: OnRampProviderOption
-        isSmartAccount: boolean
-      }
+      properties: { provider: OnRampProviderOption; isSmartAccount: boolean }
     }
   | {
       type: 'track'
       address?: string
       event: 'SELECT_WHAT_IS_A_BUY'
-      properties: {
-        isSmartAccount: boolean
-      }
+      properties: { isSmartAccount: boolean }
     }
   | {
       type: 'track'
       address?: string
       event: 'SET_PREFERRED_ACCOUNT_TYPE'
-      properties: {
-        accountType: W3mFrameTypes.AccountType
-        network: string
-      }
+      properties: { accountType: W3mFrameTypes.AccountType; network: string }
     }
   | {
       type: 'track'
       address?: string
       event: 'OPEN_SWAP'
-      properties: {
-        isSmartAccount: boolean
-        network: string
-      }
+      properties: { isSmartAccount: boolean; network: string }
     }
   | {
       type: 'track'
@@ -761,7 +741,6 @@ export type Event =
       event: 'SOCIAL_LOGIN_SUCCESS'
       properties: {
         provider: SocialProvider
-        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -923,6 +902,7 @@ type PayEvent =
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -933,6 +913,7 @@ type PayEvent =
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -943,6 +924,7 @@ type PayEvent =
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -952,6 +934,7 @@ type PayEvent =
       properties: {
         exchanges: PayExchange[]
         configuration: PayConfiguration
+        caipNetworkId?: CaipNetworkId
       }
     }
   | {
@@ -963,6 +946,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         headless: boolean
+        caipNetworkId?: CaipNetworkId
       }
     }
 
