@@ -44,8 +44,9 @@ export default css`
     transition:
       transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
       border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
-    will-change: border-radius, background-color, transform;
+      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
+      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
+    will-change: border-radius, background-color, transform, box-shadow;
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     padding: ${({ spacing }) => spacing[1]};
     box-sizing: border-box;
