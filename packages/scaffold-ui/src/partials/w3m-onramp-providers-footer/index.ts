@@ -36,7 +36,7 @@ export class W3mOnRampProvidersFooter extends LitElement {
         justifyContent="center"
         gap="3"
       >
-        <wui-text color="secondary" variant="sm-regular" align="center">
+        <wui-text color="secondary" variant="md-regular" align="center">
           We work with the best providers to give you the lowest fees and best support. More options
           coming soon!
         </wui-text>

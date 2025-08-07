@@ -38,7 +38,11 @@ export class WuiListDescription extends LitElement {
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-flex flexDirection="column" gap="1">
             <wui-text variant="md-medium" color="primary">${this.text}</wui-text>
-            <wui-text variant="md-regular" color="secondary">${this.description}</wui-text>
+            ${this.description
+              ? html`<wui-text variant="sm-medium" color="secondary">
+                  ${this.description}</wui-text
+                >`
+              : null}
           </wui-flex>
           <wui-icon size="md" name="chevronRight" color="default"></wui-icon>
         </wui-flex>

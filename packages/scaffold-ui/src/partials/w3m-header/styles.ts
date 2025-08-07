@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -7,10 +7,12 @@ export default css`
 
   :host > wui-flex {
     box-sizing: border-box;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 
   wui-text {
     text-transform: capitalize;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 
   wui-flex.w3m-header-title {

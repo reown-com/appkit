@@ -7,7 +7,6 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-legal-checkbox/index.js'
-import '../../partials/w3m-legal-footer/index.js'
 import '../../partials/w3m-social-login-list/index.js'
 import styles from './styles.js'
 
@@ -57,7 +56,6 @@ export class W3mConnectSocialsView extends LitElement {
       >
         <w3m-social-login-list tabIdx=${ifDefined(tabIndex)}></w3m-social-login-list>
       </wui-flex>
-      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 }

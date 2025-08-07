@@ -50,19 +50,28 @@ export class WuiRouterContainer extends LitElement {
       this.style.setProperty('--local-transition', this.transitionFunction)
     }
     this.style.setProperty('--local-duration', this.transitionDuration)
-
     this.historyState = this.history
 
     this.resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         if (entry.target === this.getWrapper()) {
-          const newHeight = `${entry.contentRect.height}px`
+          let newHeight = entry.contentRect.height
+          const footerHeight = parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue('--apkt-footer-height') ||
+              '0'
+          )
+          const totalHeight = newHeight + footerHeight
+          newHeight = totalHeight
+          this.style.setProperty(
+            '--local-border-bottom-radius',
+            footerHeight ? 'var(--apkt-borderRadius-5)' : '0px'
+          )
 
-          this.style.setProperty('--new-height', newHeight)
+          this.style.setProperty('--local-container-height', `${newHeight}px`)
           if (this.previousHeight !== '0px') {
             this.style.setProperty('--local-duration-height', this.transitionDuration)
           }
-          this.previousHeight = newHeight
+          this.previousHeight = `${newHeight}px`
         }
       }
     })
@@ -81,7 +90,9 @@ export class WuiRouterContainer extends LitElement {
     return html`
       <div class="container">
         <div class="page" view-direction="${this.viewDirection}">
-          <slot></slot>
+          <div class="page-content">
+            <slot></slot>
+          </div>
         </div>
       </div>
     `

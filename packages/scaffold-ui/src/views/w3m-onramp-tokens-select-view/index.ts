@@ -15,7 +15,6 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-text'
 
-import '../../partials/w3m-legal-checkbox/index.js'
 import '../../partials/w3m-legal-footer/index.js'
 import styles from './styles.js'
 
@@ -73,7 +72,6 @@ export class W3mOnrampTokensView extends LitElement {
       >
         ${this.currenciesTemplate(disabled)}
       </wui-flex>
-      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 

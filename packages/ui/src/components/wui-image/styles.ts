@@ -22,7 +22,7 @@ export default css`
     -o-user-drag: none;
   }
 
-  :host([boxed]) {
+  :host([data-boxed='true']) {
     width: 40px;
     height: 40px;
     display: flex;
@@ -32,19 +32,18 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
-  :host([rounded]) {
-    border-radius: ${({ borderRadius }) => borderRadius[16]};
-  }
-
-  :host([boxed]) img {
+  :host([data-boxed='true']) img {
     width: 20px;
     height: 20px;
     border-radius: ${({ borderRadius }) => borderRadius[16]};
   }
 
-  :host([boxed]) wui-icon {
+  :host([data-boxed='true']) wui-icon {
     width: 16px;
     height: 16px;
-    color: ${({ tokens }) => tokens.theme.textPrimary};
+  }
+
+  :host([data-rounded='true']) {
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
   }
 `

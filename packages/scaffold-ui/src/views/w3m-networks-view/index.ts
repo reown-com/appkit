@@ -10,16 +10,13 @@ import {
   ChainController,
   ConnectorController,
   CoreHelperUtil,
-  EventsController,
-  NetworkUtil,
-  RouterController
+  NetworkUtil
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-input-text'
 import '@reown/appkit-ui/wui-link'
 import '@reown/appkit-ui/wui-list-network'
-import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
@@ -67,18 +64,6 @@ export class W3mNetworksView extends LitElement {
       >
         ${this.networksTemplate()}
       </wui-flex>
-
-      <wui-separator></wui-separator>
-
-      <wui-flex padding="3" flexDirection="column" gap="3" alignItems="center">
-        <wui-text variant="sm-regular" color="secondary" align="center">
-          Your connected wallet may not support some of the networks available for this dApp
-        </wui-text>
-        <wui-link @click=${this.onNetworkHelp.bind(this)}>
-          <wui-icon size="xs" color="accent-primary" slot="iconLeft" name="helpCircle"></wui-icon>
-          What is a network
-        </wui-link>
-      </wui-flex>
     `
   }
 
@@ -104,11 +89,6 @@ export class W3mNetworksView extends LitElement {
   private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
     this.search = value
   }, 100)
-
-  private onNetworkHelp() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' })
-    RouterController.push('WhatIsANetwork')
-  }
 
   private networksTemplate() {
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()

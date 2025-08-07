@@ -16,7 +16,6 @@ import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-text'
 
 import '../../partials/w3m-legal-checkbox/index.js'
-import '../../partials/w3m-legal-footer/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-onramp-fiat-select-view')
@@ -73,7 +72,6 @@ export class W3mOnrampFiatSelectView extends LitElement {
       >
         ${this.currenciesTemplate(disabled)}
       </wui-flex>
-      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 

@@ -21,10 +21,6 @@ export default css`
     text-transform: capitalize;
   }
 
-  wui-image {
-    border-radius: ${({ borderRadius }) => borderRadius.round} !important;
-  }
-
   button:hover:enabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }

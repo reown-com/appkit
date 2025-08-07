@@ -65,11 +65,11 @@ export class W3mAccountTokensWidget extends LitElement {
       <wui-list-description
         @click=${this.onReceiveClick.bind(this)}
         text="Receive funds"
-        description="Transfer tokens on your wallet"
-        icon="arrowBottomCircle"
-        iconColor="secondary"
-        iconBackgroundColor="secondary"
-        data-testid="receive-funds"
+        description="Scan the QR code and receive funds"
+        icon="qrCode"
+        iconColor="fg-200"
+        iconBackgroundColor="fg-200"
+        data-testid="w3m-account-receive-button"
       ></wui-list-description
     ></wui-flex>`
   }
@@ -84,7 +84,7 @@ export class W3mAccountTokensWidget extends LitElement {
         iconColor="success-100"
         iconBackgroundColor="success-100"
         tag="popular"
-        data-testid="buy-crypto"
+        data-testid="w3m-account-onramp-button"
       ></wui-list-description>`
     }
 

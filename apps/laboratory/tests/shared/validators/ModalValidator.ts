@@ -361,7 +361,7 @@ export class ModalValidator {
   }
 
   async expectOnrampButton(visible: boolean) {
-    const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
+    const onrampButton = this.page.getByTestId('wallet-features-onramp-button')
     if (visible) {
       await expect(onrampButton).toBeVisible()
     } else {
