@@ -39,7 +39,7 @@ export class WuiTab extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-active=${this.active} data-testid="tab-${this.label.toLowerCase()}">
+      <button data-active=${this.active}>
         ${this.icon
           ? html`<wui-icon size=${ICON_SIZE[this.size]} name=${this.icon}></wui-icon>`
           : ''}
