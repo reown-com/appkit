@@ -1,4 +1,4 @@
-import { css } from '../../utils/ThemeHelperUtil.js'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {

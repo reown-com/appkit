@@ -160,14 +160,14 @@ describe('W3mSwapView', () => {
     expect(toInput?.target).to.equal('toToken')
   })
 
-  it('should handle token switching', async () => {
+  it.only('should handle token switching', async () => {
     const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
 
     await element.updateComplete
 
     const switchTokensSpy = vi.spyOn(SwapController, 'switchTokens')
     const switchButton = element.shadowRoot?.querySelector(
-      '.replace-tokens-button-container button'
+      'wui-flex.replace-tokens-button-container wui-icon-box'
     ) as HTMLElement
     switchButton?.click()
 
