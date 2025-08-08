@@ -309,9 +309,13 @@ export const WcHelpersUtil = {
       universalProvider.on('accountsChanged', (accounts: string[]) => {
         try {
           const allAccounts = universalProvider.session?.namespaces?.[namespace]?.accounts || []
+          const defaultChain = universalProvider.rpcProviders?.[namespace]?.getDefaultChain()
+
           const parsedAccounts = accounts
             .map(account => {
-              const caipAccount = allAccounts.find(acc => acc.includes(account))
+              const caipAccount = allAccounts.find(acc =>
+                acc.includes(`${namespace}:${defaultChain}:${account}`)
+              )
               if (!caipAccount) {
                 return undefined
               }
