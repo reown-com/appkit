@@ -36,6 +36,7 @@ export const NETWORK_ID_NAMESPACE_MAP = {
   137: 'eip155',
   324: 'eip155',
   8453: 'eip155',
+  10143: 'eip155',
   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'solana',
   EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'solana',
   '000000000019d6689c085ae165831e93': 'bip122',
@@ -43,7 +44,7 @@ export const NETWORK_ID_NAMESPACE_MAP = {
 }
 
 export const NAMESPACE_NETWORK_IDS_MAP: Record<ChainNamespace, (string | number)[]> = {
-  eip155: [1, 42161, 43114, 56, 10, 137, 324, 8453],
+  eip155: [1, 42161, 43114, 56, 10, 137, 324, 8453, 10143],
   solana: ['5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
   bip122: ['000000000019d6689c085ae165831e93', '000000000933ea01ad0ee984209779ba'],
   polkadot: [],
