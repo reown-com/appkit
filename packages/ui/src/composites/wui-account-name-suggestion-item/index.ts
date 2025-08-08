@@ -19,10 +19,12 @@ export class WuiAccountNameSuggestionItem extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
+  @property({ type: Boolean }) public disabled = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.registered || this.loading}>
+      <button ?disabled=${this.disabled}>
         <wui-text class="name" color="primary" variant="md-regular">${this.name}</wui-text>
         ${this.templateRightContent()}
       </button>

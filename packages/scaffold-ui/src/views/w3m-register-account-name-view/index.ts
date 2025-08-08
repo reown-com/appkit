@@ -166,6 +166,7 @@ export class W3mRegisterAccountNameView extends LitElement {
             name=${suggestion.name}
             ?registered=${suggestion.registered}
             ?loading=${this.loading}
+            ?disabled=${suggestion.registered || this.loading}
             data-testid="account-name-suggestion"
             @click=${() => this.onSubmitName(suggestion.name as ReownName)}
           ></wui-account-name-suggestion-item>`
