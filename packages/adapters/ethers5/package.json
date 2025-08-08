@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
-    "@walletconnect/types": "2.21.3",
+    "@walletconnect/types": "2.21.7",
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",
