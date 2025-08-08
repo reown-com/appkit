@@ -56,7 +56,7 @@ jobs:
       - name: Open "version packages" PR
         uses: changesets/action@v1
         with:
-          baseBranch: release/${{ steps.next.outputs.next_version }}
+          branch: release/${{ steps.next.outputs.next_version }}
           title: 'chore: version packages'
           commit: 'chore: version packages'
           version: pnpm changeset:version
