@@ -609,7 +609,6 @@ export class AppKit extends AppKitBaseClient {
     }
 
     const featureImportPromises = []
-    console.log('>> remoteFeatures', remoteFeatures)
 
     // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
     const usingEmbeddedWallet =
