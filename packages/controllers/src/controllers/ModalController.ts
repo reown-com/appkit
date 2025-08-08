@@ -90,7 +90,6 @@ const controller = {
           RouterController.reset('ConnectingWalletConnectBasic')
         }
       } else if (options?.view) {
-        console.log('>>> ModalController.open with options', options)
         RouterController.reset(options.view, options.data)
       } else if (caipAddress) {
         RouterController.reset('Account')
