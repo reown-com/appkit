@@ -64,7 +64,7 @@ export class ModalWalletPage extends ModalPage {
     await toggleButton.click()
 
     await expect(loadingSpinner, 'Loading spinner should not be visible').toBeHidden()
-    await this.page.waitForTimeout(200)
+    await this.page.waitForTimeout(500)
   }
 
   override async disconnect(): Promise<void> {
