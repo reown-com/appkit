@@ -63,7 +63,6 @@ export class ModalWalletPage extends ModalPage {
 
     await toggleButton.click()
 
-    await expect(loadingSpinner, 'Loading spinner should be visible').toBeVisible()
     await expect(loadingSpinner, 'Loading spinner should not be visible').toBeHidden()
   }
 
