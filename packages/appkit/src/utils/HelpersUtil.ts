@@ -19,7 +19,7 @@ interface ListenWcProviderParams {
   namespace: ChainNamespace
   onConnect?: (parsedData: ParsedCaipAddress[]) => void
   onDisconnect?: () => void
-  onAccountsChanged?: (parsedData: string[]) => void
+  onAccountsChanged?: (parsedData: ParsedCaipAddress[]) => void
   onChainChanged?: (chainId: number | string) => void
   onDisplayUri?: (uri: string) => void
 }
@@ -302,8 +302,44 @@ export const WcHelpersUtil = {
     }
 
     if (onAccountsChanged) {
+      /*
+       * In multichain scenario - every adapter will listen to accountsChanged event
+       * so make sure to call `onAccountsChanged` only on the namespace that actually has accounts changed
+       */
       universalProvider.on('accountsChanged', (accounts: string[]) => {
-        onAccountsChanged(accounts)
+        try {
+          const allAccounts = universalProvider.session?.namespaces?.[namespace]?.accounts || []
+          const parsedAccounts = accounts
+            .map(account => {
+              const caipAccount = allAccounts.find(acc => acc.includes(account))
+              if (!caipAccount) {
+                return undefined
+              }
+
+              const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(
+                caipAccount as CaipAddress
+              )
+
+              return {
+                address: account,
+                chainId,
+                chainNamespace
+              }
+            })
+            .filter(account => account !== undefined)
+
+          // Emit accountsChanged event only if there are accounts
+          if (parsedAccounts.length > 0) {
+            onAccountsChanged(parsedAccounts)
+          }
+        } catch (error) {
+          console.warn(
+            'Failed to parse accounts for namespace on accountsChanged event',
+            namespace,
+            accounts,
+            error
+          )
+        }
       })
     }
 

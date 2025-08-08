@@ -1605,12 +1605,11 @@ export abstract class AppKitBaseClient {
               (ChainController.state.noAdapters || isCurrentConnectorWalletConnect)
             ) {
               const account = accounts?.[0]
-              const chainId = this.getCaipNetwork()?.id
-              if (account && chainId) {
+              if (account) {
                 this.syncAccount({
-                  address: account,
-                  chainId,
-                  chainNamespace: activeNamespace
+                  address: account.address,
+                  chainId: account.chainId,
+                  chainNamespace: account.chainNamespace
                 })
               }
             }
