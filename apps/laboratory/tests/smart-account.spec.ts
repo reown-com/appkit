@@ -181,7 +181,6 @@ smartAccountTest(
     await page.togglePreferredAccountType()
     await validator.expectChangePreferredAccountToShow(EOA)
 
-    await page.page.waitForTimeout(500)
     await page.page.reload()
     await validator.expectAccountButtonReady()
 
