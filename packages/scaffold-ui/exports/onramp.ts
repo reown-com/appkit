@@ -5,7 +5,6 @@ export * from '../src/views/w3m-onramp-tokens-select-view/index.js'
 export * from '../src/views/w3m-buy-in-progress-view/index.js'
 export * from '../src/views/w3m-what-is-a-buy-view/index.js'
 export * from '../src/views/w3m-fund-wallet-view/index.js'
-export * from '../src/views/w3m-deposit-from-exchange-view/index.js'
 
 // -- Modal Components ---------------------------------- //
 export * from '../src/modal/w3m-onramp-widget/index.js'

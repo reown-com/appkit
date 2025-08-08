@@ -80,10 +80,20 @@ export class W3mFundWalletView extends LitElement {
   }
 
   private depositFromExchangeTemplate() {
+    const isDepositFromExchangeEnabled = this.remoteFeatures?.payWithExchange
+
+    if (!isDepositFromExchangeEnabled) {
+      return null
+    }
+
     return html`
       <wui-list-description
         @click=${this.onDepositFromExchange.bind(this)}
         text="Deposit from exchange"
+        icon="download"
+        iconColor="fg-200"
+        iconBackgroundColor="fg-200"
+        data-testid="wallet-features-deposit-from-exchange-button"
       ></wui-list-description>
     `
   }

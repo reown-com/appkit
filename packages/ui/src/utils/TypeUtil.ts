@@ -129,6 +129,7 @@ export type IconType =
   | 'desktop'
   | 'disconnect'
   | 'discord'
+  | 'download'
   | 'etherscan'
   | 'extension'
   | 'externalLink'

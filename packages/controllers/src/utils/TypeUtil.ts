@@ -1157,6 +1157,7 @@ export type RemoteFeatures = {
   emailCapture?: EmailCaptureOptions[] | boolean
   // Fund Wallet
   payWithExchange?: boolean
+  payments?: boolean
   onramp?: OnRampProvider[] | false
   receive?: boolean
 }
