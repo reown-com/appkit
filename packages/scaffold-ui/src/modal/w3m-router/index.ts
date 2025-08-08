@@ -19,7 +19,8 @@ export class W3mRouter extends LitElement {
 
   @state() private history = RouterController.state.history.join(',')
 
-  public override firstUpdated() {
+  public constructor() {
+    super()
     this.unsubscribe.push(
       RouterController.subscribeKey('view', () => {
         this.history = RouterController.state.history.join(',')
