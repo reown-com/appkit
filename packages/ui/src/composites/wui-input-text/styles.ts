@@ -23,7 +23,7 @@ export default css`
     border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
     caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     padding: ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[3]}
-      ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[8]};
+      ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[10]};
     font-size: ${({ textSize }) => textSize.large};
     line-height: ${({ typography }) => typography['lg-regular'].lineHeight};
     letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
@@ -68,12 +68,8 @@ export default css`
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    left: ${({ spacing }) => spacing[2]};
-    color: ${({ tokens }) => tokens.theme.iconDefault};
-  }
-
-  wui-icon[data-size='lg'].wui-input-text-left-icon {
     left: ${({ spacing }) => spacing[4]};
+    color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
   button.wui-input-text-submit-button {

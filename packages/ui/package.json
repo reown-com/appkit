@@ -83,6 +83,11 @@
       "import": "./dist/esm/exports/wui-avatar.js",
       "default": "./dist/esm/exports/wui-avatar.js"
     },
+    "./wui-account-name-suggestion-item": {
+      "types": "./dist/types/exports/wui-account-name-suggestion-item.d.ts",
+      "import": "./dist/esm/exports/wui-account-name-suggestion-item.js",
+      "default": "./dist/esm/exports/wui-account-name-suggestion-item.js"
+    },
     "./wui-button": {
       "types": "./dist/types/exports/wui-button.d.ts",
       "import": "./dist/esm/exports/wui-button.js",

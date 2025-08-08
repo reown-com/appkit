@@ -47,7 +47,7 @@ export default css`
   .input-submit-button,
   .input-loading-spinner {
     position: absolute;
-    top: 26px;
+    top: 22px;
     transform: translateY(-50%);
     right: 10px;
   }

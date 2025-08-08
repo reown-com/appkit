@@ -37,7 +37,7 @@ export class WuiInputText extends LitElement {
 
   @property() public onSubmit?: () => void
 
-  @property() public size: 'sm' | 'md' | 'lg' = 'md'
+  @property() public size: 'md' | 'lg' = 'md'
 
   @property({ attribute: false }) public onKeyDown?: (event: KeyboardEvent) => void
 
