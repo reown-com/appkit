@@ -85,12 +85,15 @@ export const ApiController = {
   },
 
   _getSdkProperties() {
-    const { projectId, sdkType, sdkVersion } = OptionsController.state
+    const { projectId, sdkType, sdkVersion, includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
 
     return {
       projectId,
       st: sdkType || 'appkit',
-      sv: sdkVersion || 'html-wagmi-4.2.2'
+      sv: sdkVersion || 'html-wagmi-4.2.2',
+      ...(includeWalletIds?.length && { includeWalletIds: includeWalletIds.join(',') }),
+      ...(excludeWalletIds?.length && { excludeWalletIds: excludeWalletIds.join(',') }),
+      ...(featuredWalletIds?.length && { featuredWalletIds: featuredWalletIds.join(',') })
     }
   },
 
