@@ -123,8 +123,6 @@ export class W3mHeader extends LitElement {
 
   @state() private viewDirection = ''
 
-  @state() private headerText = headings()[RouterController.state.view]
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -134,7 +132,7 @@ export class W3mHeader extends LitElement {
       RouterController.subscribeKey('view', val => {
         setTimeout(() => {
           this.view = val
-          this.headerText = headings()[val]
+          this.heading = headings()[val]
         }, ConstantsUtil.ANIMATION_DURATIONS.HeaderText)
         this.onViewChange()
         this.onHistoryChange()
@@ -153,7 +151,11 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+      <wui-flex
+        .padding=${['0', '5', '0', '5'] as const}
+        justifyContent="space-between"
+        alignItems="center"
+      >
         ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
@@ -181,6 +183,7 @@ export class W3mHeader extends LitElement {
     return html`<wui-flex>
       <wui-icon-link
         icon="clock"
+        variant="primary"
         @click=${() => RouterController.push('SmartSessionList')}
         data-testid="w3m-header-smart-sessions"
       ></wui-icon-link>
@@ -192,6 +195,7 @@ export class W3mHeader extends LitElement {
     return html`
       <wui-icon-link
         icon="close"
+        variant="primary"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
       ></wui-icon-link>
@@ -206,12 +210,12 @@ export class W3mHeader extends LitElement {
         view-direction="${this.viewDirection}"
         class="w3m-header-title"
         alignItems="center"
-        gap="xs"
+        gap="2"
       >
-        <wui-text variant="paragraph-700" color="fg-100" data-testid="w3m-header-text"
-          >${this.headerText}</wui-text
-        >
-        ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
+        <wui-text variant="lg-regular" color="primary" data-testid="w3m-header-text">
+          ${this.heading}
+        </wui-text>
+        ${isBeta ? html`<wui-tag variant="accent" size="md">Beta</wui-tag>` : null}
       </wui-flex>
     `
   }
@@ -243,6 +247,7 @@ export class W3mHeader extends LitElement {
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
+        variant="primary"
         @click=${this.onGoBack.bind(this)}
       ></wui-icon-link>`
     }
@@ -251,6 +256,7 @@ export class W3mHeader extends LitElement {
       data-hidden=${!isConnectHelp}
       id="dynamic"
       icon="helpCircle"
+      variant="primary"
       @click=${this.onWalletHelp.bind(this)}
     ></wui-icon-link>`
   }
@@ -268,14 +274,6 @@ export class W3mHeader extends LitElement {
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
     return isMultiNetwork || !isValidNetwork
-  }
-
-  private getPadding() {
-    if (this.heading) {
-      return ['l', '2l', 'l', '2l'] as const
-    }
-
-    return ['0', '2l', '0', '2l'] as const
   }
 
   private onViewChange() {

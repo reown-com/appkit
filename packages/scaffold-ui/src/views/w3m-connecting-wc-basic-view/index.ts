@@ -44,19 +44,15 @@ export class W3mConnectingWcBasicView extends LitElement {
       const showConnectors =
         featured.length || recommended.length || customWallets?.length || recent.length
 
-      return html`<wui-flex
-        flexDirection="column"
-        gap="xs"
-        .margin=${['3xs', 's', 's', 's'] as const}
-      >
+      return html`<wui-flex flexDirection="column" gap="2" .margin=${['1', '3', '3', '3'] as const}>
         ${showConnectors ? html`<w3m-connector-list></w3m-connector-list>` : null}
         <w3m-all-wallets-widget></w3m-all-wallets-widget>
       </wui-flex>`
     }
 
-    return html`<wui-flex flexDirection="column" .padding=${['0', '0', 'l', '0'] as const}>
+    return html`<wui-flex flexDirection="column" .padding=${['0', '0', '4', '0'] as const}>
         <w3m-connecting-wc-view .displayBranding=${false}></w3m-connecting-wc-view>
-        <wui-flex flexDirection="column" .padding=${['0', 'm', '0', 'm'] as const}>
+        <wui-flex flexDirection="column" .padding=${['0', '3', '0', '3'] as const}>
           <w3m-all-wallets-widget></w3m-all-wallets-widget>
         </wui-flex>
       </wui-flex>
@@ -68,7 +64,7 @@ export class W3mConnectingWcBasicView extends LitElement {
       return null
     }
 
-    return html` <wui-flex flexDirection="column" .padding=${['3xs', '0', '3xs', '0'] as const}>
+    return html` <wui-flex flexDirection="column" .padding=${['1', '0', '1', '0'] as const}>
       <wui-ux-by-reown></wui-ux-by-reown>
     </wui-flex>`
   }

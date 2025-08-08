@@ -78,7 +78,7 @@ describe('W3mConnectMultiChainWidget', () => {
     expect(mockWalletSelector).not.toBeNull()
     expect(mockWalletSelector.getAttribute('name')).toBe(MOCK_MULTI_CHAIN_CONNECTOR.name)
     expect(mockWalletSelector.getAttribute('tagLabel')).toBe('multichain')
-    expect(mockWalletSelector.getAttribute('tagVariant')).toBe('shade')
+    expect(mockWalletSelector.getAttribute('tagVariant')).toBe('info')
     expect(walletConnectSelector).toBeNull()
   })
 

@@ -8,6 +8,7 @@ import {
   ChainController,
   type Connector,
   ConnectorController,
+  ApiController as ControllersApiController,
   CoreHelperUtil,
   ModalController,
   RouterController,
@@ -42,11 +43,15 @@ describe('AppKitWalletButton', () => {
       walletButtons: [MetaMask]
     })
     vi.spyOn(ApiController, 'fetchWalletButtons').mockResolvedValue()
+    vi.spyOn(ControllersApiController, 'prefetch').mockImplementation(() =>
+      Promise.resolve([] as PromiseSettledResult<unknown>[])
+    )
   })
 
   beforeEach(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     ChainController.state.activeCaipAddress = undefined
+    ModalController.state.loading = false
   })
 
   test('should connect with social', async () => {
@@ -115,21 +120,16 @@ describe('AppKitWalletButton', () => {
       html`<appkit-wallet-button wallet="metamask"></appkit-wallet-button>`
     )
 
+    const caipAddress = 'eip155:1:0x123'
     const walletButton = HelpersUtil.getByTestId(element, WALLET_BUTTON)
+    const ModalControllerOpenSpy = vi.spyOn(ModalController, 'open')
+    const RouterControllerResetSpy = vi.spyOn(RouterController, 'reset')
 
     expect(walletButton.getAttribute('name')).toBe('MetaMask')
     expect(walletButton.getAttribute('disabled')).toBeNull()
     expect(walletButton.getAttribute('loading')).toBeNull()
 
     ApiController.state.walletButtons = [MetaMask]
-
-    const ModalControllerOpenSpy = vi
-      .spyOn(ModalController, 'open')
-      .mockImplementation(async () => {
-        ModalController.state.open = true
-      })
-
-    const RouterControllerReplaceSpy = vi.spyOn(RouterController, 'replace')
 
     const walletButtonClick = vi.fn()
 
@@ -144,28 +144,23 @@ describe('AppKitWalletButton', () => {
     expect(walletButton.getAttribute('loading')).not.toBeNull()
 
     expect(walletButtonClick).toHaveBeenCalledOnce()
-    expect(ModalControllerOpenSpy).toHaveBeenCalled()
-    expect(RouterControllerReplaceSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
-      wallet: MetaMask
+    expect(ModalControllerOpenSpy).toHaveBeenCalledWith({
+      view: 'ConnectingWalletConnect',
+      data: { wallet: MetaMask }
     })
-
     expect(RouterController.state?.data?.wallet).toEqual(MetaMask)
 
-    const ModalControllerCloseSpy = vi.spyOn(ModalController, 'close').mockImplementation(() => {
-      ModalController.state.open = false
-    })
-
+    const modalControllerCloseSpy = vi.spyOn(ModalController, 'close')
     const parseCaipAddressSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
-    const caipAddress = 'eip155:1:0x123'
     ChainController.state.activeCaipAddress = caipAddress
 
     // Wait until subscribeKey from ChainController has been called
     await HelpersUtil.sleep(100)
 
     expect(parseCaipAddressSpy).toHaveBeenCalledWith(caipAddress)
-    expect(ModalControllerCloseSpy).toHaveBeenCalled()
-    expect(RouterControllerReplaceSpy).toHaveBeenCalledWith('Connect')
+    expect(modalControllerCloseSpy).toHaveBeenCalled()
+    expect(RouterControllerResetSpy).toHaveBeenCalledWith('Connect')
 
     element.requestUpdate()
     await elementUpdated(element)
@@ -176,8 +171,7 @@ describe('AppKitWalletButton', () => {
 
   test('should redirect to all wallets on mobile if walletConnect is selected', async () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
-    vi.spyOn(ModalController, 'open').mockResolvedValue()
-    const RouterControllerReplaceSpy = vi.spyOn(RouterController, 'replace')
+    const modalControllerOpenSpy = vi.spyOn(ModalController, 'open')
 
     const element: AppKitWalletButton = await fixture(
       html`<appkit-wallet-button wallet="walletConnect"></appkit-wallet-button>`
@@ -192,7 +186,7 @@ describe('AppKitWalletButton', () => {
     await walletButton.click()
 
     expect(walletButtonClick).toHaveBeenCalled()
-    expect(RouterControllerReplaceSpy).toHaveBeenCalledWith('AllWallets')
+    expect(modalControllerOpenSpy).toHaveBeenCalledWith({ view: 'AllWallets' })
   })
 
   test('should connect with external connector', async () => {
@@ -218,6 +212,7 @@ describe('AppKitWalletButton', () => {
     )
 
     const walletButtonExternal = HelpersUtil.getByTestId(element, WALLET_BUTTON_EXTERNAL)
+    const walletButtonExternalClick = vi.fn()
 
     expect(walletButtonExternal).not.toBeNull()
     expect(walletButtonExternal.getAttribute('name')).toBe('MetaMask')
@@ -229,8 +224,6 @@ describe('AppKitWalletButton', () => {
     vi.spyOn(ConnectorControllerUtil, 'connectExternal').mockRejectedValueOnce(
       'Connection rejected'
     )
-
-    const walletButtonExternalClick = vi.fn()
 
     walletButtonExternal.addEventListener('click', walletButtonExternalClick)
 

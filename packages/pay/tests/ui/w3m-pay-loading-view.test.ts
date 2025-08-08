@@ -63,8 +63,8 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="fg-100"]')
-    const subMessage = element.shadowRoot?.querySelector('wui-text[color="fg-200"]')
+    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="primary"]')
+    const subMessage = element.shadowRoot?.querySelector('wui-text[color="secondary"]')
     const loadingThumbnail = element.shadowRoot?.querySelector('wui-loading-thumbnail')
 
     expect(loadingMessage?.textContent?.trim()).toBe('Awaiting payment confirmation')
@@ -89,8 +89,8 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="fg-100"]')
-    const subMessage = element.shadowRoot?.querySelector('wui-text[color="fg-200"]')
+    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="primary"]')
+    const subMessage = element.shadowRoot?.querySelector('wui-text[color="secondary"]')
     const successIcon = element.shadowRoot?.querySelector('wui-icon[name="checkmark"]')
 
     expect(loadingMessage?.textContent?.trim()).toBe('Payment completed')
@@ -114,8 +114,8 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="fg-100"]')
-    const subMessage = element.shadowRoot?.querySelector('wui-text[color="fg-200"]')
+    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="primary"]')
+    const subMessage = element.shadowRoot?.querySelector('wui-text[color="secondary"]')
     const errorIcon = element.shadowRoot?.querySelector('wui-icon[name="close"]')
 
     expect(loadingMessage?.textContent?.trim()).toBe('Payment failed')
@@ -139,8 +139,8 @@ describe('W3mPayLoadingView', () => {
 
     await elementUpdated(element)
 
-    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="fg-100"]')
-    const subMessage = element.shadowRoot?.querySelector('wui-text[color="fg-200"]')
+    const loadingMessage = element.shadowRoot?.querySelector('wui-text[color="primary"]')
+    const subMessage = element.shadowRoot?.querySelector('wui-text[color="secondary"]')
     const errorIcon = element.shadowRoot?.querySelector('wui-icon[name="close"]')
 
     expect(loadingMessage?.textContent?.trim()).toBe('Payment failed')

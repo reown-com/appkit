@@ -19,22 +19,17 @@ export class WuiCardSelectLoader extends LitElement {
   public override render() {
     return html`
       ${this.shimmerTemplate()}
-      <wui-shimmer width="56px" height="20px" borderRadius="xs"></wui-shimmer>
+      <wui-shimmer width="80px" height="20px"></wui-shimmer>
     `
   }
 
   private shimmerTemplate() {
     if (this.type === 'network') {
-      return html` <wui-shimmer
-          data-type=${this.type}
-          width="48px"
-          height="54px"
-          borderRadius="xs"
-        ></wui-shimmer>
+      return html` <wui-shimmer data-type=${this.type} width="48px" height="54px"></wui-shimmer>
         ${networkSvgMd}`
     }
 
-    return html`<wui-shimmer width="56px" height="56px" borderRadius="xs"></wui-shimmer>`
+    return html`<wui-shimmer width="56px" height="56px"></wui-shimmer>`
   }
 }
 

@@ -4,9 +4,9 @@ export default css`
   :host {
     display: block;
     position: absolute;
-    top: var(--wui-spacing-s);
-    left: var(--wui-spacing-l);
-    right: var(--wui-spacing-l);
+    top: var(--apkt-spacing-3);
+    left: var(--apkt-spacing-4);
+    right: var(--apkt-spacing-4);
     opacity: 0;
     pointer-events: none;
   }

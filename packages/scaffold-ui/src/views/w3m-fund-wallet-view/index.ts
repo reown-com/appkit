@@ -46,7 +46,7 @@ export class W3mFundWalletView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 's', 'xl', 's'] as const} gap="xs">
+      <wui-flex flexDirection="column" .padding=${['1', '3', '3', '3'] as const} gap="2">
         ${this.onrampTemplate()} ${this.receiveTemplate()}
       </wui-flex>
     `
@@ -68,14 +68,13 @@ export class W3mFundWalletView extends LitElement {
     }
 
     return html`
-      <wui-list-description
+      <wui-list-item
         @click=${this.onBuyCrypto.bind(this)}
-        text="Buy crypto"
         icon="card"
-        iconColor="success-100"
-        iconBackgroundColor="success-100"
         data-testid="wallet-features-onramp-button"
-      ></wui-list-description>
+      >
+        <wui-text variant="lg-regular" color="primary">Buy crypto</wui-text>
+      </wui-list-item>
     `
   }
 
@@ -87,14 +86,13 @@ export class W3mFundWalletView extends LitElement {
     }
 
     return html`
-      <wui-list-description
+      <wui-list-item
         @click=${this.onReceive.bind(this)}
-        text="Receive funds"
         icon="qrCode"
-        iconColor="fg-200"
-        iconBackgroundColor="fg-200"
         data-testid="wallet-features-receive-button"
-      ></wui-list-description>
+      >
+        <wui-text variant="lg-regular" color="primary">Receive funds</wui-text>
+      </wui-list-item>
     `
   }
 

@@ -31,6 +31,7 @@ export class ModalWalletValidator extends ModalValidator {
       this.page.getByTestId('account-toggle-preferred-account-type'),
       'Preferred account toggle should show correct value'
     ).toContainText(type)
+    await this.page.waitForTimeout(1000)
   }
 
   async expectChangedAddressAfterSwitchingAccountType(previousAddress: string) {

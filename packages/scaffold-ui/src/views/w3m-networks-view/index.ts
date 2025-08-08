@@ -10,16 +10,13 @@ import {
   ChainController,
   ConnectorController,
   CoreHelperUtil,
-  EventsController,
-  NetworkUtil,
-  RouterController
+  NetworkUtil
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-input-text'
 import '@reown/appkit-ui/wui-link'
 import '@reown/appkit-ui/wui-list-network'
-import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
@@ -61,23 +58,11 @@ export class W3mNetworksView extends LitElement {
       ${this.templateSearchInput()}
       <wui-flex
         class="container"
-        .padding=${['0', 's', 's', 's'] as const}
+        .padding=${['0', '3', '3', '3'] as const}
         flexDirection="column"
-        gap="xs"
+        gap="2"
       >
         ${this.networksTemplate()}
-      </wui-flex>
-
-      <wui-separator></wui-separator>
-
-      <wui-flex padding="s" flexDirection="column" gap="m" alignItems="center">
-        <wui-text variant="small-400" color="fg-300" align="center">
-          Your connected wallet may not support some of the networks available for this dApp
-        </wui-text>
-        <wui-link @click=${this.onNetworkHelp.bind(this)}>
-          <wui-icon size="xs" color="accent-100" slot="iconLeft" name="helpCircle"></wui-icon>
-          What is a network
-        </wui-link>
       </wui-flex>
     `
   }
@@ -85,7 +70,7 @@ export class W3mNetworksView extends LitElement {
   // Private Methods ------------------------------------- //
   private templateSearchInput() {
     return html`
-      <wui-flex gap="xs" .padding=${['0', 's', 's', 's'] as const}>
+      <wui-flex gap="2" .padding=${['0', '3', '3', '3'] as const}>
         <wui-input-text
           @inputChange=${this.onInputChange.bind(this)}
           class="network-search-input"
@@ -104,11 +89,6 @@ export class W3mNetworksView extends LitElement {
   private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
     this.search = value
   }, 100)
-
-  private onNetworkHelp() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' })
-    RouterController.push('WhatIsANetwork')
-  }
 
   private networksTemplate() {
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()

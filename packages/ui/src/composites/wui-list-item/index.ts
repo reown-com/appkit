@@ -2,15 +2,11 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '../../components/wui-icon/index.js'
-import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
-import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { AccountEntryType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
-import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
 @customElement('wui-list-item')
@@ -18,90 +14,74 @@ export class WuiListItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
+  @property() public imageSrc = 'google'
+
   @property() public icon?: IconType
 
-  @property() public iconSize?: SizeType
-
-  @property() public tabIdx?: number = undefined
-
-  @property() public variant: AccountEntryType = 'icon'
-
-  @property() public iconVariant?: 'blue' | 'overlay' | 'square' | 'square-blue'
-
-  @property({ type: Boolean }) public disabled = false
-
-  @property() public imageSrc?: string = undefined
-
-  @property() public alt?: string = undefined
-
-  @property({ type: Boolean }) public chevron = false
+  @property() public iconColor?: IconColorType
 
   @property({ type: Boolean }) public loading = false
 
+  @property() public tabIdx?: boolean
+
+  @property({ type: Boolean }) public disabled = false
+
+  @property({ type: Boolean }) public rightIcon = true
+
+  @property({ type: Boolean }) public rounded = false
+
+  @property({ type: Boolean }) public fullSize = false
+
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['rounded'] = this.rounded ? 'true' : 'false'
+
     return html`
       <button
         ?disabled=${this.loading ? true : Boolean(this.disabled)}
         data-loading=${this.loading}
-        data-iconvariant=${ifDefined(this.iconVariant)}
         tabindex=${ifDefined(this.tabIdx)}
       >
-        ${this.loadingTemplate()} ${this.visualTemplate()}
-        <wui-flex gap="3xs">
-          <slot></slot>
+        <wui-flex gap="2" alignItems="center">
+          ${this.templateLeftIcon()}
+          <wui-flex gap="1">
+            <slot></slot>
+          </wui-flex>
         </wui-flex>
-        ${this.chevronTemplate()}
+        ${this.templateRightIcon()}
       </button>
     `
   }
 
   // -- Private ------------------------------------------- //
-  public visualTemplate() {
-    if (this.variant === 'image' && this.imageSrc) {
-      return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'list item'}></wui-image>`
-    }
-    if (this.iconVariant === 'square' && this.icon && this.variant === 'icon') {
-      return html`<wui-icon name=${this.icon}></wui-icon>`
-    }
-    if (this.variant === 'icon' && this.icon && this.iconVariant) {
-      const color = ['blue', 'square-blue'].includes(this.iconVariant) ? 'accent-100' : 'fg-200'
-      const size = this.iconVariant === 'square-blue' ? 'mdl' : 'md'
-      const iconSize = this.iconSize ? this.iconSize : size
-
-      return html`
-        <wui-icon-box
-          data-variant=${this.iconVariant}
-          icon=${this.icon}
-          iconSize=${iconSize}
-          background="transparent"
-          iconColor=${color}
-          backgroundColor=${color}
-          size=${size}
-        ></wui-icon-box>
-      `
+  private templateLeftIcon() {
+    if (this.icon) {
+      return html`<wui-image
+        icon=${this.icon}
+        iconColor=${ifDefined(this.iconColor)}
+        ?boxed=${true}
+        ?rounded=${this.rounded}
+      ></wui-image>`
     }
 
-    return null
+    return html`<wui-image
+      ?boxed=${true}
+      ?rounded=${this.rounded}
+      ?fullSize=${this.fullSize}
+      src=${this.imageSrc}
+    ></wui-image>`
   }
 
-  public loadingTemplate() {
+  private templateRightIcon() {
+    if (!this.rightIcon) {
+      return null
+    }
+
     if (this.loading) {
-      return html`<wui-loading-spinner
-        data-testid="wui-list-item-loading-spinner"
-        color="fg-300"
-      ></wui-loading-spinner>`
+      return html`<wui-loading-spinner size="md" color="accent-primary"></wui-loading-spinner>`
     }
 
-    return html``
-  }
-
-  public chevronTemplate() {
-    if (this.chevron) {
-      return html`<wui-icon size="inherit" color="fg-200" name="chevronRight"></wui-icon>`
-    }
-
-    return null
+    return html`<wui-icon name="chevronRight" size="lg" color="default"></wui-icon>`
   }
 }
 

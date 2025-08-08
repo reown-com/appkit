@@ -73,9 +73,9 @@ describe('W3mPayView', () => {
 
     await elementUpdated(element)
 
-    const amountText = element.shadowRoot?.querySelector('wui-text[variant="large-700"]')
-    const tokenText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-600"]')
-    const networkText = element.shadowRoot?.querySelector('wui-text[variant="small-500"]')
+    const amountText = element.shadowRoot?.querySelector('wui-text[variant="h1-regular"]')
+    const tokenText = element.shadowRoot?.querySelector('wui-text[variant="md-medium"]')
+    const networkText = element.shadowRoot?.querySelector('wui-text[variant="sm-medium"]')
 
     expect(amountText?.textContent).toBe('10')
     expect(tokenText?.textContent?.trim()).toBe('USDC')

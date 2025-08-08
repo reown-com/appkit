@@ -43,7 +43,7 @@ export default css`
   }
 
   .tokens-container {
-    border-top: 1px solid var(--wui-color-gray-glass-005);
+    border-top: 1px solid var(--apkt-tokens-core-glass010);
     height: 100%;
     max-height: 390px;
   }
@@ -75,23 +75,24 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+    gap: var(--apkt-spacing-2);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
     background-color: transparent;
-    border-radius: var(--wui-border-radius-xxs);
-    padding: var(--wui-spacing-xs);
+    border-radius: var(--apkt-borderRadius-3);
+    padding: var(--apkt-spacing-2);
     align-items: center;
-    transition: background-color 0.2s linear;
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    will-change: background-color;
   }
 
   .select-network-button:hover {
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
   }
 
   .select-network-button > wui-image {
     width: 26px;
     height: 26px;
-    border-radius: var(--wui-border-radius-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
+    border-radius: var(--apkt-borderRadius-4);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
   }
 `

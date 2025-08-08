@@ -1,19 +1,32 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   button {
-    column-gap: var(--wui-spacing-s);
-    padding: 16.5px var(--wui-spacing-l) 16.5px var(--wui-spacing-xs);
+    display: flex;
+    gap: ${({ spacing }) => spacing[1]};
+    padding: ${({ spacing }) => spacing[4]};
     width: 100%;
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-100);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
     justify-content: center;
     align-items: center;
   }
 
+  :host([data-size='sm']) button {
+    padding: ${({ spacing }) => spacing[2]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+  }
+
+  :host([data-size='md']) button {
+    padding: ${({ spacing }) => spacing[3]};
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
+  }
+
+  button:hover {
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
   button:disabled {
-    background-color: var(--wui-color-gray-glass-015);
-    color: var(--wui-color-gray-glass-015);
+    opacity: 0.5;
   }
 `

@@ -4,9 +4,9 @@ import type { SpacingType, ThemeType, TruncateOptions } from './TypeUtil.js'
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
     if (Array.isArray(spacing)) {
-      return spacing[index] ? `var(--wui-spacing-${spacing[index]})` : undefined
+      return spacing[index] ? `var(--apkt-spacing-${spacing[index]})` : undefined
     } else if (typeof spacing === 'string') {
-      return `var(--wui-spacing-${spacing})`
+      return `var(--apkt-spacing-${spacing})`
     }
 
     return undefined
@@ -14,6 +14,24 @@ export const UiHelperUtil = {
 
   getFormattedDate(date: Date) {
     return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date)
+  },
+
+  formatCurrency(amount: number | string = 0, options: Intl.NumberFormatOptions = {}) {
+    const numericAmount = Number(amount)
+
+    if (isNaN(numericAmount)) {
+      return '$0.00'
+    }
+
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      ...options
+    })
+
+    return formatter.format(numericAmount)
   },
 
   getHostName(url: string) {
@@ -118,6 +136,7 @@ export const UiHelperUtil = {
 
     return 'dark'
   },
+
   splitBalance(input: string): [string, string] {
     const parts = input.split('.') as [string, string]
     if (parts.length === 2) {
@@ -126,10 +145,21 @@ export const UiHelperUtil = {
 
     return ['0', '00']
   },
+
   roundNumber(number: number, threshold: number, fixed: number) {
     const roundedNumber =
       number.toString().length >= threshold ? Number(number).toFixed(fixed) : number
 
     return roundedNumber
+  },
+
+  cssDurationToNumber(duration: string) {
+    if (duration.endsWith('s')) {
+      return Number(duration.replace('s', '')) * 1000
+    } else if (duration.endsWith('ms')) {
+      return Number(duration.replace('ms', ''))
+    }
+
+    return 0
   }
 }

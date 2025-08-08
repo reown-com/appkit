@@ -51,10 +51,10 @@ describe('W3mOnRampActivityItem', () => {
     const labelText = element.shadowRoot?.querySelector('wui-text')
     expect(labelText?.textContent?.trim()).toBe('Test Purchase')
 
-    const purchaseText = element.shadowRoot?.querySelector('wui-text[color="fg-200"]')
+    const purchaseText = element.shadowRoot?.querySelector('wui-text[color="secondary"]')
     expect(purchaseText?.textContent?.trim()).toBe('+ 100 ETH')
 
-    const dateText = element.shadowRoot?.querySelector('wui-text[color="fg-300"]')
+    const dateText = element.shadowRoot?.querySelector('wui-text[color="tertiary"]')
     expect(dateText?.textContent?.trim()).toBe('2024-03-20')
   })
 
@@ -80,7 +80,7 @@ describe('W3mOnRampActivityItem', () => {
 
     const successIcon = element.shadowRoot?.querySelector('wui-icon-box[icon="arrowBottom"]')
     expect(successIcon).not.toBeNull()
-    expect(successIcon?.getAttribute('iconColor')).toBe('success-100')
+    expect(successIcon?.getAttribute('color')).toBe('success')
   })
 
   it('should show error icon when failed', async () => {
@@ -93,7 +93,7 @@ describe('W3mOnRampActivityItem', () => {
 
     const errorIcon = element.shadowRoot?.querySelector('wui-icon-box[icon="close"]')
     expect(errorIcon).not.toBeNull()
-    expect(errorIcon?.getAttribute('iconColor')).toBe('error-100')
+    expect(errorIcon?.getAttribute('color')).toBe('error')
   })
 
   it('should fetch token image if icon is not provided', async () => {

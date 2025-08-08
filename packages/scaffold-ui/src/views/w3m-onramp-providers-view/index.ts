@@ -37,10 +37,9 @@ export class W3mOnRampProvidersView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
+      <wui-flex flexDirection="column" .padding=${['0', '3', '3', '3']} gap="2">
         ${this.onRampProvidersTemplate()}
       </wui-flex>
-      <w3m-onramp-providers-footer></w3m-onramp-providers-footer>
     `
   }
 

@@ -28,9 +28,9 @@ export default css`
   }
 
   wui-visual {
-    width: var(--wui-wallet-image-size-lg);
-    height: var(--wui-wallet-image-size-lg);
-    border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
+    width: var(--apkt-spacing-4);
+    height: var(--apkt-spacing-4);
+    border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
     position: relative;
     overflow: hidden;
   }
@@ -42,25 +42,25 @@ export default css`
     height: 100%;
     position: absolute;
     inset: 0;
-    border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+    border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
   }
 
   wui-icon-box {
     position: absolute;
-    right: calc(var(--wui-spacing-3xs) * -1);
-    bottom: calc(var(--wui-spacing-3xs) * -1);
+    right: calc(var(--apkt-spacing-1) * -1);
+    bottom: calc(var(--apkt-spacing-1) * -1);
     opacity: 0;
     transform: scale(0.5);
     transition:
-      opacity var(--wui-ease-out-power-2) var(--wui-duration-lg),
-      transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
+      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
+      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: opacity, transform;
   }
 
   wui-text[align='center'] {
     width: 100%;
-    padding: 0px var(--wui-spacing-l);
+    padding: 0px var(--apkt-spacing-4);
   }
 
   [data-error='true'] wui-icon-box {
@@ -82,7 +82,7 @@ export default css`
   }
 
   wui-link {
-    padding: var(--wui-spacing-4xs) var(--wui-spacing-xxs);
+    padding: var(--apkt-spacing-01) var(--apkt-spacing-2);
   }
 
   .capitalize {

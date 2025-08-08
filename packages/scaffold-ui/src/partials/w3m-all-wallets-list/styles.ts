@@ -23,9 +23,26 @@ export default css`
     display: none;
   }
 
+  w3m-all-wallets-list-item {
+    opacity: 0;
+    animation-duration: var(--apkt-duration-xl);
+    animation-timing-function: var(--apkt-ease-inout-power-2);
+    animation-name: fade-in;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   wui-loading-spinner {
-    padding-top: var(--wui-spacing-l);
-    padding-bottom: var(--wui-spacing-l);
+    padding-top: var(--apkt-spacing-4);
+    padding-bottom: var(--apkt-spacing-4);
     justify-content: center;
     grid-column: 1 / span 4;
   }

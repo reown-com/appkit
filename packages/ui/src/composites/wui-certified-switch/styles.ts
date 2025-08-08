@@ -2,19 +2,20 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    height: 100%;
+    height: auto;
   }
 
   button {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: var(--wui-spacing-1xs);
-    padding: var(--wui-spacing-xs) var(--wui-spacing-s);
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    column-gap: var(--apkt-spacing-2);
+    padding: var(--apkt-spacing-2) var(--apkt-spacing-3);
+    background-color: var(--apkt-tokens-theme-foregroundPrimary);
+    border-radius: var(--apkt-borderRadius-4);
+    box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
     will-change: background-color;
     cursor: pointer;
   }

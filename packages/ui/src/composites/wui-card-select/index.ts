@@ -26,14 +26,12 @@ export class WuiCardSelect extends LitElement {
 
   @property({ type: Boolean }) public selected?: boolean = false
 
-  @property({ type: Boolean }) public installed?: boolean = false
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <button data-selected=${ifDefined(this.selected)} ?disabled=${this.disabled}>
         ${this.imageTemplate()}
-        <wui-text variant="tiny-500" color=${this.selected ? 'accent-100' : 'inherit'}>
+        <wui-text variant="md-regular" color=${this.selected ? 'accent-primary' : 'inherit'}>
           ${this.name}
         </wui-text>
       </button>
@@ -54,10 +52,9 @@ export class WuiCardSelect extends LitElement {
 
     return html`
       <wui-wallet-image
-        size="md"
+        size="lg"
         imageSrc=${ifDefined(this.imageSrc)}
         name=${this.name}
-        .installed=${this.installed}
         badgeSize="sm"
       >
       </wui-wallet-image>

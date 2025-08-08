@@ -5,30 +5,40 @@ import { html } from 'lit'
 import '@reown/appkit-ui/wui-chip-button'
 import type { WuiChipButton } from '@reown/appkit-ui/wui-chip-button'
 
-import { chipButtonVariants, iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
+import {
+  chipButtonSizes,
+  chipButtonTypes,
+  iconOptions,
+  walletImagesOptions
+} from '../../utils/PresetUtils'
 
 type Component = Meta<WuiChipButton>
 
 export default {
   title: 'Composites/wui-chip-button',
   args: {
-    variant: 'main',
+    type: 'accent',
     size: 'md',
     disabled: false,
-    icon: 'externalLink',
+    leftIcon: 'plus',
+    rightIcon: 'externalLink',
     imageSrc: walletImagesOptions[3]?.src,
     text: 'dianeyes.walletconnect.eth'
   },
   argTypes: {
-    variant: {
-      options: chipButtonVariants,
+    type: {
+      options: chipButtonTypes,
       control: { type: 'select' }
     },
     size: {
-      options: ['sm', 'md'],
+      options: chipButtonSizes,
       control: { type: 'select' }
     },
-    icon: {
+    leftIcon: {
+      options: iconOptions,
+      control: { type: 'select' }
+    },
+    rightIcon: {
       options: iconOptions,
       control: { type: 'select' }
     },
@@ -41,10 +51,11 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<wui-chip-button
-      icon=${args.icon}
-      text=${args.text}
+      type=${args.type}
       size=${args.size}
-      variant=${args.variant}
+      .leftIcon=${args.leftIcon}
+      .rightIcon=${args.rightIcon}
+      text=${args.text}
       ?disabled=${args.disabled}
       .imageSrc=${args.imageSrc}
     ></wui-chip-button>`

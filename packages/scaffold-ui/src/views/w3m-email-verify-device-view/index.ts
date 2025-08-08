@@ -45,31 +45,25 @@ export class W3mEmailVerifyDeviceView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['xxl', 's', 'xxl', 's'] as const}
-        gap="l"
+        .padding=${['6', '3', '6', '3'] as const}
+        gap="4"
       >
-        <wui-icon-box
-          size="xl"
-          iconcolor="accent-100"
-          backgroundcolor="accent-100"
-          icon="verify"
-          background="opaque"
-        ></wui-icon-box>
+        <wui-icon-box size="xl" color="accent-primary" icon="sealCheck"></wui-icon-box>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="s">
+        <wui-flex flexDirection="column" alignItems="center" gap="3">
           <wui-flex flexDirection="column" alignItems="center">
-            <wui-text variant="paragraph-400" color="fg-100">
+            <wui-text variant="md-regular" color="primary">
               Approve the login link we sent to
             </wui-text>
-            <wui-text variant="paragraph-400" color="fg-100"><b>${this.email}</b></wui-text>
+            <wui-text variant="md-regular" color="primary"><b>${this.email}</b></wui-text>
           </wui-flex>
 
-          <wui-text variant="small-400" color="fg-200" align="center">
+          <wui-text variant="sm-regular" color="secondary" align="center">
             The code expires in 20 minutes
           </wui-text>
 
-          <wui-flex alignItems="center" id="w3m-resend-section" gap="xs">
-            <wui-text variant="small-400" color="fg-100" align="center">
+          <wui-flex alignItems="center" id="w3m-resend-section" gap="2">
+            <wui-text variant="sm-regular" color="primary" align="center">
               Didn't receive it?
             </wui-text>
             <wui-link @click=${this.onResendCode.bind(this)} .disabled=${this.loading}>
