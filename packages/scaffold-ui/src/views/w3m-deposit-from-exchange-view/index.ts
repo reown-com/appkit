@@ -13,6 +13,7 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-image'
 import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-shimmer'
 import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
@@ -31,6 +32,8 @@ export class W3mDepositFromExchangeView extends LitElement {
   @state() public exchanges = ExchangeController.state.exchanges
   @state() public isLoading = ExchangeController.state.isLoading
   @state() public amount = ExchangeController.state.amount
+  @state() public tokenAmount = ExchangeController.state.tokenAmount
+  @state() public priceLoading = ExchangeController.state.priceLoading
 
   public constructor() {
     super()
@@ -39,6 +42,8 @@ export class W3mDepositFromExchangeView extends LitElement {
         this.exchanges = exchangeState.exchanges
         this.isLoading = exchangeState.isLoading
         this.amount = exchangeState.amount
+        this.tokenAmount = exchangeState.tokenAmount
+        this.priceLoading = exchangeState.priceLoading
       })
     )
   }
@@ -49,6 +54,7 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   public override firstUpdated() {
     ExchangeController.fetchExchanges()
+    ExchangeController.fetchTokenPrice()
   }
 
   // -- Render -------------------------------------------- //
@@ -103,18 +109,33 @@ export class W3mDepositFromExchangeView extends LitElement {
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" justifyContent="center">
           <wui-flex alignItems="center" gap="4xs">
-            <wui-text variant="2xl-500" color="fg-200">${ExchangeController.state.amount}</wui-text>
+            <wui-text variant="2xl-500" color="fg-200">${this.amount}</wui-text>
             <wui-text variant="paragraph-500" color="fg-200">USD</wui-text>
           </wui-flex>
-          <wui-text variant="paragraph-500" color="fg-200">
-            ${ExchangeController.state.tokenAmount.toFixed(2)} ${this.network?.nativeCurrency.symbol}
-          </wui-text>
+          ${this.tokenAmountTemplate()}
           </wui-flex>
           <wui-flex justifyContent="space-between" gap="xs">
             ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => this.onPresetAmountClick(amount)} variant=${this.amount === amount ? 'accent' : 'shade'} size="sm" fullWidth>$${amount}</wui-button>`)}
           </wui-flex>
         </wui-flex>
       </wui-flex>
+    `
+  }
+
+  private tokenAmountTemplate() {
+    if (this.priceLoading) {
+      return html`<wui-shimmer
+        width="65px"
+        height="20px"
+        borderRadius="xxs"
+        variant="light"
+      ></wui-shimmer>`
+    }
+
+    return html`
+      <wui-text variant="paragraph-500" color="fg-200">
+        ${this.tokenAmount} ${this.network?.nativeCurrency.symbol}
+      </wui-text>
     `
   }
 

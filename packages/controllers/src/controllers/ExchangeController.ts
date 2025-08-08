@@ -4,11 +4,13 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { type CaipNetworkId } from '@reown/appkit-common'
 import {
   AccountController,
+  BlockchainApiController,
   CoreHelperUtil,
   EventsController,
   SnackController
 } from '@reown/appkit-controllers'
 
+import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
 import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
 import type { Exchange, PayUrlParams } from '../utils/ExchangeUtil.js'
 
@@ -17,15 +19,17 @@ const DEFAULT_PAGE = 0
 const DEFAULT_STATE: ExchangeControllerState = {
   paymentAsset: {
     network: 'eip155:1',
-    asset: '0x0',
+    asset: 'native',
     metadata: {
-      name: '0x0',
-      symbol: '0x0',
+      name: 'Ethereum',
+      symbol: 'ETH',
       decimals: 0
     }
   },
   amount: 0,
   tokenAmount: 0,
+  tokenPrice: null,
+  priceLoading: false,
   error: null,
   exchanges: [],
   isLoading: false,
@@ -57,6 +61,8 @@ export type PaymentAsset = {
 export interface ExchangeControllerState {
   amount: number
   tokenAmount: number
+  tokenPrice: number | null
+  priceLoading: boolean
   error: string | null
   isLoading: boolean
   exchanges: Exchange[]
@@ -80,6 +86,8 @@ const state = proxy<ExchangeControllerState>({
   },
   amount: 0,
   tokenAmount: 0,
+  tokenPrice: null,
+  priceLoading: false,
   error: null,
   exchanges: [],
   isLoading: false,
@@ -103,10 +111,32 @@ export const ExchangeController = {
     Object.assign(state, { ...DEFAULT_STATE })
   },
 
+  async fetchTokenPrice() {
+    state.priceLoading = true
+    const tokenAddress = getActiveNetworkTokenAddress()
+    const result = await BlockchainApiController.fetchTokenPrice({ addresses: [tokenAddress] })
+    state.tokenPrice = result.fungibles?.[0]?.price || null
+    state.priceLoading = false
+  },
+
+  getTokenAmount() {
+    if (!state.tokenPrice) {
+      throw new Error('Cannot get token price')
+    }
+
+    const tokenAmount = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4
+    }).format(state.amount / state.tokenPrice)
+
+    return Number(tokenAmount)
+  },
+
   setAmount(amount: number) {
     state.amount = amount
-
-    // TODO: Calculate token amount
+    if (state.tokenPrice) {
+      state.tokenAmount = this.getTokenAmount()
+    }
   },
 
   setPaymentAsset(asset: PaymentAsset) {
