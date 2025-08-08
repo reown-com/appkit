@@ -124,6 +124,7 @@ export class W3mAllWalletsList extends LitElement {
     return wallets.map(
       wallet => html`
         <w3m-all-wallets-list-item
+          data-testid="wallet-search-item-${wallet.id}"
           @click=${() => this.onConnectWallet(wallet)}
           .wallet=${wallet}
         ></w3m-all-wallets-list-item>
