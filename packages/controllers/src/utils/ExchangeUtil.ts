@@ -107,9 +107,7 @@ async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcR
 }
 
 export async function getExchanges(params: GetExchangesParams) {
-  console.log('getExchanges', params)
   const response = await sendRequest<GetExchangesResult>('reown_getExchanges', params)
-  console.log('getExchanges response', response)
 
   return response.result
 }
