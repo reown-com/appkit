@@ -56,7 +56,7 @@ jobs:
       - name: Open "version packages" PR
         uses: changesets/action@v1
         with:
-          baseBranch: release/${{ steps.next.outputs.next_version }}
+          branch: release/${{ steps.next.outputs.next_version }}
           title: 'chore: version packages'
           commit: 'chore: version packages'
           version: pnpm changeset:version
@@ -65,10 +65,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start Slack Notify Workflow
-        uses: slackapi/slack-github-action@v2.1.1
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL_RELEASE_NOTIFY }}
-          webhook-type: webhook-trigger
-          payload: |
-            version: "${{ steps.next.outputs.next_version }}"
+      # - name: Start Slack Notify Workflow
+      #   uses: slackapi/slack-github-action@v2.1.1
+      #   with:
+      #     webhook: ${{ secrets.SLACK_WEBHOOK_URL_RELEASE_NOTIFY }}
+      #     webhook-type: webhook-trigger
+      #     payload: |
+      #       version: "${{ steps.next.outputs.next_version }}"
