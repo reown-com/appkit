@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updated `@walletconnect` deps to `2.21.6`
+Updated `@walletconnect` deps to `2.21.7`
