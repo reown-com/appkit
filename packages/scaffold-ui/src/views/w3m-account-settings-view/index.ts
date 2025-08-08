@@ -123,12 +123,14 @@ export class W3mAccountSettingsView extends LitElement {
         </wui-flex>
       </wui-flex>
       <wui-flex flexDirection="column" gap="4">
-        <wui-flex flexDirection="column" gap="2" .padding=${['0', '4', '3', '4'] as const}>
+        <wui-flex flexDirection="column" gap="2" .padding=${['6', '4', '3', '4'] as const}>
           ${this.authCardTemplate()}
           <w3m-account-auth-button></w3m-account-auth-button>
           <wui-list-item
             imageSrc=${ifDefined(networkImage)}
             ?chevron=${this.isAllowedNetworkSwitch()}
+            ?fullSize=${true}
+            ?rounded=${true}
             @click=${this.onNetworks.bind(this)}
             data-testid="account-switch-network-button"
           >
@@ -138,7 +140,9 @@ export class W3mAccountSettingsView extends LitElement {
           </wui-list-item>
           ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
-            icon="signOut"
+            ?rounded=${true}
+            icon="power"
+            iconColor="error"
             ?chevron=${false}
             .loading=${this.disconnecting}
             @click=${this.onDisconnect.bind(this)}
@@ -170,6 +174,7 @@ export class W3mAccountSettingsView extends LitElement {
     return html`
       <wui-list-item
         icon="id"
+        ?rounded=${true}
         ?chevron=${true}
         @click=${this.onChooseName.bind(this)}
         data-testid="account-choose-name-button"
@@ -246,6 +251,7 @@ export class W3mAccountSettingsView extends LitElement {
     return html`
       <wui-list-item
         icon="swapHorizontal"
+        ?rounded=${true}
         ?chevron=${true}
         ?loading=${this.loading}
         @click=${this.changePreferredAccountType.bind(this)}

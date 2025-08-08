@@ -58,6 +58,7 @@ export class W3mAccountAuthButton extends LitElement {
 
     return html`
       <wui-list-item
+        ?rounded=${true}
         icon=${this.socialProvider ?? 'mail'}
         data-testid="w3m-account-email-update"
         ?chevron=${!this.socialProvider}

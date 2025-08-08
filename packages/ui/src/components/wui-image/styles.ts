@@ -38,9 +38,18 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[16]};
   }
 
+  :host([data-full='true']) img {
+    width: 100%;
+    height: 100%;
+  }
+
   :host([data-boxed='true']) wui-icon {
     width: 16px;
     height: 16px;
+  }
+
+  :host([data-icon='error']) {
+    background-color: ${({ tokens }) => tokens.core.backgroundError};
   }
 
   :host([data-rounded='true']) {

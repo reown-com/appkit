@@ -25,14 +25,14 @@ export class WuiNoticeCard extends LitElement {
   public override render() {
     return html`
       <button>
-        <wui-flex gap="2" alignItems="center" justifyContent="space-between">
+        <wui-flex gap="2" alignItems="center">
           <wui-icon weight="fill" size="md" name=${this.icon} color="inherit"></wui-icon>
           <wui-flex flexDirection="column" gap="1">
             <wui-text variant="md-medium" color="primary">${this.label}</wui-text>
             <wui-text variant="md-regular" color="tertiary">${this.description}</wui-text>
           </wui-flex>
         </wui-flex>
-        <wui-icon size="md" color="accent-primary" name="chevronRight"></wui-icon>
+        <wui-icon size="lg" color="accent-primary" name="chevronRight"></wui-icon>
       </button>
     `
   }

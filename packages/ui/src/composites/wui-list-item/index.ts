@@ -30,6 +30,8 @@ export class WuiListItem extends LitElement {
 
   @property({ type: Boolean }) public rounded = false
 
+  @property({ type: Boolean }) public fullSize = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['rounded'] = this.rounded ? 'true' : 'false'
@@ -65,6 +67,7 @@ export class WuiListItem extends LitElement {
     return html`<wui-image
       ?boxed=${true}
       ?rounded=${this.rounded}
+      ?fullSize=${this.fullSize}
       src=${this.imageSrc}
     ></wui-image>`
   }

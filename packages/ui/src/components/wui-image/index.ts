@@ -28,6 +28,8 @@ export class WuiImage extends LitElement {
 
   @property({ type: Boolean }) public rounded?: boolean = false
 
+  @property({ type: Boolean }) public fullSize?: boolean = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     const getSize = {
@@ -50,8 +52,12 @@ export class WuiImage extends LitElement {
       --local-height: ${this.size ? `var(--apkt-spacing-${getSize[this.size]});` : '100%'};
       `
 
+    console.log(this.fullSize)
+
     this.dataset['boxed'] = this.boxed ? 'true' : 'false'
     this.dataset['rounded'] = this.rounded ? 'true' : 'false'
+    this.dataset['full'] = this.fullSize ? 'true' : 'false'
+    this.dataset['icon'] = this.iconColor || 'inherit'
 
     if (this.icon) {
       return html`<wui-icon
