@@ -47,7 +47,7 @@ export class W3mFundWalletView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 's', 'xl', 's'] as const} gap="xs">
-        ${this.onrampTemplate()} ${this.receiveTemplate()}
+        ${this.onrampTemplate()} ${this.receiveTemplate()} ${this.depositFromExchangeTemplate()}
       </wui-flex>
     `
   }
@@ -79,6 +79,25 @@ export class W3mFundWalletView extends LitElement {
     `
   }
 
+  private depositFromExchangeTemplate() {
+    const isDepositFromExchangeEnabled = this.remoteFeatures?.payWithExchange
+
+    if (!isDepositFromExchangeEnabled) {
+      return null
+    }
+
+    return html`
+      <wui-list-description
+        @click=${this.onDepositFromExchange.bind(this)}
+        text="Deposit from exchange"
+        icon="download"
+        iconColor="fg-200"
+        iconBackgroundColor="fg-200"
+        data-testid="wallet-features-deposit-from-exchange-button"
+      ></wui-list-description>
+    `
+  }
+
   private receiveTemplate() {
     const isReceiveEnabled = Boolean(this.features?.receive)
 
@@ -104,6 +123,10 @@ export class W3mFundWalletView extends LitElement {
 
   private onReceive() {
     RouterController.push('WalletReceive')
+  }
+
+  private onDepositFromExchange() {
+    RouterController.push('PayWithExchange')
   }
 }
 

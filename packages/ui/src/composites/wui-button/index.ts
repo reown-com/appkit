@@ -16,7 +16,8 @@ const SPINNER_COLOR_BY_VARIANT = {
   'accent-error': 'error-100',
   'accent-success': 'success-100',
   neutral: 'fg-100',
-  disabled: 'gray-glass-020'
+  disabled: 'gray-glass-020',
+  shade: 'fg-100'
 }
 
 const TEXT_VARIANT_BY_SIZE = {

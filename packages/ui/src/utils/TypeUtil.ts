@@ -129,6 +129,7 @@ export type IconType =
   | 'desktop'
   | 'disconnect'
   | 'discord'
+  | 'download'
   | 'etherscan'
   | 'extension'
   | 'externalLink'
@@ -229,6 +230,7 @@ export type ButtonVariant =
   | 'accent-error'
   | 'accent-success'
   | 'neutral'
+  | 'shade'
 
 export type TransactionType =
   | 'approve'

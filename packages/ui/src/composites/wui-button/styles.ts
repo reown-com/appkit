@@ -101,6 +101,13 @@ export default css`
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
   }
 
+  button[data-variant='shade'] {
+    background: var(--wui-color-gray-glass-002);
+    color: var(--wui-color-fg-200);
+    border: none;
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+  }
+
   /* -- Focus states --------------------------------------------------- */
   button[data-variant='main']:focus-visible:enabled {
     background-color: var(--wui-color-accent-090);
@@ -133,6 +140,12 @@ export default css`
       0 0 0 4px var(--wui-color-success-glass-020);
   }
   button[data-variant='neutral']:focus-visible:enabled {
+    background: var(--wui-color-gray-glass-005);
+    box-shadow:
+      inset 0 0 0 1px var(--wui-color-gray-glass-010),
+      0 0 0 4px var(--wui-color-gray-glass-002);
+  }
+  button[data-variant='shade']:focus-visible:enabled {
     background: var(--wui-color-gray-glass-005);
     box-shadow:
       inset 0 0 0 1px var(--wui-color-gray-glass-010),
@@ -191,6 +204,14 @@ export default css`
 
     button[data-size='lg'][data-icon-right='true'][data-icon-left='false'] {
       padding-right: var(--wui-spacing-m);
+    }
+
+    button[data-variant='shade']:hover:enabled {
+      background: var(--wui-color-gray-glass-002);
+    }
+
+    button[data-variant='shade']:active:enabled {
+      background: var(--wui-color-gray-glass-005);
     }
   }
 
