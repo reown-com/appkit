@@ -23,7 +23,9 @@ const FEATURE_KEYS: FeatureKey[] = [
   'activity',
   'reownBranding',
   'multiWallet',
-  'emailCapture'
+  'emailCapture',
+  'payWithExchange',
+  'payments'
 ]
 
 const featureConfig = {
@@ -174,6 +176,24 @@ const featureConfig = {
     isAvailableOnBasic: false,
     processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
     processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.multiWallet
+  },
+  payWithExchange: {
+    apiFeatureName: 'fund_from_exchange' as const,
+    localFeatureName: 'payWithExchange',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.payWithExchange
+  },
+  payments: {
+    apiFeatureName: 'payments' as const,
+    localFeatureName: 'payments',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.payments
   }
 }
 
@@ -254,6 +274,7 @@ export const ConfigUtil = {
 
     try {
       apiProjectConfig = await ApiController.fetchProjectConfig()
+      console.log('>> apiProjectConfig', apiProjectConfig)
       useApiConfig = apiProjectConfig !== null && apiProjectConfig !== undefined
     } catch (e) {
       console.warn(
