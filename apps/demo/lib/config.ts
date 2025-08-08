@@ -13,6 +13,7 @@ import {
   bitcoinTestnet,
   bsc,
   mainnet,
+  monadTestnet,
   optimism,
   polygon,
   solana,
@@ -32,10 +33,17 @@ if (!projectId) {
 // Networks
 type AppKitNetworksType = [AppKitNetwork, ...AppKitNetwork[]]
 
-export const evmNetworks = [mainnet, optimism, bsc, polygon, avalanche, arbitrum, zksync, base] as [
-  AppKitNetwork,
-  ...AppKitNetwork[]
-]
+export const evmNetworks = [
+  mainnet,
+  optimism,
+  bsc,
+  polygon,
+  avalanche,
+  arbitrum,
+  zksync,
+  base,
+  monadTestnet
+] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNetworks = [solana, solanaDevnet] as AppKitNetworksType
 
