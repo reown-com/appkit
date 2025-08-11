@@ -238,252 +238,175 @@
       "name": "@reown/appkit-scaffold-ui",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "kind-buses-chew",
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["kind-buses-chew", "sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-adapter-ethers5",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-adapter-ethers",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-adapter-wagmi",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "pay-test-exchange",
       "type": "patch",
       "oldVersion": "0.1.2",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "0.1.3"
     },
     {
       "name": "@reown/appkit-adapter-bitcoin",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear",
-        "wicked-nails-mix"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear", "wicked-nails-mix"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-adapter-solana",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-utils",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-cdn",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-cli",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-codemod",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-common",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-controllers",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-core",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-experimental",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-pay",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-polyfills",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-siwe",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-siwx",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-testing",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-ui",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-universal-connector",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-wallet",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
       "name": "@reown/appkit-wallet-button",
       "type": "patch",
       "oldVersion": "1.7.18",
-      "changesets": [
-        "sad-cougars-taste",
-        "shy-states-appear"
-      ],
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
       "newVersion": "1.7.19"
     },
     {
