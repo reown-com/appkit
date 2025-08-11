@@ -11,8 +11,6 @@ import {
   getPayUrl
 } from '../../src/utils/ExchangeUtil'
 
-vi.mock('../../src/controllers/OptionsController')
-
 describe('ExchangeUtil', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
