@@ -1,5 +1,24 @@
 # @reown/appkit-adapter-ethers
 
+## 1.7.20
+
+### Patch Changes
+
+- [#4753](https://github.com/reown-com/appkit/pull/4753) [`0f32a68`](https://github.com/reown-com/appkit/commit/0f32a682ac4daa704bf39c932c38f92ee97e2318) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Moved the `ux by reown` in qr basic view under the `All Wallets` button
+
+- [#4787](https://github.com/reown-com/appkit/pull/4787) [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Fixed a bug in the UP handler where it wasn't subscribing to `accountsChanged` events
+
+- [#4787](https://github.com/reown-com/appkit/pull/4787) [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Updated `@walletconnect` deps to `2.21.7`
+
+- Updated dependencies [[`0f32a68`](https://github.com/reown-com/appkit/commit/0f32a682ac4daa704bf39c932c38f92ee97e2318), [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e), [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e)]:
+  - @reown/appkit-scaffold-ui@1.7.20
+  - @reown/appkit@1.7.20
+  - @reown/appkit-utils@1.7.20
+  - @reown/appkit-common@1.7.20
+  - @reown/appkit-controllers@1.7.20
+  - @reown/appkit-polyfills@1.7.20
+  - @reown/appkit-wallet@1.7.20
+
 ## 1.7.19
 
 ### Patch Changes
