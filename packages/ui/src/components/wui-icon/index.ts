@@ -276,7 +276,7 @@ export class WuiIcon extends LitElement {
 
       // Return the Phosphor icon with dynamic tag
       // eslint-disable-next-line lit/binding-positions, lit/no-invalid-html
-      return html`<${tag} weight="${this.weight}" style="width: inherit; height: inherit; display:block;" size="${getPhosphorSize[this.size]}"></${tag}>`
+      return html`<${tag} weight="${this.weight}" style="width: inherit; height: inherit; size="${getPhosphorSize[this.size]}"></${tag}>`
     }
 
     // Fallback to regular SVG
