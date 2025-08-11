@@ -2,17 +2,15 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type CaipNetworkId } from '@reown/appkit-common'
-import {
-  AccountController,
-  BlockchainApiController,
-  CoreHelperUtil,
-  EventsController,
-  SnackController
-} from '@reown/appkit-controllers'
 
 import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
 import type { Exchange, PayUrlParams } from '../utils/ExchangeUtil.js'
+import { AccountController } from './AccountController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { EventsController } from './EventsController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
