@@ -19,8 +19,10 @@ export default css`
     cursor: not-allowed;
   }
 
-  button:hover:enabled {
-    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
   }
 
   button[data-size='sm'] > wui-icon-box,

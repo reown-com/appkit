@@ -16,6 +16,7 @@ export class W3mUpgradeWalletView extends LitElement {
         <wui-semantic-chip
           icon="externalLink"
           variant="fill"
+          text=${ConstantsUtil.SECURE_SITE_DASHBOARD}
           href=${ConstantsUtil.SECURE_SITE_DASHBOARD}
           imageSrc=${ConstantsUtil.SECURE_SITE_FAVICON}
           data-testid="w3m-secure-website-button"

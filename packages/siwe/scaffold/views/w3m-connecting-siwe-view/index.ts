@@ -32,12 +32,12 @@ export class W3mConnectingSiweView extends LitElement {
         <w3m-connecting-siwe></w3m-connecting-siwe>
       </wui-flex>
       <wui-flex .padding=${['0', '20', '4', '20'] as const} gap="3" justifyContent="space-between">
-        <wui-text variant="md-medium" align="center" color="primary"
+        <wui-text variant="lg-medium" align="center" color="primary"
           >${this.dappName ?? 'Dapp'} needs to connect to your wallet</wui-text
         >
       </wui-flex>
       <wui-flex .padding=${['0', '20', '4', '20'] as const} gap="3" justifyContent="space-between">
-        <wui-text variant="sm-regular" align="center" color="secondary"
+        <wui-text variant="md-regular" align="center" color="secondary"
           >Sign this message to prove you own this wallet and proceed. Canceling will disconnect
           you.</wui-text
         >
@@ -47,7 +47,7 @@ export class W3mConnectingSiweView extends LitElement {
           size="lg"
           borderRadius="xs"
           fullWidth
-          variant="neutral"
+          variant="neutral-secondary"
           ?loading=${this.isCancelling}
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
@@ -58,7 +58,7 @@ export class W3mConnectingSiweView extends LitElement {
           size="lg"
           borderRadius="xs"
           fullWidth
-          variant="accent-primary"
+          variant="neutral-primary"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}
           data-testid="w3m-connecting-siwe-sign"

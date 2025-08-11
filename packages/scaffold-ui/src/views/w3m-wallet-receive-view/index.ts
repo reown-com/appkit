@@ -91,7 +91,7 @@ export class W3mWalletReceiveView extends LitElement {
         flexDirection="column"
         .padding=${['4', '0', '0', '0'] as const}
         alignItems="center"
-        gap="3"
+        gap="4"
       >
         <wui-qr-code
           size=${232}
@@ -101,9 +101,13 @@ export class W3mWalletReceiveView extends LitElement {
           color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
           data-testid="wui-qr-code"
         ></wui-qr-code>
-        <wui-text variant="md-medium" color="primary" align="center">
+        <wui-text variant="lg-regular" color="primary" align="center">
           Copy your address or scan this QR code
         </wui-text>
+        <wui-button @click=${this.onCopyClick.bind(this)} size="sm" variant="neutral-secondary">
+          <wui-icon slot="iconLeft" size="sm" color="inherit" name="copy"></wui-icon>
+          <wui-text variant="md-regular" color="inherit">Copy address</wui-text>
+        </wui-button>
       </wui-flex>
       ${this.networkTemplate()}
     </wui-flex>`

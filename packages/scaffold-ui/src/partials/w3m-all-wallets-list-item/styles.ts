@@ -34,8 +34,10 @@ export default css`
     max-width: 66px;
   }
 
-  button:hover:enabled {
-    background-color: var(--apkt-tokens-theme-foregroundSecondary);
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled {
+      background-color: var(--apkt-tokens-theme-foregroundSecondary);
+    }
   }
 
   button:disabled > wui-flex > wui-text {

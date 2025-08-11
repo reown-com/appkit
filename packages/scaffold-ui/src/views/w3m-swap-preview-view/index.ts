@@ -203,7 +203,7 @@ export class W3mSwapPreviewView extends LitElement {
             fullWidth
             size="lg"
             borderRadius="xs"
-            variant="primary"
+            variant="neutral-secondary"
             @click=${this.onCancelTransaction.bind(this)}
           >
             <wui-text variant="md-medium" color="secondary">Cancel</wui-text>

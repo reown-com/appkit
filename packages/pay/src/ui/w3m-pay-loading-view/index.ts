@@ -53,15 +53,15 @@ export class W3mPayLoadingView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['5', '5', '5', '5'] as const}
-        gap="5"
+        .padding=${['7', '5', '5', '5'] as const}
+        gap="9"
       >
         <wui-flex justifyContent="center" alignItems="center"> ${this.getStateIcon()} </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text align="center" variant="md-medium" color="primary">
+          <wui-text align="center" variant="lg-medium" color="primary">
             ${this.loadingMessage}
           </wui-text>
-          <wui-text align="center" variant="sm-regular" color="secondary">
+          <wui-text align="center" variant="lg-regular" color="secondary">
             ${this.subMessage}
           </wui-text>
         </wui-flex>

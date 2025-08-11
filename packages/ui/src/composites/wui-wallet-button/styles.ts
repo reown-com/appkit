@@ -91,9 +91,11 @@ export default css`
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  button:hover:enabled,
-  button:active:enabled {
-    border-radius: ${({ borderRadius }) => borderRadius[16]};
+  @media (hover: hover) {
+    button:hover:enabled,
+    button:active:enabled {
+      border-radius: ${({ borderRadius }) => borderRadius[16]};
+    }
   }
 
   /* -- Disabled state --------------------------------------------------- */

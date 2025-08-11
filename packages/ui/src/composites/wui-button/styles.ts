@@ -87,17 +87,28 @@ export default css`
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  button[data-size='sm']:hover:enabled,
+  @media (hover: hover) {
+    button[data-size='sm']:hover:enabled {
+      border-radius: 28px;
+    }
+
+    button[data-size='md']:hover:enabled {
+      border-radius: 38px;
+    }
+
+    button[data-size='lg']:hover:enabled {
+      border-radius: 48px;
+    }
+  }
+
   button[data-size='sm']:active:enabled {
     border-radius: 28px;
   }
 
-  button[data-size='md']:hover:enabled,
   button[data-size='md']:active:enabled {
     border-radius: 38px;
   }
 
-  button[data-size='lg']:hover:enabled,
   button[data-size='lg']:active:enabled {
     border-radius: 48px;
   }

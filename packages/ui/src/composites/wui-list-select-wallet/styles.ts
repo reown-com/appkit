@@ -32,8 +32,10 @@ export default css`
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  button:hover:enabled {
-    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
   }
 
   /* -- Disabled state --------------------------------------------------- */

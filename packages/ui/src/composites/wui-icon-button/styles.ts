@@ -15,8 +15,10 @@ export default css`
     box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
-  button:hover:enabled {
-    border-radius: ${({ borderRadius }) => borderRadius[32]};
+  @media (hover: hover) {
+    button:hover:enabled {
+      border-radius: ${({ borderRadius }) => borderRadius[32]};
+    }
   }
 
   button[data-variant='accent'] {

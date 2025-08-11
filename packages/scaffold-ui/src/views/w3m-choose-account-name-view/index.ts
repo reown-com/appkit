@@ -61,7 +61,7 @@ export class W3mChooseAccountNameView extends LitElement {
         <wui-icon-box icon="id" size="xl" iconSize="xxl" color="default"></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="3">
-        <wui-text align="center" variant="md-medium" color="primary">
+        <wui-text align="center" variant="lg-medium" color="primary">
           Choose your account name
         </wui-text>
         <wui-text align="center" variant="md-regular" color="primary">

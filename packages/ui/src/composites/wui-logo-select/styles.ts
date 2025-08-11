@@ -16,8 +16,10 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
-  button:hover:enabled {
-    background: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  @media (hover: hover) {
+    button:hover:enabled {
+      background: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
   }
 
   button:disabled {

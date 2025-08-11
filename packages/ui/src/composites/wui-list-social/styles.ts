@@ -19,8 +19,10 @@ export default css`
     text-transform: capitalize;
   }
 
-  button:hover:enabled {
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    }
   }
 
   button:disabled {

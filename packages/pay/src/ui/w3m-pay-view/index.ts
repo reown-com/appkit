@@ -140,27 +140,23 @@ export class W3mPayView extends LitElement {
       <wui-list-item
         @click=${this.onWalletPayment}
         ?chevron=${true}
+        ?fullSize=${true}
+        ?rounded=${true}
         data-testid="wallet-payment-option"
+        imageSrc=${ifDefined(this.connectedWalletInfo?.icon)}
       >
-        <wui-flex alignItems="center" gap="3">
-          <wui-wallet-image
-            size="sm"
-            imageSrc=${ifDefined(this.connectedWalletInfo?.icon)}
-            name=${ifDefined(this.connectedWalletInfo?.name)}
-          ></wui-wallet-image>
-          <wui-text variant="md-medium" color="inherit">Pay with ${walletName}</wui-text>
-        </wui-flex>
+        <wui-text variant="lg-regular" color="primary">Pay with ${walletName}</wui-text>
       </wui-list-item>
 
       <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon="signOut"
+        icon="power"
+        ?rounded=${true}
+        iconColor="error"
         @click=${this.onDisconnect}
         data-testid="disconnect-button"
         ?chevron=${false}
       >
-        <wui-text variant="md-medium" color="secondary">Disconnect</wui-text>
+        <wui-text variant="lg-regular" color="secondary">Disconnect</wui-text>
       </wui-list-item>
     `
   }
@@ -170,11 +166,12 @@ export class W3mPayView extends LitElement {
       variant="icon"
       iconVariant="overlay"
       icon="wallet"
+      ?rounded=${true}
       @click=${this.onWalletPayment}
       ?chevron=${true}
       data-testid="wallet-payment-option"
     >
-      <wui-text variant="md-medium" color="inherit">Pay from wallet</wui-text>
+      <wui-text variant="lg-regular" color="inherit">Pay from wallet</wui-text>
     </wui-list-item>`
   }
 

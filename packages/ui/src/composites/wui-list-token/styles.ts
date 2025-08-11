@@ -14,8 +14,10 @@ export default css`
     background-color: transparent;
   }
 
-  button:hover:enabled {
-    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
   }
 
   button:focus-visible:enabled {

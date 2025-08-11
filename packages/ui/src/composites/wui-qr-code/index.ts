@@ -36,6 +36,8 @@ export class WuiQrCode extends LitElement {
     this.style.cssText = `--local-size: ${this.size}px`
 
     return html`<wui-flex
+      alignItems="center"
+      justifyContent="center"
       class="wui-qr-code"
       direction="column"
       gap="4"

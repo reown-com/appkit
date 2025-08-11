@@ -21,9 +21,12 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textInvert};
     background-color: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[2]};
+    align-items: normal;
   }
 
-  button:hover:enabled {
-    background-color: ${({ tokens }) => tokens.core.foregroundAccent020};
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.core.foregroundAccent020};
+    }
   }
 `

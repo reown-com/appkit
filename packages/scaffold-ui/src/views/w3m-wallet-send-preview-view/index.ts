@@ -118,7 +118,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="cancelButton"
             @click=${this.onCancelClick.bind(this)}
             size="lg"
-            variant="neutral"
+            variant="neutral-secondary"
           >
             Cancel
           </wui-button>
