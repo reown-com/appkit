@@ -52,8 +52,6 @@ export class WuiImage extends LitElement {
       --local-height: ${this.size ? `var(--apkt-spacing-${getSize[this.size]});` : '100%'};
       `
 
-    console.log(this.fullSize)
-
     this.dataset['boxed'] = this.boxed ? 'true' : 'false'
     this.dataset['rounded'] = this.rounded ? 'true' : 'false'
     this.dataset['full'] = this.fullSize ? 'true' : 'false'

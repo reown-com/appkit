@@ -19,7 +19,8 @@ export default {
     errorText: '',
     warningText: '',
     showSubmitButton: false,
-    loading: false
+    loading: false,
+    size: 'md'
   },
   argTypes: {
     disabled: {
@@ -40,6 +41,10 @@ export default {
     },
     loading: {
       control: { type: 'boolean' }
+    },
+    size: {
+      options: ['md', 'lg'],
+      control: { type: 'select' }
     }
   }
 } as Component
@@ -68,6 +73,7 @@ export const Default: Component = {
         .value=${inputValue}
         .onSubmit=${args.showSubmitButton ? handleSubmit : undefined}
         @inputChange=${handleInputChange}
+        size=${args.size}
       ></wui-input-text
     ></gallery-container>`
   }

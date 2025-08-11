@@ -32,6 +32,7 @@ export class WuiEnsInput extends LitElement {
         ?disabled=${this.disabled}
         .value=${this.value || ''}
         data-testid="wui-ens-input"
+        icon="search"
         inputRightPadding="5xl"
         .onKeyDown=${this.onKeyDown}
       ></wui-input-text>

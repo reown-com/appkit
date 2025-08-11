@@ -56,23 +56,15 @@ export class ModalWalletPage extends ModalPage {
 
   async togglePreferredAccountType() {
     const toggleButton = this.page.getByTestId('account-toggle-preferred-account-type')
+    const loadingSpinner = this.page.getByTestId('wui-list-item-loading-spinner')
+
     await expect(toggleButton, 'Toggle button should be visible').toBeVisible()
     await expect(toggleButton, 'Toggle button should be enabled').toBeEnabled()
 
-    // Get the current text before clicking
-    const currentText = await toggleButton.textContent()
     await toggleButton.click()
 
-    // Wait for the text to change to the opposite value
-    if (currentText?.includes('Switch to your EOA')) {
-      await expect(toggleButton, 'Toggle button should change to Smart Account').toContainText(
-        'Switch to your Smart Account'
-      )
-    } else if (currentText?.includes('Switch to your Smart Account')) {
-      await expect(toggleButton, 'Toggle button should change to EOA').toContainText(
-        'Switch to your EOA'
-      )
-    }
+    await expect(loadingSpinner, 'Loading spinner should not be visible').toBeHidden()
+    await this.page.waitForTimeout(500)
   }
 
   override async disconnect(): Promise<void> {

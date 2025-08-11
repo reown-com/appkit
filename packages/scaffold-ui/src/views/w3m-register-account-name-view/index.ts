@@ -14,12 +14,12 @@ import {
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-account-name-suggestion-item'
 import '@reown/appkit-ui/wui-ens-input'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -154,16 +154,6 @@ export class W3mRegisterAccountNameView extends LitElement {
     }
   }
 
-  private nameSuggestionTagTemplate(suggestion: { name: string; registered: boolean }) {
-    if (this.loading) {
-      return html`<wui-loading-spinner size="lg" color="primary"></wui-loading-spinner>`
-    }
-
-    return suggestion.registered
-      ? html`<wui-tag variant="info" size="sm">Registered</wui-tag>`
-      : html`<wui-tag variant="success" size="sm">Available</wui-tag>`
-  }
-
   private templateSuggestions() {
     if (!this.name || this.name.length < 4 || this.error) {
       return null
@@ -172,16 +162,14 @@ export class W3mRegisterAccountNameView extends LitElement {
     return html`<wui-flex flexDirection="column" gap="1" alignItems="center">
       ${this.suggestions.map(
         suggestion =>
-          html`<button
-            .disabled=${suggestion.registered || this.loading}
+          html`<wui-account-name-suggestion-item
+            name=${suggestion.name}
+            ?registered=${suggestion.registered}
+            ?loading=${this.loading}
+            ?disabled=${suggestion.registered || this.loading}
             data-testid="account-name-suggestion"
-            class="suggestion"
             @click=${() => this.onSubmitName(suggestion.name as ReownName)}
-          >
-            <wui-text color="primary" variant="md-regular" class="suggested-name">
-              ${suggestion.name}</wui-text
-            >${this.nameSuggestionTagTemplate(suggestion)}
-          </button>`
+          ></wui-account-name-suggestion-item>`
       )}
     </wui-flex>`
   }
