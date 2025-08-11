@@ -611,7 +611,7 @@ export class ModalPage {
   }
 
   async openOnramp() {
-    await this.page.getByTestId('w3m-account-default-onramp-button').click()
+    await this.page.getByTestId('wallet-features-onramp-button').click()
   }
 
   async closeModal() {
@@ -828,20 +828,31 @@ export class ModalPage {
     await profileButton.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
-  async getWalletFeaturesButton(feature: WalletFeature) {
+  async getWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton
   }
 
+  async getDefaultWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
+    const walletFeatureButton = this.page.getByTestId(`w3m-account-default-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
+  }
+
   async sendCalls() {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsButton = this.page.getByTestId('send-calls-button')
     await sendCallsButton.isVisible()
     await sendCallsButton.scrollIntoViewIfNeeded()
     await sendCallsButton.click()
   }
   async getCallsStatus(batchCallId: string) {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsInput = this.page.getByTestId('get-calls-id-input')
     const sendCallsButton = this.page.getByTestId('get-calls-status-button')
     await sendCallsButton.scrollIntoViewIfNeeded()

@@ -84,6 +84,7 @@ export interface RouterControllerState {
     | 'SIWXSignMessage'
     | 'Pay'
     | 'PayLoading'
+    | 'FundWallet'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

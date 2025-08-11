@@ -43,7 +43,9 @@ export class WuiListDescription extends LitElement {
         ></wui-icon-box>
         <wui-flex flexDirection="column" justifyContent="spaceBetween">
           ${this.titleTemplate()}
-          <wui-text variant="small-400" color="fg-200"> ${this.description}</wui-text></wui-flex
+          ${this.description
+            ? html`<wui-text variant="small-400" color="fg-200"> ${this.description}</wui-text>`
+            : null}</wui-flex
         >
       </button>
     `

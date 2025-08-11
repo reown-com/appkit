@@ -7,6 +7,7 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
+import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
@@ -51,10 +52,17 @@ export const EventsController = {
 
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
-      const address = AccountController.state.address
+      let address = AccountController.state.address
+
+      if ('address' in payload.data && payload.data.address) {
+        address = payload.data.address
+      }
+
       if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
         return
       }
+
+      const caipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
 
       await api.post({
         path: '/e',
@@ -64,7 +72,14 @@ export const EventsController = {
           url: window.location.href,
           domain: window.location.hostname,
           timestamp: payload.timestamp,
-          props: { ...payload.data, address }
+          props: {
+            ...payload.data,
+            address,
+            properties: {
+              ...('properties' in payload.data ? payload.data.properties : {}),
+              caipNetworkId
+            }
+          }
         }
       })
 

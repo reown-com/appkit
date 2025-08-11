@@ -181,8 +181,7 @@ export const ConnectorControllerUtil = {
                     type: 'track',
                     event: 'SOCIAL_LOGIN_SUCCESS',
                     properties: {
-                      provider: socialProvider,
-                      caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+                      provider: socialProvider
                     }
                   })
                 }
@@ -331,9 +330,12 @@ export const ConnectorControllerUtil = {
 
     const initialEmail = authConnector.provider.getEmail() ?? ''
 
-    RouterController.push('UpdateEmailWallet', {
-      email: initialEmail,
-      redirectView: undefined
+    await ModalController.open({
+      view: 'UpdateEmailWallet',
+      data: {
+        email: initialEmail,
+        redirectView: undefined
+      }
     })
 
     return new Promise((resolve, reject) => {

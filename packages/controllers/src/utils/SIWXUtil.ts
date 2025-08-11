@@ -41,16 +41,6 @@ export const SIWXUtil = {
     }
 
     try {
-      if (addEmbeddedWalletSessionPromise) {
-        await addEmbeddedWalletSessionPromise
-      }
-
-      const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
-
-      if (sessions.length) {
-        return
-      }
-
       if (OptionsController.state.remoteFeatures?.emailCapture) {
         const user = ChainController.getAccountData(namespace)?.user
 
@@ -61,6 +51,16 @@ export const SIWXUtil = {
           }
         })
 
+        return
+      }
+
+      if (addEmbeddedWalletSessionPromise) {
+        await addEmbeddedWalletSessionPromise
+      }
+
+      const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
+
+      if (sessions.length) {
         return
       }
 
@@ -258,7 +258,12 @@ export const SIWXUtil = {
   }) {
     const siwx = SIWXUtil.getSIWX()
 
-    if (!siwx || !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM)) {
+    if (
+      !siwx ||
+      !chainNamespace.includes(CommonConstantsUtil.CHAIN.EVM) ||
+      // Request to input email and sign message when email capture is enabled
+      OptionsController.state.remoteFeatures?.emailCapture
+    ) {
       const result = await authConnector.connect({
         chainId,
         socialUri,
@@ -360,7 +365,7 @@ export const SIWXUtil = {
     methods: string[]
   }) {
     const siwx = SIWXUtil.getSIWX()
-
+    const network = getActiveCaipNetwork()
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
@@ -428,6 +433,10 @@ export const SIWXUtil = {
 
       try {
         await siwx.setSessions(sessions)
+
+        if (network) {
+          ChainController.setLastConnectedSIWECaipNetwork(network)
+        }
 
         EventsController.sendEvent({
           type: 'track',

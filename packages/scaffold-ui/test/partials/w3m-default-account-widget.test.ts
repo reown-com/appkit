@@ -116,16 +116,16 @@ describe('W3mAccountDefaultWidget', () => {
   })
 
   describe('Features', () => {
-    it('shows onramp button when enabled for supported chain', async () => {
+    it('shows fund wallet button when enabled for supported chain', async () => {
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
       expect(
-        HelpersUtil.querySelect(element, '[data-testid="w3m-account-default-onramp-button"]')
+        HelpersUtil.querySelect(element, '[data-testid="w3m-account-default-fund-wallet-button"]')
       ).toBeTruthy()
     })
 
-    it('should not show onramp button when disabled', async () => {
+    it('should not show fund wallet button when disabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         features: {
           onramp: false
@@ -135,10 +135,10 @@ describe('W3mAccountDefaultWidget', () => {
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
-      expect(HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')).toBeFalsy()
+      expect(HelpersUtil.getByTestId(element, 'w3m-account-fund-wallet-button')).toBeFalsy()
     })
 
-    it('should not show onramp button for non-enabled chain', async () => {
+    it('should not show fund wallet button for non-enabled chain', async () => {
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeChain: ConstantsUtil.CHAIN.BITCOIN
       } as unknown as ChainControllerState)
@@ -146,7 +146,7 @@ describe('W3mAccountDefaultWidget', () => {
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
-      expect(HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')).toBeFalsy()
+      expect(HelpersUtil.getByTestId(element, 'w3m-account-fund-wallet-button')).toBeFalsy()
     })
 
     it('shows swap button for EVM chain', async () => {
@@ -230,7 +230,8 @@ describe('W3mAccountDefaultWidget', () => {
 
       expect(EventsController.sendEvent).toHaveBeenCalledWith({
         type: 'track',
-        event: 'DISCONNECT_ERROR'
+        event: 'DISCONNECT_ERROR',
+        properties: { message: 'Failed to disconnect' }
       })
       expect(SnackController.showError).toHaveBeenCalledWith('Failed to disconnect')
     })

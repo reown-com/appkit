@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
-import { encodeFunctionData, parseEther } from 'viem'
+import { type WalletCapabilities, encodeFunctionData, parseEther, toHex } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi'
 
@@ -9,10 +9,10 @@ import type { Address } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
+import { useCapabilities } from '@/src/hooks/useCapabilities'
 import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 import {
   abi as donutContractAbi,
-  donutContractSupportedChains,
   donutContractSupportedChainsName,
   address as donutContractaddress
 } from '@/src/utils/DonutContract'
@@ -43,36 +43,25 @@ const BICONOMY_PAYMASTER_CONTEXT = {
   }
 }
 
-export function WagmiSendCallsWithPaymasterServiceTest() {
-  const {
-    provider,
-    supportedChains: capabilitySupportedChains,
-    currentChainsInfo,
-    supported
-  } = useWagmiAvailableCapabilities({
+export function WagmiSendCallsWithPaymasterServiceTest({
+  capabilities
+}: {
+  capabilities: WalletCapabilities
+}) {
+  const { chain } = useAccount()
+  const { isMethodSupported } = useWagmiAvailableCapabilities()
+  const { isSupported, currentChainsInfo, supportedChains } = useCapabilities({
+    capabilities,
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-    method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+    chainId: chain?.id ? toHex(chain.id) : undefined
   })
 
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'
-  const isFeatureSupported = useMemo(
-    () =>
-      currentChainsInfo &&
-      donutContractSupportedChains.some(chain => chain.id === currentChainsInfo.chainId),
-    [currentChainsInfo]
-  )
 
-  const doWalletSupportCapability = useMemo(
-    () =>
-      currentChainsInfo &&
-      capabilitySupportedChains.some(chain => chain.chainId === currentChainsInfo.chainId),
-    [capabilitySupportedChains]
-  )
-
-  if (!isConnected || !provider || !address) {
+  if (!isConnected || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -80,7 +69,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     )
   }
 
-  if (!supported) {
+  if (!isMethodSupported(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support "wallet_sendCalls" RPC method
@@ -88,7 +77,15 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     )
   }
 
-  if (!isFeatureSupported) {
+  if (supportedChains.length === 0) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Account does not support paymaster service feature
+      </Text>
+    )
+  }
+
+  if (!currentChainsInfo) {
     return (
       <Text fontSize="md" color="yellow">
         Switch to {donutContractSupportedChainsName} to test this feature
@@ -96,7 +93,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     )
   }
 
-  if (!doWalletSupportCapability) {
+  if (!isSupported) {
     return (
       <Text fontSize="md" color="yellow">
         Account does not support paymaster service feature on {currentChainsInfo?.chainName}

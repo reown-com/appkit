@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-solana",
-  "version": "1.7.16",
+  "version": "1.7.18",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -46,7 +46,7 @@
     }
   },
   "dependencies": {
-    "@walletconnect/types": "2.21.5",
+    "@walletconnect/types": "2.21.7",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
@@ -60,7 +60,7 @@
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@wallet-standard/features": "1.1.0",
-    "@walletconnect/universal-provider": "2.21.5",
+    "@walletconnect/universal-provider": "2.21.7",
     "@solana/spl-token": "0.4.13",
     "valtio": "2.1.5"
   },

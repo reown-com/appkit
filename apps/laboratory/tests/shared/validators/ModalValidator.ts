@@ -361,7 +361,7 @@ export class ModalValidator {
   }
 
   async expectOnrampButton(visible: boolean) {
-    const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
+    const onrampButton = this.page.getByTestId('wallet-features-onramp-button')
     if (visible) {
       await expect(onrampButton).toBeVisible()
     } else {
@@ -400,9 +400,27 @@ export class ModalValidator {
     await expect(walletGuide).toBeVisible()
   }
 
+  async expectAccountNameIndex(index: number, enabled: boolean) {
+    const suggestion = this.page.getByTestId('account-name-suggestion').nth(index)
+    if (enabled) {
+      const registeredTag = suggestion.locator('wui-tag').getByText('Available')
+      expect(registeredTag).toBeVisible()
+    } else {
+      await expect(suggestion).toHaveAttribute('disabled')
+      const registeredTag = suggestion.locator('wui-tag').getByText('Registered')
+      await expect(registeredTag).toBeVisible()
+    }
+  }
   async expectAccountNameFound(name: string) {
     const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
     await expect(suggestion).toBeVisible()
+  }
+
+  async expectAccountNameDisabled(name: string) {
+    const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
+    await expect(suggestion).toHaveAttribute('disabled')
+    const registeredTag = suggestion.locator('wui-tag').getByText('Registered')
+    await expect(registeredTag).toBeVisible()
   }
 
   async expectHeaderText(text: string) {
@@ -588,5 +606,10 @@ export class ModalValidator {
     } else {
       await expect(uxBrandingReown).not.toBeVisible()
     }
+  }
+
+  async reownNameInput(name: string) {
+    const input = this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text')
+    await expect(input, 'Input should have value').toHaveValue(name)
   }
 }
