@@ -94,8 +94,12 @@ export interface DisconnectParameters {
   initialDisconnect?: boolean
 }
 
+interface ConnectWalletConnectParameters {
+  cachePromise?: boolean
+}
+
 export interface ConnectionControllerClient {
-  connectWalletConnect?: () => Promise<void>
+  connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
   disconnect: (params?: DisconnectParameters) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
@@ -211,8 +215,12 @@ const controller = {
       .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
-  async connectWalletConnect() {
-    if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
+  async connectWalletConnect({ cachePromise = true }: ConnectWalletConnectParameters = {}) {
+    const shouldCachePromise =
+      cachePromise &&
+      (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos()))
+
+    if (shouldCachePromise) {
       if (wcConnectionPromise) {
         await wcConnectionPromise
         wcConnectionPromise = undefined

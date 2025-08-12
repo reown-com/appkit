@@ -99,7 +99,7 @@ export class W3mConnectingWcView extends LitElement {
         )
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0
-        await ConnectionController.connectWalletConnect()
+        await ConnectionController.connectWalletConnect({ cachePromise: false })
 
         if (!this.isSiwxEnabled) {
           if (hasConnections && isMultiWalletEnabled) {
