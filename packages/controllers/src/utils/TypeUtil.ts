@@ -1159,7 +1159,6 @@ export type RemoteFeatures = {
   payWithExchange?: boolean
   payments?: boolean
   onramp?: OnRampProvider[] | false
-  receive?: boolean
 }
 
 export type Features = {

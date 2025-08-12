@@ -632,7 +632,7 @@ export class AppKit extends AppKitBaseClient {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/send'))
     }
 
-    if (features.receive || remoteFeatures.receive) {
+    if (features.receive) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
     }
 
