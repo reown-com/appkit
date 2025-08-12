@@ -51,7 +51,7 @@ export function getApiUrl() {
   return `https://rpc.walletconnect.org/v1/json-rpc?projectId=${projectId}&source=fund-wallet`
 }
 
-type JsonRpcResponse<T> = {
+export type JsonRpcResponse<T> = {
   jsonrpc: string
   id: number
   result: T
@@ -62,24 +62,24 @@ export type GetExchangesResult = {
   total: number
 }
 
-type GetPayUrlParams = {
+export type GetPayUrlParams = {
   exchangeId: string
   asset: string
   amount: string
   recipient: string
 }
 
-type GetPayUrlResult = {
+export type GetPayUrlResult = {
   url: string
   sessionId: string
 }
 
-type GetBuyStatusParams = {
+export type GetBuyStatusParams = {
   sessionId: string
   exchangeId: string
 }
 
-type GetBuyStatusResult = {
+export type GetBuyStatusResult = {
   status: ExchangeBuyStatus
   txHash?: string
 }

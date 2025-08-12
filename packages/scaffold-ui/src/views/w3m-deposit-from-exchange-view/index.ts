@@ -4,8 +4,10 @@ import { state } from 'lit/decorators.js'
 import {
   AssetUtil,
   ChainController,
+  type CurrentPayment,
   type Exchange,
-  ExchangeController
+  ExchangeController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -34,6 +36,9 @@ export class W3mDepositFromExchangeView extends LitElement {
   @state() public amount = ExchangeController.state.amount
   @state() public tokenAmount = ExchangeController.state.tokenAmount
   @state() public priceLoading = ExchangeController.state.priceLoading
+  @state() public isPaymentInProgress = ExchangeController.state.isPaymentInProgress
+  @state() public currentPayment?: CurrentPayment = ExchangeController.state.currentPayment
+  @state() public paymentId = ExchangeController.state.paymentId
 
   public constructor() {
     super()
@@ -44,6 +49,24 @@ export class W3mDepositFromExchangeView extends LitElement {
         this.amount = exchangeState.amount
         this.tokenAmount = exchangeState.tokenAmount
         this.priceLoading = exchangeState.priceLoading
+      }),
+      ExchangeController.subscribeKey('isPaymentInProgress', isPaymentInProgress => {
+        this.isPaymentInProgress = isPaymentInProgress
+        if (
+          isPaymentInProgress &&
+          this.currentPayment?.exchangeId &&
+          this.currentPayment?.sessionId &&
+          this.paymentId
+        ) {
+          SnackController.showLoading('Deposit in progress...')
+          ExchangeController.waitUntilComplete(
+            this.currentPayment.exchangeId,
+            this.currentPayment.sessionId,
+            this.paymentId
+          ).then(() => {
+            SnackController.showSuccess('Deposit successful')
+          })
+        }
       })
     )
   }
@@ -53,7 +76,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   public override firstUpdated() {
-    ExchangeController.fetchExchanges()
+    ExchangeController.fetchExchanges().catch()
     ExchangeController.fetchTokenPrice()
   }
 
@@ -139,9 +162,9 @@ export class W3mDepositFromExchangeView extends LitElement {
     `
   }
 
-  private onExchangeClick(exchange: Exchange) {
+  private async onExchangeClick(exchange: Exchange) {
     if (this.amount) {
-      ExchangeController.handlePayWithExchange(exchange.id)
+      await ExchangeController.handlePayWithExchange(exchange.id)
     }
   }
 
