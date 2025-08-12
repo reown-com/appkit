@@ -1,12 +1,12 @@
 ---
-'@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
+'@reown/appkit-utils': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
+'@reown/appkit-adapter-ethers': patch
+'@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
-'@reown/appkit-utils': patch
+'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Removed custom logic from EVM adapters that gets `capabilities` from `sessionProperties` as this resposibility should be delegated to the providers
+Fixed an issue where the OKX Wallet extension was not detected when using wallet button

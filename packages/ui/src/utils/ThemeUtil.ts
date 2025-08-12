@@ -1,8 +1,7 @@
 import { css, unsafeCSS } from 'lit'
 
-import type { ThemeType, ThemeVariables } from '@reown/appkit-common'
-
 import { ThemeHelperUtil } from './ThemeHelperUtil.js'
+import type { ThemeType, ThemeVariables } from './TypeUtil.js'
 
 // -- Utilities ---------------------------------------------------------------
 let apktTag: HTMLStyleElement | undefined = undefined
@@ -92,7 +91,7 @@ export function setThemeVariables(_themeVariables?: ThemeVariables) {
   }
 }
 
-function createRootStyles(_themeVariables?: ThemeVariables) {
+export function createRootStyles(_themeVariables?: ThemeVariables) {
   return {
     core: css`
       @font-face {

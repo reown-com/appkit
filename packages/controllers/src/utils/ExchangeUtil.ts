@@ -1,5 +1,6 @@
 import { type CaipNetworkId, type ChainNamespace, ParseUtil } from '@reown/appkit-common'
-import { OptionsController } from '@reown/appkit-controllers'
+
+import { OptionsController } from '../controllers/OptionsController.js'
 
 export type Exchange = {
   id: string

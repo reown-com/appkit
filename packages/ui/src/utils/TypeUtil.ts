@@ -131,6 +131,7 @@ export type IconType =
   | 'card'
   | 'checkmark'
   | 'checkmarkBold'
+  | 'download'
   | 'sealCheck'
   | 'chevronBottom'
   | 'chevronLeft'
