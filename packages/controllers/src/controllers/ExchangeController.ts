@@ -2,29 +2,32 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type CaipNetworkId } from '@reown/appkit-common'
-import {
-  AccountController,
-  CoreHelperUtil,
-  EventsController,
-  SnackController
-} from '@reown/appkit-controllers'
 
+import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
-import type { Exchange, GetExchangesParams, PayUrlParams } from '../utils/ExchangeUtil.js'
+import type { Exchange, PayUrlParams } from '../utils/ExchangeUtil.js'
+import { AccountController } from './AccountController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { EventsController } from './EventsController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
 const DEFAULT_STATE: ExchangeControllerState = {
   paymentAsset: {
     network: 'eip155:1',
-    asset: '0x0',
+    asset: 'native',
     metadata: {
-      name: '0x0',
-      symbol: '0x0',
+      name: 'Ethereum',
+      symbol: 'ETH',
       decimals: 0
     }
   },
   amount: 0,
+  tokenAmount: 0,
+  tokenPrice: null,
+  priceLoading: false,
   error: null,
   exchanges: [],
   isLoading: false,
@@ -33,11 +36,6 @@ const DEFAULT_STATE: ExchangeControllerState = {
 
 // -- Types --------------------------------------------- //
 type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
-
-type OpenPayUrlParams = {
-  exchangeId: string
-  openInNewTab?: boolean
-}
 
 export type CurrentPayment = {
   type: PaymentType
@@ -48,21 +46,26 @@ export type CurrentPayment = {
 }
 export type PayResult = CurrentPayment['result']
 
+export type PaymentAsset = {
+  network: CaipNetworkId
+  asset: string
+  metadata: {
+    name: string
+    symbol: string
+    decimals: number
+  }
+}
+
 export interface ExchangeControllerState {
   amount: number
+  tokenAmount: number
+  tokenPrice: number | null
+  priceLoading: boolean
   error: string | null
   isLoading: boolean
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
-  paymentAsset: {
-    network: CaipNetworkId
-    asset: string
-    metadata: {
-      name: string
-      symbol: string
-      decimals: number
-    }
-  }
+  paymentAsset: PaymentAsset
 }
 
 type StateKey = keyof ExchangeControllerState
@@ -72,14 +75,17 @@ type PaymentType = 'wallet' | 'exchange'
 const state = proxy<ExchangeControllerState>({
   paymentAsset: {
     network: 'eip155:1',
-    asset: '0x0',
+    asset: 'native',
     metadata: {
-      name: '0x0',
-      symbol: '0x0',
-      decimals: 0
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
     }
   },
   amount: 0,
+  tokenAmount: 0,
+  tokenPrice: null,
+  priceLoading: false,
   error: null,
   exchanges: [],
   isLoading: false,
@@ -103,11 +109,39 @@ export const ExchangeController = {
     Object.assign(state, { ...DEFAULT_STATE })
   },
 
-  // -- Getters ----------------------------------------- //
-  getExchanges() {
-    return state.exchanges
+  async fetchTokenPrice() {
+    state.priceLoading = true
+    const tokenAddress = getActiveNetworkTokenAddress()
+    const result = await BlockchainApiController.fetchTokenPrice({ addresses: [tokenAddress] })
+    state.tokenPrice = result.fungibles?.[0]?.price || null
+    state.priceLoading = false
   },
 
+  getTokenAmount() {
+    if (!state.tokenPrice) {
+      throw new Error('Cannot get token price')
+    }
+
+    const tokenAmount = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4
+    }).format(state.amount / state.tokenPrice)
+
+    return Number(tokenAmount)
+  },
+
+  setAmount(amount: number) {
+    state.amount = amount
+    if (state.tokenPrice) {
+      state.tokenAmount = this.getTokenAmount()
+    }
+  },
+
+  setPaymentAsset(asset: PaymentAsset) {
+    state.paymentAsset = asset
+  },
+
+  // -- Getters ----------------------------------------- //
   async fetchExchanges() {
     try {
       state.isLoading = true
@@ -123,25 +157,6 @@ export const ExchangeController = {
       throw new Error('Unable to get exchanges')
     } finally {
       state.isLoading = false
-    }
-  },
-
-  async getAvailableExchanges(params?: GetExchangesParams) {
-    try {
-      const asset =
-        params?.asset && params?.network
-          ? formatCaip19Asset(params.network, params.asset)
-          : undefined
-
-      const response = await getExchanges({
-        page: params?.page ?? DEFAULT_PAGE,
-        asset,
-        amount: params?.amount?.toString()
-      })
-
-      return response
-    } catch (error) {
-      throw new Error('Unable to get exchanges')
     }
   },
 
@@ -186,30 +201,9 @@ export const ExchangeController = {
     }
   },
 
-  async openPayUrl(openParams: OpenPayUrlParams, params: PayUrlParams) {
-    try {
-      const payUrl = await this.getPayUrl(openParams.exchangeId, params)
-      if (!payUrl) {
-        throw new Error('Unable to get pay url')
-      }
-
-      const target = openParams.openInNewTab ? '_blank' : '_self'
-      CoreHelperUtil.openHref(payUrl.url, target)
-
-      return payUrl
-    } catch (error) {
-      state.error = 'Unable to get pay url'
-      throw new Error('Unable to get pay url')
-    }
-  },
-
-  getExchangeById(exchangeId: string) {
-    return state.exchanges.find(exchange => exchange.id === exchangeId)
-  },
-
   async handlePayWithExchange(exchangeId: string) {
     try {
-      if (!AccountController.state.caipAddress) {
+      if (!AccountController.state.address) {
         throw new Error('No account connected')
       }
 
@@ -223,7 +217,7 @@ export const ExchangeController = {
         network,
         asset,
         amount: state.amount,
-        recipient: AccountController.state.caipAddress
+        recipient: AccountController.state.address
       }
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
@@ -234,15 +228,10 @@ export const ExchangeController = {
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
 
-      return {
-        url: payUrl.url,
-        openInNewTab: true
-      }
+      CoreHelperUtil.openHref(payUrl.url, '_blank')
     } catch (error) {
       state.error = 'Unable to initiate payment'
       SnackController.showError(state.error)
-
-      return null
     }
   }
 }

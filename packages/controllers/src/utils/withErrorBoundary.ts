@@ -60,10 +60,26 @@ export class AppKitError extends Error {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function errorHandler(err: any, defaultCategory: TelemetryErrorCategory) {
-  const error =
-    err instanceof AppKitError
-      ? err
-      : new AppKitError(err instanceof Error ? err.message : String(err), defaultCategory, err)
+  let errMessage = ''
+
+  try {
+    if (err instanceof Error) {
+      errMessage = err.message
+    } else if (typeof err === 'string') {
+      errMessage = err
+    } else if (typeof err === 'object' && err !== null) {
+      errMessage = JSON.stringify(err)
+    } else {
+      errMessage = String(err)
+    }
+  } catch (_error) {
+    errMessage = 'Unknown error'
+
+    // eslint-disable-next-line no-console
+    console.error('Error parsing error message', _error)
+  }
+
+  const error = err instanceof AppKitError ? err : new AppKitError(errMessage, defaultCategory, err)
 
   TelemetryController.sendError(error, error.category)
   throw error

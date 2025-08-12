@@ -533,7 +533,12 @@ const controller = {
         connector,
         closeModalOnConnect,
         onOpen(isMobile) {
-          ModalController.open({ view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect' })
+          const view = isMobile ? 'AllWallets' : 'ConnectingWalletConnect'
+          if (ModalController.state.open) {
+            RouterController.push(view)
+          } else {
+            ModalController.open({ view })
+          }
         },
         onConnect() {
           RouterController.replace('ProfileWallets')
