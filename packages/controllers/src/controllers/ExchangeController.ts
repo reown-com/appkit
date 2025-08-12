@@ -216,7 +216,7 @@ export const ExchangeController = {
       const payUrlParams: PayUrlParams = {
         network,
         asset,
-        amount: state.amount,
+        amount: state.tokenAmount,
         recipient: AccountController.state.address
       }
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
