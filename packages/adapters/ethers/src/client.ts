@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { JsonRpcProvider, formatEther } from 'ethers'
+import { JsonRpcProvider, formatEther, getAddress } from 'ethers'
 
 import { type AppKitOptions, WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
@@ -257,7 +257,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return {
-      address: accounts[0],
+      address: this.toChecksummedAddress(accounts[0]),
       chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: connector.type,
@@ -427,7 +427,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
       if (connection.account) {
         this.emit('accountChanged', {
-          address: connection.account.address,
+          address: this.toChecksummedAddress(connection.account.address),
           chainId: caipNetwork.id,
           connector
         })
@@ -479,7 +479,7 @@ export class EthersAdapter extends AdapterBlueprint {
       })
 
       this.emit('accountChanged', {
-        address: accounts[0] as Address,
+        address: this.toChecksummedAddress(accounts[0] as Address),
         chainId: Number(chainId),
         connector
       })
@@ -511,7 +511,7 @@ export class EthersAdapter extends AdapterBlueprint {
       }
 
       this.emit('accountChanged', {
-        address: accounts[0] as Address,
+        address: this.toChecksummedAddress(accounts[0] as Address),
         chainId: Number(chainId),
         connector
       })
@@ -815,5 +815,13 @@ export class EthersAdapter extends AdapterBlueprint {
       method: 'wallet_getAssets',
       params: [params]
     })
+  }
+
+  private toChecksummedAddress(address: string) {
+    try {
+      return getAddress(address.toLowerCase() as `0x${string}`)
+    } catch {
+      return address
+    }
   }
 }

@@ -25,7 +25,7 @@ import {
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { type Address, type Hex, formatUnits, parseUnits } from 'viem'
+import { type Address, type Hex, checksumAddress, formatUnits, parseUnits } from 'viem'
 
 import { AppKit, type AppKitOptions } from '@reown/appkit'
 import type {
@@ -348,7 +348,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
 
     this.emit('accountChanged', {
-      address,
+      address: checksumAddress(address.toLowerCase() as `0x${string}`),
       chainId,
       connector: {
         id: connector.id,
