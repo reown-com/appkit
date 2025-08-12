@@ -533,7 +533,6 @@ const controller = {
         connector,
         closeModalOnConnect,
         onOpen(isMobile) {
-          console.log('>> onOpen', isMobile, ModalController.state.open)
           const view = isMobile ? 'AllWallets' : 'ConnectingWalletConnect'
           if (ModalController.state.open) {
             RouterController.push(view)
