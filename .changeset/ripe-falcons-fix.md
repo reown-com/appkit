@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where using `<w3m-button>` with multichain didn't reflect the latest state changes and fixed send flow issues on Solana when using multichain
+Fixed an issue where using `<w3m-button>` with multichain didn't reflect the latest state changes and fixed send flow issues on solana when using multichain
