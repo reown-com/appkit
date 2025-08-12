@@ -231,7 +231,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
             return {
               accounts: connection.accounts.map(account => ({
-                address: account
+                address: this.toChecksummedAddress(account)
               })),
               caipNetwork,
               connectorId: connection.connector.id,
