@@ -380,8 +380,7 @@ const controller = {
       address,
       properties: {
         method: wcLinking ? 'mobile' : 'qrcode',
-        name: RouterController.state.data?.wallet?.name || 'Unknown',
-        caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+        name: RouterController.state.data?.wallet?.name || 'Unknown'
       }
     })
   },
@@ -534,7 +533,12 @@ const controller = {
         connector,
         closeModalOnConnect,
         onOpen(isMobile) {
-          ModalController.open({ view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect' })
+          const view = isMobile ? 'AllWallets' : 'ConnectingWalletConnect'
+          if (ModalController.state.open) {
+            RouterController.push(view)
+          } else {
+            ModalController.open({ view })
+          }
         },
         onConnect() {
           RouterController.replace('ProfileWallets')

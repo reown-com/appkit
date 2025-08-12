@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Added support for opening Binance Web3 Wallet via deeplink for Bitcoin
+Fixed an issue where errors thrown by controllers were not serialized properly

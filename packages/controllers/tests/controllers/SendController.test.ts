@@ -2,7 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type Balance } from '@reown/appkit-common'
 
-import { CoreHelperUtil, SendController, SnackController } from '../../exports/index.js'
+import {
+  AccountController,
+  CoreHelperUtil,
+  SendController,
+  SnackController
+} from '../../exports/index.js'
 import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
 import { BalanceUtil } from '../../src/utils/BalanceUtil.js'
 
@@ -158,6 +163,52 @@ describe('SendController', () => {
       expect(SendController.state.tokenBalances).toEqual(mockBalances)
       expect(SendController.state.lastRetry).toBeUndefined()
       expect(SendController.state.loading).toBe(false)
+    })
+
+    it('should use AccountController.getCaipAddress before falling back to activeCaipAddress', async () => {
+      const mockNamespace = 'eip155'
+      const mockCaipAddressFromAccount = 'eip155:1:0xAccountController'
+      const mockActiveCaipAddress = 'eip155:1:0xChainController'
+
+      mockChainControllerState({
+        activeCaipNetwork: extendedMainnet,
+        activeChain: mockNamespace,
+        activeCaipAddress: mockActiveCaipAddress
+      })
+
+      const getCaipAddressSpy = vi
+        .spyOn(AccountController, 'getCaipAddress')
+        .mockReturnValue(mockCaipAddressFromAccount)
+
+      vi.spyOn(BalanceUtil, 'getMyTokensWithBalance').mockResolvedValue([])
+
+      await SendController.fetchTokenBalance()
+
+      expect(getCaipAddressSpy).toHaveBeenCalledWith(mockNamespace)
+    })
+
+    it('should fallback to activeCaipAddress when AccountController.getCaipAddress returns undefined', async () => {
+      const mockNamespace = 'eip155'
+      const mockActiveCaipAddress = 'eip155:1:0xFallback'
+
+      mockChainControllerState({
+        activeCaipNetwork: extendedMainnet,
+        activeChain: mockNamespace,
+        activeCaipAddress: mockActiveCaipAddress
+      })
+
+      const getCaipAddressSpy = vi
+        .spyOn(AccountController, 'getCaipAddress')
+        .mockReturnValue(undefined)
+
+      const getPlainAddressSpy = vi.spyOn(CoreHelperUtil, 'getPlainAddress')
+
+      vi.spyOn(BalanceUtil, 'getMyTokensWithBalance').mockResolvedValue([])
+
+      await SendController.fetchTokenBalance()
+
+      expect(getCaipAddressSpy).toHaveBeenCalledWith(mockNamespace)
+      expect(getPlainAddressSpy).toHaveBeenCalledWith(mockActiveCaipAddress)
     })
   })
 })

@@ -242,7 +242,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
   }
 
   function updateSocials(enabled: boolean) {
-    if (enabled && !Array.isArray(appKit?.remoteFeatures.socials)) {
+    if (enabled) {
       updateRemoteFeatures({ socials: ConstantsUtil.DEFAULT_SOCIALS })
     } else if (!enabled) {
       updateRemoteFeatures({ socials: false })

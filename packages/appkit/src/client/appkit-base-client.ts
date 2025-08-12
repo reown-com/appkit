@@ -10,7 +10,6 @@ import type {
   CaipNetworkId,
   ChainNamespace,
   Hex,
-  ParsedCaipAddress,
   SdkVersion
 } from '@reown/appkit-common'
 import { ConstantsUtil, NetworkUtil, ParseUtil } from '@reown/appkit-common'
@@ -1622,9 +1621,8 @@ export abstract class AppKitBaseClient {
               activeNamespace === namespace &&
               (ChainController.state.noAdapters || isCurrentConnectorWalletConnect)
             ) {
-              if (accounts.length > 0) {
-                const account = accounts[0] as ParsedCaipAddress
-
+              const account = accounts?.[0]
+              if (account) {
                 this.syncAccount({
                   address: account.address,
                   chainId: account.chainId,

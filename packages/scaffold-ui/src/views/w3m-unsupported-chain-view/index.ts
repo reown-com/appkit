@@ -153,7 +153,11 @@ export class W3mUnsupportedChainView extends LitElement {
         SnackController.showSuccess('Wallet deleted')
       }
     } catch {
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR',
+        properties: { message: 'Failed to disconnect' }
+      })
       SnackController.showError('Failed to disconnect')
     } finally {
       this.disconnecting = false

@@ -222,6 +222,8 @@ export const ConstantsUtil = {
     reownBranding: true,
     multiWallet: false,
     emailCapture: false,
+    payWithExchange: false,
+    payments: false,
     reownAuthentication: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {

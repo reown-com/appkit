@@ -1,4 +1,6 @@
 ---
+'@reown/appkit-controllers': patch
+'@reown/appkit-scaffold-ui': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -11,12 +13,10 @@
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
 '@reown/appkit-common': patch
-'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where WalletConnect connections didn't include the `address` value when sending the `CONNECT_SUCCESS` event
+Fixed an issue where using `<w3m-button>` with multichain didn't reflect the latest state changes and fixed send flow issues on solana when using multichain

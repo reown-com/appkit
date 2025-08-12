@@ -45,6 +45,7 @@ const ICONS = {
   desktop: async () => (await import('../../assets/svg/desktop.js')).desktopSvg,
   disconnect: async () => (await import('../../assets/svg/disconnect.js')).disconnectSvg,
   discord: async () => (await import('../../assets/svg/discord.js')).discordSvg,
+  download: async () => (await import('../../assets/svg/download.js')).downloadSvg,
   ethereum: async () => (await import('../../assets/svg/ethereum.js')).ethereumSvg,
   etherscan: async () => (await import('../../assets/svg/etherscan.js')).etherscanSvg,
   extension: async () => (await import('../../assets/svg/extension.js')).extensionSvg,
@@ -107,7 +108,8 @@ const ICONS = {
   exclamationTriangle: async () =>
     (await import('../../assets/svg/exclamation-triangle.js')).exclamationTriangleSvg,
   reown: async () => (await import('../../assets/svg/reown-logo.js')).reownSvg,
-  'x-mark': async () => (await import('../../assets/svg/x-mark.js')).xMarkSvg
+  'x-mark': async () => (await import('../../assets/svg/x-mark.js')).xMarkSvg,
+  dollar: async () => (await import('../../assets/svg/dollar.js')).dollarSvg
 } as const
 
 async function getSvg(name: IconType) {

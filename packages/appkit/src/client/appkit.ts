@@ -308,10 +308,7 @@ export class AppKit extends AppKitBaseClient {
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
-          properties: {
-            provider: socialProviderToConnect,
-            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
-          }
+          properties: { provider: socialProviderToConnect }
         })
       }
     } catch (error) {
@@ -643,11 +640,15 @@ export class AppKit extends AppKitBaseClient {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
     }
 
+    if (remoteFeatures.payWithExchange) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/pay-with-exchange'))
+    }
+
     if (remoteFeatures.activity) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
     }
 
-    if (features.pay) {
+    if (features.pay || remoteFeatures.payments) {
       featureImportPromises.push(import('@reown/appkit-pay'))
     }
 

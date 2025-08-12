@@ -96,7 +96,9 @@ function headings() {
     SIWXSignMessage: 'Sign In',
     PayLoading: 'Payment in progress',
     DataCapture: 'Profile',
-    DataCaptureOtpConfirm: 'Confirm Email'
+    DataCaptureOtpConfirm: 'Confirm Email',
+    FundWallet: 'Fund wallet',
+    PayWithExchange: 'Deposit from an exchange'
   }
 }
 

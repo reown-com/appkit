@@ -361,7 +361,7 @@ export class ModalValidator {
   }
 
   async expectOnrampButton(visible: boolean) {
-    const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
+    const onrampButton = this.page.getByTestId('wallet-features-onramp-button')
     if (visible) {
       await expect(onrampButton).toBeVisible()
     } else {
@@ -606,5 +606,10 @@ export class ModalValidator {
     } else {
       await expect(uxBrandingReown).not.toBeVisible()
     }
+  }
+
+  async reownNameInput(name: string) {
+    const input = this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text')
+    await expect(input, 'Input should have value').toHaveValue(name)
   }
 }
