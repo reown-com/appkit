@@ -38,7 +38,9 @@ export const PresetsUtil = {
     [ConstantsUtil.XVERSE_CONNECTOR_NAME]:
       '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
     [ConstantsUtil.LEATHER_CONNECTOR_NAME]:
-      '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13'
+      '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13',
+    [ConstantsUtil.OKX_CONNECTOR_NAME]:
+      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
   } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum
