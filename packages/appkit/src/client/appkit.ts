@@ -640,11 +640,15 @@ export class AppKit extends AppKitBaseClient {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
     }
 
+    if (remoteFeatures.payWithExchange) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/pay-with-exchange'))
+    }
+
     if (remoteFeatures.activity) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
     }
 
-    if (features.pay) {
+    if (features.pay || remoteFeatures.payments) {
       featureImportPromises.push(import('@reown/appkit-pay'))
     }
 

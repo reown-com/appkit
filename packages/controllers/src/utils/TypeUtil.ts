@@ -1149,13 +1149,16 @@ export type ConnectorTypeOrder =
 
 export type RemoteFeatures = {
   swaps?: SwapProvider[] | false
-  onramp?: OnRampProvider[] | false
   email?: boolean
   socials?: SocialProvider[] | false
   activity?: boolean
   reownBranding?: boolean
   multiWallet?: boolean
   emailCapture?: EmailCaptureOptions[] | boolean
+  // Fund Wallet
+  payWithExchange?: boolean
+  payments?: boolean
+  onramp?: OnRampProvider[] | false
 }
 
 export type Features = {
@@ -1303,6 +1306,8 @@ export type FeatureID =
   | 'social_login'
   | 'reown_branding'
   | 'email_capture'
+  | 'fund_from_exchange'
+  | 'payments'
 
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
@@ -1369,6 +1374,18 @@ export type FeatureConfigMap = {
   multiWallet: {
     apiFeatureName: 'multi_wallet'
     localFeatureName: 'multiWallet'
+    returnType: boolean
+    isLegacy: false
+  }
+  payWithExchange: {
+    apiFeatureName: 'fund_from_exchange'
+    localFeatureName: 'payWithExchange'
+    returnType: boolean
+    isLegacy: false
+  }
+  payments: {
+    apiFeatureName: 'payments'
+    localFeatureName: 'payments'
     returnType: boolean
     isLegacy: false
   }
