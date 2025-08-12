@@ -30,20 +30,20 @@ export class WuiListDescription extends LitElement {
   public override render() {
     return html`
       <button ?disabled=${this.disabled}>
-        <wui-flex justifyContent="space-between" alignItems="flex-start">
-          <wui-icon-box padding="2" color="default" icon=${this.icon} size="lg"></wui-icon-box>
-          ${this.tag ? html`<wui-tag tagType="main" size="sm">${this.tag}</wui-tag>` : null}
-        </wui-flex>
-
-        <wui-flex alignItems="center" justifyContent="space-between">
+        <wui-flex alignItems="center" gap="3">
+          <wui-icon-box padding="2" color="secondary" icon=${this.icon} size="lg"></wui-icon-box>
           <wui-flex flexDirection="column" gap="1">
             <wui-text variant="md-medium" color="primary">${this.text}</wui-text>
             ${this.description
-              ? html`<wui-text variant="sm-medium" color="secondary">
+              ? html`<wui-text variant="md-regular" color="secondary">
                   ${this.description}</wui-text
                 >`
               : null}
           </wui-flex>
+        </wui-flex>
+
+        <wui-flex class="tag-container" alignItems="center" gap="1" justifyContent="flex-end">
+          ${this.tag ? html`<wui-tag tagType="main" size="sm">${this.tag}</wui-tag>` : null}
           <wui-icon size="md" name="chevronRight" color="default"></wui-icon>
         </wui-flex>
       </button>

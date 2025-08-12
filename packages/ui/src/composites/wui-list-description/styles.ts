@@ -8,16 +8,25 @@ export default css`
   button {
     width: 100%;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     gap: ${({ spacing }) => spacing[4]};
     padding: ${({ spacing }) => spacing[4]};
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background-color: transparent;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
+  }
+
+  wui-text {
+    max-width: 174px;
+  }
+
+  .tag-container {
+    width: fit-content;
   }
 
   @media (hover: hover) {
     button:hover:enabled {
-      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+      background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     }
   }
 `

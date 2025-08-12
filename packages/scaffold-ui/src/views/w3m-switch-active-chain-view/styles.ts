@@ -28,8 +28,6 @@ export default css`
   }
 
   wui-visual {
-    width: var(--apkt-spacing-4);
-    height: var(--apkt-spacing-4);
     border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
     position: relative;
     overflow: hidden;

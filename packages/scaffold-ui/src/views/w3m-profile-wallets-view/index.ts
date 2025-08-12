@@ -202,16 +202,16 @@ export class W3mProfileWalletsView extends LitElement {
     return html`
       <wui-flex alignItems="center" columngap="1">
         <wui-icon
+          size="sm"
           name=${NAMESPACE_ICONS[namespace as keyof typeof NAMESPACE_ICONS] ??
           NAMESPACE_ICONS.eip155}
-          size="lg"
         ></wui-icon>
-        <wui-text color="secondary" variant="sm-regular"
+        <wui-text color="secondary" variant="lg-regular"
           >${totalConnections > 1 ? 'Wallets' : 'Wallet'}</wui-text
         >
         <wui-text
           color="primary"
-          variant="sm-regular"
+          variant="lg-regular"
           class="balance-amount"
           data-testid="balance-amount"
         >
@@ -257,7 +257,7 @@ export class W3mProfileWalletsView extends LitElement {
       ${plainAddress || connectorId || connections.length > 0
         ? html`<wui-flex
             flexDirection="column"
-            .padding=${['4', '0', '2', '0'] as const}
+            .padding=${['4', '0', '4', '0'] as const}
             class="active-wallets"
           >
             ${this.renderActiveProfile(namespace)} ${this.renderActiveConnectionsList(namespace)}
@@ -458,26 +458,24 @@ export class W3mProfileWalletsView extends LitElement {
           rowgap="3"
           class="empty-box"
         >
-          <wui-icon-box size="lg" icon="wallet" color="default"></wui-icon-box>
+          <wui-icon-box size="xl" icon="wallet" color="secondary"></wui-icon-box>
 
           <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="1">
-            <wui-text color="primary" variant="md-medium" data-testid="empty-state-text"
+            <wui-text color="primary" variant="lg-regular" data-testid="empty-state-text"
               >No wallet connected</wui-text
             >
-            <wui-text color="secondary" variant="sm-medium" data-testid="empty-state-description"
+            <wui-text color="secondary" variant="md-regular" data-testid="empty-state-description"
               >${description}</wui-text
             >
           </wui-flex>
 
-          <wui-button
-            variant="neutral"
-            size="md"
+          <wui-link
             @click=${() => this.handleAddConnection(namespace)}
             data-testid="empty-state-button"
+            icon="plus"
           >
-            <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
             ${title}
-          </wui-button>
+          </wui-link>
         </wui-flex>
       </wui-flex>
     `

@@ -15,7 +15,7 @@ export class WuiToggle extends LitElement {
   public inputElementRef: Ref<HTMLInputElement> = createRef<HTMLInputElement>()
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) public checked?: boolean = undefined
+  @property({ type: Boolean }) public checked?: boolean = false
 
   @property({ type: Boolean }) public disabled = false
 

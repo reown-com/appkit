@@ -21,7 +21,7 @@ export class WuiIconBox extends LitElement {
 
   @property() public padding?: '1' | '2' = '1'
 
-  @property() public color: IconColorType = 'default'
+  @property() public color: IconColorType | 'secondary' = 'default'
 
   // -- Render -------------------------------------------- //
   public override render() {

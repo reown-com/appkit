@@ -65,7 +65,10 @@ export class WuiButton extends LitElement {
   public loadingTemplate() {
     if (this.loading) {
       const size = SPINNER_SIZE_BY_SIZE[this.size]
-      const color = this.variant === 'neutral-primary' ? 'invert' : 'primary'
+      const color =
+        this.variant === 'neutral-primary' || this.variant === 'accent-primary'
+          ? 'invert'
+          : 'primary'
 
       return html`<wui-loading-spinner color=${color} size=${size}></wui-loading-spinner>`
     }

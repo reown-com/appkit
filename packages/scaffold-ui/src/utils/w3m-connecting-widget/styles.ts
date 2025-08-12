@@ -24,8 +24,8 @@ export default css`
   }
 
   wui-wallet-image {
-    padding: var(--apkt-spacing-2);
-    outline: 1px solid var(--apkt-tokens-theme-borderPrimary);
+    width: 56px;
+    height: 56px;
   }
 
   wui-loading-thumbnail {

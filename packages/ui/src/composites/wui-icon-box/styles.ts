@@ -38,12 +38,17 @@ export default css`
     background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
-  :host([data-color='default']) {
+  :host([data-color='default']),
+  :host([data-color='secondary']) {
     color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
   :host([data-color='default']):after {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  :host([data-color='secondary']):after {
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   :host([data-color='success']) {

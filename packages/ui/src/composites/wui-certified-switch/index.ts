@@ -11,16 +11,47 @@ export class WuiCertifiedSwitch extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) public checked?: boolean = undefined
+  @property({ type: Boolean }) public checked?: boolean = false
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button>
+      <button @click=${this.handleClick.bind(this)}>
         <wui-icon size="xl" name="walletConnectBrown"></wui-icon>
-        <wui-toggle .checked=${this.checked} size="sm"></wui-toggle>
+        <wui-toggle
+          ?checked=${this.checked}
+          size="sm"
+          @switchChange=${this.handleToggleChange.bind(this)}
+        ></wui-toggle>
       </button>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private handleClick(event: Event) {
+    // Prevent the button click from firing if the toggle was clicked
+    const target = event.target as Element
+    if (target.closest('wui-toggle')) {
+      return
+    }
+
+    this.dispatchSwitchEvent()
+  }
+
+  private handleToggleChange(event: CustomEvent) {
+    event.stopPropagation()
+    this.checked = event.detail
+    this.dispatchSwitchEvent()
+  }
+
+  private dispatchSwitchEvent() {
+    this.dispatchEvent(
+      new CustomEvent('certifiedSwitchChange', {
+        detail: this.checked,
+        bubbles: true,
+        composed: true
+      })
+    )
   }
 }
 

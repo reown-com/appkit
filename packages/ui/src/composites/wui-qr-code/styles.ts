@@ -48,4 +48,9 @@ export default css`
     color: #3396ff !important;
     transform: translateY(-50%) translateX(-50%) scale(0.25);
   }
+
+  wui-icon > svg {
+    width: inherit;
+    height: inherit;
+  }
 `

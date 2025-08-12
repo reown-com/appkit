@@ -33,7 +33,7 @@ export class WuiSearchBar extends LitElement {
           ? html`<wui-icon
               @click=${this.clearValue}
               color="inherit"
-              size="xs"
+              size="sm"
               name="close"
             ></wui-icon>`
           : null}

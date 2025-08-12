@@ -58,24 +58,26 @@ export class W3mSwitchActiveChainView extends LitElement {
         flexDirection="column"
         alignItems="center"
         .padding=${['4', '2', '2', '2'] as const}
-        gap="2"
+        gap="4"
       >
         <wui-flex justifyContent="center" flexDirection="column" alignItems="center" gap="2">
           <wui-visual
             size="md"
             name=${ifDefined(chainIconNameMap[this.switchToChain])}
           ></wui-visual>
-          <wui-text
-            data-testid=${`w3m-switch-active-chain-to-${nextChainName}`}
-            variant="md-medium"
-            color="primary"
-            align="center"
-            >Switch to <span class="capitalize">${nextChainName}</span></wui-text
-          >
-          <wui-text variant="sm-regular" color="secondary" align="center">
-            Connected wallet doesn't support connecting to ${switchedChainNameString} chain. You
-            need to connect with a different wallet.
-          </wui-text>
+          <wui-flex gap="2" flexDirection="column">
+            <wui-text
+              data-testid=${`w3m-switch-active-chain-to-${nextChainName}`}
+              variant="lg-regular"
+              color="primary"
+              align="center"
+              >Switch to <span class="capitalize">${nextChainName}</span></wui-text
+            >
+            <wui-text variant="md-regular" color="secondary" align="center">
+              Connected wallet doesn't support connecting to ${switchedChainNameString} chain. You
+              need to connect with a different wallet.
+            </wui-text>
+          </wui-flex>
           <wui-button
             data-testid="w3m-switch-active-chain-button"
             size="md"

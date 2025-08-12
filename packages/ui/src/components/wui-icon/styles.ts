@@ -11,8 +11,8 @@ export default css`
   }
 
   svg {
-    width: inherit;
     height: inherit;
+    width: inherit;
     object-fit: contain;
     object-position: center;
   }

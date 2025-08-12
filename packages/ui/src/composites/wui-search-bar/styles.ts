@@ -13,5 +13,16 @@ export default css`
     transform: translateY(-50%);
     right: ${({ spacing }) => spacing[3]};
     color: ${({ tokens }) => tokens.theme.iconDefault};
+    cursor: pointer;
+    padding: ${({ spacing }) => spacing[2]};
+    background-color: transparent;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+  }
+
+  @media (hover: hover) {
+    wui-icon:hover {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
   }
 `
