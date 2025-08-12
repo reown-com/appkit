@@ -433,7 +433,7 @@ export class EthersAdapter extends AdapterBlueprint {
         })
 
         return {
-          address: connection.account.address,
+          address: this.toChecksummedAddress(connection.account.address),
           chainId: caipNetwork.id,
           provider: connector.provider,
           type: connector.type,
@@ -528,7 +528,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return {
-      address: accounts[0] as Address,
+      address: this.toChecksummedAddress(accounts[0] as Address),
       chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,

@@ -348,7 +348,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
 
     this.emit('accountChanged', {
-      address: checksumAddress(address.toLowerCase() as `0x${string}`),
+      address: this.toChecksummedAddress(address),
       chainId,
       connector: {
         id: connector.id,
@@ -545,7 +545,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
         return {
           chainId: Number(chainId),
-          address: res.accounts[0] as string,
+          address: this.toChecksummedAddress(res.accounts[0] as string),
           provider: safeProvider,
           type: connection?.connector.type?.toUpperCase() as ConnectorType,
           id: connection?.connector.id as string
@@ -555,7 +555,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     return {
       chainId: Number(connection?.chainId),
-      address: connection?.accounts[0] as string,
+      address: this.toChecksummedAddress(connection?.accounts[0] as string),
       provider,
       type: connection?.connector.type?.toUpperCase() as ConnectorType,
       id: connection?.connector.id as string
@@ -629,7 +629,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       }))
 
       return {
-        address: sortedAccounts[0],
+        address: this.toChecksummedAddress(sortedAccounts[0]),
         chainId: connection.chainId,
         provider: provider as Provider,
         type: type as ConnectorType,
@@ -645,7 +645,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
 
     return {
-      address: res.accounts[0],
+      address: this.toChecksummedAddress(res.accounts[0]),
       chainId: res.chainId,
       provider: provider as Provider,
       type: type as ConnectorType,
@@ -656,7 +656,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public override get connections(): Connection[] {
     return Array.from(this.wagmiConfig.state.connections.values()).map(connection => ({
       accounts: connection.accounts.map(account => ({
-        address: account
+        address: this.toChecksummedAddress(account)
       })),
       connectorId: connection.connector.id
     }))
@@ -755,7 +755,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           connections: [
             {
               accounts: connection.accounts.map(account => ({
-                address: account
+                address: this.toChecksummedAddress(account)
               })),
               connectorId: connection.connector.id
             }
@@ -792,7 +792,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         .filter(connection => connection.status === 'fulfilled')
         .map(({ value: connection }) => ({
           accounts: connection.accounts.map(account => ({
-            address: account
+            address: this.toChecksummedAddress(account)
           })),
           connectorId: connection.connector.id
         }))
@@ -975,5 +975,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
 
     return Promise.resolve()
+  }
+
+  private toChecksummedAddress(address: string) {
+    return checksumAddress(address.toLowerCase() as `0x${string}`)
   }
 }

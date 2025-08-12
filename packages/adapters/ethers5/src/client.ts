@@ -531,7 +531,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     return {
-      address: accounts[0] as Address,
+      address: this.toChecksummedAddress(accounts[0] as Address),
       chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
