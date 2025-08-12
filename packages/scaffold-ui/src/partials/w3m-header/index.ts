@@ -97,7 +97,8 @@ function headings() {
     PayLoading: 'Payment in progress',
     DataCapture: 'Profile',
     DataCaptureOtpConfirm: 'Confirm Email',
-    FundWallet: 'Fund wallet'
+    FundWallet: 'Fund wallet',
+    PayWithExchange: 'Deposit from an exchange'
   }
 }
 
