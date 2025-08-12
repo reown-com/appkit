@@ -61,7 +61,7 @@
     "tailwind-merge": "2.6.0",
     "tailwindcss-animate": "1.0.7",
     "viem": "2.32.0",
-    "wagmi": "2.15.7",
+    "wagmi": "2.16.2",
     "valtio": "2.1.5"
   },
   "devDependencies": {
