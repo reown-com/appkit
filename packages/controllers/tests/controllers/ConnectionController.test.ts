@@ -220,14 +220,14 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.status).toEqual('connected')
   })
 
-  it('should handle connectWalletConnect when cachePromise argument is false', async () => {
+  it('should handle connectWalletConnect when cache argument is "never"', async () => {
     vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
     vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
     vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
 
     const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
 
-    await ConnectionController.connectWalletConnect({ cachePromise: false })
+    await ConnectionController.connectWalletConnect({ cache: 'never' })
 
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
   })
