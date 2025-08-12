@@ -1,5 +1,22 @@
 # @reown/appkit-adapter-bitcoin
 
+## 1.7.19
+
+### Patch Changes
+
+- [#4747](https://github.com/reown-com/appkit/pull/4747) [`cbe17ff`](https://github.com/reown-com/appkit/commit/cbe17ffc0a4a7d8aa8ba9471f02d09f005629d0a) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Removed custom logic from EVM adapters that gets `capabilities` from `sessionProperties` as this resposibility should be delegated to the providers
+
+- [#4792](https://github.com/reown-com/appkit/pull/4792) [`2bccf2a`](https://github.com/reown-com/appkit/commit/2bccf2a36cbef80f53453228515cc3407ff8f96e) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where secure site screens would break in demo
+
+- [#4767](https://github.com/reown-com/appkit/pull/4767) [`6b023b9`](https://github.com/reown-com/appkit/commit/6b023b90c29e211fdc827b9843d0a692608056a1) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors OKX and Unisat connectors to pass signInputs to wallet provider's `signPsbt` method
+
+- Updated dependencies [[`cbe17ff`](https://github.com/reown-com/appkit/commit/cbe17ffc0a4a7d8aa8ba9471f02d09f005629d0a), [`2bccf2a`](https://github.com/reown-com/appkit/commit/2bccf2a36cbef80f53453228515cc3407ff8f96e)]:
+  - @reown/appkit@1.7.19
+  - @reown/appkit-utils@1.7.19
+  - @reown/appkit-common@1.7.19
+  - @reown/appkit-controllers@1.7.19
+  - @reown/appkit-polyfills@1.7.19
+
 ## 1.7.18
 
 ### Patch Changes
