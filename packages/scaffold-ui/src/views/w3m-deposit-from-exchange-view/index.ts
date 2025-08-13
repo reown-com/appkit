@@ -167,11 +167,11 @@ export class W3mDepositFromExchangeView extends LitElement {
       ) {
         SnackController.showLoading('Deposit in progress...')
         RouterController.replace('Account')
-        const status = await ExchangeController.waitUntilComplete(
-          this.currentPayment.exchangeId,
-          this.currentPayment.sessionId,
-          this.paymentId
-        )
+        const status = await ExchangeController.waitUntilComplete({
+          exchangeId: this.currentPayment.exchangeId,
+          sessionId: this.currentPayment.sessionId,
+          paymentId: this.paymentId
+        })
         if (status.status === 'SUCCESS') {
           SnackController.showSuccess('Deposit completed')
         } else if (status.status === 'FAILED') {
