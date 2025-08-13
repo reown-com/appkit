@@ -60,13 +60,13 @@ export class WuiImage extends LitElement {
     if (this.icon) {
       return html`<wui-icon
         color=${this.iconColor || 'inherit'}
-        size="inherit"
         name=${this.icon}
+        size="lg"
       ></wui-icon> `
     }
 
     if (this.logo) {
-      return html`<wui-icon color="inherit" size="inherit" name=${this.logo}></wui-icon> `
+      return html`<wui-icon size="lg" color="inherit" size="inherit" name=${this.logo}></wui-icon> `
     }
 
     return html`<img src=${ifDefined(this.src)} alt=${this.alt} @error=${this.handleImageError} />`

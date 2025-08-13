@@ -51,7 +51,11 @@ export class W3mSwapInput extends LitElement {
     const isMarketValueGreaterThanZero = NumberUtil.bigNumber(marketValue).gt('0')
 
     return html`
-      <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
+      <wui-flex
+        class="${this.focused ? 'focus' : ''}"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <wui-flex
           flex="1"
           flexDirection="column"

@@ -44,8 +44,8 @@ export default css`
   }
 
   :host([data-boxed='true']) wui-icon {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
   }
 
   :host([data-icon='error']) {

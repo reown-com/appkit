@@ -265,20 +265,20 @@ export class WuiIcon extends LitElement {
       const tag = unsafeStatic(phosphorIconTag)
 
       const getPhosphorSize = {
-        xxs: '8px',
-        xs: '12px',
-        sm: '12px',
-        md: '16px',
-        mdl: '20px',
-        lg: '20px',
-        xl: '24px',
-        xxl: '28px'
+        xxs: '0.5em',
+        xs: '0.75em',
+        sm: '0.75em',
+        md: '1em',
+        mdl: '1.25em',
+        lg: '1.25em',
+        xl: '1.5em',
+        xxl: '1.75em'
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any
 
       // Return the Phosphor icon with dynamic tag
       // eslint-disable-next-line lit/binding-positions, lit/no-invalid-html
-      return html`<${tag} weight="${this.weight}" style="width: inherit; height: inherit; size="${getPhosphorSize[this.size]}"></${tag}>`
+      return html`<${tag} size=${getPhosphorSize[this.size]} weight="${this.weight}"></${tag}>`
     }
 
     // Fallback to regular SVG
