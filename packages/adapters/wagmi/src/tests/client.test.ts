@@ -16,6 +16,7 @@ import {
 import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { checksumAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
@@ -1138,7 +1139,7 @@ describe('WagmiAdapter', () => {
       await vi.waitFor(() => {
         expect(accountChangedSpy).toHaveBeenCalledWith(
           expect.objectContaining({
-            address: currAccount.address,
+            address: checksumAddress(currAccount.address as `0x${string}`),
             chainId: currAccount.chainId
           })
         )
@@ -1188,7 +1189,7 @@ describe('WagmiAdapter', () => {
       await vi.waitFor(() => {
         expect(accountChangedSpy).toHaveBeenCalledWith(
           expect.objectContaining({
-            address: currAccount.address,
+            address: checksumAddress(currAccount.address as `0x${string}`),
             chainId: currAccount.chainId
           })
         )

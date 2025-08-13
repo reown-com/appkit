@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { JsonRpcProvider } from 'ethers'
+import { JsonRpcProvider, getAddress } from 'ethers'
 import { type Mock, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
@@ -1175,6 +1175,41 @@ describe('EthersAdapter', () => {
 
       expect(disconnect).toHaveBeenCalled()
       expect(mockProvider.removeListener).toHaveBeenCalledWith('disconnect', expect.any(Function))
+    })
+
+    it('should emit accountChanged event when connected', async () => {
+      const emitter = new Emitter()
+
+      const mockAddress = '0xdadb0d80178819f2319190d340ce9a924f783711'
+      const mockProvider = {
+        connect: vi.fn(),
+        request: vi.fn().mockResolvedValue([mockAddress]),
+        removeListener: vi.fn(),
+        on: emitter.on.bind(emitter),
+        off: emitter.off.bind(emitter),
+        emit: emitter.emit.bind(emitter)
+      } as unknown as Provider
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [{ id: 'test', provider: mockProvider }]
+      })
+
+      const accountChangedSpy = vi.fn()
+
+      adapter.on('accountChanged', accountChangedSpy)
+
+      await adapter.connect({
+        id: 'test',
+        type: 'EXTERNAL',
+        chainId: 1
+      })
+
+      expect(accountChangedSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          address: getAddress(mockAddress),
+          chainId: 1
+        })
+      )
     })
   })
 
