@@ -203,6 +203,8 @@ export const ExchangeController = {
       state.isPaymentInProgress = true
       state.paymentId = crypto.randomUUID()
 
+      console.log('>> handlePayWithExchange', exchangeId)
+
       state.currentPayment = {
         type: 'exchange',
         exchangeId
@@ -224,6 +226,7 @@ export const ExchangeController = {
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
 
+      console.log('>> handlePayWithExchange opening url', payUrl)
       CoreHelperUtil.openHref(payUrl.url, '_blank')
     } catch (error) {
       state.error = 'Unable to initiate payment'
@@ -236,8 +239,9 @@ export const ExchangeController = {
     sessionId: string,
     paymentId: string
   ): Promise<GetBuyStatusResult> {
+    console.log('>> Getting status', exchangeId, sessionId, paymentId)
     const status = await this.getBuyStatus(exchangeId, sessionId, paymentId)
-
+    console.log('>> waitUntilComplete status', status)
     if (status.status === 'SUCCESS' || status.status === 'FAILED') {
       return status
     }

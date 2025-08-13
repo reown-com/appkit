@@ -49,11 +49,11 @@ export class W3mDepositFromExchangeView extends LitElement {
         this.amount = exchangeState.amount
         this.tokenAmount = exchangeState.tokenAmount
         this.priceLoading = exchangeState.priceLoading
-      }),
-      ExchangeController.subscribeKey('isPaymentInProgress', isPaymentInProgress => {
-        this.isPaymentInProgress = isPaymentInProgress
+        this.paymentId = exchangeState.paymentId
+        this.isPaymentInProgress = exchangeState.isPaymentInProgress
+        this.currentPayment = exchangeState.currentPayment
         if (
-          isPaymentInProgress &&
+          exchangeState.isPaymentInProgress &&
           this.currentPayment?.exchangeId &&
           this.currentPayment?.sessionId &&
           this.paymentId
