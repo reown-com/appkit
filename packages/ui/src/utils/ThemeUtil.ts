@@ -12,16 +12,15 @@ let lightModeTag: HTMLStyleElement | undefined = undefined
 // Store current theme variables for reuse
 let currentThemeVariables: ThemeVariables | undefined = undefined
 
-/* @TODO: Replace fonts */
 const fonts = {
-  'KHTeka-500':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Medium_dzj5on.woff',
-  'KHTeka-400':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Regular_rgphis.woff',
-  'KHTeka-300':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Light_jzizi3.woff',
-  'KHTekaMono-400':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTekaMono-Regular_nytitk.woff'
+  'KHTeka-500-woff2': 'https://fonts.reown.com/KHTeka-Medium.woff2',
+  'KHTeka-400-woff2': 'https://fonts.reown.com/KHTeka-Regular.woff2',
+  'KHTeka-300-woff2': 'https://fonts.reown.com/KHTeka-Light.woff2',
+  'KHTekaMono-400-woff2': 'https://fonts.reown.com/KHTekaMono-Regular.woff2',
+  'KHTeka-500-woff': 'https://fonts.reown.com/KHTeka-Light.woff',
+  'KHTeka-400-woff': 'https://fonts.reown.com/KHTeka-Regular.woff',
+  'KHTeka-300-woff': 'https://fonts.reown.com/KHTeka-Light.woff',
+  'KHTekaMono-400-woff': 'https://fonts.reown.com/KHTekaMono-Regular.woff'
 }
 
 function createAppKitTheme(themeVariables?: ThemeVariables, theme: ThemeType = 'dark') {
@@ -49,14 +48,14 @@ export function initializeTheming(themeVariables?: ThemeVariables, themeMode: Th
   createAppKitTheme(themeVariables, themeMode)
   setColorTheme(themeMode)
 
-  // Preload fonts only if no custom font family is provided
   if (!themeVariables?.['--w3m-font-family']) {
-    for (const url of Object.values(fonts)) {
+    for (const [key, url] of Object.entries(fonts)) {
       const link = document.createElement('link')
       link.rel = 'preload'
       link.href = url
       link.as = 'font'
-      link.type = 'font/otf'
+      link.type = key.includes('woff2') ? 'font/woff2' : 'font/woff'
+      link.crossOrigin = 'anonymous'
       document.head.appendChild(link)
     }
   }
@@ -118,28 +117,37 @@ export function createRootStyles(_themeVariables?: ThemeVariables) {
         : css`
             @font-face {
               font-family: 'KHTeka';
-              src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('woff');
-              font-weight: 500;
+              src:
+                url(${unsafeCSS(fonts['KHTeka-400-woff2'])}) format('woff2'),
+                url(${unsafeCSS(fonts['KHTeka-400-woff'])}) format('woff');
+              font-weight: 400;
               font-style: normal;
+              font-display: swap;
             }
 
             @font-face {
               font-family: 'KHTeka';
-              src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('woff');
+              src:
+                url(${unsafeCSS(fonts['KHTeka-300-woff2'])}) format('woff2'),
+                url(${unsafeCSS(fonts['KHTeka-300-woff'])}) format('woff');
               font-weight: 300;
               font-style: normal;
             }
 
             @font-face {
               font-family: 'KHTekaMono';
-              src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('woff');
+              src:
+                url(${unsafeCSS(fonts['KHTekaMono-400-woff2'])}) format('woff2'),
+                url(${unsafeCSS(fonts['KHTekaMono-400-woff'])}) format('woff');
               font-weight: 400;
               font-style: normal;
             }
 
             @font-face {
               font-family: 'KHTeka';
-              src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('woff');
+              src:
+                url(${unsafeCSS(fonts['KHTeka-400-woff2'])}) format('woff2'),
+                url(${unsafeCSS(fonts['KHTeka-400-woff'])}) format('woff');
               font-weight: 400;
               font-style: normal;
             }
