@@ -160,6 +160,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
+    this.resetControllers()
     this.initializeProjectSettings(options)
     this.initControllers(options)
     await this.initChainAdapters()
@@ -260,6 +261,23 @@ export abstract class AppKitBaseClient {
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
     this.initializeConnectorController()
+  }
+
+  protected resetControllers() {
+    OptionsController.reset()
+    AccountController.reset()
+    AlertController.reset()
+    ApiController.reset()
+    BlockchainApiController.reset()
+    ChainController.reset()
+    ConnectionController.reset()
+    ConnectorController.reset()
+    EventsController.reset()
+    ModalController.reset()
+    OnRampController.reset()
+    PublicStateController.reset()
+    SendController.reset()
+    ThemeController.reset()
   }
 
   protected initializeThemeController(options: AppKitOptions) {
@@ -601,7 +619,7 @@ export abstract class AppKitBaseClient {
 
           const disconnectResults = await Promise.allSettled(disconnectPromises)
 
-          SendController.resetSend()
+          SendController.reset()
           ConnectionController.resetWcConnection()
 
           if (SIWXUtil.getSIWX()?.signOutOnDisconnect) {
@@ -1110,7 +1128,7 @@ export abstract class AppKitBaseClient {
   }) {
     const { chainNamespace, closeModal } = options || {}
 
-    ChainController.resetAccount(chainNamespace)
+    ChainController.reset(chainNamespace)
     ChainController.resetNetwork(chainNamespace)
 
     StorageUtil.removeConnectedNamespace(chainNamespace)
@@ -1556,7 +1574,7 @@ export abstract class AppKitBaseClient {
           },
           onDisconnect: () => {
             if (ChainController.state.noAdapters) {
-              this.resetAccount(namespace)
+              this.reset(namespace)
             }
             ConnectionController.resetWcConnection()
           },
@@ -1799,8 +1817,8 @@ export abstract class AppKitBaseClient {
     AccountController.setUser(user, chain)
   }
 
-  public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
-    AccountController.resetAccount(chain)
+  public reset: (typeof AccountController)['reset'] = (chain: ChainNamespace) => {
+    AccountController.reset(chain)
   }
 
   public setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {

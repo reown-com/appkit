@@ -347,6 +347,11 @@ const controller = {
     return ConnectionController._getClient()?.checkInstalled?.(ids) || false
   },
 
+  reset() {
+    ConnectionController.resetWcConnection()
+    ConnectionController.resetUri()
+  },
+
   resetWcConnection() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined

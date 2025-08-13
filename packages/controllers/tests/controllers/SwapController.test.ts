@@ -110,7 +110,7 @@ describe('SwapController', () => {
   })
 
   it('should handle fetchSwapQuote error correctly', async () => {
-    SwapController.resetState()
+    SwapController.reset()
 
     const mockFetchQuote = vi.spyOn(BlockchainApiController, 'fetchSwapQuote')
     mockFetchQuote.mockRejectedValueOnce(new Error('Quote error'))

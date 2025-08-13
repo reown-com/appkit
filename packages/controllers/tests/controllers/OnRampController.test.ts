@@ -73,7 +73,7 @@ describe('OnRampController', () => {
   })
 
   it('should get available currencies and properly update state', async () => {
-    OnRampController.resetState()
+    OnRampController.reset()
     const getOnrampOptions = vi
       .spyOn(BlockchainApiController, 'getOnrampOptions')
       .mockResolvedValueOnce({
@@ -100,7 +100,7 @@ describe('OnRampController', () => {
   })
 
   it('should get quotes and properly update state with default params', async () => {
-    OnRampController.resetState()
+    OnRampController.reset()
     const getOnrampQuote = vi
       .spyOn(BlockchainApiController, 'getOnrampQuote')
       .mockResolvedValue(mockQuote)
@@ -116,7 +116,7 @@ describe('OnRampController', () => {
   })
 
   it('should get quotes and properly update state with set state', async () => {
-    OnRampController.resetState()
+    OnRampController.reset()
 
     const getOnrampQuote = vi
       .spyOn(BlockchainApiController, 'getOnrampQuote')
@@ -141,7 +141,7 @@ describe('OnRampController', () => {
   })
 
   it('should set error when failing to get quotes', async () => {
-    OnRampController.resetState()
+    OnRampController.reset()
     const error = new Error('Test error')
     const getOnrampQuote = vi
       .spyOn(BlockchainApiController, 'getOnrampQuote')
@@ -190,12 +190,12 @@ describe('OnRampController', () => {
     OnRampController.setOnrampProviders(null as any)
     expect(OnRampController.state.providers).toEqual([])
 
-    OnRampController.resetState()
+    OnRampController.reset()
 
     OnRampController.setOnrampProviders({ provider: 'coinbase' } as any)
     expect(OnRampController.state.providers).toEqual([])
 
-    OnRampController.resetState()
+    OnRampController.reset()
 
     OnRampController.setOnrampProviders(['coinbase', 123] as any)
     expect(OnRampController.state.providers).toEqual([])
@@ -212,7 +212,7 @@ describe('OnRampController', () => {
       ])
     })
     OptionsController.state.projectId = 'test'
-    OnRampController.resetState()
+    OnRampController.reset()
     const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
     OnRampController.setSelectedProvider(meldProvider)
     const resultUrl = new URL(meldProvider.url)

@@ -271,7 +271,7 @@ const controller = {
     })
 
     ConnectionController._getClient()?.updateBalance('eip155')
-    SendController.resetSend()
+    SendController.reset()
   },
 
   async sendERC20Token(params: ContractWriteParams) {
@@ -307,7 +307,7 @@ const controller = {
         chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
 
-      SendController.resetSend()
+      SendController.reset()
     }
   },
 
@@ -329,10 +329,10 @@ const controller = {
     })
 
     ConnectionController._getClient()?.updateBalance('solana')
-    SendController.resetSend()
+    SendController.reset()
   },
 
-  resetSend() {
+  reset() {
     state.token = undefined
     state.sendTokenAmount = undefined
     state.receiverAddress = undefined

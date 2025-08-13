@@ -105,8 +105,14 @@ export const ExchangeController = {
     return subKey(state, key, callback)
   },
 
-  resetState() {
-    Object.assign(state, { ...DEFAULT_STATE })
+  reset() {
+    state.paymentAsset = DEFAULT_STATE.paymentAsset
+    state.amount = DEFAULT_STATE.amount
+    state.tokenAmount = DEFAULT_STATE.tokenAmount
+    state.tokenPrice = DEFAULT_STATE.tokenPrice
+    state.priceLoading = DEFAULT_STATE.priceLoading
+    state.error = DEFAULT_STATE.error
+    state.exchanges = DEFAULT_STATE.exchanges
   },
 
   async fetchTokenPrice() {

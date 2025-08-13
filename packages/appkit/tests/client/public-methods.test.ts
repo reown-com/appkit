@@ -428,12 +428,12 @@ describe('Base Public methods', () => {
   })
 
   it('should reset account', () => {
-    const resetAccount = vi.spyOn(AccountController, 'resetAccount')
+    const reset = vi.spyOn(AccountController, 'reset')
 
     const appKit = new AppKit(mockOptions)
-    appKit.resetAccount('eip155')
+    appKit.reset('eip155')
 
-    expect(resetAccount).toHaveBeenCalledWith('eip155')
+    expect(reset).toHaveBeenCalledWith('eip155')
   })
 
   it('should set CAIP network', () => {

@@ -159,6 +159,14 @@ const controller = {
     setTimeout(() => {
       state.shake = false
     }, 500)
+  },
+
+  reset() {
+    state.loading = false
+    state.loadingNamespaceMap.clear()
+    state.open = false
+    state.shake = false
+    state.namespace = undefined
   }
 }
 

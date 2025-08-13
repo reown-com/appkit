@@ -211,8 +211,8 @@ type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerSt
 const state = proxy<OptionsControllerState>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
-  sdkType: 'appkit',
-  sdkVersion: 'html-wagmi-undefined',
+  sdkType: 'appkit' as const,
+  sdkVersion: 'html-wagmi-undefined' as const,
   defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
   enableNetworkSwitch: true,
   experimental_preferUniversalLinks: false,
@@ -228,7 +228,7 @@ export const OptionsController = {
   },
 
   setOptions(options: OptionsControllerState) {
-    Object.assign(state, options)
+    Object.assign(state, proxy(options))
   },
 
   setRemoteFeatures(remoteFeatures: OptionsControllerState['remoteFeatures']) {
@@ -446,5 +446,42 @@ export const OptionsController = {
 
   getSnapshot() {
     return snapshot(state)
+  },
+
+  reset() {
+    state.features = ConstantsUtil.DEFAULT_FEATURES
+    state.projectId = ''
+    state.sdkType = 'appkit' as const
+    state.sdkVersion = 'html-wagmi-undefined' as const
+    state.defaultAccountTypes = ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+    state.enableNetworkSwitch = true
+    state.experimental_preferUniversalLinks = false
+    state.remoteFeatures = undefined
+    state.isSiweEnabled = undefined
+    state.isUniversalProvider = undefined
+    state.manualWCControl = undefined
+    state.universalProviderConfigOverride = undefined
+    state.enableEmbedded = false
+    state.allowUnsupportedChain = false
+    state.enableReconnect = true
+    state.enableEIP6963 = false
+    state.debug = false
+    state.enableWalletConnect = true
+    state.enableWalletGuide = true
+    state.enableAuthLogger = true
+    state.enableWallets = true
+    state.enableCoinbase = true
+    state.excludeWalletIds = []
+    state.includeWalletIds = []
+    state.featuredWalletIds = []
+    state.tokens = {}
+    state.customWallets = []
+    state.termsConditionsUrl = undefined
+    state.privacyPolicyUrl = undefined
+    state.metadata = undefined
+    state.disableAppend = false
+    state.allWallets = undefined
+    state.customRpcUrls = undefined
+    state.siwx = undefined
   }
 }

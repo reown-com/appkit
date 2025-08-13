@@ -680,5 +680,11 @@ export const BlockchainApiController = {
   setClientId(clientId: string | null) {
     state.clientId = clientId
     state.api = new FetchUtil({ baseUrl, clientId })
+  },
+
+  reset() {
+    state.clientId = null
+    state.api = new FetchUtil({ baseUrl, clientId: null })
+    state.supportedChains = { http: [], ws: [] }
   }
 }

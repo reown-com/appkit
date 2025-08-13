@@ -119,7 +119,7 @@ export class W3mSwapView extends LitElement {
         ),
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
-            SwapController.resetState()
+            SwapController.reset()
           }
         }),
         RouterController.subscribeKey('view', newRoute => {
@@ -468,7 +468,7 @@ export class W3mSwapView extends LitElement {
       this.caipAddress = newCaipAddress
 
       if (resetSwapState) {
-        SwapController.resetState()
+        SwapController.reset()
       }
 
       if (initializeSwapState) {
@@ -486,7 +486,7 @@ export class W3mSwapView extends LitElement {
       this.caipNetworkId = newCaipNetwork?.caipNetworkId
 
       if (resetSwapState) {
-        SwapController.resetState()
+        SwapController.reset()
       }
 
       if (initializeSwapState) {
