@@ -49,14 +49,16 @@ export function initializeTheming(themeVariables?: ThemeVariables, themeMode: Th
   createAppKitTheme(themeVariables, themeMode)
   setColorTheme(themeMode)
 
-  // Preload fonts
-  for (const url of Object.values(fonts)) {
-    const link = document.createElement('link')
-    link.rel = 'preload'
-    link.href = url
-    link.as = 'font'
-    link.type = 'font/otf'
-    document.head.appendChild(link)
+  // Preload fonts only if no custom font family is provided
+  if (!themeVariables?.['--w3m-font-family']) {
+    for (const url of Object.values(fonts)) {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.href = url
+      link.as = 'font'
+      link.type = 'font/otf'
+      document.head.appendChild(link)
+    }
   }
 
   setColorTheme(themeMode)
@@ -83,6 +85,21 @@ export function setThemeVariables(_themeVariables?: ThemeVariables) {
     themeTag.textContent = createRootStyles(_themeVariables).core.cssText
     darkModeTag.textContent = createRootStyles(_themeVariables).dark.cssText
     lightModeTag.textContent = createRootStyles(_themeVariables).light.cssText
+    if (_themeVariables?.['--w3m-font-family']) {
+      const fontFamily = _themeVariables['--w3m-font-family']
+      themeTag.textContent = themeTag.textContent?.replace(
+        'font-family: KHTeka',
+        `font-family: ${fontFamily}`
+      )
+      darkModeTag.textContent = darkModeTag.textContent?.replace(
+        'font-family: KHTeka',
+        `font-family: ${fontFamily}`
+      )
+      lightModeTag.textContent = lightModeTag.textContent?.replace(
+        'font-family: KHTeka',
+        `font-family: ${fontFamily}`
+      )
+    }
   }
 
   if (apktTag) {
@@ -92,35 +109,41 @@ export function setThemeVariables(_themeVariables?: ThemeVariables) {
 }
 
 export function createRootStyles(_themeVariables?: ThemeVariables) {
+  const hasCustomFontFamily = Boolean(_themeVariables?.['--w3m-font-family'])
+
   return {
     core: css`
-      @font-face {
-        font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('woff');
-        font-weight: 500;
-        font-style: normal;
-      }
+      ${hasCustomFontFamily
+        ? css``
+        : css`
+            @font-face {
+              font-family: 'KHTeka';
+              src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('woff');
+              font-weight: 500;
+              font-style: normal;
+            }
 
-      @font-face {
-        font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('woff');
-        font-weight: 300;
-        font-style: normal;
-      }
+            @font-face {
+              font-family: 'KHTeka';
+              src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('woff');
+              font-weight: 300;
+              font-style: normal;
+            }
 
-      @font-face {
-        font-family: 'KHTekaMono';
-        src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('woff');
-        font-weight: 400;
-        font-style: normal;
-      }
+            @font-face {
+              font-family: 'KHTekaMono';
+              src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('woff');
+              font-weight: 400;
+              font-style: normal;
+            }
 
-      @font-face {
-        font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('woff');
-        font-weight: 400;
-        font-style: normal;
-      }
+            @font-face {
+              font-family: 'KHTeka';
+              src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('woff');
+              font-weight: 400;
+              font-style: normal;
+            }
+          `}
 
       @keyframes w3m-shake {
         0% {
