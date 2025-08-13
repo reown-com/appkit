@@ -25,7 +25,14 @@ import {
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { type Address, type Hex, checksumAddress, formatUnits, parseUnits } from 'viem'
+import {
+  type Address,
+  type Hex,
+  UserRejectedRequestError,
+  checksumAddress,
+  formatUnits,
+  parseUnits
+} from 'viem'
 
 import { AppKit, type AppKitOptions } from '@reown/appkit'
 import type {
@@ -563,26 +570,34 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async connectWalletConnect(chainId?: number | string) {
-    // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
-    const walletConnectConnector = this.getWalletConnectConnector()
-    await walletConnectConnector.authenticate()
+    try {
+      // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
+      const walletConnectConnector = this.getWalletConnectConnector()
+      await walletConnectConnector.authenticate()
 
-    const wagmiConnector = this.getWagmiConnector('walletConnect')
+      const wagmiConnector = this.getWagmiConnector('walletConnect')
 
-    if (!wagmiConnector) {
-      throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
+      if (!wagmiConnector) {
+        throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
+      }
+
+      const res = await connect(this.wagmiConfig, {
+        connector: wagmiConnector,
+        chainId: chainId ? Number(chainId) : undefined
+      })
+
+      if (res.chainId !== Number(chainId)) {
+        await switchChain(this.wagmiConfig, { chainId: res.chainId })
+      }
+
+      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
+    } catch (err) {
+      if (err instanceof UserRejectedRequestError) {
+        throw new Error(err.shortMessage)
+      }
+
+      throw err
     }
-
-    const res = await connect(this.wagmiConfig, {
-      connector: wagmiConnector,
-      chainId: chainId ? Number(chainId) : undefined
-    })
-
-    if (res.chainId !== Number(chainId)) {
-      await switchChain(this.wagmiConfig, { chainId: res.chainId })
-    }
-
-    return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
   }
 
   public async connect(
