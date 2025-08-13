@@ -25,7 +25,14 @@ import {
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { type Address, type Hex, formatUnits, parseUnits } from 'viem'
+import {
+  type Address,
+  type Hex,
+  UserRejectedRequestError,
+  checksumAddress,
+  formatUnits,
+  parseUnits
+} from 'viem'
 
 import { AppKit, type AppKitOptions } from '@reown/appkit'
 import type {
@@ -231,7 +238,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
             return {
               accounts: connection.accounts.map(account => ({
-                address: account
+                address: this.toChecksummedAddress(account)
               })),
               caipNetwork,
               connectorId: connection.connector.id,
@@ -348,7 +355,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
 
     this.emit('accountChanged', {
-      address,
+      address: this.toChecksummedAddress(address),
       chainId,
       connector: {
         id: connector.id,
@@ -545,7 +552,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
         return {
           chainId: Number(chainId),
-          address: res.accounts[0] as string,
+          address: this.toChecksummedAddress(res.accounts[0] as string),
           provider: safeProvider,
           type: connection?.connector.type?.toUpperCase() as ConnectorType,
           id: connection?.connector.id as string
@@ -555,7 +562,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     return {
       chainId: Number(connection?.chainId),
-      address: connection?.accounts[0] as string,
+      address: this.toChecksummedAddress(connection?.accounts[0] as string),
       provider,
       type: connection?.connector.type?.toUpperCase() as ConnectorType,
       id: connection?.connector.id as string
@@ -563,26 +570,34 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async connectWalletConnect(chainId?: number | string) {
-    // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
-    const walletConnectConnector = this.getWalletConnectConnector()
-    await walletConnectConnector.authenticate()
+    try {
+      // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
+      const walletConnectConnector = this.getWalletConnectConnector()
+      await walletConnectConnector.authenticate()
 
-    const wagmiConnector = this.getWagmiConnector('walletConnect')
+      const wagmiConnector = this.getWagmiConnector('walletConnect')
 
-    if (!wagmiConnector) {
-      throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
+      if (!wagmiConnector) {
+        throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
+      }
+
+      const res = await connect(this.wagmiConfig, {
+        connector: wagmiConnector,
+        chainId: chainId ? Number(chainId) : undefined
+      })
+
+      if (res.chainId !== Number(chainId)) {
+        await switchChain(this.wagmiConfig, { chainId: res.chainId })
+      }
+
+      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
+    } catch (err) {
+      if (err instanceof UserRejectedRequestError) {
+        throw new Error(err.shortMessage)
+      }
+
+      throw err
     }
-
-    const res = await connect(this.wagmiConfig, {
-      connector: wagmiConnector,
-      chainId: chainId ? Number(chainId) : undefined
-    })
-
-    if (res.chainId !== Number(chainId)) {
-      await switchChain(this.wagmiConfig, { chainId: res.chainId })
-    }
-
-    return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
   }
 
   public async connect(
@@ -629,7 +644,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       }))
 
       return {
-        address: sortedAccounts[0],
+        address: this.toChecksummedAddress(sortedAccounts[0]),
         chainId: connection.chainId,
         provider: provider as Provider,
         type: type as ConnectorType,
@@ -645,7 +660,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
 
     return {
-      address: res.accounts[0],
+      address: this.toChecksummedAddress(res.accounts[0]),
       chainId: res.chainId,
       provider: provider as Provider,
       type: type as ConnectorType,
@@ -656,7 +671,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public override get connections(): Connection[] {
     return Array.from(this.wagmiConfig.state.connections.values()).map(connection => ({
       accounts: connection.accounts.map(account => ({
-        address: account
+        address: this.toChecksummedAddress(account)
       })),
       connectorId: connection.connector.id
     }))
@@ -755,7 +770,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           connections: [
             {
               accounts: connection.accounts.map(account => ({
-                address: account
+                address: this.toChecksummedAddress(account)
               })),
               connectorId: connection.connector.id
             }
@@ -792,7 +807,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         .filter(connection => connection.status === 'fulfilled')
         .map(({ value: connection }) => ({
           accounts: connection.accounts.map(account => ({
-            address: account
+            address: this.toChecksummedAddress(account)
           })),
           connectorId: connection.connector.id
         }))
@@ -975,5 +990,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
 
     return Promise.resolve()
+  }
+
+  private toChecksummedAddress(address: string) {
+    return checksumAddress(address.toLowerCase() as `0x${string}`)
   }
 }
