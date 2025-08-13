@@ -203,8 +203,6 @@ export const ExchangeController = {
       state.isPaymentInProgress = true
       state.paymentId = crypto.randomUUID()
 
-      console.log('>> handlePayWithExchange', exchangeId)
-
       state.currentPayment = {
         type: 'exchange',
         exchangeId
@@ -226,7 +224,6 @@ export const ExchangeController = {
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
 
-      console.log('>> handlePayWithExchange opening url', payUrl)
       CoreHelperUtil.openHref(payUrl.url, '_blank')
     } catch (error) {
       state.error = 'Unable to initiate payment'
@@ -234,24 +231,37 @@ export const ExchangeController = {
     }
   },
 
-  async waitUntilComplete(
-    exchangeId: string,
-    sessionId: string,
+  async waitUntilComplete({
+    exchangeId,
+    sessionId,
+    paymentId,
+    retries = 20
+  }: {
+    exchangeId: string
+    sessionId: string
     paymentId: string
-  ): Promise<GetBuyStatusResult> {
-    console.log('>> Getting status', exchangeId, sessionId, paymentId)
+    retries?: number
+  }): Promise<GetBuyStatusResult> {
     const status = await this.getBuyStatus(exchangeId, sessionId, paymentId)
-    console.log('>> waitUntilComplete status', status)
     if (status.status === 'SUCCESS' || status.status === 'FAILED') {
       return status
     }
 
+    if (retries === 0) {
+      throw new Error('Unable to get deposit status')
+    }
+
     // Wait 1 second before checking again
     await new Promise(resolve => {
-      setTimeout(resolve, 1000)
+      setTimeout(resolve, 5000)
     })
 
-    return this.waitUntilComplete(exchangeId, sessionId, paymentId)
+    return this.waitUntilComplete({
+      exchangeId,
+      sessionId,
+      paymentId,
+      retries: retries - 1
+    })
   },
 
   async getBuyStatus(exchangeId: string, sessionId: string, paymentId: string) {
@@ -289,7 +299,31 @@ export const ExchangeController = {
 
       return status
     } catch (error) {
-      throw new Error('Unable to get buy status')
+      return {
+        status: 'UNKNOWN',
+        txHash: ''
+      } as GetBuyStatusResult
     }
+  },
+  reset() {
+    state.currentPayment = undefined
+    state.isPaymentInProgress = false
+    state.paymentId = ''
+    state.paymentAsset = {
+      network: 'eip155:1',
+      asset: 'native',
+      metadata: {
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 0
+      }
+    }
+    state.amount = 0
+    state.tokenAmount = 0
+    state.tokenPrice = null
+    state.priceLoading = false
+    state.error = null
+    state.exchanges = []
+    state.isLoading = false
   }
 }

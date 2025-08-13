@@ -7,6 +7,7 @@ import {
   type CurrentPayment,
   type Exchange,
   ExchangeController,
+  RouterController,
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -52,20 +53,8 @@ export class W3mDepositFromExchangeView extends LitElement {
         this.paymentId = exchangeState.paymentId
         this.isPaymentInProgress = exchangeState.isPaymentInProgress
         this.currentPayment = exchangeState.currentPayment
-        if (
-          exchangeState.isPaymentInProgress &&
-          this.currentPayment?.exchangeId &&
-          this.currentPayment?.sessionId &&
-          this.paymentId
-        ) {
-          SnackController.showLoading('Deposit in progress...')
-          ExchangeController.waitUntilComplete(
-            this.currentPayment.exchangeId,
-            this.currentPayment.sessionId,
-            this.paymentId
-          ).then(() => {
-            SnackController.showSuccess('Deposit successful')
-          })
+        if (exchangeState.isPaymentInProgress) {
+          this.handlePaymentInProgress()
         }
       })
     )
@@ -165,6 +154,34 @@ export class W3mDepositFromExchangeView extends LitElement {
   private async onExchangeClick(exchange: Exchange) {
     if (this.amount) {
       await ExchangeController.handlePayWithExchange(exchange.id)
+    }
+  }
+
+  private async handlePaymentInProgress() {
+    try {
+      if (
+        this.isPaymentInProgress &&
+        this.currentPayment?.exchangeId &&
+        this.currentPayment?.sessionId &&
+        this.paymentId
+      ) {
+        SnackController.showLoading('Deposit in progress...')
+        RouterController.replace('Account')
+        const status = await ExchangeController.waitUntilComplete(
+          this.currentPayment.exchangeId,
+          this.currentPayment.sessionId,
+          this.paymentId
+        )
+        if (status.status === 'SUCCESS') {
+          SnackController.showSuccess('Deposit completed')
+        } else if (status.status === 'FAILED') {
+          SnackController.showError('Deposit failed')
+        }
+      }
+    } catch (error) {
+      SnackController.showError('Error fetching deposit status')
+    } finally {
+      ExchangeController.reset()
     }
   }
 
