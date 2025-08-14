@@ -69,6 +69,7 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    ExchangeController.reset()
   }
 
   public override firstUpdated() {
@@ -164,31 +165,26 @@ export class W3mDepositFromExchangeView extends LitElement {
     }
   }
 
-  private async handlePaymentInProgress() {
-    try {
-      if (
-        this.isPaymentInProgress &&
-        this.currentPayment?.exchangeId &&
-        this.currentPayment?.sessionId &&
-        this.paymentId
-      ) {
-        SnackController.showLoading('Deposit in progress...')
-        RouterController.replace('Account')
-        const status = await ExchangeController.waitUntilComplete({
-          exchangeId: this.currentPayment.exchangeId,
-          sessionId: this.currentPayment.sessionId,
-          paymentId: this.paymentId
-        })
+  private handlePaymentInProgress() {
+    if (
+      this.isPaymentInProgress &&
+      this.currentPayment?.exchangeId &&
+      this.currentPayment?.sessionId &&
+      this.paymentId
+    ) {
+      SnackController.showLoading('Deposit in progress...')
+      RouterController.replace('Account')
+      ExchangeController.waitUntilComplete({
+        exchangeId: this.currentPayment.exchangeId,
+        sessionId: this.currentPayment.sessionId,
+        paymentId: this.paymentId
+      }).then(status => {
         if (status.status === 'SUCCESS') {
           SnackController.showSuccess('Deposit completed')
         } else if (status.status === 'FAILED') {
           SnackController.showError('Deposit failed')
         }
-      }
-    } catch (error) {
-      SnackController.showError('Error fetching deposit status')
-    } finally {
-      ExchangeController.reset()
+      })
     }
   }
 

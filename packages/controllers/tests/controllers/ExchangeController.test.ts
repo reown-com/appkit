@@ -153,7 +153,11 @@ describe('ExchangeController', () => {
       expect(ExchangeController.state.currentPayment?.status).toBe('IN_PROGRESS')
       expect(ExchangeController.state.currentPayment?.sessionId).toBe('sess-123')
       expect(ExchangeController.state.currentPayment?.exchangeId).toBe('ex1')
-      expect(CoreHelperUtil.openHref).toHaveBeenCalledWith('https://pay.url', '_blank')
+      expect(CoreHelperUtil.openHref).toHaveBeenCalledWith(
+        'https://pay.url',
+        '_blank',
+        'popup=yes,width=480,height=720,noopener,noreferrer'
+      )
     })
 
     it('shows error if no account connected', async () => {
