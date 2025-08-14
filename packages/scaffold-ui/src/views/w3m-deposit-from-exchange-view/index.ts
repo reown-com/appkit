@@ -53,7 +53,14 @@ export class W3mDepositFromExchangeView extends LitElement {
         this.paymentId = exchangeState.paymentId
         this.isPaymentInProgress = exchangeState.isPaymentInProgress
         this.currentPayment = exchangeState.currentPayment
-        if (exchangeState.isPaymentInProgress) {
+
+        const shouldHandlePaymentInProgress =
+          exchangeState.isPaymentInProgress &&
+          exchangeState.currentPayment?.exchangeId &&
+          exchangeState.currentPayment?.sessionId &&
+          exchangeState.paymentId
+
+        if (shouldHandlePaymentInProgress) {
           this.handlePaymentInProgress()
         }
       })
