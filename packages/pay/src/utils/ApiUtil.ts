@@ -54,11 +54,17 @@ type GetBuyStatusResult = {
 
 async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcResponse<T>> {
   const url = getApiUrl()
+  const { sdkType: st, sdkVersion: sv, projectId } = OptionsController.state
   const requestBody = {
     jsonrpc: '2.0',
     id: 1,
     method,
-    params
+    params: {
+      ...(params || {}),
+      st,
+      sv,
+      projectId
+    }
   }
   const response = await fetch(url, {
     method: 'POST',
