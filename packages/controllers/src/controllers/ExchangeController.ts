@@ -224,7 +224,11 @@ export const ExchangeController = {
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
 
-      CoreHelperUtil.openHref(payUrl.url, '_blank')
+      CoreHelperUtil.openHref(
+        payUrl.url,
+        '_blank',
+        'popup=yes,width=480,height=720,noopener,noreferrer'
+      )
     } catch (error) {
       state.error = 'Unable to initiate payment'
       SnackController.showError(state.error)
