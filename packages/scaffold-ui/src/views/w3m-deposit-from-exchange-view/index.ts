@@ -72,7 +72,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   public override firstUpdated() {
-    ExchangeController.fetchExchanges().catch()
+    ExchangeController.fetchExchanges()
     ExchangeController.fetchTokenPrice()
   }
 
