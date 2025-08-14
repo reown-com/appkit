@@ -59,8 +59,8 @@ export class WuiTransactionVisual extends LitElement {
   private templateVisual() {
     const [firstImage, secondImage] = this.images
     const firstImageType = firstImage?.type
-    const haveTwoImages = this.images.length === 2
-    if (haveTwoImages && (firstImage?.url || secondImage?.url)) {
+    const hasTwoImages = this.images.length === 2
+    if (hasTwoImages && (firstImage?.url || secondImage?.url)) {
       return html`<div class="swap-images-container">
         ${firstImage?.url
           ? html`<wui-image src=${firstImage.url} alt="Transaction image"></wui-image>`

@@ -25,7 +25,7 @@ export class WuiTabs extends LitElement {
     this.dataset['size'] = this.size
 
     return this.tabs.map((tab, index) => {
-      const active = index === this.activeTab
+      const isActive = index === this.activeTab
 
       return html`
         <wui-tab-item
@@ -33,8 +33,8 @@ export class WuiTabs extends LitElement {
           icon=${tab.icon}
           size=${this.size}
           label=${tab.label}
-          ?active=${active}
-          data-active=${active}
+          ?active=${isActive}
+          data-active=${isActive}
           data-testid="tab-${tab.label?.toLowerCase()}"
         ></wui-tab-item>
       `
