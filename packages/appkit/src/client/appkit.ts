@@ -547,7 +547,7 @@ export class AppKit extends AppKitBaseClient {
     const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
     const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
-    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
+    if (activeCaipNetwork?.testnet) {
       this.setProfileName(null, chainNamespace)
       this.setProfileImage(null, chainNamespace)
 
@@ -559,8 +559,7 @@ export class AppKit extends AppKitBaseClient {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        address,
-        caipNetworkId
+        address
       })
 
       if (!name && isAuthConnector) {

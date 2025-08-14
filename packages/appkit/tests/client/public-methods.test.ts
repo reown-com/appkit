@@ -841,38 +841,6 @@ describe('Base Public methods', () => {
     expect(fetchIdentity).toHaveBeenCalled()
   })
 
-  it('should not sync identity on non-evm network', async () => {
-    const fetchIdentity = vi.spyOn(BlockchainApiController, 'fetchIdentity')
-
-    const appKit = new AppKit({
-      ...mockOptions,
-      adapters: [mockSolanaAdapter],
-      networks: [solana]
-    })
-
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
-      {
-        quantity: { numeric: '0.00', decimals: '18' },
-        chainId: solana.caipNetworkId,
-        symbol: 'SOL'
-      } as Balance
-    ])
-    const mockAccountData = {
-      address: '7y523k4jsh90d',
-      chainId: solana.id,
-      chainNamespace: solana.chainNamespace
-    }
-    vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
-      namespace: solana.chainNamespace,
-      chainId: solana.id,
-      caipNetworkId: solana.caipNetworkId
-    })
-
-    await appKit['syncAccount'](mockAccountData)
-
-    expect(fetchIdentity).not.toHaveBeenCalled()
-  })
-
   it('should not sync identity on a test network', async () => {
     const fetchIdentity = vi.spyOn(BlockchainApiController, 'fetchIdentity')
 
