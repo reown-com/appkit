@@ -73,7 +73,6 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
   'eip155:1111',
   'eip155:146',
   'eip155:130',
-  'stacks:2147483648',
   'eip155:1284',
   'eip155:30',
   'eip155:2810',
