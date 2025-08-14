@@ -5,7 +5,13 @@ import { type CaipNetworkId } from '@reown/appkit-common'
 
 import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
+import {
+  type GetBuyStatusResult,
+  formatCaip19Asset,
+  getBuyStatus,
+  getExchanges,
+  getPayUrl
+} from '../utils/ExchangeUtil.js'
 import type { Exchange, PayUrlParams } from '../utils/ExchangeUtil.js'
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -31,7 +37,9 @@ const DEFAULT_STATE: ExchangeControllerState = {
   error: null,
   exchanges: [],
   isLoading: false,
-  currentPayment: undefined
+  currentPayment: undefined,
+  isPaymentInProgress: false,
+  paymentId: ''
 }
 
 // -- Types --------------------------------------------- //
@@ -66,31 +74,15 @@ export interface ExchangeControllerState {
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
   paymentAsset: PaymentAsset
+  isPaymentInProgress: boolean
+  paymentId: string
 }
 
 type StateKey = keyof ExchangeControllerState
 type PaymentType = 'wallet' | 'exchange'
 
 // -- State --------------------------------------------- //
-const state = proxy<ExchangeControllerState>({
-  paymentAsset: {
-    network: 'eip155:1',
-    asset: 'native',
-    metadata: {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      decimals: 18
-    }
-  },
-  amount: 0,
-  tokenAmount: 0,
-  tokenPrice: null,
-  priceLoading: false,
-  error: null,
-  exchanges: [],
-  isLoading: false,
-  currentPayment: undefined
-})
+const state = proxy<ExchangeControllerState>(DEFAULT_STATE)
 
 // -- Controller ---------------------------------------- //
 export const ExchangeController = {
@@ -188,6 +180,7 @@ export const ExchangeController = {
             type: 'exchange',
             exchangeId
           },
+          source: 'fund-from-exchange',
           headless: false
         }
       })
@@ -206,6 +199,9 @@ export const ExchangeController = {
       if (!AccountController.state.address) {
         throw new Error('No account connected')
       }
+
+      state.isPaymentInProgress = true
+      state.paymentId = crypto.randomUUID()
 
       state.currentPayment = {
         type: 'exchange',
@@ -233,5 +229,101 @@ export const ExchangeController = {
       state.error = 'Unable to initiate payment'
       SnackController.showError(state.error)
     }
+  },
+
+  async waitUntilComplete({
+    exchangeId,
+    sessionId,
+    paymentId,
+    retries = 20
+  }: {
+    exchangeId: string
+    sessionId: string
+    paymentId: string
+    retries?: number
+  }): Promise<GetBuyStatusResult> {
+    const status = await this.getBuyStatus(exchangeId, sessionId, paymentId)
+    if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+      return status
+    }
+
+    if (retries === 0) {
+      throw new Error('Unable to get deposit status')
+    }
+
+    // Wait 1 second before checking again
+    await new Promise(resolve => {
+      setTimeout(resolve, 5000)
+    })
+
+    return this.waitUntilComplete({
+      exchangeId,
+      sessionId,
+      paymentId,
+      retries: retries - 1
+    })
+  },
+
+  async getBuyStatus(exchangeId: string, sessionId: string, paymentId: string) {
+    try {
+      if (!state.currentPayment) {
+        throw new Error('No current payment')
+      }
+
+      const status = await getBuyStatus({ sessionId, exchangeId })
+      state.currentPayment.status = status.status
+      if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+        state.currentPayment.result = status.txHash
+        state.isPaymentInProgress = false
+        EventsController.sendEvent({
+          type: 'track',
+          event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
+          properties: {
+            source: 'fund-from-exchange',
+            paymentId,
+            configuration: {
+              network: state.paymentAsset.network,
+              asset: state.paymentAsset.asset,
+              recipient: AccountController.state.address || '',
+              amount: state.amount
+            },
+            currentPayment: {
+              type: 'exchange',
+              exchangeId: state.currentPayment?.exchangeId,
+              sessionId: state.currentPayment?.sessionId,
+              result: status.txHash
+            }
+          }
+        })
+      }
+
+      return status
+    } catch (error) {
+      return {
+        status: 'UNKNOWN',
+        txHash: ''
+      } as GetBuyStatusResult
+    }
+  },
+  reset() {
+    state.currentPayment = undefined
+    state.isPaymentInProgress = false
+    state.paymentId = ''
+    state.paymentAsset = {
+      network: 'eip155:1',
+      asset: 'native',
+      metadata: {
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 0
+      }
+    }
+    state.amount = 0
+    state.tokenAmount = 0
+    state.tokenPrice = null
+    state.priceLoading = false
+    state.error = null
+    state.exchanges = []
+    state.isLoading = false
   }
 }

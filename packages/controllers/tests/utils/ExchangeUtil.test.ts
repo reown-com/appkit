@@ -41,7 +41,8 @@ describe('ExchangeUtil', () => {
         page: 2,
         asset: 'native',
         amount: '100',
-        network: 'eip155:1' as CaipNetworkId
+        network: 'eip155:1' as CaipNetworkId,
+        projectId: 'test-project-id'
       }
 
       vi.mocked(global.fetch).mockResolvedValue({
@@ -78,7 +79,8 @@ describe('ExchangeUtil', () => {
         exchangeId: 'ex1',
         asset: 'erc20:0xabc',
         amount: '1',
-        recipient: '0x123'
+        recipient: '0x123',
+        projectId: 'test-project-id'
       }
 
       vi.mocked(global.fetch).mockResolvedValue({
@@ -100,7 +102,7 @@ describe('ExchangeUtil', () => {
     })
 
     it('getBuyStatus sends request and returns result', async () => {
-      const params = { sessionId: 'sess-1', exchangeId: 'ex1' }
+      const params = { sessionId: 'sess-1', exchangeId: 'ex1', projectId: 'test-project-id' }
 
       vi.mocked(global.fetch).mockResolvedValue({
         json: vi.fn().mockResolvedValue({
