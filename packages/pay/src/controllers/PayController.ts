@@ -225,6 +225,7 @@ export const PayController = {
         type: 'track',
         event: 'PAY_EXCHANGE_SELECTED',
         properties: {
+          source: 'pay',
           exchange: {
             id: exchangeId
           },
@@ -247,6 +248,7 @@ export const PayController = {
           type: 'track',
           event: 'PAY_INITIATED',
           properties: {
+            source: 'pay',
             paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
               network: params.network,
@@ -508,6 +510,7 @@ export const PayController = {
           type: 'track',
           event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
           properties: {
+            source: 'pay',
             paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
               network: state.paymentAsset.network,
@@ -569,6 +572,7 @@ export const PayController = {
           type: 'track',
           event: eventType as 'PAY_INITIATED' | 'PAY_SUCCESS' | 'PAY_ERROR',
           properties: {
+            source: 'pay',
             paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
               network: state.paymentAsset.network,

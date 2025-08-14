@@ -58,6 +58,9 @@ export const QrCodeUtil = {
       { x: 0, y: 1 }
     ]
 
+    document.addEventListener('scroll', () => {
+      console.log('scroll')
+    })
     qrList.forEach(({ x, y }) => {
       const x1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * x + padding
       const y1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * y + padding

@@ -4,8 +4,11 @@ import { state } from 'lit/decorators.js'
 import {
   AssetUtil,
   ChainController,
+  type CurrentPayment,
   type Exchange,
-  ExchangeController
+  ExchangeController,
+  RouterController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -34,6 +37,9 @@ export class W3mDepositFromExchangeView extends LitElement {
   @state() public amount = ExchangeController.state.amount
   @state() public tokenAmount = ExchangeController.state.tokenAmount
   @state() public priceLoading = ExchangeController.state.priceLoading
+  @state() public isPaymentInProgress = ExchangeController.state.isPaymentInProgress
+  @state() public currentPayment?: CurrentPayment = ExchangeController.state.currentPayment
+  @state() public paymentId = ExchangeController.state.paymentId
 
   public constructor() {
     super()
@@ -44,12 +50,26 @@ export class W3mDepositFromExchangeView extends LitElement {
         this.amount = exchangeState.amount
         this.tokenAmount = exchangeState.tokenAmount
         this.priceLoading = exchangeState.priceLoading
+        this.paymentId = exchangeState.paymentId
+        this.isPaymentInProgress = exchangeState.isPaymentInProgress
+        this.currentPayment = exchangeState.currentPayment
+
+        const shouldHandlePaymentInProgress =
+          exchangeState.isPaymentInProgress &&
+          exchangeState.currentPayment?.exchangeId &&
+          exchangeState.currentPayment?.sessionId &&
+          exchangeState.paymentId
+
+        if (shouldHandlePaymentInProgress) {
+          this.handlePaymentInProgress()
+        }
       })
     )
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    ExchangeController.reset()
   }
 
   public override firstUpdated() {
@@ -139,9 +159,32 @@ export class W3mDepositFromExchangeView extends LitElement {
     `
   }
 
-  private onExchangeClick(exchange: Exchange) {
+  private async onExchangeClick(exchange: Exchange) {
     if (this.amount) {
-      ExchangeController.handlePayWithExchange(exchange.id)
+      await ExchangeController.handlePayWithExchange(exchange.id)
+    }
+  }
+
+  private handlePaymentInProgress() {
+    if (
+      this.isPaymentInProgress &&
+      this.currentPayment?.exchangeId &&
+      this.currentPayment?.sessionId &&
+      this.paymentId
+    ) {
+      SnackController.showLoading('Deposit in progress...')
+      RouterController.replace('Account')
+      ExchangeController.waitUntilComplete({
+        exchangeId: this.currentPayment.exchangeId,
+        sessionId: this.currentPayment.sessionId,
+        paymentId: this.paymentId
+      }).then(status => {
+        if (status.status === 'SUCCESS') {
+          SnackController.showSuccess('Deposit completed')
+        } else if (status.status === 'FAILED') {
+          SnackController.showError('Deposit failed')
+        }
+      })
     }
   }
 

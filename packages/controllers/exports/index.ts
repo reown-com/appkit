@@ -85,7 +85,10 @@ export { OptionsStateController } from '../src/controllers/OptionsStateControlle
 export type { OptionsStateControllerState } from '../src/controllers/OptionsStateController.js'
 
 export { ExchangeController } from '../src/controllers/ExchangeController.js'
-export type { ExchangeControllerState } from '../src/controllers/ExchangeController.js'
+export type {
+  ExchangeControllerState,
+  CurrentPayment
+} from '../src/controllers/ExchangeController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
