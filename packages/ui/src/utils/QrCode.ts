@@ -35,9 +35,19 @@ function getMatrix(value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCo
 }
 
 export const QrCodeUtil = {
-  generate(params: { uri: string; size: number; logoSize: number; padding?: number }) {
-    const { uri, size, logoSize, padding = 8 } = params
-
+  generate({
+    uri,
+    size,
+    logoSize,
+    padding = 8,
+    dotColor = 'var(--apkt-tokens-theme-textInvert)'
+  }: {
+    uri: string
+    size: number
+    padding?: number
+    logoSize: number
+    dotColor?: string
+  }) {
     const strokeWidth = 10
     const dots: TemplateResult[] = []
     const matrix = getMatrix(uri, 'Q')
@@ -61,7 +71,7 @@ export const QrCodeUtil = {
               width=${i === 0 ? dotSize - strokeWidth : dotSize}
               rx= ${i === 0 ? (dotSize - strokeWidth) * borderRadius : dotSize * borderRadius}
               ry= ${i === 0 ? (dotSize - strokeWidth) * borderRadius : dotSize * borderRadius}
-              stroke="currentColor"
+              stroke=${dotColor}
               stroke-width=${i === 0 ? strokeWidth : 0}
               height=${i === 0 ? dotSize - strokeWidth : dotSize}
               x= ${i === 0 ? y1 + cellSize * i + strokeWidth / 2 : y1 + cellSize * i}
@@ -131,7 +141,7 @@ export const QrCodeUtil = {
       .forEach(([cx, cys]) => {
         cys.forEach(cy => {
           dots.push(
-            svg`<circle cx=${cx} cy=${cy} fill="currentColor" r=${cellSize / CIRCLE_SIZE_MODIFIER} />`
+            svg`<circle cx=${cx} cy=${cy} fill=${dotColor} r=${cellSize / CIRCLE_SIZE_MODIFIER} />`
           )
         })
       })
@@ -173,7 +183,7 @@ export const QrCodeUtil = {
                 x2=${cx}
                 y1=${y1}
                 y2=${y2}
-                stroke="currentColor"
+                stroke=${dotColor}
                 stroke-width=${cellSize / (CIRCLE_SIZE_MODIFIER / 2)}
                 stroke-linecap="round"
               />

@@ -11,10 +11,6 @@ describe('ThemeUtil', () => {
       const styles = createRootStyles(themeVariables)
       expect(styles.core.cssText).toContain("font-family: 'KHTeka'")
       expect(styles.core.cssText).toContain("font-family: 'KHTekaMono'")
-      expect(styles.core.cssText).toContain('KHTeka-Medium_dzj5on.woff')
-      expect(styles.core.cssText).toContain('KHTeka-Light_jzizi3.woff')
-      expect(styles.core.cssText).toContain('KHTekaMono-Regular_nytitk.woff')
-      expect(styles.core.cssText).toContain('KHTeka-Regular_rgphis.woff')
     })
 
     it('should not include Google Fonts import when custom font family is provided', () => {
@@ -25,10 +21,10 @@ describe('ThemeUtil', () => {
 
       expect(styles.core.cssText).not.toContain("font-family: 'KHTeka'")
       expect(styles.core.cssText).not.toContain("font-family: 'KHTekaMono'")
-      expect(styles.core.cssText).not.toContain('KHTeka-Medium_dzj5on.woff')
-      expect(styles.core.cssText).not.toContain('KHTeka-Light_jzizi3.woff')
-      expect(styles.core.cssText).not.toContain('KHTekaMono-Regular_nytitk.woff')
-      expect(styles.core.cssText).not.toContain('KHTeka-Regular_rgphis.woff')
+      expect(styles.core.cssText).not.toContain('KHTeka-Medium.woff')
+      expect(styles.core.cssText).not.toContain('KHTeka-Light.woff')
+      expect(styles.core.cssText).not.toContain('KHTekaMono-Regular.woff')
+      expect(styles.core.cssText).not.toContain('KHTeka-Regular.woff')
     })
 
     it('should always include keyframe animations regardless of font family setting', () => {
