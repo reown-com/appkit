@@ -124,7 +124,7 @@ describe('W3mDataCaptureView', () => {
       await createView()
 
       expect(SnackController.showError).toHaveBeenCalledWith(
-        'ReownAuthentication is not initialized.'
+        'ReownAuthentication is not initialized. Please contact support.'
       )
     })
 
@@ -209,6 +209,31 @@ describe('W3mDataCaptureView', () => {
   })
 
   describe('Form Submission', () => {
+    it('should show error and abort when siwx is not an instance of ReownAuthentication on submit', async () => {
+      // Prepare view with invalid siwx
+      OptionsController.state.siwx = {} as any
+
+      const view = await createView()
+
+      // Set a valid email and attempt submit
+      const emailInput = HelpersUtil.querySelector(view, 'wui-email-input')
+      emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
+      await view.updateComplete
+
+      // Spy on requestEmailOtp on prototype to detect accidental calls
+      const spy = vi.spyOn(ReownAuthentication.prototype as any, 'requestEmailOtp')
+
+      const submitButton = HelpersUtil.querySelector(view, 'wui-button[type="submit"]')
+      submitButton?.click()
+
+      await new Promise(resolve => setTimeout(resolve, 0))
+
+      expect(SnackController.showError).toHaveBeenCalledWith(
+        'ReownAuthentication is not initialized. Please contact support.'
+      )
+      expect(spy).not.toHaveBeenCalled()
+      spy.mockRestore()
+    })
     it('should handle successful OTP request with UUID', async () => {
       mockSiwx.requestEmailOtp = vi.fn().mockResolvedValue({ uuid: 'test-uuid' })
 
