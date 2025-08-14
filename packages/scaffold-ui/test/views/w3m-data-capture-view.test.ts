@@ -7,10 +7,10 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 
-import { ReownAuthentication } from '../../src/configs/index'
-import { W3mDataCaptureView } from '../../src/ui/w3m-data-capture-view/index'
-import { HelpersUtil } from './utils/HelpersUtil'
+import { W3mDataCaptureView } from '../../src/views/w3m-data-capture-view/index.js'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // Mock controllers
 vi.mock('@reown/appkit-controllers', () => ({
@@ -133,7 +133,7 @@ describe('W3mDataCaptureView', () => {
 
       expect(element).toBeTruthy()
       // Check that the view renders the hero section
-      const hero = HelpersUtil.querySelector(element, '.hero')
+      const hero = HelpersUtil.querySelect(element, '.hero')
       expect(hero).toBeTruthy()
     })
 
@@ -142,7 +142,7 @@ describe('W3mDataCaptureView', () => {
 
       element = await createView()
 
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       expect((emailInput as any)?.value).toBe('test@example.com')
     })
 
@@ -156,7 +156,7 @@ describe('W3mDataCaptureView', () => {
 
       element = await createView()
 
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       expect((emailInput as any)?.value).toBe('user@test.com')
     })
 
@@ -179,13 +179,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set invalid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'invalid-email' }))
 
       await element.updateComplete
 
       // Try to submit
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       expect(SnackController.showError).toHaveBeenCalledWith('Please provide a valid email.')
@@ -195,13 +195,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Try to submit
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       expect(SnackController.showError).not.toHaveBeenCalledWith('Please provide a valid email.')
@@ -216,14 +216,14 @@ describe('W3mDataCaptureView', () => {
       const view = await createView()
 
       // Set a valid email and attempt submit
-      const emailInput = HelpersUtil.querySelector(view, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(view, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
       await view.updateComplete
 
       // Spy on requestEmailOtp on prototype to detect accidental calls
       const spy = vi.spyOn(ReownAuthentication.prototype as any, 'requestEmailOtp')
 
-      const submitButton = HelpersUtil.querySelector(view, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(view, 'wui-button[type="submit"]')
       submitButton?.click()
 
       await new Promise(resolve => setTimeout(resolve, 0))
@@ -240,13 +240,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Submit form
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       await new Promise(resolve => setTimeout(resolve, 0))
@@ -267,13 +267,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Submit form
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       await new Promise(resolve => setTimeout(resolve, 0))
@@ -287,13 +287,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Submit form
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       await new Promise(resolve => setTimeout(resolve, 0))
@@ -307,13 +307,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Submit form should throw error
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
 
       // The onSubmit method throws an error, but it should be handled by the component
       // and not actually cause a rejection. We just test if the button is disabled.
@@ -333,7 +333,7 @@ describe('W3mDataCaptureView', () => {
       element.requestUpdate()
       await element.updateComplete
 
-      const recentEmailsWidget = HelpersUtil.querySelector(element, 'w3m-recent-emails-widget')
+      const recentEmailsWidget = HelpersUtil.querySelect(element, 'w3m-recent-emails-widget')
       expect(recentEmailsWidget).toBeTruthy()
 
       // Check that emails are passed to the widget
@@ -356,7 +356,7 @@ describe('W3mDataCaptureView', () => {
       element.requestUpdate()
       await element.updateComplete
 
-      const recentEmailsWidget = HelpersUtil.querySelector(element, 'w3m-recent-emails-widget')
+      const recentEmailsWidget = HelpersUtil.querySelect(element, 'w3m-recent-emails-widget')
       expect(recentEmailsWidget).toBeTruthy()
 
       // Simulate email selection
@@ -386,7 +386,7 @@ describe('W3mDataCaptureView', () => {
       element.requestUpdate()
       await element.updateComplete
 
-      const recentEmailsWidget = HelpersUtil.querySelector(element, 'w3m-recent-emails-widget')
+      const recentEmailsWidget = HelpersUtil.querySelect(element, 'w3m-recent-emails-widget')
       expect(recentEmailsWidget).toBeTruthy()
 
       // Should only show valid emails (invalid-email should be filtered out)
@@ -404,7 +404,7 @@ describe('W3mDataCaptureView', () => {
       element.requestUpdate()
       await element.updateComplete
 
-      const recentEmailsWidget = HelpersUtil.querySelector(element, 'w3m-recent-emails-widget')
+      const recentEmailsWidget = HelpersUtil.querySelect(element, 'w3m-recent-emails-widget')
       expect(recentEmailsWidget).toBeTruthy()
 
       // Should only show first 3 emails
@@ -421,13 +421,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'new@example.com' }))
 
       await element.updateComplete
 
       // Submit form
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       await new Promise(resolve => setTimeout(resolve, 0))
@@ -443,14 +443,14 @@ describe('W3mDataCaptureView', () => {
     it('should render email suffixes widget', async () => {
       element = await createView()
 
-      const suffixesWidget = HelpersUtil.querySelector(element, 'w3m-email-suffixes-widget')
+      const suffixesWidget = HelpersUtil.querySelect(element, 'w3m-email-suffixes-widget')
       expect(suffixesWidget).toBeTruthy()
     })
 
     it('should handle email change from suffixes widget', async () => {
       element = await createView()
 
-      const suffixesWidget = HelpersUtil.querySelector(element, 'w3m-email-suffixes-widget')
+      const suffixesWidget = HelpersUtil.querySelect(element, 'w3m-email-suffixes-widget')
 
       // Simulate suffix selection
       suffixesWidget?.dispatchEvent(
@@ -461,7 +461,7 @@ describe('W3mDataCaptureView', () => {
 
       await element.updateComplete
 
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       expect((emailInput as any)?.value).toBe('test@gmail.com')
     })
   })
@@ -479,13 +479,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Submit form
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       // Give a moment for loading state to be set
@@ -493,7 +493,7 @@ describe('W3mDataCaptureView', () => {
       await element.updateComplete
 
       // Should show loading state
-      const hero = HelpersUtil.querySelector(element, '.hero')
+      const hero = HelpersUtil.querySelect(element, '.hero')
       expect(hero?.getAttribute('data-state')).toBe('loading')
 
       // Wait for request to complete (100ms mock + 300ms component delay)
@@ -515,13 +515,13 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Submit form
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       // Give a moment for loading state to be set
@@ -529,14 +529,14 @@ describe('W3mDataCaptureView', () => {
       await element.updateComplete
 
       // Email input should not be present in DOM during loading
-      const emailInputDuringLoading = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInputDuringLoading = HelpersUtil.querySelect(element, 'wui-email-input')
       expect(emailInputDuringLoading).toBeNull()
 
       // Wait for request to complete (100ms mock + 300ms component delay)
       await new Promise(resolve => setTimeout(resolve, 450))
 
       // Email input should be present again after loading
-      const emailInputAfterLoading = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInputAfterLoading = HelpersUtil.querySelect(element, 'wui-email-input')
       expect(emailInputAfterLoading).toBeTruthy()
     })
 
@@ -562,20 +562,17 @@ describe('W3mDataCaptureView', () => {
       await element.updateComplete
 
       // Verify recent emails widget is visible initially
-      const recentEmailsWidgetInitial = HelpersUtil.querySelector(
-        element,
-        'w3m-recent-emails-widget'
-      )
+      const recentEmailsWidgetInitial = HelpersUtil.querySelect(element, 'w3m-recent-emails-widget')
       expect(recentEmailsWidgetInitial).toBeTruthy()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
 
       // Submit form
-      const submitButton = HelpersUtil.querySelector(element, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(element, 'wui-button[type="submit"]')
       submitButton?.click()
 
       // Give a moment for loading state to be set
@@ -583,7 +580,7 @@ describe('W3mDataCaptureView', () => {
       await element.updateComplete
 
       // Recent emails widget should not be present in DOM during loading
-      const recentEmailsWidgetDuringLoading = HelpersUtil.querySelector(
+      const recentEmailsWidgetDuringLoading = HelpersUtil.querySelect(
         element,
         'w3m-recent-emails-widget'
       )
@@ -593,7 +590,7 @@ describe('W3mDataCaptureView', () => {
       await new Promise(resolve => setTimeout(resolve, 450))
 
       // Recent emails widget should be present again after loading
-      const recentEmailsWidgetAfterLoading = HelpersUtil.querySelector(
+      const recentEmailsWidgetAfterLoading = HelpersUtil.querySelect(
         element,
         'w3m-recent-emails-widget'
       )
@@ -628,7 +625,7 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
@@ -648,7 +645,7 @@ describe('W3mDataCaptureView', () => {
       element = await createView()
 
       // Set valid email
-      const emailInput = HelpersUtil.querySelector(element, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
 
       await element.updateComplete
