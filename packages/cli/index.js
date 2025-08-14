@@ -29,6 +29,7 @@ async function questionFramework() {
       ]
     }
   ]
+
   return await inquirer.prompt(framework)
 }
 
@@ -73,7 +74,7 @@ export async function main() {
 
   await cloneRepository(repoUrl, directoryName)
 
-  const url = 'https://cloud.reown.com'
+  const url = 'https://dashboard.reown.com'
   console.log(`Your ${redTip('Project Id')} will work only on the localhost enviroment`)
   console.log(`
 Go to: ${url}
