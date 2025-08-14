@@ -79,7 +79,7 @@ type GetBuyStatusParams = {
   exchangeId: string
 }
 
-type GetBuyStatusResult = {
+export type GetBuyStatusResult = {
   status: ExchangeBuyStatus
   txHash?: string
 }

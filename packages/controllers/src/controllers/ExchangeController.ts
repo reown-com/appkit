@@ -5,8 +5,8 @@ import { type CaipNetworkId } from '@reown/appkit-common'
 
 import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
-import type { Exchange, PayUrlParams } from '../utils/ExchangeUtil.js'
+import { formatCaip19Asset, getExchanges, getPayUrl, getBuyStatus } from '../utils/ExchangeUtil.js'
+import type { Exchange, PayUrlParams, GetBuyStatusResult } from '../utils/ExchangeUtil.js'
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { EventsController } from './EventsController.js'
@@ -31,6 +31,7 @@ const DEFAULT_STATE: ExchangeControllerState = {
   error: null,
   exchanges: [],
   isLoading: false,
+  isPaymentInProgress: false,
   currentPayment: undefined
 }
 
@@ -63,6 +64,7 @@ export interface ExchangeControllerState {
   priceLoading: boolean
   error: string | null
   isLoading: boolean
+  isPaymentInProgress: boolean
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
   paymentAsset: PaymentAsset
@@ -89,6 +91,7 @@ const state = proxy<ExchangeControllerState>({
   error: null,
   exchanges: [],
   isLoading: false,
+  isPaymentInProgress: false,
   currentPayment: undefined
 })
 
@@ -233,5 +236,79 @@ export const ExchangeController = {
       state.error = 'Unable to initiate payment'
       SnackController.showError(state.error)
     }
+  },
+
+  async getBuyStatus(exchangeId: string, sessionId: string, paymentId: string) {
+    try {
+      if (!state.currentPayment) {
+        throw new Error('No current payment')
+      }
+
+      const status = await getBuyStatus({ sessionId, exchangeId })
+      state.currentPayment.status = status.status
+      if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+        state.currentPayment.result = status.txHash
+        state.isPaymentInProgress = false
+        EventsController.sendEvent({
+          type: 'track',
+          event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
+          properties: {
+            paymentId,
+            configuration: {
+              network: state.paymentAsset.network,
+              asset: state.paymentAsset.asset,
+              recipient: AccountController.state.address || '',
+              amount: state.amount
+            },
+            currentPayment: {
+              type: 'exchange',
+              exchangeId: state.currentPayment?.exchangeId,
+              sessionId: state.currentPayment?.sessionId,
+              result: status.txHash
+            }
+          }
+        })
+      }
+
+      return status
+    } catch (error) {
+      return {
+        status: 'UNKNOWN',
+        txHash: ''
+      } as GetBuyStatusResult
+    }
+  },
+
+  async waitUntilComplete({
+    exchangeId,
+    sessionId,
+    paymentId,
+    retries = 20
+  }: {
+    exchangeId: string
+    sessionId: string
+    paymentId: string
+    retries?: number
+  }): Promise<GetBuyStatusResult> {
+    const status = await this.getBuyStatus(exchangeId, sessionId, paymentId)
+    if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+      return status
+    }
+
+    if (retries === 0) {
+      throw new Error('Unable to get deposit status')
+    }
+
+    // Wait 5 seconds before checking again
+    await new Promise(resolve => {
+      setTimeout(resolve, 5000)
+    })
+
+    return this.waitUntilComplete({
+      exchangeId,
+      sessionId,
+      paymentId,
+      retries: retries - 1
+    })
   }
 }

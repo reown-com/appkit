@@ -8,6 +8,7 @@ import { SnackController } from '../../src/controllers/SnackController'
 import * as ChainControllerUtil from '../../src/utils/ChainControllerUtil'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil'
 import * as ExchangeUtil from '../../src/utils/ExchangeUtil'
+import type { ExchangeBuyStatus } from '../../src/utils/ExchangeUtil'
 
 describe('ExchangeController', () => {
   beforeEach(() => {
@@ -174,6 +175,308 @@ describe('ExchangeController', () => {
 
       expect(SnackController.showError).toHaveBeenCalledWith('Unable to initiate payment')
       expect(ExchangeController.state.error).toBe('Unable to initiate payment')
+    })
+  })
+
+  describe('getBuyStatus', () => {
+    beforeEach(() => {
+      // Set up a current payment
+      ExchangeController.state.currentPayment = {
+        type: 'exchange',
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        status: 'IN_PROGRESS'
+      }
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
+      ExchangeController.state.amount = 100
+      AccountController.state.address = '0xabc123'
+    })
+
+    it('returns success status and updates state correctly', async () => {
+      const mockStatus = {
+        status: 'SUCCESS' as ExchangeBuyStatus,
+        txHash: '0xtxhash123'
+      }
+      vi.spyOn(ExchangeUtil, 'getBuyStatus').mockResolvedValue(mockStatus)
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+      const result = await ExchangeController.getBuyStatus('ex1', 'sess-123', 'payment-123')
+
+      expect(ExchangeUtil.getBuyStatus).toHaveBeenCalledWith({
+        sessionId: 'sess-123',
+        exchangeId: 'ex1'
+      })
+      expect(ExchangeController.state.currentPayment?.status).toBe('SUCCESS')
+      expect(ExchangeController.state.currentPayment?.result).toBe('0xtxhash123')
+      expect(EventsController.sendEvent).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'PAY_SUCCESS',
+        properties: {
+          paymentId: 'payment-123',
+          configuration: {
+            network: 'eip155:1',
+            asset: 'native',
+            recipient: '0xabc123',
+            amount: 100
+          },
+          currentPayment: {
+            type: 'exchange',
+            exchangeId: 'ex1',
+            sessionId: 'sess-123',
+            result: '0xtxhash123'
+          }
+        }
+      })
+      expect(result).toEqual(mockStatus)
+    })
+
+    it('returns failed status and sends error event', async () => {
+      const mockStatus = {
+        status: 'FAILED' as ExchangeBuyStatus,
+        txHash: '0xfailedtx'
+      }
+      vi.spyOn(ExchangeUtil, 'getBuyStatus').mockResolvedValue(mockStatus)
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+      const result = await ExchangeController.getBuyStatus('ex1', 'sess-123', 'payment-123')
+
+      expect(ExchangeController.state.currentPayment?.status).toBe('FAILED')
+      expect(ExchangeController.state.currentPayment?.result).toBe('0xfailedtx')
+      expect(EventsController.sendEvent).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'PAY_ERROR',
+        properties: {
+          paymentId: 'payment-123',
+          configuration: {
+            network: 'eip155:1',
+            asset: 'native',
+            recipient: '0xabc123',
+            amount: 100
+          },
+          currentPayment: {
+            type: 'exchange',
+            exchangeId: 'ex1',
+            sessionId: 'sess-123',
+            result: '0xfailedtx'
+          }
+        }
+      })
+      expect(result).toEqual(mockStatus)
+    })
+
+    it('returns in progress status without sending event', async () => {
+      const mockStatus = {
+        status: 'IN_PROGRESS' as ExchangeBuyStatus,
+        txHash: undefined
+      }
+      vi.spyOn(ExchangeUtil, 'getBuyStatus').mockResolvedValue(mockStatus)
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+      const result = await ExchangeController.getBuyStatus('ex1', 'sess-123', 'payment-123')
+
+      expect(ExchangeController.state.currentPayment?.status).toBe('IN_PROGRESS')
+      expect(ExchangeController.state.currentPayment?.result).toBeUndefined()
+      expect(EventsController.sendEvent).not.toHaveBeenCalled()
+      expect(result).toEqual(mockStatus)
+    })
+
+    it('throws error when no current payment exists', async () => {
+      ExchangeController.state.currentPayment = undefined
+
+      const result = await ExchangeController.getBuyStatus('ex1', 'sess-123', 'payment-123')
+
+      expect(result).toEqual({
+        status: 'UNKNOWN',
+        txHash: ''
+      })
+    })
+
+    it('returns UNKNOWN status when getBuyStatus utility throws error', async () => {
+      vi.spyOn(ExchangeUtil, 'getBuyStatus').mockRejectedValue(new Error('Network error'))
+
+      const result = await ExchangeController.getBuyStatus('ex1', 'sess-123', 'payment-123')
+
+      expect(result).toEqual({
+        status: 'UNKNOWN',
+        txHash: ''
+      })
+    })
+  })
+
+  describe('waitUntilComplete', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+      // Set up a current payment
+      ExchangeController.state.currentPayment = {
+        type: 'exchange',
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        status: 'IN_PROGRESS'
+      }
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('returns immediately when getBuyStatus returns SUCCESS', async () => {
+      const mockStatus = {
+        status: 'SUCCESS' as ExchangeBuyStatus,
+        txHash: '0xtxhash123'
+      }
+      vi.spyOn(ExchangeController, 'getBuyStatus').mockResolvedValue(mockStatus)
+
+      const result = await ExchangeController.waitUntilComplete({
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        paymentId: 'payment-123'
+      })
+
+      expect(ExchangeController.getBuyStatus).toHaveBeenCalledWith('ex1', 'sess-123', 'payment-123')
+      expect(result).toEqual(mockStatus)
+    })
+
+    it('returns immediately when getBuyStatus returns FAILED', async () => {
+      const mockStatus = {
+        status: 'FAILED' as ExchangeBuyStatus,
+        txHash: '0xfailedtx'
+      }
+      vi.spyOn(ExchangeController, 'getBuyStatus').mockResolvedValue(mockStatus)
+
+      const result = await ExchangeController.waitUntilComplete({
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        paymentId: 'payment-123'
+      })
+
+      expect(result).toEqual(mockStatus)
+    })
+
+    it('retries when getBuyStatus returns IN_PROGRESS then SUCCESS', async () => {
+      const inProgressStatus = {
+        status: 'IN_PROGRESS' as ExchangeBuyStatus,
+        txHash: undefined
+      }
+      const successStatus = {
+        status: 'SUCCESS' as ExchangeBuyStatus,
+        txHash: '0xtxhash123'
+      }
+      
+      vi.spyOn(ExchangeController, 'getBuyStatus')
+        .mockResolvedValueOnce(inProgressStatus)
+        .mockResolvedValueOnce(successStatus)
+
+      const resultPromise = ExchangeController.waitUntilComplete({
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        paymentId: 'payment-123'
+      })
+
+      // Fast forward the timer to resolve the setTimeout
+      await vi.advanceTimersByTimeAsync(5000)
+
+      const result = await resultPromise
+
+      expect(ExchangeController.getBuyStatus).toHaveBeenCalledTimes(2)
+      expect(result).toEqual(successStatus)
+    })
+
+    it('throws error when retries are exhausted', async () => {
+      const inProgressStatus = {
+        status: 'IN_PROGRESS' as ExchangeBuyStatus,
+        txHash: undefined
+      }
+      
+      vi.spyOn(ExchangeController, 'getBuyStatus').mockResolvedValue(inProgressStatus)
+
+      // Start the promise but don't await it yet
+      const resultPromise = ExchangeController.waitUntilComplete({
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        paymentId: 'payment-123',
+        retries: 2
+      }).catch(error => {
+        // Catch the error to prevent unhandled rejection
+        throw error
+      })
+
+      // Run all timers to completion - this should trigger all retries
+      await vi.runAllTimersAsync()
+
+      // Now properly await and expect the rejection
+      await expect(resultPromise).rejects.toThrow('Unable to get deposit status')
+      expect(ExchangeController.getBuyStatus).toHaveBeenCalledTimes(3) // Initial + 2 retries
+    })
+
+    it('uses default retries value of 20', async () => {
+      const inProgressStatus = {
+        status: 'IN_PROGRESS' as ExchangeBuyStatus,
+        txHash: undefined
+      }
+      const successStatus = {
+        status: 'SUCCESS' as ExchangeBuyStatus,
+        txHash: '0xtxhash123'
+      }
+      
+      // Mock to return IN_PROGRESS for the first 19 calls, then SUCCESS
+      const getBuyStatusSpy = vi.spyOn(ExchangeController, 'getBuyStatus')
+      for (let i = 0; i < 19; i++) {
+        getBuyStatusSpy.mockResolvedValueOnce(inProgressStatus)
+      }
+      getBuyStatusSpy.mockResolvedValueOnce(successStatus)
+
+      const resultPromise = ExchangeController.waitUntilComplete({
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        paymentId: 'payment-123'
+      })
+
+      // Run all timers to completion
+      await vi.runAllTimersAsync()
+
+      const result = await resultPromise
+
+      expect(ExchangeController.getBuyStatus).toHaveBeenCalledTimes(20)
+      expect(result).toEqual(successStatus)
+    })
+
+    it('waits 5 seconds between retries', async () => {
+      const inProgressStatus = {
+        status: 'IN_PROGRESS' as ExchangeBuyStatus,
+        txHash: undefined
+      }
+      const successStatus = {
+        status: 'SUCCESS' as ExchangeBuyStatus,
+        txHash: '0xtxhash123'
+      }
+      
+      vi.spyOn(ExchangeController, 'getBuyStatus')
+        .mockResolvedValueOnce(inProgressStatus)
+        .mockResolvedValueOnce(successStatus)
+
+      const resultPromise = ExchangeController.waitUntilComplete({
+        exchangeId: 'ex1',
+        sessionId: 'sess-123',
+        paymentId: 'payment-123'
+      })
+
+      // Should be called once initially
+      expect(ExchangeController.getBuyStatus).toHaveBeenCalledTimes(1)
+
+      // Fast forward 4 seconds - should not call again yet
+      await vi.advanceTimersByTimeAsync(4000)
+      expect(ExchangeController.getBuyStatus).toHaveBeenCalledTimes(1)
+
+      // Fast forward 1 more second - should call again
+      await vi.advanceTimersByTimeAsync(1000)
+      
+      const result = await resultPromise
+      expect(ExchangeController.getBuyStatus).toHaveBeenCalledTimes(2)
+      expect(result).toEqual(successStatus)
     })
   })
 })
