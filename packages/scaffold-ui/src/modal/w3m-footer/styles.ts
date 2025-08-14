@@ -17,7 +17,7 @@ export default css`
 
   div.container[status='hide'] {
     animation: fade-out;
-    animation-duration: var(--apkt-durations-dynamic);
+    animation-duration: var(--apkt-duration-dynamic);
     animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: both;
     animation-delay: 0s;
@@ -25,10 +25,10 @@ export default css`
 
   div.container[status='show'] {
     animation: fade-in;
-    animation-duration: var(--apkt-durations-dynamic);
+    animation-duration: var(--apkt-duration-dynamic);
     animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: both;
-    animation-delay: var(--apkt-durations-dynamic);
+    animation-delay: var(--apkt-duration-dynamic);
   }
 
   @keyframes fade-in {

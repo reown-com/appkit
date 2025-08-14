@@ -26,7 +26,7 @@ export class W3mRouter extends LitElement {
         this.history = RouterController.state.history.join(',')
         document.documentElement.style.setProperty(
           '--apkt-duration-dynamic',
-          'var(--apkt-duration-lg)'
+          'var(--apkt-durations-lg)'
         )
       })
     )

@@ -85,16 +85,16 @@ export default css`
   :host([data-border='true']) wui-card {
     animation:
       fade-in ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
-      card-background-border var(--apkt-durations-dynamic)
+      card-background-border var(--apkt-duration-dynamic)
         ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: backwards, both;
-    animation-delay: var(--apkt-durations-dynamic);
+    animation-delay: var(--apkt-duration-dynamic);
   }
 
   :host([data-border='false']) wui-card {
     animation:
       fade-in ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
-      card-background-default var(--apkt-durations-dynamic)
+      card-background-default var(--apkt-duration-dynamic)
         ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: backwards, both;
     animation-delay: 0s;

@@ -6,7 +6,7 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius['4']};
     border: none;
     outline: none;
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background-color: ${({ tokens }) => tokens.core.glass010};
     width: 100%;
     display: flex;
     align-items: center;
@@ -15,10 +15,11 @@ export default css`
     transition: background-color ${({ easings }) => easings['ease-out-power-1']}
       ${({ durations }) => durations['md']};
     will-change: background-color;
+    cursor: pointer;
   }
 
   button:hover {
-    background-color: ${({ tokens }) => tokens.core.glass010};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .provider-image {

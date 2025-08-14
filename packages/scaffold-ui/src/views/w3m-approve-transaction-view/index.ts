@@ -42,7 +42,7 @@ export class W3mApproveTransactionView extends LitElement {
         }),
         ModalController.subscribeKey('shake', val => {
           if (val) {
-            this.iframe.style.animation = `w3m-shake 500ms var(--apkt-ease-out-power-2)`
+            this.iframe.style.animation = `w3m-shake 500ms var(--apkt-easings-ease-out-power-2)`
           } else {
             this.iframe.style.animation = 'none'
           }
@@ -99,13 +99,13 @@ export class W3mApproveTransactionView extends LitElement {
     const isMobile = window.innerWidth <= 430
     this.ready = true
     this.iframe.style.animation = isMobile
-      ? 'w3m-iframe-zoom-in-mobile 200ms var(--apkt-ease-out-power-2)'
-      : 'w3m-iframe-zoom-in 200ms var(--apkt-ease-out-power-2)'
+      ? 'w3m-iframe-zoom-in-mobile 200ms var(--apkt-easings-ease-out-power-2)'
+      : 'w3m-iframe-zoom-in 200ms var(--apkt-easings-ease-out-power-2)'
   }
 
   private onHideIframe() {
     this.iframe.style.display = 'none'
-    this.iframe.style.animation = 'w3m-iframe-fade-out 200ms var(--apkt-ease-out-power-2)'
+    this.iframe.style.animation = 'w3m-iframe-fade-out 200ms var(--apkt-easings-ease-out-power-2)'
   }
 
   private async syncTheme() {

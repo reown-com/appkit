@@ -225,7 +225,7 @@ export function createRootStyles(_themeVariables?: ThemeVariables) {
         --apkt-width-network-md: 48px;
         --apkt-width-network-lg: 86px;
 
-        --apkt-durations-dynamic: 0ms;
+        --apkt-duration-dynamic: 0ms;
         --apkt-height-network-sm: 40px;
         --apkt-height-network-md: 54px;
         --apkt-height-network-lg: 96px;
@@ -289,16 +289,16 @@ export const elementStyles = css`
     border: none;
     text-decoration: none;
     transition:
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      border var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      width var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      height var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      scale var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      background-color var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      color var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      border var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      box-shadow var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      width var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      height var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      transform var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      opacity var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      scale var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2),
+      border-radius var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2);
     will-change:
       background-color, color, border, box-shadow, width, height, transform, opacity, scale,
       border-radius;
