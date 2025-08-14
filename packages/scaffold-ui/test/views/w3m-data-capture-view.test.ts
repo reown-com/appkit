@@ -216,14 +216,14 @@ describe('W3mDataCaptureView', () => {
       const view = await createView()
 
       // Set a valid email and attempt submit
-      const emailInput = HelpersUtil.querySelector(view, 'wui-email-input')
+      const emailInput = HelpersUtil.querySelect(view, 'wui-email-input')
       emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'test@example.com' }))
       await view.updateComplete
 
       // Spy on requestEmailOtp on prototype to detect accidental calls
       const spy = vi.spyOn(ReownAuthentication.prototype as any, 'requestEmailOtp')
 
-      const submitButton = HelpersUtil.querySelector(view, 'wui-button[type="submit"]')
+      const submitButton = HelpersUtil.querySelect(view, 'wui-button[type="submit"]')
       submitButton?.click()
 
       await new Promise(resolve => setTimeout(resolve, 0))
