@@ -6,6 +6,7 @@ import {
   type ChainNamespace,
   ConstantsUtil,
   type EmbeddedWalletTimeoutReason,
+  type SocialProvider,
   getW3mThemeVariables
 } from '@reown/appkit-common'
 import {
@@ -259,6 +260,29 @@ export class AppKit extends AppKitBaseClient {
           chain: chainNamespace
         })
         this.setStatus('connected', chainNamespace)
+        const socialProvider = StorageUtil.getConnectedSocialProvider()
+        if (socialProvider) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_SUCCESS',
+            address: AccountController.state.address,
+            properties: {
+              provider: socialProvider as SocialProvider,
+              reconnect: true
+            }
+          })
+        } else {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'CONNECT_SUCCESS',
+            address: AccountController.state.address,
+            properties: {
+              method: 'email',
+              name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
+              reconnect: true
+            }
+          })
+        }
       } else if (
         ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
       ) {
