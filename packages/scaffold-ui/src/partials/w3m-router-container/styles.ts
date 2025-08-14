@@ -3,8 +3,8 @@ import { css } from '@reown/appkit-ui'
 export default css`
   :host {
     --local-duration-height: 0s;
-    --local-duration: var(--apkt-duration-lg);
-    --local-transition: var(--apkt-ease-out-power-2);
+    --local-duration: ${({ durations }) => durations['lg']};
+    --local-transition: ${({ easings }) => easings['ease-out-power-2']};
   }
 
   .container {
@@ -42,14 +42,14 @@ export default css`
     animation:
       slide-left-out var(--local-duration) forwards var(--local-transition),
       slide-left-in var(--local-duration) forwards var(--local-transition);
-    animation-delay: 0ms, var(--local-duration, var(--apkt-duration-lg));
+    animation-delay: 0ms, var(--local-duration, ${({ durations }) => durations['lg']});
   }
 
   div.page[view-direction^='next-'] .page-content {
     animation:
       slide-right-out var(--local-duration) forwards var(--local-transition),
       slide-right-in var(--local-duration) forwards var(--local-transition);
-    animation-delay: 0ms, var(--local-duration, var(--apkt-duration-lg));
+    animation-delay: 0ms, var(--local-duration, ${({ durations }) => durations['lg']});
   }
 
   @keyframes slide-left-out {

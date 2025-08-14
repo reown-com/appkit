@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   @keyframes shake {
@@ -28,7 +28,9 @@ export default css`
   }
 
   wui-visual {
-    border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
+    border-radius: calc(
+      ${({ borderRadius }) => borderRadius['1']} * 9 - ${({ borderRadius }) => borderRadius['3']}
+    );
     position: relative;
     overflow: hidden;
   }
@@ -40,25 +42,28 @@ export default css`
     height: 100%;
     position: absolute;
     inset: 0;
-    border-radius: calc(var(--apkt-borderRadius-1) * 9 - var(--apkt-borderRadius-3));
-    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
+    border-radius: calc(
+      ${({ borderRadius }) => borderRadius['1']} * 9 - ${({ borderRadius }) => borderRadius['3']}
+    );
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
   }
 
   wui-icon-box {
     position: absolute;
-    right: calc(var(--apkt-spacing-1) * -1);
-    bottom: calc(var(--apkt-spacing-1) * -1);
+    right: calc(${({ spacing }) => spacing['1']} * -1);
+    bottom: calc(${({ spacing }) => spacing['1']} * -1);
     opacity: 0;
     transform: scale(0.5);
     transition:
-      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      transform ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity, transform;
   }
 
   wui-text[align='center'] {
     width: 100%;
-    padding: 0px var(--apkt-spacing-4);
+    padding: 0px ${({ spacing }) => spacing['4']};
   }
 
   [data-error='true'] wui-icon-box {
@@ -67,7 +72,7 @@ export default css`
   }
 
   [data-error='true'] > wui-flex:first-child {
-    animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: shake 250ms ${({ easings }) => easings['ease-out-power-2']} both;
   }
 
   [data-retry='false'] wui-link {
@@ -80,7 +85,7 @@ export default css`
   }
 
   wui-link {
-    padding: var(--apkt-spacing-01) var(--apkt-spacing-2);
+    padding: ${({ spacing }) => spacing['01']} ${({ spacing }) => spacing['2']};
   }
 
   .capitalize {

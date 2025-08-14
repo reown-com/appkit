@@ -9,8 +9,8 @@ export default css`
 
   wui-qr-code {
     opacity: 0;
-    animation-duration: var(--apkt-duration-xl);
-    animation-timing-function: var(--apkt-ease-out-power-2);
+    animation-duration: ${({ durations }) => durations['xl']};
+    animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     animation-name: fade-in;
     animation-fill-mode: forwards;
   }
@@ -18,7 +18,7 @@ export default css`
   wui-logo {
     width: 80px;
     height: 80px;
-    border-radius: var(--apkt-borderRadius-7);
+    border-radius: ${({ borderRadius }) => borderRadius['8']};
   }
 
   wui-flex:first-child:not(:only-child) {
@@ -31,13 +31,14 @@ export default css`
 
   wui-icon-box {
     position: absolute;
-    right: calc(var(--apkt-spacing-1) * -1);
-    bottom: calc(var(--apkt-spacing-1) * -1);
+    right: calc(${({ spacing }) => spacing['1']} * -1);
+    bottom: calc(${({ spacing }) => spacing['1']} * -1);
     opacity: 0;
     transform: scale(0.5);
     transition:
-      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      transform ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity, transform;
   }
 

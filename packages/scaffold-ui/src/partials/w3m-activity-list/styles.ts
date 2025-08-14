@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -6,7 +6,7 @@ export default css`
   }
 
   .group-container[last-group='true'] {
-    padding-bottom: var(--apkt-spacing-3);
+    padding-bottom: ${({ spacing }) => spacing['3']};
   }
 
   .contentContainer {
@@ -16,7 +16,7 @@ export default css`
   .contentContainer > wui-icon-box {
     width: 40px;
     height: 40px;
-    border-radius: var(--apkt-borderRadius-3);
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
   }
 
   .contentContainer > .textContent {

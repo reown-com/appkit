@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   @keyframes shake {
@@ -34,19 +34,19 @@ export default css`
 
   wui-icon-box {
     position: absolute;
-    right: calc(var(--apkt-spacing-1) * -1);
-    bottom: calc(var(--apkt-spacing-1) * -1);
+    right: calc(${({ spacing }) => spacing['1']} * -1);
+    bottom: calc(${({ spacing }) => spacing['1']} * -1);
     opacity: 0;
     transform: scale(0.5);
     transition-property: opacity, transform;
-    transition-duration: var(--apkt-duration-lg);
-    transition-timing-function: var(--apkt-ease-out-power-2);
+    transition-duration: ${({ durations }) => durations['lg']};
+    transition-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity, transform;
   }
 
   wui-text[align='center'] {
     width: 100%;
-    padding: 0px var(--apkt-spacing-4);
+    padding: 0px ${({ spacing }) => spacing['4']};
   }
 
   [data-error='true'] wui-icon-box {
@@ -55,7 +55,7 @@ export default css`
   }
 
   [data-error='true'] > wui-flex:first-child {
-    animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: shake 250ms ${({ easings }) => easings['ease-out-power-2']} both;
   }
 
   [data-retry='false'] wui-link {

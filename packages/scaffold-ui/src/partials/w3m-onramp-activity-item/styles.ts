@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -7,17 +7,17 @@ export default css`
 
   :host > wui-flex {
     width: 100%;
-    padding: var(--apkt-spacing-3);
-    border-radius: var(--apkt-borderRadius-4);
+    padding: ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: var(--apkt-spacing-3);
+    gap: ${({ spacing }) => spacing['3']};
   }
 
   :host > wui-flex:hover {
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .purchase-image-container {
@@ -25,15 +25,15 @@ export default css`
     justify-content: center;
     align-items: center;
     position: relative;
-    width: var(--apkt-spacing-10);
-    height: var(--apkt-spacing-10);
+    width: ${({ spacing }) => spacing['10']};
+    height: ${({ spacing }) => spacing['10']};
   }
 
   .purchase-image-container wui-image {
     width: 100%;
     height: 100%;
     position: relative;
-    border-radius: calc(var(--apkt-spacing-10) / 2);
+    border-radius: calc(${({ spacing }) => spacing['10']} / 2);
   }
 
   .purchase-image-container wui-image::after {
@@ -43,8 +43,8 @@ export default css`
     height: 100%;
     position: absolute;
     inset: 0;
-    border-radius: calc(var(--apkt-spacing-10) / 2);
-    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
+    border-radius: calc(${({ spacing }) => spacing['10']} / 2);
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
   }
 
   .purchase-image-container wui-icon-box {

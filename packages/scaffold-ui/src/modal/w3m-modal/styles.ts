@@ -16,8 +16,9 @@ export default css`
     background-color: ${({ tokens }) => tokens.theme.overlay};
     backdrop-filter: blur(0px);
     transition:
-      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      backdrop-filter var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      backdrop-filter ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity;
   }
 
@@ -42,10 +43,14 @@ export default css`
     transform: translateY(4px);
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
     transition:
-      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
-      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
+      transform ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      border-radius ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-1']},
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-1']},
+      box-shadow ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-1']};
     will-change: border-radius, background-color, transform, box-shadow;
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     padding: ${({ spacing }) => spacing[1]};
@@ -63,8 +68,9 @@ export default css`
     position: absolute;
     inset: 0;
     border-radius: clamp(0px, var(--apkt-borderRadius-8), 44px);
-    transition: box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
-    transition-delay: var(--apkt-duration-md);
+    transition: box-shadow ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
+    transition-delay: ${({ durations }) => durations['md']};
     will-change: box-shadow;
   }
 
@@ -78,16 +84,18 @@ export default css`
 
   :host([data-border='true']) wui-card {
     animation:
-      fade-in var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      card-background-border var(--apkt-duration-dynamic) var(--apkt-ease-out-power-2);
+      fade-in ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      card-background-border var(--apkt-durations-dynamic)
+        ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: backwards, both;
-    animation-delay: var(--apkt-duration-dynamic);
+    animation-delay: var(--apkt-durations-dynamic);
   }
 
   :host([data-border='false']) wui-card {
     animation:
-      fade-in var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      card-background-default var(--apkt-duration-dynamic) var(--apkt-ease-out-power-2);
+      fade-in ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      card-background-default var(--apkt-durations-dynamic)
+        ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: backwards, both;
     animation-delay: 0s;
   }
@@ -98,8 +106,9 @@ export default css`
 
   wui-card[shake='true'] {
     animation:
-      fade-in var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      w3m-shake var(--apkt-duration-xl) var(--apkt-ease-out-power-2);
+      fade-in ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      w3m-shake ${({ durations }) => durations['xl']}
+        ${({ easings }) => easings['ease-out-power-2']};
   }
 
   wui-flex {
@@ -135,7 +144,7 @@ export default css`
     }
 
     wui-card[shake='true'] {
-      animation: w3m-shake 0.5s var(--apkt-ease-out-power-2);
+      animation: w3m-shake 0.5s ${({ easings }) => easings['ease-out-power-2']};
     }
   }
 

@@ -1,9 +1,9 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-separator {
-    margin: var(--apkt-spacing-3) calc(var(--apkt-spacing-3) * -1);
-    width: calc(100% + var(--apkt-spacing-3) * 2);
+    margin: ${({ spacing }) => spacing['3']} calc(${({ spacing }) => spacing['3']} * -1);
+    width: calc(100% + ${({ spacing }) => spacing['3']} * 2);
   }
 
   wui-email-input {
@@ -24,14 +24,15 @@ export default css`
   }
 
   wui-icon-link {
-    right: var(--apkt-spacing-2);
+    right: ${({ spacing }) => spacing['2']};
   }
 
   wui-loading-spinner {
-    right: var(--apkt-spacing-3);
+    right: ${({ spacing }) => spacing['3']};
   }
 
   wui-text {
-    margin: var(--apkt-spacing-2) var(--apkt-spacing-3) var(--apkt-spacing-0) var(--apkt-spacing-3);
+    margin: ${({ spacing }) => spacing['2']} ${({ spacing }) => spacing['3']}
+      ${({ spacing }) => spacing['0']} ${({ spacing }) => spacing['3']};
   }
 `

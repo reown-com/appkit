@@ -14,8 +14,9 @@ export default css`
     background-color: transparent;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     transition:
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      scale var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      scale ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color, scale;
   }
 

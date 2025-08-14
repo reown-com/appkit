@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -10,12 +10,13 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: var(--apkt-spacing-2);
-    padding: var(--apkt-spacing-2) var(--apkt-spacing-3);
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--apkt-borderRadius-4);
-    box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    column-gap: ${({ spacing }) => spacing['2']};
+    padding: ${({ spacing }) => spacing['2']} ${({ spacing }) => spacing['3']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color;
     cursor: pointer;
   }

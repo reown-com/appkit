@@ -74,7 +74,7 @@ export default css`
   .icon-box {
     height: 40px;
     width: 40px;
-    border-radius: var(--apkt-borderRadius-2);
+    border-radius: ${({ borderRadius }) => borderRadius['2']};
     background-color: var(--local-icon-bg-value);
   }
 `

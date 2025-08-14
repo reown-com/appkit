@@ -6,7 +6,7 @@ export default css`
   }
 
   :host wui-ux-by-reown.branding-only {
-    padding-top: var(--apkt-spacing-3);
+    padding-top: ${({ spacing }) => spacing['3']};
   }
 
   a {

@@ -14,8 +14,9 @@ export default css`
   :host > wui-text {
     position: absolute;
     padding: 0px 8px;
-    background-color: var(--apkt-tokens-theme-backgroundPrimary);
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color;
   }
 `

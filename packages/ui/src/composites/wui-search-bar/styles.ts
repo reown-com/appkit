@@ -17,7 +17,8 @@ export default css`
     padding: ${({ spacing }) => spacing[2]};
     background-color: transparent;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
   }
 
   @media (hover: hover) {

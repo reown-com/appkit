@@ -1,14 +1,15 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
     display: flex;
     width: auto;
     flex-direction: column;
-    gap: var(--apkt-spacing-1);
-    border-radius: var(--apkt-borderRadius-5);
-    background: var(--apkt-tokens-theme-foregroundPrimary);
-    padding: var(--apkt-spacing-3) var(--apkt-spacing-2) var(--apkt-spacing-2) var(--apkt-spacing-2);
+    gap: ${({ spacing }) => spacing['1']};
+    border-radius: ${({ borderRadius }) => borderRadius['5']};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    padding: ${({ spacing }) => spacing['3']} ${({ spacing }) => spacing['2']}
+      ${({ spacing }) => spacing['2']} ${({ spacing }) => spacing['2']};
   }
 
   wui-list-content {
@@ -16,32 +17,33 @@ export default css`
   }
 
   wui-text {
-    padding: 0 var(--apkt-spacing-2);
+    padding: 0 ${({ spacing }) => spacing['2']};
   }
 
   wui-flex {
-    margin-top: var(--apkt-spacing-2);
+    margin-top: ${({ spacing }) => spacing['2']};
   }
 
   .network {
     cursor: pointer;
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-1']};
     will-change: background-color;
   }
 
   .network:focus-visible {
-    border: 1px solid var(--apkt-colors-accent100);
-    background-color: var(--apkt-tokens-core-glass010);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--apkt-tokens-core-foregroundAccent010);
-    -moz-box-shadow: 0px 0px 0px 4px var(--apkt-tokens-core-foregroundAccent010);
-    box-shadow: 0px 0px 0px 4px var(--apkt-tokens-core-foregroundAccent010);
+    border: 1px solid ${({ tokens }) => tokens.core.textAccentPrimary};
+    background-color: ${({ tokens }) => tokens.core.glass010};
+    -webkit-box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent010};
+    -moz-box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent010};
+    box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
   .network:hover {
-    background-color: var(--apkt-tokens-core-glass010);
+    background-color: ${({ tokens }) => tokens.core.glass010};
   }
 
   .network:active {
-    background-color: var(--apkt-tokens-core-glass010);
+    background-color: ${({ tokens }) => tokens.core.glass010};
   }
 `

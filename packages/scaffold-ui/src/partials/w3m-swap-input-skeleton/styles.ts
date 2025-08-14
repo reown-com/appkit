@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -10,11 +10,11 @@ export default css`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: var(--apkt-borderRadius-5);
-    padding: var(--apkt-spacing-5);
-    padding-right: var(--apkt-spacing-3);
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    box-shadow: inset 0px 0px 0px 1px var(--apkt-tokens-theme-foregroundPrimary);
+    border-radius: ${({ borderRadius }) => borderRadius['5']};
+    padding: ${({ spacing }) => spacing['5']};
+    padding-right: ${({ spacing }) => spacing['3']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    box-shadow: inset 0px 0px 0px 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
     width: 100%;
     height: 100px;
     box-sizing: border-box;
@@ -33,15 +33,16 @@ export default css`
 
   :host wui-flex .input_mask__border,
   :host wui-flex .input_mask__background {
-    transition: fill var(--apkt-duration-md) var(--apkt-ease-out-power-1);
+    transition: fill ${({ durations }) => durations['md']}
+      ${({ easings }) => easings['ease-out-power-1']};
     will-change: fill;
   }
 
   :host wui-flex .input_mask__border {
-    fill: var(--apkt-tokens-core-glass010);
+    fill: ${({ tokens }) => tokens.core.glass010};
   }
 
   :host wui-flex .input_mask__background {
-    fill: var(--apkt-tokens-theme-foregroundPrimary);
+    fill: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 `

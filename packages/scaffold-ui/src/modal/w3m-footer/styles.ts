@@ -17,18 +17,18 @@ export default css`
 
   div.container[status='hide'] {
     animation: fade-out;
-    animation-duration: var(--apkt-duration-dynamic);
-    animation-timing-function: var(--apkt-ease-out-power-2);
+    animation-duration: var(--apkt-durations-dynamic);
+    animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: both;
     animation-delay: 0s;
   }
 
   div.container[status='show'] {
     animation: fade-in;
-    animation-duration: var(--apkt-duration-dynamic);
-    animation-timing-function: var(--apkt-ease-out-power-2);
+    animation-duration: var(--apkt-durations-dynamic);
+    animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     animation-fill-mode: both;
-    animation-delay: var(--apkt-duration-dynamic);
+    animation-delay: var(--apkt-durations-dynamic);
   }
 
   @keyframes fade-in {

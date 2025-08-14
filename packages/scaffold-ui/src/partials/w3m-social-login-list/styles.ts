@@ -1,12 +1,12 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
-    margin-top: var(--apkt-spacing-1);
+    margin-top: ${({ spacing }) => spacing['1']};
   }
   wui-separator {
-    margin: var(--apkt-spacing-3) calc(var(--apkt-spacing-3) * -1) var(--apkt-spacing-2)
-      calc(var(--apkt-spacing-3) * -1);
-    width: calc(100% + var(--apkt-spacing-3) * 2);
+    margin: ${({ spacing }) => spacing['3']} calc(${({ spacing }) => spacing['3']} * -1)
+      ${({ spacing }) => spacing['2']} calc(${({ spacing }) => spacing['3']} * -1);
+    width: calc(100% + ${({ spacing }) => spacing['3']} * 2);
   }
 `

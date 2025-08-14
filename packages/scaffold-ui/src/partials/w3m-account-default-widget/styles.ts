@@ -2,11 +2,11 @@ import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-icon-link {
-    margin-right: calc(var(--apkt-spacing-8) * -1);
+    margin-right: calc(${({ spacing }) => spacing['8']} * -1);
   }
 
   wui-notice-card {
-    margin-bottom: var(--apkt-spacing-1);
+    margin-bottom: ${({ spacing }) => spacing['1']};
   }
 
   wui-list-item > wui-text {
@@ -34,18 +34,19 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--apkt-spacing-3);
+    gap: ${({ spacing }) => spacing['3']};
     height: 48px;
-    padding: var(--apkt-spacing-2);
-    padding-right: var(--apkt-spacing-3);
-    box-shadow: inset 0 0 0 1px var(--apkt-tokens-theme-foregroundPrimary);
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
+    padding: ${({ spacing }) => spacing['2']};
+    padding-right: ${({ spacing }) => spacing['3']};
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[6]};
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
   }
 
   .account-button:hover {
-    background-color: var(--apkt-tokens-core-glass010);
+    background-color: ${({ tokens }) => tokens.core.glass010};
   }
 
   .avatar-container {
@@ -55,11 +56,11 @@ export default css`
   wui-avatar.avatar {
     width: 32px;
     height: 32px;
-    box-shadow: 0 0 0 2px var(--apkt-tokens-core-glass010);
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.core.glass010};
   }
 
   wui-wallet-switch {
-    margin-top: var(--apkt-spacing-2);
+    margin-top: ${({ spacing }) => spacing['2']};
   }
 
   wui-avatar.network-avatar {
@@ -69,7 +70,7 @@ export default css`
     left: 100%;
     top: 100%;
     transform: translate(-75%, -75%);
-    box-shadow: 0 0 0 2px var(--apkt-tokens-core-glass010);
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.core.glass010};
   }
 
   .account-links {
@@ -94,8 +95,9 @@ export default css`
     border: 1px solid var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     background: var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     transition:
-      background-color var(--apkt-duration-md) var(--apkt-ease-out-power-1),
-      opacity var(--apkt-duration-md) var(--apkt-ease-out-power-1);
+      background-color ${({ durations }) => durations['md']}
+        ${({ easings }) => easings['ease-out-power-1']},
+      opacity ${({ durations }) => durations['md']} ${({ easings }) => easings['ease-out-power-1']};
     will-change: background-color, opacity;
   }
 

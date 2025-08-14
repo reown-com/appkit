@@ -6,7 +6,7 @@ export default css`
   }
 
   button {
-    border-radius: var(--apkt-borderRadius-20);
+    border-radius: ${({ borderRadius }) => borderRadius['20']};
     background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     display: flex;
     gap: ${({ spacing }) => spacing[1]};
@@ -14,7 +14,8 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textSecondary};
     border-radius: ${({ borderRadius }) => borderRadius[16]};
     height: 32px;
-    transition: box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: box-shadow ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: box-shadow;
   }
 
@@ -59,7 +60,8 @@ export default css`
     padding-right: ${({ spacing }) => spacing[1]};
     background: ${({ tokens }) => tokens.theme.foregroundSecondary};
     color: ${({ tokens }) => tokens.theme.textPrimary};
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color;
   }
 

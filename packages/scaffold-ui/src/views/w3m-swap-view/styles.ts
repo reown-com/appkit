@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host > wui-flex:first-child {
@@ -17,11 +17,11 @@ export default css`
 
   .action-button {
     width: 100%;
-    border-radius: var(--apkt-borderRadius-4);
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
   }
 
   .action-button:disabled {
-    border-color: 1px solid var(--apkt-tokens-core-glass010);
+    border-color: 1px solid ${({ tokens }) => tokens.core.glass010};
   }
 
   .swap-inputs-container {
@@ -31,9 +31,9 @@ export default css`
   wui-icon-box {
     width: 32px;
     height: 32px;
-    border-radius: var(--apkt-borderRadius-10) !important;
-    border: 4px solid var(--apkt-tokens-theme-backgroundPrimary);
-    background: var(--apkt-tokens-theme-foregroundPrimary);
+    border-radius: ${({ borderRadius }) => borderRadius['10']} !important;
+    border: 4px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     position: absolute;
     top: 50%;
     left: 50%;
@@ -49,33 +49,34 @@ export default css`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    gap: var(--apkt-spacing-2);
-    border-radius: var(--apkt-borderRadius-4);
-    background-color: var(--apkt-tokens-theme-backgroundPrimary);
-    padding: var(--apkt-spacing-2);
+    gap: ${({ spacing }) => spacing['2']};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    padding: ${({ spacing }) => spacing['2']};
   }
 
   .details-container > wui-flex {
-    background: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--apkt-borderRadius-3);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
     width: 100%;
   }
 
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--apkt-spacing-3);
-    border-radius: var(--apkt-borderRadius-3);
-    transition: background var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    padding: ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    transition: background ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: background;
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--apkt-tokens-theme-foregroundPrimary);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .details-content-container {
-    padding: var(--apkt-spacing-2);
+    padding: ${({ spacing }) => spacing['2']};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -87,8 +88,8 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--apkt-spacing-3) var(--apkt-spacing-5);
-    border-radius: var(--apkt-borderRadius-3);
-    background: var(--apkt-tokens-theme-foregroundPrimary);
+    padding: ${({ spacing }) => spacing['3']} ${({ spacing }) => spacing['5']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 `

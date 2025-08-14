@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   .contentContainer {
@@ -8,7 +8,7 @@ export default css`
   .contentContainer > wui-icon-box {
     width: 40px;
     height: 40px;
-    border-radius: var(--apkt-borderRadius-3);
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
   }
 
   .contentContainer > .textContent {

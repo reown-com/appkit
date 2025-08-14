@@ -26,7 +26,8 @@ export default css`
     background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
     gap: ${({ spacing }) => spacing[1]};
     border: none;
-    transition: border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: border-radius ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: border-radius;
     color: ${({ tokens }) => tokens.theme.textInvert};
   }

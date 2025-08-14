@@ -9,8 +9,8 @@ export default css`
 
   wui-qr-code {
     opacity: 0;
-    animation-duration: var(--apkt-duration-xl);
-    animation-timing-function: var(--apkt-ease-out-power-2);
+    animation-duration: ${({ durations }) => durations['xl']};
+    animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     animation-name: fade-in;
     animation-fill-mode: forwards;
   }

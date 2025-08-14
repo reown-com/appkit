@@ -1,8 +1,8 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-icon-box {
-    height: var(--apkt-spacing-16);
-    width: var(--apkt-spacing-16);
+    height: ${({ spacing }) => spacing['16']};
+    width: ${({ spacing }) => spacing['16']};
   }
 `

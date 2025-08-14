@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -10,10 +10,10 @@ export default css`
     background: transparent;
     width: 100%;
     height: auto;
-    color: var(--apkt-tokens-theme-textPrimary);
+    color: ${({ tokens }) => tokens.theme.textPrimary};
     font-feature-settings: 'case' on;
     font-size: 32px;
-    caret-color: var(--apkt-colors-accent100);
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     line-height: 130%;
     letter-spacing: -1.28px;
     box-sizing: border-box;
@@ -29,6 +29,6 @@ export default css`
   }
 
   input::placeholder {
-    color: var(--apkt-tokens-theme-foregroundTertiary);
+    color: ${({ tokens }) => tokens.theme.foregroundTertiary};
   }
 `

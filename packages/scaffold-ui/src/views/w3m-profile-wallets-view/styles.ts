@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -14,7 +14,8 @@ export default css`
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: opacity var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+    transition: opacity ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['md']};
     will-change: opacity;
     mask-image: linear-gradient(
       to bottom,
@@ -28,8 +29,8 @@ export default css`
   }
 
   .active-wallets {
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--apkt-borderRadius-4);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
   }
 
   .active-wallets-box {
@@ -42,21 +43,21 @@ export default css`
 
   .empty-box {
     width: 100%;
-    padding: var(--apkt-spacing-4);
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    border-radius: var(--apkt-borderRadius-4);
+    padding: ${({ spacing }) => spacing['4']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
   }
 
   wui-separator {
-    margin: var(--apkt-spacing-2) 0 var(--apkt-spacing-2) 0;
+    margin: ${({ spacing }) => spacing['2']} 0 ${({ spacing }) => spacing['2']} 0;
   }
 
   .active-connection {
-    padding: var(--apkt-spacing-2);
+    padding: ${({ spacing }) => spacing['2']};
   }
 
   .recent-connection {
-    padding: var(--apkt-spacing-2) 0 var(--apkt-spacing-2) 0;
+    padding: ${({ spacing }) => spacing['2']} 0 ${({ spacing }) => spacing['2']} 0;
   }
 
   @media (max-width: 430px) {

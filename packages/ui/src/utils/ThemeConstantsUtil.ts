@@ -302,6 +302,22 @@ const typography = {
   'sm-medium': { lineHeight: '14px', letterSpacing: '-0.12px' }
 }
 
+const easings = {
+  'ease-out-power-2': 'cubic-bezier(0.23, 0.09, 0.08, 1.13)',
+  'ease-out-power-1': 'cubic-bezier(0.12, 0.04, 0.2, 1.06)',
+  'ease-in-power-2': 'cubic-bezier(0.92, -0.13, 0.77, 0.91)',
+  'ease-in-power-1': 'cubic-bezier(0.88, -0.06, 0.8, 0.96)',
+  'ease-inout-power-2': 'cubic-bezier(0.77, 0.09, 0.23, 1.13)',
+  'ease-inout-power-1': 'cubic-bezier(0.88, 0.04, 0.12, 1.06)'
+}
+
+const durations = {
+  xl: '400ms',
+  lg: '200ms',
+  md: '125ms',
+  sm: '75ms'
+}
+
 export const styles = {
   colors,
   fontFamily,
@@ -317,5 +333,7 @@ export const styles = {
     theme: tokens.dark
   },
   borderRadius,
-  spacing
+  spacing,
+  durations,
+  easings
 }

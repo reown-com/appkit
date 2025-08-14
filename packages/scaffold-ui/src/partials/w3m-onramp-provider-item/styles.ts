@@ -1,49 +1,53 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   button {
-    padding: var(--apkt-spacing-3);
-    border-radius: var(--apkt-borderRadius-4);
+    padding: ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
     border: none;
     outline: none;
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: var(--apkt-spacing-3);
-    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+    gap: ${({ spacing }) => spacing['3']};
+    transition: background-color ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['md']};
     will-change: background-color;
   }
 
   button:hover {
-    background-color: var(--apkt-tokens-core-glass010);
+    background-color: ${({ tokens }) => tokens.core.glass010};
   }
 
   .provider-image {
-    width: var(--apkt-spacing-10);
-    min-width: var(--apkt-spacing-10);
-    height: var(--apkt-spacing-10);
-    border-radius: calc(var(--apkt-borderRadius-4) - calc(var(--apkt-spacing-3) / 2));
+    width: ${({ spacing }) => spacing['10']};
+    min-width: ${({ spacing }) => spacing['10']};
+    height: ${({ spacing }) => spacing['10']};
+    border-radius: calc(
+      ${({ borderRadius }) => borderRadius['4']} - calc(${({ spacing }) => spacing['3']} / 2)
+    );
     position: relative;
     overflow: hidden;
   }
 
   .network-icon {
-    width: var(--apkt-spacing-3);
-    height: var(--apkt-spacing-3);
-    border-radius: calc(var(--apkt-spacing-3) / 2);
+    width: ${({ spacing }) => spacing['3']};
+    height: ${({ spacing }) => spacing['3']};
+    border-radius: calc(${({ spacing }) => spacing['3']} / 2);
     overflow: hidden;
     box-shadow:
-      0 0 0 3px var(--apkt-tokens-theme-foregroundPrimary),
-      0 0 0 3px var(--apkt-tokens-theme-backgroundPrimary);
-    transition: box-shadow var(--apkt-ease-out-power-1) var(--apkt-duration-md);
+      0 0 0 3px ${({ tokens }) => tokens.theme.foregroundPrimary},
+      0 0 0 3px ${({ tokens }) => tokens.theme.backgroundPrimary};
+    transition: box-shadow ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['md']};
     will-change: box-shadow;
   }
 
   button:hover .network-icon {
     box-shadow:
-      0 0 0 3px var(--apkt-tokens-core-glass010),
-      0 0 0 3px var(--apkt-tokens-theme-backgroundPrimary);
+      0 0 0 3px ${({ tokens }) => tokens.core.glass010},
+      0 0 0 3px ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 `

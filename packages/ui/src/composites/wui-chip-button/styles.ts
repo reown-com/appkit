@@ -3,14 +3,16 @@ import { css } from '../../utils/ThemeHelperUtil.js'
 export default css`
   button {
     border: none;
-    border-radius: var(--apkt-borderRadius-20);
+    border-radius: ${({ borderRadius }) => borderRadius['20']};
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: ${({ spacing }) => spacing[1]};
     transition:
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      box-shadow ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color, box-shadow;
   }
 

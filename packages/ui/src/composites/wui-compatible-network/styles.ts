@@ -11,7 +11,8 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[3]};
     border: none;
     padding: ${({ spacing }) => spacing[3]};
-    transition: background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color;
   }
 

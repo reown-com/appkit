@@ -12,14 +12,17 @@ export default css`
     display: inline-block;
     user-select: none;
     transition:
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      border var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      width var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      height var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      color ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      border ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      box-shadow ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      width ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      height ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      transform ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color, color, border, box-shadow, width, height, transform, opacity;
   }
 
@@ -41,14 +44,17 @@ export default css`
     border: 1px solid transparent;
     will-change: border;
     transition:
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      border var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      box-shadow var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      width var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      height var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      transform var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      color ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      border ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      box-shadow ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      width ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      height ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      transform ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color, color, border, box-shadow, width, height, transform, opacity;
   }
 

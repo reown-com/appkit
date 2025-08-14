@@ -10,9 +10,11 @@ export default css`
     white-space: nowrap;
     column-gap: ${({ spacing }) => spacing[2]};
     transition:
-      scale var(--apkt-duration-lg) var(--apkt-ease-out-power-1),
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      border-radius var(--apkt-duration-lg) var(--apkt-ease-out-power-1);
+      scale ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-1']},
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      border-radius ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-1']};
     will-change: scale, background-color, border-radius;
     cursor: pointer;
   }

@@ -1,8 +1,8 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-compatible-network {
-    margin-top: var(--apkt-spacing-4);
+    margin-top: ${({ spacing }) => spacing['4']};
     width: 100%;
   }
 

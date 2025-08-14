@@ -1,10 +1,10 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   span {
     font-weight: 500;
     font-size: 38px;
-    color: var(--apkt-tokens-theme-textPrimary);
+    color: ${({ tokens }) => tokens.theme.textPrimary};
     line-height: 38px;
     letter-spacing: -2%;
     text-align: center;
@@ -12,6 +12,6 @@ export default css`
   }
 
   .pennies {
-    color: var(--apkt-tokens-theme-textSecondary);
+    color: ${({ tokens }) => tokens.theme.textSecondary};
   }
 `

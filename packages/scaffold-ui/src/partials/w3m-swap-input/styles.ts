@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host > wui-flex {
@@ -6,21 +6,22 @@ export default css`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: var(--apkt-borderRadius-5);
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    padding: var(--apkt-spacing-5);
-    padding-right: var(--apkt-spacing-3);
+    border-radius: ${({ borderRadius }) => borderRadius['5']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    padding: ${({ spacing }) => spacing['5']};
+    padding-right: ${({ spacing }) => spacing['3']};
     width: 100%;
     height: 100px;
     box-sizing: border-box;
-    box-shadow: inset 0px 0px 0px 1px var(--apkt-tokens-theme-foregroundPrimary);
+    box-shadow: inset 0px 0px 0px 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
     position: relative;
-    transition: box-shadow var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
+    transition: box-shadow ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['lg']};
     will-change: background-color;
   }
 
   :host wui-flex.focus {
-    box-shadow: inset 0px 0px 0px 1px var(--apkt-tokens-core-glass010);
+    box-shadow: inset 0px 0px 0px 1px ${({ tokens }) => tokens.core.glass010};
   }
 
   :host > wui-flex .swap-input,
@@ -60,8 +61,8 @@ export default css`
     line-height: 130%;
     letter-spacing: -1.28px;
     outline: none;
-    caret-color: var(--apkt-colors-accent100);
-    color: var(--apkt-tokens-theme-textPrimary);
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
     padding: 0px;
   }
 
@@ -79,7 +80,7 @@ export default css`
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: var(--apkt-tokens-core-glass010);
+    color: ${({ tokens }) => tokens.core.glass010};
     padding-left: 0px;
   }
 

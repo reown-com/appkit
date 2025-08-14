@@ -47,7 +47,7 @@ export default css`
   }
 
   button:disabled > wui-tag {
-    background-color: var(--apkt-tokens-core-glass010);
-    color: var(--apkt-tokens-theme-foregroundTertiary);
+    background-color: ${({ tokens }) => tokens.core.glass010};
+    color: ${({ tokens }) => tokens.theme.foregroundTertiary};
   }
 `

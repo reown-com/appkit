@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-grid {
@@ -25,8 +25,8 @@ export default css`
 
   w3m-all-wallets-list-item {
     opacity: 0;
-    animation-duration: var(--apkt-duration-xl);
-    animation-timing-function: var(--apkt-ease-inout-power-2);
+    animation-duration: ${({ durations }) => durations['xl']};
+    animation-timing-function: ${({ easings }) => easings['ease-inout-power-2']};
     animation-name: fade-in;
     animation-fill-mode: forwards;
   }
@@ -41,8 +41,8 @@ export default css`
   }
 
   wui-loading-spinner {
-    padding-top: var(--apkt-spacing-4);
-    padding-bottom: var(--apkt-spacing-4);
+    padding-top: ${({ spacing }) => spacing['4']};
+    padding-bottom: ${({ spacing }) => spacing['4']};
     justify-content: center;
     grid-column: 1 / span 4;
   }

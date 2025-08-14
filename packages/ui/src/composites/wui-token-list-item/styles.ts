@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -10,26 +10,27 @@ export default css`
     cursor: pointer;
     height: 100%;
     display: flex;
-    column-gap: var(--apkt-spacing-3);
-    padding: var(--apkt-spacing-2);
-    padding-right: var(--apkt-spacing-4);
+    column-gap: ${({ spacing }) => spacing['3']};
+    padding: ${({ spacing }) => spacing['2']};
+    padding-right: ${({ spacing }) => spacing['4']};
     width: 100%;
     background-color: transparent;
-    border-radius: var(--apkt-borderRadius-4);
-    color: var(--apkt-tokens-theme-foregroundSecondary);
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
+    color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     transition:
-      background-color var(--apkt-duration-lg) var(--apkt-ease-out-power-2),
-      opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color, opacity;
   }
 
   @media (hover: hover) and (pointer: fine) {
     :host > wui-flex:hover {
-      background-color: var(--apkt-tokens-theme-foregroundPrimary);
+      background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     }
 
     :host > wui-flex:active {
-      background-color: var(--apkt-tokens-core-glass010);
+      background-color: ${({ tokens }) => tokens.core.glass010};
     }
   }
 
@@ -50,7 +51,7 @@ export default css`
     width: 40px;
     max-width: 40px;
     height: 40px;
-    border-radius: var(--apkt-borderRadius-20);
+    border-radius: ${({ borderRadius }) => borderRadius['20']};
     position: relative;
   }
 
@@ -65,12 +66,12 @@ export default css`
     position: absolute;
     content: '';
     inset: 0;
-    box-shadow: inset 0 0 0 1px var(--apkt-tokens-core-glass010);
-    border-radius: var(--apkt-borderRadius-8);
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
+    border-radius: ${({ borderRadius }) => borderRadius['8']};
   }
 
   button > wui-icon-box[data-variant='square-blue'] {
-    border-radius: var(--apkt-borderRadius-2);
+    border-radius: ${({ borderRadius }) => borderRadius['2']};
     position: relative;
     border: none;
     width: 36px;

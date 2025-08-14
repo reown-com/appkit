@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -12,9 +12,9 @@ export default css`
   }
 
   :host([data-round='true']) {
-    background: var(--apkt-tokens-theme-foregroundPrimary);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: 100%;
-    outline: 1px solid var(--apkt-tokens-core-glass010);
+    outline: 1px solid ${({ tokens }) => tokens.core.glass010};
   }
 
   svg {
@@ -35,7 +35,7 @@ export default css`
     height: 100%;
     -webkit-clip-path: var(--local-path);
     clip-path: var(--local-path);
-    background: var(--apkt-tokens-theme-foregroundPrimary);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   wui-icon {

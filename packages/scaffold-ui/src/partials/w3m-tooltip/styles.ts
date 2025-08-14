@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -8,33 +8,34 @@ export default css`
   :host > wui-flex {
     display: var(--w3m-tooltip-display);
     opacity: var(--w3m-tooltip-opacity);
-    padding: 9px var(--apkt-spacing-3) 10px var(--apkt-spacing-3);
-    border-radius: var(--apkt-borderRadius-3);
-    color: var(--apkt-tokens-theme-backgroundPrimary);
+    padding: 9px ${({ spacing }) => spacing['3']} 10px ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     position: fixed;
     top: var(--w3m-tooltip-top);
     left: var(--w3m-tooltip-left);
     transform: translate(calc(-50% + var(--w3m-tooltip-parent-width)), calc(-100% - 8px));
-    max-width: calc(var(--apkt-modal-width) - var(--apkt-spacing-5));
-    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    max-width: calc(var(--apkt-modal-width) - ${({ spacing }) => spacing['5']});
+    transition: opacity ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity;
     opacity: 0;
-    animation-duration: var(--apkt-duration-xl);
-    animation-timing-function: var(--apkt-ease-out-power-2);
+    animation-duration: ${({ durations }) => durations['xl']};
+    animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
     animation-name: fade-in;
     animation-fill-mode: forwards;
   }
 
   :host([data-variant='shade']) > wui-flex {
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   :host([data-variant='shade']) > wui-flex > wui-text {
-    color: var(--apkt-tokens-theme-textSecondary);
+    color: ${({ tokens }) => tokens.theme.textSecondary};
   }
 
   :host([data-variant='fill']) > wui-flex {
-    background-color: var(--apkt-tokens-theme-textPrimary);
+    background-color: ${({ tokens }) => tokens.theme.textPrimary};
     border: none;
   }
 
@@ -42,7 +43,7 @@ export default css`
     position: absolute;
     width: 12px !important;
     height: 4px !important;
-    color: var(--apkt-tokens-theme-foregroundPrimary);
+    color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   wui-icon[data-placement='top'] {

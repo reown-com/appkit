@@ -1,19 +1,21 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
     width: 100%;
     height: 100px;
-    border-radius: var(--apkt-borderRadius-5);
-    border: 1px solid var(--apkt-tokens-theme-foregroundPrimary);
-    background-color: var(--apkt-tokens-theme-foregroundPrimary);
-    transition: background-color var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
+    border-radius: ${({ borderRadius }) => borderRadius['5']};
+    border: 1px solid ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-1']};
     will-change: background-color;
-    transition: all var(--apkt-ease-out-power-1) var(--apkt-duration-lg);
+    transition: all ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['lg']};
   }
 
   :host(:hover) {
-    background-color: var(--apkt-tokens-theme-foregroundSecondary);
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   wui-flex {

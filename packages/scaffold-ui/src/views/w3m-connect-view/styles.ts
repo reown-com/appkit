@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -12,13 +12,15 @@ export default css`
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: opacity ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity;
     mask-image: var(--connect-mask-image);
   }
 
   .guide {
-    transition: opacity var(--apkt-duration-lg) var(--apkt-ease-out-power-2);
+    transition: opacity ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity;
   }
 
@@ -38,7 +40,7 @@ export default css`
   }
 
   wui-separator {
-    margin: var(--apkt-spacing-3) calc(var(--apkt-spacing-3) * -1);
-    width: calc(100% + var(--apkt-spacing-3) * 2);
+    margin: ${({ spacing }) => spacing['3']} calc(${({ spacing }) => spacing['3']} * -1);
+    width: calc(100% + ${({ spacing }) => spacing['3']} * 2);
   }
 `
