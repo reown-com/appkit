@@ -36,7 +36,7 @@ export class W3mDataCaptureView extends LitElement {
 
   public override connectedCallback() {
     if (!this.siwx || !(this.siwx instanceof ReownAuthentication)) {
-      SnackController.showError('ReownAuthentication is not initialized.')
+      SnackController.showError('ReownAuthentication is not initialized. Please contact support.')
     }
 
     super.connectedCallback()
@@ -228,6 +228,12 @@ export class W3mDataCaptureView extends LitElement {
   }
 
   private async onSubmit() {
+    if (!(this.siwx instanceof ReownAuthentication)) {
+      SnackController.showError('ReownAuthentication is not initialized. Please contact support.')
+
+      return
+    }
+
     const account = ChainController.getActiveCaipAddress()
 
     if (!account) {

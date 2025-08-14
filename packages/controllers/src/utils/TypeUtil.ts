@@ -899,6 +899,7 @@ type PayEvent =
       address?: string
       event: 'PAY_SUCCESS'
       properties: {
+        source: 'pay' | 'fund-from-exchange'
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
@@ -910,6 +911,7 @@ type PayEvent =
       address?: string
       event: 'PAY_ERROR'
       properties: {
+        source: 'pay' | 'fund-from-exchange'
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
@@ -921,6 +923,7 @@ type PayEvent =
       address?: string
       event: 'PAY_INITIATED'
       properties: {
+        source: 'pay' | 'fund-from-exchange'
         paymentId: string
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
@@ -947,6 +950,7 @@ type PayEvent =
         currentPayment: PayCurrentPayment
         headless: boolean
         caipNetworkId?: CaipNetworkId
+        source: 'pay' | 'fund-from-exchange'
       }
     }
 
