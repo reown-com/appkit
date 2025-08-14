@@ -1159,6 +1159,7 @@ export type RemoteFeatures = {
   reownBranding?: boolean
   multiWallet?: boolean
   emailCapture?: EmailCaptureOptions[] | boolean
+  reownAuthentication?: boolean
   // Fund Wallet
   payWithExchange?: boolean
   payments?: boolean
@@ -1258,6 +1259,12 @@ export type Features = {
    * @type {boolean}
    */
   pay?: boolean
+
+  /**
+   * @description Enable or disable the ReownAuthentication SIWX feature. Disabled by default.
+   * @type {boolean}
+   */
+  reownAuthentication?: boolean
 }
 
 export type FeaturesKeys = Exclude<
@@ -1312,6 +1319,7 @@ export type FeatureID =
   | 'email_capture'
   | 'fund_from_exchange'
   | 'payments'
+  | 'reown_authentication'
 
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
@@ -1390,6 +1398,12 @@ export type FeatureConfigMap = {
   payments: {
     apiFeatureName: 'payments'
     localFeatureName: 'payments'
+    returnType: boolean
+    isLegacy: false
+  }
+  reownAuthentication: {
+    apiFeatureName: 'reown_authentication'
+    localFeatureName: 'reownAuthentication'
     returnType: boolean
     isLegacy: false
   }

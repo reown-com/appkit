@@ -84,6 +84,11 @@
       "types": "./dist/types/exports/pay-with-exchange.d.ts",
       "import": "./dist/esm/exports/pay-with-exchange.js",
       "default": "./dist/esm/exports/pay-with-exchange.js"
+    },
+    "./reown-authentication/*": {
+      "types": "./dist/types/exports/reown-authentication/*.d.ts",
+      "import": "./dist/esm/exports/reown-authentication/*.js",
+      "default": "./dist/esm/exports/reown-authentication/*.js"
     }
   },
   "scripts": {
