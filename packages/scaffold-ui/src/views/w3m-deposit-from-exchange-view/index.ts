@@ -21,7 +21,7 @@ import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
-const PRESET_AMOUNTS = [10, 50, 100]
+const PRESET_AMOUNTS = [1, 10, 50, 100]
 
 @customElement('w3m-deposit-from-exchange-view')
 export class W3mDepositFromExchangeView extends LitElement {
