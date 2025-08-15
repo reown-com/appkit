@@ -13,7 +13,7 @@ import {
 import Image from 'next/image'
 
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
-import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useWalletInfo, useAppKitProvider } from '@reown/appkit/react'
 
 import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 
@@ -24,6 +24,7 @@ export function AppKitInfo() {
   const { walletInfo } = useWalletInfo()
   const { chainId } = useAppKitNetwork()
   const appKitAccount = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider('eip155')
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
   const erc3770Address = React.useMemo(() => {
@@ -36,6 +37,8 @@ export function AppKitInfo() {
       return null
     }
   }, [caipAddress, isEIP155])
+
+  const wcSessionProperties = (walletProvider as any)?.session?.sessionProperties
 
   return (
     <Card marginTop={10} marginBottom={10}>
@@ -118,6 +121,14 @@ export function AppKitInfo() {
                     />
                   ) : null}
                   <Text data-testid="w3m-wallet-name">{walletInfo.name}</Text>
+                </Box>
+              </Box>
+
+              {/* WalletConnect session_properties debug */}
+              <Box mt={3}>
+                <Text fontWeight="bold" color="gray.500">WalletConnect Session Properties</Text>
+                <Box as="pre" fontSize="xs" color="purple.600" bg="gray.50" p={2} borderRadius="md" overflowX="auto">
+                  {wcSessionProperties ? JSON.stringify(wcSessionProperties, null, 2) : 'No session properties'}
                 </Box>
               </Box>
             </Box>
