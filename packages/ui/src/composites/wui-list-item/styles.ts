@@ -1,4 +1,8 @@
-import { css } from '../../utils/ThemeHelperUtil.js'
+import { css } from '../../utils/ThemeHelperUtil.js';
+
+
+
+
 
 export default css`
   :host {
@@ -11,7 +15,7 @@ export default css`
     justify-content: space-between;
     padding: ${({ spacing }) => spacing[3]};
     width: 100%;
-    background-color: transparent;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     transition:
       background-color ${({ durations }) => durations['lg']}
