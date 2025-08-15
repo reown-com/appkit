@@ -88,7 +88,7 @@
     "vite-plugin-node-polyfills": "0.23.0",
     "vitest": "2.1.9"
   },
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@10.14.0",
   "pnpm": {
     "overrides": {
       "@solana/web3.js": "1.98.2",
