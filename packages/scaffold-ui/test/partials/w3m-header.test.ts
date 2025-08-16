@@ -158,6 +158,16 @@ describe('W3mHeader', () => {
 
       expect(shakeSpy).toHaveBeenCalled()
     })
+
+    it('should not show close button in SIWXSignMessage view', async () => {
+      RouterController.state.view = 'SIWXSignMessage'
+      element.requestUpdate()
+      await element.updateComplete
+      await elementUpdated(element)
+
+      const closeButton = HelpersUtil.getByTestId(element, 'w3m-header-close')
+      expect(closeButton).toBeFalsy()
+    })
   })
 
   describe('Smart Sessions', () => {
