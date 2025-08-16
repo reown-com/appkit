@@ -183,6 +183,10 @@ export const ConstantsUtil = {
     CommonConstantsUtil.CHAIN.EVM,
     CommonConstantsUtil.CHAIN.SOLANA
   ] as ChainNamespace[],
+  PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES: [
+    CommonConstantsUtil.CHAIN.EVM,
+    CommonConstantsUtil.CHAIN.SOLANA
+  ] as ChainNamespace[],
   ACTIVITY_ENABLED_CHAIN_NAMESPACES: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
