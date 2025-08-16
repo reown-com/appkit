@@ -1,10 +1,10 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-logo {
     width: 80px;
     height: 80px;
-    border-radius: var(--wui-border-radius-m);
+    border-radius: ${({ borderRadius }) => borderRadius['8']};
   }
   @keyframes shake {
     0% {
@@ -31,22 +31,23 @@ export default css`
   }
   wui-icon-box {
     position: absolute;
-    right: calc(var(--wui-spacing-3xs) * -1);
-    bottom: calc(var(--wui-spacing-3xs) * -1);
+    right: calc(${({ spacing }) => spacing['1']} * -1);
+    bottom: calc(${({ spacing }) => spacing['1']} * -1);
     opacity: 0;
     transform: scale(0.5);
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: all ${({ easings }) => easings['ease-out-power-2']}
+      ${({ durations }) => durations['lg']};
   }
   wui-text[align='center'] {
     width: 100%;
-    padding: 0px var(--wui-spacing-l);
+    padding: 0px ${({ spacing }) => spacing['4']};
   }
   [data-error='true'] wui-icon-box {
     opacity: 1;
     transform: scale(1);
   }
   [data-error='true'] > wui-flex:first-child {
-    animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: shake 250ms ${({ easings }) => easings['ease-out-power-2']} both;
   }
   .capitalize {
     text-transform: capitalize;

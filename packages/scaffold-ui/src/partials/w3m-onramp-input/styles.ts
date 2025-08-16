@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -16,14 +16,14 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: var(--wui-spacing-1xs);
+    right: ${({ spacing }) => spacing['2']};
     height: 40px;
-    padding: var(--wui-spacing-xs) var(--wui-spacing-1xs) var(--wui-spacing-xs)
-      var(--wui-spacing-xs);
+    padding: ${({ spacing }) => spacing['2']} ${({ spacing }) => spacing['2']}
+      ${({ spacing }) => spacing['2']} ${({ spacing }) => spacing['2']};
     min-width: 95px;
-    border-radius: var(--FULL, 1000px);
-    border: 1px solid var(--wui-color-gray-glass-002);
-    background: var(--wui-color-gray-glass-002);
+    border-radius: ${({ borderRadius }) => borderRadius['round']};
+    border: 1px solid ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     cursor: pointer;
   }
 

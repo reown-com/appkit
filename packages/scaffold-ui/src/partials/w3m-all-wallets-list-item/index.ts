@@ -61,9 +61,9 @@ export class W3mAllWalletsListItem extends LitElement {
     return html`
       <button>
         ${this.imageTemplate()}
-        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="3xs">
+        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="1">
           <wui-text
-            variant="tiny-500"
+            variant="md-regular"
             color="inherit"
             class=${ifDefined(certified ? 'certified' : undefined)}
             >${this.wallet?.name}</wui-text
@@ -81,7 +81,7 @@ export class W3mAllWalletsListItem extends LitElement {
 
     return html`
       <wui-wallet-image
-        size="md"
+        size="lg"
         imageSrc=${ifDefined(this.imageSrc)}
         name=${this.wallet?.name}
         .installed=${this.wallet?.installed}
@@ -92,7 +92,7 @@ export class W3mAllWalletsListItem extends LitElement {
   }
 
   private shimmerTemplate() {
-    return html`<wui-shimmer width="56px" height="56px" borderRadius="xs"></wui-shimmer>`
+    return html`<wui-shimmer width="56px" height="56px"></wui-shimmer>`
   }
 
   private async fetchImageSrc() {

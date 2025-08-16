@@ -1,41 +1,61 @@
-export type ColorType =
-  | 'accent-100'
-  | 'error-100'
-  | 'fg-100'
-  | 'fg-150'
-  | 'fg-200'
-  | 'fg-250'
-  | 'fg-300'
+import type { vars } from './ThemeHelperUtil.js'
+
+export type ColorType = string
+
+export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
+
+export type AlertType = 'success' | 'error' | 'warning' | 'info'
+
+export type IconColorType =
   | 'inherit'
-  | 'inverse-000'
-  | 'inverse-100'
-  | 'success-100'
-  | 'gray-glass-005'
-  | 'gray-glass-020'
+  | 'accent-primary'
+  | 'accent-certified'
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'default'
+  | 'inverse'
+
+export type TextColorType =
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'invert'
+  | 'error'
+  | 'warning'
+  | 'accent-primary'
+
+export type FontFamilyType = 'regular' | 'mono'
 
 export type TextType =
-  | 'large-500'
-  | 'large-600'
-  | 'large-700'
-  | 'medium-400'
-  | 'medium-600'
-  | 'medium-title-600'
-  | 'micro-600'
-  | 'micro-500'
-  | 'title-6-600'
-  | 'micro-700'
-  | 'mini-700'
-  | 'paragraph-400'
-  | 'paragraph-500'
-  | 'paragraph-600'
-  | 'paragraph-700'
-  | 'small-400'
-  | 'small-500'
-  | 'small-600'
-  | 'tiny-400'
-  | 'tiny-500'
-  | 'tiny-600'
-  | '2xl-500'
+  | 'h1-regular-mono'
+  | 'h1-regular'
+  | 'h1-medium'
+  | 'h2-regular-mono'
+  | 'h2-regular'
+  | 'h2-medium'
+  | 'h3-regular-mono'
+  | 'h3-regular'
+  | 'h3-medium'
+  | 'h4-regular-mono'
+  | 'h4-regular'
+  | 'h4-medium'
+  | 'h5-regular-mono'
+  | 'h5-regular'
+  | 'h5-medium'
+  | 'h6-regular-mono'
+  | 'h6-regular'
+  | 'h6-medium'
+  | 'lg-regular-mono'
+  | 'lg-regular'
+  | 'lg-medium'
+  | 'md-regular-mono'
+  | 'md-regular'
+  | 'md-medium'
+  | 'sm-regular-mono'
+  | 'sm-regular'
+  | 'sm-medium'
 
 export type TextAlign = 'center' | 'left' | 'right'
 
@@ -43,23 +63,11 @@ export type LineClamp = '1' | '2'
 
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
-export type SpacingType =
-  | '0'
-  | '1xs'
-  | '2xl'
-  | '3xl'
-  | '4xl'
-  | '5xl'
-  | '3xs'
-  | '4xs'
-  | 'l'
-  | '2l'
-  | 'm'
-  | 's'
-  | 'xl'
-  | 'xs'
-  | 'xxl'
-  | 'xxs'
+export type SelectSize = 'lg' | 'md' | 'sm'
+
+export type SpacingType = keyof typeof vars.spacing
+
+export type IconSizeType = 'sm' | 'md' | 'lg' | 'xl' | 'inherit'
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
@@ -88,6 +96,10 @@ export interface IWalletImage {
   walletName?: string
 }
 
+export type TabSize = 'sm' | 'md'
+
+export type ToastMessageVariant = 'info' | 'success' | 'warning' | 'error'
+
 export type GridContentType =
   | 'center'
   | 'end'
@@ -100,6 +112,7 @@ export type GridContentType =
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
+  | 'user'
   | 'add'
   | 'allWallets'
   | 'arrowBottomCircle'
@@ -110,11 +123,16 @@ export type IconType =
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
+  | 'arrowTopRight'
+  | 'arrowClockWise'
+  | 'bin'
   | 'bank'
   | 'browser'
   | 'card'
   | 'checkmark'
   | 'checkmarkBold'
+  | 'download'
+  | 'sealCheck'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -125,14 +143,14 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
-  | 'cursorTransparent'
   | 'desktop'
-  | 'disconnect'
+  | 'signOut'
   | 'discord'
-  | 'download'
+  | 'dollar'
   | 'etherscan'
   | 'extension'
   | 'externalLink'
+  | 'exclamationCircle'
   | 'facebook'
   | 'farcaster'
   | 'filters'
@@ -141,26 +159,23 @@ export type IconType =
   | 'helpCircle'
   | 'image'
   | 'id'
-  | 'infoCircle'
   | 'lightbulb'
   | 'mail'
   | 'mobile'
   | 'more'
   | 'networkPlaceholder'
   | 'nftPlaceholder'
-  | 'off'
   | 'playStore'
   | 'plus'
   | 'qrCode'
+  | 'questionMark'
   | 'recycleHorizontal'
-  | 'reown'
   | 'refresh'
+  | 'reown'
   | 'search'
   | 'send'
+  | 'spinner'
   | 'swapHorizontal'
-  | 'swapHorizontalBold'
-  | 'swapHorizontalMedium'
-  | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
   | 'threeDots'
@@ -173,11 +188,15 @@ export type IconType =
   | 'walletConnect'
   | 'walletConnectLightBrown'
   | 'walletConnectBrown'
-  | 'walletPlaceholder'
+  | 'warning'
   | 'warningCircle'
   | 'x'
   | 'info'
-  | 'exclamationTriangle'
+  | 'ethereum'
+  | 'solana'
+  | 'bitcoin'
+
+export type IconWeightType = 'regular' | 'bold' | 'fill'
 
 export type VisualType =
   | 'browser'
@@ -217,21 +236,50 @@ export type LogoType =
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
-export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
+export type SemanticChipType = 'success' | 'error' | 'warning'
 
-export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
+export type SemanticChipSize = 'sm' | 'md' | 'lg'
 
-export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs'
+export type ChipButtonType = 'accent' | 'neutral'
+
+export type ChipButtonSize = 'sm' | 'md' | 'lg'
+
+export type DomainChipVariant = 'success' | 'warning' | 'error'
+
+export type DomainChipSize = 'sm' | 'md'
+
+export type ButtonSize = 'lg' | 'md' | 'sm'
+
+export type ToggleSize = 'lg' | 'md' | 'sm'
+
+export type CheckboxSize = 'lg' | 'md' | 'sm'
+
+export type TooltipSize = 'md' | 'sm'
+
+export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
+
+export type TagSize = 'md' | 'sm'
+
+export type IconButtonVariant = 'neutral-primary' | 'neutral-secondary' | 'accent-primary'
+
+export type IconButtonSize = 'xs' | 'sm' | 'md' | 'lg'
 
 export type ButtonVariant =
-  | 'main'
-  | 'inverse'
-  | 'accent'
-  | 'accent-error'
-  | 'accent-success'
-  | 'neutral'
-  | 'shade'
+  | 'accent-primary'
+  | 'accent-secondary'
+  | 'neutral-primary'
+  | 'neutral-secondary'
+  | 'error-primary'
+  | 'error-secondary'
+  | 'neutral-tertiary'
 
+export type ButtonShortcutVariant = 'accent' | 'secondary'
+export type ButtonLinkVariant = 'accent' | 'secondary'
+
+export type TransactionThumbnailType = TransactionType | 'fiat' | 'unknown' | 'nft'
+export type TransactionThumbnailSize = 'sm' | 'lg'
+
+// @TODO: Remove this everywhere in the code and use TransactionThumbnailType type instead
 export type TransactionType =
   | 'approve'
   | 'bought'
@@ -285,7 +333,7 @@ export type CardSelectType = 'network' | 'wallet'
 
 export type BackgroundType = 'opaque' | 'gray' | 'transparent'
 
-export type TagType = 'main' | 'shade' | 'error' | 'success'
+export type TagType = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
 
 export type AccountEntryType = 'icon' | 'image'
 
@@ -323,7 +371,6 @@ export interface ThemeVariables {
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
-  '--w3m-qr-color'?: string
 }
 
 export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-accent-glass-010'

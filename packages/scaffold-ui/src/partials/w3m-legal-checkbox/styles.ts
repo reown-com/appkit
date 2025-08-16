@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -7,11 +7,11 @@ export default css`
     justify-content: center;
   }
   wui-checkbox {
-    padding: var(--wui-spacing-s);
+    padding: ${({ spacing }) => spacing['3']};
   }
   a {
     text-decoration: none;
-    color: var(--wui-color-fg-150);
+    color: ${({ tokens }) => tokens.theme.textSecondary};
     font-weight: 500;
   }
 `

@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -43,7 +43,7 @@ export default css`
   }
 
   .tokens-container {
-    border-top: 1px solid var(--wui-color-gray-glass-005);
+    border-top: 1px solid ${({ tokens }) => tokens.core.glass010};
     height: 100%;
     max-height: 390px;
   }
@@ -75,23 +75,25 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+    gap: ${({ spacing }) => spacing['2']};
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
     background-color: transparent;
-    border-radius: var(--wui-border-radius-xxs);
-    padding: var(--wui-spacing-xs);
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    padding: ${({ spacing }) => spacing['2']};
     align-items: center;
-    transition: background-color 0.2s linear;
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
+    will-change: background-color;
   }
 
   .select-network-button:hover {
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .select-network-button > wui-image {
     width: 26px;
     height: 26px;
-    border-radius: var(--wui-border-radius-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
   }
 `

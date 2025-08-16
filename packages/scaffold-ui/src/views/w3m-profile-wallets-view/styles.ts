@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -14,7 +14,8 @@ export default css`
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    transition: opacity ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['md']};
     will-change: opacity;
     mask-image: linear-gradient(
       to bottom,
@@ -28,8 +29,8 @@ export default css`
   }
 
   .active-wallets {
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
   }
 
   .active-wallets-box {
@@ -42,21 +43,21 @@ export default css`
 
   .empty-box {
     width: 100%;
-    padding: var(--wui-spacing-l);
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
+    padding: ${({ spacing }) => spacing['4']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
   }
 
   wui-separator {
-    margin: var(--wui-spacing-xs) 0 var(--wui-spacing-xs) 0;
+    margin: ${({ spacing }) => spacing['2']} 0 ${({ spacing }) => spacing['2']} 0;
   }
 
   .active-connection {
-    padding: var(--wui-spacing-xs);
+    padding: ${({ spacing }) => spacing['2']};
   }
 
   .recent-connection {
-    padding: var(--wui-spacing-xs) 0 var(--wui-spacing-xs) 0;
+    padding: ${({ spacing }) => spacing['2']} 0 ${({ spacing }) => spacing['2']} 0;
   }
 
   @media (max-width: 430px) {

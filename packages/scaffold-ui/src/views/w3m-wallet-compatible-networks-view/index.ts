@@ -32,11 +32,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex
-      flexDirection="column"
-      .padding=${['xs', 's', 'm', 's'] as const}
-      gap="xs"
-    >
+    return html` <wui-flex flexDirection="column" .padding=${['2', '3', '3', '3'] as const} gap="2">
       <wui-banner
         icon="warningCircle"
         text="You can only receive assets on these networks"

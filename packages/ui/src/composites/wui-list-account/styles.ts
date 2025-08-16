@@ -1,13 +1,13 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   button {
-    padding: 6.5px var(--wui-spacing-l) 6.5px var(--wui-spacing-xs);
+    padding: 6.5px ${({ spacing }) => spacing['4']} 6.5px ${({ spacing }) => spacing['2']};
     display: flex;
     justify-content: space-between;
     width: 100%;
-    border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-color-gray-glass-002);
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   button[data-clickable='false'] {
@@ -16,29 +16,29 @@ export default css`
   }
 
   wui-image {
-    width: var(--wui-spacing-3xl);
-    height: var(--wui-spacing-3xl);
-    border-radius: var(--wui-border-radius-3xl);
+    width: ${({ spacing }) => spacing['10']};
+    height: ${({ spacing }) => spacing['10']};
+    border-radius: ${({ borderRadius }) => borderRadius['20']};
   }
 
   wui-avatar {
-    width: var(--wui-spacing-3xl);
-    height: var(--wui-spacing-3xl);
+    width: ${({ spacing }) => spacing['10']};
+    height: ${({ spacing }) => spacing['10']};
     box-shadow: 0 0 0 0;
   }
   .address {
-    color: var(--wui-color-fg-base-100);
+    color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
   .address-description {
     text-transform: capitalize;
-    color: var(--wui-color-fg-base-200);
+    color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   wui-icon-box {
     position: relative;
     right: 15px;
     top: 15px;
-    border: 2px solid var(--wui-color-bg-150);
-    background-color: var(--wui-color-bg-125);
+    border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 `

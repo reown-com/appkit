@@ -1,4 +1,4 @@
-import { Meta, Title } from '@storybook/blocks'
+import { Meta, Title } from '@storybook/addon-docs/blocks'
 
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-grid'
@@ -11,15 +11,30 @@ import { iconOptions } from '../../utils/PresetUtils'
 
 <Title>Icons</Title>
 
-<wui-grid gridTemplateColumns="repeat(6, 1fr)" gap="3xl">
-  {iconOptions.map(value => (
-    <>
-      <wui-flex flexDirection="column" alignItems="center" justifyContent="space-between" gap="s">
-        <wui-icon size="lg" color="fg-100" name={value}></wui-icon>
-        <wui-text variant="paragraph-500" color="fg-100">
-          {value}
-        </wui-text>
-      </wui-flex>
-    </>
-  ))}
+## Icons
+
+<wui-grid gridTemplateColumns="repeat(6, 1fr)" gap="4" style={{ marginBottom: '32px' }}>
+{[
+'add', 'allWallets', 'arrowBottom', 'arrowBottomCircle', 'arrowClockWise', 'arrowLeft',
+'arrowRight', 'arrowTop', 'arrowTopRight', 'bank', 'bin', 'browser', 'card', 'checkmark',
+'checkmarkBold', 'chevronBottom', 'chevronLeft', 'chevronRight', 'chevronTop', 'clock',
+'close', 'coinPlaceholder', 'compass', 'copy', 'desktop', 'dollar', 'exclamationCircle',
+'extension', 'externalLink', 'filters', 'helpCircle', 'id', 'image', 'info', 'lightbulb',
+'mail', 'mobile', 'more', 'networkPlaceholder', 'nftPlaceholder', 'plus', 'power', 'qrCode',
+'questionMark', 'refresh', 'search', 'sealCheck', 'send', 'signOut', 'spinner', 'swapHorizontal', 'swapVertical', 'threeDots',
+'user', 'verify', 'verifyFilled', 'wallet', 'warning', 'warningCircle'
+].map(value => (
+<wui-flex
+key={value}
+flexDirection="column"
+alignItems="center"
+justifyContent="space-between"
+gap="2"
+style={{ padding: '8px', backgroundColor: 'var(--wui-color-success-glass-002)', borderRadius: '8px' }} >
+<wui-icon color="default" size="lg" name={value}></wui-icon>
+<wui-text variant="sm-regular" color="inverse" align="center">
+{value}
+</wui-text>
+</wui-flex>
+))}
 </wui-grid>

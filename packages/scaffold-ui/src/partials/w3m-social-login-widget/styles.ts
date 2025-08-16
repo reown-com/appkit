@@ -1,9 +1,9 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-separator {
-    margin: var(--wui-spacing-m) calc(var(--wui-spacing-m) * -1) var(--wui-spacing-m)
-      calc(var(--wui-spacing-m) * -1);
-    width: calc(100% + var(--wui-spacing-s) * 2);
+    margin: ${({ spacing }) => spacing['3']} calc(${({ spacing }) => spacing['3']} * -1)
+      ${({ spacing }) => spacing['3']} calc(${({ spacing }) => spacing['3']} * -1);
+    width: calc(100% + ${({ spacing }) => spacing['3']} * 2);
   }
 `

@@ -80,7 +80,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" gap="xs" class="container">
+      <wui-flex flexDirection="column" gap="2" class="container">
         ${this.amountInputTemplate()} ${this.exchangesTemplate()}
       </wui-flex>
     `
@@ -91,8 +91,8 @@ export class W3mDepositFromExchangeView extends LitElement {
     return html`
       <wui-flex
         flexDirection="column"
-        gap="xs"
-        .padding=${['xs', 's', 's', 's'] as const}
+        gap="2"
+        .padding=${['3', '3', '3', '3'] as const}
         class="exchanges-container"
       >
         ${this.exchanges.map(
@@ -105,7 +105,7 @@ export class W3mDepositFromExchangeView extends LitElement {
               ?loading=${this.isLoading}
               ?disabled=${!this.amount}
             >
-              <wui-text variant="paragraph-500" color="fg-200">
+              <wui-text variant="md-regular" color="secondary">
                 Deposit from ${exchange.name}
               </wui-text>
             </wui-list-item>`
@@ -115,27 +115,26 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
   private amountInputTemplate() {
     return html`
-      <wui-flex flexDirection="column" gap="s" .padding=${['0', 's', 's', 's'] as const} class="amount-input-container">
-        <wui-flex justifyContent="space-between">
-          <wui-text variant="paragraph-500" color="fg-200">Asset</wui-text>
-          <wui-chip-button
-            data-testid="deposit-from-exchange-asset-button"
+      <wui-flex flexDirection="column" gap="3" .padding=${['0', '3', '3', '3'] as const} class="amount-input-container">
+        <wui-flex justifyContent="space-between" alignItems="center">
+          <wui-text variant="md-medium" color="secondary">Asset</wui-text>
+
+          <wui-token-button
+            flexDirection="row-reverse"
             text=${this.network?.nativeCurrency.symbol || ''}
-            imageSrc=${AssetUtil.getNetworkImage(this.network)}
-            size="sm"
-            variant="gray"
-            icon=${null}
-          ></wui-chip-button>
+            imageSrc=${AssetUtil.getNetworkImage(this.network) || ''}
+            >
+          </wui-token-button>
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" justifyContent="center">
-          <wui-flex alignItems="center" gap="4xs">
-            <wui-text variant="2xl-500" color="fg-200">${this.amount}</wui-text>
-            <wui-text variant="paragraph-500" color="fg-200">USD</wui-text>
+          <wui-flex alignItems="center" gap="1">
+            <wui-text variant="h2-regular" color="secondary">${this.amount}</wui-text>
+            <wui-text variant="md-regular" color="secondary">USD</wui-text>
           </wui-flex>
           ${this.tokenAmountTemplate()}
           </wui-flex>
-          <wui-flex justifyContent="space-between" gap="xs">
-            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => this.onPresetAmountClick(amount)} variant=${this.amount === amount ? 'accent' : 'shade'} size="sm" fullWidth>$${amount}</wui-button>`)}
+          <wui-flex justifyContent="space-between" gap="2">
+            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => this.onPresetAmountClick(amount)} variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'} size="sm" fullWidth>$${amount}</wui-button>`)}
           </wui-flex>
         </wui-flex>
       </wui-flex>
@@ -153,7 +152,7 @@ export class W3mDepositFromExchangeView extends LitElement {
     }
 
     return html`
-      <wui-text variant="paragraph-500" color="fg-200">
+      <wui-text variant="md-regular" color="secondary">
         ${this.tokenAmount} ${this.network?.nativeCurrency.symbol}
       </wui-text>
     `

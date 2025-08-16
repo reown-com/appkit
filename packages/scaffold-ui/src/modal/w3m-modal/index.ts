@@ -30,6 +30,8 @@ import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
 import '../../partials/w3m-snackbar/index.js'
 import '../../partials/w3m-tooltip/index.js'
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
+import '../w3m-footer/index.js'
 import '../w3m-router/index.js'
 import styles from './styles.js'
 
@@ -75,12 +77,17 @@ export class W3mModalBase extends LitElement {
             ApiController.fetchRecommendedWallets()
             this.filterByNamespace = val
           }
+        }),
+        RouterController.subscribeKey('view', () => {
+          this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
         })
       ]
     )
   }
 
   public override firstUpdated() {
+    this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
+
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
@@ -110,7 +117,7 @@ export class W3mModalBase extends LitElement {
   public override render() {
     this.style.cssText = `
       --local-border-bottom-mobile-radius: ${
-        this.enableEmbedded ? 'clamp(0px, var(--wui-border-radius-l), 44px)' : '0px'
+        this.enableEmbedded ? 'clamp(0px, var(--apkt-borderRadius-8), 44px)' : '0px'
       };
     `
 
@@ -141,10 +148,12 @@ export class W3mModalBase extends LitElement {
     >
       <w3m-header></w3m-header>
       <w3m-router></w3m-router>
+      <w3m-footer></w3m-footer>
       <w3m-snackbar></w3m-snackbar>
       <w3m-alertbar></w3m-alertbar>
     </wui-card>`
   }
+
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       await this.handleClose()

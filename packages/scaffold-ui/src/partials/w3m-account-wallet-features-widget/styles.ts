@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-flex {
@@ -11,11 +11,11 @@ export default css`
   }
 
   wui-profile-button {
-    margin-top: calc(-1 * var(--wui-spacing-2l));
+    margin-top: calc(-1 * ${({ spacing }) => spacing['4']});
   }
 
   wui-promo + wui-profile-button {
-    margin-top: var(--wui-spacing-2l);
+    margin-top: ${({ spacing }) => spacing['4']};
   }
 
   wui-tabs {
@@ -29,7 +29,7 @@ export default css`
   .contentContainer > wui-icon-box {
     width: 40px;
     height: 40px;
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
   }
 
   .contentContainer > .textContent {

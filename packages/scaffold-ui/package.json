@@ -20,6 +20,11 @@
       "import": "./dist/esm/exports/w3m-modal.js",
       "default": "./dist/esm/exports/w3m-modal.js"
     },
+    "./partials/w3m-router-container": {
+      "types": "./dist/types/exports/partials/w3m-router-container.d.ts",
+      "import": "./dist/esm/exports/partials/w3m-router-container.js",
+      "default": "./dist/esm/exports/partials/w3m-router-container.js"
+    },
     "./utils": {
       "types": "./dist/types/exports/utils.d.ts",
       "import": "./dist/esm/exports/utils.js",

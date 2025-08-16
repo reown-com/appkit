@@ -1,13 +1,28 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
+  :host {
+    width: 100%;
+  }
+
   button {
-    padding: 6.5px var(--wui-spacing-l) 6.5px var(--wui-spacing-xs);
+    padding: ${({ spacing }) => spacing[3]};
     display: flex;
     justify-content: space-between;
     width: 100%;
-    border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-color-gray-glass-002);
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    background-color: transparent;
+  }
+
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
+  }
+
+  button:focus-visible:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent040};
   }
 
   button[data-clickable='false'] {
@@ -17,11 +32,11 @@ export default css`
 
   wui-image,
   wui-icon {
-    width: var(--wui-spacing-3xl);
-    height: var(--wui-spacing-3xl);
+    width: ${({ spacing }) => spacing[10]};
+    height: ${({ spacing }) => spacing[10]};
   }
 
   wui-image {
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
   }
 `

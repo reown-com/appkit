@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
+import { property } from 'lit/decorators.js'
 import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
-import '../../composites/wui-input-element/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-input-text/index.js'
@@ -15,6 +15,8 @@ export class WuiSearchBar extends LitElement {
   // -- State & Properties -------------------------------- //
   public inputComponentRef: Ref<WuiInputText> = createRef<WuiInputText>()
 
+  @property() public inputValue = ''
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -25,18 +27,31 @@ export class WuiSearchBar extends LitElement {
         type="search"
         enterKeyHint="search"
         size="sm"
+        @inputChange=${this.onInputChange}
       >
-        <wui-input-element @click=${this.clearValue} icon="close"></wui-input-element>
+        ${this.inputValue
+          ? html`<wui-icon
+              @click=${this.clearValue}
+              color="inherit"
+              size="sm"
+              name="close"
+            ></wui-icon>`
+          : null}
       </wui-input-text>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private onInputChange(event: CustomEvent) {
+    this.inputValue = event.detail || ''
+  }
+
   private clearValue() {
-    const inputComponent = this.inputComponentRef.value
-    const inputElement = inputComponent?.inputElementRef.value
+    const component = this.inputComponentRef.value
+    const inputElement = component?.inputElementRef.value
     if (inputElement) {
       inputElement.value = ''
+      this.inputValue = ''
       inputElement.focus()
       inputElement.dispatchEvent(new Event('input'))
     }

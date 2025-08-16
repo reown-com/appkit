@@ -22,8 +22,8 @@ export class W3mWalletSendDetails extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-text variant="small-400" color="fg-200">Details</wui-text>
-      <wui-flex flexDirection="column" gap="xxs">
+    return html` <wui-text variant="sm-regular" color="secondary">Details</wui-text>
+      <wui-flex flexDirection="column" gap="1">
         <wui-list-content
           textTitle="Address"
           textValue=${UiHelperUtil.getTruncateString({

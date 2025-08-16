@@ -93,7 +93,7 @@ describe('W3mConnectWalletConnectWidget', () => {
     expect(walletSelector).not.toBeNull()
     expect(walletSelector.getAttribute('name')).toBe(WALLET_CONNECT_CONNECTOR.name)
     expect(walletSelector.getAttribute('tagLabel')).toBe('qr code')
-    expect(walletSelector.getAttribute('tagVariant')).toBe('main')
+    expect(walletSelector.getAttribute('tagVariant')).toBe('accent')
   })
 
   it('should render WalletConnect connector with custom image URL', async () => {

@@ -1,21 +1,25 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     position: relative;
     width: 100%;
     display: inline-block;
-    color: var(--wui-color-fg-275);
   }
 
-  .error {
-    margin: var(--wui-spacing-xxs) var(--wui-spacing-m) var(--wui-spacing-0) var(--wui-spacing-m);
+  :host([disabled]) {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   .base-name {
     position: absolute;
-    right: 45px;
-    top: 15px;
+    right: ${({ spacing }) => spacing[4]};
+    top: 50%;
+    transform: translateY(-50%);
     text-align: right;
+    padding: ${({ spacing }) => spacing[1]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 `

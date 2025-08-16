@@ -1,21 +1,17 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
-  :host > wui-flex {
-    background-color: var(--wui-color-gray-glass-005);
-  }
-
   :host wui-ux-by-reown {
     padding-top: 0;
   }
 
   :host wui-ux-by-reown.branding-only {
-    padding-top: var(--wui-spacing-m);
+    padding-top: ${({ spacing }) => spacing['3']};
   }
 
   a {
     text-decoration: none;
-    color: var(--wui-color-fg-175);
+    color: ${({ tokens }) => tokens.core.textAccentPrimary};
     font-weight: 500;
   }
 `

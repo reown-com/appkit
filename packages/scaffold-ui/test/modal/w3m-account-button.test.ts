@@ -217,14 +217,13 @@ describe('W3mAccountButton', () => {
         html`<w3m-account-button namespace="solana"></w3m-account-button>`
       )) as W3mAccountButton
       const wuiAccountButton = HelpersUtil.getByTestId(element, 'account-button-solana')
+      const { value, floating, symbol } = CoreHelperUtil.formatBalance('2.00', 'SOL')
 
       await elementUpdated(element)
       await element.updateComplete
 
       expect(wuiAccountButton?.getAttribute('address')).toEqual('FyTsuBMn')
-      expect(wuiAccountButton?.getAttribute('balance')).toEqual(
-        CoreHelperUtil.formatBalance('2.00', 'SOL')
-      )
+      expect(wuiAccountButton?.getAttribute('balance')).toEqual(`${value}.${floating} ${symbol}`)
       expect(wuiAccountButton?.getAttribute('profileName')).toEqual('test')
       expect(wuiAccountButton?.getAttribute('avatarSrc')).toEqual('https://example.com/image.png')
     })

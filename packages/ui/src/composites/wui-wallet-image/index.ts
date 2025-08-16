@@ -3,8 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import '../../layout/wui-flex/index.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
@@ -12,10 +11,10 @@ import styles from './styles.js'
 
 @customElement('wui-wallet-image')
 export class WuiWalletImage extends LitElement {
-  public static override styles = [elementStyles, resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'xl' | 'xs' | 'xxs'> = 'md'
+  @property() public size: 'lg' | 'md' | 'sm' = 'md'
 
   @property() public name = ''
 
@@ -29,19 +28,22 @@ export class WuiWalletImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let borderRadius: BorderRadiusType = 'xxs'
+    let borderRadius: BorderRadiusType = '1'
     if (this.size === 'lg') {
-      borderRadius = 'm'
+      borderRadius = '4'
     } else if (this.size === 'md') {
-      borderRadius = 'xs'
-    } else {
-      borderRadius = 'xxs'
+      borderRadius = '2'
+    } else if (this.size === 'sm') {
+      borderRadius = '1'
     }
     this.style.cssText = `
-       --local-border-radius: var(--wui-border-radius-${borderRadius});
-       --local-size: var(--wui-wallet-image-size-${this.size});
+       --local-border-radius: var(--apkt-borderRadius-${borderRadius});
    `
 
+    this.dataset['size'] = this.size
+    if (this.imageSrc) {
+      this.dataset['image'] = 'true'
+    }
     if (this.walletIcon) {
       this.dataset['walletIcon'] = this.walletIcon
     }
@@ -56,19 +58,14 @@ export class WuiWalletImage extends LitElement {
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     } else if (this.walletIcon) {
-      return html`<wui-icon
-        data-parent-size="md"
-        size="md"
-        color="inherit"
-        name=${this.walletIcon}
-      ></wui-icon>`
+      return html`<wui-icon size="md" color="default" name=${this.walletIcon}></wui-icon>`
     }
 
     return html`<wui-icon
       data-parent-size=${this.size}
       size="inherit"
       color="inherit"
-      name="walletPlaceholder"
+      name="wallet"
     ></wui-icon>`
   }
 }

@@ -1,22 +1,22 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: block;
-    width: var(--wui-box-size-lg);
-    height: var(--wui-box-size-lg);
+    width: 120px;
+    height: 120px;
   }
 
   svg {
-    width: var(--wui-box-size-lg);
-    height: var(--wui-box-size-lg);
+    width: 120px;
+    height: 120px;
     fill: none;
     stroke: transparent;
     stroke-linecap: round;
   }
 
   use {
-    stroke: var(--wui-color-accent-100);
+    stroke: ${tokens => tokens.colors.accent100};
     stroke-width: 2px;
     stroke-dasharray: 54, 118;
     stroke-dashoffset: 172;

@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -6,21 +6,21 @@ export default css`
   }
 
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xxs);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
     width: 100%;
   }
 
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xxs);
+    padding: ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
     cursor: pointer;
   }
 
   .details-content-container {
-    padding: var(--wui-spacing-1xs);
+    padding: ${({ spacing }) => spacing['2']};
     padding-top: 0px;
     display: flex;
     align-items: center;
@@ -33,11 +33,13 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s);
-    padding-left: var(--wui-spacing-s);
-    padding-right: var(--wui-spacing-1xs);
-    border-radius: calc(var(--wui-border-radius-5xs) + var(--wui-border-radius-4xs));
-    background: var(--wui-color-gray-glass-002);
+    padding: ${({ spacing }) => spacing['3']};
+    padding-left: ${({ spacing }) => spacing['3']};
+    padding-right: ${({ spacing }) => spacing['2']};
+    border-radius: calc(
+      ${({ borderRadius }) => borderRadius['1']} + ${({ borderRadius }) => borderRadius['1']}
+    );
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .details-row-title {
@@ -45,6 +47,6 @@ export default css`
   }
 
   .details-row.provider-free-row {
-    padding-right: var(--wui-spacing-xs);
+    padding-right: ${({ spacing }) => spacing['2']};
   }
 `

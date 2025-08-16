@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -9,32 +9,61 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 48px;
-    width: 100%;
-    background-color: var(--wui-color-accent-glass-010);
-    border-radius: var(--wui-border-radius-xs);
-    border: 1px solid var(--wui-color-accent-glass-010);
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
-    will-change: background-color;
   }
 
-  wui-tooltip {
-    padding: 7px var(--wui-spacing-s) 8px var(--wui-spacing-s);
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translate(-50%, -100%);
-    opacity: 0;
-    display: none;
+  button:focus-visible {
+    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
   }
 
-  @media (hover: hover) and (pointer: fine) {
+  @media (hover: hover) {
     button:hover:enabled {
-      background-color: var(--wui-color-accent-glass-015);
+      border-radius: ${({ borderRadius }) => borderRadius[32]};
     }
+  }
 
-    button:active:enabled {
-      background-color: var(--wui-color-accent-glass-020);
-    }
+  button[data-variant='accent'] {
+    background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
+  }
+
+  button[data-variant='secondary'] {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  button[data-size='sm'] {
+    padding: ${({ spacing }) => spacing[2]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+  }
+
+  button[data-size='md'] {
+    padding: ${({ spacing }) => spacing[3]};
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
+  }
+
+  button[data-size='lg'] {
+    padding: ${({ spacing }) => spacing[3]};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+  }
+
+  button[data-size='sm'] wui-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  button[data-size='md'] wui-icon {
+    width: 16px;
+  }
+
+  button[data-size='lg'] wui-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  button[data-full-width] {
+    width: 100%;
+  }
+
+  button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `

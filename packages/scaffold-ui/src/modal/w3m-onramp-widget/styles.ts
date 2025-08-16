@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host > wui-flex {
@@ -7,7 +7,7 @@ export default css`
   }
 
   :host > wui-flex > wui-flex {
-    border-radius: var(--wui-border-radius-l);
+    border-radius: ${({ borderRadius }) => borderRadius['8']};
     width: 100%;
   }
 

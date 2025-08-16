@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-flex {
@@ -6,14 +6,20 @@ export default css`
   }
 
   .suggestion {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+  }
+
+  .suggestion:hover:not(:disabled) {
+    cursor: pointer;
     border: none;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    padding: var(--wui-spacing-m);
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    border-radius: ${({ borderRadius }) => borderRadius[6]};
+    padding: ${({ spacing }) => spacing[4]};
   }
 
   .suggestion:disabled {
@@ -22,12 +28,8 @@ export default css`
   }
 
   .suggestion:focus-visible:not(:disabled) {
-    outline: 1px solid var(--wui-color-gray-glass-020);
-    background-color: var(--wui-color-gray-glass-005);
-  }
-
-  .suggestion:hover:not(:disabled) {
-    background-color: var(--wui-color-gray-glass-005);
+    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent040};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   .suggested-name {
@@ -45,7 +47,7 @@ export default css`
   .input-submit-button,
   .input-loading-spinner {
     position: absolute;
-    top: 26px;
+    top: 22px;
     transform: translateY(-50%);
     right: 10px;
   }

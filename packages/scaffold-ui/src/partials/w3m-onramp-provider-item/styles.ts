@@ -1,60 +1,54 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   button {
-    padding: var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xs);
+    padding: ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
     border: none;
     outline: none;
-    background-color: var(--wui-color-gray-glass-002);
+    background-color: ${({ tokens }) => tokens.core.glass010};
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: var(--wui-spacing-s);
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    gap: ${({ spacing }) => spacing['3']};
+    transition: background-color ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['md']};
     will-change: background-color;
+    cursor: pointer;
   }
 
   button:hover {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .provider-image {
-    width: var(--wui-spacing-3xl);
-    min-width: var(--wui-spacing-3xl);
-    height: var(--wui-spacing-3xl);
-    border-radius: calc(var(--wui-border-radius-xs) - calc(var(--wui-spacing-s) / 2));
+    width: ${({ spacing }) => spacing['10']};
+    min-width: ${({ spacing }) => spacing['10']};
+    height: ${({ spacing }) => spacing['10']};
+    border-radius: calc(
+      ${({ borderRadius }) => borderRadius['4']} - calc(${({ spacing }) => spacing['3']} / 2)
+    );
     position: relative;
     overflow: hidden;
   }
 
-  .provider-image::after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    inset: 0;
-    border-radius: calc(var(--wui-border-radius-xs) - calc(var(--wui-spacing-s) / 2));
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
-  }
-
   .network-icon {
-    width: var(--wui-spacing-m);
-    height: var(--wui-spacing-m);
-    border-radius: calc(var(--wui-spacing-m) / 2);
+    width: ${({ spacing }) => spacing['3']};
+    height: ${({ spacing }) => spacing['3']};
+    border-radius: calc(${({ spacing }) => spacing['3']} / 2);
     overflow: hidden;
     box-shadow:
-      0 0 0 3px var(--wui-color-gray-glass-002),
-      0 0 0 3px var(--wui-color-modal-bg);
-    transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-md);
+      0 0 0 3px ${({ tokens }) => tokens.theme.foregroundPrimary},
+      0 0 0 3px ${({ tokens }) => tokens.theme.backgroundPrimary};
+    transition: box-shadow ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['md']};
     will-change: box-shadow;
   }
 
   button:hover .network-icon {
     box-shadow:
-      0 0 0 3px var(--wui-color-gray-glass-005),
-      0 0 0 3px var(--wui-color-modal-bg);
+      0 0 0 3px ${({ tokens }) => tokens.core.glass010},
+      0 0 0 3px ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 `

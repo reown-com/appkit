@@ -1,0 +1,94 @@
+import { Meta, Title } from '@storybook/addon-docs/blocks'
+
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
+
+<Meta title="Theme/Motion" />
+
+# Motion
+
+<Title>Motion</Title>
+
+<wui-text variant="lg-regular" color="primary" style={{ marginBottom: '24px' }}>
+Visual demonstration of all motion easing functions and durations in the design system:
+</wui-text>
+
+## Ease Out Animations
+
+_Fast start, slow finish - best for elements entering the screen_
+
+<wui-flex flexDirection="column" gap="6">
+  <wui-flex flexDirection="column" gap="3" style={{ padding: '20px', borderRadius: '12px', backgroundColor: 'var(--apkt-tokens-theme-foregroundAccent010)' }}>
+    <wui-text variant="sm-medium" color="inverse">Ease Out Power 2</wui-text>
+    <wui-text variant="sm-regular" color="inverse">--apkt-easings-ease-out-power-2</wui-text>
+    <div style={{ width: '100%', height: '60px', position: 'relative', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)', borderRadius: '8px', border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent060)', borderRadius: '50%', animation: 'easeOutPower2 2s var(--apkt-easings-ease-out-power-2) infinite alternate' }} />
+    </div>
+  </wui-flex>
+
+<wui-flex flexDirection="column" gap="3" style={{ padding: '20px', borderRadius: '12px', backgroundColor: 'var(--apkt-tokens-theme-backgroundSecondary)' }}>
+<wui-text variant="sm-medium" color="inverse">Ease Out Power 1</wui-text>
+<wui-text variant="sm-regular" color="inverse">--apkt-easings-ease-out-power-1</wui-text>
+
+<div style={{ width: '100%', height: '60px', position: 'relative', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)', borderRadius: '8px', border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)', overflow: 'hidden' }}>
+<div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent060)', borderRadius: '50%', animation: 'easeOutPower1 2s var(--apkt-easings-ease-out-power-1) infinite alternate' }} />
+</div>
+</wui-flex>
+</wui-flex>
+
+## Ease In Animations
+
+_Slow start, fast finish - best for elements exiting the screen_
+
+<wui-flex flexDirection="column" gap="6">
+  <wui-flex flexDirection="column" gap="3" style={{ padding: '20px', borderRadius: '12px', backgroundColor: 'var(--apkt-tokens-theme-backgroundSecondary)' }}>
+    <wui-text variant="sm-medium" color="inverse">Ease In Power 2</wui-text>
+    <wui-text variant="sm-regular" color="inverse">--apkt-easings-ease-in-power-2</wui-text>
+    <div style={{ width: '100%', height: '60px', position: 'relative', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)', borderRadius: '8px', border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent060)', borderRadius: '50%', animation: 'easeInPower2 2s var(--apkt-easings-ease-in-power-2) infinite alternate' }} />
+    </div>
+  </wui-flex>
+
+<wui-flex flexDirection="column" gap="3" style={{ padding: '20px', borderRadius: '12px', backgroundColor: 'var(--apkt-tokens-theme-backgroundSecondary)' }}>
+<wui-text variant="sm-medium" color="inverse">Ease In Power 1</wui-text>
+<wui-text variant="sm-regular" color="inverse">--apkt-easings-ease-in-power-1</wui-text>
+
+<div style={{ width: '100%', height: '60px', position: 'relative', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)', borderRadius: '8px', border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)', overflow: 'hidden' }}>
+<div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent060)', borderRadius: '50%', animation: 'easeInPower1 2s var(--apkt-easings-ease-in-power-1) infinite alternate' }} />
+</div>
+</wui-flex>
+</wui-flex>
+
+## Ease In-Out Animations
+
+_Smooth start and finish - best for elements moving within the screen_
+
+<wui-flex flexDirection="column" gap="6">
+  <wui-flex flexDirection="column" gap="3" style={{ padding: '20px', borderRadius: '12px', backgroundColor: 'var(--apkt-tokens-theme-foregroundAccent010)' }}>
+    <wui-text variant="sm-medium" color="inverse">Ease InOut Power 2</wui-text>
+    <wui-text variant="sm-regular" color="inverse">--apkt-easings-ease-inout-power-2</wui-text>
+    <div style={{ width: '100%', height: '60px', position: 'relative', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)', borderRadius: '8px', border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent060)', borderRadius: '50%', animation: 'easeInOutPower2 2s var(--apkt-easings-ease-inout-power-2) infinite alternate' }} />
+    </div>
+  </wui-flex>
+
+<wui-flex flexDirection="column" gap="3" style={{ padding: '20px', borderRadius: '12px', backgroundColor: 'var(--apkt-tokens-theme-backgroundSecondary)' }}>
+<wui-text variant="sm-medium" color="inverse">Ease InOut Power 1</wui-text>
+<wui-text variant="sm-regular" color="inverse">--apkt-easings-ease-inout-power-1</wui-text>
+
+<div style={{ width: '100%', height: '60px', position: 'relative', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent010)', borderRadius: '8px', border: '1px dotted var(--apkt-tokens-core-foregroundAccent060)', overflow: 'hidden' }}>
+<div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', backgroundColor: 'var(--apkt-tokens-core-foregroundAccent060)', borderRadius: '50%', animation: 'easeInOutPower1 2s var(--apkt-easings-ease-inout-power-1) infinite alternate' }} />
+</div>
+</wui-flex>
+</wui-flex>
+
+<style>
+  {`
+@keyframes easeOutPower2 { 0% { left: 12px; } 100% { left: calc(100% - 28px); } }
+@keyframes easeOutPower1 { 0% { left: 12px; } 100% { left: calc(100% - 28px); } }
+@keyframes easeInPower2 { 0% { left: 12px; } 100% { left: calc(100% - 28px); } }
+@keyframes easeInPower1 { 0% { left: 12px; } 100% { left: calc(100% - 28px); } }
+@keyframes easeInOutPower2 { 0% { left: 12px; } 100% { left: calc(100% - 28px); } }
+@keyframes easeInOutPower1 { 0% { left: 12px; } 100% { left: calc(100% - 28px); } }
+`}
+</style>

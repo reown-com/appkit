@@ -1,44 +1,49 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
     display: flex;
     width: auto;
     flex-direction: column;
-    gap: var(--wui-border-radius-1xs);
-    border-radius: var(--wui-border-radius-s);
-    background: var(--wui-color-gray-glass-002);
-    padding: var(--wui-spacing-s) var(--wui-spacing-1xs) var(--wui-spacing-1xs)
-      var(--wui-spacing-1xs);
+    gap: ${({ spacing }) => spacing['1']};
+    border-radius: ${({ borderRadius }) => borderRadius['5']};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    padding: ${({ spacing }) => spacing['3']} ${({ spacing }) => spacing['2']}
+      ${({ spacing }) => spacing['2']} ${({ spacing }) => spacing['2']};
+  }
+
+  wui-list-content {
+    width: -webkit-fill-available !important;
   }
 
   wui-text {
-    padding: 0 var(--wui-spacing-1xs);
+    padding: 0 ${({ spacing }) => spacing['2']};
   }
 
   wui-flex {
-    margin-top: var(--wui-spacing-1xs);
+    margin-top: ${({ spacing }) => spacing['2']};
   }
 
   .network {
     cursor: pointer;
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-1']};
     will-change: background-color;
   }
 
   .network:focus-visible {
-    border: 1px solid var(--wui-color-accent-100);
-    background-color: var(--wui-color-gray-glass-005);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    border: 1px solid ${({ tokens }) => tokens.core.textAccentPrimary};
+    background-color: ${({ tokens }) => tokens.core.glass010};
+    -webkit-box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent010};
+    -moz-box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent010};
+    box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
   .network:hover {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: ${({ tokens }) => tokens.core.glass010};
   }
 
   .network:active {
-    background-color: var(--wui-color-gray-glass-010);
+    background-color: ${({ tokens }) => tokens.core.glass010};
   }
 `

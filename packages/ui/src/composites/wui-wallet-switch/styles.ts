@@ -1,19 +1,24 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   button {
     display: flex;
     align-items: center;
-    padding: var(--wui-spacing-xxs);
-    border-radius: var(--wui-border-radius-xxs);
-    column-gap: var(--wui-spacing-xs);
+    height: 40px;
+    padding: ${({ spacing }) => spacing[2]};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    column-gap: ${({ spacing }) => spacing[1]};
+    background-color: transparent;
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
+    will-change: background-color;
   }
 
   wui-image,
   .icon-box {
-    width: var(--wui-spacing-xxl);
-    height: var(--wui-spacing-xxl);
-    border-radius: var(--wui-border-radius-3xs);
+    width: ${({ spacing }) => spacing[6]};
+    height: ${({ spacing }) => spacing[6]};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
   wui-text {
@@ -25,17 +30,25 @@ export default css`
   }
 
   .icon-box[data-active='true'] {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   .circle {
     position: absolute;
     left: 16px;
     top: 15px;
-    width: var(--wui-spacing-1xs);
-    height: var(--wui-spacing-1xs);
-    background-color: var(--wui-color-success-100);
-    border: 2px solid var(--wui-color-modal-bg);
+    width: 8px;
+    height: 8px;
+    background-color: ${({ tokens }) => tokens.core.textSuccess};
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: 50%;
+  }
+
+  /* -- Hover & Active states ----------------------------------------------------------- */
+  @media (hover: hover) {
+    button:hover:enabled,
+    button:active:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    }
   }
 `

@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -7,27 +7,30 @@ export default css`
   }
 
   input {
-    width: 50px;
-    height: 50px;
-    background: var(--wui-color-gray-glass-010);
-    border-radius: var(--wui-border-radius-xs);
-    border: 1px solid var(--wui-color-gray-glass-005);
-    font-family: var(--wui-font-family);
-    font-size: var(--wui-font-size-large);
-    font-weight: var(--wui-font-weight-regular);
-    letter-spacing: var(--wui-letter-spacing-large);
+    width: 48px;
+    height: 48px;
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
+    font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-size: ${({ textSize }) => textSize.large};
+    line-height: 18px;
+    letter-spacing: -0.16px;
     text-align: center;
-    color: var(--wui-color-fg-100);
-    caret-color: var(--wui-color-accent-100);
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     transition:
-      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      border-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      border-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      box-shadow ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color, border-color, box-shadow;
     box-sizing: border-box;
     -webkit-appearance: none;
     -moz-appearance: textfield;
-    padding: 0px;
+    padding: ${({ spacing }) => spacing[4]};
   }
 
   input::-webkit-outer-spin-button,
@@ -42,21 +45,12 @@ export default css`
 
   input:disabled {
     cursor: not-allowed;
-    border: 1px solid var(--wui-color-gray-glass-010);
-    background: var(--wui-color-gray-glass-005);
+    opacity: 0.5;
   }
 
-  input:focus:enabled {
-    background-color: var(--wui-color-gray-glass-015);
-    border: 1px solid var(--wui-color-accent-100);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    input:hover:enabled {
-      background-color: var(--wui-color-gray-glass-015);
-    }
+  input:focus-visible:enabled {
+    background-color: transparent;
+    border: 1px solid ${({ tokens }) => tokens.theme.borderSecondary};
+    box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent040};
   }
 `

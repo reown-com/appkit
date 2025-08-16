@@ -1,34 +1,26 @@
 import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/wui-alertbar'
 import type { WuiAlertBar } from '@reown/appkit-ui/wui-alertbar'
+import '@reown/appkit-ui/wui-alertbar'
+import '@reown/appkit-ui/wui-semantic-chip'
 
 import '../../components/gallery-container'
-import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiAlertBar>
 
 export default {
   title: 'Composites/wui-alertbar',
   args: {
-    message: 'Alert',
-    backgroundColor: 'fg-350',
-    iconColor: 'fg-325',
-    icon: 'info'
+    message: 'Transaction sent successfully',
+    type: 'info'
   },
   argTypes: {
-    backgroundColor: {
-      options: colorOptions,
-      control: { type: 'select' }
-    },
-    iconColor: {
-      options: colorOptions,
-      control: { type: 'select' }
-    },
-    icon: {
-      options: iconOptions,
+    message: { control: { type: 'text' } },
+    type: {
+      options: ['info', 'success', 'warning', 'error'],
       control: { type: 'select' }
     }
   }
@@ -37,13 +29,7 @@ export default {
 export const Default: Component = {
   render: args => html`
     <gallery-container width="336">
-      <wui-alertbar
-        iconColor=${args.iconColor}
-        backgroundColor=${args.backgroundColor}
-        icon=${args.icon}
-        message=${args.message}
-      >
-      </wui-alertbar>
+      <wui-alertbar message=${args.message} type=${ifDefined(args.type)}></wui-alertbar>
     </gallery-container>
   `
 }

@@ -45,8 +45,8 @@ export class W3mLegalFooter extends LitElement {
 
     return html`
       <wui-flex flexDirection="column">
-        <wui-flex .padding=${['m', 's', 's', 's'] as const} justifyContent="center">
-          <wui-text color="fg-250" variant="small-400" align="center">
+        <wui-flex .padding=${['4', '3', '3', '3'] as const} justifyContent="center">
+          <wui-text color="secondary" variant="md-regular" align="center">
             By connecting your wallet, you agree to our <br />
             ${this.termsTemplate()} ${this.andTemplate()} ${this.privacyTemplate()}
           </wui-text>
