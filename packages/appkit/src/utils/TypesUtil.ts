@@ -87,9 +87,9 @@ export type AppKitOptions = {
    */
   coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
   /**
-   * Enable analytics to get more insights on your users activity within your Reown Cloud's dashboard.
+   * Enable analytics to get more insights on your users activity within your our Dashboard.
    * @default false
-   * @see https://cloud.walletconnect.com/
+   * @see https://dashboard.reown.com/
    */
   metadata?: Metadata
   /**
