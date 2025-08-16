@@ -39,7 +39,7 @@ describe('BlockchainApiController', () => {
     vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
     OptionsController.state.projectId = 'test-project-id'
 
-    await BlockchainApiController.fetchIdentity({ address, caipNetworkId: 'eip155:1' })
+    await BlockchainApiController.fetchIdentity({ address })
 
     expect(FetchUtil.prototype.get).toHaveBeenCalledWith(
       expect.objectContaining({

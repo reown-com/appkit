@@ -8,6 +8,7 @@ import {
   type Connector,
   ConnectorController,
   type ConnectorType,
+  EventsController,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
@@ -404,6 +405,37 @@ describe('syncConnectedWalletInfo', () => {
         chainNamespace: 'eip155'
       })
       expect(getCaipNetwork).toHaveBeenCalledWith('eip155')
+    })
+
+    it('should emit CONNECT_SUCCESS event on reconnection', async () => {
+      const appKit = new AppKit(mockOptions)
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue({
+        syncConnection: vi.fn().mockResolvedValue({
+          address: '0xabc',
+          chainId: '1',
+          provider: {}
+        })
+      })
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('test-connector')
+      vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([
+        { id: 'test-connector', info: { name: 'Test Connector' } } as unknown as Connector
+      ])
+      vi.spyOn(appKit, 'getCaipNetwork').mockReturnValue({
+        id: '1',
+        rpcUrls: { default: { http: ['https://test.com'] } }
+      } as unknown as CaipNetwork)
+
+      const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+
+      await appKit['syncAdapterConnection']('eip155')
+
+      expect(sendEventSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties: expect.objectContaining({ reconnect: true })
+        })
+      )
     })
 
     it('should handle missing caipNetwork', async () => {

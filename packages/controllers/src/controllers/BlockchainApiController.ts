@@ -192,18 +192,7 @@ export const BlockchainApiController = {
     }
   },
 
-  async fetchIdentity({
-    address,
-    caipNetworkId
-  }: BlockchainApiIdentityRequest & {
-    caipNetworkId: CaipNetworkId
-  }) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
-
-    if (!isSupported) {
-      return { avatar: '', name: '' }
-    }
-
+  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
     if (identityCache) {
       return identityCache
