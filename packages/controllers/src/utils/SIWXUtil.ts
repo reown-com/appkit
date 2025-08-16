@@ -334,14 +334,25 @@ export const SIWXUtil = {
     signature: string
   ): Promise<void> {
     if (addEmbeddedWalletSessionPromise) {
+      // eslint-disable-next-line no-console
+      console.debug('[SIWX] addEmbeddedWalletSession:dedup')
       return addEmbeddedWalletSessionPromise
     }
 
     const siwx = SIWXUtil.getSIWX()
 
     if (!siwx) {
+      // eslint-disable-next-line no-console
+      console.debug('[SIWX] addEmbeddedWalletSession:skip:no_siwx')
       return Promise.resolve()
     }
+
+    // eslint-disable-next-line no-console
+    console.debug('[SIWX] addEmbeddedWalletSession:start', {
+      chainId: siwxMessageData.chainId,
+      address: siwxMessageData.accountAddress,
+      statementSet: Boolean(siwxMessageData.statement)
+    })
 
     addEmbeddedWalletSessionPromise = siwx
       .addSession({
@@ -350,6 +361,8 @@ export const SIWXUtil = {
         signature
       })
       .finally(() => {
+        // eslint-disable-next-line no-console
+        console.debug('[SIWX] addEmbeddedWalletSession:done')
         addEmbeddedWalletSessionPromise = null
       })
 
@@ -368,7 +381,21 @@ export const SIWXUtil = {
     const network = getActiveCaipNetwork()
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
+    // eslint-disable-next-line no-console
+    console.debug('[SIWX] universalProviderAuthenticate:start', {
+      chains,
+      methods,
+      namespaces: Array.from(namespaces),
+      hasSiwx: Boolean(siwx),
+      activeCaipNetwork: network?.caipNetworkId
+    })
+
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
+      // eslint-disable-next-line no-console
+      console.debug('[SIWX] universalProviderAuthenticate:skipped', {
+        reason: !siwx ? 'no_siwx' : namespaces.size !== 1 ? 'multi_namespace' : 'non_eip155',
+        namespaces: Array.from(namespaces)
+      })
       return false
     }
 
@@ -377,6 +404,27 @@ export const SIWXUtil = {
       chainId: getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
       accountAddress: ''
     })
+
+    const outgoingChains = [siwxMessage.chainId, ...chains.filter(chain => chain !== siwxMessage.chainId)]
+
+    // eslint-disable-next-line no-console
+    console.debug('[SIWX] universalProviderAuthenticate:message_built', {
+      chainId: siwxMessage.chainId,
+      domain: siwxMessage.domain,
+      uri: siwxMessage.uri,
+      nonce: siwxMessage.nonce,
+      iat: siwxMessage.issuedAt,
+      exp: siwxMessage.expirationTime,
+      nbf: siwxMessage.notBefore,
+      requestId: siwxMessage.requestId,
+      version: siwxMessage.version,
+      resourcesCount: siwxMessage.resources?.length || 0,
+      statementSet: Boolean(siwxMessage.statement),
+      outgoingChains
+    })
+
+    // eslint-disable-next-line no-console
+    console.debug('[SIWX] universalProviderAuthenticate:calling_authenticate')
 
     const result = await universalProvider.authenticate({
       nonce: siwxMessage.nonce,
@@ -392,7 +440,15 @@ export const SIWXUtil = {
       chainId: siwxMessage.chainId,
       methods,
       // The first chainId is what is used for universal provider to build the message
-      chains: [siwxMessage.chainId, ...chains.filter(chain => chain !== siwxMessage.chainId)]
+      chains: outgoingChains
+    })
+
+    // eslint-disable-next-line no-console
+    console.debug('[SIWX] universalProviderAuthenticate:authenticate_result', {
+      hasSession: Boolean(result?.session),
+      topic: result?.session?.topic,
+      peerName: result?.session?.peer?.metadata?.name,
+      authsCount: result?.auths?.length || 0
     })
 
     SnackController.showLoading('Authenticating...', { autoClose: false })
@@ -431,6 +487,11 @@ export const SIWXUtil = {
         }
       })
 
+      // eslint-disable-next-line no-console
+      console.debug('[SIWX] universalProviderAuthenticate:setting_sessions', {
+        count: sessions.length
+      })
+
       try {
         await siwx.setSessions(sessions)
 
@@ -461,6 +522,8 @@ export const SIWXUtil = {
       }
     }
 
+    // eslint-disable-next-line no-console
+    console.debug('[SIWX] universalProviderAuthenticate:done')
     return true
   },
   getSIWXEventProperties() {
