@@ -181,7 +181,7 @@ const controller = {
     }
   },
 
-  resetState() {
+  reset() {
     state.selectedProvider = null
     state.error = null
     state.purchaseCurrency = USDC_CURRENCY_DEFAULT

@@ -16,7 +16,7 @@ export interface ThemeControllerState {
 
 // -- State --------------------------------------------- //
 const state = proxy<ThemeControllerState>({
-  themeMode: 'dark',
+  themeMode: 'dark' as const,
   themeVariables: {},
   w3mThemeVariables: undefined
 })
@@ -72,6 +72,12 @@ const controller = {
 
   getSnapshot() {
     return snapshot(state)
+  },
+
+  reset() {
+    state.themeMode = 'dark' as const
+    state.themeVariables = {}
+    state.w3mThemeVariables = undefined
   }
 }
 

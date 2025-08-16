@@ -362,7 +362,7 @@ const controller = {
       AccountController.replaceState(newAdapter.accountState)
     }
     // Reset send state when switching networks
-    SendController.resetSend()
+    SendController.reset()
 
     PublicStateController.set({
       activeChain: state.activeChain,
@@ -639,19 +639,21 @@ const controller = {
     })
   },
 
-  resetAccount(chain: ChainNamespace | undefined) {
-    const chainToWrite = chain
-
-    if (!chainToWrite) {
-      throw new Error('Chain is required to set account prop')
+  reset(namespace?: ChainNamespace) {
+    if (namespace) {
+      ChainController._reset(namespace)
+    } else {
+      state.chains.forEach(chain => ChainController._reset(chain.namespace as ChainNamespace))
     }
+  },
 
+  _reset(chain: ChainNamespace) {
     const currentAccountType =
-      ChainController.state.chains.get(chainToWrite)?.accountState?.preferredAccountType
-    const optionsAccountType = OptionsController.state.defaultAccountTypes[chainToWrite]
+      ChainController.state.chains.get(chain)?.accountState?.preferredAccountType
+    const optionsAccountType = OptionsController.state.defaultAccountTypes[chain]
 
     state.activeCaipAddress = undefined
-    ChainController.setChainAccountData(chainToWrite, {
+    ChainController.setChainAccountData(chain, {
       smartAccountDeployed: false,
       currentTab: 0,
       caipAddress: undefined,
@@ -670,7 +672,7 @@ const controller = {
       user: undefined,
       status: 'disconnected'
     })
-    ConnectorController.removeConnectorId(chainToWrite)
+    ConnectorController.removeConnectorId(chain)
   },
 
   setIsSwitchingNamespace(isSwitchingNamespace: boolean) {

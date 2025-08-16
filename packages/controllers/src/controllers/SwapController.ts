@@ -124,7 +124,7 @@ export interface TokenInfo {
 type StateKey = keyof SwapControllerState
 
 // -- State --------------------------------------------- //
-const initialState: SwapControllerState = {
+const state = proxy<SwapControllerState>({
   // Loading states
   initializing: false,
   initialized: false,
@@ -171,9 +171,7 @@ const initialState: SwapControllerState = {
   priceImpact: undefined,
   maxSlippage: undefined,
   providerFee: undefined
-}
-
-const state = proxy<SwapControllerState>({ ...initialState })
+})
 
 // -- Controller ---------------------------------------- //
 const controller = {
@@ -300,21 +298,52 @@ const controller = {
     SwapController.swapTokens()
   },
 
-  resetState() {
-    state.myTokensWithBalance = initialState.myTokensWithBalance
-    state.tokensPriceMap = initialState.tokensPriceMap
-    state.initialized = initialState.initialized
-    state.initializing = initialState.initializing
-    state.sourceToken = initialState.sourceToken
-    state.sourceTokenAmount = initialState.sourceTokenAmount
-    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD
-    state.toToken = initialState.toToken
-    state.toTokenAmount = initialState.toTokenAmount
-    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD
-    state.networkPrice = initialState.networkPrice
-    state.networkTokenSymbol = initialState.networkTokenSymbol
-    state.networkBalanceInUSD = initialState.networkBalanceInUSD
-    state.inputError = initialState.inputError
+  reset() {
+    state.initializing = false
+    state.initialized = false
+    state.loadingPrices = false
+    state.loadingQuote = false
+    state.loadingApprovalTransaction = false
+    state.loadingBuildTransaction = false
+    state.loadingTransaction = false
+
+    // Error states
+    state.fetchError = false
+
+    // Approval & Swap transaction states
+    state.approvalTransaction = undefined
+    state.swapTransaction = undefined
+    state.transactionError = undefined
+
+    // Input values
+    state.sourceToken = undefined
+    state.sourceTokenAmount = ''
+    state.sourceTokenPriceInUSD = 0
+    state.toToken = undefined
+    state.toTokenAmount = ''
+    state.toTokenPriceInUSD = 0
+    state.networkPrice = '0'
+    state.networkBalanceInUSD = '0'
+    state.networkTokenSymbol = ''
+    state.inputError = undefined
+
+    // Request values
+    state.slippage = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
+
+    // Tokens
+    state.tokens = undefined
+    state.popularTokens = undefined
+    state.suggestedTokens = undefined
+    state.foundTokens = undefined
+    state.myTokensWithBalance = undefined
+    state.tokensPriceMap = {}
+
+    // Calculations
+    state.gasFee = '0'
+    state.gasPriceInUSD = 0
+    state.priceImpact = undefined
+    state.maxSlippage = undefined
+    state.providerFee = undefined
   },
 
   resetValues() {
@@ -819,7 +848,7 @@ const controller = {
         onSuccess() {
           RouterController.replace('Account')
           SnackController.showLoading(snackbarPendingMessage)
-          controller.resetState()
+          controller.reset()
         }
       })
     } else {
@@ -852,7 +881,7 @@ const controller = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
-      controller.resetState()
+      controller.reset()
       if (!isAuthConnector) {
         RouterController.replace('Account')
       }

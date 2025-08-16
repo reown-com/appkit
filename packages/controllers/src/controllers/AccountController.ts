@@ -269,8 +269,8 @@ const controller = {
     return []
   },
 
-  resetAccount(chain: ChainNamespace) {
-    ChainController.resetAccount(chain)
+  reset(chain?: ChainNamespace) {
+    ChainController.reset(chain)
   }
 }
 

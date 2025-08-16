@@ -107,7 +107,7 @@ export const PayController = {
   },
 
   async handleOpenPay(options: PaymentOptions) {
-    this.resetState()
+    this.reset()
     this.setPaymentConfig(options)
     this.subscribeEvents()
     this.initializeAnalytics()
@@ -130,7 +130,7 @@ export const PayController = {
     })
   },
 
-  resetState() {
+  reset() {
     state.paymentAsset = {
       network: 'eip155:1',
       asset: '0x0',

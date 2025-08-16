@@ -55,5 +55,13 @@ export const PublicStateController = {
 
   set(newState: Partial<PublicStateControllerState>) {
     Object.assign(state, { ...state, ...newState })
+  },
+
+  reset() {
+    state.activeChain = undefined
+    state.initialized = false
+    state.loading = false
+    state.open = false
+    state.selectedNetworkId = undefined
   }
 }

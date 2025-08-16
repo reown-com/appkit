@@ -291,7 +291,7 @@ describe('ChainController', () => {
   })
 
   it('should reset account as expected', () => {
-    ChainController.resetAccount(chainNamespace)
+    ChainController.reset(chainNamespace)
     expect(AccountController.state.smartAccountDeployed).toEqual(false)
     expect(AccountController.state.currentTab).toEqual(0)
     expect(AccountController.state.caipAddress).toEqual(undefined)
@@ -317,7 +317,7 @@ describe('ChainController', () => {
       }
     })
 
-    ChainController.resetAccount(chainNamespace)
+    ChainController.reset(chainNamespace)
 
     expect(
       ChainController.state.chains.get(chainNamespace)?.accountState?.preferredAccountType

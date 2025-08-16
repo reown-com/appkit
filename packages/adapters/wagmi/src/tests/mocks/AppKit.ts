@@ -47,7 +47,7 @@ export const mockAppKit = {
   setConnectedWalletInfo: vi.fn(),
   resetWcConnection: vi.fn(),
   resetNetwork: vi.fn(),
-  resetAccount: vi.fn(),
+  reset: vi.fn(),
   setPreferredAccountType: vi.fn(),
   getPreferredAccountType: vi.fn().mockReturnValue('eoa'),
   setEIP6963Enabled: vi.fn(),
