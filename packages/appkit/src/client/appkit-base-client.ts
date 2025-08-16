@@ -102,6 +102,7 @@ export type Views =
   | 'WhatIsANetwork'
   | 'AllWallets'
   | 'WalletSend'
+  | 'UnsupportedChain'
 
 type ViewArguments = {
   Swap: NonNullable<RouterControllerState['data']>['swap']
