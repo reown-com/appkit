@@ -106,7 +106,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     const connector = connectorId ? ConnectorController.getConnectorById(connectorId) : undefined
     const connectorImage = AssetUtil.getConnectorImage(connector)
-    const { value, floating, symbol } = CoreHelperUtil.formatBalance(
+    const { value, decimals, symbol } = CoreHelperUtil.parseBalance(
       this.balance,
       this.balanceSymbol
     )
@@ -133,7 +133,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         ></wui-wallet-switch>
         <wui-flex flexDirection="row" alignItems="flex-end" justifyContent="center" gap="1">
           <wui-text variant="h3-regular" color="primary">${value}</wui-text>
-          <wui-text variant="h3-regular" color="secondary">.${floating}</wui-text>
+          <wui-text variant="h3-regular" color="secondary">.${decimals}</wui-text>
           <wui-text variant="h6-medium" color="primary">${symbol}</wui-text>
         </wui-flex>
         ${this.explorerBtnTemplate()}
