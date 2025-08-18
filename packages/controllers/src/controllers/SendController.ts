@@ -180,9 +180,11 @@ const controller = {
 
   async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
     state.loading = true
+    const namespace = ChainController.state.activeChain
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
-    const caipAddress = ChainController.state.activeCaipAddress
+    const caipAddress =
+      AccountController.getCaipAddress(namespace) ?? ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
     if (
       state.lastRetry &&

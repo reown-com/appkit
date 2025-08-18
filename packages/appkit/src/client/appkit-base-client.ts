@@ -183,6 +183,23 @@ export abstract class AppKitBaseClient {
     ) {
       await this.checkAllowedOrigins()
     }
+
+    if (
+      OptionsController.state.features?.reownAuthentication ||
+      OptionsController.state.remoteFeatures?.reownAuthentication
+    ) {
+      const { ReownAuthentication } = await import('@reown/appkit-controllers/features')
+      const currentSIWX = OptionsController.state.siwx
+      if (!(currentSIWX instanceof ReownAuthentication)) {
+        if (currentSIWX) {
+          console.warn(
+            'ReownAuthentication option is enabled, SIWX configuration will be overridden.'
+          )
+        }
+        OptionsController.setSIWX(new ReownAuthentication())
+      }
+      // If siwx is already configured for ReownAuthentication we keep the current instance
+    }
   }
 
   private async checkAllowedOrigins() {
@@ -1078,6 +1095,22 @@ export abstract class AppKitBaseClient {
     }
   }
 
+  protected async reconnectWalletConnect() {
+    await this.syncWalletConnectAccount()
+    const address = this.getAddress()
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      address,
+      properties: {
+        method: CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode',
+        name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
+        reconnect: true
+      }
+    })
+  }
+
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
       if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isSafeApp()) {
@@ -1090,7 +1123,7 @@ export abstract class AppKitBaseClient {
 
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
-          await this.syncWalletConnectAccount()
+          await this.reconnectWalletConnect()
           break
         case ConstantsUtil.CONNECTOR_ID.AUTH:
           // Handled during initialization of adapters' auth provider
@@ -1186,6 +1219,16 @@ export abstract class AppKitBaseClient {
         this.syncProvider({ ...connection, chainNamespace: namespace })
         await this.syncAccount({ ...connection, chainNamespace: namespace })
         this.setStatus('connected', namespace)
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          address: connection.address,
+          properties: {
+            method: 'browser',
+            name: connector.info?.name || connector.name || 'Unknown',
+            reconnect: true
+          }
+        })
       } else {
         this.setStatus('disconnected', namespace)
       }
@@ -1552,7 +1595,7 @@ export abstract class AppKitBaseClient {
           onConnect: accounts => {
             const { address } = CoreHelperUtil.getAccount(accounts[0])
 
-            ConnectionController.finalizeWcConnection(address)
+            ConnectionController.finalizeWcConnection(address as string)
           },
           onDisconnect: () => {
             if (ChainController.state.noAdapters) {

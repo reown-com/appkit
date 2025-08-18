@@ -6,6 +6,7 @@ import {
   type ChainNamespace,
   ConstantsUtil,
   type EmbeddedWalletTimeoutReason,
+  type SocialProvider,
   getW3mThemeVariables
 } from '@reown/appkit-common'
 import {
@@ -259,6 +260,29 @@ export class AppKit extends AppKitBaseClient {
           chain: chainNamespace
         })
         this.setStatus('connected', chainNamespace)
+        const socialProvider = StorageUtil.getConnectedSocialProvider()
+        if (socialProvider) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_SUCCESS',
+            address: AccountController.state.address,
+            properties: {
+              provider: socialProvider as SocialProvider,
+              reconnect: true
+            }
+          })
+        } else {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'CONNECT_SUCCESS',
+            address: AccountController.state.address,
+            properties: {
+              method: 'email',
+              name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
+              reconnect: true
+            }
+          })
+        }
       } else if (
         ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
       ) {
@@ -523,7 +547,7 @@ export class AppKit extends AppKitBaseClient {
     const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
     const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
-    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
+    if (activeCaipNetwork?.testnet) {
       this.setProfileName(null, chainNamespace)
       this.setProfileImage(null, chainNamespace)
 
@@ -535,8 +559,7 @@ export class AppKit extends AppKitBaseClient {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        address,
-        caipNetworkId
+        address
       })
 
       if (!name && isAuthConnector) {
@@ -640,16 +663,22 @@ export class AppKit extends AppKitBaseClient {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
     }
 
+    if (remoteFeatures.payWithExchange) {
+      featureImportPromises.push(import('@reown/appkit-scaffold-ui/pay-with-exchange'))
+    }
+
     if (remoteFeatures.activity) {
       featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
     }
 
-    if (features.pay) {
+    if (features.pay || remoteFeatures.payments) {
       featureImportPromises.push(import('@reown/appkit-pay'))
     }
 
     if (remoteFeatures.emailCapture) {
-      featureImportPromises.push(import('@reown/appkit-siwx/ui'))
+      featureImportPromises.push(
+        import('@reown/appkit-scaffold-ui/reown-authentication/data-capture')
+      )
     }
 
     await Promise.all([

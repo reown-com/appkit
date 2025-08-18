@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.7.18",
+  "version": "1.7.19",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -147,7 +147,7 @@
     "bs58": "6.0.0",
     "semver": "7.7.2",
     "valtio": "2.1.5",
-    "viem": ">=2.32.0"
+    "viem": ">=2.33.3"
   },
   "devDependencies": {
     "@walletconnect/types": "2.21.7",
@@ -164,7 +164,6 @@
     "vue": "3.x"
   },
   "optionalDependencies": {
-    "@reown/appkit-siwx": "workspace:*",
     "@lit/react": "1.0.8"
   },
   "author": "Reown (https://discord.gg/reown)",

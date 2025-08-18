@@ -5,15 +5,16 @@ import { API_URL } from '../../src/utils/ConstantsUtil.js'
 
 // --- Mocks -------------------------------------------------------------------
 const MOCK_PROJECT_ID = 'mockProjectId'
+const MOCK_SDK_TYPE = 'appkit'
+const MOCK_SDK_VERSION = 'html-wagmi-0.0.1'
 
 vi.mock('@reown/appkit-controllers', () => ({
   OptionsController: {
-    getSnapshot: vi.fn(
-      () =>
-        ({
-          projectId: MOCK_PROJECT_ID
-        }) as any
-    )
+    getSnapshot: vi.fn(() => ({
+      projectId: MOCK_PROJECT_ID,
+      sdkType: MOCK_SDK_TYPE,
+      sdkVersion: MOCK_SDK_VERSION
+    }))
   }
 }))
 
@@ -42,7 +43,12 @@ describe('ApiUtil', () => {
   })
 
   describe('getExchanges', () => {
-    const mockParams = { page: 1 }
+    const mockParams = {
+      projectId: MOCK_PROJECT_ID,
+      st: MOCK_SDK_TYPE,
+      sv: MOCK_SDK_VERSION,
+      page: 1
+    }
     const mockSuccessResponse = {
       jsonrpc: '2.0',
       id: 1,
@@ -99,6 +105,9 @@ describe('ApiUtil', () => {
 
   describe('getPayUrl', () => {
     const mockParams = {
+      projectId: MOCK_PROJECT_ID,
+      st: MOCK_SDK_TYPE,
+      sv: MOCK_SDK_VERSION,
       exchangeId: 'exchange',
       asset: 'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
       amount: '10',

@@ -8,11 +8,9 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
-import { ReownAuthentication } from '../../configs/index.js'
-import './email-suffixes-widget.js'
-import './recent-emails-widget.js'
 import styles from './styles.js'
 
 @customElement('w3m-data-capture-view')
@@ -38,7 +36,7 @@ export class W3mDataCaptureView extends LitElement {
 
   public override connectedCallback() {
     if (!this.siwx || !(this.siwx instanceof ReownAuthentication)) {
-      SnackController.showError('ReownAuthentication is not initialized.')
+      SnackController.showError('ReownAuthentication is not initialized. Please contact support.')
     }
 
     super.connectedCallback()
@@ -230,6 +228,12 @@ export class W3mDataCaptureView extends LitElement {
   }
 
   private async onSubmit() {
+    if (!(this.siwx instanceof ReownAuthentication)) {
+      SnackController.showError('ReownAuthentication is not initialized. Please contact support.')
+
+      return
+    }
+
     const account = ChainController.getActiveCaipAddress()
 
     if (!account) {

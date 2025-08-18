@@ -12,6 +12,7 @@ import {
   PublicStateController,
   StorageUtil
 } from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -24,6 +25,10 @@ import {
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
+
+vi.mock('@reown/appkit-controllers/features', () => ({
+  ReownAuthentication: vi.fn()
+}))
 
 describe('Base', () => {
   beforeEach(() => {
@@ -260,6 +265,127 @@ describe('Base', () => {
       expect(remoteFeatures?.swaps).toEqual(mockRemoteFeaturesConfig.swaps)
       expect(remoteFeatures?.onramp).toEqual(mockRemoteFeaturesConfig.onramp)
       expect(remoteFeatures?.activity).toBe(mockRemoteFeaturesConfig.activity)
+    })
+
+    it('should override SIWX instance if reownAuthentication feature is enabled', async () => {
+      const setSIWX = vi.spyOn(OptionsController, 'setSIWX')
+
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          reownAuthentication: true
+        }
+      })
+
+      await appKit.ready()
+
+      expect(setSIWX).toHaveBeenCalledWith(expect.any(ReownAuthentication))
+    })
+
+    it('should override SIWX instance if reownAuthentication remote feature is enabled', async () => {
+      const setSIWX = vi.spyOn(OptionsController, 'setSIWX')
+
+      // Mock ConfigUtil to return remote features with reownAuthentication enabled
+      const { ConfigUtil } = await import('../../src/utils/ConfigUtil.js')
+      vi.spyOn(ConfigUtil, 'fetchRemoteFeatures').mockResolvedValue({
+        ...mockRemoteFeaturesConfig,
+        reownAuthentication: true
+      })
+
+      const appKit = new AppKit(mockOptions)
+
+      await appKit.ready()
+
+      expect(setSIWX).toHaveBeenCalledWith(expect.any(ReownAuthentication))
+    })
+
+    it('should override SIWX instance when features.reownAuthentication is false but remoteFeatures.reownAuthentication is true', async () => {
+      const setSIWX = vi.spyOn(OptionsController, 'setSIWX')
+
+      // Mock ConfigUtil to return remote features with reownAuthentication enabled
+      const { ConfigUtil } = await import('../../src/utils/ConfigUtil.js')
+      vi.spyOn(ConfigUtil, 'fetchRemoteFeatures').mockResolvedValue({
+        ...mockRemoteFeaturesConfig,
+        reownAuthentication: true
+      })
+
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          reownAuthentication: false // Explicitly disabled in features
+        }
+      })
+
+      await appKit.ready()
+
+      expect(setSIWX).toHaveBeenCalledWith(expect.any(ReownAuthentication))
+    })
+
+    it('should not override SIWX instance when both features and remoteFeatures have reownAuthentication disabled', async () => {
+      const setSIWX = vi.spyOn(OptionsController, 'setSIWX')
+
+      // Mock ConfigUtil to return remote features with reownAuthentication disabled
+      const { ConfigUtil } = await import('../../src/utils/ConfigUtil.js')
+      vi.spyOn(ConfigUtil, 'fetchRemoteFeatures').mockResolvedValue({
+        ...mockRemoteFeaturesConfig,
+        reownAuthentication: false
+      })
+
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          reownAuthentication: false // Explicitly disabled in features
+        }
+      })
+
+      await appKit.ready()
+
+      // Should not have been called with ReownAuthentication instance
+      expect(setSIWX).not.toHaveBeenCalledWith(expect.any(ReownAuthentication))
+    })
+
+    it('should override SIWX instance when both features and remoteFeatures have reownAuthentication enabled', async () => {
+      const setSIWX = vi.spyOn(OptionsController, 'setSIWX')
+
+      // Mock ConfigUtil to return remote features with reownAuthentication enabled
+      const { ConfigUtil } = await import('../../src/utils/ConfigUtil.js')
+      vi.spyOn(ConfigUtil, 'fetchRemoteFeatures').mockResolvedValue({
+        ...mockRemoteFeaturesConfig,
+        reownAuthentication: true
+      })
+
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          reownAuthentication: true // Explicitly enabled in features
+        }
+      })
+
+      await appKit.ready()
+
+      expect(setSIWX).toHaveBeenCalledWith(expect.any(ReownAuthentication))
+    })
+
+    it('should handle undefined features.reownAuthentication and rely on remoteFeatures', async () => {
+      const setSIWX = vi.spyOn(OptionsController, 'setSIWX')
+
+      // Mock ConfigUtil to return remote features with reownAuthentication enabled
+      const { ConfigUtil } = await import('../../src/utils/ConfigUtil.js')
+      vi.spyOn(ConfigUtil, 'fetchRemoteFeatures').mockResolvedValue({
+        ...mockRemoteFeaturesConfig,
+        reownAuthentication: true
+      })
+
+      const appKit = new AppKit({
+        ...mockOptions,
+        features: {
+          // reownAuthentication is undefined
+        }
+      })
+
+      await appKit.ready()
+
+      expect(setSIWX).toHaveBeenCalledWith(expect.any(ReownAuthentication))
     })
   })
 

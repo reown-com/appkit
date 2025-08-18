@@ -1,5 +1,6 @@
 import { type CaipNetworkId, type ChainNamespace, ParseUtil } from '@reown/appkit-common'
-import { OptionsController } from '@reown/appkit-controllers'
+
+import { OptionsController } from '../controllers/OptionsController.js'
 
 export type Exchange = {
   id: string
@@ -50,7 +51,7 @@ export function getApiUrl() {
   return `https://rpc.walletconnect.org/v1/json-rpc?projectId=${projectId}&source=fund-wallet`
 }
 
-type JsonRpcResponse<T> = {
+export type JsonRpcResponse<T> = {
   jsonrpc: string
   id: number
   result: T
@@ -61,35 +62,41 @@ export type GetExchangesResult = {
   total: number
 }
 
-type GetPayUrlParams = {
+export type GetPayUrlParams = {
   exchangeId: string
   asset: string
   amount: string
   recipient: string
 }
 
-type GetPayUrlResult = {
+export type GetPayUrlResult = {
   url: string
   sessionId: string
 }
 
-type GetBuyStatusParams = {
+export type GetBuyStatusParams = {
   sessionId: string
   exchangeId: string
 }
 
-type GetBuyStatusResult = {
+export type GetBuyStatusResult = {
   status: ExchangeBuyStatus
   txHash?: string
 }
 
 async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcResponse<T>> {
   const url = getApiUrl()
+  const { sdkType: st, sdkVersion: sv, projectId } = OptionsController.getSnapshot()
   const requestBody = {
     jsonrpc: '2.0',
     id: 1,
     method,
-    params
+    params: {
+      ...(params || {}),
+      st,
+      sv,
+      projectId
+    }
   }
   const response = await fetch(url, {
     method: 'POST',

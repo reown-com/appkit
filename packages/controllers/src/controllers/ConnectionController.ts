@@ -94,8 +94,12 @@ export interface DisconnectParameters {
   initialDisconnect?: boolean
 }
 
+interface ConnectWalletConnectParameters {
+  cache?: 'auto' | 'always' | 'never'
+}
+
 export interface ConnectionControllerClient {
-  connectWalletConnect?: () => Promise<void>
+  connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
   disconnect: (params?: DisconnectParameters) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
@@ -211,8 +215,11 @@ const controller = {
       .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
-  async connectWalletConnect() {
-    if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
+  async connectWalletConnect({ cache = 'auto' }: ConnectWalletConnectParameters = {}) {
+    const isInTelegramOrSafariIos =
+      CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
+
+    if (cache === 'always' || (cache === 'auto' && isInTelegramOrSafariIos)) {
       if (wcConnectionPromise) {
         await wcConnectionPromise
         wcConnectionPromise = undefined
@@ -533,7 +540,12 @@ const controller = {
         connector,
         closeModalOnConnect,
         onOpen(isMobile) {
-          ModalController.open({ view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect' })
+          const view = isMobile ? 'AllWallets' : 'ConnectingWalletConnect'
+          if (ModalController.state.open) {
+            RouterController.push(view)
+          } else {
+            ModalController.open({ view })
+          }
         },
         onConnect() {
           RouterController.replace('ProfileWallets')
