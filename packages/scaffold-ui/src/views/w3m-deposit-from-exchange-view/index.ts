@@ -120,6 +120,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           <wui-text variant="md-medium" color="secondary">Asset</wui-text>
 
           <wui-token-button
+            data-testid="deposit-from-exchange-asset-button"
             flexDirection="row-reverse"
             text=${this.network?.nativeCurrency.symbol || ''}
             imageSrc=${AssetUtil.getNetworkImage(this.network) || ''}

@@ -229,10 +229,11 @@ describe('W3mApproveTransactionView - Iframe Positioning Logic', () => {
       enableEmbedded: true
     })
 
-    vi.spyOn(global, 'setTimeout').mockImplementation((callback: any) => {
-      callback()
-
-      return setTimeout(() => {}, 1)
+    vi.spyOn(global, 'setTimeout').mockImplementation((handler: TimerHandler) => {
+      if (typeof handler === 'function') {
+        handler()
+      }
+      return 0 as any
     })
 
     await element.updateComplete
