@@ -1,8 +1,4 @@
-import { css } from '../../utils/ThemeHelperUtil.js';
-
-
-
-
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
