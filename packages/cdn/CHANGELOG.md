@@ -1,5 +1,19 @@
 # @reown/appkit-cdn
 
+## 1.7.21
+
+### Patch Changes
+
+- [#4852](https://github.com/reown-com/appkit/pull/4852) [`b59dfa7`](https://github.com/reown-com/appkit/commit/b59dfa728934866610e89301dc9ecf67665038df) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where cancelling SIWX message signing did not restore the previous connected network state when using social or email login
+
+- Updated dependencies [[`b59dfa7`](https://github.com/reown-com/appkit/commit/b59dfa728934866610e89301dc9ecf67665038df), [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b), [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b)]:
+  - @reown/appkit-adapter-ethers@1.7.21
+  - @reown/appkit-adapter-ethers5@1.7.21
+  - @reown/appkit-adapter-solana@1.7.21
+  - @reown/appkit-adapter-wagmi@1.7.21
+  - @reown/appkit@1.7.21
+  - @reown/appkit-polyfills@1.7.21
+
 ## 1.7.20
 
 ### Patch Changes
