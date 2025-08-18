@@ -267,7 +267,7 @@ export const CoreHelperUtil = {
     return Promise.race([imagePromise, CoreHelperUtil.wait(2000)])
   },
 
-  formatBalance(balance: string | undefined, symbol: string | undefined) {
+  parseBalance(balance: string | undefined, symbol: string | undefined) {
     let formattedBalance = '0.000'
 
     if (typeof balance === 'string') {
@@ -279,9 +279,19 @@ export const CoreHelperUtil = {
         }
       }
     }
-    const [value, floating] = formattedBalance.split('.')
+    const [valueString, decimalsString] = formattedBalance.split('.')
 
-    return { value, floating, symbol }
+    const value = valueString || '0'
+    const decimals = decimalsString || '000'
+
+    let formattedText = `${value}.${decimals}${symbol ? ` ${symbol}` : ''}`
+
+    return {
+      formattedText,
+      value,
+      decimals,
+      symbol
+    }
   },
 
   getApiUrl() {

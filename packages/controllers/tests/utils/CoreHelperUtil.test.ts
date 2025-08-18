@@ -6,55 +6,65 @@ import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 // -- Tests --------------------------------------------------------------------
 describe('CoreHelperUtil', () => {
   it('should return format balance as expected', () => {
-    expect(CoreHelperUtil.formatBalance(undefined, undefined)).toEqual({
+    expect(CoreHelperUtil.parseBalance(undefined, undefined)).toEqual({
       value: '0',
-      floating: '000',
-      symbol: undefined
+      decimals: '000',
+      symbol: undefined,
+      formattedText: '0.000'
     })
-    expect(CoreHelperUtil.formatBalance('3', undefined)).toEqual({
+    expect(CoreHelperUtil.parseBalance('3', undefined)).toEqual({
       value: '3',
-      floating: '000',
-      symbol: undefined
+      decimals: '000',
+      symbol: undefined,
+      formattedText: '3.000'
     })
-    expect(CoreHelperUtil.formatBalance('0', undefined)).toEqual({
+    expect(CoreHelperUtil.parseBalance('0', undefined)).toEqual({
       value: '0',
-      floating: '000',
-      symbol: undefined
+      decimals: '000',
+      symbol: undefined,
+      formattedText: '0.000'
     })
-    expect(CoreHelperUtil.formatBalance('123.456789', 'ETH')).toEqual({
+    expect(CoreHelperUtil.parseBalance('123.456789', 'ETH')).toEqual({
       value: '123',
-      floating: '456',
-      symbol: 'ETH'
+      decimals: '456',
+      symbol: 'ETH',
+      formattedText: '123.456 ETH'
     })
-    expect(CoreHelperUtil.formatBalance('123.456789', undefined)).toEqual({
+    expect(CoreHelperUtil.parseBalance('123.456789', undefined)).toEqual({
       value: '123',
-      floating: '456',
-      symbol: undefined
+      decimals: '456',
+      symbol: undefined,
+      formattedText: '123.456'
     })
-    expect(CoreHelperUtil.formatBalance('0.000456789', 'BTC')).toEqual({
+    expect(CoreHelperUtil.parseBalance('0.000456789', 'BTC')).toEqual({
       value: '0',
-      floating: '000',
-      symbol: 'BTC'
+      decimals: '000',
+      symbol: 'BTC',
+      formattedText: '0.000 BTC'
     })
-    expect(CoreHelperUtil.formatBalance('123456789.123456789', 'USD')).toEqual({
+    expect(CoreHelperUtil.parseBalance('123456789.123456789', 'USD')).toEqual({
       value: '123456789',
-      floating: '123',
-      symbol: 'USD'
+      decimals: '123',
+      symbol: 'USD',
+      formattedText: '123456789.123 USD'
     })
-    expect(CoreHelperUtil.formatBalance('abc', 'USD')).toEqual({
+    expect(CoreHelperUtil.parseBalance('abc', 'USD')).toEqual({
       value: '0',
-      floating: '000',
-      symbol: 'USD'
+      decimals: '000',
+      symbol: 'USD',
+      formattedText: '0.000 USD'
     })
-    expect(CoreHelperUtil.formatBalance('', 'USD')).toEqual({
+    expect(CoreHelperUtil.parseBalance('', 'USD')).toEqual({
       value: '0',
-      floating: '000',
-      symbol: 'USD'
+      decimals: '000',
+      symbol: 'USD',
+      formattedText: '0.000 USD'
     })
-    expect(CoreHelperUtil.formatBalance('0', 'ETH')).toEqual({
+    expect(CoreHelperUtil.parseBalance('0', 'ETH')).toEqual({
       value: '0',
-      floating: '000',
-      symbol: 'ETH'
+      decimals: '000',
+      symbol: 'ETH',
+      formattedText: '0.000 ETH'
     })
   })
 
