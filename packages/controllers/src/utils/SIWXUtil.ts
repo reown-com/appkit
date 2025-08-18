@@ -257,6 +257,7 @@ export const SIWXUtil = {
     chainNamespace: ChainNamespace
   }) {
     const siwx = SIWXUtil.getSIWX()
+    const network = getActiveCaipNetwork()
 
     if (
       !siwx ||
@@ -320,6 +321,8 @@ export const SIWXUtil = {
 
       await promise
     }
+
+    ChainController.setLastConnectedSIWECaipNetwork(network)
 
     return {
       address: result.address,

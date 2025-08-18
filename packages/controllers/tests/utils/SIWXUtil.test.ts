@@ -1,7 +1,7 @@
 import { ref } from 'valtio/vanilla'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type SIWXConfig, SIWXUtil } from '../../exports/index.js'
+import { ChainController, type SIWXConfig, SIWXUtil } from '../../exports/index.js'
 import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
@@ -15,11 +15,16 @@ describe('SIWXUtil', () => {
   })
 
   describe('requestSignMessage', () => {
-    it('should show signature declined error and send SIWX_AUTH_ERROR event when error occurs', async () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+
       mockChainControllerState({
         activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
         activeCaipNetwork: ref(extendedMainnet)
       })
+    })
+
+    it('should show signature declined error and send SIWX_AUTH_ERROR event when error occurs', async () => {
       const showErrorSpy = vi.spyOn(SnackController, 'showError')
       const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
       const getSIWXEventPropertiesSpy = vi
@@ -61,6 +66,15 @@ describe('SIWXUtil', () => {
   })
 
   describe('authConnectorAuthenticate', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+
+      mockChainControllerState({
+        activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+        activeCaipNetwork: ref(extendedMainnet)
+      })
+    })
+
     it('should call authConnector.connect without siwxMessage when SIWX is not enabled', async () => {
       const mockAuthConnector = {
         connect: vi.fn().mockResolvedValue({
@@ -134,6 +148,15 @@ describe('SIWXUtil', () => {
         .spyOn(SIWXUtil, 'addEmbeddedWalletSession')
         .mockResolvedValue()
 
+      const setLastConnectedSIWECaipNetworkSpy = vi.spyOn(
+        ChainController,
+        'setLastConnectedSIWECaipNetwork'
+      )
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: extendedMainnet
+      })
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         siwx: mockSIWX as unknown as SIWXConfig
@@ -178,6 +201,7 @@ describe('SIWXUtil', () => {
         chainId: 1,
         accounts: ['0x1234567890123456789012345678901234567890']
       })
+      expect(setLastConnectedSIWECaipNetworkSpy).toHaveBeenCalledWith(extendedMainnet)
     })
 
     it('should call authConnector.connect without siwxMessage if email capture is enabled', async () => {
