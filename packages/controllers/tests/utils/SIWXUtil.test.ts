@@ -11,6 +11,7 @@ import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
 describe('SIWXUtil', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     vi.restoreAllMocks()
   })
 
