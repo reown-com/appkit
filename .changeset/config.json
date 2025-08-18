@@ -10,7 +10,7 @@
   "linked": [],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
+  "updateInternalDependencies": "never",
   "ignore": [
     "@examples/*",
     "@apps/*",
