@@ -10,8 +10,7 @@
   "linked": [],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "never",
-  "ignore": [
+   "ignore": [
     "@examples/*",
     "@apps/*",
     "@apps/browser-extension",
