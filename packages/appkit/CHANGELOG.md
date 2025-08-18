@@ -1,5 +1,25 @@
 # @reown/appkit
 
+## 1.7.21
+
+### Patch Changes
+
+- [#4852](https://github.com/reown-com/appkit/pull/4852) [`b59dfa7`](https://github.com/reown-com/appkit/commit/b59dfa728934866610e89301dc9ecf67665038df) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where cancelling SIWX message signing did not restore the previous connected network state when using social or email login
+
+- [#4836](https://github.com/reown-com/appkit/pull/4836) [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b) Thanks [@tomiir](https://github.com/tomiir)! - Emits connection success events on reconnection
+
+- [#4836](https://github.com/reown-com/appkit/pull/4836) [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b) Thanks [@tomiir](https://github.com/tomiir)! - Enables connection success events regardless of config
+
+- Updated dependencies [[`b59dfa7`](https://github.com/reown-com/appkit/commit/b59dfa728934866610e89301dc9ecf67665038df), [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b), [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b)]:
+  - @reown/appkit-controllers@1.7.21
+  - @reown/appkit-utils@1.7.21
+  - @reown/appkit-common@1.7.21
+  - @reown/appkit-pay@1.7.21
+  - @reown/appkit-polyfills@1.7.21
+  - @reown/appkit-scaffold-ui@1.7.21
+  - @reown/appkit-ui@1.7.21
+  - @reown/appkit-wallet@1.7.21
+
 ## 1.7.20
 
 ### Patch Changes
