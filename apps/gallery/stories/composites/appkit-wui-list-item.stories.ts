@@ -12,7 +12,7 @@ import { iconOptions, networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiListItem>
 
 export default {
-  title: 'Composites/appkit-wui-list-item',
+  title: 'Composites/apkt-list-item',
   args: {
     disabled: false,
     imageSrc: networkImageSrc,

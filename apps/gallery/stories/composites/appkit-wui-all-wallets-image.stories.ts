@@ -10,7 +10,7 @@ import { walletImagesOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiAllWalletsImage>
 
 export default {
-  title: 'Composites/appkit-wui-all-wallets-image',
+  title: 'Composites/apkt-all-wallets-image',
   args: {
     walletImages: walletImagesOptions
   }

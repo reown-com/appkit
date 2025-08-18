@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiSearchBar>
 
 export default {
-  title: 'Composites/wui-search-bar'
+  title: 'Composites/apkt-search-bar'
 } as Component
 
 export const Default: Component = {

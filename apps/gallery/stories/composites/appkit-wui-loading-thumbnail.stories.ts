@@ -8,7 +8,7 @@ import type { WuiLoadingThumbnail } from '@reown/appkit-ui/wui-loading-thumbnail
 type Component = Meta<WuiLoadingThumbnail>
 
 export default {
-  title: 'Composites/appkit-wui-loading-thumbnail',
+  title: 'Composites/apkt-loading-thumbnail',
   args: {
     radius: 36
   }

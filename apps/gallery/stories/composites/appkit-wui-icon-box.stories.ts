@@ -10,7 +10,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiIconBox>
 
 export default {
-  title: 'Composites/appkit-wui-icon-box',
+  title: 'Composites/apkt-icon-box',
   args: {
     icon: 'qrCode',
     size: 'md',

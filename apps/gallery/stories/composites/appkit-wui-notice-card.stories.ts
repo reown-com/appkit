@@ -11,7 +11,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiNoticeCard>
 
 export default {
-  title: 'Composites/appkit-wui-notice-card',
+  title: 'Composites/apkt-notice-card',
   args: {
     label: 'Enjoy all your wallet potential',
     description: 'Switch to a Non Custodial Wallet in a minute',

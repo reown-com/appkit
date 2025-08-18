@@ -11,7 +11,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiBanner>
 
 export default {
-  title: 'Composites/appkit-wui-banner',
+  title: 'Composites/apkt-banner',
   args: {
     text: 'You can only receive assets on these networks',
     icon: 'warningCircle',

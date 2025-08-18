@@ -10,7 +10,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiTab>
 
 export default {
-  title: 'Composites/appkit-wui-tab-item',
+  title: 'Composites/apkt-tab-item',
   args: {
     icon: 'mobile',
     size: 'md',

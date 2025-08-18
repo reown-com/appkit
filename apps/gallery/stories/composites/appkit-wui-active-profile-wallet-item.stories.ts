@@ -11,7 +11,7 @@ import { iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiActiveProfileWalletItem>
 
 export default {
-  title: 'Composites/appkit-wui-active-profile-wallet-item',
+  title: 'Composites/apkt-active-profile-wallet-item',
   args: {
     address: '0x1234567890123456789012345678901234567890',
     profileName: 'enesozturk.eth',

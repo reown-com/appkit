@@ -8,7 +8,7 @@ import type { WuiLoadingHexagon } from '@reown/appkit-ui/wui-loading-hexagon'
 type Component = Meta<WuiLoadingHexagon>
 
 export default {
-  title: 'Composites/appkit-wui-loading-hexagon'
+  title: 'Composites/apkt-loading-hexagon'
 } as Component
 
 export const Default: Component = {

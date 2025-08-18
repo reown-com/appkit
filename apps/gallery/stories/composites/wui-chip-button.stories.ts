@@ -15,7 +15,7 @@ import {
 type Component = Meta<WuiChipButton>
 
 export default {
-  title: 'Composites/wui-chip-button',
+  title: 'Composites/apkt-chip-button',
   args: {
     type: 'accent',
     size: 'md',

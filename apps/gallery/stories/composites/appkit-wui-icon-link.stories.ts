@@ -10,7 +10,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiIconLink>
 
 export default {
-  title: 'Composites/appkit-wui-icon-link',
+  title: 'Composites/apkt-icon-link',
   args: {
     size: 'md',
     disabled: false,

@@ -11,7 +11,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiIconButton>
 
 export default {
-  title: 'Composites/appkit-wui-icon-button',
+  title: 'Composites/apkt-icon-button',
   args: {
     icon: 'card',
     size: 'md',

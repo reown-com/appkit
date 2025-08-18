@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiCertifiedSwitch>
 
 export default {
-  title: 'Composites/appkit-wui-certified-switch',
+  title: 'Composites/apkt-certified-switch',
   args: {
     checked: false
   },

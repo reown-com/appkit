@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiTokenListItemLoader>
 
 export default {
-  title: 'Composites/wui-token-list-item-loader'
+  title: 'Composites/apkt-token-list-item-loader'
 } as Component
 
 export const Default: Component = {

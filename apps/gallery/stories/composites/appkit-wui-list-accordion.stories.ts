@@ -11,7 +11,7 @@ import { signTypedData } from '../../utils/PresetUtils'
 type Component = Meta<WuiListAccordion>
 
 export default {
-  title: 'Composites/appkit-wui-list-accordion',
+  title: 'Composites/apkt-list-accordion',
   args: {
     textTitle: 'Message',
     overflowedContent: JSON.stringify(signTypedData, null, 2)

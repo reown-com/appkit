@@ -10,7 +10,7 @@ import { cardSelectOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiCardSelectLoader>
 
 export default {
-  title: 'Composites/appkit-wui-card-select-loader',
+  title: 'Composites/apkt-card-select-loader',
   args: {
     type: 'wallet'
   },

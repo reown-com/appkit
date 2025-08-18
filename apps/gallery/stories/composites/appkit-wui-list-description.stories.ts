@@ -11,7 +11,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiListDescription>
 
 export default {
-  title: 'Composites/appkit-wui-list-description',
+  title: 'Composites/apkt-list-description',
   args: {
     icon: 'card',
     text: 'Buy Crypto',

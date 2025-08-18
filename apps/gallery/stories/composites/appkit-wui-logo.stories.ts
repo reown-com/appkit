@@ -10,7 +10,7 @@ import { logoOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiLogo>
 
 export default {
-  title: 'Composites/appkit-wui-logo',
+  title: 'Composites/apkt-logo',
   args: {
     logo: 'google'
   },

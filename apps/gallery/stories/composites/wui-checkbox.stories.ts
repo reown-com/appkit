@@ -7,7 +7,7 @@ import type { WuiCheckBox } from '@reown/appkit-ui/wui-checkbox'
 type Component = Meta<WuiCheckBox>
 
 export default {
-  title: 'Composites/wui-checkbox',
+  title: 'Composites/apkt-checkbox',
   args: {
     disabled: false,
     size: 'md'

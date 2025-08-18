@@ -10,7 +10,7 @@ import { themeOptions, walletImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiQrCode>
 
 export default {
-  title: 'Composites/appkit-wui-qr-code',
+  title: 'Composites/apkt-qr-code',
   args: {
     size: 318,
     theme: 'dark',

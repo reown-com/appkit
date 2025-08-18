@@ -11,7 +11,7 @@ import { logoOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiLogoSelect>
 
 export default {
-  title: 'Composites/appkit-wui-logo-select',
+  title: 'Composites/apkt-logo-select',
   args: {
     logo: 'google',
     disabled: false

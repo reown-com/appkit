@@ -10,7 +10,7 @@ import type { WuiUxByReown } from '@reown/appkit-ui/wui-ux-by-reown'
 type Component = Meta<WuiUxByReown>
 
 export default {
-  title: 'Composites/appkit-wui-ux-by-reown',
+  title: 'Composites/apkt-ux-by-reown',
   args: {},
   argTypes: {}
 } as Component

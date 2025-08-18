@@ -8,7 +8,7 @@ import type { WuiSnackbar } from '@reown/appkit-ui/wui-snackbar'
 type Component = Meta<WuiSnackbar>
 
 export default {
-  title: 'Composites/appkit-wui-snackbar',
+  title: 'Composites/apkt-snackbar',
   args: {
     message: 'Address approved',
     variant: 'success'

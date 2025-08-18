@@ -10,7 +10,7 @@ import { networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiNetworkButton>
 
 export default {
-  title: 'Composites/appkit-wui-network-button',
+  title: 'Composites/apkt-network-button',
   args: {
     imageSrc: networkImageSrc,
     disabled: false,

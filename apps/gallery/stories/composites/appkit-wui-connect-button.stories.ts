@@ -8,7 +8,7 @@ import type { WuiConnectButton } from '@reown/appkit-ui/wui-connect-button'
 type Component = Meta<WuiConnectButton>
 
 export default {
-  title: 'Composites/appkit-wui-connect-button',
+  title: 'Composites/apkt-connect-button',
   args: {
     size: 'md',
     variant: 'primary',

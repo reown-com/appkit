@@ -10,7 +10,7 @@ import { networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiTokenButton>
 
 export default {
-  title: 'Composites/appkit-wui-token-button',
+  title: 'Composites/apkt-token-button',
   args: {
     text: 'ETH',
     imageSrc: networkImageSrc,

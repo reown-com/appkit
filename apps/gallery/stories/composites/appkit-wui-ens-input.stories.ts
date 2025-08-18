@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiEnsInput>
 
 export default {
-  title: 'Composites/appkit-wui-ens-input',
+  title: 'Composites/apkt-ens-input',
   args: {
     errorMessage: '',
     disabled: false

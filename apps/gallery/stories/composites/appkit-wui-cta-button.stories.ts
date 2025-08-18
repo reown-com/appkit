@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiCtaButton>
 
 export default {
-  title: 'Composites/appkit-wui-cta-button',
+  title: 'Composites/apkt-cta-button',
   args: {
     label: `Don't have MetaMask?`,
     buttonLabel: 'Get'

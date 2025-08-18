@@ -10,7 +10,7 @@ import { address, networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiPreviewItem>
 
 export default {
-  title: 'Composites/appkit-wui-preview-item',
+  title: 'Composites/apkt-preview-item',
   args: {
     imageSrc: networkImageSrc,
     address,

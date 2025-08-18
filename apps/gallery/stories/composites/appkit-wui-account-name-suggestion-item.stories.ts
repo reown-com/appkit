@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiAccountNameSuggestionItem>
 
 export default {
-  title: 'Composites/appkit-wui-account-name-suggestion-item',
+  title: 'Composites/apkt-account-name-suggestion-item',
   args: {
     name: 'alice.reown.id',
     registered: false,

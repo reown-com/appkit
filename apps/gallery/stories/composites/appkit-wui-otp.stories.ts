@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiOtp>
 
 export default {
-  title: 'Composites/appkit-wui-otp',
+  title: 'Composites/apkt-otp',
   args: {
     length: 6
   }

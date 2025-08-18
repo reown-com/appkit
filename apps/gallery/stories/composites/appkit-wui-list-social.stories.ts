@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiListSocial>
 
 export default {
-  title: 'Composites/appkit-wui-list-social',
+  title: 'Composites/apkt-list-social',
   args: {
     name: 'google',
     logo: 'google',

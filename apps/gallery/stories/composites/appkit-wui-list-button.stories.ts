@@ -11,7 +11,7 @@ import { iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiListButton>
 
 export default {
-  title: 'Composites/appkit-wui-list-button',
+  title: 'Composites/apkt-list-button',
   args: {
     text: 'Continue with a wallet',
     size: 'lg',

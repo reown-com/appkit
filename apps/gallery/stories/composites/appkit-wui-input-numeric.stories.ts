@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiInputNumeric>
 
 export default {
-  title: 'Composites/appkit-wui-input-numeric',
+  title: 'Composites/apkt-input-numeric',
   args: {
     disabled: false
   },

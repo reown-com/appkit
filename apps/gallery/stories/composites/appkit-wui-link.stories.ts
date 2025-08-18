@@ -11,7 +11,7 @@ import { buttonLinkOptions, iconOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiLink & { iconLeft?: IconType; iconRight?: IconType }>
 
 export default {
-  title: 'Composites/appkit-wui-link',
+  title: 'Composites/apkt-link',
   args: {
     disabled: false,
     variant: 'accent',

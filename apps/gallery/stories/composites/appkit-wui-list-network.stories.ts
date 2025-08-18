@@ -11,7 +11,7 @@ import { networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiListNetwork>
 
 export default {
-  title: 'Composites/appkit-wui-list-network',
+  title: 'Composites/apkt-list-network',
   args: {
     imageSrc: networkImageSrc,
     name: 'Ethereum',

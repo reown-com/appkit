@@ -10,7 +10,7 @@ import { address, avatarImageSrc, networkImageSrc } from '../../utils/PresetUtil
 type Component = Meta<WuiAccountButton>
 
 export default {
-  title: 'Composites/appkit-wui-account-button',
+  title: 'Composites/apkt-account-button',
   args: {
     disabled: false,
     networkSrc: networkImageSrc,
