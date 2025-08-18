@@ -284,7 +284,7 @@ export const CoreHelperUtil = {
     const value = valueString || '0'
     const decimals = decimalsString || '000'
 
-    let formattedText = `${value}.${decimals}${symbol ? ` ${symbol}` : ''}`
+    const formattedText = `${value}.${decimals}${symbol ? ` ${symbol}` : ''}`
 
     return {
       formattedText,
