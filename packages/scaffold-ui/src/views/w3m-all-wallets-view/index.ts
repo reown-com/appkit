@@ -28,7 +28,7 @@ export class W3mAllWalletsView extends LitElement {
     const isSearch = this.search.length >= 2
 
     return html`
-      <wui-flex .padding=${['1', '3', '3', '3'] as const} gap="2">
+      <wui-flex .padding=${['1', '3', '3', '3'] as const} gap="2" alignItems="center">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
         <wui-certified-switch
           ?checked=${this.badge === 'certified'}
@@ -71,7 +71,7 @@ export class W3mAllWalletsView extends LitElement {
     if (CoreHelperUtil.isMobile()) {
       return html`
         <wui-icon-box
-          size="lg"
+          size="xl"
           iconSize="xl"
           color="accent-primary"
           icon="qrCode"

@@ -16,7 +16,7 @@ export default css`
   }
 
   input {
-    width: -webkit-fill-available;
+    width: 100%;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     color: inherit;
     background: transparent;

@@ -16,28 +16,18 @@ export class WuiCertifiedSwitch extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button @click=${this.handleClick.bind(this)}>
+      <wui-flex>
         <wui-icon size="xl" name="walletConnectBrown"></wui-icon>
         <wui-toggle
           ?checked=${this.checked}
           size="sm"
           @switchChange=${this.handleToggleChange.bind(this)}
         ></wui-toggle>
-      </button>
+      </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private handleClick(event: Event) {
-    // Prevent the button click from firing if the toggle was clicked
-    const target = event.target as Element
-    if (target.closest('wui-toggle')) {
-      return
-    }
-
-    this.dispatchSwitchEvent()
-  }
-
   private handleToggleChange(event: CustomEvent) {
     event.stopPropagation()
     this.checked = event.detail
