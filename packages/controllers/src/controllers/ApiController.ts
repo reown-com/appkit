@@ -230,6 +230,8 @@ export const ApiController = {
       exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS).map(w => w.id))
     }
 
+    console.trace('>> fetchWallets', params.exclude)
+
     const wallets = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
@@ -477,5 +479,21 @@ export const ApiController = {
     state.filteredWallets = state.wallets.filter(wallet =>
       wallet.chains?.some(chain => caipNetworkIds.includes(chain))
     )
+  },
+
+  reset() {
+    state.filteredWallets = []
+    state.isFetchingRecommendedWallets = false
+    state.promises = {}
+    state.page = 1
+    state.count = 0
+    state.featured = []
+    state.allFeatured = []
+    state.recommended = []
+    state.allRecommended = []
+    state.wallets = []
+    state.search = []
+    state.isAnalyticsEnabled = false
+    state.excludedWallets = []
   }
 }

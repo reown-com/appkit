@@ -416,7 +416,6 @@ export class AppKit extends AppKitBaseClient {
   // -- Overrides ----------------------------------------------------------------
   protected override initControllers(options: AppKitOptionsWithSdk) {
     super.initControllers(options)
-
     if (this.options.excludeWalletIds) {
       ApiController.initializeExcludedWallets({ ids: this.options.excludeWalletIds })
     }

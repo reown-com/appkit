@@ -22,7 +22,7 @@ interface OpenMessageParameters {
 // -- State --------------------------------------------- //
 const state = proxy<AlertControllerState>({
   message: '',
-  variant: 'info',
+  variant: 'info' as const,
   open: false
 })
 
@@ -58,6 +58,10 @@ const controller = {
     state.open = false
     state.message = ''
     state.variant = 'info'
+  },
+
+  reset() {
+    AlertController.close()
   }
 }
 

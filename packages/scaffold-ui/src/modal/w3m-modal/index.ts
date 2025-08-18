@@ -312,7 +312,7 @@ export class W3mModalBase extends LitElement {
     }
 
     if (networkIdChanged) {
-      SwapController.resetState()
+      SwapController.reset()
     }
 
     if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {

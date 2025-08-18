@@ -294,7 +294,7 @@ export class W3mAccountSettingsView extends LitElement {
         : 'Switch to your Smart Account'
     this.switched = true
 
-    SendController.resetSend()
+    SendController.reset()
     this.loading = false
     this.requestUpdate()
   }

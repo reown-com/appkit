@@ -46,7 +46,7 @@ describe('W3mWalletSendView', () => {
 
   afterEach(() => {
     vi.clearAllMocks()
-    SendController.resetSend()
+    SendController.reset()
     Element.prototype.animate = originalAnimate
   })
 

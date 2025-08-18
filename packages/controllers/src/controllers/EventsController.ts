@@ -27,8 +27,8 @@ const state = proxy<EventsControllerState>({
   timestamp: Date.now(),
   reportedErrors: {},
   data: {
-    type: 'track',
-    event: 'MODAL_CREATED'
+    type: 'track' as const,
+    event: 'MODAL_CREATED' as const
   }
 })
 
@@ -117,6 +117,15 @@ export const EventsController = {
     ]
     if (OptionsController.state.features?.analytics || MANDATORY_EVENTS.includes(data.event)) {
       EventsController._sendAnalyticsEvent(state)
+    }
+  },
+
+  reset() {
+    state.timestamp = Date.now()
+    state.reportedErrors = {}
+    state.data = {
+      type: 'track' as const,
+      event: 'MODAL_CREATED' as const
     }
   }
 }

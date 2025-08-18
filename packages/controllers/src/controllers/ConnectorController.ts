@@ -420,6 +420,15 @@ const controller = {
 
   resetConnectorIds() {
     state.activeConnectorIds = { ...defaultActiveConnectors }
+  },
+
+  reset() {
+    state.activeConnector = undefined
+    state.filterByNamespace = undefined
+    state.filterByNamespaceMap = { ...defaultFilterByNamespaceMap }
+    state.activeConnectorIds = { ...defaultActiveConnectors }
+    state.connectors = []
+    state.allConnectors = []
   }
 }
 

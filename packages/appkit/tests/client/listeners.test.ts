@@ -109,7 +109,7 @@ describe('Listeners', () => {
   it('should call all required methods when adapter emits disconnect event', async () => {
     const chainNamespace = mainnet.chainNamespace
 
-    const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+    const resetAccountSpy = vi.spyOn(ChainController, 'reset')
     const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
     const removeConnectorIdSpy = vi.spyOn(ConnectorController, 'removeConnectorId')
     const removeConnectedNamespaceSpy = vi.spyOn(StorageUtil, 'removeConnectedNamespace')
@@ -137,7 +137,7 @@ describe('Listeners', () => {
   })
 
   it('should handle disconnect event for different chain namespaces', async () => {
-    const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+    const resetAccountSpy = vi.spyOn(ChainController, 'reset')
     const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
     const removeConnectorIdSpy = vi.spyOn(ConnectorController, 'removeConnectorId')
 

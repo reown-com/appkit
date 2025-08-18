@@ -97,8 +97,8 @@ describe('AccountController', () => {
     expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
   })
 
-  it('should update state correctly on resetAccount()', () => {
-    AccountController.resetAccount(chain)
+  it('should update state correctly on reset()', () => {
+    AccountController.reset(chain)
     expect(AccountController.state).toEqual({
       smartAccountDeployed: false,
       currentTab: 0,
