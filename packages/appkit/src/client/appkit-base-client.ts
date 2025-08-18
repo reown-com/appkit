@@ -185,7 +185,7 @@ export abstract class AppKitBaseClient {
     }
 
     if (
-      OptionsController.state.features?.reownAuthentication ??
+      OptionsController.state.features?.reownAuthentication ||
       OptionsController.state.remoteFeatures?.reownAuthentication
     ) {
       const { ReownAuthentication } = await import('@reown/appkit-controllers/features')
