@@ -41,9 +41,9 @@ export class WuiTokenButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (this.loading) {
-      return html` <wui-flex alignItems="center" gap="xxs" padding="xs">
-        <wui-shimmer width="24px" height="24px"></wui-shimmer>
-        <wui-shimmer width="40px" height="20px" borderRadius="4xs"></wui-shimmer>
+      return html` <wui-flex alignItems="center" gap="01" padding="01">
+        <wui-shimmer width="20px" height="20px"></wui-shimmer>
+        <wui-shimmer width="32px" height="18px" borderRadius="4xs"></wui-shimmer>
       </wui-flex>`
     }
 

@@ -206,7 +206,7 @@ export class W3mSwapSelectTokenView extends LitElement {
   private templateTokens() {
     return html`
       <wui-flex class="tokens-container">
-        <wui-flex class="tokens" .padding=${['0', '2', '2', '2']} flexDirection="column">
+        <wui-flex class="tokens" .padding=${['0', '2', '2', '2'] as const} flexDirection="column">
           ${this.templateMyTokens()}
           <wui-flex justifyContent="flex-start" padding="3">
             <wui-text variant="md-medium" color="secondary">Tokens</wui-text>
@@ -222,7 +222,11 @@ export class W3mSwapSelectTokenView extends LitElement {
 
     if (this.tokensLoading) {
       return html`
-        <wui-flex class="suggested-tokens-container" .padding=${['0', '2', '0', '2']} gap="2">
+        <wui-flex
+          class="suggested-tokens-container"
+          .padding=${['0', '3', '0', '3'] as const}
+          gap="2"
+        >
           <wui-token-button loading></wui-token-button>
           <wui-token-button loading></wui-token-button>
           <wui-token-button loading></wui-token-button>
