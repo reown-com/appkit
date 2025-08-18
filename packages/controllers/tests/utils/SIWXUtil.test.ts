@@ -11,16 +11,20 @@ import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
 describe('SIWXUtil', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.restoreAllMocks()
   })
 
   describe('requestSignMessage', () => {
-    it('should show signature declined error and send SIWX_AUTH_ERROR event when error occurs', async () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+
       mockChainControllerState({
         activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
         activeCaipNetwork: ref(extendedMainnet)
       })
+    })
+
+    it('should show signature declined error and send SIWX_AUTH_ERROR event when error occurs', async () => {
       const showErrorSpy = vi.spyOn(SnackController, 'showError')
       const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
       const getSIWXEventPropertiesSpy = vi
@@ -62,6 +66,15 @@ describe('SIWXUtil', () => {
   })
 
   describe('authConnectorAuthenticate', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+
+      mockChainControllerState({
+        activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+        activeCaipNetwork: ref(extendedMainnet)
+      })
+    })
+
     it('should call authConnector.connect without siwxMessage when SIWX is not enabled', async () => {
       const mockAuthConnector = {
         connect: vi.fn().mockResolvedValue({
