@@ -978,11 +978,24 @@ describe('ApiController', () => {
     expect(filteredWallets.map(w => w.id)).toEqual(['1', '3'])
   })
 
-  it('should filter out wallets without mobile_link in mobile environment but keep custom deeplink wallets', () => {
+  it('should include wallets with webapp_link in mobile environment', () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
-    mockChainControllerState({
-      activeChain: 'solana'
-    })
+
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', mobile_link: 'link1' },
+      { id: '2', name: 'Wallet2', webapp_link: 'webapp_link2' },
+      { id: '3', name: 'Wallet3' },
+      { id: '4', name: 'Wallet4', mobile_link: 'link4', webapp_link: 'webapp_link4' }
+    ] as WcWallet[]
+
+    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    expect(filteredWallets).toHaveLength(3)
+    expect(filteredWallets.map(w => w.id)).toEqual(['1', '2', '4'])
+  })
+
+  it('should filter out wallets without mobile_link in mobile environment but keep all custom deeplink wallets', () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+
     const mockWallets = [
       { id: '1', name: 'Wallet1', mobile_link: 'link1' },
       { id: '2', name: 'Wallet2' },
@@ -992,17 +1005,43 @@ describe('ApiController', () => {
         name: 'Coinbase Wallet'
       },
       { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, name: 'Phantom' },
-      { id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, name: 'Solflare' }
+      { id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, name: 'Solflare' },
+      { id: CUSTOM_DEEPLINK_WALLETS.BINANCE.id, name: 'Binance' }
+    ] as WcWallet[]
+
+    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    expect(filteredWallets).toHaveLength(6)
+    expect(filteredWallets.map(w => w.id)).toEqual([
+      '1',
+      '3',
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+      CUSTOM_DEEPLINK_WALLETS.BINANCE.id
+    ])
+  })
+
+  it('should correctly combine mobile_link, webapp_link, and custom deeplink wallet logic on mobile', () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', mobile_link: 'link1' },
+      { id: '2', name: 'Wallet2', webapp_link: 'webapp_link2' },
+      { id: '3', name: 'Wallet3' }, // Should be filtered out
+      { id: '4', name: 'Wallet4', mobile_link: 'link4', webapp_link: 'webapp_link4' },
+      { id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id, name: 'Coinbase Wallet' },
+      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, name: 'Phantom' },
+      { id: '5', name: 'Wallet5' } // Should be filtered out
     ] as WcWallet[]
 
     const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
     expect(filteredWallets).toHaveLength(5)
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
-      '3',
+      '2',
+      '4',
       CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
-      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id
+      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id
     ])
   })
 

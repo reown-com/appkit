@@ -135,23 +135,15 @@ export const ApiController = {
   _filterWalletsByPlatform(wallets: WcWallet[]) {
     const filteredWallets = CoreHelperUtil.isMobile()
       ? wallets?.filter(w => {
-          if (w.mobile_link) {
+          if (w.mobile_link || w.webapp_link) {
             return true
           }
 
-          if (
-            w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id ||
-            w.id === CUSTOM_DEEPLINK_WALLETS.BINANCE.id
-          ) {
-            return true
-          }
-          const isSolana = ChainController.state.activeChain === 'solana'
-
-          return (
-            isSolana &&
-            (w.id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id ||
-              w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id)
+          const customDeeplinkWalletIds = Object.values(CUSTOM_DEEPLINK_WALLETS).map(
+            wallet => wallet.id
           )
+
+          return customDeeplinkWalletIds.includes(w.id)
         })
       : wallets
 
