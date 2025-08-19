@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -7,8 +7,7 @@ export default css`
     align-items: center;
     width: 40px;
     height: 40px;
-    border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-color-gray-glass-005);
+    border-radius: ${({ borderRadius }) => borderRadius['20']};
     overflow: hidden;
   }
 

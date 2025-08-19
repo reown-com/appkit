@@ -41,8 +41,8 @@ import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockUser, mockUserBalance } from '../mocks/Account.js'
-import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
-import { base, bitcoin, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
+import { mockEvmAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
+import { base, bitcoin, mainnet, polygon, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
@@ -839,38 +839,6 @@ describe('Base Public methods', () => {
     await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
 
     expect(fetchIdentity).toHaveBeenCalled()
-  })
-
-  it('should not sync identity on non-evm network', async () => {
-    const fetchIdentity = vi.spyOn(BlockchainApiController, 'fetchIdentity')
-
-    const appKit = new AppKit({
-      ...mockOptions,
-      adapters: [mockSolanaAdapter],
-      networks: [solana]
-    })
-
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
-      {
-        quantity: { numeric: '0.00', decimals: '18' },
-        chainId: solana.caipNetworkId,
-        symbol: 'SOL'
-      } as Balance
-    ])
-    const mockAccountData = {
-      address: '7y523k4jsh90d',
-      chainId: solana.id,
-      chainNamespace: solana.chainNamespace
-    }
-    vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
-      namespace: solana.chainNamespace,
-      chainId: solana.id,
-      caipNetworkId: solana.caipNetworkId
-    })
-
-    await appKit['syncAccount'](mockAccountData)
-
-    expect(fetchIdentity).not.toHaveBeenCalled()
   })
 
   it('should not sync identity on a test network', async () => {

@@ -110,7 +110,12 @@ export const EventsController = {
   sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now()
     state.data = data
-    if (OptionsController.state.features?.analytics || data.event === 'INITIALIZE') {
+    const MANDATORY_EVENTS: Event['event'][] = [
+      'INITIALIZE',
+      'CONNECT_SUCCESS',
+      'SOCIAL_LOGIN_SUCCESS'
+    ]
+    if (OptionsController.state.features?.analytics || MANDATORY_EVENTS.includes(data.event)) {
       EventsController._sendAnalyticsEvent(state)
     }
   }

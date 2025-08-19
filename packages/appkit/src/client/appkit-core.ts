@@ -54,7 +54,7 @@ export class AppKit extends AppKitBaseClient {
     await super.close()
 
     if (this.options.manualWCControl) {
-      ConnectionController.finalizeWcConnection()
+      ConnectionController.finalizeWcConnection(AccountController.state.address as string)
     }
   }
 

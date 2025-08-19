@@ -15,11 +15,11 @@ export class WuiTokenListItemLoader extends LitElement {
     return html`
       <wui-flex alignItems="center">
         <wui-shimmer width="40px" height="40px"></wui-shimmer>
-        <wui-flex flexDirection="column" gap="2xs">
+        <wui-flex flexDirection="column" gap="1">
           <wui-shimmer width="72px" height="16px" borderRadius="4xs"></wui-shimmer>
           <wui-shimmer width="148px" height="14px" borderRadius="4xs"></wui-shimmer>
         </wui-flex>
-        <wui-flex flexDirection="column" gap="2xs" alignItems="flex-end">
+        <wui-flex flexDirection="column" gap="1" alignItems="flex-end">
           <wui-shimmer width="24px" height="12px" borderRadius="4xs"></wui-shimmer>
           <wui-shimmer width="32px" height="12px" borderRadius="4xs"></wui-shimmer>
         </wui-flex>

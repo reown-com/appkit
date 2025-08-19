@@ -1,11 +1,12 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
-import '../../composites/wui-chip-button/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-button/index.js'
 import styles from './styles.js'
 
 @customElement('wui-cta-button')
@@ -22,14 +23,12 @@ export class WuiCtaButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex
-        justifyContent="space-between"
-        alignItems="center"
-        .padding=${['1xs', '2l', '1xs', '2l'] as const}
-      >
-        <wui-text variant="paragraph-500" color="fg-200">${this.label}</wui-text>
-        <wui-chip-button size="sm" variant="shade" text=${this.buttonLabel} icon="chevronRight">
-        </wui-chip-button>
+      <wui-flex justifyContent="space-between" alignItems="center">
+        <wui-text variant="lg-regular" color="inherit">${this.label}</wui-text>
+        <wui-button variant="accent-secondary" size="sm">
+          ${this.buttonLabel}
+          <wui-icon name="chevronRight" color="inherit" size="inherit" slot="iconRight"></wui-icon>
+        </wui-button>
       </wui-flex>
     `
   }

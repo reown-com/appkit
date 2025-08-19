@@ -125,6 +125,7 @@ class W3mAccountButtonBase extends LitElement {
 
     const shouldShowBalance = this.balance === 'show'
     const shouldShowLoading = typeof this.balanceVal !== 'string'
+    const { formattedText } = CoreHelperUtil.parseBalance(this.balanceVal, this.balanceSymbol)
 
     return html`
       <wui-account-button
@@ -136,9 +137,7 @@ class W3mAccountButtonBase extends LitElement {
         profileName=${ifDefined(this.profileName)}
         networkSrc=${ifDefined(this.networkImage)}
         avatarSrc=${ifDefined(this.profileImage)}
-        balance=${shouldShowBalance
-          ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)
-          : ''}
+        balance=${shouldShowBalance ? formattedText : ''}
         @click=${this.onClick.bind(this)}
         data-testid=${`account-button${this.namespace ? `-${this.namespace}` : ''}`}
         .charsStart=${this.charsStart}

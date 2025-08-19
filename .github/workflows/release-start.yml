@@ -1,6 +1,12 @@
 name: Start release
 on:
   workflow_dispatch: # manual trigger
+    inputs:
+      send_slack_notification:
+        description: 'Send Slack notification'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   create-release-branch:
@@ -66,6 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start Slack Notify Workflow
+        if: ${{ inputs.send_slack_notification }}
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL_RELEASE_NOTIFY }}

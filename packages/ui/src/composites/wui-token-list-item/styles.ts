@@ -1,7 +1,8 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
+    width: 100%;
     height: 60px;
     min-height: 60px;
   }
@@ -10,26 +11,27 @@ export default css`
     cursor: pointer;
     height: 100%;
     display: flex;
-    column-gap: var(--wui-spacing-s);
-    padding: var(--wui-spacing-xs);
-    padding-right: var(--wui-spacing-l);
+    column-gap: ${({ spacing }) => spacing['3']};
+    padding: ${({ spacing }) => spacing['2']};
+    padding-right: ${({ spacing }) => spacing['4']};
     width: 100%;
     background-color: transparent;
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-250);
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
+    color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     transition:
-      background-color var(--wui-ease-out-power-1) var(--wui-duration-lg),
-      opacity var(--wui-ease-out-power-1) var(--wui-duration-lg);
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color, opacity;
   }
 
   @media (hover: hover) and (pointer: fine) {
     :host > wui-flex:hover {
-      background-color: var(--wui-color-gray-glass-002);
+      background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     }
 
     :host > wui-flex:active {
-      background-color: var(--wui-color-gray-glass-005);
+      background-color: ${({ tokens }) => tokens.core.glass010};
     }
   }
 
@@ -50,7 +52,7 @@ export default css`
     width: 40px;
     max-width: 40px;
     height: 40px;
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: ${({ borderRadius }) => borderRadius['20']};
     position: relative;
   }
 
@@ -65,12 +67,12 @@ export default css`
     position: absolute;
     content: '';
     inset: 0;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
-    border-radius: var(--wui-border-radius-l);
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
+    border-radius: ${({ borderRadius }) => borderRadius['8']};
   }
 
   button > wui-icon-box[data-variant='square-blue'] {
-    border-radius: var(--wui-border-radius-3xs);
+    border-radius: ${({ borderRadius }) => borderRadius['2']};
     position: relative;
     border: none;
     width: 36px;

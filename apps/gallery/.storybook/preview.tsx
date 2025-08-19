@@ -1,22 +1,16 @@
-import React from 'react'
-
-import { Controls, Description, Primary, Source, Subtitle, Title } from '@storybook/blocks'
-import { GLOBALS_UPDATED, SET_GLOBALS } from '@storybook/core-events'
-import { addons } from '@storybook/preview-api'
-import { themes } from '@storybook/theming'
+import { GLOBALS_UPDATED, SET_GLOBALS } from 'storybook/internal/core-events'
+import { addons } from 'storybook/preview-api'
 
 import { initializeTheming, setColorTheme } from '@reown/appkit-ui'
 
 // -- Utilities ------------------------------------------------------------
-initializeTheming({})
+setColorTheme('dark')
+initializeTheming({}, 'dark')
 
 const backgroundChangeListener = args => {
   const bgColor = args.globals.backgrounds?.value
   if (bgColor) {
-    const theme = bgColor === '#272A2A' ? 'dark' : 'light'
-    setColorTheme(theme)
-  } else {
-    setColorTheme('dark')
+    setColorTheme(bgColor)
   }
 }
 
@@ -41,29 +35,13 @@ export default {
       values: [
         {
           name: 'dark',
-          value: '#272A2A'
+          value: '#202020'
         },
         {
           name: 'light',
-          value: '#EAF1F1'
+          value: '#FFFFFF'
         }
       ]
-    },
-
-    docs: {
-      theme: themes.dark,
-      page: () => (
-        <>
-          <Title />
-          <Subtitle />
-          <Description />
-          <Primary />
-          <Source dark />
-          <Controls />
-        </>
-      )
     }
-  },
-
-  tags: ['autodocs']
+  }
 }

@@ -1,12 +1,18 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
-    height: 64px;
+    height: 60px;
+  }
+
+  :host > wui-flex {
+    box-sizing: border-box;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 
   wui-text {
     text-transform: capitalize;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 
   wui-flex.w3m-header-title {
@@ -16,15 +22,15 @@ export default css`
 
   wui-flex.w3m-header-title[view-direction='prev'] {
     animation:
-      slide-down-out 120ms forwards var(--wui-ease-out-power-2),
-      slide-down-in 120ms forwards var(--wui-ease-out-power-2);
+      slide-down-out 120ms forwards ${({ easings }) => easings['ease-out-power-2']},
+      slide-down-in 120ms forwards ${({ easings }) => easings['ease-out-power-2']};
     animation-delay: 0ms, 200ms;
   }
 
   wui-flex.w3m-header-title[view-direction='next'] {
     animation:
-      slide-up-out 120ms forwards var(--wui-ease-out-power-2),
-      slide-up-in 120ms forwards var(--wui-ease-out-power-2);
+      slide-up-out 120ms forwards ${({ easings }) => easings['ease-out-power-2']},
+      slide-up-in 120ms forwards ${({ easings }) => easings['ease-out-power-2']};
     animation-delay: 0ms, 200ms;
   }
 
