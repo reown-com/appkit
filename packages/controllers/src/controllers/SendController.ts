@@ -328,8 +328,8 @@ const controller = {
       SendController.state.token &&
       CoreHelperUtil.isCaipAddress(SendController.state.token.address)
     ) {
-      const [, , tokenMintSPLAdress] = SendController.state.token.address.split(':')
-      tokenMint = tokenMintSPLAdress
+      const [, , tokenMintSPLAddress] = SendController.state.token.address.split(':')
+      tokenMint = tokenMintSPLAddress
     }
 
     await ConnectionController.sendTransaction({
