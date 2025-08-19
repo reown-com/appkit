@@ -1,25 +1,28 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   button {
     display: flex;
-    gap: var(--wui-spacing-3xs);
+    height: 18px;
+    padding: ${({ spacing }) => spacing['01']};
     align-items: center;
-    padding: 6.25px var(--wui-spacing-xs) 7.25px var(--wui-spacing-s);
-    background-color: var(--wui-color-gray-glass-090);
-    border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-color-gray-glass-060);
-    transition: background-color var(--wui-duration-md) var(--wui-ease-inout-power-1);
+    background-color: transparent;
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
+    border: none;
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled {
-      background-color: var(--wui-color-gray-glass-080);
-    }
+  wui-text {
+    padding-left: ${({ spacing }) => spacing['01']};
+    padding-right: ${({ spacing }) => spacing['01']};
+  }
 
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled,
     button:active:enabled {
-      background-color: var(--wui-color-gray-glass-060);
+      background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
     }
   }
 `

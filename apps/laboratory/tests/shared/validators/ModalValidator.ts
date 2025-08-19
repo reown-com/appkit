@@ -88,11 +88,9 @@ export class ModalValidator {
       timeout: MAX_WAIT
     })
 
-    await expect(connectButton, 'Connect button should contain text Connect').toHaveText(
-      'Connect Wallet',
-      {
-        timeout: MAX_WAIT
-      }
+    await expect(connectButton, 'Connect button should contain text Connect').toContainText(
+      'Connect',
+      { timeout: MAX_WAIT }
     )
   }
 

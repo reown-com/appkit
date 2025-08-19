@@ -1,8 +1,9 @@
 import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-token-list-item'
 import type { WuiTokenListItem } from '@reown/appkit-ui/wui-token-list-item'
 
 import '../../components/gallery-container'
@@ -15,23 +16,21 @@ export default {
   args: {
     name: 'Ethereum',
     symbol: 'ETH',
-    price: '$1,740.72',
+    price: '1740.72',
     amount: '0.867',
     imageSrc: networkImageSrc
-  },
-  argTypes: {}
+  }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html`<gallery-container width="336">
+    html` <gallery-container width="336">
       <wui-token-list-item
-        name=${args.name}
-        symbol=${args.symbol}
-        price=${args.price}
-        amount=${args.amount}
-        .imageSrc=${args.imageSrc}
-      >
-      </wui-token-list-item>
+        name=${ifDefined(args.name)}
+        symbol=${ifDefined(args.symbol)}
+        price=${ifDefined(args.price)}
+        amount=${ifDefined(args.amount)}
+        imageSrc=${ifDefined(args.imageSrc)}
+      ></wui-token-list-item>
     </gallery-container>`
 }

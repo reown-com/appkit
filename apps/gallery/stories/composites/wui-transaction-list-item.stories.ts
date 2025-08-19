@@ -6,12 +6,7 @@ import '@reown/appkit-ui/wui-transaction-list-item'
 import type { WuiTransactionListItem } from '@reown/appkit-ui/wui-transaction-list-item'
 
 import '../../components/gallery-container'
-import {
-  transactionDirectionOptions,
-  transactionImageSrc,
-  transactionStatusOptions,
-  transactionTypeOptions
-} from '../../utils/PresetUtils'
+import { walletImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiTransactionListItem>
 
@@ -19,44 +14,62 @@ export default {
   title: 'Composites/wui-transaction-list-item',
   args: {
     type: 'approve',
+    descriptions: ['1 ETH', '3245 USDC'],
+    date: '2021-01-01',
+    onlyDirectionIcon: false,
+    status: 'confirmed',
+    direction: 'in',
     images: [
       {
         type: 'NFT',
-        url: transactionImageSrc
+        url: walletImageSrc
       }
-    ],
-    status: 'confirmed',
-    direction: 'in',
-    descriptions: ['+8 SOCKS']
+    ]
   },
   argTypes: {
     type: {
-      options: transactionTypeOptions,
-      control: { type: 'select' }
-    },
-    images: {
-      control: { type: 'array' }
+      control: 'select',
+      options: [
+        'approve',
+        'bought',
+        'borrow',
+        'burn',
+        'cancel',
+        'claim',
+        'deploy',
+        'deposit',
+        'execute',
+        'mint',
+        'receive',
+        'repay',
+        'send',
+        'stake',
+        'trade',
+        'unstake',
+        'withdraw'
+      ]
     },
     status: {
-      options: transactionStatusOptions,
-      control: { type: 'select' }
+      control: 'select',
+      options: ['confirmed', 'failed', 'pending']
     },
     direction: {
-      options: transactionDirectionOptions,
-      control: { type: 'select' }
+      control: 'select',
+      options: ['in', 'out', 'self']
     }
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html` <gallery-container width="336">
+    html` <gallery-container width="400">
       <wui-transaction-list-item
-        type=${args.type}
-        status=${args.status}
-        direction=${args.direction}
-        .images=${args.images}
+        .type=${args.type}
+        .status=${args.status}
+        .direction=${args.direction}
         .descriptions=${args.descriptions}
+        .date=${args.date}
+        .onlyDirectionIcon=${args.onlyDirectionIcon}
       ></wui-transaction-list-item>
     </gallery-container>`
 }
