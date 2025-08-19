@@ -1,38 +1,32 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
-  button {
-    column-gap: var(--wui-spacing-s);
-    padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
+  :host {
     width: 100%;
-    justify-content: flex-start;
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-100);
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: ${({ spacing }) => spacing[3]};
+    width: 100%;
+    background-color: transparent;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
   wui-text {
     text-transform: capitalize;
   }
 
-  wui-text[data-align='left'] {
-    display: flex;
-    flex: 1;
-  }
-
-  wui-text[data-align='center'] {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-  }
-
-  .invisible {
-    opacity: 0;
-    pointer-events: none;
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    }
   }
 
   button:disabled {
-    background-color: var(--wui-color-gray-glass-015);
-    color: var(--wui-color-gray-glass-015);
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `

@@ -544,12 +544,12 @@ describe('W3mProfileWalletsView - Connections List', () => {
 
     activeConnections?.forEach(profile => {
       expect(profile.getAttribute('buttonLabel')).toBe('Switch')
-      expect(profile.getAttribute('buttonVariant')).toBe('accent')
+      expect(profile.getAttribute('buttonVariant')).toBe('accent-secondary')
     })
 
     recentConnections?.forEach(profile => {
       expect(profile.getAttribute('buttonLabel')).toBe('Connect')
-      expect(profile.getAttribute('buttonVariant')).toBe('neutral')
+      expect(profile.getAttribute('buttonVariant')).toBe('neutral-secondary')
     })
   })
 })

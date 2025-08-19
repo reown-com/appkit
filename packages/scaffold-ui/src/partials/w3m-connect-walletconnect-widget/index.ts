@@ -65,9 +65,10 @@ export class W3mConnectWalletConnectWidget extends LitElement {
         name=${connector.name ?? 'Unknown'}
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"
-        tagVariant="main"
+        tagVariant="accent"
         tabIdx=${ifDefined(this.tabIdx)}
         data-testid="wallet-selector-walletconnect"
+        size="sm"
         ?disabled=${hasWcConnection}
       >
       </wui-list-wallet>

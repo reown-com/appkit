@@ -1,4 +1,4 @@
-import { assign, createMachine, setup } from 'xstate'
+import { assign, setup } from 'xstate'
 
 import type { Balance } from '@reown/appkit-common'
 

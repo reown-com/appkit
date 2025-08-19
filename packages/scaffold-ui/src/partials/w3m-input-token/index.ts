@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
+import { NumberUtil } from '@reown/appkit-common'
 import { RouterController } from '@reown/appkit-controllers'
 import { sendActor } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
@@ -24,7 +25,6 @@ export class W3mInputToken extends LitElement {
   @state() private loading = false
   @state() private maxAmount = 0
   @state() private exceedsBalance = false
-  @state() private usdValue = '$0.00'
 
   private unsubscribe: (() => void)[] = []
 
@@ -67,20 +67,14 @@ export class W3mInputToken extends LitElement {
         snapshot.context.sendAmount &&
         snapshot.context.sendAmount > Number(snapshot.context.selectedToken.quantity.numeric)
     )
-
-    // Calculate USD value
-    this.usdValue =
-      snapshot.context.selectedToken?.price && snapshot.context.sendAmount
-        ? `$${(snapshot.context.selectedToken.price * snapshot.context.sendAmount).toFixed(2)}`
-        : '$0.00'
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <wui-flex
       flexDirection="column"
-      gap="4xs"
-      .padding=${['xl', 's', 'l', 'l'] as const}
+      gap="01"
+      .padding=${['5', '3', '4', '3'] as const}
     >
       <wui-flex alignItems="center">
         <wui-input-amount
@@ -92,7 +86,7 @@ export class W3mInputToken extends LitElement {
       </wui-flex>
       <wui-flex alignItems="center" justifyContent="space-between">
         ${this.sendValueTemplate()}
-        <wui-flex alignItems="center" gap="4xs" justifyContent="flex-end">
+        <wui-flex alignItems="center" gap="01" justifyContent="flex-end">
           ${this.maxAmountTemplate()} ${this.actionTemplate()}
         </wui-flex>
       </wui-flex>
@@ -111,7 +105,7 @@ export class W3mInputToken extends LitElement {
 
     return html`<wui-button
       size="md"
-      variant="accent"
+      variant="neutral-secondary"
       @click=${this.handleSelectButtonClick.bind(this)}
       >Select token</wui-button
     >`
@@ -122,9 +116,14 @@ export class W3mInputToken extends LitElement {
   }
 
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount && this.usdValue !== '$0.00') {
-      return html`<wui-text class="totalValue" variant="small-400" color="fg-200"
-        >${this.usdValue}</wui-text
+    if (this.token && this.sendTokenAmount) {
+      const price = this.token.price
+      const totalValue = price * this.sendTokenAmount
+
+      return html`<wui-text class="totalValue" variant="sm-regular" color="secondary"
+        >${totalValue
+          ? `$${NumberUtil.formatNumberToLocalString(totalValue, 2)}`
+          : 'Incorrect value'}</wui-text
       >`
     }
 
@@ -133,10 +132,14 @@ export class W3mInputToken extends LitElement {
 
   private maxAmountTemplate() {
     if (this.token) {
-      const color = this.exceedsBalance ? 'error-100' : 'fg-200'
+      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
+        return html` <wui-text variant="sm-regular" color="error">
+          ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
+        </wui-text>`
+      }
 
-      return html` <wui-text variant="small-400" color=${color}>
-        ${UiHelperUtil.roundNumber(this.maxAmount, 6, 5)}
+      return html` <wui-text variant="sm-regular" color="secondary">
+        ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
       </wui-text>`
     }
 

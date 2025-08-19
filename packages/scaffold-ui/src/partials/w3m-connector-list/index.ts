@@ -50,7 +50,7 @@ export class W3mConnectorList extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" gap="xs"> ${this.connectorListTemplate()} </wui-flex>
+      <wui-flex flexDirection="column" gap="2"> ${this.connectorListTemplate()} </wui-flex>
     `
   }
 

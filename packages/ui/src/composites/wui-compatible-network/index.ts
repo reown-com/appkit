@@ -22,10 +22,10 @@ export class WuiCompatibleNetwork extends LitElement {
   public override render() {
     return html`
       <button>
-        <wui-text variant="small-400" color="fg-200">${this.text}</wui-text>
-        <wui-flex gap="3xs" alignItems="center">
+        <wui-text variant="md-regular" color="inherit">${this.text}</wui-text>
+        <wui-flex>
           ${this.networksTemplate()}
-          <wui-icon name="chevronRight" size="sm" color="fg-200"></wui-icon>
+          <wui-icon name="chevronRight" size="sm" color="inherit"></wui-icon>
         </wui-flex>
       </button>
     `

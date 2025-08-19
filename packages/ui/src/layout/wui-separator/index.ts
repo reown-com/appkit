@@ -21,7 +21,7 @@ export class WuiSeparator extends LitElement {
   // -- Private ------------------------------------------- //
   private template() {
     if (this.text) {
-      return html`<wui-text variant="small-500" color="fg-200">${this.text}</wui-text>`
+      return html`<wui-text variant="md-regular" color="secondary">${this.text}</wui-text>`
     }
 
     return null

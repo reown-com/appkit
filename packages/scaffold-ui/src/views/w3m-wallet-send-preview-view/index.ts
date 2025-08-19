@@ -24,10 +24,9 @@ export class W3mWalletSendPreviewView extends LitElement {
   @state() private receiverAddress?: string
   @state() private receiverProfileName?: string
   @state() private receiverProfileImageUrl?: string
-  @state() private caipNetwork: CaipNetwork | undefined = ChainController.state.activeCaipNetwork
+  @state() private caipNetwork = ChainController.state.activeCaipNetwork
   @state() private loading = false
   @state() private formattedAmount = '0'
-  @state() private usdValue = '$0.00'
 
   private unsubscribe: (() => void)[] = []
 
@@ -75,21 +74,15 @@ export class W3mWalletSendPreviewView extends LitElement {
     this.formattedAmount = snapshot.context.sendAmount
       ? String(UiHelperUtil.roundNumber(snapshot.context.sendAmount, 6, 5))
       : '0'
-
-    // Calculate USD value
-    this.usdValue =
-      snapshot.context.selectedToken?.price && snapshot.context.sendAmount
-        ? `$${(snapshot.context.selectedToken.price * snapshot.context.sendAmount).toFixed(2)}`
-        : '$0.00'
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
-      <wui-flex gap="xs" flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+    return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
+      <wui-flex gap="2" flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-flex flexDirection="column" gap="4xs">
-            <wui-text variant="small-400" color="fg-150">Send</wui-text>
+          <wui-flex flexDirection="column" gap="01">
+            <wui-text variant="sm-regular" color="secondary">Send</wui-text>
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
@@ -98,10 +91,10 @@ export class W3mWalletSendPreviewView extends LitElement {
           ></wui-preview-item>
         </wui-flex>
         <wui-flex>
-          <wui-icon color="fg-200" size="md" name="arrowBottom"></wui-icon>
+          <wui-icon color="default" size="md" name="arrowBottom"></wui-icon>
         </wui-flex>
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="small-400" color="fg-150">To</wui-text>
+          <wui-text variant="sm-regular" color="secondary">To</wui-text>
           <wui-preview-item
             text="${this.receiverProfileName
               ? UiHelperUtil.getTruncateString({
@@ -122,21 +115,21 @@ export class W3mWalletSendPreviewView extends LitElement {
           ></wui-preview-item>
         </wui-flex>
       </wui-flex>
-      <wui-flex flexDirection="column" .padding=${['xxl', '0', '0', '0'] as const}>
+      <wui-flex flexDirection="column" .padding=${['6', '0', '0', '0'] as const}>
         <w3m-wallet-send-details
-          .caipNetwork=${this.caipNetwork}
-          .receiverAddress=${this.receiverAddress}
+          .caipNetwork=${this.caipNetwork as unknown as CaipNetwork | undefined}
+          .receiverAddress=${this.receiverAddress || ''}
         ></w3m-wallet-send-details>
-        <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
-          <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
+        <wui-flex justifyContent="center" gap="1" .padding=${['3', '0', '0', '0'] as const}>
+          <wui-icon size="sm" color="default" name="warningCircle"></wui-icon>
+          <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
-        <wui-flex justifyContent="center" gap="s" .padding=${['l', '0', '0', '0'] as const}>
+        <wui-flex justifyContent="center" gap="3" .padding=${['4', '0', '0', '0'] as const}>
           <wui-button
             class="cancelButton"
             @click=${this.onCancelClick.bind(this)}
             size="lg"
-            variant="neutral"
+            variant="neutral-secondary"
           >
             Cancel
           </wui-button>
@@ -144,7 +137,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="sendButton"
             @click=${this.onSendClick.bind(this)}
             size="lg"
-            variant="main"
+            variant="accent-primary"
             .loading=${this.loading}
           >
             Send
@@ -156,8 +149,13 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private sendValueTemplate() {
-    if (this.usdValue && this.usdValue !== '$0.00') {
-      return html`<wui-text variant="paragraph-400" color="fg-100">${this.usdValue}</wui-text>`
+    if (this.token && this.sendTokenAmount) {
+      const price = this.token.price
+      const totalValue = price * this.sendTokenAmount
+
+      return html`<wui-text variant="md-regular" color="primary"
+        >$${totalValue.toFixed(2)}</wui-text
+      >`
     }
 
     return null

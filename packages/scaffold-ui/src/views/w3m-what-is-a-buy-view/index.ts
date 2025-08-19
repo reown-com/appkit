@@ -15,16 +15,16 @@ export class W3mWhatIsABuyView extends LitElement {
     return html`
       <wui-flex
         flexDirection="column"
-        .padding=${['xxl', '3xl', 'xl', '3xl'] as const}
+        .padding=${['6', '10', '5', '10'] as const}
         alignItems="center"
-        gap="xl"
+        gap="5"
       >
         <wui-visual name="onrampCard"></wui-visual>
-        <wui-flex flexDirection="column" gap="xs" alignItems="center">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">
+        <wui-flex flexDirection="column" gap="2" alignItems="center">
+          <wui-text align="center" variant="md-medium" color="primary">
             Quickly and easily buy digital assets!
           </wui-text>
-          <wui-text align="center" variant="small-400" color="fg-200">
+          <wui-text align="center" variant="sm-regular" color="secondary">
             Simply select your preferred onramp provider and add digital assets to your account
             using your credit card or bank transfer
           </wui-text>

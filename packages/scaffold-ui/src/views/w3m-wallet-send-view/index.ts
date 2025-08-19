@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import type { Balance } from '@reown/appkit-common'
 import { RouterController } from '@reown/appkit-controllers'
 import { sendActor } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -20,8 +21,11 @@ export class W3mWalletSendView extends LitElement {
   @state() private message = 'Preview Send'
   @state() private buttonDisabled = true
   @state() private loading = false
-  @state() private variant: 'main' | 'accent' | 'neutral' = 'neutral'
   @state() private canSend = false
+  @state() private token?: Balance
+  @state() private sendTokenAmount?: number
+  @state() private receiverAddress?: string
+  @state() private receiverProfileName?: string
 
   private unsubscribe: (() => void)[] = []
 
@@ -50,37 +54,33 @@ export class W3mWalletSendView extends LitElement {
   private updateButtonState(
     snapshot: typeof sendActor extends { getSnapshot(): infer T } ? T : never
   ) {
+    // Sync state properties with XState actor context
+    this.token = snapshot.context.selectedToken
+    this.sendTokenAmount = snapshot.context.sendAmount
+    this.receiverAddress = snapshot.context.receiverAddress
+    this.receiverProfileName = snapshot.context.receiverProfileName
+
     // Update button message based on state
     if (snapshot.matches('error')) {
       this.message = 'Retry'
-      this.variant = 'accent'
     } else if (snapshot.matches('sending')) {
       this.message = 'Sending...'
-      this.variant = 'main'
     } else if (snapshot.matches({ formEntry: 'resolvingENS' })) {
       this.message = 'Resolving...'
-      this.variant = 'neutral'
     } else if (!snapshot.context.selectedToken) {
       this.message = 'Select Token'
-      this.variant = 'neutral'
     } else if (!snapshot.context.sendAmount) {
       this.message = 'Add Amount'
-      this.variant = 'neutral'
     } else if (!snapshot.context.receiverAddress) {
       this.message = 'Add Address'
-      this.variant = 'neutral'
     } else if (snapshot.context.validationErrors.amount) {
       this.message = 'Insufficient Funds'
-      this.variant = 'neutral'
     } else if (snapshot.context.validationErrors.address) {
       this.message = 'Invalid Address'
-      this.variant = 'neutral'
     } else if (snapshot.context.validationErrors.token) {
       this.message = 'Invalid Token'
-      this.variant = 'neutral'
     } else if (snapshot.matches('readyToSend')) {
       this.message = 'Preview Send'
-      this.variant = 'main'
     }
 
     // Update button state
@@ -91,25 +91,23 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
-      <wui-flex class="inputContainer" gap="xs" flexDirection="column">
-        <w3m-input-token></w3m-input-token>
-        <wui-icon-box
-          size="inherit"
-          backgroundColor="fg-300"
-          iconSize="lg"
-          iconColor="fg-250"
-          background="opaque"
-          icon="arrowBottom"
-        ></wui-icon-box>
-        <w3m-input-address></w3m-input-address>
+    return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
+      <wui-flex class="inputContainer" gap="2" flexDirection="column">
+        <w3m-input-token
+          .token=${this.token}
+          .sendTokenAmount=${this.sendTokenAmount}
+        ></w3m-input-token>
+        <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
+        <w3m-input-address
+          .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
+        ></w3m-input-address>
       </wui-flex>
-      <wui-flex .margin=${['l', '0', '0', '0'] as const}>
+      <wui-flex .margin=${['4', '0', '0', '0'] as const}>
         <wui-button
           @click=${this.onButtonClick.bind(this)}
           ?disabled=${this.buttonDisabled}
           size="lg"
-          variant=${this.variant}
+          variant="accent-primary"
           ?loading=${this.loading}
           fullWidth
         >

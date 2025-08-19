@@ -5,5 +5,6 @@ export default css`
     display: flex;
     width: inherit;
     height: inherit;
+    box-sizing: border-box;
   }
 `

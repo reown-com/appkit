@@ -398,8 +398,10 @@ describe('ExchangeController', () => {
       }
 
       vi.spyOn(ExchangeController, 'getBuyStatus').mockResolvedValue(inProgressStatus)
-      vi.spyOn(global, 'setTimeout').mockImplementation(fn => {
-        fn() // run immediately
+      vi.spyOn(global, 'setTimeout').mockImplementation((handler: TimerHandler) => {
+        if (typeof handler === 'function') {
+          handler()
+        }
         return 0 as any
       })
       // Start the promise but don't await it yet

@@ -167,7 +167,7 @@ describe('W3mSwapView', () => {
 
     const switchTokensSpy = vi.spyOn(SwapController, 'switchTokens')
     const switchButton = element.shadowRoot?.querySelector(
-      '.replace-tokens-button-container button'
+      'wui-flex.replace-tokens-button-container wui-icon-box'
     ) as HTMLElement
     switchButton?.click()
 
