@@ -11,7 +11,7 @@ import { walletImagesOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiTransactionVisual>
 
 export default {
-  title: 'Composites/wui-transaction-visual',
+  title: 'Composites/apkt-transaction-visual',
   args: {
     type: 'approve',
     status: 'confirmed',

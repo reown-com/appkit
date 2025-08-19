@@ -8,7 +8,7 @@ import type { WuiShimmer } from '@reown/appkit-ui/wui-shimmer'
 type Component = Meta<WuiShimmer>
 
 export default {
-  title: 'Composites/wui-shimmer',
+  title: 'Composites/apkt-shimmer',
   args: {
     width: '200px',
     height: '50px',

@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiInputAmount>
 
 export default {
-  title: 'Composites/wui-input-amount',
+  title: 'Composites/apkt-input-amount',
   args: {
     disabled: false,
     placeholder: '0'
