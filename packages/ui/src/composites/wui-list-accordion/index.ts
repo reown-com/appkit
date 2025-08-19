@@ -58,7 +58,7 @@ export class WuiListAccordion extends LitElement {
         @click=${() => this.onClick()}
       >
         <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="md-regular" color="secondary">${this.textTitle}</wui-text>
+          <wui-text variant="lg-regular" color="secondary">${this.textTitle}</wui-text>
           ${this.chevronTemplate()}
         </wui-flex>
         <div
