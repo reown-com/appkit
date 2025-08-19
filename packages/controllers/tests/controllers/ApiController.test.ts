@@ -13,7 +13,6 @@ import {
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
-import { mockChainControllerState } from '../../exports/testing.js'
 import { api } from '../../src/controllers/ApiController.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../../src/utils/MobileWallet.js'
 
