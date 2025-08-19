@@ -15,6 +15,7 @@ export const networkImages = {
   324: 'b310f07f-4ef7-49f3-7073-2a0a39685800',
   // Base
   8453: '7289c336-3981-4081-c5f4-efc26ac64a00',
+  10_143: '0a728e83-bacb-46db-7844-948f05434900',
   // Solana
   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
   // Solana Testnet
