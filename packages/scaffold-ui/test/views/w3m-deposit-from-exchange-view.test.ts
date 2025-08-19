@@ -3,10 +3,35 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import type { CaipNetwork } from '@reown/appkit-common'
 import { ChainController, ExchangeController } from '@reown/appkit-controllers'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
+
+const mockMainnet = {
+  id: '1',
+  name: 'Mainnet',
+  chainNamespace: 'eip155',
+  nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY']
+    }
+  }
+}
+
+const mockSolanaMainnet = {
+  id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  name: 'Solana Mainnet',
+  chainNamespace: 'solana',
+  nativeCurrency: { symbol: 'SOL', name: 'Solana', decimals: 9 },
+  rpcUrls: {
+    default: {
+      http: ['https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY']
+    }
+  }
+}
 
 describe('W3mDepositFromExchangeView', () => {
   beforeEach(() => {
@@ -15,6 +40,47 @@ describe('W3mDepositFromExchangeView', () => {
 
   afterEach(() => {
     vi.clearAllMocks()
+  })
+
+  it('should set network native currency as payment asset', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: mockSolanaMainnet as unknown as CaipNetwork
+    })
+
+    const setPaymentAssetSpy = vi.spyOn(ExchangeController, 'setPaymentAsset')
+
+    await fixture(html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`)
+
+    expect(setPaymentAssetSpy).toHaveBeenCalledWith({
+      network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      asset: 'native',
+      metadata: {
+        name: 'Solana',
+        symbol: 'SOL',
+        decimals: 9
+      }
+    })
+    expect(setPaymentAssetSpy).toHaveBeenCalledTimes(1)
+
+    // Test mainnet
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: mockMainnet as unknown as CaipNetwork
+    })
+
+    await fixture(html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`)
+
+    expect(setPaymentAssetSpy).toHaveBeenCalledWith({
+      network: 'eip155:1',
+      asset: 'native',
+      metadata: {
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18
+      }
+    })
+    expect(setPaymentAssetSpy).toHaveBeenCalledTimes(2)
   })
 
   it('renders exchanges and asset chip, and calls controller on interactions', async () => {

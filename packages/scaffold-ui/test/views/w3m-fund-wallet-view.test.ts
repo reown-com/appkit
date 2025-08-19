@@ -9,6 +9,9 @@ import { ChainController, OptionsController, RouterController } from '@reown/app
 import { W3mFundWalletView } from '../../src/views/w3m-fund-wallet-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
+// -- Constants ----------------------------------------- //
+const DEPOSIT_FROM_EXCHANGE_BUTTON_TEST_ID = 'wallet-features-deposit-from-exchange-button'
+
 describe('W3mFundWalletView', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
@@ -218,5 +221,82 @@ describe('W3mFundWalletView', () => {
       '[data-testid="wallet-features-receive-button"]'
     )
     expect(receiveFundsButton).toBeFalsy()
+  })
+
+  it('should not show deposit from exchange option when payWithExchange is disabled', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: {
+        payWithExchange: false
+      }
+    })
+
+    const element: W3mFundWalletView = await fixture(
+      html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
+    )
+
+    await elementUpdated(element)
+
+    const depositFromExchangeButton = HelpersUtil.getByTestId(
+      element,
+      DEPOSIT_FROM_EXCHANGE_BUTTON_TEST_ID
+    )
+    expect(depositFromExchangeButton).toBeFalsy()
+  })
+
+  it('should show deposit from exchange option when payWithExchange is enabled', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: {
+        payWithExchange: true
+      }
+    })
+
+    const element: W3mFundWalletView = await fixture(
+      html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
+    )
+
+    await elementUpdated(element)
+
+    const depositFromExchangeButton = HelpersUtil.getByTestId(
+      element,
+      DEPOSIT_FROM_EXCHANGE_BUTTON_TEST_ID
+    )
+
+    expect(depositFromExchangeButton).toBeTruthy()
+  })
+
+  it('should not show deposit from exchange option when chain is not supported and payWithExchange is enabled', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.BITCOIN
+    })
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: {
+        payWithExchange: true
+      }
+    })
+
+    const element: W3mFundWalletView = await fixture(
+      html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
+    )
+
+    await elementUpdated(element)
+
+    const depositFromExchangeButton = HelpersUtil.getByTestId(
+      element,
+      DEPOSIT_FROM_EXCHANGE_BUTTON_TEST_ID
+    )
+
+    expect(depositFromExchangeButton).toBeNull()
   })
 })
