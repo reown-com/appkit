@@ -1,5 +1,11 @@
 # pay-test-exchange
 
+## 0.1.5
+
+### Patch Changes
+
+- [`b59dfa7`](https://github.com/reown-com/appkit/commit/b59dfa728934866610e89301dc9ecf67665038df) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where cancelling SIWX message signing did not restore the previous connected network state when using social or email login
+
 ## 0.1.4
 
 ### Patch Changes
