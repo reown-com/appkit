@@ -197,6 +197,28 @@ describe('W3mAccountDefaultWidget', () => {
         expect(swapButton).not.toBeNull()
         expect(sendButton).toBeNull()
       })
+
+      it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            swaps: true,
+            receive: false
+          },
+          remoteFeatures: {
+            payWithExchange: false,
+            onramp: false
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
+
+        expect(fundWalletButton).toBeNull()
+      })
     })
 
     describe('solana wallet features', () => {
@@ -280,6 +302,28 @@ describe('W3mAccountDefaultWidget', () => {
         expect(fundWalletButton).not.toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).toBeNull()
+      })
+
+      it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            swaps: true,
+            receive: false
+          },
+          remoteFeatures: {
+            payWithExchange: false,
+            onramp: false
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
+
+        expect(fundWalletButton).toBeNull()
       })
     })
 
