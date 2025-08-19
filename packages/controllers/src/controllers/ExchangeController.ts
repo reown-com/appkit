@@ -30,7 +30,7 @@ const DEFAULT_STATE: ExchangeControllerState = {
       decimals: 18
     }
   },
-  amount: 0,
+  amount: 10,
   tokenAmount: 0,
   tokenPrice: null,
   priceLoading: false,
@@ -107,6 +107,7 @@ export const ExchangeController = {
     const result = await BlockchainApiController.fetchTokenPrice({ addresses: [tokenAddress] })
     state.tokenPrice = result.fungibles?.[0]?.price || null
     state.priceLoading = false
+    state.tokenAmount = ExchangeController.getTokenAmount()
   },
 
   getTokenAmount() {
@@ -116,7 +117,7 @@ export const ExchangeController = {
 
     const tokenAmount = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 0,
-      maximumFractionDigits: state.paymentAsset.metadata.decimals
+      maximumFractionDigits: 8
     }).format(state.amount / state.tokenPrice)
 
 
@@ -126,7 +127,7 @@ export const ExchangeController = {
   setAmount(amount: number) {
     state.amount = amount
     if (state.tokenPrice) {
-      state.tokenAmount = this.getTokenAmount()
+      state.tokenAmount = ExchangeController.getTokenAmount()
     }
   },
 
@@ -143,7 +144,7 @@ export const ExchangeController = {
         asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
         amount: state.amount.toString()
       })
-      // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
+      // Putting ExchangeController here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
     } catch (error) {
       SnackController.showError('Unable to get exchanges')
@@ -216,7 +217,7 @@ export const ExchangeController = {
         amount: state.tokenAmount,
         recipient: AccountController.state.address
       }
-      const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
+      const payUrl = await ExchangeController.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
         throw new Error('Unable to initiate payment')
       }
@@ -247,7 +248,7 @@ export const ExchangeController = {
     paymentId: string
     retries?: number
   }): Promise<GetBuyStatusResult> {
-    const status = await this.getBuyStatus(exchangeId, sessionId, paymentId)
+    const status = await ExchangeController.getBuyStatus(exchangeId, sessionId, paymentId)
     if (status.status === 'SUCCESS' || status.status === 'FAILED') {
       return status
     }
@@ -261,7 +262,7 @@ export const ExchangeController = {
       setTimeout(resolve, 5000)
     })
 
-    return this.waitUntilComplete({
+    return ExchangeController.waitUntilComplete({
       exchangeId,
       sessionId,
       paymentId,

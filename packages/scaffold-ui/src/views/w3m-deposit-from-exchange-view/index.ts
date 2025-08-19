@@ -46,17 +46,7 @@ export class W3mDepositFromExchangeView extends LitElement {
     this.unsubscribe.push(
       ChainController.subscribeKey('activeCaipNetwork', val => {
         this.network = val
-        if (val) {
-          ExchangeController.setPaymentAsset({
-            network: val.caipNetworkId,
-            asset: 'native',
-            metadata: {
-              name: val.nativeCurrency.name,
-              symbol: val.nativeCurrency.symbol,
-              decimals: val.nativeCurrency.decimals
-            }
-          })
-        }
+        this.updatePaymentAsset()
       }),
       ExchangeController.subscribe(exchangeState => {
         this.exchanges = exchangeState.exchanges
@@ -87,6 +77,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   public override firstUpdated() {
+    this.updatePaymentAsset()
     ExchangeController.fetchTokenPrice()
     ExchangeController.fetchExchanges()
   }
@@ -102,8 +93,9 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private exchangesTemplate() {
-    return html`
-      <wui-flex
+    return (this.isLoading && !this.exchanges.length)
+      ? html`<wui-shimmer width="100%" height="100px" borderRadius="xxs" variant="light"></wui-shimmer>`
+      : html`<wui-flex
         flexDirection="column"
         gap="2"
         .padding=${['3', '3', '3', '3'] as const}
@@ -189,8 +181,6 @@ export class W3mDepositFromExchangeView extends LitElement {
       this.currentPayment?.sessionId &&
       this.paymentId
     ) {
-      SnackController.showLoading('Deposit in progress...')
-      RouterController.replace('Account')
       ExchangeController.waitUntilComplete({
         exchangeId: this.currentPayment.exchangeId,
         sessionId: this.currentPayment.sessionId,
@@ -202,11 +192,27 @@ export class W3mDepositFromExchangeView extends LitElement {
           SnackController.showError('Deposit failed')
         }
       })
+      SnackController.showLoading('Deposit in progress...')
+      RouterController.replace('Account')
     }
   }
 
   private onPresetAmountClick(amount: number) {
     ExchangeController.setAmount(amount)
+  }
+
+  private updatePaymentAsset() {
+    if (this.network) {
+      ExchangeController.setPaymentAsset({
+        network: this.network.caipNetworkId,
+        asset: 'native',
+        metadata: {
+          name: this.network.nativeCurrency.name,
+          symbol: this.network.nativeCurrency.symbol,
+          decimals: this.network.nativeCurrency.decimals
+        }
+      })
+    }
   }
 }
 
