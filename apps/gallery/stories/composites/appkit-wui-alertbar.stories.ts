@@ -12,7 +12,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiAlertBar>
 
 export default {
-  title: 'Composites/wui-alertbar',
+  title: 'Composites/apkt-alertbar',
   args: {
     message: 'Transaction sent successfully',
     type: 'info'

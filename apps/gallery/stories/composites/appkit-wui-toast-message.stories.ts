@@ -11,7 +11,7 @@ import { toastMessageOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiToastMessage>
 
 export default {
-  title: 'Composites/wui-toast-message',
+  title: 'Composites/apkt-toast-message',
   args: {
     message: 'Title',
     variant: 'info'

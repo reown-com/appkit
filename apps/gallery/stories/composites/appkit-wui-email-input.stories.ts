@@ -10,7 +10,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiEmailInput>
 
 export default {
-  title: 'Composites/wui-email-input',
+  title: 'Composites/apkt-email-input',
   args: {
     errorMessage: ''
   }
