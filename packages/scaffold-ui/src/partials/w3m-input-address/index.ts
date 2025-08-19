@@ -1,14 +1,10 @@
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
-import {
-  ChainController,
-  ConnectionController,
-  CoreHelperUtil,
-  SendController
-} from '@reown/appkit-controllers'
+import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { sendActor } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -27,17 +23,72 @@ export class W3mInputAddress extends LitElement {
   public instructionElementRef: Ref<HTMLElement> = createRef()
 
   // -- State & Properties -------------------------------- //
-  @property() public value?: string
-
-  @state() private instructionHidden = Boolean(this.value)
-
+  @state() public value?: string
+  @state() public displayName?: string
+  @state() public avatar?: string
+  @state() private loading = false
+  @state() private hasError = false
+  @state() private errorMessage?: string
+  @state() private instructionHidden = false
   @state() private pasting = false
 
-  protected override firstUpdated() {
-    if (this.value) {
-      this.instructionHidden = true
+  private unsubscribe: (() => void)[] = []
+
+  public constructor() {
+    super()
+
+    // Initialize from current actor state
+    const snapshot = sendActor.getSnapshot()
+    this.updateAddressState(snapshot)
+
+    // Subscribe to actor state changes
+    this.unsubscribe.push(
+      sendActor.subscribe(actorSnapshot => {
+        this.updateAddressState(actorSnapshot)
+        this.requestUpdate()
+      }).unsubscribe
+    )
+  }
+
+  public override disconnectedCallback() {
+    super.disconnectedCallback()
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  // -- Private ------------------------------------------- //
+  private updateAddressState(
+    snapshot: typeof sendActor extends { getSnapshot(): infer T } ? T : never
+  ) {
+    const address = snapshot.context.receiverAddress || ''
+    const name = snapshot.context.receiverProfileName
+    const avatar = snapshot.context.receiverProfileImageUrl
+    const loading = snapshot.matches({ formEntry: 'resolvingENS' })
+    const hasError = Boolean(snapshot.context.validationErrors.address)
+    const error = snapshot.context.validationErrors.address
+
+    this.value = name || address
+    this.displayName = name
+    this.avatar = avatar
+    this.loading = loading
+    this.hasError = hasError
+    this.errorMessage = error
+
+    const shouldShowInstruction = this.instructionHidden
+    this.instructionHidden = Boolean(this.value)
+
+    // If instruction should now be visible (was hidden, now should show)
+    if (shouldShowInstruction && !this.instructionHidden) {
+      setTimeout(() => this.focusInstruction(), 0)
     }
+  }
+
+  protected override firstUpdated() {
     this.checkHidden()
+
+    // Ensure instruction is properly set up if it should be visible
+    if (!this.instructionHidden) {
+      setTimeout(() => this.focusInstruction(), 0)
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -70,15 +121,19 @@ export class W3mInputAddress extends LitElement {
       </wui-text>
       <textarea
         spellcheck="false"
-        ?disabled=${!this.instructionHidden}
+        ?disabled=${!this.instructionHidden || this.loading}
         ${ref(this.inputElementRef)}
         @input=${this.onInputChange.bind(this)}
         @blur=${this.onBlur.bind(this)}
         .value=${this.value ?? ''}
         autocomplete="off"
+        class=${this.hasError ? 'error' : ''}
       >
 ${this.value ?? ''}</textarea
       >
+      ${this.hasError
+        ? html` <wui-text variant="small-400" color="error-100"> ${this.errorMessage} </wui-text> `
+        : null}
     </wui-flex>`
   }
 
@@ -140,9 +195,13 @@ ${this.value ?? ''}</textarea
   private async onPasteClick() {
     this.pasting = true
 
-    const text = await navigator.clipboard.readText()
-    SendController.setReceiverAddress(text)
-    this.focusInput()
+    try {
+      const text = await navigator.clipboard.readText()
+      sendActor.send({ type: 'SET_ADDRESS', address: text })
+      this.focusInput()
+    } catch {
+      // Silently handle clipboard errors
+    }
   }
 
   private onInputChange(e: InputEvent) {
@@ -154,48 +213,20 @@ ${this.value ?? ''}</textarea
     if (element.value && !this.instructionHidden) {
       this.focusInput()
     }
-    SendController.setLoading(true)
+
     this.onDebouncedSearch(element.value)
   }
 
-  private onDebouncedSearch = CoreHelperUtil.debounce(async (value: string) => {
+  private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
     if (!value.length) {
-      this.setReceiverAddress('')
+      sendActor.send({ type: 'CLEAR_ADDRESS' })
 
       return
     }
 
-    const activeChain = ChainController.state.activeChain
-    const isValidAddress = CoreHelperUtil.isAddress(value, activeChain)
-
-    if (isValidAddress) {
-      this.setReceiverAddress(value)
-
-      return
-    }
-
-    try {
-      const resolvedAddress = await ConnectionController.getEnsAddress(value)
-
-      if (resolvedAddress) {
-        SendController.setReceiverProfileName(value)
-        SendController.setReceiverAddress(resolvedAddress)
-        const avatar = await ConnectionController.getEnsAvatar(value)
-        SendController.setReceiverProfileImageUrl(avatar || undefined)
-      }
-    } catch (error) {
-      this.setReceiverAddress(value)
-    } finally {
-      SendController.setLoading(false)
-    }
+    // Send the address to XState - it will handle validation and ENS resolution
+    sendActor.send({ type: 'SET_ADDRESS', address: value })
   })
-
-  private setReceiverAddress(address: string) {
-    SendController.setReceiverAddress(address)
-    SendController.setReceiverProfileName(undefined)
-    SendController.setReceiverProfileImageUrl(undefined)
-    SendController.setLoading(false)
-  }
 }
 
 declare global {

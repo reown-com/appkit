@@ -1,9 +1,9 @@
 import { LitElement, html } from 'lit'
-import { property } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
-import { NumberUtil } from '@reown/appkit-common'
-import { RouterController, SendController } from '@reown/appkit-controllers'
+import { RouterController } from '@reown/appkit-controllers'
+import { sendActor } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -19,9 +19,61 @@ export class W3mInputToken extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Object }) public token?: Balance
+  @state() private token?: Balance
+  @state() private sendTokenAmount?: number
+  @state() private loading = false
+  @state() private maxAmount = 0
+  @state() private exceedsBalance = false
+  @state() private usdValue = '$0.00'
 
-  @property({ type: Number }) public sendTokenAmount?: number
+  private unsubscribe: (() => void)[] = []
+
+  // -- Lifecycle ----------------------------------------- //
+  public constructor() {
+    super()
+
+    // Initialize from current actor state
+    const snapshot = sendActor.getSnapshot()
+    this.updateTokenState(snapshot)
+
+    // Subscribe to actor state changes
+    this.unsubscribe.push(
+      sendActor.subscribe(actorSnapshot => {
+        this.updateTokenState(actorSnapshot)
+        this.requestUpdate()
+      }).unsubscribe
+    )
+  }
+
+  public override disconnectedCallback() {
+    super.disconnectedCallback()
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  // -- Private ------------------------------------------- //
+  private updateTokenState(
+    snapshot: typeof sendActor extends { getSnapshot(): infer T } ? T : never
+  ) {
+    this.token = snapshot.context.selectedToken
+    this.sendTokenAmount = snapshot.context.sendAmount
+    this.loading = snapshot.matches('loadingBalances') || snapshot.matches('sending')
+    this.maxAmount = snapshot.context.selectedToken
+      ? Number(snapshot.context.selectedToken.quantity.numeric)
+      : 0
+
+    // Calculate exceeds balance
+    this.exceedsBalance = Boolean(
+      snapshot.context.selectedToken &&
+        snapshot.context.sendAmount &&
+        snapshot.context.sendAmount > Number(snapshot.context.selectedToken.quantity.numeric)
+    )
+
+    // Calculate USD value
+    this.usdValue =
+      snapshot.context.selectedToken?.price && snapshot.context.sendAmount
+        ? `$${(snapshot.context.selectedToken.price * snapshot.context.sendAmount).toFixed(2)}`
+        : '$0.00'
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -33,7 +85,7 @@ export class W3mInputToken extends LitElement {
       <wui-flex alignItems="center">
         <wui-input-amount
           @inputChange=${this.onInputChange.bind(this)}
-          ?disabled=${!this.token && true}
+          ?disabled=${!this.token || this.loading}
           .value=${this.sendTokenAmount ? String(this.sendTokenAmount) : ''}
         ></wui-input-amount>
         ${this.buttonTemplate()}
@@ -47,7 +99,6 @@ export class W3mInputToken extends LitElement {
     </wui-flex>`
   }
 
-  // -- Private ------------------------------------------- //
   private buttonTemplate() {
     if (this.token) {
       return html`<wui-token-button
@@ -71,14 +122,9 @@ export class W3mInputToken extends LitElement {
   }
 
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount) {
-      const price = this.token.price
-      const totalValue = price * this.sendTokenAmount
-
+    if (this.token && this.sendTokenAmount && this.usdValue !== '$0.00') {
       return html`<wui-text class="totalValue" variant="small-400" color="fg-200"
-        >${totalValue
-          ? `$${NumberUtil.formatNumberToLocalString(totalValue, 2)}`
-          : 'Incorrect value'}</wui-text
+        >${this.usdValue}</wui-text
       >`
     }
 
@@ -87,14 +133,10 @@ export class W3mInputToken extends LitElement {
 
   private maxAmountTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-        return html` <wui-text variant="small-400" color="error-100">
-          ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
-        </wui-text>`
-      }
+      const color = this.exceedsBalance ? 'error-100' : 'fg-200'
 
-      return html` <wui-text variant="small-400" color="fg-200">
-        ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
+      return html` <wui-text variant="small-400" color=${color}>
+        ${UiHelperUtil.roundNumber(this.maxAmount, 6, 5)}
       </wui-text>`
     }
 
@@ -103,7 +145,7 @@ export class W3mInputToken extends LitElement {
 
   private actionTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
+      if (this.exceedsBalance) {
         return html`<wui-link @click=${this.onBuyClick.bind(this)}>Buy</wui-link>`
       }
 
@@ -114,14 +156,12 @@ export class W3mInputToken extends LitElement {
   }
 
   private onInputChange(event: InputEvent) {
-    SendController.setTokenAmount(event.detail)
+    sendActor.send({ type: 'SET_AMOUNT', amount: event.detail })
   }
 
   private onMaxClick() {
-    if (this.token) {
-      const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
-
-      SendController.setTokenAmount(Number(maxValue.toFixed(20)))
+    if (this.maxAmount > 0) {
+      sendActor.send({ type: 'SET_AMOUNT', amount: this.maxAmount })
     }
   }
 

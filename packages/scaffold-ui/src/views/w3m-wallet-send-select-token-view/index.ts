@@ -1,14 +1,10 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { Balance } from '@reown/appkit-common'
-import {
-  ChainController,
-  CoreHelperUtil,
-  RouterController,
-  SendController,
-  SwapController
-} from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import { sendActor } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -25,32 +21,38 @@ import styles from './styles.js'
 export class W3mSendSelectTokenView extends LitElement {
   public static override styles = styles
 
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalances = SendController.state.tokenBalances
-
+  @state() private tokenBalances: Balance[] = []
   @state() private tokens?: Balance[]
-
   @state() private filteredTokens?: Balance[]
-
   @state() private search = ''
+
+  private unsubscribe: (() => void)[] = []
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    this.fetchBalancesAndNetworkPrice()
+
+    // Initialize from current actor state
+    const snapshot = sendActor.getSnapshot()
+    this.tokenBalances = snapshot.context.tokenBalances
+
+    // Fetch balances when this view is loaded if not already available
+    if (snapshot.context.tokenBalances.length === 0 && !snapshot.matches('loadingBalances')) {
+      sendActor.send({ type: 'FETCH_BALANCES' })
+    }
+
+    // Subscribe to actor state changes
     this.unsubscribe.push(
-      ...[
-        SendController.subscribe(val => {
-          this.tokenBalances = val.tokenBalances
-        })
-      ]
+      sendActor.subscribe(actorSnapshot => {
+        this.tokenBalances = actorSnapshot.context.tokenBalances
+        this.requestUpdate()
+      }).unsubscribe
     )
   }
 
   public override disconnectedCallback() {
+    super.disconnectedCallback()
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
@@ -64,22 +66,6 @@ export class W3mSendSelectTokenView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-
-  private async fetchBalancesAndNetworkPrice() {
-    if (!this.tokenBalances || this.tokenBalances?.length === 0) {
-      await this.fetchBalances()
-      await this.fetchNetworkPrice()
-    }
-  }
-
-  private async fetchBalances() {
-    await SendController.fetchTokenBalance()
-    SendController.fetchNetworkBalance()
-  }
-
-  private async fetchNetworkPrice() {
-    await SwapController.getNetworkTokenPrice()
-  }
 
   private templateSearchInput() {
     return html`
@@ -126,7 +112,7 @@ export class W3mSendSelectTokenView extends LitElement {
                     tokenName=${token.name}
                     tokenImageUrl=${token.iconUrl}
                     tokenAmount=${token.quantity.numeric}
-                    tokenValue=${token.value}
+                    tokenValue=${ifDefined(token.value)}
                     tokenCurrency=${token.symbol}
                   ></wui-list-token>`
               )
@@ -176,8 +162,7 @@ export class W3mSendSelectTokenView extends LitElement {
   })
 
   private handleTokenClick(token: Balance) {
-    SendController.setToken(token)
-    SendController.setTokenAmount(undefined)
+    sendActor.send({ type: 'SELECT_TOKEN', token })
     RouterController.goBack()
   }
 }

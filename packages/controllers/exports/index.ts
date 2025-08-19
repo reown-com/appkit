@@ -66,6 +66,9 @@ export type { SwapControllerState, SwapInputTarget } from '../src/controllers/Sw
 export { SendController } from '../src/controllers/SendController.js'
 export type { SendControllerState } from '../src/controllers/SendController.js'
 
+// XState Controllers
+export * from '../src/xstate-controllers/send/index.js'
+
 export { TooltipController } from '../src/controllers/TooltipController.js'
 export type { TooltipControllerState } from '../src/controllers/TooltipController.js'
 

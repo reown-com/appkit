@@ -1,13 +1,8 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import {
-  ChainController,
-  CoreHelperUtil,
-  RouterController,
-  SendController,
-  SwapController
-} from '@reown/appkit-controllers'
+import { RouterController } from '@reown/appkit-controllers'
+import { sendActor } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -21,64 +16,84 @@ import styles from './styles.js'
 export class W3mWalletSendView extends LitElement {
   public static override styles = styles
 
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //
-  @state() private token = SendController.state.token
+  @state() private message = 'Preview Send'
+  @state() private buttonDisabled = true
+  @state() private loading = false
+  @state() private variant: 'main' | 'accent' | 'neutral' = 'neutral'
+  @state() private canSend = false
 
-  @state() private sendTokenAmount = SendController.state.sendTokenAmount
-
-  @state() private receiverAddress = SendController.state.receiverAddress
-
-  @state() private receiverProfileName = SendController.state.receiverProfileName
-
-  @state() private loading = SendController.state.loading
-
-  @state() private message:
-    | 'Preview Send'
-    | 'Select Token'
-    | 'Add Address'
-    | 'Add Amount'
-    | 'Insufficient Funds'
-    | 'Incorrect Value'
-    | 'Invalid Address' = 'Preview Send'
+  private unsubscribe: (() => void)[] = []
 
   public constructor() {
     super()
-    // Only load balances and network price if a token is set, else they will be loaded in the select token view
-    if (this.token) {
-      this.fetchBalances()
-      this.fetchNetworkPrice()
-    }
 
+    // Initialize from current actor state
+    const snapshot = sendActor.getSnapshot()
+    this.updateButtonState(snapshot)
+
+    // Subscribe to actor state changes
     this.unsubscribe.push(
-      ...[
-        SendController.subscribe(val => {
-          this.token = val.token
-          this.sendTokenAmount = val.sendTokenAmount
-          this.receiverAddress = val.receiverAddress
-          this.receiverProfileName = val.receiverProfileName
-          this.loading = val.loading
-        })
-      ]
+      sendActor.subscribe(actorSnapshot => {
+        this.updateButtonState(actorSnapshot)
+        this.requestUpdate()
+      }).unsubscribe
     )
   }
 
   public override disconnectedCallback() {
+    super.disconnectedCallback()
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  // -- Private ------------------------------------------- //
+  private updateButtonState(
+    snapshot: typeof sendActor extends { getSnapshot(): infer T } ? T : never
+  ) {
+    // Update button message based on state
+    if (snapshot.matches('error')) {
+      this.message = 'Retry'
+      this.variant = 'accent'
+    } else if (snapshot.matches('sending')) {
+      this.message = 'Sending...'
+      this.variant = 'main'
+    } else if (snapshot.matches({ formEntry: 'resolvingENS' })) {
+      this.message = 'Resolving...'
+      this.variant = 'neutral'
+    } else if (!snapshot.context.selectedToken) {
+      this.message = 'Select Token'
+      this.variant = 'neutral'
+    } else if (!snapshot.context.sendAmount) {
+      this.message = 'Add Amount'
+      this.variant = 'neutral'
+    } else if (!snapshot.context.receiverAddress) {
+      this.message = 'Add Address'
+      this.variant = 'neutral'
+    } else if (snapshot.context.validationErrors.amount) {
+      this.message = 'Insufficient Funds'
+      this.variant = 'neutral'
+    } else if (snapshot.context.validationErrors.address) {
+      this.message = 'Invalid Address'
+      this.variant = 'neutral'
+    } else if (snapshot.context.validationErrors.token) {
+      this.message = 'Invalid Token'
+      this.variant = 'neutral'
+    } else if (snapshot.matches('readyToSend')) {
+      this.message = 'Preview Send'
+      this.variant = 'main'
+    }
+
+    // Update button state
+    this.buttonDisabled = !snapshot.matches('readyToSend') || snapshot.context.loading
+    this.loading = snapshot.context.loading
+    this.canSend = snapshot.matches('readyToSend')
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.getMessage()
-
     return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
       <wui-flex class="inputContainer" gap="xs" flexDirection="column">
-        <w3m-input-token
-          .token=${this.token}
-          .sendTokenAmount=${this.sendTokenAmount}
-        ></w3m-input-token>
+        <w3m-input-token></w3m-input-token>
         <wui-icon-box
           size="inherit"
           backgroundColor="fg-300"
@@ -87,16 +102,14 @@ export class W3mWalletSendView extends LitElement {
           background="opaque"
           icon="arrowBottom"
         ></wui-icon-box>
-        <w3m-input-address
-          .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
-        ></w3m-input-address>
+        <w3m-input-address></w3m-input-address>
       </wui-flex>
       <wui-flex .margin=${['l', '0', '0', '0'] as const}>
         <wui-button
           @click=${this.onButtonClick.bind(this)}
-          ?disabled=${!this.message.startsWith('Preview Send')}
+          ?disabled=${this.buttonDisabled}
           size="lg"
-          variant="main"
+          variant=${this.variant}
           ?loading=${this.loading}
           fullWidth
         >
@@ -107,54 +120,19 @@ export class W3mWalletSendView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private async fetchBalances() {
-    await SendController.fetchTokenBalance()
-    SendController.fetchNetworkBalance()
-  }
-
-  private async fetchNetworkPrice() {
-    await SwapController.getNetworkTokenPrice()
-  }
-
   private onButtonClick() {
-    RouterController.push('WalletSendPreview')
-  }
+    if (this.canSend) {
+      RouterController.push('WalletSendPreview')
+    } else {
+      // Handle different button states
+      const snapshot = sendActor.getSnapshot()
 
-  private getMessage() {
-    this.message = 'Preview Send'
-
-    if (
-      this.receiverAddress &&
-      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
-    ) {
-      this.message = 'Invalid Address'
-    }
-
-    if (!this.receiverAddress) {
-      this.message = 'Add Address'
-    }
-
-    if (
-      this.sendTokenAmount &&
-      this.token &&
-      this.sendTokenAmount > Number(this.token.quantity.numeric)
-    ) {
-      this.message = 'Insufficient Funds'
-    }
-
-    if (!this.sendTokenAmount) {
-      this.message = 'Add Amount'
-    }
-
-    if (this.sendTokenAmount && this.token?.price) {
-      const value = this.sendTokenAmount * this.token.price
-      if (!value) {
-        this.message = 'Incorrect Value'
+      if (!snapshot.context.selectedToken) {
+        RouterController.push('WalletSendSelectToken')
+      } else if (snapshot.matches('error')) {
+        sendActor.send({ type: 'RETRY_SEND' })
       }
-    }
-
-    if (!this.token) {
-      this.message = 'Select Token'
+      // Other cases are handled by form validation in the machine
     }
   }
 }
