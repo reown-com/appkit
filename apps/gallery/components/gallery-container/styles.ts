@@ -9,8 +9,4 @@ export default css`
     align-items: center;
     background-color: inherit;
   }
-
-  ::slotted(*) {
-    width: 100%;
-  }
 `

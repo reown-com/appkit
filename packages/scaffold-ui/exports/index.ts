@@ -11,6 +11,7 @@ export * from '../src/modal/w3m-button/index.js'
 export * from '../src/modal/w3m-connect-button/index.js'
 export * from '../src/modal/w3m-network-button/index.js'
 export * from '../src/modal/w3m-router/index.js'
+export * from '../src/modal/w3m-footer/index.js'
 
 // -- Views --------------------------------------------- //
 

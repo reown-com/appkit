@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   @keyframes shake {
@@ -28,9 +28,9 @@ export default css`
   }
 
   wui-visual {
-    width: var(--wui-wallet-image-size-lg);
-    height: var(--wui-wallet-image-size-lg);
-    border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
+    border-radius: calc(
+      ${({ borderRadius }) => borderRadius['1']} * 9 - ${({ borderRadius }) => borderRadius['3']}
+    );
     position: relative;
     overflow: hidden;
   }
@@ -42,25 +42,28 @@ export default css`
     height: 100%;
     position: absolute;
     inset: 0;
-    border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+    border-radius: calc(
+      ${({ borderRadius }) => borderRadius['1']} * 9 - ${({ borderRadius }) => borderRadius['3']}
+    );
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
   }
 
   wui-icon-box {
     position: absolute;
-    right: calc(var(--wui-spacing-3xs) * -1);
-    bottom: calc(var(--wui-spacing-3xs) * -1);
+    right: calc(${({ spacing }) => spacing['1']} * -1);
+    bottom: calc(${({ spacing }) => spacing['1']} * -1);
     opacity: 0;
     transform: scale(0.5);
     transition:
-      opacity var(--wui-ease-out-power-2) var(--wui-duration-lg),
-      transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      transform ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity, transform;
   }
 
   wui-text[align='center'] {
     width: 100%;
-    padding: 0px var(--wui-spacing-l);
+    padding: 0px ${({ spacing }) => spacing['4']};
   }
 
   [data-error='true'] wui-icon-box {
@@ -69,7 +72,7 @@ export default css`
   }
 
   [data-error='true'] > wui-flex:first-child {
-    animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: shake 250ms ${({ easings }) => easings['ease-out-power-2']} both;
   }
 
   [data-retry='false'] wui-link {
@@ -82,7 +85,7 @@ export default css`
   }
 
   wui-link {
-    padding: var(--wui-spacing-4xs) var(--wui-spacing-xxs);
+    padding: ${({ spacing }) => spacing['01']} ${({ spacing }) => spacing['2']};
   }
 
   .capitalize {

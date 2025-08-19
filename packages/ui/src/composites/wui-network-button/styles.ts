@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -6,37 +6,45 @@ export default css`
   }
 
   button {
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: ${({ borderRadius }) => borderRadius[32]};
     display: flex;
-    gap: var(--wui-spacing-xs);
-    padding: var(--wui-spacing-2xs) var(--wui-spacing-s) var(--wui-spacing-2xs)
-      var(--wui-spacing-xs);
-    border: 1px solid var(--wui-color-gray-glass-010);
-    background-color: var(--wui-color-gray-glass-005);
-    color: var(--wui-color-fg-100);
+    gap: ${({ spacing }) => spacing[1]};
+    padding: ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[2]}
+      ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[1]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   button:disabled {
-    border: 1px solid var(--wui-color-gray-glass-005);
-    background-color: var(--wui-color-gray-glass-015);
-    color: var(--wui-color-gray-glass-015);
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  @media (hover: hover) and (pointer: fine) {
+  @media (hover: hover) {
     button:hover:enabled {
-      background-color: var(--wui-color-gray-glass-010);
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     }
+  }
 
-    button:active:enabled {
-      background-color: var(--wui-color-gray-glass-015);
-    }
+  button[data-size='sm'] > wui-icon-box,
+  button[data-size='sm'] > wui-image {
+    width: 16px;
+    height: 16px;
+  }
+
+  button[data-size='md'] > wui-icon-box,
+  button[data-size='md'] > wui-image {
+    width: 20px;
+    height: 20px;
+  }
+
+  button[data-size='lg'] > wui-icon-box,
+  button[data-size='lg'] > wui-image {
+    width: 24px;
+    height: 24px;
   }
 
   wui-image,
   wui-icon-box {
-    border-radius: var(--wui-border-radius-3xl);
-    width: 24px;
-    height: 24px;
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+    border-radius: ${({ borderRadius }) => borderRadius[32]};
   }
 `

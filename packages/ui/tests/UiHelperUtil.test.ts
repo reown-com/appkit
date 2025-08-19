@@ -17,14 +17,14 @@ describe('UiHelperUtil', () => {
 
   describe('getSpacingStyles', () => {
     it('handles array of spacings', () => {
-      expect(UiHelperUtil.getSpacingStyles(['xs', 'm', 'l'], 0)).toBe('var(--wui-spacing-xs)')
-      expect(UiHelperUtil.getSpacingStyles(['xs', 'm', 'l'], 1)).toBe('var(--wui-spacing-m)')
-      expect(UiHelperUtil.getSpacingStyles(['xs', 'm', 'l'], 3)).toBe(undefined)
+      expect(UiHelperUtil.getSpacingStyles(['0', '1', '2'], 0)).toBe('var(--apkt-spacing-0)')
+      expect(UiHelperUtil.getSpacingStyles(['0', '1', '2'], 1)).toBe('var(--apkt-spacing-1)')
+      expect(UiHelperUtil.getSpacingStyles(['0', '1', '2'], 3)).toBe(undefined)
     })
 
     it('handles single spacing string', () => {
-      expect(UiHelperUtil.getSpacingStyles('m', 0)).toBe('var(--wui-spacing-m)')
-      expect(UiHelperUtil.getSpacingStyles('l', 5)).toBe('var(--wui-spacing-l)')
+      expect(UiHelperUtil.getSpacingStyles('3', 0)).toBe('var(--apkt-spacing-3)')
+      expect(UiHelperUtil.getSpacingStyles('4', 5)).toBe('var(--apkt-spacing-4)')
     })
   })
 
@@ -219,5 +219,38 @@ describe('UiHelperUtil', () => {
       expect(result).toBe(123)
       expect(typeof result).toBe('number')
     })
+  })
+
+  it('should format currency as expected', () => {
+    // Large numbers
+    expect(UiHelperUtil.formatCurrency(1000000)).toEqual('$1,000,000.00')
+    expect(UiHelperUtil.formatCurrency(2500000.5)).toEqual('$2,500,000.50')
+    expect(UiHelperUtil.formatCurrency(123456789.99)).toEqual('$123,456,789.99')
+
+    // Mid-range numbers
+    expect(UiHelperUtil.formatCurrency(10000)).toEqual('$10,000.00')
+    expect(UiHelperUtil.formatCurrency(12345.67)).toEqual('$12,345.67')
+    expect(UiHelperUtil.formatCurrency(54321.12)).toEqual('$54,321.12')
+
+    // Small numbers
+    expect(UiHelperUtil.formatCurrency(10.5)).toEqual('$10.50')
+    expect(UiHelperUtil.formatCurrency(0.99)).toEqual('$0.99')
+    expect(UiHelperUtil.formatCurrency(0.004)).toEqual('$0.00')
+    expect(UiHelperUtil.formatCurrency(0.006)).toEqual('$0.01')
+
+    // Zero and negative numbers
+    expect(UiHelperUtil.formatCurrency(0)).toEqual('$0.00')
+    expect(UiHelperUtil.formatCurrency(-10000)).toEqual('-$10,000.00')
+    expect(UiHelperUtil.formatCurrency(-123.45)).toEqual('-$123.45')
+
+    // String numbers
+    expect(UiHelperUtil.formatCurrency('10000')).toEqual('$10,000.00')
+    expect(UiHelperUtil.formatCurrency('10000')).toEqual('$10,000.00')
+    expect(UiHelperUtil.formatCurrency('12345.67')).toEqual('$12,345.67')
+
+    // Invalid numbers
+    expect(UiHelperUtil.formatCurrency('')).toEqual('$0.00')
+    expect(UiHelperUtil.formatCurrency('abc')).toEqual('$0.00')
+    expect(UiHelperUtil.formatCurrency(undefined)).toEqual('$0.00')
   })
 })
