@@ -43,9 +43,9 @@ export class WuiGrid extends LitElement {
       align-items: ${this.alignItems};
       justify-content: ${this.justifyContent};
       align-content: ${this.alignContent};
-      column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
-      row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
-      gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
+      column-gap: ${this.columnGap && `var(--apkt-spacing-${this.columnGap})`};
+      row-gap: ${this.rowGap && `var(--apkt-spacing-${this.rowGap})`};
+      gap: ${this.gap && `var(--apkt-spacing-${this.gap})`};
       padding-top: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 0)};
       padding-right: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 1)};
       padding-bottom: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 2)};

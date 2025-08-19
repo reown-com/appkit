@@ -4,6 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { IconType, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -16,13 +17,22 @@ export class WuiListButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property() public size: 'sm' | 'md' | 'lg' = 'lg'
+
+  @property() public icon: IconType = 'copy'
+
   @property() public tabIdx?: number = undefined
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['size'] = this.size
+
+    const textVariant = `${this.size}-regular` as TextType
+
     return html`
       <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
-        <wui-text align="center" variant="paragraph-500" color="inherit">${this.text}</wui-text>
+        <wui-icon name=${this.icon} size=${this.size} color="default"></wui-icon>
+        <wui-text align="center" variant=${textVariant} color="primary">${this.text}</wui-text>
       </button>
     `
   }

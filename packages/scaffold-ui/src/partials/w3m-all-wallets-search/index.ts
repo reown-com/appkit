@@ -35,7 +35,7 @@ export class W3mAllWalletsSearch extends LitElement {
     this.onSearch()
 
     return this.loading
-      ? html`<wui-loading-spinner color="accent-100"></wui-loading-spinner>`
+      ? html`<wui-loading-spinner color="accent-primary"></wui-loading-spinner>`
       : this.walletsTemplate()
   }
 
@@ -60,17 +60,11 @@ export class W3mAllWalletsSearch extends LitElement {
           data-testid="no-wallet-found"
           justifyContent="center"
           alignItems="center"
-          gap="s"
+          gap="3"
           flexDirection="column"
         >
-          <wui-icon-box
-            size="lg"
-            iconColor="fg-200"
-            backgroundColor="fg-300"
-            icon="wallet"
-            background="transparent"
-          ></wui-icon-box>
-          <wui-text data-testid="no-wallet-found-text" color="fg-200" variant="paragraph-500">
+          <wui-icon-box size="lg" color="default" icon="wallet"></wui-icon-box>
+          <wui-text data-testid="no-wallet-found-text" color="secondary" variant="md-medium">
             No Wallet found
           </wui-text>
         </wui-flex>
@@ -80,9 +74,9 @@ export class W3mAllWalletsSearch extends LitElement {
     return html`
       <wui-grid
         data-testid="wallet-list"
-        .padding=${['0', 's', 's', 's'] as const}
-        rowGap="l"
-        columnGap="xs"
+        .padding=${['0', '3', '3', '3'] as const}
+        rowGap="4"
+        columngap="2"
         justifyContent="space-between"
       >
         ${wallets.map(

@@ -66,9 +66,8 @@ export class W3mAllWalletsList extends LitElement {
     return html`
       <wui-grid
         data-scroll=${!this.loading}
-        .padding=${['0', 's', 's', 's'] as const}
-        columnGap="xxs"
-        rowGap="l"
+        .padding=${['0', '3', '3', '3'] as const}
+        gap="2"
         justifyContent="space-between"
       >
         ${this.loading ? this.shimmerTemplate(16) : this.walletsTemplate()}
@@ -125,6 +124,7 @@ export class W3mAllWalletsList extends LitElement {
     return wallets.map(
       wallet => html`
         <w3m-all-wallets-list-item
+          data-testid="wallet-search-item-${wallet.id}"
           @click=${() => this.onConnectWallet(wallet)}
           .wallet=${wallet}
         ></w3m-all-wallets-list-item>

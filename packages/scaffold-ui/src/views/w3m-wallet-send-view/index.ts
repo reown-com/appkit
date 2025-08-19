@@ -73,30 +73,23 @@ export class W3mWalletSendView extends LitElement {
   public override render() {
     this.getMessage()
 
-    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
-      <wui-flex class="inputContainer" gap="xs" flexDirection="column">
+    return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
+      <wui-flex class="inputContainer" gap="2" flexDirection="column">
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
         ></w3m-input-token>
-        <wui-icon-box
-          size="inherit"
-          backgroundColor="fg-300"
-          iconSize="lg"
-          iconColor="fg-250"
-          background="opaque"
-          icon="arrowBottom"
-        ></wui-icon-box>
+        <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
         <w3m-input-address
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>
       </wui-flex>
-      <wui-flex .margin=${['l', '0', '0', '0'] as const}>
+      <wui-flex .margin=${['4', '0', '0', '0'] as const}>
         <wui-button
           @click=${this.onButtonClick.bind(this)}
           ?disabled=${!this.message.startsWith('Preview Send')}
           size="lg"
-          variant="main"
+          variant="accent-primary"
           ?loading=${this.loading}
           fullWidth
         >

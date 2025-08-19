@@ -62,13 +62,14 @@ export class W3mConnectCustomWidget extends LitElement {
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
 
-    return html`<wui-flex flexDirection="column" gap="xs">
+    return html`<wui-flex flexDirection="column" gap="2">
       ${wallets.map(
         wallet => html`
           <wui-list-wallet
             imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
             name=${wallet.name ?? 'Unknown'}
             @click=${() => this.onConnectWallet(wallet)}
+            size="sm"
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
             ?loading=${this.loading}

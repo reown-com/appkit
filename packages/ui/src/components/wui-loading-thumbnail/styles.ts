@@ -1,21 +1,21 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: block;
-    width: var(--wui-box-size-md);
-    height: var(--wui-box-size-md);
+    width: 100px;
+    height: 100px;
   }
 
   svg {
-    width: var(--wui-box-size-md);
-    height: var(--wui-box-size-md);
+    width: 100px;
+    height: 100px;
   }
 
   rect {
     fill: none;
-    stroke: var(--wui-color-accent-100);
-    stroke-width: 4px;
+    stroke: ${tokens => tokens.colors.accent100};
+    stroke-width: 3px;
     stroke-linecap: round;
     animation: dash 1s linear infinite;
   }

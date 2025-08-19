@@ -12,14 +12,14 @@ export class WuiDetailsGroupItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public name = ''
+  @property({ type: String }) public name = ''
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <wui-flex justifyContent="space-between" alignItems="center">
-        <wui-text variant="paragraph-500" color="fg-200">${this.name}</wui-text>
-        <wui-flex gap="xs" alignItems="center">
+        <wui-text variant="lg-regular" color="secondary">${this.name}</wui-text>
+        <wui-flex gap="2" alignItems="center">
           <slot></slot>
         </wui-flex>
       </wui-flex>

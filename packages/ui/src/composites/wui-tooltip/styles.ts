@@ -1,27 +1,11 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
-    display: block;
-    padding: 9px var(--wui-spacing-s) 10px var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xxs);
-
-    color: var(--wui-color-bg-100);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-  }
-
-  :host([data-variant='shade']) {
-    background-color: var(--wui-color-bg-150);
-    border: 1px solid var(--wui-color-gray-glass-005);
-  }
-
-  :host([data-variant='shade']) > wui-text {
-    color: var(--wui-color-fg-150);
-  }
-
-  :host([data-variant='fill']) {
-    background-color: var(--wui-color-fg-100);
-    border: none;
   }
 
   wui-icon {
@@ -30,6 +14,43 @@ export default css`
     height: 4px !important;
   }
 
+  /* -- Variants --------------------------------------------------------- */
+  :host([data-variant='fill']) {
+    background-color: ${({ colors }) => colors.neutrals100};
+  }
+
+  :host([data-variant='shade']) {
+    background-color: ${({ colors }) => colors.neutrals900};
+  }
+
+  :host([data-variant='fill']) > wui-text {
+    color: ${({ colors }) => colors.black};
+  }
+
+  :host([data-variant='shade']) > wui-text {
+    color: ${({ colors }) => colors.white};
+  }
+
+  :host([data-variant='fill']) > wui-icon {
+    color: ${({ colors }) => colors.neutrals100};
+  }
+
+  :host([data-variant='shade']) > wui-icon {
+    color: ${({ colors }) => colors.neutrals900};
+  }
+
+  /* -- Sizes --------------------------------------------------------- */
+  :host([data-size='sm']) {
+    padding: ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[2]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+  }
+
+  :host([data-size='md']) {
+    padding: ${({ spacing }) => spacing[2]} ${({ spacing }) => spacing[3]};
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
+  }
+
+  /* -- Placements --------------------------------------------------------- */
   wui-icon[data-placement='top'] {
     bottom: 0px;
     left: 50%;
