@@ -10,7 +10,7 @@ import { iconOptions, networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiNetworkSwitch>
 
 export default {
-  title: 'Composites/wui-network-switch',
+  title: 'Composites/apkt-network-switch',
   args: {
     imageSrc: networkImageSrc,
     icon: 'networkPlaceholder',

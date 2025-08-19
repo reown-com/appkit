@@ -10,7 +10,7 @@ import { visualOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiVisual>
 
 export default {
-  title: 'Composites/wui-visual',
+  title: 'Composites/apkt-visual',
   args: {
     name: 'browser'
   },
