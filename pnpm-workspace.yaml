@@ -23,6 +23,5 @@ packages:
   - 'examples/*'
   - 'services/*'
   - '!packages/appkit-new'
-  - '!apps/demo'
   - '!apps/gallery-new'
   - '!apps/laboratory-new'
