@@ -381,15 +381,17 @@ const controller = {
       StorageUtil.setAppKitRecent(recentWallet)
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'CONNECT_SUCCESS',
-      address,
-      properties: {
-        method: wcLinking ? 'mobile' : 'qrcode',
-        name: RouterController.state.data?.wallet?.name || 'Unknown'
-      }
-    })
+    if (address) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address,
+        properties: {
+          method: wcLinking ? 'mobile' : 'qrcode',
+          name: RouterController.state.data?.wallet?.name || 'Unknown'
+        }
+      })
+    }
   },
 
   setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {
