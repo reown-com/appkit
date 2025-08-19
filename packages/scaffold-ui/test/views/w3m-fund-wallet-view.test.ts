@@ -238,7 +238,7 @@ describe('W3mFundWalletView', () => {
     const element: W3mFundWalletView = await fixture(
       html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
     )
-    
+
     await elementUpdated(element)
 
     const depositFromExchangeButton = HelpersUtil.getByTestId(
@@ -274,7 +274,7 @@ describe('W3mFundWalletView', () => {
     expect(depositFromExchangeButton).toBeTruthy()
   })
 
-  it('should not show deposit from exchange option when payWithExchange if chain is not supported and payWithExchange is enabled', async () => {
+  it('should not show deposit from exchange option when chain is not supported and payWithExchange is enabled', async () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       activeChain: CommonConstantsUtil.CHAIN.BITCOIN
