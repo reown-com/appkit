@@ -79,9 +79,15 @@ export class W3mFundWalletView extends LitElement {
   }
 
   private depositFromExchangeTemplate() {
-    const isDepositFromExchangeEnabled = this.remoteFeatures?.payWithExchange
+    if (!this.namespace) {
+      return null
+    }
 
-    if (!isDepositFromExchangeEnabled) {
+    const isPayWithExchangeEnabled =
+      this.remoteFeatures?.payWithExchange &&
+      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(this.namespace)
+
+    if (!isPayWithExchangeEnabled) {
       return null
     }
 
