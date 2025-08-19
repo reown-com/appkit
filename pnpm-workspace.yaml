@@ -24,5 +24,6 @@ packages:
   - 'services/*'
   - 'packages/ui-new'
   - '!packages/appkit-new'
+  - '!apps/demo'
   - '!apps/gallery-new'
   - '!apps/laboratory-new'
