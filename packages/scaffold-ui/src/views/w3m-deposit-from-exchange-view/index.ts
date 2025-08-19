@@ -44,6 +44,20 @@ export class W3mDepositFromExchangeView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.network = val
+        if (val) {
+          ExchangeController.setPaymentAsset({
+            network: val.caipNetworkId,
+            asset: 'native',
+            metadata: {
+              name: val.nativeCurrency.name,
+              symbol: val.nativeCurrency.symbol,
+              decimals: val.nativeCurrency.decimals
+            }
+          })
+        }
+      }),
       ExchangeController.subscribe(exchangeState => {
         this.exchanges = exchangeState.exchanges
         this.isLoading = exchangeState.isLoading
@@ -73,20 +87,8 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   public override firstUpdated() {
-    ExchangeController.fetchExchanges()
     ExchangeController.fetchTokenPrice()
-
-    if (this.network) {
-      ExchangeController.setPaymentAsset({
-        network: `${this.network.chainNamespace}:${this.network.id}`,
-        asset: 'native',
-        metadata: {
-          name: this.network.nativeCurrency.name,
-          symbol: this.network.nativeCurrency.symbol,
-          decimals: this.network.nativeCurrency.decimals
-        }
-      })
-    }
+    ExchangeController.fetchExchanges()
   }
 
   // -- Render -------------------------------------------- //
@@ -114,8 +116,7 @@ export class W3mDepositFromExchangeView extends LitElement {
               chevron
               variant="image"
               imageSrc=${exchange.imageUrl}
-              ?loading=${this.isLoading}
-              ?disabled=${!this.amount}
+              ?loading=${this.isLoading && !this.exchanges.length}
             >
               <wui-text variant="md-regular" color="secondary">
                 Deposit from ${exchange.name}
@@ -166,15 +167,19 @@ export class W3mDepositFromExchangeView extends LitElement {
 
     return html`
       <wui-text variant="md-regular" color="secondary">
-        ${this.tokenAmount} ${this.network?.nativeCurrency.symbol}
+        ${this.tokenAmount.toFixed(4)} ${this.network?.nativeCurrency.symbol}
       </wui-text>
     `
   }
 
   private async onExchangeClick(exchange: Exchange) {
-    if (this.amount) {
-      await ExchangeController.handlePayWithExchange(exchange.id)
+    if (!this.amount) {
+      SnackController.showError('Please enter an amount')
+
+      return
     }
+
+    await ExchangeController.handlePayWithExchange(exchange.id)
   }
 
   private handlePaymentInProgress() {

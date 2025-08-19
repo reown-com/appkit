@@ -27,7 +27,7 @@ const DEFAULT_STATE: ExchangeControllerState = {
     metadata: {
       name: 'Ethereum',
       symbol: 'ETH',
-      decimals: 0
+      decimals: 18
     }
   },
   amount: 0,
@@ -116,8 +116,9 @@ export const ExchangeController = {
 
     const tokenAmount = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 4
+      maximumFractionDigits: state.paymentAsset.metadata.decimals
     }).format(state.amount / state.tokenPrice)
+
 
     return Number(tokenAmount)
   },

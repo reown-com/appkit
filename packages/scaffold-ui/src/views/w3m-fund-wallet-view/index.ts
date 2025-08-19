@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
+  ExchangeController,
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
@@ -18,10 +19,11 @@ export class W3mFundWalletView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private namespace = ChainController.state.activeChain
+  @state() private activeCaipNetwork = ChainController.state.activeCaipNetwork
   @state() private features = OptionsController.state.features
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
-
+  @state() private exchangesLoading = ExchangeController.state.isLoading
+  @state() private exchanges = ExchangeController.state.exchanges
   public constructor() {
     super()
 
@@ -29,18 +31,33 @@ export class W3mFundWalletView extends LitElement {
       ...[
         OptionsController.subscribeKey('features', val => (this.features = val)),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
-        ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
-          if (val?.chainNamespace) {
-            this.namespace = val?.chainNamespace
+          this.activeCaipNetwork = val
+          if (val) {
+            ExchangeController.setPaymentAsset({
+              network: val.caipNetworkId,
+              asset: 'native',
+              metadata: {
+                name: val.nativeCurrency.name,
+                symbol: val.nativeCurrency.symbol,
+                decimals: val.nativeCurrency.decimals
+              }
+            })
           }
-        })
+        }),
+        ExchangeController.subscribeKey('isLoading', val => (this.exchangesLoading = val)),
+        ExchangeController.subscribeKey('exchanges', val => (this.exchanges = val))
       ]
     )
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  public override firstUpdated() {
+    ExchangeController.fetchExchanges()
+    ExchangeController.fetchTokenPrice()
   }
 
   // -- Render -------------------------------------------- //
@@ -54,13 +71,13 @@ export class W3mFundWalletView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
-    if (!this.namespace) {
+    if (!this.activeCaipNetwork) {
       return null
     }
 
     const isOnrampEnabled = this.remoteFeatures?.onramp
     const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
-      this.namespace
+      this.activeCaipNetwork.chainNamespace
     )
 
     if (!isOnrampEnabled || !hasNetworkSupport) {
@@ -79,13 +96,15 @@ export class W3mFundWalletView extends LitElement {
   }
 
   private depositFromExchangeTemplate() {
-    if (!this.namespace) {
+    if (!this.activeCaipNetwork) {
       return null
     }
 
     const isPayWithExchangeEnabled =
       this.remoteFeatures?.payWithExchange &&
-      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(this.namespace)
+      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
+        this.activeCaipNetwork.chainNamespace
+      )
 
     if (!isPayWithExchangeEnabled) {
       return null
@@ -96,6 +115,8 @@ export class W3mFundWalletView extends LitElement {
         @click=${this.onDepositFromExchange.bind(this)}
         icon="download"
         data-testid="wallet-features-deposit-from-exchange-button"
+        ?loading=${this.exchangesLoading}
+        ?disabled=${this.exchangesLoading || !this.exchanges.length}
       >
         <wui-text variant="lg-regular" color="primary">Deposit from exchange</wui-text>
       </wui-list-item>
