@@ -6,12 +6,7 @@ import { AccountController } from '../../../controllers/AccountController.js'
 import { ChainController } from '../../../controllers/ChainController.js'
 import { CoreHelperUtil } from '../../../utils/CoreHelperUtil.js'
 import * as sendActions from '../actions/sendActions.js'
-import * as sendGuards from '../guards/sendGuards.js'
-import {
-  balanceFetchService,
-  networkPriceFetchService,
-  retryDelayService
-} from '../services/balanceServices.js'
+import { balanceAndPriceFetchService } from '../services/balanceServices.js'
 import { ensResolutionService } from '../services/ensServices.js'
 import { transactionService } from '../services/transactionServices.js'
 import type { BalanceFetchInput, SendContext, SendEvent } from '../types/sendTypes.js'
@@ -23,11 +18,9 @@ export const sendMachine = setup({
     input: {} as { initialToken?: Balance }
   },
   actors: {
-    balanceFetcher: balanceFetchService,
-    networkPriceFetcher: networkPriceFetchService,
+    balanceAndPriceFetcher: balanceAndPriceFetchService,
     ensResolver: ensResolutionService,
-    transactionSender: transactionService,
-    retryDelay: retryDelayService
+    transactionSender: transactionService
   },
   actions: {
     assignToken: assign({
@@ -55,7 +48,10 @@ export const sendMachine = setup({
         }
 
         return event.address
-      }
+      },
+
+      receiverProfileName: undefined,
+      receiverProfileImageUrl: undefined
     }),
     assignENSResolution: assign({
       receiverAddress: ({ event }) => {
@@ -80,27 +76,25 @@ export const sendMachine = setup({
         return event.output?.avatar
       }
     }),
-    assignTokenBalances: assign({
+    assignBalancesAndPrice: assign({
       tokenBalances: ({ event }) => {
-        if (event.type !== 'xstate.done.actor.balanceFetcher') {
+        if (event.type !== 'xstate.done.actor.balanceAndPriceFetcher') {
           return []
         }
 
-        return event.output || []
-      }
-    }),
-    assignNetworkBalance: assign({
+        return event.output?.balances || []
+      },
       networkBalanceInUSD: ({ event }) => {
-        if (event.type !== 'xstate.done.actor.networkPriceFetcher') {
+        if (event.type !== 'xstate.done.actor.balanceAndPriceFetcher') {
           return undefined
         }
 
-        return event.output
+        return event.output?.networkBalanceInUSD
       }
     }),
     assignBalanceError: assign({
       error: ({ event }) => {
-        if (event.type !== 'xstate.error.actor.balanceFetcher') {
+        if (event.type !== 'xstate.error.actor.balanceAndPriceFetcher') {
           return 'Unknown error'
         }
 
@@ -127,21 +121,7 @@ export const sendMachine = setup({
       },
       loading: false
     }),
-    assignValidationError: assign({
-      validationErrors: ({ context, event }) => {
-        if (event.type !== 'VALIDATION_ERROR') {
-          return context.validationErrors
-        }
 
-        return {
-          ...context.validationErrors,
-          [event.field]: event.message
-        }
-      }
-    }),
-    clearValidationErrors: assign({
-      validationErrors: {}
-    }),
     clearAddressDetails: assign({
       receiverAddress: undefined,
       receiverProfileName: undefined,
@@ -153,11 +133,11 @@ export const sendMachine = setup({
       receiverAddress: undefined,
       receiverProfileName: undefined,
       receiverProfileImageUrl: undefined,
-      validationErrors: {},
       error: undefined,
       loading: false,
       retryCount: 0
     }),
+
     setLoading: assign({
       loading: true
     }),
@@ -167,11 +147,7 @@ export const sendMachine = setup({
     incrementRetryCount: assign({
       retryCount: ({ context }) => context.retryCount + 1
     }),
-    resetRetryCount: assign({
-      retryCount: 0
-    }),
 
-    // Side effects (these can remain as external functions since they don't modify context)
     showSuccessMessage: sendActions.showSuccessMessage,
     showErrorMessage: sendActions.showErrorMessage,
     navigateToAccount: sendActions.navigateToAccount,
@@ -180,29 +156,35 @@ export const sendMachine = setup({
     navigateBack: sendActions.navigateBack
   },
   guards: {
-    hasSelectedToken: sendGuards.hasSelectedToken,
-    isValidToken: sendGuards.isValidToken,
-    hasAmount: sendGuards.hasAmount,
-    isValidAmount: sendGuards.isValidAmount,
-    hasSufficientBalance: sendGuards.hasSufficientBalance,
-    hasReceiverAddress: sendGuards.hasReceiverAddress,
-    isValidAddress: sendGuards.isValidAddress,
-    isENSName: sendGuards.isENSName,
-    isFormComplete: sendGuards.isFormComplete,
-    canSendTransaction: sendGuards.canSendTransaction,
-    isEvmChain: sendGuards.isEvmChain,
-    isSolanaChain: sendGuards.isSolanaChain,
-    isNativeToken: sendGuards.isNativeToken,
-    isERC20Token: sendGuards.isERC20Token,
-    canRetry: sendGuards.canRetry,
-    shouldAllowRetry: sendGuards.shouldAllowRetry,
-    isNotLoading: sendGuards.isNotLoading,
-    hasNoErrors: sendGuards.hasNoErrors,
-    hasValidationErrors: sendGuards.hasValidationErrors,
-    hasValidValue: sendGuards.hasValidValue
+    isENSName: ({ event }) => {
+      if (event.type !== 'SET_ADDRESS') {
+        return false
+      }
+
+      return event.address.includes('.')
+    },
+
+    isValidAddress: ({ event }) => {
+      if (event.type !== 'SET_ADDRESS') {
+        return false
+      }
+
+      const activeChain = ChainController.state.activeChain
+
+      return CoreHelperUtil.isAddress(event.address, activeChain)
+    },
+
+    canSendTransaction: ({ context }) =>
+      Boolean(
+        context.selectedToken &&
+          context.sendAmount &&
+          context.sendAmount > 0 &&
+          context.receiverAddress &&
+          context.sendAmount <= Number(context.selectedToken.quantity.numeric)
+      )
   }
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5SzAOwgYgEoFEBiuAygBID6AQgIIAylAcgMI6EDaADALqKgAOA9rACWAF0F9U3EAA9EAVgDsAGhABPRAEZ58gHQBOWQGZ1AJjYA2XWePHZ6gCwBfB8pToMDek2qlCOOgBF2LiQQfiFRcUkZBAVlNQQDNgAObVMjUwsrG3snFzRMIhwAFVIANRoASX9KIoqAeTpSHCwsOqxWTkkwkTEJEOj1XV07PXk2MfTZOI1jXJBXCG1BCAAbMAxfahwGEqK6gGk-IK6BHsj+xGN5WVltNkHDEynVDWSRpNldAzHM61s5hZLVbrPDFBhkKi0RjMY4hboRPqgaJXG53B6TaYIeS6YzaAx2MZfXTqNi2Ni6AH5IFrDAAcTqpD2jIOfh8OC2O1hvFOCKiiAM3wM2jslnJ32e8TMBl0eKJZiSxNJJIpznmVJWfAAhhBBKgoORNStNagAMZwDAQcRgJaoABufAA1taAEaG41mvBgYQmgAWYAATlzQjzenyEDZjOptLIkmknpjjLoUhMTOZLH8cqrARrtbr9W7TeaA-6+P7tDwjcIAGalgC22ldRsLnu9fsDnThIfOSMQZiULwSbDYuMjiXUZlkiZuSUcWfVWp1eoNTbNsAwxdL5crNf99cb7rALd9AZY6mC3PCoYu4eut3u+gxA4sKQV0vlirJKry6AbBbNWC9f0VH8MAjRUC0rRte0nW0f1AOA0DNRUIN4SvHssX7eIpxGeR1DHCcpxjWdv0WKsvV9PM6C9AB3UsHQABX9QQzQg1BrV1aDrTY4RaP9BimI9ci2xQrtEWkRA7BjTE7AnYVHgydNsmItUfzI1tKJoujGOY9YNzLCtNWrOttG43j+J0o9hI7C8zjE6JJKSTFpz0cxjEk35skpVS6xwVBhCA7RIB6PUNmKUhKAAWTqABVOgihEy9u3EhJ1CSIVyXkCcrAlS5BhlCx5GldRJ30IivNIny-ICoLRBC3wSkofx-CIDpz2DRK7P5VL0t0TLZGyhNbHS8kFWKwiZ3K7Qd1rXz-JUQKdVqqBQoapqWtPNrUKS6IjDSu5eqymwE0TMxtGKpUCNKia5283dZuqxa83cLZKCwcK1uYVqTg6sMTpHLR8XFBM7FMaMBQMRNhyu5TAWm+75pqp7Nm2XYWToBLbN+3qo2nT4gYHYwIZGZJhzYOwoenGGqThqr5rg2A+BWW08z8QhWPYu1HWtNBYAAhmmZPaz2sx69vj7FzCbsfGsNkNghUMAVIfGqnbpm2nYLgRnmb1Vn139Et9O3Yyeb5rXBc20Swwh3Q2G0Mw8OMJJ4wJ6VcTMOWzDsMbocmmm5u0W1DWWQynox3lrxRO90Wd+JLFOgw8Z+RT-huiq7vVwOVmDpaMA276RfQgwknGaN5BB1LrgTUkUmsZIlZ91ONe1FQij4Qh8lCgJGSwehCEoHZ6nRoWts6hIbGFaWNAVW4+wrtMshTkim4gFu247+rwqi2L4uHy3RckifK4HexI2FHFusGBf1EmuDm9b9u3A3xrms+sO0OS-Fbilo-4gdu9pWrpfDMN8wB3zXo-MKz91pnnzuHQuCdD45QQMVTQehJKJCdsna+jdb4r3vh3BgL03pQNfrvH6osEHfyQSYR20YPhfCMFgkBYCH6YGRjsZkhwh4W3IYXYqiCEzyGMKdGwSZiQlUpswvB4CCjMDCngNoEU37bS6l-SeCAJxCj7JYNKQDPKNwWHmcscEeCaiYnqIo-pjSwE1CaBEucyEF2StiIUAMqHHRFKkZUAo9GyEmoYvUxiwCmPMVASx1jbH2Lzp2XhzivjaDceowYEM7a4SSEnK+-j8hGJ4CYsxeZwmoBsXY3oudjA8KcQMBUp1Ek-0uASW2YwLoSJjGYLJ6AjEBKgDgW0tZ2ZQS5oFXphTikIlYebWB78Bjkx0Doup4ZUpRnUPYBQNtxptIMdkwJXSel9L0luQy00hm1hGZE3o4z2wVLgclVKlgEmFXcS7LQqQCRFRaUkdpi4oDaC6YQRmxpNT9I4oM-mALTklPEBc5Ro97AlzmUgtIribimHJsrT5nStlQD+U2QF+yDJGV3D8-5qBNTgrGfkCZMTKlTzubUhFjtXHDGEZdack09LYGKFgAAmmyAI0KwyGBlIkGS6TqFmHtqkueHlF4qUWOy3ARRuW8sCDAql1zkRl3ykMSMoqEwQ1tsOaUshUUNyXvKuRJQFFYCUY49VlwBSnWHA89R2IdDkysO5Jhjd2VPy3nFflEcQZaIhk7I6LtkgJL7GME1kjvX61LCtd6L9CBfTVVM+phM7YhpjvUlJmgjUxrKnGg2oUOSoy4QG9CblM1Skdjm8MNxbgxlJoW66qpUB8AgHASQCxJkqIQLoTENs5LpBFEMcdHzG7LDWH20ebk7kxjjGG+IZdbYzkJEVJU5JJo5i+cuA88A039sSDiO4ZcdXzKEUKaUG6PzLOwUvfchYAJzRAmBWdYYQY6CXQipM36hHEkJlYBUsxG5qQonqKiPEtICTAB+68sQBySSjDiHRjCr4qzTmrOa8Gq3EhGFcZ18zBhjASaYWMazTWyqmpVf2iM9S4Y-kOL+59dUE0nChpIntjUUyLUvP2AV6ZaxZnQQgjGdqvISeMOW9abDDmFFxySrbMM0fTv7TO2c8ziYkvcW2Xt7j9WXZcH4dxGHJAULLPCUjV6sO0zETCGhyYGo4yKmS0p0nooY0e0ek545k3lMRzKQpy7pPnsAzZHTAm5OCfkixViilnKSiPAVZc8T+bY7-YYttjUBbC-opeXSfmYt2XZkkyy9ABfpfYYU7sGG+M89835xLNSlfuChyrmJbmzIvXlmVgJCuwAAK4mlXIemydrkF9lxNiDrBNxjBfxKNd5GyzXxv9HZyM4tIx2BnOo6tUYCRjGxLxttDggA */
+  /** @xstate-layout N4IgpgJg5mDOIC5SzAOwgOgJYQDZgGIAxAUQBUBhACQH0AhAQQBkGA5CkgZQG0AGAXUSgADgHtYWAC5ZRqISAAeiAIwBOAOyqMADnXblygMwAWAKyrjy3oYA0IAJ6JDvAEwYAbNuPH3p99cN1ZVMAXxC7FHQMAEMAY2kAN0IIWTBsVATRAGs0gCNo3GjUWLAGdAAFACcsEqIwSViACzBKvkEkEDEJaVl5JQRTEwxVd2NtdxcXbRdjFztHBBNTD0Mp0x9zNeMwiLRMOMTCFsrRSoxhQskAM1OAWwx8wuLSiura+qaWtvkuqRk5Dr9QbLdyraZqXhGMa2ByISbLSa+YLKbQjZwTHYgSL7eJYJIETgkJgkChkGhkADyAGkSKxvh1fj0AaB+rplsZ1O5-OpDBo1Lp5ohNhhTMEJqprFZ3OpQuEsXtzpUwMJotVUFACeQaAwALIUgCqrDI9JE4j+vUBKhcemGykshm0zgMmhhCyMRgwvHW418LlM-uCmOxiuVqqw6s1ZIYABFowAlLg8AQ-M1MvqINkYDlc3g8vmqAWwhAF9RZ1ZmQyViwzFxBhXCJUqtUawlR2MJzg8ZTtU3df7phAGVTKT3acyeLneCyCwcuZTuDyQ9SuUF6bTjOtRBuh5sECjEhhx7XtxMmzqp-uW2ejT25sfOwLaGcGFy8DB2scOmWuP2GTeYbcm3DFsiRJMlKRpOlkwZC8LRZK0eQwKYJX0dQZVUQxRmfVxDA8VRBnUMYJj8SZ-xDICI0JVho3JOM2E4BhSQASQpKCe3PPs4MUFRTGtDBv14CUHSHDln2MVQtB8Kx-XHUxIVUMilVgURcASYDaU4AgUlQNJw0yHIMDQWA4zgFSklaaDe3NZluIQTNs25XkghLZ8DDfR1dC5CZMKmRTTNU9TWE045TnOS4bkqe4jJM5TVK+SyOOsgd7M5Rz80LN0XEMEcZjGXLVl4MY-NitT1Q0yNj3jU8EsZS94IQUERynVYuX9At9Gwqx+PXXx3GHfDVllXYomxYCtNSdJ9LSSRKiKWADn+Tg9ni9jaq4-p52lT0svWQI+onUxn3WLQRisMZgg2UEyNGiMQrOC5omuO4MBmuaFtkJb0BWlNOJsjbpUkwJzsKkwpWfQItC9cSNDXXhwWugBXWISlgWBiHIah6GYNgOCTVbYL+uEJn4yV8N4tDBKfItxNwsn9BMVYXBzbY5WDWAkZRtHCWJUlyWpWkzzWwmECZtxl2ysnrWXAtwYLYYZmcVwRlBUYwjlVBRAgOB5GxH6kqvABadxwdLdQmbktD2uCP0yJwfA9bTK81GMN8eTMFELF5QbnxmEdxcrcxPOMP9WYVBakgdurbJ8Yws1S6w-Qw3hrGN6mgk9XlneUZCXcDUOt0bMN1Uj9arQ0JCRlRNEZSmYwxLtEU4esQqjDnIr88wJSzMCzgS+FvwFymIwuWXZQ9F5Vzs6Qyxpib5y-GuvZgL7gdnddpYPeDjC-SOyskN8T8-DH0YQ+GzB2eRuB4Bg36B1mE3Tbk-RHQDaY1ZCIA */
   id: 'send',
   initial: 'idle',
   context: {
@@ -217,32 +199,22 @@ export const sendMachine = setup({
     loading: false,
     lastRetry: undefined,
     retryCount: 0,
-    error: undefined,
-    validationErrors: {}
+    error: undefined
   },
 
   states: {
     idle: {
-      entry: ['clearValidationErrors', 'resetRetryCount', 'clearLoading'],
+      entry: ['clearLoading'],
       on: {
-        SELECT_TOKEN: {
-          actions: ['assignToken'],
-          target: 'formEntry'
-        },
-        FETCH_BALANCES: {
-          target: 'loadingBalances'
-        },
-        GO_TO_TOKEN_SELECT: {
-          actions: ['navigateToTokenSelect']
-        }
+        FETCH_BALANCES: { target: 'active' }
       }
     },
 
-    loadingBalances: {
+    active: {
       entry: ['setLoading'],
       invoke: {
-        src: 'balanceFetcher',
-        id: 'balanceFetcher',
+        src: 'balanceAndPriceFetcher',
+        id: 'balanceAndPriceFetcher',
         input: (): BalanceFetchInput => {
           const address = AccountController.state.address || ''
           const chainId = String(ChainController.state.activeCaipNetwork?.id || '')
@@ -251,319 +223,106 @@ export const sendMachine = setup({
           return { address, chainId, chainNamespace }
         },
         onDone: {
-          actions: ['assignTokenBalances'],
-          target: 'fetchingNetworkPrice'
-        },
-        onError: [
-          {
-            guard: 'shouldAllowRetry',
-            actions: ['assignBalanceError'],
-            target: 'balanceRetryDelay'
-          },
-          {
-            actions: ['assignBalanceError'],
-            target: 'idle'
-          }
-        ]
-      }
-    },
-
-    balanceRetryDelay: {
-      invoke: {
-        src: 'retryDelay',
-        id: 'retryDelay',
-        input: { delayMs: 2000 },
-        onDone: {
-          target: 'loadingBalances'
-        }
-      }
-    },
-
-    fetchingNetworkPrice: {
-      invoke: {
-        src: 'networkPriceFetcher',
-        id: 'networkPriceFetcher',
-        input: ({ context }) => ({ tokenBalances: context.tokenBalances }),
-        onDone: {
-          actions: ['assignNetworkBalance'],
-          target: 'idle'
+          actions: ['assignBalancesAndPrice', 'clearLoading']
         },
         onError: {
-          // Don't fail if network price fetch fails
-          target: 'idle'
+          actions: ['assignBalanceError', 'clearLoading']
         }
-      }
-    },
-
-    formEntry: {
-      initial: 'editing',
-      states: {
-        editing: {
-          on: {
-            SET_AMOUNT: {
-              actions: ['assignAmount'],
-              target: 'validating'
-            },
-            SET_ADDRESS: [
-              {
-                guard: 'isENSName',
-                actions: ['assignAddress'],
-                target: 'resolvingENS'
-              },
-              {
-                actions: ['assignAddress'],
-                target: 'validating'
-              }
-            ],
-            CLEAR_ADDRESS: {
-              actions: ['clearAddressDetails'],
-              target: 'editing'
-            },
-            SELECT_TOKEN: {
-              actions: ['assignToken'],
-              target: 'editing'
-            }
-          }
-        },
-
-        resolvingENS: {
-          entry: ['setLoading'],
-          invoke: {
-            src: 'ensResolver',
-            id: 'ensResolver',
-            input: ({ context }) => ({
-              nameOrAddress: context.receiverAddress || '',
-              chainNamespace: ChainController.state.activeChain
-            }),
-            onDone: {
-              actions: ['assignENSResolution', 'clearLoading'],
-              target: 'validating'
-            },
-            onError: {
-              actions: [
-                'clearLoading',
-                assign({
-                  validationErrors: ({ context }) => ({
-                    ...context.validationErrors,
-                    address: 'Invalid ENS name or address'
-                  })
-                })
-              ],
-              target: 'editing'
-            }
-          }
-        },
-
-        validating: {
-          always: [
-            {
-              guard: 'canSendTransaction',
-              target: '#send.readyToSend'
-            },
-            {
-              actions: [
-                // Set validation errors based on current state
-                assign({
-                  validationErrors: ({ context }) => {
-                    const errors: SendContext['validationErrors'] = {}
-
-                    if (!context.selectedToken) {
-                      errors.token = 'Please select a token'
-                    }
-
-                    if (!context.sendAmount) {
-                      errors.amount = 'Please enter an amount'
-                    } else if (context.sendAmount <= 0) {
-                      errors.amount = 'Amount must be greater than 0'
-                    } else if (
-                      context.selectedToken &&
-                      context.sendAmount > Number(context.selectedToken.quantity.numeric)
-                    ) {
-                      errors.amount = 'Insufficient balance'
-                    }
-
-                    if (!context.receiverAddress) {
-                      /* Empty */
-                    } else if (
-                      !CoreHelperUtil.isAddress(
-                        context.receiverAddress,
-                        ChainController.state.activeChain
-                      )
-                    ) {
-                      errors.address = 'Invalid address format'
-                    }
-
-                    return errors
-                  }
-                })
-              ],
-              target: 'editing'
-            }
-          ]
-        }
-      }
-    },
-
-    readyToSend: {
-      entry: ['clearValidationErrors', 'clearLoading'],
+      },
       on: {
-        SEND_TRANSACTION: {
-          target: 'sending'
-        },
-        SET_AMOUNT: {
-          actions: ['assignAmount'],
-          target: 'formEntry.validating'
-        },
+        SELECT_TOKEN: { actions: ['assignToken'], target: 'preparing' }
+      }
+    },
+
+    preparing: {
+      on: {
+        SET_AMOUNT: { actions: ['assignAmount'] },
         SET_ADDRESS: [
           {
             guard: 'isENSName',
-            actions: ['assignAddress'],
-            target: 'formEntry.resolvingENS'
+            target: 'resolvingENS',
+            actions: ['assignAddress', 'setLoading']
           },
           {
-            actions: ['assignAddress'],
-            target: 'formEntry.validating'
+            guard: 'isValidAddress',
+            actions: ['assignAddress']
           }
         ],
-        CLEAR_ADDRESS: {
-          actions: ['clearAddressDetails'],
-          target: 'formEntry.editing'
-        },
-        SELECT_TOKEN: {
-          actions: ['assignToken'],
-          target: 'formEntry.validating'
-        },
-        RESET_FORM: {
-          actions: ['resetForm'],
-          target: 'idle'
+        CLEAR_ADDRESS: { actions: ['clearAddressDetails'] },
+        SELECT_TOKEN: { actions: ['assignToken'] },
+        SEND_TRANSACTION: {
+          target: 'sending',
+          guard: 'canSendTransaction'
         }
+      }
+    },
+
+    resolvingENS: {
+      invoke: {
+        src: 'ensResolver',
+        id: 'ensResolver',
+        input: ({ context }) => ({
+          nameOrAddress: context.receiverAddress || '',
+          chainNamespace: ChainController.state.activeChain
+        }),
+        onDone: {
+          actions: ['assignENSResolution', 'clearLoading'],
+          target: 'preparing'
+        },
+        onError: {
+          actions: ['clearLoading', 'clearAddressDetails'],
+          target: 'preparing'
+        }
+      },
+      on: {
+        SET_ADDRESS: { actions: ['assignAddress'] }
       }
     },
 
     sending: {
-      initial: 'preparingTransaction',
       entry: ['setLoading'],
-      states: {
-        preparingTransaction: {
-          always: [
-            {
-              guard: 'isEvmChain',
-              target: 'sendingEvm'
-            },
-            {
-              guard: 'isSolanaChain',
-              target: 'sendingSolana'
-            },
-            {
-              target: '#send.error',
-              actions: [
-                assign({
-                  error: 'Unsupported blockchain network'
-                })
-              ]
-            }
-          ]
-        },
-
-        sendingEvm: {
-          invoke: {
-            src: 'transactionSender',
-            id: 'evmTransactionSender',
-            input: ({ context }) => ({
+      invoke: {
+        src: 'transactionSender',
+        id: 'transactionSender',
+        input: ({ context }) => {
+          const activeChain = ChainController.state.activeChain
+          if (activeChain === 'eip155') {
+            return {
               type: 'evm' as const,
               token: context.selectedToken,
               amount: context.sendAmount || 0,
               to: context.receiverAddress || '',
               fromAddress: AccountController.state.address || '',
-              chainNamespace: ChainController.state.activeChain || 'eip155'
-            }),
-            onDone: {
-              actions: ['assignTransactionSuccess', 'showSuccessMessage', 'navigateToAccount'],
-              target: 'success'
-            },
-            onError: {
-              actions: ['assignTransactionError'],
-              target: '#send.error'
+              chainNamespace: 'eip155'
             }
-          }
-        },
-
-        sendingSolana: {
-          invoke: {
-            src: 'transactionSender',
-            id: 'solanaTransactionSender',
-            input: ({ context }) => ({
+          } else if (activeChain === 'solana') {
+            return {
               type: 'solana' as const,
               amount: context.sendAmount || 0,
               to: context.receiverAddress || '',
               fromAddress: AccountController.state.address || '',
               chainNamespace: 'solana'
-            }),
-            onDone: {
-              actions: ['assignTransactionSuccess', 'showSuccessMessage', 'navigateToAccount'],
-              target: 'success'
-            },
-            onError: {
-              actions: ['assignTransactionError'],
-              target: '#send.error'
             }
           }
+          throw new Error('Unsupported blockchain network')
         },
-
-        success: {
-          type: 'final',
-          entry: ['resetForm']
+        onDone: {
+          actions: ['assignTransactionSuccess', 'showSuccessMessage', 'navigateToAccount'],
+          target: 'success'
+        },
+        onError: {
+          actions: ['assignTransactionError', 'clearLoading'],
+          target: 'preparing'
         }
       }
     },
 
-    error: {
-      entry: ['clearLoading', 'showErrorMessage'],
+    success: {
+      entry: ['clearLoading', 'resetForm'],
       on: {
-        RETRY_SEND: [
-          {
-            guard: 'canRetry',
-            target: 'sending'
-          },
-          {
-            actions: [
-              assign({
-                error: 'Maximum retry attempts exceeded'
-              })
-            ]
-          }
-        ],
-        RESET_FORM: {
-          actions: ['resetForm'],
-          target: 'idle'
-        },
-        SET_AMOUNT: {
-          actions: ['assignAmount', 'clearValidationErrors'],
-          target: 'formEntry.validating'
-        },
-        SET_ADDRESS: {
-          actions: ['assignAddress', 'clearValidationErrors'],
-          target: 'formEntry.validating'
-        },
-        SELECT_TOKEN: {
-          actions: ['assignToken', 'clearValidationErrors'],
-          target: 'formEntry.validating'
-        }
+        FETCH_BALANCES: { target: 'active' },
+        SELECT_TOKEN: { actions: ['assignToken'], target: 'preparing' }
       }
-    }
-  },
-
-  // Global event handlers
-  on: {
-    REFRESH_BALANCES: {
-      target: '.loadingBalances'
-    },
-    CANCEL_SEND: {
-      actions: ['resetForm'],
-      target: '.idle'
-    },
-    RESET_VALIDATION_ERRORS: {
-      actions: ['clearValidationErrors']
     }
   }
 })

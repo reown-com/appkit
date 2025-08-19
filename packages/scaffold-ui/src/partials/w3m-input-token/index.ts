@@ -32,11 +32,9 @@ export class W3mInputToken extends LitElement {
   public constructor() {
     super()
 
-    // Initialize from current actor state
     const snapshot = sendActor.getSnapshot()
     this.updateTokenState(snapshot)
 
-    // Subscribe to actor state changes
     this.unsubscribe.push(
       sendActor.subscribe(actorSnapshot => {
         this.updateTokenState(actorSnapshot)
@@ -56,12 +54,11 @@ export class W3mInputToken extends LitElement {
   ) {
     this.token = snapshot.context.selectedToken
     this.sendTokenAmount = snapshot.context.sendAmount
-    this.loading = snapshot.matches('loadingBalances') || snapshot.matches('sending')
+    this.loading = snapshot.context.loading || snapshot.matches('sending')
     this.maxAmount = snapshot.context.selectedToken
       ? Number(snapshot.context.selectedToken.quantity.numeric)
       : 0
 
-    // Calculate exceeds balance
     this.exceedsBalance = Boolean(
       snapshot.context.selectedToken &&
         snapshot.context.sendAmount &&

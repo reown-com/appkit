@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
+import type { SendContext } from '@reown/appkit-controllers'
 import { RouterController } from '@reown/appkit-controllers'
 import { sendActor } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -51,42 +52,64 @@ export class W3mWalletSendView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private isReadyToSend(context: SendContext): boolean {
+    return Boolean(
+      context.selectedToken &&
+        context.sendAmount &&
+        context.sendAmount > 0 &&
+        context.receiverAddress &&
+        context.sendAmount <= Number(context.selectedToken.quantity.numeric)
+    )
+  }
+
   private updateButtonState(
     snapshot: typeof sendActor extends { getSnapshot(): infer T } ? T : never
   ) {
-    // Sync state properties with XState actor context
     this.token = snapshot.context.selectedToken
     this.sendTokenAmount = snapshot.context.sendAmount
     this.receiverAddress = snapshot.context.receiverAddress
     this.receiverProfileName = snapshot.context.receiverProfileName
 
-    // Update button message based on state
-    if (snapshot.matches('error')) {
-      this.message = 'Retry'
+    if (snapshot.matches('active')) {
+      this.message = 'Loading Balances...'
     } else if (snapshot.matches('sending')) {
       this.message = 'Sending...'
-    } else if (snapshot.matches({ formEntry: 'resolvingENS' })) {
+    } else if (snapshot.matches('resolvingENS')) {
       this.message = 'Resolving...'
+    } else if (snapshot.matches('success')) {
+      this.message = 'Transaction Sent'
     } else if (!snapshot.context.selectedToken) {
       this.message = 'Select Token'
     } else if (!snapshot.context.sendAmount) {
-      this.message = 'Add Amount'
+      this.message = 'Enter Amount'
+    } else if (snapshot.context.sendAmount <= 0) {
+      this.message = 'Enter Valid Amount'
+    } else if (
+      snapshot.context.selectedToken &&
+      snapshot.context.sendAmount > Number(snapshot.context.selectedToken.quantity.numeric)
+    ) {
+      this.message = 'Insufficient Balance'
     } else if (!snapshot.context.receiverAddress) {
-      this.message = 'Add Address'
-    } else if (snapshot.context.validationErrors.amount) {
-      this.message = 'Insufficient Funds'
-    } else if (snapshot.context.validationErrors.address) {
-      this.message = 'Invalid Address'
-    } else if (snapshot.context.validationErrors.token) {
-      this.message = 'Invalid Token'
-    } else if (snapshot.matches('readyToSend')) {
+      this.message = 'Enter Address'
+    } else if (this.isReadyToSend(snapshot.context)) {
       this.message = 'Preview Send'
+    } else if (snapshot.context.error) {
+      this.message = 'Retry'
+    } else {
+      this.message = 'Complete Form'
     }
 
     // Update button state
-    this.buttonDisabled = !snapshot.matches('readyToSend') || snapshot.context.loading
-    this.loading = snapshot.context.loading
-    this.canSend = snapshot.matches('readyToSend')
+    const isFormComplete = this.isReadyToSend(snapshot.context)
+    const isProcessing =
+      snapshot.matches('active') || snapshot.matches('sending') || snapshot.matches('resolvingENS')
+
+    this.buttonDisabled =
+      isProcessing ||
+      (!isFormComplete && ((snapshot as any).matches('preparing') || snapshot.matches('idle')))
+    this.loading = snapshot.context.loading || isProcessing
+    this.canSend =
+      isFormComplete && ((snapshot as any).matches('preparing') || snapshot.matches('idle'))
   }
 
   // -- Render -------------------------------------------- //
@@ -119,18 +142,16 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onButtonClick() {
+    const snapshot = sendActor.getSnapshot()
+
     if (this.canSend) {
       RouterController.push('WalletSendPreview')
-    } else {
-      // Handle different button states
-      const snapshot = sendActor.getSnapshot()
-
-      if (!snapshot.context.selectedToken) {
-        RouterController.push('WalletSendSelectToken')
-      } else if (snapshot.matches('error')) {
-        sendActor.send({ type: 'RETRY_SEND' })
-      }
-      // Other cases are handled by form validation in the machine
+    } else if (!snapshot.context.selectedToken) {
+      RouterController.push('WalletSendSelectToken')
+    } else if (snapshot.context.error) {
+      sendActor.send({ type: 'RESET_FORM' })
+    } else if (snapshot.matches('success')) {
+      sendActor.send({ type: 'FETCH_BALANCES' })
     }
   }
 }

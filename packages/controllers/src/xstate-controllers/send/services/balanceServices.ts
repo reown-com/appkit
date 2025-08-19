@@ -8,8 +8,15 @@ import { getActiveNetworkTokenAddress } from '../../../utils/ChainControllerUtil
 import { SwapApiUtil } from '../../../utils/SwapApiUtil.js'
 import type { BalanceFetchInput } from '../types/sendTypes.js'
 
-export const balanceFetchService = fromPromise(
-  async ({ input }: { input: BalanceFetchInput }): Promise<Balance[]> => {
+export const balanceAndPriceFetchService = fromPromise(
+  async ({
+    input
+  }: {
+    input: BalanceFetchInput
+  }): Promise<{
+    balances: Balance[]
+    networkBalanceInUSD?: string
+  }> => {
     const { address, chainId, chainNamespace } = input
 
     if (!address || !chainId || !chainNamespace) {
@@ -17,15 +24,45 @@ export const balanceFetchService = fromPromise(
     }
 
     try {
+      // Fetch balances first
       const balances = await BalanceUtil.getMyTokensWithBalance()
 
-      return balances || []
+      if (!balances || balances.length === 0) {
+        return { balances: [] }
+      }
+
+      let networkBalanceInUSD: string | undefined = undefined
+      try {
+        const networkTokenBalances = SwapApiUtil.mapBalancesToSwapTokens(balances)
+
+        if (networkTokenBalances) {
+          const networkToken = networkTokenBalances.find(
+            (token: { address: string; quantity: { numeric: string }; price: number }) =>
+              token.address === getActiveNetworkTokenAddress()
+          )
+
+          if (networkToken) {
+            networkBalanceInUSD = (
+              Number(networkToken.quantity.numeric) * networkToken.price
+            ).toString()
+          }
+        }
+      } catch (error) {
+        networkBalanceInUSD = undefined
+      }
+
+      return {
+        balances: balances || [],
+        networkBalanceInUSD
+      }
     } catch (error) {
       SnackController.showError('Token Balance Unavailable')
       throw error
     }
   }
 )
+
+export const balanceFetchService = balanceAndPriceFetchService
 
 export const networkPriceFetchService = fromPromise(
   ({ input }: { input: { tokenBalances: Balance[] } }): Promise<string | undefined> => {
@@ -57,19 +94,7 @@ export const networkPriceFetchService = fromPromise(
 
       return Promise.resolve(networkBalanceInUSD)
     } catch (error) {
-      // Network price fetch failures are not critical, return undefined
-
       return Promise.resolve(undefined)
     }
-  }
-)
-
-export const retryDelayService = fromPromise(
-  async ({ input }: { input: { delayMs: number } }): Promise<void> => {
-    const { delayMs } = input
-
-    return new Promise(resolve => {
-      setTimeout(resolve, delayMs)
-    })
   }
 )

@@ -62,9 +62,10 @@ export class W3mInputAddress extends LitElement {
     const address = snapshot.context.receiverAddress || ''
     const name = snapshot.context.receiverProfileName
     const avatar = snapshot.context.receiverProfileImageUrl
-    const loading = snapshot.matches({ formEntry: 'resolvingENS' })
-    const hasError = Boolean(snapshot.context.validationErrors.address)
-    const error = snapshot.context.validationErrors.address
+    const loading = snapshot.matches('resolvingENS')
+
+    const hasError = false
+    const error = undefined
 
     this.value = name || address
     this.displayName = name
@@ -76,7 +77,6 @@ export class W3mInputAddress extends LitElement {
     const shouldShowInstruction = this.instructionHidden
     this.instructionHidden = Boolean(this.value)
 
-    // If instruction should now be visible (was hidden, now should show)
     if (shouldShowInstruction && !this.instructionHidden) {
       setTimeout(() => this.focusInstruction(), 0)
     }
@@ -85,7 +85,6 @@ export class W3mInputAddress extends LitElement {
   protected override firstUpdated() {
     this.checkHidden()
 
-    // Ensure instruction is properly set up if it should be visible
     if (!this.instructionHidden) {
       setTimeout(() => this.focusInstruction(), 0)
     }

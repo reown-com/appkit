@@ -24,12 +24,6 @@ export interface SendContext {
 
   // Error handling
   error?: string
-  validationErrors: {
-    amount?: string
-    address?: string
-    token?: string
-    general?: string
-  }
 }
 
 export type SendEvent =
@@ -43,24 +37,24 @@ export type SendEvent =
   | { type: 'SEND_TRANSACTION' }
   | { type: 'RETRY_SEND' }
   | { type: 'RESET_FORM' }
-  | { type: 'RESET_VALIDATION_ERRORS' }
-  | { type: 'CANCEL_SEND' }
   | { type: 'GO_TO_TOKEN_SELECT' }
-  | { type: 'VALIDATION_ERROR'; field: string; message: string }
   | { type: 'SET_LOADING'; loading?: boolean }
   // XState service completion events
   | { type: 'xstate.done.actor.ensResolver'; output: ENSResolutionOutput }
-  | { type: 'xstate.done.actor.balanceFetcher'; output: Balance[] }
-  | { type: 'xstate.done.actor.networkPriceFetcher'; output?: string }
+  | {
+      type: 'xstate.done.actor.balanceAndPriceFetcher'
+      output: { balances: Balance[]; networkBalanceInUSD?: string }
+    }
   | { type: 'xstate.done.actor.evmTransactionSender'; output: TransactionOutput }
   | { type: 'xstate.done.actor.solanaTransactionSender'; output: TransactionOutput }
+  | { type: 'xstate.done.actor.transactionSender'; output: TransactionOutput }
   | { type: 'xstate.done.actor.retryDelay'; output: undefined }
   // XState service error events
   | { type: 'xstate.error.actor.ensResolver'; error: Error }
-  | { type: 'xstate.error.actor.balanceFetcher'; error: Error }
-  | { type: 'xstate.error.actor.networkPriceFetcher'; error: Error }
+  | { type: 'xstate.error.actor.balanceAndPriceFetcher'; error: Error }
   | { type: 'xstate.error.actor.evmTransactionSender'; error: Error }
   | { type: 'xstate.error.actor.solanaTransactionSender'; error: Error }
+  | { type: 'xstate.error.actor.transactionSender'; error: Error }
   | { type: 'xstate.error.actor.retryDelay'; error: Error }
 
 export interface BalanceFetchInput {
@@ -131,7 +125,6 @@ export interface LoadingEvent {
   loading?: boolean
 }
 
-// Machine type exports (proper typing will be done after machine creation)
 export interface SendMachine {
   context: SendContext
   events: SendEvent

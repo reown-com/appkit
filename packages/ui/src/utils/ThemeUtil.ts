@@ -13,14 +13,14 @@ let lightModeTag: HTMLStyleElement | undefined = undefined
 let currentThemeVariables: ThemeVariables | undefined = undefined
 
 const fonts = {
-  'KHTeka-500-woff2': 'https://fonts.reown.com/KHTeka-Medium.woff2?v=1.0.0',
-  'KHTeka-400-woff2': 'https://fonts.reown.com/KHTeka-Regular.woff2?v=1.0.0',
-  'KHTeka-300-woff2': 'https://fonts.reown.com/KHTeka-Light.woff2?v=1.0.0',
-  'KHTekaMono-400-woff2': 'https://fonts.reown.com/KHTekaMono-Regular.woff2?v=1.0.0',
-  'KHTeka-500-woff': 'https://fonts.reown.com/KHTeka-Light.woff?v=1.0.0',
-  'KHTeka-400-woff': 'https://fonts.reown.com/KHTeka-Regular.woff?v=1.0.0',
-  'KHTeka-300-woff': 'https://fonts.reown.com/KHTeka-Light.woff?v=1.0.0',
-  'KHTekaMono-400-woff': 'https://fonts.reown.com/KHTekaMono-Regular.woff?v=1.0.0'
+  'KHTeka-500-woff2': 'https://fonts.reown.com/KHTeka-Medium.woff2',
+  'KHTeka-400-woff2': 'https://fonts.reown.com/KHTeka-Regular.woff2',
+  'KHTeka-300-woff2': 'https://fonts.reown.com/KHTeka-Light.woff2',
+  'KHTekaMono-400-woff2': 'https://fonts.reown.com/KHTekaMono-Regular.woff2',
+  'KHTeka-500-woff': 'https://fonts.reown.com/KHTeka-Light.woff',
+  'KHTeka-400-woff': 'https://fonts.reown.com/KHTeka-Regular.woff',
+  'KHTeka-300-woff': 'https://fonts.reown.com/KHTeka-Light.woff',
+  'KHTekaMono-400-woff': 'https://fonts.reown.com/KHTekaMono-Regular.woff'
 }
 
 function createAppKitTheme(themeVariables?: ThemeVariables, theme: ThemeType = 'dark') {

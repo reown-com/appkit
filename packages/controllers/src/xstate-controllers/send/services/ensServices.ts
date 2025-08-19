@@ -15,7 +15,6 @@ export const ensResolutionService = fromPromise(
 
     const activeChain = chainNamespace || ChainController.state.activeChain
 
-    // If it's already a valid address, return as-is
     if (CoreHelperUtil.isAddress(nameOrAddress, activeChain)) {
       return {
         resolvedAddress: nameOrAddress,
@@ -25,19 +24,16 @@ export const ensResolutionService = fromPromise(
     }
 
     try {
-      // Try to resolve ENS name
       const resolvedAddress = await ConnectionController.getEnsAddress(nameOrAddress)
 
       if (!resolvedAddress) {
         throw new Error('ENS name could not be resolved')
       }
 
-      // Try to get avatar (this might fail, that's ok)
       let avatar: string | undefined = undefined
       try {
         avatar = (await ConnectionController.getEnsAvatar(nameOrAddress)) as string | undefined
       } catch {
-        // Avatar fetch failed, continue without it
         avatar = undefined
       }
 
@@ -47,7 +43,6 @@ export const ensResolutionService = fromPromise(
         avatar
       }
     } catch (error) {
-      // If ENS resolution fails, check if the input might still be a valid address
       if (CoreHelperUtil.isAddress(nameOrAddress, activeChain)) {
         return {
           resolvedAddress: nameOrAddress,

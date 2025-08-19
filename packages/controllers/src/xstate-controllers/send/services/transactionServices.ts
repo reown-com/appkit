@@ -7,6 +7,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import { ChainController } from '../../../controllers/ChainController.js'
 import { ConnectionController } from '../../../controllers/ConnectionController.js'
 import { EventsController } from '../../../controllers/EventsController.js'
+import { RouterController } from '../../../controllers/RouterController.js'
 import { getPreferredAccountType } from '../../../utils/ChainControllerUtil.js'
 import { CoreHelperUtil } from '../../../utils/CoreHelperUtil.js'
 import type { TransactionInput, TransactionOutput } from '../types/sendTypes.js'
@@ -21,6 +22,24 @@ export const transactionService = fromPromise(
 
     let hash = ''
 
+    const activeAccountType = getPreferredAccountType(chainNamespace)
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SEND_INITIATED',
+      properties: {
+        isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+        token: token?.address || token?.symbol || 'native',
+        amount,
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+      }
+    })
+
+    RouterController.pushTransactionStack({
+      onSuccess() {
+        RouterController.replace('Account')
+      }
+    })
+
     try {
       if (type === 'evm') {
         hash = await sendEvmTransaction({ token, amount, to, fromAddress })
@@ -30,7 +49,6 @@ export const transactionService = fromPromise(
         throw new Error(`Unsupported transaction type: ${type}`)
       }
 
-      const activeAccountType = getPreferredAccountType(chainNamespace)
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_SUCCESS',
@@ -49,7 +67,6 @@ export const transactionService = fromPromise(
         success: true
       }
     } catch (error) {
-      const activeAccountType = getPreferredAccountType(chainNamespace)
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
@@ -79,7 +96,6 @@ async function sendEvmTransaction({
   fromAddress: string
 }): Promise<string> {
   if (token?.address) {
-    // ERC20 token transfer
     const parsedAmount = ConnectionController.parseUnits(
       amount.toString(),
       Number(token.quantity.decimals)
@@ -100,10 +116,11 @@ async function sendEvmTransaction({
       chainNamespace: CommonConstantsUtil.CHAIN.EVM
     })
 
-    return typeof result === 'string' ? result : (result as any)?.hash || ''
+    return typeof result === 'string'
+      ? result
+      : (result as unknown as { hash?: string })?.hash || ''
   }
 
-  // Native token transfer
   const value = ConnectionController.parseUnits(
     amount.toString(),
     Number(token?.quantity?.decimals || '18')
@@ -117,7 +134,7 @@ async function sendEvmTransaction({
     value: value ?? BigInt(0)
   })
 
-  return typeof result === 'string' ? result : (result as any)?.hash || ''
+  return typeof result === 'string' ? result : (result as unknown as { hash?: string })?.hash || ''
 }
 
 async function sendSolanaTransaction({
@@ -133,8 +150,5 @@ async function sendSolanaTransaction({
     value: amount
   })
 
-  // Update balance after transaction
-  ConnectionController._getClient()?.updateBalance('solana')
-
-  return typeof result === 'string' ? result : (result as any)?.hash || ''
+  return typeof result === 'string' ? result : (result as unknown as { hash?: string })?.hash || ''
 }

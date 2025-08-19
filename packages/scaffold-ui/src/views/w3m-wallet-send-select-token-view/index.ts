@@ -33,16 +33,13 @@ export class W3mSendSelectTokenView extends LitElement {
   public constructor() {
     super()
 
-    // Initialize from current actor state
     const snapshot = sendActor.getSnapshot()
     this.tokenBalances = snapshot.context.tokenBalances
 
-    // Fetch balances when this view is loaded if not already available
-    if (snapshot.context.tokenBalances.length === 0 && !snapshot.matches('loadingBalances')) {
+    if (snapshot.context.tokenBalances.length === 0 && !snapshot.context.loading) {
       sendActor.send({ type: 'FETCH_BALANCES' })
     }
 
-    // Subscribe to actor state changes
     this.unsubscribe.push(
       sendActor.subscribe(actorSnapshot => {
         this.tokenBalances = actorSnapshot.context.tokenBalances

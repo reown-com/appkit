@@ -33,11 +33,9 @@ export class W3mWalletSendPreviewView extends LitElement {
   public constructor() {
     super()
 
-    // Initialize from current actor state
     const snapshot = sendActor.getSnapshot()
     this.updatePreviewState(snapshot)
 
-    // Subscribe to actor state changes
     this.unsubscribe.push(
       sendActor.subscribe(actorSnapshot => {
         this.updatePreviewState(actorSnapshot)
@@ -45,7 +43,6 @@ export class W3mWalletSendPreviewView extends LitElement {
       }).unsubscribe
     )
 
-    // Also subscribe to network changes
     this.unsubscribe.push(
       ChainController.subscribeKey('activeCaipNetwork', val => {
         this.caipNetwork = val
@@ -164,7 +161,15 @@ export class W3mWalletSendPreviewView extends LitElement {
   private onSendClick() {
     const snapshot = sendActor.getSnapshot()
 
-    if (!snapshot.matches('readyToSend')) {
+    const isReady = Boolean(
+      snapshot.context.selectedToken &&
+        snapshot.context.sendAmount &&
+        snapshot.context.sendAmount > 0 &&
+        snapshot.context.receiverAddress &&
+        snapshot.context.sendAmount <= Number(snapshot.context.selectedToken.quantity.numeric)
+    )
+
+    if (!isReady) {
       SnackController.showError('Please complete the form before sending')
 
       return
