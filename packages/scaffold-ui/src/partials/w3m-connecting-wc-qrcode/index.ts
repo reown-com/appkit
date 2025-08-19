@@ -53,14 +53,11 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['0', 'xl', 'xl', 'xl']}
-        gap="xl"
+        .padding=${['0', '5', '5', '5'] as const}
+        gap="5"
       >
-        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
-
-        <wui-text variant="paragraph-500" color="fg-100">
-          Scan this QR Code with your phone
-        </wui-text>
+        <wui-shimmer width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
+        <wui-text variant="lg-medium" color="primary"> Scan this QR Code with your phone </wui-text>
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
@@ -101,15 +98,16 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   private copyTemplate() {
     const inactive = !this.uri || !this.ready
 
-    return html`<wui-link
+    return html`<wui-button
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      color="fg-200"
+      variant="neutral-secondary"
+      size="sm"
       data-testid="copy-wc2-uri"
     >
-      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
       Copy link
-    </wui-link>`
+      <wui-icon size="sm" color="inherit" name="copy" slot="iconRight"></wui-icon>
+    </wui-button>`
   }
 
   private forceUpdate = () => {

@@ -51,7 +51,7 @@ describe('W3mOnRampProvidersFooter', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const text = element.shadowRoot?.querySelector('wui-text[color="fg-250"]')
+    const text = element.shadowRoot?.querySelector('wui-text[color="secondary"]')
     const textContent = text?.textContent?.replace(/\s+/g, ' ').trim()
     expect(textContent).toBe(
       'We work with the best providers to give you the lowest fees and best support. More options coming soon!'

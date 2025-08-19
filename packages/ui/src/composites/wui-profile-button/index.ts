@@ -31,15 +31,15 @@ export class WuiProfileButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`<button data-testid="wui-profile-button">
-      <wui-flex gap="xs" alignItems="center">
+      <wui-flex gap="2" alignItems="center">
         <wui-avatar
           .imageSrc=${this.avatarSrc}
           alt=${this.address}
           address=${this.address}
         ></wui-avatar>
         ${this.networkImageTemplate()}
-        <wui-flex gap="xs" alignItems="center">
-          <wui-text variant="large-600" color="fg-100">
+        <wui-flex gap="1" alignItems="center">
+          <wui-text variant="lg-medium" color="primary">
             ${UiHelperUtil.getTruncateString({
               string: this.profileName || this.address,
               charsStart: this.profileName ? 18 : 4,
@@ -47,7 +47,7 @@ export class WuiProfileButton extends LitElement {
               truncate: this.profileName ? 'end' : 'middle'
             })}
           </wui-text>
-          <wui-icon size="sm" color="fg-200" name=${this.icon}></wui-icon>
+          <wui-icon size="sm" color="default" name=${this.icon}></wui-icon>
         </wui-flex>
       </wui-flex>
     </button>`
@@ -60,12 +60,7 @@ export class WuiProfileButton extends LitElement {
     }
 
     return html`
-      <wui-icon-box
-        size="xxs"
-        iconColor="fg-200"
-        backgroundColor="bg-100"
-        icon="networkPlaceholder"
-      ></wui-icon-box>
+      <wui-icon-box size="lg" iconColor="default" icon="networkPlaceholder"></wui-icon-box>
     `
   }
 }
