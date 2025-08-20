@@ -46,9 +46,16 @@ const CHAIN_ASSET_INFO_MAP: Partial<
 class JsonRpcError extends Error {}
 
 export function getApiUrl() {
-  const projectId = OptionsController.getSnapshot().projectId
+  const { sdkType, sdkVersion, projectId } = OptionsController.getSnapshot()
 
-  return `https://rpc.walletconnect.org/v1/json-rpc?projectId=${projectId}&source=fund-wallet`
+  const url = new URL('https://rpc.walletconnect.org/v1/json-rpc')
+
+  url.searchParams.set('projectId', projectId)
+  url.searchParams.set('st', sdkType)
+  url.searchParams.set('sv', sdkVersion)
+  url.searchParams.set('source', 'fund-wallet')
+
+  return url.toString()
 }
 
 export type JsonRpcResponse<T> = {
@@ -86,15 +93,13 @@ export type GetBuyStatusResult = {
 
 async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcResponse<T>> {
   const url = getApiUrl()
-  const { sdkType: st, sdkVersion: sv, projectId } = OptionsController.getSnapshot()
+  const { projectId } = OptionsController.getSnapshot()
   const requestBody = {
     jsonrpc: '2.0',
     id: 1,
     method,
     params: {
       ...(params || {}),
-      st,
-      sv,
       projectId
     }
   }
