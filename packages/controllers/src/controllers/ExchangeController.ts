@@ -200,6 +200,16 @@ export const ExchangeController = {
         throw new Error('No account connected')
       }
 
+      const popupWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'scrollbar=yes,width=480,height=720'
+      )
+
+      if (!popupWindow) {
+        throw new Error('Could not create popup window')
+      }
+
       state.isPaymentInProgress = true
       state.paymentId = crypto.randomUUID()
 
@@ -216,7 +226,9 @@ export const ExchangeController = {
         recipient: AccountController.state.address
       }
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
+
       if (!payUrl) {
+        popupWindow.close()
         throw new Error('Unable to initiate payment')
       }
 
@@ -224,11 +236,7 @@ export const ExchangeController = {
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
 
-      CoreHelperUtil.openHref(
-        payUrl.url,
-        '_blank',
-        'popup=yes,width=480,height=720,noopener,noreferrer'
-      )
+      popupWindow.location.href = payUrl.url
     } catch (error) {
       state.error = 'Unable to initiate payment'
       SnackController.showError(state.error)
@@ -255,7 +263,7 @@ export const ExchangeController = {
       throw new Error('Unable to get deposit status')
     }
 
-    // Wait 1 second before checking again
+    // Wait 5 seconds before checking again
     await new Promise(resolve => {
       setTimeout(resolve, 5000)
     })
