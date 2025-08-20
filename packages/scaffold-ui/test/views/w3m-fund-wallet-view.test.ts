@@ -4,7 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ExchangeController, OptionsController, RouterController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ExchangeController,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-controllers'
 
 import { W3mFundWalletView } from '../../src/views/w3m-fund-wallet-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -342,13 +347,15 @@ describe('W3mFundWalletView', () => {
       }
     })
 
-    const getAssetsForNetworkSpy = vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([
-      {
-        network: 'eip155:1',
-        asset: 'native',
-        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
-      }
-    ])
+    const getAssetsForNetworkSpy = vi
+      .spyOn(ExchangeController, 'getAssetsForNetwork')
+      .mockResolvedValue([
+        {
+          network: 'eip155:1',
+          asset: 'native',
+          metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+        }
+      ])
     const setPaymentAssetSpy = vi.spyOn(ExchangeController, 'setPaymentAsset')
     const fetchExchangesSpy = vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
 
@@ -382,7 +389,7 @@ describe('W3mFundWalletView', () => {
     // Mock state with no exchanges
     ExchangeController.state.exchanges = []
     ExchangeController.state.isLoading = false
-    
+
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([])
     vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
 
@@ -423,7 +430,7 @@ describe('W3mFundWalletView', () => {
     // Mock loading state
     ExchangeController.state.isLoading = true
     ExchangeController.state.exchanges = []
-    
+
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([])
     vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
 
@@ -468,7 +475,7 @@ describe('W3mFundWalletView', () => {
       { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' }
     ] as any
     ExchangeController.state.isLoading = false
-    
+
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([])
     vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
 

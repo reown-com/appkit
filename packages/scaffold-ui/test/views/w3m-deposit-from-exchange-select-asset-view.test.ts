@@ -90,7 +90,7 @@ describe('W3mDepositFromExchangeSelectAssetView', () => {
     // Simulate search input
     const searchInput = element.shadowRoot?.querySelector('wui-input-text')
     searchInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'usd' }))
-    
+
     // Wait for debounced search to trigger
     await new Promise(resolve => setTimeout(resolve, 500))
     await elementUpdated(element)
@@ -139,12 +139,12 @@ describe('W3mDepositFromExchangeSelectAssetView', () => {
     await elementUpdated(element)
 
     expect(element.shadowRoot?.textContent).toContain('No tokens found')
-    
+
     // Test buy button navigation
     const routerSpy = vi.spyOn(RouterController, 'push')
     const buyLink = element.shadowRoot?.querySelector('wui-link')
     buyLink?.click()
-    
+
     expect(routerSpy).toHaveBeenCalledWith('OnRampProviders')
   })
 
@@ -161,7 +161,7 @@ describe('W3mDepositFromExchangeSelectAssetView', () => {
     // Search for something that doesn't exist
     const searchInput = element.shadowRoot?.querySelector('wui-input-text')
     searchInput?.dispatchEvent(new CustomEvent('inputChange', { detail: 'bitcoin' }))
-    
+
     // Wait for debounced search to trigger
     await new Promise(resolve => setTimeout(resolve, 300))
     await elementUpdated(element)

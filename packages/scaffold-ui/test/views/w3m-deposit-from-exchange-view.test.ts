@@ -4,7 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { ChainController, ExchangeController, RouterController, SnackController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ExchangeController,
+  RouterController,
+  SnackController
+} from '@reown/appkit-controllers'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -50,17 +55,19 @@ describe('W3mDepositFromExchangeView', () => {
       activeCaipNetwork: mockSolanaMainnet as unknown as CaipNetwork
     })
 
-    const getAssetsForNetworkSpy = vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([
-      {
-        network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        asset: 'native',
-        metadata: {
-          name: 'Solana',
-          symbol: 'SOL',
-          decimals: 9
+    const getAssetsForNetworkSpy = vi
+      .spyOn(ExchangeController, 'getAssetsForNetwork')
+      .mockResolvedValue([
+        {
+          network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          asset: 'native',
+          metadata: {
+            name: 'Solana',
+            symbol: 'SOL',
+            decimals: 9
+          }
         }
-      }
-    ])
+      ])
     const setPaymentAssetSpy = vi.spyOn(ExchangeController, 'setPaymentAsset')
     const fetchExchangesSpy = vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
 
@@ -142,7 +149,7 @@ describe('W3mDepositFromExchangeView', () => {
   it('shows error when clicking exchange without amount', async () => {
     // Mock the SnackController
     const showErrorSpy = vi.spyOn(SnackController, 'showError')
-    
+
     // Mock active network
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -166,7 +173,7 @@ describe('W3mDepositFromExchangeView', () => {
 
     const items = HelpersUtil.querySelectAll(element, 'wui-list-item')
     items?.[0]?.click()
-    
+
     expect(showErrorSpy).toHaveBeenCalledWith('Please enter an amount')
   })
 })

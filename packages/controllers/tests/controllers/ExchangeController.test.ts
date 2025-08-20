@@ -547,11 +547,13 @@ describe('ExchangeController', () => {
       // Mock the BlockchainApiController response
       vi.spyOn(ExchangeController, 'getAssetsImageAndPrice').mockResolvedValue([
         {
-          fungibles: [{
-            address: 'eip155:1/slip44:60',
-            price: 2000,
-            iconUrl: 'https://example.com/eth.png'
-          }]
+          fungibles: [
+            {
+              address: 'eip155:1/slip44:60',
+              price: 2000,
+              iconUrl: 'https://example.com/eth.png'
+            }
+          ]
         }
       ] as any)
 
