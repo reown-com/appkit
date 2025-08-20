@@ -101,7 +101,6 @@ describe('W3mDepositFromExchangeView', () => {
 
     // Avoid side effects on firstUpdated
     vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
-    vi.spyOn(ExchangeController, 'fetchTokenPrice').mockResolvedValue()
 
     const element: W3mDepositFromExchangeView = await fixture(
       html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`

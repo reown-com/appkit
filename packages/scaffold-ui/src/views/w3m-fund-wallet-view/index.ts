@@ -33,17 +33,7 @@ export class W3mFundWalletView extends LitElement {
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.activeCaipNetwork = val
-          if (val) {
-            ExchangeController.setPaymentAsset({
-              network: val.caipNetworkId,
-              asset: 'native',
-              metadata: {
-                name: val.nativeCurrency.name,
-                symbol: val.nativeCurrency.symbol,
-                decimals: val.nativeCurrency.decimals
-              }
-            })
-          }
+          this.setDefaultPaymentAsset()
         }),
         ExchangeController.subscribeKey('isLoading', val => (this.exchangesLoading = val)),
         ExchangeController.subscribeKey('exchanges', val => (this.exchanges = val))
@@ -55,9 +45,9 @@ export class W3mFundWalletView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
-  public override firstUpdated() {
-    ExchangeController.fetchExchanges()
-    ExchangeController.fetchTokenPrice()
+  public override async firstUpdated() {
+    await this.setDefaultPaymentAsset()
+    await ExchangeController.fetchExchanges()
   }
 
   // -- Render -------------------------------------------- //
@@ -70,6 +60,18 @@ export class W3mFundWalletView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private async setDefaultPaymentAsset() {
+    if (!this.activeCaipNetwork) {
+      return
+    }
+
+    const assets = await ExchangeController.getAssetsForNetwork(this.activeCaipNetwork.caipNetworkId)
+    const usdc = assets.find(asset => asset.metadata.symbol === 'USDC') || assets[0]
+    if (usdc) {
+      ExchangeController.setPaymentAsset(usdc)
+    }
+  }
   private onrampTemplate() {
     if (!this.activeCaipNetwork) {
       return null

@@ -1,11 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AccountController } from '../../src/controllers/AccountController'
-import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'
 import { SnackController } from '../../src/controllers/SnackController'
-import * as ChainControllerUtil from '../../src/utils/ChainControllerUtil'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil'
 import * as ExchangeUtil from '../../src/utils/ExchangeUtil'
 import type { ExchangeBuyStatus } from '../../src/utils/ExchangeUtil'
@@ -19,33 +17,26 @@ describe('ExchangeController', () => {
     vi.resetAllMocks()
   })
 
-  it('fetchTokenPrice sets price and toggles loading', async () => {
-    vi.spyOn(ChainControllerUtil, 'getActiveNetworkTokenAddress').mockReturnValue(
-      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-    )
-    vi.spyOn(BlockchainApiController, 'fetchTokenPrice').mockResolvedValue({
-      fungibles: [{ price: 123.45 }]
-    } as any)
-
-    await ExchangeController.fetchTokenPrice()
-
-    expect(BlockchainApiController.fetchTokenPrice).toHaveBeenCalledWith({
-      addresses: ['eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
-    })
-    expect(ExchangeController.state.tokenPrice).toBe(123.45)
-    expect(ExchangeController.state.priceLoading).toBe(false)
-  })
-
   it('getTokenAmount returns computed amount', () => {
     ExchangeController.state.amount = 10
-    ExchangeController.state.tokenPrice = 2
+    ExchangeController.state.paymentAsset = {
+      network: 'eip155:1',
+      asset: 'native',
+      metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+      price: 2
+    }
 
     const value = ExchangeController.getTokenAmount()
     expect(value).toBe(5)
   })
 
   it('setAmount updates amount and tokenAmount when price exists', () => {
-    ExchangeController.state.tokenPrice = 4
+    ExchangeController.state.paymentAsset = {
+      network: 'eip155:1',
+      asset: 'native',
+      metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+      price: 4
+    }
     ExchangeController.setAmount(10)
     expect(ExchangeController.state.amount).toBe(10)
     expect(ExchangeController.state.tokenAmount).toBe(2.5)
