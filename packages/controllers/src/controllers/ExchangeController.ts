@@ -228,7 +228,13 @@ export const ExchangeController = {
       const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
 
       if (!payUrl) {
-        popupWindow.close()
+        try {
+          popupWindow.close()
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Unable to close popup window', err)
+        }
+
         throw new Error('Unable to initiate payment')
       }
 
