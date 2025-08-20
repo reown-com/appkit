@@ -130,13 +130,18 @@ describe('ExchangeController', () => {
 
   describe('handlePayWithExchange', () => {
     it('opens pay URL and updates current payment state', async () => {
+      const hrefObject = {
+        location: { href: '' }
+      }
+
       AccountController.state.address = '0xabc'
       ExchangeController.state.amount = 2
+
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue({
         url: 'https://pay.url',
         sessionId: 'sess-123'
       })
-      vi.spyOn(CoreHelperUtil, 'openHref').mockImplementation(() => {})
+      vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(hrefObject as any)
 
       await ExchangeController.handlePayWithExchange('ex1')
 
@@ -144,11 +149,12 @@ describe('ExchangeController', () => {
       expect(ExchangeController.state.currentPayment?.status).toBe('IN_PROGRESS')
       expect(ExchangeController.state.currentPayment?.sessionId).toBe('sess-123')
       expect(ExchangeController.state.currentPayment?.exchangeId).toBe('ex1')
-      expect(CoreHelperUtil.openHref).toHaveBeenCalledWith(
-        'https://pay.url',
-        '_blank',
-        'popup=yes,width=480,height=720,noopener,noreferrer'
+      expect(CoreHelperUtil.returnOpenHref).toHaveBeenCalledWith(
+        '',
+        'popupWindow',
+        'scrollbar=yes,width=480,height=720'
       )
+      expect(hrefObject.location.href).toBe('https://pay.url')
     })
 
     it('shows error if no account connected', async () => {

@@ -318,6 +318,10 @@ const controller = {
     return ConnectionController._getClient()?.formatUnits(value, decimals)
   },
 
+  updateBalance(namespace: ChainNamespace) {
+    return ConnectionController._getClient()?.updateBalance(namespace)
+  },
+
   async sendTransaction(args: SendTransactionArgs) {
     return ConnectionController._getClient()?.sendTransaction(args)
   },
