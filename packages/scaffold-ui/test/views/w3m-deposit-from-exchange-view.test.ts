@@ -25,7 +25,7 @@ const mockMainnet = {
       http: ['https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY']
     }
   }
-}
+} as CaipNetwork
 
 const mockSolanaMainnet = {
   id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -38,7 +38,7 @@ const mockSolanaMainnet = {
       http: ['https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY']
     }
   }
-}
+} as CaipNetwork
 
 describe('W3mDepositFromExchangeView', () => {
   beforeEach(() => {
@@ -61,7 +61,9 @@ describe('W3mDepositFromExchangeView', () => {
         {
           network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           asset: 'native',
+          price: 1,
           metadata: {
+            iconUrl: 'https://img.solana.com/solana-logo-full.svg',
             name: 'Solana',
             symbol: 'SOL',
             decimals: 9
@@ -77,7 +79,9 @@ describe('W3mDepositFromExchangeView', () => {
     expect(setPaymentAssetSpy).toHaveBeenCalledWith({
       network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       asset: 'native',
+      price: 1,
       metadata: {
+        iconUrl: 'https://img.solana.com/solana-logo-full.svg',
         name: 'Solana',
         symbol: 'SOL',
         decimals: 9
@@ -97,7 +101,13 @@ describe('W3mDepositFromExchangeView', () => {
     const mockPaymentAsset = {
       network: 'eip155:1' as const,
       asset: 'native',
-      metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      price: 1,
+      metadata: {
+        iconUrl: 'https://img.solana.com/solana-logo-full.svg',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18
+      }
     }
 
     // Seed controller state for exchanges and amount

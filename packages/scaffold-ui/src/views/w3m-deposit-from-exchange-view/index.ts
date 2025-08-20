@@ -119,12 +119,7 @@ export class W3mDepositFromExchangeView extends LitElement {
               </wui-text>
             </wui-list-item>`
         )
-      : html`<wui-flex
-          flexDirection="column"
-          alignItems="center"
-          gap="4"
-          padding="4"
-        >
+      : html`<wui-flex flexDirection="column" alignItems="center" gap="4" padding="4">
           <wui-text variant="lg-medium" align="center" color="primary">
             No exchanges support this asset on this network
           </wui-text>

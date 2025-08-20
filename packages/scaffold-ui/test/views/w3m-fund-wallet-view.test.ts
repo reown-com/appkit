@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ExchangeController,
@@ -65,7 +65,7 @@ describe('W3mFundWalletView', () => {
         caipNetworkId: 'eip155:1' as const,
         chainNamespace: 'eip155',
         name: 'Mainnet'
-      }
+      } as unknown as CaipNetwork
     })
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
@@ -127,7 +127,7 @@ describe('W3mFundWalletView', () => {
         caipNetworkId: 'eip155:1' as const,
         chainNamespace: 'eip155',
         name: 'Mainnet'
-      }
+      } as unknown as CaipNetwork
     })
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
@@ -278,7 +278,7 @@ describe('W3mFundWalletView', () => {
         caipNetworkId: 'eip155:1' as const,
         chainNamespace: 'eip155',
         name: 'Mainnet'
-      }
+      } as unknown as CaipNetwork
     })
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
@@ -333,7 +333,7 @@ describe('W3mFundWalletView', () => {
       caipNetworkId: 'eip155:1' as const,
       chainNamespace: 'eip155',
       name: 'Mainnet'
-    }
+    } as unknown as CaipNetwork
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -353,7 +353,13 @@ describe('W3mFundWalletView', () => {
         {
           network: 'eip155:1',
           asset: 'native',
-          metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+          price: 1,
+          metadata: {
+            iconUrl: 'https://img.solana.com/solana-logo-full.svg',
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18
+          }
         }
       ])
     const setPaymentAssetSpy = vi.spyOn(ExchangeController, 'setPaymentAsset')
@@ -372,7 +378,7 @@ describe('W3mFundWalletView', () => {
       caipNetworkId: 'eip155:1' as const,
       chainNamespace: 'eip155',
       name: 'Mainnet'
-    }
+    } as unknown as CaipNetwork
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -413,7 +419,7 @@ describe('W3mFundWalletView', () => {
       caipNetworkId: 'eip155:1' as const,
       chainNamespace: 'eip155',
       name: 'Mainnet'
-    }
+    } as unknown as CaipNetwork
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -454,7 +460,7 @@ describe('W3mFundWalletView', () => {
       caipNetworkId: 'eip155:1' as const,
       chainNamespace: 'eip155',
       name: 'Mainnet'
-    }
+    } as unknown as CaipNetwork
 
     const pushSpy = vi.spyOn(RouterController, 'push')
 
