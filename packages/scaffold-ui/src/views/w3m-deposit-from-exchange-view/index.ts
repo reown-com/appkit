@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
+  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -198,6 +199,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           SnackController.showSuccess('Deposit completed')
 
           if (namespace) {
+            AccountController.fetchTokenBalance()
             ConnectionController.updateBalance(namespace)
           }
         } else if (status.status === 'FAILED') {
