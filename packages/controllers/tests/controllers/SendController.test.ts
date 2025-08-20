@@ -4,8 +4,11 @@ import { type Balance } from '@reown/appkit-common'
 
 import {
   AccountController,
+  ConnectionController,
   CoreHelperUtil,
+  RouterController,
   SendController,
+  type SendControllerState,
   SnackController
 } from '../../exports/index.js'
 import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
@@ -209,6 +212,73 @@ describe('SendController', () => {
 
       expect(getCaipAddressSpy).toHaveBeenCalledWith(mockNamespace)
       expect(getPlainAddressSpy).toHaveBeenCalledWith(mockActiveCaipAddress)
+    })
+  })
+
+  describe('sendSolanaToken()', () => {
+    beforeEach(() => {
+      vi.spyOn(RouterController, 'pushTransactionStack').mockImplementation(() => {})
+      vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
+      vi.spyOn(ConnectionController, 'sendTransaction').mockResolvedValue(undefined)
+      vi.spyOn(ConnectionController, '_getClient').mockReturnValue({
+        updateBalance: vi.fn()
+      } as any)
+      vi.spyOn(CoreHelperUtil, 'isCaipAddress').mockReturnValue(false)
+      vi.spyOn(SendController, 'resetSend').mockImplementation(() => {})
+    })
+
+    it('should call sendTransaction without tokenMint', async () => {
+      SendController.setTokenAmount(0.1)
+      SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
+
+      await SendController.sendSolanaToken()
+
+      expect(RouterController.pushTransactionStack).toHaveBeenCalledWith({
+        onSuccess: expect.any(Function)
+      })
+      expect(ConnectionController.sendTransaction).toHaveBeenCalledWith({
+        chainNamespace: 'solana',
+        tokenMint: undefined,
+        to: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+        value: 0.1
+      })
+      expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
+      expect(SendController.resetSend).toHaveBeenCalled()
+    })
+
+    it('should call sendTransaction with tokenMint', async () => {
+      vi.spyOn(CoreHelperUtil, 'isCaipAddress').mockReturnValue(true)
+
+      const solanaToken = {
+        name: 'USDC',
+        address: 'solana:mainnet:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        symbol: 'USDC',
+        chainId: 'solana:mainnet',
+        value: 100,
+        price: 1,
+        quantity: {
+          decimals: '6',
+          numeric: '100000000'
+        }
+      }
+
+      SendController.setToken(solanaToken as SendControllerState['token'])
+      SendController.setTokenAmount(50)
+      SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
+
+      await SendController.sendSolanaToken()
+
+      expect(RouterController.pushTransactionStack).toHaveBeenCalledWith({
+        onSuccess: expect.any(Function)
+      })
+      expect(ConnectionController.sendTransaction).toHaveBeenCalledWith({
+        chainNamespace: 'solana',
+        tokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        to: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+        value: 50
+      })
+      expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
+      expect(SendController.resetSend).toHaveBeenCalled()
     })
   })
 })
