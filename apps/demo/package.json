@@ -60,7 +60,7 @@
     "sonner": "1.7.4",
     "tailwind-merge": "2.6.0",
     "tailwindcss-animate": "1.0.7",
-    "viem": "2.33.3",
+    "viem": "2.34.0",
     "wagmi": "2.16.3",
     "valtio": "2.1.5"
   },
