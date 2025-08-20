@@ -151,7 +151,7 @@ export const ExchangeController = {
         asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
         amount: state.amount.toString()
       })
-      // Putting ExchangeController here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
+      // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
     } catch (error) {
       SnackController.showError('Unable to get exchanges')
