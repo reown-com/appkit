@@ -322,8 +322,19 @@ const controller = {
       }
     })
 
+    let tokenMint: string | undefined = undefined
+
+    if (
+      SendController.state.token &&
+      CoreHelperUtil.isCaipAddress(SendController.state.token.address)
+    ) {
+      const [, , tokenMintSPLAddress] = SendController.state.token.address.split(':')
+      tokenMint = tokenMintSPLAddress
+    }
+
     await ConnectionController.sendTransaction({
       chainNamespace: 'solana',
+      tokenMint,
       to: SendController.state.receiverAddress,
       value: SendController.state.sendTokenAmount
     })

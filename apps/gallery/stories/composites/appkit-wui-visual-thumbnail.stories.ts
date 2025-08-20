@@ -10,7 +10,7 @@ import { walletImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiVisualThumbnail>
 
 export default {
-  title: 'Composites/wui-visual-thumbnail',
+  title: 'Composites/apkt-visual-thumbnail',
   args: {
     imageSrc: walletImageSrc,
     borderRadiusFull: true

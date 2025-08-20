@@ -75,6 +75,18 @@ export class W3mDepositFromExchangeView extends LitElement {
   public override firstUpdated() {
     ExchangeController.fetchExchanges()
     ExchangeController.fetchTokenPrice()
+
+    if (this.network) {
+      ExchangeController.setPaymentAsset({
+        network: `${this.network.chainNamespace}:${this.network.id}`,
+        asset: 'native',
+        metadata: {
+          name: this.network.nativeCurrency.name,
+          symbol: this.network.nativeCurrency.symbol,
+          decimals: this.network.nativeCurrency.decimals
+        }
+      })
+    }
   }
 
   // -- Render -------------------------------------------- //

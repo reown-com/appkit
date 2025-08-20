@@ -11,7 +11,7 @@ import { walletImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiTransactionListItem>
 
 export default {
-  title: 'Composites/wui-transaction-list-item',
+  title: 'Composites/apkt-transaction-list-item',
   args: {
     type: 'approve',
     descriptions: ['1 ETH', '3245 USDC'],

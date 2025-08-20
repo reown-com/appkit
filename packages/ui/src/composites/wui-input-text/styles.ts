@@ -13,6 +13,7 @@ export default css`
 
   .wui-input-text-container {
     position: relative;
+    display: flex;
   }
 
   input {

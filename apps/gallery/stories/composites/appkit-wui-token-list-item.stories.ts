@@ -12,7 +12,7 @@ import { networkImageSrc } from '../../utils/PresetUtils'
 type Component = Meta<WuiTokenListItem>
 
 export default {
-  title: 'Composites/wui-token-list-item',
+  title: 'Composites/apkt-token-list-item',
   args: {
     name: 'Ethereum',
     symbol: 'ETH',

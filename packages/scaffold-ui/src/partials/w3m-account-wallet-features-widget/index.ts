@@ -183,10 +183,22 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private fundWalletTemplate() {
-    const isOnrampEnabled = this.remoteFeatures?.onramp
-    const isReceiveEnabled = this.features?.receive
+    if (!this.namespace) {
+      return null
+    }
 
-    if (!isOnrampEnabled && !isReceiveEnabled) {
+    const isOnrampSupported = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
+      this.namespace
+    )
+    const isPayWithExchangeSupported =
+      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(this.namespace)
+
+    const isReceiveEnabled = this.features?.receive
+    const isOnrampEnabled = this.remoteFeatures?.onramp && isOnrampSupported
+    const isPayWithExchangeEnabled =
+      this.remoteFeatures?.payWithExchange && isPayWithExchangeSupported
+
+    if (!isOnrampEnabled && !isReceiveEnabled && !isPayWithExchangeEnabled) {
       return null
     }
 

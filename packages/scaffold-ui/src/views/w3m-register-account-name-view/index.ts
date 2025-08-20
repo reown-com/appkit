@@ -83,7 +83,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         flexDirection="column"
         alignItems="center"
         gap="4"
-        .padding=${['0', '3', '4', '3'] as const}
+        .padding=${['1', '3', '4', '3'] as const}
       >
         <form ${ref(this.formRef)} @submit=${this.onSubmitName.bind(this)}>
           <wui-ens-input
