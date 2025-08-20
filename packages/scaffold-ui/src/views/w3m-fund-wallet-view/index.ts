@@ -66,7 +66,9 @@ export class W3mFundWalletView extends LitElement {
       return
     }
 
-    const assets = await ExchangeController.getAssetsForNetwork(this.activeCaipNetwork.caipNetworkId)
+    const assets = await ExchangeController.getAssetsForNetwork(
+      this.activeCaipNetwork.caipNetworkId
+    )
     const usdc = assets.find(asset => asset.metadata.symbol === 'USDC') || assets[0]
     if (usdc) {
       ExchangeController.setPaymentAsset(usdc)

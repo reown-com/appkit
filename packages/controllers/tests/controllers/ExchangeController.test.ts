@@ -136,6 +136,12 @@ describe('ExchangeController', () => {
 
       AccountController.state.address = '0xabc'
       ExchangeController.state.amount = 2
+      ExchangeController.state.tokenAmount = 1.5
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
 
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue({
         url: 'https://pay.url',
@@ -145,7 +151,12 @@ describe('ExchangeController', () => {
 
       await ExchangeController.handlePayWithExchange('ex1')
 
-      expect(ExchangeController.getPayUrl).toHaveBeenCalled()
+      expect(ExchangeController.getPayUrl).toHaveBeenCalledWith('ex1', {
+        network: 'eip155:1',
+        asset: 'native',
+        amount: 1.5,
+        recipient: '0xabc'
+      })
       expect(ExchangeController.state.currentPayment?.status).toBe('IN_PROGRESS')
       expect(ExchangeController.state.currentPayment?.sessionId).toBe('sess-123')
       expect(ExchangeController.state.currentPayment?.exchangeId).toBe('ex1')
@@ -167,8 +178,24 @@ describe('ExchangeController', () => {
       expect(ExchangeController.state.error).toBe('Unable to initiate payment')
     })
 
+    it('shows error if no payment asset selected', async () => {
+      AccountController.state.address = '0xabc'
+      ExchangeController.state.paymentAsset = null
+      vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
+
+      await ExchangeController.handlePayWithExchange('ex1')
+
+      expect(SnackController.showError).toHaveBeenCalledWith('Unable to initiate payment')
+      expect(ExchangeController.state.error).toBe('Unable to initiate payment')
+    })
+
     it('shows error if pay url cannot be obtained', async () => {
       AccountController.state.address = '0xabc'
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue(undefined as any)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 

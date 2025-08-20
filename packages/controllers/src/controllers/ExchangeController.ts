@@ -105,9 +105,7 @@ export const ExchangeController = {
     )
 
     const metadata = await Promise.all(
-      addresses.map(address =>
-        BlockchainApiController.fetchTokenPrice({ addresses: [address] })
-      )
+      addresses.map(address => BlockchainApiController.fetchTokenPrice({ addresses: [address] }))
     )
 
     return metadata
