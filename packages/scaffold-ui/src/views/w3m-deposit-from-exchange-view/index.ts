@@ -123,7 +123,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           flexDirection="column"
           alignItems="center"
           gap="4"
-          .padding=${['4', '4', '4', '4'] as const}
+          padding="4"
         >
           <wui-text variant="lg-medium" align="center" color="primary">
             No exchanges support this asset on this network
