@@ -125,7 +125,7 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     expect(alertSpy).not.toHaveBeenCalled()
   })
 
-  it.only('should show ORIGIN_NOT_ALLOWED alert when origin is not allowed', async () => {
+  it('should show ORIGIN_NOT_ALLOWED alert when origin is not allowed', async () => {
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValueOnce(['https://example.com'])
     vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockReturnValueOnce(false as any)
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValueOnce(true)
