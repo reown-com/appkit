@@ -53,4 +53,4 @@ This SDK is provided under the **[Reown AppKit] Community License** (“Communit
 - Ownership of modifications
 - Mandatory binding arbitration for disputes
 
-**Downloading, installation, integration and use of this SDK constitutes acceptance of the [[Reown AppKit] Community License(./LICENSE.md).**
+**Downloading, installation, integration and use of this SDK constitutes acceptance of the [Reown AppKit Community License](./LICENSE.md).**
