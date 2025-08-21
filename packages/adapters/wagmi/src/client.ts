@@ -316,7 +316,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(walletConnect(options, appKit))
     }
 
-    if (options.enableEIP6963 !== false) {
+    if (options.enableInjected !== false) {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
