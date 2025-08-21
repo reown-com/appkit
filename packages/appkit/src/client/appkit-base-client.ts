@@ -206,9 +206,7 @@ export abstract class AppKitBaseClient {
     try {
       const allowedOrigins = await ApiController.fetchAllowedOrigins()
 
-      if (!allowedOrigins || !CoreHelperUtil.isClient()) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-
+      if (!CoreHelperUtil.isClient()) {
         return
       }
 
@@ -224,8 +222,6 @@ export abstract class AppKitBaseClient {
       }
     } catch (error) {
       if (!(error instanceof Error)) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-
         return
       }
 
@@ -247,7 +243,7 @@ export abstract class AppKitBaseClient {
           break
         }
         default:
-          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+          return
       }
     }
   }

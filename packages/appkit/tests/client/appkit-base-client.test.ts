@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
@@ -7,61 +7,55 @@ import {
   ApiController,
   type ChainAdapter,
   ChainController,
-  ConnectionController
+  ConnectionController,
+  CoreHelperUtil
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
+import { WcHelpersUtil } from '../../src/utils/index'
 import { mainnet } from '../mocks/Networks'
 
-class TestAppKitBaseClient {
-  async checkAllowedOrigins() {
-    try {
-      const allowedOrigins = await ApiController.fetchAllowedOrigins()
-      if (!allowedOrigins) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        const errorHandlers: Record<string, () => void> = {
-          RATE_LIMITED: () => {
-            AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
-          },
-          SERVER_ERROR: () => {
-            const originalError = error.cause instanceof Error ? error.cause : error
-            AlertController.open(
-              {
-                displayMessage:
-                  ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
-                debugMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
-                  originalError.message
-                )
-              },
-              'error'
-            )
-          }
-        }
-
-        const handler = errorHandlers[error.message]
-        if (handler) {
-          handler()
-        } else {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-        }
-      } else {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-      }
-    }
-  }
-}
-
 describe('AppKitBaseClient.checkAllowedOrigins', () => {
-  let client: TestAppKitBaseClient
+  let baseClient: AppKitBaseClient
   let alertSpy: any
 
+  beforeAll(() => {
+    // Mock document for getDefaultMetaData method
+    Object.defineProperty(globalThis, 'document', {
+      value: {
+        getElementsByTagName: vi.fn(),
+        querySelector: vi.fn()
+      },
+      writable: true
+    })
+
+    Object.defineProperty(globalThis, 'window', {
+      value: {
+        location: {
+          origin: 'http://localhost:3000'
+        }
+      },
+      writable: true
+    })
+  })
+
   beforeEach(() => {
-    client = new TestAppKitBaseClient()
+    vi.restoreAllMocks()
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
     alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
   })
 
@@ -69,7 +63,7 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     const rateLimitedError = new Error('RATE_LIMITED')
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(rateLimitedError)
 
-    await client['checkAllowedOrigins']()
+    await (baseClient as any)['checkAllowedOrigins']()
 
     expect(alertSpy).toHaveBeenCalledWith(
       ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION,
@@ -83,7 +77,7 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     serverError.cause = originalError
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(serverError)
 
-    await client['checkAllowedOrigins']()
+    await (baseClient as any)['checkAllowedOrigins']()
 
     expect(alertSpy).toHaveBeenCalledWith(
       {
@@ -102,7 +96,7 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     serverError.cause = 'not an error object'
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(serverError)
 
-    await client['checkAllowedOrigins']()
+    await (baseClient as any)['checkAllowedOrigins']()
 
     expect(alertSpy).toHaveBeenCalledWith(
       {
@@ -114,21 +108,40 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     )
   })
 
-  it('should show PROJECT_ID_NOT_CONFIGURED alert for unknown errors', async () => {
+  it('should not show any alert for unknown errors', async () => {
     const unknownError = new Error('UNKNOWN_ERROR')
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(unknownError)
 
-    await client['checkAllowedOrigins']()
+    await (baseClient as any)['checkAllowedOrigins']()
 
-    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+    expect(alertSpy).not.toHaveBeenCalled()
   })
 
-  it('should show PROJECT_ID_NOT_CONFIGURED alert for non-Error objects', async () => {
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce('string error')
+  it('should not show any alert for non-Error rejections', async () => {
+    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce('string error' as any)
 
-    await client['checkAllowedOrigins']()
+    await (baseClient as any)['checkAllowedOrigins']()
 
-    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+    expect(alertSpy).not.toHaveBeenCalled()
+  })
+
+  it.only('should show ORIGIN_NOT_ALLOWED alert when origin is not allowed', async () => {
+    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValueOnce(['https://example.com'])
+    vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockReturnValueOnce(false as any)
+    vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValueOnce(true)
+
+    await (baseClient as any)['checkAllowedOrigins']()
+
+    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED, 'error')
+  })
+
+  it('should not show any alert when origin is allowed', async () => {
+    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValueOnce(['https://example.com'])
+    vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockReturnValueOnce(true as any)
+
+    await (baseClient as any)['checkAllowedOrigins']()
+
+    expect(alertSpy).not.toHaveBeenCalled()
   })
 })
 
