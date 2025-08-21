@@ -360,5 +360,51 @@ describe('LeatherConnector', () => {
 
       expect((provider as any).getAccount()).toBeUndefined()
     })
+
+    it('should select the correct address when multiple networks have addresses', () => {
+      universalProvider.session = mockUniversalProvider.mockSession({
+        namespaces: {
+          bip122: {
+            accounts: [
+              `${bitcoin.caipNetworkId}:mainnet_address`,
+              `${bitcoinTestnet.caipNetworkId}:testnet_address`
+            ],
+            events: [],
+            methods: []
+          }
+        }
+      })
+
+      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(
+        `${bitcoin.caipNetworkId}:mainnet_address`
+      )
+
+      const result = (provider as any).getAccount()
+
+      expect(result).toBe('mainnet_address')
+    })
+
+    it('should select testnet address when testnet is active chain', () => {
+      universalProvider.session = mockUniversalProvider.mockSession({
+        namespaces: {
+          bip122: {
+            accounts: [
+              `${bitcoin.caipNetworkId}:mainnet_address`,
+              `${bitcoinTestnet.caipNetworkId}:testnet_address`
+            ],
+            events: [],
+            methods: []
+          }
+        }
+      })
+
+      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(
+        `${bitcoinTestnet.caipNetworkId}:testnet_address`
+      )
+
+      const result = (provider as any).getAccount()
+
+      expect(result).toBe('testnet_address')
+    })
   })
 })
