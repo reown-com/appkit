@@ -32,11 +32,7 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
     })
 
     Object.defineProperty(globalThis, 'window', {
-      value: {
-        location: {
-          origin: 'http://localhost:3000'
-        }
-      },
+      value: { location: { origin: 'https://appkit-lab.reown.com' } },
       writable: true
     })
   })
