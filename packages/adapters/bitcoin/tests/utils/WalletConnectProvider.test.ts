@@ -1,7 +1,7 @@
 import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
+import { AccountController, ChainController } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from '../../src/connectors/BitcoinWalletConnectConnector'
@@ -116,6 +116,9 @@ describe('LeatherConnector', () => {
   describe('sendTransfer', () => {
     beforeEach(() => {
       universalProvider.session = mockUniversalProvider.mockSession()
+      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(
+        `${bitcoin.caipNetworkId}:address`
+      )
     })
 
     it('should send the transfer and parse response', async () => {
@@ -186,7 +189,7 @@ describe('LeatherConnector', () => {
 
       await expect(
         provider.sendTransfer({ recipient: 'mock_recipient', amount: 'mock_amount' })
-      ).rejects.toThrow('Address not found')
+      ).rejects.toThrow('Account not found')
     })
   })
 
