@@ -71,22 +71,23 @@ function headings() {
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
     WhatIsABuy: 'What is Buy?',
-    RegisterAccountName: 'Choose name',
+    RegisterAccountName: 'Choose Name',
     RegisterAccountNameSuccess: '',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
-    SwapSelectToken: 'Select token',
-    SwapPreview: 'Preview swap',
+    SwapSelectToken: 'Select Token',
+    SwapPreview: 'Preview Swap',
     WalletSend: 'Send',
-    WalletSendPreview: 'Review send',
+    WalletSendPreview: 'Review Zend',
     WalletSendSelectToken: 'Select Token',
     WhatIsANetwork: 'What is a network?',
-    WhatIsAWallet: 'What is a wallet?',
-    ConnectWallets: 'Connect wallet',
-    ConnectSocials: 'All socials',
+    WhatIsAWallet: 'What is a Wallet?',
+    ConnectWallets: 'Connect Wallet',
+    ConnectSocials: 'All Socials',
     ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider
+      ? AccountController.state.socialProvider.charAt(0).toUpperCase() +
+        AccountController.state.socialProvider.slice(1)
       : 'Connect Social',
     ConnectingMultiChain: 'Select chain',
     ConnectingFarcaster: 'Farcaster',
@@ -98,7 +99,8 @@ function headings() {
     DataCapture: 'Profile',
     DataCaptureOtpConfirm: 'Confirm Email',
     FundWallet: 'Fund wallet',
-    PayWithExchange: 'Deposit from an exchange'
+    PayWithExchange: 'Deposit from an exchange',
+    PayWithExchangeSelectAsset: 'Select Asset'
   }
 }
 
