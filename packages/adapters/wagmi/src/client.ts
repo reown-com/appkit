@@ -320,9 +320,11 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
-    const isEmailEnabled = appKit?.remoteFeatures?.email ?? true
-    const socialsEnabled =
-      Array.isArray(appKit?.remoteFeatures?.socials) && appKit?.remoteFeatures?.socials?.length > 0
+    const { remoteFeatures, features } = OptionsController.getSnapshot()
+    const isEmailEnabled = remoteFeatures?.email ?? features?.email ?? true
+
+    const socials = remoteFeatures?.socials ?? features?.socials
+    const socialsEnabled = Array.isArray(socials) && socials?.length > 0
 
     if (isEmailEnabled || socialsEnabled) {
       customConnectors.push(
