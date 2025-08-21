@@ -113,7 +113,6 @@ export class W3mDepositFromExchangeSelectAssetView extends LitElement {
                   gap="2"
                   flexDirection="column"
                   justifyContent="center"
-                  flexDirection="column"
                 >
                   <wui-text variant="lg-medium" align="center" color="primary">
                     No tokens found
