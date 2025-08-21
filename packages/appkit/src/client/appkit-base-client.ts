@@ -243,7 +243,7 @@ export abstract class AppKitBaseClient {
           break
         }
         default:
-          return
+          break
       }
     }
   }
