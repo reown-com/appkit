@@ -85,10 +85,7 @@ export { OptionsStateController } from '../src/controllers/OptionsStateControlle
 export type { OptionsStateControllerState } from '../src/controllers/OptionsStateController.js'
 
 export { ExchangeController } from '../src/controllers/ExchangeController.js'
-export type {
-  ExchangeControllerState,
-  CurrentPayment
-} from '../src/controllers/ExchangeController.js'
+export type { ExchangeControllerState } from '../src/controllers/ExchangeController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
@@ -101,8 +98,19 @@ export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 export { ModalUtil } from '../src/utils/ModalUtil.js'
 export { NetworkUtil } from '../src/utils/NetworkUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
-export { formatCaip19Asset, getExchanges, getPayUrl } from '../src/utils/ExchangeUtil.js'
-export type { Exchange, GetExchangesParams, PayUrlParams } from '../src/utils/ExchangeUtil.js'
+export {
+  formatCaip19Asset,
+  getExchanges,
+  getPayUrl,
+  getPaymentAssetsForNetwork
+} from '../src/utils/ExchangeUtil.js'
+export type {
+  Exchange,
+  GetExchangesParams,
+  PayUrlParams,
+  PaymentAsset,
+  CurrentPayment
+} from '../src/utils/ExchangeUtil.js'
 
 export { FetchUtil } from '../src/utils/FetchUtil.js'
 
