@@ -892,15 +892,15 @@ export abstract class AppKitBaseClient {
           }
         })
       )
-    }
 
-    // Make the secure site back to current network after reconnecting the other namespaces
-    if (activeCaipNetwork) {
-      await activeAdapter?.switchNetwork({
-        caipNetwork: activeCaipNetwork,
-        provider: activeProvider,
-        providerType: params.type
-      })
+      // Make the secure site back to current network after reconnecting the other namespaces
+      if (activeCaipNetwork) {
+        await activeAdapter?.switchNetwork({
+          caipNetwork: activeCaipNetwork,
+          provider: activeProvider,
+          providerType: params.type
+        })
+      }
     }
   }
 
