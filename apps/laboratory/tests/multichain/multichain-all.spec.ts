@@ -112,17 +112,17 @@ test('should switch network when clicking custom buttons per namespace', async (
   await evmButton.click()
   await modalValidator.expectAccountButtonReady('eip155')
   await modalPage.closeModal()
-  await modalValidator.expectBalanceFetched('POL')
+  await modalValidator.expectBalanceFetched('ETH', 'eip155')
 
   await solanaButton.click()
   await modalValidator.expectAccountButtonReady('solana')
   await modalPage.closeModal()
-  await modalValidator.expectBalanceFetched('SOL')
+  await modalValidator.expectBalanceFetched('SOL', 'solana')
 
   await bitcoinButton.click()
   await modalValidator.expectAccountButtonReady('bip122')
   await modalPage.closeModal()
-  await modalValidator.expectBalanceFetched('BTC')
+  await modalValidator.expectBalanceFetched('BTC', 'bip122')
 })
 
 test('should disconnect from all namespaces', async () => {

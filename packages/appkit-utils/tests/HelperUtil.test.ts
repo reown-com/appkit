@@ -86,4 +86,23 @@ describe('HelpersUtil', () => {
       expect(conditionFn).toHaveBeenCalledTimes(1)
     })
   })
+
+  describe('getOtherAuthNamespaces', () => {
+    it('should return empty array if no active namespace', () => {
+      const otherAuthNamespaces = HelpersUtil.getOtherAuthNamespaces(undefined)
+      expect(otherAuthNamespaces).toEqual([])
+    })
+
+    it('should return all auth namespaces except the active one (eip155)', () => {
+      const activeNamespace = 'eip155'
+      const otherAuthNamespaces = HelpersUtil.getOtherAuthNamespaces(activeNamespace)
+      expect(otherAuthNamespaces).toEqual(['solana'])
+    })
+
+    it('should return all auth namespaces except the active one (solana)', () => {
+      const activeNamespace = 'solana'
+      const otherAuthNamespaces = HelpersUtil.getOtherAuthNamespaces(activeNamespace)
+      expect(otherAuthNamespaces).toEqual(['eip155'])
+    })
+  })
 })
