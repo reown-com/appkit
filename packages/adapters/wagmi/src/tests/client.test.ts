@@ -346,12 +346,13 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-        features: {
-          email: true,
-          socials: ['google'] as SocialProvider[]
-        },
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      }
+
+      mockAppKit.features = {
+        email: true,
+        socials: ['google'] as SocialProvider[]
       }
 
       await adapter.syncConnectors(options, mockAppKit)
