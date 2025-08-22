@@ -358,7 +358,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setSIWX(options.siwx)
 
     this.features = OptionsController.state.features ?? {}
-    
+
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
 
