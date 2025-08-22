@@ -84,7 +84,6 @@ export async function main() {
     }
   } while (directoryExists)
 
-  // Const answerFramework = await questionFramework()
   const answerLibrary = await questionLibrary()
   const repoUrl = generateRepoUrl(answerFramework, answerLibrary)
 
