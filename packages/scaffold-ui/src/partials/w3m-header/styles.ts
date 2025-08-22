@@ -11,7 +11,6 @@ export default css`
   }
 
   wui-text {
-    text-transform: capitalize;
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 

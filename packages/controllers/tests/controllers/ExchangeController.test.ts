@@ -1,11 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AccountController } from '../../src/controllers/AccountController'
-import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'
 import { SnackController } from '../../src/controllers/SnackController'
-import * as ChainControllerUtil from '../../src/utils/ChainControllerUtil'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil'
 import * as ExchangeUtil from '../../src/utils/ExchangeUtil'
 import type { ExchangeBuyStatus } from '../../src/utils/ExchangeUtil'
@@ -19,33 +17,26 @@ describe('ExchangeController', () => {
     vi.resetAllMocks()
   })
 
-  it('fetchTokenPrice sets price and toggles loading', async () => {
-    vi.spyOn(ChainControllerUtil, 'getActiveNetworkTokenAddress').mockReturnValue(
-      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-    )
-    vi.spyOn(BlockchainApiController, 'fetchTokenPrice').mockResolvedValue({
-      fungibles: [{ price: 123.45 }]
-    } as any)
-
-    await ExchangeController.fetchTokenPrice()
-
-    expect(BlockchainApiController.fetchTokenPrice).toHaveBeenCalledWith({
-      addresses: ['eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
-    })
-    expect(ExchangeController.state.tokenPrice).toBe(123.45)
-    expect(ExchangeController.state.priceLoading).toBe(false)
-  })
-
   it('getTokenAmount returns computed amount', () => {
     ExchangeController.state.amount = 10
-    ExchangeController.state.tokenPrice = 2
+    ExchangeController.state.paymentAsset = {
+      network: 'eip155:1',
+      asset: 'native',
+      metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+      price: 2
+    }
 
     const value = ExchangeController.getTokenAmount()
     expect(value).toBe(5)
   })
 
   it('setAmount updates amount and tokenAmount when price exists', () => {
-    ExchangeController.state.tokenPrice = 4
+    ExchangeController.state.paymentAsset = {
+      network: 'eip155:1',
+      asset: 'native',
+      metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+      price: 4
+    }
     ExchangeController.setAmount(10)
     expect(ExchangeController.state.amount).toBe(10)
     expect(ExchangeController.state.tokenAmount).toBe(2.5)
@@ -64,6 +55,11 @@ describe('ExchangeController', () => {
       vi.spyOn(ExchangeUtil, 'getExchanges').mockResolvedValue(mockResponse)
 
       ExchangeController.state.amount = 100
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
       await ExchangeController.fetchExchanges()
 
       expect(ExchangeUtil.getExchanges).toHaveBeenCalledWith({
@@ -75,7 +71,23 @@ describe('ExchangeController', () => {
       expect(ExchangeController.state.isLoading).toBe(false)
     })
 
+    it('returns empty exchanges when no payment asset selected', async () => {
+      ExchangeController.state.paymentAsset = null
+      ExchangeController.state.amount = 100
+
+      await ExchangeController.fetchExchanges()
+
+      expect(ExchangeController.state.exchanges).toEqual([])
+      expect(ExchangeController.state.isLoading).toBe(false)
+    })
+
     it('shows error and rethrows on failure', async () => {
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
+      ExchangeController.state.amount = 100
       vi.spyOn(ExchangeUtil, 'getExchanges').mockRejectedValue(new Error('network error'))
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -145,6 +157,12 @@ describe('ExchangeController', () => {
 
       AccountController.state.address = '0xabc'
       ExchangeController.state.amount = 2
+      ExchangeController.state.tokenAmount = 1.5
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
 
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue({
         url: 'https://pay.url',
@@ -154,7 +172,12 @@ describe('ExchangeController', () => {
 
       await ExchangeController.handlePayWithExchange('ex1')
 
-      expect(ExchangeController.getPayUrl).toHaveBeenCalled()
+      expect(ExchangeController.getPayUrl).toHaveBeenCalledWith('ex1', {
+        network: 'eip155:1',
+        asset: 'native',
+        amount: 1.5,
+        recipient: '0xabc'
+      })
       expect(ExchangeController.state.currentPayment?.status).toBe('IN_PROGRESS')
       expect(ExchangeController.state.currentPayment?.sessionId).toBe('sess-123')
       expect(ExchangeController.state.currentPayment?.exchangeId).toBe('ex1')
@@ -176,8 +199,24 @@ describe('ExchangeController', () => {
       expect(ExchangeController.state.error).toBe('Unable to initiate payment')
     })
 
+    it('shows error if no payment asset selected', async () => {
+      AccountController.state.address = '0xabc'
+      ExchangeController.state.paymentAsset = null
+      vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
+
+      await ExchangeController.handlePayWithExchange('ex1')
+
+      expect(SnackController.showError).toHaveBeenCalledWith('Unable to initiate payment')
+      expect(ExchangeController.state.error).toBe('Unable to initiate payment')
+    })
+
     it('shows error if pay url cannot be obtained', async () => {
       AccountController.state.address = '0xabc'
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue(undefined as any)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -488,6 +527,62 @@ describe('ExchangeController', () => {
       const result = await resultPromise
       expect(ExchangeController.getBuyStatus).toHaveBeenCalledTimes(2)
       expect(result).toEqual(successStatus)
+    })
+  })
+
+  describe('asset management', () => {
+    it('should set payment asset', () => {
+      const asset = {
+        network: 'eip155:1' as const,
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
+
+      ExchangeController.setPaymentAsset(asset)
+
+      expect(ExchangeController.state.paymentAsset).toEqual(asset)
+    })
+
+    it('should get assets for network', async () => {
+      // Mock the BlockchainApiController response
+      vi.spyOn(ExchangeController, 'getAssetsImageAndPrice').mockResolvedValue([
+        {
+          fungibles: [
+            {
+              address: 'eip155:1/slip44:60',
+              price: 2000,
+              iconUrl: 'https://example.com/eth.png'
+            }
+          ]
+        }
+      ] as any)
+
+      const assets = await ExchangeController.getAssetsForNetwork('eip155:1')
+
+      expect(assets).toBeDefined()
+      expect(ExchangeController.state.assets).toEqual(assets)
+    })
+
+    it('should reset state properly', () => {
+      // Set some state
+      ExchangeController.state.currentPayment = {
+        type: 'exchange',
+        exchangeId: 'test',
+        sessionId: 'test-session'
+      }
+      ExchangeController.state.amount = 100
+      ExchangeController.state.paymentAsset = {
+        network: 'eip155:1',
+        asset: 'native',
+        metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
+      }
+
+      ExchangeController.reset()
+
+      expect(ExchangeController.state.currentPayment).toBeUndefined()
+      expect(ExchangeController.state.amount).toBe(0)
+      expect(ExchangeController.state.paymentAsset).toBeNull()
+      expect(ExchangeController.state.isPaymentInProgress).toBe(false)
     })
   })
 })
