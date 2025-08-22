@@ -116,7 +116,7 @@ export class WuiTransactionVisual extends LitElement {
     }
 
     if (this.type === 'trade') {
-      return 'swapHorizontalBold'
+      return 'swapHorizontal'
     } else if (this.type === 'approve') {
       return 'checkmark'
     } else if (this.type === 'cancel') {

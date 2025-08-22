@@ -156,7 +156,7 @@ export class AppKitWalletButton extends LitElement {
             })
             .finally(() => (this.loading = false))
         }}
-        .icon=${ifDefined(this.wallet === 'walletConnect' ? 'walletConnect' : undefined)}
+        .icon=${ifDefined(this.wallet === 'walletConnect' ? 'walletConnectInvert' : undefined)}
         .imageSrc=${ifDefined(walletImage)}
         ?disabled=${Boolean(this.caipAddress) || loading || this.modalLoading}
         ?loading=${loading || this.modalLoading}
