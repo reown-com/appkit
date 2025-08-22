@@ -8,6 +8,7 @@ import {
   baseSepolia,
   berachain,
   bitcoin,
+  bitcoinSignet,
   bitcoinTestnet,
   gnosis,
   hedera,
@@ -103,7 +104,10 @@ const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as 
   ...AppKitNetwork[]
 ]
 
-const BitcoinNetworks = [bitcoin, bitcoinTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
+const BitcoinNetworks = [bitcoin, bitcoinTestnet, bitcoinSignet] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
