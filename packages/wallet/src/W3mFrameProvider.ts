@@ -32,8 +32,10 @@ export class W3mFrameProvider {
   private abortController: AbortController
   private getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
   private getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
-  private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
-    []
+  private openRpcRequests = new Map<
+    string,
+    W3mFrameTypes.RPCRequest & { abortController: AbortController }
+  >()
 
   private rpcRequestHandler?: (request: W3mFrameTypes.RPCRequest) => void
   private rpcSuccessHandler?: (
@@ -617,7 +619,7 @@ export class W3mFrameProvider {
   public async rejectRpcRequests() {
     try {
       await Promise.all(
-        this.openRpcRequests.map(async ({ abortController, method }) => {
+        Array.from(this.openRpcRequests.values()).map(async ({ abortController, method }) => {
           if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
             abortController.abort()
           }
@@ -627,7 +629,7 @@ export class W3mFrameProvider {
           })
         })
       )
-      this.openRpcRequests = []
+      this.openRpcRequests.clear()
     } catch (e) {
       this.w3mLogger?.logger.error({ error: e }, 'Error aborting RPC request')
     }
@@ -692,7 +694,7 @@ export class W3mFrameProvider {
       const abortController = new AbortController()
       if (type === 'RPC_REQUEST') {
         const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
-        this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }]
+        this.openRpcRequests.set(id, { ...rpcEvent.payload, abortController })
       }
       abortController.signal.addEventListener('abort', () => {
         if (type === 'RPC_REQUEST') {
@@ -702,12 +704,12 @@ export class W3mFrameProvider {
         }
       })
 
-      function handler(framEvent: W3mFrameTypes.FrameEvent, logger?: W3mFrameLogger) {
+      const handler = (framEvent: W3mFrameTypes.FrameEvent, logger?: W3mFrameLogger) => {
         if (framEvent.id !== id) {
           return
         }
         logger?.logger.info?.({ framEvent, id }, 'Received frame response')
-
+        this.openRpcRequests.delete(framEvent.id)
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
           if (requestTimeout) {
             clearTimeout(requestTimeout)

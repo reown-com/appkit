@@ -179,6 +179,43 @@ describe('W3mFrameProvider', () => {
     expect(postAppEventSpy).toHaveBeenCalled()
   })
 
+  it('should approve rpc request', async () => {
+    provider['w3mFrame'].frameLoadPromise = Promise.resolve()
+    const responsePayload = '0xdeadbeef'
+    const request = {
+      method: 'personal_sign',
+      params: []
+    } as any
+
+    const postAppEventSpy = vi
+      .spyOn(provider['w3mFrame'].events, 'postAppEvent')
+      .mockImplementation(async ({ id }) => {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        // @ts-expect-error - openRpcRequests is private
+        expect(provider.openRpcRequests.size).toBe(1)
+        // @ts-expect-error - openRpcRequests is private
+        const openRequest = Array.from(provider.openRpcRequests.values())[0]
+        if (!openRequest) {
+          throw new Error('No open request found, expected 1')
+        }
+        expect(openRequest.method).toEqual(request.method)
+        expect((openRequest as any).params).toEqual(request.params)
+        SecureSiteMock.approveRequest({
+          id: id as string,
+          type: 'RPC_REQUEST',
+          response: responsePayload
+        })
+      })
+
+    const response = await provider.request(request)
+
+    // @ts-expect-error - openRpcRequests is private
+    expect(provider.openRpcRequests.size).toBe(0)
+
+    expect(response).toEqual(responsePayload)
+    expect(postAppEventSpy).toHaveBeenCalled()
+  })
+
   it('should timeout after 2 minutes of no response on request', async () => {
     vi.useFakeTimers()
     const onTimeoutMock = vi.fn<(reason: EmbeddedWalletTimeoutReason) => void>()
