@@ -19,6 +19,21 @@ export type ConnectionEvent =
   | {
       type: 'DISCONNECT'
     }
+  | {
+      type: 'AUTHENTICATION_REQUEST'
+    }
+  | {
+      type: 'AUTHENTICATION_APPROVED'
+    }
+  | {
+      type: 'AUTHENTICATION_REJECTED'
+    }
+  | {
+      type: 'AUTHENTICATION_SUCCESS'
+    }
+  | {
+      type: 'AUTHENTICATION_FAILURE'
+    }
 /*
  * User events
  * | { type: 'SELECT_TOKEN'; token: Balance }
