@@ -284,6 +284,7 @@ export interface BlockchainApiTokenPriceRequest {
 
 export interface BlockchainApiTokenPriceResponse {
   fungibles: {
+    address: string
     name: string
     symbol: string
     iconUrl: string

@@ -10,7 +10,7 @@ import { networkImageSrc, transactionThumbnailOptions } from '../../utils/Preset
 type Component = Meta<WuiTransactionThumbnail>
 
 export default {
-  title: 'Composites/wui-transaction-thumbnail',
+  title: 'Composites/apkt-transaction-thumbnail',
   args: {
     type: 'approve',
     size: 'lg',

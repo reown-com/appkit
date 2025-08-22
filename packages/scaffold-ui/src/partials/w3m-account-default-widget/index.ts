@@ -163,14 +163,18 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
+    const isOnrampSupported = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
       this.namespace
     )
+    const isPayWithExchangeSupported =
+      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(this.namespace)
 
-    const isOnrampEnabled = this.remoteFeatures?.onramp && hasNetworkSupport
     const isReceiveEnabled = Boolean(this.features?.receive)
+    const isOnrampEnabled = this.remoteFeatures?.onramp && isOnrampSupported
+    const isPayWithExchangeEnabled =
+      this.remoteFeatures?.payWithExchange && isPayWithExchangeSupported
 
-    if (!isOnrampEnabled && !isReceiveEnabled) {
+    if (!isOnrampEnabled && !isReceiveEnabled && !isPayWithExchangeEnabled) {
       return null
     }
 

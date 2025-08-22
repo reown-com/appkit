@@ -294,6 +294,31 @@ describe('wallet features visibility', () => {
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
     })
+
+    it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          swaps: true,
+          receive: false
+        },
+        remoteFeatures: {
+          payWithExchange: false,
+          onramp: false
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      const fundWalletButton = HelpersUtil.getByTestId(
+        element,
+        'wallet-features-fund-wallet-button'
+      )
+
+      expect(fundWalletButton).toBeNull()
+    })
   })
 
   describe('solana wallet features', () => {
@@ -402,6 +427,31 @@ describe('wallet features visibility', () => {
       expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
       expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
+    })
+
+    it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          swaps: true,
+          receive: false
+        },
+        remoteFeatures: {
+          payWithExchange: false,
+          onramp: false
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      const fundWalletButton = HelpersUtil.getByTestId(
+        element,
+        'wallet-features-fund-wallet-button'
+      )
+
+      expect(fundWalletButton).toBeNull()
     })
   })
 
