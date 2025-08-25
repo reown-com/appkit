@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
-import { BlockchainApiController, StorageUtil } from '@reown/appkit-controllers'
+import { BlockchainApiController, ChainController, StorageUtil } from '@reown/appkit-controllers'
 
 import { ConfigUtil } from '../src/utils/ConfigUtil.js'
 import { mockLocalStorage } from './mocks/LocalStorage.js'

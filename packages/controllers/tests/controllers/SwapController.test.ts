@@ -173,8 +173,8 @@ describe('SwapController', () => {
   describe('getParams()', () => {
     it('should use ChainController.getAccountData before falling back to activeCaipAddress', () => {
       const mockNamespace = ConstantsUtil.CHAIN.EVM
-      const mockCaipAddressFromAccount = 'eip155:1:0xAccountController'
-      const mockActiveCaipAddress = 'eip155:1:0xChainController'
+      const mockCaipAddressFromAccount = 'eip155:1:1'
+      const mockActiveCaipAddress = 'eip155:1:2'
 
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         ...ChainController.state,
