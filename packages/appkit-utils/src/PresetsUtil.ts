@@ -110,7 +110,9 @@ export const PresetsUtil = {
     // Bitcoin
     '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
     // Bitcoin Testnet
-    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
+    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200',
+    // Bitcoin Signet
+    '00000008819873e925422c1ff0f99f7c': 'b3406e4a-bbfc-44fb-e3a6-89673c78b700'
   } as Record<string, string>,
 
   ConnectorImageIds: {
