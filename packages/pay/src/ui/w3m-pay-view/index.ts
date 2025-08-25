@@ -193,14 +193,11 @@ export class W3mPayView extends LitElement {
           @click=${() => this.onExchangePayment(exchange.id)}
           data-testid="exchange-option-${exchange.id}"
           ?chevron=${true}
-          ?disabled=${this.loadingExchangeId !== null}
+          ?disabled=${this.loadingExchangeId !== null || this.loadingExchangeId === exchange.id}
+          ?loading=${this.loadingExchangeId === exchange.id}
           imageSrc=${ifDefined(exchange.imageUrl)}
         >
           <wui-flex alignItems="center" gap="3">
-            <wui-loading-spinner color="accent-primary" size="md"></wui-loading-spinner>
-            ${this.loadingExchangeId === exchange.id
-              ? html`<wui-loading-spinner color="accent-primary" size="md"></wui-loading-spinner>`
-              : null}
             <wui-text flexGrow="1" variant="md-medium" color="inherit"
               >Pay with ${exchange.name} <wui-spinner size="sm" color="secondary"></wui-spinner
             ></wui-text>
