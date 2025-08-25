@@ -87,6 +87,12 @@ export const ErrorUtil = {
   ALERT_WARNINGS: {
     LOCAL_CONFIGURATION_IGNORED: {
       debugMessage: (warningMessage: string) => `[Reown Config Notice] ${warningMessage}`
+    },
+    INACTIVE_NAMESPACE_NOT_CONNECTED: {
+      code: 'APKT011',
+      displayMessage: 'Inactive Namespace Not Connected',
+      debugMessage: (namespace: string, errorMessage?: string) =>
+        `An error occurred while connecting an inactive namespace ${namespace}: "${errorMessage}"`
     }
   }
 }

@@ -871,24 +871,35 @@ export abstract class AppKitBaseClient {
     if (isConnectingToAuth) {
       await Promise.all(
         otherAuthNamespaces.map(async ns => {
-          const provider = ProviderUtil.getProvider(ns)
-          const caipNetwork = ChainController.getNetworkData(ns)?.caipNetwork
-          const caipNetworkToUse = this.getCaipNetwork(ns)
+          try {
+            const provider = ProviderUtil.getProvider(ns)
+            const caipNetwork = ChainController.getNetworkData(ns)?.caipNetwork
+            const caipNetworkToUse = this.getCaipNetwork(ns)
 
-          const adapter = this.getAdapter(ns)
-          const res = await adapter?.connect({
-            ...params,
-            provider,
-            socialUri: undefined,
-            chainId: caipNetworkToUse?.id,
-            rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0]
-          })
+            const adapter = this.getAdapter(ns)
+            const res = await adapter?.connect({
+              ...params,
+              provider,
+              socialUri: undefined,
+              chainId: caipNetworkToUse?.id,
+              rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0]
+            })
 
-          if (res) {
-            StorageUtil.addConnectedNamespace(ns)
-            StorageUtil.removeDisconnectedConnectorId(params.id, ns)
-            this.setStatus('connected', ns)
-            this.syncConnectedWalletInfo(ns)
+            if (res) {
+              StorageUtil.addConnectedNamespace(ns)
+              StorageUtil.removeDisconnectedConnectorId(params.id, ns)
+              this.setStatus('connected', ns)
+              this.syncConnectedWalletInfo(ns)
+            }
+          } catch (error) {
+            AlertController.warn(
+              ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.displayMessage,
+              ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.debugMessage(
+                ns,
+                error instanceof Error ? error.message : undefined
+              ),
+              ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.code
+            )
           }
         })
       )
