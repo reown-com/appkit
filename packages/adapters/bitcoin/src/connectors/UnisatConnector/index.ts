@@ -40,10 +40,6 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   }
 
   public get chains() {
-    if (this.id === 'unisat') {
-      return this.requestedChains.filter(chain => chain.caipNetworkId === bitcoin.caipNetworkId)
-    }
-
     return this.requestedChains.filter(
       chain => chain.chainNamespace === ConstantsUtil.CHAIN.BITCOIN
     )
