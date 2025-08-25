@@ -2,12 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
-import {
-  AccountController,
-  ChainController,
-  RouterController,
-  SwapController
-} from '@reown/appkit-controllers'
+import { ChainController, RouterController, SwapController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -47,8 +42,6 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
-
   @state() private inputError = SwapController.state.inputError
 
   @state() private loadingQuote = SwapController.state.loadingQuote
@@ -65,10 +58,11 @@ export class W3mSwapPreviewView extends LitElement {
 
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('balanceSymbol', newBalanceSymbol => {
-          if (this.balanceSymbol !== newBalanceSymbol) {
+        ChainController.subscribeKey('chains', () => {
+          console.log('>> debug: check this')
+          const accountData = ChainController.getAccountData()
+          if (accountData?.balanceSymbol) {
             RouterController.goBack()
-            // Maybe reset state as well?
           }
         }),
         ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {

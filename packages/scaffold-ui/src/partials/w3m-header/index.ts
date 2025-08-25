@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -85,9 +84,7 @@ function headings() {
     WhatIsAWallet: 'What is a wallet?',
     ConnectWallets: 'Connect Wallet',
     ConnectSocials: 'All Socials',
-    ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider
-      : 'Connect Social',
+    ConnectingSocial: ChainController.getAccountData()?.socialProvider ?? 'Connect Social',
     ConnectingMultiChain: 'Select Chain',
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch Chain',

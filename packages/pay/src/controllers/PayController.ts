@@ -327,7 +327,7 @@ export const PayController = {
       type: 'wallet',
       status: 'IN_PROGRESS'
     }
-    const caipAddress = AccountController.state.caipAddress
+    const caipAddress = ChainController.getActiveCaipAddress()
     if (!caipAddress) {
       return
     }
@@ -445,7 +445,7 @@ export const PayController = {
   },
 
   handlePayWithWallet() {
-    const caipAddress = AccountController.state.caipAddress
+    const caipAddress = ChainController.getActiveCaipAddress()
     if (!caipAddress) {
       RouterController.push('Connect')
 

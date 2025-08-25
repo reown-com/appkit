@@ -8,6 +8,7 @@ import {
 } from '@reown/appkit-common'
 import {
   AccountController,
+  type AccountControllerState,
   ApiController,
   BlockchainApiController,
   ChainController
@@ -314,10 +315,9 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       const fetchSpy = vi.spyOn(global, 'fetch')
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
-      AccountController.state.connectedWalletInfo = undefined
-      vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValueOnce(
-        walletInfo
-      )
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+        connectedWalletInfo: walletInfo
+      } as AccountControllerState)
 
       fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 

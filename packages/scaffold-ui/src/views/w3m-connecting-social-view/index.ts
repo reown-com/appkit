@@ -35,9 +35,9 @@ export class W3mConnectingSocialView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = ChainController.getAccountData()?.socialProvider
 
-  @state() private socialWindow = AccountController.state.socialWindow
+  @state() private socialWindow = ChainController.getAccountData()?.socialWindow
 
   @state() protected error = false
 
@@ -47,7 +47,7 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  private address = AccountController.state.address
+  private address = ChainController.getAccountData()?.address
 
   private connectionsByNamespace = ConnectionController.getConnections(
     ChainController.state.activeChain
@@ -64,17 +64,18 @@ export class W3mConnectingSocialView extends LitElement {
     abortController.signal.addEventListener('abort', () => {
       if (this.socialWindow) {
         this.socialWindow.close()
-        AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+        ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
       }
     })
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.socialProvider) {
-            this.socialProvider = val.socialProvider
-          }
-          if (val.socialWindow) {
-            this.socialWindow = val.socialWindow
+        ChainController.subscribeKey('chains', () => {
+          const accountData = ChainController.getAccountData()
+          if (accountData) {
+            this.socialProvider = accountData.socialProvider
+            if (accountData.socialWindow) {
+              this.socialWindow = accountData.socialWindow
+            }
           }
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
@@ -103,7 +104,7 @@ export class W3mConnectingSocialView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('message', this.handleSocialConnection, false)
     this.socialWindow?.close()
-    AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+    ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
   }
 
   // -- Render -------------------------------------------- //
@@ -150,7 +151,11 @@ export class W3mConnectingSocialView extends LitElement {
           if (this.authConnector && !this.connecting) {
             if (this.socialWindow) {
               this.socialWindow.close()
-              AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+              ChainController.setAccountProp(
+                'socialWindow',
+                undefined,
+                ChainController.state.activeChain
+              )
             }
             this.connecting = true
             this.updateMessage()

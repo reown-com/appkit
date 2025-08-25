@@ -20,7 +20,6 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
@@ -184,7 +183,8 @@ const controller = {
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress =
-      AccountController.getCaipAddress(namespace) ?? ChainController.state.activeCaipAddress
+      ChainController.getAccountData(namespace)?.caipAddress ??
+      ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
     if (
       state.lastRetry &&
@@ -243,7 +243,7 @@ const controller = {
     RouterController.pushTransactionStack({})
 
     const to = params.receiverAddress as Address
-    const address = AccountController.state.address as Address
+    const address = ChainController.getAccountData()?.address as Address
     const value = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
@@ -286,12 +286,8 @@ const controller = {
       Number(params.decimals)
     )
 
-    if (
-      AccountController.state.address &&
-      params.sendTokenAmount &&
-      params.receiverAddress &&
-      params.tokenAddress
-    ) {
+    const address = ChainController.getAccountData()?.address
+    if (address && params.sendTokenAmount && params.receiverAddress && params.tokenAddress) {
       const tokenAddress = CoreHelperUtil.getPlainAddress(params.tokenAddress as CaipAddress)
 
       if (!tokenAddress) {
@@ -299,7 +295,7 @@ const controller = {
       }
 
       await ConnectionController.writeContract({
-        fromAddress: AccountController.state.address as Address,
+        fromAddress: address as Address,
         tokenAddress,
         args: [params.receiverAddress as Address, amount ?? BigInt(0)],
         method: 'transfer',

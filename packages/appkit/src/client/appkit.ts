@@ -110,7 +110,9 @@ export class AppKit extends AppKitBaseClient {
     this.setCaipAddress(caipAddress, namespace)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { signature, siwxMessage, message, ...userWithOutSiwxData } = user
-    this.setUser({ ...(AccountController.state.user || {}), ...userWithOutSiwxData }, namespace)
+    const accountData = ChainController.getAccountData(namespace)
+
+    this.setUser({ ...(accountData?.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
 
@@ -146,7 +148,7 @@ export class AppKit extends AppKitBaseClient {
     })
     provider.onRpcSuccess((_, request) => {
       const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
-      const address = AccountController.state.address
+      const address = this.getAddress()
       const caipNetwork = ChainController.state.activeCaipNetwork
 
       if (isSafeRequest) {
@@ -174,7 +176,7 @@ export class AppKit extends AppKitBaseClient {
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
       if (isConnectedWithAuth) {
-        this.setCaipAddress(undefined, namespace)
+        this.setCaipAddress(null, namespace)
         this.setLoading(false, namespace)
       }
     })
@@ -237,7 +239,8 @@ export class AppKit extends AppKitBaseClient {
     const email = provider.getEmail()
     const username = provider.getUsername()
 
-    this.setUser({ ...(AccountController.state?.user || {}), username, email }, chainNamespace)
+    const user = ChainController.getAccountData(chainNamespace)?.user || {}
+    this.setUser({ ...user, username, email }, chainNamespace)
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
@@ -265,7 +268,7 @@ export class AppKit extends AppKitBaseClient {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_SUCCESS',
-            address: AccountController.state.address,
+            address: this.getAddress(),
             properties: {
               provider: socialProvider as SocialProvider,
               reconnect: true
@@ -275,7 +278,7 @@ export class AppKit extends AppKitBaseClient {
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
-            address: AccountController.state.address,
+            address: this.getAddress(),
             properties: {
               method: 'email',
               name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
@@ -311,7 +314,9 @@ export class AppKit extends AppKitBaseClient {
       if (!resultUri) {
         return
       }
-      AccountController.setSocialProvider(socialProviderToConnect, chainNamespace)
+      if (socialProviderToConnect) {
+        ChainController.setAccountProp('socialProvider', socialProviderToConnect, chainNamespace)
+      }
       await this.authProvider?.init()
       const authConnector = ConnectorController.getAuthConnector()
       if (socialProviderToConnect && authConnector) {

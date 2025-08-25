@@ -44,15 +44,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
-
-  @state() private profileName = AccountController.state.profileName
-
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private currentTab = AccountController.state.currentTab
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private address = ChainController.getAccountData()?.address
+
+  @state() private currentTab = ChainController.getAccountData()?.currentTab
+
+  @state() private tokenBalance = ChainController.getAccountData()?.tokenBalance
 
   @state() private features = OptionsController.state.features
 
@@ -66,12 +66,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
-            this.address = val.address
-            this.profileName = val.profileName
-            this.currentTab = val.currentTab
-            this.tokenBalance = val.tokenBalance
+        ChainController.subscribeKey('chains', () => {
+          const accountData = ChainController.getAccountData()
+          if (accountData) {
+            this.address = accountData.address
+            this.profileName = accountData.profileName
+            this.currentTab = accountData.currentTab
+            this.tokenBalance = accountData.tokenBalance
           } else {
             ModalController.close()
           }
@@ -316,7 +317,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onTabChange(index: number) {
-    AccountController.setCurrentTab(index)
+    ChainController.setAccountProp('currentTab', index, this.namespace)
   }
 
   private onFundWalletClick() {

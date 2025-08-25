@@ -4,7 +4,6 @@ import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EnsController,
@@ -45,7 +44,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private suggestions = EnsController.state.suggestions
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
   public constructor() {
     super()
@@ -55,9 +54,10 @@ export class W3mRegisterAccountNameView extends LitElement {
           this.suggestions = val.suggestions
           this.loading = val.loading
         }),
-        AccountController.subscribeKey('profileName', val => {
-          this.profileName = val
-          if (val) {
+        ChainController.subscribeKey('chains', () => {
+          const accountData = ChainController.getAccountData()
+          this.profileName = accountData?.profileName
+          if (accountData?.profileName) {
             this.error = 'You already own a name'
           }
         })

@@ -142,9 +142,13 @@ describe('Ethers5Adapter', () => {
   describe('Ethers5Adapter -sendTransaction', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        caipAddress: 'eip155:1:0x123'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0x123',
+        currentTab: 0,
+        tokenBalance: [],
+        smartAccountDeployed: false,
+        addressLabels: new Map(),
+        user: undefined
       })
       vi.spyOn(Ethers5Methods, 'sendTransaction').mockResolvedValue(mockTxHash)
 
@@ -162,9 +166,13 @@ describe('Ethers5Adapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        caipAddress: 'eip155:1:0x123'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0x123',
+        currentTab: 0,
+        tokenBalance: [],
+        smartAccountDeployed: false,
+        addressLabels: new Map(),
+        user: undefined
       })
       await expect(
         adapter.sendTransaction({
@@ -270,9 +278,13 @@ describe('Ethers5Adapter', () => {
     })
 
     it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        preferredAccountType: 'smartAccount'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0x123',
+        currentTab: 0,
+        tokenBalance: [],
+        smartAccountDeployed: false,
+        addressLabels: new Map(),
+        user: undefined
       })
 
       const ethers5Adapter = new Ethers5Adapter()

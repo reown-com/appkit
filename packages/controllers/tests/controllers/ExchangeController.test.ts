@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AccountController } from '../../src/controllers/AccountController'
+import { type AccountControllerState } from '../../src/controllers/AccountController'
+import { ChainController } from '../../src/controllers/ChainController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'
 import { SnackController } from '../../src/controllers/SnackController'
@@ -155,7 +156,9 @@ describe('ExchangeController', () => {
         location: { href: '' }
       }
 
-      AccountController.state.address = '0xabc'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0xabc'
+      } as AccountControllerState)
       ExchangeController.state.amount = 2
       ExchangeController.state.tokenAmount = 1.5
       ExchangeController.state.paymentAsset = {
@@ -190,7 +193,7 @@ describe('ExchangeController', () => {
     })
 
     it('shows error if no account connected', async () => {
-      AccountController.state.address = undefined
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
       await ExchangeController.handlePayWithExchange('ex1')
@@ -200,7 +203,6 @@ describe('ExchangeController', () => {
     })
 
     it('shows error if no payment asset selected', async () => {
-      AccountController.state.address = '0xabc'
       ExchangeController.state.paymentAsset = null
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -211,12 +213,14 @@ describe('ExchangeController', () => {
     })
 
     it('shows error if pay url cannot be obtained', async () => {
-      AccountController.state.address = '0xabc'
       ExchangeController.state.paymentAsset = {
         network: 'eip155:1',
         asset: 'native',
         metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
       }
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0xabc'
+      } as AccountControllerState)
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue(undefined as any)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -229,6 +233,7 @@ describe('ExchangeController', () => {
 
   describe('getBuyStatus', () => {
     beforeEach(() => {
+      vi.restoreAllMocks()
       // Set up a current payment
       ExchangeController.state.currentPayment = {
         type: 'exchange',
@@ -242,7 +247,9 @@ describe('ExchangeController', () => {
         metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
       }
       ExchangeController.state.amount = 100
-      AccountController.state.address = '0xabc123'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0xabc123'
+      } as AccountControllerState)
     })
 
     it('returns success status and updates state correctly', async () => {

@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   CoreHelperUtil,
@@ -29,9 +28,9 @@ export class W3mWalletReceiveView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() private address = ChainController.getAccountData()?.address
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
   @state() private network = ChainController.state.activeCaipNetwork
 
@@ -39,10 +38,11 @@ export class W3mWalletReceiveView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
-            this.address = val.address
-            this.profileName = val.profileName
+        ChainController.subscribeKey('chains', () => {
+          const accountData = ChainController.getAccountData()
+          if (accountData) {
+            this.address = accountData.address
+            this.profileName = accountData.profileName
           } else {
             SnackController.showError('Account not found')
           }

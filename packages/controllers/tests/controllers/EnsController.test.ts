@@ -209,7 +209,9 @@ describe('EnsController', () => {
     expect(getAuthConnectorSpy).toHaveBeenCalled()
 
     expect(signMessageSpy).toHaveBeenCalledWith(message)
-    expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
+    expect(ChainController.getAccountData()?.profileName).toBe(
+      `newname${ConstantsUtil.WC_NAME_SUFFIX}`
+    )
     expect(EnsController.state.loading).toBe(false)
     vi.useRealTimers()
   })

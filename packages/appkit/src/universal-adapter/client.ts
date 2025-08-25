@@ -98,13 +98,15 @@ export class UniversalAdapter extends AdapterBlueprint {
       }
     }
 
+    const accountData = ChainController.getAccountData()
+
     if (
-      AccountController.state.balanceLoading &&
+      accountData?.balanceLoading &&
       params.chainId === ChainController.state.activeCaipNetwork?.id
     ) {
       return {
-        balance: AccountController.state.balance || '0.00',
-        symbol: AccountController.state.balanceSymbol || ''
+        balance: accountData?.balance || '0.00',
+        symbol: accountData?.balanceSymbol || ''
       }
     }
 

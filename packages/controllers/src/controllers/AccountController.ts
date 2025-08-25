@@ -251,7 +251,7 @@ const controller = {
       if (address && chainId && chain) {
         const balance = await BalanceUtil.getMyTokensWithBalance()
 
-        AccountController.setTokenBalance(balance, chain)
+        ChainController.setAccountProp('tokenBalance', balance, chain)
         state.lastRetry = undefined
         state.balanceLoading = false
 

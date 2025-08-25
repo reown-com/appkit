@@ -3,7 +3,6 @@ import { property, state } from 'lit/decorators.js'
 
 import { type CaipAddress, type CaipNetwork, NumberUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
@@ -53,7 +52,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.getAccountData()?.caipAddress
 
   @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
 
@@ -86,38 +85,37 @@ export class W3mSwapView extends LitElement {
   private minTokenPriceUpdateInterval = 10_000
 
   // -- Lifecycle ----------------------------------------- //
+  private subscribe({
+    resetSwapState,
+    initializeSwapState
+  }: {
+    resetSwapState: boolean
+    initializeSwapState: boolean
+  }) {
+    return () => {
+      ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+        this.onCaipNetworkChange({
+          newCaipNetwork,
+          resetSwapState,
+          initializeSwapState
+        })
+      )
+      ChainController.subscribeKey('chains', () => {
+        const accountData = ChainController.getAccountData()
+        this.onCaipAddressChange({
+          newCaipAddress: accountData?.caipAddress,
+          resetSwapState,
+          initializeSwapState
+        })
+      })
+    }
+  }
   public constructor() {
     super()
-    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
-      this.onCaipNetworkChange({
-        newCaipNetwork,
-        resetSwapState: true,
-        initializeSwapState: false
-      })
-    )
-    AccountController.subscribeKey('caipAddress', newCaipAddress =>
-      this.onCaipAddressChange({
-        newCaipAddress,
-        resetSwapState: true,
-        initializeSwapState: false
-      })
-    )
+    this.subscribe({ resetSwapState: true, initializeSwapState: false })()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
-          this.onCaipNetworkChange({
-            newCaipNetwork,
-            resetSwapState: false,
-            initializeSwapState: true
-          })
-        ),
-        AccountController.subscribeKey('caipAddress', newCaipAddress =>
-          this.onCaipAddressChange({
-            newCaipAddress,
-            resetSwapState: false,
-            initializeSwapState: true
-          })
-        ),
+        this.subscribe({ resetSwapState: false, initializeSwapState: true }),
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             SwapController.resetState()

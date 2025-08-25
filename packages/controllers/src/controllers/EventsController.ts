@@ -5,7 +5,6 @@ import { ConstantsUtil, isSafe } from '@reown/appkit-common'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
@@ -52,7 +51,7 @@ export const EventsController = {
 
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
-      let address = AccountController.state.address
+      let address = ChainController.getAccountData()?.address
 
       if ('address' in payload.data && payload.data.address) {
         address = payload.data.address
