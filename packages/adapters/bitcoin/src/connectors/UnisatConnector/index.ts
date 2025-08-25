@@ -1,7 +1,7 @@
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../../utils/BitcoinConnector.js'
@@ -212,6 +212,8 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
         return 'BITCOIN_MAINNET'
       case bitcoinTestnet.caipNetworkId:
         return 'BITCOIN_TESTNET'
+      case bitcoinSignet.caipNetworkId:
+        return 'BITCOIN_SIGNET'
       default:
         throw new Error('UnisatConnector: unsupported network')
     }
