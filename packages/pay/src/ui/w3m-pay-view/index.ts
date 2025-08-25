@@ -193,7 +193,7 @@ export class W3mPayView extends LitElement {
           @click=${() => this.onExchangePayment(exchange.id)}
           data-testid="exchange-option-${exchange.id}"
           ?chevron=${true}
-          ?disabled=${this.loadingExchangeId !== null || this.loadingExchangeId === exchange.id}
+          ?disabled=${this.loadingExchangeId !== null}
           ?loading=${this.loadingExchangeId === exchange.id}
           imageSrc=${ifDefined(exchange.imageUrl)}
         >
