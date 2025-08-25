@@ -67,17 +67,15 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   public constructor() {
     super()
-
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          this.address = CoreHelperUtil.getPlainAddress(accountData?.caipAddress)
-          this.caipAddress = accountData?.caipAddress
-          this.balance = accountData?.balance
-          this.balanceSymbol = accountData?.balanceSymbol
-          this.profileName = accountData?.profileName
-          this.profileImage = accountData?.profileImage
+        ChainController.subscribeChainProp('accountState', val => {
+          this.address = CoreHelperUtil.getPlainAddress(val?.caipAddress)
+          this.caipAddress = val?.caipAddress
+          this.balance = val?.balance
+          this.balanceSymbol = val?.balanceSymbol
+          this.profileName = val?.profileName
+          this.profileImage = val?.profileImage
         }),
         OptionsController.subscribeKey('features', val => (this.features = val)),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),

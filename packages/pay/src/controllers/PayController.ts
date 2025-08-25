@@ -3,7 +3,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
@@ -306,11 +305,11 @@ export const PayController = {
       }
     })
 
-    AccountController.subscribeKey('caipAddress', caipAddress => {
+    ChainController.subscribeChainProp('accountState', accountState => {
       const hasWcConnection = ConnectionController.hasAnyConnection(
         ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
       )
-      if (caipAddress) {
+      if (accountState?.caipAddress) {
         // WalletConnect connections sometimes fail down the line due to state not being updated atomically
         if (hasWcConnection) {
           setTimeout(() => {

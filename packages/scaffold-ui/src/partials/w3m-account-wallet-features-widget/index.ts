@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
@@ -66,18 +65,18 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          if (accountData) {
-            this.address = accountData.address
-            this.profileName = accountData.profileName
-            this.currentTab = accountData.currentTab
-            this.tokenBalance = accountData.tokenBalance
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val?.address) {
+            this.address = val.address
+            this.profileName = val.profileName
+            this.currentTab = val.currentTab
+            this.tokenBalance = val.tokenBalance
           } else {
             ModalController.close()
           }
         })
       ],
+
       ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
         this.activeConnectorIds = newActiveConnectorIds
       }),
@@ -95,13 +94,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   public override firstUpdated() {
-    AccountController.fetchTokenBalance()
+    ChainController.fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
-      throw new Error('w3m-account-view: No account provided')
+      throw new Error('w3m-account-features-widget: No account provided')
     }
 
     if (!this.namespace) {
@@ -262,7 +261,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private watchSwapValues() {
     this.watchTokenBalance = setInterval(
-      () => AccountController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
+      () => ChainController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
       10_000
     )
   }

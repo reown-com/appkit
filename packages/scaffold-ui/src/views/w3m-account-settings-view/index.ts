@@ -58,12 +58,11 @@ export class W3mAccountSettingsView extends LitElement {
     super()
     this.usubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          if (accountData) {
-            this.address = accountData.address
-            this.profileImage = accountData.profileImage
-            this.profileName = accountData.profileName
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val) {
+            this.address = val.address
+            this.profileImage = val.profileImage
+            this.profileName = val.profileName
           }
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => {

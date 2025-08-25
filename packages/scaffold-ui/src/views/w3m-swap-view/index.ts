@@ -100,10 +100,9 @@ export class W3mSwapView extends LitElement {
           initializeSwapState
         })
       )
-      ChainController.subscribeKey('chains', () => {
-        const accountData = ChainController.getAccountData()
+      ChainController.subscribeChainProp('accountState', val => {
         this.onCaipAddressChange({
-          newCaipAddress: accountData?.caipAddress,
+          newCaipAddress: val?.caipAddress,
           resetSwapState,
           initializeSwapState
         })

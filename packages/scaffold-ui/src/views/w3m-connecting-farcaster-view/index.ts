@@ -54,10 +54,9 @@ export class W3mConnectingFarcasterView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          this.socialProvider = accountData?.socialProvider
-          this.uri = accountData?.farcasterUrl
+        ChainController.subscribeChainProp('accountState', val => {
+          this.socialProvider = val?.socialProvider
+          this.uri = val?.farcasterUrl
           this.connectFarcaster()
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {

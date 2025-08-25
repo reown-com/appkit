@@ -30,6 +30,7 @@ export const NetworkUtil = {
 
     const isCurrentNamespaceConnected = Boolean(ChainController.getAccountData(currentNamespace))
     const isNextNamespaceConnected = Boolean(ChainController.getAccountData(network.chainNamespace))
+
     const isDifferentNamespace = network.chainNamespace !== currentNamespace
     const connectorId = ConnectorController.getConnectorId(currentNamespace)
 

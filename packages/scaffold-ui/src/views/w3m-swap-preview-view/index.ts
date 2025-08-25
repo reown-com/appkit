@@ -58,10 +58,8 @@ export class W3mSwapPreviewView extends LitElement {
 
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          console.log('>> debug: check this')
-          const accountData = ChainController.getAccountData()
-          if (accountData?.balanceSymbol) {
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val?.balanceSymbol) {
             RouterController.goBack()
           }
         }),

@@ -9,7 +9,6 @@ import {
   Emitter
 } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient,

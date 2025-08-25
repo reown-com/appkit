@@ -20,7 +20,7 @@ export * from '../src/library/vue/index.js'
 export * from '../src/utils/index.js'
 export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
-export { CoreHelperUtil, AccountController } from '@reown/appkit-controllers'
+export { CoreHelperUtil } from '@reown/appkit-controllers'
 
 let modal: AppKit | undefined = undefined
 

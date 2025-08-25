@@ -11,7 +11,7 @@ import {
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 import {
-  type AccountControllerState,
+  type AccountState,
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
@@ -245,7 +245,7 @@ export abstract class AdapterBlueprint<
     }
   }
 
-  protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
+  protected setStatus(status: AccountState['status'], chainNamespace?: ChainNamespace) {
     ChainController.setAccountProp('status', status, chainNamespace)
   }
 

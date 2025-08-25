@@ -121,9 +121,8 @@ export class W3mProfileWalletsView extends LitElement {
           this.activeConnectorIds = ids
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val)),
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          this.user = accountData?.user
+        ChainController.subscribeChainProp('accountState', val => {
+          this.user = val?.user
         }),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
       ]

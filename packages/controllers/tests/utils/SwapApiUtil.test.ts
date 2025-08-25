@@ -2,11 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
 
-import {
-  AccountController,
-  type AccountControllerState
-} from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
+import { type AccountState } from '../../src/controllers/ChainController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
 import { OptionsController } from '../../src/controllers/OptionsController'
@@ -17,7 +14,6 @@ vi.mock('../../src/controllers/ChainController')
 vi.mock('../../src/controllers/BlockchainApiController')
 vi.mock('../../src/controllers/OptionsController')
 vi.mock('../../src/controllers/ConnectionController')
-vi.mock('../../src/controllers/AccountController')
 vi.mock('../../src/controllers/ChainController')
 
 const mockSolanaNetwork = {
@@ -187,7 +183,7 @@ describe('SwapApiUtil', () => {
     it('should fetch and return tokens with balance', async () => {
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         address: '0x123'
-      } as AccountControllerState)
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       BlockchainApiController.getBalance = vi.fn().mockResolvedValue({
         balances: [{ address: '0x456', quantity: { decimals: '18', numeric: '1.5' } }]
@@ -200,7 +196,7 @@ describe('SwapApiUtil', () => {
         'eip155:1',
         undefined
       )
-      expect(AccountController.setTokenBalance).toHaveBeenCalled()
+      expect(ChainController.setAccountProp).toHaveBeenCalled()
       expect(result).toEqual([
         {
           address: '0x456',

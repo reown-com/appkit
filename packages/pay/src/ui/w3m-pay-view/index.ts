@@ -51,9 +51,8 @@ export class W3mPayView extends LitElement {
     this.unsubscribe.push(PayController.subscribeKey('exchanges', val => (this.exchanges = val)))
     this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
     this.unsubscribe.push(
-      ChainController.subscribeKey('chains', () => {
-        const accountData = ChainController.getAccountData()
-        this.connectedWalletInfo = accountData?.connectedWalletInfo
+      ChainController.subscribeChainProp('accountState', val => {
+        this.connectedWalletInfo = val?.connectedWalletInfo
       })
     )
 

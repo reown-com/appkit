@@ -54,10 +54,9 @@ export class W3mRegisterAccountNameView extends LitElement {
           this.suggestions = val.suggestions
           this.loading = val.loading
         }),
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          this.profileName = accountData?.profileName
-          if (accountData?.profileName) {
+        ChainController.subscribeChainProp('accountState', val => {
+          this.profileName = val?.profileName
+          if (val?.profileName) {
             this.error = 'You already own a name'
           }
         })

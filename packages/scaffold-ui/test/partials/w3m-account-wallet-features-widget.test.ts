@@ -5,7 +5,7 @@ import { html } from 'lit'
 
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
+  type AccountState,
   ChainController,
   ConnectorController,
   CoreHelperUtil,
@@ -38,21 +38,21 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.restoreAllMocks()
   })
 
-  it('it should not return any components if address is not provided in AccountController', () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+  it('it should not return any components if address is not provided in ChainController', () => {
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       address: undefined
-    })
+    } as unknown as AccountState)
     expect(() =>
       fixture(html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`)
     ).rejects.toThrow('w3m-account-view: No account provided')
   })
 
   it('it should return all components if address is provided in AccountsController', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       address: MOCK_ADDRESS
-    })
+    } as unknown as AccountState)
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       activeConnectorIds: {
@@ -75,10 +75,10 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   it('should redirect to ProfileWallets view', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       address: MOCK_ADDRESS
-    })
+    } as unknown as AccountState)
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       activeConnectorIds: {
@@ -108,10 +108,10 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   it('should show tabs for eip155 namespace', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       address: MOCK_ADDRESS
-    })
+    } as unknown as AccountState)
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       activeChain: CommonConstantsUtil.CHAIN.EVM
@@ -127,10 +127,10 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   it('should not show tabs for solana namespace', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       address: MOCK_ADDRESS
-    })
+    } as unknown as AccountState)
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       activeChain: CommonConstantsUtil.CHAIN.SOLANA
@@ -149,10 +149,10 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.useFakeTimers()
     vi.spyOn(global, 'setInterval')
     vi.spyOn(global, 'clearInterval')
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       address: ACCOUNT.address
-    })
+    } as unknown as AccountState)
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -166,7 +166,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
 
     const error = new Error(SERVICE_UNAVAILABLE_MESSAGE, { cause: response })
 
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockImplementation(async callback => {
+    vi.spyOn(ChainController, 'fetchTokenBalance').mockImplementation(async callback => {
       callback?.(error)
       return []
     })
@@ -193,10 +193,10 @@ describe('wallet features visibility', () => {
         ...ChainController.state,
         activeChain: CommonConstantsUtil.CHAIN.EVM
       })
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...ChainController.getAccountData(),
         address: MOCK_ADDRESS
-      })
+      } as unknown as AccountState)
     })
 
     it('should show all features when enabled', async () => {
@@ -327,10 +327,10 @@ describe('wallet features visibility', () => {
         ...ChainController.state,
         activeChain: CommonConstantsUtil.CHAIN.SOLANA
       })
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...ChainController.getAccountData(),
         address: MOCK_ADDRESS
-      })
+      } as unknown as AccountState)
     })
 
     it('should show all features but swaps when enabled', async () => {
@@ -461,10 +461,10 @@ describe('wallet features visibility', () => {
         ...ChainController.state,
         activeChain: CommonConstantsUtil.CHAIN.BITCOIN
       })
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...ChainController.getAccountData(),
         address: 'bc1qa1234567890'
-      })
+      } as unknown as AccountState)
     })
 
     it('should only show fund wallet when receive and onramp are enabled', async () => {

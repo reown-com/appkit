@@ -5,7 +5,6 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   type ConnectionControllerClient,
@@ -183,7 +182,7 @@ describe('EnsController', () => {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     }
     ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, evmAdapter)
-    AccountController.setCaipAddress('eip155:1:0x123', chain)
+    ChainController.setAccountProp('caipAddress', 'eip155:1:0x123', chain)
     // Use fake timers so that the timestamp is always the same
     vi.useFakeTimers()
 

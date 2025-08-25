@@ -38,11 +38,10 @@ export class W3mWalletReceiveView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          if (accountData) {
-            this.address = accountData.address
-            this.profileName = accountData.profileName
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val) {
+            this.address = val.address
+            this.profileName = val.profileName
           } else {
             SnackController.showError('Account not found')
           }

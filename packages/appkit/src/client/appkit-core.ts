@@ -1,7 +1,6 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapter } from '@reown/appkit-controllers'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -21,9 +20,6 @@ declare global {
     ethereum?: Record<string, unknown>
   }
 }
-
-// -- Export Controllers -------------------------------------------------------
-export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export type OpenOptions<View extends Views> = Omit<BaseOpenOptions<View>, 'namespace'>

@@ -4,7 +4,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -69,29 +68,30 @@ export class W3mConnectingSocialView extends LitElement {
     })
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          if (accountData) {
-            this.socialProvider = accountData.socialProvider
-            if (accountData.socialWindow) {
-              this.socialWindow = accountData.socialWindow
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val) {
+            this.socialProvider = val.socialProvider
+            if (val.socialWindow) {
+              this.socialWindow = val.socialWindow
+            }
+
+            if (val.address) {
+              const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+
+              if (val.address !== this.address) {
+                if (this.hasMultipleConnections && isMultiWalletEnabled) {
+                  RouterController.replace('ProfileWallets')
+                  SnackController.showSuccess('New Wallet Added')
+                  this.address = val.address
+                } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
+                  ModalController.close()
+                }
+              }
             }
           }
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
           this.remoteFeatures = val
-        }),
-        AccountController.subscribeKey('address', val => {
-          const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-
-          if (val && val !== this.address) {
-            if (this.hasMultipleConnections && isMultiWalletEnabled) {
-              RouterController.replace('ProfileWallets')
-              SnackController.showSuccess('New Wallet Added')
-            } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
-              ModalController.close()
-            }
-          }
         })
       ]
     )

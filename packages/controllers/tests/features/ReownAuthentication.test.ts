@@ -7,8 +7,7 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   ApiController,
   BlockchainApiController,
   ChainController
@@ -317,7 +316,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
       vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
         connectedWalletInfo: walletInfo
-      } as AccountControllerState)
+      } as AccountState)
 
       fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: mockJWT }))
 
@@ -1193,17 +1192,19 @@ describe('Edge cases and error handling', () => {
   })
 
   it('should handle wallet info when connectedWalletInfo is undefined', () => {
-    vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValue(undefined)
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
 
     const walletInfo = siwx['getWalletInfo']()
     expect(walletInfo).toBeUndefined()
   })
 
   it('should handle wallet info with missing properties', () => {
-    vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValue({
-      type: 'unknown-type'
-      // Missing name and icon
-    } as any)
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      connectedWalletInfo: {
+        type: 'unknown-type'
+        // Missing name and icon
+      }
+    } as unknown as AccountState)
 
     const walletInfo = siwx['getWalletInfo']()
     expect(walletInfo).toEqual({

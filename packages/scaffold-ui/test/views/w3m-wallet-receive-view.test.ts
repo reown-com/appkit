@@ -8,8 +8,7 @@ import {
   ConstantsUtil
 } from '@reown/appkit-common'
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   AssetUtil,
   ChainController,
   type ChainControllerState,
@@ -77,7 +76,7 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
 }
 
 // Create partial mock states to satisfy TypeScript
-const mockAccountControllerState: Partial<AccountControllerState> = {
+const mockAccountState: Partial<AccountState> = {
   address: mockAddress,
   profileName: mockProfileName,
   preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
@@ -123,10 +122,7 @@ const mockRequestedNetworks: CaipNetwork[] = [
 
 describe('W3mWalletReceiveView', () => {
   beforeEach(() => {
-    // Mock AccountController state
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue(
-      mockAccountControllerState as AccountControllerState
-    )
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(mockAccountState as AccountState)
 
     // Mock ChainController state
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
@@ -173,10 +169,10 @@ describe('W3mWalletReceiveView', () => {
   })
 
   it('should display address when no profile name', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...mockAccountControllerState,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...mockAccountState,
       profileName: undefined
-    } as AccountControllerState)
+    } as AccountState)
 
     const element = await fixture<W3mWalletReceiveView>(
       html`<w3m-wallet-receive-view></w3m-wallet-receive-view>`

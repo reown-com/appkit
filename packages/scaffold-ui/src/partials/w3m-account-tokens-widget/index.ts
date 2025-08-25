@@ -32,9 +32,8 @@ export class W3mAccountTokensWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('chains', () => {
-          const accountData = ChainController.getAccountData()
-          this.tokenBalance = accountData?.tokenBalance
+        ChainController.subscribeChainProp('accountState', val => {
+          this.tokenBalance = val?.tokenBalance
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
           this.remoteFeatures = val

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AccountControllerState } from '../../src/controllers/AccountController'
+import { type AccountState } from '../../src/controllers/ChainController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'
@@ -158,7 +158,7 @@ describe('ExchangeController', () => {
 
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         address: '0xabc'
-      } as AccountControllerState)
+      } as AccountState)
       ExchangeController.state.amount = 2
       ExchangeController.state.tokenAmount = 1.5
       ExchangeController.state.paymentAsset = {
@@ -220,7 +220,7 @@ describe('ExchangeController', () => {
       }
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         address: '0xabc'
-      } as AccountControllerState)
+      } as AccountState)
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue(undefined as any)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -249,7 +249,7 @@ describe('ExchangeController', () => {
       ExchangeController.state.amount = 100
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         address: '0xabc123'
-      } as AccountControllerState)
+      } as AccountState)
     })
 
     it('returns success status and updates state correctly', async () => {

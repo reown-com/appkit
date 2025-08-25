@@ -25,7 +25,6 @@ import {
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
-  AccountController,
   AlertController,
   ChainController,
   CoreHelperUtil,
@@ -52,9 +51,6 @@ declare global {
     ethereum?: Record<string, unknown>
   }
 }
-
-// -- Export Controllers -------------------------------------------------------
-export { AccountController }
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -437,7 +433,7 @@ export class AppKit extends AppKitBaseClient {
     const namespaceAddress = this.getAddressByChainNamespace(networkNamespace)
     const isSameNamespace = networkNamespace === currentNamespace
 
-    if (isSameNamespace && namespaceAddress) {
+    if (isSameNamespace && ChainController.getAccountData(networkNamespace)?.caipAddress) {
       const adapter = this.getAdapter(networkNamespace)
       const provider = ProviderUtil.getProvider(networkNamespace)
       const providerType = ProviderUtil.getProviderId(networkNamespace)

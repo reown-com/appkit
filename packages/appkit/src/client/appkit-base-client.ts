@@ -14,7 +14,7 @@ import type {
 } from '@reown/appkit-common'
 import { ConstantsUtil, NetworkUtil, ParseUtil } from '@reown/appkit-common'
 import type {
-  AccountControllerState,
+  AccountState,
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerClient,
@@ -41,7 +41,6 @@ import type {
   WriteContractArgs
 } from '@reown/appkit-controllers'
 import {
-  AccountController,
   AlertController,
   ApiController,
   AssetUtil,
@@ -879,10 +878,6 @@ export abstract class AppKitBaseClient {
   }
 
   protected async switchCaipNetwork(caipNetwork: CaipNetwork) {
-    if (!caipNetwork) {
-      return
-    }
-
     const networkNamespace = caipNetwork.chainNamespace
     const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
 
@@ -892,7 +887,6 @@ export abstract class AppKitBaseClient {
 
       if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
         const adapter = this.getAdapter(networkNamespace)
-
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       } else {
         this.setCaipNetwork(caipNetwork)
@@ -1873,7 +1867,7 @@ export abstract class AppKitBaseClient {
     ChainController.setChainNetworkData(chainNamespace, { caipNetwork })
   }
 
-  public setStatus = (status: AccountControllerState['status'], chain: ChainNamespace) => {
+  public setStatus = (status: AccountState['status'], chain: ChainNamespace) => {
     ChainController.setAccountProp('status', status, chain)
 
     // If at least one namespace is connected, set the connection status
@@ -1885,7 +1879,7 @@ export abstract class AppKitBaseClient {
   }
 
   public getAddressByChainNamespace = (chainNamespace: ChainNamespace) =>
-    ChainController.state.chains.get(chainNamespace)?.accountState?.address
+    ChainController.getAccountData(chainNamespace)?.address
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
@@ -2143,9 +2137,7 @@ export abstract class AppKitBaseClient {
                     username: StorageUtil.getConnectedSocialUsername()
                   }
                 : undefined,
-              authProvider:
-                accountState.socialProvider ||
-                ('email' as AccountControllerState['socialProvider'] | 'email'),
+              authProvider: accountState.socialProvider || ('email' as const),
               accountType: getPreferredAccountType(namespace),
               isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
             }
@@ -2192,14 +2184,22 @@ export abstract class AppKitBaseClient {
     namespace?: ChainNamespace
   ) {
     if (namespace) {
-      return AccountController.subscribeKey('connectedWalletInfo', callback, namespace)
+      return ChainController.subscribeChainProp(
+        'accountState',
+        accountState => callback(accountState?.connectedWalletInfo),
+        namespace
+      )
     }
 
-    return AccountController.subscribeKey('connectedWalletInfo', callback)
+    return ChainController.subscribeChainProp('accountState', accountState =>
+      callback(accountState?.connectedWalletInfo)
+    )
   }
 
   public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
-    AccountController.subscribeKey('shouldUpdateToAddress', callback)
+    ChainController.subscribeChainProp('accountState', accountState =>
+      callback(accountState?.shouldUpdateToAddress)
+    )
   }
 
   public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
@@ -2264,19 +2264,12 @@ export abstract class AppKitBaseClient {
 
   public getIsConnectedState = () => Boolean(ChainController.state.activeCaipAddress)
 
-  public addAddressLabel: (typeof AccountController)['addAddressLabel'] = (
-    address,
-    label,
-    chain
-  ) => {
+  public addAddressLabel = (address: string, label: string, chain: ChainNamespace) => {
     const addressLabels = ChainController.getAccountData(chain)?.addressLabels || {}
     ChainController.setAccountProp('addressLabels', { ...addressLabels, [address]: label }, chain)
   }
 
-  public removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = (
-    address,
-    chain
-  ) => {
+  public removeAddressLabel = (address: string, chain: ChainNamespace) => {
     const addressLabels = ChainController.getAccountData(chain)?.addressLabels || {}
     ChainController.setAccountProp(
       'addressLabels',
