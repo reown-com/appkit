@@ -497,7 +497,7 @@ export abstract class AppKitBaseClient {
       connectExternal: async params => {
         const connectResult = await this.onConnectExternal(params)
 
-        await this.connectExternalRemainingNamespaces(params, connectResult)
+        await this.connectInactiveNamespaces(params, connectResult)
 
         return connectResult ? { address: connectResult.address } : undefined
       },
@@ -856,7 +856,7 @@ export abstract class AppKitBaseClient {
     return { address: res.address, connectedCaipNetwork: caipNetworkToUse }
   }
 
-  protected async connectExternalRemainingNamespaces(
+  protected async connectInactiveNamespaces(
     params: ConnectExternalOptions,
     connectResult: { address: string; connectedCaipNetwork: CaipNetwork | undefined } | undefined
   ) {
