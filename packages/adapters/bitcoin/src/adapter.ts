@@ -51,9 +51,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    const chain =
-      this.getCaipNetworks(this.namespace).find(c => c.id === params.chainId) ||
-      this.getCaipNetworks(this.namespace)[0]
+    const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
 
     if (!chain) {
       throw new Error('The connector does not support any of the requested chains')
