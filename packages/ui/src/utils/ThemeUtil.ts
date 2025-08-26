@@ -266,7 +266,7 @@ export const resetStyles = css`
   }
 
   :host {
-    font-family: var(--apkt-font-family);
+    font-family: var(--apkt-fontFamily-regular);
   }
 `
 
