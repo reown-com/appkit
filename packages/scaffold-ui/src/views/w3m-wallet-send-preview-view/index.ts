@@ -1,21 +1,15 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import {
-  ChainController,
-  EventsController,
-  RouterController,
-  SendController,
-  SnackController,
-  getPreferredAccountType
-} from '@reown/appkit-controllers'
+import type { Balance, CaipNetwork } from '@reown/appkit-common'
+import { ChainController, RouterController, SnackController } from '@reown/appkit-controllers'
+import { sendActor } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-preview-item'
 import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
@@ -24,43 +18,59 @@ import styles from './styles.js'
 export class W3mWalletSendPreviewView extends LitElement {
   public static override styles = styles
 
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //
-  @state() private token = SendController.state.token
-
-  @state() private sendTokenAmount = SendController.state.sendTokenAmount
-
-  @state() private receiverAddress = SendController.state.receiverAddress
-
-  @state() private receiverProfileName = SendController.state.receiverProfileName
-
-  @state() private receiverProfileImageUrl = SendController.state.receiverProfileImageUrl
-
+  @state() private token?: Balance
+  @state() public sendTokenAmount?: number
+  @state() private receiverAddress?: string
+  @state() private receiverProfileName?: string
+  @state() private receiverProfileImageUrl?: string
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
+  @state() private loading = false
+  @state() private formattedAmount = '0'
 
-  @state() private loading = SendController.state.loading
+  private unsubscribe: (() => void)[] = []
 
   public constructor() {
     super()
+
+    const snapshot = sendActor.getSnapshot()
+    this.updatePreviewState(snapshot)
+
     this.unsubscribe.push(
-      ...[
-        SendController.subscribe(val => {
-          this.token = val.token
-          this.sendTokenAmount = val.sendTokenAmount
-          this.receiverAddress = val.receiverAddress
-          this.receiverProfileName = val.receiverProfileName
-          this.receiverProfileImageUrl = val.receiverProfileImageUrl
-          this.loading = val.loading
-        }),
-        ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val))
-      ]
+      sendActor.subscribe(actorSnapshot => {
+        this.updatePreviewState(actorSnapshot)
+        this.requestUpdate()
+      }).unsubscribe
+    )
+
+    this.unsubscribe.push(
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.caipNetwork = val
+        this.requestUpdate()
+      })
     )
   }
 
   public override disconnectedCallback() {
+    super.disconnectedCallback()
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  // -- Private ------------------------------------------- //
+  private updatePreviewState(
+    snapshot: typeof sendActor extends { getSnapshot(): infer T } ? T : never
+  ) {
+    this.token = snapshot.context.selectedToken
+    this.sendTokenAmount = snapshot.context.sendAmount
+    this.receiverAddress = snapshot.context.receiverAddress || ''
+    this.receiverProfileName = snapshot.context.receiverProfileName
+    this.receiverProfileImageUrl = snapshot.context.receiverProfileImageUrl
+    this.loading = snapshot.context.loading
+
+    // Calculate formatted amount
+    this.formattedAmount = snapshot.context.sendAmount
+      ? String(UiHelperUtil.roundNumber(snapshot.context.sendAmount, 6, 5))
+      : '0'
   }
 
   // -- Render -------------------------------------------- //
@@ -73,9 +83,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
-            text="${this.sendTokenAmount
-              ? UiHelperUtil.roundNumber(this.sendTokenAmount, 6, 5)
-              : 'unknown'} ${this.token?.symbol}"
+            text="${this.formattedAmount} ${this.token?.symbol || ''}"
             .imageSrc=${this.token?.iconUrl}
           ></wui-preview-item>
         </wui-flex>
@@ -106,8 +114,8 @@ export class W3mWalletSendPreviewView extends LitElement {
       </wui-flex>
       <wui-flex flexDirection="column" .padding=${['6', '0', '0', '0'] as const}>
         <w3m-wallet-send-details
-          .caipNetwork=${this.caipNetwork}
-          .receiverAddress=${this.receiverAddress}
+          .caipNetwork=${this.caipNetwork as unknown as CaipNetwork | undefined}
+          .receiverAddress=${this.receiverAddress || ''}
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="1" .padding=${['3', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="default" name="warningCircle"></wui-icon>
@@ -150,38 +158,25 @@ export class W3mWalletSendPreviewView extends LitElement {
     return null
   }
 
-  async onSendClick() {
-    if (!this.sendTokenAmount || !this.receiverAddress) {
-      SnackController.showError('Please enter a valid amount and receiver address')
+  private onSendClick() {
+    const snapshot = sendActor.getSnapshot()
+
+    const isReady = Boolean(
+      snapshot.context.selectedToken &&
+        snapshot.context.sendAmount &&
+        snapshot.context.sendAmount > 0 &&
+        snapshot.context.receiverAddress &&
+        snapshot.context.sendAmount <= Number(snapshot.context.selectedToken.quantity.numeric)
+    )
+
+    if (!isReady) {
+      SnackController.showError('Please complete the form before sending')
 
       return
     }
 
-    try {
-      await SendController.sendToken()
-      SnackController.showSuccess('Transaction started')
-      RouterController.replace('Account')
-    } catch (error) {
-      SnackController.showError('Failed to send transaction. Please try again.')
-      // eslint-disable-next-line no-console
-      console.error('SendController:sendToken - failed to send transaction', error)
-
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_ERROR',
-        properties: {
-          message: errorMessage,
-          isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.token?.symbol || '',
-          amount: this.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-        }
-      })
-    }
+    // Send transaction event to XState machine
+    sendActor.send({ type: 'SEND_TRANSACTION' })
   }
 
   private onCancelClick() {
