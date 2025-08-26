@@ -141,12 +141,15 @@ export const ExchangeController = {
   // -- Getters ----------------------------------------- //
   async fetchExchanges() {
     const isPayWithExchangeEnabled =
-      OptionsController.state.remoteFeatures?.payWithExchange &&
+      OptionsController.state.remoteFeatures?.payWithExchange ||
+      OptionsController.state.remoteFeatures?.payments ||
+      OptionsController.state.features?.pay
+    const isPayWithExchangeSupported =
       ChainController.state.activeCaipNetwork &&
       ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
         ChainController.state.activeCaipNetwork.chainNamespace
       )
-    if (!isPayWithExchangeEnabled) {
+    if (!(isPayWithExchangeEnabled && isPayWithExchangeSupported)) {
       return
     }
 
