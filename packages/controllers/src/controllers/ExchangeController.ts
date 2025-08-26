@@ -17,6 +17,7 @@ import type { CurrentPayment, Exchange, PayUrlParams, PaymentAsset } from '../ut
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
@@ -154,7 +155,10 @@ export const ExchangeController = {
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
     } catch (error) {
-      SnackController.showError('Unable to get exchanges')
+      const isEnabled = OptionsController.state.remoteFeatures?.payWithExchange
+      if (isEnabled) {
+        SnackController.showError('Unable to get exchanges')
+      }
       throw new Error('Unable to get exchanges')
     } finally {
       state.isLoading = false
