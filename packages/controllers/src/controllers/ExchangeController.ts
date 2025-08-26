@@ -158,13 +158,10 @@ export const ExchangeController = {
 
   // -- Getters ----------------------------------------- //
   async fetchExchanges() {
-    const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
-    if (!isPayWithExchangeSupported) {
-      return
-    }
-
     try {
-      if (!state.paymentAsset) {
+      const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+
+      if (!state.paymentAsset || !isPayWithExchangeSupported) {
         state.exchanges = []
         state.isLoading = false
 
