@@ -46,16 +46,8 @@ export class W3mFundWalletView extends LitElement {
   }
 
   public override async firstUpdated() {
-    const isPayWithExchangeEnabled =
-      OptionsController.state.remoteFeatures?.payWithExchange ||
-      OptionsController.state.remoteFeatures?.payments ||
-      OptionsController.state.features?.pay
-    const isPayWithExchangeSupported =
-      ChainController.state.activeCaipNetwork &&
-      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
-        ChainController.state.activeCaipNetwork.chainNamespace
-      )
-    if (isPayWithExchangeEnabled && isPayWithExchangeSupported) {
+    const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+    if (isPayWithExchangeSupported) {
       await this.setDefaultPaymentAsset()
       await ExchangeController.fetchExchanges()
     }
@@ -115,13 +107,8 @@ export class W3mFundWalletView extends LitElement {
       return null
     }
 
-    const isPayWithExchangeEnabled =
-      this.remoteFeatures?.payWithExchange &&
-      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
-        this.activeCaipNetwork.chainNamespace
-      )
-
-    if (!isPayWithExchangeEnabled) {
+    const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+    if (!isPayWithExchangeSupported) {
       return null
     }
 

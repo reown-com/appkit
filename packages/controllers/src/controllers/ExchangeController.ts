@@ -138,18 +138,28 @@ export const ExchangeController = {
     state.paymentAsset = asset
   },
 
-  // -- Getters ----------------------------------------- //
-  async fetchExchanges() {
-    const isPayWithExchangeEnabled =
+  isPayWithExchangeEnabled() {
+    return (
       OptionsController.state.remoteFeatures?.payWithExchange ||
       OptionsController.state.remoteFeatures?.payments ||
       OptionsController.state.features?.pay
-    const isPayWithExchangeSupported =
+    )
+  },
+
+  isPayWithExchangeSupported() {
+    return (
+      ExchangeController.isPayWithExchangeEnabled() &&
       ChainController.state.activeCaipNetwork &&
       ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
         ChainController.state.activeCaipNetwork.chainNamespace
       )
-    if (!(isPayWithExchangeEnabled && isPayWithExchangeSupported)) {
+    )
+  },
+
+  // -- Getters ----------------------------------------- //
+  async fetchExchanges() {
+    const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+    if (!isPayWithExchangeSupported) {
       return
     }
 
