@@ -79,7 +79,7 @@ function headings() {
     SwapSelectToken: 'Select Token',
     SwapPreview: 'Preview Swap',
     WalletSend: 'Send',
-    WalletSendPreview: 'Review Zend',
+    WalletSendPreview: 'Review Send',
     WalletSendSelectToken: 'Select Token',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a Wallet?',
