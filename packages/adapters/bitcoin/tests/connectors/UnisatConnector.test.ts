@@ -61,8 +61,8 @@ describe('UnisatConnector', () => {
     expect(connector.imageUrl).toBe('mock_image_url')
   })
 
-  it('should return only mainnet chain', () => {
-    expect(connector.chains).toEqual([bitcoin])
+  it('should return bitcoin chains', () => {
+    expect(connector.chains).toEqual([bitcoin, bitcoinTestnet])
   })
 
   describe('connect', () => {

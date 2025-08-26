@@ -37,6 +37,7 @@ export class WuiLink extends LitElement {
   public override render() {
     return html`
       <button ?disabled=${this.disabled} data-variant=${this.variant}>
+        <slot name="iconLeft"></slot>
         <wui-text
           color=${TEXT_COLOR_BY_VARIANT[this.variant]}
           variant=${TEXT_VARIANT_BY_SIZE[this.size]}
