@@ -87,6 +87,11 @@ export const ErrorUtil = {
   ALERT_WARNINGS: {
     LOCAL_CONFIGURATION_IGNORED: {
       debugMessage: (warningMessage: string) => `[Reown Config Notice] ${warningMessage}`
+    },
+    INVALID_EMAIL: {
+      code: 'APKTW001',
+      displayMessage: 'Invalid Email Address',
+      debugMessage: 'Please enter a valid email address'
     }
   }
 }

@@ -67,6 +67,7 @@ export class W3mAlertBar extends LitElement {
         backgroundColor=${preset?.backgroundColor}
         iconColor=${preset?.iconColor}
         icon=${preset?.icon}
+        type=${variant}
       ></wui-alertbar>
     `
   }
