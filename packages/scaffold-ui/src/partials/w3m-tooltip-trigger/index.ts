@@ -61,8 +61,9 @@ export class WuiTooltipTrigger extends LitElement {
   private onMouseEnter() {
     const rect = this.getBoundingClientRect()
     if (!this.open) {
-      const modalContainer = this.closest('w3m-modal')
-      let triggerRect = {
+      const modalContainer = document.querySelector('w3m-modal')
+
+      const triggerRect = {
         width: rect.width,
         height: rect.height,
         left: rect.left,
@@ -71,12 +72,8 @@ export class WuiTooltipTrigger extends LitElement {
 
       if (modalContainer) {
         const containerRect = modalContainer.getBoundingClientRect()
-        triggerRect = {
-          width: rect.width,
-          height: rect.height,
-          left: rect.left - containerRect.left,
-          top: rect.top - containerRect.top
-        }
+        triggerRect.left = rect.left - (window.innerWidth - containerRect.width) / 2
+        triggerRect.top = rect.top - (window.innerHeight - containerRect.height) / 2
       }
 
       TooltipController.showTooltip({
