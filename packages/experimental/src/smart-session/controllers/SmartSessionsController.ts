@@ -3,7 +3,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil as CommonConstantsUtil, type Hex } from '@reown/appkit-common'
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   ConnectionController,
@@ -56,7 +55,7 @@ export const SmartSessionsController = {
   },
   async getSmartSessions() {
     try {
-      const caipAddress = AccountController.state.caipAddress
+      const caipAddress = ChainController.getActiveCaipAddress()
       if (!caipAddress) {
         return []
       }

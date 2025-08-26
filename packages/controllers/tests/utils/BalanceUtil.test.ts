@@ -3,15 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
 
 import { ConnectorController } from '../../exports'
-import { AccountController } from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
+import { type AccountState } from '../../src/controllers/ChainController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
 import { BalanceUtil } from '../../src/utils/BalanceUtil'
 import { ERC7811Utils, type WalletGetAssetsResponse } from '../../src/utils/ERC7811Util'
 import { StorageUtil } from '../../src/utils/StorageUtil'
 
-vi.mock('../../src/controllers/AccountController')
 vi.mock('../../src/controllers/BlockchainApiController')
 vi.mock('../../src/controllers/ChainController')
 vi.mock('../../src/controllers/ConnectionController')
@@ -62,7 +61,10 @@ describe('BalanceUtil', () => {
 
   describe('getMyTokensWithBalance', () => {
     beforeEach(() => {
-      AccountController.state.address = mockEthereumAddress
+      vi.restoreAllMocks()
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
       ConnectorController.state.activeConnectorIds = {
@@ -78,7 +80,9 @@ describe('BalanceUtil', () => {
     })
 
     it('should return empty array when address is missing', async () => {
-      AccountController.state.address = undefined
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: undefined
+      } as AccountState)
       const result = await BalanceUtil.getMyTokensWithBalance()
       expect(result).toEqual([])
     })
@@ -108,7 +112,9 @@ describe('BalanceUtil', () => {
         ]
       }
 
-      AccountController.state.address = mockEthereumAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       const mockBalance = {
         symbol: 'ETH',
@@ -151,7 +157,9 @@ describe('BalanceUtil', () => {
         }
       ]
 
-      AccountController.state.address = mockSolanaAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockSolanaAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockSolanaNetwork
       vi.mocked(BlockchainApiController.getBalance).mockResolvedValue({ balances: mockBalances })
 
@@ -177,7 +185,9 @@ describe('BalanceUtil', () => {
         }
       ]
 
-      AccountController.state.address = mockEthereumAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
         ConstantsUtil.CONNECTOR_ID.INJECTED
@@ -277,7 +287,9 @@ describe('BalanceUtil', () => {
   describe('getEIP155Balances', () => {
     beforeEach(() => {
       vi.restoreAllMocks()
-      AccountController.state.address = mockEthereumAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       ConnectorController.state.activeConnectorIds = {
         eip155: ConstantsUtil.CONNECTOR_ID.AUTH,

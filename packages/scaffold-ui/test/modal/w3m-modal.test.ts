@@ -13,7 +13,7 @@ import {
   RouterController,
   SIWXUtil
 } from '@reown/appkit-controllers'
-import type { AccountControllerState, SIWXConfig } from '@reown/appkit-controllers'
+import type { AccountState, SIWXConfig } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { W3mModal } from '../../src/modal/w3m-modal'
@@ -180,7 +180,7 @@ describe('W3mModal', () => {
       })
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         caipAddress: 'eip155:1:0x123'
-      } as unknown as AccountControllerState)
+      } as unknown as AccountState)
     })
 
     beforeEach(async () => {

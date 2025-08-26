@@ -3,7 +3,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -38,9 +38,9 @@ export class W3mConnectingFarcasterView extends LitElement {
   // -- State & Properties -------------------------------- //
   protected timeout?: ReturnType<typeof setTimeout> = undefined
 
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = ChainController.getAccountData()?.socialProvider
 
-  @state() protected uri = AccountController.state.farcasterUrl
+  @state() protected uri = ChainController.getAccountData()?.farcasterUrl
 
   @state() protected ready = false
 
@@ -54,16 +54,10 @@ export class W3mConnectingFarcasterView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('farcasterUrl', val => {
-          if (val) {
-            this.uri = val
-            this.connectFarcaster()
-          }
-        }),
-        AccountController.subscribeKey('socialProvider', val => {
-          if (val) {
-            this.socialProvider = val
-          }
+        ChainController.subscribeChainProp('accountState', val => {
+          this.socialProvider = val?.socialProvider
+          this.uri = val?.farcasterUrl
+          this.connectFarcaster()
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
           this.remoteFeatures = val

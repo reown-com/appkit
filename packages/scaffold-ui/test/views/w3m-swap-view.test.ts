@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 
 
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
+  type AccountState,
   ChainController,
   type ChainControllerState,
   RouterController,
@@ -132,11 +132,11 @@ describe('W3mSwapView', () => {
     vi.spyOn(SwapController, 'setSourceTokenAmount').mockImplementation(() => {})
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
 
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       caipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
       address: '0x123456789abcdef123456789abcdef123456789a'
-    })
+    } as unknown as AccountState)
   })
 
   afterEach(() => {
@@ -289,25 +289,24 @@ describe('W3mSwapView', () => {
     vi.mocked(SwapController.resetState).mockClear()
     vi.mocked(SwapController.initializeState).mockClear()
 
-    // Spy on AccountController.subscribeKey to capture subscription callbacks
-    const subscribeKeySpy = vi.spyOn(AccountController, 'subscribeKey')
+    const subscribeKeySpy = vi.spyOn(ChainController, 'subscribeKey')
 
-    // Create the component which will register subscriptions
     const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
     await element.updateComplete
 
-    // Verify AccountController.subscribeKey was called
     expect(subscribeKeySpy.mock.calls.length).to.be.greaterThan(0)
 
-    // Verify one of the calls was for caipAddress
-    const hasCaipAddressCall = subscribeKeySpy.mock.calls.some(call => call[0] === 'caipAddress')
-    expect(hasCaipAddressCall).to.be.true
+    // Use the correct key from ChainControllerState, which is likely 'activeCaipAddress'
+    const hasActiveCaipAddressCall = subscribeKeySpy.mock.calls.some(
+      call => call[0] === 'activeCaipAddress'
+    )
+    expect(hasActiveCaipAddressCall).to.be.true
 
-    // Get the callback function that was registered for caipAddress changes
-    const caipAddressCallArgs = subscribeKeySpy.mock.calls
-      .filter(call => call[0] === 'caipAddress')
+    // Get the callback function that was registered for activeCaipAddress changes
+    const activeCaipAddressCallArgs = subscribeKeySpy.mock.calls
+      .filter(call => call[0] === 'activeCaipAddress')
       .map(call => call[1])
-    const callbacks = caipAddressCallArgs.map((call: any) => call)
+    const callbacks = activeCaipAddressCallArgs.map((call: any) => call)
 
     // Verify callback exists
     expect(callbacks.length > 0).to.be.true
@@ -396,7 +395,7 @@ describe('W3mSwapView', () => {
     const initializeStateSpy = vi.spyOn(SwapController, 'initializeState')
 
     const subscribeKeySpy = vi.spyOn(ChainController, 'subscribeKey')
-    const accountSubscribeKeySpy = vi.spyOn(AccountController, 'subscribeKey')
+    const subscribeChainPropSpy = vi.spyOn(ChainController, 'subscribeChainProp')
 
     const element: W3mSwapView = await fixture(html`<w3m-swap-view></w3m-swap-view>`)
     await element.updateComplete
@@ -404,8 +403,8 @@ describe('W3mSwapView', () => {
     const chainCallbacks = subscribeKeySpy.mock.calls
       .filter(call => call[0] === 'activeCaipNetwork')
       .map(call => call[1])
-    const accountCallbacks = accountSubscribeKeySpy.mock.calls
-      .filter(call => call[0] === 'caipAddress')
+    const accountCallbacks = subscribeChainPropSpy.mock.calls
+      .filter(call => call[0] === 'accountState')
       .map(call => call[1])
 
     vitestExpect(chainCallbacks.length).toBe(2)
