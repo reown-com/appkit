@@ -89,10 +89,15 @@ export const ErrorUtil = {
       debugMessage: (warningMessage: string) => `[Reown Config Notice] ${warningMessage}`
     },
     INACTIVE_NAMESPACE_NOT_CONNECTED: {
-      code: 'APKT011',
+      code: 'APKTW001',
       displayMessage: 'Inactive Namespace Not Connected',
       debugMessage: (namespace: string, errorMessage?: string) =>
         `An error occurred while connecting an inactive namespace ${namespace}: "${errorMessage}"`
+    },
+    INVALID_EMAIL: {
+      code: 'APKTW002',
+      displayMessage: 'Invalid Email Address',
+      debugMessage: 'Please enter a valid email address'
     }
   }
 }

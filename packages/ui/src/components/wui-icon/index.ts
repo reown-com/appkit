@@ -23,6 +23,7 @@ import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
 import {
   walletConnectBrownSvg,
+  walletConnectInvertSvg,
   walletConnectLightBrownSvg,
   walletConnectSvg
 } from '../../assets/svg/walletconnect.js'
@@ -204,6 +205,7 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   twitter: xSvg,
   twitterIcon: twitterIconSvg,
   walletConnect: walletConnectSvg,
+  walletConnectInvert: walletConnectInvertSvg,
   walletConnectBrown: walletConnectBrownSvg,
   walletConnectLightBrown: walletConnectLightBrownSvg,
   x: xSvg

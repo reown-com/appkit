@@ -22,6 +22,10 @@ export const HelpersUtil = {
     return /^[a-zA-Z0-9]+$/gu.test(name)
   },
 
+  isValidEmail(email: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/gu.test(email)
+  },
+
   validateReownName(name: string) {
     const sanitizedName = name.replace(/\^/gu, '').toLowerCase()
 
