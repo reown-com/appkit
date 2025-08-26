@@ -30,8 +30,8 @@ describe('UiHelperUtil', () => {
 
   describe('getFormattedDate', () => {
     it('formats date to month and day', () => {
-      expect(UiHelperUtil.getFormattedDate(new Date('2024-01-01'))).toBe('Jan 1')
-      expect(UiHelperUtil.getFormattedDate(new Date('2024-12-31'))).toBe('Dec 31')
+      expect(UiHelperUtil.getFormattedDate(new Date('2024-01-01T12:00:00.000Z'))).toBe('Jan 1')
+      expect(UiHelperUtil.getFormattedDate(new Date('2024-12-31T12:00:00.000Z'))).toBe('Dec 31')
     })
   })
 
