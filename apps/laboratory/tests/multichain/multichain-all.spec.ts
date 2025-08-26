@@ -112,7 +112,7 @@ test('should switch network when clicking custom buttons per namespace', async (
   await evmButton.click()
   await modalValidator.expectAccountButtonReady('eip155')
   await modalPage.closeModal()
-  await modalValidator.expectBalanceFetched('ETH', 'eip155')
+  await modalValidator.expectBalanceFetched('POL', 'eip155')
 
   await solanaButton.click()
   await modalValidator.expectAccountButtonReady('solana')
