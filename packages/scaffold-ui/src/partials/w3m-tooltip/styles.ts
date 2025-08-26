@@ -11,7 +11,7 @@ export default css`
     padding: 9px ${({ spacing }) => spacing['3']} 10px ${({ spacing }) => spacing['3']};
     border-radius: ${({ borderRadius }) => borderRadius['3']};
     color: ${({ tokens }) => tokens.theme.backgroundPrimary};
-    position: fixed;
+    position: absolute;
     top: var(--w3m-tooltip-top);
     left: var(--w3m-tooltip-left);
     transform: translate(calc(-50% + var(--w3m-tooltip-parent-width)), calc(-100% - 8px));
