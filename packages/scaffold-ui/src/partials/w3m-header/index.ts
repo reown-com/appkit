@@ -76,17 +76,18 @@ function headings() {
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
-    SwapSelectToken: 'Select token',
+    SwapSelectToken: 'Select Token',
     SwapPreview: 'Preview Swap',
     WalletSend: 'Send',
     WalletSendPreview: 'Review Send',
     WalletSendSelectToken: 'Select Token',
     WhatIsANetwork: 'What is a network?',
-    WhatIsAWallet: 'What is a wallet?',
+    WhatIsAWallet: 'What is a Wallet?',
     ConnectWallets: 'Connect Wallet',
     ConnectSocials: 'All Socials',
     ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider
+      ? AccountController.state.socialProvider.charAt(0).toUpperCase() +
+        AccountController.state.socialProvider.slice(1)
       : 'Connect Social',
     ConnectingMultiChain: 'Select Chain',
     ConnectingFarcaster: 'Farcaster',
