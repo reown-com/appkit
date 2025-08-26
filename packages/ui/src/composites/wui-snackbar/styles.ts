@@ -12,6 +12,7 @@ export default css`
     box-shadow:
       0px 0px 8px 0px rgba(0, 0, 0, 0.1),
       inset 0 0 0 1px ${({ tokens }) => tokens.theme.borderPrimary};
+    max-width: 320px;
   }
 
   wui-icon-box {

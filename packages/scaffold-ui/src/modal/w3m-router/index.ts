@@ -172,6 +172,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
       case 'PayWithExchange':
         return html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
+      case 'PayWithExchangeSelectAsset':
+        return html`<w3m-deposit-from-exchange-select-asset-view></w3m-deposit-from-exchange-select-asset-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

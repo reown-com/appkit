@@ -126,6 +126,7 @@ export abstract class AppKitBaseClient {
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
+  public features: Features = {}
   public remoteFeatures: RemoteFeatures = {}
   public version: SdkVersion | AppKitSdkVersion
   public reportedAlertErrors: Record<string, boolean> = {}
@@ -206,9 +207,7 @@ export abstract class AppKitBaseClient {
     try {
       const allowedOrigins = await ApiController.fetchAllowedOrigins()
 
-      if (!allowedOrigins || !CoreHelperUtil.isClient()) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-
+      if (!CoreHelperUtil.isClient()) {
         return
       }
 
@@ -224,8 +223,6 @@ export abstract class AppKitBaseClient {
       }
     } catch (error) {
       if (!(error instanceof Error)) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-
         return
       }
 
@@ -247,7 +244,7 @@ export abstract class AppKitBaseClient {
           break
         }
         default:
-          AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+          break
       }
     }
   }
@@ -355,6 +352,8 @@ export abstract class AppKitBaseClient {
     OptionsController.setDisableAppend(options.disableAppend)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setSIWX(options.siwx)
+
+    this.features = OptionsController.state.features ?? {}
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
