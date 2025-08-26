@@ -46,8 +46,16 @@ export class W3mFundWalletView extends LitElement {
   }
 
   public override async firstUpdated() {
-    await this.setDefaultPaymentAsset()
-    await ExchangeController.fetchExchanges()
+    const isPayWithExchangeEnabled =
+      this.remoteFeatures?.payWithExchange &&
+      this.activeCaipNetwork &&
+      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
+        this.activeCaipNetwork.chainNamespace
+      )
+    if (isPayWithExchangeEnabled) {
+      await this.setDefaultPaymentAsset()
+      await ExchangeController.fetchExchanges()
+    }
   }
 
   // -- Render -------------------------------------------- //

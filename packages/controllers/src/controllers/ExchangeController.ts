@@ -138,6 +138,11 @@ export const ExchangeController = {
 
   // -- Getters ----------------------------------------- //
   async fetchExchanges() {
+    const isEnabled = OptionsController.state.remoteFeatures?.payWithExchange
+    if (!isEnabled) {
+      return
+    }
+
     try {
       if (!state.paymentAsset) {
         state.exchanges = []
@@ -155,10 +160,7 @@ export const ExchangeController = {
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
     } catch (error) {
-      const isEnabled = OptionsController.state.remoteFeatures?.payWithExchange
-      if (isEnabled) {
-        SnackController.showError('Unable to get exchanges')
-      }
+      SnackController.showError('Unable to get exchanges')
       throw new Error('Unable to get exchanges')
     } finally {
       state.isLoading = false
