@@ -872,7 +872,6 @@ export abstract class AppKitBaseClient {
         otherAuthNamespaces.map(async ns => {
           try {
             const provider = ProviderUtil.getProvider(ns)
-            const caipNetwork = ChainController.getNetworkData(ns)?.caipNetwork
             const caipNetworkToUse = this.getCaipNetwork(ns)
 
             const adapter = this.getAdapter(ns)
@@ -881,7 +880,7 @@ export abstract class AppKitBaseClient {
               provider,
               socialUri: undefined,
               chainId: caipNetworkToUse?.id,
-              rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0]
+              rpcUrl: caipNetworkToUse?.rpcUrls?.default?.http?.[0]
             })
 
             if (res) {
