@@ -92,16 +92,8 @@ export const HelpersUtil = {
     }
 
     const [namespace] = chainId.split(':')
-    switch (namespace) {
-      case 'eip155':
-        return CommonConstantsUtil.CHAIN.EVM
-      case 'solana':
-        return CommonConstantsUtil.CHAIN.SOLANA
-      case 'bip122':
-        return CommonConstantsUtil.CHAIN.BITCOIN
-      default:
-        return namespace as ChainNamespace
-    }
+
+    return namespace as ChainNamespace
   },
 
   /**
