@@ -101,7 +101,7 @@ export default css`
   }
 
   :host(.appkit-modal) wui-card {
-    max-width: 400px;
+    max-width: var(--apkt-modal-width);
   }
 
   wui-card[shake='true'] {
