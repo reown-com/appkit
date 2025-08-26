@@ -33,7 +33,13 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
   }
 
   async connectWalletConnect() {
+    // eslint-disable-next-line no-console
+    console.debug('[WC] connectWalletConnect:start')
+
     const isAuthenticated = await this.authenticate()
+
+    // eslint-disable-next-line no-console
+    console.debug('[WC] connectWalletConnect:authenticate_done', { isAuthenticated })
 
     if (!isAuthenticated) {
       const caipNetworks = this.getCaipNetworks()
@@ -43,7 +49,13 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
         caipNetworks,
         universalProviderConfigOverride
       )
+      // eslint-disable-next-line no-console
+      console.debug('[WC] connectWalletConnect:provider_connect', { optionalNamespaces: namespaces })
       await this.provider.connect({ optionalNamespaces: namespaces })
+      // eslint-disable-next-line no-console
+      console.debug('[WC] connectWalletConnect:provider_connected', {
+        topic: this.provider.session?.topic
+      })
     }
 
     return {
@@ -58,12 +70,18 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
 
   async authenticate(): Promise<boolean> {
     const chains = this.chains.map(network => network.caipNetworkId)
+    // eslint-disable-next-line no-console
+    console.debug('[WC] walletConnect.authenticate:start', { chains })
 
-    return SIWXUtil.universalProviderAuthenticate({
+    const res = await SIWXUtil.universalProviderAuthenticate({
       universalProvider: this.provider,
       chains,
       methods: OPTIONAL_METHODS
     })
+
+    // eslint-disable-next-line no-console
+    console.debug('[WC] walletConnect.authenticate:done', { result: res })
+    return res
   }
 }
 

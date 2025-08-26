@@ -572,6 +572,8 @@ export class WagmiAdapter extends AdapterBlueprint {
   public override async connectWalletConnect(chainId?: number | string) {
     try {
       // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
+      // eslint-disable-next-line no-console
+      console.debug('[WAGMI] connectWalletConnect:start', { chainId })
       const walletConnectConnector = this.getWalletConnectConnector()
       await walletConnectConnector.authenticate()
 
@@ -586,11 +588,22 @@ export class WagmiAdapter extends AdapterBlueprint {
         chainId: chainId ? Number(chainId) : undefined
       })
 
+      // eslint-disable-next-line no-console
+      console.debug('[WAGMI] connectWalletConnect:session_proposed', {
+        accounts: res.accounts?.length,
+        resChainId: res.chainId
+      })
+
       if (res.chainId !== Number(chainId)) {
         await switchChain(this.wagmiConfig, { chainId: res.chainId })
+        // eslint-disable-next-line no-console
+        console.debug('[WAGMI] connectWalletConnect:switched_chain', { to: res.chainId })
       }
 
-      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
+      const clientId = await walletConnectConnector.provider.client.core.crypto.getClientId()
+      // eslint-disable-next-line no-console
+      console.debug('[WAGMI] connectWalletConnect:done', { clientId })
+      return { clientId }
     } catch (err) {
       if (err instanceof UserRejectedRequestError) {
         throw new Error(err.shortMessage)
