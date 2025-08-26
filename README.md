@@ -41,3 +41,16 @@ Refer to the "Features" section of the [AppKit docs](https://docs.reown.com/appk
 
 > [!NOTE]
 > If you are using Web3Modal v1–v5, please use our [migration guides](https://docs.reown.com/appkit/upgrade/to-reown-appkit-web#migrate-from-web3modal-v5-to-reown-appkit).
+
+## License and Use
+
+This SDK is provided under the **[Reown AppKit] Community License** (“Community License”), that governs, among other things:
+
+- Permitted non-commercial use
+- RPC and MAU thresholds for commercial licensing
+- Required connection to Reown's proprietary infrastructure
+- Redistribution and attribution obligations
+- Ownership of modifications
+- Mandatory binding arbitration for disputes
+
+**Downloading, installation, integration and use of this SDK constitutes acceptance of the [Reown AppKit Community License](./LICENSE.md).**
