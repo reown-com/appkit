@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { type CaipNetworkId } from '@reown/appkit-common'
 
 import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import {
   type GetBuyStatusResult,
@@ -16,7 +17,9 @@ import {
 import type { CurrentPayment, Exchange, PayUrlParams, PaymentAsset } from '../utils/ExchangeUtil.js'
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
@@ -135,10 +138,30 @@ export const ExchangeController = {
     state.paymentAsset = asset
   },
 
+  isPayWithExchangeEnabled() {
+    return (
+      OptionsController.state.remoteFeatures?.payWithExchange ||
+      OptionsController.state.remoteFeatures?.payments ||
+      OptionsController.state.features?.pay
+    )
+  },
+
+  isPayWithExchangeSupported() {
+    return (
+      ExchangeController.isPayWithExchangeEnabled() &&
+      ChainController.state.activeCaipNetwork &&
+      ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
+        ChainController.state.activeCaipNetwork.chainNamespace
+      )
+    )
+  },
+
   // -- Getters ----------------------------------------- //
   async fetchExchanges() {
     try {
-      if (!state.paymentAsset) {
+      const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+
+      if (!state.paymentAsset || !isPayWithExchangeSupported) {
         state.exchanges = []
         state.isLoading = false
 
