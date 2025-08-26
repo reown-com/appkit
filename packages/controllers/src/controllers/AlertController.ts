@@ -54,6 +54,16 @@ const controller = {
     }
   },
 
+  warn(title: string, description: string, code: string) {
+    state.open = true
+    state.message = title
+    state.variant = 'warning'
+
+    if (description) {
+      console.warn(description, code)
+    }
+  },
+
   close() {
     state.open = false
     state.message = ''

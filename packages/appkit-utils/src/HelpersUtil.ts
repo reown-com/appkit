@@ -1,4 +1,8 @@
-import { type CaipNetworkId, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import { ChainController, ConnectorController, type Tokens } from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
@@ -75,5 +79,44 @@ export const HelpersUtil = {
 
       tryCheck()
     })
+  },
+
+  /**
+   * Returns the chain namespace from user's chainId which is returned from Auth provider.
+   * @param chainId - The chainId to parse.
+   * @returns The chain namespace.
+   */
+  userChainIdToChainNamespace(chainId: number | string) {
+    if (typeof chainId === 'number') {
+      return CommonConstantsUtil.CHAIN.EVM
+    }
+
+    const [namespace] = chainId.split(':')
+    switch (namespace) {
+      case 'eip155':
+        return CommonConstantsUtil.CHAIN.EVM
+      case 'solana':
+        return CommonConstantsUtil.CHAIN.SOLANA
+      case 'bip122':
+        return CommonConstantsUtil.CHAIN.BITCOIN
+      default:
+        return namespace as ChainNamespace
+    }
+  },
+
+  /**
+   * Get all auth namespaces except the active one
+   * @param activeNamespace - The active namespace
+   * @returns All auth namespaces except the active one
+   */
+  getOtherAuthNamespaces(activeNamespace: ChainNamespace | undefined) {
+    if (!activeNamespace) {
+      return []
+    }
+
+    const authNamespaces = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
+    const otherAuthNamespaces = authNamespaces.filter(ns => ns !== activeNamespace)
+
+    return otherAuthNamespaces
   }
 }
