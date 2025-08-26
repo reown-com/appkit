@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ChainController } from '../../exports'
 import { AccountController } from '../../src/controllers/AccountController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'
+import { OptionsController } from '../../src/controllers/OptionsController'
 import { SnackController } from '../../src/controllers/SnackController'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil'
 import * as ExchangeUtil from '../../src/utils/ExchangeUtil'
@@ -43,6 +45,23 @@ describe('ExchangeController', () => {
   })
 
   describe('fetchExchanges', () => {
+    beforeEach(() => {
+      vi.restoreAllMocks()
+      OptionsController.state.remoteFeatures = { payWithExchange: true }
+      ChainController.state.activeCaipNetwork = {
+        caipNetworkId: 'eip155:1',
+        chainNamespace: 'eip155',
+        id: 1,
+        name: 'Ethereum',
+        nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+        rpcUrls: {
+          default: {
+            http: ['https://rpc.ankr.com/eth']
+          }
+        }
+      }
+    })
+
     it('loads exchanges and truncates to two', async () => {
       const mockResponse = {
         exchanges: [
@@ -94,6 +113,13 @@ describe('ExchangeController', () => {
       await expect(ExchangeController.fetchExchanges()).rejects.toThrow('Unable to get exchanges')
       expect(SnackController.showError).toHaveBeenCalledWith('Unable to get exchanges')
       expect(ExchangeController.state.isLoading).toBe(false)
+    })
+
+    it('does not fetch exchanges when pay with exchange is not enabled', async () => {
+      OptionsController.state.remoteFeatures = { payWithExchange: false }
+      vi.spyOn(ExchangeUtil, 'getExchanges')
+      await ExchangeController.fetchExchanges()
+      expect(ExchangeUtil.getExchanges).not.toHaveBeenCalled()
     })
   })
 
