@@ -33,6 +33,10 @@ function headings() {
   const name = walletName ?? connectorName
   const connectors = ConnectorController.getConnectors()
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
+  const socialProvider = ChainController.getAccountData()?.socialProvider
+  const socialTitle = socialProvider
+    ? socialProvider.charAt(0).toUpperCase() + socialProvider.slice(1)
+    : 'Connect Social'
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
@@ -75,16 +79,16 @@ function headings() {
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
-    SwapSelectToken: 'Select token',
+    SwapSelectToken: 'Select Token',
     SwapPreview: 'Preview Swap',
     WalletSend: 'Send',
     WalletSendPreview: 'Review Send',
     WalletSendSelectToken: 'Select Token',
     WhatIsANetwork: 'What is a network?',
-    WhatIsAWallet: 'What is a wallet?',
+    WhatIsAWallet: 'What is a Wallet?',
     ConnectWallets: 'Connect Wallet',
     ConnectSocials: 'All Socials',
-    ConnectingSocial: ChainController.getAccountData()?.socialProvider ?? 'Connect Social',
+    ConnectingSocial: socialTitle,
     ConnectingMultiChain: 'Select Chain',
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch Chain',
