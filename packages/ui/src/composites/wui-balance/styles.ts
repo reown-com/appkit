@@ -8,7 +8,7 @@ export default css`
     line-height: 38px;
     letter-spacing: -2%;
     text-align: center;
-    font-family: var(--apkt-font-family);
+    font-family: var(--apkt-fontFamily-regular);
   }
 
   .pennies {

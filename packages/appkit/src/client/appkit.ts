@@ -64,6 +64,8 @@ export class AppKit extends AppKitBaseClient {
   // -- Private ------------------------------------------------------------------
 
   private async onAuthProviderConnected(user: W3mFrameTypes.Responses['FrameGetUserResponse']) {
+    const namespace = HelpersUtil.userChainIdToChainNamespace(user?.chainId)
+
     if (user.message && user.signature && user.siwxMessage) {
       // OnAuthProviderConnected is getting triggered when we receive a success event on Social / Email login. At this moment, if SIWX is enabled, we are still adding the session to SIWX. Await this promise to make sure that the modal doesn't show the SIWX Sign Message UI
       await SIWXUtil.addEmbeddedWalletSession(
@@ -84,7 +86,6 @@ export class AppKit extends AppKitBaseClient {
         user.signature
       )
     }
-    const namespace = ChainController.state.activeChain
 
     if (!namespace) {
       throw new Error('AppKit:onAuthProviderConnected - namespace is required')
@@ -255,7 +256,7 @@ export class AppKit extends AppKitBaseClient {
           info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
           type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
           provider,
-          chainId: ChainController.state.activeCaipNetwork?.id,
+          chainId: ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id,
           chain: chainNamespace
         })
         this.setStatus('connected', chainNamespace)

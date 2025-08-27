@@ -1,5 +1,5 @@
 import { elementUpdated, fixture } from '@open-wc/testing'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -8,10 +8,8 @@ import {
   AssetController,
   AssetUtil,
   ChainController,
-  type ConnectionControllerClient,
   EventsController,
   ModalController,
-  type NetworkControllerClient,
   OptionsController,
   RouterController,
   SIWXUtil
