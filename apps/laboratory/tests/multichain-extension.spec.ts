@@ -102,8 +102,10 @@ extensionTest(
   async () => {
     await modalPage.connectToExtensionMultichain('solana')
     await modalValidator.expectConnected()
+
     const extensionSolAddress = (await modalPage.page
-      .getByTestId('w3m-address')
+      .getByTestId('w3m-address-solana')
+      .first()
       .textContent()) as string
 
     await modalPage.switchNetwork('Ethereum', true)
@@ -125,7 +127,8 @@ extensionTest(
     await modalValidator.expectConnected()
 
     const emailEthAddress = (await modalPage.page
-      .getByTestId('w3m-address')
+      .getByTestId('w3m-address-eip155')
+      .first()
       .textContent()) as string
 
     await modalPage.switchNetwork('Solana', true)

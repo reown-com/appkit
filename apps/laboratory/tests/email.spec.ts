@@ -156,7 +156,7 @@ emailTest('it should switch account and network correctly', async ({ library }) 
     await page.closeModal()
     await validator.expectNetworkButton('Solana Testnet')
   } else {
-    const currentAddress = await page.getAddress()
+    const currentAddress = await page.getAddress('eip155')
 
     await page.switchNetwork('Base')
     await validator.expectSwitchedNetworkOnNetworksView('Base')
@@ -168,7 +168,7 @@ emailTest('it should switch account and network correctly', async ({ library }) 
     const [secondAddress] = await page.getActiveConnectionsAddresses()
     await page.switchAccountByAddress(secondAddress as string)
     await page.closeModal()
-    await validator.expectAccountSwitched(currentAddress)
+    await validator.expectAccountSwitched(currentAddress, 'eip155')
     await validator.expectNetworkButton('Base')
   }
 })

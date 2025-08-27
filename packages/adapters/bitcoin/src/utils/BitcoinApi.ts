@@ -5,17 +5,21 @@ export const BitcoinApi: BitcoinApi.Interface = {
   getUTXOs: async ({ network, address }: BitcoinApi.GetUTXOsParams): Promise<BitcoinApi.UTXO[]> => {
     const isTestnet = network.caipNetworkId === bitcoinTestnet.caipNetworkId
 
-    const response = await fetch(
-      `https://mempool.space${isTestnet ? '/testnet' : ''}/api/address/${address}/utxo`
-    )
+    try {
+      const response = await fetch(
+        `https://mempool.space${isTestnet ? '/testnet' : ''}/api/address/${address}/utxo`
+      )
 
-    if (!response.ok) {
-      console.warn(`Failed to fetch UTXOs: ${await response.text()}`)
+      if (!response.ok) {
+        console.warn(`Failed to fetch UTXOs: ${await response.text()}`)
 
+        return []
+      }
+
+      return (await response.json()) as BitcoinApi.UTXO[]
+    } catch (error) {
       return []
     }
-
-    return (await response.json()) as BitcoinApi.UTXO[]
   }
 }
 

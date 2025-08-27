@@ -47,19 +47,19 @@ export type ModalFlavor =
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
-    default: `${baseUrl}library/${library}/`,
-    external: `${baseUrl}library/external/`,
-    siwx: `${baseUrl}library/siwx-default/`,
-    'wagmi-verify-valid': `${baseUrl}library/wagmi-verify-valid/`,
-    'wagmi-verify-domain-mismatch': `${baseUrl}library/wagmi-verify-domain-mismatch/`,
+    default: `${baseUrl}demo?name=${library}`,
+    external: `${baseUrl}demo?name=external`,
+    siwx: `${baseUrl}demo?name=siwx-default`,
+    'wagmi-verify-valid': `${baseUrl}demo?name=wagmi-verify-valid`,
+    'wagmi-verify-domain-mismatch': `${baseUrl}demo?name=wagmi-verify-domain-mismatch`,
     'wagmi-verify-evil': maliciousUrl,
-    'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
-    'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
+    'ethers-verify-valid': `${baseUrl}demo?name=ethers-verify-valid`,
+    'ethers-verify-domain-mismatch': `${baseUrl}demo?name=ethers-verify-domain-mismatch`,
     'ethers-verify-evil': maliciousUrl,
-    'core-sign-client': `${baseUrl}core/sign-client/`
+    'core-sign-client': `${baseUrl}core/sign-client`
   }
 
-  return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
+  return urlsByFlavor[flavor] || `${baseUrl}demo?name=${library}-${flavor}`
 }
 
 export class ModalPage {
@@ -79,11 +79,13 @@ export class ModalPage {
     this.connectButton = this.page.getByTestId('connect-button').first()
 
     if (library === 'multichain-ethers-solana') {
-      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+      this.url = `${this.baseURL}demo?name=multichain-ethers-solana`
     } else if (library === 'default-account-types-sa' || library === 'default-account-types-eoa') {
-      this.url = `${this.baseURL}flag/${library}/`
+      this.url = `${this.baseURL}demo?name=flag-${library}`
     } else if (flavor === 'flag-enable-reconnect') {
-      this.url = `${this.baseURL}flag/enable-reconnect/${library}`
+      this.url = `${this.baseURL}demo?name=${flavor}-${library}`
+    } else if (flavor === 'siwe') {
+      this.url = `${this.baseURL}demo?name=${library}-all`
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
@@ -106,10 +108,20 @@ export class ModalPage {
 
   async load() {
     if (this.flavor === 'wagmi-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/wagmi-verify-evil/')
+      await routeInterceptUrl(
+        this.page,
+        maliciousUrl,
+        this.baseURL,
+        '/demo?name=wagmi-verify-evil/'
+      )
     }
     if (this.flavor === 'ethers-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/ethers-verify-evil/')
+      await routeInterceptUrl(
+        this.page,
+        maliciousUrl,
+        this.baseURL,
+        '/demo?name=ethers-verify-evil/'
+      )
     }
 
     await this.page.goto(this.url)

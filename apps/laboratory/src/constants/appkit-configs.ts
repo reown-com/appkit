@@ -36,11 +36,12 @@ const connectors = [externalTestConnector()]
 const commonAppKitConfig = {
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  customWallets: ConstantsUtil.CustomWallets
+  customWallets: ConstantsUtil.CustomWallets,
+  projectId: ConstantsUtil.ProjectId
 }
 const commonWagmiConfig = {
   ssr: true,
-  networks: ConstantsUtil.EvmNetworks,
+  networks: ConstantsUtil.AllNetworks,
   projectId: ConstantsUtil.ProjectId
 } as WagmiConfig
 
@@ -92,6 +93,7 @@ export const appKitConfigs = {
   'wagmi-verify-domain-mismatch': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     metadata: {
       name: 'AppKit',
@@ -103,6 +105,7 @@ export const appKitConfigs = {
   'wagmi-verify-evil': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     // Special project ID with https://malicious-app-verify-simulation.vercel.app/ as the verified domain and this domain is marked as a scam
     projectId: '9d176efa3150a1df0a76c8c138b6b657'
@@ -110,6 +113,7 @@ export const appKitConfigs = {
   'wagmi-verify-valid': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     // Special project ID with verify enabled on localhost
     projectId: 'e4eae1aad4503db9966a04fd045a7e4d'
@@ -117,6 +121,7 @@ export const appKitConfigs = {
   'wagmi-permission-async': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     features: {
       smartSessions: true,
@@ -127,6 +132,7 @@ export const appKitConfigs = {
   'wagmi-permission-sync': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     features: {
       smartSessions: true,
@@ -297,6 +303,7 @@ export const appKitConfigs = {
   // ----- Multichain Variants ------------------------------
   'multichain-all': {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana', 'bitcoin'],
     networks: ConstantsUtil.AllNetworks
   },
@@ -307,17 +314,20 @@ export const appKitConfigs = {
   },
   'multichain-wagmi-solana': {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana'],
     networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
   },
   'multichain-wagmi-solana-siwe': {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana'],
     networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
     siweConfig
   },
   'multichain-wagmi-bitcoin': {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'bitcoin'],
     networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.BitcoinNetworks]
   },
@@ -365,12 +375,14 @@ export const appKitConfigs = {
   },
   'universal-links': {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi'],
     networks: ConstantsUtil.EvmNetworks,
     experimental_preferUniversalLinks: true
   },
   external: {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi'],
     networks: ConstantsUtil.EvmNetworks,
     connectors,
@@ -381,12 +393,14 @@ export const appKitConfigs = {
   'flag-custom-rpc-url': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     customRpcUrls
   },
   'flag-default-account-types-eoa': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     defaultAccountTypes: {
       eip155: 'eoa'
@@ -395,6 +409,7 @@ export const appKitConfigs = {
   'flag-default-account-types-sa': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     defaultAccountTypes: {
       eip155: 'smartAccount'
@@ -414,6 +429,7 @@ export const appKitConfigs = {
   },
   'flag-enable-reconnect-wagmi': {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana', 'bitcoin'],
     networks: ConstantsUtil.AllNetworks,
     enableReconnect: false
@@ -421,6 +437,7 @@ export const appKitConfigs = {
   'flag-exclude-wallet-ids': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     excludeWalletIds: ['2bd8c14e035c2d48f184aaa168559e86b0e3433228d3c4075900a221785019b0']
   }

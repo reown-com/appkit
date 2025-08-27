@@ -61,6 +61,7 @@ test('should connect multiple wallets', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   // Connect WalletConnect wallet
   await modal.qrCodeFlow(modal, wallet)
@@ -73,7 +74,7 @@ test('should connect multiple wallets', async ({ library }) => {
   await extensionWallet.click()
   await modal.closeModal()
   await validator.expectConnected()
-  extensionAddress = await modal.getAddress()
+  extensionAddress = await modal.getAddress(namespace)
 
   // Validate ProfileWallets view
   await modal.openProfileWalletsView()
@@ -86,9 +87,10 @@ test('should sign with each wallet', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await modal.openProfileWalletsView()
-  const currentAddress = await modal.getAddress()
+  const currentAddress = await modal.getAddress(namespace)
   const activeConnectionsAddresses = await modal.getActiveConnectionsAddresses()
   await modal.closeModal()
 
@@ -132,11 +134,12 @@ test('should disconnect all wallets', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await modal.openProfileWalletsView()
 
   for (const [idx] of CONNECTOR_IDS_TO_DISCONNECT.entries()) {
-    const address = await modal.getAddress()
+    const address = await modal.getAddress(namespace)
 
     if (!address) {
       throw new Error('No address found')
@@ -150,7 +153,7 @@ test('should disconnect all wallets', async ({ library }) => {
     if (isLastConnectorId) {
       await validator.expectDisconnected()
     } else {
-      await validator.expectAccountSwitched(address)
+      await validator.expectAccountSwitched(address, namespace)
     }
   }
 })
