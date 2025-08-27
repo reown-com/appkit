@@ -19,7 +19,6 @@ import type {
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AccountState } from '../controllers/ChainController.js'
-import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
@@ -1094,25 +1093,11 @@ export interface NetworkControllerClient {
   }>
 }
 
-export type AdapterNetworkState = {
-  supportsAllNetworks: boolean
-  isUnsupportedChain?: boolean
-  _client?: NetworkControllerClient
-  caipNetwork?: CaipNetwork
+export type NamespaceState = {
+  activeCaipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
-  smartAccountEnabledNetworks?: number[]
-}
-
-export type ChainAdapter = {
-  connectionControllerClient?: ConnectionControllerClient
-  networkControllerClient?: NetworkControllerClient
-  accountState?: AccountState
-  networkState?: AdapterNetworkState
-  namespace?: ChainNamespace
-  caipNetworks?: CaipNetwork[]
-  projectId?: string
-  adapterType?: string
+  supportsAllNetworks?: boolean
 }
 
 export type ProviderEventListener = {
