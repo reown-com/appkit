@@ -2,9 +2,12 @@ import type { CreateConfigParameters } from 'wagmi'
 
 import type { CreateAppKit } from '@reown/appkit'
 import type { AppKitNetwork, CustomRpcUrlMap } from '@reown/appkit-common'
+import { DefaultSIWX, ReownAuthentication } from '@reown/appkit-siwx'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
+
+import { externalTestConnector } from '../utils/ConnectorUtil'
 
 export type Adapter = 'wagmi' | 'ethers' | 'ethers5' | 'solana' | 'bitcoin'
 export type WagmiConfig = Partial<CreateConfigParameters> & {
@@ -21,6 +24,15 @@ export type AppKitConfigObject = Record<
   }
 >
 
+const customRpcUrls = {
+  'eip155:1': [{ url: 'https://ethereum-rpc.publicnode.com' }],
+  'eip155:137': [{ url: 'https://polygon-bor-rpc.publicnode.com' }],
+  'eip155:42161': [{ url: 'https://arbitrum-rpc.publicnode.com' }],
+  'eip155:10': [{ url: 'https://optimism-rpc.publicnode.com' }],
+  'eip155:100': [{ url: 'https://gnosis-rpc.publicnode.com' }],
+  'eip155:8453': [{ url: 'https://base-rpc.publicnode.com' }]
+}
+const connectors = [externalTestConnector()]
 const commonAppKitConfig = {
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
@@ -74,6 +86,59 @@ export const appKitConfigs = {
     wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     debug: true
+  },
+
+  // ----- Wagmi Custom Variants ------------------------------
+  'wagmi-verify-domain-mismatch': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    metadata: {
+      name: 'AppKit',
+      description: 'AppKit Laboratory',
+      url: 'https://example.com',
+      icons: []
+    }
+  },
+  'wagmi-verify-evil': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    // Special project ID with https://malicious-app-verify-simulation.vercel.app/ as the verified domain and this domain is marked as a scam
+    projectId: '9d176efa3150a1df0a76c8c138b6b657'
+  },
+  'wagmi-verify-valid': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    // Special project ID with verify enabled on localhost
+    projectId: 'e4eae1aad4503db9966a04fd045a7e4d'
+  },
+  'wagmi-permission-async': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    features: {
+      smartSessions: true,
+      emailShowWallets: false,
+      socials: []
+    }
+  },
+  'wagmi-permission-sync': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    features: {
+      smartSessions: true,
+      emailShowWallets: false,
+      socials: []
+    }
+  },
+  'wagmi-no-ssr': {
+    ...commonAppKitConfig,
+    wagmiConfig: { ...commonWagmiConfig, ssr: false },
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks
   },
 
   // ----- Ethers5 Variants ------------------------------
@@ -150,6 +215,33 @@ export const appKitConfigs = {
     adapters: ['ethers'],
     networks: ConstantsUtil.EvmNetworks,
     debug: true
+  },
+
+  // ----- Ethers Custom Variants ------------------------------
+  'ethers-verify-domain-mismatch': {
+    ...commonAppKitConfig,
+    adapters: ['ethers'],
+    networks: ConstantsUtil.EvmNetworks,
+    metadata: {
+      name: 'AppKit',
+      description: 'AppKit Laboratory',
+      url: 'https://example.com',
+      icons: []
+    }
+  },
+  'ethers-verify-evil': {
+    ...commonAppKitConfig,
+    adapters: ['ethers'],
+    networks: ConstantsUtil.EvmNetworks,
+    // Special project ID with https://malicious-app-verify-simulation.vercel.app/ as the verified domain and this domain is marked as a scam
+    projectId: '9d176efa3150a1df0a76c8c138b6b657'
+  },
+  'ethers-verify-valid': {
+    ...commonAppKitConfig,
+    adapters: ['ethers'],
+    networks: ConstantsUtil.EvmNetworks,
+    // Special project ID with verify enabled on localhost
+    projectId: 'e4eae1aad4503db9966a04fd045a7e4d'
   },
 
   // ----- Bitcoin Variants ------------------------------
@@ -250,5 +342,88 @@ export const appKitConfigs = {
     adapters: ['ethers5', 'solana'],
     networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
     siweConfig
+  },
+
+  // ----- Custom Variants ------------------------------
+  'siwx-default': {
+    ...commonAppKitConfig,
+    adapters: ['ethers', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'reown-authentication': {
+    ...commonAppKitConfig,
+    adapters: ['ethers', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    siwx: new ReownAuthentication()
+  },
+  'pay-default': {
+    ...commonAppKitConfig,
+    adapters: ['ethers', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    features: { pay: true }
+  },
+  'universal-links': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    experimental_preferUniversalLinks: true
+  },
+  external: {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    connectors,
+    featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa']
+  },
+
+  // ----- Flags -------------------------
+  'flag-custom-rpc-url': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    customRpcUrls
+  },
+  'flag-default-account-types-eoa': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    defaultAccountTypes: {
+      eip155: 'eoa'
+    }
+  },
+  'flag-default-account-types-sa': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    defaultAccountTypes: {
+      eip155: 'smartAccount'
+    }
+  },
+  'flag-enable-reconnect-ethers': {
+    ...commonAppKitConfig,
+    adapters: ['ethers', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    enableReconnect: false
+  },
+  'flag-enable-reconnect-ethers5': {
+    ...commonAppKitConfig,
+    adapters: ['ethers5', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    enableReconnect: false
+  },
+  'flag-enable-reconnect-wagmi': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    enableReconnect: false
+  },
+  'flag-exclude-wallet-ids': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    excludeWalletIds: ['2bd8c14e035c2d48f184aaa168559e86b0e3433228d3c4075900a221785019b0']
   }
+
+  // ----- Core -------------------------
 } as AppKitConfigObject
