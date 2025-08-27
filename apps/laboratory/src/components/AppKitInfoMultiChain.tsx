@@ -46,8 +46,8 @@ function AccountCard({
 }) {
   const caipAddress = account?.caipAddress
 
-  const { embeddedWalletInfo } = useAppKitAccount({ namespace: namespace as ChainNamespace })
-  const { walletInfo } = useWalletInfo(namespace as ChainNamespace)
+  const { embeddedWalletInfo } = useAppKitAccount({ namespace })
+  const { walletInfo } = useWalletInfo(namespace)
   const appKitAccount = useAppKitAccount()
 
   const isEIP155 = caipAddress?.startsWith('eip155:')

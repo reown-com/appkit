@@ -108,19 +108,14 @@ export class ModalPage {
 
   async load() {
     if (this.flavor === 'wagmi-verify-evil') {
-      await routeInterceptUrl(
-        this.page,
-        maliciousUrl,
-        this.baseURL,
-        '/demo?name=wagmi-verify-evil/'
-      )
+      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/demo?name=wagmi-verify-evil')
     }
     if (this.flavor === 'ethers-verify-evil') {
       await routeInterceptUrl(
         this.page,
         maliciousUrl,
         this.baseURL,
-        '/demo?name=ethers-verify-evil/'
+        '/demo?name=ethers-verify-evil'
       )
     }
 
