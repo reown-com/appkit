@@ -96,6 +96,10 @@ describe('W3mOnRampProvidersView', () => {
     const routerPushSpy = vi.spyOn(RouterController, 'push')
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
+      preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    } as unknown as AccountState)
 
     const parameterizedUrl = 'https://meldcrypto.com'
     const mockState = vi.spyOn(OnRampController, 'state', 'get').mockReturnValue({

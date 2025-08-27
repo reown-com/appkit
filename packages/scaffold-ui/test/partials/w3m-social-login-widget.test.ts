@@ -60,10 +60,14 @@ describe('W3mSocialLoginWidget', () => {
       'width=600,height=800,scrollbars=yes'
     )
     expect(ChainController.setAccountProp).toHaveBeenCalledWith(
+      'socialProvider',
+      'google',
+      'eip155'
+    )
+    expect(ChainController.setAccountProp).toHaveBeenCalledWith(
       'socialWindow',
       mockWindow,
-      'eip155',
-      true
+      'eip155'
     )
     expect(mockWindow.location.href).toBe(mockUri)
   })

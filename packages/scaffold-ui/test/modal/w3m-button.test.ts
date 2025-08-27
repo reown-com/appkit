@@ -116,7 +116,6 @@ describe('W3mButton', () => {
           ConstantsUtil.CHAIN.SOLANA,
           {
             accountState: {
-              ...ChainController.getAccountData('solana'),
               caipAddress:
                 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:FyTsuBMnCAHKYaBUJ5rkd79rzdPu5VSpMwYh3hPhEuAn'
             }
@@ -126,7 +125,6 @@ describe('W3mButton', () => {
           ConstantsUtil.CHAIN.EVM,
           {
             accountState: {
-              ...ChainController.getAccountData('eip155'),
               caipAddress: 'eip155:1:0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831'
             }
           }

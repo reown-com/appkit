@@ -439,8 +439,7 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
 
     const activeProfile = element.shadowRoot?.querySelector(ACTIVE_PROFILE_WALLET)
 
-    expect(activeProfile?.iconBadge).toBe('lightbulb')
-    expect(activeProfile?.iconBadgeSize).toBe('md')
+    expect(activeProfile?.iconBadge).toBeUndefined()
   })
 })
 

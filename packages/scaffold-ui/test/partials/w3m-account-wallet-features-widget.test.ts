@@ -45,7 +45,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     } as unknown as AccountState)
     expect(() =>
       fixture(html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`)
-    ).rejects.toThrow('w3m-account-view: No account provided')
+    ).rejects.toThrow('w3m-account-features-widget: No account provided')
   })
 
   it('it should return all components if address is provided in AccountsController', async () => {

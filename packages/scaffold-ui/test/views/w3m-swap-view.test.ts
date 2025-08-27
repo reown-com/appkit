@@ -289,71 +289,45 @@ describe('W3mSwapView', () => {
     vi.mocked(SwapController.resetState).mockClear()
     vi.mocked(SwapController.initializeState).mockClear()
 
-    const subscribeKeySpy = vi.spyOn(ChainController, 'subscribeKey')
+    const subscribeChainPropSpy = vi.spyOn(ChainController, 'subscribeChainProp')
 
     const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
     await element.updateComplete
 
-    expect(subscribeKeySpy.mock.calls.length).to.be.greaterThan(0)
+    expect(subscribeChainPropSpy.mock.calls.length).to.be.greaterThan(0)
 
-    // Use the correct key from ChainControllerState, which is likely 'activeCaipAddress'
-    const hasActiveCaipAddressCall = subscribeKeySpy.mock.calls.some(
-      call => call[0] === 'activeCaipAddress'
-    )
-    expect(hasActiveCaipAddressCall).to.be.true
+    // Ensure we registered for 'accountState' updates
+    const accountStateCallback = subscribeChainPropSpy.mock.calls.find(
+      call => call[0] === 'accountState'
+    )?.[1] as ((val: Partial<AccountState>) => void) | undefined
 
-    // Get the callback function that was registered for activeCaipAddress changes
-    const activeCaipAddressCallArgs = subscribeKeySpy.mock.calls
-      .filter(call => call[0] === 'activeCaipAddress')
-      .map(call => call[1])
-    const callbacks = activeCaipAddressCallArgs.map((call: any) => call)
-
-    // Verify callback exists
-    expect(callbacks.length > 0).to.be.true
+    expect(Boolean(accountStateCallback)).to.be.true
 
     // Test 1: Same caipAddress should not trigger resets
     const currentCaipAddress = 'eip155:1:0x123456789abcdef123456789abcdef123456789a'
     vi.mocked(SwapController.resetState).mockClear()
     vi.mocked(SwapController.initializeState).mockClear()
 
-    for (const callback of callbacks) {
-      callback!(currentCaipAddress)
-    }
+    accountStateCallback?.({ caipAddress: currentCaipAddress })
 
-    // Verify methods were NOT called when address hasn't changed
     expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(0)
     expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
 
-    // Test 2: Different caipAddress should trigger resets
+    // Test 2: Different caipAddress should trigger reset
     vi.mocked(SwapController.resetState).mockClear()
     vi.mocked(SwapController.initializeState).mockClear()
 
     const newCaipAddress = 'eip155:1:0xabcdef123456789abcdef123456789abcdef1234'
+    accountStateCallback?.({ caipAddress: newCaipAddress })
 
-    // Call the first callback (from constructor) which should reset state
-    callbacks[0]!(newCaipAddress)
-
-    // Verify resetState was called
     expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(1)
-    expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
-
-    // Clear mocks for the second callback
-    vi.mocked(SwapController.resetState).mockClear()
-    vi.mocked(SwapController.initializeState).mockClear()
-
-    // Call the second callback (from unsubscribe array) which should NOT initialize state
-    // because the caipAddress property has already been updated by the first callback
-    callbacks[1]!(newCaipAddress)
-
-    // Verify initializeState was NOT called
-    expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(0)
     expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
   })
 
   it('should set initial state with preselected tokens', async () => {
     const element = await fixture<W3mSwapView>(
       html`<w3m-swap-view
-        initialParams='{"fromToken": "AAAA","toToken":"BBBB","amount":"321.123"}'
+        .initialParams=${{ fromToken: 'AAAA', toToken: 'BBBB', amount: '321.123' }}
       ></w3m-swap-view>`
     )
 
@@ -407,8 +381,8 @@ describe('W3mSwapView', () => {
       .filter(call => call[0] === 'accountState')
       .map(call => call[1])
 
-    vitestExpect(chainCallbacks.length).toBe(2)
-    vitestExpect(accountCallbacks.length).toBe(2)
+    vitestExpect(chainCallbacks.length).toBe(1)
+    vitestExpect(accountCallbacks.length).toBe(1)
 
     element.disconnectedCallback()
 

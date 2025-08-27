@@ -56,7 +56,7 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
     element.disconnectedCallback()
 
     expect(mockSocialWindow.close).toHaveBeenCalled()
-    expect(setSocialWindowSpy).toHaveBeenCalledWith('socialWindow', undefined, 'eip155', true)
+    expect(setSocialWindowSpy).toHaveBeenCalledWith('socialWindow', undefined, 'eip155')
   })
 })
 
@@ -91,10 +91,12 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
     vi.spyOn(ChainController, 'subscribe').mockImplementationOnce(() => {
       return () => {}
     })
-    vi.spyOn(ChainController, 'subscribeKey').mockImplementationOnce((_property, callback) => {
-      subscriptionCallback = callback
-      return () => {}
-    })
+    vi.spyOn(ChainController, 'subscribeChainProp').mockImplementationOnce(
+      (_property, callback) => {
+        subscriptionCallback = callback
+        return () => {}
+      }
+    )
 
     await fixture(html`<w3m-connecting-social-view></w3m-connecting-social-view>`)
 
@@ -148,10 +150,12 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
     vi.spyOn(ChainController, 'subscribe').mockImplementationOnce(() => {
       return () => {}
     })
-    vi.spyOn(ChainController, 'subscribeKey').mockImplementationOnce((_property, callback) => {
-      subscriptionCallback = callback
-      return () => {}
-    })
+    vi.spyOn(ChainController, 'subscribeChainProp').mockImplementationOnce(
+      (_property, callback) => {
+        subscriptionCallback = callback
+        return () => {}
+      }
+    )
 
     await fixture(html`<w3m-connecting-social-view></w3m-connecting-social-view>`)
 
