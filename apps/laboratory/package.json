@@ -106,9 +106,7 @@
     "playwright:debug:reown-authentication-email": "pnpm playwright:test:reown-authentication-email --debug",
     "playwright:debug:multi-wallet": "playwright test --grep 'multi-wallet.spec.ts' --debug",
     "playwright:debug:multi-wallet-siwx": "playwright test --grep 'multi-wallet-siwx.spec.ts' --debug",
-    "playwright:debug:multi-wallet-multichain": "playwright test --grep 'multi-wallet-multichain.spec.ts' --debug",
-    "prebuild": "node -e \"require('fs').writeFileSync('.build-start', Date.now().toString())\"",
-    "postbuild": "node -e \"const fs=require('fs'); const s=+fs.readFileSync('.build-start','utf8'); const d=Date.now()-s; const m=Math.floor(d/60000); const sec=Math.round((d%60000)/1000); console.log('\\nBuild completed in ' + m + 'm ' + sec + 's (' + d + ' ms)\\n'); try{fs.unlinkSync('.build-start')}catch(e){}\""
+    "playwright:debug:multi-wallet-multichain": "playwright test --grep 'multi-wallet-multichain.spec.ts' --debug"
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "1.2.0",

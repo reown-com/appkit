@@ -105,7 +105,6 @@ extensionTest(
 
     const extensionSolAddress = (await modalPage.page
       .getByTestId('w3m-address-solana')
-      .first()
       .textContent()) as string
 
     await modalPage.switchNetwork('Ethereum', true)
@@ -128,7 +127,6 @@ extensionTest(
 
     const emailEthAddress = (await modalPage.page
       .getByTestId('w3m-address-eip155')
-      .first()
       .textContent()) as string
 
     await modalPage.switchNetwork('Solana', true)
