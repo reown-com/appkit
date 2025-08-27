@@ -102,6 +102,7 @@ extensionTest(
   async () => {
     await modalPage.connectToExtensionMultichain('solana')
     await modalValidator.expectConnected()
+
     const extensionSolAddress = (await modalPage.page
       .getByTestId('w3m-address')
       .textContent()) as string
@@ -129,9 +130,15 @@ extensionTest(
       .textContent()) as string
 
     await modalPage.switchNetwork('Solana', true)
+    await modalValidator.expectAccountSwitched(extensionSolAddress)
+
+    const emailSolAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
     await modalPage.closeModal()
     await modalValidator.expectConnected()
-    await modalValidator.expectAccountButtonAddress(extensionSolAddress)
+    await modalValidator.expectAccountButtonAddress(emailSolAddress)
     await modalValidator.expectNoUnsupportedUIOnAccountButton()
 
     // Disconnect from Ethereum
