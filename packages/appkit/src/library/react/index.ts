@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { useEffect, useState } from 'react'
 
+import { useSnapshot } from 'valtio'
+
 import type { ChainNamespace } from '@reown/appkit-common'
 import type {
   AppKitAccountButton,
@@ -76,29 +78,7 @@ export function getAppKit(appKit: AppKit) {
 export * from '@reown/appkit-controllers/react'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
-  const [providers, setProviders] = useState(ProviderUtil.state.providers)
-  const [providerIds, setProviderIds] = useState(ProviderUtil.state.providerIds)
-
-  useEffect(() => {
-    const unsubscribeProviders = ProviderUtil.subscribeKey(
-      'providers',
-      (newProviders: ProviderStoreUtilState['providers']) => {
-        setProviders(newProviders)
-      }
-    )
-
-    const unsubscribeProviderIds = ProviderUtil.subscribeKey(
-      'providerIds',
-      (newProviderIds: ProviderStoreUtilState['providerIds']) => {
-        setProviderIds(newProviderIds)
-      }
-    )
-
-    return () => {
-      unsubscribeProviders()
-      unsubscribeProviderIds()
-    }
-  }, [])
+  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
   const walletProvider = providers[chainNamespace] as T
   const walletProviderType = providerIds[chainNamespace]
