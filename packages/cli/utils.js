@@ -55,10 +55,13 @@ export async function cloneRepository(repoUrl, directoryName) {
   }
 }
 
-export async function runReactNativeCLI() {
+export async function runReactNativeCLI(directoryName) {
   const { execSync } = await import('child_process')
   try {
-    execSync('npx @reown/appkit-react-native-cli --no-banner', { stdio: 'inherit' })
+    const nameCommand = directoryName ? `--name ${directoryName}` : ''
+    execSync(`npx @reown/appkit-react-native-cli --no-banner ${nameCommand}`, {
+      stdio: 'inherit'
+    })
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error running AppKit React Native CLI:', error.message)

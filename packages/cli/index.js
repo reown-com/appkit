@@ -67,7 +67,7 @@ export async function main() {
   const answerFramework = await questionFramework()
 
   if (answerFramework.framework === 'react-native') {
-    await runReactNativeCLI()
+    await runReactNativeCLI(directoryName)
 
     return
   }
