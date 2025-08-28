@@ -11,7 +11,7 @@ import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
-import type { Adapter } from '../constants/appkit-configs'
+import type { Adapter, AppKitConfigObject } from '../constants/appkit-configs'
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
@@ -22,19 +22,22 @@ import { UpaTests } from './UPA/UpaTests'
 const embeddedWalletOptions = [...ConstantsUtil.Socials, ConstantsUtil.Email]
 
 export default function DemoContent({
-  adapters,
-  evmAdapter,
-  siwxEnabled,
-  siweEnabled
+  config
 }: {
-  adapters: Adapter[] | undefined
-  siwxEnabled: boolean
-  evmAdapter?: 'ethers' | 'ethers5' | 'wagmi'
-  siweEnabled: boolean
+  config: AppKitConfigObject[string] | undefined
 }) {
+  const hasNoAdapters = config?.adapters?.length === 0
+  const solanaAdapter = config?.adapters?.find(adapter => adapter === 'solana')
+  const bitcoinAdapter = config?.adapters?.find(adapter => adapter === 'bitcoin')
+  const evmAdapter = config?.adapters?.find(
+    adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
+  )
+  const siwxEnabled = Boolean(config?.siwx)
+  const siweEnabled = Boolean(config?.siweConfig)
+
   return (
     <>
-      <AppKitButtonsMultiChain adapters={adapters} />
+      <AppKitButtonsMultiChain adapters={config?.adapters} />
       <AppKitInfoMultiChain />
       <EmbeddedWalletInfo />
       {siweEnabled ? <SiweData /> : null}
@@ -47,26 +50,32 @@ export default function DemoContent({
       {evmAdapter === 'wagmi' && <WagmiTests />}
       {evmAdapter === 'ethers5' && <Ethers5Tests />}
       {evmAdapter === 'ethers' && <EthersTests />}
-      <SolanaTests />
-      <BitcoinTests />
-      <UpaTests />
+      {solanaAdapter ? <SolanaTests /> : null}
+      {bitcoinAdapter ? <BitcoinTests /> : null}
+      {hasNoAdapters ? <UpaTests /> : null}
 
-      <AppKitWalletButtons
-        title="EVM Wallet Buttons"
-        namespace="eip155"
-        wallets={[...ConstantsUtil.EvmWalletButtons, ...embeddedWalletOptions]}
-      />
-      <AppKitWalletButtons
-        title="Solana Wallet Buttons"
-        namespace="solana"
-        wallets={[...ConstantsUtil.SolanaWalletButtons, ...embeddedWalletOptions]}
-      />
-      <AppKitWalletButtons
-        title="Bitcoin Wallet Buttons"
-        namespace="bip122"
-        wallets={ConstantsUtil.BitcoinWalletButtons}
-        showActions={false}
-      />
+      {evmAdapter ? (
+        <AppKitWalletButtons
+          title="EVM Wallet Buttons"
+          namespace="eip155"
+          wallets={[...ConstantsUtil.EvmWalletButtons, ...embeddedWalletOptions]}
+        />
+      ) : null}
+      {solanaAdapter ? (
+        <AppKitWalletButtons
+          title="Solana Wallet Buttons"
+          namespace="solana"
+          wallets={[...ConstantsUtil.SolanaWalletButtons, ...embeddedWalletOptions]}
+        />
+      ) : null}
+      {bitcoinAdapter ? (
+        <AppKitWalletButtons
+          title="Bitcoin Wallet Buttons"
+          namespace="bip122"
+          wallets={ConstantsUtil.BitcoinWalletButtons}
+          showActions={false}
+        />
+      ) : null}
     </>
   )
 }

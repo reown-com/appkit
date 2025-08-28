@@ -26,7 +26,7 @@ type SearchParams = {
 }
 
 function resolvePathFromName(name: string) {
-  return appKitConfigs[name] || null
+  return appKitConfigs[name] || undefined
 }
 
 function getAdapters(_adapters: Adapter[] | undefined, wagmiConfig: WagmiConfig | undefined) {
@@ -58,10 +58,7 @@ function getAdapters(_adapters: Adapter[] | undefined, wagmiConfig: WagmiConfig 
 export default function DemoPage({ searchParams }: { searchParams: SearchParams }) {
   const name = searchParams['name']
   const config = resolvePathFromName(name || '')
-  const evmAdapter = config?.adapters?.find(
-    adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
-  )
-  const hasWagmi = evmAdapter === 'wagmi'
+  const hasWagmi = config?.adapters?.includes('wagmi')
 
   if (!config) {
     return null
@@ -77,12 +74,7 @@ export default function DemoPage({ searchParams }: { searchParams: SearchParams 
       <WagmiProvider config={wagmiAdapter?.wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <AppKitProvider config={appKitConfig}>
-            <DemoContent
-              evmAdapter={evmAdapter}
-              adapters={config.adapters}
-              siwxEnabled={Boolean(config.siwx)}
-              siweEnabled={Boolean(config.siweConfig)}
-            />
+            <DemoContent config={config} />
           </AppKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
@@ -96,12 +88,7 @@ export default function DemoPage({ searchParams }: { searchParams: SearchParams 
 
   return (
     <AppKitProvider config={appKitConfig}>
-      <DemoContent
-        evmAdapter={evmAdapter}
-        adapters={config.adapters}
-        siwxEnabled={Boolean(config.siwx)}
-        siweEnabled={Boolean(config.siweConfig)}
-      />
+      <DemoContent config={config} />
     </AppKitProvider>
   )
 }
