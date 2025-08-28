@@ -1,6 +1,10 @@
 'use client'
 
+import { IoArrowBack } from 'react-icons/io5'
+
+import { Box, Button, Card, Heading, Text } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import Link from 'next/link'
 import { WagmiProvider } from 'wagmi'
 
 import type { ChainAdapter } from '@reown/appkit'
@@ -60,8 +64,17 @@ export default function DemoPage({ searchParams }: { searchParams: SearchParams 
   const config = resolvePathFromName(name || '')
   const hasWagmi = config?.adapters?.includes('wagmi')
 
-  if (!config) {
-    return null
+  if (!config || !name) {
+    return (
+      <Card p={4} mt={2}>
+        <Heading size="xs" textTransform="uppercase" pb="2">
+          Config not found
+        </Heading>
+        <Link href="/">
+          <Button leftIcon={<IoArrowBack />}>Home</Button>
+        </Link>
+      </Card>
+    )
   }
 
   if (hasWagmi && config.wagmiConfig) {
@@ -71,7 +84,7 @@ export default function DemoPage({ searchParams }: { searchParams: SearchParams 
     const appKitConfig = { ...config, adapters }
 
     return (
-      <WagmiProvider config={wagmiAdapter?.wagmiConfig}>
+      <WagmiProvider config={wagmiAdapter.wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <AppKitProvider config={appKitConfig}>
             <DemoContent config={config} />
