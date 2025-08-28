@@ -554,7 +554,7 @@ export class ModalPage {
   }
 
   async switchActiveChain() {
-    await this.page.getByText('Switch to', { exact: false }).waitFor()
+    await this.page.locator('w3m-switch-active-chain-view').waitFor()
     await this.page.getByTestId('w3m-switch-active-chain-button').click()
   }
 

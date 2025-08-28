@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "start": "next start",
-    "build": "next build",
+    "build": "next build --turbopack",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
     "playwright:start": "pnpm start",
@@ -148,7 +148,7 @@
     "ethers": "6.14.0",
     "ethers5": "npm:ethers@5.8.0",
     "framer-motion": "10.18.0",
-    "next": "15.3.5",
+    "next": "15.5.2",
     "next-auth": "5.0.0-beta.29",
     "react": "19.1.0",
     "react-dom": "19.1.0",

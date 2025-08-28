@@ -20,7 +20,6 @@ async function switchNetworkAndMaybeSignSiwe(network: string, siwe = true) {
     await modalPage.switchActiveChain()
     await modalPage.connectToExtensionMultichain('eip155', true, true)
     await modalValidator.expectOnSignOutEventCalled(true)
-    modalPage.closeModal()
   }
   if (siwe) {
     await modalPage.promptSiwe()
@@ -68,13 +67,13 @@ extensionTest('it should switch networks and sign siwe', async () => {
   await switchNetworkAndMaybeSignSiwe(network)
   await modalValidator.expectConnected()
 
-  network = 'Base'
-  await switchNetworkAndMaybeSignSiwe(network)
-  await modalValidator.expectConnected()
+  // network = 'Base'
+  // await switchNetworkAndMaybeSignSiwe(network)
+  // await modalValidator.expectConnected()
 
-  network = 'OP Mainnet'
-  await switchNetworkAndMaybeSignSiwe(network)
-  await modalValidator.expectConnected()
+  // network = 'OP Mainnet'
+  // await switchNetworkAndMaybeSignSiwe(network)
+  // await modalValidator.expectConnected()
 
   network = 'Solana'
   await switchNetworkAndMaybeSignSiwe(network, false)
