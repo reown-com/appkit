@@ -11,7 +11,7 @@ import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
-import type { Adapter, AppKitConfigObject } from '../constants/appkit-configs'
+import type { AppKitConfigObject } from '../constants/appkit-configs'
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'

@@ -2,7 +2,7 @@
 
 import { IoArrowBack } from 'react-icons/io5'
 
-import { Box, Button, Card, Heading, Text } from '@chakra-ui/react'
+import { Button, Card, Heading } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Link from 'next/link'
 import { WagmiProvider } from 'wagmi'
