@@ -67,13 +67,13 @@ extensionTest('it should switch networks and sign siwe', async () => {
   await switchNetworkAndMaybeSignSiwe(network)
   await modalValidator.expectConnected()
 
-  // network = 'Base'
-  // await switchNetworkAndMaybeSignSiwe(network)
-  // await modalValidator.expectConnected()
+  network = 'Base'
+  await switchNetworkAndMaybeSignSiwe(network)
+  await modalValidator.expectConnected()
 
-  // network = 'OP Mainnet'
-  // await switchNetworkAndMaybeSignSiwe(network)
-  // await modalValidator.expectConnected()
+  network = 'OP Mainnet'
+  await switchNetworkAndMaybeSignSiwe(network)
+  await modalValidator.expectConnected()
 
   network = 'Solana'
   await switchNetworkAndMaybeSignSiwe(network, false)
