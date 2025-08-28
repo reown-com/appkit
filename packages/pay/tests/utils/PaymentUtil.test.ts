@@ -32,6 +32,9 @@ vi.mock('@reown/appkit-controllers', () => ({
   },
   CoreHelperUtil: {
     sortRequestedNetworks: vi.fn()
+  },
+  ProviderController: {
+    getProvider: vi.fn()
   }
 }))
 
