@@ -18,6 +18,7 @@ import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { type UseAppKitAccountReturn, useAppKitAccount, useWalletInfo } from '@reown/appkit/react'
 
 import type { AppKitConfigObject } from '../constants/appkit-configs'
+import { AppKitNetworkInfo } from './AppKitNetworkInfo'
 import { RelayClientInfo } from './RelayClientInfo'
 
 function namespaceToTitle(namespace: string | undefined) {
@@ -208,7 +209,10 @@ export function AppKitInfoMultiChain({
         {solanaAdapter && <AccountCard account={solanaAccount} namespace="solana" />}
         {bitcoinAdapter && <AccountCard account={bitcoinAccount} namespace="bip122" />}
       </Grid>
-      <AccountCard account={currentAccount} />
+      <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }} gap={4}>
+        <AccountCard account={currentAccount} />
+        <AppKitNetworkInfo />
+      </Grid>
     </>
   )
 }
