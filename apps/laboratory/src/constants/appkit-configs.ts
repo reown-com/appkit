@@ -21,6 +21,7 @@ export type AppKitConfigObject = Record<
     projectId?: string
     wagmiConfig?: WagmiConfig
     adapters?: Adapter[]
+    siwxReown?: boolean
   }
 >
 
@@ -365,7 +366,8 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['ethers', 'solana', 'bitcoin'],
     networks: ConstantsUtil.AllNetworks,
-    siwx: new ReownAuthentication()
+    siwx: new ReownAuthentication(),
+    siwxReown: true
   },
   'pay-default': {
     ...commonAppKitConfig,

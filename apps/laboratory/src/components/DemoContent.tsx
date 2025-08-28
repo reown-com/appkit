@@ -12,7 +12,6 @@ import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 import type { AppKitConfigObject } from '../constants/appkit-configs'
-import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
 import { ReownAuthenticationTests } from './ReownAuthentication'
@@ -32,17 +31,17 @@ export default function DemoContent({
   const evmAdapter = config?.adapters?.find(
     adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
   )
-  const siwxEnabled = Boolean(config?.siwx)
+  const siwxReown = Boolean(config?.siwxReown)
   const siweEnabled = Boolean(config?.siweConfig)
   const isMultiChain = config?.adapters?.length && config?.adapters?.length > 1
 
   return (
     <>
       <AppKitButtonsMultiChain adapters={config?.adapters} />
-      <AppKitInfoMultiChain />
-      <EmbeddedWalletInfo />
+      <AppKitInfoMultiChain config={config} />
+
       {siweEnabled ? <SiweData /> : null}
-      {siwxEnabled ? <ReownAuthenticationTests /> : null}
+      {siwxReown ? <ReownAuthenticationTests /> : null}
 
       <AppKitConnections namespace="eip155" title="EVM Connections" />
       <AppKitConnections namespace="solana" title="Solana Connections" />

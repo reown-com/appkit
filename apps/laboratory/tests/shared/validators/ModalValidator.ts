@@ -159,12 +159,6 @@ export class ModalValidator {
     })
   }
 
-  async expectAddress(expectedAddress: string) {
-    const address = this.page.getByTestId('w3m-address')
-
-    await expect(address, 'Correct address should be present').toHaveText(expectedAddress)
-  }
-
   async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
     const address = this.page.getByTestId('w3m-caip-address')
     await expect(address, 'Correct CAIP address should be present').toContainText(

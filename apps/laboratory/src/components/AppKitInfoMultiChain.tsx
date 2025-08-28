@@ -17,7 +17,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { type UseAppKitAccountReturn, useAppKitAccount, useWalletInfo } from '@reown/appkit/react'
 
-import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
+import type { AppKitConfigObject } from '../constants/appkit-configs'
 import { RelayClientInfo } from './RelayClientInfo'
 
 function namespaceToTitle(namespace: string | undefined) {
@@ -42,7 +42,7 @@ function AccountCard({
   namespace
 }: {
   account: UseAppKitAccountReturn | undefined
-  namespace: ChainNamespace
+  namespace?: ChainNamespace
 }) {
   const caipAddress = account?.caipAddress
 
@@ -65,7 +65,9 @@ function AccountCard({
   return (
     <Card data-testid={`${namespace}-account-card`}>
       <CardHeader>
-        <Heading size="md">{namespaceToTitle(namespace)} Account Info</Heading>
+        <Heading size="md">
+          {namespace ? namespaceToTitle(namespace) : 'Current'} Account Info
+        </Heading>
       </CardHeader>
 
       <CardBody>
@@ -74,33 +76,58 @@ function AccountCard({
             <Heading size="xs" textTransform="uppercase" pb="2">
               CAIP Address
             </Heading>
-            <Text data-testid="w3m-caip-address">{account?.caipAddress || '-'}</Text>
+            <Text data-testid={`w3m-caip-address${namespace ? `-${namespace}` : ''}`}>
+              {account?.caipAddress || '-'}
+            </Text>
           </Box>
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Address
             </Heading>
-            <Text data-testid={`w3m-address-${namespace}`}>{account?.address || '-'}</Text>
+            <Text data-testid={`w3m-address${namespace ? `-${namespace}` : ''}`}>
+              {account?.address || '-'}
+            </Text>
           </Box>
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Chain Specific Address (ERC-3770)
             </Heading>
-            <Text data-testid="w3m-erc3770-address">{erc3770Address || '-'}</Text>
+            <Text data-testid={`w3m-erc3770-address${namespace ? `-${namespace}` : ''}`}>
+              {erc3770Address || '-'}
+            </Text>
           </Box>
 
-          {embeddedWalletInfo && (
+          {embeddedWalletInfo ? (
             <Box>
               <Heading size="xs" textTransform="uppercase" pb="2">
                 Embedded Wallet Info
               </Heading>
-              <Text data-testid="w3m-embedded-wallet-info">
-                {JSON.stringify(embeddedWalletInfo, null, 2)}
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Email
+              </Heading>
+              <Text data-testid={`w3m-email${namespace ? `-${namespace}` : ''}`}>
+                {embeddedWalletInfo?.user?.email}
+              </Text>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Account Type
+              </Heading>
+              <Text data-testid={`w3m-account-type${namespace ? `-${namespace}` : ''}`}>
+                {embeddedWalletInfo?.accountType === 'eoa' ? 'EOA' : 'Smart Account'}
+              </Text>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Username
+              </Heading>
+              <Text>{embeddedWalletInfo?.user?.username}</Text>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Smart Account Status
+              </Heading>
+              <Text data-testid={`w3m-sa-account-status${namespace ? `-${namespace}` : ''}`}>
+                {embeddedWalletInfo?.isSmartAccountDeployed ? 'Deployed' : 'Not Deployed'}
               </Text>
             </Box>
-          )}
+          ) : null}
 
           {walletInfo && (
             <Box>
@@ -111,7 +138,9 @@ function AccountCard({
                 <Text fontWeight="bold" color="gray.500">
                   Type
                 </Text>
-                <Text data-testid="w3m-wallet-type">{walletInfo.type}</Text>
+                <Text data-testid={`w3m-wallet-type${namespace ? `-${namespace}` : ''}`}>
+                  {walletInfo.type}
+                </Text>
               </Box>
               <Box>
                 <Text fontWeight="bold" color="gray.500">
@@ -127,7 +156,9 @@ function AccountCard({
                       unoptimized
                     />
                   ) : null}
-                  <Text data-testid="w3m-wallet-name">{walletInfo.name}</Text>
+                  <Text data-testid={`w3m-wallet-name${namespace ? `-${namespace}` : ''}`}>
+                    {walletInfo.name}
+                  </Text>
                 </Box>
               </Box>
             </Box>
@@ -137,33 +168,47 @@ function AccountCard({
             <Heading size="xs" textTransform="uppercase" pb="2">
               Status
             </Heading>
-            <Text data-testid="apkt-account-status">{appKitAccount?.status || '-'}</Text>
+            <Text data-testid={`apkt-account-status${namespace ? `-${namespace}` : ''}`}>
+              {appKitAccount?.status || '-'}
+            </Text>
           </Box>
 
           <RelayClientInfo />
-
-          <EmbeddedWalletInfo />
         </Stack>
       </CardBody>
     </Card>
   )
 }
 
-export function AppKitInfoMultiChain() {
+export function AppKitInfoMultiChain({
+  config
+}: {
+  config: AppKitConfigObject[string] | undefined
+}) {
+  const evmAdapter = config?.adapters?.find(
+    adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
+  )
+  const solanaAdapter = config?.adapters?.find(adapter => adapter === 'solana')
+  const bitcoinAdapter = config?.adapters?.find(adapter => adapter === 'bitcoin')
+
+  const currentAccount = useAppKitAccount()
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
 
   return (
-    <Grid
-      templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
-      gap={4}
-      marginTop={4}
-      marginBottom={4}
-    >
-      <AccountCard account={evmAccount} namespace="eip155" />
-      <AccountCard account={solanaAccount} namespace="solana" />
-      <AccountCard account={bitcoinAccount} namespace="bip122" />
-    </Grid>
+    <>
+      <Grid
+        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
+        gap={4}
+        marginTop={4}
+        marginBottom={4}
+      >
+        {evmAdapter && <AccountCard account={evmAccount} namespace="eip155" />}
+        {solanaAdapter && <AccountCard account={solanaAccount} namespace="solana" />}
+        {bitcoinAdapter && <AccountCard account={bitcoinAccount} namespace="bip122" />}
+      </Grid>
+      <AccountCard account={currentAccount} />
+    </>
   )
 }
