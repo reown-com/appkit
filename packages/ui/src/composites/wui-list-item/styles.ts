@@ -24,6 +24,10 @@ export default css`
     text-transform: capitalize;
   }
 
+  wui-image {
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+  }
+
   @media (hover: hover) {
     button:hover:enabled {
       background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
