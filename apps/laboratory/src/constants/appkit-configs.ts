@@ -382,10 +382,9 @@ export const appKitConfigs = {
   },
   external: {
     ...commonAppKitConfig,
-    wagmiConfig: commonWagmiConfig,
+    wagmiConfig: { ...commonWagmiConfig, connectors },
     adapters: ['wagmi'],
     networks: ConstantsUtil.EvmNetworks,
-    connectors,
     featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa']
   },
 
