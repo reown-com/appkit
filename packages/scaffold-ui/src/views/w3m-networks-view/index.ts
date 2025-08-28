@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -123,15 +122,17 @@ export class W3mNetworksView extends LitElement {
 
   private getNetworkDisabled(network: CaipNetwork) {
     const networkNamespace = network.chainNamespace
-    const isNextNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
+    const isNextNamespaceConnected = Boolean(
+      ChainController.getAccountData(networkNamespace)?.caipAddress
+    )
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
-    const supportsAllNetworks =
+    const shouldSupportAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
     const connectorId = ConnectorController.getConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
-    if (!isNextNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
+    if (!isNextNamespaceConnected || shouldSupportAllNetworks || isConnectedWithAuth) {
       return false
     }
 

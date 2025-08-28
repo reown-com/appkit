@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import {
-  AccountController,
   type AuthConnector,
   ChainController,
   ConnectorController,
@@ -36,7 +35,7 @@ describe('W3mSocialLoginWidget', () => {
       ...OptionsController.state.remoteFeatures,
       socials: ['google']
     })
-    vi.spyOn(AccountController, 'setSocialProvider')
+    vi.spyOn(ChainController, 'setAccountProp')
     vi.spyOn(EventsController, 'sendEvent')
     vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(mockWindow as Window)
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
@@ -46,7 +45,7 @@ describe('W3mSocialLoginWidget', () => {
       },
       type: 'AUTH'
     } as unknown as AuthConnector)
-    vi.spyOn(AccountController, 'setSocialWindow')
+    vi.spyOn(ChainController, 'setAccountProp')
 
     const element: W3mSocialLoginWidget = await fixture(
       html`<w3m-social-login-widget></w3m-social-login-widget>`
@@ -60,7 +59,16 @@ describe('W3mSocialLoginWidget', () => {
       'popupWindow',
       'width=600,height=800,scrollbars=yes'
     )
-    expect(AccountController.setSocialWindow).toHaveBeenCalledWith(mockWindow, 'eip155')
+    expect(ChainController.setAccountProp).toHaveBeenCalledWith(
+      'socialProvider',
+      'google',
+      'eip155'
+    )
+    expect(ChainController.setAccountProp).toHaveBeenCalledWith(
+      'socialWindow',
+      mockWindow,
+      'eip155'
+    )
     expect(mockWindow.location.href).toBe(mockUri)
   })
 
