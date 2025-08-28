@@ -28,7 +28,7 @@ import {
   useDisconnect
 } from '@reown/appkit/react'
 
-import type { Adapter } from '../constants/appkit-configs'
+import type { Adapter } from '../constants/appKitConfigs'
 
 function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
   if (!activeNetwork) {

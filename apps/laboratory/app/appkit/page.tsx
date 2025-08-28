@@ -15,7 +15,7 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 import DemoContent from '@/src/components/DemoContent'
-import { type Adapter, type WagmiConfig, appKitConfigs } from '@/src/constants/appkit-configs'
+import { type Adapter, type WagmiConfig, appKitConfigs } from '@/src/constants/appKitConfigs'
 import { AppKitProvider } from '@/src/context/AppKitContext'
 
 const queryClient = new QueryClient()

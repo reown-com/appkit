@@ -218,7 +218,7 @@ timingFixture.extend<TimingFixtureWithLibrary>({
   const verifyApiNestedIframesTestOuterDomain =
     'https://verify-api-nested-iframes-test-outer-domain.com'
   const outerUrl = verifyApiNestedIframesTestOuterDomain
-  const innerUrl = `${BASE_URL}demo?name=wagmi-verify-valid`
+  const innerUrl = `${BASE_URL}appkit?name=wagmi-verify-valid`
   await rootPage.route(outerUrl, async route => {
     await route.fulfill({
       body: `<iframe name="innerFrame" src="${innerUrl}" style="width:100vw; height:100vh"></iframe>`

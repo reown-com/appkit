@@ -17,7 +17,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { type UseAppKitAccountReturn, useAppKitAccount, useWalletInfo } from '@reown/appkit/react'
 
-import type { AppKitConfigObject } from '../constants/appkit-configs'
+import type { AppKitConfigObject } from '../constants/appKitConfigs'
 import { AppKitNetworkInfo } from './AppKitNetworkInfo'
 import { RelayClientInfo } from './RelayClientInfo'
 
