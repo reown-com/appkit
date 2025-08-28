@@ -15,7 +15,6 @@ import type {
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
 import { ProviderUtil } from '@reown/appkit-utils'
-import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 
 import type {
   AppKitBaseClient as AppKit,
