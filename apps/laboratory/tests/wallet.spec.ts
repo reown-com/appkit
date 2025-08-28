@@ -191,11 +191,11 @@ sampleWalletTest('it should switch between multiple accounts', async ({ library 
     return
   }
 
-  const originalAddress = await modalPage.getAddress('eip155')
+  const originalAddress = await modalPage.getAddress()
   await modalPage.openProfileWalletsView()
   await modalPage.switchAccount()
   await modalPage.closeModal()
-  await modalValidator.expectAccountSwitched(originalAddress, 'eip155')
+  await modalValidator.expectAccountSwitched(originalAddress)
 })
 
 sampleWalletTest('it should show multiple accounts', async ({ library }) => {

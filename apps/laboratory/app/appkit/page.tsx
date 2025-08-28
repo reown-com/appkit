@@ -20,10 +20,9 @@ type SearchParams = {
 }
 
 export default function Page({ searchParams }: { searchParams: SearchParams }) {
-  const name = searchParams['name']
-  const config = getAppKitConfigByName(name || '')
+  const config = getAppKitConfigByName(searchParams['name'] || '')
 
-  if (!config || !name) {
+  if (!config) {
     return (
       <Card p={4} mt={2}>
         <Heading size="xs" textTransform="uppercase" pb="2">

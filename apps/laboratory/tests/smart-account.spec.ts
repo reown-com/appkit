@@ -69,7 +69,7 @@ smartAccountTest('it should sign with smart account 6492 signature', async ({ li
   await validator.expectAcceptedSign()
 
   const signature = await page.getSignature()
-  const address = await page.getAddress(namespace)
+  const address = await page.getAddress()
   const chainId = await page.getChainId()
 
   await validator.expectValidSignature(signature, address, chainId)
@@ -120,7 +120,7 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
   await validator.expectAcceptedSign()
 
   const signature = await page.getSignature()
-  const address = await page.getAddress(namespace)
+  const address = await page.getAddress()
   const chainId = await page.getChainId()
 
   await validator.expectValidSignature(signature, address, chainId)

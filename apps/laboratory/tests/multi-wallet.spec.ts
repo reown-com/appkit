@@ -61,8 +61,6 @@ test('should connect multiple wallets', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-
   // Connect WalletConnect wallet
   await modal.qrCodeFlow(modal, wallet)
   await validator.expectConnected()
@@ -74,7 +72,7 @@ test('should connect multiple wallets', async ({ library }) => {
   await extensionWallet.click()
   await modal.closeModal()
   await validator.expectConnected()
-  extensionAddress = await modal.getAddress(namespace)
+  extensionAddress = await modal.getAddress()
 
   // Validate ProfileWallets view
   await modal.openProfileWalletsView()
@@ -87,10 +85,9 @@ test('should sign with each wallet', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await modal.openProfileWalletsView()
-  const currentAddress = await modal.getAddress(namespace)
+  const currentAddress = await modal.getAddress()
   const activeConnectionsAddresses = await modal.getActiveConnectionsAddresses()
   await modal.closeModal()
 

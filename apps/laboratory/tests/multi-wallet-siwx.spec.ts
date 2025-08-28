@@ -64,14 +64,12 @@ test('should connect multiple wallets with SIWX', async ({ library }) => {
     return
   }
 
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-
   // Connect WalletConnect Wallet
   await modal.qrCodeFlow(modal, wallet)
   await modal.promptSiwe()
   await wallet.handleRequest({ accept: true })
   await validator.expectConnected()
-  walletConnectAddress = await modal.getAddress(namespace)
+  walletConnectAddress = await modal.getAddress()
 
   // Connect Extension Wallet & Sign
   await modal.openProfileWalletsView()
@@ -80,8 +78,8 @@ test('should connect multiple wallets with SIWX', async ({ library }) => {
   await extensionWallet.click()
   await modal.promptSiwe()
   await validator.expectConnected()
-  await validator.expectAccountSwitched(walletConnectAddress, namespace)
-  extensionAddress = await modal.getAddress(namespace)
+  await validator.expectAccountSwitched(walletConnectAddress)
+  extensionAddress = await modal.getAddress()
 })
 
 test('should require SIWX signature when switching networks with multiple wallets', async ({
@@ -90,7 +88,6 @@ test('should require SIWX signature when switching networks with multiple wallet
   if (library === 'bitcoin') {
     return
   }
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   const previouslyConnectedAddresses = [walletConnectAddress, extensionAddress].filter(Boolean)
 
@@ -99,12 +96,12 @@ test('should require SIWX signature when switching networks with multiple wallet
   }
 
   for (const [idx, address] of previouslyConnectedAddresses.entries()) {
-    const _currentAddress = await modal.getAddress(namespace)
+    const _currentAddress = await modal.getAddress()
     await modal.openProfileWalletsView()
     await modal.switchAccountByAddress(address)
 
     await modal.closeModal()
-    await validator.expectAccountSwitched(_currentAddress, namespace)
+    await validator.expectAccountSwitched(_currentAddress)
 
     const network = networks[idx]
 

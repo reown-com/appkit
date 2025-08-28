@@ -77,7 +77,7 @@ test('should connect multiple wallets across all namespaces', async () => {
   const solanaExtensionWallet = await modal.getExtensionWallet()
   await solanaExtensionWallet.click()
 
-  await validator.expectAccountSwitched(walletConnectSolanaAddress, 'solana')
+  await validator.expectAccountSwitched(walletConnectSolanaAddress)
   solanaExtensionWalletAddress = await modal.getActiveProfileWalletItemAddress()
 
   await modal.closeModal()
@@ -94,7 +94,7 @@ test('should connect multiple wallets across all namespaces', async () => {
   const evmExtensionWallet = await modal.getExtensionWallet()
   await evmExtensionWallet.click()
 
-  await validator.expectAccountSwitched(walletConnectEvmAddress, 'eip155')
+  await validator.expectAccountSwitched(walletConnectEvmAddress)
   evmExtensionWalletAddress = await modal.getActiveProfileWalletItemAddress()
 
   await modal.closeModal()
@@ -131,7 +131,7 @@ test('should switch between different wallets across all namespaces', async () =
   await modal.openProfileWalletsView()
   await modal.clickTab('evm')
   await modal.switchAccountByAddress(walletConnectEvmAddress)
-  await validator.expectAccountSwitched(evmExtensionWalletAddress, 'eip155')
+  await validator.expectAccountSwitched(evmExtensionWalletAddress)
   await modal.closeModal()
   await modal.sign('eip155')
   await wallet.handleRequest({ accept: true })
@@ -142,7 +142,7 @@ test('should switch between different wallets across all namespaces', async () =
   await modal.openProfileWalletsView()
   await modal.clickTab('solana')
   await modal.switchAccountByAddress(walletConnectSolanaAddress)
-  await validator.expectAccountSwitched(solanaExtensionWalletAddress, 'solana')
+  await validator.expectAccountSwitched(solanaExtensionWalletAddress)
   await modal.closeModal()
   await modal.sign('solana')
   await wallet.handleRequest({ accept: true })
