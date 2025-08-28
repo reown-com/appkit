@@ -34,6 +34,7 @@ export default function DemoContent({
   )
   const siwxEnabled = Boolean(config?.siwx)
   const siweEnabled = Boolean(config?.siweConfig)
+  const isMultiChain = config?.adapters?.length > 1
 
   return (
     <>
@@ -57,21 +58,21 @@ export default function DemoContent({
       {evmAdapter ? (
         <AppKitWalletButtons
           title="EVM Wallet Buttons"
-          namespace="eip155"
+          namespace={isMultiChain ? 'eip155' : undefined}
           wallets={[...ConstantsUtil.EvmWalletButtons, ...embeddedWalletOptions]}
         />
       ) : null}
       {solanaAdapter ? (
         <AppKitWalletButtons
           title="Solana Wallet Buttons"
-          namespace="solana"
+          namespace={isMultiChain ? 'solana' : undefined}
           wallets={[...ConstantsUtil.SolanaWalletButtons, ...embeddedWalletOptions]}
         />
       ) : null}
       {bitcoinAdapter ? (
         <AppKitWalletButtons
           title="Bitcoin Wallet Buttons"
-          namespace="bip122"
+          namespace={isMultiChain ? 'bip122' : undefined}
           wallets={ConstantsUtil.BitcoinWalletButtons}
           showActions={false}
         />
