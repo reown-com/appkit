@@ -66,15 +66,12 @@ export const siweConfig = createSIWEConfig({
   },
   signOut: async () => {
     try {
-      await signOut({
-        redirect: false
-      })
+      // await signOut({ redirect: false })
       // Some times the first signOut doesn't delete the cookie, so we need to sign out again
+      console.log('@@siweConfig: signOut')
       const session = await getSession()
       if (session) {
-        await signOut({
-          redirect: false
-        })
+        await signOut({ redirect: false })
       }
 
       return true
