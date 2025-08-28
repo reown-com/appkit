@@ -34,7 +34,7 @@ export default function DemoContent({
   )
   const siwxEnabled = Boolean(config?.siwx)
   const siweEnabled = Boolean(config?.siweConfig)
-  const isMultiChain = config?.adapters?.length > 1
+  const isMultiChain = config?.adapters?.length && config?.adapters?.length > 1
 
   return (
     <>
