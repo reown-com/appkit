@@ -12,6 +12,7 @@ import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 import type { Adapter } from '../constants/appkit-configs'
+import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
 import { ReownAuthenticationTests } from './ReownAuthentication'
@@ -35,6 +36,7 @@ export default function DemoContent({
     <>
       <AppKitButtonsMultiChain adapters={adapters} />
       <AppKitInfoMultiChain />
+      <EmbeddedWalletInfo />
       {siweEnabled ? <SiweData /> : null}
       {siwxEnabled ? <ReownAuthenticationTests /> : null}
 
