@@ -131,12 +131,11 @@ test('should disconnect all wallets', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await modal.openProfileWalletsView()
 
   for (const [idx] of CONNECTOR_IDS_TO_DISCONNECT.entries()) {
-    const address = await modal.getAddress(namespace)
+    const address = await modal.getAddress()
 
     if (!address) {
       throw new Error('No address found')
@@ -150,7 +149,7 @@ test('should disconnect all wallets', async ({ library }) => {
     if (isLastConnectorId) {
       await validator.expectDisconnected()
     } else {
-      await validator.expectAccountSwitched(address, namespace)
+      await validator.expectAccountSwitched(address)
     }
   }
 })
