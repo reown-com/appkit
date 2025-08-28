@@ -11,6 +11,7 @@ import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
+import type { SendInputArguments } from './SendController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -102,6 +103,7 @@ export interface RouterControllerState {
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
     swap?: SwapInputArguments
+    send?: SendInputArguments
   }
   transactionStack: TransactionAction[]
 }

@@ -17,6 +17,9 @@ import {
   useDisconnect
 } from '@reown/appkit/react'
 
+import { ConstantsUtil } from '../utils/ConstantsUtil'
+import { useChakraToast } from './Toast'
+
 function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
   if (!activeNetwork) {
     return mainnet
@@ -33,10 +36,11 @@ function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
 }
 
 export function AppKitHooks() {
-  const { open } = useAppKit()
-  const { isConnected } = useAppKitAccount()
+  const { open, openSend } = useAppKit()
+  const { isConnected, address } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
+  const toast = useChakraToast()
   const pathname = usePathname()
   const isMultichainPage = pathname?.includes('multichain-no-adapters')
 
@@ -59,6 +63,27 @@ export function AppKitHooks() {
         toToken: 'ETH'
       }
     })
+  }
+
+  const USDC_ADDRESS = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913'
+  async function handleOpenSendWithArguments() {
+    if (address) {
+      const { hash } = await openSend({
+        view: 'WalletSend',
+        arguments: {
+          amount: '1',
+          caipAsset: `eip155:8453/erc20:${USDC_ADDRESS}`,
+          caipNetworkId: 'eip155:8453',
+          to: '0x...'
+        }
+      })
+
+      toast({
+        title: ConstantsUtil.SigningSucceededToastTitle,
+        description: hash,
+        type: 'success'
+      })
+    }
   }
 
   return (
@@ -97,6 +122,13 @@ export function AppKitHooks() {
           onClick={handleOpenSwapWithArguments}
         >
           Open Swap with Arguments
+        </Button>
+
+        <Button
+          data-testid="open-send-with-arguments-hook-button"
+          onClick={handleOpenSendWithArguments}
+        >
+          Open Send with Arguments
         </Button>
       </Box>
     </Box>

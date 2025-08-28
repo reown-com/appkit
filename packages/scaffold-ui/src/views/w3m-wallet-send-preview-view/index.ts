@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import {
   ChainController,
   EventsController,
+  ModalController,
   RouterController,
   SendController,
   SnackController,
@@ -41,6 +42,8 @@ export class W3mWalletSendPreviewView extends LitElement {
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   @state() private loading = SendController.state.loading
+
+  @state() private params = RouterController.state.data?.send
 
   public constructor() {
     super()
@@ -138,7 +141,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount) {
+    if (!this.params && this.token && this.sendTokenAmount) {
       const price = this.token.price
       const totalValue = price * this.sendTokenAmount
 
@@ -159,8 +162,12 @@ export class W3mWalletSendPreviewView extends LitElement {
 
     try {
       await SendController.sendToken()
-      SnackController.showSuccess('Transaction started')
-      RouterController.replace('Account')
+      if (this.params) {
+        ModalController.close()
+      } else {
+        SnackController.showSuccess('Transaction started')
+        RouterController.replace('Account')
+      }
     } catch (error) {
       SnackController.showError('Failed to send transaction. Please try again.')
       // eslint-disable-next-line no-console

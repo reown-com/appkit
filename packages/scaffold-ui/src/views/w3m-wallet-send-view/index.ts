@@ -1,13 +1,18 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import { ParseUtil } from '@reown/appkit-common'
 import {
+  AccountController,
   ChainController,
+  ConstantsUtil,
   CoreHelperUtil,
   RouterController,
   SendController,
+  SnackController,
   SwapController
 } from '@reown/appkit-controllers'
+import { BalanceUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -35,6 +40,10 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private loading = SendController.state.loading
 
+  @state() private params = RouterController.state.data?.send
+
+  @state() private address = AccountController.state.address
+
   @state() private message:
     | 'Preview Send'
     | 'Select Token'
@@ -54,6 +63,9 @@ export class W3mWalletSendView extends LitElement {
 
     this.unsubscribe.push(
       ...[
+        AccountController.subscribeKey('caipAddress', val => {
+          this.address = CoreHelperUtil.getPlainAddress(val)
+        }),
         SendController.subscribe(val => {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
@@ -69,18 +81,29 @@ export class W3mWalletSendView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
+  public override async firstUpdated() {
+    await this.handleSendParameters()
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.getMessage()
+
+    const isReadOnly = Boolean(this.params)
+    if (!this.address) {
+      throw new Error('w3m-wallet-send-view: No account connected')
+    }
 
     return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
       <wui-flex class="inputContainer" gap="2" flexDirection="column">
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
+          ?readOnly=${isReadOnly}
         ></w3m-input-token>
         <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
         <w3m-input-address
+          ?readOnly=${isReadOnly}
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>
       </wui-flex>
@@ -110,7 +133,9 @@ export class W3mWalletSendView extends LitElement {
   }
 
   private onButtonClick() {
-    RouterController.push('WalletSendPreview')
+    RouterController.push('WalletSendPreview', {
+      send: this.params
+    })
   }
 
   private getMessage() {
@@ -148,6 +173,72 @@ export class W3mWalletSendView extends LitElement {
 
     if (!this.token) {
       this.message = 'Select Token'
+    }
+  }
+
+  async handleSendParameters() {
+    this.loading = true
+
+    if (!this.params) {
+      this.loading = false
+
+      return
+    }
+
+    const amount = Number(this.params.amount)
+
+    if (isNaN(amount)) {
+      SnackController.showError('Invalid amount')
+      this.loading = false
+
+      return
+    }
+
+    const { asset } = ParseUtil.parseCaipAsset(this.params.caipAsset)
+    const { chainNamespace } = ParseUtil.parseCaipNetworkId(this.params.caipNetworkId)
+
+    if (!ConstantsUtil.SEND_PARAMS_SUPPORTED_CHAINS.includes(chainNamespace)) {
+      SnackController.showError(`Chain "${chainNamespace}" is not supported for send parameters`)
+      this.loading = false
+
+      return
+    }
+
+    try {
+      const { balance, name, symbol, decimals } = await BalanceUtil.fetchERC20Balance({
+        caipAddress: `${this.params.caipNetworkId}:${this.address}`,
+        caipAsset: this.params.caipAsset,
+        caipNetworkId: this.params.caipNetworkId
+      })
+
+      if (!name || !symbol || !decimals || !balance) {
+        SnackController.showError('Token not found')
+
+        return
+      }
+
+      SendController.setToken({
+        name,
+        symbol,
+        chainId: this.params.caipNetworkId,
+        address: `${this.params.caipNetworkId}:${asset.address}`,
+        value: 0,
+        price: 0,
+        quantity: {
+          decimals: decimals.toString(),
+          numeric: balance.toString()
+        },
+        iconUrl:
+          'https://api.dune.com/api/echo/beta/token/logo/8453/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913'
+      })
+      SendController.setTokenAmount(amount)
+      SendController.setReceiverAddress(this.params.to)
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load token information:', err)
+      SnackController.showError('Failed to load token information')
+    } finally {
+      this.loading = false
     }
   }
 }

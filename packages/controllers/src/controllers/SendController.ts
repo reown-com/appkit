@@ -5,6 +5,8 @@ import {
   type Address,
   type Balance,
   type CaipAddress,
+  type CaipAsset,
+  type CaipNetworkId,
   ConstantsUtil as CommonConstantsUtil,
   NumberUtil
 } from '@reown/appkit-common'
@@ -34,6 +36,12 @@ export interface TxParams {
   sendTokenAmount: number
   decimals: string
 }
+export interface SendInputArguments {
+  caipAsset: CaipAsset
+  amount: string
+  caipNetworkId: CaipNetworkId
+  to: string
+}
 
 export interface ContractWriteParams {
   receiverAddress: string
@@ -44,6 +52,7 @@ export interface ContractWriteParams {
 export interface SendControllerState {
   tokenBalances: Balance[]
   token?: Balance
+  hash?: string
   sendTokenAmount?: number
   receiverAddress?: string
   receiverProfileName?: string
@@ -77,6 +86,10 @@ const controller = {
     if (token) {
       state.token = ref(token)
     }
+  },
+
+  setHash(hash: SendControllerState['hash']) {
+    state.hash = hash
   },
 
   setTokenAmount(sendTokenAmount: SendControllerState['sendTokenAmount']) {
@@ -250,7 +263,7 @@ const controller = {
     )
     const data = '0x'
 
-    await ConnectionController.sendTransaction({
+    const hash = await ConnectionController.sendTransaction({
       chainNamespace: CommonConstantsUtil.CHAIN.EVM,
       to,
       address,
@@ -269,6 +282,10 @@ const controller = {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
       }
     })
+
+    if (hash) {
+      SendController.setHash(hash)
+    }
 
     ConnectionController._getClient()?.updateBalance('eip155')
     SendController.resetSend()
@@ -298,7 +315,7 @@ const controller = {
         throw new Error('SendController:sendERC20Token - tokenAddress is required')
       }
 
-      await ConnectionController.writeContract({
+      const hash = await ConnectionController.writeContract({
         fromAddress: AccountController.state.address as Address,
         tokenAddress,
         args: [params.receiverAddress as Address, amount ?? BigInt(0)],
@@ -306,6 +323,10 @@ const controller = {
         abi: ContractUtil.getERC20Abi(tokenAddress),
         chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
+
+      if (hash) {
+        SendController.setHash(hash)
+      }
 
       SendController.resetSend()
     }
@@ -332,12 +353,16 @@ const controller = {
       tokenMint = tokenMintSPLAddress
     }
 
-    await ConnectionController.sendTransaction({
+    const hash = await ConnectionController.sendTransaction({
       chainNamespace: 'solana',
       tokenMint,
       to: SendController.state.receiverAddress,
       value: SendController.state.sendTokenAmount
     })
+
+    if (hash) {
+      SendController.setHash(hash)
+    }
 
     ConnectionController._getClient()?.updateBalance('solana')
     SendController.resetSend()

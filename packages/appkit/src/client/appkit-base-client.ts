@@ -106,6 +106,7 @@ export type Views =
 
 type ViewArguments = {
   Swap: NonNullable<RouterControllerState['data']>['swap']
+  WalletSend: NonNullable<RouterControllerState['data']>['send']
 }
 
 export interface OpenOptions<View extends Views> {
@@ -247,6 +248,18 @@ export abstract class AppKitBaseClient {
         default:
           break
       }
+    }
+  }
+
+  private createCleanupHandler(unsubscribeFunctions: (() => void)[]) {
+    return (): void => {
+      unsubscribeFunctions.forEach(unsubscribe => {
+        try {
+          unsubscribe()
+        } catch {
+          // Ignore cleanup errors
+        }
+      })
     }
   }
 
@@ -2038,12 +2051,44 @@ export abstract class AppKitBaseClient {
     if (options?.arguments) {
       switch (options?.view) {
         case 'Swap':
-          return ModalController.open({ ...options, data: { swap: options.arguments } })
+          return ModalController.open({
+            ...options,
+            data: { swap: options.arguments as ViewArguments['Swap'] }
+          })
+        case 'WalletSend':
+          return ModalController.open({
+            ...options,
+            data: { send: options.arguments as ViewArguments['WalletSend'] }
+          })
         default:
       }
     }
 
     return ModalController.open(options)
+  }
+
+  public async openSend<View extends Views>(
+    options?: OpenOptions<View>
+  ): Promise<{ hash: string }> {
+    await this.open(options)
+
+    return new Promise((resolve, reject) => {
+      const unsubscribe = SendController.subscribeKey('hash', hash => {
+        if (hash) {
+          cleanup()
+          resolve({ hash })
+        }
+      })
+
+      const unsubscribeModal = ModalController.subscribe(modal => {
+        if (!modal.open) {
+          cleanup()
+          reject(new Error('Modal closed'))
+        }
+      })
+
+      const cleanup = this.createCleanupHandler([unsubscribe, unsubscribeModal])
+    })
   }
 
   public async close() {

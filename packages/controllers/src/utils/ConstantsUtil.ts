@@ -151,6 +151,7 @@ export const ConstantsUtil = {
     CommonConstantsUtil.CHAIN.EVM,
     CommonConstantsUtil.CHAIN.SOLANA
   ] as ChainNamespace[],
+  SEND_PARAMS_SUPPORTED_CHAINS: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',
