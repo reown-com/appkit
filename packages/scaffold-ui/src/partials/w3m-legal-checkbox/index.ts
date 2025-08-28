@@ -52,7 +52,7 @@ export class W3mLegalCheckbox extends LitElement {
         @checkboxChange=${this.onCheckboxChange.bind(this)}
         data-testid="wui-checkbox"
       >
-        <wui-text color="fg-250" variant="small-400" align="left">
+        <wui-text color="secondary" variant="sm-regular" align="left">
           I agree to our ${this.termsTemplate()} ${this.andTemplate()} ${this.privacyTemplate()}
         </wui-text>
       </wui-checkbox>

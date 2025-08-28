@@ -1,16 +1,17 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   span {
     font-weight: 500;
-    font-size: 40px;
-    color: var(--wui-color-fg-100);
-    line-height: 130%; /* 52px */
-    letter-spacing: -1.6px;
+    font-size: 38px;
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+    line-height: 38px;
+    letter-spacing: -2%;
     text-align: center;
+    font-family: var(--apkt-fontFamily-regular);
   }
 
   .pennies {
-    color: var(--wui-color-fg-200);
+    color: ${({ tokens }) => tokens.theme.textSecondary};
   }
 `

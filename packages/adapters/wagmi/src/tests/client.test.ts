@@ -16,6 +16,7 @@ import {
 import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { checksumAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
@@ -218,7 +219,7 @@ describe('WagmiAdapter', () => {
       ])
     })
 
-    it('should not set info property for injected connector', () => {
+    it('should not set info property for injected connector', async () => {
       const mockConnectors = [
         {
           id: 'Browser Wallet',
@@ -228,7 +229,7 @@ describe('WagmiAdapter', () => {
         }
       ]
 
-      ;(adapter as any).syncConnectors(mockConnectors)
+      await (adapter as any).syncConnectors(mockConnectors)
 
       const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
 
@@ -245,12 +246,12 @@ describe('WagmiAdapter', () => {
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
       }
 
-      mockAppKit.remoteFeatures = {
+      mockAppKit.features = {
         email: false,
         socials: false
       }
 
-      adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors(options, mockAppKit)
 
       expect(authConnectorSpy).not.toHaveBeenCalled()
     })
@@ -265,12 +266,12 @@ describe('WagmiAdapter', () => {
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
       }
 
-      mockAppKit.remoteFeatures = {
+      mockAppKit.features = {
         email: true,
         socials: false
       }
 
-      adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors(options, mockAppKit)
 
       expect(authConnectorSpy).toHaveBeenCalled()
     })
@@ -285,12 +286,12 @@ describe('WagmiAdapter', () => {
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
       }
 
-      mockAppKit.remoteFeatures = {
+      mockAppKit.features = {
         email: false,
         socials: []
       }
 
-      adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors(options, mockAppKit)
 
       expect(authConnectorSpy).not.toHaveBeenCalled()
     })
@@ -305,12 +306,12 @@ describe('WagmiAdapter', () => {
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
       }
 
-      mockAppKit.remoteFeatures = {
+      mockAppKit.features = {
         email: true,
         socials: ['facebook'] as SocialProvider[]
       }
 
-      adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors(options, mockAppKit)
 
       await vi.waitFor(() => {
         expect(authConnectorSpy).toHaveBeenCalled()
@@ -327,12 +328,12 @@ describe('WagmiAdapter', () => {
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
       }
 
-      mockAppKit.remoteFeatures = {
+      mockAppKit.features = {
         email: false,
-        socials: ['x']
+        socials: ['x'] as SocialProvider[]
       }
 
-      adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors(options, mockAppKit)
 
       await vi.waitFor(() => {
         expect(authConnectorSpy).toHaveBeenCalled()
@@ -345,17 +346,16 @@ describe('WagmiAdapter', () => {
       const options = {
         enableWalletConnect: false,
         enableInjected: false,
-
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
       }
 
-      mockAppKit.remoteFeatures = {
+      mockAppKit.features = {
         email: true,
         socials: ['google'] as SocialProvider[]
       }
 
-      adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors(options, mockAppKit)
 
       await vi.waitFor(() => {
         expect(authConnectorSpy).toHaveBeenCalled()
@@ -1138,7 +1138,7 @@ describe('WagmiAdapter', () => {
       await vi.waitFor(() => {
         expect(accountChangedSpy).toHaveBeenCalledWith(
           expect.objectContaining({
-            address: currAccount.address,
+            address: checksumAddress(currAccount.address as `0x${string}`),
             chainId: currAccount.chainId
           })
         )
@@ -1188,7 +1188,7 @@ describe('WagmiAdapter', () => {
       await vi.waitFor(() => {
         expect(accountChangedSpy).toHaveBeenCalledWith(
           expect.objectContaining({
-            address: currAccount.address,
+            address: checksumAddress(currAccount.address as `0x${string}`),
             chainId: currAccount.chainId
           })
         )

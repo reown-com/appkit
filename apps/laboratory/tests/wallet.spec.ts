@@ -53,6 +53,10 @@ sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
 
 sampleWalletTest('it should show onramp button accordingly', async ({ library }) => {
   await modalPage.openModal()
+
+  const accountButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
+  await accountButton.click()
+
   if (library === 'bitcoin') {
     await modalValidator.expectOnrampButton(false)
   } else {
@@ -282,18 +286,6 @@ sampleWalletTest('it should disconnect and close modal when connecting from wall
   await walletValidator.expectSessionCard({ visible: false })
   await modalValidator.expectModalNotVisible()
   await walletPage.page.waitForTimeout(500)
-})
-
-sampleWalletTest('it should display wallet guide and show explore option', async ({ library }) => {
-  if (library === 'bitcoin') {
-    return
-  }
-
-  await modalPage.openConnectModal()
-  await modalValidator.expectWalletGuide(library, 'get-started')
-  await modalPage.clickWalletGuideGetStarted()
-  await modalValidator.expectWalletGuide(library, 'explore')
-  await modalPage.closeModal()
 })
 
 sampleWalletTest('it should disconnect as expected', async () => {

@@ -248,6 +248,7 @@ describe('PayController', () => {
         type: 'track',
         event: 'PAY_EXCHANGE_SELECTED',
         properties: {
+          source: 'pay',
           exchange: {
             id: 'coinbase'
           },
@@ -279,6 +280,7 @@ describe('PayController', () => {
         event: 'PAY_INITIATED',
         properties: {
           paymentId: mockPaymentId,
+          source: 'pay',
           configuration: {
             network: params.network,
             asset: params.asset,
@@ -901,6 +903,7 @@ describe('PayController', () => {
         event: 'PAY_SUCCESS',
         properties: {
           paymentId: mockPaymentId,
+          source: 'pay',
           configuration: {
             network: mockPaymentOptions.paymentAsset.network,
             asset: mockPaymentOptions.paymentAsset.asset,
@@ -929,6 +932,7 @@ describe('PayController', () => {
         event: 'PAY_ERROR',
         properties: {
           paymentId: mockPaymentId,
+          source: 'pay',
           configuration: {
             network: mockPaymentOptions.paymentAsset.network,
             asset: mockPaymentOptions.paymentAsset.asset,

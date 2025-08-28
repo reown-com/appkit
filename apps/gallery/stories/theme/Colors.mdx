@@ -1,4 +1,4 @@
-import { ColorItem, ColorPalette, Meta, Title } from '@storybook/blocks'
+import { ColorItem, ColorPalette, Meta, Title } from '@storybook/addon-docs/blocks'
 
 <Meta title="theme/Colors" />
 
@@ -6,173 +6,242 @@ import { ColorItem, ColorPalette, Meta, Title } from '@storybook/blocks'
 
 <ColorPalette>
   <ColorItem
-    title="Accent"
-    subtitle="80 | 90 | 100"
+    title="Accent Primary"
+    subtitle="010 | 020 | 030"
     colors={{
-      'wui-accent-080': 'hsla(231, 92%, 74%, 1)',
-      'wui-accent-090': 'hsla(231, 97%, 72%, 1)',
-      'wui-accent-100': 'hsla(231, 100%, 70%, 1)'
+      'accent-010': 'rgba(9, 136, 240, 0.1)',
+      'accent-020': 'rgba(9, 136, 240, 0.2)',
+      'accent-030': 'rgba(9, 136, 240, 0.3)'
     }}
   />
   <ColorItem
-    title="Blue"
-    subtitle="80 | 90 | 100"
+    title="Accent Primary"
+    subtitle="080 | 090 | 100"
     colors={{
-      'wui-color-blue-80': '#6CB4FF',
-      'wui-color-blue-90': '#59AAFF',
-      'wui-color-blue-100': '#47A1FF'
+      'accent-080': 'rgba(9, 136, 240, 0.8)',
+      'accent-090': 'rgba(9, 136, 240, 0.9)',
+      'accent-100': 'rgba(9, 136, 240, 1.0)'
     }}
   />
   <ColorItem
-    title="Foreground"
-    subtitle="100 | 125 | 150"
+    title="Accent Secondary"
+    subtitle="080 | 090 | 100"
     colors={{
-      'wui-color-fg-100': '#E4E7E7',
-      'wui-color-fg-125': '#D0D5D5',
-      'wui-color-fg-150': '#A8B1B1'
+      'accent-secondary-080': 'rgba(199, 185, 148, 0.8)',
+      'accent-secondary-090': 'rgba(199, 185, 148, 0.9)',
+      'accent-secondary-100': 'rgba(199, 185, 148, 1.0)'
     }}
   />
   <ColorItem
-    title="Foreground"
-    subtitle="175 | 200 | 225"
+    title="Text"
+    subtitle="Primary | Secondary | Tertiary"
     colors={{
-      'wui-color-fg-175': '#A8B0B0',
-      'wui-color-fg-200': '#949E9E',
-      'wui-color-fg-225': '#868F8F'
-    }}
-  />
-  <ColorItem
-    title="Foreground"
-    subtitle="250 | 275 | 300"
-    colors={{
-      'wui-color-fg-250': '#788080',
-      'wui-color-fg-275': '#788181',
-      'wui-color-fg-300': '#6E7777'
+      'text-primary': '#FFFFFF',
+      'text-secondary': '#9A9A9A',
+      'text-tertiary': '#BBBBBB'
     }}
   />
   <ColorItem
     title="Background"
-    subtitle="100 | 125 | 150"
+    subtitle="Primary | Secondary | Tertiary"
     colors={{
-      'wui-color-bg-100': '#141414',
-      'wui-color-bg-125': '#191A1A',
-      'wui-color-bg-150': '#1E1F1F'
+      'background-primary': '#202020',
+      'foreground-primary': '#252525',
+      'foreground-secondary': '#2A2A2A',
+      'foreground-tertiary': '#363636'
     }}
   />
   <ColorItem
-    title="Background"
-    subtitle="175 | 200 | 225"
+    title="Neutrals"
+    subtitle="500 | 600 | 700"
     colors={{
-      'wui-color-bg-175': '#222525',
-      'wui-color-bg-200': '#272A2A',
-      'wui-color-bg-225': '#2C3030'
+      'neutrals-500': '#9A9A9A',
+      'neutrals-600': '#6C6C6C',
+      'neutrals-700': '#4F4F4F'
     }}
   />
   <ColorItem
-    title="Background"
-    subtitle="250 | 275 | 300"
+    title="Neutrals"
+    subtitle="800 | 900 | 1000"
     colors={{
-      'wui-color-bg-250': '#313535',
-      'wui-color-bg-275': '#363B3B',
-      'wui-color-bg-300': '#3B4040'
+      'neutrals-800': '#363636',
+      'neutrals-900': '#2A2A2A',
+      'neutrals-1000': '#252525'
     }}
   />
   <ColorItem
-    title="Inverse"
-    subtitle="100 | 000"
+    title="Borders"
+    subtitle="Primary | Secondary"
     colors={{
-      'wui-color-inverse-000': '#000',
-      'wui-color-inverse-100': '#fff'
+      'border-primary': '#2A2A2A',
+      'border-secondary': '#4F4F4F'
     }}
   />
-  <ColorItem title="Success" subtitle="100" colors={{ 'wui-color-success-100': '#26D962' }} />
-  <ColorItem title="Error" subtitle="100" colors={{ 'wui-color-error-100': '#F25A67' }} />
-  <ColorItem title="Teal" subtitle="100" colors={{ 'wui-color-teal-100': '#36E2E2' }} />
-  <ColorItem title="Magenta" subtitle="100" colors={{ 'wui-color-magenta-100': '#CB4D8C' }} />
-  <ColorItem title="Indigo" subtitle="100" colors={{ 'wui-color-indigo-100': '#516DFB' }} />
-  <ColorItem title="Orange" subtitle="100" colors={{ 'wui-color-orange-100': '#FFA64C' }} />
-  <ColorItem title="Purple" subtitle="100" colors={{ 'wui-color-purple-100': '#906EF7' }} />
+  <ColorItem
+    title="Semantic Success"
+    subtitle="010 | 080 | 100"
+    colors={{
+      'semantic-success-010': 'rgba(48, 164, 107, 0.1)',
+      'semantic-success-080': 'rgba(48, 164, 107, 0.8)',
+      'semantic-success-100': 'rgba(48, 164, 107, 1.0)'
+    }}
+  />
+  <ColorItem
+    title="Semantic Error"
+    subtitle="010 | 080 | 100"
+    colors={{
+      'semantic-error-010': 'rgba(223, 74, 52, 0.1)',
+      'semantic-error-080': 'rgba(223, 74, 52, 0.8)',
+      'semantic-error-100': 'rgba(223, 74, 52, 1.0)'
+    }}
+  />
+  <ColorItem
+    title="Semantic Warning"
+    subtitle="010 | 080 | 100"
+    colors={{
+      'semantic-warning-010': 'rgba(243, 161, 63, 0.1)',
+      'semantic-warning-080': 'rgba(243, 161, 63, 0.8)',
+      'semantic-warning-100': 'rgba(243, 161, 63, 1.0)'
+    }}
+  />
+  <ColorItem
+    title="Product Colors"
+    subtitle="WalletKit | AppKit | Cloud"
+    colors={{
+      'product-walletkit': '#FFB800',
+      'product-appkit': '#FF573B',
+      'product-cloud': '#0988F0'
+    }}
+  />
+  <ColorItem
+    title="Base Colors"
+    subtitle="Black | White | White010"
+    colors={{
+      black: '#202020',
+      white: '#FFFFFF',
+      'white-010': 'rgba(255, 255, 255, 0.1)'
+    }}
+  />
 </ColorPalette>
 
 <Title>Light</Title>
 
 <ColorPalette>
   <ColorItem
-    title="Accent"
-    subtitle="80 | 90 | 100"
+    title="Accent Primary"
+    subtitle="010 | 020 | 030"
     colors={{
-      'wui-accent-080': 'hsla(230, 59%, 55%, 1)',
-      'wui-accent-090': 'hsla(231, 76%, 61%, 1)',
-      'wui-accent-100': 'hsla(230, 100%, 67%, 1)'
+      'accent-010': 'rgba(9, 136, 240, 0.1)',
+      'accent-020': 'rgba(9, 136, 240, 0.2)',
+      'accent-030': 'rgba(9, 136, 240, 0.3)'
     }}
   />
   <ColorItem
-    title="Foreground"
-    subtitle="100 | 125 | 150"
+    title="Accent Primary"
+    subtitle="080 | 090 | 100"
     colors={{
-      'wui-color-fg-100': '#141414',
-      'wui-color-fg-125': '#2D3131',
-      'wui-color-fg-150': '#474D4D'
+      'accent-080': 'rgba(9, 136, 240, 0.8)',
+      'accent-090': 'rgba(9, 136, 240, 0.9)',
+      'accent-100': 'rgba(9, 136, 240, 1.0)'
     }}
   />
   <ColorItem
-    title="Foreground"
-    subtitle="175 | 200 | 225"
+    title="Accent Secondary"
+    subtitle="080 | 090 | 100"
     colors={{
-      'wui-color-fg-175': '#636D6D',
-      'wui-color-fg-200': '#798686',
-      'wui-color-fg-225': '#828F8F'
+      'accent-secondary-080': 'rgba(199, 185, 148, 0.8)',
+      'accent-secondary-090': 'rgba(199, 185, 148, 0.9)',
+      'accent-secondary-100': 'rgba(199, 185, 148, 1.0)'
     }}
   />
   <ColorItem
-    title="Foreground"
-    subtitle="250 | 275 | 300"
+    title="Text"
+    subtitle="Primary | Secondary | Tertiary"
     colors={{
-      'wui-color-fg-250': '#8B9797',
-      'wui-color-fg-275': '#95A0A0',
-      'wui-color-fg-300': '#9EA9A9'
-    }}
-  />
-  <ColorItem
-    title="Background"
-    subtitle="100 | 125 | 150"
-    colors={{
-      'wui-color-bg-100': '#FFFFFF',
-      'wui-color-bg-125': '#F5FAFA',
-      'wui-color-bg-150': '#F3F8F8'
+      'text-primary': '#202020',
+      'text-secondary': '#9A9A9A',
+      'text-tertiary': '#6C6C6C'
     }}
   />
   <ColorItem
     title="Background"
-    subtitle="175 | 200 | 225"
+    subtitle="Primary | Secondary | Tertiary"
     colors={{
-      'wui-color-bg-175': '#EEF4F4',
-      'wui-color-bg-200': '#EAF1F1',
-      'wui-color-bg-225': '#E5EDED'
+      'background-primary': '#FFFFFF',
+      'foreground-primary': '#F3F3F3',
+      'foreground-secondary': '#E9E9E9',
+      'foreground-tertiary': '#D0D0D0'
     }}
   />
   <ColorItem
-    title="Background"
-    subtitle="250 | 275 | 300"
+    title="Neutrals"
+    subtitle="050 | 100 | 200"
     colors={{
-      'wui-color-bg-250': '#E1E9E9',
-      'wui-color-bg-275': '#DCE7E7',
-      'wui-color-bg-300': '#D8E3E3'
+      'neutrals-050': '#F6F6F6',
+      'neutrals-100': '#F3F3F3',
+      'neutrals-200': '#E9E9E9'
     }}
   />
   <ColorItem
-    title="Inverse"
-    subtitle="100 | 000"
+    title="Neutrals"
+    subtitle="300 | 400 | 500"
     colors={{
-      'wui-color-inverse-000': '#000',
-      'wui-color-inverse-100': '#fff'
+      'neutrals-300': '#D0D0D0',
+      'neutrals-400': '#BBB',
+      'neutrals-500': '#9A9A9A'
     }}
   />
-  <ColorItem title="Success" subtitle="100" colors={{ 'wui-color-success-100': '#26B562' }} />
-  <ColorItem title="Error" subtitle="100" colors={{ 'wui-color-error-100': '#F05142' }} />
-  <ColorItem title="Teal" subtitle="100" colors={{ 'wui-color-teal-100': '#2BB6B6' }} />
-  <ColorItem title="Magenta" subtitle="100" colors={{ 'wui-color-magenta-100': '#C65380' }} />
-  <ColorItem title="Indigo" subtitle="100" colors={{ 'wui-color-indigo-100': '#3D5CF5' }} />
-  <ColorItem title="Orange" subtitle="100" colors={{ 'wui-color-orange-100': '#EA8C2E' }} />
-  <ColorItem title="Purple" subtitle="100" colors={{ 'wui-color-purple-100': '#794CFF' }} />
+  <ColorItem
+    title="Borders"
+    subtitle="Primary | Secondary"
+    colors={{
+      'border-primary': '#E9E9E9',
+      'border-secondary': '#D0D0D0'
+    }}
+  />
+  <ColorItem
+    title="Semantic Success"
+    subtitle="010 | 080 | 100"
+    colors={{
+      'semantic-success-010': 'rgba(48, 164, 107, 0.1)',
+      'semantic-success-080': 'rgba(48, 164, 107, 0.8)',
+      'semantic-success-100': 'rgba(48, 164, 107, 1.0)'
+    }}
+  />
+  <ColorItem
+    title="Semantic Error"
+    subtitle="010 | 080 | 100"
+    colors={{
+      'semantic-error-010': 'rgba(223, 74, 52, 0.1)',
+      'semantic-error-080': 'rgba(223, 74, 52, 0.8)',
+      'semantic-error-100': 'rgba(223, 74, 52, 1.0)'
+    }}
+  />
+  <ColorItem
+    title="Semantic Warning"
+    subtitle="010 | 080 | 100"
+    colors={{
+      'semantic-warning-010': 'rgba(243, 161, 63, 0.1)',
+      'semantic-warning-080': 'rgba(243, 161, 63, 0.8)',
+      'semantic-warning-100': 'rgba(243, 161, 63, 1.0)'
+    }}
+  />
+  <ColorItem
+    title="Product Colors"
+    subtitle="WalletKit | AppKit | Cloud"
+    colors={{
+      'product-walletkit': '#FFB800',
+      'product-appkit': '#FF573B',
+      'product-cloud': '#0988F0'
+    }}
+  />
+  <ColorItem
+    title="Base Colors"
+    subtitle="Black | White | White010"
+    colors={{
+      black: '#202020',
+      white: '#FFFFFF',
+      'white-010': 'rgba(255, 255, 255, 0.1)'
+    }}
+  />
 </ColorPalette>

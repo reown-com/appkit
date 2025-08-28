@@ -13,6 +13,7 @@ import type {
   ConnectionControllerClient,
   Connector,
   ConnectorType,
+  ModalControllerState,
   NetworkControllerClient
 } from '../../exports/index.js'
 import {
@@ -22,7 +23,9 @@ import {
   ConnectorController,
   ConnectorControllerUtil,
   ConstantsUtil,
-  CoreHelperUtil
+  CoreHelperUtil,
+  ModalController,
+  RouterController
 } from '../../exports/index.js'
 import { AccountController } from '../../exports/index.js'
 
@@ -215,6 +218,18 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
     expect(ConnectionController.state.status).toEqual('connected')
+  })
+
+  it('should handle connectWalletConnect when cache argument is "never"', async () => {
+    vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
+
+    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+
+    await ConnectionController.connectWalletConnect({ cache: 'never' })
+
+    expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should set connections for a namespace', () => {
@@ -478,6 +493,86 @@ describe('ConnectionController', () => {
         namespace: chain,
         hasSwitchedAccount: true,
         hasSwitchedWallet: true
+      })
+    })
+
+    it('should handle connected connection when trying to connect with walletconnect if modal open', async () => {
+      const address = '0x321'
+      vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('disconnected')
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
+      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+        open: true
+      } as ModalControllerState)
+      vi.spyOn(RouterController, 'push')
+
+      const connectWalletConnectSpy = vi
+        .spyOn(ConnectorControllerUtil, 'connectWalletConnect')
+        .mockImplementation(({ onOpen }) => {
+          onOpen?.(false)
+          return Promise.resolve({ address: '0x321' } as ParsedCaipAddress)
+        })
+
+      const onChange = vi.fn()
+
+      await ConnectionController.switchConnection({
+        connection: {
+          ...mockConnection,
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+        },
+        address,
+        namespace: chain,
+        onChange
+      })
+
+      expect(connectWalletConnectSpy).toHaveBeenCalledWith({
+        walletConnect: true,
+        onOpen: expect.any(Function),
+        onConnect: expect.any(Function),
+        connector: mockConnector,
+        closeModalOnConnect: undefined
+      })
+
+      expect(RouterController.push).toHaveBeenCalledWith('ConnectingWalletConnect')
+    })
+
+    it('should handle connected connection when trying to connect with walletconnect if modal closed', async () => {
+      const address = '0x321'
+      vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('disconnected')
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
+      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+        open: false
+      } as ModalControllerState)
+      vi.spyOn(ModalController, 'open')
+
+      const connectWalletConnectSpy = vi
+        .spyOn(ConnectorControllerUtil, 'connectWalletConnect')
+        .mockImplementation(({ onOpen }) => {
+          onOpen?.(false)
+          return Promise.resolve({ address: '0x321' } as ParsedCaipAddress)
+        })
+
+      const onChange = vi.fn()
+
+      await ConnectionController.switchConnection({
+        connection: {
+          ...mockConnection,
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+        },
+        address,
+        namespace: chain,
+        onChange
+      })
+
+      expect(connectWalletConnectSpy).toHaveBeenCalledWith({
+        walletConnect: true,
+        onOpen: expect.any(Function),
+        onConnect: expect.any(Function),
+        connector: mockConnector,
+        closeModalOnConnect: undefined
+      })
+
+      expect(ModalController.open).toHaveBeenCalledWith({
+        view: 'ConnectingWalletConnect'
       })
     })
 

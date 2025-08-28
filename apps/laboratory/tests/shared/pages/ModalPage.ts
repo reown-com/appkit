@@ -407,7 +407,7 @@ export class ModalPage {
     }
 
     await expect(this.page.getByText(headerTitle)).not.toBeVisible({
-      timeout: 20_000
+      timeout: 30_000
     })
   }
 
@@ -611,7 +611,7 @@ export class ModalPage {
   }
 
   async openOnramp() {
-    await this.page.getByTestId('w3m-account-default-onramp-button').click()
+    await this.page.getByTestId('wallet-features-onramp-button').click()
   }
 
   async closeModal() {
@@ -828,8 +828,15 @@ export class ModalPage {
     await profileButton.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
-  async getWalletFeaturesButton(feature: WalletFeature) {
+  async getWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
+  }
+
+  async getDefaultWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
+    const walletFeatureButton = this.page.getByTestId(`w3m-account-default-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton

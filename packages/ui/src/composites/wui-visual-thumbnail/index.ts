@@ -20,9 +20,7 @@ export class WuiVisualThumbnail extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `--local-border-radius: ${
-      this.borderRadiusFull ? '1000px' : '20px'
-    }; background-color: var(--wui-color-modal-bg);`
+    this.dataset['borderRadiusFull'] = this.borderRadiusFull ? 'true' : 'false'
 
     return html`${this.templateVisual()}`
   }
@@ -37,7 +35,7 @@ export class WuiVisualThumbnail extends LitElement {
       data-parent-size="md"
       size="inherit"
       color="inherit"
-      name="walletPlaceholder"
+      name="wallet"
     ></wui-icon>`
   }
 }

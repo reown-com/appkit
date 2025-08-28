@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.7.17",
+  "version": "1.8.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -19,6 +19,11 @@
       "types": "./dist/types/exports/w3m-modal.d.ts",
       "import": "./dist/esm/exports/w3m-modal.js",
       "default": "./dist/esm/exports/w3m-modal.js"
+    },
+    "./partials/w3m-router-container": {
+      "types": "./dist/types/exports/partials/w3m-router-container.d.ts",
+      "import": "./dist/esm/exports/partials/w3m-router-container.js",
+      "default": "./dist/esm/exports/partials/w3m-router-container.js"
     },
     "./utils": {
       "types": "./dist/types/exports/utils.d.ts",
@@ -79,6 +84,16 @@
       "types": "./dist/types/exports/pay.d.ts",
       "import": "./dist/esm/exports/pay.js",
       "default": "./dist/esm/exports/pay.js"
+    },
+    "./pay-with-exchange": {
+      "types": "./dist/types/exports/pay-with-exchange.d.ts",
+      "import": "./dist/esm/exports/pay-with-exchange.js",
+      "default": "./dist/esm/exports/pay-with-exchange.js"
+    },
+    "./reown-authentication/*": {
+      "types": "./dist/types/exports/reown-authentication/*.d.ts",
+      "import": "./dist/esm/exports/reown-authentication/*.js",
+      "default": "./dist/esm/exports/reown-authentication/*.js"
     }
   },
   "scripts": {

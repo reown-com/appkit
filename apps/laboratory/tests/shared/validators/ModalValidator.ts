@@ -42,8 +42,10 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL') {
-    const accountButton = this.page.locator('appkit-account-button').first()
+  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL', namespace?: string) {
+    const accountButton = namespace
+      ? this.page.getByTestId(`account-button-${namespace}`)
+      : this.page.locator('appkit-account-button').first()
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -88,11 +90,9 @@ export class ModalValidator {
       timeout: MAX_WAIT
     })
 
-    await expect(connectButton, 'Connect button should contain text Connect').toHaveText(
-      'Connect Wallet',
-      {
-        timeout: MAX_WAIT
-      }
+    await expect(connectButton, 'Connect button should contain text Connect').toContainText(
+      'Connect',
+      { timeout: MAX_WAIT }
     )
   }
 
@@ -361,7 +361,7 @@ export class ModalValidator {
   }
 
   async expectOnrampButton(visible: boolean) {
-    const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
+    const onrampButton = this.page.getByTestId('wallet-features-onramp-button')
     if (visible) {
       await expect(onrampButton).toBeVisible()
     } else {
@@ -498,7 +498,10 @@ export class ModalValidator {
   async expectAccountButtonAddress(address: string) {
     const accountButton = this.page.getByTestId('account-button')
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
-    await expect(accountButton).toHaveAttribute('address', address)
+    await expect(accountButton, `Account button to have address ${address}`).toHaveAttribute(
+      'address',
+      address
+    )
   }
 
   async expectNoUnsupportedUIOnAccountButton() {
@@ -606,5 +609,10 @@ export class ModalValidator {
     } else {
       await expect(uxBrandingReown).not.toBeVisible()
     }
+  }
+
+  async reownNameInput(name: string) {
+    const input = this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text')
+    await expect(input, 'Input should have value').toHaveValue(name)
   }
 }

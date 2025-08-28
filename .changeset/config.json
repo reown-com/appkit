@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
-  "changelog": ["@changesets/changelog-github", 
+  "changelog": ["@changesets/changelog-github",
   { "repo": "reown-com/appkit" }],
   "commit": false,
   "fixed": [[
@@ -11,11 +11,13 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
+  "bumpVersionsWithWorkspaceProtocolOnly": true,
   "ignore": [
     "@examples/*",
     "@apps/*",
     "@apps/browser-extension",
-    "@reown/appkit-adapter-polkadot",
-    "@reown/appkit-ui-new"
+    "@reown/appkit-adapter-polkadot"
   ]
 }
+
+

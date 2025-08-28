@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwx",
-  "version": "1.7.17",
+  "version": "1.8.0",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -25,11 +25,6 @@
       "types": "./dist/types/exports/vue.d.ts",
       "import": "./dist/esm/exports/vue.js",
       "default": "./dist/esm/exports/vue.js"
-    },
-    "./ui": {
-      "types": "./dist/types/exports/ui.d.ts",
-      "import": "./dist/esm/exports/ui.js",
-      "default": "./dist/esm/exports/ui.js"
     }
   },
   "scripts": {
@@ -44,12 +39,10 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
-    "@reown/appkit-ui": "workspace:*",
-    "@reown/appkit-scaffold-ui": "workspace:*",
     "bip322-js": "2.0.0",
     "bs58": "6.0.0",
     "tweetnacl": "1.0.3",
-    "viem": "2.32.0"
+    "viem": "2.33.3"
   },
   "devDependencies": {
     "@types/react": "19.1.3",

@@ -7,6 +7,7 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
+import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
@@ -61,6 +62,8 @@ export const EventsController = {
         return
       }
 
+      const caipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
+
       await api.post({
         path: '/e',
         params: EventsController.getSdkProperties(),
@@ -69,7 +72,14 @@ export const EventsController = {
           url: window.location.href,
           domain: window.location.hostname,
           timestamp: payload.timestamp,
-          props: { ...payload.data, address }
+          props: {
+            ...payload.data,
+            address,
+            properties: {
+              ...('properties' in payload.data ? payload.data.properties : {}),
+              caipNetworkId
+            }
+          }
         }
       })
 
@@ -100,7 +110,12 @@ export const EventsController = {
   sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now()
     state.data = data
-    if (OptionsController.state.features?.analytics || data.event === 'INITIALIZE') {
+    const MANDATORY_EVENTS: Event['event'][] = [
+      'INITIALIZE',
+      'CONNECT_SUCCESS',
+      'SOCIAL_LOGIN_SUCCESS'
+    ]
+    if (OptionsController.state.features?.analytics || MANDATORY_EVENTS.includes(data.event)) {
       EventsController._sendAnalyticsEvent(state)
     }
   }

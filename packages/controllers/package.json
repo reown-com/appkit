@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-controllers",
-  "version": "1.7.17",
+  "version": "1.8.0",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -43,6 +43,11 @@
       "types": "./dist/types/exports/testing.d.ts",
       "import": "./dist/esm/exports/testing.js",
       "default": "./dist/esm/exports/testing.js"
+    },
+    "./features": {
+      "types": "./dist/types/exports/features.d.ts",
+      "import": "./dist/esm/exports/features.js",
+      "default": "./dist/esm/exports/features.js"
     }
   },
   "typesVersions": {
@@ -58,9 +63,9 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.5",
+    "@walletconnect/universal-provider": "2.21.7",
     "valtio": "2.1.5",
-    "viem": ">=2.32.0"
+    "viem": ">=2.33.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",

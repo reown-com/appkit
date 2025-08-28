@@ -69,6 +69,13 @@ export namespace BitcoinConnector {
     recipient: string
   }
 
+  /**
+   * Parameters for signing a PSBT. The names or types of these parameters may vary across different providers. Refer to the links below for more information:
+   * @link https://docs.unisat.io/dev/open-api-documentation/unisat-wallet#signpsbt
+   * @link https://web3.okx.com/build/dev-docs/sdks/chains/bitcoin/provider#signpsbt
+   * @link https://developer.onekey.so/connect-to-software/webapp-connect-onekey/btc/api-reference/signpsbt
+   * @link https://leather.gitbook.io/developers/bitcoin-methods/signpsbt
+   */
   export type SignPSBTParams = {
     /**
      * The PSBT to be signed, string base64 encoded
@@ -87,6 +94,21 @@ export namespace BitcoinConnector {
        * Specifies which part(s) of the transaction the signature commits to
        */
       sighashTypes: number[]
+      /**
+       * (Optional) The public key corresponding to the private key to use for signing.
+       * At least specify either an address or a public key.
+       */
+      publicKey?: string
+      /**
+       * (Optional) When signing and unlocking Taproot addresses, the tweakSigner is used by default for signature generation.
+       * Enabling this allows for signing with the original private key.
+       */
+      disableTweakSigner?: boolean
+      /**
+       * (Optional) By setting useTweakedSigner, you can forcibly decide whether or not to use tweakedSigner.
+       * It has a higher priority than disableTweakSigner.
+       */
+      useTweakedSigner?: boolean
     }[]
 
     /**

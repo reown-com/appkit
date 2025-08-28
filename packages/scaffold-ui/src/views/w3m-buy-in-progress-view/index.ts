@@ -85,8 +85,8 @@ export class W3mBuyInProgressView extends LitElement {
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-visual
@@ -99,9 +99,7 @@ export class W3mBuyInProgressView extends LitElement {
           ${this.error ? null : this.loaderTemplate()}
 
           <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
+            color="error"
             icon="close"
             size="sm"
             border
@@ -109,19 +107,24 @@ export class W3mBuyInProgressView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+        <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          gap="2"
+          .padding=${['4', '0', '0', '0'] as const}
+        >
+          <wui-text variant="md-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text align="center" variant="sm-medium" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         ${this.error ? this.tryAgainTemplate() : null}
       </wui-flex>
 
-      <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const} justifyContent="center">
-        <wui-link @click=${this.onCopyUri} color="fg-200">
-          <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+      <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
+        <wui-link @click=${this.onCopyUri} color="secondary">
+          <wui-icon size="sm" color="default" slot="iconLeft" name="copy"></wui-icon>
           Copy link
         </wui-link>
       </wui-flex>

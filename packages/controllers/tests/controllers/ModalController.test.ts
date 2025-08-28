@@ -131,6 +131,29 @@ describe('ModalController', () => {
     expect(NetworkUtil.onSwitchNetwork).toHaveBeenCalled()
   })
 
+  it('should switchActiveNetwork and show ConnectingWalletConnectBasic when hasNoAdapters is true and namespace is provided and different from activeChain', async () => {
+    mockChainControllerState({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      noAdapters: true,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.BITCOIN,
+          { networkState: { caipNetwork: mockBitcoinNetwork, supportsAllNetworks: false } }
+        ]
+      ])
+    })
+
+    const switchActiveNetworkSpy = vi
+      .spyOn(ChainController, 'switchActiveNetwork')
+      .mockResolvedValue(undefined)
+    const routerPushSpy = vi.spyOn(RouterController, 'push')
+
+    await ModalController.open({ namespace: ConstantsUtil.CHAIN.BITCOIN })
+
+    expect(switchActiveNetworkSpy).toHaveBeenCalledWith(mockBitcoinNetwork)
+    expect(routerPushSpy).toHaveBeenCalledWith('ConnectingWalletConnectBasic')
+  })
+
   it.skip('should not open the ConnectingWalletConnectBasic modal view when connected and manualWCControl is false', async () => {
     ChainController.state.activeCaipAddress = 'eip155:1:0x123'
     ChainController.state.noAdapters = true

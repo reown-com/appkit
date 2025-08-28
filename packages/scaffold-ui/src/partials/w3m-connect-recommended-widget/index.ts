@@ -79,13 +79,14 @@ export class W3mConnectRecommendedWidget extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${wallets.map(
           wallet => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet?.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
+              size="sm"
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}
