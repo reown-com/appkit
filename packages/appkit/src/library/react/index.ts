@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { useEffect, useState } from 'react'
 
-import { useSnapshot } from 'valtio'
-
 import type { ChainNamespace } from '@reown/appkit-common'
 import type {
   AppKitAccountButton,
@@ -14,7 +12,6 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import type {
   AppKitBaseClient as AppKit,
@@ -75,18 +72,6 @@ export function getAppKit(appKit: AppKit) {
 
 // -- Core Hooks ---------------------------------------------------------------
 export * from '@reown/appkit-controllers/react'
-
-export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
-  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
-
-  const walletProvider = providers[chainNamespace] as T
-  const walletProviderType = providerIds[chainNamespace]
-
-  return {
-    walletProvider,
-    walletProviderType
-  }
-}
 
 export function useAppKitTheme() {
   if (!modal) {
