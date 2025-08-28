@@ -4,16 +4,6 @@ import credentialsProvider from 'next-auth/providers/credentials'
 
 import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@reown/appkit-siwe'
 
-const nextAuthSecret = process.env['NEXTAUTH_SECRET']
-if (!nextAuthSecret) {
-  throw new Error('NEXTAUTH_SECRET is not set')
-}
-
-const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-if (!projectId) {
-  throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-}
-
 // Extend the Session type to include address and chainId
 interface ExtendedSession extends Session {
   address?: string
@@ -36,6 +26,12 @@ const providers = [
       }
     },
     async authorize(credentials: Partial<Record<'message' | 'signature', unknown>>) {
+      const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+
+      if (!projectId) {
+        throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+      }
+
       try {
         const message = credentials.message as string
         const signature = credentials.signature as string
@@ -68,7 +64,7 @@ const providers = [
 
 // eslint-disable-next-line new-cap
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  secret: nextAuthSecret,
+  secret: process.env['NEXTAUTH_SECRET'],
   providers,
   session: {
     strategy: 'jwt'
