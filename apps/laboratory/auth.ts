@@ -64,6 +64,7 @@ const providers = [
 
 // eslint-disable-next-line new-cap
 export const { auth, handlers, signIn, signOut } = NextAuth({
+  trustHost: true,
   secret: process.env['NEXTAUTH_SECRET'],
   providers,
   session: {
