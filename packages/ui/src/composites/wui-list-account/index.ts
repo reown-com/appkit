@@ -7,6 +7,7 @@ import {
   ConnectorController,
   StorageUtil
 } from '@reown/appkit-controllers'
+import { ChainController, ConnectionController } from '@reown/appkit-controllers'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../components/wui-image/index.js'

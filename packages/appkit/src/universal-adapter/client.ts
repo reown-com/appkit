@@ -87,32 +87,28 @@ export class UniversalAdapter extends AdapterBlueprint {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const { caipNetwork, chainId } = params
     const isBalanceSupported =
-      params.caipNetwork &&
-      CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(params.caipNetwork?.chainNamespace)
+      caipNetwork &&
+      CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(caipNetwork?.chainNamespace)
 
-    if (!isBalanceSupported || params.caipNetwork?.testnet) {
+    if (!isBalanceSupported || caipNetwork?.testnet) {
       return {
         balance: '0.00',
-        symbol: params.caipNetwork?.nativeCurrency.symbol || ''
+        symbol: caipNetwork?.nativeCurrency.symbol || ''
       }
     }
 
-    const accountData = ConnectionController.getAccountData(params.caipNetwork?.chainNamespace)
+    const accountData = ConnectionController.getAccountData(caipNetwork?.chainNamespace)
 
-    if (
-      accountData?.balanceLoading &&
-      params.chainId === ChainController.getActiveCaipNetwork()?.id
-    ) {
+    if (accountData?.balanceLoading && chainId === ChainController.getActiveCaipNetwork()?.id) {
       return {
         balance: accountData?.balance || '0.00',
         symbol: accountData?.balanceSymbol || ''
       }
     }
 
-    const balances = await ConnectionController.fetchTokenBalance(
-      params.caipNetwork?.chainNamespace
-    )
+    const balances = await ConnectionController.fetchTokenBalance()
     const balance = balances.find(
       b =>
         b.chainId === `${params.caipNetwork?.chainNamespace}:${params.chainId}` &&

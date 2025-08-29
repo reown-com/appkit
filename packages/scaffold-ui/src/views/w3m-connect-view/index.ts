@@ -59,12 +59,12 @@ export class W3mConnectView extends LitElement {
   @state() private checked = OptionsStateController.state.isLegalCheckboxChecked
 
   @state() private isEmailEnabled =
-    this.remoteFeatures?.email && !!OptionsController.state.adapters?.length
+    this.remoteFeatures?.email && Boolean(OptionsController.state.adapters?.length)
 
   @state() private isSocialEnabled =
     this.remoteFeatures?.socials &&
     this.remoteFeatures.socials.length > 0 &&
-    !!OptionsController.state.adapters?.length
+    Boolean(OptionsController.state.adapters?.length)
 
   @state() private isAuthEnabled = this.checkIfAuthEnabled(this.connectors)
 

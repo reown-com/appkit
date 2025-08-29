@@ -327,7 +327,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onTabChange(index: number) {
-    ConnectionController.setAccountProp('currentTab', index, this.namespace)
+    if (this.namespace) {
+      ConnectionController.setAccountProp('currentTab', index, this.namespace)
+    }
   }
 
   private onFundWalletClick() {

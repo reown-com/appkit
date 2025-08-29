@@ -514,7 +514,7 @@ export class AppKit extends AppKitBaseClient {
          * Switch network for adapters, as each manages
          * its own connections state and requires network updates
          */
-        if (!!OptionsController.state.adapters.length) {
+        if (OptionsController.state.adapters.length) {
           const adapter = this.getAdapter(networkNamespace)
           const provider = ProviderUtil.getProvider(networkNamespace)
           const providerType = ProviderUtil.getProviderId(networkNamespace)

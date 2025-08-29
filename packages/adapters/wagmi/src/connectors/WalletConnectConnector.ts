@@ -23,7 +23,7 @@ import { WcHelpersUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { OptionsController, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -89,7 +89,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
     async connect({ ...rest } = {}) {
       try {
-        const caipNetworks = ChainController.getCaipNetworks()
+        const caipNetworks = ChainController.getCaipNetworks() ?? []
         const provider = await this.getProvider()
         if (!provider) {
           throw new ProviderNotFoundError()
@@ -270,7 +270,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.chains?.[0]
 
-      const network = ChainController.getCaipNetworks().find(c => c.id === chain)
+      const network = ChainController.getCaipNetworks()?.find(c => c.id === chain)
 
       return network?.id as number
     },
@@ -304,7 +304,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         throw new ProviderNotFoundError()
       }
 
-      const chainToSwitch = ChainController.getCaipNetworks().find(x => x.id === chainId)
+      const chainToSwitch = ChainController.getCaipNetworks()?.find(x => x.id === chainId)
 
       if (!chainToSwitch) {
         throw new SwitchChainError(new ChainNotConfiguredError())
@@ -384,7 +384,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       config.emitter.emit('change', { chainId })
     },
     onConnect(_connectInfo) {
-      this.setRequestedChainsIds(ChainController.getCaipNetworks().map(x => Number(x.id)))
+      this.setRequestedChainsIds(ChainController.getCaipNetworks()?.map(x => Number(x.id)) ?? [])
     },
     async onDisconnect(_error) {
       this.setRequestedChainsIds([])

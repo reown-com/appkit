@@ -1,6 +1,7 @@
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  ChainController,
   ConnectionController,
   type Connector,
   ConnectorController,
@@ -107,9 +108,9 @@ export const ConnectorUtil = {
    * @returns boolean
    */
   getIsConnectedWithWC() {
-    const chains = Array.from(ChainController.getSnapshot().context.namespaces.values())
+    const chains = Array.from(ChainController.getSnapshot().context.namespaces.keys())
     const isConnectedWithWC = chains.some(chain => {
-      const connectorId = ConnectorController.getConnectorId(chain.namespace)
+      const connectorId = ConnectorController.getConnectorId(chain)
 
       return connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     })

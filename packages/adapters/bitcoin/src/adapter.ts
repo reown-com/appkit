@@ -468,6 +468,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const accounts = await this.getAccounts({ id: connector.id })
     const chain = connector.chains.find(c => c.id === chainId) || connector.chains[0]
 
+    if (!chain?.caipNetworkId) {
+      throw new Error('BitcoinAdapter:onChainChanged - chain.caipNetworkId is undefined')
+    }
+
     if (
       HelpersUtil.isLowerCaseMatch(
         this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
@@ -482,7 +486,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts: accounts.accounts.map(a => ({
         address: a.address,
         type: a.type,
-        publicKey: a.publicKey
+        publicKey: a.publicKey,
+        caipAddress: `${chain?.caipNetworkId}:${a.address}` as const,
+        currentTab: 0,
+        addressLabels: new Map()
       })),
       caipNetwork: chain
     })

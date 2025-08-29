@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
+  ChainController,
   CoreHelperUtil,
   EventsController,
   OnRampController,
@@ -44,12 +45,13 @@ export class W3mOnRampProvidersView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onRampProvidersTemplate() {
+    const activeChain = ChainController.getSnapshot().context.activeChain
+    if (!activeChain) {
+      return []
+    }
+
     return this.providers
-      .filter(provider =>
-        provider.supportedChains.includes(
-          ChainController.getActiveCaipNetwork()?.chainNamespace ?? 'eip155'
-        )
-      )
+      .filter(provider => provider.supportedChains.includes(activeChain))
       .map(
         provider => html`
           <w3m-onramp-provider-item

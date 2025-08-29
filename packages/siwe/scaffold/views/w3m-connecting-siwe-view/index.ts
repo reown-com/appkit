@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
+  ChainController,
   ConnectionController,
   EventsController,
   ModalController,
@@ -125,7 +126,7 @@ export class W3mConnectingSiweView extends LitElement {
 
   private async onCancel() {
     this.isCancelling = true
-    const caipAddress = ConnectionController.getActiveConnection().caipAddress
+    const caipAddress = ConnectionController.getAccountData()?.caipAddress
     if (caipAddress) {
       await ConnectionController.disconnect()
       ModalController.close()

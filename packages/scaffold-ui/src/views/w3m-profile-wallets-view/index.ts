@@ -654,7 +654,9 @@ export class W3mProfileWalletsView extends LitElement {
 
     if (
       namespace === CommonConstantsUtil.CHAIN.BITCOIN &&
-      connectedConnection?.accounts.every(account => typeof account?.type === 'string')
+      connectedConnection?.accounts.every(
+        account => typeof account?.preferredAccountType === 'string'
+      )
     ) {
       return this.getBitcoinProfileContent(connectedConnection.accounts, address)
     }

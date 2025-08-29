@@ -235,11 +235,15 @@ export class WagmiAdapter extends AdapterBlueprint {
             )
 
             const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+            const accounts = connection.accounts.map(account => ({
+              address: this.toChecksummedAddress(account),
+              caipAddress: `eip155:${connection.chainId}:${account}` as const,
+              currentTab: 0,
+              addressLabels: new Map()
+            }))
 
             return {
-              accounts: connection.accounts.map(account => ({
-                address: this.toChecksummedAddress(account)
-              })),
+              accounts,
               caipNetwork,
               connectorId: connection.connector.id,
               auth: isAuth
@@ -671,7 +675,10 @@ export class WagmiAdapter extends AdapterBlueprint {
   public override get connections(): Connection[] {
     return Array.from(this.wagmiConfig.state.connections.values()).map(connection => ({
       accounts: connection.accounts.map(account => ({
-        address: this.toChecksummedAddress(account)
+        address: this.toChecksummedAddress(account),
+        caipAddress: `eip155:${connection.chainId}:${account}` as const,
+        currentTab: 0,
+        addressLabels: new Map()
       })),
       connectorId: connection.connector.id
     }))
@@ -770,7 +777,10 @@ export class WagmiAdapter extends AdapterBlueprint {
           connections: [
             {
               accounts: connection.accounts.map(account => ({
-                address: this.toChecksummedAddress(account)
+                address: this.toChecksummedAddress(account),
+                caipAddress: `eip155:${connection.chainId}:${account}` as const,
+                currentTab: 0,
+                addressLabels: new Map()
               })),
               connectorId: connection.connector.id
             }
@@ -807,7 +817,10 @@ export class WagmiAdapter extends AdapterBlueprint {
         .filter(connection => connection.status === 'fulfilled')
         .map(({ value: connection }) => ({
           accounts: connection.accounts.map(account => ({
-            address: this.toChecksummedAddress(account)
+            address: this.toChecksummedAddress(account),
+            caipAddress: `eip155:${connection.chainId}:${account}` as const,
+            currentTab: 0,
+            addressLabels: new Map()
           })),
           connectorId: connection.connector.id
         }))

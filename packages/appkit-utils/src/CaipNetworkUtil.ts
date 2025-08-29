@@ -9,7 +9,7 @@ import {
   type CustomRpcUrl,
   type CustomRpcUrlMap
 } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 
 import { PresetsUtil } from './PresetsUtil.js'
 

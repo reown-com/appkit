@@ -446,6 +446,10 @@ export const OptionsController = {
     return state.universalProviderConfigOverride
   },
 
+  setAdapters(adapters: ChainNamespace[]) {
+    state.adapters = adapters.map(adapter => adapter)
+  },
+
   getSnapshot() {
     return snapshot(state)
   }

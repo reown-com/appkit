@@ -362,7 +362,7 @@ export const PayController = {
       const requestedCaipNetworks = ChainController.getCaipNetworks(chainNamespace) ?? []
       const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(chainNamespace)
 
-      await ensureCorrectNetwork({
+      ensureCorrectNetwork({
         paymentAssetNetwork: state.paymentAsset.network,
         activeCaipNetwork: caipNetwork,
         approvedCaipNetworkIds,

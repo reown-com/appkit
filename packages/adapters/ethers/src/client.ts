@@ -5,6 +5,7 @@ import { type AppKitOptions, WcConstantsUtil, WcHelpersUtil } from '@reown/appki
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
+  ConnectionController,
   type Connector,
   type ConnectorType,
   CoreHelperUtil,
@@ -471,11 +472,25 @@ export class EthersAdapter extends AdapterBlueprint {
 
       accounts = [_address]
 
+      if (!caipNetwork?.caipNetworkId) {
+        throw new Error('EthersAdapter:connect - could not find the caipNetwork to connect')
+      }
+
       this.addConnection({
         connectorId: id,
         accounts: authAccounts
-          ? authAccounts.map(account => ({ address: account.address }))
-          : accounts.map(account => ({ address: account })),
+          ? (authAccounts.map(account => ({
+              address: account.address,
+              caipAddress: `${caipNetwork?.caipNetworkId}:${account.address}` as const,
+              currentTab: 0,
+              addressLabels: new Map()
+            })) ?? [])
+          : accounts.map(account => ({
+              address: account,
+              caipAddress: `${caipNetwork?.caipNetworkId}:${account}` as const,
+              currentTab: 0,
+              addressLabels: new Map()
+            })),
         caipNetwork,
         auth: {
           name: StorageUtil.getConnectedSocialProvider(),
@@ -521,9 +536,18 @@ export class EthersAdapter extends AdapterBlueprint {
         connector
       })
 
+      if (!caipNetwork?.caipNetworkId) {
+        throw new Error('EthersAdapter:connect - could not find the caipNetwork to connect')
+      }
+
       this.addConnection({
         connectorId: id,
-        accounts: accounts.map(account => ({ address: account })),
+        accounts: accounts.map(account => ({
+          address: account,
+          caipAddress: `${caipNetwork?.caipNetworkId}:${account}` as const,
+          currentTab: 0,
+          addressLabels: new Map()
+        })),
         caipNetwork
       })
 

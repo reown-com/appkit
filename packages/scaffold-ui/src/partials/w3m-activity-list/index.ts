@@ -68,9 +68,9 @@ export class W3mActivityList extends LitElement {
           this.caipAddress = accountData?.caipAddress
         }),
         ChainController.subscribe(() => {
-          const caipNetwork = ChainController.getActiveCaipNetwork()
-          if (caipNetwork?.caipNetworkId !== this.caipNetworkId) {
-            this.caipAddress = ConnectionController.getAccountData()?.caipAddress
+          const caipAddress = ConnectionController.getAccountData()?.caipAddress
+          if (caipAddress !== this.caipAddress) {
+            this.caipAddress = caipAddress
             this.updateTransactionView()
           }
         }),

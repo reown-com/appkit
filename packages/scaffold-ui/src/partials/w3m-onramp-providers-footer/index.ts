@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 
 import {
+  ChainController,
   EventsController,
   OptionsController,
   RouterController,
@@ -59,7 +60,7 @@ export class W3mOnRampProvidersFooter extends LitElement {
       event: 'SELECT_WHAT_IS_A_BUY',
       properties: {
         isSmartAccount:
-          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
+          getPreferredAccountType(ChainController.getSnapshot().context.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

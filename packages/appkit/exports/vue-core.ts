@@ -48,7 +48,7 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
     }
   })
 
-  const subscription = ChainController.subscribe(snapshot => {
+  const unsubscribe = ChainController.subscribe(snapshot => {
     const activeChain = snapshot.context.activeChain
 
     if (!activeChain) {
@@ -67,7 +67,7 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
   })
 
   onUnmounted(() => {
-    subscription.unsubscribe()
+    unsubscribe?.()
   })
 
   return state

@@ -59,15 +59,11 @@ export class W3mConnectingSocialView extends LitElement {
   public constructor() {
     super()
     const abortController = ErrorUtil.EmbeddedWalletAbortController
-
+    const activeChain = ChainController.getSnapshot().context.activeChain
     abortController.signal.addEventListener('abort', () => {
-      if (this.socialWindow) {
+      if (this.socialWindow && activeChain) {
         this.socialWindow.close()
-        ConnectionController.setAccountProp(
-          'socialWindow',
-          undefined,
-          ChainController.getActiveCaipNetwork()?.chainNamespace
-        )
+        ConnectionController.setAccountProp('socialWindow', undefined, activeChain)
       }
     })
     this.unsubscribe.push(
@@ -109,11 +105,10 @@ export class W3mConnectingSocialView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('message', this.handleSocialConnection, false)
     this.socialWindow?.close()
-    ConnectionController.setAccountProp(
-      'socialWindow',
-      undefined,
-      ChainController.getActiveCaipNetwork()?.chainNamespace
-    )
+    const activeChain = ChainController.getSnapshot().context.activeChain
+    if (activeChain) {
+      ConnectionController.setAccountProp('socialWindow', undefined, activeChain)
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -153,18 +148,15 @@ export class W3mConnectingSocialView extends LitElement {
   }
 
   private handleSocialConnection = async (event: MessageEvent) => {
+    const activeChain = ChainController.getSnapshot().context.activeChain
     if (event.data?.resultUri) {
       if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
         window.removeEventListener('message', this.handleSocialConnection, false)
         try {
           if (this.authConnector && !this.connecting) {
-            if (this.socialWindow) {
+            if (this.socialWindow && activeChain) {
               this.socialWindow.close()
-              ConnectionController.setAccountProp(
-                'socialWindow',
-                undefined,
-                ChainController.getActiveCaipNetwork()?.chainNamespace
-              )
+              ConnectionController.setAccountProp('socialWindow', undefined, activeChain)
             }
             this.connecting = true
             this.updateMessage()

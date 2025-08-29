@@ -58,8 +58,9 @@ class W3mAccountButtonBase extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public override connectedCallback() {
     super.connectedCallback()
+
+    this.setAccountData(ConnectionController.getAccountData(this.namespace))
     if (this.namespace) {
-      this.setAccountData(ConnectionController.getAccountData(this.namespace))
       this.setNetworkData(ChainController.getSnapshot().context.namespaces.get(this.namespace))
     }
   }
@@ -67,41 +68,24 @@ class W3mAccountButtonBase extends LitElement {
   public override firstUpdated() {
     const namespace = this.namespace
 
-    if (namespace) {
-      this.unsubscribe.push(
-        ConnectionController.subscribeKey('connections', () => {
-          this.setAccountData(ConnectionController.getAccountData(this.namespace))
-        }),
-        ChainController.subscribe(() => {
-          this.setNetworkData(ChainController.getSnapshot().context.namespaces.get(this.namespace))
-          this.isSupported = ChainController.checkIfSupportedNetwork(
-            this.namespace as ChainNamespace
-          )
-        }),
-        ChainController.subscribe(() => {
-          this.setNetworkData(ChainController.getSnapshot().context.namespaces.get(this.namespace))
-          this.isSupported = ChainController.checkIfSupportedNetwork(
-            this.namespace as ChainNamespace
-          )
-        })
-      )
-    } else {
-      this.unsubscribe.push(
-        AssetController.subscribeNetworkImages(() => {
-          this.networkImage = AssetUtil.getNetworkImage(this.network)
-        }),
-        ConnectionController.subscribeKey('connections', () => {
-          this.setAccountData(ConnectionController.getAccountData(this.namespace))
-        }),
-        ChainController.subscribe(() => {
-          this.setNetworkData(ChainController.getSnapshot().context.namespaces.get(this.namespace))
-          this.isSupported = ChainController.checkIfSupportedNetwork(
-            this.namespace as ChainNamespace
-          )
-          this.fetchNetworkImage(this.network)
-        })
-      )
-    }
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('connections', () => {
+        this.setAccountData(ConnectionController.getAccountData(namespace))
+      }),
+      ChainController.subscribe(({ context }) => {
+        const activeChain = context.activeChain
+        if (activeChain) {
+          const activeCaipNetwork = context.namespaces.get(activeChain)
+          if (activeCaipNetwork) {
+            this.setNetworkData(activeCaipNetwork)
+          }
+          this.isSupported = ChainController.checkIfSupportedNetwork(activeChain)
+        }
+      }),
+      AssetController.subscribeNetworkImages(() => {
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      })
+    )
   }
 
   public override updated() {
@@ -175,8 +159,8 @@ class W3mAccountButtonBase extends LitElement {
       return
     }
 
-    this.network = networkState.caipNetwork
-    this.networkImage = AssetUtil.getNetworkImage(networkState.caipNetwork)
+    this.network = networkState.activeCaipNetwork
+    this.networkImage = AssetUtil.getNetworkImage(networkState.activeCaipNetwork)
   }
 }
 

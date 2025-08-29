@@ -1,6 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import {
+  type AccountState,
   type Address,
   type CaipAddress,
   type CaipNetwork,
@@ -11,7 +12,6 @@ import {
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 import {
-  type AccountState,
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
@@ -156,7 +156,17 @@ export abstract class AdapterBlueprint<
     if (accounts && caipNetwork) {
       this.addConnection({
         connectorId: CommonConstantsUtil.CONNECTOR_ID.AUTH,
-        accounts,
+        accounts: accounts.map(account => {
+          const parsedAccount = typeof account === 'string' ? account : account.address
+          const caipAddress = `${caipNetwork.caipNetworkId}:${parsedAccount}` as const
+
+          return {
+            address: parsedAccount,
+            caipAddress,
+            currentTab: 0,
+            addressLabels: new Map()
+          }
+        }),
         caipNetwork
       })
     }
@@ -246,8 +256,8 @@ export abstract class AdapterBlueprint<
     }
   }
 
-  protected setStatus(status: AccountState['status'], chainNamespace?: ChainNamespace) {
-    ConnectionController.setStatus(status, chainNamespace)
+  protected setStatus(status: AccountState['status']) {
+    ConnectionController.setStatus(status)
   }
 
   /**
@@ -517,7 +527,7 @@ export abstract class AdapterBlueprint<
 
       const connector = this.connectors.find(c => c.id === connectorId)
 
-      if (address) {
+      if (address && caipNetwork) {
         this.emit('accountChanged', {
           address,
           chainId,
@@ -526,10 +536,16 @@ export abstract class AdapterBlueprint<
 
         this.addConnection({
           connectorId,
-          accounts: accounts.map(_account => {
-            const { address } = CoreHelperUtil.getAccount(_account)
+          accounts: accounts.map(account => {
+            const parsedAccount = typeof account === 'string' ? account : account.address
+            const caipAddress = `${caipNetwork.caipNetworkId}:${parsedAccount}` as const
 
-            return { address: address as string }
+            return {
+              address: parsedAccount,
+              caipAddress,
+              currentTab: 0,
+              addressLabels: new Map()
+            }
           }),
           caipNetwork
         })
@@ -570,12 +586,23 @@ export abstract class AdapterBlueprint<
         })
       }
 
+      const caipNetworkId = connection?.caipNetwork?.caipNetworkId
+      if (!caipNetworkId) {
+        return
+      }
+
       this.addConnection({
         connectorId,
-        accounts: accounts.map(_account => {
-          const { address } = CoreHelperUtil.getAccount(_account)
+        accounts: accounts.map(account => {
+          const parsedAccount = typeof account === 'string' ? account : account.address
+          const caipAddress = `${caipNetworkId}:${parsedAccount}` as const
 
-          return { address: address as string }
+          return {
+            address: parsedAccount,
+            caipAddress,
+            currentTab: 0,
+            addressLabels: new Map()
+          }
         }),
         caipNetwork: connection?.caipNetwork
       })
