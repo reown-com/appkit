@@ -32,6 +32,8 @@ const controller = {
   },
 
   subscribe(callback: ({ context, state }: { context: ChainContext; state: ChainState }) => void) {
+    console.trace('>> Subscribing to ChainController')
+
     return chainActor.subscribe(snapshot => {
       callback({ context: snapshot.context, state: snapshot.value })
     }).unsubscribe
@@ -144,10 +146,12 @@ const controller = {
     })
   },
   checkIfSupportedNetwork(namespace: ChainNamespace, caipNetworkId?: CaipNetworkId) {
-    const namespaceState = chainActor.getSnapshot().context.namespaces.get(namespace)
+    const namespaces = chainActor.getSnapshot().context.namespaces
+    const namespaceState = namespaces.get(namespace)
+    const networkId = caipNetworkId || namespaceState?.activeCaipNetwork?.caipNetworkId
 
     return namespaceState?.requestedCaipNetworks?.some(
-      network => network.caipNetworkId === caipNetworkId
+      network => network.caipNetworkId === networkId
     )
   },
 

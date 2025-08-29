@@ -247,8 +247,14 @@ export const chainMachine = setup({
                 network => network.chainNamespace === ns
               )
 
+              // Use the stored active network if it belongs to this namespace, otherwise use the first network
+              const namespaceActiveNetwork =
+                activeCaipNetwork?.chainNamespace === ns
+                  ? activeCaipNetwork
+                  : namespaceNetworks?.[0]
+
               namespaceMap.set(ns, {
-                activeCaipNetwork: namespaceNetworks?.[0],
+                activeCaipNetwork: namespaceActiveNetwork,
                 requestedCaipNetworks: namespaceNetworks ?? [],
                 approvedCaipNetworks: [],
                 supportsAllNetworks: true
@@ -271,6 +277,11 @@ export const chainMachine = setup({
       }
     },
     ready: {
+      entry: assign(({ context }) => {
+        console.log('>> READY - entry', { context })
+
+        return {}
+      }),
       on: {
         ADD_NETWORK: {
           actions: assign(({ context, event }: ActionArgs) => {
@@ -294,6 +305,8 @@ export const chainMachine = setup({
               const map = new Map(context.namespaces)
               map.set(ns, next)
               context.ports.filterConnectorsByNamespace(ns, true)
+
+              console.log('>> ADD_NETWORK - done', { ns, next, map })
 
               return { namespaces: map }
             }
@@ -336,10 +349,11 @@ export const chainMachine = setup({
         REFRESH_APPROVED_NETWORKS: { target: 'refreshingApproved' },
 
         SET_SMART_ACCOUNT_ENABLED: {
-          actions: assign(({ event }: ActionArgs) => {
+          actions: assign(({ event, context }: ActionArgs) => {
             if (event.type !== 'SET_SMART_ACCOUNT_ENABLED') {
               return {}
             }
+            console.log('>> SET_SMART_ACCOUNT_ENABLED', { event, context })
 
             return {
               smartAccountEnabledNetworks: event.networkIds.map(
@@ -363,11 +377,12 @@ export const chainMachine = setup({
             if (event.type !== 'RESET_NETWORK') {
               return {}
             }
+            console.log('>> RESET_NETWORK', { context, event })
             const map = new Map(context.namespaces)
             map.set(event.namespace, {
-              activeCaipNetwork: undefined,
-              requestedCaipNetworks: [],
-              approvedCaipNetworks: []
+              ...context.namespaces.get(event.namespace),
+              approvedCaipNetworks: [],
+              supportsAllNetworks: true
             })
 
             return { namespaces: map }
@@ -452,14 +467,18 @@ export const chainMachine = setup({
         input: ({ context }) => context,
         onDone: {
           target: 'ready',
-          actions: assign(({ event, context }) => ({
-            namespaces:
-              (
-                event as DoneActorEvent<
-                  { namespaces: Map<ChainNamespace, NamespaceState> } | undefined
-                >
-              ).output?.namespaces ?? context.namespaces
-          }))
+          actions: assign(({ event, context }) => {
+            console.log('>> REFRESH_APPROVED_NETWORKS - done', { event, context })
+
+            return {
+              namespaces:
+                (
+                  event as DoneActorEvent<
+                    { namespaces: Map<ChainNamespace, NamespaceState> } | undefined
+                  >
+                ).output?.namespaces ?? context.namespaces
+            }
+          })
         }
       }
     },

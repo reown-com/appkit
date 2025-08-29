@@ -45,14 +45,31 @@ class W3mNetworkButtonBase extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+    console.log('>> networkbutton - constructor')
+  }
+
+  public override firstUpdated() {
+    const snapshot = ChainController.getSnapshot()
+    console.log('>> networkbutton - firstUpdated - snapshot', snapshot)
+    this.network = ChainController.getActiveCaipNetwork()
+    this.networkImage = AssetUtil.getNetworkImage(this.network)
+    this.isSupported = this.network?.chainNamespace
+      ? ChainController.checkIfSupportedNetwork(this.network?.chainNamespace)
+      : true
+
+    console.log('>> networkbutton - firstUpdated - done', {
+      network: this.network,
+      networkImage: this.networkImage,
+      isSupported: this.isSupported
+    })
+
     this.unsubscribe.push(
       ...[
         AssetController.subscribeNetworkImages(() => {
           this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
         ChainController.subscribe(input => {
-          const { context, state: chainState } = input
-          console.log('>> networkbutton - ChainController.subscribe', { context, chainState })
+          console.log('>> networkbutton - ChainController.subscribe', input)
           this.network = ChainController.getActiveCaipNetwork()
           this.networkImage = AssetUtil.getNetworkImage(this.network)
           this.isSupported = this.network?.chainNamespace
@@ -65,9 +82,6 @@ class W3mNetworkButtonBase extends LitElement {
         ModalController.subscribeKey('loading', val => (this.loading = val))
       ]
     )
-  }
-
-  public override firstUpdated() {
     AssetUtil.fetchNetworkImage(this.network?.assets?.imageId)
   }
 
@@ -77,9 +91,13 @@ class W3mNetworkButtonBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('>> networkbutton - render', this.network)
+
     const isSupported = this.network
       ? ChainController.checkIfSupportedNetwork(this.network.chainNamespace)
       : true
+
+    console.log('>> networkbutton - render - isSupported', isSupported)
 
     return html`
       <wui-network-button
