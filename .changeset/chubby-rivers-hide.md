@@ -24,4 +24,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updates React hooks to use `subscribe` for Valtion states instead of `useSnapshot` which fails on React `>=19.1.x`
+Moves `useAppKitProvider` and `ProviderUtil` to `controllers` package, upgrades Valtio versions
