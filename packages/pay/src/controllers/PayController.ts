@@ -305,10 +305,12 @@ export const PayController = {
       }
     })
 
-    ChainController.subscribeChainProp('accountState', accountState => {
+    ConnectionController.subscribeKey('connections', () => {
       const hasWcConnection = ConnectionController.hasAnyConnection(
         ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
       )
+
+      const accountState = ConnectionController.getAccountData()
       if (accountState?.caipAddress) {
         // WalletConnect connections sometimes fail down the line due to state not being updated atomically
         if (hasWcConnection) {
@@ -326,13 +328,13 @@ export const PayController = {
       type: 'wallet',
       status: 'IN_PROGRESS'
     }
-    const caipAddress = ChainController.getActiveCaipAddress()
+    const caipAddress = ConnectionController.getAccountData()?.caipAddress
     if (!caipAddress) {
       return
     }
 
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain
+    const chainNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!address || !chainId || !chainNamespace) {
       return
@@ -344,7 +346,7 @@ export const PayController = {
       return
     }
 
-    const caipNetwork = ChainController.state.activeCaipNetwork
+    const caipNetwork = ChainController.getActiveCaipNetwork()
 
     if (!caipNetwork) {
       return
@@ -357,8 +359,8 @@ export const PayController = {
     try {
       this.initiatePayment()
 
-      const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-      const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+      const requestedCaipNetworks = ChainController.getCaipNetworks(chainNamespace) ?? []
+      const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(chainNamespace)
 
       await ensureCorrectNetwork({
         paymentAssetNetwork: state.paymentAsset.network,
@@ -444,14 +446,14 @@ export const PayController = {
   },
 
   handlePayWithWallet() {
-    const caipAddress = ChainController.getActiveCaipAddress()
+    const caipAddress = ConnectionController.getAccountData()?.caipAddress
     if (!caipAddress) {
       RouterController.push('Connect')
 
       return
     }
     const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain
+    const chainNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
     if (!address || !chainId || !chainNamespace) {
       RouterController.push('Connect')
 

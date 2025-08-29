@@ -13,14 +13,14 @@ export class W3mAccountView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  @state() namespace = ChainController.state.activeChain
+  @state() namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
-      ChainController.subscribeKey('activeChain', namespace => {
-        this.namespace = namespace
+      ChainController.subscribe(() => {
+        this.namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
       })
     )
   }

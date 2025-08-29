@@ -7,6 +7,7 @@ import {
   AssetController,
   AssetUtil,
   ChainController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   NetworkUtil
@@ -27,9 +28,9 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public network = ChainController.state.activeCaipNetwork
+  @state() public network = ChainController.getActiveCaipNetwork()
 
-  @state() public requestedCaipNetworks = ChainController.getCaipNetworks()
+  @state() public requestedCaipNetworks: CaipNetwork[] = ChainController.getCaipNetworks() ?? []
 
   @state() private filteredNetworks?: CaipNetwork[]
 
@@ -40,10 +41,18 @@ export class W3mNetworksView extends LitElement {
     super()
     this.unsubscribe.push(
       AssetController.subscribeNetworkImages(() => this.requestUpdate()),
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
-      ChainController.subscribe(() => {
-        this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-      })
+      () =>
+        ChainController.subscribe(({ context }) => {
+          const { activeChain, namespaces } = context
+          if (!activeChain) {
+            return
+          }
+
+          const namespaceState = namespaces.get(activeChain)
+
+          this.requestedCaipNetworks = namespaceState?.requestedCaipNetworks ?? []
+          this.network = namespaceState?.activeCaipNetwork
+        })
     )
   }
 
@@ -90,7 +99,13 @@ export class W3mNetworksView extends LitElement {
   }, 100)
 
   private networksTemplate() {
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+    if (!this.network?.chainNamespace) {
+      return null
+    }
+
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(
+      this.network?.chainNamespace
+    )
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -123,11 +138,11 @@ export class W3mNetworksView extends LitElement {
   private getNetworkDisabled(network: CaipNetwork) {
     const networkNamespace = network.chainNamespace
     const isNextNamespaceConnected = Boolean(
-      ChainController.getAccountData(networkNamespace)?.caipAddress
+      ConnectionController.getAccountData(networkNamespace)?.caipAddress
     )
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(networkNamespace)
     const shouldSupportAllNetworks =
-      ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
+      ChainController.getSnapshot().context.namespaces.get(networkNamespace)?.supportsAllNetworks
     const connectorId = ConnectorController.getConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector

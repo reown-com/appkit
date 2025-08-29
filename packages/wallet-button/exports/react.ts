@@ -7,7 +7,7 @@ import { useSnapshot } from 'valtio'
 
 import type { ChainNamespace, ParsedCaipAddress } from '@reown/appkit-common'
 import {
-  ChainController,
+  ConnectionController,
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
@@ -82,8 +82,8 @@ export function useAppKitWallet(parameters?: {
 
   useEffect(
     () =>
-      ChainController.subscribeKey('activeCaipAddress', val => {
-        if (val) {
+      ConnectionController.subscribeKey('connections', () => {
+        if (ConnectionController.getAccountData()?.caipAddress) {
           WalletButtonController.setError(undefined)
           WalletButtonController.setPending(false)
         }

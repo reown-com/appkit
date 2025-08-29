@@ -8,9 +8,6 @@ export type {
 export { RouterController } from '../src/controllers/RouterController.js'
 export type { RouterControllerState } from '../src/controllers/RouterController.js'
 
-export { ChainController } from '../src/controllers/ChainController.js'
-export type { ChainControllerState, AccountState } from '../src/controllers/ChainController.js'
-
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
@@ -115,3 +112,7 @@ export { FetchUtil } from '../src/utils/FetchUtil.js'
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'
 export * from '../src/utils/ChainControllerUtil.js'
+
+export { chainActor } from '../src/controllers/poc/ChainActor.js'
+export { ChainController } from '../src/controllers/poc/ChainController.js'
+export type { NamespaceState } from '../src/utils/TypeUtil copy.js'

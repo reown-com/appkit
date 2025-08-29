@@ -38,7 +38,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverProfileImageUrl = SendController.state.receiverProfileImageUrl
 
-  @state() private caipNetwork = ChainController.state.activeCaipNetwork
+  @state() private caipNetwork = ChainController.getActiveCaipNetwork()
 
   @state() private loading = SendController.state.loading
 
@@ -54,7 +54,10 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
           this.loading = val.loading
         }),
-        ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val))
+        ChainController.subscribe(() => {
+          const activeNetwork = ChainController.getActiveCaipNetwork()
+          this.caipNetwork = activeNetwork
+        })
       ]
     )
   }
@@ -174,11 +177,11 @@ export class W3mWalletSendPreviewView extends LitElement {
         properties: {
           message: errorMessage,
           isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
+            getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.token?.symbol || '',
           amount: this.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || ''
         }
       })
     }

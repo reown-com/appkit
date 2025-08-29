@@ -30,7 +30,7 @@ export const HelpersUtil = {
    * @returns ChainNamespace | undefined
    */
   getActiveNamespaceConnectedToAuth() {
-    const activeChain = ChainController.state.activeChain
+    const activeChain = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     return CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       chain =>

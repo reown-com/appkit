@@ -28,12 +28,15 @@ export class W3mSwitchActiveChainView extends LitElement {
   protected readonly caipNetwork = RouterController.state.data?.network
 
   // -- State & Properties -------------------------------- //
-  @property() public activeChain = ChainController.state.activeChain
+  @property() public activeChain = ChainController.getActiveCaipNetwork()?.chainNamespace
 
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
-    this.unsubscribe.push(
-      ChainController.subscribeKey('activeChain', val => (this.activeChain = val))
+    this.unsubscribe.push(() =>
+      ChainController.subscribe(() => {
+        const activeNetwork = ChainController.getActiveCaipNetwork()
+        this.activeChain = activeNetwork?.chainNamespace
+      })
     )
   }
 
@@ -90,16 +93,15 @@ export class W3mSwitchActiveChainView extends LitElement {
   }
 
   // -- Private Methods ------------------------------------ //
-  private async switchActiveChain() {
+  private switchActiveChain() {
     if (!this.switchToChain) {
       return
     }
 
-    ChainController.setIsSwitchingNamespace(true)
     ConnectorController.setFilterByNamespace(this.switchToChain)
 
     if (this.caipNetwork) {
-      await ChainController.switchActiveNetwork(this.caipNetwork)
+      ChainController.switchActiveNetwork(this.caipNetwork)
     } else {
       ChainController.setActiveNamespace(this.switchToChain)
     }

@@ -35,7 +35,6 @@ import type {
   PaymentCurrency,
   PurchaseCurrency
 } from '../utils/TypeUtil.js'
-import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
 
@@ -200,8 +199,8 @@ export const BlockchainApiController = {
     const result = await BlockchainApiController.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        sender: ChainController.state.activeCaipAddress
-          ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
+        sender: ConnectionController.getActiveConnection().caipAddress
+          ? CoreHelperUtil.getPlainAddress(ConnectionController.getActiveConnection().caipAddress)
           : undefined
       }
     })
@@ -223,7 +222,7 @@ export const BlockchainApiController = {
     chainId
   }: BlockchainApiTransactionsRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { data: [], next: undefined }
@@ -259,7 +258,7 @@ export const BlockchainApiController = {
 
   async fetchSwapQuote({ amount, userAddress, from, to, gasPrice }: BlockchainApiSwapQuoteRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { quotes: [] }
@@ -284,7 +283,7 @@ export const BlockchainApiController = {
     chainId
   }: BlockchainApiSwapTokensRequest): Promise<BlockchainApiSwapTokensResponse> {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { tokens: [] }
@@ -298,7 +297,7 @@ export const BlockchainApiController = {
 
   async fetchTokenPrice({ addresses }: BlockchainApiTokenPriceRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { fungibles: [] }
@@ -332,7 +331,7 @@ export const BlockchainApiController = {
 
   async fetchSwapAllowance({ tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { allowance: '0' }
@@ -354,7 +353,7 @@ export const BlockchainApiController = {
     const { st, sv } = BlockchainApiController.getSdkProperties()
 
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       throw new Error('Network not supported for Gas Price')
@@ -381,7 +380,7 @@ export const BlockchainApiController = {
     disableEstimate
   }: BlockchainApiGenerateSwapCalldataRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       throw new Error('Network not supported for Swaps')
@@ -414,7 +413,7 @@ export const BlockchainApiController = {
     const { st, sv } = BlockchainApiController.getSdkProperties()
 
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       throw new Error('Network not supported for Swaps')
@@ -439,7 +438,7 @@ export const BlockchainApiController = {
     const { st, sv } = BlockchainApiController.getSdkProperties()
 
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       SnackController.showError('Token Balance Unavailable')
@@ -475,7 +474,7 @@ export const BlockchainApiController = {
 
   async lookupEnsName(name: string) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { addresses: {}, attributes: [] }
@@ -489,13 +488,13 @@ export const BlockchainApiController = {
 
   async reverseLookupEnsName({ address }: { address: string }) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return []
     }
 
-    const sender = ChainController.getAccountData()?.address
+    const sender = ConnectionController.getAccountData()?.address
 
     return BlockchainApiController.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}`,
@@ -508,7 +507,7 @@ export const BlockchainApiController = {
 
   async getEnsNameSuggestions(name: string) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { suggestions: [] }
@@ -527,7 +526,7 @@ export const BlockchainApiController = {
     signature
   }: BlockchainApiRegisterNameParams) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { success: false }
@@ -550,7 +549,7 @@ export const BlockchainApiController = {
     paymentAmount
   }: GenerateOnRampUrlArgs) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return ''
@@ -576,7 +575,7 @@ export const BlockchainApiController = {
 
   async getOnrampOptions() {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { paymentCurrencies: [], purchaseCurrencies: [] }
@@ -604,7 +603,7 @@ export const BlockchainApiController = {
   }: GetQuoteArgs): Promise<OnrampQuote | null> {
     try {
       const isSupported = await BlockchainApiController.isNetworkSupported(
-        ChainController.state.activeCaipNetwork?.caipNetworkId
+        ChainController.getActiveCaipNetwork()?.caipNetworkId
       )
       if (!isSupported) {
         return null
@@ -638,7 +637,7 @@ export const BlockchainApiController = {
 
   async getSmartSessions(caipAddress: CaipAddress) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return []
@@ -650,7 +649,7 @@ export const BlockchainApiController = {
   },
   async revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
+      ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (!isSupported) {
       return { success: false }

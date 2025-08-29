@@ -60,7 +60,7 @@ export class W3mOnRampProviderItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getCaipNetworks() ?? []
     const slicedNetworks = requestedCaipNetworks
       ?.filter(network => network?.assets?.imageId)
       ?.slice(0, 5)

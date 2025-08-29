@@ -154,7 +154,7 @@ describe('WagmiAdapter', () => {
       projectId: mockProjectId
     })
     adapter.wagmiConfig = mockWagmiConfig
-    ChainController.initialize([adapter], mockCaipNetworks, {
+    ChainControllerPoc.initialize([adapter], mockCaipNetworks, {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient
     })

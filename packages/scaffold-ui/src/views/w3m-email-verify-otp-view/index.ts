@@ -19,7 +19,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.authConnector) {
-        const namespace = ChainController.state.activeChain
+        const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
         const connectionsByNamespace = ConnectionController.getConnections(namespace)
         const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0

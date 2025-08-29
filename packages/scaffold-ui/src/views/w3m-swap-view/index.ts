@@ -4,6 +4,7 @@ import { property, state } from 'lit/decorators.js'
 import { type CaipAddress, type CaipNetwork, NumberUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -52,9 +53,9 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipAddress = ChainController.getAccountData()?.caipAddress
+  @state() private caipAddress = ConnectionController.getAccountData()?.caipAddress
 
-  @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
+  @state() private caipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
 
   @state() private initialized = SwapController.state.initialized
 
@@ -93,16 +94,16 @@ export class W3mSwapView extends LitElement {
     initializeSwapState: boolean
   }) {
     return () => {
-      ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+      ChainController.subscribe(() => {
         this.onCaipNetworkChange({
-          newCaipNetwork,
+          newCaipNetwork: ChainController.getActiveCaipNetwork(),
           resetSwapState,
           initializeSwapState
         })
-      )
-      ChainController.subscribeChainProp('accountState', val => {
+      })
+      ConnectionController.subscribeKey('connections', () => {
         this.onCaipAddressChange({
-          newCaipAddress: val?.caipAddress,
+          newCaipAddress: ConnectionController.getAccountData()?.caipAddress,
           resetSwapState,
           initializeSwapState
         })
@@ -370,7 +371,7 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

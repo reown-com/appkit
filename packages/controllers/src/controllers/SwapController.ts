@@ -5,6 +5,7 @@ import { type Address, type CaipNetworkId, type Hex, NumberUtil } from '@reown/a
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { ChainController } from '../../exports/index.js'
 import { BalanceUtil } from '../utils/BalanceUtil.js'
 import {
   getActiveNetworkTokenAddress,
@@ -18,7 +19,6 @@ import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
-import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -187,13 +187,15 @@ const controller = {
   },
 
   getParams() {
-    const namespace = ChainController.state.activeChain
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
     const caipAddress =
-      ChainController.getAccountData(namespace)?.caipAddress ??
-      ChainController.state.activeCaipAddress
+      ConnectionController.getAccountData(namespace)?.caipAddress ??
+      ConnectionController.getActiveConnection().caipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = getActiveNetworkTokenAddress()
-    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -368,7 +370,7 @@ const controller = {
   },
 
   async getTokenList() {
-    const activeCaipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
+    const activeCaipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
 
     if (state.caipNetworkId === activeCaipNetworkId && state.tokens) {
       return
@@ -458,7 +460,7 @@ const controller = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = SwapController.getParams()
-    const caipNetwork = ChainController.state.activeCaipNetwork
+    const caipNetwork = ChainController.getActiveCaipNetwork()
 
     if (!caipNetwork) {
       return
@@ -484,7 +486,8 @@ const controller = {
       return { gasPrice: null, gasPriceInUSD: null }
     }
 
-    switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
+    const activeNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
+    switch (activeNamespace) {
       case CommonConstantsUtil.CHAIN.SOLANA:
         state.gasFee = res.standard ?? '0'
         state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
@@ -516,7 +519,7 @@ const controller = {
 
   // -- Swap -------------------------------------- //
   async swapTokens() {
-    const address = ChainController.getAccountData()?.address
+    const address = ConnectionController.getAccountData()?.address
     const sourceToken = state.sourceToken
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
@@ -785,7 +788,7 @@ const controller = {
         event: 'SWAP_APPROVAL_ERROR',
         properties: {
           message: error?.displayMessage || error?.message || 'Unknown',
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
           swapFromToken: SwapController.state.sourceToken?.symbol || '',
           swapToToken: SwapController.state.toToken?.symbol || '',
           swapFromAmount: SwapController.state.sourceTokenAmount || '',
@@ -842,7 +845,7 @@ const controller = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
           swapFromToken: SwapController.state.sourceToken?.symbol || '',
           swapToToken: SwapController.state.toToken?.symbol || '',
           swapFromAmount: SwapController.state.sourceTokenAmount || '',
@@ -869,7 +872,7 @@ const controller = {
         event: 'SWAP_ERROR',
         properties: {
           message: error?.displayMessage || error?.message || 'Unknown',
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
           swapFromToken: SwapController.state.sourceToken?.symbol || '',
           swapToToken: SwapController.state.toToken?.symbol || '',
           swapFromAmount: SwapController.state.sourceTokenAmount || '',

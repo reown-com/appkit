@@ -3,6 +3,7 @@ import { state } from 'lit/decorators.js'
 
 import {
   ChainController,
+  ConnectionController,
   EventsController,
   OptionsController,
   RouterController,
@@ -24,7 +25,7 @@ export class W3mAccountTokensWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = ChainController.getAccountData()?.tokenBalance
+  @state() private tokenBalance = ConnectionController.getAccountData()?.tokenBalance
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
@@ -32,8 +33,8 @@ export class W3mAccountTokensWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeChainProp('accountState', val => {
-          this.tokenBalance = val?.tokenBalance
+        ConnectionController.subscribeKey('connections', () => {
+          this.tokenBalance = ConnectionController.getAccountData()?.tokenBalance
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
           this.remoteFeatures = val
@@ -113,7 +114,7 @@ export class W3mAccountTokensWidget extends LitElement {
       event: 'SELECT_BUY_CRYPTO',
       properties: {
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

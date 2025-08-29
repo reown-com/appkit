@@ -45,7 +45,7 @@ export class InformalMessenger extends SIWXMessenger {
    * @returns The blockchain name
    */
   protected getNetworkName(chainId: CaipNetworkId): string | undefined {
-    const requestedNetworks = ChainController.getAllRequestedCaipNetworks()
+    const requestedNetworks = ChainController.getCaipNetworks() ?? []
 
     return NetworkUtil.getNetworkNameByCaipNetworkId(requestedNetworks, chainId)
   }

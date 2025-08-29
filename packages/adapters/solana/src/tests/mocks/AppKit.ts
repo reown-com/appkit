@@ -12,7 +12,6 @@ export const mockAppKit = {
     .mockReturnValue(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:f558d7ee6670ce7a44846ecd311532f499b9a13a21a754672ae5bdc484cee935'
     ),
-  setRequestedCaipNetworks: vi.fn(),
   setConnectors: vi.fn(),
   getConnectors: vi.fn().mockReturnValue([]),
   setConnectedWalletInfo: vi.fn(),

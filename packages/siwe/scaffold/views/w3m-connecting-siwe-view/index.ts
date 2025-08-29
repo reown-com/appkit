@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  ChainController,
   ConnectionController,
   EventsController,
   ModalController,
@@ -76,9 +75,9 @@ export class W3mConnectingSiweView extends LitElement {
       event: 'CLICK_SIGN_SIWX_MESSAGE',
       type: 'track',
       properties: {
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+        network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -90,16 +89,18 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWX_AUTH_SUCCESS',
         type: 'track',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
           isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
+            getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
       return session
     } catch (error) {
-      const preferredAccountType = getPreferredAccountType(ChainController.state.activeChain)
+      const preferredAccountType = getPreferredAccountType(
+        ChainController.getActiveCaipNetwork()?.chainNamespace
+      )
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
 
@@ -113,7 +114,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWX_AUTH_ERROR',
         type: 'track',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
           isSmartAccount
         }
       })
@@ -124,7 +125,7 @@ export class W3mConnectingSiweView extends LitElement {
 
   private async onCancel() {
     this.isCancelling = true
-    const caipAddress = ChainController.state.activeCaipAddress
+    const caipAddress = ConnectionController.getActiveConnection().caipAddress
     if (caipAddress) {
       await ConnectionController.disconnect()
       ModalController.close()
@@ -136,9 +137,9 @@ export class W3mConnectingSiweView extends LitElement {
       event: 'CLICK_CANCEL_SIWX',
       type: 'track',
       properties: {
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+        network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

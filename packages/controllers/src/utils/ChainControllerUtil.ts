@@ -1,7 +1,6 @@
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
-import { ChainController } from '../controllers/ChainController.js'
 import { ConnectorControllerUtil } from './ConnectorControllerUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { ChainAdapter } from './TypeUtil.js'
@@ -13,11 +12,14 @@ import type { ChainAdapter } from './TypeUtil.js'
  * @returns An array of chains to disconnect.
  */
 export function getChainsToDisconnect(namespace?: ChainNamespace) {
-  const namespaces = Array.from(ChainController.state.chains.keys())
+  const namespaces = Array.from(ChainController.getSnapshot().context.namespaces.keys())
   let chains: [ChainNamespace, ChainAdapter][] = []
 
   if (namespace) {
-    chains.push([namespace, ChainController.state.chains.get(namespace) as ChainAdapter])
+    chains.push([
+      namespace,
+      ChainController.getSnapshot().context.namespaces.get(namespace) as ChainAdapter
+    ])
 
     if (
       ConnectorControllerUtil.checkNamespaceConnectorId(
@@ -33,7 +35,10 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
             CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
           )
         ) {
-          chains.push([ns, ChainController.state.chains.get(ns) as ChainAdapter])
+          chains.push([
+            ns,
+            ChainController.getSnapshot().context.namespaces.get(ns) as ChainAdapter
+          ])
         }
       })
     } else if (
@@ -50,12 +55,15 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
             CommonConstantsUtil.CONNECTOR_ID.AUTH
           )
         ) {
-          chains.push([ns, ChainController.state.chains.get(ns) as ChainAdapter])
+          chains.push([
+            ns,
+            ChainController.getSnapshot().context.namespaces.get(ns) as ChainAdapter
+          ])
         }
       })
     }
   } else {
-    chains = Array.from(ChainController.state.chains.entries())
+    chains = Array.from(ChainController.getSnapshot().context.namespaces.entries())
   }
 
   return chains
@@ -66,8 +74,8 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
  * @returns The active network token address
  */
 export function getActiveNetworkTokenAddress() {
-  const namespace = ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
-  const chainId = ChainController.state.activeCaipNetwork?.id || 1
+  const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace || 'eip155'
+  const chainId = ChainController.getActiveCaipNetwork()?.id || 1
   const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
 
   return `${namespace}:${chainId}:${address}`
@@ -79,7 +87,7 @@ export function getActiveNetworkTokenAddress() {
  * @returns The preferred account type
  */
 export function getPreferredAccountType(namespace: ChainNamespace | undefined) {
-  const preferredAccountType = ChainController.getAccountData(namespace)?.preferredAccountType
+  const preferredAccountType = ConnectionController.getAccountData(namespace)?.preferredAccountType
 
   return preferredAccountType
 }
@@ -91,8 +99,9 @@ export function getPreferredAccountType(namespace: ChainNamespace | undefined) {
  */
 export function getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
   if (chainNamespace) {
-    return ChainController.state.chains.get(chainNamespace)?.networkState?.caipNetwork
+    return ChainController.getSnapshot().context.namespaces.get(chainNamespace)?.networkState
+      ?.caipNetwork
   }
 
-  return ChainController.state.activeCaipNetwork
+  return ChainController.getActiveCaipNetwork()
 }

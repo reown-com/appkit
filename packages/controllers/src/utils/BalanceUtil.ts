@@ -1,7 +1,6 @@
 import { type Address, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
-import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { ERC7811Utils } from './ERC7811Util.js'
@@ -19,8 +18,8 @@ export const BalanceUtil = {
   async getMyTokensWithBalance(
     forceUpdate?: string
   ): Promise<BlockchainApiBalanceResponse['balances']> {
-    const address = ChainController.getAccountData()?.address
-    const caipNetwork = ChainController.state.activeCaipNetwork
+    const address = ConnectionController.getAccountData()?.address
+    const caipNetwork = ChainController.getActiveCaipNetwork()
     const isAuthConnector =
       ConnectorController.getConnectorId('eip155') === ConstantsUtil.CONNECTOR_ID.AUTH
 

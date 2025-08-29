@@ -16,7 +16,6 @@ import {
 } from '../utils/ExchangeUtil.js'
 import type { CurrentPayment, Exchange, PayUrlParams, PaymentAsset } from '../utils/ExchangeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
-import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
@@ -148,9 +147,9 @@ export const ExchangeController = {
   isPayWithExchangeSupported() {
     return (
       ExchangeController.isPayWithExchangeEnabled() &&
-      ChainController.state.activeCaipNetwork &&
+      ChainController.getActiveCaipNetwork() &&
       ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
-        ChainController.state.activeCaipNetwork.chainNamespace
+        ChainController.getActiveCaipNetwork().chainNamespace
       )
     )
   },
@@ -227,7 +226,7 @@ export const ExchangeController = {
 
   async handlePayWithExchange(exchangeId: string) {
     try {
-      const address = ChainController.getAccountData()?.address
+      const address = ConnectionController.getAccountData()?.address
       if (!address) {
         throw new Error('No account connected')
       }
@@ -326,7 +325,7 @@ export const ExchangeController = {
       const status = await getBuyStatus({ sessionId, exchangeId })
       state.currentPayment.status = status.status
       if (status.status === 'SUCCESS' || status.status === 'FAILED') {
-        const address = ChainController.getAccountData()?.address
+        const address = ConnectionController.getAccountData()?.address
         state.currentPayment.result = status.txHash
         state.isPaymentInProgress = false
         EventsController.sendEvent({

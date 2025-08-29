@@ -5,7 +5,6 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
@@ -175,7 +174,7 @@ const controller = {
   },
 
   goBack() {
-    const isConnected = ChainController.state.activeCaipAddress
+    const isConnected = ConnectionController.getActiveConnection().caipAddress
     const isFarcasterView = RouterController.state.view === 'ConnectingFarcaster'
 
     const shouldReload = !isConnected && isFarcasterView
@@ -202,7 +201,11 @@ const controller = {
     // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
     setTimeout(() => {
       if (shouldReload) {
-        ChainController.setAccountProp('farcasterUrl', undefined, ChainController.state.activeChain)
+        ConnectionController.setAccountProp(
+          'farcasterUrl',
+          undefined,
+          ChainController.getActiveCaipNetwork()?.chainNamespace
+        )
         const authConnector = ConnectorController.getAuthConnector()
         authConnector?.provider?.reload()
 

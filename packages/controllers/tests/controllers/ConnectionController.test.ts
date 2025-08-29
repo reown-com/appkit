@@ -2,6 +2,7 @@ import { polygon } from 'viem/chains'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  type CaipAddress,
   type CaipNetwork,
   ConstantsUtil as CommonConstantsUtil,
   ParseUtil,
@@ -30,6 +31,15 @@ import {
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
+const mockAccount = (address: string, publicKey?: string, path?: string) => ({
+  currentTab: 0,
+  caipAddress: `eip155:137:${address}` as CaipAddress,
+  addressLabels: new Map(),
+  address,
+  publicKey,
+  path
+})
+
 const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
@@ -99,7 +109,7 @@ const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters, [], {
+  ChainControllerPoc.initialize(adapters, [], {
     connectionControllerClient: client,
     networkControllerClient: vi.fn() as unknown as NetworkControllerClient
   })
@@ -108,7 +118,7 @@ beforeAll(() => {
 
 describe('ConnectionController', () => {
   it('should have valid default state', () => {
-    ChainController.initialize(
+    ChainControllerPoc.initialize(
       [
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
@@ -160,7 +170,7 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw when optional methods are undefined', async () => {
-    ChainController.initialize(
+    ChainControllerPoc.initialize(
       [
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
@@ -233,16 +243,16 @@ describe('ConnectionController', () => {
   })
 
   it('should set connections for a namespace', () => {
-    const connections = [{ connectorId: 'test-connector', accounts: [{ address: '0x123' }] }]
+    const connections = [{ connectorId: 'test-connector', accounts: [mockAccount('0x123')] }]
     ConnectionController.setConnections(connections, chain)
     expect(ConnectionController.state.connections.get(chain)).toEqual(connections)
   })
 
   it('should overwrite existing connections for a namespace', () => {
     const initialConnections = [
-      { connectorId: 'initial-connector', accounts: [{ address: '0xabc' }] }
+      { connectorId: 'initial-connector', accounts: [mockAccount('0xabc')] }
     ]
-    const newConnections = [{ connectorId: 'new-connector', accounts: [{ address: '0xdef' }] }]
+    const newConnections = [{ connectorId: 'new-connector', accounts: [mockAccount('0xdef')] }]
     ConnectionController.setConnections(initialConnections, chain)
     ConnectionController.setConnections(newConnections, chain)
     expect(ConnectionController.state.connections.get(chain)).toEqual(newConnections)
@@ -251,7 +261,7 @@ describe('ConnectionController', () => {
   describe('switchConnection', () => {
     const mockConnection = {
       connectorId: 'test-connector',
-      accounts: [{ address: '0x123' }, { address: '0x456' }],
+      accounts: [mockAccount('0x123'), mockAccount('0x456')],
       name: 'Test Wallet',
       icon: 'test-icon.png'
     }

@@ -165,7 +165,7 @@ ${this.value ?? ''}</textarea
       return
     }
 
-    const activeChain = ChainController.state.activeChain
+    const activeChain = ChainController.getActiveCaipNetwork()?.chainNamespace
     const isValidAddress = CoreHelperUtil.isAddress(value, activeChain)
 
     if (isValidAddress) {

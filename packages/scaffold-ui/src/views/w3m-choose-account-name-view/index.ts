@@ -96,7 +96,7 @@ export class W3mChooseAccountNameView extends LitElement {
       event: 'OPEN_ENS_FLOW',
       properties: {
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

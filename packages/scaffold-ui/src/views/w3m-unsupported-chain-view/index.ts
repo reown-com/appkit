@@ -107,8 +107,8 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+    const requestedCaipNetworks = ChainController.getCaipNetworks() ?? []
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds()
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -137,7 +137,7 @@ export class W3mUnsupportedChainView extends LitElement {
     try {
       this.disconnecting = true
 
-      const namespace = ChainController.state.activeChain
+      const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
       const connectionsByNamespace = ConnectionController.getConnections(namespace)
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
@@ -161,25 +161,24 @@ export class W3mUnsupportedChainView extends LitElement {
     }
   }
 
-  private async onSwitchNetwork(network: CaipNetwork) {
-    const caipAddress = ChainController.getActiveCaipAddress()
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
-    const shouldSupportAllNetworks = ChainController.getNetworkProp(
-      'supportsAllNetworks',
+  private onSwitchNetwork(network: CaipNetwork) {
+    const caipAddress = ConnectionController.getAccountData()?.caipAddress
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(network.chainNamespace)
+    const shouldSupportAllNetworks = ChainController.getSnapshot().context.namespaces.get(
       network.chainNamespace
-    )
+    )?.supportsAllNetworks
     const routerData = RouterController.state.data
 
     if (caipAddress) {
       if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
-        await ChainController.switchActiveNetwork(network)
+        ChainController.switchActiveNetwork(network)
       } else if (shouldSupportAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!caipAddress) {
-      ChainController.setActiveCaipNetwork(network)
+      ChainController.switchActiveNetwork(network)
       RouterController.push('Connect')
     }
   }

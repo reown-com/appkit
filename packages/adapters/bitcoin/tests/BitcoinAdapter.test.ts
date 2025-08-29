@@ -13,7 +13,7 @@ import {
 import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  ChainController,
+  ChainControllerPoc,
   type ConnectionControllerClient,
   type NetworkControllerClient,
   StorageUtil
@@ -39,9 +39,7 @@ function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.
 }
 
 const mockGetActiveNetworks = vi.fn(() => {
-  const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(
-    ConstantsUtil.CHAIN.BITCOIN
-  )
+  const requestedCaipNetworks = ChainControllerPoc.getCaipNetworks(ConstantsUtil.CHAIN.BITCOIN)
 
   return requestedCaipNetworks?.[0]
 })
@@ -53,11 +51,7 @@ describe('BitcoinAdapter', () => {
   beforeEach(() => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
-    ChainController.initialize([adapter], [bitcoin], {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
-    })
-    ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
+    ChainControllerPoc.initialize([bitcoin])
   })
 
   describe('constructor', () => {
@@ -274,7 +268,7 @@ describe('BitcoinAdapter', () => {
 
     it('should pass correct getActiveNetwork to SatsConnectConnector', async () => {
       const mocks = mockSatsConnectProvider({ id: LeatherConnector.ProviderId, name: 'Leather' })
-      const getRequestedCaipNetworksSpy = vi.spyOn(ChainController, 'getRequestedCaipNetworks')
+      const getRequestedCaipNetworksSpy = vi.spyOn(ChainControllerPoc, 'getRequestedCaipNetworkIds')
       await adapter.syncConnectors(undefined, { getCaipNetwork: mockGetActiveNetworks } as any)
 
       vi.spyOn(mocks.wallet, 'request').mockResolvedValueOnce(
@@ -543,7 +537,7 @@ describe('BitcoinAdapter', () => {
     it('should handle empty connections', async () => {
       const result = await adapter.disconnect({ id: undefined })
 
-      expect(result.connections).toHaveLength(0)
+      expect(result?.connections).toHaveLength(0)
     })
 
     it('should throw error if one of the connector is not found from connections', async () => {

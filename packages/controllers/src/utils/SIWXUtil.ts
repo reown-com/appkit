@@ -5,7 +5,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { ChainController } from '../controllers/ChainController.js'
+import { ChainController } from '../../exports/index.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
@@ -27,7 +27,7 @@ export const SIWXUtil = {
     return OptionsController.state.siwx
   },
 
-  async initializeIfEnabled(caipAddress = ChainController.getActiveCaipAddress()) {
+  async initializeIfEnabled(caipAddress = ConnectionController.getAccountData()?.caipAddress) {
     const siwx = OptionsController.state.siwx
 
     if (!(siwx && caipAddress)) {
@@ -41,7 +41,7 @@ export const SIWXUtil = {
 
     try {
       if (OptionsController.state.remoteFeatures?.emailCapture) {
-        const user = ChainController.getAccountData(namespace)?.user
+        const user = ConnectionController.getAccountData(namespace)?.user
 
         await ModalController.open({
           view: 'DataCapture',
@@ -84,7 +84,9 @@ export const SIWXUtil = {
   },
   async requestSignMessage() {
     const siwx = OptionsController.state.siwx
-    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+    const address = CoreHelperUtil.getPlainAddress(
+      ConnectionController.getAccountData()?.caipAddress
+    )
     const network = getActiveCaipNetwork()
     const client = ConnectionController._getClient()
 
@@ -164,10 +166,10 @@ export const SIWXUtil = {
         if (lastNetwork) {
           const sessions = await siwx?.getSessions(
             lastNetwork?.caipNetworkId,
-            CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+            CoreHelperUtil.getPlainAddress(ConnectionController.getAccountData()?.caipAddress) || ''
           )
           if (sessions && sessions.length > 0) {
-            await ChainController.switchActiveNetwork(lastNetwork)
+            ChainController.switchActiveNetwork(lastNetwork)
           } else {
             await ConnectionController.disconnect()
           }
@@ -192,13 +194,13 @@ export const SIWXUtil = {
   },
   async getAllSessions() {
     const siwx = this.getSIWX()
-    const allRequestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const allRequestedCaipNetworks = ChainController.getCaipNetworks() ?? []
     const sessions = [] as SIWXSession[]
     await Promise.all(
       allRequestedCaipNetworks.map(async caipNetwork => {
         const session = await siwx?.getSessions(
           caipNetwork.caipNetworkId,
-          CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress()) || ''
+          CoreHelperUtil.getPlainAddress(ConnectionController.getAccountData()?.caipAddress) || ''
         )
         if (session) {
           sessions.push(...session)
@@ -212,12 +214,13 @@ export const SIWXUtil = {
     const siwx = OptionsController.state.siwx
     let address = args?.address
     if (!address) {
-      const activeCaipAddress = ChainController.getActiveCaipAddress()
+      const activeCaipAddress = ConnectionController.getAccountData()?.caipAddress
       address = CoreHelperUtil.getPlainAddress(activeCaipAddress)
     }
 
     let network = args?.caipNetworkId
     if (!network) {
+      const pocActiveCaipNetwork = ChainController.getActiveCaipNetwork()
       const activeCaipNetwork = ChainController.getActiveCaipNetwork()
       network = activeCaipNetwork?.caipNetworkId
     }
@@ -406,7 +409,7 @@ export const SIWXUtil = {
       type: 'WALLET_CONNECT'
     }
 
-    ChainController.setAccountProp(
+    ConnectionController.setAccountProp(
       'connectedWalletInfo',
       walletInfo,
       Array.from(namespaces)[0] as ChainNamespace
@@ -469,14 +472,14 @@ export const SIWXUtil = {
     return true
   },
   getSIWXEventProperties() {
-    const namespace = ChainController.state.activeChain
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!namespace) {
       throw new Error('SIWXUtil:getSIWXEventProperties - namespace is required')
     }
 
     return {
-      network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+      network: ChainController.getActiveCaipNetwork()?.caipNetworkId || '',
       isSmartAccount:
         getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }

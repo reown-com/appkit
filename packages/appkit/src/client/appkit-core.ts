@@ -1,7 +1,6 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapter } from '@reown/appkit-controllers'
 import {
-  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -51,7 +50,7 @@ export class AppKit extends AppKitBaseClient {
     await super.close()
 
     if (this.options.manualWCControl) {
-      const address = ChainController.getAccountData(this.activeChainNamespace)?.address
+      const address = ConnectionController.getAccountData(this.activeChainNamespace)?.address
       ConnectionController.finalizeWcConnection(address)
     }
   }

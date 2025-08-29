@@ -23,13 +23,13 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
   private getCaipNetworks = ChainController.getCaipNetworks.bind(ChainController)
 
   constructor({ provider, namespace }: WalletConnectConnector.Options<Namespace>) {
-    this.caipNetworks = this.getCaipNetworks()
+    this.caipNetworks = this.getCaipNetworks() ?? []
     this.provider = provider
     this.chain = namespace
   }
 
   get chains() {
-    return this.getCaipNetworks()
+    return this.getCaipNetworks() ?? []
   }
 
   async connectWalletConnect() {
@@ -40,7 +40,7 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
       const universalProviderConfigOverride =
         OptionsController.state.universalProviderConfigOverride
       const namespaces = WcHelpersUtil.createNamespaces(
-        caipNetworks,
+        caipNetworks ?? [],
         universalProviderConfigOverride
       )
       await this.provider.connect({ optionalNamespaces: namespaces })
@@ -57,11 +57,11 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
   }
 
   async authenticate(): Promise<boolean> {
-    const chains = this.chains.map(network => network.caipNetworkId)
+    const chains = this.chains?.map(network => network.caipNetworkId)
 
     return SIWXUtil.universalProviderAuthenticate({
       universalProvider: this.provider,
-      chains,
+      chains: chains ?? [],
       methods: OPTIONAL_METHODS
     })
   }

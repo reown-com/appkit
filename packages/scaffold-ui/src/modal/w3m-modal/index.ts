@@ -11,6 +11,7 @@ import {
 import {
   ApiController,
   ChainController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
@@ -53,9 +54,9 @@ export class W3mModalBase extends LitElement {
 
   @state() private open = ModalController.state.open
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private caipAddress = ConnectionController.getAccountData()?.caipAddress
 
-  @state() private caipNetwork = ChainController.state.activeCaipNetwork
+  @state() private caipNetwork = ChainController.getActiveCaipNetwork()
 
   @state() private shake = ModalController.state.shake
 
@@ -69,11 +70,18 @@ export class W3mModalBase extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
-        ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
-        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
+        ChainController.subscribe(() => {
+          this.onNewNetwork(ChainController.getActiveCaipNetwork())
+        }),
+        ConnectionController.subscribeKey('connections', () => {
+          this.onNewAddress(ConnectionController.getAccountData()?.caipAddress)
+        }),
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
         ConnectorController.subscribeKey('filterByNamespace', val => {
-          if (this.filterByNamespace !== val && !ChainController.getAccountData(val)?.caipAddress) {
+          if (
+            this.filterByNamespace !== val &&
+            !ConnectionController.getAccountData(val)?.caipAddress
+          ) {
             ApiController.fetchRecommendedWallets()
             this.filterByNamespace = val
           }
@@ -235,7 +243,7 @@ export class W3mModalBase extends LitElement {
 
   private async onNewAddress(caipAddress?: CaipAddress) {
     // Capture current state
-    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
+    const isSwitchingNamespace = ChainController.getSnapshot().context.isSwitchingNamespace
 
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
 
@@ -251,7 +259,6 @@ export class W3mModalBase extends LitElement {
 
     await SIWXUtil.initializeIfEnabled(caipAddress)
     this.caipAddress = caipAddress
-    ChainController.setIsSwitchingNamespace(false)
   }
 
   private async onConnected(args: {
@@ -308,7 +315,7 @@ export class W3mModalBase extends LitElement {
     const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
     const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
     // Check connection status based on the address state *before* this update cycle potentially finishes
-    const isNotConnected = !ChainController.getAccountData(nextCaipNetwork?.chainNamespace)
+    const isNotConnected = !ConnectionController.getAccountData(nextCaipNetwork?.chainNamespace)
       ?.caipAddress
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'

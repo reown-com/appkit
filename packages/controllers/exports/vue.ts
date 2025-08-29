@@ -5,7 +5,6 @@ import type { Connection } from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
-import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
@@ -13,12 +12,9 @@ import { getPreferredAccountType } from '../src/utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { StorageUtil } from '../src/utils/StorageUtil.js'
-import type {
-  AccountType,
-  ChainAdapter,
-  SocialProvider,
-  UseAppKitAccountReturn
-} from '../src/utils/TypeUtil.js'
+import type { NamespaceState } from '../src/utils/TypeUtil copy.js'
+import type { AccountType, SocialProvider, UseAppKitAccountReturn } from '../src/utils/TypeUtil.js'
+import { ChainController } from './index.js'
 import { AssetUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
@@ -73,8 +69,10 @@ interface UseAppKitConnectionReturn {
 export function useAppKitAccount(options?: {
   namespace?: ChainNamespace
 }): Ref<UseAppKitAccountReturn> {
-  const chainNamespace = ref(options?.namespace || ChainController.state.activeChain)
-  const chains = ref(ChainController.state.chains)
+  const chainNamespace = ref(
+    options?.namespace || ChainController.getActiveCaipNetwork()?.chainNamespace
+  )
+  const chains = ref(ChainController.getSnapshot().context.namespaces)
   const state = ref({
     allAccounts: [] as AccountType[],
     address: undefined,
@@ -85,17 +83,16 @@ export function useAppKitAccount(options?: {
   } as UseAppKitAccountReturn)
 
   function updateState(
-    _chains: Map<ChainNamespace, ChainAdapter>,
+    _chains: Map<ChainNamespace, NamespaceState>,
     _chainNamespace: ChainNamespace | undefined
   ) {
     const activeConnectorId = StorageUtil.getConnectedConnectorId(_chainNamespace)
     const authConnector = _chainNamespace
       ? ConnectorController.getAuthConnector(_chainNamespace)
       : undefined
-    const activeChainNamespace = _chainNamespace || ChainController.state.activeChain
-    const accountState = activeChainNamespace
-      ? _chains.get(activeChainNamespace)?.accountState
-      : undefined
+    const activeChainNamespace =
+      _chainNamespace || ChainController.getActiveCaipNetwork()?.chainNamespace
+    const accountState = ConnectionController.getAccountData(activeChainNamespace)
 
     state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
     state.value.caipAddress = accountState?.caipAddress
@@ -112,13 +109,10 @@ export function useAppKitAccount(options?: {
         : undefined
   }
 
-  const unsubscribeActiveChain = ChainController.subscribeKey('activeChain', val => {
-    chainNamespace.value = options?.namespace || val
-    updateState(chains.value, chainNamespace.value)
-  })
-
-  const unsubscribeChains = ChainController.subscribe(val => {
-    chains.value = val['chains']
+  const unsubscribeActiveChain = ChainController.subscribe(() => {
+    const activeNetwork = ChainController.getActiveCaipNetwork()
+    chainNamespace.value = options?.namespace || activeNetwork?.chainNamespace
+    chains.value = ChainController.getSnapshot().context.namespaces
     updateState(chains.value, chainNamespace.value)
   })
 
@@ -127,7 +121,6 @@ export function useAppKitAccount(options?: {
   })
 
   onUnmounted(() => {
-    unsubscribeChains()
     unsubscribeActiveChain()
   })
 
@@ -165,7 +158,7 @@ export function useAppKitConnections(namespace?: ChainNamespace): Ref<UseAppKitC
   }
 
   function updateConnections() {
-    const chainNamespace = namespace ?? ChainController.state.activeChain
+    const chainNamespace = namespace ?? ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!chainNamespace) {
       state.value = {
@@ -214,7 +207,7 @@ export function useAppKitConnections(namespace?: ChainNamespace): Ref<UseAppKitC
     })
   )
   unsubscribe.push(
-    ChainController.subscribeKey('activeChain', () => {
+    ChainController.subscribe(() => {
       updateConnections()
     })
   )
@@ -261,7 +254,7 @@ export function useAppKitConnection(
   const forceUpdateCounter = ref(0)
 
   function updateConnection() {
-    const chainNamespace = namespace ?? ChainController.state.activeChain
+    const chainNamespace = namespace ?? ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!chainNamespace) {
       state.value.connection = undefined
@@ -284,7 +277,7 @@ export function useAppKitConnection(
   }
 
   async function switchConnection({ connection: _connection, address }: SwitchConnectionParams) {
-    const chainNamespace = namespace ?? ChainController.state.activeChain
+    const chainNamespace = namespace ?? ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!chainNamespace) {
       console.warn('No namespace found for switchConnection')
@@ -323,7 +316,7 @@ export function useAppKitConnection(
   }
 
   function deleteConnection({ address, connectorId }: DeleteRecentConnectionProps) {
-    const chainNamespace = namespace ?? ChainController.state.activeChain
+    const chainNamespace = namespace ?? ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!chainNamespace) {
       console.warn('No namespace found for deleteConnection')
@@ -362,7 +355,7 @@ export function useAppKitConnection(
     })
   )
   unsubscribe.push(
-    ChainController.subscribeKey('activeChain', () => {
+    ChainController.subscribe(() => {
       updateConnection()
     })
   )

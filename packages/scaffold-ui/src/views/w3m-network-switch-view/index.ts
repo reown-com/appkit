@@ -96,7 +96,9 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private getSubLabel() {
-    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return ''
@@ -108,7 +110,9 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   private getLabel() {
-    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`
@@ -128,14 +132,11 @@ export class W3mNetworkSwitchView extends LitElement {
     }
   }
 
-  private async onSwitchNetwork() {
+  private onSwitchNetwork() {
     try {
       this.error = false
-      if (ChainController.state.activeChain !== this.network?.chainNamespace) {
-        ChainController.setIsSwitchingNamespace(true)
-      }
       if (this.network) {
-        await ChainController.switchActiveNetwork(this.network)
+        ChainController.switchActiveNetwork(this.network)
       }
     } catch (error) {
       this.error = true

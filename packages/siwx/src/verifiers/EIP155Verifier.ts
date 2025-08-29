@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 
 import { type Address, type BaseNetwork, ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, type SIWXSession } from '@reown/appkit-controllers'
+import { type SIWXSession } from '@reown/appkit-controllers'
 
 import { SIWXVerifier } from '../core/SIWXVerifier.js'
 
@@ -12,8 +12,8 @@ export class EIP155Verifier extends SIWXVerifier {
   public readonly chainNamespace = ConstantsUtil.CHAIN.EVM
 
   public async verify(session: SIWXSession): Promise<boolean> {
-    const caipNetwork = ChainController.state.chains
-      .get('eip155')
+    const caipNetwork = ChainController.getSnapshot()
+      .context.namespaces.get('eip155')
       ?.caipNetworks?.find(cn => cn.caipNetworkId === session.data.chainId)
 
     if (!caipNetwork) {

@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectionController,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
@@ -43,19 +44,19 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private network = ChainController.state.activeCaipNetwork
+  @state() private network = ChainController.getActiveCaipNetwork()
 
-  @state() private profileName = ChainController.getAccountData()?.profileName
+  @state() private profileName = ConnectionController.getAccountData()?.profileName
 
-  @state() private address = ChainController.getAccountData()?.address
+  @state() private address = ConnectionController.getAccountData()?.address
 
-  @state() private currentTab = ChainController.getAccountData()?.currentTab
+  @state() private currentTab = ConnectionController.getAccountData()?.currentTab
 
-  @state() private tokenBalance = ChainController.getAccountData()?.tokenBalance
+  @state() private tokenBalance = ConnectionController.getAccountData()?.tokenBalance
 
   @state() private features = OptionsController.state.features
 
-  @state() private namespace = ChainController.state.activeChain
+  @state() private namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
 
@@ -65,12 +66,17 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeChainProp('accountState', val => {
-          if (val?.address) {
-            this.address = val.address
-            this.profileName = val.profileName
-            this.currentTab = val.currentTab
-            this.tokenBalance = val.tokenBalance
+        ConnectionController.subscribeKey('connections', () => {
+          if (!this.namespace) {
+            return
+          }
+
+          const connection = ConnectionController.getAccountData(this.namespace)
+          if (connection?.address) {
+            this.address = connection.address
+            this.profileName = connection.profileName
+            this.currentTab = connection.currentTab
+            this.tokenBalance = connection.tokenBalance
           } else {
             ModalController.close()
           }
@@ -80,8 +86,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
         this.activeConnectorIds = newActiveConnectorIds
       }),
-      ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      ChainController.subscribe(() => {
+        this.namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
+        this.network = ChainController.getActiveCaipNetwork()
+      }),
       OptionsController.subscribeKey('features', val => (this.features = val)),
       OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )
@@ -94,7 +102,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   public override firstUpdated() {
-    ChainController.fetchTokenBalance()
+    ConnectionController.fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
@@ -217,7 +225,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private swapsTemplate() {
     const isSwapsEnabled = this.remoteFeatures?.swaps
-    const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+    const isEvm =
+      ChainController.getActiveCaipNetwork()?.chainNamespace === CommonConstantsUtil.CHAIN.EVM
 
     if (!isSwapsEnabled || !isEvm) {
       return null
@@ -239,7 +248,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private sendTemplate() {
     const isSendEnabled = this.features?.send
-    const activeNamespace = ChainController.state.activeChain as ChainNamespace
+    const activeNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace as ChainNamespace
     const isSendSupported = CoreConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(activeNamespace)
 
     if (!isSendEnabled || !isSendSupported) {
@@ -261,7 +270,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private watchSwapValues() {
     this.watchTokenBalance = setInterval(
-      () => ChainController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
+      () => ConnectionController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
       10_000
     )
   }
@@ -302,7 +311,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private tabsTemplate() {
-    const tabsByNamespace = HelpersUtil.getTabsByNamespace(ChainController.state.activeChain)
+    const tabsByNamespace = HelpersUtil.getTabsByNamespace(
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
 
     if (tabsByNamespace.length === 0) {
       return null
@@ -316,7 +327,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onTabChange(index: number) {
-    ChainController.setAccountProp('currentTab', index, this.namespace)
+    ConnectionController.setAccountProp('currentTab', index, this.namespace)
   }
 
   private onFundWalletClick() {
@@ -338,7 +349,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         properties: {
           network: this.network?.caipNetworkId || '',
           isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
+            getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -375,7 +386,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       properties: {
         network: this.network?.caipNetworkId || '',
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

@@ -7,7 +7,7 @@ import {
   type Provider,
   WcHelpersUtil
 } from '@reown/appkit'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
@@ -94,7 +94,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts: accounts.accounts.map(a => ({
         address: a.address,
         type: a.type,
-        publicKey: a.publicKey
+        publicKey: a.publicKey,
+        caipAddress: `${ConstantsUtil.CHAIN.BITCOIN}:${a.address}` as CaipAddress,
+        currentTab: 0,
+        addressLabels: new Map()
       })),
       caipNetwork: chain
     })

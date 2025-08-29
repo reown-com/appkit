@@ -1,6 +1,5 @@
 import { ConstantsUtil } from '@reown/appkit-common'
 
-import { ChainController } from '../controllers/ChainController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
 import { RouterController } from '../controllers/RouterController.js'
@@ -26,11 +25,15 @@ export async function connectFarcaster() {
   const authConnector = ConnectorController.getAuthConnector()
 
   if (authConnector) {
-    const accountData = ChainController.getAccountData()
+    const accountData = ConnectionController.getAccountData()
     if (!accountData?.farcasterUrl) {
       try {
         const { url } = await authConnector.provider.getFarcasterUri()
-        ChainController.setAccountProp('farcasterUrl', url, ChainController.state.activeChain)
+        ConnectionController.setAccountProp(
+          'farcasterUrl',
+          url,
+          ChainController.getActiveCaipNetwork()?.chainNamespace
+        )
       } catch (error) {
         RouterController.goBack()
         SnackController.showError(error)
@@ -59,10 +62,10 @@ export async function connectSocial(
       }
 
       if (popupWindow) {
-        ChainController.setAccountProp(
+        ConnectionController.setAccountProp(
           'socialWindow',
           popupWindow,
-          ChainController.state.activeChain
+          ChainController.getActiveCaipNetwork()?.chainNamespace
         )
       } else if (!CoreHelperUtil.isTelegram()) {
         throw new Error('Could not create social popup')
@@ -97,10 +100,10 @@ export async function connectSocial(
 }
 
 export async function executeSocialLogin(socialProvider: SocialProvider) {
-  ChainController.setAccountProp(
+  ConnectionController.setAccountProp(
     'socialProvider',
     socialProvider,
-    ChainController.state.activeChain
+    ChainController.getActiveCaipNetwork()?.chainNamespace
   )
   EventsController.sendEvent({
     type: 'track',

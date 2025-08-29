@@ -314,7 +314,14 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     this.addConnection({
       connectorId: connector.id,
-      accounts: [{ address }],
+      accounts: [
+        {
+          address,
+          caipAddress: `${caipNetwork?.caipNetworkId}:${address}` as `solana:${string}:${string}`,
+          currentTab: 0,
+          addressLabels: new Map()
+        }
+      ],
       caipNetwork,
       auth: isAuth
         ? {

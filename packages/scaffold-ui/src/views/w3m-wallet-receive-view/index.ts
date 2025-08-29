@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   AssetUtil,
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   RouterController,
   SnackController,
@@ -28,30 +29,30 @@ export class W3mWalletReceiveView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = ChainController.getAccountData()?.address
+  @state() private address = ConnectionController.getAccountData()?.address
 
-  @state() private profileName = ChainController.getAccountData()?.profileName
+  @state() private profileName = ConnectionController.getAccountData()?.profileName
 
-  @state() private network = ChainController.state.activeCaipNetwork
+  @state() private network = ChainController.getActiveCaipNetwork()
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeChainProp('accountState', val => {
-          if (val) {
-            this.address = val.address
-            this.profileName = val.profileName
+        ChainController.subscribe(() => {
+          const activeNetwork = ChainController.getActiveCaipNetwork()
+          this.network = activeNetwork
+        }),
+        ConnectionController.subscribeKey('connections', () => {
+          const accountState = ConnectionController.getAccountData()
+          if (accountState) {
+            this.address = accountState.address
+            this.profileName = accountState.profileName
           } else {
             SnackController.showError('Account not found')
           }
         })
-      ],
-      ChainController.subscribeKey('activeCaipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      ]
     )
   }
 
@@ -114,9 +115,9 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getCaipNetworks() ?? []
     const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
-    const caipNetwork = ChainController.state.activeCaipNetwork
+    const caipNetwork = ChainController.getActiveCaipNetwork()
     const namespaceNetworks = requestedCaipNetworks.filter(
       network => network?.chainNamespace === caipNetwork?.chainNamespace
     )

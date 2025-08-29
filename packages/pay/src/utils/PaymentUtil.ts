@@ -20,7 +20,7 @@ interface EnsureNetworkOptions {
   requestedCaipNetworks: CaipNetwork[] | undefined
 }
 
-export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promise<void> {
+export function ensureCorrectNetwork(options: EnsureNetworkOptions): void {
   const { paymentAssetNetwork, activeCaipNetwork, approvedCaipNetworkIds, requestedCaipNetworks } =
     options
 
@@ -41,20 +41,19 @@ export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promi
     return
   }
 
-  const isSupportingAllNetworks = ChainController.getNetworkProp(
-    'supportsAllNetworks',
+  const shouldSupportAllNetworks = ChainController.getSnapshot().context.namespaces.get(
     assetCaipNetwork.chainNamespace
-  )
+  )?.supportsAllNetworks
 
   const isSwitchAllowed =
-    approvedCaipNetworkIds?.includes(assetCaipNetwork.caipNetworkId) || isSupportingAllNetworks
+    approvedCaipNetworkIds?.includes(assetCaipNetwork.caipNetworkId) || shouldSupportAllNetworks
 
   if (!isSwitchAllowed) {
     throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG)
   }
 
   try {
-    await ChainController.switchActiveNetwork(assetCaipNetwork)
+    ChainController.switchActiveNetwork(assetCaipNetwork)
   } catch (error) {
     throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR, error)
   }

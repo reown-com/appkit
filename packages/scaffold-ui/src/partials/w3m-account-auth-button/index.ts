@@ -21,14 +21,15 @@ export class W3mAccountAuthButton extends LitElement {
 
   private socialUsername = StorageUtil.getConnectedSocialUsername()
 
-  @state() namespace = ChainController.state.activeChain
+  @state() namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
 
     this.unsubscribe.push(
-      ChainController.subscribeKey('activeChain', namespace => {
+      ChainController.subscribe(() => {
+        const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
         this.namespace = namespace
       })
     )

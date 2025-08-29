@@ -40,22 +40,34 @@ export type { AppKitOptions }
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
   const state = ref({
-    caipNetwork: ChainController.state.activeCaipNetwork,
-    chainId: ChainController.state.activeCaipNetwork?.id,
-    caipNetworkId: ChainController.state.activeCaipNetwork?.caipNetworkId,
+    caipNetwork: ChainController.getActiveCaipNetwork(),
+    chainId: ChainController.getActiveCaipNetwork()?.id,
+    caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId,
     switchNetwork: (network: AppKitNetwork) => {
       modal?.switchNetwork(network)
     }
   })
 
-  const unsubscribe = ChainController.subscribeKey('activeCaipNetwork', val => {
-    state.value.caipNetwork = val
-    state.value.chainId = val?.id
-    state.value.caipNetworkId = val?.caipNetworkId
+  const subscription = ChainController.subscribe(snapshot => {
+    const activeChain = snapshot.context.activeChain
+
+    if (!activeChain) {
+      return
+    }
+
+    const namespaceState = snapshot.context.namespaces.get(activeChain)
+
+    if (!namespaceState) {
+      return
+    }
+
+    state.value.caipNetwork = namespaceState.activeCaipNetwork
+    state.value.chainId = namespaceState.activeCaipNetwork?.id
+    state.value.caipNetworkId = namespaceState.activeCaipNetwork?.caipNetworkId
   })
 
   onUnmounted(() => {
-    unsubscribe()
+    subscription.unsubscribe()
   })
 
   return state

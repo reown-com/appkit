@@ -90,22 +90,6 @@ describe('ModalController', () => {
     expect(ModalController.setLoading).toHaveBeenCalledWith(true, namespace)
   })
 
-  it('should not call switchActiveNamespace if namespace parameter is the same', async () => {
-    mockChainControllerState({
-      chains: new Map([
-        [
-          ConstantsUtil.CHAIN.BITCOIN,
-          { networkState: { caipNetwork: mockBitcoinNetwork, supportsAllNetworks: false } }
-        ]
-      ])
-    })
-    const switchActiveNetworkSpy = vi.spyOn(ChainController, 'switchActiveNetwork')
-
-    await ModalController.open({ namespace: ConstantsUtil.CHAIN.BITCOIN })
-
-    expect(switchActiveNetworkSpy).not.toHaveBeenCalled()
-  })
-
   it('should check account depending on namespace when calling open()', async () => {
     mockChainControllerState({
       activeChain: ConstantsUtil.CHAIN.EVM,

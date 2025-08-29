@@ -43,7 +43,7 @@ export class W3mPayView extends LitElement {
   @state() private exchanges = PayController.state.exchanges
   @state() private isLoading = PayController.state.isLoading
   @state() private loadingExchangeId: string | null = null
-  @state() private connectedWalletInfo = ChainController.getAccountData()?.connectedWalletInfo
+  @state() private connectedWalletInfo = ConnectionController.getAccountData()?.connectedWalletInfo
 
   public constructor() {
     super()
@@ -51,8 +51,8 @@ export class W3mPayView extends LitElement {
     this.unsubscribe.push(PayController.subscribeKey('exchanges', val => (this.exchanges = val)))
     this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
     this.unsubscribe.push(
-      ChainController.subscribeChainProp('accountState', val => {
-        this.connectedWalletInfo = val?.connectedWalletInfo
+      ConnectionController.subscribeKey('connections', () => {
+        this.connectedWalletInfo = ConnectionController.getAccountData()?.connectedWalletInfo
       })
     )
 
@@ -64,7 +64,7 @@ export class W3mPayView extends LitElement {
    * Check if wallet is connected based on active address
    */
   private get isWalletConnected(): boolean {
-    const accountData = ChainController.getAccountData()
+    const accountData = ConnectionController.getAccountData()
 
     return accountData?.status === 'connected'
   }
@@ -106,7 +106,7 @@ export class W3mPayView extends LitElement {
   private renderPaymentHeader() {
     let displayNetworkName = this.networkName
     if (this.networkName) {
-      const allNetworks = ChainController.getAllRequestedCaipNetworks()
+      const allNetworks = ChainController.getCaipNetworks() ?? []
       const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.networkName)
       if (targetNetwork) {
         displayNetworkName = targetNetwork['name']

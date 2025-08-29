@@ -2,11 +2,11 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 
 import { ConstantsUtil, isSafe } from '@reown/appkit-common'
 
+import { ChainController, ConnectionController } from '../../exports/index.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
 import { AlertController } from './AlertController.js'
-import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
@@ -51,7 +51,7 @@ export const EventsController = {
 
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
-      let address = ChainController.getAccountData()?.address
+      let address = ConnectionController.getAccountData()?.address
 
       if ('address' in payload.data && payload.data.address) {
         address = payload.data.address
@@ -62,6 +62,8 @@ export const EventsController = {
       }
 
       const caipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
+      const pocCaipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
+      console.log('>> EventsController._sendAnalyticsEvent', caipNetworkId, pocCaipNetworkId)
 
       await api.post({
         path: '/e',

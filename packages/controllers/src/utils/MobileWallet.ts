@@ -1,6 +1,6 @@
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 
-import { ChainController, type ChainControllerState } from '../controllers/ChainController.js'
+import { ChainController } from '../../exports/index.js'
 
 /*
  * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
@@ -41,7 +41,7 @@ export const MobileWalletUtil = {
    * @param {string} id - The id of the wallet.
    * @param {ChainNamespace} namespace - The namespace of the chain.
    */
-  handleMobileDeeplinkRedirect(id: string, namespace: ChainControllerState['activeChain']): void {
+  handleMobileDeeplinkRedirect(id: string, namespace: ChainNamespace): void {
     /**
      * Universal Links requires explicit user interaction to open the wallet app.
      * Previously we've been calling this with the life-cycle methods in the Solana clients by listening the SELECT_WALLET event of EventController.
@@ -74,7 +74,7 @@ export const MobileWalletUtil = {
      */
     if (namespace === ConstantsUtil.CHAIN.BITCOIN) {
       if (id === CUSTOM_DEEPLINK_WALLETS.BINANCE.id && !('binancew3w' in window)) {
-        const activeCaipNetwork = ChainController.state.activeCaipNetwork
+        const activeCaipNetwork = ChainController.getActiveCaipNetwork()
 
         const startPagePath = window.btoa('/pages/browser/index')
         const startPageQuery = window.btoa(

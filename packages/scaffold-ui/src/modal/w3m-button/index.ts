@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
+import { ConnectionController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import type { W3mAccountButton } from '../w3m-account-button/index.js'
@@ -38,23 +38,14 @@ class W3mButtonBase extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.caipAddress = this.namespace
-      ? ChainController.getAccountData(this.namespace)?.caipAddress
-      : ChainController.state.activeCaipAddress
-    if (this.namespace) {
-      this.unsubscribe.push(
-        ChainController.subscribeChainProp(
-          'accountState',
-          val => {
-            this.caipAddress = val?.caipAddress
-          },
-          this.namespace
-        )
-      )
-    } else {
-      this.unsubscribe.push(
-        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val))
-      )
-    }
+      ? ConnectionController.getAccountData(this.namespace)?.caipAddress
+      : ConnectionController.getActiveConnection(this.namespace)?.caipAddress
+
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('connections', () => {
+        this.caipAddress = ConnectionController.getAccountData(this.namespace)?.caipAddress
+      })
+    )
   }
 
   public override disconnectedCallback() {

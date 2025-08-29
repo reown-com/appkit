@@ -1,7 +1,7 @@
 import { state } from 'lit/decorators.js'
 
 import {
-  ChainController,
+  ConnectionController,
   OptionsController,
   RouterController,
   SnackController
@@ -37,7 +37,7 @@ export class W3mDataCaptureOtpConfirmView extends W3mEmailOtpWidget {
   }
 
   override onOtpResend: OnOtpResendFn = async email => {
-    const accountData = ChainController.getAccountData()
+    const accountData = ConnectionController.getAccountData()
 
     if (!accountData?.caipAddress) {
       throw new Error('No account data found')

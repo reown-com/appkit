@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
+import { type AccountState, type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
 
 import { ConnectorController } from '../../exports'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
-import { type AccountState } from '../../src/controllers/ChainController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
 import { BalanceUtil } from '../../src/utils/BalanceUtil'
@@ -80,9 +79,7 @@ describe('BalanceUtil', () => {
     })
 
     it('should return empty array when address is missing', async () => {
-      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
-        address: undefined
-      } as AccountState)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       const result = await BalanceUtil.getMyTokensWithBalance()
       expect(result).toEqual([])
     })

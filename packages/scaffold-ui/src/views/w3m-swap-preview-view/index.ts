@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
-import { ChainController, RouterController, SwapController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectionController,
+  RouterController,
+  SwapController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -40,7 +45,7 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() private caipNetwork = ChainController.state.activeCaipNetwork
+  @state() private caipNetwork = ChainController.getActiveCaipNetwork()
 
   @state() private inputError = SwapController.state.inputError
 
@@ -58,14 +63,16 @@ export class W3mSwapPreviewView extends LitElement {
 
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeChainProp('accountState', val => {
-          if (val?.balanceSymbol) {
+        ConnectionController.subscribeKey('connections', () => {
+          const accountData = ConnectionController.getAccountData()
+          if (accountData?.balanceSymbol) {
             RouterController.goBack()
           }
         }),
-        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
-          if (this.caipNetwork !== newCaipNetwork) {
-            this.caipNetwork = newCaipNetwork
+        ChainController.subscribe(() => {
+          const caipNetwork = ChainController.getActiveCaipNetwork()
+          if (caipNetwork?.caipNetworkId !== this.caipNetwork?.caipNetworkId) {
+            this.caipNetwork = caipNetwork
           }
         }),
         SwapController.subscribe(newState => {

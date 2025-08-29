@@ -201,7 +201,7 @@ describe('W3mModal', () => {
       ;(element as any).caipAddress = undefined
       ;(element as any).caipNetwork = mainnet
 
-      ChainController.setActiveCaipNetwork(polygon)
+      ChainControllerPoc.swithActiveCaipNetwork(polygon)
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -214,7 +214,7 @@ describe('W3mModal', () => {
       ;(element as any).caipAddress = undefined
       ;(element as any).caipNetwork = polygon
 
-      ChainController.setActiveCaipNetwork(mainnet)
+      ChainControllerPoc.swithActiveCaipNetwork(mainnet)
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -227,7 +227,7 @@ describe('W3mModal', () => {
       ;(element as any).caipAddress = 'eip155:1:0x123'
       ;(element as any).caipNetwork = mainnet
 
-      ChainController.setActiveCaipNetwork(polygon) // switch network
+      ChainControllerPoc.swithActiveCaipNetwork(polygon) // switch network
 
       element.requestUpdate()
       await elementUpdated(element)
@@ -241,7 +241,7 @@ describe('W3mModal', () => {
       ;(element as any).caipAddress = 'eip155:137:0x123'
       ;(element as any).caipNetwork = polygon
 
-      ChainController.setActiveCaipNetwork(mainnet)
+      ChainControllerPoc.swithActiveCaipNetwork(mainnet)
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -254,7 +254,7 @@ describe('W3mModal', () => {
       ;(element as any).caipAddress = 'eip155:1:0x123'
       ;(element as any).caipNetwork = mainnet
 
-      ChainController.setActiveCaipNetwork(polygon)
+      ChainControllerPoc.swithActiveCaipNetwork(polygon)
       element.requestUpdate()
       await elementUpdated(element)
 

@@ -200,7 +200,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   async onSocialClick(socialProvider?: SocialProvider) {
     const isAvailableChain = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
-      chain => chain === ChainController.state.activeChain
+      chain => chain === ChainController.getActiveCaipNetwork()?.chainNamespace
     )
 
     if (!isAvailableChain) {

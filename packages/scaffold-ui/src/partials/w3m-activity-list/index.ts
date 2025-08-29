@@ -5,6 +5,7 @@ import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   OptionsController,
@@ -40,7 +41,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private caipAddress = ConnectionController.getAccountData()?.caipAddress
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -56,17 +57,22 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('activeCaipAddress', val => {
-          if (val) {
-            if (this.caipAddress !== val) {
+        ConnectionController.subscribeKey('connections', () => {
+          const accountData = ConnectionController.getAccountData()
+          if (accountData) {
+            if (this.caipAddress !== accountData.caipAddress) {
               TransactionsController.resetTransactions()
-              TransactionsController.fetchTransactions(val)
+              TransactionsController.fetchTransactions(accountData.caipAddress)
             }
           }
-          this.caipAddress = val
+          this.caipAddress = accountData?.caipAddress
         }),
-        ChainController.subscribeKey('activeCaipNetwork', () => {
-          this.updateTransactionView()
+        ChainController.subscribe(() => {
+          const caipNetwork = ChainController.getActiveCaipNetwork()
+          if (caipNetwork?.caipNetworkId !== this.caipNetworkId) {
+            this.caipAddress = ConnectionController.getAccountData()?.caipAddress
+            this.updateTransactionView()
+          }
         }),
         TransactionsController.subscribe(val => {
           this.transactionsByYear = val.transactionsByYear
@@ -301,7 +307,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              getPreferredAccountType(ChainController.state.activeChain) ===
+              getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })

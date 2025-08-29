@@ -7,7 +7,6 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
-import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
@@ -58,7 +57,7 @@ const controller = {
       const response = await BlockchainApiController.fetchTransactions({
         account: accountAddress,
         cursor: state.next,
-        chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
+        chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId
       })
 
       const nonSpamTransactions = TransactionsController.filterSpamTransactions(response.data)
@@ -77,7 +76,8 @@ const controller = {
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
     } catch (error) {
-      const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
+      const activeChainNamespace = ChainController.getActiveCaipNetwork()
+        ?.chainNamespace as ChainNamespace
       EventsController.sendEvent({
         type: 'track',
         event: 'ERROR_FETCH_TRANSACTIONS',
@@ -134,7 +134,7 @@ const controller = {
   },
 
   filterByConnectedChain(transactions: Transaction[]) {
-    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
+    const chainId = ChainController.getActiveCaipNetwork()?.caipNetworkId
     const filteredTransactions = transactions.filter(
       transaction => transaction.metadata.chain === chainId
     )

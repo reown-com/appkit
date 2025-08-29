@@ -102,7 +102,7 @@ export class W3mConnectRecentWidget extends LitElement {
   }
 
   private isWalletCompatibleWithCurrentChain(wallet: WcWallet) {
-    const currentNamespace = ChainController.state.activeChain
+    const currentNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (currentNamespace && wallet.chains) {
       return wallet.chains.some(c => {

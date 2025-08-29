@@ -10,7 +10,6 @@ import {
 
 import { ApiController } from '../../controllers/ApiController.js'
 import { BlockchainApiController } from '../../controllers/BlockchainApiController.js'
-import { ChainController } from '../../controllers/ChainController.js'
 import { getActiveCaipNetwork } from '../../utils/ChainControllerUtil.js'
 import type { SIWXConfig, SIWXMessage, SIWXSession } from '../../utils/SIWXUtil.js'
 import { ReownAuthenticationMessenger } from './ReownAuthenticationMessenger.js'
@@ -297,7 +296,7 @@ export class ReownAuthentication implements SIWXConfig {
   }
 
   private getWalletInfo(): ReownAuthentication.WalletInfo | undefined {
-    const walletInfo = ChainController.getAccountData()?.connectedWalletInfo
+    const walletInfo = ConnectionController.getAccountData()?.connectedWalletInfo
 
     if (!walletInfo) {
       return undefined
@@ -350,7 +349,7 @@ export class ReownAuthentication implements SIWXConfig {
 
     if (email) {
       Object.values(ConstantsUtil.CHAIN).forEach(chainNamespace => {
-        ChainController.setAccountProp('user', { email }, chainNamespace)
+        ConnectionController.setAccountProp('user', { email }, chainNamespace)
       })
     }
   }

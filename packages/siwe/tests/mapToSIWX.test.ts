@@ -376,7 +376,7 @@ describe('SIWE: mapToSIWX', () => {
 
       OptionsController.setSIWX(siwx)
       ChainController.setLastConnectedSIWECaipNetwork(networks.mainnet)
-      ChainController.setActiveCaipNetwork(networks.polygon)
+      ChainControllerPoc.swithActiveCaipNetwork(networks.polygon)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -397,7 +397,7 @@ describe('SIWE: mapToSIWX', () => {
 
       OptionsController.setSIWX(siwx)
 
-      ChainController.setActiveCaipNetwork(networks.polygon)
+      ChainControllerPoc.swithActiveCaipNetwork(networks.polygon)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -418,7 +418,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-      ChainController.setActiveCaipNetwork(undefined)
+      ChainControllerPoc.swithActiveCaipNetwork(undefined)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -479,7 +479,7 @@ describe('SIWE: mapToSIWX', () => {
 
   describe('siwe.options.signOutOnAccountChange', () => {
     beforeEach(() => {
-      ChainController.setActiveCaipNetwork({
+      ChainControllerPoc.swithActiveCaipNetwork({
         ...networks.mainnet,
         caipNetworkId: 'eip155:1',
         chainNamespace: 'eip155'

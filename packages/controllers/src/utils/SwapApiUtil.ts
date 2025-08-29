@@ -1,7 +1,7 @@
 import type { CaipNetworkId } from '@reown/appkit-common'
 
+import { ChainController } from '../../exports/index.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
-import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { BalanceUtil } from './BalanceUtil.js'
 import { getActiveNetworkTokenAddress } from './ChainControllerUtil.js'
@@ -46,7 +46,7 @@ export const SwapApiUtil = {
   },
 
   async fetchGasPrice() {
-    const caipNetwork = ChainController.state.activeCaipNetwork
+    const caipNetwork = ChainController.getActiveCaipNetwork()
 
     if (!caipNetwork) {
       return null
@@ -105,7 +105,12 @@ export const SwapApiUtil = {
   async getMyTokensWithBalance(forceUpdate?: string) {
     const balances = await BalanceUtil.getMyTokensWithBalance(forceUpdate)
 
-    ChainController.setAccountProp('tokenBalance', balances, ChainController.state.activeChain)
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
+    if (!namespace) {
+      return []
+    }
+
+    ConnectionController.setAccountProp('tokenBalance', balances, namespace)
 
     return this.mapBalancesToSwapTokens(balances)
   },

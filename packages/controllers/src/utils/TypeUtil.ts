@@ -16,9 +16,9 @@ import type {
   SwapProvider,
   Transaction
 } from '@reown/appkit-common'
+import type { AccountState, AccountTypeMap, NamespaceTypeMap } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
-import type { AccountState } from '../controllers/ChainController.js'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
@@ -53,22 +53,6 @@ export type CaipNetworkCoinbaseNetwork =
   | 'Avalanche'
   | 'OP Mainnet'
   | 'Celo'
-
-export type ConnectedWalletInfo = {
-  name: string
-  icon?: string
-  type?: string
-  [key: string]: unknown
-}
-
-export type User = {
-  email?: string | null | undefined
-  username?: string | null | undefined
-  accounts?: {
-    type: 'eoa' | 'smartAccount'
-    address: string
-  }[]
-}
 
 export interface LinkingRecord {
   redirect: string
@@ -1017,25 +1001,6 @@ export type GetQuoteArgs = {
   network: string
 }
 
-export type NamespaceTypeMap = {
-  eip155: 'eoa' | 'smartAccount'
-  solana: 'eoa'
-  bip122: 'payment' | 'ordinal' | 'stx'
-  polkadot: 'eoa'
-  cosmos: 'eoa'
-  sui: 'eoa'
-  stacks: 'eoa'
-}
-
-export type AccountTypeMap = {
-  [K in ChainNamespace]: {
-    namespace: K
-    address: string
-    type: NamespaceTypeMap[K]
-    publicKey?: K extends 'bip122' ? string : never
-    path?: K extends 'bip122' ? string : never
-  }
-}
 export type WalletGetAssetsParams = {
   account: Address
   assetFilter?: Record<Address, (Address | 'native')[]>
@@ -1101,6 +1066,7 @@ export type AdapterNetworkState = {
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
+  allowUnsupportedCaipNetwork?: boolean
   smartAccountEnabledNetworks?: number[]
 }
 

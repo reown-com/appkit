@@ -4,7 +4,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { ConstantsUtil as CommonConstantsUtil, type Hex } from '@reown/appkit-common'
 import {
   BlockchainApiController,
-  ChainController,
   ConnectionController,
   OptionsController,
   RouterController,
@@ -55,7 +54,7 @@ export const SmartSessionsController = {
   },
   async getSmartSessions() {
     try {
-      const caipAddress = ChainController.getActiveCaipAddress()
+      const caipAddress = ConnectionController.getAccountData()?.caipAddress
       if (!caipAddress) {
         return []
       }
@@ -88,7 +87,7 @@ export const SmartSessionsController = {
       throw new Error('Wallet does not support `wallet_grantPermissions` method')
     }
 
-    const { activeCaipAddress } = ChainController.state
+    const activeCaipAddress = ConnectionController.getAccountData()?.caipAddress
 
     // Ensure the namespace is supported and extract address
     const chainAndAddress = extractChainAndAddress(activeCaipAddress)
@@ -198,7 +197,7 @@ export const SmartSessionsController = {
   },
   async revokeSmartSession(session: SmartSession) {
     try {
-      const { activeCaipAddress } = ChainController.state
+      const activeCaipAddress = ConnectionController.getAccountData()?.caipAddress
 
       // Ensure the namespace is supported and extract address
       const chainAndAddress = extractChainAndAddress(activeCaipAddress)

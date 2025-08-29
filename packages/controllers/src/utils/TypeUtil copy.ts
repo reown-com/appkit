@@ -1,6 +1,7 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type {
+  AccountState,
   AdapterType,
   Address,
   AppKitNetwork,
@@ -18,7 +19,6 @@ import type {
 } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
-import type { AccountState } from '../controllers/ChainController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
@@ -1088,7 +1088,7 @@ export interface WriteContractArgs {
 export interface NetworkControllerClient {
   switchCaipNetwork: (network: CaipNetwork) => Promise<void>
   getApprovedCaipNetworksData: () => Promise<{
-    approvedCaipNetworkIds: CaipNetworkId[]
+    approvedCaipNetworks: CaipNetwork[]
     supportsAllNetworks: boolean
   }>
 }
@@ -1096,7 +1096,7 @@ export interface NetworkControllerClient {
 export type NamespaceState = {
   activeCaipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
-  approvedCaipNetworkIds?: CaipNetworkId[]
+  approvedCaipNetworks?: CaipNetwork[]
   supportsAllNetworks?: boolean
 }
 

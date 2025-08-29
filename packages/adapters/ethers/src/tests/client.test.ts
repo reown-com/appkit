@@ -10,6 +10,7 @@ import {
 } from '@reown/appkit-common'
 import {
   ChainController,
+  ChainControllerPoc,
   type ConnectionControllerClient,
   CoreHelperUtil,
   type NetworkControllerClient,
@@ -135,11 +136,7 @@ describe('EthersAdapter', () => {
     }))
 
     adapter = new EthersAdapter()
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
-    })
-    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
+    ChainControllerPoc.initialize(mockCaipNetworks)
   })
 
   describe('EthersAdapter -constructor', () => {

@@ -217,11 +217,72 @@ export type OnRampProvider = 'meld'
 export type InferredCaipNetwork<T extends { chainNamespace: string } = { chainNamespace: string }> =
   T extends { chainNamespace: infer N extends string } ? CustomCaipNetwork<N> : CustomCaipNetwork
 
+export type ConnectedWalletInfo = {
+  name: string
+  icon?: string
+  type?: string
+  [key: string]: unknown
+}
+
+export type User = {
+  email?: string | null | undefined
+  username?: string | null | undefined
+  accounts?: {
+    type: 'eoa' | 'smartAccount'
+    address: string
+  }[]
+}
+
+export type NamespaceTypeMap = {
+  eip155: 'eoa' | 'smartAccount'
+  solana: 'eoa'
+  bip122: 'payment' | 'ordinal' | 'stx'
+  polkadot: 'eoa'
+  cosmos: 'eoa'
+  sui: 'eoa'
+  stacks: 'eoa'
+}
+
+export type AccountTypeMap = {
+  [K in ChainNamespace]: {
+    namespace: K
+    address: string
+    type: NamespaceTypeMap[K]
+    publicKey?: K extends 'bip122' ? string : never
+    path?: K extends 'bip122' ? string : never
+  }
+}
+
+export interface AccountState {
+  caipAddress: CaipAddress
+  address: string
+  currentTab: number
+  user?: User
+  publicKey?: string
+  path?: string
+  addressLabels: Map<string, string>
+  balance?: string
+  balanceSymbol?: string
+  balanceLoading?: boolean
+  profileName?: string | null
+  profileImage?: string | null
+  addressExplorerUrl?: string
+  smartAccountDeployed?: boolean
+  socialProvider?: SocialProvider
+  tokenBalance?: Balance[]
+  connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: NamespaceTypeMap[keyof NamespaceTypeMap]
+  socialWindow?: Window
+  farcasterUrl?: string
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
+  lastRetry?: number
+}
+
 export type Connection = {
   name?: string
   icon?: string
   networkIcon?: string
-  accounts: { type?: string; address: string; publicKey?: string }[]
+  accounts: AccountState[]
   caipNetwork?: CaipNetwork
   connectorId: string
   auth?: {

@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
-import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-controllers'
+import { ConstantsUtil, SwapController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -22,7 +22,7 @@ export class WuiSwapDetails extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public networkName = ChainController.state.activeCaipNetwork?.name
+  @state() public networkName = ChainController.getActiveCaipNetwork()?.name
 
   @property() public detailsOpen = false
 

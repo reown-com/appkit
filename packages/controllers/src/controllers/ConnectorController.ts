@@ -9,13 +9,13 @@ import {
 } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { ChainController } from '../../exports/index.js'
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
-import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
 import { ThemeController } from './ThemeController.js'
@@ -257,7 +257,7 @@ const controller = {
   },
 
   getAuthConnector(chainNamespace?: ChainNamespace): AuthConnector | undefined {
-    const activeNamespace = chainNamespace || ChainController.state.activeChain
+    const activeNamespace = chainNamespace || ChainController.getActiveCaipNetwork()?.chainNamespace
     const authConnector = state.connectors.find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH)
 
     if (!authConnector) {
@@ -290,7 +290,7 @@ const controller = {
     rdns?: string | null
     namespace?: ChainNamespace
   }) {
-    const namespaceToUse = namespace || ChainController.state.activeChain
+    const namespaceToUse = namespace || ChainController.getActiveCaipNetwork()?.chainNamespace
 
     const connectorsByNamespace = state.allConnectors.filter(c => c.chain === namespaceToUse)
 
@@ -351,7 +351,7 @@ const controller = {
 
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       connector?.explorerId || wallet.id,
-      ChainController.state.activeChain
+      ChainController.getActiveCaipNetwork()?.chainNamespace
     )
 
     if (connector) {

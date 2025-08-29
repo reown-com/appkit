@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { ChainController, ModalController, OnRampController } from '@reown/appkit-controllers'
+import { ConnectionController, ModalController, OnRampController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -27,7 +27,7 @@ export class W3mOnrampWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled? = false
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private caipAddress = ConnectionController.getAccountData()?.caipAddress
 
   @state() private loading = ModalController.state.loading
 
@@ -44,7 +44,9 @@ export class W3mOnrampWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
+        ConnectionController.subscribeKey('connections', () => {
+          this.caipAddress = ConnectionController.getAccountData()?.caipAddress
+        }),
         ModalController.subscribeKey('loading', val => {
           this.loading = val
         }),

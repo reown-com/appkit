@@ -73,7 +73,7 @@ describe('SolanaAdapter', () => {
       namespace: ConstantsUtil.CHAIN.SOLANA,
       adapterType: ConstantsUtil.ADAPTER_TYPES.SOLANA
     })
-    ChainController.initialize([adapter], mockCaipNetworks, {
+    ChainControllerPoc.initialize([adapter], mockCaipNetworks, {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient
     })

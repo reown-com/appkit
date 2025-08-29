@@ -9,9 +9,8 @@ import {
   Emitter
 } from '@reown/appkit-common'
 import {
-  ChainController,
-  type ConnectionControllerClient,
-  type NetworkControllerClient,
+  ChainControllerPoc,
+  ConnectionController,
   type Provider,
   SIWXUtil
 } from '@reown/appkit-controllers'
@@ -79,11 +78,7 @@ describe('Ethers5Adapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new Ethers5Adapter()
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
-    })
-    ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
+    ChainControllerPoc.initialize(mockCaipNetworks)
   })
 
   describe('Ethers5Adapter -constructor', () => {

@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  ChainController,
   CoreHelperUtil,
   EventsController,
   OnRampController,
@@ -47,7 +46,9 @@ export class W3mOnRampProvidersView extends LitElement {
   private onRampProvidersTemplate() {
     return this.providers
       .filter(provider =>
-        provider.supportedChains.includes(ChainController.state.activeChain ?? 'eip155')
+        provider.supportedChains.includes(
+          ChainController.getActiveCaipNetwork()?.chainNamespace ?? 'eip155'
+        )
       )
       .map(
         provider => html`
@@ -79,7 +80,7 @@ export class W3mOnRampProvidersView extends LitElement {
       properties: {
         provider: provider.name,
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  ChainController,
   CoreHelperUtil,
   RouterController,
   SendController,
@@ -118,7 +117,10 @@ export class W3mWalletSendView extends LitElement {
 
     if (
       this.receiverAddress &&
-      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
+      !CoreHelperUtil.isAddress(
+        this.receiverAddress,
+        ChainController.getActiveCaipNetwork()?.chainNamespace
+      )
     ) {
       this.message = 'Invalid Address'
     }

@@ -1,15 +1,14 @@
 import { vi } from 'vitest'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { AccountState, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
 import type { SIWXSession } from '@reown/appkit-controllers'
 
 import {
-  type AccountState,
   type AdapterNetworkState,
   type ChainAdapter,
   ChainController,
-  type ChainControllerState
+  ConnectionController
 } from '../exports/index.js'
 
 export const extendedMainnet = {
@@ -30,26 +29,6 @@ export const extendedMainnet = {
   }
 } as CaipNetwork
 
-export function mockChainControllerState(
-  state: Partial<
-    Omit<ChainControllerState, 'chains'> & {
-      chains: Map<
-        ChainNamespace,
-        Partial<Omit<ChainAdapter, 'accountState' | 'networkState'>> & {
-          accountState?: Partial<AccountState>
-          networkState?: Partial<AdapterNetworkState>
-        }
-      >
-    }
-  >
-) {
-  // @ts-expect-error - we need to mock the state
-  vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-    ...ChainController.state,
-    ...state
-  })
-}
-
 export function updateChainsMap(
   namespace: ChainNamespace,
   state: Partial<Omit<ChainAdapter, 'accountState' | 'networkState'>> & {
@@ -57,14 +36,13 @@ export function updateChainsMap(
     networkState?: Partial<AdapterNetworkState>
   }
 ) {
-  const currentState = ChainController.state.chains.get(namespace)
-  // @ts-expect-error - we need to mock the state
-  ChainController.state.chains.set(namespace, { ...currentState, ...state })
+  const currentState = ChainController.getSnapshot().context.namespaces.get(namespace)
+  ChainController.getSnapshot().context.namespaces.set(namespace, { ...currentState, ...state })
 }
 
 export function mockAccountState(state: AccountState) {
-  vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
-    ...ChainController.getAccountData(),
+  vi.spyOn(ConnectionController, 'getAccountData').mockReturnValue({
+    ...ConnectionController.getAccountData(),
     ...state
   })
 }

@@ -72,7 +72,8 @@ export function authConnector(parameters: AuthParameters) {
         },
         abortController: ErrorUtil.EmbeddedWalletAbortController,
         getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
-        getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
+        getCaipNetworks: (namespace?: ChainNamespace) =>
+          ChainController.getCaipNetworks(namespace) || []
       })
     }
 
@@ -190,7 +191,7 @@ export function authConnector(parameters: AuthParameters) {
           },
           getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
           getCaipNetworks: (namespace?: ChainNamespace) =>
-            ChainController.getCaipNetworks(namespace)
+            ChainController.getCaipNetworks(namespace) || []
         })
       }
 
@@ -205,7 +206,7 @@ export function authConnector(parameters: AuthParameters) {
     },
 
     async isAuthorized() {
-      const activeChain = ChainController.state.activeChain
+      const activeChain = ChainController.getActiveCaipNetwork()?.chainNamespace
       const isActiveChainEvm = activeChain === CommonConstantsUtil.CHAIN.EVM
       const isAnyAuthConnected = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.some(
         chain => ConnectorController.getConnectorId(chain) === CommonConstantsUtil.CONNECTOR_ID.AUTH

@@ -3,6 +3,8 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
+  type AccountState,
+  type Balance,
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
@@ -13,6 +15,8 @@ import {
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
+import { ChainController, ConstantsUtil, SnackController } from '../../exports/index.js'
+import { BalanceUtil } from '../utils/BalanceUtil.js'
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
@@ -29,7 +33,6 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { ChainController, type ChainControllerState } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
@@ -138,7 +141,7 @@ export interface ConnectionControllerState {
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
-  status?: 'connecting' | 'connected' | 'disconnected'
+  status?: 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
   connectionControllerClient?: ConnectionControllerClient
 }
 
@@ -191,7 +194,8 @@ const controller = {
   syncStorageConnections(namespaces?: ChainNamespace[]) {
     const storageConnections = StorageUtil.getConnections()
 
-    const namespacesToSync = namespaces ?? Array.from(ChainController.state.chains.keys())
+    const namespacesToSync =
+      namespaces ?? Array.from(ChainController.getSnapshot().context.namespaces.keys())
 
     for (const namespace of namespacesToSync) {
       const storageConnectionsByNamespace = storageConnections[namespace] ?? []
@@ -245,14 +249,14 @@ const controller = {
     }
   },
 
-  async connectExternal(
-    options: ConnectExternalOptions,
-    chain: ChainControllerState['activeChain'],
-    setChain = true
-  ) {
+  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
     const connectData = await ConnectionController._getClient()?.connectExternal?.(options)
 
     if (setChain) {
+      if (chain) {
+        console.log('>> connectExternal-setChain-setActiveNamespace', { chain })
+        ChainController.setActiveNamespace(chain)
+      }
       ChainController.setActiveNamespace(chain)
     }
 
@@ -261,29 +265,26 @@ const controller = {
 
   async reconnectExternal(options: ConnectExternalOptions) {
     await ConnectionController._getClient()?.reconnectExternal?.(options)
-    const namespace = options.chain || ChainController.state.activeChain
+    const namespace = options.chain || ChainController.getActiveCaipNetwork()?.chainNamespace
     if (namespace) {
       ConnectorController.setConnectorId(options.id, namespace)
     }
   },
 
-  async setPreferredAccountType(
-    accountType: W3mFrameTypes.AccountType,
-    namespace: ChainControllerState['activeChain']
-  ) {
+  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType, namespace: ChainNamespace) {
     if (!namespace) {
       return
     }
 
-    ModalController.setLoading(true, ChainController.state.activeChain)
+    ModalController.setLoading(true, ChainController.getActiveCaipNetwork()?.chainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (!authConnector) {
       return
     }
-    ChainController.setAccountProp('preferredAccountType', accountType, namespace)
+    ConnectionController.setAccountProp('preferredAccountType', accountType, namespace)
     await authConnector.provider.setPreferredAccount(accountType)
     StorageUtil.setPreferredAccountTypes(
-      Object.entries(ChainController.state.chains).reduce((acc, [key, _]) => {
+      Object.entries(ChainController.getSnapshot().context.namespaces).reduce((acc, [key, _]) => {
         const namespace = key as ChainNamespace
         const accountType = getPreferredAccountType(namespace)
         if (accountType !== undefined) {
@@ -294,13 +295,13 @@ const controller = {
       }, {})
     )
     await ConnectionController.reconnectExternal(authConnector)
-    ModalController.setLoading(false, ChainController.state.activeChain)
+    ModalController.setLoading(false, ChainController.getActiveCaipNetwork()?.chainNamespace)
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
       properties: {
         accountType,
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        network: ChainController.getActiveCaipNetwork()?.caipNetworkId || ''
       }
     })
   },
@@ -440,6 +441,11 @@ const controller = {
         chainNamespace: namespace,
         initialDisconnect
       })
+      if (namespace) {
+        ConnectionController.setConnections([], namespace)
+      } else {
+        state.connections.clear()
+      }
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
@@ -452,7 +458,7 @@ const controller = {
   },
 
   async handleAuthAccountSwitch({ address, namespace }: HandleAuthAccountSwitchParams) {
-    const accountData = ChainController.getAccountData(namespace)
+    const accountData = ConnectionController.getAccountData(namespace)
     const smartAccount = accountData?.user?.accounts?.find(c => c.type === 'smartAccount')
 
     const accountType =
@@ -589,7 +595,7 @@ const controller = {
   }: SwitchConnectionParams) {
     let currentAddress: string | undefined = undefined
 
-    const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
+    const caipAddress = ConnectionController.getAccountData(namespace)?.caipAddress
 
     if (caipAddress) {
       const { address: currentAddressParsed } = ParseUtil.parseCaipAddress(caipAddress)
@@ -642,6 +648,82 @@ const controller = {
       default:
         throw new Error(`Invalid connection status: ${status}`)
     }
+  },
+  getActiveConnection(namespace?: ChainNamespace) {
+    const connections = ConnectionController.getConnections(namespace)
+
+    return connections[0]
+  },
+  getAccountData(namespace?: ChainNamespace) {
+    console.log('>> getAccountData - Review this.', namespace)
+    const connection = ConnectionController.getActiveConnection(namespace)
+
+    return connection?.accounts[0]
+  },
+  setAccountProp(
+    prop: keyof AccountState,
+    value: AccountState[keyof AccountState],
+    namespace: ChainNamespace
+  ) {
+    const connections = ConnectionController.getConnections(namespace)
+    const connection = connections[0]
+
+    if (connection?.accounts[0]) {
+      const account = { ...connection.accounts[0], [prop]: value }
+      connection.accounts[0] = account
+      ConnectionController.setConnections(connections, namespace)
+    }
+  },
+  resetConnectionAccount(namespace: ChainNamespace) {
+    const connections = ConnectionController.getConnections(namespace)
+    const connection = connections[0]
+    if (connection?.accounts[0]) {
+      connection.accounts = []
+    }
+    ConnectionController.setConnections(connections, namespace)
+  },
+
+  async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
+    const accountState = { ...ConnectionController.getAccountData() }
+    if (!accountState) {
+      return []
+    }
+
+    accountState.balanceLoading = true
+    const chainId = ChainController.getActiveCaipNetwork()?.caipNetworkId
+    const chain = ChainController.getActiveCaipNetwork()?.chainNamespace
+    const caipAddress = ConnectionController.getAccountData(chain)?.caipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+
+    if (
+      accountState.lastRetry &&
+      !CoreHelperUtil.isAllowedRetry(accountState.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
+    ) {
+      accountState.balanceLoading = false
+
+      return []
+    }
+
+    try {
+      if (address && chainId && chain) {
+        const balance = await BalanceUtil.getMyTokensWithBalance()
+
+        ConnectionController.setAccountProp('tokenBalance', balance, chain)
+        accountState.lastRetry = undefined
+        accountState.balanceLoading = false
+
+        return balance
+      }
+    } catch (error) {
+      accountState.lastRetry = Date.now()
+
+      onError?.(error)
+      SnackController.showError('Token Balance Unavailable')
+    } finally {
+      accountState.balanceLoading = false
+    }
+
+    return []
   }
 }
 

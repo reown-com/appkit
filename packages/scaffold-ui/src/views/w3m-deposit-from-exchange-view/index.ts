@@ -31,7 +31,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public network = ChainController.state.activeCaipNetwork
+  @state() public network = ChainController.getActiveCaipNetwork()
   @state() public exchanges = ExchangeController.state.exchanges
   @state() public isLoading = ExchangeController.state.isLoading
   @state() public amount = ExchangeController.state.amount
@@ -45,9 +45,12 @@ export class W3mDepositFromExchangeView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ChainController.subscribeKey('activeCaipNetwork', val => {
-        this.network = val
-        this.setDefaultPaymentAsset()
+      ChainController.subscribe(() => {
+        const network = ChainController.getActiveCaipNetwork()
+        if (network?.caipNetworkId !== this.network?.caipNetworkId) {
+          this.network = network
+          this.setDefaultPaymentAsset()
+        }
       }),
       ExchangeController.subscribe(exchangeState => {
         this.exchanges = exchangeState.exchanges
@@ -195,7 +198,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   private handlePaymentInProgress() {
-    const namespace = ChainController.state.activeChain
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (
       this.isPaymentInProgress &&
@@ -212,7 +215,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           SnackController.showSuccess('Deposit completed')
 
           if (namespace) {
-            ChainController.fetchTokenBalance()
+            ConnectionController.fetchTokenBalance()
             ConnectionController.updateBalance(namespace)
           }
         } else if (status.status === 'FAILED') {

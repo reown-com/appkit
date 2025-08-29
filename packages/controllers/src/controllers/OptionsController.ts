@@ -1,7 +1,7 @@
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace, CustomRpcUrl } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { OptionsUtil } from '../utils/OptionsUtil.js'
@@ -202,6 +202,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   remoteFeatures?: RemoteFeatures
+  adapters: ChainNamespace[]
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -216,7 +217,8 @@ const state = proxy<OptionsControllerState>({
   defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
   enableNetworkSwitch: true,
   experimental_preferUniversalLinks: false,
-  remoteFeatures: {}
+  remoteFeatures: {},
+  adapters: []
 })
 
 // -- Controller ---------------------------------------- //

@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
+import { ChainController } from '../../exports/index.js'
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
@@ -18,7 +19,6 @@ import type {
   WcWallet
 } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
-import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
@@ -145,7 +145,7 @@ export const ApiController = {
           ) {
             return true
           }
-          const isSolana = ChainController.state.activeChain === 'solana'
+          const isSolana = ChainController.getActiveCaipNetwork()?.chainNamespace === 'solana'
 
           return (
             isSolana &&
@@ -195,7 +195,7 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getCaipNetworks() ?? []
 
     const ids = requestedCaipNetworks
       ?.map(({ assets }) => assets?.imageId)

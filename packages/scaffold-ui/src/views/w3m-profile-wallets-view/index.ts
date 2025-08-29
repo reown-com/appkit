@@ -94,24 +94,24 @@ export class W3mProfileWalletsView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private currentTab = 0
-  @state() private namespace = ChainController.state.activeChain
-  @state() private namespaces = Array.from(ChainController.state.chains.keys())
+  @state() private namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
+  @state() private namespaces = Array.from(ChainController.getSnapshot().context.namespaces.keys())
   @state() private caipAddress: CaipAddress | undefined = undefined
   @state() private profileName: string | null | undefined = undefined
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private lastSelectedAddress = ''
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
-  @state() private caipNetwork = ChainController.state.activeCaipNetwork
-  @state() private user = ChainController.getAccountData()?.user
+  @state() private caipNetwork = ChainController.getActiveCaipNetwork()
+  @state() private user = ConnectionController.getAccountData()?.user
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   constructor() {
     super()
 
     this.currentTab = this.namespace ? this.namespaces.indexOf(this.namespace) : 0
-    this.caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
-    this.profileName = ChainController.getAccountData(this.namespace)?.profileName
+    this.caipAddress = ConnectionController.getAccountData(this.namespace)?.caipAddress
+    this.profileName = ConnectionController.getAccountData(this.namespace)?.profileName
 
     this.unsubscribers.push(
       ...[
@@ -120,21 +120,18 @@ export class W3mProfileWalletsView extends LitElement {
         ConnectorController.subscribeKey('activeConnectorIds', ids => {
           this.activeConnectorIds = ids
         }),
-        ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val)),
-        ChainController.subscribeChainProp('accountState', val => {
-          this.user = val?.user
+        ChainController.subscribe(() => {
+          const activeNetwork = ChainController.getActiveCaipNetwork()
+          this.caipNetwork = activeNetwork
+        }),
+        ConnectionController.subscribeKey('connections', () => {
+          const accountState = ConnectionController.getAccountData()
+          this.caipAddress = accountState?.caipAddress
+          this.profileName = accountState?.profileName
+          this.user = accountState?.user
         }),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
       ]
-    )
-
-    this.chainListener = ChainController.subscribeChainProp(
-      'accountState',
-      accountState => {
-        this.caipAddress = accountState?.caipAddress
-        this.profileName = accountState?.profileName
-      },
-      this.namespace
     )
   }
 
@@ -490,16 +487,14 @@ export class W3mProfileWalletsView extends LitElement {
       this.currentTab = this.namespaces.indexOf(nextNamespace)
       this.namespace = nextNamespace
 
-      this.caipAddress = ChainController.getAccountData(nextNamespace)?.caipAddress
-      this.profileName = ChainController.getAccountData(nextNamespace)?.profileName
+      this.caipAddress = ConnectionController.getAccountData(nextNamespace)?.caipAddress
+      this.profileName = ConnectionController.getAccountData(nextNamespace)?.profileName
 
-      this.chainListener = ChainController.subscribeChainProp(
-        'accountState',
-        accountState => {
-          this.caipAddress = accountState?.caipAddress
-        },
-        nextNamespace
-      )
+      this.chainListener = () =>
+        ChainController.subscribe(() => {
+          const activeNetwork = ChainController.getActiveCaipNetwork(nextNamespace)
+          this.caipNetwork = activeNetwork
+        })
     }
   }
 
@@ -659,7 +654,7 @@ export class W3mProfileWalletsView extends LitElement {
 
     if (
       namespace === CommonConstantsUtil.CHAIN.BITCOIN &&
-      connectedConnection?.accounts.every(account => typeof account.type === 'string')
+      connectedConnection?.accounts.every(account => typeof account?.type === 'string')
     ) {
       return this.getBitcoinProfileContent(connectedConnection.accounts, address)
     }

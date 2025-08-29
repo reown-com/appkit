@@ -75,7 +75,7 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(
+  ChainControllerPoc.initialize(
     [
       {
         namespace: ConstantsUtil.CHAIN.EVM,
@@ -147,7 +147,7 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    ChainController.setActiveCaipNetwork({
+    ChainControllerPoc.swithActiveCaipNetwork({
       id: 1,
       caipNetworkId: 'eip155:1',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
@@ -172,7 +172,7 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    ChainController.setActiveCaipNetwork({
+    ChainControllerPoc.swithActiveCaipNetwork({
       ...polygon,
       chainNamespace: ConstantsUtil.CHAIN.EVM
     } as any)

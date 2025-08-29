@@ -42,7 +42,7 @@ importers:
         version: 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       '@vitest/coverage-v8':
         specifier: 2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
       '@vitest/ui':
         specifier: 2.1.8
         version: 2.1.8(vitest@2.1.9)
@@ -2198,7 +2198,7 @@ importers:
         version: 2.1.21
       '@vitest/coverage-v8':
         specifier: 2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
       '@wallet-standard/features':
         specifier: 1.0.3
         version: 1.0.3
@@ -2257,7 +2257,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
       '@walletconnect/types':
         specifier: 2.21.3
         version: 2.21.3(@netlify/blobs@9.1.2)(aws4fetch@1.0.20)(db0@0.3.2)(ioredis@5.7.0)
@@ -2313,7 +2313,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
       '@walletconnect/types':
         specifier: 2.21.3
         version: 2.21.3(@netlify/blobs@9.1.2)(aws4fetch@1.0.20)(db0@0.3.2)(ioredis@5.7.0)
@@ -2477,7 +2477,7 @@ importers:
         version: 19.1.3(@types/react@19.1.3)
       '@vitest/coverage-v8':
         specifier: 2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))
       '@walletconnect/types':
         specifier: 2.21.3
         version: 2.21.3(@netlify/blobs@9.1.2)(aws4fetch@1.0.20)(db0@0.3.2)(ioredis@5.7.0)
@@ -2751,6 +2751,9 @@ importers:
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@statelyai/inspect':
+        specifier: 0.4.0
+        version: 0.4.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@5.20.2)
       '@walletconnect/universal-provider':
         specifier: 2.21.7
         version: 2.21.7(@netlify/blobs@9.1.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.2)(ioredis@5.7.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -8109,6 +8112,11 @@ packages:
   '@stacks/stacks-blockchain-api-types@7.8.2':
     resolution: {integrity: sha512-wcDSdgIZx/ttQfUTPtGJOIyEkTOjmCsC79TaIyxTIiihSgrGppqTuzkwHD/DyuQkcJtUZvDTxMsAXkBKShE1kw==}
 
+  '@statelyai/inspect@0.4.0':
+    resolution: {integrity: sha512-VxQldRlKYcu6rzLY83RSXVwMYexkH6hNx85B89YWYyXYWtNGaWHFCwV7a/Kz8FFPeUz8EKVAnyMOg2kNpn07wQ==}
+    peerDependencies:
+      xstate: ^5.5.1
+
   '@storybook/addon-docs@9.0.15':
     resolution: {integrity: sha512-HOb45DkF23T1tRzakb9q33qnBRso15S/GM28ippPZWi5ZXR9RAyKVgOSMA/ViEpK4ezASxN+Tee+H7m4ksEFZw==}
     peerDependencies:
@@ -11495,6 +11503,10 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
+  event-target-shim@6.0.2:
+    resolution: {integrity: sha512-8q3LsZjRezbFZ2PN+uP+Q7pnHUMmAOziU2vA2OwoFaKIXxlxl38IylhSSgUorWu/rf4er67w0ikBqjBFk/pomA==}
+    engines: {node: '>=10.13.0'}
+
   eventemitter2@6.4.9:
     resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
 
@@ -12659,6 +12671,11 @@ packages:
 
   isomorphic-ws@4.0.1:
     resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
+    peerDependencies:
+      ws: '>=7.5.10'
+
+  isomorphic-ws@5.0.0:
+    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
     peerDependencies:
       ws: '>=7.5.10'
 
@@ -14057,6 +14074,9 @@ packages:
   parseurl@1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
+
+  partysocket@0.0.25:
+    resolution: {integrity: sha512-1oCGA65fydX/FgdnsiBh68buOvfxuteoZVSb3Paci2kRp/7lhF0HyA8EDb5X/O6FxId1e+usPTQNRuzFEvkJbQ==}
 
   pascal-case@3.1.2:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
@@ -15594,6 +15614,10 @@ packages:
     resolution: {integrity: sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==}
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
+
+  superjson@1.13.3:
+    resolution: {integrity: sha512-mJiVjfd2vokfDxsQPOwJ/PtanO87LhpYY88ubI5dUB1Ab58Txbyje3+jpm+/83R/fevaq/107NNhtYBLuoTrFg==}
+    engines: {node: '>=10'}
 
   superjson@2.2.2:
     resolution: {integrity: sha512-5JRxVqC8I8NuOUjzBbvVJAKNM8qoVuH0O77h4WInc/qC2q5IreqKxYwgkga3PfA22OayK2ikceb/B26dztPl+Q==}
@@ -26059,6 +26083,18 @@ snapshots:
 
   '@stacks/stacks-blockchain-api-types@7.8.2': {}
 
+  '@statelyai/inspect@0.4.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@5.20.2)':
+    dependencies:
+      fast-safe-stringify: 2.1.1
+      isomorphic-ws: 5.0.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      partysocket: 0.0.25
+      safe-stable-stringify: 2.5.0
+      superjson: 1.13.3
+      uuid: 9.0.1
+      xstate: 5.20.2
+    transitivePeerDependencies:
+      - ws
+
   '@storybook/addon-docs@9.0.15(@types/react@19.1.3)(storybook@9.0.15(@testing-library/dom@10.4.1)(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@5.0.10))':
     dependencies:
       '@mdx-js/react': 3.1.0(@types/react@19.1.3)(react@19.1.0)
@@ -27119,7 +27155,7 @@ snapshots:
       vite: 6.3.5(@types/node@22.13.9)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vue: 3.5.13(typescript@5.8.3)
 
-  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))':
+  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(terser@5.43.1))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -31301,8 +31337,8 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.5(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.56.0)
@@ -31321,8 +31357,8 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.5(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.2.0(eslint@8.56.0)
@@ -31345,7 +31381,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.1
@@ -31356,7 +31392,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -31367,11 +31403,11 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.8.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -31688,6 +31724,8 @@ snapshots:
       require-like: 0.1.2
 
   event-target-shim@5.0.1: {}
+
+  event-target-shim@6.0.2: {}
 
   eventemitter2@6.4.9: {}
 
@@ -32951,6 +32989,10 @@ snapshots:
   isomorphic-timers-promises@1.0.1: {}
 
   isomorphic-ws@4.0.1(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+    dependencies:
+      ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+
+  isomorphic-ws@5.0.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
 
@@ -34951,6 +34993,10 @@ snapshots:
 
   parseurl@1.3.3: {}
 
+  partysocket@0.0.25:
+    dependencies:
+      event-target-shim: 6.0.2
+
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
@@ -36840,6 +36886,10 @@ snapshots:
       mz: 2.7.0
       pirates: 4.0.7
       ts-interface-checker: 0.1.13
+
+  superjson@1.13.3:
+    dependencies:
+      copy-anything: 3.0.5
 
   superjson@2.2.2:
     dependencies:

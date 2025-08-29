@@ -95,7 +95,7 @@ export class W3mConnectingWcView extends LitElement {
         status === 'connecting'
       ) {
         const connectionsByNamespace = ConnectionController.getConnections(
-          ChainController.state.activeChain
+          ChainController.getActiveCaipNetwork()?.chainNamespace
         )
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0
@@ -121,11 +121,15 @@ export class W3mConnectingWcView extends LitElement {
         error.message.includes('An error occurred when attempting to switch chain') &&
         !OptionsController.state.enableNetworkSwitch
       ) {
-        if (ChainController.state.activeChain) {
-          ChainController.setActiveCaipNetwork(
+        const activeNetwork = ChainController.getActiveCaipNetwork()
+        if (activeNetwork?.chainNamespace) {
+          ChainController.switchActiveNetwork(
             CaipNetworksUtil.getUnsupportedNetwork(
-              `${ChainController.state.activeChain}:${ChainController.state.activeCaipNetwork?.id}`
+              `${activeNetwork?.chainNamespace}:${activeNetwork?.id}`
             )
+          )
+          ChainController.switchActiveNetwork(
+            CaipNetworksUtil.getUnsupportedNetwork(activeNetwork.caipNetworkId)
           )
           ChainController.showUnsupportedChainUI()
 
@@ -168,7 +172,7 @@ export class W3mConnectingWcView extends LitElement {
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
-    if (isBrowserWc && !ChainController.state.noAdapters) {
+    if (isBrowserWc && Boolean(OptionsController.state.adapters?.length)) {
       this.platforms.push('browser')
     }
     if (hasMobileWCLink) {
@@ -180,7 +184,7 @@ export class W3mConnectingWcView extends LitElement {
     if (isDesktopWc) {
       this.platforms.push('desktop')
     }
-    if (!isBrowserWc && isBrowser && !ChainController.state.noAdapters) {
+    if (!isBrowserWc && isBrowser && Boolean(OptionsController.state.adapters?.length)) {
       this.platforms.push('unsupported')
     }
 

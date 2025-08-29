@@ -1,6 +1,6 @@
 import { ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 import {
-  ChainController,
+  ConnectionController,
   CoreHelperUtil,
   type SIWXConfig,
   type SIWXMessage,
@@ -59,7 +59,9 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
   subscriptions.forEach(unsubscribe => unsubscribe())
   subscriptions.push(
-    ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {
+    ConnectionController.subscribeKey('connections', async () => {
+      const activeCaipAddress = ConnectionController.getAccountData()?.caipAddress
+
       if (siwe.options.signOutOnDisconnect && !activeCaipAddress) {
         const session = await getSession()
         if (session) {

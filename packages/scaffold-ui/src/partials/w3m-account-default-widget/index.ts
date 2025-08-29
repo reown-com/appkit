@@ -41,27 +41,27 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipAddress = ChainController.getAccountData()?.caipAddress
+  @state() public caipAddress = ConnectionController.getAccountData()?.caipAddress
 
   @state() public address = CoreHelperUtil.getPlainAddress(
-    ChainController.getAccountData()?.caipAddress
+    ConnectionController.getAccountData()?.caipAddress
   )
 
-  @state() private profileImage = ChainController.getAccountData()?.profileImage
+  @state() private profileImage = ConnectionController.getAccountData()?.profileImage
 
-  @state() private profileName = ChainController.getAccountData()?.profileName
+  @state() private profileName = ConnectionController.getAccountData()?.profileName
 
   @state() private disconnecting = false
 
-  @state() private balance = ChainController.getAccountData()?.balance
+  @state() private balance = ConnectionController.getAccountData()?.balance
 
-  @state() private balanceSymbol = ChainController.getAccountData()?.balanceSymbol
+  @state() private balanceSymbol = ConnectionController.getAccountData()?.balanceSymbol
 
   @state() private features = OptionsController.state.features
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  @state() private namespace = ChainController.state.activeChain
+  @state() private namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
 
@@ -69,7 +69,8 @@ export class W3mAccountDefaultWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeChainProp('accountState', val => {
+        ConnectionController.subscribeKey('connections', () => {
+          const val = ConnectionController.getAccountData()
           this.address = CoreHelperUtil.getPlainAddress(val?.caipAddress)
           this.caipAddress = val?.caipAddress
           this.balance = val?.balance
@@ -82,11 +83,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
           this.activeConnectorIds = newActiveConnectorIds
         }),
-        ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
-        ChainController.subscribeKey('activeCaipNetwork', val => {
-          if (val?.chainNamespace) {
-            this.namespace = val?.chainNamespace
-          }
+        ChainController.subscribe(() => {
+          this.namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
         })
       ]
     )
@@ -234,7 +232,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private swapsTemplate() {
     const isSwapsEnabled = this.remoteFeatures?.swaps
-    const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const isEvm = ChainController.getActiveCaipNetwork()?.chainNamespace === ConstantsUtil.CHAIN.EVM
 
     if (!isSwapsEnabled || !isEvm) {
       return null
@@ -255,7 +253,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private sendTemplate() {
     const isSendEnabled = this.features?.send
-    const namespace = ChainController.state.activeChain
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!namespace) {
       throw new Error('SendController:sendTemplate - namespace is required')
@@ -281,7 +279,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const namespace = ChainController.state.activeChain
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!namespace) {
       throw new Error('AuthCardTemplate:authCardTemplate - namespace is required')
@@ -323,7 +321,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const addressExplorerUrl = ChainController.getAccountData()?.addressExplorerUrl
+    const addressExplorerUrl = ConnectionController.getAccountData()?.addressExplorerUrl
 
     if (!addressExplorerUrl) {
       return null
@@ -344,7 +342,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
+          getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -379,7 +377,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const addressExplorerUrl = ChainController.getAccountData()?.addressExplorerUrl
+    const addressExplorerUrl = ConnectionController.getAccountData()?.addressExplorerUrl
 
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')

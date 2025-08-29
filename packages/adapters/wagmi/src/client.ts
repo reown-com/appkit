@@ -973,7 +973,7 @@ export class WagmiAdapter extends AdapterBlueprint {
          * - To prevent this, we check if the current active chain is `'eip155'`.
          * - If it is, we skip reconnection to avoid interrupting in the SIWX flow.
          */
-        if (ChainController.state.activeChain === 'eip155') {
+        if (ChainController.getActiveCaipNetwork()?.chainNamespace === 'eip155') {
           return
         }
 

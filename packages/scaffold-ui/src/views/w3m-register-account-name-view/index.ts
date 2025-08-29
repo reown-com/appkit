@@ -5,6 +5,7 @@ import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EnsController,
   EventsController,
@@ -44,7 +45,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private suggestions = EnsController.state.suggestions
 
-  @state() private profileName = ChainController.getAccountData()?.profileName
+  @state() private profileName = ConnectionController.getAccountData()?.profileName
 
   public constructor() {
     super()
@@ -54,10 +55,13 @@ export class W3mRegisterAccountNameView extends LitElement {
           this.suggestions = val.suggestions
           this.loading = val.loading
         }),
-        ChainController.subscribeChainProp('accountState', val => {
-          this.profileName = val?.profileName
-          if (val?.profileName) {
-            this.error = 'You already own a name'
+        ConnectionController.subscribeKey('connections', () => {
+          const accountData = ConnectionController.getAccountData()
+          if (accountData) {
+            this.profileName = accountData.profileName
+            if (accountData.profileName) {
+              this.error = 'You already own a name'
+            }
           }
         })
       ]
@@ -199,7 +203,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_INITIATED',
         properties: {
           isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
+            getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: name
         }
@@ -210,7 +214,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_SUCCESS',
         properties: {
           isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
+            getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: name
         }
@@ -222,7 +226,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_ERROR',
         properties: {
           isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
+            getPreferredAccountType(ChainController.getActiveCaipNetwork()?.chainNamespace) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: name,
           error: (error as Error)?.message || 'Unknown error'

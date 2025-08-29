@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
 import {
-  ChainController,
   CoreHelperUtil,
   RouterController,
   SendController,
@@ -97,7 +96,7 @@ export class W3mSendSelectTokenView extends LitElement {
 
   private templateTokens() {
     this.tokens = this.tokenBalances?.filter(
-      token => token.chainId === ChainController.state.activeCaipNetwork?.caipNetworkId
+      token => token.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
     )
     if (this.search) {
       this.filteredTokens = this.tokenBalances?.filter(token =>

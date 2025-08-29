@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AccountState } from '../../src/controllers/ChainController'
+import { type AccountState } from '@reown/appkit-common'
+
 import { ChainController } from '../../src/controllers/ChainController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'

@@ -20,7 +20,6 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
@@ -107,7 +106,7 @@ const controller = {
   async sendToken() {
     try {
       SendController.setLoading(true)
-      switch (ChainController.state.activeCaipNetwork?.chainNamespace) {
+      switch (ChainController.getActiveCaipNetwork()?.chainNamespace) {
         case 'eip155':
           await SendController.sendEvmToken()
 
@@ -125,7 +124,7 @@ const controller = {
   },
 
   async sendEvmToken() {
-    const activeChainNamespace = ChainController.state.activeChain
+    const activeChainNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
 
     if (!activeChainNamespace) {
       throw new Error('SendController:sendEvmToken - activeChainNamespace is required')
@@ -149,7 +148,7 @@ const controller = {
           isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: SendController.state.token.address,
           amount: SendController.state.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || ''
         }
       })
       await SendController.sendERC20Token({
@@ -166,7 +165,7 @@ const controller = {
           isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: SendController.state.token.symbol || '',
           amount: SendController.state.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+          network: ChainController.getActiveCaipNetwork()?.caipNetworkId || ''
         }
       })
       await SendController.sendNativeToken({
@@ -179,12 +178,12 @@ const controller = {
 
   async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
     state.loading = true
-    const namespace = ChainController.state.activeChain
-    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
-    const chain = ChainController.state.activeCaipNetwork?.chainNamespace
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
+    const chainId = ChainController.getActiveCaipNetwork()?.caipNetworkId
+    const chain = ChainController.getActiveCaipNetwork()?.chainNamespace
     const caipAddress =
-      ChainController.getAccountData(namespace)?.caipAddress ??
-      ChainController.state.activeCaipAddress
+      ConnectionController.getAccountData(namespace)?.caipAddress ??
+      ConnectionController.getActiveConnection().caipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
     if (
       state.lastRetry &&
@@ -243,7 +242,7 @@ const controller = {
     RouterController.pushTransactionStack({})
 
     const to = params.receiverAddress as Address
-    const address = ChainController.getAccountData()?.address as Address
+    const address = ConnectionController.getAccountData()?.address as Address
     const value = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
@@ -266,7 +265,7 @@ const controller = {
           getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
         token: SendController.state.token?.symbol || '',
         amount: params.sendTokenAmount,
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        network: ChainController.getActiveCaipNetwork()?.caipNetworkId || ''
       }
     })
 
@@ -286,7 +285,7 @@ const controller = {
       Number(params.decimals)
     )
 
-    const address = ChainController.getAccountData()?.address
+    const address = ConnectionController.getAccountData()?.address
     if (address && params.sendTokenAmount && params.receiverAddress && params.tokenAddress) {
       const tokenAddress = CoreHelperUtil.getPlainAddress(params.tokenAddress as CaipAddress)
 

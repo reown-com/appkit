@@ -3,11 +3,11 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace } from '@reown/appkit-common'
 
+import { ChainController } from '../../exports/index.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil } from '../utils/NetworkUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
-import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -58,10 +58,10 @@ const controller = {
 
   async open(options?: ModalControllerArguments['open']) {
     const namespace = options?.namespace
-    const currentNamespace = ChainController.state.activeChain
+    const currentNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
     const isSwitchingNamespace = namespace && namespace !== currentNamespace
-    const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
-    const hasNoAdapters = ChainController.state.noAdapters
+    const caipAddress = ConnectionController.getAccountData(options?.namespace)?.caipAddress
+    const hasNoAdapters = !OptionsController.state.adapters.length
 
     if (ConnectionController.state.wcBasic) {
       // No need to add an await here if we are use basic
@@ -74,13 +74,12 @@ const controller = {
     ModalController.setLoading(true, namespace)
 
     if (namespace && isSwitchingNamespace) {
-      const namespaceNetwork =
-        ChainController.getNetworkData(namespace)?.caipNetwork ||
-        ChainController.getRequestedCaipNetworks(namespace)[0]
+      const namespaceState = ChainController.getSnapshot().context.namespaces.get(namespace)
+      const namespaceNetwork = namespaceState?.activeCaipNetwork
 
       if (namespaceNetwork) {
         if (hasNoAdapters) {
-          await ChainController.switchActiveNetwork(namespaceNetwork)
+          ChainController.switchActiveNetwork(namespaceNetwork)
           RouterController.push('ConnectingWalletConnectBasic')
         } else {
           NetworkUtil.onSwitchNetwork({ network: namespaceNetwork, ignoreSwitchConfirmation: true })
@@ -111,7 +110,9 @@ const controller = {
 
   close() {
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const isConnected = Boolean(ChainController.state.activeCaipAddress)
+    const isConnected = Boolean(
+      ConnectionController.getActiveConnection(state.namespace)?.accounts[0]?.caipAddress
+    )
 
     // Only send the event if the modal is open and is about to be closed
     if (state.open) {

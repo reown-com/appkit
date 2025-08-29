@@ -185,13 +185,13 @@ export class W3mPayLoadingView extends LitElement {
     }
 
     if (currentPayment.type === 'wallet') {
-      const walletIcon = ChainController.getAccountData()?.connectedWalletInfo?.icon
+      const walletIcon = ConnectionController.getAccountData()?.connectedWalletInfo?.icon
       if (walletIcon) {
         return walletIcon
       }
 
       // Fallback
-      const chainNamespace = ChainController.state.activeChain
+      const chainNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
       if (!chainNamespace) {
         return undefined
       }

@@ -5,7 +5,7 @@ import base58 from 'bs58'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  ChainController,
+  ConnectionController,
   type RequestArguments,
   SIWXUtil,
   getPreferredAccountType
@@ -40,8 +40,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   }
 
   get publicKey(): PublicKey | undefined {
-    const address = ChainController.state.chains.get(ConstantsUtil.CHAIN.SOLANA)?.accountState
-      ?.address
+    const address = ConnectionController.getAccountData(ConstantsUtil.CHAIN.SOLANA)?.address
 
     return address ? new PublicKey(address) : undefined
   }

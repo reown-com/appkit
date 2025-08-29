@@ -6,6 +6,7 @@ import {
   AssetController,
   AssetUtil,
   ChainController,
+  ConnectionController,
   ConnectorController,
   EventsController,
   ModalUtil,
@@ -33,7 +34,7 @@ function headings() {
   const name = walletName ?? connectorName
   const connectors = ConnectorController.getConnectors()
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
-  const socialProvider = ChainController.getAccountData()?.socialProvider
+  const socialProvider = ConnectionController.getAccountData()?.socialProvider
   const socialTitle = socialProvider
     ? socialProvider.charAt(0).toUpperCase() + socialProvider.slice(1)
     : 'Connect Social'
@@ -114,7 +115,7 @@ export class W3mHeader extends LitElement {
   // -- State & Properties --------------------------------- //
   @state() private heading = headings()[RouterController.state.view]
 
-  @state() private network = ChainController.state.activeCaipNetwork
+  @state() private network = ChainController.getActiveCaipNetwork()
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
@@ -140,8 +141,8 @@ export class W3mHeader extends LitElement {
         this.onViewChange()
         this.onHistoryChange()
       }),
-      ChainController.subscribeKey('activeCaipNetwork', val => {
-        this.network = val
+      ChainController.subscribe(() => {
+        this.network = ChainController.getActiveCaipNetwork()
         this.networkImage = AssetUtil.getNetworkImage(this.network)
       })
     )
@@ -272,7 +273,7 @@ export class W3mHeader extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getCaipNetworks() ?? []
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

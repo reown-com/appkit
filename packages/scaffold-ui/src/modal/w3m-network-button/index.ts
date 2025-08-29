@@ -6,6 +6,7 @@ import {
   AssetController,
   AssetUtil,
   ChainController,
+  ConnectionController,
   EventsController,
   ModalController,
   OptionsController
@@ -26,19 +27,19 @@ class W3mNetworkButtonBase extends LitElement {
 
   @property({ type: String }) public label?: string
 
-  @state() private network = ChainController.state.activeCaipNetwork
+  @state() private network = ChainController.getActiveCaipNetwork()
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private caipAddress = ConnectionController.getAccountData()?.caipAddress
 
   @state() private loading = ModalController.state.loading
 
   // eslint-disable-next-line no-nested-ternary
   @state() private isSupported = OptionsController.state.allowUnsupportedChain
     ? true
-    : ChainController.state.activeChain
-      ? ChainController.checkIfSupportedNetwork(ChainController.state.activeChain)
+    : this.network?.chainNamespace
+      ? ChainController.checkIfSupportedNetwork(this.network?.chainNamespace)
       : true
 
   // -- Lifecycle ----------------------------------------- //
@@ -49,16 +50,15 @@ class W3mNetworkButtonBase extends LitElement {
         AssetController.subscribeNetworkImages(() => {
           this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
-        ChainController.subscribeKey('activeCaipAddress', val => {
-          this.caipAddress = val
-        }),
-        ChainController.subscribeKey('activeCaipNetwork', val => {
-          this.network = val
-          this.networkImage = AssetUtil.getNetworkImage(val)
-          this.isSupported = val?.chainNamespace
-            ? ChainController.checkIfSupportedNetwork(val.chainNamespace)
+        ChainController.subscribe(() => {
+          this.network = ChainController.getActiveCaipNetwork()
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
+          this.isSupported = this.network?.chainNamespace
+            ? ChainController.checkIfSupportedNetwork(this.network?.chainNamespace)
             : true
-          AssetUtil.fetchNetworkImage(val?.assets?.imageId)
+        }),
+        ConnectionController.subscribeKey('connections', () => {
+          this.caipAddress = ConnectionController.getAccountData()?.caipAddress
         }),
         ModalController.subscribeKey('loading', val => (this.loading = val))
       ]

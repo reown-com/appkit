@@ -136,7 +136,7 @@ export class W3mEmailLoginWidget extends LitElement {
     }
 
     const isAvailableChain = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
-      chain => chain === ChainController.state.activeChain
+      chain => chain === ChainController.getActiveCaipNetwork()?.chainNamespace
     )
 
     if (!isAvailableChain) {
@@ -173,7 +173,10 @@ export class W3mEmailLoginWidget extends LitElement {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-        await ConnectionController.connectExternal(authConnector, ChainController.state.activeChain)
+        await ConnectionController.connectExternal(
+          authConnector,
+          ChainController.getActiveCaipNetwork()?.chainNamespace
+        )
 
         if (isMultiWalletEnabled) {
           RouterController.replace('ProfileWallets')

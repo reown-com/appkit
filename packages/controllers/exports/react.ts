@@ -6,17 +6,13 @@ import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appk
 
 import { AlertController } from '../src/controllers/AlertController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
-import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
-import type {
-  NamespaceTypeMap,
-  UseAppKitAccountReturn,
-  UseAppKitNetworkReturn
-} from '../src/utils/TypeUtil.js'
+import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
+import { ChainController } from './index.js'
 import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
@@ -54,7 +50,7 @@ export function useAppKitNetworkCore(): Pick<
   UseAppKitNetworkReturn,
   'caipNetwork' | 'chainId' | 'caipNetworkId'
 > {
-  const { activeCaipNetwork } = useSnapshot(ChainController.state)
+  const activeCaipNetwork = ChainController.getActiveCaipNetwork()
 
   return {
     caipNetwork: activeCaipNetwork,
@@ -64,9 +60,9 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
-  const state = useSnapshot(ChainController.state)
+  const state = useSnapshot(ChainController.getSnapshot())
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
-  const chainNamespace = options?.namespace || state.activeChain
+  const chainNamespace = options?.namespace || state.context.activeChain
 
   if (!chainNamespace) {
     return {
@@ -79,33 +75,38 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
     }
   }
 
-  const chainAccountState = state.chains.get(chainNamespace)?.accountState
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
   const activeConnectorId = activeConnectorIds[chainNamespace]
   const connections = ConnectionController.getConnections(chainNamespace)
   const allAccounts = connections.flatMap(connection =>
-    connection.accounts.map(({ address, type, publicKey }) =>
+    connection.accounts.map(({ address, preferredAccountType, publicKey }) =>
       CoreHelperUtil.createAccount(
         chainNamespace,
         address,
-        (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
+        preferredAccountType || 'eoa',
         publicKey
       )
     )
   )
 
+  const accountState = ConnectionController.getAccountData(chainNamespace)
+  const caipAddress = accountState?.caipAddress
+  const status = accountState?.status
+  const address = CoreHelperUtil.getPlainAddress(caipAddress)
+  const isConnected = Boolean(caipAddress)
+
   return {
     allAccounts,
-    caipAddress: chainAccountState?.caipAddress,
-    address: CoreHelperUtil.getPlainAddress(chainAccountState?.caipAddress),
-    isConnected: Boolean(chainAccountState?.caipAddress),
-    status: chainAccountState?.status,
+    caipAddress,
+    address,
+    isConnected,
+    status,
     embeddedWalletInfo:
       authConnector && activeConnectorId === ConstantsUtil.CONNECTOR_ID.AUTH
         ? {
-            user: chainAccountState?.user
+            user: accountState?.user
               ? {
-                  ...chainAccountState.user,
+                  ...accountState.user,
                   /*
                    * Getting the username from the chain controller works well for social logins,
                    * but Farcaster uses a different connection flow and doesn’t emit the username via events.
@@ -115,9 +116,9 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
                   username: StorageUtil.getConnectedSocialUsername()
                 }
               : undefined,
-            authProvider: chainAccountState?.socialProvider || 'email',
-            accountType: chainAccountState?.preferredAccountType,
-            isSmartAccountDeployed: Boolean(chainAccountState?.smartAccountDeployed)
+            authProvider: accountState?.socialProvider || 'email',
+            accountType: accountState?.preferredAccountType,
+            isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
           }
         : undefined
   }
@@ -137,7 +138,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   useSnapshot(ConnectorController.state)
   useSnapshot(AssetController.state)
 
-  const { activeChain } = useSnapshot(ChainController.state)
+  const activeChain = ChainController.getSnapshot()?.context?.activeChain
   const { remoteFeatures } = useSnapshot(OptionsController.state)
 
   const chainNamespace = namespace ?? activeChain
@@ -187,7 +188,7 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
 export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKitConnectionProps) {
   const { connections, isSwitchingConnection } = useSnapshot(ConnectionController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
-  const { activeChain } = useSnapshot(ChainController.state)
+  const activeChain = ChainController.getSnapshot()?.context?.activeChain
   const { remoteFeatures } = useSnapshot(OptionsController.state)
 
   const chainNamespace = namespace ?? activeChain

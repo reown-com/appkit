@@ -81,7 +81,7 @@ const networks = [
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
   global.URL.createObjectURL = vi.fn((file: Blob) => `blob:${file}`)
-  ChainController.initialize(
+  ChainControllerPoc.initialize(
     [
       {
         namespace: ConstantsUtil.CHAIN.EVM,
@@ -258,7 +258,7 @@ describe('ApiController', () => {
         }
       } as CaipNetwork
     ]
-    ChainController.initialize(
+    ChainControllerPoc.initialize(
       [
         {
           namespace: ConstantsUtil.CHAIN.EVM,

@@ -4,7 +4,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { ChainController } from '../controllers/ChainController.js'
+import { ChainController } from '../../exports/index.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
@@ -79,25 +79,33 @@ export const ConnectorControllerUtil = {
         })
       }
 
-      const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
-        if (val) {
-          onConnect?.()
-          if (closeModalOnConnect) {
-            ModalController.close()
+      const unsubscribeChainController = ConnectionController.subscribeKey('connections', val => {
+        const chain = ChainController.getActiveCaipNetwork()
+        if (chain) {
+          const address = val.get(chain.chainNamespace)?.[0]?.accounts[0]?.caipAddress
+          if (address) {
+            onConnect?.()
+            if (closeModalOnConnect) {
+              ModalController.close()
+            }
+            unsubscribeChainController()
+            resolve(ParseUtil.parseCaipAddress(address))
           }
-          unsubscribeChainController()
-          resolve(ParseUtil.parseCaipAddress(val))
         }
       })
     })
   },
   connectExternal(connector: Connector): Promise<ParsedCaipAddress> {
     return new Promise((resolve, reject) => {
-      const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
-        if (val) {
-          ModalController.close()
-          unsubscribeChainController()
-          resolve(ParseUtil.parseCaipAddress(val))
+      const unsubscribeChainController = ConnectionController.subscribeKey('connections', val => {
+        const chain = ChainController.getActiveCaipNetwork()
+        if (chain) {
+          const address = val.get(chain.chainNamespace)?.[0]?.accounts[0]?.caipAddress
+          if (address) {
+            ModalController.close()
+            unsubscribeChainController()
+            resolve(ParseUtil.parseCaipAddress(address))
+          }
         }
       })
 
@@ -114,16 +122,17 @@ export const ConnectorControllerUtil = {
     onOpenFarcaster,
     onConnect
   }: ConnectSocialParameters): Promise<ParsedCaipAddress> {
-    const accountData = ChainController.getAccountData(namespace)
+    const accountData = ConnectionController.getAccountData(namespace)
     let socialWindow: Window | null | undefined = accountData?.socialWindow
     let socialProvider = accountData?.socialProvider
     let isConnectingSocial = false
     let popupWindow: Window | null = null
 
-    const namespaceToUse = namespace || ChainController.state.activeChain
+    const namespaceToUse = namespace || ChainController.getActiveCaipNetwork()?.chainNamespace
 
-    const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
-      if (val) {
+    const unsubscribeChainController = ConnectionController.subscribeKey('connections', () => {
+      const address = ConnectionController.getAccountData(namespaceToUse)?.address
+      if (address) {
         if (closeModalOnConnect) {
           ModalController.close()
         }
@@ -140,10 +149,10 @@ export const ConnectorControllerUtil = {
               const authConnector = ConnectorController.getAuthConnector(namespaceToUse)
 
               if (authConnector && !isConnectingSocial) {
-                const _accountData = ChainController.getAccountData(namespaceToUse)
-                if (socialWindow) {
+                const _accountData = ConnectionController.getAccountData(namespaceToUse)
+                if (socialWindow && namespaceToUse) {
                   socialWindow.close()
-                  ChainController.setAccountProp('socialWindow', undefined, namespaceToUse)
+                  ConnectionController.setAccountProp('socialWindow', undefined, namespaceToUse)
                   socialWindow = _accountData?.socialWindow
                 }
                 isConnectingSocial = true
@@ -168,7 +177,8 @@ export const ConnectorControllerUtil = {
                     authConnector.chain
                   )
 
-                  const caipAddress = ChainController.state.activeCaipAddress
+                  const caipAddress =
+                    ConnectionController.getAccountData(namespaceToUse)?.caipAddress
 
                   if (!caipAddress) {
                     reject(new Error('Failed to connect'))
@@ -208,9 +218,9 @@ export const ConnectorControllerUtil = {
       }
 
       async function connectSocial() {
-        if (social) {
-          const _accountData = ChainController.getAccountData(namespaceToUse)
-          ChainController.setAccountProp('socialProvider', social, namespaceToUse)
+        if (social && namespaceToUse) {
+          const _accountData = ConnectionController.getAccountData(namespaceToUse)
+          ConnectionController.setAccountProp('socialProvider', social, namespaceToUse)
           socialProvider = _accountData?.socialProvider
           EventsController.sendEvent({
             type: 'track',
@@ -232,12 +242,12 @@ export const ConnectorControllerUtil = {
           const authConnector = ConnectorController.getAuthConnector()
 
           if (authConnector) {
-            const _accountData = ChainController.getAccountData(namespaceToUse)
-            if (!_accountData?.farcasterUrl) {
+            const _accountData = ConnectionController.getAccountData(namespaceToUse)
+            if (!_accountData?.farcasterUrl && namespaceToUse) {
               try {
                 const { url } = await authConnector.provider.getFarcasterUri()
 
-                ChainController.setAccountProp('farcasterUrl', url, namespaceToUse)
+                ConnectionController.setAccountProp('farcasterUrl', url, namespaceToUse)
               } catch {
                 reject(new Error('Failed to connect to farcaster'))
               }
@@ -258,8 +268,8 @@ export const ConnectorControllerUtil = {
                   socialProvider as W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']['provider']
               })
 
-              if (popupWindow && uri) {
-                ChainController.setAccountProp('socialWindow', popupWindow, namespaceToUse)
+              if (popupWindow && uri && namespaceToUse) {
+                ConnectionController.setAccountProp('socialWindow', popupWindow, namespaceToUse)
                 socialWindow = accountData?.socialWindow
                 popupWindow.location.href = uri
 
@@ -307,20 +317,23 @@ export const ConnectorControllerUtil = {
         })
       }
 
-      const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
-        if (val) {
+      const unsubscribeChainController = ConnectionController.subscribeKey('connections', () => {
+        const address = ConnectionController.getAccountData()?.caipAddress
+        if (address) {
           onConnect?.()
           if (closeModalOnConnect) {
             ModalController.close()
           }
           unsubscribeChainController()
-          resolve(ParseUtil.parseCaipAddress(val))
+          resolve(ParseUtil.parseCaipAddress(address))
         }
       })
     })
   },
   async updateEmail(): Promise<{ email: string }> {
-    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
+    const connectorId = StorageUtil.getConnectedConnectorId(
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
     const authConnector = ConnectorController.getAuthConnector()
 
     if (!authConnector) {

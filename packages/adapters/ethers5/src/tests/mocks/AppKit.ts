@@ -8,7 +8,6 @@ export const mockAppKit = {
   getIsConnectedState: vi.fn().mockReturnValue(true),
   setCaipAddress: vi.fn(),
   getCaipAddress: vi.fn().mockReturnValue('eip155:1:0xE62a3eD41B21447b67a63880607CD2E746A0E35d'),
-  setRequestedCaipNetworks: vi.fn(),
   setConnectors: vi.fn(),
   getConnectors: vi.fn().mockReturnValue([]),
   setConnectedWalletInfo: vi.fn(),

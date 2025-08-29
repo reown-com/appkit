@@ -66,7 +66,7 @@ describe('W3mHeader', () => {
       await element.updateComplete
 
       const getNetworkImageSpy = vi.spyOn(AssetUtil, 'getNetworkImage')
-      ChainController.setActiveCaipNetwork(mockNetwork)
+      ChainControllerPoc.swithActiveCaipNetwork(mockNetwork)
       await elementUpdated(element)
 
       const networkSelect = HelpersUtil.getByTestId(element, 'w3m-account-select-network')
@@ -88,7 +88,7 @@ describe('W3mHeader', () => {
       element = await fixture(html`<w3m-header></w3m-header>`)
       await element.updateComplete
 
-      ChainController.setActiveCaipNetwork(mockNetwork)
+      ChainControllerPoc.swithActiveCaipNetwork(mockNetwork)
       await elementUpdated(element)
 
       const getNetworkImageSpy = vi.spyOn(AssetUtil, 'getNetworkImage')

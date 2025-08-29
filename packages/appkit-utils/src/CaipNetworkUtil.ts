@@ -9,7 +9,7 @@ import {
   type CustomRpcUrl,
   type CustomRpcUrlMap
 } from '@reown/appkit-common'
-import { ChainController, StorageUtil } from '@reown/appkit-controllers'
+import { StorageUtil } from '@reown/appkit-controllers'
 
 import { PresetsUtil } from './PresetsUtil.js'
 
@@ -295,8 +295,10 @@ export const CaipNetworksUtil = {
    */
   getCaipNetworkFromStorage(defaultCaipNetwork?: CaipNetwork) {
     const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
-    const caipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const availableNamespaces = Array.from(ChainController.state.chains?.keys() || [])
+    const caipNetworks = ChainController.getCaipNetworks() ?? []
+    const availableNamespaces = Array.from(
+      ChainController.getSnapshot().context.namespaces?.keys() || []
+    )
     const namespace = caipNetworkIdFromStorage?.split(':')[0] as ChainNamespace | undefined
     const isNamespaceAvailable = namespace ? availableNamespaces.includes(namespace) : false
     const caipNetwork = caipNetworks?.find(cn => cn.caipNetworkId === caipNetworkIdFromStorage)

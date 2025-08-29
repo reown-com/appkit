@@ -1,6 +1,7 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type {
+  CaipAddress,
   CaipNetwork,
   ChainNamespace,
   Connection as ConnectionType
@@ -102,7 +103,13 @@ export class ConnectionManager {
             if (accounts.length > 0) {
               onConnection({
                 connectorId: connector.id,
-                accounts: accounts.map(account => ({ address: account.address })),
+                accounts: accounts.map(account => ({
+                  address: account.address,
+                  caipAddress:
+                    `${this.namespace}${account.chainId}:${account.address}` as CaipAddress,
+                  currentTab: 0,
+                  addressLabels: new Map()
+                })),
                 caipNetwork
               })
             }
@@ -116,7 +123,12 @@ export class ConnectionManager {
 
               onConnection({
                 connectorId: connector.id,
-                accounts: accounts.map(address => ({ address })),
+                accounts: accounts.map(address => ({
+                  address,
+                  caipAddress: `${this.namespace}${chainId}:${address}` as CaipAddress,
+                  currentTab: 0,
+                  addressLabels: new Map()
+                })),
                 caipNetwork
               })
 
@@ -158,7 +170,13 @@ export class ConnectionManager {
             if (accounts.length > 0) {
               onConnection({
                 connectorId: connector.id,
-                accounts: accounts.map(account => ({ address: account.address })),
+                accounts: accounts.map(account => ({
+                  address: account.address,
+                  caipAddress:
+                    `${this.namespace}${caipNetwork?.id}:${account.address}` as CaipAddress,
+                  currentTab: 0,
+                  addressLabels: new Map()
+                })),
                 caipNetwork
               })
             }
@@ -170,7 +188,14 @@ export class ConnectionManager {
             if (address) {
               onConnection({
                 connectorId: connector.id,
-                accounts: [{ address }],
+                accounts: [
+                  {
+                    address,
+                    caipAddress: `${this.namespace}${caipNetwork?.id}:${address}` as CaipAddress,
+                    currentTab: 0,
+                    addressLabels: new Map()
+                  }
+                ],
                 caipNetwork
               })
 
@@ -206,7 +231,13 @@ export class ConnectionManager {
             if (accounts.length > 0) {
               onConnection({
                 connectorId: connector.id,
-                accounts: accounts.map(account => ({ address: account.address })),
+                accounts: accounts.map(account => ({
+                  address: account.address,
+                  caipAddress:
+                    `${this.namespace}${caipNetwork?.id}:${account.address}` as CaipAddress,
+                  currentTab: 0,
+                  addressLabels: new Map()
+                })),
                 caipNetwork
               })
             }
@@ -256,7 +287,12 @@ export class ConnectionManager {
             onListenProvider(connector.id, connector.provider as BitcoinConnector)
             onConnection({
               connectorId: connector.id,
-              accounts: accounts.map(a => ({ address: a.address, type: a.type })),
+              accounts: accounts.map(a => ({
+                address: a.address,
+                caipAddress: `${this.namespace}${caipNetwork?.id}:${a.address}` as CaipAddress,
+                currentTab: 0,
+                addressLabels: new Map()
+              })),
               caipNetwork
             })
           }

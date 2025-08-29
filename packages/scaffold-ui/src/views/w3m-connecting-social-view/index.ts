@@ -34,9 +34,9 @@ export class W3mConnectingSocialView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private socialProvider = ChainController.getAccountData()?.socialProvider
+  @state() private socialProvider = ConnectionController.getAccountData()?.socialProvider
 
-  @state() private socialWindow = ChainController.getAccountData()?.socialWindow
+  @state() private socialWindow = ConnectionController.getAccountData()?.socialWindow
 
   @state() protected error = false
 
@@ -46,10 +46,10 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  private address = ChainController.getAccountData()?.address
+  private address = ConnectionController.getAccountData()?.address
 
   private connectionsByNamespace = ConnectionController.getConnections(
-    ChainController.state.activeChain
+    ChainController.getActiveCaipNetwork()?.chainNamespace
   )
 
   private hasMultipleConnections = this.connectionsByNamespace.length > 0
@@ -63,26 +63,31 @@ export class W3mConnectingSocialView extends LitElement {
     abortController.signal.addEventListener('abort', () => {
       if (this.socialWindow) {
         this.socialWindow.close()
-        ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
+        ConnectionController.setAccountProp(
+          'socialWindow',
+          undefined,
+          ChainController.getActiveCaipNetwork()?.chainNamespace
+        )
       }
     })
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeChainProp('accountState', val => {
-          if (val) {
-            this.socialProvider = val.socialProvider
-            if (val.socialWindow) {
-              this.socialWindow = val.socialWindow
+        ConnectionController.subscribeKey('connections', () => {
+          const accountData = ConnectionController.getAccountData()
+          if (accountData) {
+            this.socialProvider = accountData.socialProvider
+            if (accountData.socialWindow) {
+              this.socialWindow = accountData.socialWindow
             }
 
-            if (val.address) {
+            if (accountData.address) {
               const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
 
-              if (val.address !== this.address) {
+              if (accountData.address !== this.address) {
                 if (this.hasMultipleConnections && isMultiWalletEnabled) {
                   RouterController.replace('ProfileWallets')
                   SnackController.showSuccess('New Wallet Added')
-                  this.address = val.address
+                  this.address = accountData.address
                 } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
                   ModalController.close()
                 }
@@ -104,7 +109,11 @@ export class W3mConnectingSocialView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('message', this.handleSocialConnection, false)
     this.socialWindow?.close()
-    ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
+    ConnectionController.setAccountProp(
+      'socialWindow',
+      undefined,
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
   }
 
   // -- Render -------------------------------------------- //
@@ -151,10 +160,10 @@ export class W3mConnectingSocialView extends LitElement {
           if (this.authConnector && !this.connecting) {
             if (this.socialWindow) {
               this.socialWindow.close()
-              ChainController.setAccountProp(
+              ConnectionController.setAccountProp(
                 'socialWindow',
                 undefined,
-                ChainController.state.activeChain
+                ChainController.getActiveCaipNetwork()?.chainNamespace
               )
             }
             this.connecting = true

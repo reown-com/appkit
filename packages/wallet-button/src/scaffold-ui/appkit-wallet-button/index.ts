@@ -6,7 +6,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import {
   AssetUtil,
-  ChainController,
+  ConnectionController,
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
@@ -64,9 +64,7 @@ export class AppKitWalletButton extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public override connectedCallback() {
     super.connectedCallback()
-    this.caipAddress = this.namespace
-      ? ChainController.state.chains.get(this.namespace)?.accountState?.caipAddress
-      : ChainController.state.activeCaipAddress
+    this.caipAddress = ConnectionController.getAccountData(this.namespace)?.caipAddress
   }
 
   public override firstUpdated() {
@@ -77,17 +75,15 @@ export class AppKitWalletButton extends LitElement {
 
     if (this.namespace) {
       this.unsubscribe.push(
-        ChainController.subscribeChainProp(
-          'accountState',
-          val => {
-            this.caipAddress = val?.caipAddress
-          },
-          this.namespace
-        )
+        ConnectionController.subscribeKey('connections', () => {
+          this.caipAddress = ConnectionController.getAccountData(this.namespace)?.caipAddress
+        })
       )
     } else {
       this.unsubscribe.push(
-        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val))
+        ConnectionController.subscribeKey('connections', () => {
+          this.caipAddress = ConnectionController.getAccountData()?.caipAddress
+        })
       )
     }
   }

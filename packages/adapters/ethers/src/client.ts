@@ -4,7 +4,6 @@ import { JsonRpcProvider, formatEther, getAddress } from 'ethers'
 import { type AppKitOptions, WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
-  ChainController,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
@@ -155,7 +154,7 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Provider is undefined')
     }
 
-    const address = ChainController.getAccountData(CommonConstantsUtil.CHAIN.EVM)?.address
+    const address = ConnectionController.getAccountData(CommonConstantsUtil.CHAIN.EVM)?.address
 
     if (!address) {
       throw new Error('Address is undefined')

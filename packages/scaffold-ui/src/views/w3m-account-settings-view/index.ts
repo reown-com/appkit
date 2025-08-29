@@ -36,13 +36,13 @@ export class W3mAccountSettingsView extends LitElement {
   private readonly networkImages = AssetController.state.networkImages
 
   // -- State & Properties --------------------------------- //
-  @state() private address = ChainController.getAccountData()?.address
+  @state() private address = ConnectionController.getAccountData()?.address
 
-  @state() private profileImage = ChainController.getAccountData()?.profileImage
+  @state() private profileImage = ConnectionController.getAccountData()?.profileImage
 
-  @state() private profileName = ChainController.getAccountData()?.profileName
+  @state() private profileName = ConnectionController.getAccountData()?.profileName
 
-  @state() private network = ChainController.state.activeCaipNetwork
+  @state() private network = ChainController.getActiveCaipNetwork()
 
   @state() private disconnecting = false
 
@@ -58,16 +58,18 @@ export class W3mAccountSettingsView extends LitElement {
     super()
     this.usubscribe.push(
       ...[
-        ChainController.subscribeChainProp('accountState', val => {
-          if (val) {
-            this.address = val.address
-            this.profileImage = val.profileImage
-            this.profileName = val.profileName
+        ConnectionController.subscribeKey('connections', () => {
+          const accountData = ConnectionController.getAccountData()
+          if (accountData) {
+            this.address = accountData.address
+            this.profileImage = accountData.profileImage
+            this.profileName = accountData.profileName
           }
         }),
-        ChainController.subscribeKey('activeCaipNetwork', val => {
-          if (val?.id) {
-            this.network = val
+        ChainController.subscribe(() => {
+          const caipNetwork = ChainController.getActiveCaipNetwork()
+          if (caipNetwork?.caipNetworkId !== this.network?.caipNetworkId) {
+            this.network = caipNetwork
           }
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
@@ -208,7 +210,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getCaipNetworks() ?? []
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

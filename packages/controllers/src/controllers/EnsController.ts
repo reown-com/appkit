@@ -8,7 +8,6 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
-import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
@@ -83,7 +82,7 @@ const controller = {
 
   async getNamesForAddress(address: string) {
     try {
-      const network = ChainController.state.activeCaipNetwork
+      const network = ChainController.getActiveCaipNetwork()
       if (!network) {
         return []
       }
@@ -108,8 +107,8 @@ const controller = {
   },
 
   async registerName(name: ReownName) {
-    const network = ChainController.state.activeCaipNetwork
-    const address = ChainController.getAccountData(network?.chainNamespace)?.address
+    const network = ChainController.getActiveCaipNetwork()
+    const address = ConnectionController.getAccountData(network?.chainNamespace)?.address
     const emailConnector = ConnectorController.getAuthConnector()
 
     if (!network) {
@@ -152,7 +151,7 @@ const controller = {
         message
       })
 
-      ChainController.setAccountProp('profileName', name, network.chainNamespace)
+      ConnectionController.setAccountProp('profileName', name, network.chainNamespace)
       StorageUtil.updateEnsCache({
         address,
         ens: [

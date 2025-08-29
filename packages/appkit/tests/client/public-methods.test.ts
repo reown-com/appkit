@@ -981,7 +981,6 @@ describe('Base Public methods', () => {
     vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
       Promise.resolve()
     )
-    ChainController.state.activeCaipNetwork = mainnet
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
     vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(ChainController, 'setAccountProp').mockImplementation(() => Promise.resolve())
@@ -1013,7 +1012,6 @@ describe('Base Public methods', () => {
     vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
       Promise.resolve()
     )
-    ChainController.state.activeCaipNetwork = mainnet
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
     vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(ChainController, 'setAccountProp').mockImplementation(() => Promise.resolve())
@@ -1045,7 +1043,6 @@ describe('Base Public methods', () => {
     vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
       Promise.resolve()
     )
-    ChainController.state.activeCaipNetwork = bitcoin
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([bitcoin])
     vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(ChainController, 'setAccountProp').mockImplementation(() => Promise.resolve())
@@ -1081,7 +1078,6 @@ describe('Base Public methods', () => {
     } as AuthConnector
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
-    ChainController.state.activeChain = 'eip155'
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: 'eip155:1:0x123',
       status: 'connected',

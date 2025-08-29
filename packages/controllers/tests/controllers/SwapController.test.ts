@@ -65,12 +65,12 @@ beforeAll(async () => {
     networkControllerClient: client,
     caipNetworks: [caipNetwork]
   }
-  ChainController.initialize([mockAdapter], [caipNetwork], {
+  ChainControllerPoc.initialize([mockAdapter], [caipNetwork], {
     connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
     networkControllerClient: client
   })
 
-  ChainController.setActiveCaipNetwork(caipNetwork)
+  ChainControllerPoc.swithActiveCaipNetwork(caipNetwork)
   ChainController.setAccountProp('caipAddress', caipAddress, chain)
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)

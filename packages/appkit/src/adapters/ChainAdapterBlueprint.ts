@@ -15,6 +15,7 @@ import {
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   type Tokens,
@@ -88,7 +89,7 @@ export abstract class AdapterBlueprint<
    */
   constructor(params?: AdapterBlueprint.Params) {
     this.getCaipNetworks = (namespace?: ChainNamespace) =>
-      ChainController.getCaipNetworks(namespace)
+      ChainController.getCaipNetworks(namespace) ?? []
     this.getConnectorId = (namespace: ChainNamespace) =>
       ConnectorController.getConnectorId(namespace)
 
@@ -246,7 +247,7 @@ export abstract class AdapterBlueprint<
   }
 
   protected setStatus(status: AccountState['status'], chainNamespace?: ChainNamespace) {
-    ChainController.setAccountProp('status', status, chainNamespace)
+    ConnectionController.setStatus(status, chainNamespace)
   }
 
   /**

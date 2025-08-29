@@ -19,7 +19,7 @@ export class W3mFundWalletView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private activeCaipNetwork = ChainController.state.activeCaipNetwork
+  @state() private activeCaipNetwork = ChainController.getActiveCaipNetwork()
   @state() private features = OptionsController.state.features
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
   @state() private exchangesLoading = ExchangeController.state.isLoading
@@ -31,8 +31,8 @@ export class W3mFundWalletView extends LitElement {
       ...[
         OptionsController.subscribeKey('features', val => (this.features = val)),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
-        ChainController.subscribeKey('activeCaipNetwork', val => {
-          this.activeCaipNetwork = val
+        ChainController.subscribe(() => {
+          this.activeCaipNetwork = ChainController.getActiveCaipNetwork()
           this.setDefaultPaymentAsset()
         }),
         ExchangeController.subscribeKey('isLoading', val => (this.exchangesLoading = val)),

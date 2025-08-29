@@ -5,6 +5,7 @@ import { toHex } from 'viem'
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectionController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
 } from '@reown/appkit-controllers'
@@ -97,11 +98,11 @@ export class UniversalAdapter extends AdapterBlueprint {
       }
     }
 
-    const accountData = ChainController.getAccountData()
+    const accountData = ConnectionController.getAccountData(params.caipNetwork?.chainNamespace)
 
     if (
       accountData?.balanceLoading &&
-      params.chainId === ChainController.state.activeCaipNetwork?.id
+      params.chainId === ChainController.getActiveCaipNetwork()?.id
     ) {
       return {
         balance: accountData?.balance || '0.00',
@@ -109,7 +110,9 @@ export class UniversalAdapter extends AdapterBlueprint {
       }
     }
 
-    const balances = await ChainController.fetchTokenBalance()
+    const balances = await ConnectionController.fetchTokenBalance(
+      params.caipNetwork?.chainNamespace
+    )
     const balance = balances.find(
       b =>
         b.chainId === `${params.caipNetwork?.chainNamespace}:${params.chainId}` &&
@@ -132,7 +135,7 @@ export class UniversalAdapter extends AdapterBlueprint {
 
     let signature = ''
 
-    if (ChainController.state.activeCaipNetwork?.chainNamespace === ConstantsUtil.CHAIN.SOLANA) {
+    if (ChainController.getActiveCaipNetwork()?.chainNamespace === ConstantsUtil.CHAIN.SOLANA) {
       const response = await provider.request(
         {
           method: 'solana_signMessage',
@@ -141,7 +144,7 @@ export class UniversalAdapter extends AdapterBlueprint {
             pubkey: address
           }
         },
-        ChainController.state.activeCaipNetwork?.caipNetworkId
+        ChainController.getActiveCaipNetwork()?.caipNetworkId
       )
 
       signature = (response as { signature: string }).signature
@@ -151,7 +154,7 @@ export class UniversalAdapter extends AdapterBlueprint {
           method: 'personal_sign',
           params: [message, address]
         },
-        ChainController.state.activeCaipNetwork?.caipNetworkId
+        ChainController.getActiveCaipNetwork()?.caipNetworkId
       )
     }
 

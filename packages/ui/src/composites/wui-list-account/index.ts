@@ -4,7 +4,6 @@ import { property } from 'lit/decorators.js'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   BlockchainApiController,
-  ChainController,
   ConnectorController,
   StorageUtil
 } from '@reown/appkit-controllers'
@@ -30,9 +29,9 @@ export class WuiListAccount extends LitElement {
 
   @property() public accountType = ''
 
-  private labels = ChainController.getAccountData()?.addressLabels
+  private labels = ConnectionController.getAccountData()?.addressLabels
 
-  private caipNetwork = ChainController.state.activeCaipNetwork
+  private caipNetwork = ChainController.getActiveCaipNetwork()
 
   private socialProvider = StorageUtil.getConnectedSocialProvider()
 
@@ -70,7 +69,9 @@ export class WuiListAccount extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const label = this.getLabel()
-    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
 
     // Only show icon for AUTH accounts
     this.shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
@@ -118,7 +119,9 @@ export class WuiListAccount extends LitElement {
 
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
-    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(
+      ChainController.getActiveCaipNetwork()?.chainNamespace
+    )
 
     if (!label && connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
       label = `${this.accountType === 'eoa' ? (this.socialProvider ?? 'Email') : 'Smart'} Account`

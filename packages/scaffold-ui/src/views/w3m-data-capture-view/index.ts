@@ -3,7 +3,7 @@ import { state } from 'lit/decorators.js'
 
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
-  ChainController,
+  ConnectionController,
   OptionsController,
   RouterController,
   SnackController
@@ -18,9 +18,9 @@ export class W3mDataCaptureView extends LitElement {
   public static override styles = [styles]
 
   @state() private email =
-    RouterController.state.data?.email ?? ChainController.getAccountData()?.user?.email ?? ''
+    RouterController.state.data?.email ?? ConnectionController.getAccountData()?.user?.email ?? ''
 
-  @state() private address = ChainController.getAccountData()?.address ?? ''
+  @state() private address = ConnectionController.getAccountData()?.address ?? ''
 
   @state() private loading = false
 
@@ -234,7 +234,7 @@ export class W3mDataCaptureView extends LitElement {
       return
     }
 
-    const account = ChainController.getActiveCaipAddress()
+    const account = ConnectionController.getAccountData()?.caipAddress
 
     if (!account) {
       throw new Error('Account is not connected.')
