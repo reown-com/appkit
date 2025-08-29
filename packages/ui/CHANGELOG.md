@@ -1,5 +1,16 @@
 # @reown/appkit-ui
 
+## 1.8.2
+
+### Patch Changes
+
+- [#4911](https://github.com/reown-com/appkit/pull/4911) [`2f67cb8`](https://github.com/reown-com/appkit/commit/2f67cb800e99c09a85e89ba7f6dc38486305120a) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix several styling issues when used with AppKit CDN
+
+- Updated dependencies [[`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca)]:
+  - @reown/appkit-controllers@1.8.2
+  - @reown/appkit-common@1.8.2
+  - @reown/appkit-wallet@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes
