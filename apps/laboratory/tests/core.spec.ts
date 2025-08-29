@@ -24,7 +24,7 @@ coreTest.beforeAll(async ({ browser }) => {
   const browserPage = await context.newPage()
 
   // Navigate to core page
-  await browserPage.goto(`${BASE_URL}core/`)
+  await browserPage.goto(`${BASE_URL}appkit-core/`)
 
   modalPage = new ModalPage(browserPage, 'library', 'core')
   walletPage = new WalletPage(await context.newPage())

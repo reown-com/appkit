@@ -10,6 +10,10 @@ export function EmbeddedWalletInfo() {
   const email = user?.email
   const username = user?.username
 
+  if (!embeddedWalletInfo) {
+    return null
+  }
+
   return (
     <Stack divider={<StackDivider />} spacing="4">
       <Box>

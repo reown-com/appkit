@@ -133,7 +133,8 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private paginationLoaderTemplate() {
-    const { wallets, recommended, featured, count } = ApiController.state
+    const { wallets, recommended, featured, count, mobileFilteredOutWalletsLength } =
+      ApiController.state
     const columns = window.innerWidth < 352 ? 3 : 4
     const currentWallets = wallets.length + recommended.length
     const minimumRows = Math.ceil(currentWallets / columns)
@@ -144,7 +145,11 @@ export class W3mAllWalletsList extends LitElement {
       return null
     }
 
-    if (count === 0 || [...featured, ...wallets, ...recommended].length < count) {
+    if (
+      count === 0 ||
+      [...featured, ...wallets, ...recommended].length <
+        count - (mobileFilteredOutWalletsLength ?? 0)
+    ) {
       return this.shimmerTemplate(shimmerCount, PAGINATOR_ID)
     }
 
