@@ -48,6 +48,7 @@ export interface ApiControllerState {
   isAnalyticsEnabled: boolean
   excludedWallets: { rdns?: string | null; name: string }[]
   isFetchingRecommendedWallets: boolean
+  mobileFilteredOutWalletsLength?: number
 }
 
 interface PrefetchParameters {
@@ -133,6 +134,7 @@ export const ApiController = {
   },
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
+    const walletsLength = wallets.length
     const filteredWallets = CoreHelperUtil.isMobile()
       ? wallets?.filter(w => {
           if (w.mobile_link) {
@@ -155,7 +157,9 @@ export const ApiController = {
         })
       : wallets
 
-    return filteredWallets
+    const mobileFilteredOutWalletsLength = walletsLength - filteredWallets.length
+
+    return { filteredWallets, mobileFilteredOutWalletsLength }
   },
 
   async fetchProjectConfig() {
@@ -242,7 +246,10 @@ export const ApiController = {
       }
     })
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(wallets?.data)
+    const { filteredWallets, mobileFilteredOutWalletsLength } =
+      ApiController._filterWalletsByPlatform(wallets?.data)
+    state.mobileFilteredOutWalletsLength =
+      mobileFilteredOutWalletsLength + (state.mobileFilteredOutWalletsLength ?? 0)
 
     return {
       data: filteredWallets || [],
