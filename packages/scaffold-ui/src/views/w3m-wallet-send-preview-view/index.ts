@@ -4,7 +4,6 @@ import { state } from 'lit/decorators.js'
 import {
   ChainController,
   EventsController,
-  ModalController,
   RouterController,
   SendController,
   SnackController,
@@ -163,7 +162,7 @@ export class W3mWalletSendPreviewView extends LitElement {
     try {
       await SendController.sendToken()
       if (this.params) {
-        ModalController.close()
+        RouterController.reset('WalletSendConfirmed')
       } else {
         SnackController.showSuccess('Transaction started')
         RouterController.replace('Account')

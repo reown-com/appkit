@@ -72,6 +72,7 @@ export interface RouterControllerState {
     | 'WalletSend'
     | 'WalletSendPreview'
     | 'WalletSendSelectToken'
+    | 'WalletSendConfirmed'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'

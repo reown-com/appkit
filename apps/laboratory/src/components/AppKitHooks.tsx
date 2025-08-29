@@ -74,7 +74,7 @@ export function AppKitHooks() {
           amount: '1',
           caipAsset: `eip155:8453/erc20:${USDC_ADDRESS}`,
           caipNetworkId: 'eip155:8453',
-          to: '0x...'
+          to: address
         }
       })
 
