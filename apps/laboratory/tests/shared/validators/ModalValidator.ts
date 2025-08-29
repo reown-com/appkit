@@ -2,6 +2,7 @@ import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 
 import type { CaipNetworkId } from '@reown/appkit'
+import type { ChainNamespace } from '@reown/appkit-common'
 import { getMaximumWaitConnections } from '@reown/appkit-testing'
 
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
@@ -15,8 +16,10 @@ export class ModalValidator {
     this.page = page
   }
 
-  async expectConnected() {
-    const accountButton = this.page.locator('appkit-account-button').first()
+  async expectConnected(namespace?: ChainNamespace) {
+    const accountButton = namespace
+      ? this.page.locator(`appkit-account-button[namespace="${namespace}"]`)
+      : this.page.locator('appkit-account-button:not([namespace])')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -29,8 +32,10 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
-  async expectLoading() {
-    const accountButton = this.page.locator('appkit-connect-button')
+  async expectLoading(namespace?: ChainNamespace) {
+    const accountButton = namespace
+      ? this.page.locator(`appkit-connect-button[namespace="${namespace}"]`)
+      : this.page.locator('appkit-connect-button:not([namespace])')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -97,7 +102,7 @@ export class ModalValidator {
   }
 
   async expectStatus(status: 'connecting' | 'connected' | 'disconnected') {
-    const connectButton = this.page.getByTestId('apkt-account-status')
+    const connectButton = this.page.getByTestId('apkt-account-status').first()
     await expect(connectButton, `Account status should be ${status}`).toHaveText(status)
   }
 
@@ -152,12 +157,6 @@ export class ModalValidator {
     await expect(this.page.getByText('Connect Wallet')).toBeVisible({
       timeout: MAX_WAIT
     })
-  }
-
-  async expectAddress(expectedAddress: string) {
-    const address = this.page.getByTestId('w3m-address')
-
-    await expect(address, 'Correct address should be present').toHaveText(expectedAddress)
   }
 
   async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
@@ -489,7 +488,7 @@ export class ModalValidator {
     // Wait for the page to be loaded
     const initializeBoundary = this.page.getByTestId('w3m-page-loading')
     await expect(initializeBoundary).toBeHidden()
-    const accountButton = this.page.locator('appkit-account-button')
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: 1000
     })
@@ -519,16 +518,9 @@ export class ModalValidator {
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 
-  async expectAccountSwitched(oldAddress: string) {
-    const address = this.page.getByTestId('w3m-address')
+  async expectAccountSwitched(oldAddress: string, namespace?: string) {
+    const address = this.page.getByTestId(`w3m-address${namespace ? `-${namespace}` : ''}`)
     await expect(address).not.toHaveText(oldAddress, {
-      timeout: 10000
-    })
-  }
-
-  async expectActiveProfileWalletItemAddressSwitched(address: string) {
-    const activeProfileWalletItem = this.page.getByTestId('wui-active-profile-wallet-item')
-    await expect(activeProfileWalletItem).not.toHaveAttribute('address', address, {
       timeout: 10000
     })
   }

@@ -61,7 +61,6 @@ test('should connect multiple wallets', async ({ library }) => {
   if (library === 'bitcoin') {
     return
   }
-
   // Connect WalletConnect wallet
   await modal.qrCodeFlow(modal, wallet)
   await validator.expectConnected()
