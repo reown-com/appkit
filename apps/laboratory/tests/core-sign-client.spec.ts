@@ -24,7 +24,7 @@ signClientTest.beforeAll(async ({ browser }) => {
   const browserPage = await context.newPage()
 
   // Navigate to sign-client page
-  await browserPage.goto(`${BASE_URL}core/sign-client/`)
+  await browserPage.goto(`${BASE_URL}appkit-core/sign-client/`)
 
   modalPage = new ModalPage(browserPage, 'library', 'core-sign-client')
   walletPage = new WalletPage(await context.newPage())

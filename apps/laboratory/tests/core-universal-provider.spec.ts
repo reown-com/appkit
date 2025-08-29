@@ -24,7 +24,7 @@ universalProviderTest.beforeAll(async ({ browser }) => {
   const browserPage = await context.newPage()
 
   // Navigate to universal-provider page
-  await browserPage.goto(`${BASE_URL}core/universal-provider/`)
+  await browserPage.goto(`${BASE_URL}appkit-core/universal-provider/`)
 
   modalPage = new ModalPage(browserPage, 'library', 'core-universal-provider')
   walletPage = new WalletPage(await context.newPage())
