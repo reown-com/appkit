@@ -34,10 +34,6 @@ export class ModalWalletValidator extends ModalValidator {
     await this.page.waitForTimeout(1000)
   }
 
-  async expectChangedAddressAfterSwitchingAccountType(previousAddress: string) {
-    await expect(this.page.getByTestId('w3m-address')).not.toHaveText(previousAddress)
-  }
-
   async expectCallStatusPending() {
     const closeButton = this.page.locator('#toast-close-button')
 
