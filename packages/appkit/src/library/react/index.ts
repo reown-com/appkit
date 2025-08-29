@@ -76,6 +76,10 @@ export function getAppKit(appKit: AppKit) {
 // -- Core Hooks ---------------------------------------------------------------
 export * from '@reown/appkit-controllers/react'
 
+/**
+ * React hook to access wallet provider and provider type for a specific chain namespace.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitprovider
+ */
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
@@ -88,6 +92,10 @@ export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   }
 }
 
+/**
+ * React hook to manage AppKit theme mode and theme variables with real-time updates.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkittheme
+ */
 export function useAppKitTheme() {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKitTheme" hook')
@@ -127,6 +135,10 @@ export function useAppKitTheme() {
   }
 }
 
+/**
+ * React hook to control AppKit modal with open and close functionality.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkit
+ */
 export function useAppKit() {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKit" hook')
@@ -143,6 +155,10 @@ export function useAppKit() {
   return { open, close }
 }
 
+/**
+ * React hook to access current wallet information for a specific chain namespace.
+ * @see https://docs.reown.com/appkit/react/core/hooks#usewalletinfo
+ */
 export function useWalletInfo(namespace?: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useWalletInfo" hook')
@@ -160,6 +176,10 @@ export function useWalletInfo(namespace?: ChainNamespace) {
   return { walletInfo }
 }
 
+/**
+ * React hook to access AppKit state and remote features with real-time updates.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitstate
+ */
 export function useAppKitState() {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKitState" hook')
@@ -191,6 +211,10 @@ export function useAppKitState() {
   return { ...state, ...(remoteFeatures ?? {}) }
 }
 
+/**
+ * React hook to subscribe to AppKit events and receive real-time event updates.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitevents
+ */
 export function useAppKitEvents() {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKitEvents" hook')
