@@ -108,12 +108,6 @@ function providerSupportsTarget({
     return false
   }
 
-  console.log('>> providerSupportsTarget', {
-    event: event.type,
-    supportsAllNetworks: s.supportsAllNetworks,
-    approvedCaipNetworks: s.approvedCaipNetworks
-  })
-
   return (
     Boolean(s.supportsAllNetworks) ||
     Boolean(s.approvedCaipNetworks?.some(n => n.caipNetworkId === event.network.caipNetworkId))
@@ -138,11 +132,6 @@ function appAllowsUnsupported({
     return true
   }
   const s = context.namespaces.get(event.network.chainNamespace)
-
-  console.log('>> appAllowsUnsupported', {
-    event: event.type,
-    s: s?.requestedCaipNetworks?.find(n => n.id === event.network.id)
-  })
 
   return Boolean(s?.requestedCaipNetworks?.find(n => n.id === event.network.id))
 }
@@ -182,7 +171,6 @@ const svcRefreshApproved = fromCallback(args => {
 
 const svcRequestProviderSwitch = fromPromise(async ({ input }) => {
   const { context, event } = input as { context: ChainContext; event: ChainEvent }
-  console.log('>> svcRequestProviderSwitch', { context, event })
   if (event.type !== 'SWITCH_ACTIVE_NETWORK') {
     return { network: undefined, approved: undefined }
   }
@@ -191,7 +179,6 @@ const svcRequestProviderSwitch = fromPromise(async ({ input }) => {
 
   // Ask provider/wallet to switch
   await context.ports.requestProviderSwitch({ namespace: t.chainNamespace, chainId: t.id })
-  console.log('>> svcRequestProviderSwitch-after-requestProviderSwitch', { context, event })
   // Side-effects after successful switch
   context.ports.resetSend()
   context.ports.persistActiveCaipNetworkId(t.caipNetworkId)
@@ -207,7 +194,13 @@ const svcRequestProviderSwitch = fromPromise(async ({ input }) => {
     activeNetwork: t,
     requestedCaipNetworks: context.namespaces.get(t.chainNamespace)?.requestedCaipNetworks ?? []
   })
-  console.log('>> svcRequestProviderSwitch-after-getApprovedNetworksData', { context, event })
+
+  console.log('>> HELLO??', {
+    activeNamespace: t.chainNamespace,
+    approved,
+    activeNetwork: t,
+    requestedCaipNetworks: context.namespaces.get(t.chainNamespace)?.requestedCaipNetworks ?? []
+  })
 
   return { network: t, approved }
 })
@@ -239,6 +232,7 @@ export const chainMachine = setup({
           target: 'ready',
           actions: assign(({ context, event }) => {
             const storage = context.ports.loadActiveNetworkProps()
+            console.log('>> INIT - loaded from storage', { storage })
             const storageActiveNetwork = storage.caipNetworkId
             const activeCaipNetwork = event.caipNetworks?.find(
               network => network.caipNetworkId === storageActiveNetwork
@@ -259,6 +253,12 @@ export const chainMachine = setup({
                 approvedCaipNetworks: [],
                 supportsAllNetworks: true
               })
+            })
+
+            console.log('>> INIT - done', {
+              namespaceMap,
+              activeCaipNetwork,
+              activeChain: storage.namespace
             })
 
             return {
@@ -414,7 +414,6 @@ export const chainMachine = setup({
         onDone: {
           target: 'ready',
           actions: assign(({ context, event }) => {
-            console.log('>> switchingNetwork-onDone', { context, event })
             const { network, approved } = (
               event as DoneActorEvent<{
                 network: CaipNetwork
@@ -436,12 +435,6 @@ export const chainMachine = setup({
               supportsAllNetworks: approved.supportsAllNetworks,
               approvedCaipNetworks: approved.approvedCaipNetworks,
               requestedCaipNetworks: requested
-            })
-
-            console.log('>> switchingNetwork-onDone-after-assign', {
-              namespaces,
-              activeChain: namespace,
-              activeCaipNetwork: network
             })
 
             return {

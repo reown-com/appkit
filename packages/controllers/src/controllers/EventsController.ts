@@ -62,8 +62,6 @@ export const EventsController = {
       }
 
       const caipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
-      const pocCaipNetworkId = ChainController.getActiveCaipNetwork()?.caipNetworkId
-      console.log('>> EventsController._sendAnalyticsEvent', caipNetworkId, pocCaipNetworkId)
 
       await api.post({
         path: '/e',

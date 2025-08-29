@@ -254,7 +254,6 @@ const controller = {
 
     if (setChain) {
       if (chain) {
-        console.log('>> connectExternal-setChain-setActiveNamespace', { chain })
         ChainController.setActiveNamespace(chain)
       }
       ChainController.setActiveNamespace(chain)
@@ -655,7 +654,6 @@ const controller = {
     return connections[0]
   },
   getAccountData(namespace?: ChainNamespace) {
-    console.log('>> getAccountData - Review this.', namespace)
     const connection = ConnectionController.getActiveConnection(namespace)
 
     return connection?.accounts[0]

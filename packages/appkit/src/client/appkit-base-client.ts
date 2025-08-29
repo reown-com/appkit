@@ -292,10 +292,6 @@ export abstract class AppKitBaseClient {
       throw new Error('ConnectionControllerClient and NetworkControllerClient must be set')
     }
     ChainController.initialize(this.caipNetworks)
-    ChainController.subscribe(({ context, state }) => {
-      console.log('>> ChainController.subscribe', context, state)
-    })
-
     const network = this.getDefaultNetwork()
     if (network) {
       ChainController.switchActiveNetwork(network)
@@ -976,7 +972,7 @@ export abstract class AppKitBaseClient {
         const adapter = this.getAdapter(networkNamespace)
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       } else {
-        this.switchCaipNetwork(caipNetwork)
+        ChainController.switchActiveNetwork(caipNetwork)
         if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
           this.syncWalletConnectAccount()
         } else {
@@ -991,7 +987,7 @@ export abstract class AppKitBaseClient {
         }
       }
     } else {
-      this.switchCaipNetwork(caipNetwork)
+      ChainController.switchActiveNetwork(caipNetwork)
     }
   }
 

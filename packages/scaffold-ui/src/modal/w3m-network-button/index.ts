@@ -50,7 +50,9 @@ class W3mNetworkButtonBase extends LitElement {
         AssetController.subscribeNetworkImages(() => {
           this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
-        ChainController.subscribe(() => {
+        ChainController.subscribe(input => {
+          const { context, state: chainState } = input
+          console.log('>> networkbutton - ChainController.subscribe', { context, chainState })
           this.network = ChainController.getActiveCaipNetwork()
           this.networkImage = AssetUtil.getNetworkImage(this.network)
           this.isSupported = this.network?.chainNamespace

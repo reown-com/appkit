@@ -60,7 +60,7 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
-  const state = useSnapshot(ChainController.getSnapshot())
+  const state = ChainController.getSnapshot()
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
   const chainNamespace = options?.namespace || state.context.activeChain
 

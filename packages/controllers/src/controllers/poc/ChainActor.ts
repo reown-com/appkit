@@ -5,6 +5,13 @@ import ports from './ports.js'
 
 export const chainActor = createActor(chainMachine, {
   input: {
-    ports
+    ports,
+    namespaces: new Map(),
+    activeChain: undefined,
+    activeCaipNetwork: undefined,
+    isSwitchingNamespace: false,
+    lastConnectedSIWECaipNetwork: undefined,
+    smartAccountEnabledNetworks: undefined,
+    requestedCaipNetworks: []
   }
 })
