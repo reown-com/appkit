@@ -9,9 +9,9 @@
     "globalTimeout": 0,
     "grep": {},
     "grepInvert": null,
-    "maxFailures": 0,
+    "maxFailures": 1,
     "metadata": {
-      "actualWorkers": 4
+      "actualWorkers": 1
     },
     "preserveOutput": "always",
     "reporter": [
@@ -52,7 +52,7 @@
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:extension.spec.ts|multichain-extension.spec.ts|multichain-siwe-extension.spec.ts|basic-tests.spec.ts|canary.spec.ts|config.spec.ts|email.spec.ts|no-email.spec.ts|no-socials.spec.ts|siwe-extension.spec.ts|siwe-email.spec.ts|siwe-sa.spec.ts|siwe.spec.ts|smart-account.spec.ts|wallet-features.spec.ts|wallet.spec.ts|wallet-button.spec|verify.spec.ts|email-after-farcaster.spec.ts|multi-wallet.spec.ts|multi-wallet-siwx.spec.ts|flag-enable-reconnect.spec.ts)/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -66,7 +66,7 @@
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -80,7 +80,7 @@
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -94,7 +94,7 @@
         "testMatch": [
           "/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -108,7 +108,7 @@
         "testMatch": [
           "/^.*\\/multichain-all\\.spec\\.ts$/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -122,7 +122,7 @@
         "testMatch": [
           "/^.*\\/multi-wallet-multichain\\.spec\\.ts$/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -136,7 +136,7 @@
         "testMatch": [
           "/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -150,7 +150,7 @@
         "testMatch": [
           "/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -164,7 +164,7 @@
         "testMatch": [
           "/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -178,7 +178,7 @@
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:sign-client.spec.ts|universal-provider.spec.ts|core.spec.ts)/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -192,7 +192,7 @@
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:reown-authentication.spec.ts|reown-authentication-email.spec.ts)/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       },
       {
         "outputDir": "/Users/enesozturk/Desktop/Projects/appkit/apps/laboratory/test-results",
@@ -206,13 +206,13 @@
         "testMatch": [
           "/^.*\\/email-default-account-types\\.spec\\.ts$/u"
         ],
-        "timeout": 90000
+        "timeout": 0
       }
     ],
     "shard": null,
     "updateSnapshots": "missing",
     "version": "1.48.2",
-    "workers": 4,
+    "workers": 1,
     "webServer": {
       "command": "pnpm playwright:start",
       "url": "http://localhost:3000/",
@@ -436,11 +436,11 @@
           "tags": [],
           "tests": [
             {
-              "timeout": 90000,
+              "timeout": 0,
               "annotations": [],
               "expectedStatus": "passed",
-              "projectId": "Desktop Chrome/ethers",
-              "projectName": "Desktop Chrome/ethers",
+              "projectId": "Desktop Firefox/ethers",
+              "projectName": "Desktop Firefox/ethers",
               "results": [
                 {
                   "workerIndex": 3,
@@ -675,7 +675,11 @@
       ]
     }
   ],
-  "errors": [],
+  "errors": [
+    {
+      "message": "\u001b[31mTesting stopped early after 1 maximum allowed failures.\u001b[39m"
+    }
+  ],
   "stats": {
     "startTime": "2025-08-27T12:44:13.176Z",
     "duration": 27745.729,

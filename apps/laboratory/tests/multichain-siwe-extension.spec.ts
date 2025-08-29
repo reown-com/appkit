@@ -18,8 +18,8 @@ async function switchNetworkAndMaybeSignSiwe(network: string, siwe = true) {
   await modalPage.switchNetwork(network)
   if (network === 'Solana') {
     await modalPage.switchActiveChain()
+    await modalPage.connectToExtensionMultichain('eip155', true, true)
     await modalValidator.expectOnSignOutEventCalled(true)
-    modalPage.closeModal()
   }
   if (siwe) {
     await modalPage.promptSiwe()

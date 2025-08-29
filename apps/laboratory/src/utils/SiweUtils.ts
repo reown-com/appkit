@@ -1,7 +1,9 @@
-import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
+import { getCsrfToken, signIn, signOut } from 'next-auth/react'
 
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@reown/appkit-siwe'
 import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
+
+import { getSession } from '@/src/utils/auth-get-session'
 
 import { ConstantsUtil } from './ConstantsUtil'
 
@@ -64,15 +66,11 @@ export const siweConfig = createSIWEConfig({
   },
   signOut: async () => {
     try {
-      await signOut({
-        redirect: false
-      })
+      await signOut({ redirect: false })
       // Some times the first signOut doesn't delete the cookie, so we need to sign out again
       const session = await getSession()
       if (session) {
-        await signOut({
-          redirect: false
-        })
+        await signOut({ redirect: false })
       }
 
       return true

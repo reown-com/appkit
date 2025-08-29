@@ -14,11 +14,11 @@ import {
   type ConnectionControllerClient,
   type NetworkControllerClient,
   type Provider,
+  ProviderController,
   SIWXUtil
 } from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
-import { ProviderUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
 
@@ -977,7 +977,7 @@ describe('Ethers5Adapter', () => {
     } as unknown as UniversalProvider
 
     beforeEach(() => {
-      vi.spyOn(ProviderUtil, 'getProvider').mockImplementation(() => mockProvider)
+      vi.spyOn(ProviderController, 'getProvider').mockImplementation(() => mockProvider)
     })
 
     it('should call wallet_getCapabilities', async () => {

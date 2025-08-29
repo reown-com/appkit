@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
+import { ProviderController } from '@reown/appkit-controllers'
 import type { EstimateGasTransactionArgs } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client.js'
 import { mockEvmAdapter } from '../mocks/Adapter.js'
@@ -46,7 +46,7 @@ describe('AppKit Gas Estimation', () => {
       chains: new Map([[ConstantsUtil.CHAIN.EVM, {}]])
     })
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
     vi.spyOn(mockEvmAdapter, 'estimateGas').mockResolvedValue({ gas: mockGasEstimate })
 
     const transactionArgs: EstimateGasTransactionArgs = {
@@ -58,7 +58,7 @@ describe('AppKit Gas Estimation', () => {
 
     const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
 
-    expect(ProviderUtil.getProvider).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
+    expect(ProviderController.getProvider).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
     expect(mockEvmAdapter.estimateGas).toHaveBeenCalledWith({
       ...transactionArgs,
       provider: mockProvider,
@@ -91,7 +91,7 @@ describe('AppKit Gas Estimation', () => {
       chains: new Map([[ConstantsUtil.CHAIN.EVM, {}]])
     })
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
     vi.spyOn(mockEvmAdapter, 'estimateGas').mockRejectedValue(new Error('Gas estimation failed'))
 
     const transactionArgs: EstimateGasTransactionArgs = {
@@ -117,7 +117,7 @@ describe('AppKit Gas Estimation', () => {
       chains: new Map([[ConstantsUtil.CHAIN.EVM, {}]])
     })
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
     vi.spyOn(mockEvmAdapter, 'estimateGas').mockReset()
 
     const transactionArgs: EstimateGasTransactionArgs = {
@@ -140,7 +140,7 @@ describe('AppKit Gas Estimation', () => {
       chains: new Map([[ConstantsUtil.CHAIN.EVM, {}]])
     })
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
     vi.spyOn(mockEvmAdapter, 'estimateGas').mockResolvedValue(undefined as any)
 
     const transactionArgs: EstimateGasTransactionArgs = {

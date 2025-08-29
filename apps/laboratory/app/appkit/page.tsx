@@ -19,8 +19,8 @@ type SearchParams = {
   name: string
 }
 
-export default function Page({ searchParams }: { searchParams: SearchParams }) {
-  const config = getAppKitConfigByName(searchParams['name'] || '')
+export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const config = getAppKitConfigByName((await searchParams).name)
 
   if (!config) {
     return (
