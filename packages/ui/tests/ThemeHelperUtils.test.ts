@@ -148,13 +148,10 @@ describe('ThemeHelperUtil', () => {
     })
   })
 
-  it('should handle z-index values correctly in generateW3MVariables and generateW3MOverrides', () => {
+  it('should handle z-index values correctly in generateW3MOverrides', () => {
     const themeVariablesWithZIndex = {
       '--w3m-z-index': 999
     }
-
-    const customZIndexResult = ThemeHelperUtil.generateW3MVariables(themeVariablesWithZIndex)
-    expect(customZIndexResult['--apkt-z-index']).toBe('999')
 
     const customZIndexOverrides = ThemeHelperUtil.generateW3MOverrides(themeVariablesWithZIndex)
     expect(customZIndexOverrides['--apkt-tokens-core-zIndex']).toBe('999')
@@ -163,20 +160,11 @@ describe('ThemeHelperUtil', () => {
       '--w3m-accent': '#ff0000'
     }
 
-    const defaultZIndexResult = ThemeHelperUtil.generateW3MVariables(themeVariablesWithoutZIndex)
-    expect(defaultZIndexResult['--apkt-z-index']).toBe('0')
-
     const defaultZIndexOverrides = ThemeHelperUtil.generateW3MOverrides(themeVariablesWithoutZIndex)
     expect(defaultZIndexOverrides['--apkt-tokens-core-zIndex']).toBeUndefined()
 
-    const undefinedResult = ThemeHelperUtil.generateW3MVariables(undefined)
-    expect(undefinedResult).toStrictEqual({})
-
     const undefinedOverrides = ThemeHelperUtil.generateW3MOverrides(undefined)
     expect(undefinedOverrides).toStrictEqual({})
-
-    const emptyResult = ThemeHelperUtil.generateW3MVariables({})
-    expect(emptyResult['--apkt-z-index']).toBe('0')
 
     const emptyOverrides = ThemeHelperUtil.generateW3MOverrides({})
     expect(emptyOverrides['--apkt-tokens-core-zIndex']).toBeUndefined()

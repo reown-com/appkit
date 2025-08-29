@@ -38,7 +38,10 @@ const commonAppKitConfig = {
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   customWallets: ConstantsUtil.CustomWallets,
-  projectId: ConstantsUtil.ProjectId
+  projectId: ConstantsUtil.ProjectId,
+  themeVariables: {
+    '--w3m-z-index': 1000
+  }
 }
 const commonWagmiConfig = {
   ssr: true,
