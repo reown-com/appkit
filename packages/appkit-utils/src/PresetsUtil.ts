@@ -115,6 +115,17 @@ export const PresetsUtil = {
     '00000008819873e925422c1ff0f99f7c': 'b3406e4a-bbfc-44fb-e3a6-89673c78b700'
   } as Record<string, string>,
 
+  TOKEN_ADDRESSES_BY_SYMBOL: {
+    DAI: ['0x6b175474e89094c44da98b954eedeac495271d0f'],
+    USDC: [
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+      '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
+    ],
+    USDT: ['0xdac17f958d2ee523a2206206994597c13d831ec7']
+  },
+
   ConnectorImageIds: {
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',

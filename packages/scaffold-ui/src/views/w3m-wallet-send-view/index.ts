@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import { type CaipNetworkId } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetUtil,
   ChainController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -229,8 +230,7 @@ export class W3mWalletSendView extends LitElement {
           decimals: decimals.toString(),
           numeric: balance.toString()
         },
-        iconUrl:
-          'https://api.dune.com/api/echo/beta/token/logo/8453/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913'
+        iconUrl: AssetUtil.getTokenImage(symbol) ?? ''
       })
       SendController.setTokenAmount(amount)
       SendController.setReceiverAddress(this.params.to)

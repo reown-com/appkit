@@ -73,6 +73,7 @@ import {
   ErrorUtil,
   HelpersUtil,
   LoggerUtil,
+  TokenUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
@@ -2068,6 +2069,16 @@ export abstract class AppKitBaseClient {
   }
 
   public async openSend(args?: OpenOptions<'WalletSend'>['arguments']): Promise<{ hash: string }> {
+    const symbol = TokenUtil.getTokenSymbolByAddress(args?.assetAddress)
+
+    if (symbol) {
+      try {
+        await ApiController.fetchTokenImages([symbol])
+      } catch {
+        /* Ignore */
+      }
+    }
+
     await this.open({
       view: 'WalletSend',
       arguments: args
