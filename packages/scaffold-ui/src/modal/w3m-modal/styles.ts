@@ -2,7 +2,7 @@ import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
-    z-index: var(--w3m-z-index);
+    z-index: ${({ tokens }) => tokens.core.zIndex};
     display: block;
     backface-visibility: hidden;
     will-change: opacity;
