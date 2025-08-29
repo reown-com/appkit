@@ -33,7 +33,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   }
 
   public override firstUpdated() {
-    if (this.basic === false) {
+    if (!this.basic) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SELECT_WALLET',
