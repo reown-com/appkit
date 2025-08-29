@@ -248,13 +248,12 @@ export const ApiController = {
 
     const { filteredWallets, mobileFilteredOutWalletsLength } =
       ApiController._filterWalletsByPlatform(wallets?.data)
-    state.mobileFilteredOutWalletsLength =
-      mobileFilteredOutWalletsLength + (state.mobileFilteredOutWalletsLength ?? 0)
 
     return {
       data: filteredWallets || [],
       // Keep original count for display on main page
-      count: wallets?.count
+      count: wallets?.count,
+      mobileFilteredOutWalletsLength
     }
   },
 
@@ -327,7 +326,11 @@ export const ApiController = {
       exclude,
       chains
     }
-    const { data, count } = await ApiController.fetchWallets(params)
+    const { data, count, mobileFilteredOutWalletsLength } = await ApiController.fetchWallets(params)
+
+    state.mobileFilteredOutWalletsLength =
+      mobileFilteredOutWalletsLength + (state.mobileFilteredOutWalletsLength ?? 0)
+
     const images = data
       .slice(0, imageCountToFetch)
       .map(w => w.image_id)
