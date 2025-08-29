@@ -151,7 +151,6 @@ export const ThemeHelperUtil = {
     variables['--w3m-color-mix-strength'] = `${themeVariables['--w3m-color-mix-strength'] || 0}%`
     variables['--w3m-font-size-master'] = themeVariables['--w3m-font-size-master'] || '10px'
     variables['--w3m-border-radius-master'] = themeVariables['--w3m-border-radius-master'] || '4px'
-    variables['--apkt-z-index'] = `${themeVariables['--w3m-z-index'] || 0}`
 
     return variables
   },
