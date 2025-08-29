@@ -179,6 +179,10 @@ export const ThemeHelperUtil = {
       overrides['--apkt-fontFamily-regular'] = themeVariables['--w3m-font-family']
     }
 
+    if (themeVariables['--w3m-z-index']) {
+      overrides['--apkt-tokens-core-zIndex'] = `${themeVariables['--w3m-z-index']}`
+    }
+
     return overrides
   },
 
