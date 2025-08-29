@@ -136,6 +136,9 @@ export function useWalletInfo(namespace?: ChainNamespace) {
   const [walletInfo, setWalletInfo] = useState(() => modal?.getWalletInfo(namespace))
 
   useEffect(() => {
+    // Sync immediately on namespace change to avoid stale data until subscription emits
+    setWalletInfo(modal?.getWalletInfo(namespace))
+
     const unsubscribe = modal?.subscribeWalletInfo(newWalletInfo => {
       setWalletInfo(newWalletInfo)
     }, namespace)
