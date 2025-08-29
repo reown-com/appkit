@@ -2067,10 +2067,11 @@ export abstract class AppKitBaseClient {
     return ModalController.open(options)
   }
 
-  public async openSend<View extends Views>(
-    options?: OpenOptions<View>
-  ): Promise<{ hash: string }> {
-    await this.open(options)
+  public async openSend(args?: OpenOptions<'WalletSend'>['arguments']): Promise<{ hash: string }> {
+    await this.open({
+      view: 'WalletSend',
+      arguments: args
+    })
 
     return new Promise((resolve, reject) => {
       const unsubscribe = SendController.subscribeKey('hash', hash => {

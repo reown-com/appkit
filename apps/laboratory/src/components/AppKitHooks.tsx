@@ -69,13 +69,11 @@ export function AppKitHooks() {
   async function handleOpenSendWithArguments() {
     if (address) {
       const { hash } = await openSend({
-        view: 'WalletSend',
-        arguments: {
-          amount: '1',
-          caipAsset: `eip155:8453/erc20:${USDC_ADDRESS}`,
-          caipNetworkId: 'eip155:8453',
-          to: address
-        }
+        amount: '1',
+        assetAddress: USDC_ADDRESS,
+        namespace: 'eip155',
+        chainId: 8453,
+        to: address
       })
 
       toast({

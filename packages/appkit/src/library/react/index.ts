@@ -136,10 +136,10 @@ export function useAppKit() {
     await modal?.open(options)
   }
 
-  async function openSend<View extends Views>(options?: OpenOptions<View>) {
+  async function openSend(args?: OpenOptions<'WalletSend'>['arguments']) {
     const w3mModal = modal as AppKit
 
-    return w3mModal.openSend(options)
+    return w3mModal.openSend(args)
   }
 
   async function close() {

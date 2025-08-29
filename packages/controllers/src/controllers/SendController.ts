@@ -5,8 +5,7 @@ import {
   type Address,
   type Balance,
   type CaipAddress,
-  type CaipAsset,
-  type CaipNetworkId,
+  type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   NumberUtil
 } from '@reown/appkit-common'
@@ -37,9 +36,10 @@ export interface TxParams {
   decimals: string
 }
 export interface SendInputArguments {
-  caipAsset: CaipAsset
   amount: string
-  caipNetworkId: CaipNetworkId
+  assetAddress: string
+  namespace: ChainNamespace
+  chainId: string | number
   to: string
 }
 

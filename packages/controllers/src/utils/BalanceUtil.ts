@@ -3,7 +3,6 @@ import { erc20Abi, formatUnits } from 'viem'
 import {
   type Address,
   type CaipAddress,
-  type CaipAsset,
   type CaipNetwork,
   type CaipNetworkId,
   ConstantsUtil,
@@ -23,7 +22,7 @@ import type { BlockchainApiBalanceResponse } from './TypeUtil.js'
 // -- Types -------------------------------------------------------------------- //
 interface FetchER20BalanceParams {
   caipAddress: CaipAddress
-  caipAsset: CaipAsset
+  assetAddress: string
   caipNetworkId: CaipNetworkId
 }
 
@@ -124,35 +123,34 @@ export const BalanceUtil = {
   filterLowQualityTokens(balances: BlockchainApiBalanceResponse['balances']) {
     return balances.filter(balance => balance.quantity.decimals !== '0')
   },
-  async fetchERC20Balance({ caipAddress, caipAsset, caipNetworkId }: FetchER20BalanceParams) {
+  async fetchERC20Balance({ caipAddress, assetAddress, caipNetworkId }: FetchER20BalanceParams) {
     const publicClient = NetworkUtil.createViemPublicClient(caipNetworkId)
 
-    const { asset } = ParseUtil.parseCaipAsset(caipAsset)
     const { address } = ParseUtil.parseCaipAddress(caipAddress)
 
     const [{ result: name }, { result: symbol }, { result: balance }, { result: decimals }] =
       await publicClient.multicall({
         contracts: [
           {
-            address: asset.address as Address,
+            address: assetAddress as Address,
             functionName: 'name',
             args: [],
             abi: erc20Abi
           },
           {
-            address: asset.address as Address,
+            address: assetAddress as Address,
             functionName: 'symbol',
             args: [],
             abi: erc20Abi
           },
           {
-            address: asset.address as Address,
+            address: assetAddress as Address,
             functionName: 'balanceOf',
             args: [address as Address],
             abi: erc20Abi
           },
           {
-            address: asset.address as Address,
+            address: assetAddress as Address,
             functionName: 'decimals',
             args: [],
             abi: erc20Abi

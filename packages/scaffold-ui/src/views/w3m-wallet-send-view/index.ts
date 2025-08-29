@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ParseUtil } from '@reown/appkit-common'
+import { type CaipNetworkId } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -194,21 +194,22 @@ export class W3mWalletSendView extends LitElement {
       return
     }
 
-    const { asset } = ParseUtil.parseCaipAsset(this.params.caipAsset)
-    const { chainNamespace } = ParseUtil.parseCaipNetworkId(this.params.caipNetworkId)
+    const { namespace, chainId, assetAddress } = this.params
 
-    if (!ConstantsUtil.SEND_PARAMS_SUPPORTED_CHAINS.includes(chainNamespace)) {
-      SnackController.showError(`Chain "${chainNamespace}" is not supported for send parameters`)
+    if (!ConstantsUtil.SEND_PARAMS_SUPPORTED_CHAINS.includes(namespace)) {
+      SnackController.showError(`Chain "${namespace}" is not supported for send parameters`)
       this.loading = false
 
       return
     }
 
+    const caipNetworkId: CaipNetworkId = `${namespace}:${chainId}`
+
     try {
       const { balance, name, symbol, decimals } = await BalanceUtil.fetchERC20Balance({
-        caipAddress: `${this.params.caipNetworkId}:${this.address}`,
-        caipAsset: this.params.caipAsset,
-        caipNetworkId: this.params.caipNetworkId
+        caipAddress: `${caipNetworkId}:${this.address}`,
+        assetAddress,
+        caipNetworkId
       })
 
       if (!name || !symbol || !decimals || !balance) {
@@ -220,8 +221,8 @@ export class W3mWalletSendView extends LitElement {
       SendController.setToken({
         name,
         symbol,
-        chainId: this.params.caipNetworkId,
-        address: `${this.params.caipNetworkId}:${asset.address}`,
+        chainId: caipNetworkId,
+        address: `${caipNetworkId}:${assetAddress}`,
         value: 0,
         price: 0,
         quantity: {
