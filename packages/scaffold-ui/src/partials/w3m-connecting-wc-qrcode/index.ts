@@ -1,4 +1,5 @@
 import { html } from 'lit'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
@@ -24,19 +25,25 @@ import styles from './styles.js'
 export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
 
+  @property({ type: Boolean }) public basic = false
+
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
+  }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'SELECT_WALLET',
-      properties: {
-        name: this.wallet?.name ?? 'WalletConnect',
-        platform: 'qrcode',
-        displayIndex: this.wallet?.display_index
-      }
-    })
+  public override firstUpdated() {
+    if (this.basic === false) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SELECT_WALLET',
+        properties: {
+          name: this.wallet?.name ?? 'WalletConnect',
+          platform: 'qrcode',
+          displayIndex: this.wallet?.display_index
+        }
+      })
+    }
   }
 
   public override disconnectedCallback() {
