@@ -1,5 +1,17 @@
 # @reown/appkit-cdn
 
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [[`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca)]:
+  - @reown/appkit@1.8.2
+  - @reown/appkit-adapter-ethers@1.8.2
+  - @reown/appkit-adapter-ethers5@1.8.2
+  - @reown/appkit-adapter-wagmi@1.8.2
+  - @reown/appkit-adapter-solana@1.8.2
+  - @reown/appkit-polyfills@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes

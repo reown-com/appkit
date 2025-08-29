@@ -1,5 +1,14 @@
 # @reown/appkit-siwx
 
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [[`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca)]:
+  - @reown/appkit-controllers@1.8.2
+  - @reown/appkit-utils@1.8.2
+  - @reown/appkit-common@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes
