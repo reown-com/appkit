@@ -1,9 +1,11 @@
 import { ConstantsUtil } from '@reown/appkit-common'
 
+import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
+import { ChainController } from '../controllers/poc/ChainController.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
@@ -26,14 +28,11 @@ export async function connectFarcaster() {
 
   if (authConnector) {
     const accountData = ConnectionController.getAccountData()
-    if (!accountData?.farcasterUrl) {
+    const activeChain = ChainController.getSnapshot().context.activeChain
+    if (!accountData?.farcasterUrl && activeChain) {
       try {
         const { url } = await authConnector.provider.getFarcasterUri()
-        ConnectionController.setAccountProp(
-          'farcasterUrl',
-          url,
-          ChainController.getActiveCaipNetwork()?.chainNamespace
-        )
+        ConnectionController.setAccountProp('farcasterUrl', url, activeChain)
       } catch (error) {
         RouterController.goBack()
         SnackController.showError(error)
@@ -61,12 +60,9 @@ export async function connectSocial(
         popupWindow = getPopupWindow()
       }
 
-      if (popupWindow) {
-        ConnectionController.setAccountProp(
-          'socialWindow',
-          popupWindow,
-          ChainController.getActiveCaipNetwork()?.chainNamespace
-        )
+      const activeChain = ChainController.getSnapshot().context.activeChain
+      if (popupWindow && activeChain) {
+        ConnectionController.setAccountProp('socialWindow', popupWindow, activeChain)
       } else if (!CoreHelperUtil.isTelegram()) {
         throw new Error('Could not create social popup')
       }
@@ -100,11 +96,12 @@ export async function connectSocial(
 }
 
 export async function executeSocialLogin(socialProvider: SocialProvider) {
-  ConnectionController.setAccountProp(
-    'socialProvider',
-    socialProvider,
-    ChainController.getActiveCaipNetwork()?.chainNamespace
-  )
+  const activeChain = ChainController.getSnapshot().context.activeChain
+  if (!activeChain) {
+    return
+  }
+
+  ConnectionController.setAccountProp('socialProvider', socialProvider, activeChain)
   EventsController.sendEvent({
     type: 'track',
     event: 'SOCIAL_LOGIN_STARTED',

@@ -1,7 +1,9 @@
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
+import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { RouterController } from '../controllers/RouterController.js'
+import { ChainController } from '../controllers/poc/ChainController.js'
 
 export const NetworkUtil = {
   /**
@@ -19,7 +21,7 @@ export const NetworkUtil = {
     ignoreSwitchConfirmation?: boolean
   }) {
     const currentNetwork = ChainController.getActiveCaipNetwork()
-    const currentNamespace = ChainController.getActiveCaipNetwork()?.chainNamespace
+    const currentNamespace = currentNetwork?.chainNamespace
     const routerData = RouterController.state.data
     const isSameNetwork = network.id === currentNetwork?.id
 

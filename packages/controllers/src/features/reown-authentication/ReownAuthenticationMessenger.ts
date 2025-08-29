@@ -1,5 +1,6 @@
 import { type CaipNetworkId, NetworkUtil } from '@reown/appkit-common'
 
+import { ChainController } from '../../controllers/poc/ChainController.js'
 import type { SIWXMessage } from '../../utils/SIWXUtil.js'
 
 export class ReownAuthenticationMessenger {

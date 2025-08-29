@@ -35,8 +35,10 @@ import type {
   PaymentCurrency,
   PurchaseCurrency
 } from '../utils/TypeUtil.js'
+import { ConnectionController } from './ConnectionController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
+import { ChainController } from './poc/ChainController.js'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -195,13 +197,11 @@ export const BlockchainApiController = {
     if (identityCache) {
       return identityCache
     }
-
+    const activeAddress = ConnectionController.getAccountData()?.address
     const result = await BlockchainApiController.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        sender: ConnectionController.getActiveConnection().caipAddress
-          ? CoreHelperUtil.getPlainAddress(ConnectionController.getActiveConnection().caipAddress)
-          : undefined
+        sender: activeAddress
       }
     })
 

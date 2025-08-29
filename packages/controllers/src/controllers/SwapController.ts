@@ -188,9 +188,7 @@ const controller = {
 
   getParams() {
     const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
-    const caipAddress =
-      ConnectionController.getAccountData(namespace)?.caipAddress ??
-      ConnectionController.getActiveConnection().caipAddress
+    const caipAddress = ConnectionController.getAccountData(namespace)?.caipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = getActiveNetworkTokenAddress()
     const connectorId = ConnectorController.getConnectorId(

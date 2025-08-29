@@ -1,9 +1,11 @@
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ChainController } from '../controllers/poc/ChainController.js'
 import { ConnectorControllerUtil } from './ConnectorControllerUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { ChainAdapter } from './TypeUtil.js'
+import type { NamespaceState } from './TypeUtil copy.js'
 
 /**
  * Returns the array of chains to disconnect from the connector with the given namespace.
@@ -13,12 +15,12 @@ import type { ChainAdapter } from './TypeUtil.js'
  */
 export function getChainsToDisconnect(namespace?: ChainNamespace) {
   const namespaces = Array.from(ChainController.getSnapshot().context.namespaces.keys())
-  let chains: [ChainNamespace, ChainAdapter][] = []
+  let chains: [ChainNamespace, NamespaceState][] = []
 
   if (namespace) {
     chains.push([
       namespace,
-      ChainController.getSnapshot().context.namespaces.get(namespace) as ChainAdapter
+      ChainController.getSnapshot().context.namespaces.get(namespace) as NamespaceState
     ])
 
     if (
@@ -37,7 +39,7 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
         ) {
           chains.push([
             ns,
-            ChainController.getSnapshot().context.namespaces.get(ns) as ChainAdapter
+            ChainController.getSnapshot().context.namespaces.get(ns) as NamespaceState
           ])
         }
       })
@@ -57,7 +59,7 @@ export function getChainsToDisconnect(namespace?: ChainNamespace) {
         ) {
           chains.push([
             ns,
-            ChainController.getSnapshot().context.namespaces.get(ns) as ChainAdapter
+            ChainController.getSnapshot().context.namespaces.get(ns) as NamespaceState
           ])
         }
       })
@@ -99,8 +101,7 @@ export function getPreferredAccountType(namespace: ChainNamespace | undefined) {
  */
 export function getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
   if (chainNamespace) {
-    return ChainController.getSnapshot().context.namespaces.get(chainNamespace)?.networkState
-      ?.caipNetwork
+    return ChainController.getSnapshot().context.namespaces.get(chainNamespace)?.activeCaipNetwork
   }
 
   return ChainController.getActiveCaipNetwork()

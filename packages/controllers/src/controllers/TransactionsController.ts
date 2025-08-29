@@ -10,6 +10,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
+import { ChainController } from './poc/ChainController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>

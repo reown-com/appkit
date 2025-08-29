@@ -349,9 +349,11 @@ const controller = {
       rdns: wallet.rdns
     })
 
+    const namespace = ChainController.getSnapshot().context.activeChain
+
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       connector?.explorerId || wallet.id,
-      ChainController.getActiveCaipNetwork()?.chainNamespace
+      namespace as ChainNamespace
     )
 
     if (connector) {

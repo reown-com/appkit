@@ -11,6 +11,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
+import { ChainController } from './poc/ChainController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {

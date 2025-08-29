@@ -5,10 +5,12 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
+import { ChainController } from './poc/ChainController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -174,7 +176,7 @@ const controller = {
   },
 
   goBack() {
-    const isConnected = ConnectionController.getActiveConnection().caipAddress
+    const isConnected = ConnectionController.getAccountData()?.caipAddress
     const isFarcasterView = RouterController.state.view === 'ConnectingFarcaster'
 
     const shouldReload = !isConnected && isFarcasterView
@@ -204,7 +206,7 @@ const controller = {
         ConnectionController.setAccountProp(
           'farcasterUrl',
           undefined,
-          ChainController.getActiveCaipNetwork()?.chainNamespace
+          ChainController.getSnapshot().context.activeChain as ChainNamespace
         )
         const authConnector = ConnectorController.getAuthConnector()
         authConnector?.provider?.reload()

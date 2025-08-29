@@ -220,7 +220,6 @@ export const SIWXUtil = {
 
     let network = args?.caipNetworkId
     if (!network) {
-      const pocActiveCaipNetwork = ChainController.getActiveCaipNetwork()
       const activeCaipNetwork = ChainController.getActiveCaipNetwork()
       network = activeCaipNetwork?.caipNetworkId
     }

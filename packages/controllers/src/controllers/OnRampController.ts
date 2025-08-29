@@ -9,7 +9,9 @@ import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { OptionsController } from './OptionsController.js'
+import { ChainController } from './poc/ChainController.js'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'meld'
@@ -103,10 +105,7 @@ const controller = {
     if (provider && provider.name === 'meld') {
       const activeChain = ChainController.getActiveCaipNetwork()?.chainNamespace
       const currency = activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
-      const address = activeChain
-        ? (ChainController.getSnapshot().context.namespaces.get(activeChain)?.accountState
-            ?.address ?? '')
-        : ''
+      const address = ConnectionController.getAccountData(activeChain)?.address ?? ''
       const url = new URL(provider.url)
       url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)

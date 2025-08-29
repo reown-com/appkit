@@ -3,6 +3,7 @@ import { type Address, type CaipNetwork, ConstantsUtil } from '@reown/appkit-com
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
+import { ChainController } from '../controllers/poc/ChainController.js'
 import { ERC7811Utils } from './ERC7811Util.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { BlockchainApiBalanceResponse } from './TypeUtil.js'

@@ -10,6 +10,7 @@ import {
 
 import { ApiController } from '../../controllers/ApiController.js'
 import { BlockchainApiController } from '../../controllers/BlockchainApiController.js'
+import { ConnectionController } from '../../controllers/ConnectionController.js'
 import { getActiveCaipNetwork } from '../../utils/ChainControllerUtil.js'
 import type { SIWXConfig, SIWXMessage, SIWXSession } from '../../utils/SIWXUtil.js'
 import { ReownAuthenticationMessenger } from './ReownAuthenticationMessenger.js'

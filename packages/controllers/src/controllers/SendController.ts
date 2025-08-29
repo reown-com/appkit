@@ -24,6 +24,7 @@ import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
+import { ChainController } from './poc/ChainController.js'
 
 // -- Types --------------------------------------------- //
 
@@ -178,12 +179,11 @@ const controller = {
 
   async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
     state.loading = true
-    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
-    const chainId = ChainController.getActiveCaipNetwork()?.caipNetworkId
-    const chain = ChainController.getActiveCaipNetwork()?.chainNamespace
-    const caipAddress =
-      ConnectionController.getAccountData(namespace)?.caipAddress ??
-      ConnectionController.getActiveConnection().caipAddress
+    const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+    const namespace = activeCaipNetwork?.chainNamespace
+    const chainId = activeCaipNetwork?.caipNetworkId
+    const chain = activeCaipNetwork?.chainNamespace
+    const caipAddress = ConnectionController.getAccountData(namespace)?.caipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
     if (
       state.lastRetry &&

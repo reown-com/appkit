@@ -16,9 +16,11 @@ import {
 } from '../utils/ExchangeUtil.js'
 import type { CurrentPayment, Exchange, PayUrlParams, PaymentAsset } from '../utils/ExchangeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
+import { ChainController } from './poc/ChainController.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
@@ -145,12 +147,12 @@ export const ExchangeController = {
   },
 
   isPayWithExchangeSupported() {
+    const namespace = ChainController.getActiveCaipNetwork()?.chainNamespace
+
     return (
       ExchangeController.isPayWithExchangeEnabled() &&
-      ChainController.getActiveCaipNetwork() &&
-      ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
-        ChainController.getActiveCaipNetwork().chainNamespace
-      )
+      namespace &&
+      ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(namespace)
     )
   },
 

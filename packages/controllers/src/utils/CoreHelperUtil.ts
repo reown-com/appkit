@@ -7,11 +7,16 @@ import type {
   SdkVersion
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
-import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+import type {
+  AccountTypeMap,
+  CaipAddress,
+  CaipNetwork,
+  NamespaceTypeMap
+} from '@reown/appkit-common'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 import { StorageUtil } from './StorageUtil.js'
-import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
+import type { ChainAdapter, LinkingRecord } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 export type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
