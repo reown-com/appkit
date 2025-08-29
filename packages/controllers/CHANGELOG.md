@@ -1,5 +1,15 @@
 # @reown/appkit-core
 
+## 1.8.2
+
+### Patch Changes
+
+- [#4917](https://github.com/reown-com/appkit/pull/4917) [`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where there would be incorrect loading skeletons on mobile environments in the all wallets list due to incorrect count value
+
+- Updated dependencies []:
+  - @reown/appkit-common@1.8.2
+  - @reown/appkit-wallet@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes
