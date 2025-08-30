@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { getW3mThemeVariables } from '@reown/appkit-common'
-import { ConnectorController, ModalController, ThemeController } from '@reown/appkit-controllers'
+import {
+  ConnectorController,
+  ModalController,
+  OptionsController,
+  ThemeController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -37,7 +42,7 @@ export class W3mApproveTransactionView extends LitElement {
         }),
         ModalController.subscribeKey('shake', val => {
           if (val) {
-            this.iframe.style.animation = `w3m-shake 500ms var(--wui-ease-out-power-2)`
+            this.iframe.style.animation = `w3m-shake 500ms var(--apkt-easings-ease-out-power-2)`
           } else {
             this.iframe.style.animation = 'none'
           }
@@ -63,21 +68,23 @@ export class W3mApproveTransactionView extends LitElement {
 
       this.iframe.style.height = `${PAGE_HEIGHT}px`
 
-      // Update container size to prevent the iframe from being cut off
       container.style.height = `${PAGE_HEIGHT}px`
-      if (width && width <= 430) {
+      if (OptionsController.state.enableEmbedded) {
+        this.updateFrameSizeForEmbeddedMode()
+      } else if (width && width <= 430) {
+        // Update container size to prevent the iframe from being cut off
         this.iframe.style.width = '100%'
         this.iframe.style.left = '0px'
         this.iframe.style.bottom = '0px'
         this.iframe.style.top = 'unset'
+        this.onShowIframe()
       } else {
         this.iframe.style.width = `${PAGE_WIDTH}px`
         this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`
         this.iframe.style.top = `calc(50% - ${PAGE_HEIGHT / 2}px + ${HEADER_HEIGHT / 2}px)`
         this.iframe.style.bottom = 'unset'
+        this.onShowIframe()
       }
-      this.ready = true
-      this.onShowIframe()
     })
     this.bodyObserver.observe(window.document.body)
   }
@@ -90,14 +97,15 @@ export class W3mApproveTransactionView extends LitElement {
   // -- Private ------------------------------------------- //
   private onShowIframe() {
     const isMobile = window.innerWidth <= 430
+    this.ready = true
     this.iframe.style.animation = isMobile
-      ? 'w3m-iframe-zoom-in-mobile 200ms var(--wui-ease-out-power-2)'
-      : 'w3m-iframe-zoom-in 200ms var(--wui-ease-out-power-2)'
+      ? 'w3m-iframe-zoom-in-mobile 200ms var(--apkt-easings-ease-out-power-2)'
+      : 'w3m-iframe-zoom-in 200ms var(--apkt-easings-ease-out-power-2)'
   }
 
   private onHideIframe() {
     this.iframe.style.display = 'none'
-    this.iframe.style.animation = 'w3m-iframe-fade-out 200ms var(--wui-ease-out-power-2)'
+    this.iframe.style.animation = 'w3m-iframe-fade-out 200ms var(--apkt-easings-ease-out-power-2)'
   }
 
   private async syncTheme() {
@@ -112,6 +120,28 @@ export class W3mApproveTransactionView extends LitElement {
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
     }
+  }
+
+  private async updateFrameSizeForEmbeddedMode() {
+    const container = this?.renderRoot?.querySelector('div') as HTMLDivElement
+
+    /*
+     * Wait for the resize to complete to avoid getting wrong rect sizes
+     * as it is not updated yet when the animation is pending
+     */
+    await new Promise(resolve => {
+      setTimeout(resolve, 300)
+    })
+
+    const rect = this.getBoundingClientRect()
+
+    container.style.width = '100%'
+
+    this.iframe.style.left = `${rect.left}px`
+    this.iframe.style.top = `${rect.top}px`
+    this.iframe.style.width = `${rect.width}px`
+    this.iframe.style.height = `${rect.height}px`
+    this.onShowIframe()
   }
 }
 

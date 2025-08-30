@@ -92,14 +92,14 @@ export function mockUniversalProviderSession(
     },
     acknowledged: true,
     pairingTopic: '06e5b8a04b03f8dec6daafbe6d16cefaff665cc634b52baf906ca05f289eeb46',
-    requiredNamespaces: {
+    requiredNamespaces: {},
+    optionalNamespaces: {
       solana: {
         chains,
         methods: ['solana_signMessage', 'solana_signTransaction', 'solana_signAndSendTransaction'],
         events: []
       }
     },
-    optionalNamespaces: {},
     controller: '6c4a0bf9796287e690bacd0f7bd4ff9da698cbbb7432535cbe2bf1cd4f560e47',
     self: {
       publicKey: 'f558d7ee6670ce7a44846ecd311532f499b9a13a21a754672ae5bdc484cee935',

@@ -1,7 +1,7 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 'vitest'
 
-import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -70,7 +70,8 @@ const mockChainState: ChainControllerState = {
       grantPermissions: vi.fn(),
       revokePermissions: vi.fn(),
       getCapabilities: vi.fn(),
-      walletGetAssets: vi.fn()
+      walletGetAssets: vi.fn(),
+      updateBalance: vi.fn()
     }
   },
   noAdapters: false,
@@ -120,17 +121,16 @@ describe('W3mSwapView', () => {
     })
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(mockChainState)
-
     vi.spyOn(SwapController, 'initializeState').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'getMyTokensWithBalance').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'swapTokens').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'switchTokens').mockImplementation(() => {})
     vi.spyOn(SwapController, 'resetState').mockImplementation(() => {})
-    vi.spyOn(RouterController, 'push').mockImplementation(() => {})
     vi.spyOn(SwapController, 'setSourceToken').mockImplementation(() => {})
     vi.spyOn(SwapController, 'setToToken').mockImplementation(() => {})
     vi.spyOn(SwapController, 'setSourceTokenAmount').mockImplementation(() => {})
+    vi.spyOn(RouterController, 'push').mockImplementation(() => {})
 
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
@@ -167,7 +167,7 @@ describe('W3mSwapView', () => {
 
     const switchTokensSpy = vi.spyOn(SwapController, 'switchTokens')
     const switchButton = element.shadowRoot?.querySelector(
-      '.replace-tokens-button-container button'
+      'wui-flex.replace-tokens-button-container wui-icon-box'
     ) as HTMLElement
     switchButton?.click()
 
@@ -427,5 +427,28 @@ describe('W3mSwapView', () => {
 
     vitestExpect(resetStateSpy).toHaveBeenCalled()
     vitestExpect(initializeStateSpy).not.toHaveBeenCalled()
+  })
+
+  it('should call handleChangeAmount with max value when setting max value', async () => {
+    vi.useFakeTimers()
+    const swapTokensSpy = vi.spyOn(SwapController, 'swapTokens')
+    const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
+    await element.updateComplete
+
+    const handleChangeAmountSpy = vi.spyOn(element as any, 'handleChangeAmount')
+
+    // Call onSetMaxValue directly since it's the method used by the max button
+    element['onSetMaxValue']('sourceToken', '100')
+
+    vitestExpect(handleChangeAmountSpy).toHaveBeenCalledWith(
+      'sourceToken',
+      '100.00000000000000000000'
+    )
+
+    // Wait for debounce timeout
+    await vi.advanceTimersByTime(200)
+
+    vitestExpect(swapTokensSpy).toHaveBeenCalledOnce()
+    vi.useRealTimers()
   })
 })

@@ -1,13 +1,11 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-banner'
@@ -24,16 +22,8 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  // -- State & Properties -------------------------------- //
-  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
-
   public constructor() {
     super()
-    this.unsubscribe.push(
-      AccountController.subscribeKey('preferredAccountTypes', val => {
-        this.preferredAccountTypes = val
-      })
-    )
   }
 
   public override disconnectedCallback() {
@@ -42,11 +32,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex
-      flexDirection="column"
-      .padding=${['xs', 's', 'm', 's'] as const}
-      gap="xs"
-    >
+    return html` <wui-flex flexDirection="column" .padding=${['2', '3', '3', '3'] as const} gap="2">
       <wui-banner
         icon="warningCircle"
         text="You can only receive assets on these networks"
@@ -70,7 +56,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
     // For now, each network has a unique account
     if (
       isNetworkEnabledForSmartAccounts &&
-      this.preferredAccountTypes?.[caipNetwork?.chainNamespace as ChainNamespace] ===
+      getPreferredAccountType(caipNetwork?.chainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       if (!caipNetwork) {
@@ -79,7 +65,11 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
       sortedNetworks = [caipNetwork]
     }
 
-    return sortedNetworks.map(
+    const namespaceNetworks = sortedNetworks.filter(
+      network => network.chainNamespace === caipNetwork?.chainNamespace
+    )
+
+    return namespaceNetworks.map(
       network => html`
         <wui-list-network
           imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}

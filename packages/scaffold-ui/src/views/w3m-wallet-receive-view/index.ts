@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -10,10 +9,10 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController,
-  ThemeController
+  ThemeController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-chip-button'
 import '@reown/appkit-ui/wui-compatible-network'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-qr-code'
@@ -36,8 +35,6 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountTypes = AccountController.state.preferredAccountTypes
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -46,7 +43,6 @@ export class W3mWalletReceiveView extends LitElement {
           if (val.address) {
             this.address = val.address
             this.profileName = val.profileName
-            this.preferredAccountTypes = val.preferredAccountTypes
           } else {
             SnackController.showError('Account not found')
           }
@@ -74,7 +70,7 @@ export class W3mWalletReceiveView extends LitElement {
 
     return html` <wui-flex
       flexDirection="column"
-      .padding=${['0', 'l', 'l', 'l'] as const}
+      .padding=${['0', '4', '4', '4'] as const}
       alignItems="center"
     >
       <wui-chip-button
@@ -93,9 +89,9 @@ export class W3mWalletReceiveView extends LitElement {
       ></wui-chip-button>
       <wui-flex
         flexDirection="column"
-        .padding=${['l', '0', '0', '0'] as const}
+        .padding=${['4', '0', '0', '0'] as const}
         alignItems="center"
-        gap="s"
+        gap="4"
       >
         <wui-qr-code
           size=${232}
@@ -105,9 +101,13 @@ export class W3mWalletReceiveView extends LitElement {
           color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
           data-testid="wui-qr-code"
         ></wui-qr-code>
-        <wui-text variant="paragraph-500" color="fg-100" align="center">
+        <wui-text variant="lg-regular" color="primary" align="center">
           Copy your address or scan this QR code
         </wui-text>
+        <wui-button @click=${this.onCopyClick.bind(this)} size="sm" variant="neutral-secondary">
+          <wui-icon slot="iconLeft" size="sm" color="inherit" name="copy"></wui-icon>
+          <wui-text variant="md-regular" color="inherit">Copy address</wui-text>
+        </wui-button>
       </wui-flex>
       ${this.networkTemplate()}
     </wui-flex>`
@@ -118,9 +118,11 @@ export class W3mWalletReceiveView extends LitElement {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
     const caipNetwork = ChainController.state.activeCaipNetwork
-
+    const namespaceNetworks = requestedCaipNetworks.filter(
+      network => network?.chainNamespace === caipNetwork?.chainNamespace
+    )
     if (
-      this.preferredAccountTypes?.[caipNetwork?.chainNamespace as ChainNamespace] ===
+      getPreferredAccountType(caipNetwork?.chainNamespace) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
       isNetworkEnabledForSmartAccounts
     ) {
@@ -134,7 +136,7 @@ export class W3mWalletReceiveView extends LitElement {
         .networkImages=${[AssetUtil.getNetworkImage(caipNetwork) ?? '']}
       ></wui-compatible-network>`
     }
-    const slicedNetworks = requestedCaipNetworks
+    const slicedNetworks = namespaceNetworks
       ?.filter(network => network?.assets?.imageId)
       ?.slice(0, 5)
     const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]

@@ -4,6 +4,7 @@ import type { ParsedCaipAddress } from '@reown/appkit-common'
 import {
   type Connector,
   ConnectorController,
+  ConnectorControllerUtil,
   FetchUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
@@ -11,7 +12,6 @@ import {
 import { AppKitWalletButton } from '../client'
 import { ApiController } from '../controllers/ApiController'
 import { WalletButtonController } from '../controllers/WalletButtonController'
-import { ConnectorUtil } from '../utils/ConnectorUtil'
 import { WalletUtil } from '../utils/WalletUtil'
 
 // -- Constants ------------------------------------------------------------
@@ -33,9 +33,13 @@ const PARSED_CAIP_ADDRESS = {
 
 describe('AppKitWalletButton', () => {
   beforeAll(() => {
-    vi.spyOn(ConnectorUtil, 'connectSocial').mockImplementation(async () => PARSED_CAIP_ADDRESS)
-    vi.spyOn(ConnectorUtil, 'connectExternal').mockImplementation(async () => PARSED_CAIP_ADDRESS)
-    vi.spyOn(ConnectorUtil, 'connectWalletConnect').mockImplementation(
+    vi.spyOn(ConnectorControllerUtil, 'connectSocial').mockImplementation(
+      async () => PARSED_CAIP_ADDRESS
+    )
+    vi.spyOn(ConnectorControllerUtil, 'connectExternal').mockImplementation(
+      async () => PARSED_CAIP_ADDRESS
+    )
+    vi.spyOn(ConnectorControllerUtil, 'connectWalletConnect').mockImplementation(
       async () => PARSED_CAIP_ADDRESS
     )
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({
@@ -76,12 +80,30 @@ describe('AppKitWalletButton', () => {
     expect(subscribeIsReady).toHaveBeenCalled()
   })
 
-  test('it should connect to google (social)', () => {
+  test('it should connect to google (social) and not call provider methods', () => {
+    const mockProvider = {
+      connectSocial: vi.fn()
+    }
+
+    const mockAuthConnector = {
+      id: 'auth',
+      type: 'AUTH',
+      chain: 'eip155',
+      provider: mockProvider
+    }
+
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(mockAuthConnector as any)
     // Initialize wallet button
     const appKitWalletButton = new AppKitWalletButton()
 
     appKitWalletButton.connect('google')
-    expect(ConnectorUtil.connectSocial).toHaveBeenCalledWith('google')
+    expect(ConnectorControllerUtil.connectSocial).toHaveBeenCalledWith({
+      social: 'google',
+      onConnect: expect.any(Function),
+      onOpenFarcaster: expect.any(Function)
+    })
+
+    expect(mockProvider.connectSocial).not.toHaveBeenCalled()
   })
 
   test('it should connect to metamask (external)', () => {
@@ -95,7 +117,7 @@ describe('AppKitWalletButton', () => {
     const appKitWalletButton = new AppKitWalletButton()
 
     appKitWalletButton.connect('metamask')
-    expect(ConnectorUtil.connectExternal).toHaveBeenCalledWith(METAMASK_CONNECTOR)
+    expect(ConnectorControllerUtil.connectExternal).toHaveBeenCalledWith(METAMASK_CONNECTOR)
   })
 
   test('it should connect to walletConnect (QR Code)', () => {
@@ -112,12 +134,11 @@ describe('AppKitWalletButton', () => {
     const appKitWalletButton = new AppKitWalletButton()
 
     appKitWalletButton.connect('walletConnect')
-    expect(ConnectorUtil.connectWalletConnect).toHaveBeenCalledWith({
+    expect(ConnectorControllerUtil.connectWalletConnect).toHaveBeenCalledWith({
       walletConnect: true,
       connector: WC_CONNECTOR,
-      wallet: {
-        id: 'walletConnect'
-      }
+      onConnect: expect.any(Function),
+      onOpen: expect.any(Function)
     })
   })
 })

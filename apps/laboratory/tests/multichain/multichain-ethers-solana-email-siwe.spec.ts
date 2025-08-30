@@ -29,8 +29,6 @@ test.beforeAll(async ({ browser }) => {
   const email = new Email(mailsacApiKey)
   const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-  await page.promptSiwe()
-  await page.approveSign()
 
   await validator.expectConnected()
   await validator.expectAuthenticated()
@@ -45,7 +43,6 @@ test('it should switch networks and sign', async () => {
   const chainName = 'Polygon'
 
   await page.switchNetwork(chainName)
-  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
   await validator.expectAuthenticated()

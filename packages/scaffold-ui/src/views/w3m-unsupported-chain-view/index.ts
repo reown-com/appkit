@@ -9,10 +9,11 @@ import {
   AssetUtil,
   ChainController,
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -36,11 +37,18 @@ export class W3mUnsupportedChainView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
-  @state() private disconecting = false
+  @state() private disconnecting = false
+
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   public constructor() {
     super()
-    this.unsubscribe.push(AssetController.subscribeNetworkImages(() => this.requestUpdate()))
+    this.unsubscribe.push(
+      AssetController.subscribeNetworkImages(() => this.requestUpdate()),
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
+      })
+    )
   }
 
   public override disconnectedCallback() {
@@ -54,29 +62,27 @@ export class W3mUnsupportedChainView extends LitElement {
         <wui-flex
           class="container"
           flexDirection="column"
-          .padding=${['m', 'xl', 'xs', 'xl'] as const}
+          .padding=${['3', '5', '2', '5'] as const}
           alignItems="center"
-          gap="xl"
+          gap="5"
         >
           ${this.descriptionTemplate()}
         </wui-flex>
 
-        <wui-flex flexDirection="column" padding="s" gap="xs">
-          ${this.networksTemplate()}
-        </wui-flex>
+        <wui-flex flexDirection="column" padding="3" gap="2"> ${this.networksTemplate()} </wui-flex>
 
         <wui-separator text="or"></wui-separator>
-        <wui-flex flexDirection="column" padding="s" gap="xs">
+        <wui-flex flexDirection="column" padding="3" gap="2">
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
-            icon="disconnect"
+            icon="signOut"
             ?chevron=${false}
-            .loading=${this.disconecting}
+            .loading=${this.disconnecting}
             @click=${this.onDisconnect.bind(this)}
             data-testid="disconnect-button"
           >
-            <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+            <wui-text variant="md-medium" color="secondary">Disconnect</wui-text>
           </wui-list-item>
         </wui-flex>
       </wui-flex>
@@ -87,7 +93,7 @@ export class W3mUnsupportedChainView extends LitElement {
   private descriptionTemplate() {
     if (this.swapUnsupportedChain) {
       return html`
-        <wui-text variant="small-400" color="fg-200" align="center">
+        <wui-text variant="sm-regular" color="secondary" align="center">
           The swap feature doesn’t support your current network. Switch to an available option to
           continue.
         </wui-text>
@@ -95,7 +101,7 @@ export class W3mUnsupportedChainView extends LitElement {
     }
 
     return html`
-      <wui-text variant="small-400" color="fg-200" align="center">
+      <wui-text variant="sm-regular" color="secondary" align="center">
         This app doesn’t support your current network. Switch to an available option to continue.
       </wui-text>
     `
@@ -130,14 +136,29 @@ export class W3mUnsupportedChainView extends LitElement {
 
   private async onDisconnect() {
     try {
-      this.disconecting = true
-      await ConnectionController.disconnect()
-      ModalController.close()
+      this.disconnecting = true
+
+      const namespace = ChainController.state.activeChain
+      const connectionsByNamespace = ConnectionController.getConnections(namespace)
+      const hasConnections = connectionsByNamespace.length > 0
+      const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+      await ConnectionController.disconnect(
+        isMultiWalletEnabled ? { id: connectorId, namespace } : {}
+      )
+      if (hasConnections && isMultiWalletEnabled) {
+        RouterController.push('ProfileWallets')
+        SnackController.showSuccess('Wallet deleted')
+      }
     } catch {
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR',
+        properties: { message: 'Failed to disconnect' }
+      })
       SnackController.showError('Failed to disconnect')
     } finally {
-      this.disconecting = false
+      this.disconnecting = false
     }
   }
 
@@ -148,7 +169,6 @@ export class W3mUnsupportedChainView extends LitElement {
       'supportsAllNetworks',
       network.chainNamespace
     )
-
     const routerData = RouterController.state.data
 
     if (caipAddress) {

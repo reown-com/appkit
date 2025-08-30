@@ -1,13 +1,15 @@
 import { elementUpdated, fixture } from '@open-wc/testing'
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
+  OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
 
@@ -16,8 +18,8 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const WALLET_FEATURE_WIDGET_TEST_ID = 'w3m-account-wallet-features-widget'
+const WALLET_SWITCH_TEST_ID = 'wui-wallet-switch'
 const MOCK_ADDRESS = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
-const PROFILE_BUTTON = 'w3m-profile-button'
 
 const SERVICE_UNAVAILABLE_MESSAGE = 'Service Unavailable'
 
@@ -32,8 +34,8 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
+  beforeEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('it should not return any components if address is not provided in AccountController', () => {
@@ -51,6 +53,16 @@ describe('W3mAccountWalletFeaturesWidget', () => {
       ...AccountController.state,
       address: MOCK_ADDRESS
     })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        eip155: 'metamask.io'
+      } as Record<ChainNamespace, string | undefined>
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
+    })
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -62,15 +74,20 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     expect(HelpersUtil.getByTestId(element, WALLET_FEATURE_WIDGET_TEST_ID)).not.toBeNull()
   })
 
-  it('should redirect to AccountSettings view if has one account', async () => {
+  it('should redirect to ProfileWallets view', async () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
-      address: ACCOUNT.address
+      address: MOCK_ADDRESS
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address,
-      allAccounts: [ACCOUNT]
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        eip155: 'metamask.io'
+      } as Record<ChainNamespace, string | undefined>
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
     })
 
     const pushSpy = vi.spyOn(RouterController, 'push')
@@ -79,15 +96,15 @@ describe('W3mAccountWalletFeaturesWidget', () => {
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
     )
 
-    const profileButton = HelpersUtil.getByTestId(element, PROFILE_BUTTON)
+    const walletSwitch = HelpersUtil.getByTestId(element, WALLET_SWITCH_TEST_ID)
 
-    expect(profileButton).not.toBeNull()
+    expect(walletSwitch).not.toBeNull()
 
-    const button = HelpersUtil.querySelect(profileButton, 'button')
+    const button = HelpersUtil.querySelect(walletSwitch, 'button')
 
     button.click()
 
-    expect(pushSpy).toHaveBeenCalledWith('AccountSettings')
+    expect(pushSpy).toHaveBeenCalledWith('ProfileWallets')
   })
 
   it('should show tabs for eip155 namespace', async () => {
@@ -128,34 +145,6 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     expect(tabs).toBeNull()
   })
 
-  it('should redirect to Profile view if has more than one account', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address
-    })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address,
-      allAccounts: [ACCOUNT, ACCOUNT]
-    })
-
-    const pushSpy = vi.spyOn(RouterController, 'push')
-
-    const element: W3mAccountWalletFeaturesWidget = await fixture(
-      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
-    )
-
-    const profileButton = HelpersUtil.getByTestId(element, PROFILE_BUTTON)
-
-    expect(profileButton).not.toBeNull()
-
-    const button = HelpersUtil.querySelect(profileButton, 'button')
-
-    button.click()
-
-    expect(pushSpy).toHaveBeenCalledWith('Profile')
-  })
-
   it('should clearInterval when fetchTokenBalance fails after 10 seconds', async () => {
     vi.useFakeTimers()
     vi.spyOn(global, 'setInterval')
@@ -187,5 +176,343 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     expect(clearInterval).toHaveBeenCalledWith((element as any).watchTokenBalance)
 
     vi.useRealTimers()
+    vi.restoreAllMocks()
+  })
+})
+describe('wallet features visibility', () => {
+  beforeAll(() => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+  describe('evm wallet features', () => {
+    beforeEach(() => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: CommonConstantsUtil.CHAIN.EVM
+      })
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        address: MOCK_ADDRESS
+      })
+    })
+
+    it('should show all features when enabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: true,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: ['meld'],
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
+    })
+
+    it('should not show swaps if disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: true,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: ['meld'],
+          swaps: false
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
+    })
+
+    it('should not show fund wallet if receive and onramp are disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: false,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: false,
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
+    })
+
+    it('should not show send if disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: true,
+          send: false
+        },
+        remoteFeatures: {
+          onramp: ['meld'],
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
+    })
+
+    it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          swaps: true,
+          receive: false
+        },
+        remoteFeatures: {
+          payWithExchange: false,
+          onramp: false
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      const fundWalletButton = HelpersUtil.getByTestId(
+        element,
+        'wallet-features-fund-wallet-button'
+      )
+
+      expect(fundWalletButton).toBeNull()
+    })
+  })
+
+  describe('solana wallet features', () => {
+    beforeEach(() => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: CommonConstantsUtil.CHAIN.SOLANA
+      })
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        address: MOCK_ADDRESS
+      })
+    })
+
+    it('should show all features but swaps when enabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: true,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: ['meld'],
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
+    })
+
+    it('should not show fund wallet if onramp and receive are disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: false,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: false,
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
+    })
+
+    it('should not show receive if disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: false,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: ['meld'],
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).not.toBeNull()
+    })
+
+    it('should not show send if disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: true,
+          send: false
+        },
+        remoteFeatures: {
+          onramp: ['meld'],
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
+    })
+
+    it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          swaps: true,
+          receive: false
+        },
+        remoteFeatures: {
+          payWithExchange: false,
+          onramp: false
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      const fundWalletButton = HelpersUtil.getByTestId(
+        element,
+        'wallet-features-fund-wallet-button'
+      )
+
+      expect(fundWalletButton).toBeNull()
+    })
+  })
+
+  describe('bitcoin wallet features', () => {
+    beforeEach(() => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: CommonConstantsUtil.CHAIN.BITCOIN
+      })
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        address: 'bc1qa1234567890'
+      })
+    })
+
+    it('should only show fund wallet when receive and onramp are enabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: true,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: ['meld'],
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).not.toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
+    })
+
+    it('should not show fund wallet if onramp and receive are disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          receive: false,
+          send: true
+        },
+        remoteFeatures: {
+          onramp: false,
+          swaps: ['1inch']
+        }
+      })
+
+      const element: W3mAccountWalletFeaturesWidget = await fixture(
+        html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+      )
+
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-fund-wallet-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-swaps-button')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'wallet-features-send-button')).toBeNull()
+    })
   })
 })

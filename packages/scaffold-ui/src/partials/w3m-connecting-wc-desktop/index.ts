@@ -12,10 +12,15 @@ export class W3mConnectingWcDesktop extends W3mConnectingWidget {
     }
     this.onConnect = this.onConnectProxy.bind(this)
     this.onRender = this.onRenderProxy.bind(this)
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: this.wallet.name, platform: 'desktop' }
+      properties: {
+        name: this.wallet.name,
+        platform: 'desktop',
+        displayIndex: this.wallet?.display_index
+      }
     })
   }
 

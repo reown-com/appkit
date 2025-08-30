@@ -1,13 +1,27 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { OptionsController } from '../../exports/index.js'
 import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
+import { OptionsUtil } from '../../src/utils/OptionsUtil.js'
+import type { RemoteFeatures, SocialProvider } from '../../src/utils/TypeUtil.js'
+
+vi.mock('../../src/utils/OptionsUtil.js', () => ({
+  OptionsUtil: {
+    filterSocialsByPlatform: vi.fn(socials => socials)
+  }
+}))
 
 // -- Tests --------------------------------------------------------------------
 describe('OptionsController', () => {
+  beforeEach(() => {
+    vi.mocked(OptionsUtil.filterSocialsByPlatform).mockClear()
+    OptionsController.state.remoteFeatures = {}
+  })
+
   it('should have valid default state', () => {
     expect(OptionsController.state).toEqual({
       features: ConstantsUtil.DEFAULT_FEATURES,
+      remoteFeatures: {},
       projectId: '',
       sdkType: 'appkit',
       sdkVersion: 'html-wagmi-undefined',
@@ -17,7 +31,8 @@ describe('OptionsController', () => {
         polkadot: 'eoa',
         solana: 'eoa'
       },
-      enableNetworkSwitch: true
+      enableNetworkSwitch: true,
+      experimental_preferUniversalLinks: false
     })
   })
 
@@ -44,5 +59,52 @@ describe('OptionsController', () => {
       polkadot: 'eoa',
       solana: 'eoa'
     })
+  })
+
+  it('should update state correctly on setFeatures()', () => {
+    OptionsController.setFeatures({
+      analytics: true
+    })
+
+    expect(OptionsController.state.features).toEqual({
+      ...OptionsController.state.features,
+      analytics: true
+    })
+  })
+
+  it('should do nothing if remoteFeatures is undefined', () => {
+    const initialState = { ...OptionsController.state }
+    OptionsController.setRemoteFeatures(undefined)
+    expect(OptionsController.state).toEqual(initialState)
+    expect(OptionsUtil.filterSocialsByPlatform).not.toHaveBeenCalled()
+  })
+
+  it('should set remoteFeatures and call OptionsUtil.filterSocialsByPlatform if socials data exists', () => {
+    const socialProviders = ['google' as SocialProvider]
+    const filteredSocialProviders = ['google' as SocialProvider]
+    vi.mocked(OptionsUtil.filterSocialsByPlatform).mockReturnValue(filteredSocialProviders)
+
+    const remoteFeatures: RemoteFeatures = {
+      socials: socialProviders,
+      activity: true
+    }
+    OptionsController.setRemoteFeatures(remoteFeatures)
+    expect(OptionsController.state.remoteFeatures?.socials).toEqual(filteredSocialProviders)
+    expect(OptionsController.state.remoteFeatures?.activity).toBe(true)
+    expect(OptionsUtil.filterSocialsByPlatform).toHaveBeenCalledWith(socialProviders)
+  })
+
+  it('should correctly set SIWX defaults for provided SIWX config', () => {
+    OptionsController.setSIWX({} as any)
+    const keys = Object.keys(
+      ConstantsUtil.SIWX_DEFAULTS
+    ) as (keyof typeof ConstantsUtil.SIWX_DEFAULTS)[]
+    keys.forEach(key => {
+      expect(OptionsController.state.siwx![key]).toEqual(ConstantsUtil.SIWX_DEFAULTS[key])
+    })
+
+    // Test setting signOutOnDisconnect to false
+    OptionsController.setSIWX({ signOutOnDisconnect: false } as any)
+    expect(OptionsController.state.siwx!.signOutOnDisconnect).toEqual(false)
   })
 })

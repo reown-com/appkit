@@ -38,7 +38,9 @@ export const PresetsUtil = {
     [ConstantsUtil.XVERSE_CONNECTOR_NAME]:
       '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
     [ConstantsUtil.LEATHER_CONNECTOR_NAME]:
-      '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13'
+      '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13',
+    [ConstantsUtil.OKX_CONNECTOR_NAME]:
+      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
   } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum
@@ -108,7 +110,9 @@ export const PresetsUtil = {
     // Bitcoin
     '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
     // Bitcoin Testnet
-    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
+    '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200',
+    // Bitcoin Signet
+    '00000008819873e925422c1ff0f99f7c': 'b3406e4a-bbfc-44fb-e3a6-89673c78b700'
   } as Record<string, string>,
 
   ConnectorImageIds: {
@@ -133,7 +137,8 @@ export const PresetsUtil = {
     [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: 'INJECTED',
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
     [CommonConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
-    [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH'
+    [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH',
+    [ConstantsUtil.CONNECTOR_TYPE_AUTH]: 'AUTH'
   } as Record<string, ConnectorType>,
 
   WalletConnectRpcChainIds: [

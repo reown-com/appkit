@@ -9,6 +9,7 @@ import { base, mainnet, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import {
   mockBlockchainApiController,
+  mockRemoteFeatures,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -18,6 +19,7 @@ describe('Balance sync', () => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
+    mockRemoteFeatures()
   })
 
   it.sequential('should not sync balance if theres no matching caipNetwork', async () => {
@@ -25,6 +27,7 @@ describe('Balance sync', () => {
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
 
     const appKit = new AppKit(mockOptions)
+
     await appKit['syncBalance']({
       address: '0x123',
       chainId: base.id,
@@ -58,6 +61,8 @@ describe('Balance sync', () => {
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
 
     const appKit = new AppKit(mockOptions)
+    await appKit.ready()
+
     await appKit['syncBalance']({
       address: '0x123',
       chainId: mainnet.id,

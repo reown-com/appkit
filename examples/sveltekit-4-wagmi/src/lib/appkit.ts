@@ -32,11 +32,11 @@ if (browser) {
     networks: [arbitrum, mainnet, optimism, polygon],
     defaultNetwork: arbitrum,
     projectId,
+    themeMode: 'light',
     features: {
       email: false,
       socials: false
     },
-    themeMode: 'light',
     metadata: {
       name: 'SvelteKit Example',
       description: 'SvelteKit Example using Wagmi adapter',

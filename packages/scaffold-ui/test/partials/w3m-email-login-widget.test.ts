@@ -11,6 +11,7 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -42,9 +43,11 @@ describe('W3mEmailLoginWidget', () => {
     )
     vi.spyOn(EventsController, 'sendEvent').mockImplementation(vi.fn())
     vi.spyOn(RouterController, 'push').mockImplementation(vi.fn())
+    vi.spyOn(RouterController, 'reset').mockImplementation(vi.fn())
     vi.spyOn(RouterController, 'replace').mockImplementation(vi.fn())
     vi.spyOn(ConnectionController, 'connectExternal').mockImplementation(vi.fn())
     vi.spyOn(SnackController, 'showError').mockImplementation(vi.fn())
+    vi.spyOn(SnackController, 'showSuccess').mockImplementation(vi.fn())
   })
 
   afterEach(() => {
@@ -103,10 +106,16 @@ describe('W3mEmailLoginWidget', () => {
   describe('Form Submission', () => {
     it('redirects to network switch when on unsupported chain', async () => {
       vi.mocked(ChainController.state).activeChain = 'unsupported' as ChainNamespace
+      vi.spyOn(ChainController, 'getFirstCaipNetworkSupportsAuthConnector').mockReturnValue(mainnet)
 
       const element: W3mEmailLoginWidget = await fixture(
         html`<w3m-email-login-widget></w3m-email-login-widget>`
       )
+
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
+      emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: mockEmail }))
+      await elementUpdated(element)
+
       const form = HelpersUtil.querySelect(element, 'form')
       form?.dispatchEvent(new Event('submit'))
 
@@ -151,8 +160,11 @@ describe('W3mEmailLoginWidget', () => {
 
     it('handles CONNECT action', async () => {
       vi.useFakeTimers()
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        remoteFeatures: { multiWallet: true }
+      })
       mockAuthConnector.provider.connectEmail.mockResolvedValue({ action: 'CONNECT' })
-
       const element: W3mEmailLoginWidget = await fixture(
         html`<w3m-email-login-widget></w3m-email-login-widget>`
       )
@@ -164,7 +176,8 @@ describe('W3mEmailLoginWidget', () => {
 
       await vi.advanceTimersByTime(1000)
       expect(ConnectionController.connectExternal).toHaveBeenCalled()
-      expect(RouterController.replace).toHaveBeenCalledWith('Account')
+      expect(RouterController.replace).toHaveBeenCalledWith('ProfileWallets')
+      expect(SnackController.showSuccess).toHaveBeenCalledWith('New Wallet Added')
       vi.useRealTimers()
     })
 

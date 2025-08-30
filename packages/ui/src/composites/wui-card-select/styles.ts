@@ -1,39 +1,40 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   button {
     flex-direction: column;
     width: 76px;
-    row-gap: var(--wui-spacing-xs);
-    padding: var(--wui-spacing-xs) var(--wui-spacing-0);
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
+    row-gap: ${({ spacing }) => spacing[1]};
+    padding: ${({ spacing }) => spacing[3]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[5]};
   }
 
   button > wui-text {
-    color: var(--wui-color-fg-100);
-    max-width: var(--wui-icon-box-size-xl);
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+    max-width: 64px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     justify-content: center;
   }
 
-  button:disabled > wui-text {
-    color: var(--wui-color-gray-glass-015);
+  button:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
   }
 
   [data-selected='true'] {
-    background-color: var(--wui-color-accent-glass-020);
+    background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
   @media (hover: hover) and (pointer: fine) {
-    [data-selected='true']:hover:enabled {
-      background-color: var(--wui-color-accent-glass-015);
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     }
-  }
 
-  [data-selected='true']:active:enabled {
-    background-color: var(--wui-color-accent-glass-010);
+    button[data-selected='true']:hover:enabled {
+      background-color: ${({ tokens }) => tokens.core.foregroundAccent020};
+    }
   }
 `

@@ -1,20 +1,20 @@
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { type UniqueIdentifier } from '@dnd-kit/core'
 
-import { ConstantsUtil, WalletFeature } from '@reown/appkit-controllers'
+import { ConstantsUtil, type WalletFeature } from '@reown/appkit-controllers'
 import { useAppKitAccount } from '@reown/appkit-controllers/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { SortableWalletFeatureList } from '@/components/sortable-list-wallet-features'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { WalletFeatureName } from '@/lib/types'
+import { type WalletFeatureName } from '@/lib/types'
 import { urlStateUtils } from '@/lib/url-state'
 
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
 export function SectionWalletFeatures() {
   const { caipAddress } = useAppKitAccount()
-  const { config, updateFeatures } = useAppKitContext()
+  const { config, updateFeatures, updateRemoteFeatures } = useAppKitContext()
   const walletFeaturesOrder = config.features.walletFeaturesOrder || defaultWalletFeaturesOrder
 
   function handleNewOrder(items: UniqueIdentifier[]) {
@@ -34,13 +34,23 @@ export function SectionWalletFeatures() {
   function handleToggleOption(name: WalletFeatureName) {
     switch (name) {
       case 'Buy':
-        updateFeatures({ onramp: !config.features.onramp })
-        return
+        updateRemoteFeatures({
+          onramp:
+            Array.isArray(config.remoteFeatures.onramp) && config.remoteFeatures.onramp.length > 0
+              ? false
+              : ['meld']
+        })
+        break
       case 'Swap':
-        updateFeatures({ swaps: !config.features.swaps })
-        return
+        updateRemoteFeatures({
+          swaps:
+            Array.isArray(config.remoteFeatures.swaps) && config.remoteFeatures.swaps.length > 0
+              ? false
+              : ['1inch']
+        })
+        break
       default:
-        return
+        break
     }
   }
 
@@ -67,14 +77,14 @@ export function SectionWalletFeatures() {
         handleNewOrder={handleNewOrder}
         handle={true}
       />
-      {!caipAddress ? (
+      {caipAddress ? null : (
         <Alert>
           <div className="flex items-center gap-3">
             <ExclamationMarkIcon />
             <AlertDescription>Connect to a wallet to view feature customization</AlertDescription>
           </div>
         </Alert>
-      ) : null}
+      )}
     </div>
   )
 }

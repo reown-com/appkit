@@ -11,27 +11,31 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitNetwork } from '@reown/appkit/react'
 
 export function AppKitNetworkInfo() {
-  const { address } = useAppKitAccount()
-  const { chainId } = useAppKitNetwork()
+  const { chainId, caipNetwork } = useAppKitNetwork()
 
   return (
-    <Card marginTop={10} marginBottom={10}>
+    <Card>
       <CardHeader>
-        <Heading size="md">Account Information</Heading>
+        <Heading size="md">Network Info</Heading>
       </CardHeader>
 
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              Address
+              CAIP Network
             </Heading>
-            <Text data-testid="w3m-address">{address || '-'}</Text>
+            <Text data-testid="w3m-caip-network-name">{caipNetwork?.name || '-'}</Text>
           </Box>
-
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              CAIP Network Id
+            </Heading>
+            <Text data-testid="w3m-caip-network-id">{caipNetwork?.caipNetworkId || '-'}</Text>
+          </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Chain Id

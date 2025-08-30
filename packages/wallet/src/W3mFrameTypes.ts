@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import {
@@ -108,6 +108,7 @@ export namespace W3mFrameTypes {
     AppRpcRequest: RPCRequest
     AppGetFarcasterUriRequest: undefined
     AppConnectFarcasterRequest: undefined
+    AppRpcAbortRequest: undefined
   }
 
   export interface Responses {
@@ -135,6 +136,7 @@ export namespace W3mFrameTypes {
     FrameRpcResponse: RPCResponse
     FrameReadyResponse: z.infer<typeof FrameReadyResponse>
     FrameReloadResponse: undefined
+    FrameRpcAbortResponse: undefined
   }
 
   export interface Network {
@@ -142,7 +144,7 @@ export namespace W3mFrameTypes {
     chainId: number | CaipNetworkId
   }
 
-  export type RPCRequest =
+  export type RPCRequest = (
     | z.infer<typeof RpcEthAccountsRequest>
     | z.infer<typeof RpcEthBlockNumber>
     | z.infer<typeof RpcEthCall>
@@ -190,6 +192,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletGrantPermissionsRequest>
     | z.infer<typeof WalletRevokePermissionsRequest>
     | z.infer<typeof WalletGetAssetsRequest>
+  ) & { chainNamespace?: ChainNamespace; chainId?: string | number; rpcUrl?: string }
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
@@ -221,6 +224,7 @@ export namespace W3mFrameTypes {
     | 'SignOut'
     | 'Rpc'
     | 'Reload'
+    | 'RpcAbort'
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type WalletCapabilities = Record<string, any>

@@ -1,19 +1,22 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
   type Connector,
   ConnectorController,
-  ModalController
+  ConnectorControllerUtil,
+  ModalController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-wallet-button'
 
 import { ApiController } from '../../controllers/ApiController.js'
-import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import type { SocialProvider, Wallet } from '../../utils/TypeUtil.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -26,9 +29,11 @@ export class AppKitWalletButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() wallet: Wallet = 'metamask'
 
+  @property() namespace?: ChainNamespace
+
   @state() private connectors = ConnectorController.state.connectors
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @state() private caipAddress: CaipAddress | undefined
 
   @state() private loading = false
 
@@ -44,12 +49,6 @@ export class AppKitWalletButton extends LitElement {
       ...[
         ModalController.subscribeKey('loading', val => (this.modalLoading = val)),
         ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-        ChainController.subscribeKey('activeCaipAddress', val => {
-          if (val) {
-            this.error = false
-          }
-          this.caipAddress = val
-        }),
         ApiController.subscribeKey('walletButtons', () => {
           this.ready = WalletUtil.isWalletButtonReady(this.wallet)
         })
@@ -62,10 +61,34 @@ export class AppKitWalletButton extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
+  // -- Lifecycle ----------------------------------------- //
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.caipAddress = this.namespace
+      ? ChainController.state.chains.get(this.namespace)?.accountState?.caipAddress
+      : ChainController.state.activeCaipAddress
+  }
+
   public override firstUpdated() {
     if (!WalletUtil.isWalletButtonReady(this.wallet)) {
       // Prefetch wallet buttons
       ApiController.fetchWalletButtons()
+    }
+
+    if (this.namespace) {
+      this.unsubscribe.push(
+        ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            this.caipAddress = val?.caipAddress
+          },
+          this.namespace
+        )
+      )
+    } else {
+      this.unsubscribe.push(
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val))
+      )
     }
   }
 
@@ -82,7 +105,11 @@ export class AppKitWalletButton extends LitElement {
     const walletButton = WalletUtil.getWalletButton(this.wallet)
 
     const connector = walletButton
-      ? ConnectorController.getConnector(walletButton.id, walletButton.rdns)
+      ? ConnectorController.getConnector({
+          id: walletButton.id,
+          rdns: walletButton.rdns,
+          namespace: this.namespace
+        })
       : undefined
 
     if (connector) {
@@ -111,17 +138,25 @@ export class AppKitWalletButton extends LitElement {
           : ifDefined(walletName)}
         @click=${async () => {
           this.loading = true
-          await ConnectorUtil.connectWalletConnect({
+          await ConnectorControllerUtil.connectWalletConnect({
             walletConnect: this.wallet === 'walletConnect',
-            wallet: walletButton,
-            connector: this.connectors.find(c => c.id === 'walletConnect')
+            connector: this.connectors.find(c => c.id === 'walletConnect'),
+            onOpen(isMobile) {
+              ModalController.open({
+                view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect',
+                data: isMobile ? undefined : { wallet: walletButton }
+              })
+            },
+            onConnect() {
+              RouterController.replace('Connect')
+            }
           })
             .catch(() => {
               // Ignore. We don't want to handle errors if user closes QR modal
             })
             .finally(() => (this.loading = false))
         }}
-        .icon=${ifDefined(this.wallet === 'walletConnect' ? 'walletConnect' : undefined)}
+        .icon=${ifDefined(this.wallet === 'walletConnect' ? 'walletConnectInvert' : undefined)}
         .imageSrc=${ifDefined(walletImage)}
         ?disabled=${Boolean(this.caipAddress) || loading || this.modalLoading}
         ?loading=${loading || this.modalLoading}
@@ -143,7 +178,7 @@ export class AppKitWalletButton extends LitElement {
         @click=${async () => {
           this.loading = true
           this.error = false
-          await ConnectorUtil.connectExternal(connector)
+          await ConnectorControllerUtil.connectExternal(connector)
             .catch(() => (this.error = true))
             .finally(() => (this.loading = false))
         }}
@@ -162,7 +197,17 @@ export class AppKitWalletButton extends LitElement {
       @click=${async () => {
         this.loading = true
         this.error = false
-        await ConnectorUtil.connectSocial(this.wallet as SocialProvider)
+
+        return ConnectorControllerUtil.connectSocial({
+          social: this.wallet as SocialProvider,
+          namespace: this.namespace,
+          onOpenFarcaster() {
+            ModalController.open({ view: 'ConnectingFarcaster' })
+          },
+          onConnect() {
+            RouterController.push('Connect')
+          }
+        })
           .catch(() => (this.error = true))
           .finally(() => (this.loading = false))
       }}
@@ -180,7 +225,15 @@ export class AppKitWalletButton extends LitElement {
       @click=${async () => {
         this.loading = true
         this.error = false
-        await ConnectorUtil.connectEmail()
+        await ConnectorControllerUtil.connectEmail({
+          namespace: this.namespace,
+          onOpen() {
+            ModalController.open({ view: 'EmailLogin' })
+          },
+          onConnect() {
+            RouterController.push('Connect')
+          }
+        })
           .catch(() => (this.error = true))
           .finally(() => (this.loading = false))
       }}

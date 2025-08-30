@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -61,8 +61,8 @@ export class W3mNetworkSwitchView extends LitElement {
         data-error=${this.error}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '10', '5'] as const}
+        gap="7"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-network-image
@@ -72,25 +72,17 @@ export class W3mNetworkSwitchView extends LitElement {
 
           ${this.error ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
 
-          <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
-            icon="close"
-            size="sm"
-            ?border=${true}
-            borderColor="wui-color-bg-125"
-          ></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">${label}</wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
+          <wui-text align="center" variant="h6-regular" color="primary">${label}</wui-text>
+          <wui-text align="center" variant="md-regular" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         <wui-button
           data-retry=${this.showRetry}
-          variant="accent"
+          variant="accent-primary"
           size="md"
           .disabled=${!this.error}
           @click=${this.onSwitchNetwork.bind(this)}
@@ -104,8 +96,7 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private getSubLabel() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return ''
@@ -117,8 +108,7 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   private getLabel() {
-    const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`

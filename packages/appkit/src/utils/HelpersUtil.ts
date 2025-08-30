@@ -1,10 +1,28 @@
 import type { SessionTypes } from '@walletconnect/types'
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
-import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  ParseUtil,
+  type ParsedCaipAddress
+} from '@reown/appkit-common'
 import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
 
 import { solana, solanaDevnet } from '../networks/index.js'
+
+interface ListenWcProviderParams {
+  universalProvider: UniversalProvider
+  namespace: ChainNamespace
+  onConnect?: (parsedData: ParsedCaipAddress[]) => void
+  onDisconnect?: () => void
+  onAccountsChanged?: (parsedData: ParsedCaipAddress[]) => void
+  onChainChanged?: (chainId: number | string) => void
+  onDisplayUri?: (uri: string) => void
+}
 
 export const DEFAULT_METHODS = {
   solana: [
@@ -70,32 +88,32 @@ export const WcHelpersUtil = {
 
     const result = { ...baseNamespaces }
 
-    const namespacesToOverride = new Set<string>()
+    const namespacesToOverride = new Set<ChainNamespace>()
 
     if (overrides.methods) {
-      Object.keys(overrides.methods).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.methods).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.chains) {
-      Object.keys(overrides.chains).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.chains).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.events) {
-      Object.keys(overrides.events).forEach(ns => namespacesToOverride.add(ns))
+      Object.keys(overrides.events).forEach(ns => namespacesToOverride.add(ns as ChainNamespace))
     }
 
     if (overrides.rpcMap) {
       Object.keys(overrides.rpcMap).forEach(chainId => {
         const [ns] = chainId.split(':')
         if (ns) {
-          namespacesToOverride.add(ns)
+          namespacesToOverride.add(ns as ChainNamespace)
         }
       })
     }
 
     namespacesToOverride.forEach(ns => {
       if (!result[ns]) {
-        result[ns] = this.createDefaultNamespace(ns as ChainNamespace)
+        result[ns] = this.createDefaultNamespace(ns)
       }
     })
 
@@ -222,6 +240,146 @@ export const WcHelpersUtil = {
       typeof data.params.event === 'object' &&
       data.params.event !== null
     )
+  },
+
+  isOriginAllowed(
+    currentOrigin: string,
+    allowedPatterns: string[],
+    defaultAllowedOrigins: string[]
+  ): boolean {
+    for (const pattern of [...allowedPatterns, ...defaultAllowedOrigins]) {
+      if (pattern.includes('*')) {
+        // Convert wildcard pattern to regex, escape special chars, replace *, match whole string
+        const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
+        const regexString = `^${escapedPattern.replace(/\\\*/gu, '.*')}$`
+        const regex = new RegExp(regexString, 'u')
+
+        if (regex.test(currentOrigin)) {
+          return true
+        }
+      } else {
+        /**
+         * There are some cases where pattern is getting just the origin, where using new URL(pattern).origin will throw an error
+         * thus we a try catch to handle this case
+         */
+        try {
+          if (new URL(pattern).origin === currentOrigin) {
+            return true
+          }
+        } catch (e) {
+          if (pattern === currentOrigin) {
+            return true
+          }
+        }
+      }
+    }
+
+    // No match found
+    return false
+  },
+
+  listenWcProvider({
+    universalProvider,
+    namespace,
+    onConnect,
+    onDisconnect,
+    onAccountsChanged,
+    onChainChanged,
+    onDisplayUri
+  }: ListenWcProviderParams) {
+    if (onConnect) {
+      universalProvider.on('connect', () => {
+        const accounts = WcHelpersUtil.getWalletConnectAccounts(universalProvider, namespace)
+
+        onConnect(accounts)
+      })
+    }
+
+    if (onDisconnect) {
+      universalProvider.on('disconnect', () => {
+        onDisconnect()
+      })
+    }
+
+    if (onAccountsChanged) {
+      /*
+       * In multichain scenario - every adapter will listen to accountsChanged event
+       * so make sure to call `onAccountsChanged` only on the namespace that actually has accounts changed
+       */
+      universalProvider.on('accountsChanged', (accounts: string[]) => {
+        try {
+          const allAccounts = universalProvider.session?.namespaces?.[namespace]?.accounts || []
+          const defaultChain = universalProvider.rpcProviders?.[namespace]?.getDefaultChain()
+
+          const parsedAccounts = accounts
+            .map(account => {
+              const caipAccount = allAccounts.find(acc =>
+                acc.includes(`${namespace}:${defaultChain}:${account}`)
+              )
+              if (!caipAccount) {
+                return undefined
+              }
+
+              const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(
+                caipAccount as CaipAddress
+              )
+
+              return {
+                address: account,
+                chainId,
+                chainNamespace
+              }
+            })
+            .filter(account => account !== undefined)
+
+          // Emit accountsChanged event only if there are accounts
+          if (parsedAccounts.length > 0) {
+            onAccountsChanged(parsedAccounts)
+          }
+        } catch (error) {
+          console.warn(
+            'Failed to parse accounts for namespace on accountsChanged event',
+            namespace,
+            accounts,
+            error
+          )
+        }
+      })
+    }
+
+    if (onChainChanged) {
+      universalProvider.on('chainChanged', (chainId: number | string) => {
+        onChainChanged(chainId)
+      })
+    }
+
+    if (onDisplayUri) {
+      universalProvider.on('display_uri', (uri: string) => {
+        onDisplayUri(uri)
+      })
+    }
+  },
+
+  getWalletConnectAccounts(universalProvider: UniversalProvider, namespace: ChainNamespace) {
+    const accountsAdded = new Set<string>()
+
+    const accounts = universalProvider?.session?.namespaces?.[namespace]?.accounts
+      ?.map(account => ParseUtil.parseCaipAddress(account as CaipAddress))
+      .filter(({ address }) => {
+        if (accountsAdded.has(address.toLowerCase())) {
+          return false
+        }
+
+        accountsAdded.add(address.toLowerCase())
+
+        return true
+      })
+
+    if (accounts && accounts.length > 0) {
+      return accounts
+    }
+
+    return []
   }
 }
 

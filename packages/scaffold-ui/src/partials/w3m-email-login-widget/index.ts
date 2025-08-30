@@ -4,12 +4,14 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  AlertController,
   ChainController,
   ConnectionController,
   ConnectorController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -17,7 +19,9 @@ import '@reown/appkit-ui/wui-email-input'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-text'
+import { ErrorUtil } from '@reown/appkit-utils'
 
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-email-login-widget')
@@ -38,6 +42,17 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      OptionsController.subscribeKey('remoteFeatures', val => {
+        this.remoteFeatures = val
+      })
+    )
+  }
+
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
@@ -52,6 +67,8 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const hasConnection = ConnectionController.hasAnyConnection(ConstantsUtil.CONNECTOR_ID.AUTH)
+
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
@@ -59,6 +76,7 @@ export class W3mEmailLoginWidget extends LitElement {
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
           tabIdx=${ifDefined(this.tabIdx)}
+          ?disabled=${hasConnection}
         >
         </wui-email-input>
 
@@ -88,13 +106,13 @@ export class W3mEmailLoginWidget extends LitElement {
 
   private loadingTemplate() {
     return this.loading
-      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+      ? html`<wui-loading-spinner size="md" color="accent-primary"></wui-loading-spinner>`
       : null
   }
 
   private templateError() {
     if (this.error) {
-      return html`<wui-text variant="tiny-500" color="error-100">${this.error}</wui-text>`
+      return html`<wui-text variant="sm-medium" color="error">${this.error}</wui-text>`
     }
 
     return null
@@ -106,6 +124,17 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private async onSubmitEmail(event: Event) {
+    if (!HelpersUtil.isValidEmail(this.email)) {
+      AlertController.open(
+        {
+          displayMessage: ErrorUtil.ALERT_WARNINGS.INVALID_EMAIL.displayMessage
+        },
+        'warning'
+      )
+
+      return
+    }
+
     const isAvailableChain = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       chain => chain === ChainController.state.activeChain
     )
@@ -143,11 +172,15 @@ export class W3mEmailLoginWidget extends LitElement {
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       } else if (action === 'CONNECT') {
-        await ConnectionController.connectExternal(
-          authConnector,
-          ChainController.state.activeChain as ChainNamespace
-        )
-        RouterController.replace('Account')
+        const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+        await ConnectionController.connectExternal(authConnector, ChainController.state.activeChain)
+
+        if (isMultiWalletEnabled) {
+          RouterController.replace('ProfileWallets')
+          SnackController.showSuccess('New Wallet Added')
+        } else {
+          RouterController.replace('Account')
+        }
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

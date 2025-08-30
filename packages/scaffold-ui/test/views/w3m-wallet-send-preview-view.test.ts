@@ -1,7 +1,12 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
-import type { Balance, CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  type Balance,
+  type CaipAddress,
+  type CaipNetwork,
+  ConstantsUtil
+} from '@reown/appkit-common'
 import {
   type ChainAdapter,
   ChainController,
@@ -49,7 +54,6 @@ const mockSendControllerState = {
   token: mockToken,
   sendTokenAmount: 5,
   receiverAddress: '0x456',
-  gasPriceInUSD: 2.5,
   loading: false,
   tokenBalances: [mockToken]
 }
@@ -79,20 +83,21 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
   getCapabilities: vi.fn(),
-  walletGetAssets: vi.fn()
+  walletGetAssets: vi.fn(),
+  updateBalance: vi.fn()
 }
 
 const mockChainAdapter: ChainAdapter = {
-  namespace: 'eip155' as ChainNamespace,
+  namespace: ConstantsUtil.CHAIN.EVM,
   networkControllerClient: mockNetworkControllerClient,
   connectionControllerClient: mockConnectionControllerClient
 }
 
 const mockChainControllerState = {
-  activeChain: 'eip155' as ChainNamespace,
+  activeChain: ConstantsUtil.CHAIN.EVM,
   activeCaipNetwork: mockNetwork,
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a' as CaipAddress,
-  chains: new Map([['eip155' as ChainNamespace, mockChainAdapter]]),
+  chains: new Map([[ConstantsUtil.CHAIN.EVM, mockChainAdapter]]),
   universalAdapter: {
     networkControllerClient: mockNetworkControllerClient,
     connectionControllerClient: mockConnectionControllerClient
@@ -129,7 +134,7 @@ describe('W3mWalletSendPreviewView', () => {
     expect(tokenPreview?.text).to.equal('5 TEST')
     expect(tokenPreview?.imageSrc).to.equal(mockToken.iconUrl)
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$50.00')
   })
 
@@ -143,7 +148,6 @@ describe('W3mWalletSendPreviewView', () => {
     const addressPreview = element.shadowRoot?.querySelectorAll('wui-preview-item')?.[1]
     expect(addressPreview?.text).to.contain('0x45')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should display profile name when available', async () => {
@@ -163,7 +167,6 @@ describe('W3mWalletSendPreviewView', () => {
     expect(addressPreview?.text).to.equal('Test User')
     expect(addressPreview?.imageSrc).to.equal('https://example.com/profile.jpg')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should handle send action', async () => {
@@ -205,7 +208,6 @@ describe('W3mWalletSendPreviewView', () => {
 
     const detailsElement = element.shadowRoot?.querySelector('w3m-wallet-send-details')
     expect(detailsElement).to.exist
-    expect(detailsElement?.networkFee).to.equal(2.5)
     expect(detailsElement?.receiverAddress).to.equal('0x456')
     expect(detailsElement?.caipNetwork).to.deep.equal(mockNetwork)
   })
@@ -238,7 +240,7 @@ describe('W3mWalletSendPreviewView', () => {
     element['token'] = newToken
     await element.updateComplete
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$100.00')
   })
 

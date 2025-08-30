@@ -1,12 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import {
-  type CaipAddress,
-  type CaipNetwork,
-  type ChainNamespace,
-  NumberUtil
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, NumberUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -16,12 +11,14 @@ import {
   RouterController,
   SwapController,
   type SwapInputTarget,
-  type SwapToken
+  type SwapToken,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -82,9 +79,11 @@ export class W3mSwapView extends LitElement {
 
   @state() private inputError = SwapController.state.inputError
 
-  @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
-
   @state() private fetchError = SwapController.state.fetchError
+
+  @state() private lastTokenPriceUpdate = 0
+
+  private minTokenPriceUpdateInterval = 10_000
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -141,8 +140,11 @@ export class W3mSwapView extends LitElement {
           this.toTokenAmount = newState.toTokenAmount
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
-          this.gasPriceInUSD = newState.gasPriceInUSD
           this.fetchError = newState.fetchError
+
+          if (newState.sourceToken && newState.toToken) {
+            this.watchTokensAndValues()
+          }
         })
       ]
     )
@@ -157,30 +159,76 @@ export class W3mSwapView extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
     clearInterval(this.interval)
+    document?.removeEventListener('visibilitychange', this.visibilityChangeHandler)
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4']} gap="3">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private watchTokensAndValues() {
+
+  private visibilityChangeHandler = () => {
+    if (document?.hidden) {
+      clearInterval(this.interval)
+      this.interval = undefined
+    } else {
+      this.startTokenPriceInterval()
+    }
+  }
+
+  private subscribeToVisibilityChange() {
+    document?.removeEventListener('visibilitychange', this.visibilityChangeHandler)
+    document?.addEventListener('visibilitychange', this.visibilityChangeHandler)
+  }
+
+  private startTokenPriceInterval = () => {
+    if (
+      this.interval &&
+      Date.now() - this.lastTokenPriceUpdate < this.minTokenPriceUpdateInterval
+    ) {
+      return
+    }
+
+    // Quick fetch tokens and values if last update is more than 10 seconds ago
+    if (
+      this.lastTokenPriceUpdate &&
+      Date.now() - this.lastTokenPriceUpdate > this.minTokenPriceUpdateInterval
+    ) {
+      this.fetchTokensAndValues()
+    }
+    clearInterval(this.interval)
     this.interval = setInterval(() => {
-      SwapController.getNetworkTokenPrice()
-      SwapController.getMyTokensWithBalance()
-      SwapController.swapTokens()
-    }, 10_000)
+      this.fetchTokensAndValues()
+    }, this.minTokenPriceUpdateInterval)
+  }
+
+  private watchTokensAndValues = () => {
+    // Only fetch tokens and values if source and to token are set
+    if (!this.sourceToken || !this.toToken) {
+      return
+    }
+
+    this.subscribeToVisibilityChange()
+    this.startTokenPriceInterval()
+  }
+
+  private fetchTokensAndValues() {
+    SwapController.getNetworkTokenPrice()
+    SwapController.getMyTokensWithBalance()
+    SwapController.swapTokens()
+    this.lastTokenPriceUpdate = Date.now()
   }
 
   private templateSwap() {
     return html`
-      <wui-flex flexDirection="column" gap="s">
-        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
+      <wui-flex flexDirection="column" gap="3">
+        <wui-flex flexDirection="column" alignItems="center" gap="2" class="swap-inputs-container">
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
@@ -212,17 +260,20 @@ export class W3mSwapView extends LitElement {
   private templateReplaceTokensButton() {
     return html`
       <wui-flex class="replace-tokens-button-container">
-        <button @click=${this.onSwitchTokens.bind(this)}>
-          <wui-icon name="recycleHorizontal" color="fg-250" size="lg"></wui-icon>
-        </button>
+        <wui-icon-box
+          @click=${this.onSwitchTokens.bind(this)}
+          icon="recycleHorizontal"
+          size="md"
+          variant="default"
+        ></wui-icon-box>
       </wui-flex>
     `
   }
 
   private templateLoading() {
     return html`
-      <wui-flex flexDirection="column" gap="l">
-        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
+      <wui-flex flexDirection="column" gap="4">
+        <wui-flex flexDirection="column" alignItems="center" gap="2" class="swap-inputs-container">
           <w3m-swap-input-skeleton target="sourceToken"></w3m-swap-input-skeleton>
           <w3m-swap-input-skeleton target="toToken"></w3m-swap-input-skeleton>
           ${this.templateReplaceTokensButton()}
@@ -254,31 +305,7 @@ export class W3mSwapView extends LitElement {
   }
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
-    const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === ChainController.getActiveNetworkTokenAddress()
-    let value = '0'
-
-    if (!balance) {
-      value = '0'
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    if (!this.gasPriceInUSD) {
-      value = balance
-      this.handleChangeAmount(target, value)
-
-      return
-    }
-
-    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).div(
-      this.sourceTokenPriceInUSD
-    )
-    const maxValue = isNetworkToken
-      ? NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
-      : NumberUtil.bigNumber(balance)
-
+    const maxValue = NumberUtil.bigNumber(balance || '0')
     this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
   }
 
@@ -306,16 +333,16 @@ export class W3mSwapView extends LitElement {
     const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
     const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
 
-    return html` <wui-flex gap="xs">
+    return html` <wui-flex gap="2">
       <wui-button
         data-testid="swap-action-button"
         class="action-button"
         fullWidth
         size="lg"
         borderRadius="xs"
-        variant=${haveNoTokenSelected ? 'neutral' : 'main'}
-        .loading=${loading}
-        .disabled=${disabled}
+        variant="accent-primary"
+        ?loading=${Boolean(loading)}
+        ?disabled=${Boolean(disabled)}
         @click=${this.onSwapPreview.bind(this)}
       >
         ${this.actionButtonLabel()}
@@ -332,11 +359,10 @@ export class W3mSwapView extends LitElement {
   }
 
   private async onSwapPreview() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     if (this.fetchError) {
       await SwapController.swapTokens()
     }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'INITIATE_SWAP',
@@ -347,7 +373,7 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

@@ -2,6 +2,7 @@ import { getNamespaceByNetworkName } from '@/tests/shared/utils/namespace'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
+import { Email } from './shared/utils/email'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
@@ -95,6 +96,61 @@ extensionTest('it should disconnect and close modal', async () => {
   await modalValidator.expectModalNotVisible()
   await modalValidator.expectDisconnected()
 })
+
+extensionTest(
+  'it should connect with extension on Solana, switch to different chain with auth connector, switch back to Solana and persist extension state',
+  async () => {
+    await modalPage.connectToExtensionMultichain('solana')
+    await modalValidator.expectConnected()
+
+    const extensionSolAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
+    await modalPage.switchNetwork('Ethereum', true)
+    await modalPage.switchActiveChain()
+    await modalPage.closeModal()
+
+    const mailsacApiKey = process.env['MAILSAC_API_KEY']
+    if (!mailsacApiKey) {
+      throw new Error('MAILSAC_API_KEY is not set')
+    }
+
+    const email = new Email(mailsacApiKey)
+    await modalPage.emailFlow({
+      emailAddress: await email.getEmailAddressToUse(),
+      context: modalPage.page.context(),
+      mailsacApiKey,
+      clickConnectButton: true
+    })
+    await modalValidator.expectConnected()
+
+    const emailEthAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
+    await modalPage.switchNetwork('Solana', true)
+    await modalValidator.expectAccountSwitched(extensionSolAddress)
+
+    const emailSolAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
+    await modalPage.closeModal()
+    await modalValidator.expectConnected()
+    await modalValidator.expectAccountButtonAddress(emailSolAddress)
+    await modalValidator.expectNoUnsupportedUIOnAccountButton()
+
+    // Disconnect from Ethereum
+    await modalPage.switchNetworkWithNetworkButton('Ethereum')
+    await modalPage.closeModal()
+    await modalValidator.expectAccountButtonAddress(emailEthAddress)
+    await modalValidator.expectNoUnsupportedUIOnAccountButton()
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickProfileWalletsMoreButton()
+    await modalPage.disconnect(false)
+  }
+)
 
 extensionTest('it should be disconnected after page refresh', async () => {
   await modalPage.page.reload()

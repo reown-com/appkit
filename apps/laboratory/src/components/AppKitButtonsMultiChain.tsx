@@ -10,11 +10,45 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { useAppKit, useAppKitAccount, useDisconnect } from '@reown/appkit/react'
+import {
+  bitcoin,
+  bitcoinTestnet,
+  mainnet,
+  polygon,
+  solana,
+  solanaTestnet
+} from '@reown/appkit/networks'
+import {
+  AppKitButton,
+  AppKitNetworkButton,
+  type CaipNetwork,
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useDisconnect
+} from '@reown/appkit/react'
 
-export function AppKitButtonsMultiChain() {
+import type { Adapter } from '../constants/appKitConfigs'
+
+function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
+  if (!activeNetwork) {
+    return mainnet
+  }
+
+  switch (activeNetwork.chainNamespace) {
+    case 'bip122':
+      return activeNetwork.id === bitcoin.id ? bitcoinTestnet : bitcoin
+    case 'solana':
+      return activeNetwork.id === solana.id ? solanaTestnet : solana
+    default:
+      return activeNetwork.id === polygon.id ? mainnet : polygon
+  }
+}
+
+export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | undefined }) {
   const { open } = useAppKit()
   const { disconnect } = useDisconnect()
+  const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
@@ -33,6 +67,33 @@ export function AppKitButtonsMultiChain() {
     open({ namespace: 'bip122' })
   }
 
+  const hasEvmAdapter =
+    adapters?.includes('wagmi') || adapters?.includes('ethers') || adapters?.includes('ethers5')
+  const hasSolanaAdapter = adapters?.includes('solana')
+  const hasBitcoinAdapter = adapters?.includes('bitcoin')
+  const isMultipleAdapter = adapters?.length && adapters.length > 1
+
+  function handleOpenSwapWithArguments() {
+    open({
+      view: 'Swap',
+      arguments: {
+        amount: '321.123',
+        fromToken: 'USDC',
+        toToken: 'ETH'
+      }
+    })
+  }
+
+  function handleSwitchNetwork() {
+    const networkToSwitch = getNetworkToSwitch(caipNetwork)
+
+    if (!networkToSwitch) {
+      return
+    }
+
+    switchNetwork(networkToSwitch)
+  }
+
   return (
     <Card marginTop={10}>
       <CardHeader>
@@ -47,33 +108,49 @@ export function AppKitButtonsMultiChain() {
                 <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
                   Default Button
                 </Text>
-                <appkit-button />
+                <AppKitButton />
               </Stack>
-              <Stack pb="2">
-                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
-                  EVM Button
-                </Text>
-                <appkit-button namespace="eip155" />
-              </Stack>
-              <Stack pb="2">
-                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
-                  Bitcoin Button
-                </Text>
-                <appkit-button namespace="bip122" />
-              </Stack>
-              <Stack pb="2">
-                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
-                  Solana Button
-                </Text>
-                <appkit-button namespace="solana" />
-              </Stack>
+              {isMultipleAdapter ? (
+                <>
+                  {hasEvmAdapter ? (
+                    <>
+                      <Stack pb="2">
+                        <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                          EVM Button
+                        </Text>
+                        <AppKitButton namespace="eip155" />
+                      </Stack>
+                    </>
+                  ) : null}
+                  {hasBitcoinAdapter ? (
+                    <>
+                      <Stack pb="2">
+                        <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                          Bitcoin Button
+                        </Text>
+                        <AppKitButton namespace="bip122" />
+                      </Stack>
+                    </>
+                  ) : null}
+                  {hasSolanaAdapter ? (
+                    <>
+                      <Stack pb="2">
+                        <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                          Solana Button
+                        </Text>
+                        <AppKitButton namespace="solana" />
+                      </Stack>
+                    </>
+                  ) : null}
+                </>
+              ) : null}
             </Stack>
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Network Button
             </Heading>
-            <appkit-network-button />
+            <AppKitNetworkButton />
           </Box>
 
           <Box>
@@ -97,6 +174,17 @@ export function AppKitButtonsMultiChain() {
                   </Button>
                   <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
                     Open Bitcoin Modal
+                  </Button>
+                  {isMultipleAdapter ? null : (
+                    <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+                      Switch Network
+                    </Button>
+                  )}
+                  <Button
+                    data-testid="open-swap-with-arguments-hook-button"
+                    onClick={handleOpenSwapWithArguments}
+                  >
+                    Open Swap with Arguments
                   </Button>
                 </Box>
               </Box>

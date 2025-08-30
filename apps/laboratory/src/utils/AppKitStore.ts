@@ -1,4 +1,4 @@
-import { proxy } from 'valtio/vanilla'
+import { proxy, ref } from 'valtio/vanilla'
 
 import type { AppKit } from '@reown/appkit'
 
@@ -9,5 +9,5 @@ export const AppKitStore = proxy<{
 })
 
 export function setAppKit(appKit: AppKit) {
-  AppKitStore.appKit = appKit
+  AppKitStore.appKit = ref(appKit)
 }

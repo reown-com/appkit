@@ -3,7 +3,7 @@ import { expect } from '@playwright/test'
 import { ModalValidator } from './ModalValidator'
 
 export const EOA = 'EOA'
-export const SMART_ACCOUNT = 'smart account'
+export const SMART_ACCOUNT = 'Smart Account'
 
 type AccountType = typeof EOA | typeof SMART_ACCOUNT
 
@@ -31,10 +31,7 @@ export class ModalWalletValidator extends ModalValidator {
       this.page.getByTestId('account-toggle-preferred-account-type'),
       'Preferred account toggle should show correct value'
     ).toContainText(type)
-  }
-
-  async expectChangedAddressAfterSwitchingAccountType(previousAddress: string) {
-    await expect(this.page.getByTestId('w3m-address')).not.toHaveText(previousAddress)
+    await this.page.waitForTimeout(1000)
   }
 
   async expectCallStatusPending() {

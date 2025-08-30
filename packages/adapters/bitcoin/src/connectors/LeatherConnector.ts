@@ -5,9 +5,9 @@ import type {
   SignPsbtResponseBody
 } from '@leather.io/rpc'
 
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
-import type { BitcoinConnector } from '../index.js'
 import { SatsConnectConnector } from './SatsConnectConnector.js'
 
 export class LeatherConnector extends SatsConnectConnector {
@@ -69,12 +69,16 @@ export class LeatherConnector extends SatsConnectConnector {
 
   public override async signPSBT({
     psbt,
-    broadcast = false
+    broadcast = false,
+    signInputs
   }: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse> {
+    const signInputObj = signInputs?.[0]
     const params: LeatherConnector.SignPSBTParams = {
       hex: Buffer.from(psbt, 'base64').toString('hex'),
       network: this.getNetwork(),
-      broadcast
+      broadcast,
+      signAtIndex: signInputObj?.index,
+      allowedSighash: signInputObj?.sighashTypes
     }
 
     // @ts-expect-error - expected LeatherWallet params don't match sats-connect

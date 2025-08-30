@@ -1,16 +1,16 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { type ChainNamespace, DateUtil } from '@reown/appkit-common'
+import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  TransactionsController
+  TransactionsController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import type { TransactionType } from '@reown/appkit-ui'
@@ -100,16 +100,10 @@ export class W3mActivityList extends LitElement {
 
   // -- Private ------------------------------------------- //
   private updateTransactionView() {
-    const currentNetwork = ChainController.state.activeCaipNetwork?.caipNetworkId
-    const lastNetworkInView = TransactionsController.state.lastNetworkInView
-
-    if (lastNetworkInView !== currentNetwork) {
-      TransactionsController.resetTransactions()
-      if (this.caipAddress) {
-        TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
-      }
+    TransactionsController.resetTransactions()
+    if (this.caipAddress) {
+      TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
     }
-    TransactionsController.setLastNetworkInView(currentNetwork)
   }
 
   private templateTransactionsByYear() {
@@ -149,13 +143,13 @@ export class W3mActivityList extends LitElement {
             <wui-flex
               alignItems="center"
               flexDirection="row"
-              .padding=${['xs', 's', 's', 's'] as const}
+              .padding=${['2', '3', '3', '3'] as const}
             >
-              <wui-text variant="paragraph-500" color="fg-200" data-testid="group-title"
-                >${groupTitle}</wui-text
-              >
+              <wui-text variant="md-medium" color="secondary" data-testid="group-title">
+                ${groupTitle}
+              </wui-text>
             </wui-flex>
-            <wui-flex flexDirection="column" gap="xs">
+            <wui-flex flexDirection="column" gap="2">
               ${this.templateTransactions(transactions, isLastGroup)}
             </wui-flex>
           </wui-flex>
@@ -167,10 +161,10 @@ export class W3mActivityList extends LitElement {
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
     const { date, descriptions, direction, isAllNFT, images, status, transfers, type } =
       this.getTransactionListItemProps(transaction)
-    const haveMultipleTransfers = transfers?.length > 1
-    const haveTwoTransfers = transfers?.length === 2
+    const hasMultipleTransfers = transfers?.length > 1
+    const hasTwoTransfers = transfers?.length === 2
 
-    if (haveTwoTransfers && !isAllNFT) {
+    if (hasTwoTransfers && !isAllNFT) {
       return html`
         <wui-transaction-list-item
           date=${date}
@@ -184,7 +178,7 @@ export class W3mActivityList extends LitElement {
       `
     }
 
-    if (haveMultipleTransfers) {
+    if (hasMultipleTransfers) {
       return transfers.map((transfer, index) => {
         const description = TransactionUtil.getTransferDescription(transfer)
         const isLastTransfer = isLastTransaction && index === transfers.length - 1
@@ -230,24 +224,14 @@ export class W3mActivityList extends LitElement {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
-      gap="xl"
+      .padding=${['10', '5', '10', '5'] as const}
+      gap="5"
       data-testid="empty-activity-state"
     >
-      <wui-icon-box
-        backgroundColor="gray-glass-005"
-        background="gray"
-        iconColor="fg-200"
-        icon="wallet"
-        size="lg"
-        ?border=${true}
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
-      <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        <wui-text align="center" variant="paragraph-500" color="fg-100"
-          >No Transactions yet</wui-text
-        >
-        <wui-text align="center" variant="small-500" color="fg-200"
+      <wui-icon-box color="default" icon="wallet" size="xl"></wui-icon-box>
+      <wui-flex flexDirection="column" alignItems="center" gap="2">
+        <wui-text align="center" variant="lg-medium" color="primary">No Transactions yet</wui-text>
+        <wui-text align="center" variant="lg-regular" color="secondary"
           >Start trading on dApps <br />
           to grow your wallet!</wui-text
         >
@@ -261,25 +245,19 @@ export class W3mActivityList extends LitElement {
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
-      gap="l"
+      gap="4"
       data-testid="empty-account-state"
     >
-      <wui-icon-box
-        icon="swapHorizontal"
-        size="inherit"
-        iconColor="fg-200"
-        backgroundColor="fg-200"
-        iconSize="lg"
-      ></wui-icon-box>
+      <wui-icon-box icon="swapHorizontal" size="lg" color="default"></wui-icon-box>
       <wui-flex
         class="textContent"
-        gap="xs"
+        gap="2"
         flexDirection="column"
         justifyContent="center"
         flexDirection="column"
       >
-        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
-        <wui-text variant="small-400" align="center" color="fg-200"
+        <wui-text variant="md-regular" align="center" color="primary">No activity yet</wui-text>
+        <wui-text variant="sm-regular" align="center" color="secondary"
           >Your next transactions will appear here</wui-text
         >
       </wui-flex>
@@ -310,7 +288,6 @@ export class W3mActivityList extends LitElement {
   }
 
   private createPaginationObserver() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
     const { projectId } = OptionsController.state
 
     this.paginationObserver = new IntersectionObserver(([element]) => {
@@ -324,7 +301,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+              getPreferredAccountType(ChainController.state.activeChain) ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })

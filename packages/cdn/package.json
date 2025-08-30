@@ -1,12 +1,13 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
     "dist",
-    "!tsconfig.tsbuildinfo"
+    "!tsconfig.tsbuildinfo",
+    "README.md"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
@@ -21,7 +22,7 @@
     "vite-plugin-node-polyfills": "0.23.0"
   },
   "peerDependencies": {
-    "typescript": "5.7.3"
+    "typescript": "5.8.3"
   },
   "peerDependenciesMeta": {
     "typescript": {
@@ -35,11 +36,11 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@wagmi/connectors": "5.7.12",
-    "@wagmi/core": "2.16.7",
-    "viem": "2.23.13",
-    "vite": "5.4.12",
-    "wagmi": "2.14.16"
+    "@wagmi/connectors": "5.9.3",
+    "@wagmi/core": "2.19.0",
+    "viem": "2.33.3",
+    "vite": "5.4.19",
+    "wagmi": "2.16.3"
   },
   "keywords": [
     "appkit",

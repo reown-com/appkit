@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Action, ActionProps } from '../Action'
+import { Action, type ActionProps } from '../Action'
 
 export function Remove(props: ActionProps) {
   return (

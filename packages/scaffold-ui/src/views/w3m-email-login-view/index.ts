@@ -11,7 +11,7 @@ export class W3mEmailLoginView extends LitElement {
   // -- Members ------------------------------------------- //
   protected authConnector = ConnectorController.getAuthConnector()
 
-  private isEmailEnabled = OptionsController.state.features?.email
+  private isEmailEnabled = OptionsController.state.remoteFeatures?.email
 
   private isAuthEnabled = this.checkIfAuthEnabled(ConnectorController.state.connectors)
 
@@ -36,11 +36,7 @@ export class W3mEmailLoginView extends LitElement {
       throw new Error('w3m-email-login-view: No auth connector provided')
     }
 
-    return html`<wui-flex
-      flexDirection="column"
-      .padding=${['3xs', 'm', 'm', 'm'] as const}
-      gap="l"
-    >
+    return html`<wui-flex flexDirection="column" .padding=${['1', '3', '3', '3'] as const} gap="4">
       <w3m-email-login-widget></w3m-email-login-widget>
     </wui-flex> `
   }

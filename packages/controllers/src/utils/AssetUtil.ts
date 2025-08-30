@@ -19,7 +19,13 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   // Polkadot
   polkadot: '',
   // Bitcoin
-  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00'
+  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
+  // Cosmos
+  cosmos: '',
+  // Sui
+  sui: '',
+  // Stacks
+  stacks: ''
 }
 
 // -- State --------------------------------------------- //
@@ -104,6 +110,10 @@ export const AssetUtil = {
   getConnectorImage(connector?: Connector) {
     if (connector?.imageUrl) {
       return connector.imageUrl
+    }
+
+    if (connector?.info?.icon) {
+      return connector.info.icon
     }
 
     if (connector?.imageId) {

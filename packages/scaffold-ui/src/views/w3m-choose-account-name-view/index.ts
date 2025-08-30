@@ -1,13 +1,13 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { type ChainNamespace, NavigationUtil } from '@reown/appkit-common'
+import { NavigationUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
-  RouterController
+  RouterController,
+  getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -33,8 +33,8 @@ export class W3mChooseAccountNameView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="xxl"
-        .padding=${['0', '0', 'l', '0'] as const}
+        gap="6"
+        .padding=${['0', '0', '4', '0'] as const}
       >
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
         <wui-link
@@ -53,24 +53,18 @@ export class W3mChooseAccountNameView extends LitElement {
   private onboardingTemplate() {
     return html` <wui-flex
       flexDirection="column"
-      gap="xxl"
+      gap="6"
       alignItems="center"
-      .padding=${['0', 'xxl', '0', 'xxl'] as const}
+      .padding=${['0', '6', '0', '6'] as const}
     >
-      <wui-flex gap="s" alignItems="center" justifyContent="center">
-        <wui-icon-box
-          icon="id"
-          size="xl"
-          iconSize="xxl"
-          iconColor="fg-200"
-          backgroundColor="fg-200"
-        ></wui-icon-box>
+      <wui-flex gap="3" alignItems="center" justifyContent="center">
+        <wui-icon-box icon="id" size="xl" iconSize="xxl" color="default"></wui-icon-box>
       </wui-flex>
-      <wui-flex flexDirection="column" alignItems="center" gap="s">
-        <wui-text align="center" variant="medium-600" color="fg-100">
+      <wui-flex flexDirection="column" alignItems="center" gap="3">
+        <wui-text align="center" variant="lg-medium" color="primary">
           Choose your account name
         </wui-text>
-        <wui-text align="center" variant="paragraph-400" color="fg-100">
+        <wui-text align="center" variant="md-regular" color="primary">
           Finally say goodbye to 0x addresses, name your account to make it easier to exchange
           assets
         </wui-text>
@@ -80,8 +74,8 @@ export class W3mChooseAccountNameView extends LitElement {
 
   private buttonsTemplate() {
     return html`<wui-flex
-      .padding=${['0', '2l', '0', '2l'] as const}
-      gap="s"
+      .padding=${['0', '8', '0', '8'] as const}
+      gap="3"
       class="continue-button-container"
     >
       <wui-button
@@ -96,15 +90,13 @@ export class W3mChooseAccountNameView extends LitElement {
   }
 
   private handleContinue() {
-    const activeChainNamespace = ChainController.state.activeChain as ChainNamespace
-
     RouterController.push('RegisterAccountName')
     EventsController.sendEvent({
       type: 'track',
       event: 'OPEN_ENS_FLOW',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountTypes?.[activeChainNamespace] ===
+          getPreferredAccountType(ChainController.state.activeChain) ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

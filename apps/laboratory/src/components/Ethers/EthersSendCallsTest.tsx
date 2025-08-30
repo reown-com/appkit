@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
@@ -12,25 +12,26 @@ import {
   StatNumber
 } from '@chakra-ui/react'
 import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
-import { UniversalProvider } from '@walletconnect/universal-provider'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
-import { type Address, parseGwei } from 'viem'
+import { type WalletCapabilities, parseGwei, toHex } from 'viem'
 
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import type { Address, Hex } from '@reown/appkit-common'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import { AddTransactionModal } from '@/src/components/AddTransactionModal'
 import { useChakraToast } from '@/src/components/Toast'
+import { useCapabilities } from '@/src/hooks/useCapabilities'
+import { useEthersActiveCapabilities } from '@/src/hooks/useEthersActiveCapabilities'
 import { vitalikEthAddress } from '@/src/utils/DataUtil'
-import {
-  EIP_5792_RPC_METHODS,
-  WALLET_CAPABILITIES,
-  getCapabilitySupportedChainInfo
-} from '@/src/utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
-type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
-
-export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: string) => void }) {
+export function EthersSendCallsTest({
+  onCallsHash,
+  capabilities
+}: {
+  onCallsHash: (hash: string) => void
+  capabilities: WalletCapabilities
+}) {
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
@@ -39,6 +40,12 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
   const [transactionsToBatch, setTransactionsToBatch] = useState<{ value: string; to: string }[]>(
     []
   )
+  const { isMethodSupported } = useEthersActiveCapabilities()
+  const { isSupported, currentChainsInfo, supportedChains, supportedChainsName } = useCapabilities({
+    capabilities,
+    capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
+    chainId: chainId ? toHex(chainId) : undefined
+  })
   const toast = useChakraToast()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -47,8 +54,8 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
     setTransactionsToBatch(prev => [
       ...prev,
       {
-        to: args.to as `0x${string}`,
-        data: '0x' as `0x${string}`,
+        to: args.to as Address,
+        data: '0x' as Hex,
         value: `0x${parseGwei(args.eth).toString(16)}`
       }
     ])
@@ -58,30 +65,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
     setIsOpen(false)
   }
 
-  const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
-    Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
-  >([])
-
   const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (address && walletProvider) {
-      getCapabilitySupportedChainInfo(
-        WALLET_CAPABILITIES.ATOMIC_BATCH,
-        walletProvider as unknown as Provider,
-        address
-      ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
-    } else {
-      setAtomicBatchSupportedChains([])
-    }
-  }, [address, walletProvider, isConnected])
-
-  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
-    .map(ci => ci.chainName)
-    .join(', ')
-  const currentChainsInfo = atomicBatchSupportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chainId)
-  )
 
   function onAddTransactionButtonClick() {
     setIsOpen(true)
@@ -103,8 +87,8 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
       const provider = new BrowserProvider(walletProvider, chainId)
       const calls = [
         {
-          to: vitalikEthAddress as `0x${string}`,
-          data: '0x' as `0x${string}`,
+          to: vitalikEthAddress as Address,
+          data: '0x' as Hex,
           value: `0x0`
         },
         {
@@ -119,10 +103,8 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
         from: address,
         calls: transactionsToBatch.length ? transactionsToBatch : calls
       }
-      const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
-        sendCallsParams
-      ])
-
+      const result = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [sendCallsParams])
+      const batchCallHash = result?.id
       setLastCallsBatchId(batchCallHash)
       toast({
         title: 'Success',
@@ -133,27 +115,13 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
       onCallsHash(batchCallHash)
     } catch {
       toast({
-        title: 'Error',
+        title: 'SendCalls Error',
         description: 'Failed to send calls',
         type: 'error'
       })
     } finally {
       setLoading(false)
     }
-  }
-  function isSendCallsSupported(): boolean {
-    if (walletProvider instanceof W3mFrameProvider) {
-      return true
-    }
-    if (walletProvider instanceof UniversalProvider) {
-      return Boolean(
-        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
-          EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-        )
-      )
-    }
-
-    return false
   }
 
   if (!isConnected || !walletProvider || !address) {
@@ -163,17 +131,26 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
       </Text>
     )
   }
-  if (!isSendCallsSupported()) {
+  if (!isMethodSupported(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_sendCalls rpc
+        Wallet does not support the "wallet_sendCalls" RPC method
       </Text>
     )
   }
-  if (atomicBatchSupportedChains.length === 0) {
+
+  if (supportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account does not support atomic batch feature
+        Account does not support the atomic batch feature
+      </Text>
+    )
+  }
+
+  if (!isSupported) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Switch to {supportedChainsName} to test this feature
       </Text>
     )
   }
@@ -206,7 +183,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
                 </>
               ))
             ) : (
-              <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+              <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
                 Send Batch Calls to Vitalik
               </Button>
             )}
@@ -220,7 +197,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
           </Link>
         </Stack>
         {transactionsToBatch.length ? (
-          <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+          <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
             Send Calls
           </Button>
         ) : null}
@@ -237,7 +214,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
     </>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainsNames} to test atomic batch feature
+      Switch to {supportedChainsName} to test atomic batch feature
     </Text>
   )
 }

@@ -2,8 +2,9 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-controllers'
-import { AssetUtil, ConnectorController } from '@reown/appkit-controllers'
+import { AssetUtil, ConnectionController, ConnectorController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
@@ -23,8 +24,12 @@ export class W3mConnectFeaturedWidget extends LitElement {
       return null
     }
 
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${this.wallets.map(
           wallet => html`
             <wui-list-wallet
@@ -33,6 +38,8 @@ export class W3mConnectFeaturedWidget extends LitElement {
               name=${wallet.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
               tabIdx=${ifDefined(this.tabIdx)}
+              size="sm"
+              ?disabled=${hasWcConnection}
             >
             </wui-list-wallet>
           `

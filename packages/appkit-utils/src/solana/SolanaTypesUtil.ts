@@ -51,6 +51,7 @@ export interface Provider
   connect: (params?: {
     chainId?: string
     onUri?: ((uri: string) => void) | undefined
+    socialUri?: string
   }) => Promise<string>
   disconnect: () => Promise<void>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
@@ -113,3 +114,11 @@ export type Metadata = {
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
 
 export type GetActiveChain = () => CaipNetwork | undefined
+
+export type SPLTokenTransactionArgs = {
+  provider: Provider
+  connection: Connection
+  to: string
+  amount: number
+  tokenMint: string
+}

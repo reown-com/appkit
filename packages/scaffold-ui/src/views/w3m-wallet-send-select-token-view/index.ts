@@ -6,7 +6,8 @@ import {
   ChainController,
   CoreHelperUtil,
   RouterController,
-  SendController
+  SendController,
+  SwapController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -39,6 +40,7 @@ export class W3mSendSelectTokenView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+    this.fetchBalancesAndNetworkPrice()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
@@ -63,9 +65,25 @@ export class W3mSendSelectTokenView extends LitElement {
 
   // -- Private ------------------------------------------- //
 
+  private async fetchBalancesAndNetworkPrice() {
+    if (!this.tokenBalances || this.tokenBalances?.length === 0) {
+      await this.fetchBalances()
+      await this.fetchNetworkPrice()
+    }
+  }
+
+  private async fetchBalances() {
+    await SendController.fetchTokenBalance()
+    SendController.fetchNetworkBalance()
+  }
+
+  private async fetchNetworkPrice() {
+    await SwapController.getNetworkTokenPrice()
+  }
+
   private templateSearchInput() {
     return html`
-      <wui-flex gap="xs" padding="s">
+      <wui-flex gap="2" padding="3">
         <wui-input-text
           @inputChange=${this.onInputChange.bind(this)}
           class="network-search-input"
@@ -93,12 +111,12 @@ export class W3mSendSelectTokenView extends LitElement {
       <wui-flex
         class="contentContainer"
         flexDirection="column"
-        .padding=${['0', 's', '0', 's'] as const}
+        .padding=${['0', '3', '0', '3'] as const}
       >
-        <wui-flex justifyContent="flex-start" .padding=${['m', 's', 's', 's'] as const}>
-          <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
+        <wui-flex justifyContent="flex-start" .padding=${['4', '3', '3', '3'] as const}>
+          <wui-text variant="md-medium" color="secondary">Your tokens</wui-text>
         </wui-flex>
-        <wui-flex flexDirection="column" gap="xs">
+        <wui-flex flexDirection="column" gap="2">
           ${this.filteredTokens && this.filteredTokens.length > 0
             ? this.filteredTokens.map(
                 token =>
@@ -113,31 +131,25 @@ export class W3mSendSelectTokenView extends LitElement {
                   ></wui-list-token>`
               )
             : html`<wui-flex
-                .padding=${['4xl', '0', '0', '0'] as const}
+                .padding=${['20', '0', '0', '0'] as const}
                 alignItems="center"
                 flexDirection="column"
-                gap="l"
+                gap="4"
               >
-                <wui-icon-box
-                  icon="coinPlaceholder"
-                  size="inherit"
-                  iconColor="fg-200"
-                  backgroundColor="fg-200"
-                  iconSize="lg"
-                ></wui-icon-box>
+                <wui-icon-box icon="coinPlaceholder" color="default" size="lg"></wui-icon-box>
                 <wui-flex
                   class="textContent"
-                  gap="xs"
+                  gap="2"
                   flexDirection="column"
                   justifyContent="center"
                   flexDirection="column"
                 >
-                  <wui-text variant="paragraph-500" align="center" color="fg-100"
-                    >No tokens found</wui-text
-                  >
-                  <wui-text variant="small-400" align="center" color="fg-200"
-                    >Your tokens will appear here</wui-text
-                  >
+                  <wui-text variant="lg-medium" align="center" color="primary">
+                    No tokens found
+                  </wui-text>
+                  <wui-text variant="lg-regular" align="center" color="secondary">
+                    Your tokens will appear here
+                  </wui-text>
                 </wui-flex>
                 <wui-link @click=${this.onBuyClick.bind(this)}>Buy</wui-link>
               </wui-flex>`}

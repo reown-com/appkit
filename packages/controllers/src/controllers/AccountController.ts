@@ -3,17 +3,17 @@ import { proxy, ref } from 'valtio/vanilla'
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import type { Balance } from '@reown/appkit-common'
 
+import { BalanceUtil } from '../utils/BalanceUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
-  AccountType,
-  AccountTypeMap,
   ConnectedWalletInfo,
+  NamespaceTypeMap,
   PreferredAccountTypes,
   SocialProvider,
   User
 } from '../utils/TypeUtil.js'
-import { BlockchainApiController } from './BlockchainApiController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ChainController } from './ChainController.js'
 import { SnackController } from './SnackController.js'
 
@@ -24,7 +24,6 @@ export interface AccountControllerState {
   user?: User
   address?: string
   addressLabels: Map<string, string>
-  allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
   balanceLoading?: boolean
@@ -36,7 +35,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   shouldUpdateToAddress?: string
   connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountTypes?: PreferredAccountTypes
+  preferredAccountType?: NamespaceTypeMap[keyof NamespaceTypeMap]
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
@@ -48,12 +47,11 @@ const state = proxy<AccountControllerState>({
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
-  addressLabels: new Map(),
-  allAccounts: []
+  addressLabels: new Map()
 })
 
 // -- Controller ---------------------------------------- //
-export const AccountController = {
+const controller = {
   state,
 
   replaceState(newState: AccountControllerState | undefined) {
@@ -103,7 +101,11 @@ export const AccountController = {
   },
 
   getCaipAddress(chain: ChainNamespace | undefined) {
-    return ChainController.getAccountProp('caipAddress', chain)
+    if (!chain) {
+      return undefined
+    }
+
+    return ChainController.state.chains.get(chain)?.accountState?.caipAddress
   },
 
   setCaipAddress(
@@ -168,18 +170,22 @@ export const AccountController = {
     ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 
-  setAllAccounts<N extends ChainNamespace>(accounts: AccountTypeMap[N][], namespace: N) {
-    ChainController.setAccountProp('allAccounts', accounts, namespace)
-  },
-
   addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.set(address, label)
     ChainController.setAccountProp('addressLabels', map, chain)
   },
 
   removeAddressLabel(address: string, chain: ChainNamespace | undefined) {
-    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
+    if (!chain) {
+      return
+    }
+
+    const map = ChainController.state.chains.get(chain)?.accountState?.addressLabels || new Map()
     map.delete(address)
     ChainController.setAccountProp('addressLabels', map, chain)
   },
@@ -195,18 +201,7 @@ export const AccountController = {
     preferredAccountType: PreferredAccountTypes[ChainNamespace],
     chain: ChainNamespace
   ) {
-    ChainController.setAccountProp(
-      'preferredAccountTypes',
-      {
-        ...state.preferredAccountTypes,
-        [chain]: preferredAccountType
-      },
-      chain
-    )
-  },
-
-  setPreferredAccountTypes(preferredAccountTypes: PreferredAccountTypes) {
-    state.preferredAccountTypes = preferredAccountTypes
+    ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   },
 
   setSocialProvider(
@@ -242,6 +237,7 @@ export const AccountController = {
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+
     if (
       state.lastRetry &&
       !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
@@ -253,21 +249,13 @@ export const AccountController = {
 
     try {
       if (address && chainId && chain) {
-        const response = await BlockchainApiController.getBalance(address, chainId)
+        const balance = await BalanceUtil.getMyTokensWithBalance()
 
-        /*
-         * The 1Inch API includes many low-quality tokens in the balance response,
-         * which appear inconsistently. This filter prevents them from being displayed.
-         */
-        const filteredBalances = response.balances.filter(
-          balance => balance.quantity.decimals !== '0'
-        )
-
-        this.setTokenBalance(filteredBalances, chain)
+        AccountController.setTokenBalance(balance, chain)
         state.lastRetry = undefined
         state.balanceLoading = false
 
-        return filteredBalances
+        return balance
       }
     } catch (error) {
       state.lastRetry = Date.now()
@@ -285,3 +273,5 @@ export const AccountController = {
     ChainController.resetAccount(chain)
   }
 }
+
+export const AccountController = withErrorBoundary(controller)

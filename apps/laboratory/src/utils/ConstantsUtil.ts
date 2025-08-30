@@ -8,11 +8,13 @@ import {
   baseSepolia,
   berachain,
   bitcoin,
+  bitcoinSignet,
   bitcoinTestnet,
   gnosis,
   hedera,
   mainnet,
   mantle,
+  monadTestnet,
   optimism,
   polygon,
   sepolia,
@@ -81,7 +83,8 @@ const EvmNetworks = [
   hedera,
   aurora,
   mantle,
-  abstract
+  abstract,
+  monadTestnet
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
@@ -101,7 +104,10 @@ const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as 
   ...AppKitNetwork[]
 ]
 
-const BitcoinNetworks = [bitcoin, bitcoinTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
+const BitcoinNetworks = [bitcoin, bitcoinTestnet, bitcoinSignet] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -168,7 +174,8 @@ export const ConstantsUtil = {
     'trust',
     'coinbase',
     'rainbow',
-    'phantom'
+    'phantom',
+    'haha'
   ] as Wallet[],
   SolanaWalletButtons: [
     'walletConnect',

@@ -1,3 +1,4 @@
+import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from './TypeUtil.js'
 
 export const NetworkUtil = {
@@ -17,5 +18,34 @@ export const NetworkUtil = {
 
   getFirstNetworkByNamespace(networks: CaipNetwork[] | undefined, namespace: ChainNamespace) {
     return this.getNetworksByNamespace(networks, namespace)[0]
+  },
+
+  getNetworkNameByCaipNetworkId(
+    caipNetworks: CaipNetwork[],
+    caipNetworkId: CaipNetworkId
+  ): string | undefined {
+    if (!caipNetworkId) {
+      return undefined
+    }
+
+    const caipNetwork = caipNetworks.find(network => network.caipNetworkId === caipNetworkId)
+
+    if (caipNetwork) {
+      return caipNetwork.name
+    }
+
+    const [namespace] = caipNetworkId.split(':') as [ChainNamespace]
+
+    return ConstantsUtil.CHAIN_NAME_MAP?.[namespace] || undefined
   }
 }
+
+export const AVAILABLE_NAMESPACES: ChainNamespace[] = [
+  'eip155',
+  'solana',
+  'polkadot',
+  'bip122',
+  'cosmos',
+  'sui',
+  'stacks'
+] as const

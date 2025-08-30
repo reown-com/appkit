@@ -3,8 +3,6 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
-  BlockchainApiController,
   ConnectionController,
   CoreHelperUtil,
   OnRampController,
@@ -46,8 +44,6 @@ export class W3mBuyInProgressView extends LitElement {
 
   @state() private error = false
 
-  @state() private startTime: number | null = null
-
   @property({ type: Boolean }) public isMobile = false
 
   @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
@@ -61,7 +57,6 @@ export class W3mBuyInProgressView extends LitElement {
         })
       ]
     )
-    this.watchTransactions()
   }
 
   public override disconnectedCallback() {
@@ -90,8 +85,8 @@ export class W3mBuyInProgressView extends LitElement {
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-visual
@@ -104,9 +99,7 @@ export class W3mBuyInProgressView extends LitElement {
           ${this.error ? null : this.loaderTemplate()}
 
           <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
+            color="error"
             icon="close"
             size="sm"
             border
@@ -114,19 +107,24 @@ export class W3mBuyInProgressView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+        <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          gap="2"
+          .padding=${['4', '0', '0', '0'] as const}
+        >
+          <wui-text variant="md-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text align="center" variant="sm-medium" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         ${this.error ? this.tryAgainTemplate() : null}
       </wui-flex>
 
-      <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const} justifyContent="center">
-        <wui-link @click=${this.onCopyUri} color="fg-200">
-          <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+      <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
+        <wui-link @click=${this.onCopyUri} color="secondary">
+          <wui-icon size="sm" color="default" slot="iconLeft" name="copy"></wui-icon>
           Copy link
         </wui-link>
       </wui-flex>
@@ -134,58 +132,6 @@ export class W3mBuyInProgressView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchTransactions() {
-    if (!this.selectedOnRampProvider) {
-      return
-    }
-
-    switch (this.selectedOnRampProvider.name) {
-      case 'coinbase':
-        this.startTime = Date.now()
-        this.initializeCoinbaseTransactions()
-        break
-      default:
-        break
-    }
-  }
-
-  private async initializeCoinbaseTransactions() {
-    await this.watchCoinbaseTransactions()
-    this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 4000)
-  }
-
-  private async watchCoinbaseTransactions() {
-    try {
-      const address = AccountController.state.address
-
-      if (!address) {
-        throw new Error('No address found')
-      }
-
-      const coinbaseResponse = await BlockchainApiController.fetchTransactions({
-        account: address,
-        onramp: 'coinbase'
-      })
-
-      const newTransactions = coinbaseResponse.data.filter(
-        tx =>
-          // @ts-expect-error - start time will always be set at this point
-          new Date(tx.metadata.minedAt) > new Date(this.startTime) ||
-          tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
-      )
-
-      if (newTransactions.length) {
-        clearInterval(this.intervalId)
-        RouterController.replace('OnRampActivity')
-      } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
-        clearInterval(this.intervalId)
-        this.error = true
-      }
-    } catch (error) {
-      SnackController.showError(error)
-    }
-  }
-
   private onTryAgain() {
     if (!this.selectedOnRampProvider) {
       return

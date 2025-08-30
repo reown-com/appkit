@@ -22,6 +22,7 @@ import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-loading-thumbnail'
 import '@reown/appkit-ui/wui-logo'
 import '@reown/appkit-ui/wui-text'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'
@@ -44,10 +45,28 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() protected message = 'Connect in the provider window'
 
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  private address = AccountController.state.address
+
+  private connectionsByNamespace = ConnectionController.getConnections(
+    ChainController.state.activeChain
+  )
+
+  private hasMultipleConnections = this.connectionsByNamespace.length > 0
+
   public authConnector = ConnectorController.getAuthConnector()
 
   public constructor() {
     super()
+    const abortController = ErrorUtil.EmbeddedWalletAbortController
+
+    abortController.signal.addEventListener('abort', () => {
+      if (this.socialWindow) {
+        this.socialWindow.close()
+        AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+      }
+    })
     this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
@@ -57,8 +76,18 @@ export class W3mConnectingSocialView extends LitElement {
           if (val.socialWindow) {
             this.socialWindow = val.socialWindow
           }
-          if (val.address) {
-            if (ModalController.state.open || OptionsController.state.enableEmbedded) {
+        }),
+        OptionsController.subscribeKey('remoteFeatures', val => {
+          this.remoteFeatures = val
+        }),
+        AccountController.subscribeKey('address', val => {
+          const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+
+          if (val && val !== this.address) {
+            if (this.hasMultipleConnections && isMultiWalletEnabled) {
+              RouterController.replace('ProfileWallets')
+              SnackController.showSuccess('New Wallet Added')
+            } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
               ModalController.close()
             }
           }
@@ -84,28 +113,20 @@ export class W3mConnectingSocialView extends LitElement {
         data-error=${ifDefined(this.error)}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="6"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-logo logo=${ifDefined(this.socialProvider)}></wui-logo>
           ${this.error ? null : this.loaderTemplate()}
-          <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
-            icon="close"
-            size="sm"
-            border
-            borderColor="wui-color-bg-125"
-          ></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
         </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100"
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
+          <wui-text align="center" variant="lg-medium" color="primary"
             >Log in with
             <span class="capitalize">${this.socialProvider ?? 'Social'}</span></wui-text
           >
-          <wui-text align="center" variant="small-400" color=${this.error ? 'error-100' : 'fg-200'}
+          <wui-text align="center" variant="lg-regular" color=${this.error ? 'error' : 'secondary'}
             >${this.message}</wui-text
           ></wui-flex
         >
@@ -142,14 +163,18 @@ export class W3mConnectingSocialView extends LitElement {
                 properties: { provider: this.socialProvider }
               })
             }
-            await this.authConnector.provider.connectSocial(uri)
+            await ConnectionController.connectExternal(
+              {
+                id: this.authConnector.id,
+                type: this.authConnector.type,
+                socialUri: uri
+              },
+              this.authConnector.chain
+            )
 
             if (this.socialProvider) {
               StorageUtil.setConnectedSocialProvider(this.socialProvider)
-              await ConnectionController.connectExternal(
-                this.authConnector,
-                this.authConnector.chain
-              )
+
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',

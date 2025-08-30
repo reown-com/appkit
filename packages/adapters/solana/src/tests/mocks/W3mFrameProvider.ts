@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 
+import { ErrorUtil } from '@reown/appkit-utils'
 import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
@@ -7,7 +8,13 @@ import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { TestConstants } from '../util/TestConstants.js'
 
 export function mockW3mFrameProvider() {
-  const w3mFrame = W3mFrameProviderSingleton.getInstance({ projectId: 'projectId' })
+  const w3mFrame = W3mFrameProviderSingleton.getInstance({
+    projectId: 'projectId',
+    chainId: 1,
+    abortController: ErrorUtil.EmbeddedWalletAbortController,
+    getActiveCaipNetwork: () => TestConstants.chains[0],
+    getCaipNetworks: () => TestConstants.chains
+  })
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.disconnect = vi.fn(() => Promise.resolve(undefined))
@@ -40,7 +47,9 @@ export function mockW3mFrameProvider() {
         return Promise.reject(new Error('not implemented'))
     }
   })
-  w3mFrame.switchNetwork = vi.fn((chainId: string | number) => Promise.resolve({ chainId }))
+  w3mFrame.switchNetwork = vi.fn((args: { chainId: string | number }) =>
+    Promise.resolve({ chainId: args.chainId })
+  )
   w3mFrame.getUser = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.user = mockSession()
 

@@ -2,9 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { Connector } from '@reown/appkit-controllers'
 import {
   AssetController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   RouterController
@@ -53,15 +55,21 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
     const connectorImage = connector.imageUrl || this.connectorImages[connector?.imageId ?? '']
 
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+
     return html`
       <wui-list-wallet
         imageSrc=${ifDefined(connectorImage)}
         name=${connector.name ?? 'Unknown'}
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"
-        tagVariant="main"
+        tagVariant="accent"
         tabIdx=${ifDefined(this.tabIdx)}
         data-testid="wallet-selector-walletconnect"
+        size="sm"
+        ?disabled=${hasWcConnection}
       >
       </wui-list-wallet>
     `

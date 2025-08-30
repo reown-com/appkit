@@ -3,15 +3,15 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { AccountController, RouterController } from '@reown/appkit-controllers'
+import { AccountController, OptionsController, RouterController } from '@reown/appkit-controllers'
 
 import { W3mAccountTokensWidget } from '../../src/partials/w3m-account-tokens-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ----------------------------------------- //
 const LIST_TOKEN = 'wui-list-token'
-const BUY_CRYPTO = 'buy-crypto'
-const RECEIVE_CRYPTO = 'receive-funds'
+const BUY_CRYPTO = 'w3m-account-onramp-button'
+const RECEIVE_CRYPTO = 'w3m-account-receive-button'
 
 const BALANCE = {
   name: 'Ethereum',
@@ -31,9 +31,17 @@ describe('W3mAccountTokensWidget', () => {
   })
 
   it('it should show default content if no tokens exist', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: {
+        onramp: ['meld']
+      }
+    })
+
     const accountTokensWidget: W3mAccountTokensWidget = await fixture(
       html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
     )
+
     const buyCrypto = HelpersUtil.getByTestId(accountTokensWidget, BUY_CRYPTO)
     const receiveFunds = HelpersUtil.getByTestId(accountTokensWidget, RECEIVE_CRYPTO)
 
@@ -42,6 +50,12 @@ describe('W3mAccountTokensWidget', () => {
   })
 
   it('it should navigate to different screens based on what option is clicked', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: {
+        onramp: ['meld']
+      }
+    })
     vi.spyOn(RouterController, 'push')
     const accountTokensWidget: W3mAccountTokensWidget = await fixture(
       html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`

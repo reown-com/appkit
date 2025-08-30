@@ -10,17 +10,20 @@ import {
   StackDivider,
   Text
 } from '@chakra-ui/react'
+import Image from 'next/image'
 
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@reown/appkit/react'
 
 import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 export function AppKitInfo() {
-  const { caipAddress, address } = useAppKitAccount()
+  const { caipAddress, address, embeddedWalletInfo } = useAppKitAccount()
+  const { walletInfo } = useWalletInfo()
   const { chainId } = useAppKitNetwork()
+  const appKitAccount = useAppKitAccount()
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
   const erc3770Address = React.useMemo(() => {
@@ -69,12 +72,65 @@ export function AppKitInfo() {
             </Box>
           ) : null}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Chain Id
-            </Heading>
-            <Text data-testid="w3m-chain-id">{chainId}</Text>
-          </Box>
+          {chainId !== undefined && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Id
+              </Heading>
+              <Text data-testid="w3m-chain-id">{chainId}</Text>
+            </Box>
+          )}
+
+          {embeddedWalletInfo && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Embedded Wallet Info
+              </Heading>
+              <Text data-testid="w3m-embedded-wallet-info">
+                {JSON.stringify(embeddedWalletInfo, null, 2)}
+              </Text>
+            </Box>
+          )}
+
+          {walletInfo && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Wallet Info
+              </Heading>
+              <Box>
+                <Text fontWeight="bold" color="gray.500">
+                  Type
+                </Text>
+                <Text data-testid="w3m-wallet-type">{walletInfo.type}</Text>
+              </Box>
+              <Box>
+                <Text fontWeight="bold" color="gray.500">
+                  Name
+                </Text>
+                <Box display="flex" alignItems="center" gap={2}>
+                  {walletInfo?.icon ? (
+                    <Image
+                      src={walletInfo.icon}
+                      alt={walletInfo.name}
+                      width={24}
+                      height={24}
+                      unoptimized
+                    />
+                  ) : null}
+                  <Text data-testid="w3m-wallet-name">{walletInfo.name}</Text>
+                </Box>
+              </Box>
+            </Box>
+          )}
+
+          {appKitAccount?.status && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Status
+              </Heading>
+              <Text data-testid="apkt-account-status">{appKitAccount.status}</Text>
+            </Box>
+          )}
 
           <RelayClientInfo />
 

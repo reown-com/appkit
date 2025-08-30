@@ -177,29 +177,22 @@ export const BlockchainApiController = {
   },
 
   async getSupportedNetworks() {
-    const supportedChains = await BlockchainApiController.get<
-      BlockchainApiControllerState['supportedChains']
-    >({
-      path: 'v1/supported-chains'
-    })
+    try {
+      const supportedChains = await BlockchainApiController.get<
+        BlockchainApiControllerState['supportedChains']
+      >({
+        path: 'v1/supported-chains'
+      })
 
-    state.supportedChains = supportedChains
+      state.supportedChains = supportedChains
 
-    return supportedChains
+      return supportedChains
+    } catch {
+      return state.supportedChains
+    }
   },
 
-  async fetchIdentity({
-    address,
-    caipNetworkId
-  }: BlockchainApiIdentityRequest & {
-    caipNetworkId: CaipNetworkId
-  }) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
-
-    if (!isSupported) {
-      return { avatar: '', name: '' }
-    }
-
+  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
     if (identityCache) {
       return identityCache
@@ -226,7 +219,6 @@ export const BlockchainApiController = {
   async fetchTransactions({
     account,
     cursor,
-    onramp,
     signal,
     cache,
     chainId
@@ -238,16 +230,32 @@ export const BlockchainApiController = {
       return { data: [], next: undefined }
     }
 
-    return BlockchainApiController.get<BlockchainApiTransactionsResponse>({
+    const transactionsCache = StorageUtil.getTransactionsCacheForAddress({
+      address: account,
+      chainId
+    })
+    if (transactionsCache) {
+      return transactionsCache as BlockchainApiTransactionsResponse
+    }
+
+    const result = await BlockchainApiController.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history`,
       params: {
         cursor,
-        onramp,
         chainId
       },
       signal,
       cache
     })
+
+    StorageUtil.updateTransactionsCache({
+      address: account,
+      chainId,
+      timestamp: Date.now(),
+      transactions: result
+    })
+
+    return result
   },
 
   async fetchSwapQuote({ amount, userAddress, from, to, gasPrice }: BlockchainApiSwapQuoteRequest) {
@@ -297,7 +305,12 @@ export const BlockchainApiController = {
       return { fungibles: [] }
     }
 
-    return state.api.post<BlockchainApiTokenPriceResponse>({
+    const tokenPriceCache = StorageUtil.getTokenPriceCacheForAddresses(addresses)
+    if (tokenPriceCache) {
+      return tokenPriceCache as BlockchainApiTokenPriceResponse
+    }
+
+    const result = await state.api.post<BlockchainApiTokenPriceResponse>({
       path: '/v1/fungible/price',
       body: {
         currency: 'usd',
@@ -308,6 +321,14 @@ export const BlockchainApiController = {
         'Content-Type': 'application/json'
       }
     })
+
+    StorageUtil.updateTokenPriceCache({
+      addresses,
+      timestamp: Date.now(),
+      tokenPrice: result
+    })
+
+    return result
   },
 
   async fetchSwapAllowance({ tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
@@ -428,6 +449,7 @@ export const BlockchainApiController = {
     }
     const caipAddress = `${chainId}:${address}`
     const cachedBalance = StorageUtil.getBalanceCacheForCaipAddress(caipAddress)
+
     if (cachedBalance) {
       return cachedBalance
     }
@@ -604,7 +626,6 @@ export const BlockchainApiController = {
     } catch (e) {
       // Mocking response as 1:1 until endpoint is ready
       return {
-        coinbaseFee: { amount, currency: paymentCurrency.id },
         networkFee: { amount, currency: paymentCurrency.id },
         paymentSubtotal: { amount, currency: paymentCurrency.id },
         paymentTotal: { amount, currency: paymentCurrency.id },

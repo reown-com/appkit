@@ -1,30 +1,61 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable consistent-return */
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
+import { createComponent } from '@lit/react'
 import { useSnapshot } from 'valtio'
 
-import type { ParsedCaipAddress } from '@reown/appkit-common'
-import { ChainController, type Connector, ConnectorController } from '@reown/appkit-controllers'
+import type { ChainNamespace, ParsedCaipAddress } from '@reown/appkit-common'
+import {
+  ChainController,
+  type Connector,
+  ConnectorController,
+  ConnectorControllerUtil,
+  ModalController,
+  RouterController
+} from '@reown/appkit-controllers'
 
 import { ApiController } from '../src/controllers/ApiController.js'
 import { WalletButtonController } from '../src/controllers/WalletButtonController.js'
-import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
 import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
 import type { SocialProvider } from '../src/utils/TypeUtil.js'
 import { WalletUtil } from '../src/utils/WalletUtil.js'
-import type { AppKitWalletButton, Wallet } from './index.js'
+import { AppKitWalletButton as AppKitWalletButtonComponent, type Wallet } from './index.js'
 
 export * from './index.js'
 
-declare module 'react' {
+export const AppKitWalletButton = createComponent({
+  tagName: 'appkit-wallet-button',
+  elementClass: AppKitWalletButtonComponent,
+  react: React
+})
+
+interface AppKitElements {
+  'appkit-wallet-button': Pick<AppKitWalletButtonComponent, 'wallet' | 'namespace'>
+}
+/* ------------------------------------------------------------------ */
+/* Declare global namespace for React 18     */
+/* ------------------------------------------------------------------ */
+declare global {
   namespace JSX {
-    interface IntrinsicElements {
-      'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
-    }
+    interface IntrinsicElements extends AppKitElements {}
   }
 }
+/* ------------------------------------------------------------------ */
+/* Helper alias with the built‑ins that React already supplied     */
+/* ------------------------------------------------------------------ */
+type __BuiltinIntrinsics = JSX.IntrinsicElements
 
+/* ------------------------------------------------------------------ */
+/* Declare react namespace for React 19 and extend with JSX built-ins (div, button, etc.) and extend with AppKitElements */
+/* ------------------------------------------------------------------ */
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements extends __BuiltinIntrinsics, AppKitElements {}
+  }
+}
 export function useAppKitWallet(parameters?: {
+  namespace?: ChainNamespace
   onSuccess?: (data: ParsedCaipAddress) => void
   onError?: (error: Error) => void
 }) {
@@ -36,7 +67,7 @@ export function useAppKitWallet(parameters?: {
     data: walletButtonData
   } = useSnapshot(WalletButtonController.state)
 
-  const { onSuccess, onError } = parameters ?? {}
+  const { namespace, onSuccess, onError } = parameters ?? {}
 
   // Prefetch wallet buttons
   useEffect(() => {
@@ -94,13 +125,27 @@ export function useAppKitWallet(parameters?: {
         WalletButtonController.setError(undefined)
 
         if (wallet === ConstantsUtil.Email) {
-          await ConnectorUtil.connectEmail().then(handleSuccess)
+          await ConnectorControllerUtil.connectEmail({
+            namespace,
+            onOpen() {
+              ModalController.open({ view: 'EmailLogin' })
+            }
+          }).then(handleSuccess)
 
           return
         }
 
         if (ConstantsUtil.Socials.some(social => social === wallet)) {
-          await ConnectorUtil.connectSocial(wallet as SocialProvider).then(handleSuccess)
+          await ConnectorControllerUtil.connectSocial({
+            social: wallet as SocialProvider,
+            namespace,
+            onOpenFarcaster() {
+              ModalController.open({ view: 'ConnectingFarcaster' })
+            },
+            onConnect() {
+              RouterController.push('Connect')
+            }
+          }).then(handleSuccess)
 
           return
         }
@@ -108,19 +153,31 @@ export function useAppKitWallet(parameters?: {
         const walletButton = WalletUtil.getWalletButton(wallet)
 
         const connector = walletButton
-          ? ConnectorController.getConnector(walletButton.id, walletButton.rdns)
+          ? ConnectorController.getConnector({
+              id: walletButton.id,
+              rdns: walletButton.rdns,
+              namespace
+            })
           : undefined
 
         if (connector) {
-          await ConnectorUtil.connectExternal(connector).then(handleSuccess)
+          await ConnectorControllerUtil.connectExternal(connector).then(handleSuccess)
 
           return
         }
 
-        await ConnectorUtil.connectWalletConnect({
+        await ConnectorControllerUtil.connectWalletConnect({
           walletConnect: wallet === 'walletConnect',
           connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
-          wallet: walletButton
+          onOpen(isMobile) {
+            ModalController.open({
+              view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect',
+              data: isMobile ? undefined : { wallet: walletButton }
+            })
+          },
+          onConnect() {
+            RouterController.replace('Connect')
+          }
         }).then(handleSuccess)
       } catch (err) {
         handleError(err)
@@ -128,7 +185,7 @@ export function useAppKitWallet(parameters?: {
         WalletButtonController.setPending(false)
       }
     },
-    [connectors, handleSuccess, handleError]
+    [namespace, connectors, handleSuccess, handleError]
   )
 
   return {
@@ -156,7 +213,7 @@ export function useAppKitUpdateEmail(parameters?: {
     setIsPending(true)
     setError(undefined)
 
-    await ConnectorUtil.updateEmail()
+    await ConnectorControllerUtil.updateEmail()
       .then(emailData => {
         setData(emailData)
         onSuccess?.(emailData)

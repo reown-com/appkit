@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
+  AlertController,
   ConnectorController,
   ConstantsUtil,
   OptionsController,
@@ -10,9 +10,11 @@ import {
   type SocialProvider
 } from '@reown/appkit-controllers'
 import { executeSocialLogin } from '@reown/appkit-controllers/utils'
+import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-social'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 
@@ -30,7 +32,9 @@ export class W3mSocialLoginList extends LitElement {
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
-  @state() private features = OptionsController.state.features
+  @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  @state() private isPwaLoading = false
 
   public constructor() {
     super()
@@ -39,8 +43,13 @@ export class W3mSocialLoginList extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('features', val => (this.features = val))
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )
+  }
+
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.handlePwaFrameLoad()
   }
 
   public override disconnectedCallback() {
@@ -49,7 +58,7 @@ export class W3mSocialLoginList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let socials = this.features?.socials || []
+    let socials = this.remoteFeatures?.socials || []
     const isAuthConnectorExist = Boolean(this.authConnector)
     const isSocialsEnabled = socials?.length
     const isConnectSocialsView = RouterController.state.view === 'ConnectSocials'
@@ -59,19 +68,20 @@ export class W3mSocialLoginList extends LitElement {
     }
 
     if (isConnectSocialsView && !isSocialsEnabled) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+      socials = ConstantsUtil.DEFAULT_SOCIALS
     }
 
-    return html` <wui-flex flexDirection="column" gap="xs">
+    return html` <wui-flex flexDirection="column" gap="2">
       ${socials.map(
         social =>
           html`<wui-list-social
             @click=${() => {
               this.onSocialClick(social)
             }}
+            data-testid=${`social-selector-${social}`}
             name=${social}
             logo=${social}
-            tabIdx=${ifDefined(this.tabIdx)}
+            ?disabled=${this.isPwaLoading}
           ></wui-list-social>`
       )}
     </wui-flex>`
@@ -81,6 +91,27 @@ export class W3mSocialLoginList extends LitElement {
   async onSocialClick(socialProvider?: SocialProvider) {
     if (socialProvider) {
       await executeSocialLogin(socialProvider)
+    }
+  }
+
+  private async handlePwaFrameLoad() {
+    if (CoreHelperUtil.isPWA()) {
+      this.isPwaLoading = true
+      try {
+        if (this.authConnector?.provider instanceof W3mFrameProvider) {
+          await this.authConnector.provider.init()
+        }
+      } catch (error) {
+        AlertController.open(
+          {
+            displayMessage: 'Error loading embedded wallet in PWA',
+            debugMessage: (error as Error).message
+          },
+          'error'
+        )
+      } finally {
+        this.isPwaLoading = false
+      }
     }
   }
 }

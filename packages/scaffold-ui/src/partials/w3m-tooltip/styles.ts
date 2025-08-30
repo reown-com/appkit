@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -8,29 +8,34 @@ export default css`
   :host > wui-flex {
     display: var(--w3m-tooltip-display);
     opacity: var(--w3m-tooltip-opacity);
-    padding: 9px var(--wui-spacing-s) 10px var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xxs);
-    color: var(--wui-color-bg-100);
-    position: fixed;
+    padding: 9px ${({ spacing }) => spacing['3']} 10px ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    position: absolute;
     top: var(--w3m-tooltip-top);
     left: var(--w3m-tooltip-left);
     transform: translate(calc(-50% + var(--w3m-tooltip-parent-width)), calc(-100% - 8px));
-    max-width: calc(var(--w3m-modal-width) - var(--wui-spacing-xl));
-    transition: opacity 0.2s var(--wui-ease-out-power-2);
+    max-width: calc(var(--apkt-modal-width) - ${({ spacing }) => spacing['5']});
+    transition: opacity ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: opacity;
+    opacity: 0;
+    animation-duration: ${({ durations }) => durations['xl']};
+    animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
+    animation-name: fade-in;
+    animation-fill-mode: forwards;
   }
 
   :host([data-variant='shade']) > wui-flex {
-    background-color: var(--wui-color-bg-150);
-    border: 1px solid var(--wui-color-gray-glass-005);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   :host([data-variant='shade']) > wui-flex > wui-text {
-    color: var(--wui-color-fg-150);
+    color: ${({ tokens }) => tokens.theme.textSecondary};
   }
 
   :host([data-variant='fill']) > wui-flex {
-    background-color: var(--wui-color-fg-100);
+    background-color: ${({ tokens }) => tokens.theme.textPrimary};
     border: none;
   }
 
@@ -38,7 +43,7 @@ export default css`
     position: absolute;
     width: 12px !important;
     height: 4px !important;
-    color: var(--wui-color-bg-150);
+    color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   wui-icon[data-placement='top'] {
@@ -63,5 +68,14 @@ export default css`
     top: 50%;
     right: 0%;
     transform: translate(65%, -50%) rotate(270deg);
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `

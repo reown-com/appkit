@@ -1,9 +1,12 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { type Address, type Hex } from '@reown/appkit-common'
+
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
@@ -33,7 +36,7 @@ const state = proxy<EnsControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const EnsController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: EnsControllerState) => void) {
@@ -68,15 +71,11 @@ export const EnsController = {
       state.loading = true
       state.suggestions = []
       const response = await BlockchainApiController.getEnsNameSuggestions(value)
-      state.suggestions =
-        response.suggestions.map(suggestion => ({
-          ...suggestion,
-          name: suggestion.name
-        })) || []
+      state.suggestions = response.suggestions || []
 
       return state.suggestions
     } catch (e) {
-      const errorMessage = this.parseEnsApiError(e, 'Error fetching name suggestions')
+      const errorMessage = EnsController.parseEnsApiError(e, 'Error fetching name suggestions')
       throw new Error(errorMessage)
     } finally {
       state.loading = false
@@ -104,19 +103,20 @@ export const EnsController = {
 
       return response
     } catch (e) {
-      const errorMessage = this.parseEnsApiError(e, 'Error fetching names for address')
+      const errorMessage = EnsController.parseEnsApiError(e, 'Error fetching names for address')
       throw new Error(errorMessage)
     }
   },
 
   async registerName(name: ReownName) {
     const network = ChainController.state.activeCaipNetwork
+    const address = AccountController.state.address
+    const emailConnector = ConnectorController.getAuthConnector()
+
     if (!network) {
       throw new Error('Network not found')
     }
 
-    const address = AccountController.state.address
-    const emailConnector = ConnectorController.getAuthConnector()
     if (!address || !emailConnector) {
       throw new Error('Address or auth connector not found')
     }
@@ -132,15 +132,13 @@ export const EnsController = {
       })
 
       RouterController.pushTransactionStack({
-        view: 'RegisterAccountNameSuccess',
-        goBack: false,
-        replace: true,
         onCancel() {
-          state.loading = false
+          RouterController.replace('RegisterAccountName')
         }
       })
 
       const signature = await ConnectionController.signMessage(message)
+      state.loading = false
       const networkId = network.id
 
       if (!networkId) {
@@ -150,15 +148,28 @@ export const EnsController = {
       const coinType = EnsUtil.convertEVMChainIdToCoinType(Number(networkId))
       await BlockchainApiController.registerEnsName({
         coinType,
-        address: address as `0x${string}`,
-        signature: signature as `0x${string}`,
+        address: address as Address,
+        signature: signature as Hex,
         message
       })
 
       AccountController.setProfileName(name, network.chainNamespace)
+      StorageUtil.updateEnsCache({
+        address,
+        ens: [
+          {
+            name,
+            registered_at: new Date().toISOString(),
+            updated_at: undefined,
+            addresses: {},
+            attributes: []
+          }
+        ],
+        timestamp: Date.now()
+      })
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
-      const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
+      const errorMessage = EnsController.parseEnsApiError(e, `Error registering name ${name}`)
       RouterController.replace('RegisterAccountName')
       throw new Error(errorMessage)
     } finally {
@@ -174,3 +185,6 @@ export const EnsController = {
     return ensError?.reasons?.[0]?.description || defaultError
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const EnsController = withErrorBoundary(controller)

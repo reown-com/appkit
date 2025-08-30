@@ -16,15 +16,42 @@ interface W3mFrameConfig {
   isAppClient?: boolean
   chainId?: W3mFrameTypes.Network['chainId']
   enableLogger?: boolean
+  enableCloudAuthAccount?: boolean
+  rpcUrl?: string
+}
+
+function createSecureSiteSdkUrl({
+  projectId,
+  chainId,
+  enableLogger,
+  rpcUrl = ConstantsUtil.BLOCKCHAIN_API_RPC_URL,
+  enableCloudAuthAccount = false
+}: Pick<
+  W3mFrameConfig,
+  'projectId' | 'chainId' | 'enableLogger' | 'rpcUrl' | 'enableCloudAuthAccount'
+>): string {
+  const url = new URL(SECURE_SITE_SDK)
+  url.searchParams.set('projectId', projectId)
+  url.searchParams.set('chainId', String(chainId))
+  url.searchParams.set('version', SECURE_SITE_SDK_VERSION)
+  url.searchParams.set('enableLogger', String(enableLogger))
+  url.searchParams.set('rpcUrl', rpcUrl)
+  if (enableCloudAuthAccount) {
+    url.searchParams.set('enableCloudAuthAccount', 'true')
+  }
+
+  return url.toString()
 }
 
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
   private iframe: HTMLIFrameElement | null = null
 
+  public iframeIsReady = false
+
   private projectId: string
 
-  private rpcUrl = ConstantsUtil.BLOCKCHAIN_API_RPC_URL
+  private rpcUrl: string
 
   public frameLoadPromise: Promise<void>
 
@@ -39,13 +66,16 @@ export class W3mFrame {
     projectId,
     isAppClient = false,
     chainId = 'eip155:1',
-    enableLogger = true
+    enableLogger = true,
+    enableCloudAuthAccount = false,
+    rpcUrl = ConstantsUtil.BLOCKCHAIN_API_RPC_URL
   }: W3mFrameConfig) {
     this.projectId = projectId
     this.frameLoadPromise = new Promise((resolve, reject) => {
       this.frameLoadPromiseResolver = { resolve, reject }
     })
 
+    this.rpcUrl = rpcUrl
     // Create iframe only when sdk is initialised from dapp / appkit
     if (isAppClient) {
       this.frameLoadPromise = new Promise((resolve, reject) => {
@@ -54,15 +84,21 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=${SECURE_SITE_SDK_VERSION}&enableLogger=${enableLogger}`
+        iframe.src = createSecureSiteSdkUrl({
+          projectId,
+          chainId,
+          enableLogger,
+          rpcUrl: this.rpcUrl,
+          enableCloudAuthAccount
+        })
         iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
         iframe.style.border = 'none'
         iframe.style.animationDelay = '0s, 50ms'
-        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-        iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--apkt-borderRadius-8), 44px)`
+        iframe.style.borderBottomRightRadius = `clamp(0px, var(--apkt-borderRadius-8), 44px)`
         this.iframe = iframe
         this.iframe.onerror = () => {
           this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
@@ -70,6 +106,7 @@ export class W3mFrame {
 
         this.events.onFrameEvent(event => {
           if (event.type === '@w3m-frame/READY') {
+            this.iframeIsReady = true
             this.frameLoadPromiseResolver?.resolve(undefined)
           }
         })
@@ -135,9 +172,16 @@ export class W3mFrame {
         if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
           return
         }
-        const frameEvent = W3mFrameSchema.frameEvent.parse(data)
-        if (frameEvent.id === id) {
-          callback(frameEvent)
+        const frameEvent = W3mFrameSchema.frameEvent.safeParse(data)
+
+        if (!frameEvent.success) {
+          console.warn('W3mFrame: invalid frame event', frameEvent.error.message)
+
+          return
+        }
+
+        if (frameEvent.data?.id === id) {
+          callback(frameEvent.data)
           window.removeEventListener('message', eventHandler)
         }
       }
@@ -156,8 +200,12 @@ export class W3mFrame {
             return
           }
 
-          const frameEvent = W3mFrameSchema.frameEvent.parse(data)
-          callback(frameEvent)
+          const frameEvent = W3mFrameSchema.frameEvent.safeParse(data)
+          if (frameEvent.success) {
+            callback(frameEvent.data)
+          } else {
+            console.warn('W3mFrame: invalid frame event', frameEvent.error.message)
+          }
         })
       }
     },
@@ -168,8 +216,13 @@ export class W3mFrame {
           if (!shouldHandleEvent(W3mFrameConstants.APP_EVENT_KEY, data)) {
             return
           }
-          const appEvent = W3mFrameSchema.appEvent.parse(data)
-          callback(appEvent)
+          const appEvent = W3mFrameSchema.appEvent.safeParse(data)
+          // Frame side, if the event is invalid, we allow it to go through anyways
+          if (!appEvent.success) {
+            console.warn('W3mFrame: invalid app event', appEvent.error.message)
+          }
+
+          callback(data as W3mFrameTypes.AppEvent)
         })
       }
     },
@@ -179,7 +232,6 @@ export class W3mFrame {
         if (!this.iframe?.contentWindow) {
           throw new Error('W3mFrame: iframe is not set')
         }
-        W3mFrameSchema.appEvent.parse(event)
         this.iframe.contentWindow.postMessage(event, '*')
       }
     },
@@ -189,7 +241,6 @@ export class W3mFrame {
         if (!parent) {
           throw new Error('W3mFrame: parent is not set')
         }
-        W3mFrameSchema.frameEvent.parse(event)
         parent.postMessage(event, '*')
       }
     }

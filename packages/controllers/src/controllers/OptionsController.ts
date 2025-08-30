@@ -13,6 +13,7 @@ import type {
   Metadata,
   PreferredAccountTypes,
   ProjectId,
+  RemoteFeatures,
   SdkVersion,
   SocialProvider,
   Tokens,
@@ -95,22 +96,27 @@ export interface OptionsControllerStatePublic {
    */
   enableWallets?: boolean
   /**
-   * Enable or disable the EIP6963 feature in your AppKit.
+   * Enable or disable the EIP6963 feature.
    * @default false
    */
   enableEIP6963?: boolean
   /**
-   * Enable or disable the Coinbase wallet in your AppKit.
+   * Enable or disable the Coinbase wallet.
    * @default true
    */
   enableCoinbase?: boolean
   /**
-   * Enable or disable the Injected wallet in your AppKit.
+   * Enable or disable the Injected wallet.
    * @default true
    */
   enableInjected?: boolean
   /**
-   * Enable or disable the WalletConnect QR code in your AppKit.
+   * Enable or disable automatic reconnection on initialization.
+   * @default true
+   */
+  enableReconnect?: boolean
+  /**
+   * Enable or disable the WalletConnect QR code.
    * @default true
    */
   enableWalletConnect?: boolean
@@ -125,7 +131,12 @@ export interface OptionsControllerStatePublic {
    */
   enableAuthLogger?: boolean
   /**
-   * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
+   * Enable or disable Universal Links to open the wallets as default option instead of Deep Links.
+   * @default true
+   */
+  experimental_preferUniversalLinks?: boolean
+  /**
+   * Enable or disable debug mode. This is useful if you want to see UI alerts when debugging.
    * @default true
    */
   debug?: boolean
@@ -137,7 +148,7 @@ export interface OptionsControllerStatePublic {
   features?: Features
   /**
    * @experimental - This feature is not production ready.
-   * Enable Sign In With X (SIWX) feature in your AppKit.
+   * Enable Sign In With X (SIWX) feature.
    * @default undefined
    */
   siwx?: SIWXConfig
@@ -190,25 +201,22 @@ export interface OptionsControllerStateInternal {
   sdkVersion: SdkVersion
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
-  hasMultipleAddresses?: boolean
+  remoteFeatures?: RemoteFeatures
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
 type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
 
 // -- State --------------------------------------------- //
-const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
+const state = proxy<OptionsControllerState>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: {
-    solana: 'eoa',
-    bip122: 'payment',
-    polkadot: 'eoa',
-    eip155: 'smartAccount'
-  },
-  enableNetworkSwitch: true
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
+  enableNetworkSwitch: true,
+  experimental_preferUniversalLinks: false,
+  remoteFeatures: {}
 })
 
 // -- Controller ---------------------------------------- //
@@ -223,6 +231,26 @@ export const OptionsController = {
     Object.assign(state, options)
   },
 
+  setRemoteFeatures(remoteFeatures: OptionsControllerState['remoteFeatures']) {
+    if (!remoteFeatures) {
+      return
+    }
+
+    const newRemoteFeatures = { ...state.remoteFeatures, ...remoteFeatures }
+    state.remoteFeatures = newRemoteFeatures
+
+    if (state.remoteFeatures?.socials) {
+      state.remoteFeatures.socials = OptionsUtil.filterSocialsByPlatform(
+        state.remoteFeatures.socials
+      )
+    }
+
+    if (state.features?.pay) {
+      state.remoteFeatures.email = false
+      state.remoteFeatures.socials = false
+    }
+  },
+
   setFeatures(features: OptionsControllerState['features'] | undefined) {
     if (!features) {
       return
@@ -235,8 +263,9 @@ export const OptionsController = {
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
 
-    if (state.features.socials) {
-      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
+    if (state.features?.pay && state.remoteFeatures) {
+      state.remoteFeatures.email = false
+      state.remoteFeatures.socials = false
     }
   },
 
@@ -324,11 +353,25 @@ export const OptionsController = {
     state.enableWallets = enableWallets
   },
 
-  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
-    state.hasMultipleAddresses = hasMultipleAddresses
+  setPreferUniversalLinks(
+    preferUniversalLinks: OptionsControllerState['experimental_preferUniversalLinks']
+  ) {
+    state.experimental_preferUniversalLinks = preferUniversalLinks
   },
 
   setSIWX(siwx: OptionsControllerState['siwx']) {
+    if (siwx) {
+      for (const [key, isVal] of Object.entries(ConstantsUtil.SIWX_DEFAULTS) as [
+        keyof typeof ConstantsUtil.SIWX_DEFAULTS,
+        (typeof ConstantsUtil.SIWX_DEFAULTS)[keyof typeof ConstantsUtil.SIWX_DEFAULTS]
+      ][]) {
+        /*
+         * Only writes when siwx[key] is null or undefined
+         * (use ||= if you only want to check “falsy”, not recommended here)
+         */
+        siwx[key] ??= isVal
+      }
+    }
     state.siwx = siwx
   },
 
@@ -347,8 +390,8 @@ export const OptionsController = {
   },
 
   setSocialsOrder(socialsOrder: SocialProvider[]) {
-    state.features = {
-      ...state.features,
+    state.remoteFeatures = {
+      ...state.remoteFeatures,
       socials: socialsOrder
     }
   },
@@ -374,6 +417,10 @@ export const OptionsController = {
 
   setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
     state.enableNetworkSwitch = enableNetworkSwitch
+  },
+
+  setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {
+    state.enableReconnect = enableReconnect
   },
 
   setDefaultAccountTypes(

@@ -2,9 +2,14 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { Connector } from '@reown/appkit-controllers'
-import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-controllers'
+import {
+  AssetUtil,
+  ConnectionController,
+  ConnectorController,
+  RouterController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-wallet'
@@ -37,7 +42,7 @@ export class W3mConnectExternalWidget extends LitElement {
     const externalConnectors = this.connectors.filter(connector => connector.type === 'EXTERNAL')
     const filteredOutExcludedConnectors = externalConnectors.filter(ConnectorUtil.showConnector)
     const filteredOutCoinbaseConnectors = filteredOutExcludedConnectors.filter(
-      connector => connector.id !== ConstantsUtil.CONNECTOR_ID.COINBASE_SDK
+      connector => connector.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK
     )
 
     if (!filteredOutCoinbaseConnectors?.length) {
@@ -46,8 +51,12 @@ export class W3mConnectExternalWidget extends LitElement {
       return null
     }
 
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${filteredOutCoinbaseConnectors.map(
           connector => html`
             <wui-list-wallet
@@ -55,8 +64,10 @@ export class W3mConnectExternalWidget extends LitElement {
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
               data-testid=${`wallet-selector-external-${connector.id}`}
+              size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
+              ?disabled=${hasWcConnection}
             >
             </wui-list-wallet>
           `

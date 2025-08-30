@@ -4,9 +4,9 @@ import type { SpacingType, ThemeType, TruncateOptions } from './TypeUtil.js'
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
     if (Array.isArray(spacing)) {
-      return spacing[index] ? `var(--wui-spacing-${spacing[index]})` : undefined
+      return spacing[index] ? `var(--apkt-spacing-${spacing[index]})` : undefined
     } else if (typeof spacing === 'string') {
-      return `var(--wui-spacing-${spacing})`
+      return `var(--apkt-spacing-${spacing})`
     }
 
     return undefined
@@ -14,6 +14,24 @@ export const UiHelperUtil = {
 
   getFormattedDate(date: Date) {
     return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date)
+  },
+
+  formatCurrency(amount: number | string = 0, options: Intl.NumberFormatOptions = {}) {
+    const numericAmount = Number(amount)
+
+    if (isNaN(numericAmount)) {
+      return '$0.00'
+    }
+
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      ...options
+    })
+
+    return formatter.format(numericAmount)
   },
 
   getHostName(url: string) {
@@ -104,7 +122,11 @@ export const UiHelperUtil = {
   getColorTheme(theme: ThemeType | undefined) {
     if (theme) {
       return theme
-    } else if (typeof window !== 'undefined' && window.matchMedia) {
+    } else if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      typeof window.matchMedia === 'function'
+    ) {
       if (window.matchMedia('(prefers-color-scheme: dark)')?.matches) {
         return 'dark'
       }
@@ -114,6 +136,7 @@ export const UiHelperUtil = {
 
     return 'dark'
   },
+
   splitBalance(input: string): [string, string] {
     const parts = input.split('.') as [string, string]
     if (parts.length === 2) {
@@ -122,33 +145,21 @@ export const UiHelperUtil = {
 
     return ['0', '00']
   },
+
   roundNumber(number: number, threshold: number, fixed: number) {
     const roundedNumber =
       number.toString().length >= threshold ? Number(number).toFixed(fixed) : number
 
     return roundedNumber
   },
-  /**
-   * Format the given number or string to human readable numbers with the given number of decimals
-   * @param value - The value to format. It could be a number or string. If it's a string, it will be parsed to a float then formatted.
-   * @param decimals - number of decimals after dot
-   * @returns
-   */
-  formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
-    if (value === undefined) {
-      return '0.00'
+
+  cssDurationToNumber(duration: string) {
+    if (duration.endsWith('s')) {
+      return Number(duration.replace('s', '')) * 1000
+    } else if (duration.endsWith('ms')) {
+      return Number(duration.replace('ms', ''))
     }
 
-    if (typeof value === 'number') {
-      return value.toLocaleString('en-US', {
-        maximumFractionDigits: decimals,
-        minimumFractionDigits: decimals
-      })
-    }
-
-    return parseFloat(value).toLocaleString('en-US', {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
-    })
+    return 0
   }
 }

@@ -26,17 +26,8 @@ export default css`
   }
 
   svg {
-    animation: rotate 2s linear infinite;
-  }
-
-  circle {
-    fill: none;
-    stroke: var(--local-color);
-    stroke-width: 4px;
-    stroke-dasharray: 1, 124;
-    stroke-dashoffset: 0;
-    stroke-linecap: round;
-    animation: dash 1.5s ease-in-out infinite;
+    animation: rotate 1.4s linear infinite;
+    color: var(--local-color);
   }
 
   :host([data-size='md']) > svg > circle {
@@ -50,22 +41,6 @@ export default css`
   @keyframes rotate {
     100% {
       transform: rotate(360deg);
-    }
-  }
-
-  @keyframes dash {
-    0% {
-      stroke-dasharray: 1, 124;
-      stroke-dashoffset: 0;
-    }
-
-    50% {
-      stroke-dasharray: 90, 124;
-      stroke-dashoffset: -35;
-    }
-
-    100% {
-      stroke-dashoffset: -125;
     }
   }
 `

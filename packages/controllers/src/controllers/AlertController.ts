@@ -1,6 +1,7 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -13,8 +14,9 @@ export interface AlertControllerState {
 type StateKey = keyof AlertControllerState
 
 interface OpenMessageParameters {
-  shortMessage: string
-  longMessage?: string | (() => void)
+  code?: string
+  displayMessage?: string
+  debugMessage?: string | (() => void)
 }
 
 // -- State --------------------------------------------- //
@@ -25,7 +27,7 @@ const state = proxy<AlertControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const AlertController = {
+const controller = {
   state,
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: AlertControllerState[K]) => void) {
@@ -35,17 +37,30 @@ export const AlertController = {
   open(message: OpenMessageParameters, variant: AlertControllerState['variant']) {
     const { debug } = OptionsController.state
 
-    const { shortMessage, longMessage } = message
+    const { code, displayMessage, debugMessage } = message
 
-    if (debug) {
-      state.message = shortMessage
+    if (displayMessage && debug) {
+      state.message = displayMessage
       state.variant = variant
       state.open = true
     }
 
-    if (longMessage) {
+    if (debugMessage) {
       // eslint-disable-next-line no-console
-      console.error(typeof longMessage === 'function' ? longMessage() : longMessage)
+      console.error(
+        typeof debugMessage === 'function' ? debugMessage() : debugMessage,
+        code ? { code } : undefined
+      )
+    }
+  },
+
+  warn(title: string, description: string, code: string) {
+    state.open = true
+    state.message = title
+    state.variant = 'warning'
+
+    if (description) {
+      console.warn(description, code)
     }
   },
 
@@ -55,3 +70,6 @@ export const AlertController = {
     state.variant = 'info'
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const AlertController = withErrorBoundary(controller)

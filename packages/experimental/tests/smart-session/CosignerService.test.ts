@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { type Hex } from '@reown/appkit-common'
+
 import { ConstantsUtil } from '../../src/smart-session/utils/ConstantUtils'
 import {
   CoSignerApiError,
@@ -185,7 +187,7 @@ describe('CoSigner API Tests', () => {
 
       const expectedUrl = `${ConstantsUtil.COSIGNER_BASE_URL}/${encodeURIComponent(
         mockAddress
-      )}?projectId=${encodeURIComponent(projectId)}`
+      )}?projectId=${encodeURIComponent(projectId)}&v=2`
 
       expect(mockFetch).toHaveBeenCalledWith(
         expectedUrl,
@@ -254,7 +256,7 @@ describe('CoSigner API Tests', () => {
 
     it('should revoke permissions successfully', async () => {
       const mockPci = 'test-pci'
-      const mockSignature = '0x1234567890abcdef' as `0x${string}`
+      const mockSignature = '0x1234567890abcdef' as Hex
 
       // Mock successful revocation response
       mockFetch.mockResolvedValueOnce(new Response(null, { status: 200 }))

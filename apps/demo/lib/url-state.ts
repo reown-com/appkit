@@ -1,7 +1,8 @@
 import type { ChainNamespace } from '@reown/appkit-common'
-import {
+import type {
   ConnectMethod,
   Features,
+  RemoteFeatures,
   ThemeMode,
   ThemeVariables,
   WalletFeature
@@ -11,6 +12,7 @@ import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 
 export type URLState = {
   features: Features
+  remoteFeatures: RemoteFeatures
   themeMode: ThemeMode
   themeVariables?: ThemeVariables
   enableWallets: boolean
@@ -29,9 +31,7 @@ export type URLState = {
 }
 
 export const urlStateUtils = {
-  encodeState: (state: URLState): string => {
-    return btoa(JSON.stringify(state))
-  },
+  encodeState: (state: URLState): string => btoa(JSON.stringify(state)),
 
   decodeState: (encodedState: string): URLState | null => {
     try {

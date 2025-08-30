@@ -60,6 +60,22 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
   'eip155:137',
   'eip155:10',
   'eip155:1301',
+  'eip155:80094',
+  'eip155:80069',
+  'eip155:560048',
+  'eip155:31',
+  'eip155:2818',
+  'eip155:57054',
+  'eip155:911867',
+  'eip155:534351',
+  'eip155:1112',
+  'eip155:534352',
+  'eip155:1111',
+  'eip155:146',
+  'eip155:130',
+  'eip155:1284',
+  'eip155:30',
+  'eip155:2810',
   'bip122:000000000019d6689c085ae165831e93',
   'bip122:000000000933ea01ad0ee984209779ba'
 ]
@@ -148,14 +164,14 @@ export const CaipNetworksUtil = {
     const chainNamespace = this.getChainNamespace(caipNetwork)
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
 
-    const networkDefaultRpcUrl = caipNetwork.rpcUrls.default.http?.[0]
+    const networkDefaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
     const reownRpcUrl = this.getDefaultRpcUrl(caipNetwork, caipNetworkId, projectId)
 
     const chainDefaultRpcUrl =
       caipNetwork?.rpcUrls?.['chainDefault']?.http?.[0] || networkDefaultRpcUrl
     const customRpcUrlsOfNetwork = customRpcUrls?.[caipNetworkId]?.map(i => i.url) || []
 
-    const rpcUrls = [...customRpcUrlsOfNetwork, reownRpcUrl]
+    const rpcUrls = [...customRpcUrlsOfNetwork, ...(reownRpcUrl ? [reownRpcUrl] : [])]
     const rpcUrlsWithoutReown = [...customRpcUrlsOfNetwork]
 
     if (chainDefaultRpcUrl && !rpcUrlsWithoutReown.includes(chainDefaultRpcUrl)) {

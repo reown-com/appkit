@@ -29,6 +29,7 @@ async function questionFramework() {
       ]
     }
   ]
+
   return await inquirer.prompt(framework)
 }
 
@@ -37,10 +38,11 @@ async function questionLibrary() {
     {
       type: 'list',
       name: 'library',
-      message: 'wagmi, ethers, solana, bitcoin or EVM+Solana ?',
+      message: 'AppKit Core, Wagmi, Ethers, Solana, Bitcoin or EVM+Solana ?',
       choices: [
-        { name: 'wagmi', value: 'wagmi' },
-        { name: 'ethers', value: 'ethers' },
+        { name: 'AppKit Core', value: 'core' },
+        { name: 'Wagmi', value: 'wagmi' },
+        { name: 'Ethers', value: 'ethers' },
         { name: 'Solana', value: 'solana' },
         { name: 'Bitcoin', value: 'bitcoin' },
         { name: 'Multichain', value: 'multichain' }
@@ -72,7 +74,7 @@ export async function main() {
 
   await cloneRepository(repoUrl, directoryName)
 
-  const url = 'https://cloud.reown.com'
+  const url = 'https://dashboard.reown.com'
   console.log(`Your ${redTip('Project Id')} will work only on the localhost enviroment`)
   console.log(`
 Go to: ${url}
