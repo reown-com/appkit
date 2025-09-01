@@ -10,6 +10,7 @@ import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
+import { ProviderController } from '../src/controllers/ProviderController.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
@@ -50,6 +51,18 @@ interface DeleteRecentConnectionProps {
 }
 
 // -- Hooks ------------------------------------------------------------
+export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
+  const { providers, providerIds } = useSnapshot(ProviderController.state)
+
+  const walletProvider = providers[chainNamespace] as T
+  const walletProviderType = providerIds[chainNamespace]
+
+  return {
+    walletProvider,
+    walletProviderType
+  }
+}
+
 export function useAppKitNetworkCore(): Pick<
   UseAppKitNetworkReturn,
   'caipNetwork' | 'chainId' | 'caipNetworkId'
