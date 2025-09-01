@@ -53,6 +53,10 @@ const TRANSACTION_ERROR_MAP = [
   {
     pattern: /Attempt to debit an account but found no record of a prior credit/iu,
     message: 'Not enough SOL to cover fees or rent'
+  },
+  {
+    pattern: /Insufficient funds for fee/iu,
+    message: 'Not enough SOL to cover fees or rent'
   }
 ]
 
