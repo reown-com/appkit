@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   EventsController,
@@ -162,7 +163,17 @@ export class W3mWalletSendPreviewView extends LitElement {
       SnackController.showSuccess('Transaction started')
       RouterController.replace('Account')
     } catch (error) {
-      SnackController.showError('Failed to send transaction. Please try again.')
+      let errMessage = 'Failed to send transaction. Please try again.'
+
+      // eslint-disable-next-line no-warning-comments
+      // TODO: Remove this once we have a better way to handle errors for each adapter
+      if (ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA) {
+        if (error instanceof Error) {
+          errMessage = error.message
+        }
+      }
+
+      SnackController.showError(errMessage)
       // eslint-disable-next-line no-console
       console.error('SendController:sendToken - failed to send transaction', error)
 
