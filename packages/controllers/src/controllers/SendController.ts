@@ -326,10 +326,14 @@ const controller = {
 
     if (
       SendController.state.token &&
-      CoreHelperUtil.isCaipAddress(SendController.state.token.address)
+      SendController.state.token.address !== ConstantsUtil.SOLANA_NATIVE_TOKEN_ADDRESS
     ) {
-      const [, , tokenMintSPLAddress] = SendController.state.token.address.split(':')
-      tokenMint = tokenMintSPLAddress
+      if (CoreHelperUtil.isCaipAddress(SendController.state.token.address)) {
+        const [, , tokenMintSPLAddress] = SendController.state.token.address.split(':')
+        tokenMint = tokenMintSPLAddress
+      } else {
+        tokenMint = SendController.state.token.address
+      }
     }
 
     await ConnectionController.sendTransaction({
