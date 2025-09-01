@@ -106,7 +106,6 @@ export class ModalPage {
   }
 
   async load() {
-    console.log('>>> loading', this.flavor)
     if (this.flavor === 'wagmi-verify-evil' || this.flavor === 'ethers-verify-evil') {
       await this.page.goto(maliciousUrl)
     }
