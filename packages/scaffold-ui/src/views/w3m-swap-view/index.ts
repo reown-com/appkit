@@ -165,7 +165,7 @@ export class W3mSwapView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4']} gap="3">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const} gap="3">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -341,7 +341,7 @@ export class W3mSwapView extends LitElement {
         size="lg"
         borderRadius="xs"
         variant="accent-primary"
-        ?loading=${Boolean(loading)}
+        ?loading=${Boolean(isLoading)}
         ?disabled=${Boolean(disabled)}
         @click=${this.onSwapPreview.bind(this)}
       >
@@ -354,8 +354,8 @@ export class W3mSwapView extends LitElement {
     await SwapController.swapTokens()
   }, 200)
 
-  private onSwitchTokens() {
-    SwapController.switchTokens()
+  private async onSwitchTokens() {
+    await SwapController.switchTokens()
   }
 
   private async onSwapPreview() {

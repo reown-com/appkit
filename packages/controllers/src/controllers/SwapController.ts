@@ -68,6 +68,9 @@ export interface SwapControllerState {
   loadingBuildTransaction?: boolean
   loadingTransaction?: boolean
 
+  // Control states
+  switchingTokens: boolean
+
   // Error states
   fetchError: boolean
 
@@ -134,6 +137,9 @@ const initialState: SwapControllerState = {
   loadingBuildTransaction: false,
   loadingTransaction: false,
 
+  // Control states
+  switchingTokens: false,
+
   // Error states
   fetchError: false,
 
@@ -159,6 +165,7 @@ const initialState: SwapControllerState = {
 
   // Tokens
   tokens: undefined,
+
   popularTokens: undefined,
   suggestedTokens: undefined,
   foundTokens: undefined,
@@ -225,7 +232,7 @@ const controller = {
     }
   },
 
-  setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
+  async setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
     if (!sourceToken) {
       state.sourceToken = sourceToken
       state.sourceTokenAmount = ''
@@ -235,14 +242,14 @@ const controller = {
     }
 
     state.sourceToken = sourceToken
-    SwapController.setTokenPrice(sourceToken.address, 'sourceToken')
+    await SwapController.setTokenPrice(sourceToken.address, 'sourceToken')
   },
 
   setSourceTokenAmount(amount: string) {
     state.sourceTokenAmount = amount
   },
 
-  setToToken(toToken: SwapTokenWithBalance | undefined) {
+  async setToToken(toToken: SwapTokenWithBalance | undefined) {
     if (!toToken) {
       state.toToken = toToken
       state.toTokenAmount = ''
@@ -252,7 +259,7 @@ const controller = {
     }
 
     state.toToken = toToken
-    SwapController.setTokenPrice(toToken.address, 'toToken')
+    await SwapController.setTokenPrice(toToken.address, 'toToken')
   },
 
   setToTokenAmount(amount: string) {
@@ -277,27 +284,37 @@ const controller = {
       state.loadingPrices = false
     }
 
-    if (SwapController.getParams().availableToSwap) {
+    if (SwapController.getParams().availableToSwap && !state.switchingTokens) {
       SwapController.swapTokens()
     }
   },
 
-  switchTokens() {
+  async switchTokens() {
     if (state.initializing || !state.initialized) {
       return
     }
 
-    const newSourceToken = state.toToken ? { ...state.toToken } : undefined
-    const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined
-    const newSourceTokenAmount =
-      newSourceToken && state.toTokenAmount === '' ? '1' : state.toTokenAmount
+    state.switchingTokens = true
 
-    SwapController.setSourceToken(newSourceToken)
-    SwapController.setToToken(newToToken)
+    try {
+      const newSourceToken = state.toToken ? { ...state.toToken } : undefined
+      const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined
+      const newSourceTokenAmount =
+        newSourceToken && state.toTokenAmount === '' ? '1' : state.toTokenAmount
 
-    SwapController.setSourceTokenAmount(newSourceTokenAmount)
-    SwapController.setToTokenAmount('')
-    SwapController.swapTokens()
+      SwapController.setSourceTokenAmount(newSourceTokenAmount)
+      SwapController.setToTokenAmount('')
+
+      await SwapController.setSourceToken(newSourceToken)
+      await SwapController.setToToken(newToToken)
+
+      state.switchingTokens = false
+
+      SwapController.swapTokens()
+    } catch (error) {
+      state.switchingTokens = false
+      throw error
+    }
   },
 
   resetState() {
@@ -305,6 +322,7 @@ const controller = {
     state.tokensPriceMap = initialState.tokensPriceMap
     state.initialized = initialState.initialized
     state.initializing = initialState.initializing
+    state.switchingTokens = initialState.switchingTokens
     state.sourceToken = initialState.sourceToken
     state.sourceTokenAmount = initialState.sourceTokenAmount
     state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD
