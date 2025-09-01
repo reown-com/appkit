@@ -25,17 +25,17 @@ import { EthersTransactionTest } from './EthersTransactionTest'
 import { EthersWriteContractTest } from './EthersWriteContractTest'
 
 export function Ethers5Tests() {
-  const [ready, setReady] = React.useState(false)
+  const [isReady, setIsReady] = React.useState(false)
   const [callsHash, setCallsHash] = React.useState<string>('')
   const { isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { capabilities, hasFetchedCapabilities, fetchCapabilities, capabilitiesToRender } =
     useEthersActiveCapabilities()
 
   React.useEffect(() => {
-    setReady(true)
+    setIsReady(true)
   }, [])
 
-  if (!ready) {
+  if (!isReady) {
     return null
   }
 
