@@ -203,9 +203,6 @@ testMEthersVerifyEvil(
 
 const prodVerifyServer = 'https://verify.walletconnect.org'
 
-// "https://verify-server-staging.walletconnect-v1-bridge.workers.dev"
-const altVerifyServer = null
-
 interface TimingFixtureWithLibrary {
   library: string
 }
@@ -224,9 +221,7 @@ timingFixture.extend<TimingFixtureWithLibrary>({
       body: `<iframe name="innerFrame" src="${innerUrl}" style="width:100vw; height:100vh"></iframe>`
     })
   })
-  if (altVerifyServer) {
-    await routeInterceptUrl(rootPage, prodVerifyServer, altVerifyServer, '/')
-  }
+
   await rootPage.goto(outerUrl)
 
   const frame = rootPage.frame({ name: 'innerFrame' })
@@ -248,9 +243,7 @@ timingFixture.extend<TimingFixtureWithLibrary>({
 
   const modalValidator = new ModalValidator(modalPage.page)
   const walletPagePage = await context.newPage()
-  if (altVerifyServer) {
-    await routeInterceptUrl(walletPagePage, prodVerifyServer, altVerifyServer, '/')
-  }
+
   const walletPage = new WalletPage(walletPagePage)
   await walletPage.load()
   const walletValidator = new WalletValidator(walletPage.page)
