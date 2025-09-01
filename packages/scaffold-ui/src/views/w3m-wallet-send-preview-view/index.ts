@@ -162,7 +162,13 @@ export class W3mWalletSendPreviewView extends LitElement {
       SnackController.showSuccess('Transaction started')
       RouterController.replace('Account')
     } catch (error) {
-      SnackController.showError('Failed to send transaction. Please try again.')
+      let errMessage = 'Failed to send transaction. Please try again.'
+
+      if (error instanceof Error && error.message) {
+        errMessage = error.message
+      }
+
+      SnackController.showError(errMessage)
       // eslint-disable-next-line no-console
       console.error('SendController:sendToken - failed to send transaction', error)
 
