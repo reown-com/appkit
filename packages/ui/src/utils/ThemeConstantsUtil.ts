@@ -135,7 +135,10 @@ export const tokens = {
     iconError: '#DF4A34',
     iconWarning: '#F3A13F',
 
-    glass010: 'rgba(255, 255, 255, 0.1)'
+    glass010: 'rgba(255, 255, 255, 0.1)',
+
+    /* Z-index */
+    zIndex: '0'
   },
   dark: {
     overlay: 'rgba(0, 0, 0, 0.50)',

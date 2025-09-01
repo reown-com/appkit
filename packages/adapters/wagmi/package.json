@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-wagmi",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",

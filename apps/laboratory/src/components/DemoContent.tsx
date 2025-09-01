@@ -12,6 +12,7 @@ import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 import type { AppKitConfigObject } from '../constants/appKitConfigs'
+import { AppKitPay } from './AppKitPay'
 import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
 import { ReownAuthenticationTests } from './ReownAuthentication'
@@ -34,6 +35,7 @@ export default function DemoContent({
   const siwxReown = Boolean(config?.siwxReown)
   const siweEnabled = Boolean(config?.siweConfig)
   const isMultiChain = config?.adapters?.length && config?.adapters?.length > 1
+  const isPayEnabled = Boolean(config?.features?.pay)
 
   return (
     <>
@@ -53,6 +55,8 @@ export default function DemoContent({
       {solanaAdapter ? <SolanaTests /> : null}
       {bitcoinAdapter ? <BitcoinTests /> : null}
       {hasNoAdapters ? <UpaTests /> : null}
+
+      {isPayEnabled ? <AppKitPay /> : null}
 
       {evmAdapter ? (
         <AppKitWalletButtons
