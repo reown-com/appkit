@@ -12,6 +12,7 @@ import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 import type { AppKitConfigObject } from '../constants/appKitConfigs'
+import { AppKitPay } from './AppKitPay'
 import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
 import { ReownAuthenticationTests } from './ReownAuthentication'
@@ -53,6 +54,8 @@ export default function DemoContent({
       {solanaAdapter ? <SolanaTests /> : null}
       {bitcoinAdapter ? <BitcoinTests /> : null}
       {hasNoAdapters ? <UpaTests /> : null}
+
+      <AppKitPay />
 
       {evmAdapter ? (
         <AppKitWalletButtons
