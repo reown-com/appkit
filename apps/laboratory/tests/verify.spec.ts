@@ -12,7 +12,6 @@ import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fi
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
-import { routeInterceptUrl } from './shared/utils/verify'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 testMWagmiVerifyValid(
@@ -200,8 +199,6 @@ testMEthersVerifyEvil(
     await walletValidator.expectDisconnected()
   }
 )
-
-const prodVerifyServer = 'https://verify.walletconnect.org'
 
 interface TimingFixtureWithLibrary {
   library: string
