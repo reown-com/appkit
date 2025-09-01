@@ -165,7 +165,6 @@ const initialState: SwapControllerState = {
 
   // Tokens
   tokens: undefined,
-
   popularTokens: undefined,
   suggestedTokens: undefined,
   foundTokens: undefined,

@@ -341,7 +341,7 @@ export class W3mSwapView extends LitElement {
         size="lg"
         borderRadius="xs"
         variant="accent-primary"
-        ?loading=${Boolean(isLoading)}
+        ?loading=${Boolean(loading)}
         ?disabled=${Boolean(disabled)}
         @click=${this.onSwapPreview.bind(this)}
       >
