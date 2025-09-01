@@ -5,13 +5,13 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { ChainNamespace } from '@reown/appkit-common'
 import type { ChainControllerState, ConnectorType } from '@reown/appkit-controllers'
 
-type StateKey = keyof ProviderStoreUtilState
-
-export interface ProviderStoreUtilState {
+export interface ProviderControllerState {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   providers: Record<ChainNamespace, UniversalProvider | unknown | undefined>
   providerIds: Record<ChainNamespace, ConnectorType | undefined>
 }
+
+type StateKey = keyof ProviderControllerState
 
 export type ProviderType =
   | 'walletConnect'
@@ -31,25 +31,25 @@ const CLEAN_PROVIDERS_STATE = {
   stacks: undefined
 }
 
-const state = proxy<ProviderStoreUtilState>({
+const state = proxy<ProviderControllerState>({
   providers: { ...CLEAN_PROVIDERS_STATE },
   providerIds: { ...CLEAN_PROVIDERS_STATE }
 })
 
-export const ProviderUtil = {
+export const ProviderController = {
   state,
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: ProviderStoreUtilState[K]) => void) {
+  subscribeKey<K extends StateKey>(key: K, callback: (value: ProviderControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
 
-  subscribe(callback: (value: ProviderStoreUtilState) => void) {
+  subscribe(callback: (value: ProviderControllerState) => void) {
     return subscribe(state, () => {
       callback(state)
     })
   },
 
-  subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {
+  subscribeProviders(callback: (providers: ProviderControllerState['providers']) => void) {
     return subscribe(state.providers, () => callback(state.providers))
   },
 
