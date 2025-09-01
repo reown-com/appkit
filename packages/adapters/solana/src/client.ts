@@ -55,7 +55,7 @@ const TRANSACTION_ERROR_MAP = [
     message: 'Not enough SOL to cover fees or rent'
   },
   {
-    pattern: /Transaction simulation failed: Insufficient funds for fee/iu,
+    pattern: /Insufficient funds for fee/iu,
     message: 'Not enough SOL to cover fees or rent'
   }
 ]
