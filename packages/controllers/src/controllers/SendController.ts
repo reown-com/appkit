@@ -329,8 +329,7 @@ const controller = {
       SendController.state.token.address !== ConstantsUtil.SOLANA_NATIVE_TOKEN_ADDRESS
     ) {
       if (CoreHelperUtil.isCaipAddress(SendController.state.token.address)) {
-        const [, , tokenMintSPLAddress] = SendController.state.token.address.split(':')
-        tokenMint = tokenMintSPLAddress
+        tokenMint = CoreHelperUtil.getPlainAddress(SendController.state.token.address)
       } else {
         tokenMint = SendController.state.token.address
       }
