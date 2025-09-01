@@ -62,4 +62,12 @@ describe('W3mConnectingWcQrcode', () => {
       properties: { name: WALLET.name, platform: 'qrcode' }
     })
   })
+
+  it('it should not send event if basic is true', async () => {
+    await fixture(html`<w3m-connecting-wc-qrcode basic></w3m-connecting-wc-qrcode>`)
+
+    await new Promise(resolve => setTimeout(resolve, 300))
+
+    expect(EventsController.sendEvent).not.toHaveBeenCalled()
+  })
 })
