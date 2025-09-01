@@ -80,11 +80,11 @@ test('it should switch between multiple accounts', async () => {
   await modalPage.switchNetwork(chainName)
   await modalPage.page.waitForTimeout(500)
   await modalPage.closeModal()
-  const originalAddress = await modalPage.getAddress()
+  const originalAddress = await modalPage.getAddress('eip155')
   await modalPage.openProfileWalletsView()
   await modalPage.switchAccount()
   await modalPage.closeModal()
-  await modalValidator.expectAccountSwitched(originalAddress)
+  await modalValidator.expectAccountSwitched(originalAddress, 'eip155')
 })
 
 test('it should disconnect and close modal when connecting from wallet', async () => {

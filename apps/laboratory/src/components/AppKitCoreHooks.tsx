@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Select, Text } from '@chakra-ui/react'
+import { Box, Button, Card, CardBody, CardHeader, Heading, Select, Text } from '@chakra-ui/react'
 
 import {
   type AppKitNetwork,
@@ -46,44 +46,51 @@ export function AppKitCoreHooks({ networks }: AppKitCoreHooksProps) {
   }
 
   return (
-    <Box>
-      <Heading size="xs" textTransform="uppercase" pb="2">
-        Hooks Interactions
-      </Heading>
-      <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap" mb={4}>
-        {caipAddress ? (
-          <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
-            Disconnect
-          </Button>
-        ) : (
-          <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
-            Open
-          </Button>
-        )}
-      </Box>
+    <Card marginTop={10}>
+      <CardHeader>
+        <Heading size="md">Hooks Interactions</Heading>
+      </CardHeader>
 
-      <Box mb={4}>
-        <Text fontSize="sm" mb={2}>
-          Current Network: {caipNetwork?.name || 'None'}
-        </Text>
-        <Box position="relative">
-          <Select
-            value={caipNetwork?.id}
-            onChange={handleNetworkChange}
-            placeholder="Select Network"
-            data-testid="network-selector"
-            borderRadius="full"
-            width="200px"
-            iconColor="gray.500"
-          >
-            {availableNetworks.map(network => (
-              <option key={network.id} value={network.id} disabled={network.id === caipNetwork?.id}>
-                {network.name}
-              </option>
-            ))}
-          </Select>
+      <CardBody>
+        <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap" mb={4}>
+          {caipAddress ? (
+            <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
+              Disconnect
+            </Button>
+          ) : (
+            <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
+              Open
+            </Button>
+          )}
         </Box>
-      </Box>
-    </Box>
+
+        <Box mb={4}>
+          <Text fontSize="sm" mb={2}>
+            Current Network: {caipNetwork?.name || 'None'}
+          </Text>
+          <Box position="relative">
+            <Select
+              value={caipNetwork?.id}
+              onChange={handleNetworkChange}
+              placeholder="Select Network"
+              data-testid="network-selector"
+              borderRadius="full"
+              width="200px"
+              iconColor="gray.500"
+            >
+              {availableNetworks.map(network => (
+                <option
+                  key={network.id}
+                  value={network.id}
+                  disabled={network.id === caipNetwork?.id}
+                >
+                  {network.name}
+                </option>
+              ))}
+            </Select>
+          </Box>
+        </Box>
+      </CardBody>
+    </Card>
   )
 }
