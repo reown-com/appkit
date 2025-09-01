@@ -152,10 +152,6 @@ export const ThemeHelperUtil = {
     variables['--w3m-font-size-master'] = themeVariables['--w3m-font-size-master'] || '10px'
     variables['--w3m-border-radius-master'] = themeVariables['--w3m-border-radius-master'] || '4px'
 
-    if (themeVariables['--w3m-z-index']) {
-      variables['--apkt-z-index'] = `${themeVariables['--w3m-z-index']}`
-    }
-
     return variables
   },
 
@@ -180,6 +176,10 @@ export const ThemeHelperUtil = {
 
     if (themeVariables['--w3m-font-family']) {
       overrides['--apkt-fontFamily-regular'] = themeVariables['--w3m-font-family']
+    }
+
+    if (themeVariables['--w3m-z-index']) {
+      overrides['--apkt-tokens-core-zIndex'] = `${themeVariables['--w3m-z-index']}`
     }
 
     return overrides

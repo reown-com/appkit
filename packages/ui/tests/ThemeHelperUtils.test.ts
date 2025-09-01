@@ -147,4 +147,26 @@ describe('ThemeHelperUtil', () => {
       '--apkt-theme-light-accent': styles.theme.light.accent
     })
   })
+
+  it('should handle z-index values correctly in generateW3MOverrides', () => {
+    const themeVariablesWithZIndex = {
+      '--w3m-z-index': 999
+    }
+
+    const customZIndexOverrides = ThemeHelperUtil.generateW3MOverrides(themeVariablesWithZIndex)
+    expect(customZIndexOverrides['--apkt-tokens-core-zIndex']).toBe('999')
+
+    const themeVariablesWithoutZIndex = {
+      '--w3m-accent': '#ff0000'
+    }
+
+    const defaultZIndexOverrides = ThemeHelperUtil.generateW3MOverrides(themeVariablesWithoutZIndex)
+    expect(defaultZIndexOverrides['--apkt-tokens-core-zIndex']).toBeUndefined()
+
+    const undefinedOverrides = ThemeHelperUtil.generateW3MOverrides(undefined)
+    expect(undefinedOverrides).toStrictEqual({})
+
+    const emptyOverrides = ThemeHelperUtil.generateW3MOverrides({})
+    expect(emptyOverrides['--apkt-tokens-core-zIndex']).toBeUndefined()
+  })
 })
