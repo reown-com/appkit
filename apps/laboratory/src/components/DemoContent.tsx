@@ -35,6 +35,7 @@ export default function DemoContent({
   const siwxReown = Boolean(config?.siwxReown)
   const siweEnabled = Boolean(config?.siweConfig)
   const isMultiChain = config?.adapters?.length && config?.adapters?.length > 1
+  const isPayEnabled = Boolean(config?.features?.pay)
 
   return (
     <>
@@ -55,7 +56,7 @@ export default function DemoContent({
       {bitcoinAdapter ? <BitcoinTests /> : null}
       {hasNoAdapters ? <UpaTests /> : null}
 
-      <AppKitPay />
+      {isPayEnabled ? <AppKitPay /> : null}
 
       {evmAdapter ? (
         <AppKitWalletButtons
