@@ -37,7 +37,7 @@ export const wagmiSdkOptions: SdkOption[] = [
   },
   {
     title: 'SIWE',
-    link: '/appkit?name=wagmi-siwe',
+    link: '/appkit?name=wagmi-all',
     description: 'Configuration using wagmi and implementing sign in with ethereum'
   },
   {
@@ -75,7 +75,7 @@ export const ethersSdkOptions: SdkOption[] = [
   },
   {
     title: 'SIWE',
-    link: '/appkit?name=ethers-siwe',
+    link: '/appkit?name=ethers-all',
     description: 'Configuration using ethers and implementing sign in with ethereum'
   },
   {
@@ -103,7 +103,7 @@ export const ethers5SdkOptions: SdkOption[] = [
   },
   {
     title: 'SIWE',
-    link: '/appkit?name=ethers5-siwe',
+    link: '/appkit?name=ethers5-all',
     description: 'Configuration using ethers and implementing sign in with ethereum'
   },
   {
