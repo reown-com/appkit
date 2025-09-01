@@ -289,7 +289,7 @@ const controller = {
   },
 
   async switchTokens() {
-    if (state.initializing || !state.initialized) {
+    if (state.initializing || !state.initialized || state.switchingTokens) {
       return
     }
 
