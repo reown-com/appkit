@@ -85,8 +85,8 @@ export class W3mDepositFromExchangeView extends LitElement {
     if (!this.paymentAsset) {
       await this.setDefaultPaymentAsset()
     }
-    await ExchangeController.fetchExchanges()
     this.onPresetAmountClick(PRESET_AMOUNTS[0])
+    await ExchangeController.fetchExchanges()
   }
 
   // -- Render -------------------------------------------- //
