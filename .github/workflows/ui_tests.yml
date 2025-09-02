@@ -102,7 +102,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'bun'
 
       - name: Install dependencies
         run: bun install
@@ -251,7 +250,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'bun'
 
       # Download actual artifact in GitHub Actions
       - name: Download build artifacts (GitHub Actions)
@@ -407,7 +405,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'bun'
 
       # Download actual artifact in GitHub Actions
       - name: Download node_modules (GitHub Actions)
