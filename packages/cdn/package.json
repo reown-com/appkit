@@ -13,7 +13,7 @@
     "build:clean": "rm -rf dist",
     "build": "tsc && vite build",
     "watch": "tsc --watch",
-    "upload": "pnpm build && pnpm publish --public",
+    "upload": "bun run build && bun run publish --public",
     "serve": "http-server dist -p 8080 --cors"
   },
   "devDependencies": {

@@ -8,13 +8,13 @@
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "playwright:start": "pnpm start",
+    "playwright:start": "bun run start",
     "playwright:test": "playwright test",
     "playwright:test:email": "playwright test --grep connections-email.spec.ts",
     "playwright:test:wallet": "playwright test --grep connections-wallet.spec.ts",
-    "playwright:debug": "pnpm playwright:test --debug",
-    "playwright:debug:email": "pnpm playwright:test:email --debug",
-    "playwright:debug:wallet": "pnpm playwright:test:wallet --debug"
+    "playwright:debug": "bun run playwright:test --debug",
+    "playwright:debug:email": "bun run playwright:test:email --debug",
+    "playwright:debug:wallet": "bun run playwright:test:wallet --debug"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
