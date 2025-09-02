@@ -216,23 +216,23 @@ describe('Base Public methods', () => {
   })
 
   it('should subscribe to wallet info changes', () => {
-    const subscribe = vi.spyOn(ChainController, 'subscribeKey')
+    const subscribe = vi.spyOn(ChainController, 'subscribeChainProp')
     const callback = vi.fn()
 
     const appKit = new AppKit(mockOptions)
     appKit.subscribeWalletInfo(callback)
 
-    expect(subscribe).toHaveBeenCalledWith('connectedWalletInfo', callback)
+    expect(subscribe).toHaveBeenCalledWith('accountState', expect.any(Function))
   })
 
   it('should subscribe to address updates', () => {
-    const subscribe = vi.spyOn(ChainController, 'subscribeKey')
+    const subscribe = vi.spyOn(ChainController, 'subscribeChainProp')
     const callback = vi.fn()
 
     const appKit = new AppKit(mockOptions)
     appKit.subscribeShouldUpdateToAddress(callback)
 
-    expect(subscribe).toHaveBeenCalledWith('shouldUpdateToAddress', callback)
+    expect(subscribe).toHaveBeenCalledWith('accountState', expect.any(Function))
   })
 
   it('should subscribe to CAIP network changes', () => {
@@ -346,11 +346,7 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     appKit.addAddressLabel('0x123', 'eip155 Address', 'eip155')
 
-    expect(chainSpy).toHaveBeenCalledWith(
-      'addressLabels',
-      new Map([['0x123', 'eip155 Address']]),
-      'eip155'
-    )
+    expect(chainSpy).toHaveBeenCalledWith('addressLabels', { '0x123': 'eip155 Address' }, 'eip155')
   })
 
   it('should remove address label', () => {
@@ -359,14 +355,10 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     appKit.removeAddressLabel('0x123', 'eip155')
 
-    expect(chainSpy).toHaveBeenCalledWith(
-      'addressLabels',
-      new Map([['0x123', undefined]]),
-      'eip155'
-    )
+    expect(chainSpy).toHaveBeenCalledWith('addressLabels', { '0x123': undefined }, 'eip155')
   })
 
-  it.only('should get address and CAIP address', async () => {
+  it('should get address and CAIP address', async () => {
     const mockAccountData = {
       address: '0x123',
       chainId: mainnet.id,
@@ -403,7 +395,8 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     appKit.setCaipAddress('eip155:1:0x123', 'eip155')
 
-    expect(setCaipAddress).toHaveBeenCalledWith('caipAddress', 'eip155:1:0x123', 'eip155')
+    expect(setCaipAddress).toHaveBeenCalledWith('caipAddress', 'eip155:1:0x123', 'eip155', false)
+    expect(setCaipAddress).toHaveBeenCalledWith('address', '0x123', 'eip155', false)
     expect(appKit.getIsConnectedState()).toBe(true)
   })
 
