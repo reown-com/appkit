@@ -95,23 +95,23 @@ jobs:
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           echo "BRANCH_NAME is $BRANCH_NAME"
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: 'bun'
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Cache Turborepo cache
         uses: actions/cache@v4
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-turbo-
 
@@ -122,12 +122,12 @@ jobs:
             ${{ github.workspace }}/apps/laboratory/out/cache
             ${{ github.workspace }}/apps/demo/out/cache
           # NOTE: apps/browser-extension likely does NOT use .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lock') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lock') }}-
 
       - name: build packages and lab
-        run: pnpm build:laboratory
+        run: bun run build:laboratory
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
@@ -144,11 +144,11 @@ jobs:
           BIP122_PRIVATE_KEY: ${{ secrets.BIP122_PRIVATE_KEY }}
           NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
         working-directory: ./apps/browser-extension/
-        run: pnpm build
+        run: bun run build
 
       - name: build Demo app
         if: inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
-        run: pnpm build:demo
+        run: bun run build:demo
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
@@ -197,7 +197,7 @@ jobs:
       # - name: Tune GitHub-hosted runner network
       #   uses: smorimoto/tune-github-hosted-runner-network@v1
 
-      - name: checkout # Checkout is still needed for pnpm install and playwright config
+      - name: checkout # Checkout is still needed for bun install and playwright config
         uses: actions/checkout@v4
         with:
           repository: reown-com/appkit
@@ -213,7 +213,7 @@ jobs:
         id: playwright-version
         run: |
           # Find the block starting with '@playwright/test': and get the next 5 lines
-          PLAYWRIGHT_BLOCK=$(grep -A 5 "'@playwright/test':" pnpm-lock.yaml)
+          PLAYWRIGHT_BLOCK=$(grep -A 5 "'@playwright/test':" bun.lock)
 
           echo "--- Playwright Block ---"
           echo "$PLAYWRIGHT_BLOCK"
@@ -244,14 +244,14 @@ jobs:
           fi
         continue-on-error: true
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: 'bun'
 
       # Download actual artifact in GitHub Actions
       - name: Download build artifacts (GitHub Actions)
@@ -272,7 +272,7 @@ jobs:
         run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
 
       - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install --frozen-lockfile
+        run: bun install
 
       # The cache is scoped to the key, version, and branch.
       # Version includes the path e.g. /tmp/playwright_cache
@@ -293,7 +293,7 @@ jobs:
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
         working-directory: ./apps/laboratory/
-        run: pnpm playwright:install-deps
+        run: bun run playwright:install-deps
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true' # <-- Re-enable condition
@@ -302,7 +302,7 @@ jobs:
         working-directory: ./apps/laboratory/
         run: |
           mkdir -p /tmp/playwright_cache
-          pnpm playwright:install # Add -ddd for max debug logging
+          bun run playwright:install # Add -ddd for max debug logging
 
       - name: Verify Cache Dir Exists After Install
         if: steps.playwright-cache.outputs.cache-hit != 'true' # Only relevant if install ran
@@ -321,7 +321,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           CI: true
         working-directory: ./apps/demo/
-        run: pnpm playwright:test
+        run: bun run playwright:test
 
       - name: Run Playwright tests
         env:
@@ -338,7 +338,7 @@ jobs:
           CI: true
           PLAYWRIGHT_SHARD_SUFFIX: ${{ matrix.shard }} # Pass shard index for unique blob filenames
         working-directory: ./apps/laboratory/
-        run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+        run: bun run ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
       - name: Run canary with minimal environment config
         if: matrix.shard == 1 # Run canary only on the first shard
@@ -350,7 +350,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache # Use workspace path
           CI: true
         working-directory: ./apps/laboratory/
-        run: pnpm playwright:test:canary
+        run: bun run playwright:test:canary
 
       - name: List blob reports directory before upload
         if: always() # Run even if previous steps failed, to see state
@@ -400,14 +400,14 @@ jobs:
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           echo "BRANCH_NAME is $BRANCH_NAME"
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: 'bun'
 
       # Download actual artifact in GitHub Actions
       - name: Download node_modules (GitHub Actions)
@@ -417,12 +417,12 @@ jobs:
           path: node_modules # Specify path to download into
 
       - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install --frozen-lockfile
+        run: bun install
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
         working-directory: ./apps/laboratory/
-        run: pnpm playwright:install-deps
+        run: bun run playwright:install-deps
 
       - name: Download all shard blob reports
         uses: actions/download-artifact@v4
@@ -442,7 +442,7 @@ jobs:
         # It uses playwright-merge.config.ts to reconcile differing testDir paths from shards
         # and to define the output reporters (HTML and JSON).
         # Output will be in './apps/laboratory/playwright-report/' (relative to working-directory)
-        run: pnpm exec playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
+        run: bunx playwright merge-reports -c playwright-merge.config.ts ${{ github.workspace }}/all-blob-reports
         working-directory: ./apps/laboratory # Playwright outputs to playwright-report here
 
       - name: Rename merged JSON report for clarity

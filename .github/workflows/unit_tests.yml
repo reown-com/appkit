@@ -19,14 +19,14 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: 'bun'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -44,12 +44,12 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: bun install
 
       - name: run vitest shard
         run: |
           echo "Running Vitest shard ${{ inputs.currentShard }}/ ${{ inputs.totalShards }}"
-          pnpm vitest run \
+          bun run vitest run \
             --shard=${{ inputs.currentShard }}/${{ inputs.totalShards }} \
             --coverage.enabled \
             --coverage.reporter=json \

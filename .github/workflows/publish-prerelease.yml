@@ -32,17 +32,17 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.inputs.branch }}
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
+          cache: 'bun'
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
         shell: bash
 
       - name: Publish prerelease
@@ -52,8 +52,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
-          pnpm install
-          pnpm changeset:pre ${{ github.event.inputs.canaryName }}
-          pnpm changeset:version
-          pnpm changeset:pre:exit
-          pnpm publish:canary
+          bun install
+          bun run changeset:pre ${{ github.event.inputs.canaryName }}
+          bun run changeset:version
+          bun run changeset:pre:exit
+          bun run publish:canary
