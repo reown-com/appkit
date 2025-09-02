@@ -3,10 +3,16 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 import { html } from 'lit'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import {
   type AccountState,
   ChainController,
+  type ChainControllerState,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -20,8 +26,42 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 const WALLET_FEATURE_WIDGET_TEST_ID = 'w3m-account-wallet-features-widget'
 const WALLET_SWITCH_TEST_ID = 'wui-wallet-switch'
 const MOCK_ADDRESS = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
-
 const SERVICE_UNAVAILABLE_MESSAGE = 'Service Unavailable'
+
+// --- Helpers ---------------------------------------------------- //
+function createMockChainState(
+  chainNamespace: string,
+  caipNetworkId?: string
+): ChainControllerState {
+  const mockCaipNetwork = caipNetworkId
+    ? {
+        id: caipNetworkId.split(':')[1],
+        chainNamespace,
+        caipNetworkId,
+        name: 'Test Network',
+        nativeCurrency: {
+          name: 'Test Token',
+          symbol: 'TEST',
+          decimals: 18
+        },
+        rpcUrls: {
+          default: { http: ['https://test.rpc'] }
+        },
+        blockExplorers: {
+          default: { name: 'Test Explorer', url: 'https://test.explorer' }
+        }
+      }
+    : undefined
+
+  return {
+    ...ChainController.state,
+    activeChain: chainNamespace as ChainNamespace,
+    activeCaipNetwork: mockCaipNetwork as CaipNetwork,
+    activeCaipAddress: mockCaipNetwork
+      ? (`${mockCaipNetwork.caipNetworkId}:${MOCK_ADDRESS}` as CaipAddress)
+      : undefined
+  }
+}
 
 const ACCOUNT = {
   namespace: 'eip155',
@@ -36,14 +76,16 @@ describe('W3mAccountWalletFeaturesWidget', () => {
 
   beforeEach(() => {
     vi.restoreAllMocks()
+    // Mock fetchTokenBalance to prevent network calls and "is not a function" errors
+    vi.spyOn(ChainController, 'fetchTokenBalance').mockResolvedValue([])
   })
 
-  it('it should not return any components if address is not provided in ChainController', () => {
+  it('it should not return any components if address is not provided in ChainController', async () => {
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       ...ChainController.getAccountData(),
       address: undefined
     } as unknown as AccountState)
-    expect(() =>
+    await expect(() =>
       fixture(html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`)
     ).rejects.toThrow('w3m-account-features-widget: No account provided')
   })
@@ -59,10 +101,9 @@ describe('W3mAccountWalletFeaturesWidget', () => {
         eip155: 'metamask.io'
       } as Record<ChainNamespace, string | undefined>
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: CommonConstantsUtil.CHAIN.EVM
-    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+      createMockChainState(CommonConstantsUtil.CHAIN.EVM, 'eip155:1')
+    )
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -85,10 +126,9 @@ describe('W3mAccountWalletFeaturesWidget', () => {
         eip155: 'metamask.io'
       } as Record<ChainNamespace, string | undefined>
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: CommonConstantsUtil.CHAIN.EVM
-    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+      createMockChainState(CommonConstantsUtil.CHAIN.EVM, 'eip155:1')
+    )
 
     const pushSpy = vi.spyOn(RouterController, 'push')
 
@@ -112,10 +152,9 @@ describe('W3mAccountWalletFeaturesWidget', () => {
       ...ChainController.getAccountData(),
       address: MOCK_ADDRESS
     } as unknown as AccountState)
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: CommonConstantsUtil.CHAIN.EVM
-    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+      createMockChainState(CommonConstantsUtil.CHAIN.EVM, 'eip155:1')
+    )
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -131,10 +170,9 @@ describe('W3mAccountWalletFeaturesWidget', () => {
       ...ChainController.getAccountData(),
       address: MOCK_ADDRESS
     } as unknown as AccountState)
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: CommonConstantsUtil.CHAIN.SOLANA
-    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+      createMockChainState(CommonConstantsUtil.CHAIN.SOLANA, 'solana:mainnet')
+    )
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -153,6 +191,9 @@ describe('W3mAccountWalletFeaturesWidget', () => {
       ...ChainController.getAccountData(),
       address: ACCOUNT.address
     } as unknown as AccountState)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+      createMockChainState(CommonConstantsUtil.CHAIN.EVM, 'eip155:1')
+    )
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -186,13 +227,14 @@ describe('wallet features visibility', () => {
 
   afterEach(() => {
     vi.clearAllMocks()
+    // Mock fetchTokenBalance to prevent network calls and "is not a function" errors
+    vi.spyOn(ChainController, 'fetchTokenBalance').mockResolvedValue([])
   })
   describe('evm wallet features', () => {
     beforeEach(() => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        ...ChainController.state,
-        activeChain: CommonConstantsUtil.CHAIN.EVM
-      })
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+        createMockChainState(CommonConstantsUtil.CHAIN.EVM, 'eip155:1')
+      )
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         ...ChainController.getAccountData(),
         address: MOCK_ADDRESS
@@ -323,10 +365,9 @@ describe('wallet features visibility', () => {
 
   describe('solana wallet features', () => {
     beforeEach(() => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        ...ChainController.state,
-        activeChain: CommonConstantsUtil.CHAIN.SOLANA
-      })
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+        createMockChainState(CommonConstantsUtil.CHAIN.SOLANA, 'solana:mainnet')
+      )
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         ...ChainController.getAccountData(),
         address: MOCK_ADDRESS
@@ -457,10 +498,12 @@ describe('wallet features visibility', () => {
 
   describe('bitcoin wallet features', () => {
     beforeEach(() => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        ...ChainController.state,
-        activeChain: CommonConstantsUtil.CHAIN.BITCOIN
-      })
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
+        createMockChainState(
+          CommonConstantsUtil.CHAIN.BITCOIN,
+          'bip122:000000000019d6689c085ae165831e93'
+        )
+      )
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         ...ChainController.getAccountData(),
         address: 'bc1qa1234567890'
