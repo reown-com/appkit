@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where funding from the exchange had a preset dollar amount causing it to fail on the first attempt
+Fixed an issue where funding from the exchange did not work on the first attempt
