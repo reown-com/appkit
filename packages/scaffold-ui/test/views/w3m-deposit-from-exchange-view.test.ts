@@ -156,10 +156,7 @@ describe('W3mDepositFromExchangeView', () => {
     expect(handleSpy).toHaveBeenCalledWith('ex1')
   })
 
-  it('shows error when clicking exchange without amount', async () => {
-    // Mock the SnackController
-    const showErrorSpy = vi.spyOn(SnackController, 'showError')
-
+  it('shows set amount during first update', async () => {
     // Mock active network
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -170,7 +167,6 @@ describe('W3mDepositFromExchangeView', () => {
     ExchangeController.state.exchanges = [
       { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' }
     ] as any
-    ExchangeController.state.amount = 0
 
     // Avoid side effects on firstUpdated
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([])
@@ -181,9 +177,6 @@ describe('W3mDepositFromExchangeView', () => {
     )
     await elementUpdated(element)
 
-    const items = HelpersUtil.querySelectAll(element, 'wui-list-item')
-    items?.[0]?.click()
-
-    expect(showErrorSpy).toHaveBeenCalledWith('Please enter an amount')
+    expect(ExchangeController.state.amount).toBe(10)
   })
 })
